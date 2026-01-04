@@ -1,3 +1,4 @@
+
 # Meaningfy Agent Skills
 
 A curated collection of specialized Agent Skills for Claude Code. Skills extend Claude's capabilities with domain-specific knowledge, tools, and workflows.
@@ -22,6 +23,15 @@ Or install locally from a cloned repository:
 claude code install ./path/to/agent-skills
 ```
 
+### Via Plugin Marketplace
+
+Install individual skills directly from the marketplace:
+
+```bash
+/plugin marketplace add architecture-skills
+/plugin marketplace add python-architecture-skills
+```
+
 ### Accessing Skills
 
 Once installed, the skills are automatically available to Claude. Skills are discovered and activated based on their descriptions when they're relevant to your task.
@@ -30,9 +40,10 @@ Once installed, the skills are automatically available to Claude. Skills are dis
 
 The following skills are available in this repository:
 
-| Skill Name | Description | Status |
-|------------|-------------|--------|
-| *(Coming soon)* | Add your skills here | - |
+| Skill Name | Description | Location |
+|------------|-------------|----------|
+| **architecture** | System-level design, C4 models, ArchiMate, UML diagrams, ADRs, and architecture documentation | [`skills/architecture/`](skills/architecture/) |
+| **cosmic-python** | Clean Architecture and Cosmic Python guidance for well-tested, layered Python systems with SOLID principles, testing strategies, and CI/CD setup | [`skills/cosmic-python/`](skills/cosmic-python/) |
 
 To see all available skills, browse the [`skills/`](skills/) directory.
 
