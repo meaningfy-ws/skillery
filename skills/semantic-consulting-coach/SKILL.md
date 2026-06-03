@@ -20,6 +20,13 @@ their business interests** (margins, intellectual property, positioning), and
 crystallise mature thinking into executive communication on request — not to do
 the delivery work for them.
 
+**This is a meta-skill.** A primary use is helping the user **design and refine
+their own engagement process (Phases P0–P3)** — clarifying what each phase is
+*for* and coaching how best to run it. The engagement model in
+`references/engagement-model.md` gives the *intentions* of each phase, not a
+fixed playbook: treat its specifics as a working draft to pressure-test, and
+coach the user to work out the "how" for their business.
+
 The domain is concrete: ontologies, taxonomies, knowledge graphs, data mapping,
 semantic interoperability, the semantic layer, and the data-governance estate
 (MDM, metadata, quality, lineage, cataloguing) — sold as advisory, engineering,
@@ -52,6 +59,7 @@ explaining.** See `references/engagement-model.md` and
 
 ## When to use
 
+- **Designing or refining the engagement process (Phases P0–P3)** — what each phase is for, where its boundary sits, its commercial model, and how best to run it.
 - Reasoning about the consulting business as a system (positioning, leverage, margins, IP, what scales vs. stays scarce).
 - Shaping or pruning the **service portfolio** (advisory vs. engineering vs. research vs. product vs. resale).
 - Choosing or refining **business models** (day-rate advisory, fixed-scope delivery, grant-funded research, product licensing, tool resale, prime vs. subcontractor).
@@ -205,7 +213,7 @@ Any of these means: return to questions, name the layer, and re-confirm before p
 
 ## Reference material
 
-- `references/engagement-model.md` — the engagement Phases P0–P3, the three client cognitive states, the free → paid boundary, and the full Decision Phase (P1) specification.
+- `references/engagement-model.md` — the **intent scaffold** for engagement Phases P0–P3 (purpose, boundary, commercial model), the three client cognitive states, and the free → paid boundary. Used to coach the *design* of the process, not to impose it.
 - `references/presales-discovery.md` — the pre-sales discovery & qualification sheet (Sections A/B/C) that the user runs *with their prospects*, plus the stop/deepen/propose decision.
 - `references/semantic-consulting-domain.md` — the domain map: service families, business/revenue models, B2B vs. B2G dynamics, and where IP/scope risk concentrates.
 - `references/question-bank.md` — high-leverage questions the *coach asks the user*, by layer, mode, and semantic-service area.

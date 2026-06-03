@@ -1,12 +1,14 @@
-# Engagement Model — how Meaningfy consults
+# Engagement Model — the intent scaffold for P0–P3
 
-The commercial spine of the business: **how we engage, where the boundaries are,
-and what each step is worth.** Use it to coach the user's decisions about
-positioning, pricing, and where to stop — not to pitch it at clients verbatim.
+**This is a meta-business skill.** Its job is to help the user *design and
+refine* their own engagement process and work out how best to run each step.
+This file gives the **intentions** of each phase — purpose, boundary, commercial
+model — **not a fixed playbook.** Coach the user to develop the "how"; treat any
+specifics here as a working draft to pressure-test, not doctrine.
 
-> **Modes ≠ Phases.** "Phases P0–P3" here are the *commercial engagement model*.
-> The coach's Exploration / Alignment / Synthesis are *conversation modes*. See
-> SKILL.md. Don't conflate them.
+> **Modes ≠ Phases.** "Phases P0–P3" are the *commercial engagement model* the
+> user is designing. The coach's Exploration / Alignment / Synthesis are
+> *conversation modes*. See SKILL.md. Don't conflate them.
 
 ## Governing Thought
 
@@ -15,7 +17,8 @@ positioning, pricing, and where to stop — not to pitch it at clients verbatim.
 
 The unit of value is **decision-readiness**, a *deliverable state* in which the
 organisation knows: what to do next, why, what success looks like, and what comes
-later. This is not vague advisory — it is a defined outcome.
+later. This is not vague advisory — it is a defined outcome. The whole point of
+the P0–P3 structure is to protect that value.
 
 ## The free → paid boundary
 
@@ -23,147 +26,81 @@ later. This is not vague advisory — it is a defined outcome.
 - **Paid:** helping the client decide what to do about it.
 
 When a conversation moves from **"is this relevant?"** to **"what should we
-do?"**, pre-sales has reached its boundary. Propose a disciplined next step (the
-Decision Phase), not more discussion.
+do?"**, pre-sales has reached its boundary. Propose a disciplined next step, not
+more discussion.
 
 ## The three cognitive states of a client
 
-| State | Client question | Commercial | Coach's rule |
-|-------|-----------------|------------|--------------|
-| **1 — Orientation** | "Is this even relevant to us?" | Free | Teach generously but **shallow**; never deeply customise. Vocabulary, high-level explanations, analogies, cross-sector examples ("what is a semantic layer?", "why Purview isn't enough on its own"). |
-| **2 — Decision pressure** | "If we do this, what do we do *first* — and what do we *not* do?" | **Paid** | This is where Meaningfy's real value starts: scoping, trade-offs, sequencing, internal politics. Answering these for free leaks intellectual capital. |
-| **3 — Execution** | "Build this with us." | Paid (different shape) | Ontology, pipelines, pilots, tooling — only *after* State 2 is complete. |
+| State | Client question | Commercial | Design rule |
+|-------|-----------------|------------|-------------|
+| **1 — Orientation** | "Is this even relevant to us?" | Free | Teach generously but **shallow**; never deeply customise. |
+| **2 — Decision pressure** | "If we do this, what do we do *first* — and what *not*?" | **Paid** | Where the real value starts: scoping, trade-offs, sequencing. Answering for free leaks intellectual capital. |
+| **3 — Execution** | "Build this with us." | Paid (different shape) | Only *after* State 2 is complete. |
 
-**State-2 trigger questions (you are already in paid territory):**
-"Which domain should we start with?" · "Is marketing data the right entry
-point?" · "Should semantics live in governance or architecture?" · "What should
-we do before building a pilot?" · "How do we avoid another shelfware initiative?"
+**State-2 signals (already paid territory):** "Which domain should we start
+with?" · "Is marketing data the right entry point?" · "Governance or
+architecture?" · "What before a pilot?" · "How do we avoid shelfware?"
 
-## Engagement Phases P0–P3
+## Engagement Phases P0–P3 — intentions, not instructions
 
-**Internal principle: Meaningfy does not collapse phases.** Each has a distinct
-purpose, boundary, and commercial model. This protects client success,
-intellectual capital, and long-term trust.
+**Internal principle: do not collapse the phases.** Each has a distinct purpose,
+boundary, and commercial model. Keeping them separate protects client success,
+intellectual capital, and long-term trust. The skill's job is to help the user
+make each phase's *intent* sharp and its *boundary* defensible — not to dictate
+the activities inside it.
 
-### Phase 0 — Orientation *(unpaid, bounded)* — outline only; detailed spec pending
-- **Purpose:** Mutual recognition. **Answers:** "Are we even relevant to each other?"
-- Introductory conversations; conceptual explanations (semantics, governance,
-  interoperability); examples from other organisations/sectors; clarifying
-  whether Meaningfy is relevant.
-- **Boundary rule:** if the conversation shifts from *"is this relevant?"* to
-  *"what should we (the client) do?"* → **stop.**
+| Phase | Purpose / question it answers | Commercial | Boundary / status |
+|-------|-------------------------------|------------|-------------------|
+| **P0 — Orientation** | Mutual recognition — "Are we even relevant to each other?" | Unpaid, bounded | Stop when talk shifts from *"is this relevant?"* to *"what should we (the client) do?"* · *outline only — to be designed* |
+| **P1 — Decision** | Make a safe, informed commitment possible — "What is the right next step, and why?" | Paid, fixed frame | The keystone: absorbs ambiguity so execution can be clean (intent detailed below) |
+| **P2 — Execution** | Build what was decided — "How do we implement this well?" | Paid, scoped | Only valid once P1 is complete · *outline only — to be designed* |
+| **P3 — Partnership & Evolution** | Sustain, scale, evolve — "How do we keep this alive?" | Paid, optional | Governance support, semantic operations, capability building |
 
-### Phase 1 — Decision Phase *(paid, fixed frame)* — fully specified below
-- **Purpose:** Make a safe, informed commitment possible. **Answers:** "What is
-  the right next step, and why?"
-- Absorbs ambiguity; creates shared understanding across stakeholders; makes the
-  next step explicit and defensible.
-- The **keystone phase** that protects both client and Meaningfy. It absorbs
-  ambiguity so execution can be clean.
+When coaching P0 and P2 (or refining P1/P3), work from intent outward: *what is
+this phase for, where does it stop, who pays and how, and what does "done" look
+like?* — then let the user design the activities.
 
-### Phase 2 — Execution *(paid, scoped)* — outline only; detailed spec pending
-- **Purpose:** Build what was decided. **Answers:** "How do we implement this well?"
-- Pilots; semantic models & ontologies; data-governance artefacts; integration
-  and tooling (mappings, software, enablement).
-- **Only successful if Phase 1 has been completed.**
+## P1 — the Decision Phase (the keystone): its intent
 
-### Phase 3 — Partnership & Evolution *(paid, optional)*
-- **Purpose:** Sustain, scale, evolve. **Answers:** "How do we keep this alive and evolving?"
-- Governance support; semantic operations; capability building; continuous evolution.
-
----
-
-## Phase 1 — The Decision Phase (full specification)
-
-A short, paid engagement that moves an organisation from awareness and interest
-to a **safe, informed decision about what to build next.** It answers:
+The flagship offering. A short, paid engagement that moves an organisation from
+awareness/interest to a **safe, informed decision about what to build next**:
 
 > What is the right next step for this organisation, given its data landscape,
 > governance maturity, legacy constraints, and strategic ambitions?
 
 It sits deliberately **before** any pilot, implementation, or programme.
 
-**It is:** a decision-enabling engagement; fixed-time, fixed-price with clear
-outcomes; a structured way to reduce uncertainty and internal risk; a bridge
-between strategy, governance, and execution.
+**It is:** decision-enabling, fixed-frame, a way to reduce uncertainty and
+internal risk, a bridge between strategy, governance, and execution.
+**It is not:** open-ended discovery; a Big4-style maturity assessment; a
+technical pilot/PoC; a substitute for the client's own decision. *Meaningfy does
+not decide for the client — it makes deciding safe.*
 
-**It is not:** endless/open-ended discovery; a Big4-style maturity assessment; a
-technical pilot or PoC; a substitute for internal decision-making. *Meaningfy
-does not decide for the client — it makes it possible to decide safely.*
+**When it fits:** the client knows semantics/governance/interoperability matters,
+feels pressure from analytics/AI/reuse, has fragmented/legacy data, and is unsure
+where to start or how to sequence — "start small, but not randomly".
 
-### When it is appropriate
-The organisation knows semantics/governance/interoperability matters; feels
-pressure from analytics, AI, or reuse ambitions; has legacy and fragmented data;
-is unsure where to start or how to sequence; wants to start small but not
-randomly. Typical signals: *"We know we need a semantic layer but can't justify
-or shape it." · "We want AI, but governance and meaning aren't there yet." · "We
-don't want another pilot that goes nowhere."*
+**The output that defines the value — a Decision Package:** a clear
+recommendation for the first initiative; a defined scope (what is in, **what is
+explicitly out**); a sequenced roadmap (pilot → scale); explicit
+**buy / build / defer** decisions; a **ready-to-contract execution brief**. It
+earns the right to say, calmly: *"From here, we can execute — or you can take
+this and execute with someone else."*
 
-### Scope (not semantics only)
-Semantic foundations (ontologies, application profiles, semantic layers); data
-governance alignment (roles, ownership, stewardship, policies); metadata &
-cataloguing strategy; interoperability & integration strategy; knowledge-graph
-readiness; AI/analytics readiness from a meaning & governance perspective.
-Semantics, governance, and architecture are often inseparable — this phase
-addresses their intersections.
+**Boundary safeguard (principle, not procedure):** if agreed outcomes can't be
+reached for reasons outside Meaningfy's control, **signal it explicitly** and
+offer a scope reduction, short extension, or clean stop with partial delivery —
+never silent overwork. **Clean handover:** execution is always a *separate*
+engagement with its own scope and budget.
 
-### Structure
-- **Duration:** typically 6–8 weeks, calendar-based (not effort-based).
-- **Team:** small senior team (usually 1–3 consultants); semantics / governance /
-  architecture expertise engaged as needed.
-- **Commercial model:** **fixed price + fixed duration**, with **variable depth
-  handled explicitly** (see safeguards) and **formal stop / extend mechanics.**
+**Design questions the coach helps the user answer (the "how", left open):**
+- Duration and shape — calendar-boxed or effort-boxed? how long?
+- Team and seniority — who is engaged, and when?
+- Commercial model — fixed price? how is *variable depth* handled? stop/extend mechanics?
+- Activities — how much structured discovery, landscape reading, scoping, option framing?
+- Inputs required from the client, and how access is secured.
+- What is explicitly *out* of scope to protect the boundary with P2.
 
-### Inputs (from the client)
-Access to key stakeholders (business, data, IT, governance); existing
-documentation (formal or informal); transparency about constraints (time,
-politics, legacy). *Goal is understanding, not completeness.*
-
-### Activities
-1. **Structured discovery & alignment** — targeted interviews/working sessions;
-   clarify business drivers; identify decision-makers vs. contributors.
-2. **Landscape reading** (lightweight, not a full audit) — data sources & flows
-   at a conceptual level; governance structures & gaps; existing tooling.
-3. **Semantic & governance scoping** — what needs shared meaning vs. what
-   doesn't; where semantics adds leverage vs. overhead; the governance ↔
-   architecture ↔ use-case relationship.
-4. **Option framing** — 2–3 credible paths (not 10); trade-offs, risks,
-   dependencies; what to start with and what to explicitly defer.
-
-### Outputs — the **Decision Package** (the core value)
-- A clear recommendation for the first semantic initiative.
-- A defined scope (what is in, **what is explicitly out**).
-- A sequenced roadmap (pilot → scale).
-- Explicit **buy / build / defer** decisions.
-- A **ready-to-contract execution brief.**
-
-The pivotal sentence the phase earns the right to say, calmly:
-> "From here, we can execute — or you can take this and execute with someone else."
-
-### Safeguards & boundaries
-If, due to factors outside Meaningfy's control (stakeholder availability, access
-to information), the agreed outcomes can't reasonably be reached in the agreed
-duration, Meaningfy will **signal the issue explicitly** and propose one of: a
-**scope reduction**, a **short extension**, or a **formal stop with partial
-delivery.** This avoids silent overwork and preserves trust.
-
-### Transition to execution
-The phase ends cleanly. If the client proceeds, **execution is a separate
-engagement** (pilot, implementation, enablement) with its own scope, budget, and
-expectations. This separation protects both sides and increases delivery success.
-
-### Why it matters
-- **For the client:** reduces risk before committing budget; avoids random or
-  politicised pilots; creates internal alignment; preserves optionality;
-  delivers clarity fast without Big4 overhead.
-- **For Meaningfy:** protects intellectual capital; prevents unpaid deep
-  thinking; ensures pilots are used, not shelved; enables long-term partnerships.
-
-### Internal note
-If a client asks for **recommendations, sequencing, or scoping** before
-committing to this phase, that is the signal to **pause and propose the Decision
-Phase explicitly.** That is the boundary between free orientation and paid value.
-
-### Working names for the offering (structure matters more than the name)
-Semantic Readiness & Direction Phase · Semantic & Governance Alignment Phase ·
-Decision Foundation for a Semantic Layer · Semantic Architecture & Scope Definition.
+**Working names** (structure matters more than the name): Semantic Readiness &
+Direction Phase · Semantic & Governance Alignment Phase · Decision Foundation for
+a Semantic Layer · Semantic Architecture & Scope Definition.
