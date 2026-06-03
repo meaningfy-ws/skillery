@@ -35,6 +35,15 @@
       "skills": [
         "./skills/semantic-consulting-coach"
       ]
+    },
+    {
+      "name": "executive-communication-skills",
+      "description": "McKinsey-style executive communication and problem-solving — Governing Thought, SCQA/SCR, Minto Pyramid, MECE, the 6-step problem-solving process, and persuasive message structure for any board paper, proposal, or analysis",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/executive-communication"
+      ]
     }
   ]
 }
