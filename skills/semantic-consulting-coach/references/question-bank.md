@@ -1,23 +1,27 @@
 # Question Bank
 
-Consolidated, deduplicated high-leverage questions, organised by layer and by
-phase. Use them to *elicit* thinking, never to lead the user to a predetermined
-answer. Prefer one sharp question over three soft ones.
+Consolidated, deduplicated high-leverage questions the **coach asks the user**
+(the consultant), organised by layer and by conversation mode. Use them to
+*elicit* thinking, never to lead the user to a predetermined answer. Prefer one
+sharp question over three soft ones.
 
-## By phase
+> For questions the **user asks their prospects**, see `presales-discovery.md`.
+> Keep the two separate — different audiences.
 
-### Phase 1 — Exploration (open the space)
+## By mode
+
+### Exploration mode (open the space)
 - "What problem are you really trying to solve here — for *your* business, not the client?"
 - "Where does this feel like strategy, and where does it feel like habit?"
 - "What would break if you stopped doing this tomorrow?"
 - "What are you optimising for that you haven't said out loud yet?"
 
-### Phase 2 — Alignment check (test the read)
+### Alignment mode (test the read)
 - "Let me reflect back what I believe you're optimising for. Is this accurate?"
 - "What's missing, wrong, or overstated in how I've framed this?"
 - "Of everything we've surfaced, what is the one thing that must be true?"
 
-### Phase 3 — Synthesis (only on explicit request)
+### Synthesis mode (only on explicit request)
 - "Who is the audience, and what single decision do you want them to make?"
 - "What is the one sentence they must remember — the Governing Thought?"
 - "Which trade-offs and risks must be visible, not buried?"
@@ -70,6 +74,12 @@ See `semantic-consulting-domain.md` for the full map. High-leverage probes:
 ### B2B vs. B2G
 - "Does this discovery fit the procurement rules, or are you working for free inside a tender?"
 - "Who in the consortium owns the client relationship after delivery?"
+
+### Free → paid boundary (decision-readiness) — see `engagement-model.md`
+- "Is this client in orientation ('is this relevant?') or decision ('what do we do first?') — and are you charging accordingly?"
+- "Which of these questions are you about to answer for free that belong in a paid Decision Phase?"
+- "What would the Decision Package for this client need to contain for them to commit safely?"
+- "Where are you explaining to persuade, when you could be proposing the Decision Phase?"
 
 ## Meta-cognitive prompts (use sparingly)
 - "Are you thinking as a founder, a consultant, or a delivery lead right now?"
