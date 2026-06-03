@@ -1,7 +1,7 @@
 # Pre-sales Discovery & Qualification Sheet
 
 Questions the **consultant asks their prospects** (distinct from the coaching
-questions the coach asks the *user* — those live in `question-bank.md`).
+questions the coach asks the *user*, which live in `question-bank.md`).
 
 > This sheet supports **pre-sales conversations, not selling.** The goal is to
 > decide whether to **stop**, **schedule a focused follow-up**, or **propose the
@@ -13,7 +13,7 @@ questions the coach asks the *user* — those live in `question-bank.md`).
 - **Scheduled discovery calls (30–60 min)** → use **Sections B and C**.
 - Don't force all sections; use what fits the context.
 
-## A. Conceptual calibration *(first encounters only — use 1–2)*
+## A. Conceptual calibration *(first encounters only, use 1–2)*
 
 - How do topics like data semantics, knowledge graphs, or shared meaning show up in your organisation today?
 - How important is data meaning for analytics or AI in your environment?
@@ -24,15 +24,15 @@ questions the coach asks the *user* — those live in `question-bank.md`).
 
 ## B. Technical & organisational discovery *(discovery calls)*
 
-- How would you describe your current data landscape — centralised, federated, mixed?
+- How would you describe your current data landscape: centralised, federated, mixed?
 - Which initiatives struggle most with data reuse or interpretation?
 - Do you have a data catalogue or metadata tooling today? How is it actually used?
-- Where does data governance sit — centrally, per domain, or informally?
+- Where does data governance sit: centrally, per domain, or informally?
 
 **Semantic & interoperability pressure**
 - Where do you see the biggest friction caused by inconsistent meaning?
 - Which data crosses domains most often?
-- What breaks first when definitions are unclear — reporting, integration, AI?
+- What breaks first when definitions are unclear: reporting, integration, AI?
 
 ## C. Business readiness & decision dynamics *(discovery calls)*
 
@@ -44,7 +44,7 @@ questions the coach asks the *user* — those live in `question-bank.md`).
 - What would make a first initiative clearly *fail* internally?
 - What would success need to look like to be taken seriously?
 
-## Internal decision (after the conversation) — choose one
+## Internal decision (after the conversation): choose one
 
 | Decision | When | Meaning |
 |----------|------|---------|
