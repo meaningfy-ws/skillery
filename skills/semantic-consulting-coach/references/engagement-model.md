@@ -10,10 +10,14 @@ specifics here as a working draft to pressure-test, not doctrine.
 > user is designing. The coach's Exploration / Alignment / Synthesis are
 > *conversation modes*. See SKILL.md. Don't conflate them.
 
-## Governing Thought
+## What you are really selling
 
 > You are not selling "semantics", "advisory", or "pilots". You are selling
 > **the moment when uncertainty becomes safe to commit.**
+
+(This is the business *thesis*. Do not confuse it with the **Governing Thought**
+of a communication artefact — the one-sentence takeaway defined in the
+`executive-communication` skill. Different term, different layer.)
 
 The unit of value is **decision-readiness**, a *deliverable state* in which the
 organisation knows: what to do next, why, what success looks like, and what comes
@@ -48,6 +52,10 @@ boundary, and commercial model. Keeping them separate protects client success,
 intellectual capital, and long-term trust. The skill's job is to help the user
 make each phase's *intent* sharp and its *boundary* defensible — not to dictate
 the activities inside it.
+
+**The phases serve the cognitive states** (above) — two views of one structure,
+not five: **P0 → State 1** (orientation), **P1 → State 2** (decision),
+**P2 → State 3** (execution); **P3** is post-decision continuity.
 
 | Phase | Purpose / question it answers | Commercial | Boundary / status |
 |-------|-------------------------------|------------|-------------------|

@@ -7,11 +7,9 @@ flag a service or model as a *hypothesis* until the user confirms it applies.
 
 ## 1. Service families (offering layer)
 
-> **Keystone offering:** the **Decision Phase** (paid, fixed-price,
-> fixed-duration) is the entry product that turns orientation into a committed,
-> scoped decision — it sits at the head of "Strategic data & semantics advisory"
-> below and gates everything downstream. Its intent (and the design questions
-> for shaping it) are in `engagement-model.md`.
+> **Keystone offering:** the **Decision Phase** (see `engagement-model.md`) sits
+> at the head of "Strategic data & semantics advisory" below and gates everything
+> downstream.
 
 Grouped by intent. The **decide vs. build** axis matters most: advisory helps the
 client *decide*; engineering helps them *build*. Blurring them silently is where

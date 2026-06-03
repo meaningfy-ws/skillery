@@ -81,7 +81,35 @@ See `semantic-consulting-domain.md` for the full map. High-leverage probes:
 - "What would the Decision Package for this client need to contain for them to commit safely?"
 - "Where are you explaining to persuade, when you could be proposing the Decision Phase?"
 
+## Negotiation meta-questions
+
+Interests and leverage before tactics. Coach the user to see the whole board.
+
+- "What is your BATNA here — and theirs? Which side can walk away more easily?"
+- "Are you negotiating *positions* or *interests*? What does each side actually want underneath the ask?"
+- "What is your walk-away (reservation point), and have you fixed it *before* the room — not in it?"
+- "Is there a ZOPA at all — a zone where a deal beats no deal for both sides?"
+- "Who anchors first, with what number or frame, and how is it justified?"
+- "Which issues can you trade — what is cheap for you but valuable to them (and vice versa)?"
+- "Are you *claiming* value or *creating* it? Can the pie grow before it is split?"
+- "What concession pattern are you signalling, and what does it train them to expect next time?"
+- "What is the real cost of no deal — versus the cost of a bad deal you can't exit?"
+- "Where is the power: scarcity, time, information, or alternatives — and is it shifting?"
+
+## Communication meta-questions
+
+The decisions *before* drafting (audience and Governing Thought are covered in
+the Synthesis-mode questions above). For the drafting method itself, use the
+`executive-communication` skill.
+
+- "What can you safely leave out without a critical omission?"
+- "What objection will they raise first — and have you pre-empted it?"
+- "What do they fear, and what do they want to be *seen* deciding?"
+- "Is this the right channel and moment, or are you polishing the message and ignoring the timing?"
+- "Are you trying to inform, persuade, or get a decision? The structure changes with the goal."
+
 ## Meta-cognitive prompts (use sparingly)
 - "Are you thinking as a founder, a consultant, or a delivery lead right now?"
 - "Is this uncertainty something to resolve — or something to preserve?"
 - "If you had to explain this to a senior peer, what would you simplify?"
+- "Are you optimising the deal, the relationship, or the precedent you set?"
