@@ -1,0 +1,304 @@
+"""Repository self-consistency guardrail.
+
+The repo embodies its own cosmic-python thesis: a thin read layer (parse
+marketplace + skill files) feeds pure check functions; ``main`` is the
+entrypoint. Each public ``*_errors``/``*_gaps``/``*_mismatch`` function returns
+a list of human-readable problems ([] == clean) so checks compose and test
+trivially.
+"""
+from __future__ import annotations
+
+import json
+import re
+import sys
+from pathlib import Path
+
+import yaml
+
+SKILLS_DIR = "skills"
+MARKETPLACE = ".claude-plugin/marketplace.json"
+README = "README.md"
+# Hard ceiling that flags genuinely bloated files; ~500 stays the soft target
+# in CONTRIBUTING. The established `architecture` skill is ~618 lines and fine.
+MAX_SKILL_LINES = 650
+
+# The R1 target bundle map (single source of truth for bundle composition).
+EXPECTED_BUNDLES = {
+    "meaningfy-engineering": {"cosmic-python", "architecture", "meaningfy-git-workflow"},
+    "meaningfy-ai-coding": {
+        "clarity-gate", "epic-planning", "bdd-gherkin",
+        "meaningfy-code-review", "technical-writing",
+    },
+    "meaningfy-consulting": {"semantic-consulting-coach", "executive-communication"},
+}
+ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "gherkin-writer", "documenter"}
+# Files/dirs whose content must never be edited (frozen) — excluded from prose checks.
+FROZEN_GLOBS = ("docs/ai-coding/",)
+
+_FRONTMATTER = re.compile(r"^---\n(.*?)\n---", re.DOTALL)
+_MD_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+_SKIP_DIRS = {".git", ".venv", "node_modules", ".idea", "__pycache__"}
+
+
+# ---------------------------------------------------------------- read layer
+def _read(repo: Path, rel: str) -> str:
+    return (repo / rel).read_text(encoding="utf-8")
+
+
+def _marketplace(repo: Path) -> dict:
+    return json.loads(_read(repo, MARKETPLACE))
+
+
+def _marketplace_skills(repo: Path) -> list[str]:
+    out: list[str] = []
+    for plugin in _marketplace(repo).get("plugins", []):
+        for s in plugin.get("skills", []):
+            out.append(s.replace("./skills/", "").strip("/").split("/")[-1])
+    return out
+
+
+def _skill_dirs(repo: Path) -> list[str]:
+    root = repo / SKILLS_DIR
+    if not root.exists():
+        return []
+    return sorted(p.name for p in root.iterdir() if (p / "SKILL.md").exists())
+
+
+def _frontmatter(text: str) -> dict | None:
+    """Parse the YAML frontmatter tolerantly — the platform's loader is lenient
+    (e.g. unquoted colons in descriptions), so the validator must not be stricter."""
+    m = _FRONTMATTER.match(text)
+    if not m:
+        return None
+    block = m.group(1)
+    try:
+        data = yaml.safe_load(block)
+        if isinstance(data, dict):
+            return data
+    except yaml.YAMLError:
+        pass
+    out: dict = {}
+    for line in block.splitlines():
+        mm = re.match(r"^([A-Za-z][\w-]*):\s?(.*)$", line)
+        if mm:
+            out.setdefault(mm.group(1), mm.group(2).strip())
+    return out
+
+
+def _iter_text_files(repo: Path):
+    for path in repo.rglob("*"):
+        if path.suffix not in (".md", ".template"):
+            continue
+        if any(part in _SKIP_DIRS for part in path.parts):
+            continue
+        yield path
+
+
+def _is_frozen(repo: Path, path: Path) -> bool:
+    rel = str(path.relative_to(repo))
+    return any(rel.startswith(g) for g in FROZEN_GLOBS)
+
+
+# ------------------------------------------------------------------- checks
+def missing_skill_dirs(repo: Path) -> list[str]:
+    dirs = set(_skill_dirs(repo))
+    return [f"marketplace lists '{s}' but skills/{s}/SKILL.md is missing"
+            for s in _marketplace_skills(repo) if s not in dirs]
+
+
+def unregistered_skill_dirs(repo: Path) -> list[str]:
+    registered = set(_marketplace_skills(repo))
+    return [f"skills/{s} exists but is not registered in the marketplace"
+            for s in _skill_dirs(repo) if s not in registered]
+
+
+def frontmatter_present_errors(repo: Path) -> list[str]:
+    errs: list[str] = []
+    for name in _skill_dirs(repo):
+        if _frontmatter(_read(repo, f"{SKILLS_DIR}/{name}/SKILL.md")) is None:
+            errs.append(f"{name}: SKILL.md has no top-of-file YAML frontmatter")
+    return errs
+
+
+def frontmatter_errors(repo: Path) -> list[str]:
+    errs: list[str] = []
+    for name in _skill_dirs(repo):
+        fm = _frontmatter(_read(repo, f"{SKILLS_DIR}/{name}/SKILL.md"))
+        if fm is None:
+            errs.append(f"{name}: no frontmatter")
+            continue
+        for field in ("name", "description"):
+            if not fm.get(field):
+                errs.append(f"{name}: missing '{field}'")
+    return errs
+
+
+def name_mismatch(repo: Path) -> list[str]:
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        fm = _frontmatter(_read(repo, f"{SKILLS_DIR}/{name}/SKILL.md"))
+        if fm is None:
+            continue  # reported by frontmatter_present_errors
+        if fm.get("name") != name:
+            out.append(f"{name}: frontmatter name '{fm.get('name')}' != dir '{name}'")
+    return out
+
+
+def expected_bundle_membership(repo: Path) -> list[str]:
+    """Placement check: every registered skill sits in its expected bundle, and
+    no unknown bundle names appear. Incremental-safe — does not require all
+    expected skills to exist yet."""
+    reverse = {s: b for b, skills in EXPECTED_BUNDLES.items() for s in skills}
+    out: list[str] = []
+    for plugin in _marketplace(repo).get("plugins", []):
+        bundle = plugin.get("name")
+        if bundle not in EXPECTED_BUNDLES:
+            out.append(f"unknown bundle '{bundle}' (not in EXPECTED_BUNDLES)")
+            continue
+        for raw in plugin.get("skills", []):
+            skill = raw.replace("./skills/", "").strip("/").split("/")[-1]
+            want = reverse.get(skill)
+            if want is None:
+                out.append(f"skill '{skill}' is not in EXPECTED_BUNDLES")
+            elif want != bundle:
+                out.append(f"skill '{skill}' in '{bundle}', expected '{want}'")
+    return out
+
+
+# Authoring/illustrative docs whose "links" are placeholder examples, not
+# navigation: the skill template, the authoring guides, and skill reference
+# files. Navigational docs (README, docs/, SKILL.md, plan files) are still
+# checked — that is where a moved file leaves a real dangling link.
+def _is_illustrative(rel_parts: tuple[str, ...]) -> bool:
+    return rel_parts[0] in ("template", "spec") or "references" in rel_parts
+
+
+def broken_links(repo: Path) -> list[str]:
+    out: list[str] = []
+    for md in _iter_text_files(repo):
+        if _is_illustrative(md.relative_to(repo).parts):
+            continue
+        for target in _MD_LINK.findall(md.read_text(encoding="utf-8")):
+            if target.startswith(("http://", "https://", "#", "mailto:")):
+                continue
+            rel = target.split("#")[0]
+            if not rel:
+                continue
+            if not (md.parent / rel).exists():
+                out.append(f"{md.relative_to(repo)} -> {target}")
+    return out
+
+
+def skill_too_long(repo: Path, limit: int = MAX_SKILL_LINES) -> list[str]:
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        n = len(_read(repo, f"{SKILLS_DIR}/{name}/SKILL.md").splitlines())
+        if n > limit:
+            out.append(f"{name}: SKILL.md is {n} lines (> {limit})")
+    return out
+
+
+def orphan_agent_references(repo: Path) -> list[str]:
+    """For any agent whose file no longer exists, ensure no non-frozen text
+    file still references it. Incremental-safe: silent while the file exists."""
+    agents_dir = repo / "agents"
+    out: list[str] = []
+    for agent in sorted(ALL_AGENT_NAMES):
+        if (agents_dir / f"{agent}.md").exists():
+            continue
+        for f in _iter_text_files(repo):
+            # frozen docs predate the change; EPIC + the migration note name agents on purpose
+            if _is_frozen(repo, f) or f.name.startswith("EPIC-setup") or f.name == "environment-setup.md":
+                continue
+            if re.search(rf"\b{re.escape(agent)}\b", f.read_text(encoding="utf-8")):
+                out.append(f"{f.relative_to(repo)} references dropped agent '{agent}'")
+    return out
+
+
+def orphan_path_mentions(repo: Path, banned: list[str]) -> list[str]:
+    """Any non-frozen text file mentioning a moved/removed basename."""
+    out: list[str] = []
+    for f in _iter_text_files(repo):
+        if _is_frozen(repo, f) or f.parts[-1].startswith("EPIC-setup"):
+            continue
+        text = f.read_text(encoding="utf-8")
+        for name in banned:
+            if name in text:
+                out.append(f"{f.relative_to(repo)} mentions removed '{name}'")
+    return out
+
+
+def readme_inventory_gaps(repo: Path) -> list[str]:
+    readme = _read(repo, README)
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        if not re.search(rf"(^|[^\w-]){re.escape(name)}([^\w-]|$)", readme):
+            out.append(f"README does not list skill '{name}'")
+    return out
+
+
+def templates_mirrored(repo: Path) -> list[str]:
+    claude = repo / "prompts/CLAUDE.md.template"
+    agents = repo / "prompts/AGENTS.md.template"
+    if not (claude.exists() and agents.exists()):
+        return []  # WS4 concern; skip until both exist
+    skills = set(_skill_dirs(repo)) | {s for b in EXPECTED_BUNDLES.values() for s in b}
+
+    def named(text: str) -> set[str]:
+        return {s for s in skills if s in text}
+    cset, aset = named(claude.read_text()), named(agents.read_text())
+    if cset != aset:
+        return [f"CLAUDE/AGENTS template skill sets differ: {cset ^ aset}"]
+    return []
+
+
+def duplicate_fact_candidates(repo: Path) -> list[str]:
+    """Non-failing ASSIST for G-DUP: flags files that *authoritatively* state a
+    canonical fact (vs. pointing by name) for human review."""
+    signatures = {
+        "layer rules": r"models/.*adapters/.*services/.*entrypoints",
+        "red-green-refactor": r"red.?green.?refactor",
+        "branch naming pattern": r"<type>/<ticket-id>/<short-label>",
+        "80% coverage": r"\b80%\s+(test\s+)?coverage",
+    }
+    out: list[str] = []
+    for f in _iter_text_files(repo):
+        if f.parts[-1].startswith("EPIC-setup"):
+            continue
+        text = f.read_text(encoding="utf-8")
+        for label, pat in signatures.items():
+            if re.search(pat, text, re.IGNORECASE | re.DOTALL):
+                out.append(f"[{label}] {f.relative_to(repo)}")
+    return out
+
+
+ALL_CHECKS = (
+    missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
+    frontmatter_errors, name_mismatch, expected_bundle_membership,
+    broken_links, skill_too_long, orphan_agent_references,
+)
+
+
+# -------------------------------------------------------------- entrypoint
+def main(argv: list[str] | None = None) -> int:
+    repo = Path(argv[0]) if argv else Path(__file__).resolve().parents[2]
+    problems: list[str] = []
+    for check in ALL_CHECKS:
+        for p in check(repo):
+            problems.append(f"{check.__name__}: {p}")
+    if problems:
+        print(f"FAIL — {len(problems)} problem(s):")
+        for p in problems:
+            print(f"  - {p}")
+        candidates = duplicate_fact_candidates(repo)
+        if candidates:
+            print(f"\n(assist) {len(candidates)} duplicate-fact candidate(s) for manual G-DUP review:")
+            for c in candidates:
+                print(f"  ? {c}")
+        return 1
+    print("OK — repository self-consistent.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))

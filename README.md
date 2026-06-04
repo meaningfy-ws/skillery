@@ -1,75 +1,90 @@
-
 # Meaningfy Agent Skills
 
-A curated collection of specialized Agent Skills for Claude Code. Skills extend Claude's capabilities with domain-specific knowledge, tools, and workflows.
+The company-wide home for working with LLM agents **consistently**: reusable Claude Code
+**skills**, thin **agents**, human **methodology & standards** docs, and the **binding
+templates** that wire them into any project.
 
-## What are Agent Skills?
+## What this is
 
-Agent Skills are self-contained, reusable packages that extend Claude's capabilities in specific domains. Each skill provides focused knowledge, tools, and workflows that Claude can activate when needed.
+A curated, self-validating catalog. Skills carry the reusable knowledge; agents are thin
+execution wrappers; `docs/` is the human canon (methodology, engineering standards, philosophy);
+`prompts/` holds the CLAUDE.md/AGENTS.md templates that bind it all into a repo. External skills
+(superpowers, stream-coding, …) are **referenced, not copied** — see
+[`docs/environment-setup.md`](docs/environment-setup.md).
 
-## Installation
+## Who it's for
 
-### Via Claude Code CLI
+- **Developers & tech leads** building clean, layered, well-tested Python with AI assistance.
+- **Consultants** doing advisory work (semantic technologies, executive communication).
+- **Anyone** standardising how their team uses Claude Code across projects.
 
-Install the entire skills collection:
+## What's inside
 
-```bash
-claude code install https://github.com/meaningfy-ws/agent-skills
+| Bundle | Skill | Purpose |
+|--------|-------|---------|
+| `meaningfy-engineering` | **cosmic-python** | Clean, layered Python (models/adapters/services/entrypoints), SOLID, testing, CI |
+| | **architecture** | System design — C4, ArchiMate/UML, ADRs, contracts |
+| | **meaningfy-git-workflow** | Conventional commits, branching, PRs, dev-environment hygiene |
+| `meaningfy-ai-coding` | **clarity-gate** | Pre-implementation spec quality gate (≥9/10) |
+| | **epic-planning** | Work Shape → implementation-ready EPIC.md |
+| | **bdd-gherkin** | BDD Gherkin features + test data from a spec |
+| | **meaningfy-code-review** | Pre-PR review checklist & criteria |
+| | **technical-writing** | Docs, explanations, summaries, docstrings |
+| `meaningfy-consulting` | **semantic-consulting-coach** | Coaching for a semantic-tech / data consulting business |
+| | **executive-communication** | McKinsey-style executive messaging (SCQA, Minto, MECE) |
+
+Thin agent wrappers live in [`agents/`](agents/) (`implementer`, `code-reviewer`,
+`epic-planner`) — they pin a model / tools and load the skills above.
+
+## Getting started
+
+```
+/plugin marketplace add meaningfy-ws/agent-skills
+/plugin install meaningfy-engineering
+/plugin install meaningfy-ai-coding
+/plugin install meaningfy-consulting
 ```
 
-Or install locally from a cloned repository:
+Then scaffold a project with `scripts/init-meaningfy-project.sh` (writes `CLAUDE.md`/`AGENTS.md`,
+creates the `.claude/` layout, prints external-dependency install commands). Full setup and the
+mandatory/optional external dependencies are in [`docs/environment-setup.md`](docs/environment-setup.md).
 
-```bash
-claude code install ./path/to/agent-skills
-```
+## How to use it
 
-### Via Plugin Marketplace
+| You want to… | Go to |
+|--------------|-------|
+| Install/curate skills | the bundles above + `scripts/init-meaningfy-project.sh` |
+| Learn the AI-coding method | [`docs/ai-coding/`](docs/ai-coding/) |
+| Apply engineering standards | [`docs/engineering-standards/`](docs/engineering-standards/) + [`prompts/`](prompts/) |
+| Understand the mindset | [`docs/philosophy/`](docs/philosophy/) |
+| Contribute a skill | [`spec/`](spec/) + [`template/`](template/) |
 
-Install individual skills directly from the marketplace:
-
-```bash
-/plugin marketplace add architecture-skills
-/plugin marketplace add python-architecture-skills
-```
-
-### Accessing Skills
-
-Once installed, the skills are automatically available to Claude. Skills are discovered and activated based on their descriptions when they're relevant to your task.
-
-## Skills Inventory
-
-The following skills are available in this repository:
-
-| Skill Name | Description | Location |
-|------------|-------------|----------|
-| **architecture** | System-level design, C4 models, ArchiMate, UML diagrams, ADRs, and architecture documentation | [`skills/architecture/`](skills/architecture/) |
-| **cosmic-python** | Clean Architecture and Cosmic Python guidance for well-tested, layered Python systems with SOLID principles, testing strategies, and CI/CD setup | [`skills/cosmic-python/`](skills/cosmic-python/) |
-
-To see all available skills, browse the [`skills/`](skills/) directory.
-
-## Quick Links
-
-- **[Creating Skills](spec/CREATING_SKILLS.md)** - Complete guide to building new skills
-- **[Contributing](CONTRIBUTING.md)** - How to contribute skills to this repository
-- **[Specification](spec/agent-skills-spec.md)** - Formal Agent Skills specification
-- **[Template](template/SKILL.md)** - Template for new skills
-
-## Repository Structure
+## Repository structure
 
 ```
 agent-skills/
-├── .claude-plugin/              # Plugin configuration
-├── skills/                      # Individual skills
-├── spec/                        # Specification & docs
-├── template/                    # Skill template
-├── CREATING_SKILLS.md          # How to create skills
-├── CONTRIBUTING.md             # Contribution guidelines
-└── README.md                   # This file
+├── skills/        # the catalog (knowledge)
+├── agents/        # three thin wrappers (no knowledge)
+├── docs/          # ai-coding/ · engineering-standards/ · philosophy/ · environment-setup.md
+├── prompts/       # CLAUDE.md / AGENTS.md / global-prompt templates
+├── scripts/       # init-meaningfy-project.sh (projection)
+├── spec/          # authoring spec + skill-repo governance
+├── template/      # skill template
+├── tools/ + tests/# the self-consistency validator (make validate)
+└── .claude-plugin/# marketplace (3 bundles)
 ```
 
-## License
+## Contributing
 
-This repository is licensed under Apache 2.0 unless otherwise specified.
-Individual skills may have their own licenses - see LICENSE.txt in each skill directory.
+See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Creating Skills guide](spec/CREATING_SKILLS.md).
+Run `make validate` before opening a PR; CI runs it too. The governance method is in
+[`spec/skill-repo-governance.md`](spec/skill-repo-governance.md).
 
-See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for attribution of dependencies.
+## Licensing
+
+Apache 2.0 (see [LICENSE](LICENSE)); individual skills may carry their own `LICENSE.txt`. External
+dependencies are attributed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Support
+
+Open an issue, or contact the maintainers at info@meaningfy.ws.

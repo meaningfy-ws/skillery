@@ -5,43 +5,41 @@
     "email": "info@meaningfy.ws"
   },
   "metadata": {
-    "description": "Agent skills for software architecture, design, and development",
-    "version": "1.0.0"
+    "description": "Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently",
+    "version": "2.0.0"
   },
   "plugins": [
     {
-      "name": "architecture-skills",
-      "description": "Architecture and design skills including architecture patterns, ADRs, BPMN, UML diagrams, and architecture documentation",
+      "name": "meaningfy-engineering",
+      "description": "Engineering standards: clean layered Python (cosmic-python), system architecture, and Meaningfy git/PR workflow",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/architecture"
+        "./skills/cosmic-python",
+        "./skills/architecture",
+        "./skills/meaningfy-git-workflow"
       ]
     },
     {
-      "name": "python-architecture-skills",
-      "description": "Cosmic Python and clean architecture guidance for well-tested, layered Python systems",
+      "name": "meaningfy-ai-coding",
+      "description": "Documentation-first AI-assisted development helpers: clarity gate, EPIC planning, BDD, code-review checklist, and technical writing (pairs with the external stream-coding + superpowers skills — see docs/environment-setup.md)",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/cosmic-python"
+        "./skills/clarity-gate",
+        "./skills/epic-planning",
+        "./skills/bdd-gherkin",
+        "./skills/meaningfy-code-review",
+        "./skills/technical-writing"
       ]
     },
     {
-      "name": "semantic-consulting-coaching-skills",
-      "description": "Socratic coaching for a semantic-technologies / data consulting business — strategy, service portfolio, pricing, partnering, and B2B/B2G client situations — with executive-communication synthesis (Governing Thought, SCQA, Minto, MECE) on request",
+      "name": "meaningfy-consulting",
+      "description": "Semantic-technologies consulting coaching and executive communication (Governing Thought, SCQA, Minto, MECE)",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/semantic-consulting-coach"
-      ]
-    },
-    {
-      "name": "executive-communication-skills",
-      "description": "McKinsey-style executive communication and problem-solving — Governing Thought, SCQA/SCR, Minto Pyramid, MECE, the 6-step problem-solving process, and persuasive message structure for any board paper, proposal, or analysis",
-      "source": "./",
-      "strict": false,
-      "skills": [
+        "./skills/semantic-consulting-coach",
         "./skills/executive-communication"
       ]
     }

@@ -316,13 +316,13 @@ This approach requires **team discipline**. One developer ignoring layers breaks
 
 ### Documentation-First Methodology (Stream Coding)
 
-- **[stream-coding-methodology.md](references/stream-coding-methodology.md)** – 40/40/20 time split, 4 mandatory spec sections, Clarity Gate, Rule of Divergence
-- **[phase-1-strategic-blueprint-checklist.md](references/phase-1-strategic-blueprint-checklist.md)** – 7 Questions framework, Strategic Blueprint, ADR writing
-- **[phase-2-clarity-gate-checklist.md](references/phase-2-clarity-gate-checklist.md)** – AI-ready specs, 13-item Clarity Gate, scoring rubric
+- The **stream-coding** skill (external — see `docs/environment-setup.md`) owns the documentation-first method: 40/40/20 split, mandatory spec sections, Rule of Divergence.
+- The **clarity-gate** skill owns AI-ready specs + the 13-item Clarity Gate and scoring rubric.
+- Meaningfy adaptation notes live in `docs/engineering-standards/references/` (`stream-coding-notes.md`, `strategic-blueprint-checklist.md`).
 
 ### Company Standards & Principles
 
-- **[MEANINGFY_PROMPT.md](references/MEANINGFY_PROMPT.md)** – Full Meaningfy engineering culture: project structure, layering rules, SOLID principles, CI/CD expectations, security
+- Human canon: `docs/engineering-standards/coding-prompt.md` — the full Meaningfy engineering culture (project structure, layering, SOLID, CI/CD, security). **This SKILL.md is the operational version of that canon.**
 
 ---
 
@@ -332,4 +332,19 @@ This approach requires **team discipline**. One developer ignoring layers breaks
 - **stream-coding** ← Documentation-first methodology (planning specs); use WITH Cosmic Python for Phase 3 implementation
 - **cosmic-python** ← Code structure within services (this skill)
 - Your **CI/CD tooling** → importlinter, SonarCloud, pytest, tox (configured per Cosmic Python standards)
+
+## BOUNDARY & CANONICAL VOCABULARY
+
+**This skill owns** code structure inside a service: the four layers, SOLID, what to test per
+layer, and CI guardrails. It does **NOT** own:
+- The **TDD ritual** (red-green-refactor) → follow `superpowers:test-driven-development`; this
+  skill says *what belongs in a models test vs. a services test*, not how to do TDD.
+- **System design / topology / contracts** → the `architecture` skill (cosmic-python *consumes*
+  the contracts it authors; `make generate-models` is the seam).
+- **Commit/PR mechanics** → the `meaningfy-git-workflow` skill.
+
+**Canonical folder vocabulary:** `models/`, `adapters/`, `services/`, `entrypoints/` within
+**root modules** (not a single `/src`). The Cosmic Python book's `/domain` and `/service_layer`
+are **documented synonyms** for `models/` and `services/` — when reading the book, map them onto
+our canonical names. No semantic label should exist only as a free string.
 
