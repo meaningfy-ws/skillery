@@ -1,0 +1,45 @@
+---
+name: technical-writing
+description: Produce clear documentation, explanations, summaries, and docstrings — AsciiDoc/Antora or Markdown — with a lightweight clarity check. Use to write or improve project docs, explain how a module works, summarise an area, or add docstrings. Trigger on "document this", "write docs/README", "explain how X works", "add docstrings", "summarise this module".
+license: Apache 2.0
+metadata:
+  category: ai-coding
+---
+
+# Technical Writing
+
+## Overview
+
+Clear, concise documentation, explanations, and summaries. Aligns with the project's
+established terminology (read `MEMORY.md` and existing docs first).
+
+## What you produce
+
+- **Code explanations** for onboarding/knowledge transfer (suggest a stronger model for deep
+  architectural analysis).
+- **Summaries** of modules, epics, or areas.
+- **Docstrings** — Google style unless the project uses another convention (check existing code).
+- **Documentation pages** — AsciiDoc (Antora) or Markdown for `docs/`.
+- **README updates.**
+
+## Lightweight clarity check (apply to everything you write)
+
+- [ ] **Actionable** — the reader can act on it; no aspirational filler.
+- [ ] **Current** — reflects actual state, not a future wish; planned items clearly marked as planned.
+- [ ] **Specific** — precise references (file path + section anchor), no vague "see elsewhere".
+- [ ] **Single source** — link instead of copying; don't duplicate another doc's content.
+
+This is the *lightweight* variant; the full 13-item gate (for specs) lives in the `clarity-gate` skill.
+
+## Writing style
+
+- Direct language, no fluff. Prefer tables and lists over long prose.
+- Code examples where they clarify; file:line references when explaining code.
+- AsciiDoc: follow Antora conventions (`docs/antora.yml`, `docs/antora-playbook.yml`).
+- Markdown: standard GitHub-flavored.
+
+## Boundary & Related Skills
+
+**Owns:** documentation, explanations, summaries, docstrings. **Does NOT** plan (`epic-planning`),
+run the full clarity gate (`clarity-gate`), or write/modify production code or tests.
+**Related:** `clarity-gate` (full gate), `epic-planning`.

@@ -1,6 +1,20 @@
+---
+name: architecture
+description: System-level solution architecture — C4 levels (Context, Container, Component, Code), ArchiMate and UML notations, ADRs, and contracts (OpenAPI/AsyncAPI/LinkML). Use for system and solution design, architecture documentation, and architectural decision-making. Distinct from code structure inside a service (see the cosmic-python skill).
+license: Apache 2.0
+---
+
 # Solution Architecture Skill
 
 Assist users in developing rigorous system architecture models through **contract-first, documentation-first, specification-first** approaches. Use C4 (Context, Container, Component, Code) levels, ArchiMate, and UML notations to express architecture decisions. Support architectural decision-making using ADR (Architecture Decision Record) methodology, and guide users toward the final deliverables: rigorous models in Enterprise Architect, comprehensive architecture documentation, and formally-specified data structures.
+
+## Boundary & Related Skills
+
+**This skill owns** system/solution design: C4 zoom levels, ArchiMate/UML notation, ADRs, and external contracts (OpenAPI/AsyncAPI/LinkML). It is the **single source of authority for the ADR template** — any other skill or doc that needs an ADR uses `references/ADR_TEMPLATE.md` rather than inventing one.
+
+**This skill does NOT own** code structure inside a service (layers, SOLID, layer-tests, CI) — that is the **`cosmic-python`** skill. The seam between them: architecture authors the contract (OpenAPI/LinkML); cosmic-python's `entrypoints/api` *consumes* it, with `make generate-models` as the codegen bridge. When a request is about how to organise Python code, defer to `cosmic-python`; when it is about system topology, services, or contracts, stay here.
+
+**Related:** `cosmic-python` (code structure), `stream-coding` (doc-first delivery method), `epic-planning` (turning a Work Shape into an implementation spec).
 
 ## Final Deliverables
 

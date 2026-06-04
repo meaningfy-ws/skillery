@@ -49,12 +49,12 @@ Before submitting a pull request, ensure your skill meets these requirements:
 - [ ] Assets are in `assets/` directory (not loaded into context)
 
 ### Documentation ✓
-- [ ] References are organized logically
-- [ ] REFERENCE.md contains complete API documentation
-- [ ] EXAMPLES.md includes real-world use cases
-- [ ] ADVANCED.md covers complex patterns (if needed)
-- [ ] Code examples are runnable
-- [ ] All file paths are relative
+- [ ] Detailed content lives under `references/` with **domain-meaningful filenames**
+      (e.g. `clarity-gate-checklist.md`, `dev-environment.md`) — not mandated `REFERENCE.md`/
+      `EXAMPLES.md`/`ADVANCED.md` names
+- [ ] SKILL.md states a **Boundary & Related Skills** section (what it does NOT own)
+- [ ] No content duplicated across files — point by name to the owning skill/doc
+- [ ] Code examples are runnable; all file paths are relative
 
 ### Registration ✓
 - [ ] Skill is added to `.claude-plugin/marketplace.json`
@@ -75,26 +75,22 @@ Follow the [Creating Skills Guide](spec/CREATING_SKILLS.md) to develop your skil
 
 ### Step 2: Update the Skill Inventory
 
-Add your skill to the [Skills Inventory](README.md#skills-inventory) table in README.md:
+Add your skill to the **What's inside** table in README.md (columns: Bundle, Skill, Purpose):
 
 ```markdown
-| My New Skill | Short description | Active |
+| `meaningfy-ai-coding` | **my-new-skill** | Short purpose |
 ```
 
 ### Step 3: Register in Marketplace
 
-Update `.claude-plugin/marketplace.json`:
+Add your skill path to the appropriate **existing bundle** in
+`.claude-plugin/marketplace.json` (we use three fixed bundles: `meaningfy-engineering`,
+`meaningfy-ai-coding`, `meaningfy-consulting`). The validator (`make validate`) enforces that
+each skill sits in its expected bundle (`EXPECTED_BUNDLES` in `tools/repo_lint/lint.py` — update
+it when adding a skill):
 
 ```json
-{
-  "plugins": [
-    {
-      "name": "your-skill-group",
-      "description": "Group description",
-      "skills": ["my-new-skill"]  // Add your skill
-    }
-  ]
-}
+{ "name": "meaningfy-ai-coding", "skills": ["./skills/clarity-gate", "./skills/my-new-skill"] }
 ```
 
 ### Step 4: Create a Pull Request
