@@ -10,7 +10,7 @@ them. This page is the single source for what to install and how to wire a proje
 From the marketplace (`.claude-plugin/marketplace.json`):
 
 ```
-/plugin marketplace add meaningfy-ws/agent-skills
+/plugin marketplace add meaningfy-ws/skillery
 /plugin install meaningfy-engineering      # cosmic-python, architecture, meaningfy-git-workflow
 /plugin install meaningfy-ai-coding         # clarity-gate, epic-planning, bdd-gherkin, meaningfy-code-review, technical-writing
 /plugin install meaningfy-consulting        # semantic-consulting-coach, executive-communication

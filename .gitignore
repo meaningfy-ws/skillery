@@ -225,3 +225,4 @@ skills/**/.cache/
 # OS
 .DS_Store
 Thumbs.db
+.gitnexus

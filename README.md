@@ -39,7 +39,7 @@ Thin agent wrappers live in [`agents/`](agents/) (`implementer`, `code-reviewer`
 ## Getting started
 
 ```
-/plugin marketplace add meaningfy-ws/agent-skills
+/plugin marketplace add meaningfy-ws/skillery
 /plugin install meaningfy-engineering
 /plugin install meaningfy-ai-coding
 /plugin install meaningfy-consulting
@@ -62,7 +62,7 @@ mandatory/optional external dependencies are in [`docs/environment-setup.md`](do
 ## Repository structure
 
 ```
-agent-skills/
+skillery/
 ├── skills/        # the catalog (knowledge)
 ├── agents/        # three thin wrappers (no knowledge)
 ├── docs/          # ai-coding/ · engineering-standards/ · philosophy/ · environment-setup.md

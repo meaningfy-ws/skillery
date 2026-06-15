@@ -300,7 +300,7 @@ Add your skill to `.claude-plugin/marketplace.json`:
 
 ```json
 {
-  "name": "meaningfy-agent-skills",
+  "name": "meaningfy-skillery",
   "owner": "Your Team",
   "version": "1.0.0",
   "description": "Collection description",

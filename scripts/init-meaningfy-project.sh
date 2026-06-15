@@ -48,7 +48,7 @@ install_template "$TEMPLATE_DIR/AGENTS.md.template" "$TARGET/AGENTS.md"
 cat <<'EOF'
 
 Next — install the skills (see docs/environment-setup.md for details):
-  /plugin marketplace add meaningfy-ws/agent-skills
+  /plugin marketplace add meaningfy-ws/skillery
   /plugin install meaningfy-engineering
   /plugin install meaningfy-ai-coding
   /plugin install meaningfy-consulting
@@ -56,5 +56,5 @@ Mandatory external skills:
   /plugin install superpowers@claude-plugins-official
   (and the external stream-coding skill)
 
-Done. Re-run this script after the agent-skills repo updates to refresh CLAUDE.md / AGENTS.md.
+Done. Re-run this script after the skillery repo updates to refresh CLAUDE.md / AGENTS.md.
 EOF
