@@ -1,0 +1,81 @@
+# Renders to .gitignore at the repo root.
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codz]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+sdist/
+wheels/
+*.egg-info/
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv
+env/
+venv/
+ENV/
+
+# Environments / secrets — never commit real secrets.
+# Keep the committed *.example templates; ignore everything else.
+.env
+.env.*
+!.env.example
+.envrc
+.secrets
+*.secrets
+!*.secrets.example
+infra/.env
+infra/.secrets
+
+# Test / coverage / report artifacts
+.coverage
+.coverage.*
+coverage.xml
+test-results.xml
+htmlcov/
+.cache
+.hypothesis/
+.pytest_cache/
+reports/
+data/
+
+# Type / lint / import caches
+.mypy_cache/
+.dmypy.json
+.ruff_cache/
+.import_linter_cache
+
+# Tooling
+.tox/
+.nox/
+
+# Docs build output + Antora toolchain
+docs/build/
+docs/_build/
+node_modules/
+docs/node_modules/
+
+# GitNexus index
+.gitnexus
+
+# IDE / editor / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Local agent overrides
+settings.local.json
+.claude/worktrees/

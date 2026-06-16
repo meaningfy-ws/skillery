@@ -1,0 +1,42 @@
+<!-- Auto-memory index for <<PROJECT_NAME>>. Auto-loaded into every session (first ~200 lines) —
+     keep it ≤200 lines and curate ruthlessly. Stable, CONFIRMED facts only: codebase patterns,
+     architectural decisions, key file paths. No session notes, no unverified conclusions, no
+     epic-specific detail (that lives under epics/). One-line entry per linked note. -->
+
+# Project Memory — <<PROJECT_NAME>>
+
+## Project Overview
+
+- <!-- one-line purpose of the repo -->
+- Top-level package: `<<PACKAGE>>/` (no `/src`). Default branch: `<<DEFAULT_BRANCH>>`.
+- Layers: `entrypoints → services → domain`, `adapters → domain`. Enforced by `.importlinter`.
+- Tooling: Poetry, Ruff, mypy, pytest + pytest-bdd, import-linter, radon/xenon. `make` is the
+  dev/CI interface (`make help`).
+
+## Project
+
+<!-- Links to longer notes that are too big for this index. One line each.
+     [some-area.md](some-area.md) — what it covers -->
+
+## Epic Status
+
+<!-- | Epic | Component | Score | Status | -->
+<!-- |------|-----------|-------|--------| -->
+
+## Feedback
+
+<!-- Stable review/feedback patterns confirmed across sessions. One line each.
+     [feedback_<topic>.md](feedback_<topic>.md) — the durable lesson -->
+
+## Reference
+
+<!-- Pointers to in-repo reference material agents reuse. One line each.
+     [code-anatomy.md](code-anatomy.md) — tier/layer dependency spec feeding .importlinter -->
+
+## Key Decisions
+
+<!-- yyyy-mm-dd: durable decision, in one line. Append; never rewrite history. -->
+
+## Gotchas
+
+<!-- Confirmed traps that cost time. One line each. -->

@@ -1,0 +1,70 @@
+# Development Environment Setup
+
+This guide sets up a full development environment for **<<PROJECT_NAME>>**. For a plain install,
+see the [README](README.md#installation).
+
+## Prerequisites
+
+| Tool | Version | Why |
+|------|---------|-----|
+| Python | >= <<PYTHON_VERSION>> | Runtime |
+| [Poetry](https://python-poetry.org) | 1.7+ | Dependency & environment management |
+| `make` | any | Task runner / dev UX |
+| Node.js | 18+ | Building the Antora docs site (optional) |
+| Docker + Compose | recent | Running the local stack (optional) |
+
+## 1. Clone and install
+
+```bash
+git clone https://github.com/<<GITHUB_ORG>>/<<PROJECT_SLUG>>.git
+cd <<PROJECT_SLUG>>
+make install        # poetry install with dev, test, and lint groups
+```
+
+`make install` does **not** run `poetry lock`. Lock dependencies explicitly with `make lock` when
+you change them.
+
+## 2. Enable pre-commit hooks
+
+The repo ships a pre-commit config (Ruff format + lint) so style issues are caught before they
+reach CI:
+
+```bash
+poetry run pre-commit install
+poetry run pre-commit run --all-files   # optional: check the whole tree once
+```
+
+## 3. Verify the environment
+
+```bash
+make check-all      # lint, type-check, architecture, tests
+```
+
+A green run means your environment matches CI.
+
+## 4. (Optional) Run the local stack with Docker
+
+If the project ships infra under `infra/`:
+
+```bash
+cp infra/.env.example infra/.env        # then fill in any required values
+make up                                 # start the stack
+make logs                               # follow logs
+make down                               # stop the stack
+```
+
+> The Docker ignore file lives at `infra/docker/Dockerfile.dockerignore` (Docker auto-discovers
+> `<dockerfile>.dockerignore`), not at the repository root.
+
+## 5. (Optional) Build the docs locally
+
+```bash
+make install-antora # first time only
+make preview-docs   # serve at http://localhost:8080
+```
+
+## Troubleshooting
+
+- **Wrong Python interpreter** — always invoke tools through Poetry (`poetry run …`) or `make`,
+  never a global `python`/`pytest`.
+- **`CLAUDE.md` looks like a duplicate** — it is a symlink to `AGENTS.md`. Leave it alone.
