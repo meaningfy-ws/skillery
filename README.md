@@ -22,7 +22,8 @@ execution wrappers; `docs/` is the human canon (methodology, engineering standar
 
 | Bundle | Skill | Purpose |
 |--------|-------|---------|
-| `meaningfy-engineering` | **cosmic-python** | Clean, layered Python (models/adapters/services/entrypoints), SOLID, testing, CI |
+| `meaningfy-engineering` | **project-setup** | Scaffold a new Meaningfy-standard Python repo (or modernise an existing one) — layout, tooling, tests, agentic files, Antora docs, CI |
+| | **cosmic-python** | Clean, layered Python (models/adapters/services/entrypoints), SOLID, testing, CI |
 | | **architecture** | System design — C4, ArchiMate/UML, ADRs, contracts |
 | | **meaningfy-git-workflow** | Conventional commits, branching, PRs, dev-environment hygiene |
 | `meaningfy-ai-coding` | **clarity-gate** | Pre-implementation spec quality gate (≥9/10) |
@@ -45,9 +46,11 @@ Thin agent wrappers live in [`agents/`](agents/) (`implementer`, `code-reviewer`
 /plugin install meaningfy-consulting
 ```
 
-Then scaffold a project with `scripts/init-meaningfy-project.sh` (writes `CLAUDE.md`/`AGENTS.md`,
-creates the `.claude/` layout, prints external-dependency install commands). Full setup and the
-mandatory/optional external dependencies are in [`docs/environment-setup.md`](docs/environment-setup.md).
+Then scaffold a repo with the **`project-setup`** skill (interview-driven full scaffold, also
+modernises existing repos) — or, for just the agentic binding files, run the minimal
+`scripts/init-meaningfy-project.sh` (writes `CLAUDE.md`/`AGENTS.md`, creates the `.claude/` layout,
+prints external-dependency install commands). Full setup and the mandatory/optional external
+dependencies are in [`docs/environment-setup.md`](docs/environment-setup.md).
 
 ## How to use it
 

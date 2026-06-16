@@ -9,6 +9,20 @@ your guide through the development lifecycle.
 For setup and configuration details, see the companion
 [AI Coding Setup Guide](ai-coding-setup-guide.md).
 
+> **Model note (2026 revision).** This runbook predates two changes and is being migrated to them;
+> a full alignment of the lifecycle diagram and phase tables below is pending. Read it through this
+> lens until then:
+>
+> - **EPIC ≡ shape, plus a derived PLAN.** The shaped bet (appetite, problem, solution outline, key
+>   decisions, rabbit-holes, no-gos) *is* the `EPIC.md`; the executable breakdown is a separate,
+>   clarity-gated **`PLAN.md`** (≥9/10). Where the diagram and tables show a single two-part
+>   `EPIC.md` carrying both spec and plan, read it as "shape the **EPIC** → derive the **PLAN**, and
+>   gate the PLAN." See [the methodology, §1.1](ai-coding-methodology.md) and the `epic-planning` skill.
+> - **Agents are now skills + three thin wrappers.** The catalog ships `epic-planner`, `implementer`,
+>   and `code-reviewer` wrappers; the former `gherkin-writer` and `documenter` roles are now the
+>   `bdd-gherkin` and `technical-writing` skills. Map any older agent name accordingly (see
+>   [environment-setup.md §4](../environment-setup.md)).
+
 ---
 
 ## 1. Development Lifecycle Overview

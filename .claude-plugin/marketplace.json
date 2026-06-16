@@ -11,10 +11,11 @@
   "plugins": [
     {
       "name": "meaningfy-engineering",
-      "description": "Engineering standards: clean layered Python (cosmic-python), system architecture, and Meaningfy git/PR workflow",
+      "description": "Engineering standards: new-repo scaffolding (project-setup), clean layered Python (cosmic-python), system architecture, and Meaningfy git/PR workflow",
       "source": "./",
       "strict": false,
       "skills": [
+        "./skills/project-setup",
         "./skills/cosmic-python",
         "./skills/architecture",
         "./skills/meaningfy-git-workflow"

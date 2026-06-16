@@ -17,17 +17,29 @@ operational *how*, see the companion documents:
 Code is generated from specifications, not improvised. The flow is always:
 
 ```
-Architecture Docs + Work Shape + Sample Data
+Architecture Docs + Sample Data
         ↓
-    EPIC Specification (implementation-ready)
+    EPIC  — the shaped bet (the spec at the right abstraction; the EPIC *is* the work shape)
+        ↓
+    PLAN  — the derived executable plan (clarity-gated ≥ 9/10)
         ↓
     Gherkin Features + Test Data
         ↓
     Task Implementation (code + tests)
 ```
 
-Each stage produces artefacts that feed the next. Skipping stages creates
-hidden assumptions that compound into defects.
+Each stage derives from the one before. The **EPIC and the work shape are one artifact**
+(Shape Up style) — appetite, problem, solution outline, key decisions, rabbit-holes, no-gos — not
+a separate upstream input and a separate spec. The **PLAN** is the distinct stage that turns the
+shaped bet into an unambiguous, agent-executable breakdown, and it is the artifact the clarity gate
+scores (gate the plan, not the shape). Skipping stages creates hidden assumptions that compound
+into defects.
+
+> **Model note (2026 revision).** Earlier versions of this document treated the *Work Shape* as a
+> separate upstream input feeding an *EPIC Specification* that also held the task breakdown. We have
+> since **folded the shape into the EPIC** (they are the same bet) and **split the executable plan
+> out into PLAN.md** as its own clarity-gated stage. Sections below are being migrated to this
+> framing; where one still says "Work Shape → EPIC", read it as "shape the EPIC → derive the PLAN".
 
 ### 1.2 The Rule of Divergence
 
@@ -118,9 +130,10 @@ Each completed task produces a task outcome file documenting what was achieved.
 ### 2.5 The Full Formula
 
 ```
-(a) Architecture Docs + (b) Work Shape + (f') Sample Data
-    → (c) EPIC Specification + (e) Gherkin Features + (f'') Test Data
-        → (d₁, d₂, d₃, … dₙ) Task Outcomes
+(a) Architecture Docs + (f') Sample Data
+    → (b) EPIC (the shaped bet)
+        → (c) PLAN (clarity-gated) + (e) Gherkin Features + (f'') Test Data
+            → (d₁, d₂, d₃, … dₙ) Task Outcomes
 ```
 
 ---

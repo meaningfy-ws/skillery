@@ -24,7 +24,7 @@ MAX_SKILL_LINES = 650
 
 # The R1 target bundle map (single source of truth for bundle composition).
 EXPECTED_BUNDLES = {
-    "meaningfy-engineering": {"cosmic-python", "architecture", "meaningfy-git-workflow"},
+    "meaningfy-engineering": {"project-setup", "cosmic-python", "architecture", "meaningfy-git-workflow"},
     "meaningfy-ai-coding": {
         "clarity-gate", "epic-planning", "bdd-gherkin",
         "meaningfy-code-review", "technical-writing",

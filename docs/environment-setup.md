@@ -11,7 +11,7 @@ From the marketplace (`.claude-plugin/marketplace.json`):
 
 ```
 /plugin marketplace add meaningfy-ws/skillery
-/plugin install meaningfy-engineering      # cosmic-python, architecture, meaningfy-git-workflow
+/plugin install meaningfy-engineering      # project-setup, cosmic-python, architecture, meaningfy-git-workflow
 /plugin install meaningfy-ai-coding         # clarity-gate, epic-planning, bdd-gherkin, meaningfy-code-review, technical-writing
 /plugin install meaningfy-consulting        # semantic-consulting-coach, executive-communication
 ```
@@ -29,6 +29,7 @@ Meaningfy skills reference these by name. They are **not** vendored here.
 |-----------|----------------------|---------|
 | `superpowers` | TDD, systematic debugging, verification-before-completion, brainstorming — the universal disciplines our skills point to instead of restating | `/plugin install superpowers@claude-plugins-official` |
 | `stream-coding` | The documentation-first delivery method (Work Shape → spec → generate-verify-integrate) | install the external `stream-coding` skill |
+| `ponytail` | YAGNI / minimal-code discipline — the routing target for "keep the code minimal, avoid over-engineering" (pairs with `cosmic-python`; wired into `project-setup`'s scaffolded `AGENTS.md`). Ships `/ponytail`, `/ponytail-review`, `/ponytail-audit`, `/ponytail-debt` | `/plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail` |
 
 ### Optional / recommended
 
@@ -46,14 +47,18 @@ Meaningfy skills reference these by name. They are **not** vendored here.
 
 ## 3. Project projection (bootstrap)
 
-Skills propagate through the marketplace (`/plugin update`). The **binding templates**
-(`CLAUDE.md`, `AGENTS.md`) and the `.claude/` layout propagate through an idempotent script:
+Skills propagate through the marketplace (`/plugin update`). To project the **binding templates**
+(`CLAUDE.md`, `AGENTS.md`) and a `.claude/` layout into a repo you have two paths:
 
-- Run `scripts/init-meaningfy-project.sh` once in a new repo to scaffold `CLAUDE.md`,
-  `AGENTS.md`, and `.claude/memory/`, and to print the install commands above.
-- **Re-run it** after this repo changes to refresh the templates — it shows a diff and never
-  overwrites local edits without confirmation. Templates carry a `meaningfy-template-version`
-  stamp so a project can tell when it is behind.
+- **Full scaffold (recommended):** the `project-setup` skill (in `meaningfy-engineering`) — an
+  interview-driven scaffolder that creates the whole Meaningfy-standard repo (layout, root tool
+  configs, tests, agentic files, Antora docs, CI). It also runs in **brownfield mode** to gap-check
+  and modernise an existing repo. This supersedes the bare init script for new repos.
+- **Minimal bootstrap:** `scripts/init-meaningfy-project.sh` projects only `CLAUDE.md`,
+  `AGENTS.md`, and `.claude/memory/`, and prints the install commands above. **Re-run it** after
+  this repo changes to refresh those templates — it shows a diff and never overwrites local edits
+  without confirmation. Templates carry a `meaningfy-template-version` stamp so a project can tell
+  when it is behind. Use this when you only need the agentic binding files, not a full scaffold.
 
 ## 4. Agents → skills migration note
 
