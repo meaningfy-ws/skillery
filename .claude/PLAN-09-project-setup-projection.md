@@ -104,9 +104,22 @@
   brownfield `--dry-run` reports gaps without writing; skillery `make validate` green.
 
 ## Roadmap
-- [ ] T1 minimal mode · [ ] T2 openspec scaffold · [ ] T3 /opsx+profile · [ ] T4 golden thread · [ ] T5 conditional model
-- [ ] T6 CLAUDE-canonical+split · [ ] T7 split-by-churn docs · [ ] T8 CI gates · [ ] T8b CD/release seam
-- [ ] T9 brownfield · [ ] T10 reference+validate
+- [x] T1 minimal mode · [x] T2 openspec scaffold · [x] T3 /opsx+profile · [x] T4 golden thread · [x] T5 conditional model
+- [x] T6 CLAUDE-canonical+split · [x] T7 split-by-churn docs · [x] T8 CI gates · [x] T8b CD/release seam
+- [x] T9 brownfield · [x] T10 reference+validate
+
+## Execution status
+`project-setup` reworked to project the spine: scaffolds `openspec/` (pinned
+meaningfy schema @1.4.1 + config + 3 rules + specs/changes/archive/inputs +
+`/opsx:* core`), conditional `model/` (product), CLAUDE-canonical agentic files
+(scaffolder inverted: AGENTS.md→CLAUDE.md) + global/repo split, split-by-churn
+docs, the CI gate set (validate --strict/codegen-check/import-linter/coverage;
+clarity-gate NOT in CI), and the CD seam (deployable → ci-cd-delivery templates,
+TODO stub pending DevOps §6). `--minimal` mode absorbs the init script. Three
+archetypes (product/library/doc-only) with intention-elicitation for doc-only
+(Q9.3); brownfield = audit→ideal→shaped EPIC+PLAN change (Q9.2=B); pinned-schema
+refresh documented, YAGNI (Q9.1). New `references/spine-projection.md`,
+`CLAUDE.md.tmpl`, `openspec/` templates, CD stub. `make validate` green.
 
 ## Clarity-gate self-check
 Every task names files/acceptance; conditional model and CLAUDE-canonical inversion are explicit; the

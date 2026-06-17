@@ -1,37 +1,10 @@
-<!-- Task outcome file. Lives at .claude/memory/epics/<epic-name>/yyyy-mm-dd-<task-title>.md.
-     Two parts, same convention as PLAN.md: Part 1 is the frozen task spec the implementer worked
-     against; Part 2 is the implementation log. Split by the `--- <!-- implementation-log --> ---`
-     separator. Focus Part 2 on outcomes and victories, not logistics. Delete guidance comments. -->
+<!-- SUPERSEDED — do not use. This template is retired (EPIC-09).
 
-# Task: <Epic ID> — <Task title>
+     Per-task outcomes are no longer local `.claude/memory/epics/<name>/yyyy-mm-dd-<task>.md` files.
+     In the Meaningfy spine the task breakdown lives in the PLAN:
 
-## Status
-- Epic: <epic-name> ([EPIC.md](EPIC.md))
-- Phase: [Spec | In Progress | Complete]
-- Last updated: yyyy-mm-dd
+         tasks  ≡  openspec/changes/<id>/tasks.md      (checkbox list the `/opsx:apply` phase tracks)
 
----
-# Part 1 — Specification
-<!-- The slice of the EPIC this task implements. Frozen once agreed. -->
-
-## Scope
-<!-- What this task delivers. The layers it touches (domain, adapters, services, entrypoints). -->
-
-## Acceptance Criteria
-<!-- Observable, testable conditions for "done". -->
-
-## References
-<!-- EPIC section anchors, Gherkin feature files, ADRs. Deep links only. -->
-
----
-<!-- implementation-log -->
----
-
-# Part 2 — Implementation Log
-<!-- Written by the implementer. -->
-
-### yyyy-mm-dd — <task title>
-- **Outcome:** what was delivered (files, public functions, tests, coverage).
-- **Decisions:** key choices and rationale.
-- **Deviations:** departures from the spec and why.
-- **Commits:** link(s).
+     Implementation outcomes accrue in the change itself (commits citing the change id) and merge
+     into openspec/specs/ on archive. This file is kept only as a redirect; the scaffolder no
+     longer renders it into a repo. -->

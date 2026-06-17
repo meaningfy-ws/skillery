@@ -1,16 +1,45 @@
-# Modernizing an Existing Project
+# Modernizing an Existing Project (brownfield)
 
 How to bring an **existing** repo up to the Meaningfy standard — the *brownfield* mode of this
-skill. Greenfield scaffolding writes a clean tree; modernization **assesses what's missing,
-plans safe incremental steps, fills gaps without clobbering, and migrates non-conformant pieces**.
+skill. The brownfield method (R9, Q9.2=B) is: **audit the existing repo, imagine the ideal target
+appropriate to it, and propose the upgrade as a shaped EPIC + PLAN — an OpenSpec change — for human
+review, then apply it in safe slices.** It is **not** in-place big-bang patching.
 
-The skill is built for this: `scaffold.sh` is idempotent and never overwrites without asking, and
-the detailed migration recipes already live in the pillar references. This doc is the **orchestrator**
-that sequences them. It does not restate them — it links.
+This **dogfoods the spine on the brownfield repo itself**: the modernization is authored as
+`openspec/changes/<id>/` (`proposal.md` = the EPIC, `design.md` + `tasks.md` = the PLAN, with
+`specs/` deltas where behaviour is touched). The human reviews and approves the change before any
+slice lands. The detailed migration *recipes* live in the pillar references; this doc sequences them
+into the change.
 
-> **Scope.** Small/young repos can be modernized in place over a few commits. A large, busy
-> codebase is a **migration project**: shape it as an EPIC + PLAN (the methodology), land it
-> in reviewable slices behind tests, and use this doc as the task checklist. Never big-bang.
+> **Scope.** Even a small/young repo's modernization is shaped as a change — the change may be tiny
+> and applied in one or two commits. A large, busy codebase is a **migration project**: the same
+> shaped EPIC + PLAN, landed in reviewable slices behind tests, this doc as the task checklist.
+> **Never big-bang.**
+
+## Brownfield-as-a-shaped-change (the method, R9)
+
+1. **Audit** the existing repo (the gap rubric below + `scaffold.sh --dry-run`). Capture the result
+   as an analysis brief under the change's `inputs/` (preserved, never groomed).
+2. **Imagine the ideal target** appropriate to *this* project (its archetype, its constraints) — not
+   a generic ideal. What would the conformant repo look like?
+3. **Propose the upgrade as a shaped change** with `/opsx:propose`:
+   - **EPIC** (`proposal.md`) — the bet: appetite, why-now, the solution outline (the migration
+     slices), key decisions (e.g. "lift `/src` last"), rabbit-holes, no-gos.
+   - **PLAN** (`design.md` + `tasks.md`) — the ordered, reviewable migration steps (the "Plan —
+     order the gaps safely" sequence below becomes the `tasks.md`). The clarity gate scores the
+     pair ≥9/10.
+4. **Human reviews / approves** the change. Only then →
+5. **Apply in safe slices** with `/opsx:apply`, gating each behind `make check-all`; archive into
+   `openspec/specs/` when done.
+
+The mechanical gap-fill (`scaffold.sh --skip-existing`) and the per-file migration recipes below are
+the *content* the PLAN's tasks reference — not a separate, un-shaped path.
+
+## The orchestration loop (feeds the PLAN's tasks)
+
+`scaffold.sh` is idempotent and never overwrites without asking; the detailed migration recipes live
+in the pillar references. This doc is the **orchestrator** that sequences them — it does not restate
+them, it links. Each numbered step below becomes a task in the shaped change's `tasks.md`.
 
 ## The loop: assess → plan → apply → verify
 
@@ -24,8 +53,9 @@ mechanical gap list:
 scripts/scaffold.sh -p <existing_package> -n "<Project Name>" -a <archetype> --dry-run
 ```
 
-`--dry-run` also flags the agent file specifically: it tells you whether `CLAUDE.md` is already a
-symlink, a divergent copy needing reconciliation (D8), or absent.
+`--dry-run` also flags the agent file specifically: it tells you whether `AGENTS.md` is already a
+symlink to the canonical `CLAUDE.md`, a divergent copy needing reconciliation (DEC-4 —
+CLAUDE-canonical), or absent.
 
 Then assess the dimensions a file-presence check **cannot** see, using this rubric (✅ conformant /
 ⚠️ partial / ❌ missing):
@@ -38,8 +68,9 @@ Then assess the dimensions a file-presence check **cannot** see, using this rubr
 | **Lint/format** | Ruff, or legacy black/isort/flake8/pylint? | `decisions.md` D4 |
 | **Tests** | type-split dirs + marker hook? pytest-bdd? coverage gate ≥80%? | `testing-setup.md` |
 | **Architecture** | `.importlinter` present and enforced in CI? layers respected? | `architecture-guardrails.md` |
-| **Agent file** | single `AGENTS.md` + `CLAUDE.md` symlink, or two divergent files? | `agentic-setup.md` D8 |
-| **Memory** | `.claude/memory/` (MEMORY.md, epics/ with EPIC.md+PLAN.md, _templates/)? | `agentic-setup.md` |
+| **Agent file** | canonical `CLAUDE.md` + `AGENTS.md` symlink, or two divergent files? (DEC-4) | `agentic-setup.md` |
+| **Spine** | `openspec/` present (config + pinned schema + specs/ + changes/)? `/opsx:*` installed? | `spine-projection.md` |
+| **Memory** | `.claude/memory/MEMORY.md` a ≤200-line regenerable INDEX (truth = `openspec/specs/`)? | `agentic-setup.md` |
 | **Docs** | Antora component with the Diátaxis IA? | `antora-docs.md` |
 | **Infra** | top-level `infra/`, multistage non-root Dockerfile, layered env? | `ci-and-infra.md` |
 | **CI** | workflows that call `make` targets, mirroring `check-all`? | `ci-and-infra.md` |
@@ -56,29 +87,36 @@ The recommended order (skip steps already conformant):
 1. **Additive, zero-risk first** — drop in the missing *standalone* files that touch nothing
    existing: `ruff.toml`, `mypy.ini`, `pytest.ini`, `.coveragerc`, `.importlinter` (start with a
    permissive contract), `.pre-commit-config.yaml`, `sonar-project.properties`, `LICENSE`,
-   `CHANGELOG.md`, the `.claude/` memory layout, CI workflows. One `--skip-existing` run does all of
+   `CHANGELOG.md`, the `.claude/` index, CI workflows. One `--skip-existing` run does all of
    these. Commit.
-2. **Agent file reconciliation** — collapse two divergent `CLAUDE.md`/`AGENTS.md` into
-   `AGENTS.md` + symlink (D8). Reconcile any project content into "Project specifics". Commit.
-3. **pyproject normalization** — strip `[tool.*]` blocks into the dedicated files now present,
+2. **Spine projection** — project `openspec/` (config + the PINNED meaningfy schema + `specs/` +
+   `changes/`) and install the `/opsx:*` core profile. Additive; never touches code. This is also
+   what lets you *author the modernization itself* as a change. Recipe: `spine-projection.md`. Commit.
+3. **Agent file reconciliation** — collapse two divergent `CLAUDE.md`/`AGENTS.md` into the canonical
+   `CLAUDE.md` + an `AGENTS.md` symlink (DEC-4 — CLAUDE-canonical). Split the content: the global
+   standard stays in `~/.claude/CLAUDE.md` (DEC-12); the repo `CLAUDE.md` routes + carries "Project
+   specifics" + the spine pointers. Commit.
+4. **pyproject normalization** — strip `[tool.*]` blocks into the dedicated files now present,
    leaving pyproject minimal. Recipe: `config-files.md` §"Migrating an existing repo's
    `pyproject.toml`". Commit.
-4. **Tooling swap** — replace black/isort/flake8/pylint with Ruff; fix the lint debt it surfaces
+5. **Tooling swap** — replace black/isort/flake8/pylint with Ruff; fix the lint debt it surfaces
    in its own commit(s). Add mypy if absent. Commit.
-5. **Test reorganization** — introduce the type-split `tests/` tree + the marker-injection
+6. **Test reorganization** — introduce the type-split `tests/` tree + the marker-injection
    `conftest.py`; move existing tests under `unit/`/`feature/`/etc.; wire the coverage gate.
    `testing-setup.md`. Commit.
-6. **The `/src` lift (highest blast radius — do it alone)** — move `src/<pkg>/` → `<pkg>/` and
+7. **The `/src` lift (highest blast radius — do it alone)** — move `src/<pkg>/` → `<pkg>/` and
    re-point every config. Recipe: `layout.md` §"Contrast: the `/src` layout" +
    `config-files.md` migration steps. This rewrites import roots and touches every path-based
    config — isolate it in one commit, run the full suite, and expect noisy diffs. Commit.
-7. **Architecture tightening** — once layers are stable, harden `.importlinter` from permissive to
+8. **Architecture tightening** — once layers are stable, harden `.importlinter` from permissive to
    the real per-component/tier contracts (`architecture-guardrails.md`, two-step method). Fix
    violations in dedicated commits. Commit.
-8. **Pillars** — add the Antora docs pillar and/or `infra/` pillar if missing and wanted.
+9. **Pillars** — add the Antora docs and/or `infra/` pillar, and the conditional `model/` (product)
+   / CD stub (deployable) if missing and wanted.
 
-Steps 1–2 are safe in almost any repo. Steps 3–7 grow in blast radius; gate each behind
-`make check-all`. Capture the whole sequence as an EPIC roadmap when the repo is non-trivial.
+Steps 1–3 are safe in almost any repo. Steps 4–8 grow in blast radius; gate each behind
+`make check-all`. This ordered list **is** the modernization change's `tasks.md` (the PLAN) when the
+repo is non-trivial.
 
 ### 3. Apply — fill gaps without clobbering
 
@@ -117,12 +155,17 @@ step on red.
 |----------------|--------|
 | Strip `[tool.*]` from `pyproject.toml` into dedicated files | `config-files.md` §"Migrating an existing repo's `pyproject.toml`" |
 | Lift `src/<pkg>/` → top-level `<pkg>/` and re-point configs | `layout.md` §"Contrast: the `/src` layout" + `config-files.md` |
-| Reconcile two `CLAUDE.md`/`AGENTS.md` files into one + symlink | `agentic-setup.md` §"Single agent file" + §"Relationship to init-meaningfy-project.sh" |
+| Reconcile two `CLAUDE.md`/`AGENTS.md` files → canonical `CLAUDE.md` + symlink | `agentic-setup.md` §"CLAUDE-canonical" |
+| Project the spine (`openspec/`, pinned schema, `/opsx:*`) | `spine-projection.md` |
+| Migrate legacy `.claude/memory/epics/` → `openspec/changes/` + `specs/` | `spine-projection.md` + `agentic-setup.md` |
 | Author `.importlinter` from a prose dependency spec | `architecture-guardrails.md` §"The two-step method" |
 | Reorganize tests + add the marker hook | `testing-setup.md` |
 
-## Relationship to the skillery's `init-meaningfy-project.sh`
+## Migrating a legacy agentic bootstrap
 
-That script does a minimal agentic bootstrap (two template files + empty memory). For a repo it
-already touched, this skill's modernization **supersedes** it: replace the two files with
-`AGENTS.md` + symlink and run the full gap analysis above. See `agentic-setup.md`.
+A repo bootstrapped by the older convention (two mirrored `CLAUDE.md`/`AGENTS.md` files, or
+AGENTS-canonical, with a hand-maintained `.claude/memory/epics/` tree) is brought up to standard by
+the steps above: collapse to **canonical `CLAUDE.md` + `AGENTS.md` symlink** (DEC-4), and migrate the
+local epics into the spine (`openspec/changes/` for in-flight work; `openspec/specs/` for preserved
+truth; `openspec/config.yaml: context:` for orientation). See `agentic-setup.md` and
+`spine-projection.md`.

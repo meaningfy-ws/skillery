@@ -13,8 +13,9 @@ copied verbatim (it has no placeholders and renders to a non-dot name).
 
 | Template (under `assets/templates/`) | Renders to | Substitution? |
 |--------------------------------------|------------|---------------|
-| `ci/ci.yaml.tmpl`                     | `.github/workflows/ci.yaml`           | yes |
+| `ci/ci.yaml.tmpl`                     | `.github/workflows/ci.yaml`           | yes (code archetypes) |
 | `ci/docs.yaml.tmpl`                   | `.github/workflows/docs.yaml`         | yes |
+| `ci/deploy.yaml.stub.tmpl`            | `.github/workflows/deploy.yaml`       | yes (**deployable product only** — TODO stub) |
 | `ci/_reusable-tests.yml.tmpl`         | `.github/workflows/_reusable-tests.yml` | yes (optional) |
 | `infra/compose.yaml.tmpl`             | `infra/compose.yaml`                  | yes |
 | `infra/docker/Dockerfile.tmpl`        | `infra/docker/Dockerfile`             | yes |
@@ -37,14 +38,39 @@ Every CI step invokes a `make` target — never an inline `ruff`/`mypy`/`pytest`
 command. The gates in `ci.yaml` mirror **`make ci-full`** exactly:
 
 ```
-make ci-full  =  check-quality (lint + typecheck + check-architecture)
-              +  test (all markers + coverage)
-              +  clean-code (Xenon thresholds)
+make ci-full  =  validate-spine   (openspec validate --strict — STRUCTURAL)
+              +  generate-models + codegen-in-sync check   (PRODUCT archetype only)
+              +  check-quality    (lint + typecheck + check-architecture)
+              +  test             (all markers + coverage ≥80%)
+              +  clean-code       (Xenon thresholds)
+              +  code-review      (pre-PR review step)
 ```
 
 So "green locally" means "green in CI", and the YAML never drifts from the dev
 UX. When a gate changes, you edit the Makefile once; both sides follow. The
 workflow is the *trigger and environment*; the Makefile is the *logic*.
+
+### The CI-automatable gates (R8) — and the one that is NOT
+
+CI runs the **CI-automatable** build-tier gates as `make` targets — this is the gate set, pinned
+in [`../../../docs/ai-coding/dod-quality-gates.md`](../../../docs/ai-coding/dod-quality-gates.md):
+
+| Gate | `make` target | Archetype |
+|------|---------------|-----------|
+| **`openspec validate --strict`** (structural — artifact shape + spec deltas) | `validate-spine` | all |
+| **codegen-in-sync** (regenerate from `model/`, fail on diff) | `generate-models` + a diff check | **product** only |
+| **architecture** (import-linter, layer direction) | `check-architecture` | code (product/library) |
+| **coverage ≥80%** on production code | `test` (with `--cov-fail-under=80`) | code |
+| **code review** (pre-PR review step) | `code-review` (or the meaningfy-code-review wrapper) | code |
+
+> **`clarity-gate` is NOT a CI step.** It is the *semantic* gate that scores the PLAN (`design.md` +
+> `tasks.md`) ≥9/10 — a human/agent judgement that cannot be reduced to a deterministic check. This
+> is the **automation boundary** (single source:
+> [`dod-quality-gates.md`](../../../docs/ai-coding/dod-quality-gates.md)). CI may **emit a reminder**
+> ("confirm the PLAN passed clarity-gate before merge") but must never claim to enforce it.
+
+A `doc-only` repo has no code CI: it gets `openspec validate --strict` (if it carries `openspec/`),
+the docs build, and lightweight link/structure checks — no `ci.yaml`.
 
 ## `ci.yaml` job walkthrough
 
@@ -138,6 +164,23 @@ changes:
 Enable GitHub Pages with source = **GitHub Actions** (Settings → Pages). For
 Read the Docs hosting instead, ship a `.readthedocs.yaml` that runs Antora to
 `$READTHEDOCS_OUTPUT/html`.
+
+## The CD seam (R10) — deploy is owned by `ci-cd-delivery`, not CI
+
+CI (this pillar) covers build/test/lint/coverage/architecture/docs. **Continuous Delivery — the
+deploy trigger, the reusable deploy mechanism, the release/image standard — is owned by the
+[`ci-cd-delivery`](../../ci-cd-delivery/SKILL.md) skill**, and `project-setup` only *renders* its
+templates. The two never overlap.
+
+- **Deployable `product` →** the interview's deployable question (Q6.4) is **yes**. Per
+  `ci-cd-delivery` §6, the §6 decisions (deploy-trigger standard, GHCR semver/sha images, the
+  reusable mechanism home) are **not yet ratified by DevOps**. So `project-setup` scaffolds a
+  clearly-marked **`deploy.yaml` TODO stub** (`ci/deploy.yaml.stub.tmpl`) plus the boundary docs —
+  **never** a half-guessed runnable deploy workflow. Render the real template (and delete the stub)
+  only after DevOps ratifies §6, via the `ci-cd-delivery` skill.
+- **`library` / `doc-only` →** **no** deploy workflow at all.
+
+Secrets never live in the repo; the stub carries placeholders + the three-repo boundary only.
 
 ---
 

@@ -1,68 +1,11 @@
-<!-- PLAN.md — the EXECUTABLE PLAN derived from the sibling EPIC.md (the shaped bet). This is the
-     detailed, unambiguous, agent-oriented breakdown: algorithm, examples, anti-patterns, test
-     specs, error matrix, task list. It is the artifact the CLARITY GATE scores (≥9/10) — gate the
-     plan, not the shape. Part 1 (Plan) is frozen once gated; Part 2 (Implementation Log) is a
-     running record. Use the epic-planning skill to derive it and the clarity-gate skill to score
-     it. Delete guidance comments as you fill the skeleton. -->
+<!-- SUPERSEDED — do not use. This template is retired (EPIC-09).
 
-# Plan: <Epic Name>
+     The PLAN is no longer a local `.claude/memory/epics/<name>/PLAN.md` file. In the Meaningfy
+     spine the PLAN *is* the OpenSpec design + tasks pair:
 
-## Status
-- Epic: [EPIC.md](./EPIC.md) — <Epic Name>
-- Clarity gate: [not scored | <score>/10 on yyyy-mm-dd] (must reach ≥9/10 before implementation)
-- Phase: [Planning | Ready | In Progress | Complete]
-- Last updated: yyyy-mm-dd
+         PLAN  ≡  openspec/changes/<id>/design.md  +  openspec/changes/<id>/tasks.md
 
----
-# Part 1 — Plan
-<!-- Derived from EPIC.md's shaped bet. FROZEN once the clarity gate passes. Do not modify during
-     implementation — if the design is wrong, fix the plan (and re-gate), not the code. -->
-
-## Algorithm / Flow
-<!-- The concrete algorithm. Add a Mermaid diagram where it clarifies the flow. -->
-
-## Concrete Examples
-<!-- Real or fabricated examples showing expected inputs → outputs. -->
-
-## Anti-Patterns (DO NOT)
-<!-- Minimum 5 entries. -->
-| Don't | Do Instead | Why |
-|-------|-----------|-----|
-
-## Test Case Specifications
-<!-- Minimum 5 entries. Cover normal and edge cases. These seed the Gherkin features (bdd-gherkin). -->
-| Test ID | Component | Input | Expected Output | Edge Cases |
-|---------|-----------|-------|-----------------|------------|
-
-## Error Handling Matrix
-| Error Type | Detection | Response | Fallback |
-|------------|-----------|----------|----------|
-
-## Task Breakdown
-<!-- Ordered tasks. Each: description; architectural layers (domain, adapters, services,
-     entrypoints); dependencies; acceptance criteria. Tasks serve the epic's shaped goal. -->
-
-### Task 1: <title>
-- **Layers:**
-- **Dependencies:**
-- **Acceptance criteria:**
-
-## Roadmap
-- [ ] Task 1: <title>
-- [ ] Task 2: <title>
-
----
-<!-- implementation-log -->
----
-
-# Part 2 — Implementation Log
-<!-- Written and updated by the implementer. One dated entry per task. Outcomes and decisions,
-     not logistics. Per-task detail can also live in yyyy-mm-dd-<task>.md outcome files. -->
-
-<!-- Template entry — copy per task, newest first:
-### yyyy-mm-dd — Task N: <task title>
-- **Outcome:** what was delivered.
-- **Decisions:** key choices and rationale.
-- **Deviations:** departures from the plan and why (if design-level, the plan was re-gated).
-- **Commits:** link(s).
--->
+     The clarity gate scores the pair (≥9/10) before `/opsx:apply`. The templates and the planning
+     procedure are owned by the spine — see openspec/schemas/meaningfy/templates/design.md and
+     tasks.md, and the epic-planning + clarity-gate skills. This file is kept only as a redirect;
+     the scaffolder no longer renders it into a repo. -->

@@ -1,0 +1,37 @@
+# TODO (CD) — NOT YET A RUNNABLE DEPLOY WORKFLOW.
+#
+# This repo is marked DEPLOYABLE, but the Meaningfy CD standard (deploy-trigger contract, the
+# reusable deploy mechanism, the release/image standard) is owned by the `ci-cd-delivery` skill
+# and its §6 decisions are NOT yet ratified by DevOps. Until they are, project-setup scaffolds a
+# clearly-marked STUB plus the boundary docs — never a half-guessed runnable deploy workflow.
+#
+# What to do when DevOps ratifies §6:
+#   1. Read the `ci-cd-delivery` skill — it OWNS the deploy templates and the three-repo model.
+#   2. Render the chosen template (the `devops-toolkit` reusable workflow caller, or a cross-repo
+#      workflow_dispatch into `infrastructure-stacks`), tag a versioned image (semver + git sha →
+#      GHCR), and map inputs/secrets per that skill.
+#   3. Delete this stub.
+#
+# Boundary (authoritative; never duplicated/automated here):
+#   - `cloud-infrastructure`   — Terraform/Ansible (DevOps-manual).
+#   - `infrastructure-stacks`  — Compose stacks + the deploy Actions this repo triggers.
+#   - Vaultwarden              — secret source of truth (GitHub Secrets are the deployment copy).
+#   - bastion / SSH break-glass — owned by the DevOps runbook.
+#
+# Secrets NEVER live in the repo. CI (build/test/lint/coverage/architecture/docs) is owned by
+# project-setup's ci.yaml — this file is CD only.
+
+name: deploy (stub — pending DevOps ratification)
+
+on:
+  workflow_dispatch: {}   # placeholder trigger only — does nothing until rendered for real
+
+jobs:
+  deploy-stub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Not configured
+        run: |
+          echo "CD is not configured. See the ci-cd-delivery skill and remove this stub once"
+          echo "DevOps ratifies the §6 deploy-trigger / registry / reusable-mechanism decisions."
+          exit 1
