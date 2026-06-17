@@ -26,7 +26,8 @@ Skills are nested under `skills/` by phase (`consulting/`, `communication/`, `en
 
 | Bundle | Skill | Purpose |
 |--------|-------|---------|
-| `meaningfy-consulting` | **semantic-consulting-coach** | Coaching for a semantic-tech / data consulting business (sales/discovery skills land here later) |
+| `meaningfy-consulting` | **semantic-consulting-coach** | Coaching for a semantic-tech / data consulting business (coaches the design) |
+| | **decision-package** | Produces the Decision Package — the paid P1 deliverable (recommendation, scope, buy/build/defer, execution brief) |
 | `meaningfy-communication` | **executive-communication** | McKinsey-style executive messaging (SCQA, Minto, MECE) |
 | | **technical-writing** | Docs, explanations, summaries, docstrings |
 | `meaningfy-engineering` | **project-setup** | Scaffold a new Meaningfy-standard Python repo (or modernise an existing one) — layout, tooling, tests, agentic files, Antora docs, CI |

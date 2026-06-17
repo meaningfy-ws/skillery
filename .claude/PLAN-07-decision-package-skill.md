@@ -75,8 +75,16 @@ bundle + validate.**
   `make validate` green; a sample Decision Package registers as a spine spec / golden-thread root.
 
 ## Roadmap
-- [ ] T1 structure · [ ] T2 discovery flow · [ ] T3 compose · [ ] T4 absorb blueprint
-- [ ] T5 boundary + spine root · [ ] T6 naming · [ ] T7 place+bundle+validate
+- [x] T1 structure · [x] T2 discovery flow · [x] T3 compose · [x] T4 absorb blueprint
+- [x] T5 boundary + spine root · [x] T6 naming · [x] T7 place+bundle+validate
+
+## Execution status
+Skill at `skills/consulting/decision-package/` (SKILL.md + references: discovery-flow,
+decision-package-template, blueprint-absorbed). Registered in `meaningfy-consulting`.
+Decision Package home = `openspec/decisions/<id>.md` (Q7.1=A); golden-thread root added
+to `spine/golden-thread.md`. Blueprint reconciled (Q7.2=A) and the original doc reduced
+to a pointer. Coach cross-points here (coach vs produce). README/EXPECTED_BUNDLES/probe
+updated; `make validate` green. Provisional pending the dogfood gate.
 
 ## Clarity-gate self-check
 Grounded in Research B §2.4; the free→paid boundary and the golden-thread-root role are explicit;

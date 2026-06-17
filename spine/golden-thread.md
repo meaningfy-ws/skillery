@@ -16,13 +16,21 @@ justifies it. This matters for explainability positioning (DORA, the EU AI Act).
 ## The chain (coarse form)
 
 ```
-product / requirement specification
-  → architecture        (scenarios, ADRs, use cases, C4 + ArchiMate views, contracts, …)
-    → EPIC / change      (the work shape; see the note on conflation below)
-      → task             (PLAN tasks.md breakdown)
-        → test           (specs scenarios → .feature acceptance)
-          → commit       (Conventional Commit referencing the change)
+Decision Package      (consulting-tier root — openspec/decisions/<id>.md; the paid P1 deliverable)
+  → product / requirement specification
+    → architecture     (scenarios, ADRs, use cases, C4 + ArchiMate views, contracts, …)
+      → EPIC / change   (the work shape; see the note on conflation below)
+        → task          (PLAN tasks.md breakdown)
+          → test        (specs scenarios → .feature acceptance)
+            → commit    (Conventional Commit referencing the change)
 ```
+
+The **Decision Package** (owned by the [`decision-package`](../skills/consulting/decision-package/SKILL.md)
+skill, EPIC-07) is the consulting-tier **root** when an engagement starts there: it is a durable
+*executive narrative* artifact (recommendation, scope, buy/build/defer, execution brief), so it lives
+at `openspec/decisions/<id>.md` — **not** in `openspec/specs/` (which are RFC-2119 behaviour
+contracts). The first requirement/architecture entries cite it as their parent. For repos that do not
+begin with a consulting engagement, the root is simply the requirement specification.
 
 Each layer **cites the one above it** ("cite your parent").
 
