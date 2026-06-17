@@ -16,7 +16,9 @@
       "strict": false,
       "skills": [
         "./skills/consulting/semantic-consulting-coach",
-        "./skills/consulting/decision-package"
+        "./skills/consulting/decision-package",
+        "./skills/consulting/proposal-writing",
+        "./skills/consulting/estimation"
       ]
     },
     {

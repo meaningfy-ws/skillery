@@ -3,6 +3,22 @@
 > Part of the Skillery v2 series. See [EPIC-00](EPIC-00-master-index.md). **Tier:** new skill
 > (consulting/communication). **Depends on:** EPIC-07 (decision-package; the engagement frame).
 
+## 0. Revisions absorbed (from QUESTIONS-EPIC-08)
+
+- **Q8.1=B — two skills, one path.** `proposal-writing` is the **entry** skill and
+  invokes `estimation` by reference; `estimation` stays independently triggerable.
+  Estimation bakes in **PERT as the favoured technique** (three-point) among
+  multiple methods; **Gantt/scheduling is produced in external tools** (Smartsheet
+  / MS Project) from the work breakdown — the skill produces the WBS + estimates,
+  not the Gantt.
+- **Q8.2=A — one sectioned ladder.** Engagement gates added to
+  `dod-quality-gates.md` as a clearly-sectioned **"Engagement gates (human/
+  commercial)"** block *above* the build gates (enforcement table per R8). The
+  wider **commercial mechanics** (qualification, pre-sale, sale, marketing, CRM,
+  lead comms, service packaging, fit-for-market) are flagged **TODO — to be
+  shaped** (HARD question), not invented.
+- Both skills **provisional** pending the dogfood gate (a real paid engagement).
+
 ## 1. Purpose & goals (the shaped bet)
 
 **Appetite:** medium. Complete the front-of-funnel and the *engagement-level* governance: the

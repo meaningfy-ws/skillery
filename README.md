@@ -28,6 +28,8 @@ Skills are nested under `skills/` by phase (`consulting/`, `communication/`, `en
 |--------|-------|---------|
 | `meaningfy-consulting` | **semantic-consulting-coach** | Coaching for a semantic-tech / data consulting business (coaches the design) |
 | | **decision-package** | Produces the Decision Package — the paid P1 deliverable (recommendation, scope, buy/build/defer, execution brief) |
+| | **proposal-writing** | Produces a proposal + SoW with an explicit in/out scope boundary (fixed-frame pricing) |
+| | **estimation** | Fixed-cost scoping discipline — PERT + work breakdown, ranges, contingency (Gantt rendered externally) |
 | `meaningfy-communication` | **executive-communication** | McKinsey-style executive messaging (SCQA, Minto, MECE) |
 | | **technical-writing** | Docs, explanations, summaries, docstrings |
 | `meaningfy-engineering` | **project-setup** | Scaffold a new Meaningfy-standard Python repo (or modernise an existing one) — layout, tooling, tests, agentic files, Antora docs, CI |

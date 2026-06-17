@@ -7,9 +7,27 @@ it. This is the single authority for the gate definitions other docs summarise. 
 [two-tier-methodology.md](two-tier-methodology.md) for the model and
 [opsx-runbook.md](opsx-runbook.md) for the flow.
 
-> Engagement-level **stage gates** are appended *upward* by EPIC-08 (the proposal/estimation/
-> engagement layer). This doc owns only the build-tier gates; the engagement gates cross-reference
-> these, they are not authored here.
+This is **one ladder** with two clearly-separated halves: the **engagement gates** (human/commercial,
+below) sit *above* the **build gates** (automated, further down). They share one file so the
+hand-off from selling to building is a single, legible sequence (Q8.2=A).
+
+## Engagement gates (human / commercial)
+
+These govern the engagement *above* the build tier (P0–P3 — see
+[`docs/engagement/`](../engagement/README.md)). They are human/commercial sign-offs, a different
+audience and cadence from the automated build gates.
+
+| Gate | When | Enforcement |
+|------|------|-------------|
+| **Proposal signed** | end of P0 → P1 | human sign-off (commercial) — see [`proposal-writing`](../../skills/consulting/proposal-writing/SKILL.md) + [`estimation`](../../skills/consulting/estimation/SKILL.md) |
+| **Decision accepted** | end of P1 | human sign-off (client) — the [`decision-package`](../../skills/consulting/decision-package/SKILL.md) is accepted |
+| **Architecture accepted** | start of P2 | human sign-off **+** `openspec validate --strict` on the architecture spec |
+| **Build DoD** | per Epic in P2 | the automated build-tier gate set below (EPIC-05) |
+
+> **Commercial layer — TODO (to be shaped).** The wider commercial mechanics (qualification,
+> pre-sale, sale, marketing, CRM & lead communication, service packaging, fit-for-market) are **not
+> yet developed** — they are to be brainstormed, debated, and crystallised. This ladder covers only
+> the stage gates that are already settled.
 
 ## The build-tier gate set
 
