@@ -31,7 +31,8 @@ EXPECTED_BUNDLES = {
     "meaningfy-communication": {"executive-communication", "technical-writing"},
     "meaningfy-engineering": {"project-setup", "cosmic-python", "architecture", "meaningfy-git-workflow"},
     "meaningfy-ai-coding": {
-        "epic-planning", "spec-stewardship", "clarity-gate", "bdd-gherkin", "meaningfy-code-review",
+        "epic-planning", "spec-stewardship", "clarity-gate", "bdd-gherkin",
+        "meaningfy-code-review", "guardrails",
     },
 }
 # Meta-bundles are curated overlays: they may re-reference skills *owned* by a
@@ -340,6 +341,34 @@ def trigger_probe_report(repo: Path) -> list[str]:
     return out
 
 
+def ownership_claim_report(repo: Path) -> list[str]:
+    """Non-blocking single-owner tripwire (Q5.2=B). Flags when a NON-owner skill's
+    SKILL.md contains a defining claim pattern for a capability owned elsewhere
+    (RISK-4, no double-spec). Owners marked ``external:<name>`` are not local, so
+    any local skill claiming them is flagged. Advisory only — never fails CI."""
+    fixtures = repo / "tests" / "ownership.yaml"
+    if not fixtures.exists():
+        return []
+    try:
+        data = yaml.safe_load(fixtures.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as exc:
+        return [f"ownership.yaml failed to parse: {exc}"]
+    caps = data.get("capabilities", []) if isinstance(data, dict) else []
+    paths = _skill_paths(repo)
+    out: list[str] = []
+    for cap in caps:
+        owner = (cap or {}).get("owner", "")
+        tag = cap.get("tag", "?")
+        owner_local = owner if owner in paths else None
+        for name, path in paths.items():
+            if name == owner_local:
+                continue
+            text = path.read_text(encoding="utf-8")
+            if any(re.search(pat, text, re.IGNORECASE) for pat in cap.get("claim_patterns", [])):
+                out.append(f"[{tag}] skill '{name}' may re-specify a capability owned by '{owner}'")
+    return out
+
+
 ALL_CHECKS = (
     missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
     frontmatter_errors, name_mismatch, expected_bundle_membership,
@@ -348,11 +377,14 @@ ALL_CHECKS = (
 
 
 def _print_trigger_notes(repo: Path) -> None:
-    probes = trigger_probe_report(repo)
-    if probes:
-        print(f"\n(assist) {len(probes)} trigger-probe note(s) — non-blocking (Q4.2=B):")
-        for p in probes:
-            print(f"  ? {p}")
+    for label, notes in (
+        ("trigger-probe (Q4.2=B)", trigger_probe_report(repo)),
+        ("ownership-tripwire (Q5.2=B)", ownership_claim_report(repo)),
+    ):
+        if notes:
+            print(f"\n(assist) {len(notes)} {label} note(s) — non-blocking:")
+            for n in notes:
+                print(f"  ? {n}")
 
 
 # -------------------------------------------------------------- entrypoint

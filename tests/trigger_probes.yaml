@@ -23,6 +23,8 @@ probes:
     expect: epic-planning
   - probe: "archive this change and merge the spec deltas into specs/"
     expect: spec-stewardship
+  - probe: "bound this agent's decisions and defend against prompt injection"
+    expect: guardrails
   - probe: "score this spec against the clarity gate before implementation"
     expect: clarity-gate
   - probe: "write Gherkin feature files for this acceptance criterion"

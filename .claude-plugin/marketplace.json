@@ -50,7 +50,8 @@
         "./skills/ai-coding/spec-stewardship",
         "./skills/ai-coding/clarity-gate",
         "./skills/ai-coding/bdd-gherkin",
-        "./skills/ai-coding/meaningfy-code-review"
+        "./skills/ai-coding/meaningfy-code-review",
+        "./skills/ai-coding/guardrails"
       ]
     },
     {

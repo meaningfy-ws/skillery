@@ -38,6 +38,7 @@ Skills are nested under `skills/` by phase (`consulting/`, `communication/`, `en
 | | **clarity-gate** | Pre-implementation spec quality gate (≥9/10) |
 | | **bdd-gherkin** | BDD Gherkin features + test data from a spec |
 | | **meaningfy-code-review** | Pre-PR review checklist & criteria |
+| | **guardrails** | Agentic guardrails per step: decision bounds, output validation, prompt-injection defence |
 | `meaningfy-spine` | *(meta-bundle)* | Curated overlay installing the spine working set (epic-planning, clarity-gate, bdd-gherkin, meaningfy-code-review, cosmic-python). The durable spine **assets** (`openspec/` + the forked `meaningfy` schema, and `spine/` docs) are projected into a repo by `project-setup`, not installed as a skill — see [`spine/README.md`](spine/README.md) and [`spine/meaningfy-spine-bundle.md`](spine/meaningfy-spine-bundle.md) |
 
 Thin agent wrappers live in [`agents/`](agents/) (`implementer`, `code-reviewer`,
