@@ -70,18 +70,30 @@ Enrich one existing skill (no new skill). **(T1) seed-intake reference → (T2) 
 - **Acceptance:** probes recorded; length ok; validate green.
 
 ## Anti-patterns
-- ❌ Creating a new "stewardship" skill (DEC-9 — fold into `epic-planning`).
-- ❌ Authoring an EPIC and a separate OpenSpec proposal (they are one).
+- ❌ Overloading `epic-planning` with the lifecycle (Q3.1=C — stewardship is its
+  own `spec-stewardship` skill; keep authoring and lifecycle boundaries clean).
+- ❌ Authoring an EPIC and a separate OpenSpec proposal (they are one: EPIC ≡ `proposal.md`).
 - ❌ Deleting/grooming seed inputs (preserve, secondary).
-- ❌ Clarity-gating the EPIC instead of the PLAN.
+- ❌ Running the FULL clarity gate on the EPIC instead of the PLAN (the EPIC gets a
+  *lightweight* readiness check only — Q3.3=A).
 
 ## Verification
 - A dry-run on the PLAN-02 sample: seeds archived under `inputs/`, EPIC+PLAN produced, clarity-gate
   invoked on PLAN, wrapper drives `/opsx`. `make validate` green; trigger probes pass.
 
 ## Roadmap
-- [ ] T1 seed-intake · [ ] T2 elicitation · [ ] T3 EPIC authoring · [ ] T4 PLAN+clarity-gate
-- [ ] T5 stewardship · [ ] T6 memory index · [ ] T7 wrapper · [ ] T8 triggers+validate
+- [x] T1 seed-intake · [x] T2 elicitation · [x] T3 EPIC authoring · [x] T4 PLAN+clarity-gate
+- [x] T5 stewardship · [x] T6 memory index · [x] T7 wrapper · [x] T8 triggers+validate
+
+## Execution status
+Stewardship split into its own **`spec-stewardship`** skill (Q3.1=C). `epic-planning`
+enriched with seed intake (`references/seed-intake.md`), elicitation→`/opsx:explore`,
+EPIC≡`proposal.md` shaping, the lightweight EPIC readiness check (Q3.3=A), PLAN≡
+`design.md`+`tasks.md` derivation, clarity-gate on the PLAN, and the freeze-vs-reshape
+rule (Q3.2=A). `spec-stewardship` owns the change lifecycle, delta→`specs/` merge,
+grooming, and the orientation-index policy (truth=`specs/`, index=`config.yaml: context:`).
+`epic-planner` agent rewired to drive `/opsx` with native paths. Registered in
+`meaningfy-ai-coding` + `meaningfy-spine`; trigger probe added; `make validate` green.
 
 ## Clarity-gate self-check
 Each task names files + acceptance; the no-new-skill and EPIC≡proposal constraints are explicit;

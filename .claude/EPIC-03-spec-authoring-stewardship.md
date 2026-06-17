@@ -3,6 +3,24 @@
 > Part of the Skillery v2 series. See [EPIC-00](EPIC-00-master-index.md). **Tier:** foundation.
 > **Depends on:** EPIC-02 (the `meaningfy` schema, golden thread, seed-archiving convention).
 
+## 0. Revisions absorbed (from QUESTIONS-EPIC-03)
+
+- **Q3.1=C — split, don't overload (reopens DEC-9).** Stewardship is **its own
+  skill** `spec-stewardship`, not folded into `epic-planning`. Two guarded
+  skills with limited responsibilities: `epic-planning` = **authoring**
+  (seed→EPIC→PLAN→gate); `spec-stewardship` = **living-spec lifecycle** (archive,
+  delta→`specs/` merge, grooming, orientation-index policy). DEC-9 amended in
+  EPIC-00. (Standing preference: prefer 2–3 focused skills over one massive one.)
+- **Q3.2=A — freeze vs re-shape.** PLAN-level wrongness → revise the PLAN
+  (normal divergence); EPIC-level wrongness (the bet is wrong) → a **deliberate,
+  logged re-shape**, not a silent edit. Encoded in both skills.
+- **Q3.3=A — gate the PLAN, lightly check the EPIC.** Full clarity-gate (≥9/10)
+  on the PLAN only; a **lightweight readiness check** runs over the EPIC before
+  PLAN derivation to catch bet-level ambiguity.
+- Artifacts are OpenSpec-native (inherited from EPIC-02/Q2.2): EPIC ≡
+  `proposal.md`, PLAN ≡ `design.md` + `tasks.md`. The skills reference the spine
+  schema templates rather than restating them.
+
 ## 1. Purpose & goals (the shaped bet)
 
 **Appetite:** small–medium. This turns the spine from a *store* into a *practice*: the human-led

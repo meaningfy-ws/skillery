@@ -30,14 +30,17 @@ EXPECTED_BUNDLES = {
     "meaningfy-consulting": {"semantic-consulting-coach"},
     "meaningfy-communication": {"executive-communication", "technical-writing"},
     "meaningfy-engineering": {"project-setup", "cosmic-python", "architecture", "meaningfy-git-workflow"},
-    "meaningfy-ai-coding": {"epic-planning", "clarity-gate", "bdd-gherkin", "meaningfy-code-review"},
+    "meaningfy-ai-coding": {
+        "epic-planning", "spec-stewardship", "clarity-gate", "bdd-gherkin", "meaningfy-code-review",
+    },
 }
 # Meta-bundles are curated overlays: they may re-reference skills *owned* by a
 # phase bundle above. They are NOT exclusive owners, so the placement check only
 # requires their skills to be owned somewhere — not to match the meta name.
 META_BUNDLES = {
     "meaningfy-spine": {
-        "epic-planning", "clarity-gate", "bdd-gherkin", "meaningfy-code-review", "cosmic-python",
+        "epic-planning", "spec-stewardship", "clarity-gate", "bdd-gherkin",
+        "meaningfy-code-review", "cosmic-python",
     },
 }
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "gherkin-writer", "documenter"}
