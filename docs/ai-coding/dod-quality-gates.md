@@ -1,45 +1,58 @@
-# Definition of Done & Quality Gates
+# Definition of Done & Quality Gates (build tier)
 
-**Audience:** Meaningfy developers and agents working under the AI-coding methodology.
+**Audience:** Meaningfy developers and agents working under the two-tier method.
 
-**Purpose:** the shared bar for "done" and the gates that enforce it. Referenced by
-[AI Coding Methodology](ai-coding-methodology.md) and the
-[AI Coding Runbook](ai-coding-runbook.md); this file is the single authority for the gate
-definitions those documents summarise.
+**Purpose:** the shared bar for "done" at the **BUILD tier** (one Epic), and the gates that enforce
+it. This is the single authority for the gate definitions other docs summarise. See
+[two-tier-methodology.md](two-tier-methodology.md) for the model and
+[opsx-runbook.md](opsx-runbook.md) for the flow.
 
-> This document concerns the **AI-coding workflow** (Work Shape → EPIC → Gherkin → task).
-> For the *repository reorganization* quality gates, see `.claude/EPIC-setup-quality-gates.md`.
+> Engagement-level **stage gates** are appended *upward* by EPIC-08 (the proposal/estimation/
+> engagement layer). This doc owns only the build-tier gates; the engagement gates cross-reference
+> these, they are not authored here.
 
-## Quality gates
+## The build-tier gate set
 
-| Gate | When | Owner | Pass condition |
-|------|------|-------|----------------|
-| **Clarity Gate** | Before an EPIC proceeds to implementation | `epic-planner` | Spec scores **≥ 9/10** on the 13-item checklist (see the `clarity-gate` skill); every claim grounded, every assumption visible |
-| **Tests green** | After every generate-verify-integrate cycle | `implementer` | Full suite passes; failures triaged trivial-bug vs. design-failure (design failures fix the spec, not the code) |
-| **Code review** | Before commit / PR | `code-reviewer` | No unaddressed Critical findings (architecture, security, spec conformance) — see the `meaningfy-code-review` skill |
-| **Architecture check** | During review | `code-reviewer` + `importlinter` | Layer dependency direction respected (`entrypoints → services → models`, `adapters → models`); no forbidden imports |
-| **Coverage** | CI | pipeline | **≥ 80%** on production code, higher on new/critical code |
+| Gate | Nature | Owner | Pass condition |
+|------|--------|-------|----------------|
+| **Clarity gate** | semantic | [`clarity-gate`](../../skills/ai-coding/clarity-gate/SKILL.md) | The PLAN (`design.md` + `tasks.md`) scores **≥ 9/10** on the rubric before implementation |
+| **`openspec validate --strict`** | structural | spine ([`spec-stewardship`](../../skills/ai-coding/spec-stewardship/SKILL.md)) | Artifact shape + spec deltas are well-formed |
+| **Tests green** | content | [`cosmic-python`](../../skills/engineering/cosmic-python/SKILL.md) + `superpowers:test-driven-development` | Full suite passes; design-failures fix the spec, not the code |
+| **Coverage** | content | CI pipeline | **≥ 80%** on production code, higher on new/critical code |
+| **Architecture check** | structural | [`cosmic-python`](../../skills/engineering/cosmic-python/SKILL.md) + import-linter | Layer direction respected (`entrypoints → services → models`, `adapters → models`); no forbidden imports |
+| **Code review** | content | [`meaningfy-code-review`](../../skills/ai-coding/meaningfy-code-review/SKILL.md) | No unaddressed Critical findings (architecture, security, spec conformance) |
+
+## The automation boundary (single source — other EPICs reference this)
+
+- **`openspec validate --strict` is CI-automated** — it runs structurally in the pipeline (and in
+  `make validate-spine`).
+- **`clarity-gate` is a human/agent gate — NOT CI-automated.** It is semantic judgement; it cannot
+  be reduced to a deterministic CI check. Do not assume CI enforces it.
+
+Guardrails ([`guardrails`](../../skills/ai-coding/guardrails/SKILL.md)) reuse these same gates for
+output validation — they do not add a parallel enforcement stack.
 
 ## Definition of Done (a task)
 
 A task is done when **all** hold:
 
 - [ ] Implements its EPIC acceptance criteria; no undocumented divergence from the spec.
-- [ ] Unit tests per affected layer (models, adapters, services, entrypoints); Gherkin step definitions implemented for the covering scenarios.
+- [ ] Unit tests per affected layer (models, adapters, services, entrypoints); BDD scenarios covered.
 - [ ] Tests green; coverage ≥ 80% (and not lower than before).
-- [ ] Architecture check passes (importlinter / `make check-architecture`).
+- [ ] Architecture check passes (import-linter).
 - [ ] Code review passed with no open Critical findings.
-- [ ] Task memory file written; EPIC roadmap updated.
-- [ ] Committed only with explicit developer consent (per the runbook).
+- [ ] Committed only with explicit developer consent.
 
-## Definition of Done (an EPIC)
+## Definition of Done (an Epic)
 
 - [ ] Every task in the breakdown is done by the above.
-- [ ] Clarity Gate history recorded (the spec reached ≥ 9/10 before implementation).
-- [ ] All Gherkin features pass; error-handling-matrix scenarios covered.
-- [ ] PR opened referencing the EPIC and summarising outcomes.
+- [ ] Clarity-gate history recorded (the PLAN reached ≥ 9/10 before implementation).
+- [ ] `openspec validate --strict` passes on the change's deltas.
+- [ ] All `.feature` scenarios pass; error-matrix scenarios covered.
+- [ ] Change verified, then synced/archived into `openspec/specs/`.
 
 ## The two questions
 
 - **Built right (verification):** tests green, coverage met, architecture check clean, review passed.
-- **Right thing built (validation):** acceptance criteria and Gherkin scenarios — written from the EPIC and the Work Shape — demonstrably pass; the delivered behaviour matches the shaped intent.
+- **Right thing built (validation):** acceptance criteria and `.feature` scenarios — written from
+  the EPIC — demonstrably pass; the delivered behaviour matches the shaped bet.

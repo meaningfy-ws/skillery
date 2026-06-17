@@ -97,9 +97,18 @@ other doc cites.
   shape is the only input").
 
 ## Roadmap
-- [ ] T1 ownership table · [ ] T2 methodology · [ ] T3 runbook · [ ] T4 setup-guide
-- [ ] T5 guardrails/agent/tiering · [ ] T6 agentic-requirements · [ ] T7 DoD
-- [ ] T8 testing-standard doc + fold-ins · [ ] T9 validate
+- [x] T1 ownership table · [x] T2 methodology · [x] T3 runbook · [x] T4 setup-guide
+- [x] T5 guardrails/agent/tiering · [x] T6 agentic-requirements · [x] T7 DoD
+- [x] T8 testing-standard doc + fold-ins · [x] T9 validate
+
+## Execution status
+v2 canon authored (`two-tier-methodology.md`, `opsx-runbook.md`,
+`openspec-setup-guide.md`), v1 docs bannered (Q5.1=C), `dod-quality-gates.md`
+rewritten (automation boundary pinned: validate=CI, clarity-gate=human),
+`testing-standard.md` added (narrate-and-point). Guardrails shipped as a skill
+(Q5.3=C); ownership table backed by `tests/ownership.yaml` + non-blocking
+tripwire (Q5.2=B). Also corrected broken spine→skill links that an EPIC-04
+staging oversight had left in committed HEAD (nested-path links).
 
 ## Clarity-gate self-check
 The single-owner table is authored first so downstream docs cite one contract; the supersession is
