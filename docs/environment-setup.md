@@ -82,6 +82,25 @@ Skills propagate through the marketplace (`/plugin update`). To project the agen
 - It also runs in **brownfield mode** to gap-check and modernise an existing repo.
 - Projection is via this skill **only** — there is no init script.
 
+## 6. CI/CD external boundary (deployable repos)
+
+For **deployable** application repos, delivery is split:
+
+- **CI** (test / lint / guardrail / docs-publish) is owned by **`project-setup`** and scaffolded with
+  the repo.
+- **CD + release + the delivery contract** is owned by the **`ci-cd-delivery`** skill (app-repo side:
+  versioned GHCR image, one reusable deploy mechanism, the deploy-trigger contract).
+
+These are **DevOps-owned and out of the skill's automation scope** — documented as a boundary only:
+
+- **`cloud-infrastructure`** — Terraform + Ansible VM provisioning/config (DevOps-manual; not automated here).
+- **`infrastructure-stacks`** — Docker Compose stack deploys (rsync + `.env`-from-Secrets to VMs).
+- **Vaultwarden** — secret source-of-truth (GitHub Secrets are the deployment copy); **bastion/SSH**
+  is the break-glass path.
+
+The CD building blocks and the DevOps decisions to ratify are in the
+[`ci-cd-delivery`](../skills/engineering/ci-cd-delivery/SKILL.md) skill.
+
 ## 5. Agents → skills migration note
 
 Earlier versions of this repo shipped five sub-agents. The catalog now ships the **knowledge

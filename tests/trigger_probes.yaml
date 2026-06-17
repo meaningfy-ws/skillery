@@ -25,6 +25,8 @@ probes:
     expect: architecture
   - probe: "model the domain in LinkML and generate Pydantic + OWL + SHACL"
     expect: conceptual-modelling
+  - probe: "set up the CD deploy workflow and push a versioned GHCR image"
+    expect: ci-cd-delivery
   - probe: "what is the branch naming and commit-message convention"
     expect: meaningfy-git-workflow
   - probe: "shape this EPIC and derive its PLAN"

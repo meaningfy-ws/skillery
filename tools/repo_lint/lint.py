@@ -32,7 +32,8 @@ EXPECTED_BUNDLES = {
     },
     "meaningfy-communication": {"executive-communication", "technical-writing"},
     "meaningfy-engineering": {
-        "project-setup", "cosmic-python", "architecture", "conceptual-modelling", "meaningfy-git-workflow",
+        "project-setup", "cosmic-python", "architecture", "conceptual-modelling",
+        "ci-cd-delivery", "meaningfy-git-workflow",
     },
     "meaningfy-ai-coding": {
         "epic-planning", "spec-stewardship", "clarity-gate", "bdd-gherkin",

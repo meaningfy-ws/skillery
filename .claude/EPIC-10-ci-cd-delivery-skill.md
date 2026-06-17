@@ -4,6 +4,20 @@
 > (engineering). **Depends on:** EPIC-04 (the `engineering/` subfolder + bundle). **Relates to:**
 > EPIC-09 (project-setup scaffolds the workflows this skill defines), EPIC-05 (the gate/ownership map).
 
+## 0. Revisions absorbed (from QUESTIONS-EPIC-10)
+
+- **Q10.1=A:** skillery ships a **template + a pointer** to the canonical
+  `devops-toolkit` reusable workflow; **no second runnable copy** lives here.
+- **Q10.2=A:** EPIC-09's CD seam renders the chosen template **only after DevOps
+  §6 ratification**; until then a deployable repo gets a clearly-marked TODO stub
+  + the boundary docs.
+- **Q10.3=A:** ships a concrete **migration runbook** (per-repo PR recipe) so the
+  ~7× duplicated deploy block actually gets replaced with `uses:` the reusable
+  mechanism.
+- The §6 DevOps decisions (deploy-trigger standard, registry-pushed images, home
+  of the reusable mechanism) are presented as **recommendations pending DevOps
+  ratification**, not assumed. Placed in `meaningfy-engineering` (Q4.1 layout).
+
 ## 1. Purpose & goals (the shaped bet)
 
 **Appetite:** medium. Codify Meaningfy's *real* delivery model and standardise the app-repo side of

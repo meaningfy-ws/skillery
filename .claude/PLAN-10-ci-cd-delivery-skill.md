@@ -90,8 +90,16 @@ validate.** T1 grounds everything; the §6 decisions are confirmed with DevOps d
   `make validate` green. The §6 decisions are recorded as DevOps-ratified before adoption.
 
 ## Roadmap
-- [ ] T1 study repos · [ ] T2 model/boundary · [ ] T3 secrets/rotation · [ ] T4 trigger contract
-- [ ] T5 reusable deploy mechanism · [ ] T6 release+image (GHCR) · [ ] T7 ownership · [ ] T8 bundle+validate
+- [x] T1 study repos · [x] T2 model/boundary · [x] T3 secrets/rotation · [x] T4 trigger contract
+- [x] T5 reusable deploy mechanism · [x] T6 release+image (GHCR) · [x] T7 ownership · [x] T8 bundle+validate
+
+## Execution status
+Skill at `skills/engineering/ci-cd-delivery/` (SKILL.md + references: delivery-model,
+secrets-model, deploy-workflow-template, release-image-template, migration-runbook).
+Template+pointer to devops-toolkit (Q10.1=A); migration runbook shipped (Q10.3=A);
+projection seam renders only after DevOps §6 ratification (Q10.2=A). §6 decisions
+marked recommendations-pending-ratification. Registered in `meaningfy-engineering`;
+CD boundary added to `docs/environment-setup.md` §6. `make validate` green.
 
 ## Clarity-gate self-check
 Grounded in the real four-repo study (T1 is a precondition, not an assumption); the three genuine
