@@ -4,6 +4,35 @@
 > and decisions register. **Tier:** foundation (keystone). **Depends on:** EPIC-01 (doc standard,
 > CLAUDE-canonical, one constitution).
 
+## 0. Revisions absorbed (from QUESTIONS-EPIC-02 + grounding on OpenSpec 1.4.1)
+
+This EPIC was revised before execution to absorb the answers and the verified
+OpenSpec mechanics. Deltas from the original text below:
+
+- **Q2.1=A (thin fork).** Fork now but keep it thin: only the EPIC/PLAN templates
+  + **3 hard rules**; defer rich per-artifact `rules:` until the dogfood gate.
+  *(Standing task HQ-02.5: revisit the fork after the whole series lands.)*
+- **Q2.2=B (OpenSpec-native artifacts).** Keep OpenSpec's **native filenames** and
+  overlay the Meaningfy vocabulary — **EPIC ≡ `proposal.md`**, **PLAN ≡
+  `design.md` + `tasks.md`** (the clarity gate scores the *pair*, not a merged
+  `PLAN.md`). This supersedes R2's "emit `EPIC.md` + `PLAN.md`" below. EPIC-00
+  DEC-2 + §4 amended to match. Downstream EPIC-03/05/09 inherit this.
+- **Q2.3=A + coarser thread.** Human-readable minted IDs; the golden-thread chain
+  is deliberately **coarse/provisional** (`requirement → architecture(…) →
+  epic/change → task → test → commit`) — see `spine/golden-thread.md` and
+  HQ-02.1/HQ-02.2.
+- **Q2.4 (memory).** OpenSpec has no memory generator; truth = `openspec/specs/`,
+  orientation = `openspec/config.yaml: context:`. **Drop** a bespoke
+  `MEMORY.md`-as-truth; a deterministic generator into `context:` is deferred
+  (HQ-02.3). See `spine/epic-change-memory-mapping.md`.
+- **Grounding corrections (OpenSpec 1.4.1):** the schema lives where OpenSpec
+  resolves it — **`openspec/schemas/meaningfy/`** (not `spine/openspec-meaningfy-schema/`);
+  per-artifact `rules:` live in **`openspec/config.yaml`** (not `schema.yaml`);
+  the profile enum is **`core | custom`** (there is no `expanded` preset — R6
+  corrected); skillery dogfoods its own spine via a live `openspec/`. The
+  `spine/` directory now holds the **documentation/conventions**; the live
+  OpenSpec assets live under `openspec/`.
+
 ## 1. Purpose & goals (the shaped bet)
 
 **Appetite:** medium — this is the keystone of the whole series; do it carefully, but resist
