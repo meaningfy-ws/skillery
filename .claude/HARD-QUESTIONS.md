@@ -54,6 +54,20 @@ end-of-series task**, not a blocker.
 
 ---
 
+## From EPIC-04 (catalogue reorg)
+
+### HQ-04.1 — A real trigger-precision harness (beyond the non-blocking stub)?
+Q4.2=B asked for a non-blocking trigger-probe harness. I shipped a deterministic
+stub: `tests/trigger_probes.yaml` (probe → expected skill) + a reporter that
+checks every probe names a real skill and every skill has a probe. It does **not**
+actually run an LLM to confirm the probe *fires* the expected skill (that's
+non-deterministic in CI). **Working assumption:** the stub is enough for now; a
+real LLM-matching harness (run locally / nightly, not in blocking CI) is a future
+nice-to-have. Confirm whether you want the real harness built later.
+**Answer:**
+
+---
+
 ## From the campaign framing (EPIC-00 build order)
 
 ### HQ-00.1 — Dogfood gate vs "complete all EPICs now".

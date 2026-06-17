@@ -17,14 +17,19 @@ Skills are designed to be discovered and activated by Claude when relevant to a 
 
 ### 1. Copy the Template
 
+Skills are nested by **phase subfolder** — pick the one your skill belongs to
+(`consulting/`, `communication/`, `engineering/`, `ai-coding/`) and place the
+skill under it. Then register it in the matching bundle in
+[`.claude-plugin/marketplace.json`](../.claude-plugin/marketplace.json).
+
 ```bash
-mkdir -p skills/my-new-skill
-cp spec/skill-template.md skills/my-new-skill/SKILL.md
+mkdir -p skills/<phase>/my-new-skill        # e.g. skills/engineering/my-new-skill
+cp spec/skill-template.md skills/<phase>/my-new-skill/SKILL.md
 ```
 
 ### 2. Edit the YAML Frontmatter
 
-Open `skills/my-new-skill/SKILL.md` and update:
+Open `skills/<phase>/my-new-skill/SKILL.md` and update:
 
 ```yaml
 ---

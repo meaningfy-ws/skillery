@@ -83,14 +83,15 @@ Add your skill to the **What's inside** table in README.md (columns: Bundle, Ski
 
 ### Step 3: Register in Marketplace
 
-Add your skill path to the appropriate **existing bundle** in
-`.claude-plugin/marketplace.json` (we use three fixed bundles: `meaningfy-engineering`,
-`meaningfy-ai-coding`, `meaningfy-consulting`). The validator (`make validate`) enforces that
-each skill sits in its expected bundle (`EXPECTED_BUNDLES` in `tools/repo_lint/lint.py` — update
-it when adding a skill):
+Add your skill path (nested under its phase subfolder) to the appropriate
+**existing bundle** in `.claude-plugin/marketplace.json`. The value-chain bundles
+are `meaningfy-consulting`, `meaningfy-communication`, `meaningfy-engineering`,
+`meaningfy-ai-coding`, plus the `meaningfy-spine` meta-bundle overlay. The
+validator (`make validate`) enforces that each skill sits in its expected bundle
+(`EXPECTED_BUNDLES` in `tools/repo_lint/lint.py` — update it when adding a skill):
 
 ```json
-{ "name": "meaningfy-ai-coding", "skills": ["./skills/clarity-gate", "./skills/my-new-skill"] }
+{ "name": "meaningfy-ai-coding", "skills": ["./skills/ai-coding/clarity-gate", "./skills/ai-coding/my-new-skill"] }
 ```
 
 ### Step 4: Create a Pull Request

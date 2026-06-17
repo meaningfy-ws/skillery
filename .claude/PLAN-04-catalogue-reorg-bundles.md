@@ -80,8 +80,24 @@ user-vs-project split → (T7) validate.** T1–T4 in one logical change; T5–T
   can tell from `environment-setup.md` exactly what to install once vs per-repo.
 
 ## Roadmap
-- [ ] T1 subfolders · [ ] T2 fix refs · [ ] T3 marketplace · [ ] T4 validator+tests
-- [ ] T5 README · [ ] T6 environment-setup (user/project split) · [ ] T7 validate
+- [x] T1 subfolders · [x] T2 fix refs · [x] T3 marketplace · [x] T4 validator+tests
+- [x] T5 README · [x] T6 environment-setup (user/project split) · [x] T7 validate
+
+## Execution status (absorbed Q4.1/Q4.2/Q4.3)
+- **Q4.1=A + reshape:** `modelling` is **folded into `meaningfy-engineering`** next
+  to `architecture` (per the answer's note) — so there is **no separate
+  `meaningfy-architecture` or `meaningfy-modelling` bundle**, and **4 phase
+  subfolders** were created (`consulting`, `communication`, `engineering`,
+  `ai-coding`) rather than 5. Shipped **5 bundles** (4 phase + `meaningfy-spine`
+  meta-bundle), not 6. conceptual-modelling (EPIC-06) lands in `engineering/`.
+- **Q4.2=B:** non-blocking trigger-probe harness added (`tests/trigger_probes.yaml`
+  + `lint.trigger_probe_report`, surfaced in the assist section, never fails CI).
+- **Q4.3=A:** landed as a stacked series on one branch — structural commit
+  (moves+marketplace+validator+tests) then a docs commit; each commit is
+  `make validate`-green (self-consistency preserved at every commit).
+- Validator now discovers nested skills (flat+nested) and treats `meaningfy-spine`
+  as an overlay (META_BUNDLES). README + environment-setup rewritten; CONTRIBUTING
+  + CREATING_SKILLS + governance updated for the nested home.
 
 ## Clarity-gate self-check
 Grounded; the one-commit constraint prevents a self-inconsistent state; DEC-12 split is concretely
