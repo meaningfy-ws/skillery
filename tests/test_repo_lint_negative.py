@@ -80,6 +80,17 @@ def test_orphan_path_mention_is_flagged(tmp_path):
     assert lint.orphan_path_mentions(tmp_path, ["MEANINGFY_PROMPT.md"])
 
 
+def test_claude_dir_excluded_from_prose_checks(tmp_path):
+    # .claude/ is agent/tool working-state, not the catalogue: content there that
+    # would otherwise trip prose checks (orphan agents, broken links) must be ignored.
+    claude = tmp_path / ".claude"
+    claude.mkdir()
+    (claude / "EPIC-x.md").write_text("ask the documenter and gherkin-writer", encoding="utf-8")
+    (claude / "notes.md").write_text("see [x](missing-file.md)", encoding="utf-8")
+    assert lint.orphan_agent_references(tmp_path) == []
+    assert lint.broken_links(tmp_path) == []
+
+
 def test_clean_fixture_passes_all(tmp_path):
     _skill(tmp_path, "cosmic-python")
     _skill(tmp_path, "architecture")

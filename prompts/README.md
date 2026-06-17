@@ -1,16 +1,31 @@
 # Binding templates
 
-The thin "always-on" layer that wires the skills into a project. Three tiers:
+The thin "always-on" layer that wires skills into a project. Two tiers:
 
 | File | Tier | Goes where | Purpose |
 |------|------|-----------|---------|
-| `global-prompt.md` | Personal default | your `~/.claude/CLAUDE.md` | per-developer routing + non-negotiables (≤~40 lines) |
-| `CLAUDE.md.template` | Committed project binding | `<repo>/CLAUDE.md` | the company-wide, team-shared binding for a repo |
-| `AGENTS.md.template` | Cross-tool mirror | `<repo>/AGENTS.md` | tool-neutral mirror of the same policy (Copilot, etc.) |
+| `global-prompt.md` | Personal default | `~/.claude/CLAUDE.md` | per-developer routing + non-negotiables |
+| `CLAUDE.md.template` | Committed project binding | `<repo>/CLAUDE.md` | company-wide, team-shared binding for a repo |
 
-**Rules**
-- The binding **routes and mandates**; it never carries the standard (that lives in skills + `docs/`).
-- `CLAUDE.md` and `AGENTS.md` are a **single source** — keep their policy sections identical
-  (the repo validator's `templates_mirrored` check enforces the skill set matches).
-- Each template carries a `meaningfy-template-version` stamp so a consuming repo can tell when it
-  is behind. Refresh with `scripts/init-meaningfy-project.sh` (see `docs/environment-setup.md`).
+`CLAUDE.md.template` is the **single canonical binding template**. There is no separate
+`AGENTS.md.template`.
+
+## Rules
+
+- A binding **routes and mandates**; it never carries the standard (standards live in skills and `docs/`).
+- **Single source of authority**: fill in `CLAUDE.md` and keep it as the one source; do not duplicate
+  policy across multiple agentic files.
+- Each template carries a `meaningfy-template-version` stamp so a consuming repo can tell when it is
+  behind. Refresh with `scripts/init-meaningfy-project.sh` (see `docs/environment-setup.md`).
+
+## Optional AGENTS.md symlink
+
+Some tools (e.g. OpenAI Codex, other AGENTS.md-reading tools) load `AGENTS.md` instead of
+`CLAUDE.md`. To serve those tools without duplicating policy, create a symlink:
+
+```bash
+ln -s CLAUDE.md AGENTS.md
+```
+
+This means both files point to the same content. **Do not maintain a separate `AGENTS.md` with
+divergent content** — a symlink is the correct pattern whenever cross-tool support is needed.

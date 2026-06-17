@@ -18,7 +18,8 @@ Skills are designed to be discovered and activated by Claude when relevant to a 
 ### 1. Copy the Template
 
 ```bash
-cp -r template/ skills/my-new-skill/
+mkdir -p skills/my-new-skill
+cp spec/skill-template.md skills/my-new-skill/SKILL.md
 ```
 
 ### 2. Edit the YAML Frontmatter

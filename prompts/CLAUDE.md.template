@@ -1,41 +1,50 @@
-<!-- meaningfy-template-version: 2.0.0 -->
-<!-- Single source with AGENTS.md.template — keep the policy sections mirrored. -->
+<!-- meaningfy-template-version: 3.0.0 -->
+<!-- Binding template — copy to <repo>/CLAUDE.md and fill in the Project specifics section. -->
+<!-- This is the SINGLE canonical binding template. AGENTS.md is an optional symlink (see prompts/README.md). -->
 
 # Project: <PROJECT-NAME>
 
-Meaningfy project. Build clean, layered, well-tested code; minimise WTFs-per-minute. The
-authoritative standards are the installed skills below — use them rather than improvising.
+This file is a **Binding**: it mandates and routes. It carries no reusable knowledge.
+Every substantive standard lives in the skill or doc it points to.
 
-## Skill routing (use the skill for the task)
+## Skill routing
 
-- Structuring Python code (models/adapters/services/entrypoints, SOLID, CI) → **cosmic-python**
-- System / solution design (C4, ADRs, contracts) → **architecture**
-- Any new feature or non-trivial change → start by exploring options (**superpowers:brainstorming**)
-- Any feature or bugfix implementation → **superpowers:test-driven-development** (tests first)
-- Debugging → **superpowers:systematic-debugging**
-- Planning a Work Shape into a spec → **epic-planning** (+ external **stream-coding**)
-- Spec readiness → **clarity-gate**
-- BDD features → **bdd-gherkin**
-- Commits / branches / PRs → **meaningfy-git-workflow** (mechanics via **commit-commands**)
-- Pre-PR review → **meaningfy-code-review** (+ external **code-review**)
-- Docs → **technical-writing**
+Use the skill for the task — do not improvise what a skill already knows.
 
-If a request conflicts with these, flag it before proceeding.
+| Task | Skill |
+|------|-------|
+| Python code structure (models/adapters/services/entrypoints, SOLID, CI) | **meaningfy-engineering:cosmic-python** |
+| System / solution design (C4, ADRs, contracts) | **meaningfy-engineering:architecture** |
+| New feature or non-trivial change — explore options first | **superpowers:brainstorming** |
+| Feature or bugfix implementation — tests first | **superpowers:test-driven-development** |
+| Debugging | **superpowers:systematic-debugging** |
+| Plan a Work Shape into a spec | **meaningfy-ai-coding:epic-planning** |
+| Spec readiness gate | **meaningfy-ai-coding:clarity-gate** |
+| BDD / Gherkin features | **meaningfy-ai-coding:bdd-gherkin** |
+| Commits / branches / PRs | **meaningfy-engineering:meaningfy-git-workflow** |
+| Pre-PR review | **meaningfy-ai-coding:meaningfy-code-review** |
+| Docs and technical writing | **meaningfy-ai-coding:technical-writing** |
 
-## Implementation loop (orchestration)
+If a request conflicts with the above, flag it before proceeding.
 
-Before editing a symbol, run gitnexus impact (status → analyze → impact/context); stop and
-report HIGH/CRITICAL risk. Loop: generate (tests first) → verify (run tests) → integrate
-(present, get consent). On a design-level failure, fix the spec, not the code (Rule of
-Divergence). Commit only on explicit developer consent.
+## Implementation loop
+
+1. Before editing any symbol, run GitNexus impact analysis; stop and report HIGH/CRITICAL risk.
+2. Loop: generate (tests first) → verify (run tests) → integrate (present, get consent).
+3. On a design-level failure, fix the spec, not the code (Rule of Divergence).
+4. Commit only on explicit developer consent.
 
 ## Memory conventions
 
 - `.claude/memory/MEMORY.md` — stable, confirmed patterns (≤200 lines; auto-loaded).
 - `.claude/memory/epics/<epic-name>/` — `EPIC.md` + dated task files (read the relevant epic on demand).
 
+## OpenSpec and Spine conventions
+
+_Forthcoming — EPIC-02, not yet landed. Once published, this binding will route to the OpenSpec
+index and the canonical Spine rules instead of this placeholder._
+
 ## Project specifics
 
-<!-- modules, bounded contexts, external systems, make targets, GitNexus repo name -->
-
-See `docs/` for methodology (ai-coding), standards (engineering-standards), and philosophy.
+<!-- Fill in: modules, bounded contexts, external systems, make targets, GitNexus repo name. -->
+<!-- Example: GitNexus repo name: my-project | Main module: my_module | Key make targets: test, lint, ci -->

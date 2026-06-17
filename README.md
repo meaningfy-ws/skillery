@@ -60,7 +60,7 @@ dependencies are in [`docs/environment-setup.md`](docs/environment-setup.md).
 | Learn the AI-coding method | [`docs/ai-coding/`](docs/ai-coding/) |
 | Apply engineering standards | [`docs/engineering-standards/`](docs/engineering-standards/) + [`prompts/`](prompts/) |
 | Understand the mindset | [`docs/philosophy/`](docs/philosophy/) |
-| Contribute a skill | [`spec/`](spec/) + [`template/`](template/) |
+| Contribute a skill | [`spec/`](spec/) (incl. [`skill-template.md`](spec/skill-template.md)) |
 
 ## Repository structure
 

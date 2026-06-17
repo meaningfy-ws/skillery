@@ -37,7 +37,10 @@ FROZEN_GLOBS = ("docs/ai-coding/",)
 
 _FRONTMATTER = re.compile(r"^---\n(.*?)\n---", re.DOTALL)
 _MD_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
-_SKIP_DIRS = {".git", ".venv", "node_modules", ".idea", "__pycache__"}
+# `.claude/` is agent/tool working-state — planning docs (EPIC/PLAN/RESEARCH) and
+# tool-installed skills (e.g. GitNexus's own) — not the published catalogue, so prose
+# checks skip it. (`.claude-plugin/` is a distinct part and is NOT skipped.)
+_SKIP_DIRS = {".git", ".venv", "node_modules", ".idea", "__pycache__", ".claude"}
 
 
 # ---------------------------------------------------------------- read layer

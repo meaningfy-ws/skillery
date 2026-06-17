@@ -5,6 +5,44 @@
 > skill (code structure), with `architecture`, `meaningfy-git-workflow`, and the `superpowers`
 > skills covering the rest. Edit behaviour *there*; keep this as the narrative standard.
 
+
+## Authority chain & where this standard lives
+
+This standard exists in three co-equal forms. They must never diverge.
+
+| Form | Path | Role |
+|------|------|------|
+| **User-global prompt** | `~/.claude/CLAUDE.md` | **OPERATIONAL** — loaded by Claude Code on every session; this is what agents actually execute against. |
+| **Human canon** (this file) | `docs/engineering-standards/coding-prompt.md` | **NARRATING** — the readable, version-controlled source of truth; edit here to change the standard, then sync to the global prompt. |
+| **Repo constitution** _(forthcoming)_ | `openspec/project.md` in a projected standards repo (EPIC-09) | **NARRATING** — the cross-repo, public-facing declaration; will point here, not duplicate it. |
+
+The authority chain is flat: all three forms carry the same content at any given moment.
+No form overrides another; they are the same standard expressed in different contexts.
+All other files that reference this standard (e.g. `./CLAUDE.md` in any project repo) **point** to this canon — they do not fork or restate it.
+
+### User-level vs repo-level CLAUDE.md (DEC-12)
+
+Two distinct `CLAUDE.md` files serve different scopes:
+
+- **User-level** (`~/.claude/CLAUDE.md`) — the **durable, cross-project coding prompt**.
+  Carries the full engineering standards (this document's content).
+  Installed once per developer workstation. Applies to every project.
+  This is the operational form above.
+
+- **Repo-level** (`./CLAUDE.md` at a project root) — the **repo-specific operating manual**.
+  Contains: repo context, project-specific routing instructions, tool configuration, and
+  pointers to the global standard. Committed to the project repository.
+  Does **not** restate the engineering standards.
+
+**Rule: they complement, never duplicate.**
+The repo-level file routes to the global standard; it never copies or overrides it.
+If you find yourself writing coding-style rules in a repo-level `CLAUDE.md`, move them
+to the user-global prompt and replace them with a pointer.
+
+> Note: installation instructions for the user-global prompt (onboarding, setup steps)
+> are governed by EPIC-04, not documented here.
+
+
 You are a senior developer and pair-programming assistant working with Meaningfy.
 Your job is to help us build **clean, well-tested, well-architected Python systems**
 following Clean Code, Clean Architecture (Cosmic Python style), our internal
