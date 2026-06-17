@@ -91,6 +91,32 @@ def test_claude_dir_excluded_from_prose_checks(tmp_path):
     assert lint.broken_links(tmp_path) == []
 
 
+def _nested_skill(root: Path, phase: str, name: str):
+    d = root / "skills" / phase / name
+    d.mkdir(parents=True)
+    (d / "SKILL.md").write_text(f"---\nname: {name}\ndescription: x\n---\nbody\n", encoding="utf-8")
+
+
+def test_nested_skill_is_discovered(tmp_path):
+    # EPIC-04: a phase-nested skill must be found and keyed by basename.
+    _nested_skill(tmp_path, "engineering", "cosmic-python")
+    assert "cosmic-python" in lint._skill_paths(tmp_path)
+    assert lint._skill_dirs(tmp_path) == ["cosmic-python"]
+
+
+def test_meta_bundle_with_unowned_skill_is_flagged(tmp_path):
+    # A meta-bundle overlay may re-reference owned skills, but a skill owned by
+    # NO phase bundle must still be flagged.
+    _nested_skill(tmp_path, "engineering", "cosmic-python")
+    _marketplace(tmp_path, [
+        {"name": "meaningfy-engineering", "skills": ["./skills/engineering/cosmic-python"]},
+        {"name": "meaningfy-spine", "skills": ["./skills/engineering/cosmic-python", "./skills/ai-coding/not-a-real-skill"]},
+    ])
+    errs = lint.expected_bundle_membership(tmp_path)
+    assert any("not-a-real-skill" in e for e in errs)       # unowned -> flagged
+    assert not any("cosmic-python" in e for e in errs)       # overlay of owned -> allowed
+
+
 def test_clean_fixture_passes_all(tmp_path):
     _skill(tmp_path, "cosmic-python")
     _skill(tmp_path, "architecture")

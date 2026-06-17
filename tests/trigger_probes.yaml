@@ -1,0 +1,29 @@
+# Trigger-probe fixtures (Q4.2=B) — a NON-BLOCKING aid for catching trigger
+# collisions after skill descriptions grow or move. Each probe is a representative
+# user phrase; `expect` is the skill that should fire. The validator checks
+# deterministically that every `expect` names a real skill and that every skill
+# has at least one probe (coverage). Actual LLM trigger-matching is out of scope
+# for CI (non-deterministic) — see HARD-QUESTIONS HQ-04.1 for the future harness.
+probes:
+  - probe: "help me price this ontology / knowledge-graph consulting engagement"
+    expect: semantic-consulting-coach
+  - probe: "turn this rough input into a board-ready recommendation"
+    expect: executive-communication
+  - probe: "write the README and docstrings for this module"
+    expect: technical-writing
+  - probe: "scaffold a new Meaningfy-standard Python repository"
+    expect: project-setup
+  - probe: "design the layered architecture (models/adapters/services) for this service"
+    expect: cosmic-python
+  - probe: "draw the C4 container diagram and write an ADR"
+    expect: architecture
+  - probe: "what is the branch naming and commit-message convention"
+    expect: meaningfy-git-workflow
+  - probe: "shape this EPIC and derive its PLAN"
+    expect: epic-planning
+  - probe: "score this spec against the clarity gate before implementation"
+    expect: clarity-gate
+  - probe: "write Gherkin feature files for this acceptance criterion"
+    expect: bdd-gherkin
+  - probe: "review this change against the cosmic-python layers before the PR"
+    expect: meaningfy-code-review
