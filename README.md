@@ -32,6 +32,7 @@ Skills are nested under `skills/` by phase (`consulting/`, `communication/`, `en
 | `meaningfy-engineering` | **project-setup** | Scaffold a new Meaningfy-standard Python repo (or modernise an existing one) — layout, tooling, tests, agentic files, Antora docs, CI |
 | | **cosmic-python** | Clean, layered Python (models/adapters/services/entrypoints), SOLID, testing, CI |
 | | **architecture** | System design — C4, ArchiMate/UML, ADRs, contracts |
+| | **conceptual-modelling** | Living domain model (LinkML default) → deterministic Pydantic/JSON-Schema/OWL/SHACL generation; ontology + terminology (product-dev repos) |
 | | **meaningfy-git-workflow** | Conventional commits, branching, PRs, dev-environment hygiene |
 | `meaningfy-ai-coding` | **epic-planning** | Shape an EPIC from seeds, then derive its clarity-gated PLAN |
 | | **spec-stewardship** | Living-spec lifecycle: archive changes, groom `specs/`, keep the orientation index honest |

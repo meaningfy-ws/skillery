@@ -6,6 +6,27 @@
 > (no empty bundle ships earlier) — so this EPIC **creates** both.
 > **Gated by:** the dogfood gate (EPIC-00 §6).
 
+## 0. Revisions absorbed (from QUESTIONS-EPIC-06 + the EPIC-04 reshape)
+
+- **Placement reconciled with Q4.1.** EPIC-04's Q4.1 answer folded `modelling`
+  into **`meaningfy-engineering`** (next to `architecture`). So this EPIC does
+  **NOT** create `skills/modelling/` or a `meaningfy-modelling` bundle — the skill
+  lives at **`skills/engineering/conceptual-modelling/`** and is registered in the
+  **`meaningfy-engineering`** bundle. (R10's separate-bundle plan is superseded.)
+- **Q6.1=A:** scaffold an in-project `model/` by default (own-repo mode is the
+  deliberate exception EPIC-09 offers when a model is shared across repos).
+- **Q6.2=A:** ship **Pydantic + JSON Schema + OWL + SHACL** wired-first-class;
+  document TS / SQL-ORM / HTML / custom-generator authoring as on-demand patterns.
+- **Q6.3=A + note:** LinkML is the wired default; other ontology tooling is
+  documented. **model2owl** can be an occasional *prerequisite* (it generates the
+  LinkML, which then drives the other generators) and has strong OWL/SHACL/HTML
+  generators. No source-adapter abstraction (YAGNI).
+- **Light-touch R10:** generation/living-model **ownership** moved to this skill;
+  `architecture` keeps LinkML as a contract notation and now cross-points here.
+- **Provisional** pending the dogfood gate (Q0.1=B / Q0.3=C): the engineering
+  generation core is real; the consulting-facing depth refines after a real
+  model-building engagement. See HARD-QUESTIONS HQ-00.1.
+
 ## 1. Purpose & goals (the shaped bet)
 
 **Appetite:** medium. Elevate conceptual modelling from a buried section of `architecture` into a
