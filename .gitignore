@@ -226,3 +226,6 @@ skills/**/.cache/
 .DS_Store
 Thumbs.db
 .gitnexus
+
+# Node (OpenSpec tooling installed via npx --no-save)
+node_modules/
