@@ -41,6 +41,7 @@
         "./skills/engineering/cosmic-python",
         "./skills/engineering/architecture",
         "./skills/engineering/conceptual-modelling",
+        "./skills/engineering/ci-cd-delivery",
         "./skills/engineering/meaningfy-git-workflow"
       ]
     },
