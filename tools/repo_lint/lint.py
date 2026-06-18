@@ -22,14 +22,23 @@ README = "README.md"
 # in CONTRIBUTING. The established `architecture` skill is ~618 lines and fine.
 MAX_SKILL_LINES = 650
 
-# The R1 target bundle map (single source of truth for bundle composition).
+# The value-chain bundle map (single source of truth for bundle composition).
+# Re-cut by EPIC-04 (Q4.1=A): phase-aligned, single-skill bundles allowed, and
+# `modelling` folded into `meaningfy-engineering` next to `architecture` (so no
+# separate modelling bundle). conceptual-modelling (EPIC-06) lands in engineering.
 EXPECTED_BUNDLES = {
+    "meaningfy-consulting": {"semantic-consulting-coach"},
+    "meaningfy-communication": {"executive-communication", "technical-writing"},
     "meaningfy-engineering": {"project-setup", "cosmic-python", "architecture", "meaningfy-git-workflow"},
-    "meaningfy-ai-coding": {
-        "clarity-gate", "epic-planning", "bdd-gherkin",
-        "meaningfy-code-review", "technical-writing",
+    "meaningfy-ai-coding": {"epic-planning", "clarity-gate", "bdd-gherkin", "meaningfy-code-review"},
+}
+# Meta-bundles are curated overlays: they may re-reference skills *owned* by a
+# phase bundle above. They are NOT exclusive owners, so the placement check only
+# requires their skills to be owned somewhere — not to match the meta name.
+META_BUNDLES = {
+    "meaningfy-spine": {
+        "epic-planning", "clarity-gate", "bdd-gherkin", "meaningfy-code-review", "cosmic-python",
     },
-    "meaningfy-consulting": {"semantic-consulting-coach", "executive-communication"},
 }
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "gherkin-writer", "documenter"}
 # Files/dirs whose content must never be edited (frozen) — excluded from prose checks.
@@ -60,11 +69,33 @@ def _marketplace_skills(repo: Path) -> list[str]:
     return out
 
 
-def _skill_dirs(repo: Path) -> list[str]:
+def _skill_paths(repo: Path) -> dict[str, Path]:
+    """Map skill-name → its SKILL.md, tolerating BOTH the flat layout
+    (``skills/<name>/SKILL.md``) and the phase-nested layout
+    (``skills/<phase>/<name>/SKILL.md``). The skill name is always the basename
+    of the directory holding SKILL.md — independent of the phase folder."""
     root = repo / SKILLS_DIR
+    out: dict[str, Path] = {}
     if not root.exists():
-        return []
-    return sorted(p.name for p in root.iterdir() if (p / "SKILL.md").exists())
+        return out
+    for p in sorted(root.iterdir()):
+        if not p.is_dir():
+            continue
+        if (p / "SKILL.md").exists():               # flat: skills/<name>/
+            out[p.name] = p / "SKILL.md"
+            continue
+        for q in sorted(p.iterdir()):                # nested: skills/<phase>/<name>/
+            if q.is_dir() and (q / "SKILL.md").exists():
+                out[q.name] = q / "SKILL.md"
+    return out
+
+
+def _skill_dirs(repo: Path) -> list[str]:
+    return sorted(_skill_paths(repo))
+
+
+def _skill_md(repo: Path, name: str) -> str:
+    return _skill_paths(repo)[name].read_text(encoding="utf-8")
 
 
 def _frontmatter(text: str) -> dict | None:
@@ -118,7 +149,7 @@ def unregistered_skill_dirs(repo: Path) -> list[str]:
 def frontmatter_present_errors(repo: Path) -> list[str]:
     errs: list[str] = []
     for name in _skill_dirs(repo):
-        if _frontmatter(_read(repo, f"{SKILLS_DIR}/{name}/SKILL.md")) is None:
+        if _frontmatter(_skill_md(repo, name)) is None:
             errs.append(f"{name}: SKILL.md has no top-of-file YAML frontmatter")
     return errs
 
@@ -126,7 +157,7 @@ def frontmatter_present_errors(repo: Path) -> list[str]:
 def frontmatter_errors(repo: Path) -> list[str]:
     errs: list[str] = []
     for name in _skill_dirs(repo):
-        fm = _frontmatter(_read(repo, f"{SKILLS_DIR}/{name}/SKILL.md"))
+        fm = _frontmatter(_skill_md(repo, name))
         if fm is None:
             errs.append(f"{name}: no frontmatter")
             continue
@@ -139,7 +170,7 @@ def frontmatter_errors(repo: Path) -> list[str]:
 def name_mismatch(repo: Path) -> list[str]:
     out: list[str] = []
     for name in _skill_dirs(repo):
-        fm = _frontmatter(_read(repo, f"{SKILLS_DIR}/{name}/SKILL.md"))
+        fm = _frontmatter(_skill_md(repo, name))
         if fm is None:
             continue  # reported by frontmatter_present_errors
         if fm.get("name") != name:
@@ -155,15 +186,19 @@ def expected_bundle_membership(repo: Path) -> list[str]:
     out: list[str] = []
     for plugin in _marketplace(repo).get("plugins", []):
         bundle = plugin.get("name")
-        if bundle not in EXPECTED_BUNDLES:
-            out.append(f"unknown bundle '{bundle}' (not in EXPECTED_BUNDLES)")
+        is_meta = bundle in META_BUNDLES
+        if bundle not in EXPECTED_BUNDLES and not is_meta:
+            out.append(f"unknown bundle '{bundle}' (not in EXPECTED_BUNDLES or META_BUNDLES)")
             continue
         for raw in plugin.get("skills", []):
             skill = raw.replace("./skills/", "").strip("/").split("/")[-1]
             want = reverse.get(skill)
             if want is None:
+                # Every skill — including a meta-bundle's overlay — must be owned
+                # by exactly one phase bundle.
                 out.append(f"skill '{skill}' is not in EXPECTED_BUNDLES")
-            elif want != bundle:
+            elif not is_meta and want != bundle:
+                # Phase bundles are exclusive owners; meta-bundles are overlays.
                 out.append(f"skill '{skill}' in '{bundle}', expected '{want}'")
     return out
 
@@ -195,7 +230,7 @@ def broken_links(repo: Path) -> list[str]:
 def skill_too_long(repo: Path, limit: int = MAX_SKILL_LINES) -> list[str]:
     out: list[str] = []
     for name in _skill_dirs(repo):
-        n = len(_read(repo, f"{SKILLS_DIR}/{name}/SKILL.md").splitlines())
+        n = len(_skill_md(repo, name).splitlines())
         if n > limit:
             out.append(f"{name}: SKILL.md is {n} lines (> {limit})")
     return out
@@ -275,11 +310,46 @@ def duplicate_fact_candidates(repo: Path) -> list[str]:
     return out
 
 
+def trigger_probe_report(repo: Path) -> list[str]:
+    """Non-blocking trigger-probe harness (Q4.2=B). Deterministic checks only:
+    every probe's `expect` must name a real skill, and every skill should have at
+    least one probe (coverage). LLM trigger-matching stays out of CI. Returned
+    strings are advisory — surfaced in the assist section, never fail the build."""
+    fixtures = repo / "tests" / "trigger_probes.yaml"
+    if not fixtures.exists():
+        return []
+    try:
+        data = yaml.safe_load(fixtures.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as exc:
+        return [f"trigger_probes.yaml failed to parse: {exc}"]
+    probes = data.get("probes", []) if isinstance(data, dict) else []
+    skills = set(_skill_dirs(repo))
+    out: list[str] = []
+    covered: set[str] = set()
+    for entry in probes:
+        expect = (entry or {}).get("expect")
+        if expect not in skills:
+            out.append(f"probe expects unknown skill '{expect}'")
+        else:
+            covered.add(expect)
+    for missing in sorted(skills - covered):
+        out.append(f"skill '{missing}' has no trigger probe (coverage gap)")
+    return out
+
+
 ALL_CHECKS = (
     missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
     frontmatter_errors, name_mismatch, expected_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
 )
+
+
+def _print_trigger_notes(repo: Path) -> None:
+    probes = trigger_probe_report(repo)
+    if probes:
+        print(f"\n(assist) {len(probes)} trigger-probe note(s) — non-blocking (Q4.2=B):")
+        for p in probes:
+            print(f"  ? {p}")
 
 
 # -------------------------------------------------------------- entrypoint
@@ -298,8 +368,10 @@ def main(argv: list[str] | None = None) -> int:
             print(f"\n(assist) {len(candidates)} duplicate-fact candidate(s) for manual G-DUP review:")
             for c in candidates:
                 print(f"  ? {c}")
+        _print_trigger_notes(repo)
         return 1
     print("OK — repository self-consistent.")
+    _print_trigger_notes(repo)
     return 0
 
 

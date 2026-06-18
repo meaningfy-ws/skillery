@@ -48,7 +48,7 @@ as the artifact-lifecycle engine, with a thin Meaningfy fork of its schema.
 ## Two gates, two natures
 
 - **Clarity gate** — *semantic*, scores the PLAN (design.md + tasks.md) ≥9/10.
-  Run by a human/agent (the [`clarity-gate`](../skills/clarity-gate) skill).
+  Run by a human/agent (the [`clarity-gate`](../skills/ai-coding/clarity-gate) skill).
   **Not** CI-automated.
 - **`openspec validate --strict`** — *structural*, checks artifact shape and
   delta format. **CI-automated** (see [`../Makefile`](../Makefile) target

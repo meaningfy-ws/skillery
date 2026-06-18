@@ -3,6 +3,22 @@
 > Part of the Skillery v2 series. See [EPIC-00](EPIC-00-master-index.md). **Tier:** foundation.
 > **Depends on:** EPIC-01 (CLAUDE-canonical, constitution). Coordinates with EPIC-02 (spine bundle).
 
+## 0. Revisions absorbed (from QUESTIONS-EPIC-04)
+
+- **Q4.1=A + reshape.** Single-skill bundles are fine; **`modelling` folds into
+  `meaningfy-engineering`** next to `architecture` (per the answer's note). So
+  there is **no separate `meaningfy-architecture` or `meaningfy-modelling`
+  bundle**: this EPIC creates **4 phase subfolders** (`consulting`,
+  `communication`, `engineering`, `ai-coding`) and ships **5 bundles** (4 phase +
+  `meaningfy-spine` meta-bundle). conceptual-modelling (EPIC-06) lands in
+  `engineering/`. This narrows DEC-6's "7 bundles" to the consolidated set; new
+  bundles can be added later.
+- **Q4.2=B.** Added a **non-blocking** trigger-probe harness
+  (`tests/trigger_probes.yaml` + `lint.trigger_probe_report`) — reports, never
+  fails CI. (Future real LLM-matching harness: HARD-QUESTIONS HQ-04.1.)
+- **Q4.3=A.** Landed as a stacked commit series (structural, then docs); each
+  commit is `make validate`-green so the repo is never self-inconsistent.
+
 ## 1. Purpose & goals (the shaped bet)
 
 **Appetite:** small. A mechanical-but-careful restructure: move skills into a legible, phase-aligned

@@ -20,11 +20,11 @@ The `meaningfy-spine` bundle bundles (by reference):
   (EPIC-09), not installed as a skill.
 - **The lifecycle-driving skills** already in other phase bundles, surfaced here
   as the spine's working set:
-  - [`epic-planning`](../skills/epic-planning) — shapes the EPIC + derives the PLAN
-  - [`clarity-gate`](../skills/clarity-gate) — the semantic gate on the PLAN
-  - [`bdd-gherkin`](../skills/bdd-gherkin) — executable acceptance off the specs
-  - [`meaningfy-code-review`](../skills/meaningfy-code-review) — the verify step
-  - [`cosmic-python`](../skills/cosmic-python) — layering for `apply`
+  - [`epic-planning`](../skills/ai-coding/epic-planning) — shapes the EPIC + derives the PLAN
+  - [`clarity-gate`](../skills/ai-coding/clarity-gate) — the semantic gate on the PLAN
+  - [`bdd-gherkin`](../skills/ai-coding/bdd-gherkin) — executable acceptance off the specs
+  - [`meaningfy-code-review`](../skills/ai-coding/meaningfy-code-review) — the verify step
+  - [`cosmic-python`](../skills/engineering/cosmic-python) — layering for `apply`
 
 ## Note for EPIC-04
 
