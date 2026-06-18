@@ -201,12 +201,16 @@ scaffold_openspec() {
       && echo "  = keep   openspec/schemas/meaningfy/ (pinned @ $OPENSPEC_PIN)" \
       || echo "  + create openspec/schemas/meaningfy/ (pinned @ $OPENSPEC_PIN, copied from skillery)"
   elif [[ -d "$schema_src" ]]; then
-    if [[ -d "$TARGET/openspec/schemas/meaningfy" && "$FORCE" -ne 1 && "$SKIP_EXISTING" -eq 1 ]]; then
-      echo "  skip (exists): openspec/schemas/meaningfy/"
+    local schema_dst="$TARGET/openspec/schemas/meaningfy"
+    if [[ -d "$schema_dst" && "$FORCE" -ne 1 ]]; then
+      # Never clobber in place and never nest meaningfy/meaningfy/. Default and
+      # --skip-existing both leave an existing pinned schema untouched.
+      echo "  skip (exists): openspec/schemas/meaningfy/ (re-run with --force to refresh; never clobbered in place)"
     else
+      [[ -d "$schema_dst" ]] && rm -rf "$schema_dst"   # --force: clean replace, not copy-into-dir
       mkdir -p "$TARGET/openspec/schemas"
-      cp -R "$schema_src" "$TARGET/openspec/schemas/meaningfy"
-      echo "  copied openspec/schemas/meaningfy/ (PINNED @ $OPENSPEC_PIN — refresh via re-run; see references/spine-projection.md)"
+      cp -R "$schema_src" "$schema_dst"
+      echo "  copied openspec/schemas/meaningfy/ (PINNED @ $OPENSPEC_PIN — refresh via --force; see references/spine-projection.md)"
     fi
   else
     echo "  NOTE: meaningfy schema source not found ($schema_src) — copy openspec/schemas/meaningfy/ from skillery manually (pin $OPENSPEC_PIN)."

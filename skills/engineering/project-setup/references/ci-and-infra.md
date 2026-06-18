@@ -35,20 +35,32 @@ here.
 ## CI philosophy: thin workflows that call Make (D12)
 
 Every CI step invokes a `make` target — never an inline `ruff`/`mypy`/`pytest`
-command. The gates in `ci.yaml` mirror **`make ci-full`** exactly:
+command — so "green locally" means "green in CI": you edit the Makefile once and
+both sides follow. The workflow is the *trigger and environment*; the Makefile is
+the *logic*.
+
+**Baseline gates** wired into the scaffolded `Makefile`/`ci.yaml` for every
+archetype:
 
 ```
-make ci-full  =  validate-spine   (openspec validate --strict — STRUCTURAL)
-              +  generate-models + codegen-in-sync check   (PRODUCT archetype only)
-              +  check-quality    (lint + typecheck + check-architecture)
-              +  test             (all markers + coverage ≥80%)
-              +  clean-code       (Xenon thresholds)
-              +  code-review      (pre-PR review step)
+check-quality  (lint + typecheck + check-architecture/import-linter)
++ test         (all markers + coverage ≥80%)
++ clean-code   (Xenon thresholds)
 ```
 
-So "green locally" means "green in CI", and the YAML never drifts from the dev
-UX. When a gate changes, you edit the Makefile once; both sides follow. The
-workflow is the *trigger and environment*; the Makefile is the *logic*.
+**Spine / archetype gates** — the target the gate set converges to as the spine
+and product layers come online. These are **added per archetype** (they are not
+all in the baseline template yet — wire them when the repo needs them):
+
+```
++ validate-spine          (openspec validate --strict — STRUCTURAL; once openspec/ has changes)
++ generate-models + codegen-in-sync check   (PRODUCT archetype only)
++ code-review             (pre-PR review step)
+```
+
+`clarity-gate` is **never** a CI step — it is the human/agent semantic gate (see
+[`dod-quality-gates.md`](../../../../docs/ai-coding/dod-quality-gates.md)); CI may
+print a reminder that it must have passed, but does not score it.
 
 ### The CI-automatable gates (R8) — and the one that is NOT
 
