@@ -6,42 +6,71 @@
   },
   "metadata": {
     "description": "Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently",
-    "version": "2.0.0"
+    "version": "2.1.0"
   },
   "plugins": [
     {
-      "name": "meaningfy-engineering",
-      "description": "Engineering standards: new-repo scaffolding (project-setup), clean layered Python (cosmic-python), system architecture, and Meaningfy git/PR workflow",
+      "name": "meaningfy-consulting",
+      "description": "Semantic-technologies consulting coaching (engagement design, pricing, B2B/B2G situations). Sales/discovery skills (decision-package, proposal-writing, estimation) land here as they are authored.",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/project-setup",
-        "./skills/cosmic-python",
-        "./skills/architecture",
-        "./skills/meaningfy-git-workflow"
+        "./skills/consulting/semantic-consulting-coach",
+        "./skills/consulting/decision-package",
+        "./skills/consulting/proposal-writing",
+        "./skills/consulting/estimation"
+      ]
+    },
+    {
+      "name": "meaningfy-communication",
+      "description": "Executive and technical communication: Governing Thought, SCQA, Minto, MECE, and clear docs/docstrings",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/communication/executive-communication",
+        "./skills/communication/technical-writing"
+      ]
+    },
+    {
+      "name": "meaningfy-engineering",
+      "description": "Engineering standards: new-repo scaffolding (project-setup), clean layered Python (cosmic-python), system architecture (+ conceptual modelling as it lands), and Meaningfy git/PR workflow",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/engineering/project-setup",
+        "./skills/engineering/cosmic-python",
+        "./skills/engineering/architecture",
+        "./skills/engineering/conceptual-modelling",
+        "./skills/engineering/ci-cd-delivery",
+        "./skills/engineering/meaningfy-git-workflow"
       ]
     },
     {
       "name": "meaningfy-ai-coding",
-      "description": "Documentation-first AI-assisted development helpers: clarity gate, EPIC planning, BDD, code-review checklist, and technical writing (pairs with the external stream-coding + superpowers skills — see docs/environment-setup.md)",
+      "description": "Documentation-first AI-assisted development helpers: EPIC planning, clarity gate, BDD, and code-review checklist (pairs with the external stream-coding + superpowers skills and the OpenSpec spine — see docs/environment-setup.md)",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/clarity-gate",
-        "./skills/epic-planning",
-        "./skills/bdd-gherkin",
-        "./skills/meaningfy-code-review",
-        "./skills/technical-writing"
+        "./skills/ai-coding/epic-planning",
+        "./skills/ai-coding/spec-stewardship",
+        "./skills/ai-coding/clarity-gate",
+        "./skills/ai-coding/bdd-gherkin",
+        "./skills/ai-coding/meaningfy-code-review",
+        "./skills/ai-coding/guardrails"
       ]
     },
     {
-      "name": "meaningfy-consulting",
-      "description": "Semantic-technologies consulting coaching and executive communication (Governing Thought, SCQA, Minto, MECE)",
+      "name": "meaningfy-spine",
+      "description": "Meta-bundle: the reliable product-development spine. Installs the lifecycle-driving skills as a working set; the durable OpenSpec spine assets (openspec/ + spine/) are projected into repos by project-setup. See spine/meaningfy-spine-bundle.md.",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/semantic-consulting-coach",
-        "./skills/executive-communication"
+        "./skills/ai-coding/epic-planning",
+        "./skills/ai-coding/spec-stewardship",
+        "./skills/ai-coding/clarity-gate",
+        "./skills/ai-coding/bdd-gherkin",
+        "./skills/ai-coding/meaningfy-code-review",
+        "./skills/engineering/cosmic-python"
       ]
     }
   ]

@@ -14,8 +14,10 @@ Every artifact is exactly one of these, and that decides its home:
 | **Doc** | Humans | Never auto-loaded | `docs/` | Human canon; narrates & points, never restates skill rules |
 | **Binding** | Harness (every session) | Always | `prompts/` | Mandates & routes to skills; never carries the standard |
 
-Authoring governance (`spec/`, `template/`) and distribution (`.claude-plugin/`, `scripts/`)
-sit alongside as supporting infrastructure.
+Authoring governance (`spec/`, incl. `spec/skill-template.md`) and distribution
+(`.claude-plugin/`) sit alongside as supporting infrastructure. The durable
+spec **spine** (`spine/` + `openspec/`) is projected into project repos by the
+`project-setup` skill.
 
 ## Placement rules
 

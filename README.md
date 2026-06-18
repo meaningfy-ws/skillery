@@ -8,7 +8,8 @@ templates** that wire them into any project.
 
 A curated, self-validating catalog. Skills carry the reusable knowledge; agents are thin
 execution wrappers; `docs/` is the human canon (methodology, engineering standards, philosophy);
-`prompts/` holds the CLAUDE.md/AGENTS.md templates that bind it all into a repo. External skills
+`prompts/` holds the CLAUDE.md templates (CLAUDE-canonical: `CLAUDE.md` is the agentic file,
+`AGENTS.md` is a root symlink to it) that bind it all into a repo. External skills
 (superpowers, stream-coding, …) are **referenced, not copied** — see
 [`docs/environment-setup.md`](docs/environment-setup.md).
 
@@ -20,61 +21,88 @@ execution wrappers; `docs/` is the human canon (methodology, engineering standar
 
 ## What's inside
 
+Skills are nested under `skills/` by phase (`consulting/`, `communication/`, `engineering/`,
+`ai-coding/`) and shipped through **five bundles**:
+
 | Bundle | Skill | Purpose |
 |--------|-------|---------|
+| `meaningfy-consulting` | **semantic-consulting-coach** | Coaching for a semantic-tech / data consulting business (coaches the design) |
+| | **decision-package** | Produces the Decision Package — the paid P1 deliverable (recommendation, scope, buy/build/defer, execution brief) |
+| | **proposal-writing** | Produces a proposal + SoW with an explicit in/out scope boundary (fixed-frame pricing) |
+| | **estimation** | Fixed-cost scoping discipline — PERT + work breakdown, ranges, contingency (Gantt rendered externally) |
+| `meaningfy-communication` | **executive-communication** | McKinsey-style executive messaging (SCQA, Minto, MECE) |
+| | **technical-writing** | Docs, explanations, summaries, docstrings |
 | `meaningfy-engineering` | **project-setup** | Scaffold a new Meaningfy-standard Python repo (or modernise an existing one) — layout, tooling, tests, agentic files, Antora docs, CI |
 | | **cosmic-python** | Clean, layered Python (models/adapters/services/entrypoints), SOLID, testing, CI |
 | | **architecture** | System design — C4, ArchiMate/UML, ADRs, contracts |
+| | **conceptual-modelling** | Living domain model (LinkML default) → deterministic Pydantic/JSON-Schema/OWL/SHACL generation; ontology + terminology (product-dev repos) |
+| | **ci-cd-delivery** | App-repo CD + release: versioned GHCR image, one reusable deploy mechanism, the deploy-trigger contract (CI is project-setup; CD is here) |
 | | **meaningfy-git-workflow** | Conventional commits, branching, PRs, dev-environment hygiene |
-| `meaningfy-ai-coding` | **clarity-gate** | Pre-implementation spec quality gate (≥9/10) |
-| | **epic-planning** | Work Shape → implementation-ready EPIC.md |
+| `meaningfy-ai-coding` | **epic-planning** | Shape an EPIC from seeds, then derive its clarity-gated PLAN |
+| | **spec-stewardship** | Living-spec lifecycle: archive changes, groom `specs/`, keep the orientation index honest |
+| | **clarity-gate** | Pre-implementation spec quality gate (≥9/10) |
 | | **bdd-gherkin** | BDD Gherkin features + test data from a spec |
 | | **meaningfy-code-review** | Pre-PR review checklist & criteria |
-| | **technical-writing** | Docs, explanations, summaries, docstrings |
-| `meaningfy-consulting` | **semantic-consulting-coach** | Coaching for a semantic-tech / data consulting business |
-| | **executive-communication** | McKinsey-style executive messaging (SCQA, Minto, MECE) |
+| | **guardrails** | Agentic guardrails per step: decision bounds, output validation, prompt-injection defence |
+| `meaningfy-spine` | *(meta-bundle)* | Curated overlay installing the spine working set (epic-planning, clarity-gate, bdd-gherkin, meaningfy-code-review, cosmic-python). The durable spine **assets** (`openspec/` + the forked `meaningfy` schema, and `spine/` docs) are projected into a repo by `project-setup`, not installed as a skill — see [`spine/README.md`](spine/README.md) and [`spine/meaningfy-spine-bundle.md`](spine/meaningfy-spine-bundle.md) |
 
 Thin agent wrappers live in [`agents/`](agents/) (`implementer`, `code-reviewer`,
 `epic-planner`) — they pin a model / tools and load the skills above.
 
+> The spine reuses OpenSpec-native artifacts: an **EPIC** is the OpenSpec `proposal.md`
+> and a **PLAN** is `design.md` + `tasks.md` — there are no standalone `EPIC.md`/`PLAN.md`
+> files in a spine-wired repo.
+
 ## Getting started
+
+Install happens at two levels. Install the bundles you need:
 
 ```
 /plugin marketplace add meaningfy-ws/skillery
+/plugin install meaningfy-consulting
+/plugin install meaningfy-communication
 /plugin install meaningfy-engineering
 /plugin install meaningfy-ai-coding
-/plugin install meaningfy-consulting
+/plugin install meaningfy-spine        # meta-bundle: the spec-spine working set
 ```
 
-Then scaffold a repo with the **`project-setup`** skill (interview-driven full scaffold, also
-modernises existing repos) — or, for just the agentic binding files, run the minimal
-`scripts/init-meaningfy-project.sh` (writes `CLAUDE.md`/`AGENTS.md`, creates the `.claude/` layout,
-prints external-dependency install commands). Full setup and the mandatory/optional external
-dependencies are in [`docs/environment-setup.md`](docs/environment-setup.md).
+**User / machine level (install once).** Install the bundles plus the external skills
+(superpowers, stream-coding, ponytail, **OpenSpec**, and optional commit-commands /
+code-review / gitnexus / context7) globally via `/plugin`, and keep the durable coding
+prompt — your engineering standards, the *constitution* — in the global `~/.claude/CLAUDE.md`.
+
+**Project / repo level (per repo).** Pin the bundles a given project actually uses, wire the
+`openspec/` instance with the **`project-setup`** skill (interview-driven full scaffold; also
+modernises existing repos), and keep the repo operating manual + routing in the repo `./CLAUDE.md`,
+complementing — not duplicating — the global file.
+
+The full mandatory/optional external dependencies and the user-vs-project split are in
+[`docs/environment-setup.md`](docs/environment-setup.md).
 
 ## How to use it
 
 | You want to… | Go to |
 |--------------|-------|
-| Install/curate skills | the bundles above + `scripts/init-meaningfy-project.sh` |
+| Install/curate skills | the five bundles above |
+| Wire a repo with the spine | the **`project-setup`** skill (projects `openspec/` + agentic files) |
 | Learn the AI-coding method | [`docs/ai-coding/`](docs/ai-coding/) |
 | Apply engineering standards | [`docs/engineering-standards/`](docs/engineering-standards/) + [`prompts/`](prompts/) |
 | Understand the mindset | [`docs/philosophy/`](docs/philosophy/) |
-| Contribute a skill | [`spec/`](spec/) + [`template/`](template/) |
+| Contribute a skill | [`spec/`](spec/) (incl. [`skill-template.md`](spec/skill-template.md)) |
 
 ## Repository structure
 
 ```
 skillery/
-├── skills/        # the catalog (knowledge)
-├── agents/        # three thin wrappers (no knowledge)
+├── skills/        # nested by phase: consulting/ communication/ engineering/ ai-coding/
+├── agents/        # three thin wrappers (no knowledge): implementer, code-reviewer, epic-planner
 ├── docs/          # ai-coding/ · engineering-standards/ · philosophy/ · environment-setup.md
-├── prompts/       # CLAUDE.md / AGENTS.md / global-prompt templates
-├── scripts/       # init-meaningfy-project.sh (projection)
-├── spec/          # authoring spec + skill-repo governance
-├── template/      # skill template
+├── prompts/       # CLAUDE.md.template, global-prompt.md (CLAUDE-canonical; AGENTS.md is a root symlink)
+├── spec/          # authoring spec, governance, skill-template.md, CREATING_SKILLS.md
+├── spine/         # the OpenSpec spec-spine docs/conventions
+├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery dogfoods its own spine)
 ├── tools/ + tests/# the self-consistency validator (make validate)
-└── .claude-plugin/# marketplace (3 bundles)
+└── .claude-plugin/# marketplace (5 bundles incl. meaningfy-spine)
 ```
 
 ## Contributing

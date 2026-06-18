@@ -1,0 +1,23 @@
+# Single-owner capability map (Q5.2=B) — the machine-readable half of the
+# methodology's ownership table. Each capability is OWNED by exactly one place;
+# no other skill should re-specify it (RISK-4, no double-spec). The validator
+# flags (NON-BLOCKING) when a non-owner skill's SKILL.md contains a defining
+# claim pattern. `owner: external:<name>` means the owner is an external skill
+# (superpowers/stream-coding/openspec), so ANY local skill claiming it is flagged.
+# The prose table in docs/ai-coding narrates this; this file is the tripwire.
+capabilities:
+  - tag: clarity-rubric
+    owner: clarity-gate
+    claim_patterns: ["6-criterion rubric", "13-item checklist"]
+  - tag: gherkin-authoring
+    owner: bdd-gherkin
+    claim_patterns: ["Scenario Outline"]
+  - tag: layer-architecture
+    owner: cosmic-python
+    claim_patterns: ["models/adapters/services/entrypoints"]
+  - tag: branch-naming
+    owner: meaningfy-git-workflow
+    claim_patterns: ["<type>/<ticket-id>/<short-label>"]
+  - tag: tdd-loop
+    owner: "external:superpowers"
+    claim_patterns: ["red.?green.?refactor"]
