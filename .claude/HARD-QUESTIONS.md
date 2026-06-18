@@ -19,7 +19,8 @@ standard to itself. This is a substantial migration (Antora playbook, `.adoc` co
 workflow) and was **deferred to its own follow-up EPIC**. The README "Documentation" section already
 points at where the Pages site will live.
 **Working assumption:** defer; do it as a focused EPIC when there's appetite. Confirm priority/timing.
-**Answer:**
+
+**Answer:** well, in fact we shall propose this migration as per our dogfood. And execute later. 
 
 ---
 
@@ -35,7 +36,8 @@ specified. I made the chain deliberately coarse (see
 ArchiMate, contracts, …) → epic/change → task → test → commit`.
 **Working assumption:** keep it coarse; harden after the architecture-doc
 standard exists (likely an EPIC-05/EPIC-06 follow-on) and after the dogfood.
-**Answer:**
+
+**Answer:** plan working on architecture standards and templates, this shall include also decission on teh golden-thread (and variants where the architecture is missing and the project is more agile) 
 
 ### HQ-02.2 — Should EPIC and OpenSpec "change" ever diverge, or stay one artifact?
 Q2.3 raised that an EPIC is a Shape-Up *work shape* while a plain OpenSpec change
@@ -43,7 +45,8 @@ may want other structure. I mapped EPIC ≡ `proposal.md` (one artifact, two fac
 to prevent proliferation. **Working assumption:** one artifact; the EPIC's
 Shape-Up sections live inside `proposal.md`. Revisit only if a real engagement
 shows the two genuinely need different structures.
-**Answer:**
+
+**Answer:** 
 
 ### HQ-02.3 — Do we ever need a generated orientation index beyond `specs/` + `context:`?
 Q2.4 preferred dropping `MEMORY.md` (path C) and falling back to a deterministic
