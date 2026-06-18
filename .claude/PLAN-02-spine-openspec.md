@@ -99,8 +99,22 @@ T2 depends on T1; T3 on T2; T8 exercises T2–T7 end-to-end; T9 last.
 - `workflows.md` command→skill map has no behaviour owned twice (cross-check with EPIC-05 table).
 
 ## Roadmap
-- [ ] T1 install+pin · [ ] T2 fork schema · [ ] T3 templates+rules · [ ] T4 workflows · [ ] T5 golden thread
-- [ ] T6 seeds/mapping/memory · [ ] T7 lessons loop · [ ] T8 example change · [ ] T9 bundle+validate
+- [x] T1 install+pin · [x] T2 fork schema · [x] T3 templates+rules · [x] T4 workflows · [x] T5 golden thread
+- [x] T6 seeds/mapping/memory · [x] T7 lessons loop · [x] T8 example change · [x] T9 bundle+validate
+
+## Execution status (absorbed reality)
+Executed against OpenSpec **1.4.1** (pinned in `spine/openspec-version.txt`).
+Grounding corrections vs the task text above: the schema lives at
+`openspec/schemas/meaningfy/` (where OpenSpec resolves it), **not**
+`spine/openspec-meaningfy-schema/`; per-artifact `rules:` live in
+`openspec/config.yaml`; profile is `core` (enum `core|custom`, no `expanded`
+preset). Artifacts are OpenSpec-native (Q2.2=B): EPIC ≡ `proposal.md`, PLAN ≡
+`design.md`+`tasks.md`. `spine/` holds the conventions docs; the worked example
+lives at `openspec/changes/example-spine-roundtrip/` and round-trips
+(validate --strict + archive → `specs/`, verified). The `meaningfy-spine` bundle
+is **defined** in `spine/meaningfy-spine-bundle.md` for EPIC-04 to register.
+Both gates green: `make validate` (python guardrail) + `make validate-spine`
+(structural). T9's CI wiring landed in `.github/workflows/validate.yml`.
 
 ## Clarity-gate self-check
 Grounded in the verified OpenSpec mechanics (schema fork, artifact DAG, validate). Open risk

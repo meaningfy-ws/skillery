@@ -11,3 +11,19 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: python -m tools.repo_lint
       - run: python -m pytest tests/ -q
+
+  validate-spine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Verify OpenSpec version pin matches
+        run: |
+          v=$(cat spine/openspec-version.txt)
+          installed=$(npx --yes @fission-ai/openspec@"$v" --version)
+          echo "pinned=$v installed=$installed"
+          test "$v" = "$installed"
+      - name: Validate the meaningfy schema + changes (structural gate)
+        run: make validate-spine
