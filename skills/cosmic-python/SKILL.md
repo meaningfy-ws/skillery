@@ -87,6 +87,7 @@ entrypoints → services → models
 - **Tests per layer:** Each layer tests its own responsibility, not other layers' internals
 - **TDD/BDD:** Write tests before code; BDD (Gherkin) for use cases
 - **Test pyramid:** Many unit tests (fast, isolated), fewer integration tests, minimal end-to-end
+- **FIRST:** Tests are **F**ast, **I**ndependent (no shared state/order), **R**epeatable (deterministic, no flakiness), **S**elf-validating (pass/fail, no manual inspection), **T**imely (written with the code, not after)
 
 ---
 

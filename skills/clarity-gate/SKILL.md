@@ -52,6 +52,9 @@ doc-first method this gate sits inside), `technical-writing` (applies the lightw
 
 - Score honestly: a 9/10 that hides one critical assumption is a failed gate, not a pass.
 - When you fail a spec, return the *specific* missing items, not a vague "needs work".
+- Apply **MECE** as a completeness lens: roles, permissions, states, and edge cases should be
+  **mutually exclusive** (no overlap) and **collectively exhaustive** (no gaps). Overlaps hide
+  conflicting rules; gaps are the unstated cases that become defects.
 
 ## Limitations
 

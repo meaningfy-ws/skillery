@@ -1,5 +1,9 @@
 <!-- The EPIC — the shaped bet. In Meaningfy the EPIC *is* the OpenSpec proposal.
-     Shape-Up sections carry the bet; the native contract sections feed the specs phase. -->
+     Shape-Up sections carry the bet; the native contract sections feed the specs phase.
+
+     ALTITUDE — the bet: WHY + WHAT-shape, never HOW. Frozen once shaped; leave implementation room.
+     OWN once, cite elsewhere: decisions are DEC-n declared HERE; design.md/tasks.md cite them, never restate.
+     Inherited disciplines (SOLID, KISS/DRY, RFC-2119, SDD, TDD/BDD/GWT, SSOT) live in their skills — cite, don't recite. -->
 
 # EPIC: <short title>
 
@@ -13,7 +17,8 @@
 
 ## Solution outline
 
-<!-- The shaped approach at the right altitude — enough to start, not the full design. -->
+<!-- The shaped approach at the right altitude — enough to start, not the full design.
+     State outcomes (the problem solved / the metric moved), not a list of buttons or features. -->
 
 ## Key decisions
 
