@@ -1,9 +1,10 @@
-# Definition of Done & Quality Gates (build tier)
+# Definition of Done & Quality Gates
 
 **Audience:** Meaningfy developers and agents working under the two-tier method.
 
-**Purpose:** the shared bar for "done" at the **BUILD tier** (one Epic), and the gates that enforce
-it. This is the single authority for the gate definitions other docs summarise. See
+**Purpose:** the single authority for the quality-gate ladder — both the **engagement** stage gates
+(human/commercial, below) and the **build-tier** Definition of Done (one Epic) and its automated
+gates. Other docs summarise these definitions rather than restating them. See
 [two-tier-methodology.md](two-tier-methodology.md) for the model and
 [opsx-runbook.md](opsx-runbook.md) for the flow.
 
