@@ -27,6 +27,8 @@ probes:
     expect: conceptual-modelling
   - probe: "set up the CD deploy workflow and push a versioned GHCR image"
     expect: ci-cd-delivery
+  - probe: "cut a release, bump the version, and publish the library to PyPI"
+    expect: meaningfy-release
   - probe: "what is the branch naming and commit-message convention"
     expect: meaningfy-git-workflow
   - probe: "shape this EPIC and derive its PLAN"

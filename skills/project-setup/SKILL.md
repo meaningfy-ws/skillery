@@ -28,7 +28,8 @@ rather than restating them:
 | Minimal code — YAGNI, avoid over-engineering | `ponytail` (third-party) |
 | System design, C4, ADRs, contracts | `architecture` |
 | The domain `model/` + `make generate-models` (product) | [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md) |
-| Deploy / release / versioned image (CD seam) | [`../ci-cd-delivery/SKILL.md`](../ci-cd-delivery/SKILL.md) |
+| Deploy / versioned image (CD seam) | [`../ci-cd-delivery/SKILL.md`](../ci-cd-delivery/SKILL.md) |
+| Release lifecycle — versioning, release notes, PyPI publish, `SECURITY.md` | [`../meaningfy-release/SKILL.md`](../meaningfy-release/SKILL.md) |
 | EPIC (work shape) + PLAN, the spine workflow | `epic-planning` + the `/opsx:*` commands |
 | Docs writing, AsciiDoc/Antora prose | `technical-writing` |
 | Commits, branches, PRs | `meaningfy-git-workflow` |
@@ -69,6 +70,10 @@ hold: "automate almost everything" + TDD.** The archetype decides the *condition
   bridge — owned by [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md).
 - **CD seam** (deployable product): renders the `ci-cd-delivery` CD templates **only after DevOps
   ratifies §6**; until then a clearly-marked `deploy.yaml` TODO stub + boundary docs (`--deployable`).
+- **Release seam** (per archetype — content owned by [`../meaningfy-release/SKILL.md`](../meaningfy-release/SKILL.md)):
+  **library** projects a `release.yml` stub (release-please + PyPI Trusted Publishing) + `SECURITY.md`;
+  **product** points at the `ci-cd-delivery` GHCR image path + gets `SECURITY.md`; **doc-only** gets
+  neither. This skill owns *when/into what repo*; the release content/intent lives in `meaningfy-release`.
 - **`clarity-gate` is NOT a CI step** — it is a human/agent semantic gate (the automation boundary is
   pinned in [`../../docs/ai-coding/dod-quality-gates.md`](../../docs/ai-coding/dod-quality-gates.md)).
 

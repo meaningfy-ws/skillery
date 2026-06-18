@@ -31,7 +31,7 @@ Bundles are organised by the **role (hat) you wear** — install `meaningfy-core
 | **meaningfy-core** | **technical-writing** · **meaningfy-git-workflow** · **guardrails** | …do anything (cross-cutting basics) |
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **proposal-writing** · **estimation** · **executive-communication** | …do advisory / front-of-funnel work |
 | **meaningfy-architecture** | **architecture** · **conceptual-modelling** | …design systems or model a domain |
-| **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** | …build software with the spine |
+| **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
 
 Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implementer`,
 `code-reviewer` — they pin a model + tools and load the skills above.
@@ -97,7 +97,8 @@ the exact split): [`docs/environment-setup.md`](docs/environment-setup.md).
 | Design a system | `architecture` (C4, ADRs, contracts) |
 | Write a board paper / client note | `executive-communication` |
 | Write docs / a README | `technical-writing` |
-| Ship a service | `ci-cd-delivery` (release + deploy contract) |
+| Ship a service | `ci-cd-delivery` (deploy contract) |
+| Cut / publish a release | `meaningfy-release` (versioning, release branches, PyPI, release notes) |
 
 **The build loop, step by step** (one epic). Drives the OpenSpec `/opsx` verbs — full map in
 [`spine/workflows.md`](spine/workflows.md):
