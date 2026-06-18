@@ -81,9 +81,9 @@ The published site is the source of truth for API reference, architecture, and u
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow, architecture constraints, and commit/PR
 conventions, and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.
 
-> **Note on `CLAUDE.md`:** `CLAUDE.md` is a **symlink** to `AGENTS.md` — the single, canonical
-> agent-instruction file. This is intentional. Do not "fix" it by replacing the symlink with a
-> copy; that would let the two files drift apart.
+> **Note on agent-instruction files:** `CLAUDE.md` is the **single, canonical** agent-instruction
+> file; `AGENTS.md` is a **symlink → `CLAUDE.md`** (for AGENTS-reading tools). This is intentional.
+> Do not "fix" it by replacing the symlink with a copy; that would let the two files drift apart.
 
 ## License
 

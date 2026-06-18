@@ -5,6 +5,26 @@
 > EPIC-04 (bundles), EPIC-06 (conceptual-modelling, conditional), EPIC-10 (CD/release workflow
 > templates it scaffolds, conditional).
 
+## 0. Revisions absorbed (from QUESTIONS-EPIC-09)
+
+- **Q9.1 (YAGNI):** the `meaningfy` schema is **pinned** per repo; refresh = re-run
+  `project-setup` which diffs and never clobbers authored specs; schema upgrade is
+  a documented per-repo chore. **No** heavy `--upgrade-schema` tool built now
+  (noted as a possible future mode) — `references/spine-projection.md`.
+- **Q9.2=B (brownfield):** brownfield mode **audits** the repo, imagines the ideal
+  target, and proposes the upgrade as a **shaped EPIC + PLAN (an OpenSpec change)**
+  for human approval, then applies in safe slices — not in-place big-bang patching
+  (dogfoods the spine on the repo itself).
+- **Q9.3 (archetypes + elicitation):** three explicit archetypes —
+  **product / library / doc-only** — each with a fixed gate profile; doc-only/
+  non-code repos run a real **intention-elicitation** interview before gates are
+  scaffolded. Regardless of archetype, the basics are preserved: **automate almost
+  everything + TDD**.
+- **CLAUDE-canonical inversion done (R6/DEC-4):** `CLAUDE.md` canonical,
+  `AGENTS.md` an optional symlink → it (scaffolder inverted). Global vs repo
+  CLAUDE split scaffolded (DEC-12). Projection proceeds on the internal dogfood
+  (Q0.3=C); the consulting-tier depth still refines after a real engagement.
+
 ## 1. Purpose & goals (the shaped bet)
 
 **Appetite:** medium. Make `project-setup` *project* the whole operating system into a client/product

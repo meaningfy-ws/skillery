@@ -4,10 +4,11 @@ The defaults this skill scaffolds, why they were chosen, and when to override. D
 mature Meaningfy repos (one modern, one battle-tested) and the `agent-skills` engineering
 standards. Where the two repos disagree, the **newer conventions win** and the rationale is noted.
 
-**The non-negotiables.** Most decisions below have an "override" path. Four do not — they are the
+**The non-negotiables.** Most decisions below have an "override" path. A few do not — they are the
 hardest to reverse and the most-violated by default, and getting any wrong yields a repo that looks
 fine but is structurally off-standard: **no `/src`** (D1), **all tool config in the root** + a
-**minimal `pyproject.toml`** (D2), and a **single `AGENTS.md`** with `CLAUDE.md` symlinked (D8).
+**minimal `pyproject.toml`** (D2), a **canonical `CLAUDE.md`** with `AGENTS.md` symlinked (D8 —
+CLAUDE-canonical, DEC-4), and the **`openspec/` spine projected** (D13).
 
 ## D1 — No `/src`; top-level package
 
@@ -120,52 +121,64 @@ than contradict it by accident — flagged so they are not mistaken for errors:
   genuinely need to test across multiple interpreter versions — the single-version default does
   not.
 
-## D8 — Single agent instruction file (AGENTS.md canonical, CLAUDE.md → symlink)
+## D8 — Single agent instruction file (CLAUDE.md canonical, AGENTS.md → symlink) — DEC-4
 
-`AGENTS.md` is the tool-neutral standard and the single source. `CLAUDE.md` is a **symlink** to it
-(`ln -s AGENTS.md CLAUDE.md`). The Meaningfy template ships both as mirrored copies that "must be kept
-identical" — a symlink makes drift structurally impossible while remaining Claude-Code-compatible.
+`CLAUDE.md` is the single source of truth — Claude Code loads it directly. `AGENTS.md` is an optional
+**symlink** to it (`ln -s CLAUDE.md AGENTS.md`), so AGENTS.md-aware tools read the same canon. This
+**inverts** the older AGENTS-canonical convention (DEC-4): a symlink makes drift structurally
+impossible, and `CLAUDE.md` is Claude Code's first-class file, so making it the source removes a
+layer of indirection while staying tool-neutral.
 
-**Why.** The developer's explicit requirement ("only one"). Mirrored copies rot; a symlink cannot.
-Document the symlink in the README so contributors don't "fix" it. Content follows
-`prompts/AGENTS.md.template` from the skillery: skill-routing table, implementation loop, memory
-conventions, project specifics. Carry the `meaningfy-template-version` stamp.
+**The global vs repo split (DEC-12).** There are two `CLAUDE.md` files. The **global**
+`~/.claude/CLAUDE.md` carries the company-wide standard. The **repo** `./CLAUDE.md` is the repo
+operating manual: it **ROUTES** to the global standard and to the installed skills + the spine, and
+records only repo-specific facts — it never restates the standard.
+
+**Why.** The explicit requirement ("only one canonical file"). Mirrored copies rot; a symlink cannot.
+Document the symlink in the README so contributors don't "fix" it. Content: skill-routing table, the
+spine pointers, implementation loop, project specifics. Carry the `meaningfy-template-version` stamp.
 
 **Override.** If a tool on the team cannot follow symlinks on checkout (rare; some Windows setups),
-fall back to two files + a pre-commit hook that copies AGENTS.md→CLAUDE.md. Note it in the README.
+fall back to two files + a pre-commit hook that copies `CLAUDE.md → AGENTS.md`. Note it in the README.
 
-## D9 — Agentic memory layout + the specs-first pipeline
+## D9 — `.claude/` is a regenerable index; the spine holds the work memory
 
 ```
 .claude/
 ├── agents/                 # optional thin wrappers (or rely on installed skillery agents)
 ├── skills/                 # project-specific skills only (don't vendor the skillery)
 └── memory/
-    ├── MEMORY.md           # auto-memory index, ≤200 lines, stable patterns only
-    ├── _templates/         # blank skeletons rendered at scaffold time: EPIC.md, PLAN.md, task.md
-    └── epics/<name>/        # starts empty — EPIC.md + PLAN.md + yyyy-mm-dd-<task>.md (on demand)
+    └── MEMORY.md           # regenerable orientation INDEX, ≤200 lines, stable patterns only
 ```
 
+The legacy `.claude/memory/epics/EPIC.md`+`PLAN.md`+`task.md` model is **superseded by the spine**
+(D13): EPIC ≡ `openspec/changes/<id>/proposal.md`, PLAN ≡ `design.md` + `tasks.md`. The scaffolder no
+longer renders those skeletons. `.claude/memory/MEMORY.md` is a **regenerable index, not authority** —
+≤200 lines, stable patterns only; if it disagrees with `openspec/specs/`, **specs/ wins**. The
+orientation index of record is `openspec/config.yaml`'s `context:` field. See `agentic-setup.md` and
+`spine-projection.md`.
+
+## D13 — Project the `openspec/` spine (the work-memory backbone)
+
+The scaffolder projects `openspec/` into every repo: `config.yaml` (`schema: meaningfy` + injected
+`context:` + the 3 thin per-artifact rules), the **pinned** `schemas/meaningfy/` (copied from
+skillery, recorded against `../../../spine/openspec-version.txt`), durable `specs/`, and `changes/`
+(+ `archive/`, with the `inputs/` seed convention). The `/opsx:*` commands install on the **core
+profile** (`openspec init --tools claude --profile core`).
+
 **Pipeline: Architecture → EPIC → Plan → Implement** (specifications-first). The **EPIC *is* the
-work shape** (Shape Up style — one artifact, not a separate shape *and* epic):
+work shape** (Shape Up style), now a native spine artifact:
 
-- **EPIC.md** = the *shaped bet*: appetite, problem, solution outline, **key decisions**,
-  rabbit-holes, no-gos. The specification at the right abstraction; FROZEN once shaped.
-- **PLAN.md** = the *derived executable plan*: algorithm, examples, anti-patterns, test specs,
-  error matrix, task breakdown, roadmap, plus a Part 2 implementation log. The **clarity gate
-  scores the PLAN** (≥9/10) — gate the plan, not the shape. PLAN Part 1 freezes once gated; on a
-  design-level failure fix the plan (and re-gate), not the code.
-- Per-task outcomes accrue as `yyyy-mm-dd-<task>.md`.
+- **EPIC ≡ `proposal.md`** — the *shaped bet*: appetite, why, solution outline, **key decisions**,
+  rabbit-holes, no-gos. FROZEN once shaped.
+- **PLAN ≡ `design.md` + `tasks.md`** — the derived executable pair the **clarity gate scores**
+  (≥9/10). On a design-level failure fix the plan (and re-gate), not the code.
+- normative requirements ≡ `specs/` deltas (SHALL + GWT); they merge into `openspec/specs/` on
+  archive.
 
-**Why EPIC ≡ shape (not shape → epic).** Pure Shape Up has no separate "EPIC": the shaped pitch
-*is* the spec and a cycle implements it. Folding them removes a redundant artifact; what AI agents
-additionally need — an unambiguous, gated breakdown — is the **PLAN**, a distinct *stage*, not a
-second copy of the bet. (This supersedes the older `ai-coding-methodology` framing of Work Shape as
-a separate upstream input; reconcile upstream — see the divergence note pattern in D7.)
-
-The scaffolder renders the blank forms into `_templates/` and creates an empty `epics/` dir;
-`epic-planning` copies them into `epics/<name>/` on demand. Don't auto-load epic files — read the
-relevant one on demand. See `agentic-setup.md` for the flow and `epic-planning` for content.
+The schema is **pinned per repo**; refresh by re-running `project-setup` (shows a diff, never
+clobbers authored specs) — a documented per-repo chore, not a heavy upgrade tool (YAGNI). See
+`spine-projection.md`.
 
 ## D10 — Antora documentation with a Diátaxis-shaped IA
 
@@ -198,12 +211,15 @@ gates exactly so "green locally" means "green in CI".
 
 ## Project archetypes (what to include)
 
-| Archetype | Package layers | Antora | Infra | Notable deps |
-|-----------|----------------|--------|-------|--------------|
-| **service** (REST API) | full 4 layers, ≥1 entrypoint | yes | yes (db+api) | fastapi, uvicorn, the db driver |
-| **library** | domain (+adapters) | reference-only | no | minimal; publishable |
-| **pipeline** (batch/Airflow) | domain+adapters+services, dags entrypoint | yes | yes (workers) | the orchestrator |
-| **cli tool** | domain+services, cli entrypoint | tutorials+how-to | optional | click/typer |
-| **docs-only** | — | yes (the whole repo) | no | none (Node/Antora) |
+Three explicit archetypes, each with a **fixed gate profile** (R5/R8/R10). The basics
+("automate almost everything" + TDD) hold for all; the archetype decides the *conditional* layers.
 
-The interview picks the archetype; the archetype decides which pillars and templates apply.
+| Archetype | Package layers | `model/` | Antora | Infra | Deploy | Gate profile (CI-automatable) |
+|-----------|----------------|----------|--------|-------|--------|-------------------------------|
+| **product** (service/pipeline/cli) | full 4 layers, ≥1 entrypoint (flavour-dependent) | yes (LinkML) | yes | yes (flavour) | conditional (CD stub) | openspec-validate + codegen-sync + check-architecture + cov≥80 + review |
+| **library** | domain (+adapters) | no | reference-only | no | no | openspec-validate + check-architecture + cov≥80 + review |
+| **doc-only** (non-code) | — | no | yes (whole repo) | no | no | openspec-validate + docs build + link/structure checks |
+
+The service/pipeline/cli *flavours* (entrypoint + framework) are resolved inside `product` by the
+interview (Group 4). `clarity-gate` is in no profile as a CI step — it is a human/agent semantic gate.
+The interview picks the archetype; the archetype decides which pillars, templates, and gates apply.

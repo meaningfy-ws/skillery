@@ -14,9 +14,11 @@ TPL="$SCRIPT_DIR/../assets/templates"
 # ---- defaults -------------------------------------------------------------
 PACKAGE="" ; PROJECT_NAME="" ; SLUG="" ; PYVER="3.12"
 ORG="meaningfy-ws" ; BRANCH="develop" ; DESC="" ; YEAR="$(date +%Y)"
-ARCHETYPE="service" ; TARGET="$(pwd)"
-WITH_DOCS=1 ; WITH_INFRA=1 ; WITH_CI=1
-FORCE=0 ; SKIP_EXISTING=0 ; NO_LOCK=0 ; DRY_RUN=0
+ARCHETYPE="product" ; TARGET="$(pwd)"
+WITH_DOCS=1 ; WITH_INFRA=1 ; WITH_CI=1 ; DEPLOYABLE=0
+FORCE=0 ; SKIP_EXISTING=0 ; NO_LOCK=0 ; DRY_RUN=0 ; MINIMAL=0
+# OpenSpec version this skill pins schemas against (kept in sync with spine/openspec-version.txt).
+OPENSPEC_PIN="1.4.1"
 
 usage() {
   cat <<'EOF'
@@ -28,12 +30,16 @@ Required:
 
 Options:
   -s, --slug SLUG        repo/kebab slug          (default: derived from package)
-  -a, --archetype TYPE   service|library|pipeline|cli|docs-only  (default: service)
+  -a, --archetype TYPE   product|library|doc-only  (default: product)
+                         legacy aliases service|pipeline|cli -> product
+      --deployable       this repo ships a deployable artifact -> CD TODO stub (ci-cd-delivery)
       --python VER       Python version           (default: 3.12)
       --org ORG          GitHub org               (default: meaningfy-ws)
       --branch BRANCH    default/PR branch        (default: develop)
       --desc "TEXT"      one-line description      (default: "")
       --target DIR       repo root to scaffold     (default: current directory)
+      --minimal          MINIMAL mode: write ONLY the agentic files (CLAUDE.md + AGENTS symlink),
+                         the .claude/ layout, and print the install commands. Nothing else.
       --no-docs          skip the Antora docs pillar
       --no-infra         skip the Docker/infra pillar
       --no-ci            skip the GitHub Actions pillar
@@ -45,9 +51,11 @@ Options:
 
 Modes:
   greenfield   empty repo            scaffold.sh -p pkg -n "Name"
+  minimal      agentic files only    scaffold.sh -p pkg -n "Name" --minimal
   gap report   existing repo, audit  scaffold.sh -p pkg -n "Name" --dry-run
   fill gaps    existing repo, apply  scaffold.sh -p pkg -n "Name" --skip-existing
-For the full modernization workflow see references/modernizing-existing-projects.md.
+For the full modernization (brownfield) workflow see references/modernizing-existing-projects.md.
+For what the spine projection lays down see references/spine-projection.md.
 After running, see references/checklists.md for the Definition-of-Done.
 EOF
 }
@@ -64,6 +72,8 @@ while [[ $# -gt 0 ]]; do
     --branch)     BRANCH="$2"; shift 2;;
     --desc)       DESC="$2"; shift 2;;
     --target)     TARGET="$2"; shift 2;;
+    --deployable) DEPLOYABLE=1; shift;;
+    --minimal)    MINIMAL=1; shift;;
     --no-docs)    WITH_DOCS=0; shift;;
     --no-infra)   WITH_INFRA=0; shift;;
     --no-ci)      WITH_CI=0; shift;;
@@ -78,7 +88,17 @@ done
 
 [[ -z "$PACKAGE" || -z "$PROJECT_NAME" ]] && { echo "ERROR: --package and --name are required." >&2; usage; exit 2; }
 [[ "$PACKAGE" =~ ^[a-z_][a-z0-9_]*$ ]] || { echo "ERROR: package must be a valid lowercase python identifier." >&2; exit 2; }
-case "$ARCHETYPE" in service|library|pipeline|cli|docs-only) ;; *) echo "ERROR: unknown archetype '$ARCHETYPE'." >&2; exit 2;; esac
+# Archetypes: product | library | doc-only. Legacy aliases (service/pipeline/cli) collapse to product.
+case "$ARCHETYPE" in
+  service|pipeline|cli) ARCHETYPE="product";;
+  product|library|doc-only|docs-only) ;;
+  *) echo "ERROR: unknown archetype '$ARCHETYPE' (use product|library|doc-only)." >&2; exit 2;;
+esac
+[[ "$ARCHETYPE" == "docs-only" ]] && ARCHETYPE="doc-only"   # tolerate the older spelling
+# Derived flags: product gets code layers + a model/; doc-only is non-code.
+PRODUCT=0 ; CODE=1
+[[ "$ARCHETYPE" == "product" ]] && PRODUCT=1
+[[ "$ARCHETYPE" == "doc-only" ]] && CODE=0
 [[ -z "$SLUG" ]] && SLUG="$(echo "$PACKAGE" | tr '_' '-')"
 PYVER_NODOT="${PYVER//./}"
 
@@ -134,6 +154,86 @@ pyinit() { # create a package dir with an __init__.py if absent
   [[ -f "$TARGET/$dir/__init__.py" ]] || printf '%s' "$body" > "$TARGET/$dir/__init__.py"
 }
 
+# keepdir REL [NOTE] : ensure an (otherwise empty) directory exists, with a .gitkeep so it commits.
+keepdir() {
+  local rel="$1" note="${2:-}"
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    [[ -d "$TARGET/$rel" ]] && echo "  = keep   $rel/" || echo "  + create $rel/"
+    return 0
+  fi
+  mkdir -p "$TARGET/$rel"
+  [[ -e "$TARGET/$rel/.gitkeep" ]] || printf '%s' "$note" > "$TARGET/$rel/.gitkeep"
+}
+
+# scaffold_agentic : the CLAUDE-canonical agentic layer (DEC-4). CLAUDE.md is canonical;
+# AGENTS.md is an OPTIONAL symlink -> CLAUDE.md. The .claude/ memory is a regenerable INDEX —
+# the truth is openspec/specs/ (so we DO NOT render the retired EPIC/PLAN/task forms here).
+scaffold_agentic() {
+  render "$TPL/agentic/CLAUDE.md.tmpl"  "$TARGET/CLAUDE.md"
+  render "$TPL/agentic/MEMORY.md.tmpl"  "$TARGET/.claude/memory/MEMORY.md"
+  keepdir ".claude/skills"  "Project-specific skills only — do NOT vendor the skillery here."
+  keepdir ".claude/agents"  "Optional thin local agent wrappers — usually rely on installed skillery agents."
+  # AGENTS.md is a SYMLINK to CLAUDE.md (DEC-4) — single source of truth, CLAUDE-canonical.
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    if [[ -L "$TARGET/AGENTS.md" ]]; then echo "  = keep   AGENTS.md (symlink)"
+    elif [[ -e "$TARGET/AGENTS.md" ]]; then echo "  ! AGENTS.md exists but is NOT a symlink — would need reconciling (DEC-4)"
+    else echo "  + create AGENTS.md -> CLAUDE.md (symlink)"; fi
+  else
+    if [[ -L "$TARGET/AGENTS.md" || ! -e "$TARGET/AGENTS.md" ]]; then
+      ln -sf CLAUDE.md "$TARGET/AGENTS.md"; echo "  symlinked AGENTS.md -> CLAUDE.md"
+    else
+      echo "  WARNING: AGENTS.md exists and is not a symlink — leaving it (see references/agentic-setup.md)"
+    fi
+  fi
+}
+
+# scaffold_openspec : project the spine (openspec/) — config, the PINNED meaningfy schema,
+# durable specs/, and changes/ (+ archive/, with the inputs/ seed convention).
+scaffold_openspec() {
+  render "$TPL/openspec/config.yaml.tmpl"      "$TARGET/openspec/config.yaml"
+  render "$TPL/openspec/specs-README.md.tmpl"  "$TARGET/openspec/specs/README.md"
+  render "$TPL/openspec/changes-README.md.tmpl" "$TARGET/openspec/changes/README.md"
+  keepdir "openspec/changes/archive" "Archived (completed) changes land here after /opsx:archive."
+  # Copy the meaningfy schema PINNED from skillery (record the pin from spine/openspec-version.txt).
+  local schema_src="$SCRIPT_DIR/../../../../openspec/schemas/meaningfy"
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    [[ -d "$TARGET/openspec/schemas/meaningfy" ]] \
+      && echo "  = keep   openspec/schemas/meaningfy/ (pinned @ $OPENSPEC_PIN)" \
+      || echo "  + create openspec/schemas/meaningfy/ (pinned @ $OPENSPEC_PIN, copied from skillery)"
+  elif [[ -d "$schema_src" ]]; then
+    local schema_dst="$TARGET/openspec/schemas/meaningfy"
+    if [[ -d "$schema_dst" && "$FORCE" -ne 1 ]]; then
+      # Never clobber in place and never nest meaningfy/meaningfy/. Default and
+      # --skip-existing both leave an existing pinned schema untouched.
+      echo "  skip (exists): openspec/schemas/meaningfy/ (re-run with --force to refresh; never clobbered in place)"
+    else
+      [[ -d "$schema_dst" ]] && rm -rf "$schema_dst"   # --force: clean replace, not copy-into-dir
+      mkdir -p "$TARGET/openspec/schemas"
+      cp -R "$schema_src" "$schema_dst"
+      echo "  copied openspec/schemas/meaningfy/ (PINNED @ $OPENSPEC_PIN — refresh via --force; see references/spine-projection.md)"
+    fi
+  else
+    echo "  NOTE: meaningfy schema source not found ($schema_src) — copy openspec/schemas/meaningfy/ from skillery manually (pin $OPENSPEC_PIN)."
+  fi
+}
+
+# ---- minimal mode: agentic files + .claude/ layout only -------------------
+if [[ "$MINIMAL" -eq 1 ]]; then
+  echo "MINIMAL mode — agentic files (CLAUDE.md + AGENTS symlink) + .claude/ layout only."
+  scaffold_agentic
+  cat <<EOF
+
+Minimal scaffold complete. Install the spine + skillery so CLAUDE.md's routing resolves:
+  npx -y @fission-ai/openspec@$OPENSPEC_PIN init --tools claude --profile core
+  /plugin marketplace add meaningfy-ws/skillery
+  /plugin install meaningfy-engineering meaningfy-ai-coding
+  /plugin install superpowers@claude-plugins-official
+  /plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail
+For the full repo scaffold (package, tooling, openspec/, docs, CI) re-run without --minimal.
+EOF
+  exit 0
+fi
+
 # ---- 1. root config files -------------------------------------------------
 render "$TPL/root/pyproject.toml.tmpl"            "$TARGET/pyproject.toml"
 render "$TPL/root/ruff.toml.tmpl"                 "$TARGET/ruff.toml"
@@ -156,19 +256,54 @@ render "$TPL/project/CODE_OF_CONDUCT.md.tmpl" "$TARGET/CODE_OF_CONDUCT.md"
 render "$TPL/project/CHANGELOG.md.tmpl"       "$TARGET/CHANGELOG.md"
 
 # ---- 3. top-level package skeleton (NO src/) ------------------------------
+# doc-only repos carry no Python package, no tests, no model.
+if [[ "$CODE" -eq 1 ]]; then
 pyinit "$PACKAGE" "\"\"\"$PROJECT_NAME.\"\"\"
 
 __version__ = \"0.1.0\"
 "
-# Layers depend on archetype: a library has no entrypoints; everything else does.
+# Layers depend on archetype: a library has no entrypoints; a product has the full four.
 LAYERS="domain adapters services"
-[[ "$ARCHETYPE" != "library" && "$ARCHETYPE" != "docs-only" ]] && LAYERS="$LAYERS entrypoints"
+[[ "$ARCHETYPE" != "library" ]] && LAYERS="$LAYERS entrypoints"
 for layer in $LAYERS; do pyinit "$PACKAGE/$layer"; done
 for layer in domain adapters services; do pyinit "$PACKAGE/commons/$layer"; done
 pyinit "$PACKAGE/commons"
 
-# Runnable archetypes get a console entry point so `python -m <pkg>` works on day one.
-if [[ "$ARCHETYPE" != "library" && "$ARCHETYPE" != "docs-only" ]]; then
+# Conditional model/ (R5): the PRODUCT archetype scaffolds a LinkML model dir + the
+# generate-models bridge. The model SOURCE and `make generate-models` are owned by the
+# conceptual-modelling skill — project-setup only lays down the home and a seed schema.
+if [[ "$PRODUCT" -eq 1 ]]; then
+  keepdir "model" "LinkML conceptual model lives here. \`make generate-models\` renders targets (Pydantic, JSON Schema, OWL, SHACL). Owned by the conceptual-modelling skill."
+  schema_seed="$TARGET/model/schema.yaml"
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    [[ -e "$schema_seed" ]] && echo "  = keep   model/schema.yaml" || echo "  + create model/schema.yaml (LinkML seed)"
+  elif [[ -e "$schema_seed" && "$FORCE" -ne 1 ]]; then
+    [[ "$SKIP_EXISTING" -eq 1 ]] && echo "  skip (exists): model/schema.yaml" || echo "  kept existing model/schema.yaml"
+  else
+    cat > "$schema_seed" <<EOF
+# LinkML conceptual model for $PROJECT_NAME (the living, representation-agnostic domain source).
+# Edit the model HERE; never hand-edit generated targets. \`make generate-models\` renders
+# Pydantic / JSON Schema / OWL / SHACL deterministically (outside the LLM path).
+# Source choice (LinkML default vs model2owl) is an explicit decision — see the
+# conceptual-modelling skill. Replace this seed with the real domain model.
+id: https://w3id.org/$ORG/$SLUG
+name: $SLUG
+description: Conceptual model for $PROJECT_NAME.
+prefixes:
+  linkml: https://w3id.org/linkml/
+default_range: string
+imports:
+  - linkml:types
+classes:
+  Thing:
+    description: Replace with the first real domain entity.
+EOF
+    echo "  wrote model/schema.yaml (LinkML seed — see conceptual-modelling)"
+  fi
+fi
+
+# Runnable products get a console entry point so `python -m <pkg>` works on day one.
+if [[ "$ARCHETYPE" == "product" ]]; then
   main="$TARGET/$PACKAGE/__main__.py"
   if [[ "$DRY_RUN" -eq 1 ]]; then
     [[ -e "$main" ]] && echo "  = keep   $PACKAGE/__main__.py" || echo "  + create $PACKAGE/__main__.py"
@@ -178,7 +313,7 @@ if [[ "$ARCHETYPE" != "library" && "$ARCHETYPE" != "docs-only" ]]; then
 
 
 def main() -> None:
-    """Replace this stub with the real entry point for your archetype.
+    """Replace this stub with the real entry point.
 
     service  -> start the web app (e.g. uvicorn) from entrypoints/
     cli      -> dispatch to entrypoints/cli.py
@@ -193,14 +328,10 @@ EOF
   echo "  wrote $PACKAGE/__main__.py"
   fi
 fi
-# Pipeline archetype: a separate deployable DAGs package (a top-level dags/ package).
-if [[ "$ARCHETYPE" == "pipeline" ]]; then
-  pyinit "${PACKAGE}_dags" "\"\"\"Airflow DAGs for $PROJECT_NAME (separate deployable unit).\"\"\"
-"
-  [[ "$DRY_RUN" -eq 0 ]] && echo "  ${PACKAGE}_dags/ ready (add DAG modules; imports from $PACKAGE)"
-fi
+fi  # CODE
 
 # ---- 4. tests -------------------------------------------------------------
+if [[ "$CODE" -eq 1 ]]; then
 render "$TPL/tests/conftest.py"             "$TARGET/tests/conftest.py"
 render "$TPL/tests/unit/test_smoke.py"      "$TARGET/tests/unit/test_smoke.py"
 render "$TPL/tests/feature/example.feature" "$TARGET/tests/feature/example.feature"
@@ -208,28 +339,11 @@ render "$TPL/tests/feature/test_example.py" "$TARGET/tests/feature/test_example.
 pyinit "tests"; pyinit "tests/unit"; pyinit "tests/feature"
 pyinit "tests/e2e"; pyinit "tests/integration"
 [[ "$DRY_RUN" -eq 0 ]] && mkdir -p "$TARGET/tests/test_data"
-
-# ---- 5. agentic layer -----------------------------------------------------
-render "$TPL/agentic/AGENTS.md.tmpl"  "$TARGET/AGENTS.md"
-render "$TPL/agentic/MEMORY.md.tmpl"  "$TARGET/.claude/memory/MEMORY.md"
-# Blank skeletons live under _templates/; epic-planning copies them into epics/<name>/ on demand.
-# EPIC.md = the shaped bet + decisions (frozen); PLAN.md = the derived, clarity-gated plan.
-render "$TPL/agentic/EPIC.md.tmpl"    "$TARGET/.claude/memory/_templates/EPIC.md"
-render "$TPL/agentic/PLAN.md.tmpl"    "$TARGET/.claude/memory/_templates/PLAN.md"
-render "$TPL/agentic/task.md.tmpl"    "$TARGET/.claude/memory/_templates/task.md"
-# CLAUDE.md is a SYMLINK to AGENTS.md (decision D8) — single source of truth.
-if [[ "$DRY_RUN" -eq 1 ]]; then
-  if [[ -L "$TARGET/CLAUDE.md" ]]; then echo "  = keep   CLAUDE.md (symlink)"
-  elif [[ -e "$TARGET/CLAUDE.md" ]]; then echo "  ! CLAUDE.md exists but is NOT a symlink — would need reconciling (D8)"
-  else echo "  + create CLAUDE.md -> AGENTS.md (symlink)"; fi
-else
-  mkdir -p "$TARGET/.claude/memory/epics"
-  if [[ -L "$TARGET/CLAUDE.md" || ! -e "$TARGET/CLAUDE.md" ]]; then
-    ln -sf AGENTS.md "$TARGET/CLAUDE.md"; echo "  symlinked CLAUDE.md -> AGENTS.md"
-  else
-    echo "  WARNING: CLAUDE.md exists and is not a symlink — leaving it (see references/agentic-setup.md)"
-  fi
 fi
+
+# ---- 5. agentic layer (CLAUDE-canonical) + spine (openspec/) ---------------
+scaffold_agentic
+scaffold_openspec
 
 # ---- 6. docs pillar (Antora) ----------------------------------------------
 if [[ "$WITH_DOCS" -eq 1 ]]; then
@@ -254,10 +368,22 @@ if [[ "$WITH_INFRA" -eq 1 ]]; then
 fi
 
 # ---- 8. CI pillar ---------------------------------------------------------
+# CI runs the CI-AUTOMATABLE gates as make targets (openspec validate --strict, codegen-in-sync
+# for products, check-architecture, coverage ≥80%, code review). clarity-gate is NOT a CI step
+# (human/agent semantic gate) — CI may only emit a reminder. See references/ci-and-infra.md.
 if [[ "$WITH_CI" -eq 1 ]]; then
-  render "$TPL/ci/ci.yaml.tmpl" "$TARGET/.github/workflows/ci.yaml"
+  [[ "$CODE" -eq 1 ]] && render "$TPL/ci/ci.yaml.tmpl" "$TARGET/.github/workflows/ci.yaml"
   [[ "$WITH_DOCS" -eq 1 ]] && render "$TPL/ci/docs.yaml.tmpl" "$TARGET/.github/workflows/docs.yaml"
   # _reusable-tests.yml is opt-in (large projects only) — see references/ci-and-infra.md
+fi
+
+# ---- 8b. CD seam (deployable products only) -------------------------------
+# R10: a deployable repo gets the CD/release templates owned by ci-cd-delivery — but per its §6,
+# only AFTER DevOps ratification. Until then: a clearly-marked TODO stub + the boundary docs.
+# Library / doc-only get no deploy workflow.
+if [[ "$DEPLOYABLE" -eq 1 && "$ARCHETYPE" == "product" ]]; then
+  render "$TPL/ci/deploy.yaml.stub.tmpl" "$TARGET/.github/workflows/deploy.yaml"
+  [[ "$DRY_RUN" -eq 0 ]] && echo "  NOTE: deploy.yaml is a CD STUB (pending DevOps §6 ratification) — render the real template via the ci-cd-delivery skill."
 fi
 
 # ---- 9. lockfile ----------------------------------------------------------
@@ -269,7 +395,8 @@ DRY RUN complete — nothing was written. Lines marked '+ create' are the gaps t
 To apply only the missing pieces (never overwriting your files):
   $0 -p $PACKAGE -n "$PROJECT_NAME" -a $ARCHETYPE --skip-existing
 For per-file migrations (strip [tool.*], lift src/ → top-level, reconcile AGENTS/CLAUDE),
-see references/modernizing-existing-projects.md.
+see references/modernizing-existing-projects.md. For brownfield-as-a-shaped-change, see
+references/modernizing-existing-projects.md; for the spine projection, references/spine-projection.md.
 EOF
   exit 0
 fi
@@ -287,11 +414,15 @@ Done. Next steps:
   1. cd "$TARGET" && make lock      # if poetry.lock was not generated above
   2. make install                   # installs dev,test,lint groups
   3. make check-all                 # lint + types + architecture + tests should be green
-  4. Install the Meaningfy skillery (+ ponytail) so the AGENTS.md skill routing resolves:
+  4. Install the OpenSpec /opsx:* commands (core profile) so the spine is drivable:
+       npx -y @fission-ai/openspec@$OPENSPEC_PIN init --tools claude --profile core
+     (the meaningfy schema under openspec/schemas/meaningfy/ is already PINNED @ $OPENSPEC_PIN)
+  5. Install the Meaningfy skillery (+ ponytail) so CLAUDE.md's skill routing resolves:
        /plugin marketplace add meaningfy-ws/skillery
        /plugin install meaningfy-engineering meaningfy-ai-coding
        /plugin install superpowers@claude-plugins-official
        /plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail
-  5. Work the Definition-of-Done in references/checklists.md, then shape your first EPIC
-     (.claude/memory/epics/<name>/EPIC.md) and derive its PLAN.md (epic-planning + clarity-gate).
+  6. Work the Definition-of-Done in references/checklists.md, then shape your first EPIC with
+     /opsx:propose -> openspec/changes/<id>/proposal.md (EPIC) + design.md/tasks.md (PLAN);
+     gate the PLAN with clarity-gate (≥9/10) before /opsx:apply.
 EOF

@@ -1,69 +1,11 @@
-<!-- EPIC.md — the SHAPED BET for one unit of work (Shape Up style). This IS the specification:
-     the bet, its boundaries, and the decisions, at the right level of abstraction — concrete
-     enough to commit to, abstract enough to leave the implementer room. It is FROZEN once shaped.
-     The detailed, clarity-gated executable plan lives in the sibling PLAN.md, derived from this.
-     Use the epic-planning skill to shape it. Delete guidance comments as you fill the skeleton. -->
+<!-- SUPERSEDED — do not use. This template is retired (EPIC-09).
 
-# Epic: <Epic Name>
+     The EPIC is no longer a local `.claude/memory/epics/<name>/EPIC.md` file. In the Meaningfy
+     spine an EPIC *is* the OpenSpec proposal:
 
-## Status
-- Phase: [Shaping | Shaped | Planned | In Progress | Complete]
-- Appetite: [small batch ≈1–2 wks | big batch ≈6 wks]   <!-- time we'll spend, not an estimate -->
-- Last updated: yyyy-mm-dd
+         EPIC  ≡  openspec/changes/<id>/proposal.md      (the Shape-Up work shape)
 
-## Metadata
-| Field | Value |
-|-------|-------|
-| Epic ID | <ID> |
-| Component | <package / bounded context> |
-| Derived from | <architecture doc / ADR / use case — file path + anchor> |
-| Dependencies | <upstream epics, libraries> |
-| Downstream dependents | <who depends on this> |
-
----
-# The shaped bet
-<!-- Frozen once shaped. This is the contract the PLAN and the implementer work against. -->
-
-## Problem
-<!-- The raw idea, use case, or pain. WHY now, for whom, what breaks if we do nothing. Concrete. -->
-
-## Solution outline
-<!-- The shaped approach at the right abstraction: the elements, key flows/screens/endpoints.
-     Fat-marker sketches over pixel detail — leave implementation room. -->
-
-```mermaid
-%% optional: a fat-marker flow of the shaped solution
-flowchart LR
-  A[input] --> B[shaped element] --> C[outcome]
-```
-
-## Key decisions
-<!-- The decisions this bet carries: chosen approach, trade-offs accepted, alternatives rejected.
-     Shaping-level (boundaries, approach) — NOT implementation minutiae (those go in PLAN.md). -->
-| Decision | Rationale | Rejected alternative |
-|----------|-----------|----------------------|
-
-## Glossary
-<!-- Internal terms / concept definitions used by this epic (operational, for agent use). -->
-| Term | Definition |
-|------|-----------|
-
-## Rabbit holes
-<!-- Risks, tricky details, technical unknowns to avoid or pre-decide — places the work could
-     balloon past the appetite. Name them so the implementer doesn't fall in. -->
-- …
-
-## No-gos
-<!-- Explicitly out of scope for this bet, to keep it bounded. -->
-- …
-
-## Open questions
-<!-- Resolve before the PLAN is gated. -->
-- …
-
-## References
-<!-- Deep links only — file path + section anchor. Architecture docs, ADRs, sample data. -->
-
----
-<!-- Next: derive the executable plan in PLAN.md (epic-planning), then gate it (clarity-gate ≥9/10)
-     before implementation. EPIC.md stays frozen; PLAN.md carries the detail and the progress. -->
+     Author it with `/opsx:propose` (or `/opsx:explore` first). The shape, the template, and the
+     clarity gate are owned by the spine — see openspec/schemas/meaningfy/templates/proposal.md and
+     the epic-planning skill. This file is kept only as a redirect; the scaffolder no longer
+     renders it into a repo. -->

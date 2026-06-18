@@ -14,8 +14,8 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 
 ```
 <repo-root>/
-├── AGENTS.md                     # canonical agent instructions (D8)
-├── CLAUDE.md → AGENTS.md         # SYMLINK — never a second copy
+├── CLAUDE.md                     # CANONICAL agent instructions (D8 — CLAUDE-canonical, DEC-4)
+├── AGENTS.md → CLAUDE.md         # SYMLINK — never a second copy
 ├── README.md                     # documents the symlink + how to run
 ├── LICENSE
 ├── VERSION                       # single source of the version string
@@ -27,7 +27,7 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 ├── pytest.ini                    # pythonpath=. ; markers ; NO coverage flags here (D5)
 ├── .coveragerc                   # coverage config (≥80%)
 ├── .importlinter                 # architecture contracts (D7) — checked by make check-architecture
-├── .pre-commit-config.yaml       # ruff hook (+ optional CLAUDE.md sync on Windows)
+├── .pre-commit-config.yaml       # ruff hook (+ optional AGENTS.md sync on Windows)
 ├── sonar-project.properties      # SonarQube key/sources
 ├── Makefile                      # the dev UX — install / check-all / test / build-docs / up…
 ├── .gitignore
@@ -51,13 +51,21 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 │   ├── integration/              # marker: integration— needs a running datastore
 │   └── test_data/                # fixtures, used sparingly
 │
-├── .claude/                      # agentic layer (see agentic-setup.md)
+├── model/                        # conceptual model (LinkML) — PRODUCT archetype only (R5)
+│   └── schema.yaml               #   the domain source; make generate-models renders the targets
+│
+├── openspec/                     # the SPINE (see spine-projection.md) — projected into every repo
+│   ├── config.yaml               # schema: meaningfy ; context: ; the 3 thin per-artifact rules
+│   ├── schemas/meaningfy/         # the PINNED meaningfy schema (copied from skillery)
+│   ├── specs/                    # durable capability specs — THE TRUTH (deltas merge here on archive)
+│   └── changes/                  # in-flight changes (proposal.md=EPIC, design.md+tasks.md=PLAN, inputs/)
+│       └── archive/              #   completed changes
+│
+├── .claude/                      # regenerable INDEX layer (see agentic-setup.md) — NOT the truth
 │   ├── agents/                   # optional thin wrappers
 │   ├── skills/                   # project-specific skills only
 │   └── memory/
-│       ├── MEMORY.md             # auto-memory index, ≤200 lines
-│       ├── _templates/           # blank skeletons: EPIC.md, PLAN.md, task.md (copied on demand)
-│       └── epics/<epic>/         # EPIC.md (shaped bet) + PLAN.md (gated plan) + tasks — starts empty
+│       └── MEMORY.md             # regenerable orientation index, ≤200 lines (truth = openspec/specs/)
 │
 ├── docs/                         # Antora component (D10) — if docs pillar selected
 │   ├── antora-playbook.yml
@@ -77,8 +85,9 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 │   └── scripts/entrypoint.sh
 │
 └── .github/workflows/            # CI (D12) — workflows call make targets, never inline commands
-    ├── ci.yaml                   # lint → typecheck → check-architecture → test → coverage → Sonar
-    └── docs.yaml                 # build + deploy to Pages (if docs selected)
+    ├── ci.yaml                   # openspec-validate → lint → typecheck → check-architecture → test → cov → Sonar
+    ├── docs.yaml                 # build + deploy to Pages (if docs selected)
+    └── deploy.yaml               # CD TODO stub — DEPLOYABLE PRODUCT only, pending DevOps (ci-cd-delivery, R10)
 ```
 
 ### Annotations that matter
