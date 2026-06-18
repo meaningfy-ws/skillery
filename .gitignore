@@ -229,3 +229,10 @@ Thumbs.db
 
 # Node (OpenSpec tooling installed via npx --no-save)
 node_modules/
+
+# Local Claude Code tool state — machine-specific or tool-regenerated; never commit.
+# (Intentional planning docs like .claude/HARD-QUESTIONS.md stay tracked.)
+.claude/settings.json
+.claude/settings.local.json
+.claude/commands/
+.claude/skills/
