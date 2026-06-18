@@ -68,6 +68,19 @@ nice-to-have. Confirm whether you want the real harness built later.
 
 ---
 
+## From EPIC-08 (engagement layer)
+
+### HQ-08.1 — The commercial layer is unshaped.
+Q8.2's note: the wider commercial mechanics — qualification, pre-sale, sale,
+marketing, CRM & lead communication, service packaging, fit-for-market — are
+**still to be developed, brainstormed, debated, and crystallised**. I stubbed a
+clearly-labelled "Commercial layer — TODO" in `docs/engagement/` and the DoD
+ladder rather than inventing it. **This is a whole future workstream** (a possible
+EPIC-11+). Decide when/how to shape it.
+**Answer:**
+
+---
+
 ## From the campaign framing (EPIC-00 build order)
 
 ### HQ-00.1 — Dogfood gate vs "complete all EPICs now".

@@ -60,7 +60,15 @@ stage gates upward → (T5) place + bundle + validate.**
   per-gate enforcement; `make validate` green; trigger probes pass.
 
 ## Roadmap
-- [ ] T1 proposal-writing · [ ] T2 estimation · [ ] T3 engagement docs · [ ] T4 stage gates · [ ] T5 bundle+validate
+- [x] T1 proposal-writing · [x] T2 estimation · [x] T3 engagement docs · [x] T4 stage gates · [x] T5 bundle+validate
+
+## Execution status
+`proposal-writing` (entry) + `estimation` (PERT-default, external Gantt) skills in
+`skills/consulting/`, registered in `meaningfy-consulting`. `docs/engagement/`
+(P0–P3 + Commercial-TODO stub) authored. Engagement gate ladder added to
+`dod-quality-gates.md` as a sectioned block above the build gates (Q8.2=A).
+README/EXPECTED_BUNDLES/probes updated; `make validate` green. Commercial layer
+parked as HQ-08.1. Provisional pending the dogfood gate.
 
 ## Clarity-gate self-check
 Grounded in Research B #5/#6 + §2.4; the gate-enforcement open decision is surfaced as a task to
