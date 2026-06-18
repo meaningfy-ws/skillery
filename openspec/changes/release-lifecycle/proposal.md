@@ -36,6 +36,12 @@ mechanics. `project-setup` projects the tag-triggered release workflow per arche
 - **DEC-7**: Supply-chain (**Sigstore keyless signing + SLSA L2 provenance + SBOM via Syft + PyPI attestations**) is **recommended-not-required** — documented as the target, opt-in per repo for incremental adoption.
 - **DEC-8**: Governance baseline added: `SECURITY.md` + coordinated disclosure (GitHub Security Advisories), a **yank** procedure for bad PyPI releases, and a **deprecation cycle** required before a MAJOR bump.
 - **DEC-9**: GHCR/image release stays in `ci-cd-delivery`; this skill **references** it for deployable repos and owns only the *library/source* release + the cross-cutting lifecycle.
+- **DEC-10** *(re-shape, 2026-06-18, on developer direction "proceed with full implementation")*: the
+  original scope-guard no-go (stub + pointer only) is **lifted for the library release path** — this
+  change now **projects real `release.yml` + `SECURITY.md` templates** in `project-setup`, wired into
+  `scaffold.sh` per archetype. The GHCR/**deploy** projection stays a stub (genuinely blocked on
+  `ci-cd-delivery` §6 DevOps ratification — unchanged). The PyPI/release-please path has no such
+  external block, so projecting it is safe.
 
 ## Rabbit-holes
 
@@ -46,8 +52,11 @@ mechanics. `project-setup` projects the tag-triggered release workflow per arche
 
 ## No-gos
 
-- No change to `ci-cd-delivery`, `meaningfy-git-workflow`, or `project-setup` *content* beyond a projection seam + cross-links.
+- No change to `ci-cd-delivery` or `meaningfy-git-workflow` *content* beyond cross-links. (`project-setup`
+  gains the library release templates per **DEC-10** — the original "stub + link only" guard is
+  superseded for the library path.)
 - No runnable second copy of any deploy/CD workflow (that duplication is what `ci-cd-delivery` exists to kill).
+  The release templates are PyPI/release-please only — they do **not** duplicate the deploy mechanism.
 - No secrets or tokens in the repo or skill — Trusted Publishing only.
 
 ---

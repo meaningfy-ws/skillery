@@ -71,6 +71,8 @@ plugins, notification routing).
 ## Boundary & Related Skills
 
 **Owns:** VCS/PR conventions + dev-environment hygiene. **Does NOT own:** code structure
-(`cosmic-python`) or the mechanical commit/push/PR *commands* (external `commit-commands`).
-**Related:** `cosmic-python`, `commit-commands` (external), `code-review` (external) +
-`meaningfy-code-review` (the checklist).
+(`cosmic-python`), the mechanical commit/push/PR *commands* (external `commit-commands`), or the
+**release/hotfix branch lifecycle + versioning** (`meaningfy-release` — this skill owns only the
+branch *mechanics* it builds on).
+**Related:** `cosmic-python`, `meaningfy-release`, `commit-commands` (external), `code-review`
+(external) + `meaningfy-code-review` (the checklist).

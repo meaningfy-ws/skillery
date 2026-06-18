@@ -80,8 +80,28 @@ blocked from releasing without it.
 - **library** → `release.yml` (release-please + PyPI OIDC) + `SECURITY.md`.
 - **product/deployable** → points at `ci-cd-delivery` for GHCR; still gets `SECURITY.md` + changelog.
 - **doc-only** → no release workflow.
-This change ships the *content/intent*; `project-setup` owns *when/into what repo*. To avoid scope
-creep, this EPIC adds a **clearly-marked stub + pointer** in `project-setup`, not a full re-projection.
+This change ships the *content/intent*; `project-setup` owns *when/into what repo*.
+
+### Projection templates (DEC-10 re-shape)
+
+`project-setup` projects real files (not stubs) per archetype:
+
+| Archetype | `release.yml` | `SECURITY.md` | `deploy.yaml` |
+|-----------|---------------|---------------|---------------|
+| library | ✅ release-please + PyPI Trusted Publishing | ✅ | — |
+| product | — (uses GHCR via `ci-cd-delivery`) | ✅ | stub (unchanged; blocked on §6) |
+| doc-only | — | — | — |
+
+- `assets/templates/ci/release.yml.tmpl`: two jobs — `release-please` (opens/maintains the release PR);
+  on a published release/tag, a `pypi` job with `permissions: id-token: write`, `environment: release`,
+  a TestPyPI dry-run gate, then `pypa/gh-action-pypi-publish` (no token). Mirrors
+  [`references/pypi-publishing.md`](../../../skills/meaningfy-release/references/pypi-publishing.md).
+- `assets/templates/root/SECURITY.md.tmpl`: coordinated-disclosure policy (private GHSA report →
+  fix → CVE), supported-versions table, `{{PROJECT_NAME}}` placeholder.
+- `scaffold.sh` renders them in the archetype branch (library) and the shared root pass (SECURITY.md
+  for code archetypes), following the existing `render` helper convention.
+
+The deploy/GHCR projection stays a stub — genuinely blocked on `ci-cd-delivery` §6 (DevOps), unchanged.
 
 ## Validation
 
