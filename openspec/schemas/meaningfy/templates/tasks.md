@@ -1,4 +1,7 @@
-<!-- PLAN (tasks half). PLAN = design.md + this file. The apply phase parses `- [ ]` checkboxes. -->
+<!-- PLAN (tasks half). PLAN = design.md + this file. The apply phase parses `- [ ]` checkboxes.
+
+     ALTITUDE — the execution: ordered, verifiable, one-session steps. NO rationale (that leaks into design.md).
+     A task references the spec requirement/scenario it satisfies; it does not restate the acceptance criteria. -->
 
 > Derived from EPIC-<id>  <!-- cite your parent (golden thread) -->
 

@@ -270,7 +270,7 @@ Score your documentation on 6 criteria. **Target: 9+/10 before Phase 3.**
 | **Specificity** | 20% | All numbers concrete, all thresholds explicit, no "etc" |
 | **Consistency** | 15% | Single source of truth, no duplicates across docs |
 | **Structure** | 15% | Tables over prose, clear hierarchy, predictable format |
-| **Disambiguation** | 15% | Anti-patterns present (5+), edge cases explicit |
+| **Disambiguation** | 15% | Anti-patterns present (5+), edge cases explicit, roles/permissions/states/edge cases mapped MECE (no overlap, no gaps) |
 | **Reference Clarity** | 10% | Deep links only, no vague references |
 
 ### Score Interpretation
@@ -290,7 +290,7 @@ Before Phase 3, ask yourself:
 2. **Specificity:** "Are there any numbers I left vague? Any 'etc' or 'etc'?"
 3. **Consistency:** "Is any information stated in more than one place?"
 4. **Structure:** "Could I convert any prose paragraphs to tables?"
-5. **Disambiguation:** "Have I listed at least 5 anti-patterns per implementation doc?"
+5. **Disambiguation:** "Have I listed at least 5 anti-patterns per implementation doc? Are roles, permissions, states, and edge cases MECE — no overlaps, no gaps?"
 6. **Reference Clarity:** "Do any references say 'see elsewhere' without exact location?"
 
 **If you answer "no" to ANY question that should be "yes":** Fix before proceeding.

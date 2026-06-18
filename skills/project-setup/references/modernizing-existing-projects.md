@@ -79,6 +79,14 @@ Then assess the dimensions a file-presence check **cannot** see, using this rubr
 Write the result as a short gap report (the `code-anatomy.md`-style prose, if architecture is
 involved). That report is the input to the plan.
 
+> **Carry only DETECTED gaps into the EPIC.** A dimension reported `= keep` / ✅ is *conformant* — it
+> is not a no-go, a decision, or a finding, and mentioning it is noise that misreads as "a constraint
+> of this change". The EPIC's no-gos and decisions carry only the `+ create` / ⚠️ / ❌ dimensions —
+> what *this* repo actually violates. And **cite the standard, don't recite it**: a convention (e.g.
+> "no `/src`", DEC-4) earns a line only when it is a detected violation this change addresses — its
+> authority stays in this skill (single source), the EPIC points to it. Listing one standard while
+> silently satisfying ten others is misleading; surface the detected set, stay silent on the rest.
+
 ### 2. Plan — order the gaps safely (least risk first)
 
 Sequence the work so each step is independently reviewable, reversible, and leaves the build green.
