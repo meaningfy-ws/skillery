@@ -8,6 +8,21 @@
 
 ---
 
+## From the catalogue-UX & docs reorg (branch `feat/catalogue-ux-and-docs`)
+
+### HQ-UX.1 — Publish the durable canon to GitHub Pages via AsciiDoc + Antora?
+The catalogue-UX brainstorm decided (D7) to dogfood the split-by-churn standard: keep high-churn
+agent-loop docs (`docs/ai-coding/`, `.claude/`, `docs/engagement/`) as Markdown, but migrate the
+**durable canon** (`docs/engineering-standards/`, `docs/philosophy/`, architecture/ADRs) to
+**AsciiDoc + Antora** and publish it to **GitHub Pages** — skillery applying its own documentation
+standard to itself. This is a substantial migration (Antora playbook, `.adoc` conversion, a Pages CI
+workflow) and was **deferred to its own follow-up EPIC**. The README "Documentation" section already
+points at where the Pages site will live.
+**Working assumption:** defer; do it as a focused EPIC when there's appetite. Confirm priority/timing.
+**Answer:**
+
+---
+
 ## From EPIC-02 (the spine)
 
 ### HQ-02.1 — The golden-thread chain is provisional. When/how do we harden it?

@@ -2,7 +2,7 @@
 
 The narrate-and-point detail behind the [index](README.md). The canonical *intentions* of each phase
 live in the coach's
-[`engagement-model.md`](../../skills/consulting/semantic-consulting-coach/references/engagement-model.md);
+[`engagement-model.md`](../../skills/semantic-consulting-coach/references/engagement-model.md);
 this file maps each phase to its owning skill(s) and the boundary that protects it. It restates no
 skill's rules.
 
@@ -20,7 +20,7 @@ Mutual recognition — are we relevant to each other? Teach generously but never
 moment talk shifts from *"is this relevant?"* to *"what should we do?"*, the boundary is reached and
 the next step is a **proposal**, not more free discussion.
 
-- **Owner:** [`semantic-consulting-coach`](../../skills/consulting/semantic-consulting-coach/SKILL.md)
+- **Owner:** [`semantic-consulting-coach`](../../skills/semantic-consulting-coach/SKILL.md)
   — it holds the free→paid line and coaches *whether/how* to run P1.
 
 ---
@@ -35,13 +35,13 @@ decision about what to build next** — before any pilot or programme. Its value
 
 The skills for P1, and what each owns:
 
-- [`proposal-writing`](../../skills/consulting/proposal-writing/SKILL.md) — the **entry skill**:
+- [`proposal-writing`](../../skills/proposal-writing/SKILL.md) — the **entry skill**:
   qualifies the need, frames the offer, prices it as a fixed frame, and writes the **proposal + SoW**
   with an explicit in/out scope boundary.
-- [`estimation`](../../skills/consulting/estimation/SKILL.md) — the **pricing/scoping** discipline
+- [`estimation`](../../skills/estimation/SKILL.md) — the **pricing/scoping** discipline
   (PERT + work breakdown + ranges + contingency) that `proposal-writing` invokes for the numbers;
   independently triggerable.
-- [`decision-package`](../../skills/consulting/decision-package/SKILL.md) — **produces** the
+- [`decision-package`](../../skills/decision-package/SKILL.md) — **produces** the
   Decision Package: recommendation, in/out scope, pilot→scale roadmap, buy/build/defer, and the
   ready-to-contract execution brief that hands off to P2.
 
@@ -71,4 +71,4 @@ Sustain, scale, and evolve what was built: governance support, semantic operatio
 building. Post-decision continuity.
 
 - **Owner:** *to be shaped* — no skill yet. Governance/ops practices will be crystallised after the
-  dogfood engagement.
+  first real engagement.

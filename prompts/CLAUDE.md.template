@@ -13,17 +13,17 @@ Use the skill for the task — do not improvise what a skill already knows.
 
 | Task | Skill |
 |------|-------|
-| Python code structure (models/adapters/services/entrypoints, SOLID, CI) | **meaningfy-engineering:cosmic-python** |
-| System / solution design (C4, ADRs, contracts) | **meaningfy-engineering:architecture** |
+| Python code structure (models/adapters/services/entrypoints, SOLID, CI) | **meaningfy-building:cosmic-python** |
+| System / solution design (C4, ADRs, contracts) | **meaningfy-architecture:architecture** |
 | New feature or non-trivial change — explore options first | **superpowers:brainstorming** |
 | Feature or bugfix implementation — tests first | **superpowers:test-driven-development** |
 | Debugging | **superpowers:systematic-debugging** |
-| Plan a Work Shape into a spec | **meaningfy-ai-coding:epic-planning** |
-| Spec readiness gate | **meaningfy-ai-coding:clarity-gate** |
-| BDD / Gherkin features | **meaningfy-ai-coding:bdd-gherkin** |
-| Commits / branches / PRs | **meaningfy-engineering:meaningfy-git-workflow** |
-| Pre-PR review | **meaningfy-ai-coding:meaningfy-code-review** |
-| Docs and technical writing | **meaningfy-ai-coding:technical-writing** |
+| Plan a Work Shape into a spec | **meaningfy-building:epic-planning** |
+| Spec readiness gate | **meaningfy-building:clarity-gate** |
+| BDD / Gherkin features | **meaningfy-building:bdd-gherkin** |
+| Commits / branches / PRs | **meaningfy-core:meaningfy-git-workflow** |
+| Pre-PR review | **meaningfy-building:meaningfy-code-review** |
+| Docs and technical writing | **meaningfy-core:technical-writing** |
 
 If a request conflicts with the above, flag it before proceeding.
 

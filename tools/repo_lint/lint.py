@@ -22,31 +22,20 @@ README = "README.md"
 # in CONTRIBUTING. The established `architecture` skill is ~618 lines and fine.
 MAX_SKILL_LINES = 650
 
-# The value-chain bundle map (single source of truth for bundle composition).
-# Re-cut by EPIC-04 (Q4.1=A): phase-aligned, single-skill bundles allowed, and
-# `modelling` folded into `meaningfy-engineering` next to `architecture` (so no
-# separate modelling bundle). conceptual-modelling (EPIC-06) lands in engineering.
+# The ROLE bundle map (single source of truth for bundle composition).
+# Bundles are organised by the role/persona you install (a small `core` holds the
+# cross-cutting skills so every skill lives in exactly ONE bundle — no overlays).
+# Disk is flat (`skills/<skill>/`); bundles group only in marketplace.json.
 EXPECTED_BUNDLES = {
+    "meaningfy-core": {"technical-writing", "meaningfy-git-workflow", "guardrails"},
     "meaningfy-consulting": {
-        "semantic-consulting-coach", "decision-package", "proposal-writing", "estimation",
+        "semantic-consulting-coach", "decision-package", "proposal-writing",
+        "estimation", "executive-communication",
     },
-    "meaningfy-communication": {"executive-communication", "technical-writing"},
-    "meaningfy-engineering": {
-        "project-setup", "cosmic-python", "architecture", "conceptual-modelling",
-        "ci-cd-delivery", "meaningfy-git-workflow",
-    },
-    "meaningfy-ai-coding": {
+    "meaningfy-architecture": {"architecture", "conceptual-modelling"},
+    "meaningfy-building": {
         "epic-planning", "spec-stewardship", "clarity-gate", "bdd-gherkin",
-        "meaningfy-code-review", "guardrails",
-    },
-}
-# Meta-bundles are curated overlays: they may re-reference skills *owned* by a
-# phase bundle above. They are NOT exclusive owners, so the placement check only
-# requires their skills to be owned somewhere — not to match the meta name.
-META_BUNDLES = {
-    "meaningfy-spine": {
-        "epic-planning", "spec-stewardship", "clarity-gate", "bdd-gherkin",
-        "meaningfy-code-review", "cosmic-python",
+        "meaningfy-code-review", "cosmic-python", "project-setup", "ci-cd-delivery",
     },
 }
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "gherkin-writer", "documenter"}
@@ -131,11 +120,18 @@ def _frontmatter(text: str) -> dict | None:
     return out
 
 
+# Archived OpenSpec changes are a frozen historical record (e.g. the migrated
+# `.claude/` planning docs) — preserved as-is, not held to live-link standards.
+_ARCHIVE_PREFIX = "openspec/changes/archive/"
+
+
 def _iter_text_files(repo: Path):
     for path in repo.rglob("*"):
         if path.suffix not in (".md", ".template"):
             continue
         if any(part in _SKIP_DIRS for part in path.parts):
+            continue
+        if str(path.relative_to(repo)).startswith(_ARCHIVE_PREFIX):
             continue
         yield path
 
@@ -198,19 +194,15 @@ def expected_bundle_membership(repo: Path) -> list[str]:
     out: list[str] = []
     for plugin in _marketplace(repo).get("plugins", []):
         bundle = plugin.get("name")
-        is_meta = bundle in META_BUNDLES
-        if bundle not in EXPECTED_BUNDLES and not is_meta:
-            out.append(f"unknown bundle '{bundle}' (not in EXPECTED_BUNDLES or META_BUNDLES)")
+        if bundle not in EXPECTED_BUNDLES:
+            out.append(f"unknown bundle '{bundle}' (not in EXPECTED_BUNDLES)")
             continue
         for raw in plugin.get("skills", []):
             skill = raw.replace("./skills/", "").strip("/").split("/")[-1]
             want = reverse.get(skill)
             if want is None:
-                # Every skill — including a meta-bundle's overlay — must be owned
-                # by exactly one phase bundle.
                 out.append(f"skill '{skill}' is not in EXPECTED_BUNDLES")
-            elif not is_meta and want != bundle:
-                # Phase bundles are exclusive owners; meta-bundles are overlays.
+            elif want != bundle:
                 out.append(f"skill '{skill}' in '{bundle}', expected '{want}'")
     return out
 

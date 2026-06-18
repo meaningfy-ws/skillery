@@ -1,10 +1,11 @@
 # OpenSpec Setup Guide (v2)
 
-**Audience:** Meaningfy developers replicating the spine layout on a project repo.
+**Audience:** Meaningfy developers replicating the spine — the durable, traceable spec backbone —
+layout on a project repo.
 
 **Purpose:** describe the `openspec/` layout and the `.claude/` memory model the two-tier method
 runs on. This doc **describes**; the **mechanics** of scaffolding a repo are the
-[`project-setup`](../../skills/engineering/project-setup/SKILL.md) skill (EPIC-09) — this doc does
+[`project-setup`](../../skills/project-setup/SKILL.md) skill (EPIC-09) — this doc does
 not duplicate them. For the methodology see [two-tier-methodology.md](two-tier-methodology.md); for
 the spine conventions see [`spine/README.md`](../../spine/README.md).
 
@@ -44,7 +45,7 @@ conventions. Today it is hand-written and small.
 If a generated digest is ever wanted, it is regenerated **deterministically** from `specs/` + open
 changes **into `context:`** (like codegen, with a CI sync-check) — never a hand-curated parallel
 file. The full policy is owned by
-[`spec-stewardship`](../../skills/ai-coding/spec-stewardship/SKILL.md) and defined in
+[`spec-stewardship`](../../skills/spec-stewardship/SKILL.md) and defined in
 [`spine/epic-change-memory-mapping.md`](../../spine/epic-change-memory-mapping.md).
 
 ---
@@ -77,5 +78,5 @@ canon — no two files to drift). One source, two entry points.
 
 This guide describes the *target* layout. Laying it down on a fresh or existing repo — creating
 `openspec/`, wiring `config.yaml`, the `AGENTS.md` symlink, the layered package, tooling, and CI —
-is the [`project-setup`](../../skills/engineering/project-setup/SKILL.md) skill (EPIC-09). **This
+is the [`project-setup`](../../skills/project-setup/SKILL.md) skill (EPIC-09). **This
 doc DESCRIBES; project-setup DOES.**

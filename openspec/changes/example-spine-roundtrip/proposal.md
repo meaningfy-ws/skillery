@@ -2,8 +2,8 @@
 
 > Canonical worked example for the Meaningfy spine (EPIC-02 A2). It demonstrates
 > the full lifecycle — EPIC (this file) → PLAN (design.md + tasks.md) → specs
-> deltas → `archive` merges the delta into `openspec/specs/`. Also the dogfood
-> seed referenced downstream as "the PLAN-02 sample".
+> deltas → `archive` merges the delta into `openspec/specs/`. Also the
+> first-engagement seed referenced downstream as "the PLAN-02 sample".
 
 ## Appetite
 

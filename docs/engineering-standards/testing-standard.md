@@ -5,11 +5,11 @@ operational rules live in the skills it links. It carries no rule those skills o
 
 Authorities:
 
-- [`project-setup`](../../skills/engineering/project-setup/SKILL.md) — wires the test layout,
-  markers, CI lanes, and the coverage gate ([`references/testing-setup.md`](../../skills/engineering/project-setup/references/testing-setup.md)).
-- [`cosmic-python`](../../skills/engineering/cosmic-python/SKILL.md) — per-layer test patterns
-  ([`references/example-testing-patterns.md`](../../skills/engineering/cosmic-python/references/example-testing-patterns.md)).
-- [`bdd-gherkin`](../../skills/ai-coding/bdd-gherkin/SKILL.md) — `.feature` authoring and test data.
+- [`project-setup`](../../skills/project-setup/SKILL.md) — wires the test layout,
+  markers, CI lanes, and the coverage gate ([`references/testing-setup.md`](../../skills/project-setup/references/testing-setup.md)).
+- [`cosmic-python`](../../skills/cosmic-python/SKILL.md) — per-layer test patterns
+  ([`references/example-testing-patterns.md`](../../skills/cosmic-python/references/example-testing-patterns.md)).
+- [`bdd-gherkin`](../../skills/bdd-gherkin/SKILL.md) — `.feature` authoring and test data.
 
 ## The test taxonomy
 
@@ -25,9 +25,9 @@ reference for the mechanism).
 | **e2e** | `e2e` | Drive a near-real stack end to end. | Kept few; slow. | slow lane |
 
 Which layer gets which test is owned by
-[`cosmic-python`](../../skills/engineering/cosmic-python/SKILL.md) (models/adapters/services/
+[`cosmic-python`](../../skills/cosmic-python/SKILL.md) (models/adapters/services/
 entrypoints each test their own responsibilities). BDD scenario authoring is owned by
-[`bdd-gherkin`](../../skills/ai-coding/bdd-gherkin/SKILL.md).
+[`bdd-gherkin`](../../skills/bdd-gherkin/SKILL.md).
 
 ## Test data & conftest conventions
 
@@ -39,7 +39,7 @@ entrypoints each test their own responsibilities). BDD scenario authoring is own
   dependencies in the integration lane.
 
 The exact layout, the conftest hook, and the fixture wiring are owned by
-[`project-setup`](../../skills/engineering/project-setup/references/testing-setup.md) — this doc does
+[`project-setup`](../../skills/project-setup/references/testing-setup.md) — this doc does
 not restate them.
 
 ## Tools
@@ -53,4 +53,4 @@ not restate them.
 Coverage is **≥ 80%** on production code, higher on new/critical code, and must not drop below the
 prior level. It runs in CI; the gate definition is shared with
 [dod-quality-gates.md](../ai-coding/dod-quality-gates.md) and owned operationally by
-[`project-setup`](../../skills/engineering/project-setup/SKILL.md).
+[`project-setup`](../../skills/project-setup/SKILL.md).

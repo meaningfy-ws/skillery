@@ -33,10 +33,11 @@ See [`spec/skill-repo-governance.md`](spec/skill-repo-governance.md) for placeme
 ## Common Meaningfy practices
 
 - **Architecture** — align on cosmic-python layering (see the
-  [`skills/engineering/cosmic-python`](skills/engineering/cosmic-python) skill when designing non-trivial additions).
+  [`skills/cosmic-python`](skills/cosmic-python) skill when designing non-trivial additions).
 - **Commits** — conventional commits are mandatory; see the
-  [`skills/engineering/meaningfy-git-workflow`](skills/engineering/meaningfy-git-workflow) skill for the full standard.
+  [`skills/meaningfy-git-workflow`](skills/meaningfy-git-workflow) skill for the full standard.
 - **Spine / OpenSpec conventions** — the durable spec spine lives in [`spine/`](spine/) (docs) and [`openspec/`](openspec/) (the live OpenSpec instance + the forked `meaningfy` schema). See [`spine/README.md`](spine/README.md).
+- **External method skills land in the spine (binding).** `superpowers` (brainstorming, writing-plans, executing-plans, TDD, …) provides *disciplines*, not a parallel spec system. In a spine-wired repo, their artifacts MUST land in the spine, never in a `docs/superpowers/` tree: a **brainstorming** design feeds the **EPIC** (`openspec/changes/<id>/proposal.md`); **writing-plans is SUPERSEDED** by the **PLAN** (`design.md` + `tasks.md`, gated by `clarity-gate`); execution uses `superpowers:test-driven-development` / `subagent-driven-development`, tracked via `/opsx:apply`. The verb↔artifact map is in [`spine/workflows.md`](spine/workflows.md#superpowers--spine). skillery **dogfoods this**: its own non-trivial changes are `openspec/changes/` EPICs.
 
 <!-- ===== GitNexus (harness-maintained, do not hand-edit) ===== -->
 <!-- gitnexus:start -->
