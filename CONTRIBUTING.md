@@ -91,7 +91,7 @@ validator (`make validate`) enforces that each skill sits in its expected bundle
 (`EXPECTED_BUNDLES` in `tools/repo_lint/lint.py` — update it when adding a skill):
 
 ```json
-{ "name": "meaningfy-ai-coding", "skills": ["./skills/ai-coding/clarity-gate", "./skills/ai-coding/my-new-skill"] }
+{ "name": "meaningfy-ai-coding", "skills": ["./skills/clarity-gate", "./skills/my-new-skill"] }
 ```
 
 ### Step 4: Create a Pull Request

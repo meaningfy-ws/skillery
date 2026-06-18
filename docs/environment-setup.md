@@ -99,7 +99,7 @@ These are **DevOps-owned and out of the skill's automation scope** — documente
   is the break-glass path.
 
 The CD building blocks and the DevOps decisions to ratify are in the
-[`ci-cd-delivery`](../skills/engineering/ci-cd-delivery/SKILL.md) skill.
+[`ci-cd-delivery`](../skills/ci-cd-delivery/SKILL.md) skill.
 
 ## 6. Agents → skills migration note
 

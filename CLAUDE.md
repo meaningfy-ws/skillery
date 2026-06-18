@@ -33,9 +33,9 @@ See [`spec/skill-repo-governance.md`](spec/skill-repo-governance.md) for placeme
 ## Common Meaningfy practices
 
 - **Architecture** — align on cosmic-python layering (see the
-  [`skills/engineering/cosmic-python`](skills/engineering/cosmic-python) skill when designing non-trivial additions).
+  [`skills/cosmic-python`](skills/cosmic-python) skill when designing non-trivial additions).
 - **Commits** — conventional commits are mandatory; see the
-  [`skills/engineering/meaningfy-git-workflow`](skills/engineering/meaningfy-git-workflow) skill for the full standard.
+  [`skills/meaningfy-git-workflow`](skills/meaningfy-git-workflow) skill for the full standard.
 - **Spine / OpenSpec conventions** — the durable spec spine lives in [`spine/`](spine/) (docs) and [`openspec/`](openspec/) (the live OpenSpec instance + the forked `meaningfy` schema). See [`spine/README.md`](spine/README.md).
 
 <!-- ===== GitNexus (harness-maintained, do not hand-edit) ===== -->

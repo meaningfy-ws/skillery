@@ -20,8 +20,8 @@ audience and cadence from the automated build gates.
 
 | Gate | When | Enforcement |
 |------|------|-------------|
-| **Proposal signed** | end of P0 → P1 | human sign-off (commercial) — see [`proposal-writing`](../../skills/consulting/proposal-writing/SKILL.md) + [`estimation`](../../skills/consulting/estimation/SKILL.md) |
-| **Decision accepted** | end of P1 | human sign-off (client) — the [`decision-package`](../../skills/consulting/decision-package/SKILL.md) is accepted |
+| **Proposal signed** | end of P0 → P1 | human sign-off (commercial) — see [`proposal-writing`](../../skills/proposal-writing/SKILL.md) + [`estimation`](../../skills/estimation/SKILL.md) |
+| **Decision accepted** | end of P1 | human sign-off (client) — the [`decision-package`](../../skills/decision-package/SKILL.md) is accepted |
 | **Architecture accepted** | start of P2 | human sign-off **+** `openspec validate --strict` on the architecture spec |
 | **Build DoD** | per Epic in P2 | the automated build-tier gate set below (EPIC-05) |
 
@@ -34,12 +34,12 @@ audience and cadence from the automated build gates.
 
 | Gate | Nature | Owner | Pass condition |
 |------|--------|-------|----------------|
-| **Clarity gate** | semantic | [`clarity-gate`](../../skills/ai-coding/clarity-gate/SKILL.md) | The PLAN (`design.md` + `tasks.md`) scores **≥ 9/10** on the rubric before implementation |
-| **`openspec validate --strict`** | structural | spine ([`spec-stewardship`](../../skills/ai-coding/spec-stewardship/SKILL.md)) | Artifact shape + spec deltas are well-formed |
-| **Tests green** | content | [`cosmic-python`](../../skills/engineering/cosmic-python/SKILL.md) + `superpowers:test-driven-development` | Full suite passes; design-failures fix the spec, not the code |
+| **Clarity gate** | semantic | [`clarity-gate`](../../skills/clarity-gate/SKILL.md) | The PLAN (`design.md` + `tasks.md`) scores **≥ 9/10** on the rubric before implementation |
+| **`openspec validate --strict`** | structural | spine ([`spec-stewardship`](../../skills/spec-stewardship/SKILL.md)) | Artifact shape + spec deltas are well-formed |
+| **Tests green** | content | [`cosmic-python`](../../skills/cosmic-python/SKILL.md) + `superpowers:test-driven-development` | Full suite passes; design-failures fix the spec, not the code |
 | **Coverage** | content | CI pipeline | **≥ 80%** on production code, higher on new/critical code |
-| **Architecture check** | structural | [`cosmic-python`](../../skills/engineering/cosmic-python/SKILL.md) + import-linter | Layer direction respected (`entrypoints → services → models`, `adapters → models`); no forbidden imports |
-| **Code review** | content | [`meaningfy-code-review`](../../skills/ai-coding/meaningfy-code-review/SKILL.md) | No unaddressed Critical findings (architecture, security, spec conformance) |
+| **Architecture check** | structural | [`cosmic-python`](../../skills/cosmic-python/SKILL.md) + import-linter | Layer direction respected (`entrypoints → services → models`, `adapters → models`); no forbidden imports |
+| **Code review** | content | [`meaningfy-code-review`](../../skills/meaningfy-code-review/SKILL.md) | No unaddressed Critical findings (architecture, security, spec conformance) |
 
 ## The automation boundary (single source — other EPICs reference this)
 
@@ -48,7 +48,7 @@ audience and cadence from the automated build gates.
 - **`clarity-gate` is a human/agent gate — NOT CI-automated.** It is semantic judgement; it cannot
   be reduced to a deterministic CI check. Do not assume CI enforces it.
 
-Guardrails ([`guardrails`](../../skills/ai-coding/guardrails/SKILL.md)) reuse these same gates for
+Guardrails ([`guardrails`](../../skills/guardrails/SKILL.md)) reuse these same gates for
 output validation — they do not add a parallel enforcement stack.
 
 ## Definition of Done (a task)

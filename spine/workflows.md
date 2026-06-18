@@ -70,13 +70,13 @@ Which skill / superpowers discipline owns each verb. This is the concrete
 
 | `/opsx` verb | Driven by |
 |---|---|
-| `explore` | `superpowers:brainstorming` + [`epic-planning`](../skills/ai-coding/epic-planning) elicitation |
-| `propose` | [`epic-planning`](../skills/ai-coding/epic-planning) (shapes the EPIC = proposal.md) |
-| derive PLAN | [`epic-planning`](../skills/ai-coding/epic-planning) (design.md + tasks.md) |
-| clarity gate | [`clarity-gate`](../skills/ai-coding/clarity-gate) (semantic ≥9/10 on the PLAN) |
-| specs (deltas) | [`bdd-gherkin`](../skills/ai-coding/bdd-gherkin) feeds executable `.feature`s off the SHALL+GWT |
-| `apply` | `superpowers:test-driven-development` + [`cosmic-python`](../skills/engineering/cosmic-python) |
-| `verify` | [`meaningfy-code-review`](../skills/ai-coding/meaningfy-code-review) + `superpowers:verification-before-completion` |
+| `explore` | `superpowers:brainstorming` + [`epic-planning`](../skills/epic-planning) elicitation |
+| `propose` | [`epic-planning`](../skills/epic-planning) (shapes the EPIC = proposal.md) |
+| derive PLAN | [`epic-planning`](../skills/epic-planning) (design.md + tasks.md) |
+| clarity gate | [`clarity-gate`](../skills/clarity-gate) (semantic ≥9/10 on the PLAN) |
+| specs (deltas) | [`bdd-gherkin`](../skills/bdd-gherkin) feeds executable `.feature`s off the SHALL+GWT |
+| `apply` | `superpowers:test-driven-development` + [`cosmic-python`](../skills/cosmic-python) |
+| `verify` | [`meaningfy-code-review`](../skills/meaningfy-code-review) + `superpowers:verification-before-completion` |
 | `sync` / `archive` | spine convention (deterministic; kept out of the LLM path) |
 
 > The clarity gate (PLAN, semantic) and `openspec validate --strict` (structure,

@@ -30,7 +30,7 @@ It composes by reference and restates nothing:
   free→paid boundary and the fixed-frame intent);
 - the pricing and effort numbers come from [`estimation`](../estimation/SKILL.md);
 - the structure and persuasion come from
-  [`executive-communication`](../../communication/executive-communication/SKILL.md) — a proposal is
+  [`executive-communication`](../executive-communication/SKILL.md) — a proposal is
   an executive artefact (SCQA + a 3-point pyramid; trade-offs and scope boundaries explicit).
 
 ## Flow (R2)
@@ -54,7 +54,7 @@ It composes by reference and restates nothing:
 4. **Write the proposal + SoW.** Use the templates in
    [`references/proposal-template.md`](references/proposal-template.md) and
    [`references/sow-template.md`](references/sow-template.md). Write the proposal in the executive
-   voice ([`executive-communication`](../../communication/executive-communication/SKILL.md));
+   voice ([`executive-communication`](../executive-communication/SKILL.md));
    write the SoW as the contractual companion that pins scope, deliverables, price, and exclusions.
 
 ## The scope boundary (in/out) — load-bearing
@@ -90,7 +90,7 @@ honest.
 - Pricing / effort / contingency numbers → [`estimation`](../estimation/SKILL.md) (the entry flow
   invokes it; it also stands alone).
 - Executive framing and voice (SCQA, Minto pyramid, answer-first) →
-  [`executive-communication`](../../communication/executive-communication/SKILL.md).
+  [`executive-communication`](../executive-communication/SKILL.md).
 - The P1 deliverable definition (what the Decision Phase actually produces) →
   [`decision-package`](../decision-package/SKILL.md).
 - Coaching whether/how to run P1 and holding the free→paid boundary →

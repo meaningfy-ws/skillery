@@ -25,7 +25,7 @@ Decision Package      (consulting-tier root — openspec/decisions/<id>.md; the 
             → commit    (Conventional Commit referencing the change)
 ```
 
-The **Decision Package** (owned by the [`decision-package`](../skills/consulting/decision-package/SKILL.md)
+The **Decision Package** (owned by the [`decision-package`](../skills/decision-package/SKILL.md)
 skill, EPIC-07) is the consulting-tier **root** when an engagement starts there: it is a durable
 *executive narrative* artifact (recommendation, scope, buy/build/defer, execution brief), so it lives
 at `openspec/decisions/<id>.md` — **not** in `openspec/specs/` (which are RFC-2119 behaviour

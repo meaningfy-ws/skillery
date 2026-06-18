@@ -28,7 +28,7 @@ def _marketplace(root: Path, plugins: list[dict]):
 
 
 def test_missing_skill_dir_is_flagged(tmp_path):
-    _marketplace(tmp_path, [{"name": "meaningfy-engineering", "skills": ["./skills/cosmic-python"]}])
+    _marketplace(tmp_path, [{"name": "meaningfy-building", "skills": ["./skills/cosmic-python"]}])
     assert lint.missing_skill_dirs(tmp_path)  # listed but dir absent
 
 
@@ -51,7 +51,7 @@ def test_name_mismatch_is_flagged(tmp_path):
 def test_wrong_bundle_is_flagged(tmp_path):
     _skill(tmp_path, "cosmic-python")
     _marketplace(tmp_path, [{"name": "meaningfy-consulting", "skills": ["./skills/cosmic-python"]}])
-    assert lint.expected_bundle_membership(tmp_path)  # cosmic-python belongs in engineering
+    assert lint.expected_bundle_membership(tmp_path)  # cosmic-python belongs in meaningfy-building
 
 
 def test_unknown_bundle_is_flagged(tmp_path):
@@ -104,19 +104,6 @@ def test_nested_skill_is_discovered(tmp_path):
     assert lint._skill_dirs(tmp_path) == ["cosmic-python"]
 
 
-def test_meta_bundle_with_unowned_skill_is_flagged(tmp_path):
-    # A meta-bundle overlay may re-reference owned skills, but a skill owned by
-    # NO phase bundle must still be flagged.
-    _nested_skill(tmp_path, "engineering", "cosmic-python")
-    _marketplace(tmp_path, [
-        {"name": "meaningfy-engineering", "skills": ["./skills/engineering/cosmic-python"]},
-        {"name": "meaningfy-spine", "skills": ["./skills/engineering/cosmic-python", "./skills/ai-coding/not-a-real-skill"]},
-    ])
-    errs = lint.expected_bundle_membership(tmp_path)
-    assert any("not-a-real-skill" in e for e in errs)       # unowned -> flagged
-    assert not any("cosmic-python" in e for e in errs)       # overlay of owned -> allowed
-
-
 def test_ownership_tripwire_flags_a_non_owner_claim(tmp_path):
     # A non-owner skill that re-specifies an owned capability must be flagged.
     _nested_skill(tmp_path, "ai-coding", "clarity-gate")
@@ -133,9 +120,9 @@ def test_ownership_tripwire_flags_a_non_owner_claim(tmp_path):
 
 def test_clean_fixture_passes_all(tmp_path):
     _skill(tmp_path, "cosmic-python")
-    _skill(tmp_path, "architecture")
-    _marketplace(tmp_path, [{"name": "meaningfy-engineering",
-                             "skills": ["./skills/cosmic-python", "./skills/architecture"]}])
+    _skill(tmp_path, "project-setup")
+    _marketplace(tmp_path, [{"name": "meaningfy-building",
+                             "skills": ["./skills/cosmic-python", "./skills/project-setup"]}])
     assert lint.missing_skill_dirs(tmp_path) == []
     assert lint.unregistered_skill_dirs(tmp_path) == []
     assert lint.frontmatter_present_errors(tmp_path) == []

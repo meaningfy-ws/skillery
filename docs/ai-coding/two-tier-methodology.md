@@ -26,14 +26,14 @@ Work is shaped at two nested altitudes. The **PROJECT tier** runs once, up front
 3. **Work breakdown into shaped Epics** — the architecture is sliced into a backlog of Epics, each
    a self-contained bet.
 4. **Project & repo setup** — scaffolding the spine, the layered package, tooling, and CI. The
-   mechanics live in the [`project-setup`](../../skills/engineering/project-setup/SKILL.md) skill
+   mechanics live in the [`project-setup`](../../skills/project-setup/SKILL.md) skill
    (EPIC-09); see [openspec-setup-guide.md](openspec-setup-guide.md) for what gets laid down.
 
 ### EPIC tier (one Epic at a time)
 
 1. **Shape the Epic** — the EPIC *is* the OpenSpec `proposal.md` (Shape-Up bet: appetite, problem,
    solution outline, key decisions, rabbit-holes, no-gos).
-2. **Derive the PLAN** — the PLAN *is* `design.md` + `tasks.md`; the [`clarity-gate`](../../skills/ai-coding/clarity-gate/SKILL.md)
+2. **Derive the PLAN** — the PLAN *is* `design.md` + `tasks.md`; the [`clarity-gate`](../../skills/clarity-gate/SKILL.md)
    scores the pair (semantic, ≥9/10) before anything is built.
 3. **BDD features + test data** — executable `.feature` acceptance off the spec deltas.
 4. **Implement (TDD)** — red-green-refactor inside the cosmic-python layers.
@@ -68,7 +68,7 @@ Every step where an agent acts runs under **guardrails** — decision bounds (le
 validation (validate before the output feeds the next step), and prompt-injection defence (treat
 fetched/tool content as data, not instructions). **Guardrails validate behaviour; content gates
 (clarity-gate, tests, review) validate content.** The full concern and each guardrail's enforcement
-home live in [`guardrails`](../../skills/ai-coding/guardrails/SKILL.md) — this doc does not restate
+home live in [`guardrails`](../../skills/guardrails/SKILL.md) — this doc does not restate
 them.
 
 ---
@@ -100,15 +100,15 @@ tripwire) and the command→skill map in [`spine/workflows.md`](../../spine/work
 | **Artifact lifecycle** — `specs/` store, change/delta authoring, `validate --strict`, archive, the `/opsx` verbs | **OpenSpec** (external engine; conventions in [`spine/`](../../spine/README.md)) |
 | **Doc-first philosophy + generate-verify-integrate execution loop** | **stream-coding** (external skill) |
 | **Brainstorming, TDD (red-green-refactor), systematic-debugging, verification-before-completion, subagent-driven-development** | **superpowers** (external) — note: `writing-plans` is **SUPERSEDED** by the PLAN / `tasks.md` inside a spine repo |
-| **EPIC + PLAN authoring** | [`epic-planning`](../../skills/ai-coding/epic-planning/SKILL.md) |
-| **Living-spec lifecycle** (archive, groom, sync) | [`spec-stewardship`](../../skills/ai-coding/spec-stewardship/SKILL.md) |
-| **Clarity gate** (semantic ≥9/10) | [`clarity-gate`](../../skills/ai-coding/clarity-gate/SKILL.md) |
-| **`.feature` + test-data** | [`bdd-gherkin`](../../skills/ai-coding/bdd-gherkin/SKILL.md) |
-| **Layered architecture + per-layer tests** | [`cosmic-python`](../../skills/engineering/cosmic-python/SKILL.md) |
-| **Pre-PR review criteria** | [`meaningfy-code-review`](../../skills/ai-coding/meaningfy-code-review/SKILL.md) |
-| **Agentic guardrails** | [`guardrails`](../../skills/ai-coding/guardrails/SKILL.md) |
-| **Git workflow** (commits, branch naming, PRs) | [`meaningfy-git-workflow`](../../skills/engineering/meaningfy-git-workflow/SKILL.md) |
-| **Testing taxonomy / data / CI lanes** | [`project-setup`](../../skills/engineering/project-setup/SKILL.md) + [`cosmic-python`](../../skills/engineering/cosmic-python/SKILL.md) + [`bdd-gherkin`](../../skills/ai-coding/bdd-gherkin/SKILL.md) (narrated in [engineering-standards/testing-standard.md](../engineering-standards/testing-standard.md)) |
+| **EPIC + PLAN authoring** | [`epic-planning`](../../skills/epic-planning/SKILL.md) |
+| **Living-spec lifecycle** (archive, groom, sync) | [`spec-stewardship`](../../skills/spec-stewardship/SKILL.md) |
+| **Clarity gate** (semantic ≥9/10) | [`clarity-gate`](../../skills/clarity-gate/SKILL.md) |
+| **`.feature` + test-data** | [`bdd-gherkin`](../../skills/bdd-gherkin/SKILL.md) |
+| **Layered architecture + per-layer tests** | [`cosmic-python`](../../skills/cosmic-python/SKILL.md) |
+| **Pre-PR review criteria** | [`meaningfy-code-review`](../../skills/meaningfy-code-review/SKILL.md) |
+| **Agentic guardrails** | [`guardrails`](../../skills/guardrails/SKILL.md) |
+| **Git workflow** (commits, branch naming, PRs) | [`meaningfy-git-workflow`](../../skills/meaningfy-git-workflow/SKILL.md) |
+| **Testing taxonomy / data / CI lanes** | [`project-setup`](../../skills/project-setup/SKILL.md) + [`cosmic-python`](../../skills/cosmic-python/SKILL.md) + [`bdd-gherkin`](../../skills/bdd-gherkin/SKILL.md) (narrated in [engineering-standards/testing-standard.md](../engineering-standards/testing-standard.md)) |
 | **CD / release** | `ci-cd-delivery` (EPIC-10, future) |
 
 **CI vs CD do not overlap:** CI (build, test, validate, coverage, architecture checks) is owned by
@@ -123,7 +123,7 @@ Three layers carry "what must be true", each in exactly one notation — no redu
 - **Normative spec** — RFC-2119 SHALL + Given/When/Then in the OpenSpec spec deltas
   (`changes/<id>/specs/<cap>/spec.md`). OpenSpec-native.
 - **Executable acceptance** — `.feature` scenarios authored by
-  [`bdd-gherkin`](../../skills/ai-coding/bdd-gherkin/SKILL.md), running off the SHALL+GWT.
+  [`bdd-gherkin`](../../skills/bdd-gherkin/SKILL.md), running off the SHALL+GWT.
 - **Sequencing** — the PLAN (`tasks.md`) carries order and dependencies, nothing normative.
 
 **EARS is DROPPED.** This is a deliberate divergence from the research synthesis: OpenSpec's
@@ -141,8 +141,8 @@ The surviving thin wrappers live in [`agents/`](../../agents):
 - [`code-reviewer`](../../agents/code-reviewer.md) — drives pre-PR review (Opus).
 
 The old `gherkin-writer` and `documenter` agents are **retired** — their work is now the
-[`bdd-gherkin`](../../skills/ai-coding/bdd-gherkin/SKILL.md) and
-[`technical-writing`](../../skills/communication/technical-writing/SKILL.md) skills, invoked by the
+[`bdd-gherkin`](../../skills/bdd-gherkin/SKILL.md) and
+[`technical-writing`](../../skills/technical-writing/SKILL.md) skills, invoked by the
 surviving wrappers rather than standalone agents.
 
 ---

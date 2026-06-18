@@ -12,7 +12,7 @@ metadata:
 
 Specifications-first. Architecture and human intent are turned into **shaped EPICs**, each of
 which derives a gated **PLAN**. In the Meaningfy spine the artifacts are OpenSpec-native (see the
-[spine](../../../spine/README.md)): the **EPIC ≡ `proposal.md`** (the Shape-Up work shape) and the
+[spine](../../spine/README.md)): the **EPIC ≡ `proposal.md`** (the Shape-Up work shape) and the
 **PLAN ≡ `design.md` + `tasks.md`** (the pair the clarity gate scores). One artifact per concept —
 never a parallel `EPIC.md`/`PLAN.md` file. Ask before assuming; never ship a spec with hidden
 assumptions (Human Sovereignty).
@@ -20,7 +20,7 @@ assumptions (Human Sovereignty).
 This skill **authors**. The living-spec lifecycle after authoring — archive, grooming `specs/`,
 regenerating the orientation index — belongs to [`spec-stewardship`](../spec-stewardship/SKILL.md).
 
-## Procedure (maps to the `/opsx` build-tier flow — see [`spine/workflows.md`](../../../spine/workflows.md))
+## Procedure (maps to the `/opsx` build-tier flow — see [`spine/workflows.md`](../../spine/workflows.md))
 
 1. **Seed intake** (`/opsx:explore`). Read every human seed and supporting input — seed notes,
    architecture/ADRs, sample/test data, free notes, and for brownfield an existing-codebase analysis
@@ -33,10 +33,10 @@ regenerating the orientation index — belongs to [`spec-stewardship`](../spec-s
    marked **secondary** and **never deleted or groomed** — the authored EPIC supersedes them but does
    not replace them (the EPIC is the primary, shaped truth).
 4. **Shape the EPIC** (`/opsx:propose` → `proposal.md`). Use the spine template
-   ([`openspec/schemas/meaningfy/templates/proposal.md`](../../../openspec/schemas/meaningfy/templates/proposal.md)):
+   ([`openspec/schemas/meaningfy/templates/proposal.md`](../../openspec/schemas/meaningfy/templates/proposal.md)):
    appetite, why, solution outline, **key decisions** (each with a citeable `DEC-` id), rabbit-holes,
    **no-gos** (mandatory). Cite the EPIC's **golden-thread parents** (the requirement/architecture it
-   derives from — see [`spine/golden-thread.md`](../../../spine/golden-thread.md)). Keep it at shaping
+   derives from — see [`spine/golden-thread.md`](../../spine/golden-thread.md)). Keep it at shaping
    altitude — leave implementation room.
 5. **EPIC readiness check** (lightweight). Before deriving the PLAN, run the **lightweight variant**
    of [`clarity-gate`](../clarity-gate/SKILL.md) over the EPIC — a quick readiness pass that catches
@@ -74,6 +74,6 @@ of wrongness — handle them differently:
 lightweight EPIC readiness check, and PLAN derivation (= `design.md` + `tasks.md`).
 **Delegates:** PLAN scoring → [`clarity-gate`](../clarity-gate/SKILL.md); the living-spec lifecycle
 (archive, grooming, memory-index regen) → [`spec-stewardship`](../spec-stewardship/SKILL.md);
-Gherkin → [`bdd-gherkin`](../bdd-gherkin/SKILL.md); code → [`cosmic-python`](../../engineering/cosmic-python/SKILL.md);
+Gherkin → [`bdd-gherkin`](../bdd-gherkin/SKILL.md); code → [`cosmic-python`](../cosmic-python/SKILL.md);
 the doc-first build loop → external `stream-coding`.
 **Related:** `clarity-gate`, `spec-stewardship`, `bdd-gherkin`, `architecture`, `stream-coding` (external).

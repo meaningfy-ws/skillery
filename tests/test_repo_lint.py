@@ -50,18 +50,20 @@ def test_claude_agents_templates_mirrored():
     assert lint.templates_mirrored(REPO) == []
 
 
-def test_skills_are_nested_in_phase_subfolders():
-    # EPIC-04: the real catalogue is phase-nested; the validator must discover
-    # skills two levels deep and key them by basename.
+def test_skills_are_flat():
+    # The catalogue is flat: skills/<skill>/SKILL.md. Bundles group only in
+    # marketplace.json (role bundles), so there are no phase/role subfolders.
     paths = lint._skill_paths(REPO)
     assert "cosmic-python" in paths
-    assert paths["cosmic-python"].parts[-3:] == ("engineering", "cosmic-python", "SKILL.md")
+    assert paths["cosmic-python"].parts[-2:] == ("cosmic-python", "SKILL.md")
 
 
-def test_spine_meta_bundle_overlay_is_allowed():
-    # meaningfy-spine re-references phase-owned skills; placement check must pass.
+def test_role_bundles_have_clean_placement():
+    # 4 role bundles, every skill owned by exactly one — no overlays/meta-bundles.
     assert lint.expected_bundle_membership(REPO) == []
-    assert "meaningfy-spine" in lint.META_BUNDLES
+    assert set(lint.EXPECTED_BUNDLES) == {
+        "meaningfy-core", "meaningfy-consulting", "meaningfy-architecture", "meaningfy-building",
+    }
 
 
 def test_trigger_probes_reference_real_skills():

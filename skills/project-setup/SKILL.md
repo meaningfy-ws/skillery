@@ -34,8 +34,8 @@ rather than restating them:
 | Commits, branches, PRs | `meaningfy-git-workflow` |
 | TDD discipline while implementing | `superpowers:test-driven-development` |
 
-The spine conventions it lays down are documented in [`../../../spine/README.md`](../../../spine/README.md);
-the target layout in [`../../../docs/ai-coding/openspec-setup-guide.md`](../../../docs/ai-coding/openspec-setup-guide.md).
+The spine conventions it lays down are documented in [`../../spine/README.md`](../../spine/README.md);
+the target layout in [`../../docs/ai-coding/openspec-setup-guide.md`](../../docs/ai-coding/openspec-setup-guide.md).
 **This skill DOES; those docs DESCRIBE.**
 
 ## Modes
@@ -70,7 +70,7 @@ hold: "automate almost everything" + TDD.** The archetype decides the *condition
 - **CD seam** (deployable product): renders the `ci-cd-delivery` CD templates **only after DevOps
   ratifies §6**; until then a clearly-marked `deploy.yaml` TODO stub + boundary docs (`--deployable`).
 - **`clarity-gate` is NOT a CI step** — it is a human/agent semantic gate (the automation boundary is
-  pinned in [`../../../docs/ai-coding/dod-quality-gates.md`](../../../docs/ai-coding/dod-quality-gates.md)).
+  pinned in [`../../docs/ai-coding/dod-quality-gates.md`](../../docs/ai-coding/dod-quality-gates.md)).
 
 > **Non-negotiables** (hardest to reverse, most-violated by default): no `/src`, all tool config in
 > the root, **canonical `CLAUDE.md` with `AGENTS.md` symlinked** (DEC-4), a minimal `pyproject.toml`,

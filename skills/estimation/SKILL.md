@@ -23,14 +23,14 @@ It is independently triggerable (any "estimate this" / "PERT estimate" request) 
 **pricing step** of the [`proposal-writing`](../proposal-writing/SKILL.md) flow.
 
 It composes by reference: the estimate decomposes against the build breakdown owned by
-[`epic-planning`](../../ai-coding/epic-planning/SKILL.md), and its sequencing/roadmap framing comes
+[`epic-planning`](../epic-planning/SKILL.md), and its sequencing/roadmap framing comes
 from [`decision-package`](../decision-package/SKILL.md). It restates neither.
 
 ## What it covers (R4)
 
 1. **Decomposition (work breakdown).** Break the engagement into estimable leaf items — small enough
    that each can carry a three-point estimate. For build-tier work, decompose against the EPIC/PLAN
-   breakdown from [`epic-planning`](../../ai-coding/epic-planning/SKILL.md); do not invent a parallel
+   breakdown from [`epic-planning`](../epic-planning/SKILL.md); do not invent a parallel
    breakdown.
 2. **Uncertainty ranges.** Each leaf gets a range, not a point. PERT (below) is how the range becomes
    a weighted estimate plus a variance you can roll up.
@@ -107,7 +107,7 @@ consume.
 - The proposal / SoW wrapper (and the scope-boundary discipline the exclusions feed) →
   [`proposal-writing`](../proposal-writing/SKILL.md).
 - The build breakdown the estimate decomposes against →
-  [`epic-planning`](../../ai-coding/epic-planning/SKILL.md).
+  [`epic-planning`](../epic-planning/SKILL.md).
 - Sequencing / roadmap intent (pilot → scale) → [`decision-package`](../decision-package/SKILL.md).
 - The calendar/Gantt rendering → **external tools** (Smartsheet, MS Project) — out of repo.
 

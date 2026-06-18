@@ -43,7 +43,7 @@ Each verb has exactly one driving discipline — see the command→skill map in
 
 ## 3. The seed → EPIC → PLAN authoring flow
 
-Authoring is owned by [`epic-planning`](../../skills/ai-coding/epic-planning/SKILL.md):
+Authoring is owned by [`epic-planning`](../../skills/epic-planning/SKILL.md):
 
 1. **Seed intake** (`/opsx:explore`) — read every human seed (briefs, notes, ADRs, sample data,
    brownfield codebase analysis) and enumerate what was read.
@@ -52,7 +52,7 @@ Authoring is owned by [`epic-planning`](../../skills/ai-coding/epic-planning/SKI
 4. **Shape the EPIC** (`/opsx:propose` → `proposal.md`) — appetite, why, solution, key decisions
    (`DEC-` ids), rabbit-holes, no-gos; cite the golden-thread parent.
 5. **Derive the PLAN** (`design.md` + `tasks.md`) and **gate it** with
-   [`clarity-gate`](../../skills/ai-coding/clarity-gate/SKILL.md) at ≥9/10 before implementation.
+   [`clarity-gate`](../../skills/clarity-gate/SKILL.md) at ≥9/10 before implementation.
 
 Seeds are *inputs*, not the spec: any brief, note, codebase analysis, or ticket can seed an Epic.
 There is no single mandated input format — the shaped EPIC is the truth, the seeds sit beneath it.
@@ -62,7 +62,7 @@ There is no single mandated input format — the shaped EPIC is the truth, the s
 ## 4. Archive & lifecycle
 
 Once the change is implemented and verified, the living-spec lifecycle is owned by
-[`spec-stewardship`](../../skills/ai-coding/spec-stewardship/SKILL.md):
+[`spec-stewardship`](../../skills/spec-stewardship/SKILL.md):
 
 - `/opsx:sync` merges delta specs into the main specs without archiving;
 - `/opsx:archive` validates the deltas (`openspec validate --strict`), merges them into
@@ -71,5 +71,5 @@ Once the change is implemented and verified, the living-spec lifecycle is owned 
   archived change.
 
 The full lifecycle (grooming the durable store, brownfield delta conventions, the orientation-index
-policy) lives in [`spec-stewardship`](../../skills/ai-coding/spec-stewardship/SKILL.md); the
+policy) lives in [`spec-stewardship`](../../skills/spec-stewardship/SKILL.md); the
 mapping of nouns to files in [`spine/epic-change-memory-mapping.md`](../../spine/epic-change-memory-mapping.md).
