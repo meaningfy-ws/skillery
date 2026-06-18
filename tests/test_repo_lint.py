@@ -70,5 +70,10 @@ def test_trigger_probes_reference_real_skills():
     assert not any("unknown skill" in n for n in notes)
 
 
+def test_ownership_tripwire_runs():
+    # Non-blocking (Q5.2=B): it returns advisory strings, never raises.
+    assert isinstance(lint.ownership_claim_report(REPO), list)
+
+
 def test_cli_returns_zero():
     assert lint.main([str(REPO)]) == 0

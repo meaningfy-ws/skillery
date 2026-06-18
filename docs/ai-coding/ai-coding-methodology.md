@@ -1,3 +1,5 @@
+> ⚠️ **v1 (single-tier method) — retained for reference.** The current canon is the **two-tier model**: see [two-tier-methodology.md](two-tier-methodology.md) (+ [opsx-runbook.md](opsx-runbook.md), [openspec-setup-guide.md](openspec-setup-guide.md)). This v1 is kept live until the dogfood engagement closes, then removed.
+
 # Meaningfy AI-Assisted Coding Methodology
 
 **Audience:** Developers and technical leads adopting AI-assisted development at Meaningfy.

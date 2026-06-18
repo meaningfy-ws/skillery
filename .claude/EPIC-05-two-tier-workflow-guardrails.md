@@ -3,6 +3,23 @@
 > Part of the Skillery v2 series. See [EPIC-00](EPIC-00-master-index.md). **Tier:** method.
 > **Depends on:** EPIC-02 (spine, workflows, EPIC↔change mapping), EPIC-03 (authoring flow).
 
+## 0. Revisions absorbed (from QUESTIONS-EPIC-05)
+
+- **Q5.1=C — keep v1 live behind a banner.** The frozen `docs/ai-coding/` v1 docs
+  are **retained** with a top banner pointing to the v2 two-tier canon
+  (`two-tier-methodology.md`, `opsx-runbook.md`, `openspec-setup-guide.md`);
+  v1 is deleted once the dogfood engagement closes. (Not an in-place overwrite.)
+- **Q5.2=B — ownership tripwire.** The single-owner table is backed by a
+  machine-readable map (`tests/ownership.yaml`) + a **non-blocking** validator
+  check (`lint.ownership_claim_report`) that flags a non-owner skill re-specifying
+  an owned capability. Cheap automated tripwire, no semantic analysis.
+- **Q5.3=C — guardrails is a skill.** Built `skills/ai-coding/guardrails` with a
+  clear purpose, how-to-use, and how-to-automate, each guardrail type mapped to a
+  concrete enforcement home (agent wrapper/permissions; tests+validate+clarity-gate;
+  decision-bounds for injection).
+- Inherited: artifacts are OpenSpec-native (EPIC ≡ proposal.md, PLAN ≡
+  design.md+tasks.md); the docs narrate-and-point, they do not restate skills.
+
 ## 1. Purpose & goals (the shaped bet)
 
 **Appetite:** medium. Rewrite the *human canon* of the AI-coding method to match the system the

@@ -117,6 +117,20 @@ def test_meta_bundle_with_unowned_skill_is_flagged(tmp_path):
     assert not any("cosmic-python" in e for e in errs)       # overlay of owned -> allowed
 
 
+def test_ownership_tripwire_flags_a_non_owner_claim(tmp_path):
+    # A non-owner skill that re-specifies an owned capability must be flagged.
+    _nested_skill(tmp_path, "ai-coding", "clarity-gate")
+    _nested_skill(tmp_path, "engineering", "impostor")
+    (tmp_path / "skills" / "engineering" / "impostor" / "SKILL.md").write_text(
+        "---\nname: impostor\ndescription: x\n---\nWe use a 6-criterion rubric here.\n", encoding="utf-8")
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "ownership.yaml").write_text(
+        "capabilities:\n  - tag: clarity-rubric\n    owner: clarity-gate\n"
+        "    claim_patterns: [\"6-criterion rubric\"]\n", encoding="utf-8")
+    notes = lint.ownership_claim_report(tmp_path)
+    assert any("impostor" in n and "clarity-gate" in n for n in notes)
+
+
 def test_clean_fixture_passes_all(tmp_path):
     _skill(tmp_path, "cosmic-python")
     _skill(tmp_path, "architecture")
