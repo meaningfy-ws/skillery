@@ -4,6 +4,22 @@
 > (consulting). **Depends on:** EPIC-04 (`consulting/` subfolder + bundle). **Gated by:** the
 > dogfood gate (EPIC-00 §6).
 
+## 0. Revisions absorbed (from QUESTIONS-EPIC-07)
+
+- **Q7.1=A — own artifact home, not `specs/`.** The Decision Package is a durable
+  *executive narrative*, so it lands at **`openspec/decisions/<id>.md`** (its own
+  spine artifact home), NOT forced into `openspec/specs/` (RFC-2119 behaviour
+  contracts). It is the consulting-tier **golden-thread root**; the first
+  requirement/architecture entries cite it as parent. `spine/golden-thread.md`
+  updated to show this root.
+- **Q7.2=A — reconcile, don't paste.** `strategic-blueprint-checklist` is
+  **mapped** into the decision-readiness discovery flow (still-relevant items in)
+  and the product-only items explicitly dropped — one coherent framework. The
+  original checklist doc is reduced to a pointer.
+- Composes by reference with `semantic-consulting-coach` (coach vs produce; the
+  coach now cross-points here), `executive-communication`, `conceptual-modelling`.
+- **Provisional** pending the dogfood gate (a real paid P1 engagement). HQ-00.1.
+
 ## 1. Purpose & goals (the shaped bet)
 
 **Appetite:** medium. Productise the **paid keystone deliverable** of the consulting engagement —

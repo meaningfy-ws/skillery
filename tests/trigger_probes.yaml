@@ -7,6 +7,8 @@
 probes:
   - probe: "help me price this ontology / knowledge-graph consulting engagement"
     expect: semantic-consulting-coach
+  - probe: "produce the decision package: recommendation, scope, buy/build/defer, execution brief"
+    expect: decision-package
   - probe: "turn this rough input into a board-ready recommendation"
     expect: executive-communication
   - probe: "write the README and docstrings for this module"

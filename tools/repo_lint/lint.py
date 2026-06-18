@@ -27,7 +27,7 @@ MAX_SKILL_LINES = 650
 # `modelling` folded into `meaningfy-engineering` next to `architecture` (so no
 # separate modelling bundle). conceptual-modelling (EPIC-06) lands in engineering.
 EXPECTED_BUNDLES = {
-    "meaningfy-consulting": {"semantic-consulting-coach"},
+    "meaningfy-consulting": {"semantic-consulting-coach", "decision-package"},
     "meaningfy-communication": {"executive-communication", "technical-writing"},
     "meaningfy-engineering": {
         "project-setup", "cosmic-python", "architecture", "conceptual-modelling", "meaningfy-git-workflow",
