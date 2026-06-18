@@ -50,6 +50,9 @@ FROZEN_GLOBS = ("docs/ai-coding/",)
 
 _FRONTMATTER = re.compile(r"^---\n(.*?)\n---", re.DOTALL)
 _MD_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+# A line that points to the owner rather than restating it — used by the ownership
+# tripwire to skip legitimate delegation/pointers (not re-specifications).
+_DELEGATES = re.compile(r"→\s*follow|\bfollow\b|\bsee\b|\bowned by\b|\bdelegate|\bdefer|\bvia\b|\bper\b\s+`?\w", re.IGNORECASE)
 # `.claude/` is agent/tool working-state — planning docs (EPIC/PLAN/RESEARCH) and
 # tool-installed skills (e.g. GitNexus's own) — not the published catalogue, so prose
 # checks skip it. (`.claude-plugin/` is a distinct part and is NOT skipped.)
@@ -360,12 +363,18 @@ def ownership_claim_report(repo: Path) -> list[str]:
         owner = (cap or {}).get("owner", "")
         tag = cap.get("tag", "?")
         owner_local = owner if owner in paths else None
+        patterns = cap.get("claim_patterns", [])
         for name, path in paths.items():
             if name == owner_local:
                 continue
-            text = path.read_text(encoding="utf-8")
-            if any(re.search(pat, text, re.IGNORECASE) for pat in cap.get("claim_patterns", [])):
-                out.append(f"[{tag}] skill '{name}' may re-specify a capability owned by '{owner}'")
+            for line in path.read_text(encoding="utf-8").splitlines():
+                # A line that explicitly DELEGATES (points to the owner) is not a
+                # re-specification — skip it so the tripwire flags only genuine claims.
+                if _DELEGATES.search(line):
+                    continue
+                if any(re.search(pat, line, re.IGNORECASE) for pat in patterns):
+                    out.append(f"[{tag}] skill '{name}' may re-specify a capability owned by '{owner}'")
+                    break
     return out
 
 

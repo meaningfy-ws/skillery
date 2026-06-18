@@ -107,6 +107,7 @@ tripwire) and the command→skill map in [`spine/workflows.md`](../../spine/work
 | **Layered architecture + per-layer tests** | [`cosmic-python`](../../skills/engineering/cosmic-python/SKILL.md) |
 | **Pre-PR review criteria** | [`meaningfy-code-review`](../../skills/ai-coding/meaningfy-code-review/SKILL.md) |
 | **Agentic guardrails** | [`guardrails`](../../skills/ai-coding/guardrails/SKILL.md) |
+| **Git workflow** (commits, branch naming, PRs) | [`meaningfy-git-workflow`](../../skills/engineering/meaningfy-git-workflow/SKILL.md) |
 | **Testing taxonomy / data / CI lanes** | [`project-setup`](../../skills/engineering/project-setup/SKILL.md) + [`cosmic-python`](../../skills/engineering/cosmic-python/SKILL.md) + [`bdd-gherkin`](../../skills/ai-coding/bdd-gherkin/SKILL.md) (narrated in [engineering-standards/testing-standard.md](../engineering-standards/testing-standard.md)) |
 | **CD / release** | `ci-cd-delivery` (EPIC-10, future) |
 
