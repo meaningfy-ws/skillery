@@ -120,11 +120,18 @@ def _frontmatter(text: str) -> dict | None:
     return out
 
 
+# Archived OpenSpec changes are a frozen historical record (e.g. the migrated
+# `.claude/` planning docs) — preserved as-is, not held to live-link standards.
+_ARCHIVE_PREFIX = "openspec/changes/archive/"
+
+
 def _iter_text_files(repo: Path):
     for path in repo.rglob("*"):
         if path.suffix not in (".md", ".template"):
             continue
         if any(part in _SKIP_DIRS for part in path.parts):
+            continue
+        if str(path.relative_to(repo)).startswith(_ARCHIVE_PREFIX):
             continue
         yield path
 
