@@ -32,6 +32,11 @@ at `openspec/decisions/<id>.md` — **not** in `openspec/specs/` (which are RFC-
 contracts). The first requirement/architecture entries cite it as their parent. For repos that do not
 begin with a consulting engagement, the root is simply the requirement specification.
 
+> **Convention, not yet a schema type.** `openspec/decisions/` is the *intended* home; the forked
+> `meaningfy` schema does not yet define a `decisions` artifact type, so `openspec validate --strict`
+> does not validate it. Until it does, this is a documented convention (a plain Markdown artifact),
+> hardened alongside the golden-thread refinement (see [HARD-QUESTIONS](../.claude/HARD-QUESTIONS.md)).
+
 Each layer **cites the one above it** ("cite your parent").
 
 ### Note: EPIC vs change
