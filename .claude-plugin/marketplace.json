@@ -47,6 +47,7 @@
       "strict": false,
       "skills": [
         "./skills/ai-coding/epic-planning",
+        "./skills/ai-coding/spec-stewardship",
         "./skills/ai-coding/clarity-gate",
         "./skills/ai-coding/bdd-gherkin",
         "./skills/ai-coding/meaningfy-code-review"
@@ -59,6 +60,7 @@
       "strict": false,
       "skills": [
         "./skills/ai-coding/epic-planning",
+        "./skills/ai-coding/spec-stewardship",
         "./skills/ai-coding/clarity-gate",
         "./skills/ai-coding/bdd-gherkin",
         "./skills/ai-coding/meaningfy-code-review",

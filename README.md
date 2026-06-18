@@ -33,7 +33,8 @@ Skills are nested under `skills/` by phase (`consulting/`, `communication/`, `en
 | | **cosmic-python** | Clean, layered Python (models/adapters/services/entrypoints), SOLID, testing, CI |
 | | **architecture** | System design — C4, ArchiMate/UML, ADRs, contracts |
 | | **meaningfy-git-workflow** | Conventional commits, branching, PRs, dev-environment hygiene |
-| `meaningfy-ai-coding` | **epic-planning** | Shape an EPIC, then derive its clarity-gated PLAN |
+| `meaningfy-ai-coding` | **epic-planning** | Shape an EPIC from seeds, then derive its clarity-gated PLAN |
+| | **spec-stewardship** | Living-spec lifecycle: archive changes, groom `specs/`, keep the orientation index honest |
 | | **clarity-gate** | Pre-implementation spec quality gate (≥9/10) |
 | | **bdd-gherkin** | BDD Gherkin features + test data from a spec |
 | | **meaningfy-code-review** | Pre-PR review checklist & criteria |

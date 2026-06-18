@@ -21,6 +21,8 @@ probes:
     expect: meaningfy-git-workflow
   - probe: "shape this EPIC and derive its PLAN"
     expect: epic-planning
+  - probe: "archive this change and merge the spec deltas into specs/"
+    expect: spec-stewardship
   - probe: "score this spec against the clarity gate before implementation"
     expect: clarity-gate
   - probe: "write Gherkin feature files for this acceptance criterion"
