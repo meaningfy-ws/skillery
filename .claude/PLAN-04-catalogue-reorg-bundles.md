@@ -103,3 +103,13 @@ user-vs-project split → (T7) validate.** T1–T4 in one logical change; T5–T
 Grounded; the one-commit constraint prevents a self-inconsistent state; DEC-12 split is concretely
 specified (two sections, both skills and CLAUDE.md content). New-skill placement is deferred to their
 EPICs without ambiguity (empty `modelling/` created now).
+
+## Review follow-up (PR #8)
+- Fixed: the 13 `spine/` → skill links were repointed to nested paths here (they had
+  been fixed late in EPIC-05 due to a staging slip; corrected to land in this EPIC so
+  the branch is green standalone).
+- Deferred (honesty): the extra R7 validator rules — orphan init-script/`template/` ban
+  wiring, CLAUDE-canonical `templates_mirrored`, spine-presence, golden-thread stub — are
+  **not** wired into `ALL_CHECKS` yet (`orphan_path_mentions`/`templates_mirrored` exist
+  but are unused). Tracked as a follow-up; the nested-discovery + bundle + trigger-probe
+  rules that EPIC-04 actually needed are wired and tested.
