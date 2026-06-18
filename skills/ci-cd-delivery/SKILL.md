@@ -134,4 +134,7 @@ per-repo migration runbook.
 **Documents-only (authoritative boundary, never automated or duplicated here):**
 `cloud-infrastructure` (Terraform/Ansible), `infrastructure-stacks` (Compose stacks + deploy
 Actions), **Vaultwarden** (secret source of truth), and the **bastion/SSH** break-glass procedure.
-**Related:** [`project-setup`](../project-setup/SKILL.md), [`cosmic-python`](../cosmic-python/SKILL.md).
+**Related:** [`project-setup`](../project-setup/SKILL.md), [`cosmic-python`](../cosmic-python/SKILL.md),
+[`meaningfy-release`](../meaningfy-release/SKILL.md) — the release *lifecycle* (versioning, release
+notes, PyPI publish, the release/hotfix runbook); it cites this skill for the GHCR image path and does
+not restate it.

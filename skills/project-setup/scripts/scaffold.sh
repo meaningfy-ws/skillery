@@ -254,6 +254,8 @@ render "$TPL/project/INSTALL.md.tmpl"         "$TARGET/INSTALL.md"
 render "$TPL/project/CONTRIBUTING.md.tmpl"    "$TARGET/CONTRIBUTING.md"
 render "$TPL/project/CODE_OF_CONDUCT.md.tmpl" "$TARGET/CODE_OF_CONDUCT.md"
 render "$TPL/project/CHANGELOG.md.tmpl"       "$TARGET/CHANGELOG.md"
+# SECURITY.md (coordinated disclosure) for code archetypes — content owned by meaningfy-release.
+[[ "$CODE" -eq 1 ]] && render "$TPL/root/SECURITY.md.tmpl" "$TARGET/SECURITY.md"
 
 # ---- 3. top-level package skeleton (NO src/) ------------------------------
 # doc-only repos carry no Python package, no tests, no model.
@@ -384,6 +386,15 @@ fi
 if [[ "$DEPLOYABLE" -eq 1 && "$ARCHETYPE" == "product" ]]; then
   render "$TPL/ci/deploy.yaml.stub.tmpl" "$TARGET/.github/workflows/deploy.yaml"
   [[ "$DRY_RUN" -eq 0 ]] && echo "  NOTE: deploy.yaml is a CD STUB (pending DevOps §6 ratification) — render the real template via the ci-cd-delivery skill."
+fi
+
+# ---- 8c. Release seam (library archetype) ---------------------------------
+# A library publishes to PyPI via release-please + Trusted Publishing (OIDC). Content owned by the
+# meaningfy-release skill; unlike the deploy seam it has no external (DevOps §6) block, so the real
+# template is rendered. Needs a one-time PyPI/TestPyPI Trusted Publisher + a `release` GH environment.
+if [[ "$WITH_CI" -eq 1 && "$ARCHETYPE" == "library" ]]; then
+  render "$TPL/ci/release.yml.tmpl" "$TARGET/.github/workflows/release.yaml"
+  [[ "$DRY_RUN" -eq 0 ]] && echo "  NOTE: release.yaml needs a one-time PyPI Trusted Publisher + 'release' environment — see the meaningfy-release skill."
 fi
 
 # ---- 9. lockfile ----------------------------------------------------------

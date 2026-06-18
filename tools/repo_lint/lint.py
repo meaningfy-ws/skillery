@@ -36,6 +36,7 @@ EXPECTED_BUNDLES = {
     "meaningfy-building": {
         "epic-planning", "spec-stewardship", "clarity-gate", "bdd-gherkin",
         "meaningfy-code-review", "cosmic-python", "project-setup", "ci-cd-delivery",
+        "meaningfy-release",
     },
 }
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "gherkin-writer", "documenter"}
