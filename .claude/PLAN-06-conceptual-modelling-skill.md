@@ -76,8 +76,18 @@ LinkML-default) → (T3) generation targets + custom generators → (T4) determi
   works; `make validate` green. (Generator behaviour itself is exercised in a product repo, not here.)
 
 ## Roadmap
-- [ ] T1 extract from architecture · [ ] T2 skill core · [ ] T3 targets+generators · [ ] T4 deterministic seam
-- [ ] T5 diagrams+terminology · [ ] T6 place+bundle · [ ] T7 triggers+validate
+- [x] T1 extract from architecture · [x] T2 skill core · [x] T3 targets+generators · [x] T4 deterministic seam
+- [x] T5 diagrams+terminology · [x] T6 place+bundle · [x] T7 triggers+validate
+
+## Execution status
+Skill at `skills/engineering/conceptual-modelling/` (SKILL.md + references:
+generators, ontology-practices, terminology-management). Placed in
+**`meaningfy-engineering`** (Q4.1 fold-in, not a separate `meaningfy-modelling`
+bundle). Wired-first-class targets: Pydantic + JSON Schema + OWL + SHACL (Q6.2=A);
+TS/SQL/HTML/custom documented. LinkML default + model2owl-as-prerequisite note
+(Q6.3=A). In-project `model/` default (Q6.1=A). `architecture` cross-points here
+(light-touch R10). README/EXPECTED_BUNDLES/probe updated; `make validate` green.
+Provisional pending the dogfood gate.
 
 ## Clarity-gate self-check
 Scope matches the user's refinements verbatim (conditional, in-project default, LinkML-default-not-only,

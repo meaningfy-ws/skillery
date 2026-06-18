@@ -29,7 +29,9 @@ MAX_SKILL_LINES = 650
 EXPECTED_BUNDLES = {
     "meaningfy-consulting": {"semantic-consulting-coach"},
     "meaningfy-communication": {"executive-communication", "technical-writing"},
-    "meaningfy-engineering": {"project-setup", "cosmic-python", "architecture", "meaningfy-git-workflow"},
+    "meaningfy-engineering": {
+        "project-setup", "cosmic-python", "architecture", "conceptual-modelling", "meaningfy-git-workflow",
+    },
     "meaningfy-ai-coding": {
         "epic-planning", "spec-stewardship", "clarity-gate", "bdd-gherkin",
         "meaningfy-code-review", "guardrails",

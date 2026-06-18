@@ -17,6 +17,8 @@ probes:
     expect: cosmic-python
   - probe: "draw the C4 container diagram and write an ADR"
     expect: architecture
+  - probe: "model the domain in LinkML and generate Pydantic + OWL + SHACL"
+    expect: conceptual-modelling
   - probe: "what is the branch naming and commit-message convention"
     expect: meaningfy-git-workflow
   - probe: "shape this EPIC and derive its PLAN"
