@@ -226,7 +226,7 @@ if [[ "$MINIMAL" -eq 1 ]]; then
 Minimal scaffold complete. Install the spine + skillery so CLAUDE.md's routing resolves:
   npx -y @fission-ai/openspec@$OPENSPEC_PIN init --tools claude --profile core
   /plugin marketplace add meaningfy-ws/skillery
-  /plugin install meaningfy-engineering meaningfy-ai-coding
+  /plugin install meaningfy-core meaningfy-building
   /plugin install superpowers@claude-plugins-official
   /plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail
 For the full repo scaffold (package, tooling, openspec/, docs, CI) re-run without --minimal.
@@ -419,7 +419,7 @@ Done. Next steps:
      (the meaningfy schema under openspec/schemas/meaningfy/ is already PINNED @ $OPENSPEC_PIN)
   5. Install the Meaningfy skillery (+ ponytail) so CLAUDE.md's skill routing resolves:
        /plugin marketplace add meaningfy-ws/skillery
-       /plugin install meaningfy-engineering meaningfy-ai-coding
+       /plugin install meaningfy-core meaningfy-building
        /plugin install superpowers@claude-plugins-official
        /plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail
   6. Work the Definition-of-Done in references/checklists.md, then shape your first EPIC with

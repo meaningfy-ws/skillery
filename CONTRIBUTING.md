@@ -78,20 +78,20 @@ Follow the [Creating Skills Guide](spec/CREATING_SKILLS.md) to develop your skil
 Add your skill to the **What's inside** table in README.md (columns: Bundle, Skill, Purpose):
 
 ```markdown
-| `meaningfy-ai-coding` | **my-new-skill** | Short purpose |
+| `meaningfy-building` | **my-new-skill** | Short purpose |
 ```
 
 ### Step 3: Register in Marketplace
 
-Add your skill path (nested under its phase subfolder) to the appropriate
-**existing bundle** in `.claude-plugin/marketplace.json`. The value-chain bundles
-are `meaningfy-consulting`, `meaningfy-communication`, `meaningfy-engineering`,
-`meaningfy-ai-coding`, plus the `meaningfy-spine` meta-bundle overlay. The
-validator (`make validate`) enforces that each skill sits in its expected bundle
-(`EXPECTED_BUNDLES` in `tools/repo_lint/lint.py` — update it when adding a skill):
+Add your skill path (flat: `./skills/<skill>`) to the appropriate **role bundle**
+in `.claude-plugin/marketplace.json`. The four bundles are `meaningfy-core`,
+`meaningfy-consulting`, `meaningfy-architecture`, and `meaningfy-building` — every
+skill belongs to exactly one. The validator (`make validate`) enforces that each
+skill sits in its expected bundle (`EXPECTED_BUNDLES` in `tools/repo_lint/lint.py`
+— update it when adding a skill):
 
 ```json
-{ "name": "meaningfy-ai-coding", "skills": ["./skills/clarity-gate", "./skills/my-new-skill"] }
+{ "name": "meaningfy-building", "skills": ["./skills/clarity-gate", "./skills/my-new-skill"] }
 ```
 
 ### Step 4: Create a Pull Request

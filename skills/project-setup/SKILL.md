@@ -115,7 +115,7 @@ references in step 4 still govern each piece.
    ```
    npx -y @fission-ai/openspec@1.4.1 init --tools claude --profile core
    /plugin marketplace add meaningfy-ws/skillery
-   /plugin install meaningfy-engineering meaningfy-ai-coding
+   /plugin install meaningfy-core meaningfy-building
    /plugin install superpowers@claude-plugins-official
    /plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail
    ```

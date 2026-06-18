@@ -7,22 +7,21 @@ them. This page is the single source for what to install and how to wire a proje
 
 ## 1. Install the Meaningfy bundles
 
-From the marketplace (`.claude-plugin/marketplace.json`) — **five bundles**:
+From the marketplace (`.claude-plugin/marketplace.json`) — **four role bundles**; install
+`meaningfy-core` plus the role(s) you wear:
 
 ```
 /plugin marketplace add meaningfy-ws/skillery
-/plugin install meaningfy-consulting        # semantic-consulting-coach
-/plugin install meaningfy-communication     # executive-communication, technical-writing
-/plugin install meaningfy-engineering       # project-setup, cosmic-python, architecture, meaningfy-git-workflow
-/plugin install meaningfy-ai-coding         # epic-planning, clarity-gate, bdd-gherkin, meaningfy-code-review
-/plugin install meaningfy-spine             # meta-bundle: epic-planning, clarity-gate, bdd-gherkin, meaningfy-code-review, cosmic-python
+/plugin install meaningfy-core          # technical-writing, meaningfy-git-workflow, guardrails (everyone)
+/plugin install meaningfy-consulting    # semantic-consulting-coach, decision-package, proposal-writing, estimation, executive-communication
+/plugin install meaningfy-architecture  # architecture, conceptual-modelling
+/plugin install meaningfy-building      # epic-planning, spec-stewardship, clarity-gate, bdd-gherkin, meaningfy-code-review, cosmic-python, project-setup, ci-cd-delivery
 ```
 
-Install only the bundles you need (engineering for Python repos; ai-coding for the
-spec-driven workflow; consulting/communication for advisory work). The `meaningfy-spine`
-meta-bundle is a curated overlay that installs the lifecycle-driving working set; the durable
-spine **assets** (`openspec/` + the forked schema, and `spine/` docs) are projected into a repo
-by `project-setup`, not installed as a skill — see [`../spine/meaningfy-spine-bundle.md`](../spine/meaningfy-spine-bundle.md).
+The **spine is a capability, not a bundle**: `meaningfy-building` carries the skills that drive it,
+and the durable spine **assets** (`openspec/` + the forked schema, and `spine/` docs) are projected
+into a repo by `project-setup`, not installed as a skill — see
+[`../spine/meaningfy-spine.md`](../spine/meaningfy-spine.md).
 
 ## 2. External dependencies
 
@@ -75,7 +74,7 @@ prompt; the repo file carries only what is specific and local, so the two compos
 Skills propagate through the marketplace (`/plugin update`). To project the agentic files
 (`CLAUDE.md`, with `AGENTS.md` as a symlink to it), the `.claude/` layout, and the spine assets
 (`openspec/` + the forked schema) into a repo, use the **`project-setup`** skill (in
-`meaningfy-engineering`):
+`meaningfy-building`):
 
 - It is an interview-driven scaffolder that creates the whole Meaningfy-standard repo (layout,
   root tool configs, tests, agentic files, the `openspec/` spine wiring, Antora docs, CI).

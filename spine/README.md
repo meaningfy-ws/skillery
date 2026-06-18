@@ -32,8 +32,8 @@ as the artifact-lifecycle engine, with a thin Meaningfy fork of its schema.
   Meaningfy artifact vocabulary maps onto OpenSpec-native files, the seed-input
   convention, and the memory/orientation decision.
 - [`lessons-loop.md`](lessons-loop.md) — the lessons-learned → skill-evolution loop.
-- [`meaningfy-spine-bundle.md`](meaningfy-spine-bundle.md) — the contents of the
-  `meaningfy-spine` meta-bundle (EPIC-04 registers it in the marketplace).
+- [`meaningfy-spine.md`](meaningfy-spine.md) — why the spine is a *capability*
+  (`meaningfy-building` skills) + *projected assets*, not a marketplace bundle.
 
 ## The artifact ladder (necessary and sufficient)
 
