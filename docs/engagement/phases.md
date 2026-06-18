@@ -71,4 +71,4 @@ Sustain, scale, and evolve what was built: governance support, semantic operatio
 building. Post-decision continuity.
 
 - **Owner:** *to be shaped* — no skill yet. Governance/ops practices will be crystallised after the
-  dogfood engagement.
+  first real engagement.

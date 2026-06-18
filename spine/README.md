@@ -8,7 +8,7 @@ as the artifact-lifecycle engine, with a thin Meaningfy fork of its schema.
 
 > This directory is the spine's **documentation and conventions**. The live
 > OpenSpec instance — the forked schema, project config, specs store, and the
-> worked example — lives under [`../openspec/`](../openspec). skillery dogfoods
+> worked example — lives under [`../openspec/`](../openspec). skillery runs its own spine on itself —
 > its own spine: the `openspec/` instance here is exercised by skillery itself.
 
 ## Where things live

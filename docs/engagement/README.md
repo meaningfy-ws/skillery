@@ -47,6 +47,6 @@ brainstormed and crystallised, and must not be invented here. Open items:
 - **Service packaging** — how P0–P3 bundle into named, sellable offers.
 - **Fit-for-market** — segment fit, B2B vs B2G motion differences.
 
-These are placeholders, not commitments. They will be shaped after the dogfood engagement, alongside
+These are placeholders, not commitments. They will be shaped after the first real engagement, alongside
 the coaching the [`semantic-consulting-coach`](../../skills/semantic-consulting-coach/SKILL.md)
 provides on the business and service layers.

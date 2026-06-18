@@ -100,7 +100,7 @@ skillery/
 ├── prompts/       # CLAUDE.md.template, global-prompt.md (CLAUDE-canonical; AGENTS.md is a root symlink)
 ├── spec/          # authoring spec, governance, skill-template.md, CREATING_SKILLS.md
 ├── spine/         # the OpenSpec spec-spine docs/conventions
-├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery dogfoods its own spine)
+├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery runs its own spine on itself)
 ├── tools/ + tests/# the self-consistency validator (make validate)
 └── .claude-plugin/# marketplace (5 bundles incl. meaningfy-spine)
 ```

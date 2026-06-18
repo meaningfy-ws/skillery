@@ -43,7 +43,7 @@ instructions) plus the `specs/` corpus itself. So:
 - **If a generated digest is ever wanted** (Q2.4 fallback A), regenerate it
   *deterministically* from `specs/` + open changes **into the `context:` field**
   — like codegen, with a CI sync-check — rather than curating a separate file.
-  Building that generator is **deferred** until EPIC-03 / the dogfood proves an
+  Building that generator is **deferred** until EPIC-03 / the first engagement proves an
   index beyond `specs/` + `context:` is actually needed.
 
 ## Migration: `.claude/memory/epics/` → spine (R10)

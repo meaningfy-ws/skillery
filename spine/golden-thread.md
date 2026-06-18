@@ -65,4 +65,4 @@ no proliferation. Whether they should ever diverge is left open on purpose.
 
 Cross-repo IDs (e.g. a conceptual model living in its own repo, EPIC-06) and the
 upper rungs (requirement → architecture) are convention-only for now. Hardening
-them waits on the architecture-documentation standard and the dogfood gate.
+them waits on the architecture-documentation standard and the first-engagement gate.

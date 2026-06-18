@@ -22,10 +22,10 @@ loop turns delivery experience back into the catalogue, so skillery compounds.
 - Cross-engagement themes that recur graduate into a skill edit or a new skill
   (following [`../spec/CREATING_SKILLS.md`](../spec/CREATING_SKILLS.md)).
 
-## Dogfooding the loop
+## Running the loop on ourselves
 
 Running the spine on **this very series** (skillery's own EPICs) *is* the loop
-dogfooding itself — the internal dogfood (EPIC-00 §6, Q0.3=C). The first real
+the method applied to itself — the internal reference run (EPIC-00 §6, Q0.3=C). The first real
 client engagement then stress-tests the consulting tier. Hard questions raised
 mid-flight are parked in [`../.claude/HARD-QUESTIONS.md`](../.claude/HARD-QUESTIONS.md)
 and a PLAN's `design.md` Open Questions, not guessed.

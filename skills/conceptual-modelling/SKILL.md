@@ -8,7 +8,7 @@ metadata:
 
 # Conceptual Modelling
 
-> **Provisional pending the dogfood gate.** This skill's consulting-facing depth will be refined
+> **Provisional pending the first-engagement gate.** This skill's consulting-facing depth will be refined
 > after the first real engagement that builds a domain model; treat the wiring here as the floor.
 
 ## Overview

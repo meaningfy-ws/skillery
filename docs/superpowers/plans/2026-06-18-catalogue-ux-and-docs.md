@@ -108,7 +108,7 @@ In `tests/test_repo_lint_negative.py`: delete `test_meta_bundle_with_unowned_ski
 ```bash
 # spine docs linked ../skills/<phase>/<skill>; flatten to ../skills/<skill>
 sed -i -E 's#\(\.\./skills/(ai-coding|engineering|consulting|communication)/#(../skills/#g' spine/*.md
-# CLAUDE.md linked skills/engineering/<skill>
+# CLAUDE.md linked skills/<skill>
 sed -i -E 's#\(skills/(ai-coding|engineering|consulting|communication)/#(skills/#g' CLAUDE.md
 grep -rnE '\]\(\.\.?/?skills/(ai-coding|engineering|consulting|communication)/' spine/ CLAUDE.md || echo "no stale phase links"
 ```

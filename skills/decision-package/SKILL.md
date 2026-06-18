@@ -8,7 +8,7 @@ metadata:
 
 # Decision Package
 
-> **Provisional pending the dogfood gate.** The consulting depth here refines after the first real
+> **Provisional pending the first-engagement gate.** The consulting depth here refines after the first real
 > paid P1 engagement; treat this wiring as the floor, not the finished standard.
 
 ## Overview

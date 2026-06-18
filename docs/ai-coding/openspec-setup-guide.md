@@ -1,6 +1,7 @@
 # OpenSpec Setup Guide (v2)
 
-**Audience:** Meaningfy developers replicating the spine layout on a project repo.
+**Audience:** Meaningfy developers replicating the spine — the durable, traceable spec backbone —
+layout on a project repo.
 
 **Purpose:** describe the `openspec/` layout and the `.claude/` memory model the two-tier method
 runs on. This doc **describes**; the **mechanics** of scaffolding a repo are the

@@ -8,7 +8,7 @@ metadata:
 
 # Estimation
 
-> **Provisional pending the dogfood gate.** This wiring is the floor, not the finished standard;
+> **Provisional pending the first-engagement gate.** This wiring is the floor, not the finished standard;
 > refine it after the first real paid engagement is estimated and delivered against.
 
 ## Overview

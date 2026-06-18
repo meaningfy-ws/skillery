@@ -9,7 +9,7 @@
 points; it never restates a skill's rules.
 
 > Supersedes the v1 single-tier method ([ai-coding-methodology.md](ai-coding-methodology.md)),
-> retained for reference until the dogfood engagement closes.
+> retained for reference until the first real engagement closes.
 
 ---
 

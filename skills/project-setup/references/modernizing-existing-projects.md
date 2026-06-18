@@ -5,7 +5,7 @@ skill. The brownfield method (R9, Q9.2=B) is: **audit the existing repo, imagine
 appropriate to it, and propose the upgrade as a shaped EPIC + PLAN — an OpenSpec change — for human
 review, then apply it in safe slices.** It is **not** in-place big-bang patching.
 
-This **dogfoods the spine on the brownfield repo itself**: the modernization is authored as
+This **applies the spine to the brownfield repo itself**: the modernization is authored as
 `openspec/changes/<id>/` (`proposal.md` = the EPIC, `design.md` + `tasks.md` = the PLAN, with
 `specs/` deltas where behaviour is touched). The human reviews and approves the change before any
 slice lands. The detailed migration *recipes* live in the pillar references; this doc sequences them
