@@ -82,7 +82,7 @@ Skills propagate through the marketplace (`/plugin update`). To project the agen
 - It also runs in **brownfield mode** to gap-check and modernise an existing repo.
 - Projection is via this skill **only** — there is no init script.
 
-## 6. CI/CD external boundary (deployable repos)
+## 5. CI/CD external boundary (deployable repos)
 
 For **deployable** application repos, delivery is split:
 
@@ -101,7 +101,7 @@ These are **DevOps-owned and out of the skill's automation scope** — documente
 The CD building blocks and the DevOps decisions to ratify are in the
 [`ci-cd-delivery`](../skills/engineering/ci-cd-delivery/SKILL.md) skill.
 
-## 5. Agents → skills migration note
+## 6. Agents → skills migration note
 
 Earlier versions of this repo shipped five sub-agents. The catalog now ships the **knowledge
 as skills** plus **three thin wrappers** (`implementer`, `code-reviewer`, `epic-planner`).
