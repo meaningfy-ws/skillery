@@ -48,6 +48,11 @@ This repo carries the Meaningfy **spine** under `openspec/` (OpenSpec, schema `m
 
 Drive it with the `/opsx:*` commands (`propose`, `explore`, `apply`, `sync`, `archive` — core profile).
 
+**External method skills land in the spine (binding).** `superpowers` provides *disciplines*, not a
+parallel spec system — its artifacts MUST land in `openspec/changes/<id>/`, never a `docs/superpowers/`
+tree. A **brainstorming** design feeds the **EPIC** (`proposal.md`); **writing-plans is SUPERSEDED** by
+the **PLAN** (`design.md`+`tasks.md`); execution uses superpowers TDD, tracked via `/opsx:apply`.
+
 **Golden thread (cite your parent).** Each artifact cites the one above it: the PLAN (`tasks.md`)
 cites its EPIC id on the first line; specs cite their capability; commits reference the change. This
 is how any commit traces up to the requirement that justifies it.

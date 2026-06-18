@@ -81,3 +81,21 @@ Which skill / superpowers discipline owns each verb. This is the concrete
 
 > The clarity gate (PLAN, semantic) and `openspec validate --strict` (structure,
 > CI) are complementary — see [`README.md`](README.md#two-gates-two-natures).
+
+## superpowers ↔ spine
+
+`superpowers` provides **disciplines** (thinking, testing, execution), **not** a parallel spec
+system. In a spine repo its artifacts land in `openspec/changes/<id>/`, never a `docs/superpowers/`
+tree (a Binding in the repo `CLAUDE.md` enforces this). Map:
+
+| superpowers | role here | lands as |
+|---|---|---|
+| `brainstorming` | thinking method during `explore` / shaping | feeds the **EPIC** (`proposal.md`) — not a separate `docs/superpowers/specs/` design |
+| `writing-plans` | **superseded** inside a spine repo | the **PLAN** (`design.md` + `tasks.md`), derived by [`epic-planning`](../skills/epic-planning/SKILL.md) and gated by [`clarity-gate`](../skills/clarity-gate/SKILL.md) |
+| `test-driven-development` | the build discipline | `apply` — TDD inside [`cosmic-python`](../skills/cosmic-python/SKILL.md) layers |
+| `subagent-driven-development` / `executing-plans` | execution harness | runs `tasks.md`, tracked via `/opsx:apply` |
+| `systematic-debugging`, `verification-before-completion` | quality disciplines | used during `apply` / `verify` |
+
+**Why:** one durable, traceable spec system (the spine), not two. The lifecycle (archive, grooming,
+the orientation index) is owned by [`spec-stewardship`](../skills/spec-stewardship/SKILL.md). Forking
+superpowers into Meaningfy skills is the documented fallback **only if** this Binding proves leaky.
