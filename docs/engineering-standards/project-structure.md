@@ -11,7 +11,16 @@ A repo contains one or more **root modules** (top-level packages, one per deploy
 rather than a single `/src`. The Cosmic Python book uses a single `/src` with `/domain` and
 `/service_layer`; we map those onto our canonical names below.
 
-## Layers inside a module
+## Scaling up: component-first for larger projects
+
+A small service stays one level (just the layers below). A larger project is organised
+**component-first** — `<root>/<component>/{models,adapters,services,entrypoints}` plus one inward-looking
+`core`/`commons` component imported by all (`cosmic-python:PR-COMPONENT-FIRST`). Layers live *inside* each
+component; never the reverse, and never two layouts in parallel (`cosmic-python:AP-PARALLEL-LAYOUTS`).
+Component + tier boundaries are enforced and **groomed** by import-linter — see
+[`project-setup` architecture guardrails](../../skills/project-setup/references/architecture-guardrails.md).
+
+## Layers inside a module (or component)
 
 | Folder | Holds | Depends on |
 |--------|-------|-----------|
