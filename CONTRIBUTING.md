@@ -22,6 +22,8 @@ Before submitting a pull request, ensure your skill meets these requirements:
 - [ ] SKILL.md exists with valid YAML frontmatter
 - [ ] SKILL.md content is ~500 lines or less
 - [ ] Complex content is moved to `references/` directory
+- [ ] SKILL.md has a `## Boundary & Related Skills` section (Owns / Delegates / Related) — **CI-enforced (blocking)**; reciprocal `Related:` links are checked (advisory)
+- [ ] Reusable code rules are **cited from** the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) by id — never restated (single-source-of-authority)
 
 ### Metadata ✓
 - [ ] `name` field is 1-64 characters, lowercase, hyphens only

@@ -20,6 +20,10 @@ The authority chain is flat: all three forms carry the same content at any given
 No form overrides another; they are the same standard expressed in different contexts.
 All other files that reference this standard (e.g. `./CLAUDE.md` in any project repo) **point** to this canon — they do not fork or restate it.
 
+> For the **operational code principles, best-practices, and anti-patterns**, the single source of
+> authority is the [`cosmic-python` catalogue](../../skills/cosmic-python/references/principles-and-anti-patterns.md)
+> (stable ids: `PR-…` / `BP-…` / `AP-…`). This narrative **cites** those ids; it does not restate the rules.
+
 ### User-level vs repo-level CLAUDE.md (DEC-12)
 
 Two distinct `CLAUDE.md` files serve different scopes:
@@ -261,10 +265,11 @@ strong signals that the architecture or responsibilities are drifting:
   different versioned or customer-specific modules) instead of sharing common
   logic through `core` or other dedicated shared sub-modules.
 
-- Relying on raw dictionaries and magic strings in `models` or `services`
-  (for example checking keys everywhere). Prefer domain models, value objects
-  or clear data-transfer structures; use constants or enums for keys and
-  identifiers, and keep raw dict handling in `adapters`.
+- Relying on raw dictionaries and magic strings in **any layer** — including `adapters` and
+  `entrypoints`, not only `models`/`services` (`cosmic-python:AP-FREESTR-ANYLAYER`,
+  `cosmic-python:PR-MODELS-OVER-DICTS`). Any payload that crosses a function/file boundary or is
+  returned to a caller is a model, not a dict (`cosmic-python:AP-DICT-AS-MODEL`); raw-dict handling
+  stays at an adapter's I/O edge and is converted promptly.
 
 - Leaving important decision logic (detection, routing, validation rules,
   variant selection, etc.) without focused unit tests. Any function making

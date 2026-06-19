@@ -90,6 +90,7 @@ the exact split): [`docs/environment-setup.md`](docs/environment-setup.md).
 
 | I want to… | Reach for (in order) |
 |---|---|
+| Know the code rules (principles, anti-patterns, naming, exceptions, config, layering) | the **[code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md)** — owned by `cosmic-python`, the single source; every skill/doc cites its `PR-`/`BP-`/`AP-` ids |
 | Stand up a new repo | `project-setup` skill → scaffolds layout, tooling, tests, docs, CI, and the spine |
 | Build one epic | the loop below (epic-planner → bdd-gherkin → implementer → code-reviewer) |
 | Win / scope a client engagement | `semantic-consulting-coach` (think it through) → `decision-package` (produce it) → `proposal-writing` + `estimation` |
@@ -105,14 +106,16 @@ the exact split): [`docs/environment-setup.md`](docs/environment-setup.md).
 
 | # | Step | `/opsx` verb | Driven by |
 |---|------|-------------|-----------|
-| 1 | Gather seeds + elicit | `explore` | **epic-planner** agent ◦ `epic-planning` (+ `superpowers:brainstorming`) |
+| 1 | Gather seeds + elicit (incl. test-scenario interview) | `explore` | **epic-planner** agent ◦ `epic-planning` (+ `superpowers:brainstorming`) |
 | 2 | Shape the EPIC (= `proposal.md`) | `propose` | **epic-planner** agent ◦ `epic-planning` |
-| 3 | Derive the PLAN (`design.md` + `tasks.md`) | — | **epic-planner** agent ◦ `epic-planning` |
-| 4 | Gate the PLAN (≥9/10) | — | `clarity-gate` skill |
-| 5 | Write acceptance scenarios | — | `bdd-gherkin` skill |
-| 6 | Implement (TDD, layered) | `apply` | **implementer** agent ◦ `cosmic-python` + `superpowers:test-driven-development` |
-| 7 | Verify / review | `verify` | **code-reviewer** agent ◦ `meaningfy-code-review` |
-| 8 | Merge deltas into the living specs | `sync` / `archive` | `spec-stewardship` skill |
+| 3 | Derive the PLAN (`design.md` + `tasks.md`) **+ author `.feature` scenarios** (design-phase artifact) | — | **epic-planner** agent ◦ `epic-planning` **+ `bdd-gherkin`** |
+| 4 | Gate the PLAN (≥9/10, **incl. scenario coverage**) | — | `clarity-gate` skill |
+| 5 | Implement: **step definitions + code** (TDD, layered) | `apply` | **implementer** agent ◦ `cosmic-python` + `superpowers:test-driven-development` |
+| 6 | Verify / review | `verify` | **code-reviewer** agent ◦ `meaningfy-code-review` |
+| 7 | Merge deltas into the living specs | `sync` / `archive` | `spec-stewardship` skill |
+
+> BDD scenario authoring is a **design-phase** activity (the `.feature` files are a PLAN artifact the
+> clarity gate scores for coverage); only **step definitions** are written at implement time.
 
 ## Uninstall & conflicts
 
@@ -141,7 +144,7 @@ Skillery is additive — it rarely *conflicts*, but it can **overlap** with plug
 |---|---|---|
 | [`docs/ai-coding/`](docs/ai-coding/) | the two-tier method + the `/opsx` runbook + DoD/quality gates | you're learning how we build with agents |
 | [`spine/`](spine/) | the spec-backbone conventions (workflows, golden thread, lifecycle) | you're working with `openspec/` / the spine |
-| [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt | you want the durable engineering canon |
+| [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the durable engineering canon |
 | [`docs/engagement/`](docs/engagement/) | the P0–P3 engagement model | you're scoping/running a client engagement |
 | [`docs/philosophy/`](docs/philosophy/) | the mindset behind it all | you want the *why* |
 | [`spec/`](spec/) | how to author a skill (governance + template) | you're contributing a skill |

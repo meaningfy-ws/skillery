@@ -50,7 +50,8 @@ not restate them.
 
 ## The coverage gate
 
-Coverage is **≥ 80%** on production code, higher on new/critical code, and must not drop below the
-prior level. It runs in CI; the gate definition is shared with
+Coverage is **≥ 80% on production code, measured per layer** (`cosmic-python:BP-COVERAGE-PER-LAYER`) —
+a repo can pass overall while one layer (often `models/`) is under-tested — higher on new/critical code,
+and must not drop below the prior level. It runs in CI; the gate definition is shared with
 [dod-quality-gates.md](../ai-coding/dod-quality-gates.md) and owned operationally by
 [`project-setup`](../../skills/project-setup/SKILL.md).
