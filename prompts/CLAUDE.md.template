@@ -13,7 +13,7 @@ Use the skill for the task — do not improvise what a skill already knows.
 
 | Task | Skill |
 |------|-------|
-| Python code structure (models/adapters/services/entrypoints, SOLID, CI) | **meaningfy-building:cosmic-python** |
+| Python code structure (layers, SOLID, CI) + the code principles/anti-patterns **catalogue** (single source) | **meaningfy-building:cosmic-python** |
 | System / solution design (C4, ADRs, contracts) | **meaningfy-architecture:architecture** |
 | New feature or non-trivial change — explore options first | **superpowers:brainstorming** |
 | Feature or bugfix implementation — tests first | **superpowers:test-driven-development** |

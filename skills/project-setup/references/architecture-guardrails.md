@@ -124,3 +124,17 @@ cross-cutting package, an allowed exception — record it as an ADR. Use the
 `docs/.../pages/adr/`. The `.importlinter` comments should point back to the
 prose spec (`code-anatomy.md`) and any ADR, so a future contributor can see *why*
 a contract exists before "fixing" it.
+
+## Keeping the contracts living (grooming)
+
+The `.importlinter` is a **living artifact**, not write-once. It drifts out of date the moment a
+component is added, renamed, split, or a layer appears — and a stale contract either passes vacuously
+(parenthesised optional names that never materialised) or blocks legitimate work.
+
+- **On every refactor / new component / rename:** update the prose spec (`code-anatomy.md`) **and** the
+  contracts in the same change; treat an out-of-date contract as a bug.
+- **Periodically, the agent asks the developer** whether the contracts still reflect the intended
+  architecture (e.g. when touching structure, or at a natural review point) — and grooms them: drop
+  optional names that now exist (so they are really enforced), add contracts for new components/tiers,
+  remove dead exclusions. Never silently weaken a contract to make a build pass — change it deliberately
+  and say why.

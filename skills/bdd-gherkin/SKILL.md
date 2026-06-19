@@ -11,8 +11,11 @@ metadata:
 ## Overview
 
 Translate a specification into precise, business-language Gherkin features that define
-**what** the system should do in observable, testable terms — not **how**. Bridges the
-spec (`epic-planning`) and the implementation.
+**what** the system should do in observable, testable terms — not **how**. This is a
+**design-phase** activity: the `.feature` files are a **PLAN artifact** authored alongside the
+PLAN so `clarity-gate` can score scenario coverage. **Step definitions and production code are NOT
+authored here** — they belong to the implement phase (`superpowers:test-driven-development`).
+Scenario *thinking* (what to prove, which edge cases) is elicited in `epic-planning`'s interview.
 
 ## Quick Start
 
@@ -51,4 +54,4 @@ Scenario Outline: <description>
 **Owns:** feature files + test data. **Does NOT** write step definitions or production code
 (that is the implementer's job, following `cosmic-python` + `superpowers:test-driven-development`),
 and does NOT plan (`epic-planning`) or score specs (`clarity-gate`).
-**Related:** `epic-planning`, `clarity-gate`, `cosmic-python`.
+**Related:** `epic-planning`, `clarity-gate`, `spec-stewardship`, `cosmic-python`.

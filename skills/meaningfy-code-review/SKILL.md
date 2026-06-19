@@ -17,26 +17,32 @@ layering rules rather than restating them.
 
 ## Review checklist
 
+Architecture and code-quality rules are **owned by the catalogue**
+([`cosmic-python:references/principles-and-anti-patterns.md`](../cosmic-python/references/principles-and-anti-patterns.md));
+this checklist cites entry ids, it does not restate them.
+
 ### Architecture conformance
-- [ ] Dependency direction respected: `entrypoints → services → models`, `adapters → models`.
-- [ ] No imports from higher layers into lower layers; no circular deps.
-- [ ] Models contain no I/O or framework dependencies.
-- [ ] Business logic lives in services/models, not adapters/entrypoints.
+- [ ] Dependency direction respected (`cosmic-python` layer law); no higher→lower imports; no cycles.
+- [ ] No I/O/framework deps in models (`AP-IO-IN-MODELS`); business logic in services/models, not the edges (`AP-LOGIC-IN-EDGES`); no cross-variant/`core`-outward/reversed-DAG imports (`AP-CROSS-VARIANT-IMPORT`).
 
 ### Code quality (Clean Code + SOLID)
-- [ ] Small, single-responsibility functions/classes (SRP); intention-revealing names.
-- [ ] No deep nesting, no unnecessary duplication, no clever tricks.
-- [ ] No raw dicts / magic strings in models or services — domain models, constants, enums.
-- [ ] Extend via new classes/strategies, not piled-up conditionals (OCP); depend on abstractions (DIP).
+- [ ] SRP, intention-revealing names, no deep nesting, OCP/DIP (`cosmic-python` SOLID).
+- [ ] No free strings / raw dicts in **any** layer incl. adapters/entrypoints (`AP-FREESTR-ANYLAYER`, `AP-DICT-AS-MODEL`); models over dicts (`PR-MODELS-OVER-DICTS`).
+
+### Reuse & DRY across files
+- [ ] New code surveyed for reuse before being written (`PR-SURVEY-FIRST`) — not a near-duplicate of a sibling.
+- [ ] No constants/mappings duplicated across sibling modules (`AP-DUP-CONST`); shared infra not buried in one module (`AP-MISPLACED-SHARED-INFRA`).
+- [ ] A dict crossing a boundary is a model, not magic keys (`AP-DICT-AS-MODEL`); compact, single-source shape (`PR-SSOT-DRY`, `PR-REUSE-COMPACT`).
+- [ ] No large verbatim external copies (`AP-VERBATIM-EXTERNAL`); validation not duplicated (`AP-DUP-VALIDATION`).
 
 ### Security
-- [ ] No exposed secrets/keys/credentials; input validation at boundaries.
-- [ ] No injection (command/SQL/XSS); no OWASP-top-10 exposure.
+- [ ] No exposed secrets/keys/credentials; input validated once at boundaries (`BP-VALIDATE-AT-BOUNDARY`).
+- [ ] No injection (command/SQL/XSS); no OWASP-top-10 exposure. Sensitive-data handling per `guardrails`.
 
 ### Testing
 - [ ] Unit tests per layer; Gherkin step defs for relevant scenarios.
 - [ ] Edge cases and error scenarios from the EPIC covered.
-- [ ] Coverage meets project threshold (≥ 80%).
+- [ ] Coverage meets the per-layer threshold (`BP-COVERAGE-PER-LAYER`), not only overall.
 
 ### Spec conformance
 - [ ] Matches the EPIC; all acceptance criteria met; no undocumented divergence.
@@ -53,4 +59,4 @@ Report by priority, each finding with **file:line**, **what**, **why** (name the
 
 **Owns:** the review criteria + report format. **Does NOT** perform the read-only run (external
 `code-review` / `code-reviewer` wrapper), fix code, or restate layer rules (`cosmic-python`).
-**Related:** `cosmic-python`, external `code-review`, `superpowers:requesting-code-review`.
+**Related:** `cosmic-python`, `guardrails`, `meaningfy-git-workflow`, external `code-review`, `superpowers:requesting-code-review`.

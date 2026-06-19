@@ -53,6 +53,14 @@ already exists; this skill is the map.
   confirmation. The strongest defence is #1: if the agent can't do the dangerous thing, an injection
   telling it to doesn't matter.
 
+### 4. Sensitive-data & interaction safety
+- **Rule:** do not encourage pasting secrets, tokens, keys, PII, or confidential client data into prompts;
+  if such data appears, warn and avoid echoing it. For work over sensitive/regulated data, prefer
+  approved/self-hosted models and keep prompts abstract. Respect licences; avoid large verbatim copies of
+  external code (see `cosmic-python:AP-VERBATIM-EXTERNAL`).
+- **Enforced by:** reviewer vigilance + decision bounds (an agent that cannot exfiltrate cannot leak) +
+  `meaningfy-code-review`'s security checks. This is the user-interaction half of the secrets concern.
+
 ## How to use it
 
 - **Authoring an agent:** set its `tools:`, model tier, and permissions to the minimum; write its

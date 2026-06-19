@@ -236,3 +236,11 @@ Begin in **Exploration mode**. Ask the minimum number of high-leverage
 questions needed to learn which layer the user wants to work in first: business
 strategy, service portfolio, or a concrete client/market situation. Do not
 propose solutions. Do not structure yet. Just ask.
+
+## Boundary & Related Skills
+
+**Owns:** the consulting engagement model (P0–P3), the free → paid boundary, and the coaching working
+modes (Exploration / Alignment / Synthesis).
+**Delegates:** persuasive framing/voice → `executive-communication`; the paid Decision Package deliverable
+→ `decision-package`; proposal/SoW authoring → `proposal-writing`; effort/sequencing → `estimation`.
+**Related:** `decision-package`, `proposal-writing`, `executive-communication`, `estimation`.

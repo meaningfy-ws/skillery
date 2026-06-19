@@ -40,6 +40,9 @@ EXPECTED_BUNDLES = {
     },
 }
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "gherkin-writer", "documenter"}
+# Non-namespaced skills that legitimately live in OTHER plugins (so an agent may load them
+# without a local skills/<name>/ dir). Namespaced skills (e.g. `superpowers:tdd`) are external by form.
+EXTERNAL_SKILLS = {"stream-coding"}
 # Files/dirs whose content must never be edited (frozen) — excluded from prose checks.
 FROZEN_GLOBS = ("docs/ai-coding/",)
 
@@ -376,10 +379,71 @@ def ownership_claim_report(repo: Path) -> list[str]:
     return out
 
 
+# ------------------------------------------- single-source-of-authority checks (DEC-12)
+_BOUNDARY_HEADING = re.compile(r"^##\s+.*\bboundary\b", re.IGNORECASE | re.MULTILINE)
+_RELATED_PARA = re.compile(r"\*\*Related:?\*\*(.*?)(?:\n\n|\Z)", re.IGNORECASE | re.DOTALL)
+
+
+def boundary_section_present(repo: Path) -> list[str]:
+    """Every SKILL.md MUST declare a Boundary section so its Owns/Delegates/Related graph is
+    explicit (the single-source-of-authority graph is only auditable if every skill states it)."""
+    return [f"{name}: SKILL.md has no '## Boundary ...' section"
+            for name in _skill_dirs(repo)
+            if not _BOUNDARY_HEADING.search(_skill_md(repo, name))]
+
+
+def _agent_skill_lists(repo: Path) -> dict[str, list[str]]:
+    out: dict[str, list[str]] = {}
+    agents_dir = repo / "agents"
+    if not agents_dir.exists():
+        return out
+    for p in sorted(agents_dir.glob("*.md")):
+        fm = _frontmatter(p.read_text(encoding="utf-8")) or {}
+        skills = fm.get("skills")
+        if isinstance(skills, list):
+            out[p.stem] = [str(s) for s in skills]
+    return out
+
+
+def agent_skill_alignment(repo: Path) -> list[str]:
+    """Every skill named in an agents/*.md `skills:` list must exist locally, be plugin-namespaced
+    (contains ':'), or be a known external skill — catches dropped/renamed/typo'd skill references."""
+    local = set(_skill_dirs(repo))
+    out: list[str] = []
+    for agent, skills in _agent_skill_lists(repo).items():
+        for s in skills:
+            if ":" in s or s in EXTERNAL_SKILLS or s in local:
+                continue
+            out.append(f"agent '{agent}' lists unknown skill '{s}'")
+    return out
+
+
+def _related_map(repo: Path) -> dict[str, set[str]]:
+    paths = _skill_paths(repo)
+    names = set(paths)
+    related: dict[str, set[str]] = {}
+    for name, path in paths.items():
+        m = _RELATED_PARA.search(path.read_text(encoding="utf-8"))
+        cited = {t for t in re.findall(r"`([a-z0-9-]+)`", m.group(1))} if m else set()
+        related[name] = {t for t in cited if t in names and t != name}
+    return related
+
+
+def reciprocal_related_report(repo: Path) -> list[str]:
+    """ADVISORY (DEC-12, refined): peer `**Related:**` links should be mutual. Surfaced for triage —
+    NOT blocking, because cross-cluster relatedness is a judgment call and a core reference is cited
+    by more skills than it lists back. Fix the genuine asymmetries; ignore the deliberate ones."""
+    related = _related_map(repo)
+    return [f"'{a}' lists '{b}' as Related, but '{b}' does not reciprocate"
+            for a, cites in related.items() for b in sorted(cites)
+            if a not in related.get(b, set())]
+
+
 ALL_CHECKS = (
     missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
     frontmatter_errors, name_mismatch, expected_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
+    boundary_section_present, agent_skill_alignment,
 )
 
 
@@ -387,6 +451,7 @@ def _print_trigger_notes(repo: Path) -> None:
     for label, notes in (
         ("trigger-probe (Q4.2=B)", trigger_probe_report(repo)),
         ("ownership-tripwire (Q5.2=B)", ownership_claim_report(repo)),
+        ("reciprocal-Related (DEC-12 advisory)", reciprocal_related_report(repo)),
     ):
         if notes:
             print(f"\n(assist) {len(notes)} {label} note(s) — non-blocking:")
