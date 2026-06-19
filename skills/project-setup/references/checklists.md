@@ -77,6 +77,8 @@ multi-component) apply only if the interview selected them.
       `pyproject.toml` `packages` include has no `from`.
 - [ ] `pyproject.toml` is **minimal** — only `[project]`, `[tool.poetry]`,
       `[dependency-groups]`, `[build-system]`; every other tool config is in its own root file.
+- [ ] **Version has a single source of truth** (`cosmic-python:PR-SSOT-DRY`) — one source (a root
+      `VERSION` file or `__init__.__version__`); `pyproject.toml` derives from it. No second hard-coded literal.
 - [ ] **Docs** (if selected): `make build-docs` produces a site under `docs/build/`.
 - [ ] **Infra** (if selected): `infra/compose.yaml` validates (`docker compose … config`);
       `Dockerfile.dockerignore` co-located; `.env.example` present, real `.env` git-ignored.

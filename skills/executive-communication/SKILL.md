@@ -223,3 +223,10 @@ the language is plain, with no em dash and no throat-clearing.
 - **Mixed reasoning in one bucket:** deductive and inductive jumbled. Pick one per bucket.
 - **No close on a board message:** stopping at the argument without implications, risks, and next steps.
 - **Structurally perfect, substantively empty:** see the bland trap above.
+
+## Boundary & Related Skills
+
+**Owns:** the persuasive-communication method — Governing Thought, SCQA, the Minto pyramid, answer-first
+structure, and the Meaningfy company voice (`references/company-voice.md`).
+**Delegates:** spec/EPIC readiness → `clarity-gate`; doc prose mechanics → `technical-writing`.
+**Related:** `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`.

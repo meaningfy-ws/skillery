@@ -118,6 +118,43 @@ def test_ownership_tripwire_flags_a_non_owner_claim(tmp_path):
     assert any("impostor" in n and "clarity-gate" in n for n in notes)
 
 
+def test_missing_boundary_section_is_flagged(tmp_path):
+    # DEC-12: a SKILL.md without a Boundary section must be flagged.
+    _skill(tmp_path, "cosmic-python", body="# body, no boundary heading")
+    assert lint.boundary_section_present(tmp_path)
+
+
+def test_boundary_section_present_passes(tmp_path):
+    _skill(tmp_path, "cosmic-python", body="## Boundary & Related Skills\n**Owns:** x.")
+    assert lint.boundary_section_present(tmp_path) == []
+
+
+def test_agent_unknown_skill_is_flagged(tmp_path):
+    # DEC-12: an agent listing a non-existent, non-external, non-namespaced skill is flagged.
+    (tmp_path / "agents").mkdir()
+    (tmp_path / "agents" / "implementer.md").write_text(
+        "---\nname: implementer\nskills:\n  - cosmic-python\n  - ghost-skill\n"
+        "  - superpowers:tdd\n  - stream-coding\n---\nbody\n", encoding="utf-8")
+    _skill(tmp_path, "cosmic-python")
+    out = lint.agent_skill_alignment(tmp_path)
+    assert any("ghost-skill" in e for e in out)
+    assert not any("superpowers:tdd" in e or "stream-coding" in e or "cosmic-python" in e for e in out)
+
+
+def test_reciprocal_related_asymmetry_is_flagged(tmp_path):
+    # DEC-12 advisory: A lists B as Related but B does not list A back.
+    _skill(tmp_path, "clarity-gate", body="## Boundary\n**Related:** `bdd-gherkin`.")
+    _skill(tmp_path, "bdd-gherkin", body="## Boundary\n**Related:** `epic-planning`.")
+    notes = lint.reciprocal_related_report(tmp_path)
+    assert any("clarity-gate" in n and "bdd-gherkin" in n for n in notes)
+
+
+def test_reciprocal_related_symmetry_passes(tmp_path):
+    _skill(tmp_path, "clarity-gate", body="## Boundary\n**Related:** `bdd-gherkin`.")
+    _skill(tmp_path, "bdd-gherkin", body="## Boundary\n**Related:** `clarity-gate`.")
+    assert lint.reciprocal_related_report(tmp_path) == []
+
+
 def test_clean_fixture_passes_all(tmp_path):
     _skill(tmp_path, "cosmic-python")
     _skill(tmp_path, "project-setup")

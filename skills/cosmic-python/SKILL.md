@@ -26,6 +26,21 @@ This skill pairs with:
 
 ---
 
+## The catalogue is the single source (read this first)
+
+The principles, best-practices, and anti-patterns are owned in ONE place:
+**[`references/principles-and-anti-patterns.md`](references/principles-and-anti-patterns.md)**.
+Every other skill, agent, and the global prompt **cites an entry by id** (e.g.
+`cosmic-python:AP-DICT-AS-MODEL`) and never restates it. The tables in this SKILL.md are *reference*
+("what good looks like"); the catalogue is *authority*. When a code-review finding recurs, add it there.
+
+**Survey & reuse before you write (`PR-SURVEY-FIRST`).** Before adding a new file/class/function, read
+the sibling files in the target package and grep for existing constants, enums, models, and helpers;
+decide reuse / extend / refactor-to-fit *first*. This is the implement-phase entry step — the
+`implementer` agent enforces it; the red-green-refactor *ritual* is owned by `superpowers:test-driven-development`.
+
+---
+
 ## THE MEANINGFY CONTRACT: MINIMISE WTFs PER MINUTE
 
 Our goal is **clean code that passes code review quickly** while keeping developers productive and safe.
@@ -334,7 +349,18 @@ This approach requires **team discipline**. One developer ignoring layers breaks
 - **cosmic-python** ← Code structure within services (this skill)
 - Your **CI/CD tooling** → importlinter, SonarCloud, pytest, tox (configured per Cosmic Python standards)
 
-## BOUNDARY & CANONICAL VOCABULARY
+## Boundary & Related Skills
+
+**Owns:** the **code-principles catalogue** ([`references/principles-and-anti-patterns.md`](references/principles-and-anti-patterns.md))
+— the single source for code principles/best-practices/anti-patterns — plus code structure inside a
+service: the four layers, SOLID, what to test per layer, and CI guardrails.
+**Delegates:** TDD ritual → `superpowers:test-driven-development`; system design/topology/contracts →
+`architecture`; domain model + `make generate-models` → `conceptual-modelling`; commit/PR mechanics →
+`meaningfy-git-workflow`; sensitive-data interaction safety → `guardrails`.
+**Related:** `architecture`, `meaningfy-code-review`, `bdd-gherkin`, `guardrails`,
+`conceptual-modelling`, `ci-cd-delivery`, `meaningfy-git-workflow`.
+
+### Canonical vocabulary
 
 **This skill owns** code structure inside a service: the four layers, SOLID, what to test per
 layer, and CI guardrails. It does **NOT** own:

@@ -28,7 +28,10 @@ regenerating the orientation index — belongs to [`spec-stewardship`](../spec-s
 2. **Elicit** (`/opsx:explore` + `superpowers:brainstorming`). Drive a *myriad of clarifying
    questions*, **one concern at a time**, to surface and decide every ambiguity, conflict, and
    assumption **before** writing the EPIC. After each round, summarise what you understood and
-   confirm. Make no silent assumptions.
+   confirm. Make no silent assumptions. **Include a test-scenario interview**: help the human enumerate
+   what the EPIC must *prove* — key assertions, scenarios, edge cases — so the design phase can author
+   `.feature` coverage (handed to [`bdd-gherkin`](../bdd-gherkin/SKILL.md); the PLAN's design half
+   references that coverage and `clarity-gate` scores it). Step definitions stay in implement.
 3. **Archive the seeds.** Write the captured seeds and the Q&A record to `changes/<id>/inputs/`,
    marked **secondary** and **never deleted or groomed** — the authored EPIC supersedes them but does
    not replace them (the EPIC is the primary, shaped truth).

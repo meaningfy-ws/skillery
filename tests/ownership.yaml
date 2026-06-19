@@ -21,3 +21,8 @@ capabilities:
   - tag: tdd-loop
     owner: "external:superpowers"
     claim_patterns: ["red.?green.?refactor"]
+  - tag: code-principles-catalogue
+    owner: cosmic-python
+    # Guards against REGRESSION (re-narrowing the rule / restating prose), NOT id citation —
+    # citing `AP-*`/`PR-*` ids is the desired behaviour. Flags the old models/services narrowing.
+    claim_patterns: ["magic strings in models or services", "raw dicts.{0,20}in models or services"]

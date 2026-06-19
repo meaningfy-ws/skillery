@@ -45,8 +45,10 @@ enough — the gate is designed to surface what the prose quietly assumes.
 method), writing code (`cosmic-python`), or writing the docs themselves (`technical-writing`).
 The gate *judges*; it does not author.
 
-**Related:** `epic-planning` (produces the EPIC the gate scores), `stream-coding` (the
-doc-first method this gate sits inside), `technical-writing` (applies the lightweight check).
+**Related:** `epic-planning` (produces the EPIC the gate scores), `bdd-gherkin` (authors the
+design-phase `.feature` coverage the gate scores), `spec-stewardship` (lifecycle after gating),
+`guardrails` (behaviour gate alongside this content gate), `stream-coding` (the doc-first method this
+gate sits inside), `technical-writing` (applies the lightweight check).
 
 ## Tips
 

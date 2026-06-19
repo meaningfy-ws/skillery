@@ -12,6 +12,7 @@ tools: [Read, Write, Grep, Glob, AskUserQuestion]
 skills:
   - epic-planning
   - clarity-gate
+  - bdd-gherkin
   - stream-coding
 ---
 

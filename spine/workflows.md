@@ -72,10 +72,9 @@ Which skill / superpowers discipline owns each verb. This is the concrete
 |---|---|
 | `explore` | `superpowers:brainstorming` + [`epic-planning`](../skills/epic-planning) elicitation |
 | `propose` | [`epic-planning`](../skills/epic-planning) (shapes the EPIC = proposal.md) |
-| derive PLAN | [`epic-planning`](../skills/epic-planning) (design.md + tasks.md) |
-| clarity gate | [`clarity-gate`](../skills/clarity-gate) (semantic ≥9/10 on the PLAN) |
-| specs (deltas) | [`bdd-gherkin`](../skills/bdd-gherkin) feeds executable `.feature`s off the SHALL+GWT |
-| `apply` | `superpowers:test-driven-development` + [`cosmic-python`](../skills/cosmic-python) |
+| derive PLAN | [`epic-planning`](../skills/epic-planning) (design.md + tasks.md) + [`bdd-gherkin`](../skills/bdd-gherkin) authors `.feature` coverage as a **design-phase** PLAN artifact off the SHALL+GWT |
+| clarity gate | [`clarity-gate`](../skills/clarity-gate) (semantic ≥9/10 on the PLAN **incl. scenario coverage**) |
+| `apply` | `superpowers:test-driven-development` (step definitions + code) + [`cosmic-python`](../skills/cosmic-python) (incl. `PR-SURVEY-FIRST`) |
 | `verify` | [`meaningfy-code-review`](../skills/meaningfy-code-review) + `superpowers:verification-before-completion` |
 | `sync` / `archive` | spine convention (deterministic; kept out of the LLM path) |
 

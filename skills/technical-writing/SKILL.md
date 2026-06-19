@@ -22,14 +22,12 @@ established terminology (read `MEMORY.md` and existing docs first).
 - **Documentation pages** — AsciiDoc (Antora) or Markdown for `docs/`.
 - **README updates.**
 
-## Lightweight clarity check (apply to everything you write)
+## Clarity check (apply to everything you write)
 
-- [ ] **Actionable** — the reader can act on it; no aspirational filler.
-- [ ] **Current** — reflects actual state, not a future wish; planned items clearly marked as planned.
-- [ ] **Specific** — precise references (file path + section anchor), no vague "see elsewhere".
-- [ ] **Single source** — link instead of copying; don't duplicate another doc's content.
-
-This is the *lightweight* variant; the full 13-item gate (for specs) lives in the `clarity-gate` skill.
+Apply the **lightweight clarity check owned by [`clarity-gate`](../clarity-gate/SKILL.md)**
+(actionable · current · specific references · single-source). It is defined there; this skill
+*applies* it to prose and does not restate the criteria. The full 13-item gate (for specs) also
+lives in `clarity-gate`.
 
 ## Writing style
 

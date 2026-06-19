@@ -33,6 +33,14 @@ This file carries only project orchestration glue.
 4. If impact is HIGH/CRITICAL, **report it and stop** before editing — never silently
    edit high-risk symbols.
 
+## Survey & reuse before writing (cosmic-python:PR-SURVEY-FIRST)
+Before adding any new file/class/function: read the sibling files in the target package and grep for
+existing constants, enums, models, and helpers. Decide **reuse / extend / refactor-to-fit first** — do
+not write a near-duplicate beside an existing one. Shared symbols live in one module
+(`AP-DUP-CONST`); a payload crossing a boundary is a model, not a dict (`AP-DICT-AS-MODEL`); no free
+strings in any layer (`AP-FREESTR-ANYLAYER`). The catalogue is `cosmic-python`'s
+`references/principles-and-anti-patterns.md`.
+
 ## The loop (details in stream-coding + TDD skills)
 Generate (tests first) → Verify (run tests immediately) → Integrate (present, get consent).
 On a **design-level** failure, fix the spec, not the code (Rule of Divergence); on a trivial

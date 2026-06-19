@@ -7,7 +7,7 @@ not the full standard (that lives in the skills and `docs/engineering-standards/
 Use the installed skills; they are the authoritative, tested standards. Do not improvise
 what a skill already knows.
 
-- Python structure → **meaningfy-building:cosmic-python**; design → **meaningfy-architecture:architecture**
+- Python structure + code principles/anti-patterns **catalogue** (single source) → **meaningfy-building:cosmic-python**; design → **meaningfy-architecture:architecture**
 - Feature/bugfix → **superpowers:test-driven-development** first; debugging → **superpowers:systematic-debugging**
 - Planning → **meaningfy-building:epic-planning**; spec readiness → **meaningfy-building:clarity-gate**
 - Commits/PRs → **meaningfy-core:meaningfy-git-workflow**; pre-PR review → **meaningfy-building:meaningfy-code-review**
