@@ -133,6 +133,32 @@ entrypoints → services → models
 
 ---
 
+## Scaling up: component organization (`PR-COMPONENT-FIRST`)
+
+A small service stays **one level** — just the four layers. A larger project is **component-first**:
+
+```
+<root>/
+  core/            # or commons — shared models/adapters/services; imported by all, imports none
+    models/  adapters/  services/
+  <component-a>/   # e.g. loader/
+    models/  adapters/  services/  entrypoints/
+  <component-b>/
+    models/  adapters/  services/  entrypoints/
+```
+
+- Layers live **inside** each component. **Never** top-level `services/<component>/` (layer-first with a
+  component nested in it) — that is `AP-PARALLEL-LAYOUTS`. Pick ONE layout per package and finish the migration.
+- `core`/`commons` is the inward-looking shared component (`AP-CROSS-VARIANT-IMPORT`): others import it; it
+  imports none of them; it has no `entrypoints/`.
+- Boundaries are **enforced, not hoped**: import-linter contracts for per-component layers, a tier hierarchy
+  across components, and `commons` isolation — owned by
+  [`project-setup`](../project-setup/references/architecture-guardrails.md), which also sets the **grooming
+  cadence** (revise the contracts on every refactor / new component; the agent asks the developer
+  periodically whether they still fit).
+
+---
+
 ## ONE-MINUTE CODE STRUCTURE CHECK
 
 **For each function/class, ask:**

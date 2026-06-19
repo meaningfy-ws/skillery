@@ -107,7 +107,8 @@ references in step 4 still govern each piece.
    [`references/layout.md`](references/layout.md) + [`references/config-files.md`](references/config-files.md).
 4. **Fill the pillars**, each governed by a reference:
    - Code & architecture → [`references/layout.md`](references/layout.md) + [`references/architecture-guardrails.md`](references/architecture-guardrails.md)
-   - Tooling & config files → [`references/config-files.md`](references/config-files.md)
+   - Tooling & config files → [`references/config-files.md`](references/config-files.md);
+     application settings (the mandated `PR-CONFIG-DECOUPLED` pattern) → [`references/settings-pattern.md`](references/settings-pattern.md)
    - Tests (TDD+BDD) → [`references/testing-setup.md`](references/testing-setup.md)
    - Agentic setup (CLAUDE-canonical, memory index) → [`references/agentic-setup.md`](references/agentic-setup.md)
    - The spine (openspec/, pinned schema, /opsx:*, golden thread) → [`references/spine-projection.md`](references/spine-projection.md)

@@ -57,6 +57,14 @@
 - [x] 8.2 Confirm every G1–G5 (global-prompt) and the cross-skill audit findings have landed; mark both audits resolved
 - [x] 8.3 Run `make validate` (now SSOT-enforcing) green end-to-end
 
+## 9. Second tranche — rdf-differ findings (DEC-15/16/17)
+
+- [x] 9.1 Catalogue: add `PR-COMPONENT-FIRST`, `PR-CONFIG-DECOUPLED`, `BP-DOMAIN-REVEALING-NAMES`, `BP-EXCEPTIONS-MODULE`, `BP-CONSTANTS-HOME`, `AP-GENERIC-MODULE-NAMES`, `AP-OVER-FRAGMENTATION`, `AP-PARALLEL-LAYOUTS`, `AP-EXCEPTIONS-EMBEDDED`; extend `AP-DICT-AS-MODEL` with the entrypoint dict-return example
+- [x] 9.2 cosmic-python SKILL.md: add the "Scaling up: component organization" section (root → components → layers + core/commons; import-linter + grooming cite)
+- [x] 9.3 project-setup: add the import-linter **grooming cadence** to `references/architecture-guardrails.md`
+- [x] 9.4 project-setup: new `references/settings-pattern.md` (the `PR-CONFIG-DECOUPLED` reference impl + mandated principle); wire it into the SKILL.md pillar list
+- [x] 9.5 Archive `inputs/rdf-differ-findings.md`; `make validate` green
+
 ## Roadmap
 
 - [x] 1.1 · 1.2 · 1.3 · 1.4 → [ ] 2.1 · 2.2 · 2.3 → [ ] 3.1 · 3.2 · 3.3 · 3.4 → [ ] 4.1 · 4.2 · 4.3 · 4.4 → [ ] 5.1 · 5.2 · 5.3 · 5.4 → [ ] 6.1 · 6.2 · 6.3 · 6.4 → [ ] 7.1 · 7.2 · 7.3 · 7.4 · 7.5 → [ ] 8.1 · 8.2 · 8.3

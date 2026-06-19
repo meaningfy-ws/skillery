@@ -87,3 +87,28 @@ SHALL cover the delegations its primary skill declares; ownership claims SHALL b
 
 - **WHEN** an `agents/*.md` primary skill delegates to a skill the agent does not load
 - **THEN** the validator reports the misalignment and fails the build
+
+### Requirement: Larger projects are organised component-first with enforced, groomed guardrails
+
+A larger project SHALL be organised **component-first** (`<root>/<component>/{models,adapters,services,
+entrypoints}` plus one inward-looking `core`/`commons` component), never layer-first with components nested
+inside layers, and never two layouts in parallel. Component and tier boundaries SHALL be enforced by
+import-linter and the contracts SHALL be groomed when components are added/renamed/refactored.
+
+#### Scenario: A component-first layout with core
+
+- **WHEN** a project grows beyond a single small service
+- **THEN** each component owns its layers, a `core`/`commons` component is imported by others and imports
+  none of them, and `.importlinter` contracts enforce per-component layers + tier hierarchy + commons isolation
+
+### Requirement: Application configuration is consumed decoupled from its source
+
+When a project has settings, code SHALL consume them through typed config classes resolved by an injected
+resolver (keyed by field name), never via scattered direct environment reads; projects with no settings skip
+this entirely. The principle is mandatory; the `env_property`/`ConfigResolverABC` implementation is a reference.
+
+#### Scenario: Config consumed without knowing the source
+
+- **WHEN** code reads a configuration value
+- **THEN** it reads a typed field off a config class (resolver-injected), and the resolver can be swapped
+  (e.g. a default resolver in tests) without changing the consumer

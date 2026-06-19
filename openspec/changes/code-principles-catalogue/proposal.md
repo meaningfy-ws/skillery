@@ -88,6 +88,21 @@ one place.**
   lightweight check instead of restating it; the **coverage rule is owned once** (catalogue, *with the
   per-layer nuance* cosmic-python carries) and `meaningfy-code-review` / `project-setup` cite it — closing the
   per-layer-vs-overall divergence (audit A/B). — *same de-duplication discipline, applied to every hit the audit found.*
+- **DEC-15 (component-first organisation + living import guardrails)**: larger projects are organised
+  **component-first** (`<root>/<component>/{layers}` + a `core`/`commons` imported by all) — catalogue
+  `PR-COMPONENT-FIRST`, with a "Scaling up" section in cosmic-python. import-linter enforces per-component
+  layers + tier hierarchy + commons-isolation (already in `project-setup`), now with a **grooming cadence**
+  (revise on refactor/new component; the agent asks the developer periodically). — *from the rdf-differ
+  half-migrated layout + the mssdk/ers `.importlinter` exemplars.*
+- **DEC-16 (config consumption decoupled from source)**: `PR-CONFIG-DECOUPLED` is **mandated when a project
+  has settings** (skip when none): typed config classes, source-agnostic, resolver-injected. The
+  `env_property`/`ConfigResolverABC` reference impl lives in `project-setup/references/settings-pattern.md`
+  — the *principle* is mandatory, the *impl* a starting point. — *user (b): essential is decoupled, maintainable consumption.*
+- **DEC-17 (naming / exceptions / constants / fragmentation conventions)**: new catalogue entries —
+  `BP-DOMAIN-REVEALING-NAMES` + `AP-GENERIC-MODULE-NAMES` (no `port.py`/`factory.py`), `BP-EXCEPTIONS-MODULE` +
+  `AP-EXCEPTIONS-EMBEDDED` (always `exceptions.py`, per-layer, reuse `core` first), `BP-CONSTANTS-HOME` (small
+  reusables in `__init__.py`; shared domain vocab is a `core` resource), `AP-OVER-FRAGMENTATION`,
+  `AP-PARALLEL-LAYOUTS`, and the entrypoint dict-return example on `AP-DICT-AS-MODEL`. — *rdf-differ findings.*
 - **DEC-5**: **Survey-&-reuse-first** is a catalogue *practice*; its *enforcement hook* is added to the
   `implementer` agent wrapper + the opsx implement phase + `spine/workflows.md` — **not** a new
   cosmic-python workflow. — *put the behaviour where the harness can honour it.*
