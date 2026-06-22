@@ -34,7 +34,7 @@ Meaningfy skills reference these by name. They are **not** vendored here.
 | `superpowers` | TDD, systematic debugging, verification-before-completion, brainstorming — the universal disciplines our skills point to instead of restating | `/plugin install superpowers@claude-plugins-official` |
 | `stream-coding` | The documentation-first delivery method (Work Shape → spec → generate-verify-integrate) | install the external `stream-coding` skill |
 | `ponytail` | YAGNI / minimal-code discipline — the routing target for "keep the code minimal, avoid over-engineering" (pairs with `cosmic-python`; wired into `project-setup`'s scaffolded `CLAUDE.md`). Ships `/ponytail`, `/ponytail-review`, `/ponytail-audit`, `/ponytail-debt` | `/plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail` |
-| `@fission-ai/openspec` | **The spec-spine engine.** OpenSpec is the artifact-lifecycle engine the Meaningfy spine is built on — it provides the `/opsx:*` slash-commands (`propose`, `explore`, `apply`, `sync`, `archive` on the core profile) and the change → durable-spec store. A repo wires it with `openspec init`. Pinned version in [`../spine/openspec-version.txt`](../spine/openspec-version.txt) (currently `1.4.1`). See [`../spine/README.md`](../spine/README.md) and [`../spine/workflows.md`](../spine/workflows.md) | `npm install -g @fission-ai/openspec@1.4.1` (or run via `npx @fission-ai/openspec@1.4.1`) |
+| `@fission-ai/openspec` | **The spec-spine engine.** OpenSpec is the artifact-lifecycle engine the Meaningfy spine is built on — it provides the `/opsx:*` slash-commands (`propose`, `explore`, `apply`, `sync`, `archive` on the core profile) and the change → durable-spec store. A repo wires it with `openspec init --tools claude --profile core` (this registers the `/opsx:*` commands and the backing skills under the repo's `.claude/`). Pinned version in [`../spine/openspec-version.txt`](../spine/openspec-version.txt) (currently `1.4.1`). See [`../spine/README.md`](../spine/README.md) and [`../spine/workflows.md`](../spine/workflows.md) | `npm install -g @fission-ai/openspec@1.4.1` (or run via `npx @fission-ai/openspec@1.4.1`) |
 
 ### Optional / recommended
 
@@ -63,6 +63,15 @@ Installation splits across two scopes. Put each thing where it belongs and avoid
 through `/plugin update`; per-project pinning only records which of them a repo relies on. The
 constitution (durable standards) is the same across all your work, so it belongs in the global
 prompt; the repo file carries only what is specific and local, so the two compose without drift.
+
+> **`/opsx:*` command scope.** `openspec init --tools claude --profile core` writes the commands
+> **per repo** (under `./.claude/`, gitignored). The commands are **schema-agnostic** — they read
+> each repo's `openspec/config.yaml` at runtime — so to get them in *every* project without
+> re-running init, copy them once to user level:
+> `cp -r ./.claude/commands/opsx ~/.claude/commands/ && cp -r ./.claude/skills/openspec-* ~/.claude/skills/`.
+> The Meaningfy schema, by contrast, **cannot be global**: OpenSpec resolves schemas project-local
+> only (`openspec schema which` → `Source: project`). Each repo therefore carries its own pinned
+> `openspec/schemas/meaningfy/` fork — projected by `project-setup`, never installed once globally.
 
 > **CLAUDE-canonical.** `CLAUDE.md` is the canonical agentic file (Claude Code loads it); the
 > repo-root `AGENTS.md` is a symlink → `CLAUDE.md` for AGENTS-reading tools. Templates live in

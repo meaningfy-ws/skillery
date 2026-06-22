@@ -64,7 +64,7 @@ Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implem
 | **Mandatory** | `superpowers` | TDD, debugging, brainstorming, verification disciplines | `/plugin install superpowers@claude-plugins-official` |
 | | `stream-coding` | the documentation-first build method | external skill (see env-setup) |
 | | `ponytail` | YAGNI / minimal-code discipline | `/plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail` |
-| | **OpenSpec** | the spine engine + `/opsx:*` commands | `npm i -g @fission-ai/openspec` then `openspec init` per repo |
+| | **OpenSpec** | the spine engine + `/opsx:*` commands | `npm i -g @fission-ai/openspec`, then `openspec init --tools claude --profile core` per repo (see env-setup) |
 | **Optional** | `commit-commands` | commit/push/PR mechanics (git-workflow delegates here) | `/plugin install commit-commands@claude-plugins-official` |
 | | `code-review` | runs a read-only PR review (pairs with `meaningfy-code-review`) | `/plugin install code-review@claude-plugins-official` |
 | | `gitnexus` · `context7` | code-intelligence · live library docs | external plugins |
