@@ -36,8 +36,16 @@ lives in `clarity-gate`.
 - AsciiDoc: follow Antora conventions (`docs/antora.yml`, `docs/antora-playbook.yml`).
 - Markdown: standard GitHub-flavored.
 
+### Explanation sub-mode
+
+The defaults above suit Reference and How-to docs. When the page is a Diátaxis **Explanation** (an
+explainer, a "how X works" narrative, broad-audience teaching prose), borrow the texture craft from
+[`explanatory-writing`](../explanatory-writing/SKILL.md) — one controlling metaphor, a concrete
+example beside every abstract claim, self-answered question pivots. The terse/tables default still
+governs Reference and How-to output.
+
 ## Boundary & Related Skills
 
 **Owns:** documentation, explanations, summaries, docstrings. **Does NOT** plan (`epic-planning`),
 run the full clarity gate (`clarity-gate`), or write/modify production code or tests.
-**Related:** `clarity-gate` (full gate), `epic-planning`.
+**Related:** `clarity-gate` (full gate), `epic-planning`, `explanatory-writing` (Explanation-quadrant texture).
