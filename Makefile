@@ -1,4 +1,4 @@
-.PHONY: install validate lint test validate-spine
+.PHONY: install validate lint test validate-spine fix-spec-links
 
 install:
 	python3 -m venv .venv && . .venv/bin/activate && pip install -q -r requirements-dev.txt
@@ -8,6 +8,12 @@ validate: lint test
 
 lint:
 	. .venv/bin/activate && python -m tools.repo_lint
+
+# fix-spec-links = auto-correct relative-link depth in openspec/specs after an
+# `openspec archive` (the archive copies a delta's links verbatim). Run it right
+# after archiving; `lint` (broken_links) is the safety net if you forget.
+fix-spec-links:
+	. .venv/bin/activate && python -m tools.repo_lint --fix
 
 test:
 	. .venv/bin/activate && python -m pytest tests/ -q

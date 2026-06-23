@@ -9,6 +9,7 @@ trivially.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -22,22 +23,13 @@ README = "README.md"
 # in CONTRIBUTING. The established `architecture` skill is ~618 lines and fine.
 MAX_SKILL_LINES = 650
 
-# The ROLE bundle map (single source of truth for bundle composition).
-# Bundles are organised by the role/persona you install (a small `core` holds the
-# cross-cutting skills so every skill lives in exactly ONE bundle — no overlays).
-# Disk is flat (`skills/<skill>/`); bundles group only in marketplace.json.
-EXPECTED_BUNDLES = {
-    "meaningfy-core": {"technical-writing", "explanatory-writing", "meaningfy-git-workflow", "guardrails"},
-    "meaningfy-consulting": {
-        "semantic-consulting-coach", "decision-package", "proposal-writing",
-        "estimation", "executive-communication",
-    },
-    "meaningfy-architecture": {"architecture", "conceptual-modelling"},
-    "meaningfy-building": {
-        "epic-planning", "spec-stewardship", "clarity-gate", "bdd-gherkin",
-        "meaningfy-code-review", "cosmic-python", "project-setup", "ci-cd-delivery",
-        "meaningfy-release",
-    },
+# The ROLE taxonomy: the four bundles a skill may live in. Bundle *membership* is
+# read from marketplace.json — its single source of truth — so adding a skill never
+# means editing this file. Only the set of valid role names is pinned here (it is
+# stable and small). Every skill lives in exactly ONE bundle — no overlays. Disk is
+# flat (`skills/<skill>/`); bundles group only in marketplace.json.
+EXPECTED_BUNDLE_NAMES = {
+    "meaningfy-core", "meaningfy-consulting", "meaningfy-architecture", "meaningfy-building",
 }
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "gherkin-writer", "documenter"}
 # Non-namespaced skills that legitimately live in OTHER plugins (so an agent may load them
@@ -190,24 +182,36 @@ def name_mismatch(repo: Path) -> list[str]:
     return out
 
 
-def expected_bundle_membership(repo: Path) -> list[str]:
-    """Placement check: every registered skill sits in its expected bundle, and
-    no unknown bundle names appear. Incremental-safe — does not require all
-    expected skills to exist yet."""
-    reverse = {s: b for b, skills in EXPECTED_BUNDLES.items() for s in skills}
-    out: list[str] = []
+def _bundle_membership(repo: Path) -> dict[str, set[str]]:
+    """Bundle name -> set of skill names, read from marketplace.json (the truth)."""
+    out: dict[str, set[str]] = {}
     for plugin in _marketplace(repo).get("plugins", []):
-        bundle = plugin.get("name")
-        if bundle not in EXPECTED_BUNDLES:
-            out.append(f"unknown bundle '{bundle}' (not in EXPECTED_BUNDLES)")
-            continue
-        for raw in plugin.get("skills", []):
-            skill = raw.replace("./skills/", "").strip("/").split("/")[-1]
-            want = reverse.get(skill)
-            if want is None:
-                out.append(f"skill '{skill}' is not in EXPECTED_BUNDLES")
-            elif want != bundle:
-                out.append(f"skill '{skill}' in '{bundle}', expected '{want}'")
+        out[plugin.get("name")] = {
+            raw.replace("./skills/", "").strip("/").split("/")[-1]
+            for raw in plugin.get("skills", [])
+        }
+    return out
+
+
+def expected_bundle_membership(repo: Path) -> list[str]:
+    """Placement check with marketplace.json as the source of truth: every bundle is
+    a known role, every skill lives in exactly one bundle, and every skill dir is
+    registered. No per-skill expectations are duplicated in this file."""
+    out: list[str] = []
+    membership = _bundle_membership(repo)
+    for bundle in membership:
+        if bundle not in EXPECTED_BUNDLE_NAMES:
+            out.append(f"unknown bundle '{bundle}' (not a role bundle)")
+    skill_to_bundles: dict[str, list[str]] = {}
+    for bundle, skills in membership.items():
+        for s in skills:
+            skill_to_bundles.setdefault(s, []).append(bundle)
+    for s, bundles in sorted(skill_to_bundles.items()):
+        if len(bundles) > 1:
+            out.append(f"skill '{s}' is in multiple bundles: {sorted(bundles)}")
+    for name in _skill_dirs(repo):
+        if name not in skill_to_bundles:
+            out.append(f"skill dir '{name}' is not registered in any bundle")
     return out
 
 
@@ -274,6 +278,57 @@ def orphan_path_mentions(repo: Path, banned: list[str]) -> list[str]:
     return out
 
 
+# Top-level repo dirs a spec may link into; bounds the auto-fixer so it never
+# rewrites an incidental same-named sibling file.
+_LINKABLE_TOPDIRS = {"skills", "docs", "spine", "openspec", "prompts", "agents", "spec", "tools", "tests"}
+
+
+def groomed_spec_purpose(repo: Path) -> list[str]:
+    """Archived specs must have their Purpose groomed, not left as the archive
+    placeholder. The `openspec archive` step writes a `TBD - created by archiving`
+    Purpose that `validate --strict` does not catch; this does."""
+    specs = repo / "openspec" / "specs"
+    if not specs.exists():
+        return []
+    return [f"{s.relative_to(repo)}: Purpose still holds the archive placeholder"
+            for s in sorted(specs.glob("**/spec.md"))
+            if "TBD - created by archiving" in s.read_text(encoding="utf-8")]
+
+
+_REL_LINK = re.compile(r"\]\(((?:\.\./)+)([^)#]+?)(#[^)]*)?\)")
+
+
+def normalize_spec_links(repo: Path) -> list[str]:
+    """Auto-fix: rewrite `(../)+<topdir>/...` links under openspec/specs/ to the
+    correct depth for the file's location. `openspec archive` copies a delta's
+    relative links verbatim, so a delta two levels deeper than its merged home
+    leaves over-deep links; this recomputes them. Returns the fixes applied and
+    writes them in place."""
+    specs = repo / "openspec" / "specs"
+    if not specs.exists():
+        return []
+    fixes: list[str] = []
+    for spec in sorted(specs.glob("**/spec.md")):
+        text = spec.read_text(encoding="utf-8")
+
+        def repl(m: re.Match) -> str:
+            up, rest, anchor = m.group(1), m.group(2), m.group(3) or ""
+            if rest.split("/")[0] not in _LINKABLE_TOPDIRS:
+                return m.group(0)
+            target = repo / rest
+            if not target.exists():
+                return m.group(0)
+            correct = os.path.relpath(target, spec.parent)
+            if correct != up + rest:
+                fixes.append(f"{spec.relative_to(repo)}: {up}{rest} -> {correct}")
+            return f"]({correct}{anchor})"
+
+        new = _REL_LINK.sub(repl, text)
+        if new != text:
+            spec.write_text(new, encoding="utf-8")
+    return fixes
+
+
 def readme_inventory_gaps(repo: Path) -> list[str]:
     readme = _read(repo, README)
     out: list[str] = []
@@ -288,7 +343,7 @@ def templates_mirrored(repo: Path) -> list[str]:
     agents = repo / "prompts/AGENTS.md.template"
     if not (claude.exists() and agents.exists()):
         return []  # WS4 concern; skip until both exist
-    skills = set(_skill_dirs(repo)) | {s for b in EXPECTED_BUNDLES.values() for s in b}
+    skills = set(_skill_dirs(repo)) | {s for ss in _bundle_membership(repo).values() for s in ss}
 
     def named(text: str) -> set[str]:
         return {s for s in skills if s in text}
@@ -443,7 +498,7 @@ ALL_CHECKS = (
     missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
     frontmatter_errors, name_mismatch, expected_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
-    boundary_section_present, agent_skill_alignment,
+    boundary_section_present, agent_skill_alignment, groomed_spec_purpose,
 )
 
 
@@ -461,7 +516,13 @@ def _print_trigger_notes(repo: Path) -> None:
 
 # -------------------------------------------------------------- entrypoint
 def main(argv: list[str] | None = None) -> int:
-    repo = Path(argv[0]) if argv else Path(__file__).resolve().parents[2]
+    args = list(argv or [])
+    fix = "--fix" in args
+    args = [a for a in args if a != "--fix"]
+    repo = Path(args[0]) if args else Path(__file__).resolve().parents[2]
+    if fix:
+        for f in normalize_spec_links(repo):
+            print(f"fixed spec link: {f}")
     problems: list[str] = []
     for check in ALL_CHECKS:
         for p in check(repo):

@@ -32,6 +32,9 @@ author in openspec/changes/<id>/     (epic-planning: proposal.md + design.md + t
 
 - **Archive is deterministic** — keep it out of the LLM-generation path. Run
   `openspec validate --strict` first; archive blocks on invalid deltas.
+- **After archive, run `make fix-spec-links`.** The archive copies a delta's relative links into
+  `specs/` verbatim, so a delta nested deeper than its merged home leaves over-deep `../` links.
+  The auto-fixer recomputes the depth; the validator's `broken_links` check is the safety net.
 - **Seed inputs survive.** `changes/<id>/inputs/` is preserved with the archived change — never
   deleted or groomed (traceability).
 
