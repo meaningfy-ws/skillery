@@ -59,6 +59,15 @@ The pin is recorded in the scaffolder (`OPENSPEC_PIN`, kept in sync with
 `bulk-archive`, `onboard`) is opt-in per repo via `openspec config` — see
 `../../../spine/workflows.md#verb-roster`.
 
+**Scope — commands per-repo, schema project-local.** `init` writes the commands under the repo's
+`./.claude/` (gitignored). The commands are **schema-agnostic** — they resolve each repo's
+`openspec/config.yaml` at runtime — so a user can copy them once to user level
+(`cp -r ./.claude/commands/opsx ~/.claude/commands/ && cp -r ./.claude/skills/openspec-* ~/.claude/skills/`)
+and skip the per-repo `init`. The **schema cannot be made global**: OpenSpec resolves schemas
+project-local only (`openspec schema which` → `Source: project`). Every repo therefore carries its
+own pinned `openspec/schemas/meaningfy/` fork — that is exactly what this projection copies in, and
+why there is no "install the schema once" step.
+
 ## Golden thread pre-wiring (cite your parent)
 
 The cite-your-parent convention is pre-wired in two places at scaffold time:
