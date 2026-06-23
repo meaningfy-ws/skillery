@@ -78,5 +78,8 @@ lightweight EPIC readiness check, and PLAN derivation (= `design.md` + `tasks.md
 **Delegates:** PLAN scoring → [`clarity-gate`](../clarity-gate/SKILL.md); the living-spec lifecycle
 (archive, grooming, memory-index regen) → [`spec-stewardship`](../spec-stewardship/SKILL.md);
 Gherkin → [`bdd-gherkin`](../bdd-gherkin/SKILL.md); code → [`cosmic-python`](../cosmic-python/SKILL.md);
-the doc-first build loop → external `stream-coding`.
-**Related:** `clarity-gate`, `spec-stewardship`, `bdd-gherkin`, `architecture`, `stream-coding` (external).
+the doc-first build loop → external `stream-coding`. For the **texture** of the EPIC/PLAN narrative
+prose (the proposal "why" and "solution outline" are Explanation-quadrant), the writing family applies:
+[`technical-writing`](../technical-writing/SKILL.md) and
+[`explanatory-writing`](../explanatory-writing/SKILL.md) — referenced, not restated.
+**Related:** `clarity-gate`, `spec-stewardship`, `bdd-gherkin`, `architecture`, `technical-writing`, `explanatory-writing`, `stream-coding` (external).

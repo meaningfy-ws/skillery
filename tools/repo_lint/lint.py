@@ -27,7 +27,7 @@ MAX_SKILL_LINES = 650
 # cross-cutting skills so every skill lives in exactly ONE bundle — no overlays).
 # Disk is flat (`skills/<skill>/`); bundles group only in marketplace.json.
 EXPECTED_BUNDLES = {
-    "meaningfy-core": {"technical-writing", "meaningfy-git-workflow", "guardrails"},
+    "meaningfy-core": {"technical-writing", "explanatory-writing", "meaningfy-git-workflow", "guardrails"},
     "meaningfy-consulting": {
         "semantic-consulting-coach", "decision-package", "proposal-writing",
         "estimation", "executive-communication",

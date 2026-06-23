@@ -17,6 +17,8 @@ probes:
     expect: executive-communication
   - probe: "write the README and docstrings for this module"
     expect: technical-writing
+  - probe: "this explainer reads flat, add a controlling metaphor and a concrete example, tighten the rhythm"
+    expect: explanatory-writing
   - probe: "scaffold a new Meaningfy-standard Python repository"
     expect: project-setup
   - probe: "design the layered architecture (models/adapters/services) for this service"
