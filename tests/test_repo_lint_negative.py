@@ -48,10 +48,21 @@ def test_name_mismatch_is_flagged(tmp_path):
     assert lint.name_mismatch(tmp_path)
 
 
-def test_wrong_bundle_is_flagged(tmp_path):
+def test_skill_in_multiple_bundles_is_flagged(tmp_path):
+    # Single-home invariant: a skill registered in two bundles is an error.
     _skill(tmp_path, "cosmic-python")
-    _marketplace(tmp_path, [{"name": "meaningfy-consulting", "skills": ["./skills/cosmic-python"]}])
-    assert lint.expected_bundle_membership(tmp_path)  # cosmic-python belongs in meaningfy-building
+    _marketplace(tmp_path, [
+        {"name": "meaningfy-core", "skills": ["./skills/cosmic-python"]},
+        {"name": "meaningfy-building", "skills": ["./skills/cosmic-python"]},
+    ])
+    assert any("multiple bundles" in e for e in lint.expected_bundle_membership(tmp_path))
+
+
+def test_unregistered_skill_dir_is_flagged(tmp_path):
+    # Every skill dir must be placed in some bundle (marketplace.json is the truth).
+    _skill(tmp_path, "cosmic-python")
+    _marketplace(tmp_path, [{"name": "meaningfy-core", "skills": []}])
+    assert any("not registered" in e for e in lint.expected_bundle_membership(tmp_path))
 
 
 def test_unknown_bundle_is_flagged(tmp_path):

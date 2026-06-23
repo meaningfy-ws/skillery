@@ -60,10 +60,21 @@ def test_skills_are_flat():
 
 def test_role_bundles_have_clean_placement():
     # 4 role bundles, every skill owned by exactly one — no overlays/meta-bundles.
+    # Membership is read from marketplace.json; only the role names are pinned.
     assert lint.expected_bundle_membership(REPO) == []
-    assert set(lint.EXPECTED_BUNDLES) == {
+    assert lint.EXPECTED_BUNDLE_NAMES == {
         "meaningfy-core", "meaningfy-consulting", "meaningfy-architecture", "meaningfy-building",
     }
+
+
+def test_spec_purpose_is_groomed():
+    # No archived spec may keep the `TBD - created by archiving` placeholder.
+    assert lint.groomed_spec_purpose(REPO) == []
+
+
+def test_spec_links_are_normalised():
+    # Auto-fixer is idempotent on a clean tree: nothing left to fix.
+    assert lint.normalize_spec_links(REPO) == []
 
 
 def test_trigger_probes_reference_real_skills():
