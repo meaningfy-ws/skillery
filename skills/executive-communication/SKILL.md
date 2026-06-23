@@ -141,6 +141,11 @@ apply it unless the user names another voice. Two rules matter most here:
 Hard constraints: British English; no em dash; plain, current vocabulary; honest
 about trade-offs and unknowns. Full guidance and examples in `company-voice.md`.
 
+For the **texture** of the technical/educational register (explainers, client teaching
+material) — controlling metaphor, concrete-beside-abstract, question pivots — use
+[`explanatory-writing`](../explanatory-writing/SKILL.md). Structure still wins over texture:
+never trade answer-first clarity for it.
+
 **The bland trap:** a structurally perfect message can still say nothing. Once the
 scaffolding is right, read it back as the reader. If a sentence could appear in
 any consultancy's deck about any client, it is filler. Replace it with the
@@ -229,4 +234,4 @@ the language is plain, with no em dash and no throat-clearing.
 **Owns:** the persuasive-communication method — Governing Thought, SCQA, the Minto pyramid, answer-first
 structure, and the Meaningfy company voice (`references/company-voice.md`).
 **Delegates:** spec/EPIC readiness → `clarity-gate`; doc prose mechanics → `technical-writing`.
-**Related:** `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`.
+**Related:** `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`.

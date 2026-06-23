@@ -28,7 +28,7 @@ Bundles are organised by the **role (hat) you wear** — install `meaningfy-core
 
 | Bundle | Skills | Install if you… |
 |--------|--------|-----------------|
-| **meaningfy-core** | **technical-writing** · **meaningfy-git-workflow** · **guardrails** | …do anything (cross-cutting basics) |
+| **meaningfy-core** | **technical-writing** · **explanatory-writing** · **meaningfy-git-workflow** · **guardrails** | …do anything (cross-cutting basics) |
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **proposal-writing** · **estimation** · **executive-communication** | …do advisory / front-of-funnel work |
 | **meaningfy-architecture** | **architecture** · **conceptual-modelling** | …design systems or model a domain |
 | **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
@@ -98,6 +98,7 @@ the exact split): [`docs/environment-setup.md`](docs/environment-setup.md).
 | Design a system | `architecture` (C4, ADRs, contracts) |
 | Write a board paper / client note | `executive-communication` |
 | Write docs / a README | `technical-writing` |
+| Write a clear explainer / blog-style explanation | `explanatory-writing` |
 | Ship a service | `ci-cd-delivery` (deploy contract) |
 | Cut / publish a release | `meaningfy-release` (versioning, release branches, PyPI, release notes) |
 
