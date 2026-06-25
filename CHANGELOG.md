@@ -9,6 +9,20 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [2.6.1] - 2026-06-25
+
+### Fixed
+
+- **PR review now fans out five subagents in parallel, one per lens.** The
+  standalone mode gained an explicit *Dispatch contract* — a single combined
+  subagent is called out as a defect — fixing the case where only one subagent ran.
+- **The review checklist is now catalogue-complete.** The curated subset of ids is
+  replaced by a methodical per-lens procedure scoped to a region of the
+  `cosmic-python` standard: each lens traverses **every** `PR-*`/`BP-*`/`AP-*` in
+  its region plus the matching SKILL sections, so coverage is complete by
+  construction and survives catalogue growth. The `code-reviewer` agent is hardened
+  to run exactly one lens and refuse a combined pass.
+
 ## [2.6.0] - 2026-06-25
 
 ### Added
