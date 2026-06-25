@@ -9,6 +9,31 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [2.6.0] - 2026-06-25
+
+### Added
+
+- **Two-mode, five-lens PR review.** `meaningfy-code-review` now defines two
+  review modes — **standalone** (the read-only analysis, run as five single-lens
+  subagent passes and aggregated) and **interactive** (a thinking-partner protocol
+  in the main thread, entered when the developer discusses the PR) — with an
+  always-subagent isolation rule that keeps review reasoning out of the
+  implementation context.
+- **Five review lenses**, one subagent run each, as MECE views over the existing
+  checklist: L1 Security & safety, L2 Spec-correctness & tests, L3 Architecture
+  conformance, L4 Principles & clean code, L5 Fit, elegance & refactoring. Lenses
+  anchor to existing `cosmic-python` catalogue ids — no new ids minted.
+- **Fit & refactoring investigation** (lens L5, recommendations-only): assesses how
+  new code and the existing code it touches could be refactored for a crisper fit,
+  with `gitnexus` blast radius on each candidate.
+- New `pr-review-modes` capability spec synced into `openspec/specs/`.
+
+### Changed
+
+- `code-reviewer` agent scoped to **one lens per subagent run** (lens input;
+  default dispatches all five), staying read-only and isolated from implementation
+  context.
+
 ## [2.5.1] - 2026-06-23
 
 ### Fixed
