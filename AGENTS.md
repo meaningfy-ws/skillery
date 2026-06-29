@@ -23,10 +23,10 @@ See [`spec/skill-repo-governance.md`](spec/skill-repo-governance.md) for placeme
 ## Dual-CLI distribution
 
 This catalogue runs on both Claude Code and opencode from one set of sources, with verified parity.
-See the change [`openspec/changes/support-opencode-cli`](openspec/changes/support-opencode-cli) and,
-once published, `docs/dual-cli/` (per-CLI setup + the source→CLI mapping + the external-dependency
-compatibility matrix). `AGENTS.md` is canonical; `CLAUDE.md` is a thin pointer that adds only
-Claude-specific guidance.
+See the durable capability spec [`openspec/specs/dual-cli-distribution`](openspec/specs/dual-cli-distribution/spec.md)
+and [`docs/dual-cli/`](docs/dual-cli/README.md) (per-CLI setup + the source→CLI mapping + the
+external-dependency compatibility matrix). `AGENTS.md` is canonical; `CLAUDE.md` is a thin pointer
+that adds only Claude-specific guidance.
 
 ## How to maintain / extend the catalogue
 
