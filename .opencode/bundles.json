@@ -1,0 +1,33 @@
+{
+  "bundles": {
+    "meaningfy-architecture": [
+      "architecture",
+      "conceptual-modelling"
+    ],
+    "meaningfy-building": [
+      "bdd-gherkin",
+      "ci-cd-delivery",
+      "clarity-gate",
+      "cosmic-python",
+      "epic-planning",
+      "meaningfy-code-review",
+      "meaningfy-release",
+      "project-setup",
+      "spec-stewardship"
+    ],
+    "meaningfy-consulting": [
+      "decision-package",
+      "estimation",
+      "executive-communication",
+      "proposal-writing",
+      "semantic-consulting-coach"
+    ],
+    "meaningfy-core": [
+      "explanatory-writing",
+      "guardrails",
+      "meaningfy-git-workflow",
+      "technical-writing"
+    ]
+  },
+  "version": "2.6.1"
+}

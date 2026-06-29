@@ -1,4 +1,4 @@
-.PHONY: install validate lint test validate-spine fix-spec-links
+.PHONY: install validate lint test validate-spine fix-spec-links generate-opencode
 
 install:
 	python3 -m venv .venv && . .venv/bin/activate && pip install -q -r requirements-dev.txt
@@ -14,6 +14,12 @@ lint:
 # after archiving; `lint` (broken_links) is the safety net if you forget.
 fix-spec-links:
 	. .venv/bin/activate && python -m tools.repo_lint --fix
+
+# generate-opencode = regenerate the committed .opencode/ tree from source
+# (skills, agents, commands, manifests, parity/gap reports) and sync versions.
+# The drift/parity/version-sync/coverage gates run inside `lint` (repo_lint).
+generate-opencode:
+	. .venv/bin/activate && python -m tools.opencode_gen generate
 
 test:
 	. .venv/bin/activate && python -m pytest tests/ -q

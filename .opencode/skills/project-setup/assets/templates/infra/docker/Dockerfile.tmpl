@@ -1,0 +1,72 @@
+# Multistage image for <<PROJECT_NAME>>
+# ============================================================================
+# Stage 1 (builder): install the locked dependencies into an in-project venv.
+# Stage 2 (runtime): copy only the venv + the top-level package into a slim
+# image, run as a non-root user.
+#
+# No-src layout: the package <<PACKAGE>> sits at the repo root, so the build
+# context is the repo root (see compose.yaml: context = ../..).
+
+ARG ENVIRONMENT=production
+
+# -----------------------------------------------------------------------------
+# Builder stage — resolve and install dependencies
+# -----------------------------------------------------------------------------
+FROM python:<<PYTHON_VERSION>>-slim AS builder
+
+ARG ENVIRONMENT
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    POETRY_VERSION=2.1.1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_NO_INTERACTION=1
+
+RUN pip install --no-cache-dir "poetry==${POETRY_VERSION}"
+
+WORKDIR /app
+
+# Dependency layer first — cached unless the lock changes. The poetry.lock* glob
+# tolerates a not-yet-generated lockfile; `poetry lock` regenerates it if missing.
+COPY pyproject.toml poetry.lock* README.md ./
+
+RUN poetry lock && \
+    if [ "$ENVIRONMENT" = "development" ]; then \
+      poetry install --no-root --with dev,test,lint; \
+    else \
+      poetry install --no-root --only main; \
+    fi
+
+# Application code (no src/: the package lives at the repo root).
+COPY <<PACKAGE>> <<PACKAGE>>/
+
+RUN if [ "$ENVIRONMENT" = "development" ]; then \
+      poetry install --with dev,test,lint; \
+    else \
+      poetry install --only main; \
+    fi
+
+# -----------------------------------------------------------------------------
+# Runtime stage — minimal, non-root
+# -----------------------------------------------------------------------------
+FROM python:<<PYTHON_VERSION>>-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/app/.venv/bin:${PATH}"
+
+RUN groupadd --gid 1000 appuser && \
+    useradd --uid 1000 --gid appuser --shell /bin/bash --create-home appuser
+
+WORKDIR /app
+
+COPY --from=builder /app/.venv .venv
+COPY --from=builder /app/<<PACKAGE>> <<PACKAGE>>/
+
+COPY --chmod=755 infra/scripts/entrypoint.sh /entrypoint.sh
+
+USER appuser
+
+EXPOSE 8000
+
+ENTRYPOINT ["/entrypoint.sh"]

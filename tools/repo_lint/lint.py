@@ -46,7 +46,11 @@ _DELEGATES = re.compile(r"→\s*follow|\bfollow\b|\bsee\b|\bowned by\b|\bdelegat
 # `.claude/` is agent/tool working-state — planning docs (EPIC/PLAN/RESEARCH) and
 # tool-installed skills (e.g. GitNexus's own) — not the published catalogue, so prose
 # checks skip it. (`.claude-plugin/` is a distinct part and is NOT skipped.)
-_SKIP_DIRS = {".git", ".venv", "node_modules", ".idea", "__pycache__", ".claude"}
+# `.opencode/` is the GENERATED distribution tree (skills/agents/manifests emitted
+# by tools.opencode_gen). Like `.claude/`, it is derivative, not the authored
+# catalogue — its own gates (drift/parity/version-sync) live in opencode_gen, so
+# prose/link checks skip it.
+_SKIP_DIRS = {".git", ".venv", "node_modules", ".idea", "__pycache__", ".claude", ".opencode"}
 
 
 # ---------------------------------------------------------------- read layer
@@ -576,12 +580,23 @@ def body_agnosticism(repo: Path) -> list[str]:
     return out
 
 
+def opencode_tree_gates(repo: Path) -> list[str]:
+    """Delegate to the opencode generator's gates (drift + parity + version-sync +
+    coverage) so a single `make lint` surfaces a drifted/asymmetric opencode tree.
+    Skipped silently until the generator has emitted a tree (`.opencode-version`)."""
+    if not (repo / ".opencode-version").exists():
+        return []
+    from tools.opencode_gen.gen import all_gate_errors
+    return all_gate_errors(repo)
+
+
 ALL_CHECKS = (
     missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
     frontmatter_errors, name_mismatch, expected_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
     boundary_section_present, agent_skill_alignment, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
+    opencode_tree_gates,
 )
 
 

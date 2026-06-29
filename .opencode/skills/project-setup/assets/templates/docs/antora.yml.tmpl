@@ -1,0 +1,16 @@
+# Antora component descriptor. One component per docs repo/start_path.
+name: <<PROJECT_SLUG>>
+title: <<PROJECT_NAME>>
+version: '~'
+start_page: ROOT:index.adoc
+asciidoc:
+  attributes:
+    # Images for the ROOT module live under modules/ROOT/images/.
+    imagesdir: images
+    # `short` xrefs render just the section title, not the full numbered path.
+    xrefstyle: short@
+    example-caption: Example@
+    listing-caption: Listing@
+    table-caption: Table@
+nav:
+  - modules/ROOT/nav.adoc
