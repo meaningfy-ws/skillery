@@ -152,7 +152,7 @@ Skillery is additive — it rarely *conflicts*, but it can **overlap** with plug
 
 | Where | What | Read it when… |
 |---|---|---|
-| [`docs/dual-cli/`](docs/dual-cli/README.md) | running on **Claude Code and opencode** — per-CLI setup, the source→CLI mapping, the compatibility matrix, MCP setup | you're installing on opencode or want the dual-CLI contract |
+| [`docs/dual-cli/`](docs/dual-cli/README.md) | the **dual-CLI reference annex** — per-CLI setup runbooks, source→CLI mapping, compatibility matrix, MCP shapes (install starts at [`environment-setup.md`](docs/environment-setup.md); authoring rules are in [`AGENTS.md`](AGENTS.md#dual-cli-authoring-rules)) | you're installing on opencode, or adding a skill/agent that must work on both CLIs |
 | [`docs/ai-coding/`](docs/ai-coding/) | the two-tier method + the `/opsx` runbook + DoD/quality gates | you're learning how we build with agents |
 | [`spine/`](spine/) | the spec-backbone conventions (workflows, golden thread, lifecycle) | you're working with `openspec/` / the spine |
 | [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the durable engineering canon |

@@ -64,6 +64,12 @@ Add to `.claude-plugin/marketplace.json`:
 
 Done! Your skill is now registered.
 
+> **Dual-CLI obligation.** The catalogue ships to Claude Code **and** opencode from one source. After
+> adding or editing a skill, run `make generate-opencode` and commit the regenerated `.opencode/`
+> tree, and keep the skill **body CLI-agnostic** (no `/opsx:` or `.claude/` paths). The full rules and
+> the gates that enforce them are in
+> [`AGENTS.md` → Dual-CLI authoring rules](../AGENTS.md#dual-cli-authoring-rules).
+
 ## Detailed Skill Structure
 
 ### Minimum Viable Skill
