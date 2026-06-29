@@ -1,0 +1,74 @@
+# Release workflow — release-please + PyPI Trusted Publishing (OIDC).
+#
+# Content/intent owned by the `meaningfy-release` skill; this is the projected library template.
+#   - release-please drafts/maintains a "release PR" from Conventional Commits (version bump +
+#     CHANGELOG). Merging it tags vX.Y.Z and creates the GitHub Release.
+#   - The publish job runs on that release: TestPyPI dry-run gate, then PyPI via OIDC (NO API token).
+#
+# One-time setup before this works (see the meaningfy-release skill, references/pypi-publishing.md):
+#   1. Configure a PyPI *and* TestPyPI Trusted Publisher binding owner=<<GITHUB_ORG>>,
+#      repo=<<PROJECT_SLUG>>, workflow=release.yaml, environment=release.
+#   2. Create a GitHub `release` environment (optionally with required reviewers).
+
+name: release
+
+on:
+  push:
+    branches: [<<DEFAULT_BRANCH>>]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      released: ${{ steps.rp.outputs.release_created }}
+    steps:
+      - id: rp
+        uses: googleapis/release-please-action@v4
+        with:
+          release-type: python
+
+  # Build once; reused by the TestPyPI gate and the PyPI publish.
+  build:
+    needs: release-please
+    if: needs.release-please.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "<<PYTHON_VERSION>>"
+      - run: pipx run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  # Dry-run gate: a bad upload to PyPI can only be yanked, never replaced at the same version.
+  testpypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write            # REQUIRED for the OIDC exchange
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {name: dist, path: dist/}
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+
+  pypi:
+    needs: testpypi
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write            # REQUIRED — no username/password/token; OIDC mints a short-lived one
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {name: dist, path: dist/}
+      - uses: pypa/gh-action-pypi-publish@release/v1

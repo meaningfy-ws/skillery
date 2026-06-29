@@ -1,0 +1,97 @@
+# OPTIONAL reusable test workflow for <<PROJECT_NAME>>
+# ============================================================================
+# DELETE THIS FILE if you don't need it. It is only worth keeping when the
+# same test job must be triggered from several places (e.g. a fast unit run on
+# feature branches + a full run on PRs/<<DEFAULT_BRANCH>>), mirroring a common
+# _unit-tests.yml / _full-tests.yml split. For a single-trigger repo
+# the inline `quality` job in ci.yaml is enough.
+#
+# Usage — call it from another workflow with `workflow_call`:
+#
+#   jobs:
+#     unit:
+#       uses: ./.github/workflows/_reusable-tests.yml
+#       with:
+#         test-target: test-unit        # fast: `make test-unit`
+#       secrets:
+#         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#
+#     full:
+#       uses: ./.github/workflows/_reusable-tests.yml
+#       with:
+#         test-target: test             # full: `make test` (all markers + coverage)
+#       secrets:
+#         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#
+# Like ci.yaml, every step calls a `make` target (decision D12).
+
+name: Reusable Tests
+
+on:
+  workflow_call:
+    inputs:
+      test-target:
+        description: "Make target to run (e.g. test, test-unit, test-integration)."
+        type: string
+        default: test
+    secrets:
+      SONAR_TOKEN:
+        required: false
+
+jobs:
+  test:
+    name: ${{ inputs.test-target }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python <<PYTHON_VERSION>>
+        uses: actions/setup-python@v5
+        with:
+          python-version: "<<PYTHON_VERSION>>"
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Run tests (${{ inputs.test-target }})
+        run: make ${{ inputs.test-target }}
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ inputs.test-target }}
+          retention-days: 14
+          path: |
+            coverage.xml
+            test-results.xml
+
+      - name: Check for SonarCloud token
+        id: sonar_check
+        run: |
+          if [ -n "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "has_token=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_token=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: SonarCloud scan
+        if: always() && steps.sonar_check.outputs.has_token == 'true'
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

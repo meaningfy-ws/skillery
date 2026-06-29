@@ -1,0 +1,50 @@
+= System Context
+:navtitle: System Context
+
+This is an _explanation_ page: it builds understanding of how *<<PROJECT_NAME>>* fits into its
+environment. It corresponds to the https://c4model.com[C4 model]'s *Level 1 — System Context*:
+the system as a single box, the people who use it, and the external systems it talks to.
+
+== Context diagram
+
+[mermaid]
+....
+C4Context
+  title System Context — <<PROJECT_NAME>>
+
+  Person(user, "End User", "Operates the system to get work done")
+  System(system, "<<PROJECT_NAME>>", "The system described by this documentation")
+  System_Ext(upstream, "Upstream Service", "Provides input data")
+  System_Ext(store, "Datastore", "Persists application state")
+
+  Rel(user, system, "Uses", "HTTPS")
+  Rel(system, upstream, "Reads from", "HTTPS/API")
+  Rel(system, store, "Reads/writes", "TCP")
+....
+
+[NOTE]
+====
+The block above uses the Mermaid extension wired into this Antora site. If you prefer plain
+sequence or flowchart diagrams, any standard Mermaid syntax works inside a `[mermaid]` block.
+====
+
+== Responsibilities
+
+* *In scope* — what this system is accountable for delivering.
+* *Out of scope* — capabilities deliberately left to upstream/downstream systems.
+
+== External dependencies
+
+[cols="2,4",options="header"]
+|===
+| Dependency | Why the system needs it
+
+| Upstream Service | Source of the data the system processes.
+| Datastore | Durable storage for application state.
+|===
+
+== Going deeper
+
+* Zoom in one level (C4 Containers / Components) once those views exist.
+* See the xref:adr/adr-0001-record-architecture-decisions.adoc[ADRs] for the decisions behind this shape.
+* See xref:requirements/index.adoc[Requirements] for the use cases that justify it.

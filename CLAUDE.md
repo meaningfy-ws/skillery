@@ -1,49 +1,18 @@
-# Skillery — Repo Operating Manual
+# CLAUDE.md — Claude Code binding
 
-This file is a **Binding**: it mandates and routes. It carries no reusable knowledge.
-Every substantive topic lives in the skill or doc it points to.
+**Read [`AGENTS.md`](AGENTS.md) first.** It is the canonical, CLI-agnostic operating manual for
+this repo — what the repo is, the four artifact types, the single-source-of-authority rule, how to
+maintain/validate the catalogue, versioning, spine/OpenSpec conventions, and hooks. Everything there
+applies to Claude Code.
 
-## What this repo is
-
-A company-wide Claude Code skills/agents/docs catalogue. Every artifact is exactly one of four
-types (defined in [`spec/skill-repo-governance.md`](spec/skill-repo-governance.md)):
-
-| Type | Home | Rule |
-|------|------|------|
-| **Skill** | `skills/` | Reusable knowledge; single source of authority per fact |
-| **Agent** | `agents/` | Thin wrapper — role + model + tools + skill list; no inlined knowledge |
-| **Doc** | `docs/` | Human canon; narrates and points, never restates skill rules |
-| **Binding** | `prompts/` + root agentic files | Mandates and routes; never carries the standard (this file is a root Binding) |
-
-**Single-source-of-authority rule:** if a fact belongs to a skill, it lives there and nowhere else.
-See [`spec/skill-repo-governance.md`](spec/skill-repo-governance.md) for placement rules.
-
-## How to maintain / extend the catalogue
-
-- **Adding a new skill** — follow [`spec/CREATING_SKILLS.md`](spec/CREATING_SKILLS.md).
-- **Assigning to a bundle** — bundles are declared in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json).
-- **Boundary / related-skills** — every skill's frontmatter must declare its `boundary` and list
-  any `related_skills`. This keeps triggers crisp and prevents collisions with external neighbours.
-
-## How to validate
-
-`make validate` is the guardrail. Run it before every PR; CI runs it too. See
-[`spec/skill-repo-governance.md`](spec/skill-repo-governance.md) for what the validator enforces.
-
-## Common Meaningfy practices
-
-- **Architecture** — align on cosmic-python layering (see the
-  [`skills/cosmic-python`](skills/cosmic-python) skill when designing non-trivial additions).
-- **Commits** — conventional commits are mandatory; see the
-  [`skills/meaningfy-git-workflow`](skills/meaningfy-git-workflow) skill for the full standard.
-- **Spine / OpenSpec conventions** — the durable spec spine lives in [`spine/`](spine/) (docs) and [`openspec/`](openspec/) (the live OpenSpec instance + the forked `meaningfy` schema). See [`spine/README.md`](spine/README.md).
-- **External method skills land in the spine (binding).** `superpowers` (brainstorming, writing-plans, executing-plans, TDD, …) provides *disciplines*, not a parallel spec system. In a spine-wired repo, their artifacts MUST land in the spine, never in a `docs/superpowers/` tree: a **brainstorming** design feeds the **EPIC** (`openspec/changes/<id>/proposal.md`); **writing-plans is SUPERSEDED** by the **PLAN** (`design.md` + `tasks.md`, gated by `clarity-gate`); execution uses `superpowers:test-driven-development` / `subagent-driven-development`, tracked via `/opsx:apply`. The verb↔artifact map is in [`spine/workflows.md`](spine/workflows.md#superpowers--spine). skillery **dogfoods this**: its own non-trivial changes are `openspec/changes/` EPICs.
+This file adds **only Claude Code-specific guidance**. opencode reads `AGENTS.md` natively — do not
+duplicate the operating manual here.
 
 <!-- ===== GitNexus (harness-maintained, do not hand-edit) ===== -->
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **skillery** (2795 symbols, 3258 relationships, 16 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **skillery** (3268 symbols, 3907 relationships, 37 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > Index stale? Run `node .gitnexus/run.cjs analyze` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? `npx gitnexus analyze` (npm 11 crash → `npm i -g gitnexus`; #1939).
 

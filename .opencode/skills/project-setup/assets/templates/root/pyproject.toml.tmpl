@@ -1,0 +1,71 @@
+# Minimal pyproject.toml — Meaningfy standard (no-src, config-in-root).
+# Only [project], [tool.poetry], [dependency-groups], [build-system] live here.
+# Every TOOL is configured in its own dedicated root file:
+#   ruff.toml · mypy.ini · pytest.ini · .coveragerc · .importlinter
+#   .pre-commit-config.yaml · sonar-project.properties
+# The single source of truth for the version is the root VERSION file; keep the
+# `version` field below in sync (or wire a poetry version plugin if desired).
+
+[project]
+name = "<<PROJECT_SLUG>>"
+version = "0.1.0"
+description = "<<DESCRIPTION>>"
+authors = [
+    { name = "Meaningfy", email = "hi@meaningfy.ws" }
+]
+maintainers = [
+    { name = "Meaningfy", email = "hi@meaningfy.ws" }
+]
+license = { text = "Apache-2.0" }
+requires-python = ">=<<PYTHON_VERSION>>,<4.0"
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+]
+dependencies = [
+    # Runtime dependencies go here, pinned with `==`. Examples (uncomment as needed):
+    # "pydantic[email]==2.13.3",
+    # "fastapi==0.128.8",
+    # "uvicorn==0.41.0",
+]
+
+[dependency-groups]
+# PEP 735 dependency groups, installed via `poetry install --with dev,test,lint`.
+dev = [
+    "pre-commit==4.6.0",
+    "linkml==1.10.0",
+]
+test = [
+    "pytest==9.0.3",
+    "pytest-bdd==8.1.0",
+    "pytest-cov==7.1.0",
+    "pytest-asyncio==1.3.0",
+    "testcontainers==4.14.2",
+    "polyfactory==3.3.0",
+    "httpx==0.28.1",
+]
+lint = [
+    "ruff==0.15.11",
+    "mypy==1.20.2",
+    "import-linter==2.11",
+    "radon==6.0.1",
+    "xenon==0.9.3",
+]
+
+[tool.poetry]
+# No-src layout: include the top-level package directly, NO `from = "src"`.
+packages = [
+    { include = "<<PACKAGE>>" }
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+# NOTE: intentionally no [tool.ruff], [tool.mypy], [tool.pytest], [tool.coverage]
+# sections here — all tool config lives in dedicated root files (see header).
