@@ -1,0 +1,54 @@
+= Getting Started
+:navtitle: Getting Started
+
+This tutorial takes you from a fresh clone of *<<PROJECT_NAME>>* to a running instance and a built documentation site.
+It is a _learning_ exercise: follow every step in order, even if you think you can skip one.
+
+== Prerequisites
+
+Before you begin, make sure you have:
+
+* Python >= <<PYTHON_VERSION>> and https://python-poetry.org[Poetry] installed.
+* Node.js 18+ (only needed to build this documentation site).
+* `make` available on your `PATH`.
+
+== Step 1 — Install the project
+
+[source,bash]
+----
+git clone https://github.com/<<GITHUB_ORG>>/<<PROJECT_SLUG>>.git
+cd <<PROJECT_SLUG>>
+make install        # poetry install with all dependency groups
+----
+
+== Step 2 — Run the quality gate
+
+Confirm the checkout is healthy before changing anything:
+
+[source,bash]
+----
+make check-all      # lint, type-check, architecture, tests
+----
+
+A green run means your environment matches CI.
+
+== Step 3 — Run the application
+
+[source,bash]
+----
+make run            # or: poetry run python -m <<PACKAGE>>
+----
+
+== Step 4 — Build the docs you are reading
+
+[source,bash]
+----
+make install-antora # first time only
+make preview-docs   # builds and serves at http://localhost:8080
+----
+
+== Where to go next
+
+* Solve a concrete task with a xref:how-to/example-how-to.adoc[how-to guide].
+* Understand the design in xref:architecture/system-context.adoc[System Context].
+* Look up exact details in the xref:reference/index.adoc[Reference].

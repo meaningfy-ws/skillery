@@ -9,6 +9,48 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [2.7.0] - 2026-06-29
+
+### Added
+
+- **Dual-CLI distribution — the catalogue now runs identically on Claude Code and
+  opencode from one set of sources.** Skills, agents, command content, and hook
+  *intent* are authored once and projected to both CLIs, with verified parity. New
+  `dual-cli-distribution` capability spec.
+- **opencode tree generator** (`tools/opencode_gen`, `make generate-opencode`).
+  Reads the single sources of truth (`skills/`, `agents/`, `marketplace.json`,
+  `VERSION`) and emits a deterministic committed `.opencode/` tree — skills
+  pass-through, agent frontmatter mapped (model alias → `provider/model-id`,
+  tools/`disallowedTools` → opencode tool/permission), four role bundles, and
+  `opencode.json` — plus committed parity and gap reports. Anything unmappable is a
+  recorded `Gap`, never a silent drop. New `dual-cli-generation` capability spec.
+- **Three new gates wired into `make validate`** (via `tools.repo_lint`): **drift**
+  (committed tree ≠ regenerated), **parity** (an artifact lacks an equivalent or
+  gap on one CLI), and **version-sync** (a tree's version ≠ `VERSION`), plus a
+  coverage check that every source artifact is mapped or gap-recorded.
+- **Pinned opencode version** in `.opencode-version` (`1.17.11`); the generated
+  tree conforms to that version's format.
+- **Single-`VERSION` rule** — the root `VERSION` file is now the only version
+  source; `marketplace.json` `metadata.version`, `opencode.json`, and the
+  `.opencode/` bundle manifest all derive from it and are gate-checked for
+  agreement.
+- **Hook intent inventory** (`hooks/inventory.yaml` + `README.md` + `bindings.md`):
+  single-sourced hook intent classified by mechanism (`git`/`ci`/`agent`) and phase
+  (`quality`/`phase-gate`); git/ci bindings are shared across CLIs, agent bindings
+  render per CLI.
+- **Per-CLI documentation** under `docs/dual-cli/` — Claude and opencode setup
+  pages over a shared source→CLI mapping reference, an external-dependency/baseline
+  compatibility matrix, per-tool MCP setup templates (no config committed), and the
+  skill-body CLI-agnosticism audit.
+
+### Changed
+
+- **Root binding inverted**: `AGENTS.md` is now the canonical, CLI-agnostic
+  operating manual (read natively by opencode); `CLAUDE.md` is a thin pointer that
+  carries only Claude-specific guidance. The previous symlink between them is
+  removed. Maintenance docs note that `.opencode/` is generated and must be
+  regenerated with `make generate-opencode` after touching any source.
+
 ## [2.6.1] - 2026-06-25
 
 ### Fixed

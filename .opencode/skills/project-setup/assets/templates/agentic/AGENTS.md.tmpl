@@ -1,0 +1,15 @@
+<!-- meaningfy-template-version: 3.0.0 -->
+<!-- AGENTS.md is NOT canonical here. The canonical agent instruction file is CLAUDE.md
+     (CLAUDE-canonical; DEC-4) — Claude Code loads CLAUDE.md. AGENTS.md is normally a SYMLINK
+     to CLAUDE.md (ln -s CLAUDE.md AGENTS.md), so AGENTS.md-aware tools read the same canon.
+
+     This .tmpl is rendered as a REAL file ONLY on the Windows copy-fallback path, where a
+     checkout cannot materialise symlinks; a pre-commit hook then keeps it in sync
+     (cp CLAUDE.md AGENTS.md). On every other platform AGENTS.md is the symlink and this
+     template is not rendered. Either way: edit CLAUDE.md, never this file. -->
+
+# Project: <<PROJECT_NAME>>
+
+> **This is a mirror of `CLAUDE.md`.** The canonical agent instruction file is **`CLAUDE.md`**.
+> Read and edit `CLAUDE.md`; this file is kept in sync from it (symlink, or a copy-hook on the
+> Windows fallback). See `CLAUDE.md` for the skill routing, the spine, and the project specifics.

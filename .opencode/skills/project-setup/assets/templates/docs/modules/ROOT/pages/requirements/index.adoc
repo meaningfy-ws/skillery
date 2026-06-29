@@ -1,0 +1,51 @@
+= Requirements
+:navtitle: Requirements Overview
+
+This section records what the system must do and the use cases that justify it. Keep requirements
+testable: each one should map to at least one acceptance criterion and, eventually, a Gherkin
+scenario under `tests/feature/`.
+
+== Functional requirements
+
+[cols="1,4,1",options="header"]
+|===
+| ID | Requirement | Priority
+
+| FR-1 | The system SHALL accept a request and return a result within the configured time budget. | MUST
+| FR-2 | The system SHALL persist each accepted request for audit. | MUST
+| FR-3 | The system SHOULD expose health and readiness endpoints. | SHOULD
+|===
+
+== Non-functional requirements
+
+[cols="1,4",options="header"]
+|===
+| ID | Requirement
+
+| NFR-1 | 95th-percentile request latency under nominal load stays within the agreed budget.
+| NFR-2 | The system degrades gracefully when a downstream dependency is unavailable.
+|===
+
+== Use case: UC-1 — Process a request
+
+Use the actor / precondition / main-flow / postcondition skeleton for each use case.
+
+Actor:: End User
+Precondition:: The system is running and its dependencies are reachable.
+Trigger:: The actor submits a request.
+
+.Main flow
+. The actor submits a request to the API.
+. The system validates the request.
+. The system processes it and persists an audit record.
+. The system returns the result.
+
+.Alternate flow — dependency unavailable
+* At step 3, if the datastore is unreachable, the system returns a clear error and does not lose the request.
+
+Postcondition:: The result is returned and an audit record exists.
+
+== Related
+
+* xref:architecture/system-context.adoc[System Context] — how these requirements shape the design.
+* xref:adr/adr-0001-record-architecture-decisions.adoc[ADRs] — decisions made while meeting them.

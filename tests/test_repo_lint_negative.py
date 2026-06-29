@@ -166,6 +166,55 @@ def test_reciprocal_related_symmetry_passes(tmp_path):
     assert lint.reciprocal_related_report(tmp_path) == []
 
 
+# ---- dual-CLI foundation invariants (DEC-12/13) ----
+def test_agents_symlink_is_flagged(tmp_path):
+    (tmp_path / "AGENTS.md").write_text("canonical manual\n", encoding="utf-8")
+    (tmp_path / "CLAUDE.md").symlink_to("AGENTS.md")  # the forbidden symlink
+    assert any("symlink" in e for e in lint.agents_canonical_invariant(tmp_path))
+
+
+def test_claude_not_pointing_to_agents_is_flagged(tmp_path):
+    (tmp_path / "AGENTS.md").write_text("canonical\n", encoding="utf-8")
+    (tmp_path / "CLAUDE.md").write_text("# unrelated, no pointer\n", encoding="utf-8")
+    assert any("point to AGENTS" in e for e in lint.agents_canonical_invariant(tmp_path))
+
+
+def test_agents_canonical_clean_passes(tmp_path):
+    (tmp_path / "AGENTS.md").write_text("canonical\n", encoding="utf-8")
+    (tmp_path / "CLAUDE.md").write_text("Read AGENTS.md first.\n", encoding="utf-8")
+    assert lint.agents_canonical_invariant(tmp_path) == []
+
+
+def test_hooks_inventory_bad_mechanism_is_flagged(tmp_path):
+    (tmp_path / "VERSION").write_text("9.9.9\n", encoding="utf-8")
+    (tmp_path / "hooks").mkdir()
+    (tmp_path / "hooks" / "inventory.yaml").write_text(
+        'version: "9.9.9"\nhooks:\n'
+        "  - id: h1\n    intent: x\n    provenance: {skill: s}\n"
+        "    bindings: [{mechanism: nope, phase: quality}]\n", encoding="utf-8")
+    assert any("bad mechanism" in e for e in lint.hooks_inventory_shape(tmp_path))
+
+
+def test_hooks_inventory_version_mismatch_is_flagged(tmp_path):
+    (tmp_path / "VERSION").write_text("1.0.0\n", encoding="utf-8")
+    (tmp_path / "hooks").mkdir()
+    (tmp_path / "hooks" / "inventory.yaml").write_text(
+        'version: "2.0.0"\nhooks:\n'
+        "  - id: h1\n    intent: x\n    provenance: {skill: s}\n"
+        "    bindings: [{mechanism: git, phase: quality}]\n", encoding="utf-8")
+    assert any("!= VERSION" in e for e in lint.hooks_inventory_shape(tmp_path))
+
+
+def test_body_agnosticism_new_claude_ism_is_flagged(tmp_path):
+    _skill(tmp_path, "cosmic-python", body="Run /opsx:apply then edit .claude/settings.json")
+    assert lint.body_agnosticism(tmp_path)  # not in the allowlist → flagged
+
+
+def test_body_agnosticism_allowlisted_skill_passes(tmp_path):
+    _skill(tmp_path, "epic-planning", body="Shape via /opsx:propose")  # allowlisted
+    assert lint.body_agnosticism(tmp_path) == []
+
+
 def test_clean_fixture_passes_all(tmp_path):
     _skill(tmp_path, "cosmic-python")
     _skill(tmp_path, "project-setup")
