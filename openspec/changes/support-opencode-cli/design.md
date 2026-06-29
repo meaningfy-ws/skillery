@@ -2,7 +2,7 @@
 
 ## Parent
 
-Derives from EPIC `support-opencode-cli` (`proposal.md`). This change is the foundation and contract; the generator that emits/parity-gates the opencode tree is the dependent change [`dual-cli-generator`](../dual-cli-generator/design.md). Decisions cited from the proposal; requirements owned by `specs/dual-cli-distribution/spec.md`.
+Derives from EPIC `support-opencode-cli` (`proposal.md`). This change is the foundation and contract; the generator that emits/parity-gates the opencode tree is the dependent change [`dual-cli-generator`](../archive/2026-06-29-dual-cli-generator/design.md). Decisions cited from the proposal; requirements owned by `specs/dual-cli-distribution/spec.md`.
 
 ## Context (recon)
 
