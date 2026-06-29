@@ -36,6 +36,10 @@ that adds only Claude-specific guidance.
   any `related_skills`. This keeps triggers crisp and prevents collisions with external neighbours.
 - **Versioning** — the root [`VERSION`](VERSION) file is the single source of version truth; both
   CLI distributions derive their version from it.
+- **Regenerating the opencode tree** — the committed `.opencode/` distribution is *generated* from
+  source (`skills/`, `agents/`, `marketplace.json`, `VERSION`). After changing any of those, run
+  `make generate-opencode`; the drift/parity/version-sync gates in `make validate` fail if you don't.
+  Never hand-edit `.opencode/` — see [`docs/dual-cli/mapping.md`](docs/dual-cli/mapping.md).
 
 ## How to validate
 
