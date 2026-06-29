@@ -5,10 +5,20 @@
 Meaningfy skills are deliberately small and **reference** external skills rather than copying
 them. This page is the single source for what to install and how to wire a project.
 
-## 1. Install the Meaningfy bundles
+> **Install hierarchy.** [`README.md`](../README.md) is the front door, this page is the canon, and
+> the per-CLI runbooks carry the full detail: [`docs/dual-cli/setup-claude.md`](dual-cli/setup-claude.md)
+> and [`docs/dual-cli/setup-opencode.md`](dual-cli/setup-opencode.md). The source→CLI contract and the
+> compatibility matrix are the reference annex in [`docs/dual-cli/`](dual-cli/README.md). Authoring
+> rules (keeping skills working on *both* CLIs) live in
+> [`AGENTS.md` → How to maintain / extend](../AGENTS.md#how-to-maintain--extend-the-catalogue).
 
-From the marketplace (`.claude-plugin/marketplace.json`) — **four role bundles**; install
-`meaningfy-core` plus the role(s) you wear:
+## 1. Install the Meaningfy bundles — choose your CLI
+
+The catalogue runs on **Claude Code** and **opencode** from the same sources, at the same `VERSION`,
+with gate-verified parity. There are **four role bundles**; install `meaningfy-core` plus the role(s)
+you wear.
+
+**On Claude Code** — from the marketplace (`.claude-plugin/marketplace.json`):
 
 ```
 /plugin marketplace add meaningfy-ws/skillery
@@ -17,6 +27,13 @@ From the marketplace (`.claude-plugin/marketplace.json`) — **four role bundles
 /plugin install meaningfy-architecture  # architecture, conceptual-modelling
 /plugin install meaningfy-building      # epic-planning, spec-stewardship, clarity-gate, bdd-gherkin, meaningfy-code-review, cosmic-python, project-setup, ci-cd-delivery
 ```
+
+**On opencode** — opencode reads skills from `.opencode/skills/` *and* `.claude/skills/` natively;
+install the bundle via opencode's plugin mechanism or point it at the repo's generated `.opencode/`
+tree. Full steps (root binding, MCP, spine commands, hooks): [`dual-cli/setup-opencode.md`](dual-cli/setup-opencode.md).
+
+Each bundle pins the same root `VERSION`. Full per-CLI detail is in the two runbooks above; the rest
+of this page is **CLI-agnostic** (external deps, the user/project split, projection).
 
 The **spine is a capability, not a bundle**: `meaningfy-building` carries the skills that drive it,
 and the durable spine **assets** (`openspec/` + the forked schema, and `spine/` docs) are projected
