@@ -1,0 +1,272 @@
+# Hook intent inventory — SEED for `hooks/inventory.yaml`
+# Promoted to /hooks/inventory.yaml at apply (task 7b.1); pruned/reviewed there.
+# Schema: each hook has id, intent, provenance, and one or more bindings.
+#   binding axes: mechanism = git | ci | agent ; phase = quality | phase-gate
+#   provenance: { skill: <name> } OR { rule: "<MUST/NEVER rule in a binding>" }
+# A single intent MAY carry several bindings (e.g. a ci PR-check AND an agent pre-apply gate).
+version: 0   # seed only; the live file derives its version from root VERSION
+
+hooks:
+  # ---- git / quality ----
+  - id: conventional-commits
+    intent: Enforce Conventional Commits (imperative, no trailing punctuation)
+    provenance: { skill: meaningfy-git-workflow }
+    bindings: [{ mechanism: git, phase: quality, trigger: commit-msg }]
+  - id: protect-base-branches
+    intent: Block direct commits to main/develop
+    provenance: { skill: meaningfy-git-workflow }
+    bindings:
+      - { mechanism: git, phase: quality, trigger: pre-commit }
+      - { mechanism: ci, phase: phase-gate, trigger: branch-protection }
+  - id: validate-precommit
+    intent: Run `make validate` (lint + tests subset)
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: full-validate-prepush
+    intent: Full `make validate` + coverage >= 80%
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-push }]
+  - id: openspec-strict
+    intent: openspec validate --all --strict (spine integrity)
+    provenance: { skill: spec-stewardship }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-push }]
+  - id: spec-link-integrity
+    intent: Spec cross-reference / link integrity (validate-spine)
+    provenance: { skill: spec-stewardship }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: format-changed
+    intent: Format changed files (ruff/black/prettier)
+    provenance: { skill: project-setup }
+    bindings:
+      - { mechanism: git, phase: quality, trigger: pre-commit }
+      - { mechanism: agent, phase: quality, trigger: PostToolUse(Edit) }
+  - id: commit-epic-ref
+    intent: Inject EPIC/change-id ref into commit (golden thread)
+    provenance: { skill: epic-planning }
+    bindings: [{ mechanism: git, phase: quality, trigger: prepare-commit-msg }]
+  - id: warn-rebase-merged
+    intent: Warn on rebasing an already-merged branch
+    provenance: { skill: meaningfy-git-workflow }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-rebase }]
+  - id: regen-index-memory
+    intent: Regenerate regenerable index + MEMORY after merge/rewrite
+    provenance: { skill: spec-stewardship }
+    bindings: [{ mechanism: git, phase: quality, trigger: post-merge }]
+
+  # ---- dual-CLI distribution (this change) ----
+  - id: regenerate-no-drift
+    intent: Regenerate both CLI trees + fail if dirty (no drift committed)
+    provenance: { skill: dual-cli-distribution }
+    bindings:
+      - { mechanism: git, phase: quality, trigger: pre-commit }
+      - { mechanism: agent, phase: quality, trigger: PostToolUse(Edit on skills/agents/marketplace/MCP/VERSION) }
+  - id: version-single-source
+    intent: VERSION single-source consistency (marketplace/opencode == VERSION)
+    provenance: { skill: dual-cli-distribution }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: parity-check
+    intent: Parity — every first-party artifact has both CLI configs
+    provenance: { skill: dual-cli-distribution }
+    bindings:
+      - { mechanism: git, phase: quality, trigger: pre-commit }
+      - { mechanism: ci, phase: phase-gate, trigger: PR }
+  - id: secret-scan
+    intent: Block committed secrets, esp. in opencode.json / MCP config
+    provenance: { rule: "No committed secrets (DEC-9)" }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: generated-tree-guard
+    intent: Forbid hand-edits to generated trees / protected files
+    provenance: { skill: dual-cli-distribution }
+    bindings:
+      - { mechanism: git, phase: quality, trigger: pre-commit }
+      - { mechanism: agent, phase: quality, trigger: PreToolUse(Edit) }
+  - id: agents-canonical-invariant
+    intent: AGENTS.md canonical, CLAUDE.md pointer, no symlink reintroduced
+    provenance: { rule: "DEC-12 AGENTS canonical" }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: body-agnosticism
+    intent: No new /opsx:- or .claude/-style Claude-isms in skill bodies
+    provenance: { skill: dual-cli-distribution }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: skill-frontmatter-lint
+    intent: Skill frontmatter has boundary/related_skills; single-source-of-authority
+    provenance: { rule: "repo governance (CLAUDE.md)" }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+
+  # ---- writing / quality ----
+  - id: house-voice
+    intent: Ban AI-slop tics / forbidden phrases (wordlist)
+    provenance: { skill: technical-writing }   # canonical voice file
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: doc-structure-lint
+    intent: Heading hierarchy, no TODO/placeholder, broken links
+    provenance: { skill: technical-writing }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: terminology-glossary
+    intent: Terminology consistency against a glossary
+    provenance: { skill: technical-writing }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: template-completeness
+    intent: Proposal/decision artifacts have required sections (recommendation front-loaded)
+    provenance: { skill: proposal-writing }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: citation-link-check
+    intent: External citations resolve (exec docs cite sources)
+    provenance: { skill: executive-communication }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: reference-discipline
+    intent: Docs point, never restate skill rules
+    provenance: { rule: "DEC-9 reference discipline" }
+    bindings: [{ mechanism: ci, phase: phase-gate, trigger: PR }]
+
+  # ---- architecture / cosmic-python (quality) ----
+  - id: import-linter-contracts
+    intent: "Layer direction: entrypoints->services->models, adapters->models; core inwards; no cross-variant"
+    provenance: { skill: cosmic-python }
+    bindings:
+      - { mechanism: git, phase: quality, trigger: pre-commit }
+      - { mechanism: ci, phase: phase-gate, trigger: PR }
+  - id: models-no-framework
+    intent: models/ imports no framework/I-O (DIP)
+    provenance: { skill: cosmic-python }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: no-free-strings
+    intent: No magic-string / hasattr / == "literal" markers
+    provenance: { rule: "CLAUDE.md anti-patterns" }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: new-dependency-justification
+    intent: Adding a dependency requires an ADR/note
+    provenance: { skill: architecture }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+
+  # ---- conceptual-modelling / LinkML ----
+  - id: schema-codegen-sync
+    intent: LinkML changed -> regenerate typed artefacts, fail on diff
+    provenance: { skill: conceptual-modelling }
+    bindings:
+      - { mechanism: git, phase: quality, trigger: pre-commit }
+      - { mechanism: ci, phase: phase-gate, trigger: PR }
+  - id: generated-models-guard
+    intent: Don't hand-edit generated models
+    provenance: { skill: conceptual-modelling }
+    bindings:
+      - { mechanism: git, phase: quality, trigger: pre-commit }
+      - { mechanism: agent, phase: quality, trigger: PreToolUse(Edit) }
+  - id: linkml-schema-valid
+    intent: LinkML schema validity lint
+    provenance: { skill: conceptual-modelling }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+
+  # ---- architecture (ADRs, contracts) — phase-gate ----
+  - id: adr-required
+    intent: Architecture-significant change requires an ADR (or cited DEC-n)
+    provenance: { skill: architecture }
+    bindings: [{ mechanism: ci, phase: phase-gate, trigger: PR }]
+  - id: adr-completeness
+    intent: ADR has context/decision/consequences/status
+    provenance: { skill: architecture }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: contract-breaking-change
+    intent: Contract/interface change -> breaking-change flag (semver)
+    provenance: { skill: meaningfy-release }
+    bindings: [{ mechanism: ci, phase: phase-gate, trigger: PR }]
+  - id: design-addresses-layering
+    intent: Non-trivial addition has design.md addressing layering/boundaries before apply
+    provenance: { skill: cosmic-python }
+    bindings: [{ mechanism: agent, phase: phase-gate, trigger: pre-apply }]
+
+  # ---- GitNexus (MUST/NEVER rules in CLAUDE.md) ----
+  - id: impact-before-edit
+    intent: Run impact analysis before editing a symbol; warn on HIGH/CRITICAL
+    provenance: { rule: "CLAUDE.md GitNexus Always Do" }
+    bindings: [{ mechanism: agent, phase: quality, trigger: PreToolUse(Edit) }]
+  - id: detect-changes-precommit
+    intent: detect_changes() before commit — only expected symbols/flows touched
+    provenance: { rule: "CLAUDE.md GitNexus Never Do" }
+    bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
+  - id: rename-via-callgraph
+    intent: Block raw find-and-replace rename; use call-graph rename
+    provenance: { rule: "CLAUDE.md GitNexus Never Do" }
+    bindings: [{ mechanism: agent, phase: quality, trigger: PreToolUse(Edit) }]
+
+  # ---- spine phase-gates ----
+  - id: clarity-gate-before-apply
+    intent: Block apply until clarity-gate score >= 9/10
+    provenance: { skill: clarity-gate }
+    bindings:
+      - { mechanism: agent, phase: phase-gate, trigger: pre-apply }
+      - { mechanism: ci, phase: phase-gate, trigger: PR }
+  - id: gherkin-before-apply
+    intent: No implementation without Gherkin for the acceptance criteria
+    provenance: { skill: bdd-gherkin }
+    bindings: [{ mechanism: agent, phase: phase-gate, trigger: pre-apply }]
+  - id: epic-completeness
+    intent: EPIC has Appetite + No-gos (unshaped = blocked)
+    provenance: { skill: epic-planning }
+    bindings: [{ mechanism: ci, phase: phase-gate, trigger: PR }]
+  - id: golden-thread-integrity
+    intent: DEC-n IDs unique and cited by design/tasks
+    provenance: { skill: epic-planning }
+    bindings: [{ mechanism: ci, phase: phase-gate, trigger: PR }]
+  - id: brainstorm-before-build
+    intent: Design fed the EPIC (brainstorm before building)
+    provenance: { skill: superpowers:brainstorming }
+    bindings: [{ mechanism: agent, phase: phase-gate, trigger: SessionStart }]
+  - id: active-change-guard
+    intent: Branch matches change-id before editing tasks
+    provenance: { skill: spec-stewardship }
+    bindings: [{ mechanism: agent, phase: phase-gate, trigger: PreToolUse(Edit) }]
+
+  # ---- code review phase-gates ----
+  - id: code-review-before-pr
+    intent: Run meaningfy-code-review (5-lens) before opening a PR
+    provenance: { skill: meaningfy-code-review }
+    bindings:
+      - { mechanism: agent, phase: phase-gate, trigger: pre-PR }
+      - { mechanism: ci, phase: phase-gate, trigger: PR }
+  - id: block-merge-unresolved
+    intent: Block merge on unresolved high-priority findings
+    provenance: { skill: meaningfy-code-review }
+    bindings: [{ mechanism: ci, phase: phase-gate, trigger: PR }]
+  - id: decision-logic-tested
+    intent: New decision logic (detection/routing/validation) must have tests
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: ci, phase: phase-gate, trigger: PR }]
+  - id: self-review-after-burst
+    intent: Self-review prompt after a large implementation burst
+    provenance: { skill: meaningfy-code-review }
+    bindings: [{ mechanism: agent, phase: quality, trigger: Stop }]
+  - id: review-feedback-discipline
+    intent: On receiving review — verify, don't blind-implement
+    provenance: { skill: superpowers:receiving-code-review }
+    bindings: [{ mechanism: agent, phase: phase-gate, trigger: UserPromptSubmit }]
+
+  # ---- meta / agent discipline ----
+  - id: skill-first-discipline
+    intent: Load the process skill before build/write/review
+    provenance: { skill: superpowers:using-superpowers }
+    bindings: [{ mechanism: agent, phase: phase-gate, trigger: UserPromptSubmit }]
+  - id: verify-before-complete
+    intent: Verify "done" claims against evidence
+    provenance: { skill: superpowers:verification-before-completion }
+    bindings: [{ mechanism: agent, phase: quality, trigger: Stop }]
+  - id: agent-stop-validate
+    intent: Run `make validate` (scoped) at session end
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: agent, phase: quality, trigger: Stop }]
+  - id: persist-before-compaction
+    intent: Persist working state before context compaction
+    provenance: { skill: memory-systems }
+    bindings: [{ mechanism: agent, phase: quality, trigger: PreCompact }]
+  - id: session-start-context
+    intent: Surface AGENTS.md + MEMORY index + active EPIC at session start
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: agent, phase: quality, trigger: SessionStart }]
+  - id: dangerous-bash-guard
+    intent: Block dangerous Bash (rm -rf, force-push to main, secret exfil)
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: agent, phase: quality, trigger: PreToolUse(Bash) }]
+  - id: feature-branch-before-commit
+    intent: Ensure on a feature branch before git commit
+    provenance: { skill: meaningfy-git-workflow }
+    bindings: [{ mechanism: agent, phase: quality, trigger: PreToolUse(Bash) }]
