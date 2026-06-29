@@ -494,11 +494,94 @@ def reciprocal_related_report(repo: Path) -> list[str]:
             if a not in related.get(b, set())]
 
 
+# ------------------------------------------- dual-CLI foundation invariants (DEC-12/13)
+VERSION_FILE = "VERSION"
+HOOKS_INVENTORY = "hooks/inventory.yaml"
+_VALID_MECHANISM = {"git", "ci", "agent"}
+_VALID_PHASE = {"quality", "phase-gate"}
+# The ONLY skill bodies allowed to carry a CLI-specific (/opsx: or .claude/) reference.
+# Seeded from docs/dual-cli/body-agnosticism-audit.md — any other body fails the guard.
+_BODY_AGNOSTIC_ALLOWLIST = {"epic-planning", "spec-stewardship", "guardrails", "project-setup"}
+_CLI_ISM = re.compile(r"/opsx:|\.claude/")
+
+
+def agents_canonical_invariant(repo: Path) -> list[str]:
+    """DEC-12: AGENTS.md is the canonical root binding, CLAUDE.md a thin pointer, neither a
+    symlink to the other. Asserts the crisp structural facts (form, not prose)."""
+    out: list[str] = []
+    agents, claude = repo / "AGENTS.md", repo / "CLAUDE.md"
+    for f in (agents, claude):
+        if not f.exists():
+            out.append(f"{f.name} is missing")
+        elif f.is_symlink():
+            out.append(f"{f.name} is a symlink (DEC-12 forbids the AGENTS/CLAUDE symlink)")
+    if claude.exists() and not claude.is_symlink():
+        if "AGENTS.md" not in claude.read_text(encoding="utf-8"):
+            out.append("CLAUDE.md does not point to AGENTS.md (it must be a thin pointer)")
+    return out
+
+
+def hooks_inventory_shape(repo: Path) -> list[str]:
+    """DEC-13: the hook intent inventory is well-formed — every hook has id/intent/provenance and
+    at least one binding; every binding's mechanism/phase is valid; the inventory version tracks
+    the root VERSION."""
+    path = repo / HOOKS_INVENTORY
+    if not path.exists():
+        return [f"{HOOKS_INVENTORY} is missing"]
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as exc:
+        return [f"{HOOKS_INVENTORY} failed to parse: {exc}"]
+    out: list[str] = []
+    version = str(data.get("version", "")).strip()
+    if (repo / VERSION_FILE).exists():
+        root_version = _read(repo, VERSION_FILE).strip()
+        if version != root_version:
+            out.append(f"inventory version '{version}' != VERSION '{root_version}'")
+    seen: set[str] = set()
+    for hook in data.get("hooks", []) or []:
+        hid = (hook or {}).get("id")
+        if not hid:
+            out.append("a hook has no 'id'")
+            continue
+        if hid in seen:
+            out.append(f"duplicate hook id '{hid}'")
+        seen.add(hid)
+        if not hook.get("intent"):
+            out.append(f"hook '{hid}' has no 'intent'")
+        if not hook.get("provenance"):
+            out.append(f"hook '{hid}' has no 'provenance'")
+        bindings = hook.get("bindings") or []
+        if not bindings:
+            out.append(f"hook '{hid}' has no bindings")
+        for b in bindings:
+            if (b or {}).get("mechanism") not in _VALID_MECHANISM:
+                out.append(f"hook '{hid}': bad mechanism '{(b or {}).get('mechanism')}'")
+            if (b or {}).get("phase") not in _VALID_PHASE:
+                out.append(f"hook '{hid}': bad phase '{(b or {}).get('phase')}'")
+    return out
+
+
+def body_agnosticism(repo: Path) -> list[str]:
+    """Skill bodies are CLI-agnostic except the recorded allowlist (delegated spine / scaffolder /
+    per-CLI permission file). Any OTHER SKILL.md body introducing a /opsx: or .claude/ reference is
+    a new Claude-ism and fails — so the recorded cosmetic gaps cannot silently spread."""
+    out: list[str] = []
+    for name, path in _skill_paths(repo).items():
+        if name in _BODY_AGNOSTIC_ALLOWLIST:
+            continue
+        if _CLI_ISM.search(path.read_text(encoding="utf-8")):
+            out.append(f"{name}: SKILL.md body has a CLI-specific (/opsx: or .claude/) reference "
+                       f"not in the body-agnosticism allowlist")
+    return out
+
+
 ALL_CHECKS = (
     missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
     frontmatter_errors, name_mismatch, expected_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
     boundary_section_present, agent_skill_alignment, groomed_spec_purpose,
+    agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
 )
 
 

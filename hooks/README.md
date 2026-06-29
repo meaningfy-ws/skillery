@@ -20,7 +20,9 @@ binding (`AGENTS.md`/`CLAUDE.md`).
 ## Adoption at setup
 
 `project-setup` projects the inventory into a repo: the shared git/CI config once, and the
-agent-hook bindings for each targeted CLI.
+agent-hook bindings for each targeted CLI. How each `mechanism` becomes a concrete, projectable
+artifact — the shared pre-commit/CI config and the per-CLI Claude/opencode agent bindings — is the
+[binding reference](bindings.md).
 
 ## Catalogue (56 intents, 66 bindings — full detail in [`inventory.yaml`](inventory.yaml))
 
