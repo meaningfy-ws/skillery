@@ -24,6 +24,11 @@ Status legend:
 | **ponytail** (laziness/YAGNI discipline) | project-setup routing, CLAUDE.md | `.claude/`-compat | plugin marketplace | same `.claude/skills/` path; `/ponytail` slash form → opencode `ponytail` command (delegated). |
 | **stream-coding** (doc-first method) | clarity-gate, cosmic-python (external method) | `.claude/`-compat | plugin / repo skill | `.claude/skills/`-loadable; method is prose, no CLI binding. |
 | **commit-commands** (`commit-commands:commit`) | meaningfy-git-workflow | native (command) | plugin command | opencode `.opencode/commands/`; the *content* derives from the shared command source, registration is per-CLI (tool-native boundary). |
+| **OpenSpec** (`@fission-ai/openspec`, the spine engine + `/opsx:*`) | the spine (project-setup, epic-planning, spec-stewardship) | native | `npm i -g @fission-ai/openspec`; `openspec update --tools claude` | same npm package; `openspec update --tools opencode` registers `opsx-<id>`. Registration form is tool-native (differs by design), not a gap. |
+| **code-review** (read-only PR-review *runner*) | optional pair for `meaningfy-code-review` | unsupported (Claude plugin) | `/plugin install code-review@claude-plugins-official` | **gap (optional)** — no opencode plugin equivalent; on opencode run the `meaningfy-code-review` skill directly or opencode's native review. The review *checklist* (the skill) works on both CLIs, so no workflow is blocked. |
+
+> **gitnexus** and **context7** are MCP servers, not skill-packs — both **native** on opencode; see the
+> *MCP servers* table below.
 
 ## MCP servers
 

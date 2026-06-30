@@ -79,9 +79,11 @@ that CLI. The rest of this section (external dependencies, the user/project spli
 | | `code-review` | runs a read-only PR review (pairs with `meaningfy-code-review`) | `/plugin install code-review@claude-plugins-official` |
 | | `gitnexus` · `context7` | code-intelligence · live library docs | external plugins |
 
-The install commands above are Claude Code's; on opencode these same skills load from `.claude/`
-natively (and slash commands take the `opsx-…` form). Per-CLI install paths and the support status of
-each are in [`docs/dual-cli/compatibility.md`](docs/dual-cli/compatibility.md).
+The commands above are Claude Code's. On **opencode**: the skill-packs (`superpowers`, `stream-coding`,
+`ponytail`) load from `.claude/` natively; `OpenSpec`, `commit-commands`, and the `gitnexus`/`context7`
+MCP servers are native; **`code-review` is Claude-only** — on opencode use the `meaningfy-code-review`
+skill directly. Per-CLI status for each dependency is in
+[`docs/dual-cli/compatibility.md`](docs/dual-cli/compatibility.md).
 
 **3. User-level vs project-level.** Install the bundles + external skills **once** at the
 user/machine level, and keep your durable coding standards (the *constitution*) in the global
@@ -136,8 +138,11 @@ the exact split): [`docs/environment-setup.md`](docs/environment-setup.md).
 
 Skillery is additive — it rarely *conflicts*, but it can **overlap** with plugins you already have.
 
-**Check what you have:** open the `/plugin` menu (or inspect `enabledPlugins` in
-`~/.claude/settings.json`).
+**Check what you have:** on **Claude Code**, open the `/plugin` menu (or inspect `enabledPlugins` in
+`~/.claude/settings.json`); on **opencode**, list installed plugins via its plugin manager (or inspect
+`opencode.json`). The overlaps below are **Claude-plugin** overlaps (`feature-dev`, `code-review` are
+`@claude-plugins-official`); on opencode they simply don't apply — the catalogue's skills are loaded
+natively instead.
 
 | Situation | What it is | What to do |
 |---|---|---|
