@@ -1,6 +1,6 @@
 # Gap report
 
-> Generated from VERSION `2.7.0` — do not hand-edit.
+> Generated from VERSION `2.7.1` — do not hand-edit.
 
 | Source | CLI | Reason |
 |---|---|---|

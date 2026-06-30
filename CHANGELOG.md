@@ -9,6 +9,17 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [2.7.1] - 2026-06-30
+
+### Changed
+
+- **Dual-CLI documentation re-seated.** The README now documents opencode support;
+  `docs/environment-setup.md` is the dual-CLI install canon (a "choose your CLI" fork), and
+  `docs/dual-cli/` is reframed as the reference annex. The "works on both CLIs" authoring rule is
+  consolidated into a single canonical **Dual-CLI authoring rules** section in `AGENTS.md` that the
+  other docs link rather than restate. Corrects stale inverted-binding wording and the skill count
+  (18 → 20). New `dual-cli-distribution` requirement: *Single-home dual-CLI authoring rule*.
+
 ## [2.7.0] - 2026-06-29
 
 ### Added
