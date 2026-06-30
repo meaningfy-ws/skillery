@@ -36,10 +36,32 @@ that adds only Claude-specific guidance.
   any `related_skills`. This keeps triggers crisp and prevents collisions with external neighbours.
 - **Versioning** — the root [`VERSION`](VERSION) file is the single source of version truth; both
   CLI distributions derive their version from it.
-- **Regenerating the opencode tree** — the committed `.opencode/` distribution is *generated* from
-  source (`skills/`, `agents/`, `marketplace.json`, `VERSION`). After changing any of those, run
-  `make generate-opencode`; the drift/parity/version-sync gates in `make validate` fail if you don't.
-  Never hand-edit `.opencode/` — see [`docs/dual-cli/mapping.md`](docs/dual-cli/mapping.md).
+- **Dual-CLI parity** — anything you add or change must work on **both** CLIs; the rules are below.
+
+### Dual-CLI authoring rules
+
+The catalogue ships to Claude Code **and** opencode from one set of sources (the
+[`dual-cli-distribution`](openspec/specs/dual-cli-distribution/spec.md) contract). When you add or
+update an artifact, keep both CLIs working — the gates in `make validate` enforce it:
+
+- **Skills, agents, bundles** — author the Claude source (`skills/`, `agents/`,
+  `.claude-plugin/marketplace.json`); the opencode tree is *generated*. After any change run
+  `make generate-opencode` and commit the regenerated `.opencode/`. **Never hand-edit `.opencode/`** —
+  the drift gate will fail. The frontmatter map is the contract in
+  [`docs/dual-cli/mapping.md`](docs/dual-cli/mapping.md); an unmappable field becomes a recorded gap,
+  not a silent drop.
+- **Skill/agent bodies stay CLI-agnostic** — no `/opsx:`-style command forms or `.claude/` paths in a
+  body unless it is on the recorded allow-list (the `body_agnosticism` check fails otherwise). Phrase
+  operationally-neutral; record an unavoidable CLI-ism as a cosmetic gap in
+  [`docs/dual-cli/body-agnosticism-audit.md`](docs/dual-cli/body-agnosticism-audit.md).
+- **Commands** — only *content/templates* are shared; registration is **tool-native** (`/opsx:<id>`
+  on Claude, `opsx-<id>` on opencode). Don't try to generate one registration form for both.
+- **Specs & versions** — the root `VERSION` flows into `marketplace.json`, `opencode.json`, and the
+  bundle manifest; the version-sync gate fails on any mismatch. Hook *intent* is single-sourced in
+  [`hooks/inventory.yaml`](hooks/inventory.yaml) and rendered per CLI (see
+  [`hooks/bindings.md`](hooks/bindings.md)).
+
+Full per-CLI setup and the compatibility matrix: [`docs/dual-cli/`](docs/dual-cli/README.md).
 
 ## How to validate
 
