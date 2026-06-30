@@ -1,15 +1,18 @@
 # Meaningfy Agent Skills (Skillery)
 
-The company-wide home for working with LLM agents **consistently**: reusable Claude Code
-**skills**, thin **agents**, human **methodology & standards** docs, and the **binding templates**
-that wire them into any project.
+The company-wide home for working with LLM agents **consistently**: reusable agent **skills**, thin
+**agents**, human **methodology & standards** docs, and the **binding templates** that wire them into
+any project. Runs identically on **Claude Code** and **opencode** from one set of sources — see
+[`docs/dual-cli/`](docs/dual-cli/README.md).
 
 ## What this is
 
 A curated, self-validating catalogue. **Skills** carry reusable knowledge; **agents** are thin
 execution wrappers; `docs/` is the human canon (method, engineering standards, philosophy);
-`prompts/` holds the agentic-file templates (CLAUDE-canonical: `CLAUDE.md` is the agentic file,
-`AGENTS.md` a symlink to it). It also carries the **spine** — *the durable, traceable spec backbone*
+`prompts/` holds the agentic-file templates. The root binding is **`AGENTS.md`-canonical**:
+`AGENTS.md` is the CLI-agnostic operating manual (read natively by opencode) and `CLAUDE.md` is a
+thin pointer that adds only Claude-specific guidance (no symlink between them). It also carries the
+**spine** — *the durable, traceable spec backbone*
 (an [OpenSpec](https://github.com/Fission-AI/OpenSpec) instance + a forked `meaningfy` schema under
 [`openspec/`](openspec) and [`spine/`](spine)) — that threads a requirement all the way to a commit.
 External skills (superpowers, stream-coding, …) are **referenced, not copied**.
@@ -24,7 +27,7 @@ Bundles are organised by the **role (hat) you wear** — install `meaningfy-core
 
 ## What's inside
 
-18 skills in **4 role bundles** — every skill lives in exactly one bundle (no duplication):
+20 skills in **4 role bundles** — every skill lives in exactly one bundle (no duplication):
 
 | Bundle | Skills | Install if you… |
 |--------|--------|-----------------|
@@ -43,11 +46,17 @@ Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implem
 
 ## Installation
 
+> **Two CLIs, one catalogue.** Skillery runs on **Claude Code** and **opencode** from the same
+> sources, with gate-verified parity. The steps below are the Claude Code path; for opencode follow
+> [`docs/dual-cli/setup-opencode.md`](docs/dual-cli/setup-opencode.md). The source→CLI contract and the
+> compatibility matrix are in [`docs/dual-cli/`](docs/dual-cli/README.md).
+
 **Prerequisites**
-- [Claude Code](https://docs.claude.com/claude-code) (CLI, desktop, or IDE).
+- [Claude Code](https://docs.claude.com/claude-code) (CLI, desktop, or IDE) **or** [opencode](https://opencode.ai).
 - **Node ≥ 18** — for OpenSpec (`@fission-ai/openspec`), the spine engine.
 
-**1. Add the marketplace and install the bundle(s) for your role**
+**1. Add the marketplace and install the bundle(s) for your role** *(Claude Code; for opencode see
+[`docs/dual-cli/setup-opencode.md`](docs/dual-cli/setup-opencode.md))*
 
 ```
 /plugin marketplace add meaningfy-ws/skillery
@@ -143,6 +152,7 @@ Skillery is additive — it rarely *conflicts*, but it can **overlap** with plug
 
 | Where | What | Read it when… |
 |---|---|---|
+| [`docs/dual-cli/`](docs/dual-cli/README.md) | the **dual-CLI reference annex** — per-CLI setup runbooks, source→CLI mapping, compatibility matrix, MCP shapes (install starts at [`environment-setup.md`](docs/environment-setup.md); authoring rules are in [`AGENTS.md`](AGENTS.md#dual-cli-authoring-rules)) | you're installing on opencode, or adding a skill/agent that must work on both CLIs |
 | [`docs/ai-coding/`](docs/ai-coding/) | the two-tier method + the `/opsx` runbook + DoD/quality gates | you're learning how we build with agents |
 | [`spine/`](spine/) | the spec-backbone conventions (workflows, golden thread, lifecycle) | you're working with `openspec/` / the spine |
 | [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the durable engineering canon |
@@ -161,7 +171,8 @@ skillery/
 ├── skills/        # flat: skills/<skill>/  (bundles group them in marketplace.json)
 ├── agents/        # three thin wrappers (no knowledge): epic-planner, implementer, code-reviewer
 ├── docs/          # ai-coding/ · engineering-standards/ · philosophy/ · engagement/ · environment-setup.md
-├── prompts/       # CLAUDE.md.template, global-prompt.md (CLAUDE-canonical; AGENTS.md is a symlink)
+├── prompts/       # CLAUDE.md.template, global-prompt.md (AGENTS.md-canonical; CLAUDE.md is a thin pointer)
+├── .opencode/     # GENERATED opencode tree (skills/agents/bundles); make generate-opencode — never hand-edit
 ├── spec/          # authoring spec, governance, skill-template.md, CREATING_SKILLS.md
 ├── spine/         # the spec-backbone conventions
 ├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery runs the spine on itself)
