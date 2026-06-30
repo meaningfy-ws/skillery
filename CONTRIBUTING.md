@@ -59,9 +59,14 @@ Before submitting a pull request, ensure your skill meets these requirements:
 - [ ] Code examples are runnable; all file paths are relative
 
 ### Registration ✓
-- [ ] Skill is added to `.claude-plugin/marketplace.json`
+- [ ] Skill is added to `.claude-plugin/marketplace.json` (the single source of bundle membership)
 - [ ] Appropriate plugin group is chosen (or new group created)
 - [ ] Plugin description is clear
+
+### Dual-CLI ✓
+- [ ] Ran `make generate-opencode` and committed the regenerated `.opencode/` tree
+- [ ] SKILL.md body is **CLI-agnostic** (no `/opsx:` or `.claude/` paths) — works on Claude Code **and** opencode
+- [ ] `make validate` passes (drift / parity / version-sync gates included)
 
 ### Licensing ✓
 - [ ] Repository-level LICENSE file exists
@@ -77,10 +82,11 @@ Follow the [Creating Skills Guide](spec/CREATING_SKILLS.md) to develop your skil
 
 ### Step 2: Update the Skill Inventory
 
-Add your skill to the **What's inside** table in README.md (columns: Bundle, Skill, Purpose):
+Add your skill to its bundle's **Skills** cell in the **What's inside** table in README.md (the table
+groups skills by bundle, one cell per bundle), and bump the skill count in the sentence above it:
 
 ```markdown
-| `meaningfy-building` | **my-new-skill** | Short purpose |
+| **meaningfy-building** | … · **my-new-skill** | …build software with the spine |
 ```
 
 ### Step 3: Register in Marketplace
@@ -88,21 +94,38 @@ Add your skill to the **What's inside** table in README.md (columns: Bundle, Ski
 Add your skill path (flat: `./skills/<skill>`) to the appropriate **role bundle**
 in `.claude-plugin/marketplace.json`. The four bundles are `meaningfy-core`,
 `meaningfy-consulting`, `meaningfy-architecture`, and `meaningfy-building` — every
-skill belongs to exactly one. The validator (`make validate`) enforces that each
-skill sits in its expected bundle (`EXPECTED_BUNDLES` in `tools/repo_lint/lint.py`
-— update it when adding a skill):
+skill belongs to exactly one. `marketplace.json` is the **single source of bundle
+membership**: the validator (`make validate`) reads it to check every skill is
+registered in exactly one bundle, so **no code edit is needed** when you add a
+skill (`tools/repo_lint/lint.py` pins only the valid bundle *names*, not the
+membership):
 
 ```json
 { "name": "meaningfy-building", "skills": ["./skills/clarity-gate", "./skills/my-new-skill"] }
 ```
 
-### Step 4: Create a Pull Request
+### Step 4: Regenerate the opencode tree (dual-CLI)
+
+The catalogue ships to **Claude Code and opencode** from one source. After adding
+or editing a skill, regenerate the committed opencode tree and commit it:
+
+```bash
+make generate-opencode      # re-emits .opencode/ from skills/, agents/, marketplace.json, VERSION
+```
+
+Keep the SKILL.md **body CLI-agnostic** (no `/opsx:` or `.claude/` paths). The
+drift / parity / version-sync gates in `make validate` fail if `.opencode/` is
+stale or a body smuggles in a CLI-ism. Full rules:
+[`AGENTS.md` → Dual-CLI authoring rules](AGENTS.md#dual-cli-authoring-rules).
+
+### Step 5: Create a Pull Request
 
 1. **Commit your changes:**
    ```bash
    git add skills/my-new-skill
    git add .claude-plugin/marketplace.json
    git add README.md
+   git add .opencode/                       # the regenerated opencode tree (Step 4)
    git commit -m "Add my-new-skill"
    ```
 
@@ -123,7 +146,7 @@ skill sits in its expected bundle (`EXPECTED_BUNDLES` in `tools/repo_lint/lint.p
 
 ✅ **Good skill:**
 - Focuses on a specific domain or use case
-- Provides value for Claude users
+- Provides value for agents on **both CLIs** (Claude Code and opencode)
 - Is well-documented with examples
 - Is discoverable by clear description
 - Has clear limitations documented
@@ -163,10 +186,11 @@ Keep SKILL.md concise by organizing documentation:
 ```
 SKILL.md (quick-start, core concepts)
   ↓
-references/REFERENCE.md (complete API)
-references/EXAMPLES.md (use cases)
-references/ADVANCED.md (complex patterns)
+references/<domain-meaningful-name>.md   e.g. clarity-gate-checklist.md, mapping.md
 ```
+
+Use **domain-meaningful filenames** under `references/` — not mandated `REFERENCE.md` / `EXAMPLES.md`
+/ `ADVANCED.md` names (consistent with the Structure checklist above).
 
 ## PR Review Process
 
@@ -231,7 +255,7 @@ To remove or deprecate a skill:
 - **Use meaningful variable names**
 
 ### Testing
-- **Test with Claude** to verify discoverability
+- **Test with your agent CLI** (Claude Code or opencode) to verify discoverability
 - **Verify examples work** as written
 - **Check all links** in documentation
 - **Validate YAML** syntax
@@ -289,8 +313,9 @@ By contributing to this repository, you agree that your contributions will be li
 2. **Follow the checklist** above
 3. **Update README.md** with your skill in inventory
 4. **Register in marketplace.json**
-5. **Submit a PR** with clear description
-6. **Respond to feedback** during review
-7. **Celebrate** when merged! 🎉
+5. **Run `make generate-opencode`** and commit the `.opencode/` tree (dual-CLI)
+6. **Submit a PR** with clear description (`make validate` must pass)
+7. **Respond to feedback** during review
+8. **Celebrate** when merged! 🎉
 
 Thank you for contributing to Meaningfy Agent Skills!
