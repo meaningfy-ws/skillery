@@ -9,6 +9,16 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [2.7.2] - 2026-06-30
+
+### Changed
+
+- **Durable spec updated.** The `dual-cli-distribution` capability gains the *Single-home dual-CLI
+  authoring rule* requirement (synced from the now-archived `dual-cli-docs-refactor` change): the
+  "works on both CLIs" rule has one canonical home (`AGENTS.md`), and install docs form a single
+  hierarchy (README → `environment-setup.md` → per-CLI runbooks) with `docs/dual-cli/` as a reference
+  annex. No code or behaviour change.
+
 ## [2.7.1] - 2026-06-30
 
 ### Changed
