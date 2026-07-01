@@ -46,25 +46,26 @@ Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implem
 
 ## Installation
 
-> **Two CLIs, one catalogue.** Skillery runs on **Claude Code** and **opencode** from the same
-> sources, with gate-verified parity. The steps below are the Claude Code path; for opencode follow
-> [`docs/dual-cli/setup-opencode.md`](docs/dual-cli/setup-opencode.md). The source→CLI contract and the
-> compatibility matrix are in [`docs/dual-cli/`](docs/dual-cli/README.md).
+> **Two CLIs, one catalogue, equal footing.** Skillery runs on **Claude Code** and **opencode** from
+> the same sources with gate-verified parity. Pick your CLI and follow its runbook end to end — you do
+> not need the other. The shared source→CLI contract and compatibility matrix are in
+> [`docs/dual-cli/`](docs/dual-cli/README.md).
 
 **Prerequisites**
 - [Claude Code](https://docs.claude.com/claude-code) (CLI, desktop, or IDE) **or** [opencode](https://opencode.ai).
 - **Node ≥ 18** — for OpenSpec (`@fission-ai/openspec`), the spine engine.
 
-**1. Add the marketplace and install the bundle(s) for your role** *(Claude Code; for opencode see
-[`docs/dual-cli/setup-opencode.md`](docs/dual-cli/setup-opencode.md))*
+**1. Install the bundle(s) for your role.** Add the skillery marketplace and install `meaningfy-core`
+plus the role bundles you wear (`meaningfy-building`, `-architecture`, `-consulting`). The exact
+commands are CLI-native — follow your CLI's runbook:
 
-```
-/plugin marketplace add meaningfy-ws/skillery
-/plugin install meaningfy-core          # everyone
-/plugin install meaningfy-building      # builders
-/plugin install meaningfy-architecture  # architects / modellers
-/plugin install meaningfy-consulting    # consultants
-```
+| Your CLI | Install runbook |
+|---|---|
+| **Claude Code** | [`docs/dual-cli/setup-claude.md`](docs/dual-cli/setup-claude.md) |
+| **opencode** | [`docs/dual-cli/setup-opencode.md`](docs/dual-cli/setup-opencode.md) |
+
+Each runbook also covers the **root binding**, **MCP servers**, **spine commands**, and **hooks** for
+that CLI. The rest of this section (external dependencies, the user/project split) is CLI-agnostic.
 
 **2. External dependencies** (referenced by the skills; install separately)
 
@@ -77,6 +78,12 @@ Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implem
 | **Optional** | `commit-commands` | commit/push/PR mechanics (git-workflow delegates here) | `/plugin install commit-commands@claude-plugins-official` |
 | | `code-review` | runs a read-only PR review (pairs with `meaningfy-code-review`) | `/plugin install code-review@claude-plugins-official` |
 | | `gitnexus` · `context7` | code-intelligence · live library docs | external plugins |
+
+The commands above are Claude Code's. On **opencode**: the skill-packs (`superpowers`, `stream-coding`,
+`ponytail`) load from `.claude/` natively; `OpenSpec`, `commit-commands`, and the `gitnexus`/`context7`
+MCP servers are native; **`code-review` is Claude-only** — on opencode use the `meaningfy-code-review`
+skill directly. Per-CLI status for each dependency is in
+[`docs/dual-cli/compatibility.md`](docs/dual-cli/compatibility.md).
 
 **3. User-level vs project-level.** Install the bundles + external skills **once** at the
 user/machine level, and keep your durable coding standards (the *constitution*) in the global
@@ -131,8 +138,11 @@ the exact split): [`docs/environment-setup.md`](docs/environment-setup.md).
 
 Skillery is additive — it rarely *conflicts*, but it can **overlap** with plugins you already have.
 
-**Check what you have:** open the `/plugin` menu (or inspect `enabledPlugins` in
-`~/.claude/settings.json`).
+**Check what you have:** on **Claude Code**, open the `/plugin` menu (or inspect `enabledPlugins` in
+`~/.claude/settings.json`); on **opencode**, list installed plugins via its plugin manager (or inspect
+`opencode.json`). The overlaps below are **Claude-plugin** overlaps (`feature-dev`, `code-review` are
+`@claude-plugins-official`); on opencode they simply don't apply — the catalogue's skills are loaded
+natively instead.
 
 | Situation | What it is | What to do |
 |---|---|---|
