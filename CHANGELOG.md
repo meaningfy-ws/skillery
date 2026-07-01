@@ -9,6 +9,18 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [2.7.3] - 2026-07-01
+
+### Changed
+
+- **README + CONTRIBUTING made CLI-symmetric and accurate.** The README Installation step is now a
+  CLI-neutral intention that links the Claude Code and opencode runbooks as peers; the external-deps
+  and "Uninstall & conflicts" sections state the real per-CLI status (7/8 deps work on both CLIs;
+  `code-review` is a Claude-only optional runner). `CONTRIBUTING.md` gains the dual-CLI contributor
+  path (`make generate-opencode`, CLI-agnostic bodies) and fixes stale/contradictory guidance (the
+  `EXPECTED_BUNDLES` claim, the "What's inside" table instruction, the Progressive Disclosure
+  example). The `dual-cli/compatibility.md` matrix now classifies every referenced dependency.
+
 ## [2.7.2] - 2026-06-30
 
 ### Changed
