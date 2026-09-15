@@ -1,6 +1,6 @@
 # Parity report
 
-> Generated from VERSION `2.9.0` — do not hand-edit.
+> Generated from VERSION `2.10.0` — do not hand-edit.
 
 | Artifact | Claude | opencode | Gaps |
 |---|---|---|---|
@@ -29,4 +29,13 @@
 | `skill:semantic-consulting-coach` | ✓ | ✓ | 0 |
 | `skill:spec-stewardship` | ✓ | ✓ | 0 |
 | `skill:technical-writing` | ✓ | ✓ | 0 |
+| `skill:vault-capture` | ✓ | ✓ | 0 |
+| `skill:vault-conventions` | ✓ | ✓ | 0 |
+| `skill:vault-daily` | ✓ | ✓ | 0 |
+| `skill:vault-planning` | ✓ | ✓ | 0 |
+| `skill:vault-project` | ✓ | ✓ | 0 |
+| `skill:vault-promote` | ✓ | ✓ | 0 |
+| `skill:vault-resume` | ✓ | ✓ | 0 |
+| `skill:vault-setup` | ✓ | ✓ | 0 |
+| `skill:vault-tidy` | ✓ | ✓ | 0 |
 | `skill:writing-antipatterns` | ✓ | ✓ | 0 |

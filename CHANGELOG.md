@@ -9,6 +9,23 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [2.10.0] - 2026-09-15
+
+### Added
+
+- **`vault-assistant` workflow bundle (nine skills).** The skills that maintain a personal Obsidian
+  vault: `vault-setup` (bootstrap and check a vault and its tooling), `vault-conventions` (kinds,
+  properties, links, binaries, memory etiquette), `vault-project` (charter gate, close and archive),
+  `vault-resume` and `vault-capture` (session start and end), `vault-promote` and `vault-tidy`
+  (curation after a yes, moves through the Obsidian CLI), `vault-planning` (year, quarter OKRs,
+  month, week) and `vault-daily` (the morning note, drafts only). Needs the external
+  `obsidian@obsidian-skills` plugin and the company memory. Change: `add-vault-assistant`.
+
+### Changed
+
+- Bundles are four role bundles plus one workflow bundle (`catalogue-governance`,
+  `dual-cli-generation`, `dual-cli-distribution`).
+
 ## [2.9.0] - 2026-07-24
 
 ### Added

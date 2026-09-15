@@ -26,3 +26,7 @@ capabilities:
     # Guards against REGRESSION (re-narrowing the rule / restating prose), NOT id citation —
     # citing `AP-*`/`PR-*` ids is the desired behaviour. Flags the old models/services narrowing.
     claim_patterns: ["magic strings in models or services", "raw dicts.{0,20}in models or services"]
+  - tag: vault-note-conventions
+    owner: vault-conventions
+    # Kinds and their required properties are defined once; other vault-* skills cite them.
+    claim_patterns: ["required properties", "\\| kind \\|"]
