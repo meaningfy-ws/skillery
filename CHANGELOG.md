@@ -9,6 +9,34 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [2.11.0] - 2026-09-15
+
+### Changed
+
+- **The Meaningfy lifecycle is redefined as three parallel `ai-*` domains**, each with one runbook,
+  one Definition of Done and role playbooks: `docs/ai-coding/` (build, tightened; the build plane
+  ADLC/MDLC-lite/SDLC replaces the retired two-tier framing), `docs/ai-sales/` (the commercial process,
+  new) and `docs/ai-consulting/` (advisory and discovery methodology, new, with named extension points
+  for maturity assessment, Wardley mapping and enterprise/process modelling). The Definition of Done
+  splits into a Builder's DoD and a Shipper's DoD, and six Meaningfy roles with a RACI matrix are added,
+  including the Work Shaper.
+- **Commercial model corrected** in `semantic-consulting-coach`, `decision-package` and
+  `proposal-writing`: presale is the only free stage; Discovery & Onboarding replaces the P0/P1 labels
+  with a Light workshop or a Deep assessment; the outcome is Semantic Layer adoption in six sellable
+  building blocks.
+- **Environment and tooling docs moved** into one `docs/environment/` cluster (dual-CLI, OpenSpec setup,
+  environment setup); `docs/engagement/`, `docs/how-we-work/` and `docs/services/` are retired.
+
+### Fixed
+
+- **`repo_lint` link check**: link targets may hold one level of parentheses and are percent-decoded
+  before the existence check, so a filename such as `Handbook (2026) (1).pdf` resolves.
+- **Spine validation**: six requirements in the in-flight lifecycle changes now carry their SHALL on
+  the first line, as the pinned openspec 1.4.1 requires (no wording changed).
+- **`vault-setup`**: the scheduled `vault-daily` run can read mail and calendar and write its note
+  headless (read-only connector tools and memory `recall` allowed; `--permission-mode acceptEdits`),
+  and the final check covers trusting the vault folder in Claude Code.
+
 ## [2.10.0] - 2026-09-15
 
 ### Added
