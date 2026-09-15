@@ -6,9 +6,7 @@ Define how the opencode CLI tree is generated from the first-party Claude source
 stay in lock-step. Every opencode artifact derives from a single source (`skills/`, `agents/`,
 `.claude-plugin/marketplace.json`, `VERSION`); coverage is full-parity with explicit, recorded gaps;
 output is deterministic; and drift, parity, and version-sync are enforced through `make` targets.
-
 ## Requirements
-
 ### Requirement: Generation traces to a single source
 The generator SHALL derive every emitted opencode artifact solely from `skills/`, `agents/`, `.claude-plugin/marketplace.json`, and `VERSION`, and SHALL NOT read or depend on hand-authored content in the generated tree.
 
@@ -51,11 +49,16 @@ The generator SHALL map Claude agent frontmatter to opencode via recorded mappin
 - **THEN** the opencode permissions grant/deny the equivalent, or a gap is recorded where no analogue exists
 
 ### Requirement: Bundle grouping preserved
-The generated opencode tree SHALL reproduce the four role bundles with the same membership as `marketplace.json`.
+The generated opencode tree SHALL reproduce every bundle in `marketplace.json` (the four role bundles
+and the `vault-assistant` workflow bundle) with the same membership as `marketplace.json`.
 
 #### Scenario: Bundle membership matches
 - **WHEN** a skill or agent is a member of a bundle in `marketplace.json`
 - **THEN** it is a member of the corresponding opencode bundle
+
+#### Scenario: The workflow bundle is generated
+- **WHEN** the generator runs with the `vault-assistant` plugin entry present
+- **THEN** `.opencode/bundles.json` lists `vault-assistant` with exactly its skills
 
 ### Requirement: Version written from VERSION
 The generator SHALL write the root `VERSION` value into `marketplace.json` `metadata.version` and the opencode distribution version.
@@ -103,3 +106,4 @@ The generator SHALL run through a dedicated `make` target that regenerates the o
 #### Scenario: Regeneration via make
 - **WHEN** a maintainer runs the generate target
 - **THEN** the committed opencode tree is updated to match current source
+

@@ -7,7 +7,6 @@ pointer-`CLAUDE.md` root binding, the hook intent inventory, MCP documented per-
 external-dependency and baseline-pack compatibility matrix, the tool-native registration boundary,
 skill-body CLI-agnosticism, and the per-CLI documentation split. The generation/parity engine that
 emits and gates the opencode tree against this contract is the `dual-cli-generation` capability.
-
 ## Requirements
 ### Requirement: Single version source
 The repository SHALL contain a root `VERSION` file as the only source of version truth; the Claude `marketplace.json` `metadata.version` and the opencode distribution version SHALL both be derived from it. (Enforcement of agreement is the version-sync gate owned by `dual-cli-generator`.)
@@ -54,7 +53,7 @@ The change SHALL provide a committed compatibility matrix recording, for each ex
 - **THEN** the matrix names the equivalent baseline capability on each CLI or records a gap
 
 ### Requirement: Per-CLI documentation split
-Documentation under `docs/` SHALL clearly distinguish opencode setup and configuration from Claude setup and configuration, over a shared source→CLI mapping reference, and SHALL cover the pinned opencode version and recorded gaps. Each role bundle SHALL have a documented install path on each CLI. Each per-CLI runbook (`docs/dual-cli/setup-claude.md`, `docs/dual-cli/setup-opencode.md`) SHALL present its install path as a literal numbered sequence of steps, where each step names exactly one runnable action — a copy-paste command block or a single external link — plus at most one line of rationale, and the sequence SHALL end with a verification step naming a command and its expected output. Version numbers and dependency pins SHALL be linked to their single source (`docs/environment-setup.md`) rather than restated in the runbook.
+Documentation under `docs/` SHALL clearly distinguish opencode setup and configuration from Claude setup and configuration, over a shared source→CLI mapping reference, and SHALL cover the pinned opencode version and recorded gaps. Each bundle, role or workflow, SHALL have a documented install path on each CLI. Each per-CLI runbook (`docs/dual-cli/setup-claude.md`, `docs/dual-cli/setup-opencode.md`) SHALL present its install path as a literal numbered sequence of steps, where each step names exactly one runnable action — a copy-paste command block or a single external link — plus at most one line of rationale, and the sequence SHALL end with a verification step naming a command and its expected output. Version numbers and dependency pins SHALL be linked to their single source (`docs/environment-setup.md`) rather than restated in the runbook.
 
 #### Scenario: A team member can set up either CLI
 - **WHEN** a team member follows the documentation for their chosen CLI

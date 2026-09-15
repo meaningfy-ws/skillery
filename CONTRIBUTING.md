@@ -91,10 +91,11 @@ groups skills by bundle, one cell per bundle), and bump the skill count in the s
 
 ### Step 3: Register in Marketplace
 
-Add your skill path (flat: `./skills/<skill>`) to the appropriate **role bundle**
-in `.claude-plugin/marketplace.json`. The four bundles are `meaningfy-core`,
-`meaningfy-consulting`, `meaningfy-architecture`, and `meaningfy-building` — every
-skill belongs to exactly one. `marketplace.json` is the **single source of bundle
+Add your skill path (flat: `./skills/<skill>`) to the appropriate **bundle**
+in `.claude-plugin/marketplace.json`. The four role bundles are `meaningfy-core`,
+`meaningfy-consulting`, `meaningfy-architecture`, and `meaningfy-building`; the one
+workflow bundle is `vault-assistant` (personal-vault skills) — every skill belongs to
+exactly one. `marketplace.json` is the **single source of bundle
 membership**: the validator (`make validate`) reads it to check every skill is
 registered in exactly one bundle, so **no code edit is needed** when you add a
 skill (`tools/repo_lint/lint.py` pins only the valid bundle *names*, not the

@@ -30,7 +30,18 @@
       "meaningfy-git-workflow",
       "technical-writing",
       "writing-antipatterns"
+    ],
+    "vault-assistant": [
+      "vault-capture",
+      "vault-conventions",
+      "vault-daily",
+      "vault-planning",
+      "vault-project",
+      "vault-promote",
+      "vault-resume",
+      "vault-setup",
+      "vault-tidy"
     ]
   },
-  "version": "2.9.0"
+  "version": "2.10.0"
 }

@@ -78,6 +78,16 @@ PURPOSE_OF: dict[str, str] = {
     "decision-package": "Consulting & Business",
     "proposal-writing": "Consulting & Business",
     "estimation": "Consulting & Business",
+    # Personal Vault (the vault-assistant workflow bundle)
+    "vault-setup": "Personal Vault",
+    "vault-conventions": "Personal Vault",
+    "vault-project": "Personal Vault",
+    "vault-resume": "Personal Vault",
+    "vault-capture": "Personal Vault",
+    "vault-promote": "Personal Vault",
+    "vault-tidy": "Personal Vault",
+    "vault-planning": "Personal Vault",
+    "vault-daily": "Personal Vault",
 }
 
 PURPOSE_BLURB: dict[str, str] = {
@@ -87,6 +97,7 @@ PURPOSE_BLURB: dict[str, str] = {
     "Quality & Review": "tests, BDD, pre-PR review",
     "Delivery & Ops": "scaffolding, CI/CD, releases",
     "Consulting & Business": "front-of-funnel advisory work",
+    "Personal Vault": "a personal Obsidian vault and its daily rhythm",
 }
 
 # Light-but-distinct fills so each purpose reads as a card, not a container —
@@ -98,6 +109,7 @@ _PURPOSE_FILLS = {
     "Quality & Review": "#fdeef0",
     "Delivery & Ops": "#f6f5ef",
     "Consulting & Business": "#fdeef7",
+    "Personal Vault": "#eef7fb",
 }
 
 _SKILL_FILL = "#1e1e1e"
@@ -113,6 +125,7 @@ _SKILL_FILLS_BY_CATEGORY = {
     "Quality & Review": "#7a2030",
     "Delivery & Ops": "#4a4a3a",
     "Consulting & Business": "#6b1f4d",
+    "Personal Vault": "#1f4f6b",
 }
 
 # Pastel, distinct-enough fills for a fade/contained look — one per bundle, in
@@ -315,8 +328,9 @@ def render(bundles: list[dict], skills: dict[str, dict]) -> str:
         "     .claude-plugin/marketplace.json, and this file's own PURPOSE_OF/PURPOSE_BLURB",
         "     mappings. tests/test_skill_inventory.py fails the build if this drifts. -->",
         "",
-        f"{total} skills across {len(bundles)} role bundles. Install `meaningfy-core` plus the "
-        "bundle(s) matching your role — see the root [`README.md`](../README.md).",
+        f"{total} skills across {len(bundles)} bundles (role bundles plus the `vault-assistant` workflow "
+        "bundle). Install `meaningfy-core` plus the bundle(s) matching your role — see the root "
+        "[`README.md`](../README.md).",
         "",
         "## Map",
         "",
@@ -337,7 +351,7 @@ def render(bundles: list[dict], skills: dict[str, dict]) -> str:
         f"something off to another); a **thin dashed** arrow is *related* ({related_count} edges, "
         'everything else in the "Related" list — weaker, a "see also" rather than a hand-off). '
         f"Kept separate from the Map's classification edges — {dependency_count + related_count} "
-        "relation edges plus 22 classification edges in one diagram was tried and was a "
+        f"relation edges plus {len(PURPOSE_OF)} classification edges in one diagram was tried and was a "
         "long-crossing-line mess, confirmed by actually rendering it.",
         "",
         render_relations(bundles, skills),

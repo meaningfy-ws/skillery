@@ -5,7 +5,7 @@
      .claude-plugin/marketplace.json, and this file's own PURPOSE_OF/PURPOSE_BLURB
      mappings. tests/test_skill_inventory.py fails the build if this drifts. -->
 
-23 skills across 4 role bundles. Install `meaningfy-core` plus the bundle(s) matching your role — see the root [`README.md`](../README.md).
+32 skills across 5 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role — see the root [`README.md`](../README.md).
 
 ## Map
 
@@ -45,10 +45,22 @@ flowchart LR
     s_ci_cd_delivery["ci-cd-delivery"]
     s_meaningfy_release["meaningfy-release"]
   end
+  subgraph b_vault_assistant["vault-assistant"]
+    s_vault_setup["vault-setup"]
+    s_vault_conventions["vault-conventions"]
+    s_vault_project["vault-project"]
+    s_vault_resume["vault-resume"]
+    s_vault_capture["vault-capture"]
+    s_vault_promote["vault-promote"]
+    s_vault_tidy["vault-tidy"]
+    s_vault_planning["vault-planning"]
+    s_vault_daily["vault-daily"]
+  end
 
   p_consulting_business("Consulting & Business<br/><sub>front-of-funnel advisory work</sub>")
   p_delivery_ops("Delivery & Ops<br/><sub>scaffolding, CI/CD, releases</sub>")
   p_modelling_architecture("Modelling & Architecture<br/><sub>domain models, system design, LinkML</sub>")
+  p_personal_vault("Personal Vault<br/><sub>a personal Obsidian vault and its daily rhythm</sub>")
   p_process_governance("Process & Governance<br/><sub>the spine build loop + agentic guardrails</sub>")
   p_quality_review("Quality & Review<br/><sub>tests, BDD, pre-PR review</sub>")
   p_writing_communication("Writing & Communication<br/><sub>clear prose, persuasion, teaching</sub>")
@@ -75,15 +87,26 @@ flowchart LR
   s_semantic_consulting_coach --> p_consulting_business
   s_spec_stewardship --> p_process_governance
   s_technical_writing --> p_writing_communication
+  s_vault_capture --> p_personal_vault
+  s_vault_conventions --> p_personal_vault
+  s_vault_daily --> p_personal_vault
+  s_vault_planning --> p_personal_vault
+  s_vault_project --> p_personal_vault
+  s_vault_promote --> p_personal_vault
+  s_vault_resume --> p_personal_vault
+  s_vault_setup --> p_personal_vault
+  s_vault_tidy --> p_personal_vault
   s_writing_antipatterns --> p_writing_communication
 
   style b_meaningfy_core fill:#eaf3ff,stroke:#999,stroke-width:1px
   style b_meaningfy_consulting fill:#fff2e0,stroke:#999,stroke-width:1px
   style b_meaningfy_architecture fill:#eafaf0,stroke:#999,stroke-width:1px
   style b_meaningfy_building fill:#f5eaff,stroke:#999,stroke-width:1px
+  style b_vault_assistant fill:#eaf3ff,stroke:#999,stroke-width:1px
   style p_consulting_business fill:#fdeef7,color:#000000,stroke:#333,stroke-width:1.5px
   style p_delivery_ops fill:#f6f5ef,color:#000000,stroke:#333,stroke-width:1.5px
   style p_modelling_architecture fill:#eafaf5,color:#000000,stroke:#333,stroke-width:1.5px
+  style p_personal_vault fill:#eef7fb,color:#000000,stroke:#333,stroke-width:1.5px
   style p_process_governance fill:#eef1fb,color:#000000,stroke:#333,stroke-width:1.5px
   style p_quality_review fill:#fdeef0,color:#000000,stroke:#333,stroke-width:1.5px
   style p_writing_communication fill:#fdf6e3,color:#000000,stroke:#333,stroke-width:1.5px
@@ -109,12 +132,21 @@ flowchart LR
   style s_semantic_consulting_coach fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_spec_stewardship fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_technical_writing fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_vault_capture fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_vault_conventions fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_vault_daily fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_vault_planning fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_vault_project fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_vault_promote fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_vault_resume fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_vault_setup fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_vault_tidy fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_writing_antipatterns fill:#1e1e1e,color:#ffffff,stroke:#000
 ```
 
 ## Relations
 
-Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (the same six categories, one dark shade each) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (39 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (66 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 105 relation edges plus 22 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
+Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (the same six categories, one dark shade each) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (63 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (85 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 148 relation edges plus 32 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
 
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 12, 'rankSpacing': 45, 'curve': 'basis'}}}%%
@@ -149,6 +181,17 @@ flowchart LR
     s_project_setup["project-setup"]
     s_ci_cd_delivery["ci-cd-delivery"]
     s_meaningfy_release["meaningfy-release"]
+  end
+  subgraph b_vault_assistant["vault-assistant"]
+    s_vault_setup["vault-setup"]
+    s_vault_conventions["vault-conventions"]
+    s_vault_project["vault-project"]
+    s_vault_resume["vault-resume"]
+    s_vault_capture["vault-capture"]
+    s_vault_promote["vault-promote"]
+    s_vault_tidy["vault-tidy"]
+    s_vault_planning["vault-planning"]
+    s_vault_daily["vault-daily"]
   end
 
   s_ci_cd_delivery ==> s_project_setup
@@ -190,6 +233,30 @@ flowchart LR
   s_semantic_consulting_coach ==> s_estimation
   s_spec_stewardship ==> s_epic_planning
   s_spec_stewardship ==> s_clarity_gate
+  s_vault_capture ==> s_vault_conventions
+  s_vault_capture ==> s_vault_resume
+  s_vault_capture ==> s_vault_project
+  s_vault_conventions ==> s_vault_setup
+  s_vault_daily ==> s_vault_conventions
+  s_vault_daily ==> s_vault_planning
+  s_vault_daily ==> s_vault_setup
+  s_vault_planning ==> s_vault_conventions
+  s_vault_planning ==> s_vault_daily
+  s_vault_planning ==> s_vault_promote
+  s_vault_planning ==> s_vault_tidy
+  s_vault_project ==> s_vault_conventions
+  s_vault_project ==> s_vault_resume
+  s_vault_project ==> s_vault_capture
+  s_vault_promote ==> s_vault_conventions
+  s_vault_promote ==> s_vault_tidy
+  s_vault_resume ==> s_vault_conventions
+  s_vault_resume ==> s_vault_capture
+  s_vault_resume ==> s_vault_project
+  s_vault_setup ==> s_vault_conventions
+  s_vault_setup ==> s_project_setup
+  s_vault_tidy ==> s_vault_conventions
+  s_vault_tidy ==> s_vault_promote
+  s_vault_tidy ==> s_vault_project
 
   s_architecture -.-> s_cosmic_python
   s_architecture -.-> s_epic_planning
@@ -250,6 +317,25 @@ flowchart LR
   s_technical_writing -.-> s_epic_planning
   s_technical_writing -.-> s_explanatory_writing
   s_technical_writing -.-> s_writing_antipatterns
+  s_vault_capture -.-> s_vault_daily
+  s_vault_capture -.-> s_vault_promote
+  s_vault_conventions -.-> s_vault_project
+  s_vault_conventions -.-> s_vault_resume
+  s_vault_conventions -.-> s_vault_capture
+  s_vault_conventions -.-> s_vault_promote
+  s_vault_conventions -.-> s_vault_tidy
+  s_vault_conventions -.-> s_vault_planning
+  s_vault_conventions -.-> s_vault_daily
+  s_vault_daily -.-> s_vault_capture
+  s_vault_daily -.-> s_vault_resume
+  s_vault_planning -.-> s_vault_project
+  s_vault_project -.-> s_vault_tidy
+  s_vault_project -.-> s_vault_planning
+  s_vault_project -.-> s_epic_planning
+  s_vault_promote -.-> s_vault_capture
+  s_vault_promote -.-> s_vault_planning
+  s_vault_resume -.-> s_vault_daily
+  s_vault_setup -.-> s_vault_daily
   s_writing_antipatterns -.-> s_technical_writing
   s_writing_antipatterns -.-> s_explanatory_writing
   s_writing_antipatterns -.-> s_executive_communication
@@ -262,6 +348,7 @@ flowchart LR
   style b_meaningfy_consulting fill:#fff2e0,stroke:#999,stroke-width:1px
   style b_meaningfy_architecture fill:#eafaf0,stroke:#999,stroke-width:1px
   style b_meaningfy_building fill:#f5eaff,stroke:#999,stroke-width:1px
+  style b_vault_assistant fill:#eaf3ff,stroke:#999,stroke-width:1px
   style s_architecture fill:#0f5c48,color:#ffffff,stroke:#000
   style s_bdd_gherkin fill:#7a2030,color:#ffffff,stroke:#000
   style s_ci_cd_delivery fill:#4a4a3a,color:#ffffff,stroke:#000
@@ -284,6 +371,15 @@ flowchart LR
   style s_semantic_consulting_coach fill:#6b1f4d,color:#ffffff,stroke:#000
   style s_spec_stewardship fill:#2b3a67,color:#ffffff,stroke:#000
   style s_technical_writing fill:#7a5c00,color:#ffffff,stroke:#000
+  style s_vault_capture fill:#1f4f6b,color:#ffffff,stroke:#000
+  style s_vault_conventions fill:#1f4f6b,color:#ffffff,stroke:#000
+  style s_vault_daily fill:#1f4f6b,color:#ffffff,stroke:#000
+  style s_vault_planning fill:#1f4f6b,color:#ffffff,stroke:#000
+  style s_vault_project fill:#1f4f6b,color:#ffffff,stroke:#000
+  style s_vault_promote fill:#1f4f6b,color:#ffffff,stroke:#000
+  style s_vault_resume fill:#1f4f6b,color:#ffffff,stroke:#000
+  style s_vault_setup fill:#1f4f6b,color:#ffffff,stroke:#000
+  style s_vault_tidy fill:#1f4f6b,color:#ffffff,stroke:#000
   style s_writing_antipatterns fill:#7a5c00,color:#ffffff,stroke:#000
 ```
 
@@ -337,3 +433,19 @@ The delivery / developer role: the spine build loop (epic-planning, spec-steward
 | [`project-setup`](../skills/project-setup/SKILL.md) | Scaffold or modernise a Meaningfy-standard repo and PROJECT the Meaningfy spine into it — a top-level package (no src/), Poetry + dedicated root tool configs, cosmic-python layering with import-linter guardrails, TDD+BDD tests, a CLAUDE-canonical agentic setup (CLAUDE.md is canonical; AGENTS.md is an optional symlink), the openspec/ spine (config + pinned meaningfy schema + /opsx:* commands + golden thread), three archetypes (product/library/doc-only) with fixed gate profiles, conditional model/ and CD seam, Antora docs, infra, and CI. | `cosmic-python`, `architecture`, `epic-planning`, `technical-writing`, `meaningfy-git-workflow` | `superpowers`, `stream-coding` |
 | [`ci-cd-delivery`](../skills/ci-cd-delivery/SKILL.md) | Standardise the application-repo Continuous Delivery side of Meaningfy systems — the deploy trigger, the reusable deploy mechanism, and the release/image standard. | `project-setup`, `cosmic-python` | `project-setup`, `cosmic-python`, `meaningfy-release` |
 | [`meaningfy-release`](../skills/meaningfy-release/SKILL.md) | The Meaningfy release lifecycle — semantic versioning policy (MAJOR/MINOR/PATCH + -rc.N pre-releases), GitFlow release/hotfix branches, changelog + GitHub release notes, semi-automated releases via release-please, publishing Python libraries to PyPI with Trusted Publishing (OIDC, no tokens), opt-in supply-chain hardening (signing/provenance/SBOM), and release governance (SECURITY.md, yanking, deprecation). | — | `meaningfy-git-workflow`, `ci-cd-delivery`, `project-setup` |
+
+## vault-assistant
+
+The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily). Needs the external obsidian@obsidian-skills plugin and the company memory.
+
+| Skill | Purpose | Depends on | Related |
+|---|---|---|---|
+| [`vault-setup`](../skills/vault-setup/SKILL.md) | Bootstrap or complete a Meaningfy personal Obsidian vault and its tooling, the way project-setup does for a repository: create the vault layout and its `vault-files/` sibling, the templates for every kind, the vault's agent instructions (`AGENTS.md` with the owner profile and write rules) and the per-CLI permission settings; then guide, per operating system (Windows or Linux), installing Obsidian with its CLI, the external obsidian-skills plugin, sync through Google Drive (Insync) or OneDrive, the company memory's MCP server, mail and calendar connectors, the optional ingestion opt-in and a scheduled daily run; end with a check of every prerequisite. | `vault-conventions`, `project-setup` | `vault-conventions`, `vault-daily`, `project-setup` |
+| [`vault-conventions`](../skills/vault-conventions/SKILL.md) | Meaningfy's conventions for notes in a personal Obsidian vault: the folder layout and what each folder holds, the `kind` of every note and its required properties, the project's standing files, link and tag style, where binaries go, machine-neutral paths, the `00 Inbox/proposed/` staging area, and how a vault session may use the company memory (recall only, never remember). | `vault-setup` | `vault-setup`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
+| [`vault-project`](../skills/vault-project/SKILL.md) | Start or close a project folder in a Meaningfy Obsidian vault. | `vault-conventions`, `vault-resume`, `vault-capture` | `vault-conventions`, `vault-resume`, `vault-capture`, `vault-tidy`, `vault-planning`, `epic-planning` |
+| [`vault-resume`](../skills/vault-resume/SKILL.md) | Start a work session on one project in a Meaningfy Obsidian vault: read that project's charter (`index.md`), its latest `sessions.md` entries, `decisions.md` and `tasks.md`, make at most one memory recall naming the project, and summarise where things stand and what is next. | `vault-conventions`, `vault-capture`, `vault-project` | `vault-conventions`, `vault-capture`, `vault-project`, `vault-daily` |
+| [`vault-capture`](../skills/vault-capture/SKILL.md) | File what matters into one project's files in a Meaningfy Obsidian vault: at the end of a work session (from the conversation) or at any time from raw call or meeting notes the owner pastes. | `vault-conventions`, `vault-resume`, `vault-project` | `vault-conventions`, `vault-resume`, `vault-project`, `vault-daily`, `vault-promote` |
+| [`vault-promote`](../skills/vault-promote/SKILL.md) | Promote a staged note out of `00 Inbox/proposed/` in a Meaningfy Obsidian vault into a project folder or `03 Resources/`: after checking it carries `kind` and every property its kind requires, and moving it with the Obsidian CLI so every wikilink follows. | `vault-conventions`, `vault-tidy` | `vault-conventions`, `vault-tidy`, `vault-capture`, `vault-planning` |
+| [`vault-tidy`](../skills/vault-tidy/SKILL.md) | Tidy a Meaningfy Obsidian vault on the owner's request: survey it, present a written plan of every move, merge and rename (and every wikilink each affects), and apply the plan only after an explicit yes, moving with the Obsidian CLI so links follow. | `vault-conventions`, `vault-promote`, `vault-project` | `vault-conventions`, `vault-promote`, `vault-project` |
+| [`vault-planning`](../skills/vault-planning/SKILL.md) | Plan and review the owner's objectives in a Meaningfy Obsidian vault across four horizons: year, quarter (OKRs: objectives with measurable key results), month and week: kept in `05 To Do/Objectives YYYY.md` with its own change log, and reviewed into `04 Daily/reviews/`. | `vault-conventions`, `vault-daily`, `vault-promote`, `vault-tidy` | `vault-daily`, `vault-project`, `vault-conventions`, `vault-promote` |
+| [`vault-daily`](../skills/vault-daily/SKILL.md) | Write today's morning note in a Meaningfy Obsidian vault (`04 Daily/YYYY-MM-DD.md`, private) from live sources: the calendar, the inbox and sent mail since the previous note, the master to-do list `05 To Do/To-Do.md`, this week's plans: keep the master list current (ticks flow back, waiting-on-replies tracked), and create reply drafts, never sending anything. | `vault-conventions`, `vault-planning`, `vault-setup` | `vault-planning`, `vault-conventions`, `vault-setup`, `vault-capture`, `vault-resume` |

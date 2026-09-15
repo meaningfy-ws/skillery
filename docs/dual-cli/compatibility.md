@@ -6,7 +6,7 @@ installer following [`setup-claude.md`](setup-claude.md)/[`setup-opencode.md`](s
 already gets the correct per-CLI command; come here to double-check *why*, or to add a new
 dependency's row.
 
-First-party artifacts (`skills/`, `agents/`, the four bundles) are generated with verified parity —
+First-party artifacts (`skills/`, `agents/`, every bundle) are generated with verified parity —
 they are *not* in this matrix. This page covers the **external boundary**: third-party plugins,
 skill-packs, and MCP servers the catalogue references but cannot generate (DEC-11). Each row records
 opencode support and a per-CLI install path or a gap.
@@ -31,6 +31,7 @@ Status legend:
 | **stream-coding** (doc-first method) | clarity-gate, cosmic-python (external method) | `.claude/`-compat | plugin / repo skill | it's a single `SKILL.md`, not a package — copy it into `.claude/skills/stream-coding/`; opencode reads that path natively. |
 | **commit-commands** (`commit-commands:commit`) | meaningfy-git-workflow | native (command) | plugin command | opencode `.opencode/commands/`; the *content* derives from the shared command source, registration is per-CLI (tool-native boundary). |
 | **OpenSpec** (`@fission-ai/openspec`, the spine engine + `/opsx:*`) | the spine (project-setup, epic-planning, spec-stewardship) | native | `npm i -g @fission-ai/openspec`; `openspec update --tools claude` | same npm package; `openspec update --tools opencode` registers `opsx-<id>`. Registration form is tool-native (differs by design), not a gap. |
+| **obsidian-skills** (`obsidian@obsidian-skills`: obsidian-markdown, obsidian-bases, obsidian-cli; MIT, [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills)) | every `vault-*` skill (mandatory for `vault-assistant`) | **UNVERIFIED** (plain `SKILL.md` files) | `/plugin marketplace add kepano/obsidian-skills` + `/plugin install obsidian@obsidian-skills` | clone into the user's global opencode skills folder, never into a vault. Gaps for `vault-assistant` on opencode: explicit-only skills are invoked by name (no slash form); vault permission settings **UNVERIFIED** (see `skills/vault-setup/references/permissions-opencode.md`; a 2026-09-15 test run was inconclusive because the opencode provider did not answer). |
 | **code-review** (read-only PR-review *runner*) | optional pair for `meaningfy-code-review` | unsupported (Claude plugin) | `/plugin install code-review@claude-plugins-official` | **gap (optional)** — no opencode plugin equivalent; on opencode run the `meaningfy-code-review` skill directly or opencode's native review. The review *checklist* (the skill) works on both CLIs, so no workflow is blocked. |
 
 > **gitnexus** and **context7** are MCP servers, not skill-packs — both **native** on opencode; see the
