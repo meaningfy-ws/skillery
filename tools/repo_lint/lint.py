@@ -23,13 +23,14 @@ README = "README.md"
 # in CONTRIBUTING. The established `architecture` skill is ~618 lines and fine.
 MAX_SKILL_LINES = 650
 
-# The ROLE taxonomy: the four bundles a skill may live in. Bundle *membership* is
-# read from marketplace.json — its single source of truth — so adding a skill never
+# The bundle taxonomy: the four role bundles and the one workflow bundle a skill may
+# live in. Bundle *membership* is read from marketplace.json — its single source of truth — so adding a skill never
 # means editing this file. Only the set of valid role names is pinned here (it is
 # stable and small). Every skill lives in exactly ONE bundle — no overlays. Disk is
 # flat (`skills/<skill>/`); bundles group only in marketplace.json.
 EXPECTED_BUNDLE_NAMES = {
     "meaningfy-core", "meaningfy-consulting", "meaningfy-architecture", "meaningfy-building",
+    "vault-assistant",  # the one workflow bundle: personal-vault skills, not a role
 }
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "gherkin-writer", "documenter"}
 # Non-namespaced skills that legitimately live in OTHER plugins (so an agent may load them

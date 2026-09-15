@@ -63,6 +63,23 @@
         "./skills/ci-cd-delivery",
         "./skills/meaningfy-release"
       ]
+    },
+    {
+      "name": "vault-assistant",
+      "description": "The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily). Needs the external obsidian@obsidian-skills plugin and the company memory",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/vault-setup",
+        "./skills/vault-conventions",
+        "./skills/vault-project",
+        "./skills/vault-resume",
+        "./skills/vault-capture",
+        "./skills/vault-promote",
+        "./skills/vault-tidy",
+        "./skills/vault-planning",
+        "./skills/vault-daily"
+      ]
     }
   ]
 }

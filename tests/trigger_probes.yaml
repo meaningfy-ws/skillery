@@ -45,3 +45,23 @@ probes:
     expect: bdd-gherkin
   - probe: "review this change against the cosmic-python layers before the PR"
     expect: meaningfy-code-review
+  - probe: "set up my Obsidian vault and connect it to Google Drive"
+    expect: vault-setup
+  - probe: "what properties does a meeting note in my vault need"
+    expect: vault-conventions
+  - probe: "create a project folder in my vault for the portal work"
+    expect: vault-project
+  - probe: "close the onboarding project in my vault and archive it"
+    expect: vault-project
+  - probe: "resume the onboarding portal project, where were we"
+    expect: vault-resume
+  - probe: "file these call notes into the onboarding portal project"
+    expect: vault-capture
+  - probe: "promote this proposed note from the vault inbox into resources"
+    expect: vault-promote
+  - probe: "tidy up my vault inbox and merge the duplicate notes"
+    expect: vault-tidy
+  - probe: "plan my week and set my quarterly OKRs in the vault"
+    expect: vault-planning
+  - probe: "write my morning daily note with calendar and mail"
+    expect: vault-daily
