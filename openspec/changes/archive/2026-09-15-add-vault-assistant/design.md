@@ -149,5 +149,5 @@ positive `expect` entries. `tests/trigger_probes.yaml` carries at least one posi
 - **Nine skills cost context.** Explicit-only skills load no description on Claude Code, keeping four
   of the nine out of every session's context.
 - **UNVERIFIED items** (opencode permissions and shell patterns, headless connectors, the Flatpak CLI)
-  are marked where they appear and in `docs/environment/dual-cli/compatibility.md`; where an opencode deny is
+  are marked where they appear and in `docs/dual-cli/compatibility.md`; where an opencode deny is
   unverified, the skill body's prohibition is the stated fallback.
