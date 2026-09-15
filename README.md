@@ -27,7 +27,7 @@ Bundles are organised by the **role (hat) you wear** — install `meaningfy-core
 
 ## What's inside
 
-23 skills in **4 role bundles** — every skill lives in exactly one bundle (no duplication); the
+32 skills in **4 role bundles and 1 workflow bundle** — every skill lives in exactly one bundle (no duplication); the
 table below is bundle-level only. For the per-skill picture — purpose, which cross-cutting concern
 each one serves, and which skills depend on which — see
 [`docs/skill-inventory.md`](docs/skill-inventory.md) (a generated map + tables, not hand-maintained).
@@ -38,6 +38,7 @@ each one serves, and which skills depend on which — see
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **proposal-writing** · **estimation** · **executive-communication** | …do advisory / front-of-funnel work |
 | **meaningfy-architecture** | **architecture** · **conceptual-modelling** · **modelling-conventions** · **linkml-engineering** | …design systems or model a domain |
 | **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
+| **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/vault-assistant.md`](docs/vault-assistant.md)) |
 
 Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implementer`,
 `code-reviewer` — they pin a model + tools and load the skills above.
@@ -155,7 +156,7 @@ skillery/
 ├── spine/         # the spec-backbone conventions
 ├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery runs the spine on itself)
 ├── tools/ + tests/# the self-consistency validator (make validate)
-└── .claude-plugin/# marketplace (4 role bundles)
+└── .claude-plugin/# marketplace (4 role bundles + 1 workflow bundle)
 ```
 
 ## Contributing

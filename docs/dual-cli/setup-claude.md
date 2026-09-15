@@ -29,6 +29,7 @@ Pick your role(s) from the table, then run the matching install command(s). Ever
 | `meaningfy-building` | …build software with the spine |
 | `meaningfy-architecture` | …design systems or model a domain |
 | `meaningfy-consulting` | …do advisory / front-of-funnel work |
+| `vault-assistant` | …keep a personal Obsidian vault (workflow bundle; see [`../vault-assistant.md`](../vault-assistant.md) for its prerequisites) |
 
 ```bash
 /plugin install meaningfy-core@meaningfy-skillery

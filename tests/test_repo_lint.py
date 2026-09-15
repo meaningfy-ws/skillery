@@ -59,11 +59,12 @@ def test_skills_are_flat():
 
 
 def test_role_bundles_have_clean_placement():
-    # 4 role bundles, every skill owned by exactly one — no overlays/meta-bundles.
-    # Membership is read from marketplace.json; only the role names are pinned.
+    # 4 role bundles + 1 workflow bundle, every skill owned by exactly one — no overlays/meta-bundles.
+    # Membership is read from marketplace.json; only the bundle names are pinned.
     assert lint.expected_bundle_membership(REPO) == []
     assert lint.EXPECTED_BUNDLE_NAMES == {
         "meaningfy-core", "meaningfy-consulting", "meaningfy-architecture", "meaningfy-building",
+        "vault-assistant",
     }
 
 
