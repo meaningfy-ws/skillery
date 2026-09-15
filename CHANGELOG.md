@@ -9,7 +9,7 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
-## [Unreleased]
+## [2.10.0] - 2026-09-15
 
 ### Added
 
