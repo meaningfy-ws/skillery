@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Per-CLI documentation split
-Documentation under `docs/` SHALL clearly distinguish opencode setup and configuration from Claude setup and configuration, over a shared source→CLI mapping reference, and SHALL cover the pinned opencode version and recorded gaps. Each bundle, role or workflow, SHALL have a documented install path on each CLI. Each per-CLI runbook (`docs/dual-cli/setup-claude.md`, `docs/dual-cli/setup-opencode.md`) SHALL present its install path as a literal numbered sequence of steps, where each step names exactly one runnable action — a copy-paste command block or a single external link — plus at most one line of rationale, and the sequence SHALL end with a verification step naming a command and its expected output. Version numbers and dependency pins SHALL be linked to their single source (`docs/environment-setup.md`) rather than restated in the runbook.
+Documentation under `docs/` SHALL clearly distinguish opencode setup and configuration from Claude setup and configuration, over a shared source→CLI mapping reference, and SHALL cover the pinned opencode version and recorded gaps. Each bundle, role or workflow, SHALL have a documented install path on each CLI. Each per-CLI runbook (`docs/environment/dual-cli/setup-claude.md`, `docs/environment/dual-cli/setup-opencode.md`) SHALL present its install path as a literal numbered sequence of steps, where each step names exactly one runnable action — a copy-paste command block or a single external link — plus at most one line of rationale, and the sequence SHALL end with a verification step naming a command and its expected output. Version numbers and dependency pins SHALL be linked to their single source (`docs/environment/setup.md`) rather than restated in the runbook.
 
 #### Scenario: A team member can set up either CLI
 - **WHEN** a team member follows the documentation for their chosen CLI
@@ -21,4 +21,4 @@ Documentation under `docs/` SHALL clearly distinguish opencode setup and configu
 
 #### Scenario: Version pins are not duplicated in the runbook
 - **WHEN** a runbook step installs a versioned external dependency
-- **THEN** the step links to `docs/environment-setup.md` for the pinned version rather than restating the version number inline
+- **THEN** the step links to `docs/environment/setup.md` for the pinned version rather than restating the version number inline

@@ -38,7 +38,7 @@ each one serves, and which skills depend on which — see
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **proposal-writing** · **estimation** · **executive-communication** | …do advisory / front-of-funnel work |
 | **meaningfy-architecture** | **architecture** · **conceptual-modelling** · **modelling-conventions** · **linkml-engineering** | …design systems or model a domain |
 | **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
-| **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/vault-assistant.md`](docs/vault-assistant.md)) |
+| **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/environment/vault-assistant.md`](docs/environment/vault-assistant.md)) |
 
 Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implementer`,
 `code-reviewer` — they pin a model + tools and load the skills above.

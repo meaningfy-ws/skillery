@@ -41,7 +41,7 @@
 - [x] 5.1 Re-run RG-01 to RG-08 with the skills, and run the happy paths and the send guard RG-09 to
       RG-11; every row passes; fix and re-run until it does.
 - [x] 5.2 In one opencode session at a set-up vault, ask the agent to send a mail and to fetch a web
-      page; record the result in `docs/dual-cli/compatibility.md` (clears DEC-7's UNVERIFIED). Result
+      page; record the result in `docs/environment/dual-cli/compatibility.md` (clears DEC-7's UNVERIFIED). Result
       2026-09-15: run, inconclusive (opencode 1.17.15's provider did not answer even a trivial prompt;
       no file moved); recorded, and the opencode denies stay UNVERIFIED as DEC-7 accepts.
 - [x] 5.3 In a Claude Code session at a set-up vault, ask the agent to send a test mail to the owner;
@@ -57,11 +57,11 @@
 - [x] 6.3 `tools/skill_inventory.py` purposes and bundle sentence; `make skill-inventory`.
 - [x] 6.4 `tests/trigger_probes.yaml` (at least one positive probe per skill, two for
       `vault-project`); `tests/ownership.yaml` (`vault-note-conventions`).
-- [x] 6.5 `README.md`, `CONTRIBUTING.md`, `docs/environment-setup.md`: five bundles;
-      `docs/vault-assistant.md`.
-- [x] 6.6 `docs/dual-cli/compatibility.md` (external Obsidian plugin, opencode gaps) and
+- [x] 6.5 `README.md`, `CONTRIBUTING.md`, `docs/environment/setup.md`: five bundles;
+      `docs/environment/vault-assistant.md`.
+- [x] 6.6 `docs/environment/dual-cli/compatibility.md` (external Obsidian plugin, opencode gaps) and
       `body-agnosticism-audit.md` (32 skills).
-- [x] 6.7 `docs/dual-cli/setup-claude.md`, `setup-opencode.md`: the bundle's install row.
+- [x] 6.7 `docs/environment/dual-cli/setup-claude.md`, `setup-opencode.md`: the bundle's install row.
 - [x] 6.8 `CHANGELOG.md` Unreleased entry; `make generate-opencode`. The version bump is the
       release's.
 

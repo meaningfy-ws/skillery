@@ -55,7 +55,7 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Changed
 
-- **Install docs rewritten** as a literal, audience-scoped step-by-step (`docs/environment-setup.md`,
+- **Install docs rewritten** as a literal, audience-scoped step-by-step (`docs/environment/setup.md`,
   the two per-CLI runbooks, and the reference annex), replacing a narrative walkthrough.
 - **README skill count corrected**: 23 skills across the 4 role bundles (was previously stated as 20,
   a stale count predating several additions).
@@ -123,7 +123,7 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **Durable spec updated.** The `dual-cli-distribution` capability gains the *Single-home dual-CLI
   authoring rule* requirement (synced from the now-archived `dual-cli-docs-refactor` change): the
   "works on both CLIs" rule has one canonical home (`AGENTS.md`), and install docs form a single
-  hierarchy (README → `environment-setup.md` → per-CLI runbooks) with `docs/dual-cli/` as a reference
+  hierarchy (README → `environment-setup.md` → per-CLI runbooks) with `docs/environment/dual-cli/` as a reference
   annex. No code or behaviour change.
 
 ## [2.7.1] - 2026-06-30
@@ -131,8 +131,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 ### Changed
 
 - **Dual-CLI documentation re-seated.** The README now documents opencode support;
-  `docs/environment-setup.md` is the dual-CLI install canon (a "choose your CLI" fork), and
-  `docs/dual-cli/` is reframed as the reference annex. The "works on both CLIs" authoring rule is
+  `docs/environment/setup.md` is the dual-CLI install canon (a "choose your CLI" fork), and
+  `docs/environment/dual-cli/` is reframed as the reference annex. The "works on both CLIs" authoring rule is
   consolidated into a single canonical **Dual-CLI authoring rules** section in `AGENTS.md` that the
   other docs link rather than restate. Corrects stale inverted-binding wording and the skill count
   (18 → 20). New `dual-cli-distribution` requirement: *Single-home dual-CLI authoring rule*.
@@ -166,7 +166,7 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   single-sourced hook intent classified by mechanism (`git`/`ci`/`agent`) and phase
   (`quality`/`phase-gate`); git/ci bindings are shared across CLIs, agent bindings
   render per CLI.
-- **Per-CLI documentation** under `docs/dual-cli/` — Claude and opencode setup
+- **Per-CLI documentation** under `docs/environment/dual-cli/` — Claude and opencode setup
   pages over a shared source→CLI mapping reference, an external-dependency/baseline
   compatibility matrix, per-tool MCP setup templates (no config committed), and the
   skill-body CLI-agnosticism audit.

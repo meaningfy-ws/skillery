@@ -183,10 +183,10 @@ obsidian/<person>/
 - `tools/skill_inventory.py`: a purpose for each new skill; `docs/skill-inventory.md` regenerated.
 - `tests/trigger_probes.yaml` and `tests/ownership.yaml`: probes for every skill; the note conventions
   registered to `vault-conventions`.
-- `README.md`, `CONTRIBUTING.md`, `docs/environment-setup.md`: five bundles, and this one's prerequisites.
-- `docs/vault-assistant.md`: what the plugin needs to be useful, and how to start.
-- `docs/dual-cli/setup-claude.md`, `setup-opencode.md`: the install path for the new bundle.
-- `docs/dual-cli/compatibility.md`, `body-agnosticism-audit.md`: the external Obsidian plugin and the
+- `README.md`, `CONTRIBUTING.md`, `docs/environment/setup.md`: five bundles, and this one's prerequisites.
+- `docs/environment/vault-assistant.md`: what the plugin needs to be useful, and how to start.
+- `docs/environment/dual-cli/setup-claude.md`, `setup-opencode.md`: the install path for the new bundle.
+- `docs/environment/dual-cli/compatibility.md`, `body-agnosticism-audit.md`: the external Obsidian plugin and the
   opencode gaps.
 - `CHANGELOG.md` (Unreleased) and a regenerated `.opencode/`. The version bump belongs to the release.
 
@@ -211,6 +211,6 @@ obsidian/<person>/
 
 - **Users:** only people who install `vault-assistant`; nothing changes for the four role bundles.
 - **Prerequisites:** the plugin is useful only with a vault set up by `vault-setup`, the external
-  Obsidian plugin, and the company memory's MCP server; `docs/vault-assistant.md` says so first.
+  Obsidian plugin, and the company memory's MCP server; `docs/environment/vault-assistant.md` says so first.
 - **Upstream:** the drift in `inputs/qa-2026-09-14.md` goes back to the infrastructure repository's two
   changes, and its ingestion parser gains a citation of `vault-conventions` (DEC-13).

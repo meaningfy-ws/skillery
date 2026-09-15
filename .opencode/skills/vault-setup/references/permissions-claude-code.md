@@ -83,6 +83,8 @@ Adapt before writing:
 
 ## Verify
 
-In a session at the vault root, `/permissions` lists the rules; check every deny is there. Do not test
+A denied tool is removed from the session altogether: the agent cannot call it at all (checked
+2026-09-15 with `send_message` at a vault root). In a session at the vault root, `/permissions` lists
+the rules; check every deny is there. Do not test
 by asking for a real send. The owner may, once, ask for a mail to their own address and confirm it is
 refused without a prompt.
