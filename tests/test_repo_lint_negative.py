@@ -225,3 +225,21 @@ def test_clean_fixture_passes_all(tmp_path):
     assert lint.frontmatter_present_errors(tmp_path) == []
     assert lint.expected_bundle_membership(tmp_path) == []
     assert lint.broken_links(tmp_path) == []
+
+
+def test_link_target_with_parentheses_resolves(tmp_path):
+    # A filename containing parentheses, linked percent-encoded (as editors emit it)
+    # and with unencoded parentheses, must resolve rather than be cut at the first ')'.
+    inputs = tmp_path / "inputs"
+    inputs.mkdir()
+    (inputs / "Handbook (2026) (1).pdf").write_text("x", encoding="utf-8")
+    (tmp_path / "doc.md").write_text(
+        "see [a](inputs/Handbook%20(2026)%20(1).pdf) and [b](inputs/Handbook%20%282026%29%20%281%29.pdf)",
+        encoding="utf-8",
+    )
+    assert lint.broken_links(tmp_path) == []
+
+
+def test_link_with_parentheses_to_missing_file_is_flagged(tmp_path):
+    (tmp_path / "doc.md").write_text("see [a](inputs/Missing%20(2026).pdf)", encoding="utf-8")
+    assert lint.broken_links(tmp_path)

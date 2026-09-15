@@ -15,7 +15,9 @@ Claude Code reads `CLAUDE.md`, not `AGENTS.md`. One line imports the vault's age
 Applies to every session started at the vault root. Deny rules win over allow rules, so the shell is
 not denied wholesale (that would also block the Obsidian CLI): `obsidian` is allowed, and any other
 command needs the owner's approval in an interactive session and is refused in a scheduled one.
-Commands that move, delete or fetch (`mv`, `rm`, `curl`, `wget`) are denied outright. Any other shell
+Commands that move, delete or fetch (`mv`, `rm`, `curl`, `wget`) are denied outright. The read-only
+mail and calendar tools and the memory `recall` are allowed, so neither an interactive session nor a
+scheduled one stops to ask for them. Any other shell
 command is a **stated gap**: tell the owner to refuse it when asked.
 
 ```json
@@ -24,7 +26,18 @@ command is a **stated gap**: tell the owner to refuse it when asked.
     "allow": [
       "Bash(obsidian:*)",
       "mcp__claude_ai_Gmail__create_draft",
-      "mcp__claude_ai_Gmail__update_draft"
+      "mcp__claude_ai_Gmail__update_draft",
+      "mcp__claude_ai_Gmail__search_threads",
+      "mcp__claude_ai_Gmail__get_thread",
+      "mcp__claude_ai_Gmail__get_message",
+      "mcp__claude_ai_Gmail__list_drafts",
+      "mcp__claude_ai_Gmail__get_draft",
+      "mcp__claude_ai_Gmail__list_labels",
+      "mcp__claude_ai_Google_Calendar__list_events",
+      "mcp__claude_ai_Google_Calendar__get_event",
+      "mcp__claude_ai_Google_Calendar__search_events",
+      "mcp__claude_ai_Google_Calendar__list_calendars",
+      "mcp__<memory-server>__recall"
     ],
     "deny": [
       "mcp__claude_ai_Gmail__send_message",
