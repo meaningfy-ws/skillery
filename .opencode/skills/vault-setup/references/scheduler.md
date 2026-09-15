@@ -9,6 +9,15 @@ otherwise the owner runs the skill by hand.
 > vault root). Still test once by hand with the command below; if the note says a connector could not
 > be reached, remove the entry and keep `vault-daily` on demand.
 
+A headless run cannot answer a permission prompt, so any tool that would ask is refused. The
+read-only connector tools are allowed in the vault's settings (see
+[`permissions-claude-code.md`](permissions-claude-code.md)); `--permission-mode acceptEdits` accepts
+the run's own file edits (today's note, `To-Do.md`); every deny rule still applies.
+
+Claude Code applies a folder's allow rules only once the folder is trusted: start `claude` at the vault
+root interactively once and accept the trust prompt. Decide it knowingly, since everyone who can edit
+the vault can edit its settings; the deny rules apply either way.
+
 The run log goes to the owner folder, outside the vault, so it is never synced as a note.
 
 ## Linux (cron)
@@ -18,7 +27,7 @@ The run log goes to the owner folder, outside the vault, so it is never synced a
 
 ```
 PATH=<folder of claude>:/usr/local/bin:/usr/bin:/bin
-30 7 * * 1-5 cd "<vault path>" && claude -p "/vault-daily" >> "<owner folder>/vault-daily.log" 2>&1
+30 7 * * 1-5 cd "<vault path>" && claude -p "/vault-daily" --permission-mode acceptEdits >> "<owner folder>/vault-daily.log" 2>&1
 ```
 
 ## Windows (Task Scheduler)
@@ -29,7 +38,7 @@ short and free of nested quotes:
 ```
 @echo off
 cd /d "<vault path>"
-claude -p /vault-daily >> "<owner folder>\vault-daily.log" 2>&1
+claude -p /vault-daily --permission-mode acceptEdits >> "<owner folder>\vault-daily.log" 2>&1
 ```
 
 Then, in `cmd`:

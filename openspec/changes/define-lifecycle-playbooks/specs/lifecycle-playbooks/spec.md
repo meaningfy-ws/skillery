@@ -22,10 +22,7 @@ playbook) nor an orphan playbook (a playbook file with no corresponding defined 
   reverse also holds if a playbook is added before its role is defined
 
 ### Requirement: Pointer-discipline — no originating normative statement
-No normative lifecycle statement (a rule, gate, threshold, phase duration, price boundary, role
-definition, or RACI cell) SHALL originate in `docs/how-we-work/`. Every such statement appearing in
-`docs/how-we-work/README.md` or any file under `docs/how-we-work/playbooks/` SHALL carry an
-adjacent link to the sibling document that owns and states it.
+No normative lifecycle statement (a rule, gate, threshold, phase duration, price boundary, role definition, or RACI cell) SHALL originate in `docs/how-we-work/`. Every such statement appearing in `docs/how-we-work/README.md` or any file under `docs/how-we-work/playbooks/` SHALL carry an adjacent link to the sibling document that owns and states it.
 
 #### Scenario: A normative claim in the map carries its citation
 - **WHEN** `docs/how-we-work/README.md` states a fact about a gate, a threshold, a duration, a price

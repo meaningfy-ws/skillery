@@ -53,10 +53,7 @@ directory.
   (or a specific anchor within it) for role definition or RACI-cell detail
 
 ### Requirement: A method or technique with no owning skill is named as an explicit extension point
-Any document under `docs/ai-consulting/methods/` that describes a technique with no skill in this
-repository's `skills/` directory owning it SHALL state that absence plainly, in a checkable
-sentence, rather than fabricating acceptance criteria, a deliverable definition, or an owning skill
-that does not exist.
+Any document under `docs/ai-consulting/methods/` that describes a technique with no skill in this repository's `skills/` directory owning it SHALL state that absence plainly, in a checkable sentence, rather than fabricating acceptance criteria, a deliverable definition, or an owning skill that does not exist.
 
 #### Scenario: An unowned method states its own gap plainly
 - **WHEN** a reader opens `docs/ai-consulting/methods/wardley-mapping.md` (or
@@ -91,9 +88,7 @@ criteria not yet decided anywhere in this repository.
   no check at all
 
 ### Requirement: Cross-domain rules stay single-sourced across the two DoD files
-A rule stated as governing more than one domain's DoD (specifically, the Builder/Shipper
-Disagreement rule) SHALL remain defined in exactly one file and SHALL be cited, not copied, by any
-other DoD file it also governs.
+A rule stated as governing more than one domain's DoD (specifically, the Builder/Shipper Disagreement rule) SHALL remain defined in exactly one file and SHALL be cited, not copied, by any other DoD file it also governs.
 
 #### Scenario: sales-dod.md cites the Disagreement rule instead of copying it
 - **WHEN** a reader opens `docs/ai-sales/sales-dod.md`
