@@ -1,9 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: PROJECT-tier steps each name exactly one owning skill
-Every PROJECT-tier step in `docs/ai-coding/build-lifecycle.md` (Requirements & UC, ADLC, MDLC-lite,
-project/repo setup) SHALL cite exactly one owning skill by name and path; the doc SHALL NOT restate
-that skill's rules.
+Every PROJECT-tier step in `docs/ai-coding/build-lifecycle.md` (Requirements & UC, ADLC, MDLC-lite, project/repo setup) SHALL cite exactly one owning skill by name and path; the doc SHALL NOT restate that skill's rules.
 
 #### Scenario: ADLC step names its owner
 - **WHEN** a reader reads the PROJECT-tier ADLC step
@@ -16,8 +14,7 @@ that skill's rules.
   `modelling-conventions`, and names MDLC-standalone as a one-line known gap with no owning skill
 
 ### Requirement: EPIC-tier steps each name exactly one owning skill
-Every EPIC-tier step (shape the EPIC, derive the PLAN, BDD, TDD, review, documentation, archive)
-SHALL cite exactly one owning skill or OpenSpec mechanism per step.
+Every EPIC-tier step (shape the EPIC, derive the PLAN, BDD, TDD, review, documentation, archive) SHALL cite exactly one owning skill or OpenSpec mechanism per step.
 
 #### Scenario: Clarity-gate step names its owner
 - **WHEN** a reader reads the "derive the PLAN" EPIC-tier step
@@ -92,10 +89,7 @@ After this change, `docs/ai-coding/` SHALL contain exactly one build-plane lifec
 - **THEN** it reports zero references to `gherkin-writer` or `documenter` in that directory
 
 ### Requirement: repo_lint's link and orphan-reference gates pass after the rename
-After `two-tier-methodology.md` is renamed to `build-lifecycle.md` and its six inbound links are
-retargeted, `repo_lint`'s `broken_links` check SHALL report zero broken links against
-`docs/ai-coding/`, and `orphan_agent_references` SHALL report zero findings for this change's
-preserved seed files.
+After `two-tier-methodology.md` is renamed to `build-lifecycle.md` and its six inbound links are retargeted, `repo_lint`'s `broken_links` check SHALL report zero broken links against `docs/ai-coding/`, and `orphan_agent_references` SHALL report zero findings for this change's preserved seed files.
 
 #### Scenario: broken_links passes after the rename
 - **WHEN** `repo_lint`'s `broken_links` check runs after the rename and all six inbound link

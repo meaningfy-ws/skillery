@@ -13,6 +13,7 @@ import os
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 import yaml
 
@@ -44,7 +45,9 @@ EXTERNAL_SKILLS = {"stream-coding"}
 FROZEN_GLOBS = ()
 
 _FRONTMATTER = re.compile(r"^---\n(.*?)\n---", re.DOTALL)
-_MD_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+# A link target may hold one level of balanced parentheses (filenames like
+# "Handbook (2026).pdf"); targets are percent-decoded before the existence check.
+_MD_LINK = re.compile(r"\[[^\]]*\]\(((?:[^()]|\([^()]*\))+)\)")
 # A line that points to the owner rather than restating it — used by the ownership
 # tripwire to skip legitimate delegation/pointers (not re-specifications).
 _DELEGATES = re.compile(r"→\s*follow|\bfollow\b|\bsee\b|\bowned by\b|\bdelegate|\bdefer|\bvia\b|\bper\b\s+`?\w", re.IGNORECASE)
@@ -240,7 +243,7 @@ def broken_links(repo: Path) -> list[str]:
         for target in _MD_LINK.findall(md.read_text(encoding="utf-8")):
             if target.startswith(("http://", "https://", "#", "mailto:")):
                 continue
-            rel = target.split("#")[0]
+            rel = unquote(target.split("#")[0])
             if not rel:
                 continue
             if not (md.parent / rel).exists():
