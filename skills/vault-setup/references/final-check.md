@@ -9,6 +9,7 @@ stay unavailable until it is fixed. Never mark an item present without looking.
 | 2 | Templates | one file per kind of `vault-conventions` `references/kinds.md` in `X/Templates/` | consistent notes |
 | 3 | Owner profile | `AGENTS.md` has mail connector, calendar connector, time zone | `vault-daily` |
 | 4 | Write rules | `AGENTS.md` has the hard rules and the pointer to `vault-conventions` | safe writes |
+| 5a | Folder trusted (Claude Code) | an interactive `claude` at the vault root shows no trust prompt | the allow rules, and so the scheduled run |
 | 5 | Permission settings | the CLI's file from `permissions-*.md` exists at the vault root; the CLI's permission list shows every deny (never test with a real send) | safe `vault-daily` |
 | 6 | Obsidian | installed, version 1.12.7 or later | the moving skills |
 | 7 | Obsidian CLI | with Obsidian running, `obsidian version` answers | `vault-promote`, `vault-tidy`, `vault-project close` |
