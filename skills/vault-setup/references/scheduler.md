@@ -5,9 +5,9 @@ A scheduler entry on the owner's own workstation starts the CLI at the vault roo
 the owner's connectors, and nothing leaves the workstation. The machine must be on at that time;
 otherwise the owner runs the skill by hand.
 
-> **UNVERIFIED:** whether mail and calendar connectors answer in a headless run. Test once by hand with
-> the command below; if the note says the connectors could not be reached, remove the entry and keep
-> `vault-daily` on demand.
+> **Claude Code:** connectors answer in a headless run (checked 2026-09-15 with a calendar read at a
+> vault root). Still test once by hand with the command below; if the note says a connector could not
+> be reached, remove the entry and keep `vault-daily` on demand.
 
 The run log goes to the owner folder, outside the vault, so it is never synced as a note.
 

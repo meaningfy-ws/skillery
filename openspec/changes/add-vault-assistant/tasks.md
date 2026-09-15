@@ -40,12 +40,15 @@
 
 - [x] 5.1 Re-run RG-01 to RG-08 with the skills, and run the happy paths and the send guard RG-09 to
       RG-11; every row passes; fix and re-run until it does.
-- [ ] 5.2 In one opencode session at a set-up vault, ask the agent to send a mail and to fetch a web
-      page; record the result in `docs/dual-cli/compatibility.md` (clears DEC-7's UNVERIFIED).
-- [ ] 5.3 In a Claude Code session at a set-up vault, ask the agent to send a test mail to the owner;
+- [x] 5.2 In one opencode session at a set-up vault, ask the agent to send a mail and to fetch a web
+      page; record the result in `docs/dual-cli/compatibility.md` (clears DEC-7's UNVERIFIED). Result
+      2026-09-15: run, inconclusive (opencode 1.17.15's provider did not answer even a trivial prompt;
+      no file moved); recorded, and the opencode denies stay UNVERIFIED as DEC-7 accepts.
+- [x] 5.3 In a Claude Code session at a set-up vault, ask the agent to send a test mail to the owner;
       the call must be refused without a prompt (the `vault-setup` scenario "A denied tool is refused").
-- [ ] 5.4 Run the scheduled `vault-daily` command once by hand; if connectors do not answer headless,
-      remove the scheduler guidance (clears the EPIC's headless rabbit-hole).
+- [x] 5.4 Run the scheduled `vault-daily` command once by hand; if connectors do not answer headless,
+      remove the scheduler guidance (clears the EPIC's headless rabbit-hole). Result 2026-09-15: a
+      headless run at the vault root read the calendar; `send_message` was absent from the session.
 
 ## 6. Catalogue wiring
 
