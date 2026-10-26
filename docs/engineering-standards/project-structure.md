@@ -1,7 +1,7 @@
 # Project Structure (Engineering Standard)
 
 Human-readable reference for how Meaningfy Python projects are laid out. The **operational**
-guidance lives in the `cosmic-python` skill; this document is the readable canon.
+guidance lives in the `cosmic-python` skill; this document is the readable version.
 
 > These are what folders **mean**, wherever they sit — not a fixed tree to copy verbatim.
 

@@ -6,7 +6,7 @@ Meaningfy skills are deliberately small and **reference** external skills rather
 them. This page is the single source for what to install and how to wire a project.
 
 > **Install hierarchy.** [`README.md`](../../README.md) is the front door — it points here. This page is
-> the canon: everything below is CLI-agnostic (what to install, why, which version). The per-CLI
+> the reference: everything below is CLI-agnostic (what to install, why, which version). The per-CLI
 > runbooks carry the literal step-by-step *how*:
 > [`docs/environment/dual-cli/setup-claude.md`](dual-cli/setup-claude.md) and
 > [`docs/environment/dual-cli/setup-opencode.md`](dual-cli/setup-opencode.md). You should not need to open
@@ -41,7 +41,7 @@ into a repo by `project-setup`, not installed as a skill — see
 ## 2. External dependencies
 
 Meaningfy skills reference these by name. They are **not** vendored here. This table is the
-CLI-agnostic canon — **what** each one is, **why** it's needed, and its pinned **source/version**.
+CLI-agnostic reference — **what** each one is, **why** it's needed, and its pinned **source/version**.
 The exact install *command*, which differs per CLI, is one sub-step of Step 4 in your runbook
 ([`setup-claude.md`](dual-cli/setup-claude.md#step-4--install-the-mandatory-external-dependencies) /
 [`setup-opencode.md`](dual-cli/setup-opencode.md#step-4--install-the-mandatory-external-dependencies)) —

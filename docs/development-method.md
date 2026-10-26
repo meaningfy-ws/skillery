@@ -9,7 +9,7 @@ got, use it on the first try, and report what went wrong**. Everything here serv
 > section by section with the published methods and decides what skillery keeps, adopts by reference,
 > or separates out.
 
-This document is the human canon for the method. The binding that mandates it is
+This document defines the method. The binding that mandates it is
 [`AGENTS.md` → Skills and agents development method](../AGENTS.md#skills-and-agents-development-method);
 the structural references it routes to are listed in [§8](#8-where-things-live).
 

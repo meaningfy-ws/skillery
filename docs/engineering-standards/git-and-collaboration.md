@@ -1,6 +1,6 @@
 # Git & Collaboration (Engineering Standard)
 
-Human-readable canon for how we use Git/GitHub and set up dev environments. The **operational**
+How we use Git/GitHub and set up dev environments. The **operational**
 version — the one agents follow — is the `meaningfy-git-workflow` skill; this document narrates
 the *why* and points to the rules.
 

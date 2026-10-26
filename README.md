@@ -8,7 +8,7 @@ any project. Runs identically on **Claude Code** and **opencode** from one set o
 ## What this is
 
 A curated, self-validating catalogue. **Skills** carry reusable knowledge; **agents** are thin
-execution wrappers; `docs/` is the human canon (method, engineering standards, philosophy);
+execution wrappers; `docs/` is written for people (method, engineering standards, philosophy);
 `prompts/` holds the agentic-file templates. The root binding is **`AGENTS.md`-canonical**:
 `AGENTS.md` is the CLI-agnostic operating manual (read natively by opencode) and `CLAUDE.md` is a
 thin pointer that adds only Claude-specific guidance (no symlink between them). It also carries the
@@ -138,11 +138,11 @@ natively instead.
 | [`docs/environment/`](docs/environment/setup.md) | machine/tooling setup: external deps, the dual-CLI reference annex, the `openspec/` setup guide | you're installing or extending the catalogue |
 | [`spine/`](spine/) | the spec-backbone conventions (workflows, golden thread, lifecycle) | you're working with `openspec/` / the spine |
 | [`docs/development-method.md`](docs/development-method.md) | how skills and agents are conceived, documented, tested, installed, improved and retired — principles, lifecycles, the documentation standard, the issue loop, the Definition of Done | you're writing, changing, reviewing or reporting on a skill or agent |
-| [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the durable engineering canon |
+| [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the full engineering standards |
 | [`docs/philosophy/`](docs/philosophy/) | the mindset behind it all | you want the *why* |
 | [`spec/`](spec/) | how to author a skill (governance + template) | you're contributing a skill |
 
-> **Coming:** the durable canon (`engineering-standards/`, `philosophy/`, architecture/ADRs) will be
+> **Coming:** the durable docs (`engineering-standards/`, `philosophy/`, architecture/ADRs) will be
 > published to **GitHub Pages** via AsciiDoc + Antora — skillery applying its own documentation
 > standard to itself. Tracked as a follow-up (`.claude/HARD-QUESTIONS.md`).
 

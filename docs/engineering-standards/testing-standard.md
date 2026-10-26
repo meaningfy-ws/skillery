@@ -1,6 +1,6 @@
 # Testing Standard (Engineering Standard)
 
-Human-readable canon for how Meaningfy projects test. This document **narrates and points** — the
+How Meaningfy projects test, written for people. This document **narrates and points** — the
 operational rules live in the skills it links. It carries no rule those skills own.
 
 Authorities:

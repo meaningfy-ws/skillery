@@ -364,7 +364,7 @@ This approach requires **team discipline**. One developer ignoring layers breaks
 
 ### Company Standards & Principles
 
-- Human canon: `docs/engineering-standards/coding-prompt.md` — the full Meaningfy engineering culture (project structure, layering, SOLID, CI/CD, security). **This SKILL.md is the operational version of that canon.**
+- The full standard in prose: `docs/engineering-standards/coding-prompt.md` — the full Meaningfy engineering culture (project structure, layering, SOLID, CI/CD, security). **This SKILL.md is the operational version of that standard.**
 
 ---
 
