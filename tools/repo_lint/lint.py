@@ -1,7 +1,7 @@
 """Repository self-consistency guardrail.
 
-The repo embodies its own cosmic-python thesis: a thin read layer (parse
-marketplace + skill files) feeds pure check functions; ``main`` is the
+The repo embodies its own cosmic-python thesis: a thin read layer (bundles.yaml
+via tools.bundle_gen + skill files) feeds pure check functions; ``main`` is the
 entrypoint. Each public ``*_errors``/``*_gaps``/``*_mismatch`` function returns
 a list of human-readable problems ([] == clean) so checks compose and test
 trivially.
@@ -17,23 +17,16 @@ from urllib.parse import unquote
 
 import yaml
 
+from tools.bundle_gen import gen as bundle_gen
+
 SKILLS_DIR = "skills"
-MARKETPLACE = ".claude-plugin/marketplace.json"
 README = "README.md"
 # Hard ceiling that flags genuinely bloated files; ~500 stays the soft target
 # in CONTRIBUTING. The established `architecture` skill is ~618 lines and fine.
 MAX_SKILL_LINES = 650
 
-# The bundle taxonomy: the four role bundles and the one workflow bundle a skill may
-# live in. Bundle *membership* is read from marketplace.json — its single source of truth — so adding a skill never
-# means editing this file. Only the set of valid role names is pinned here (it is
-# stable and small). Every skill lives in exactly ONE bundle — no overlays. Disk is
-# flat (`skills/<skill>/`); bundles group only in marketplace.json.
-EXPECTED_BUNDLE_NAMES = {
-    "meaningfy-core", "meaningfy-consulting", "meaningfy-architecture", "meaningfy-building",
-    "vault-assistant",  # the one workflow bundle: personal-vault skills, not a role
-}
-ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "gherkin-writer", "documenter"}
+# documenter, gherkin-writer: DEC-7 backlog candidates (spec/agent-template.md), not retired names
+ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner"}
 # Non-namespaced skills that legitimately live in OTHER plugins (so an agent may load them
 # without a local skills/<name>/ dir). Namespaced skills (e.g. `superpowers:tdd`) are external by form.
 EXTERNAL_SKILLS = {"stream-coding"}
@@ -54,11 +47,11 @@ _DELEGATES = re.compile(r"→\s*follow|\bfollow\b|\bsee\b|\bowned by\b|\bdelegat
 # `.claude/` is agent/tool working-state — planning docs (EPIC/PLAN/RESEARCH) and
 # tool-installed skills (e.g. GitNexus's own) — not the published catalogue, so prose
 # checks skip it. (`.claude-plugin/` is a distinct part and is NOT skipped.)
-# `.opencode/` is the GENERATED distribution tree (skills/agents/manifests emitted
-# by tools.opencode_gen). Like `.claude/`, it is derivative, not the authored
-# catalogue — its own gates (drift/parity/version-sync) live in opencode_gen, so
-# prose/link checks skip it.
-_SKIP_DIRS = {".git", ".venv", "node_modules", ".idea", "__pycache__", ".claude", ".opencode"}
+# `.opencode/` is local installer output (`skillery-opencode install --project`), never part
+# of the authored catalogue. `bundles/` holds symlinks into skills/ and agents/ (rendered from
+# bundles.yaml); walking it would report every skill twice. Prose/link checks skip both.
+_SKIP_DIRS = {".git", ".venv", "node_modules", ".idea", "__pycache__", ".claude", ".opencode",
+              "bundles"}
 
 
 # ---------------------------------------------------------------- read layer
@@ -66,16 +59,17 @@ def _read(repo: Path, rel: str) -> str:
     return (repo / rel).read_text(encoding="utf-8")
 
 
-def _marketplace(repo: Path) -> dict:
-    return json.loads(_read(repo, MARKETPLACE))
+def _bundle_list(repo: Path) -> list[dict] | None:
+    """bundles.yaml via its one validator; None when it is invalid. The membership checks then
+    skip, and `bundle_gates` reports the validation error once."""
+    try:
+        return bundle_gen.load(repo)["bundles"]
+    except ValueError:
+        return None
 
 
 def _marketplace_skills(repo: Path) -> list[str]:
-    out: list[str] = []
-    for plugin in _marketplace(repo).get("plugins", []):
-        for s in plugin.get("skills", []):
-            out.append(s.replace("./skills/", "").strip("/").split("/")[-1])
-    return out
+    return [s for b in _bundle_list(repo) or [] for s in b["skills"]]
 
 
 def _skill_paths(repo: Path) -> dict[str, Path]:
@@ -151,14 +145,18 @@ def _is_frozen(repo: Path, path: Path) -> bool:
 
 # ------------------------------------------------------------------- checks
 def missing_skill_dirs(repo: Path) -> list[str]:
+    if _bundle_list(repo) is None:
+        return []  # reported by bundle_gates
     dirs = set(_skill_dirs(repo))
-    return [f"marketplace lists '{s}' but skills/{s}/SKILL.md is missing"
+    return [f"bundles.yaml lists '{s}' but skills/{s}/SKILL.md is missing"
             for s in _marketplace_skills(repo) if s not in dirs]
 
 
 def unregistered_skill_dirs(repo: Path) -> list[str]:
+    if _bundle_list(repo) is None:
+        return []  # reported by bundle_gates
     registered = set(_marketplace_skills(repo))
-    return [f"skills/{s} exists but is not registered in the marketplace"
+    return [f"skills/{s} exists but is not registered in bundles.yaml"
             for s in _skill_dirs(repo) if s not in registered]
 
 
@@ -183,6 +181,28 @@ def frontmatter_errors(repo: Path) -> list[str]:
     return errs
 
 
+def frontmatter_strict_yaml(repo: Path) -> list[str]:
+    """Strict loaders (opencode, `npx skills`) skip a skill whose frontmatter is not valid YAML, so
+    every skill and agent frontmatter block must parse with `yaml.safe_load` to a dict. The tolerant
+    `_frontmatter` stays for the other checks, so each fault is reported once, here."""
+    files = [p for p in _skill_paths(repo).values()]
+    if (repo / "agents").exists():
+        files += sorted((repo / "agents").glob("*.md"))
+    out: list[str] = []
+    for path in files:
+        m = _FRONTMATTER.match(path.read_text(encoding="utf-8"))
+        if not m:
+            continue  # reported by frontmatter_present_errors
+        try:
+            ok = isinstance(yaml.safe_load(m.group(1)), dict)
+            reason = "not a mapping"
+        except yaml.YAMLError as exc:
+            ok, reason = False, str(exc).splitlines()[0]
+        if not ok:
+            out.append(f"{path.relative_to(repo).as_posix()}: frontmatter is not strict YAML ({reason})")
+    return out
+
+
 def name_mismatch(repo: Path) -> list[str]:
     out: list[str] = []
     for name in _skill_dirs(repo):
@@ -195,36 +215,66 @@ def name_mismatch(repo: Path) -> list[str]:
 
 
 def _bundle_membership(repo: Path) -> dict[str, set[str]]:
-    """Bundle name -> set of skill names, read from marketplace.json (the truth)."""
-    out: dict[str, set[str]] = {}
-    for plugin in _marketplace(repo).get("plugins", []):
-        out[plugin.get("name")] = {
-            raw.replace("./skills/", "").strip("/").split("/")[-1]
-            for raw in plugin.get("skills", [])
-        }
-    return out
+    """Bundle name -> set of skill names, read from bundles.yaml (the truth)."""
+    return {b["name"]: set(b["skills"]) for b in _bundle_list(repo) or []}
 
 
 def expected_bundle_membership(repo: Path) -> list[str]:
-    """Placement check with marketplace.json as the source of truth: every bundle is
-    a known role, every skill lives in exactly one bundle, and every skill dir is
-    registered. No per-skill expectations are duplicated in this file."""
-    out: list[str] = []
-    membership = _bundle_membership(repo)
-    for bundle in membership:
-        if bundle not in EXPECTED_BUNDLE_NAMES:
-            out.append(f"unknown bundle '{bundle}' (not a role bundle)")
+    """Placement check with bundles.yaml as the source of truth: every skill lives in at most
+    one bundle (a skill dir in none is `unregistered_skill_dirs`'). Bundle names are not pinned
+    (a second bundle definition would drift)."""
+    if _bundle_list(repo) is None:
+        return []  # reported by bundle_gates
     skill_to_bundles: dict[str, list[str]] = {}
-    for bundle, skills in membership.items():
+    for bundle, skills in _bundle_membership(repo).items():
         for s in skills:
             skill_to_bundles.setdefault(s, []).append(bundle)
-    for s, bundles in sorted(skill_to_bundles.items()):
+    return [f"skill '{s}' is in multiple bundles: {', '.join(bundles)}"
+            for s, bundles in sorted(skill_to_bundles.items()) if len(bundles) > 1]
+
+
+def agent_bundle_membership(repo: Path) -> list[str]:
+    """Every agents/*.md is in exactly one bundle of bundles.yaml, and every listed agent exists
+    (single-source-distribution DEC-3), and its one bundle lists its primary skill
+    (agent-authoring-standard D-4)."""
+    bundles = _bundle_list(repo)
+    if bundles is None:
+        return []  # reported by bundle_gates
+    agent_to_bundles: dict[str, list[str]] = {}
+    bundle_skills = {b["name"]: set(b["skills"]) for b in bundles}
+    for b in bundles:
+        for a in b["agents"]:
+            agent_to_bundles.setdefault(a, []).append(b["name"])
+    files = {p.stem for p in (repo / "agents").glob("*.md")} if (repo / "agents").exists() else set()
+    out: list[str] = []
+    for a in sorted(files - set(agent_to_bundles)):
+        out.append(f"agent '{a}' is in no bundle in bundles.yaml")
+    for a, bundles in sorted(agent_to_bundles.items()):
         if len(bundles) > 1:
-            out.append(f"skill '{s}' is in multiple bundles: {sorted(bundles)}")
-    for name in _skill_dirs(repo):
-        if name not in skill_to_bundles:
-            out.append(f"skill dir '{name}' is not registered in any bundle")
+            out.append(f"agent '{a}' is in multiple bundles: {', '.join(bundles)}")
+        if a not in files:
+            out.append(f"bundles.yaml lists agent '{a}' but agents/{a}.md does not exist")
+        elif len(bundles) == 1:
+            out += _primary_skill_errors(repo, a, bundles[0], bundle_skills[bundles[0]])
     return out
+
+
+def _primary_skill_errors(repo: Path, agent: str, bundle: str, skills: set[str]) -> list[str]:
+    """agent-authoring-standard D-4: the agent's one bundle lists its primary skill — the first
+    `skills:` entry that is neither namespaced nor external. A missing or non-list `skills:` is
+    agent_conformance's to report; unparsable frontmatter is bundle_gates'."""
+    try:
+        listed = bundle_gen.agent_frontmatter(repo, agent)[0].get("skills")
+    except ValueError:
+        return []
+    if not isinstance(listed, list):
+        return []
+    local = [s for s in listed if ":" not in str(s) and s not in EXTERNAL_SKILLS]
+    if not local:
+        return [f"agent '{agent}' has no local primary skill"]
+    if local[0] not in skills:
+        return [f"agent '{agent}' is in bundle '{bundle}' but its primary skill '{local[0]}' is not"]
+    return []
 
 
 # Authoring/illustrative docs whose "links" are placeholder examples, not
@@ -535,6 +585,8 @@ def agents_canonical_invariant(repo: Path) -> list[str]:
     if claude.exists() and not claude.is_symlink():
         if "AGENTS.md" not in claude.read_text(encoding="utf-8"):
             out.append("CLAUDE.md does not point to AGENTS.md (it must be a thin pointer)")
+        if "<!-- gitnexus:start -->" in claude.read_text(encoding="utf-8"):
+            out.append("CLAUDE.md contains a gitnexus block (it lives in AGENTS.md only)")
     return out
 
 
@@ -593,23 +645,123 @@ def body_agnosticism(repo: Path) -> list[str]:
     return out
 
 
-def opencode_tree_gates(repo: Path) -> list[str]:
-    """Delegate to the opencode generator's gates (drift + parity + version-sync +
-    coverage) so a single `make lint` surfaces a drifted/asymmetric opencode tree.
-    Skipped silently until the generator has emitted a tree (`.opencode-version`)."""
-    if not (repo / ".opencode-version").exists():
+# ------------------------------------------- agent authoring standard (spec/agent-template.md)
+MAX_AGENT_BODY_LINES = 40
+AGENT_REQUIRED_FIELDS = ("name", "description", "type", "model", "tools", "skills")
+AGENT_OPTIONAL_FIELDS = ("disallowedTools", "color")
+CLAUDE_AGENT_COLORS = {"red", "blue", "green", "yellow", "purple", "orange", "pink", "cyan"}
+_AGENT_LIST_FIELDS = ("tools", "skills", "disallowedTools")
+_CONTRACT_LABELS = ("Input", "Output", "Side effects", "Refuses")
+_AGENT_FEATURES = "tests/features/agents"
+_FENCED = re.compile(r"^```.*?^```[^\n]*$", re.MULTILINE | re.DOTALL)
+
+
+def _agent_modes(repo: Path) -> set[str] | None:
+    """The `agentModes` keys of tools/opencode-agent-map.json (json only, never the .mjs)."""
+    try:
+        modes = json.loads(_read(repo, bundle_gen.AGENT_MAP)).get("agentModes")
+    except (OSError, ValueError):
+        return None
+    return set(modes) if isinstance(modes, dict) else None
+
+
+def _agent_frontmatter_errors(rel: str, stem: str, fm: dict, modes: set[str] | None) -> list[str]:
+    out = [f"{rel}: missing required frontmatter field '{k}'" for k in AGENT_REQUIRED_FIELDS if k not in fm]
+    allowed = AGENT_REQUIRED_FIELDS + AGENT_OPTIONAL_FIELDS
+    out += [f"{rel}: frontmatter field '{k}' is not in the agent contract (spec/agent-template.md)"
+            for k in fm if k not in allowed]
+    if "name" in fm and fm["name"] != stem:
+        out.append(f"{rel}: name '{fm['name']}' does not match the filename")
+    if "type" in fm and modes is not None and not (isinstance(fm["type"], str) and fm["type"] in modes):
+        out.append(f"{rel}: type '{fm['type']}' is not one of {', '.join(sorted(modes))}")
+    out += [f"{rel}: '{k}' must be a YAML list" for k in _AGENT_LIST_FIELDS
+            if k in fm and not isinstance(fm[k], list)]
+    if "color" in fm and not (isinstance(fm["color"], str) and fm["color"] in CLAUDE_AGENT_COLORS):
+        out.append(f"{rel}: color '{fm['color']}' is not a Claude agent colour")
+    desc = str(fm.get("description", "")).lower()
+    if "description" in fm:
+        if not re.search(r"\buse when\b", desc):
+            out.append(f"{rel}: description must say when to use the agent ('Use when …')")
+        if "<example>" in desc:
+            out.append(f"{rel}: description carries <example> blocks; examples belong in "
+                       f"{_AGENT_FEATURES}/{stem}.feature")
+        if fm.get("type") in ("lead", "scheduled") and "not for delegation" not in desc:
+            out.append(f"{rel}: a {fm['type']} agent's description must say 'Not for delegation'")
+    return out
+
+
+def _agent_body_errors(rel: str, body: str) -> list[str]:
+    out: list[str] = []
+    n = len(body.strip("\n").splitlines())
+    if n > MAX_AGENT_BODY_LINES:
+        out.append(f"{rel}: body is {n} lines (> {MAX_AGENT_BODY_LINES})")
+    unfenced = _FENCED.sub("", body)  # a `## ` line inside a fenced block is not a heading
+    m = re.search(r"^## Dispatch contract[ \t]*$(.*?)(?=^## |\Z)", unfenced, re.MULTILINE | re.DOTALL)
+    if not m:
+        out.append(f"{rel}: no '## Dispatch contract' section")
+    else:
+        found = [m.group(1).find(f"**{label}:**") for label in _CONTRACT_LABELS]
+        out += [f"{rel}: dispatch contract has no '**{label}:**'"
+                for label, at in zip(_CONTRACT_LABELS, found) if at < 0]
+        if min(found) >= 0 and found != sorted(found):
+            out.append(f"{rel}: dispatch contract labels are not in the order {', '.join(_CONTRACT_LABELS)}")
+    if _CLI_ISM.search(body):
+        out.append(f"{rel}: body has a CLI-specific (/opsx: or .claude/) reference")
+    return out
+
+
+def _agent_feature_errors(repo: Path, rel: str, stem: str, skills) -> list[str]:
+    feature = f"{_AGENT_FEATURES}/{stem}.feature"
+    if not (repo / feature).exists():
+        return [f"{rel}: no {feature}"]
+    lines = [l.strip() for l in _read(repo, feature).splitlines() if not l.strip().startswith("#")]
+    out: list[str] = []
+    if not any(l.startswith("Scenario Outline:") for l in lines) or not any(l.startswith("Examples:") for l in lines):
+        out.append(f"{feature} has no Scenario Outline with Examples")
+    start = next((i for i, l in enumerate(lines) if l.startswith("Background:")), len(lines))
+    end = next((i for i, l in enumerate(lines) if i > start and l.startswith(("Scenario", "Rule:"))), len(lines))
+    background = " ".join(l for l in lines[start:end] if "installed with skills" in l)
+    out += [f"{feature} Background does not name skill '{s}'"
+            for s in (skills if isinstance(skills, list) else []) if f"`{s}`" not in background]
+    return out
+
+
+def agent_conformance(repo: Path) -> list[str]:
+    """Every agents/*.md conforms to spec/agent-template.md: closed frontmatter contract, body cap,
+    dispatch contract, CLI-agnostic body, Gherkin feature file (agent-authoring-standard)."""
+    agents_dir = repo / "agents"
+    if not agents_dir.exists():
         return []
-    from tools.opencode_gen.gen import all_gate_errors
-    return all_gate_errors(repo)
+    modes = _agent_modes(repo)
+    out = [] if modes is not None else [f"{bundle_gen.AGENT_MAP} has no 'agentModes'"]
+    for p in sorted(agents_dir.glob("*.md")):
+        rel = f"agents/{p.name}"
+        try:
+            fm, body = bundle_gen.agent_frontmatter(repo, p.stem)
+        except ValueError as exc:
+            if "unknown model alias" not in str(exc):  # the alias error is bundle_gates' to report
+                out.append(f"{rel}: frontmatter is rejected ({exc})")
+            continue
+        out += _agent_frontmatter_errors(rel, p.stem, fm, modes)
+        out += _agent_body_errors(rel, body)
+        out += _agent_feature_errors(repo, rel, p.stem, fm.get("skills"))
+    return out
+
+
+def bundle_gates(repo: Path) -> list[str]:
+    """Delegate to tools.bundle_gen: bundles.yaml validates, the renderings
+    (marketplace.json, bundles/ links, tools/opencode-catalogue.json) match it, and versions agree."""
+    return bundle_gen.gate_errors(repo)
 
 
 ALL_CHECKS = (
     missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
-    frontmatter_errors, name_mismatch, expected_bundle_membership,
+    frontmatter_errors, frontmatter_strict_yaml, name_mismatch, expected_bundle_membership,
+    agent_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
-    boundary_section_present, agent_skill_alignment, groomed_spec_purpose,
+    boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
-    opencode_tree_gates,
+    bundle_gates,
 )
 
 

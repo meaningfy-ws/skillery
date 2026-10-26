@@ -85,7 +85,7 @@
 
 ## 8. Regeneration and verification
 
-- [ ] 8.1 Run `make generate-opencode`; commit the regenerated `.opencode/` mirror
+- [ ] 8.1 Run `make bundles` if bundle membership changed (skill content edits need no regeneration since `single-source-distribution`)
 - [ ] 8.2 Run `make skill-inventory`; commit the regenerated `docs/skill-inventory.md`
 - [ ] 8.3 Run `openspec validate --strict` for this change; fix any scenario/hashtag/format errors
 - [ ] 8.4 Run `make lint`; confirm `broken_links` and any SSOT/reciprocal-link checks pass on the

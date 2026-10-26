@@ -27,7 +27,7 @@ Bundles are organised by the **role (hat) you wear** — install `meaningfy-core
 
 ## What's inside
 
-32 skills in **4 role bundles and 1 workflow bundle** — every skill lives in exactly one bundle (no duplication); the
+32 skills in **4 role bundles and 1 workflow bundle** — every skill and every agent lives in exactly one bundle (no duplication); the
 table below is bundle-level only. For the per-skill picture — purpose, which cross-cutting concern
 each one serves, and which skills depend on which — see
 [`docs/skill-inventory.md`](docs/skill-inventory.md) (a generated map + tables, not hand-maintained).
@@ -41,7 +41,8 @@ each one serves, and which skills depend on which — see
 | **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/environment/vault-assistant.md`](docs/environment/vault-assistant.md)) |
 
 Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implementer`,
-`code-reviewer` — they pin a model + tools and load the skills above.
+`code-reviewer` — they pin a model + tools and load the skills above. They ship with the
+**`meaningfy-building`** bundle only; install it to get them.
 
 > **The spine is a *capability*, not a bundle.** `meaningfy-building` carries the skills that drive
 > it; the durable spine **assets** (`openspec/` + the forked schema + `spine/` docs) are *projected*
@@ -64,11 +65,16 @@ installed.
 **Skill or agent? The rule of thumb.**
 - A **skill** is *on-demand knowledge / method* loaded into your **current** chat — "guide me through
   X". You keep the wheel.
-- An **agent** is a *delegated worker* in its **own fresh context** with a fixed role, model, and
-  tools — "go do X and report back". It keeps your main context clean.
+- An **agent** is a *delegated worker* by default, in its **own fresh context** with a fixed role,
+  model, and tools — "go do X and report back". It keeps your main context clean. Each agent declares
+  a type: `delegated`, `lead` or `scheduled`.
 - **skill = teach / guide me; agent = delegate a whole task.** The Meaningfy agents
   (`epic-planner`, `implementer`, `code-reviewer`) each just load the relevant skills and run them in
-  isolation.
+  isolation. How an agent is written: [`spec/agent-template.md`](spec/agent-template.md), next to the
+  skill template [`spec/skill-template.md`](spec/skill-template.md).
+- Example invocations: "use the code-reviewer agent with lens L3 on this diff" (a full review is five,
+  one per lens); "use the implementer agent on task 2.1 of change `<id>`" (it reports, you commit);
+  "use the epic-planner agent on these seeds; answer its question round".
 
 **What do I reach for?**
 
@@ -92,9 +98,9 @@ installed.
 
 | # | Step | `/opsx` verb | Driven by |
 |---|------|-------------|-----------|
-| 1 | Gather seeds + elicit (incl. test-scenario interview) | `explore` | **epic-planner** agent ◦ `epic-planning` (+ `superpowers:brainstorming`) |
-| 2 | Shape the EPIC (= `proposal.md`) | `propose` | **epic-planner** agent ◦ `epic-planning` |
-| 3 | Derive the PLAN (`design.md` + `tasks.md`) **+ author `.feature` scenarios** (design-phase artifact) | — | **epic-planner** agent ◦ `epic-planning` **+ `bdd-gherkin`** |
+| 1 | Gather seeds + elicit (incl. test-scenario interview) | `explore` | **epic-planner** agent (returns question rounds) ◦ `epic-planning` (+ `superpowers:brainstorming`) |
+| 2 | Shape the EPIC (= `proposal.md`) | `propose` | **epic-planner** agent (returns question rounds) ◦ `epic-planning` |
+| 3 | Derive the PLAN (`design.md` + `tasks.md`) **+ author `.feature` scenarios** (design-phase artifact) | — | **epic-planner** agent (returns question rounds) ◦ `epic-planning` **+ `bdd-gherkin`** |
 | 4 | Gate the PLAN (≥9/10, **incl. scenario coverage**) | — | `clarity-gate` skill |
 | 5 | Implement: **step definitions + code** (TDD, layered) | `apply` | **implementer** agent ◦ `cosmic-python` + `superpowers:test-driven-development` |
 | 6 | Verify / review | `verify` | **code-reviewer** agent ◦ `meaningfy-code-review` |
@@ -115,17 +121,11 @@ natively instead.
 
 | Situation | What it is | What to do |
 |---|---|---|
-| Old `meaningfy-engineering` / `-ai-coding` / `-communication` / `-spine` bundles | the **previous** bundle cut | **Migrate:** uninstall them, install the new `meaningfy-core` + `-building` + `-architecture` + `-consulting`. |
+| Upgrading from ≤ 2.11 | 3.0.0 changed the install layout (agents only in `meaningfy-building`; per-bundle plugin roots; opencode installs agents) | **Follow the action list** in the [CHANGELOG migration note](CHANGELOG.md#300---2026-10-26). |
 | `feature-dev@claude-plugins-official` | official agents (code-architect/explorer/reviewer) overlapping `epic-planner`/`implementer`/`code-reviewer` | **Redundant, not breaking.** Optionally disable `feature-dev` to avoid two voices on the same task. |
 | `code-review@claude-plugins-official` | a read-only review *runner* | **Keep** — complementary: it *runs*, `meaningfy-code-review` is the *checklist*. |
 | `commit-commands@claude-plugins-official` | commit/push/PR mechanics | **Keep** — `meaningfy-git-workflow` delegates to it. |
-| No `stream-coding` / `ponytail` | mandatory external disciplines | **Install them** (see Installation §2). |
-
-> **Worked example (a real setup).** A machine running the *old* 3 meaningfy bundles +
-> `feature-dev` + `code-review` + `commit-commands`, **missing** `stream-coding` and `ponytail`,
-> needs: (1) migrate the 3 old bundles → the new 4; (2) install `stream-coding` + `ponytail`;
-> (3) optionally disable `feature-dev`; (4) keep `code-review` + `commit-commands`. Nothing needs
-> hard-removing — it's mostly *renaming the bundles* and *adding the missing mandatory deps*.
+| No `stream-coding` / `ponytail` | mandatory external disciplines | **Install them** (see [`setup.md` §2](docs/environment/setup.md#2-external-dependencies)). |
 
 ## Documentation
 
@@ -137,6 +137,7 @@ natively instead.
 | [`docs/roles-and-raci.md`](docs/roles-and-raci.md) | the six project roles and the RACI matrix, cited by every domain's playbooks | you want to know who is accountable for what |
 | [`docs/environment/`](docs/environment/setup.md) | machine/tooling setup: external deps, the dual-CLI reference annex, the `openspec/` setup guide | you're installing or extending the catalogue |
 | [`spine/`](spine/) | the spec-backbone conventions (workflows, golden thread, lifecycle) | you're working with `openspec/` / the spine |
+| [`docs/development-method.md`](docs/development-method.md) | how skills and agents are conceived, documented, tested, installed, improved and retired — principles, lifecycles, the documentation standard, the issue loop, the Definition of Done | you're writing, changing, reviewing or reporting on a skill or agent |
 | [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the durable engineering canon |
 | [`docs/philosophy/`](docs/philosophy/) | the mindset behind it all | you want the *why* |
 | [`spec/`](spec/) | how to author a skill (governance + template) | you're contributing a skill |
@@ -149,21 +150,26 @@ natively instead.
 
 ```
 skillery/
-├── skills/        # flat: skills/<skill>/  (bundles group them in marketplace.json)
+├── skills/        # flat: skills/<skill>/  (bundles group them in bundles.yaml)
 ├── agents/        # three thin wrappers (no knowledge): epic-planner, implementer, code-reviewer
 ├── docs/          # ai-coding/ · ai-sales/ · ai-consulting/ · engineering-standards/ · philosophy/ · roles-and-raci.md · environment/
 ├── prompts/       # CLAUDE.md.template, global-prompt.md (AGENTS.md-canonical; CLAUDE.md is a thin pointer)
-├── .opencode/     # GENERATED opencode tree (skills/agents/bundles); make generate-opencode — never hand-edit
 ├── spec/          # authoring spec, governance, skill-template.md, CREATING_SKILLS.md
 ├── spine/         # the spec-backbone conventions
 ├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery runs the spine on itself)
-├── tools/ + tests/# the self-consistency validator (make validate)
-└── .claude-plugin/# marketplace (4 role bundles + 1 workflow bundle)
+├── tools/ + tests/# the validator (make validate), the bundle renderer (make bundles), the opencode installer
+├── bundles.yaml   # the one bundle definition: each skill and agent in exactly one bundle
+├── bundles/       # RENDERED per-bundle plugin roots (symlinks into skills/ + agents/); make bundles — never hand-edit
+├── tools/opencode-catalogue.json  # RENDERED opencode catalogue (membership + agent frontmatter); make bundles — never hand-edit
+└── .claude-plugin/# RENDERED marketplace (4 role bundles + 1 workflow bundle); make bundles — never hand-edit
 ```
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Creating Skills guide](spec/CREATING_SKILLS.md).
+How skills and agents are conceived, documented, tested, installed, improved and retired:
+[`docs/development-method.md`](docs/development-method.md) (mandated by `AGENTS.md`). Report a defect or
+ask for a skill/agent through the [issue templates](.github/ISSUE_TEMPLATE/).
+Structural detail: [CONTRIBUTING.md](CONTRIBUTING.md) and the [Creating Skills guide](spec/CREATING_SKILLS.md).
 Run `make validate` before opening a PR; CI runs it too. The governance method is in
 [`spec/skill-repo-governance.md`](spec/skill-repo-governance.md).
 

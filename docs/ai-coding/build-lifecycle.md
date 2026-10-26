@@ -140,7 +140,7 @@ durable record.
 | Shape the Epic | Provides seeds, answers clarifying questions, approves the shape | Reads seeds, asks questions, writes `proposal.md` |
 | Derive & gate the PLAN | Reviews the scored PLAN | Derives `design.md` + `tasks.md`, runs the clarity gate |
 | BDD features | Reviews features for business accuracy | Writes `.feature` files, fabricates test data |
-| Implement (TDD) | Approves each commit, intervenes on spec issues | Implements code, runs tests, fixes the spec (not just the code) on design-level failures |
+| Implement (TDD) | Approves each commit, intervenes on spec issues | Implements code, runs tests, proposes the spec fix on design-level failures; the developer or epic-planner applies it |
 | Review | Decides which review issues to fix, triggers the PR | Reviews code, runs tests, reports issues by priority |
 | Archive | None | Merges deltas into the durable specs |
 
@@ -253,9 +253,9 @@ notation over the same requirements. We keep one normative home, not two.
 
 The surviving thin wrappers live in [`agents/`](../../agents):
 
-- [`epic-planner`](../../agents/epic-planner.md): drives EPIC/PLAN authoring (Opus).
-- [`implementer`](../../agents/implementer.md): drives TDD implementation (Sonnet).
-- [`code-reviewer`](../../agents/code-reviewer.md): drives pre-PR review (Opus).
+- [`epic-planner`](../../agents/epic-planner.md): drives EPIC/PLAN authoring (Opus; type `delegated`).
+- [`implementer`](../../agents/implementer.md): drives TDD implementation (Sonnet; type `delegated`).
+- [`code-reviewer`](../../agents/code-reviewer.md): drives pre-PR review (Opus; type `delegated`).
 
 Two agents from an earlier iteration of this catalogue are retired and no longer exist: their work is
 now the [`bdd-gherkin`](../../skills/bdd-gherkin/SKILL.md) and

@@ -144,7 +144,7 @@
       (1 site): retarget every `docs/how-we-work/business/discovery-and-onboarding.md` and
       `.../repeat-clients.md` link to the corresponding `docs/ai-sales/engagement-lifecycle.md`
       (with `#repeat-clients` anchor where the target was `repeat-clients.md`).
-- [ ] 7.8 Run `make generate-opencode` to regenerate `.opencode/**`'s mirror of every `skills/**` edit
+- [ ] 7.8 Run `make bundles` if bundle membership changed (skill content edits need no regeneration since `single-source-distribution`)
       above — do not hand-edit `.opencode/` (design.md Anti-patterns).
 
 ## 8. Retire `docs/how-we-work/` (only after 1-7 confirmed)

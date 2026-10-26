@@ -32,6 +32,8 @@ regenerating the orientation index — belongs to [`spec-stewardship`](../spec-s
    what the EPIC must *prove* — key assertions, scenarios, edge cases — so the design phase can author
    `.feature` coverage (handed to [`bdd-gherkin`](../bdd-gherkin/SKILL.md); the PLAN's design half
    references that coverage and `clarity-gate` scores it). Step definitions stay in implement.
+   When run as a delegated agent, return the open concerns as one question round to the caller
+   instead of asking.
 3. **Archive the seeds.** Write the captured seeds and the Q&A record to `changes/<id>/inputs/`,
    marked **secondary** and **never deleted or groomed** — the authored EPIC supersedes them but does
    not replace them (the EPIC is the primary, shaped truth).

@@ -12,67 +12,13 @@ Thank you for contributing to the Meaningfy Agent Skills repository! This guide 
 3. **Follow the [Creating Skills Guide](spec/CREATING_SKILLS.md)**
 4. **Submit a pull request** with your skill
 
-## Skill Submission Checklist
+## Before you submit
 
-Before submitting a pull request, ensure your skill meets these requirements:
-
-### Structure ✓
-- [ ] Skill directory is in `skills/`
-- [ ] Directory name matches `name` in SKILL.md (lowercase, hyphens only)
-- [ ] SKILL.md exists with valid YAML frontmatter
-- [ ] SKILL.md content is ~500 lines or less
-- [ ] Complex content is moved to `references/` directory
-- [ ] SKILL.md has a `## Boundary & Related Skills` section (Owns / Delegates / Related) — **CI-enforced (blocking)**; reciprocal `Related:` links are checked (advisory)
-- [ ] Reusable code rules are **cited from** the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) by id — never restated (single-source-of-authority)
-
-### Metadata ✓
-- [ ] `name` field is 1-64 characters, lowercase, hyphens only
-- [ ] `name` matches directory name exactly
-- [ ] `description` is clear and actionable (1-1024 chars)
-- [ ] Description includes practical use cases
-- [ ] All required YAML fields are present
-- [ ] License is specified (preferably Apache 2.0)
-
-### Content ✓
-- [ ] SKILL.md has clear Overview section
-- [ ] Quick Start section with a practical example
-- [ ] Key features or workflows documented
-- [ ] Tips, best practices, and limitations included
-- [ ] References to advanced docs in `references/` directory
-- [ ] No duplicate content across files
-- [ ] No hardcoded file paths
-
-### Code Quality ✓
-- [ ] Scripts are in `scripts/` directory
-- [ ] Scripts have clear, descriptive names
-- [ ] Scripts include comments for complex logic
-- [ ] Scripts handle errors gracefully
-- [ ] External dependencies are documented
-- [ ] Assets are in `assets/` directory (not loaded into context)
-
-### Documentation ✓
-- [ ] Detailed content lives under `references/` with **domain-meaningful filenames**
-      (e.g. `clarity-gate-checklist.md`, `dev-environment.md`) — not mandated `REFERENCE.md`/
-      `EXAMPLES.md`/`ADVANCED.md` names
-- [ ] SKILL.md states a **Boundary & Related Skills** section (what it does NOT own)
-- [ ] No content duplicated across files — point by name to the owning skill/doc
-- [ ] Code examples are runnable; all file paths are relative
-
-### Registration ✓
-- [ ] Skill is added to `.claude-plugin/marketplace.json` (the single source of bundle membership)
-- [ ] Appropriate plugin group is chosen (or new group created)
-- [ ] Plugin description is clear
-
-### Dual-CLI ✓
-- [ ] Ran `make generate-opencode` and committed the regenerated `.opencode/` tree
-- [ ] SKILL.md body is **CLI-agnostic** (no `/opsx:` or `.claude/` paths) — works on Claude Code **and** opencode
-- [ ] `make validate` passes (drift / parity / version-sync gates included)
-
-### Licensing ✓
-- [ ] Repository-level LICENSE file exists
-- [ ] Skill-specific LICENSE.txt (if different from repo)
-- [ ] THIRD_PARTY_NOTICES.md is updated if needed
-- [ ] All dependencies are properly attributed
+There is one done-checklist: [§9 of the development method](docs/development-method.md#9-definition-of-done)
+(Definition of Done). Your PR is ready when every line of it is true and `make validate` is green; most
+lines are enforced by `make validate` itself. The structural detail of a skill — frontmatter fields,
+`references/`, `scripts/`, `assets/`, examples — is in the
+[Creating Skills Guide](spec/CREATING_SKILLS.md).
 
 ## Submission Process
 
@@ -89,45 +35,34 @@ groups skills by bundle, one cell per bundle), and bump the skill count in the s
 | **meaningfy-building** | … · **my-new-skill** | …build software with the spine |
 ```
 
-### Step 3: Register in Marketplace
+### Step 3: Register in a bundle
 
-Add your skill path (flat: `./skills/<skill>`) to the appropriate **bundle**
-in `.claude-plugin/marketplace.json`. The four role bundles are `meaningfy-core`,
-`meaningfy-consulting`, `meaningfy-architecture`, and `meaningfy-building`; the one
-workflow bundle is `vault-assistant` (personal-vault skills) — every skill belongs to
-exactly one. `marketplace.json` is the **single source of bundle
-membership**: the validator (`make validate`) reads it to check every skill is
-registered in exactly one bundle, so **no code edit is needed** when you add a
-skill (`tools/repo_lint/lint.py` pins only the valid bundle *names*, not the
-membership):
+Add your skill's directory name to the `skills` list of exactly one bundle in
+[`bundles.yaml`](bundles.yaml), the **single bundle definition** (an agent goes in that bundle's
+`agents` list the same way). Bundle names are not pinned, so **no code edit is needed**. Then render
+the derived files:
 
-```json
-{ "name": "meaningfy-building", "skills": ["./skills/clarity-gate", "./skills/my-new-skill"] }
+```yaml
+  - name: meaningfy-building
+    skills: [clarity-gate, my-new-skill]
 ```
-
-### Step 4: Regenerate the opencode tree (dual-CLI)
-
-The catalogue ships to **Claude Code and opencode** from one source. After adding
-or editing a skill, regenerate the committed opencode tree and commit it:
 
 ```bash
-make generate-opencode      # re-emits .opencode/ from skills/, agents/, marketplace.json, VERSION
+make bundles          # renders .claude-plugin/marketplace.json, bundles/ and tools/opencode-catalogue.json
+make skill-inventory  # regenerates docs/skill-inventory.md (first add a PURPOSE_OF entry in tools/skill_inventory.py)
 ```
 
-Keep the SKILL.md **body CLI-agnostic** (no `/opsx:` or `.claude/` paths). The
-drift / parity / version-sync gates in `make validate` fail if `.opencode/` is
-stale or a body smuggles in a CLI-ism. Full rules:
-[`AGENTS.md` → Dual-CLI authoring rules](AGENTS.md#dual-cli-authoring-rules).
+Keep the SKILL.md **body CLI-agnostic** (no `/opsx:` or `.claude/` paths) and its frontmatter strict
+YAML (quote a `description` that contains `: `). Later edits to the skill's content need no
+regeneration. Full rules: [`AGENTS.md` → Dual-CLI authoring rules](AGENTS.md#dual-cli-authoring-rules).
 
-### Step 5: Create a Pull Request
+### Step 4: Create a Pull Request
 
 1. **Commit your changes:**
    ```bash
-   git add skills/my-new-skill
-   git add .claude-plugin/marketplace.json
-   git add README.md
-   git add .opencode/                       # the regenerated opencode tree (Step 4)
-   git commit -m "Add my-new-skill"
+   git add skills/my-new-skill bundles.yaml bundles/ .claude-plugin/marketplace.json tools/opencode-catalogue.json \
+           README.md docs/skill-inventory.md tools/skill_inventory.py
+   git commit -m "feat(skills): add my-new-skill"
    ```
 
 2. **Push to your branch:**
@@ -139,7 +74,7 @@ stale or a body smuggles in a CLI-ism. Full rules:
    - Clear title: "Add [skill-name]"
    - Description of what the skill does
    - Reference any related issues
-   - Confirmation that checklist items are complete
+   - Confirmation that the [§9 Definition of Done](docs/development-method.md#9-definition-of-done) is true
 
 ## Skill Guidelines
 
@@ -191,7 +126,7 @@ references/<domain-meaningful-name>.md   e.g. clarity-gate-checklist.md, mapping
 ```
 
 Use **domain-meaningful filenames** under `references/` — not mandated `REFERENCE.md` / `EXAMPLES.md`
-/ `ADVANCED.md` names (consistent with the Structure checklist above).
+/ `ADVANCED.md` names.
 
 ## PR Review Process
 
@@ -231,7 +166,7 @@ To update an existing skill:
 To remove or deprecate a skill:
 
 1. **Notify users** in the PR description
-2. **Remove from marketplace.json**
+2. **Remove it from `bundles.yaml`** and run `make bundles`
 3. **Keep skill directory** (for history) but mark as deprecated
 4. **Add notice** to SKILL.md if keeping it:
    ```yaml
@@ -270,6 +205,11 @@ To remove or deprecate a skill:
 ## Questions & Support
 
 ### Issues with Submission?
+
+Use the issue templates in [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) — **Defect** for a
+skill/agent that misbehaved, fired wrongly, or failed to install; **Request** for a new skill or agent.
+The improvement loop they feed is described in
+[`docs/development-method.md` §7](docs/development-method.md#7-feedback-and-improvement-loop).
 
 If you encounter problems:
 
@@ -311,12 +251,11 @@ By contributing to this repository, you agree that your contributions will be li
 ## Summary
 
 1. **Create your skill** using the [Creating Skills Guide](spec/CREATING_SKILLS.md)
-2. **Follow the checklist** above
-3. **Update README.md** with your skill in inventory
-4. **Register in marketplace.json**
-5. **Run `make generate-opencode`** and commit the `.opencode/` tree (dual-CLI)
-6. **Submit a PR** with clear description (`make validate` must pass)
-7. **Respond to feedback** during review
-8. **Celebrate** when merged! 🎉
+2. **Update README.md** with your skill in inventory
+3. **Register it in `bundles.yaml`** and run `make bundles`
+4. **Check [§9 Definition of Done](docs/development-method.md#9-definition-of-done)**
+5. **Submit a PR** with clear description (`make validate` must pass)
+6. **Respond to feedback** during review
+7. **Celebrate** when merged! 🎉
 
 Thank you for contributing to Meaningfy Agent Skills!

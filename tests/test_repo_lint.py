@@ -6,7 +6,8 @@ from tools.repo_lint import lint
 REPO = Path(__file__).resolve().parents[1]
 
 
-def test_every_marketplace_skill_exists():
+def test_every_bundled_skill_exists():
+    # bundles.yaml (read via tools.bundle_gen.gen.load) is the membership truth.
     assert lint.missing_skill_dirs(REPO) == []
 
 
@@ -42,6 +43,10 @@ def test_no_orphan_agent_references():
     assert lint.orphan_agent_references(REPO) == []
 
 
+def test_agents_conform_to_standard():
+    assert lint.agent_conformance(REPO) == []
+
+
 def test_readme_lists_every_skill():
     assert lint.readme_inventory_gaps(REPO) == []
 
@@ -52,20 +57,17 @@ def test_claude_agents_templates_mirrored():
 
 def test_skills_are_flat():
     # The catalogue is flat: skills/<skill>/SKILL.md. Bundles group only in
-    # marketplace.json (role bundles), so there are no phase/role subfolders.
+    # bundles.yaml, so there are no phase/role subfolders.
     paths = lint._skill_paths(REPO)
     assert "cosmic-python" in paths
     assert paths["cosmic-python"].parts[-2:] == ("cosmic-python", "SKILL.md")
 
 
 def test_role_bundles_have_clean_placement():
-    # 4 role bundles + 1 workflow bundle, every skill owned by exactly one — no overlays/meta-bundles.
-    # Membership is read from marketplace.json; only the bundle names are pinned.
+    # Every skill and every agent owned by exactly one bundle — no overlays/meta-bundles.
+    # Membership is read from bundles.yaml; bundle names are not pinned.
     assert lint.expected_bundle_membership(REPO) == []
-    assert lint.EXPECTED_BUNDLE_NAMES == {
-        "meaningfy-core", "meaningfy-consulting", "meaningfy-architecture", "meaningfy-building",
-        "vault-assistant",
-    }
+    assert lint.agent_bundle_membership(REPO) == []
 
 
 def test_spec_purpose_is_groomed():
