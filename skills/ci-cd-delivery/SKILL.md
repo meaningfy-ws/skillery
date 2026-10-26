@@ -3,7 +3,7 @@ name: ci-cd-delivery
 description: Standardise the application-repo Continuous Delivery side of Meaningfy systems — the deploy trigger, the reusable deploy mechanism, and the release/image standard. Use to set up a CD/deploy workflow, release and push a versioned Docker image to a registry (recommended GHCR, tagged by semver + git sha), standardise or migrate the deploy trigger, kill the duplicated SSH/bastion/rsync/.env deploy block by consuming the canonical reusable workflow, or understand the three-repo deploy model. CI (build, test, lint, coverage, architecture, docs publish) is NOT here — that is owned by project-setup; this skill owns only CD + release + the delivery contract. Trigger on "set up CD / deploy workflow", "release and push a versioned image", "GHCR image build", "standardise the deploy trigger", "migrate the duplicated deploy block", "how do we deploy this repo".
 license: Apache 2.0
 metadata:
-  purpose: delivery
+  purpose: devops
   area: coding
   subject: delivery-infra
   posture: precise

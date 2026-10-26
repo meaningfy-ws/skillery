@@ -92,7 +92,7 @@
         "cosmic-python"
       ],
       "metadata": {
-        "purpose": "quality",
+        "purpose": "software-development",
         "area": "coding",
         "subject": "python",
         "posture": "precise",
@@ -122,7 +122,7 @@
         "stream-coding"
       ],
       "metadata": {
-        "purpose": "planning",
+        "purpose": "software-development",
         "area": "coding",
         "subject": "spec-driven",
         "posture": "precise",
@@ -153,7 +153,7 @@
         "superpowers:verification-before-completion"
       ],
       "metadata": {
-        "purpose": "building",
+        "purpose": "software-development",
         "area": "coding",
         "subject": "python",
         "posture": "precise",

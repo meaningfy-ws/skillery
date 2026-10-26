@@ -3,7 +3,7 @@ name: explanatory-writing
 description: Apply explanatory craft so that Explanation-quadrant prose reads clearly — one controlling metaphor, a concrete example beside every abstract claim, self-answered question pivots, short declaratives, coin-and-explain, a confident grounded close. Use when writing or improving an explainer, a blog-style or internal explanation, or broad-audience teaching prose (Diátaxis Explanation; not Reference or How-to). Trigger on "make this explainer clearer", "why does this read flat", "write a blog-style explanation", "add a worked example or metaphor", "tighten the rhythm of this prose". Executes the Meaningfy technical/educational register from `company-voice.md`. Owns texture, not document structure (`executive-communication`) or doc placement (`technical-writing`).
 license: Apache 2.0
 metadata:
-  purpose: writing
+  purpose: content
   area: cross-cutting
   subject: generic
   posture: reusable

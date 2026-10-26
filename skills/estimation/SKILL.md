@@ -3,7 +3,7 @@ name: estimation
 description: "A lightweight fixed-cost scoping / estimation discipline that de-risks fixed-cost bids — a CHECKLIST + METHOD, not a heavy model. Produces a work breakdown plus PERT-weighted effort estimates, uncertainty ranges, assumptions & exclusions, and contingency, feeding the SoW scope boundary. PERT (three-point: optimistic / most-likely / pessimistic) is the default technique; analogous, parametric, and bottom-up are alternatives. Gantt charts / scheduling are rendered in EXTERNAL tools (Smartsheet, MS Project) from the work breakdown — this skill produces the breakdown + estimates, not the chart. It OWNS the estimation/scoping discipline; it DELEGATES the proposal/SoW wrapper to `proposal-writing` and sequencing to `decision-package`, and pairs with `epic-planning` for the build breakdown. Triggers — \"estimate this engagement\", \"PERT estimate\", \"fixed-cost scoping\", \"work breakdown for estimation\", \"contingency / uncertainty range\". Independently triggerable; also the pricing step of the `proposal-writing` flow."
 license: Apache 2.0
 metadata:
-  purpose: offering
+  purpose: offers
   area: sales
   subject: generic
   posture: reusable

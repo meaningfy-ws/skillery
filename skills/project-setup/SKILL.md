@@ -3,7 +3,7 @@ name: project-setup
 description: Scaffold or modernise a Meaningfy-standard repo and PROJECT the Meaningfy spine into it — a top-level package (no src/), Poetry + dedicated root tool configs, cosmic-python layering with import-linter guardrails, TDD+BDD tests, an AGENTS.md-canonical agentic setup (AGENTS.md is canonical; CLAUDE.md is a thin pointer that imports it, never a symlink), the openspec/ spine (config + pinned meaningfy schema + /opsx:* commands + golden thread), three archetypes (product/library/doc-only) with fixed gate profiles, conditional model/ and CD seam, Antora docs, infra, and CI. Use when starting a new repo or bringing an existing one up to standard. Trigger on "set up a new project", "scaffold a repo", "bootstrap a Python project", "new Meaningfy project", "initialise project structure", "add the standard tooling/docs/CI", "project the spine / set up openspec", "modernise/revamp an existing repo", "bring this project up to standard", "gap analysis against Meaningfy standards".
 license: Apache 2.0
 metadata:
-  purpose: building
+  purpose: software-development
   area: coding
   subject: python
   posture: precise

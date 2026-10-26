@@ -3,7 +3,7 @@ name: clarity-gate
 description: Pre-ingestion quality gate for specifications and documents before they drive implementation. Use to score a spec/EPIC against a 13-item checklist (6-criterion rubric, must reach ≥9/10), surfacing hidden assumptions and ungrounded claims. Trigger on "score this spec", "is this spec ready", "run the clarity gate", "check this EPIC before implementation". A lightweight variant applies to routine docs.
 license: Apache 2.0
 metadata:
-  purpose: quality
+  purpose: software-development
   area: cross-cutting
   subject: generic
   posture: reusable

@@ -3,7 +3,7 @@ name: writing-antipatterns
 description: The register/genre-conditional catalogue of how writing fails — a genre map (Tutorial, How-to, Reference, Explanation, Decision, Decision record, Contract/specification, Coaching dialogue), a short list of defects that apply regardless of genre, and an inversion matrix of antipatterns whose correctness depends on genre (a rhetorical question is craft in an explainer and a defect in an ADR). Use when reviewing prose for a specific genre, when a rule from one writing skill seems to be misapplied in another context, or when asked "why does this read badly" for a document that mixes genres. Trigger on "antipattern", "why is this hard to read", "review this document/plan", "does this rule apply here", "genre mismatch". Cited by every writing-family skill; never restated by them.
 license: Apache 2.0
 metadata:
-  purpose: writing
+  purpose: content
   area: cross-cutting
   subject: generic
   posture: reusable
