@@ -90,7 +90,7 @@
       each has its skills in context. Record the working plugin-scoped agent name and the exact
       `claude --agent …` literal (used by 7.2, 8.1). **Accept:** all three behave per their first
       Examples row; results (CLI, version, pass/fail) in the PR description.
-- [ ] 6.2 (partial 2026-10-26: rendered files checked — mode subagent, no skills key, Skills body line, color; dispatches not run, opencode not installed) On opencode, install `meaningfy-building` from the same pushed branch with the sibling's
+- [ ] 6.2 (partial 2026-10-26, opencode v2.1.4: `--project` install from the pushed branch; `opencode debug agents` lists code-reviewer, epic-planner, implementer as `subagent` with mapped models; theme `color` values resolve to grey #aaaaaa (cosmetic gap); dispatches not run — no opencode provider authenticated) On opencode, install `meaningfy-building` from the same pushed branch with the sibling's
       installer command; check each rendered file has `mode: subagent`, no `skills` key, the D-15 body
       line, a theme `color`; run the same three dispatches and confirm the skills were loaded.
       **Accept:** as 6.1; any failure fixed or recorded as a gap in mapping.md.
