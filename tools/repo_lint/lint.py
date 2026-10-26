@@ -287,6 +287,10 @@ USE_CASES_DIR = "use-cases"
 USE_CASE_FIELDS = ("id", "title", "primary_actor", "trigger", "success_guarantee", "area",
                    "served_by", "status")
 USE_CASE_STATUSES = ("covered", "partial", "missing")
+# The body sections, in order (docs/development/use-case-template.md).
+USE_CASE_SECTIONS = ("Brief Description", "Stakeholders and Interests", "Preconditions",
+                     "Minimal Guarantees", "Main Success Scenario", "Extensions", "Out of Scope",
+                     "Artefacts", "Evidence", "Feedback Loop", "Slices", "Open Points")
 # Lifted into frontmatter (D-14), so they never appear as body sections.
 _UC_LIFTED = ("Trigger", "Success Guarantee", "Primary Actor")
 
@@ -333,8 +337,7 @@ def use_case_catalogue(repo: Path) -> list[str]:
         out += [f"{rel}: served_by skill '{s}' is not in skills/"
                 for s in served.get("skills") or [] if s not in skills]
         headings = re.findall(r"^##\s+(.+?)\s*$", _body(text), re.MULTILINE)
-        if "Brief Description" not in headings:
-            out.append(f"{rel}: body has no '## Brief Description'")
+        out += [f"{rel}: body has no '## {h}'" for h in USE_CASE_SECTIONS if h not in headings]
         out += [f"{rel}: '{h}' is a body section; it belongs in frontmatter only"
                 for h in headings if h.split(" (")[0] in _UC_LIFTED]
     return out

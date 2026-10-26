@@ -266,6 +266,14 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   - every install route reads `#dist`: the Claude marketplace (7.3), the opencode installer
     (`git+…skillery.git#dist`) and `npx skills add meaningfy-ws/skillery#dist`.
   - a `dual-cli-distribution` delta states the rule.
+- **D-15. Use cases written for an agent catalogue** (owner, 2026-10-27: "we might want to be a bit
+  more explicit? e.g. on feedback loops? on expected artefacts/evidence?"; "update all the UCs …
+  indicate which ones you are confident about and which need human extension"). The Cockburn White
+  core stays; Use-Case 2.0 slices and three agent-catalogue sections are added: Artefacts, Evidence,
+  Feedback Loop; human decision steps are marked **[human]**; Open Points opens with a confidence
+  rating. The template is `docs/development/use-case-template.md`; `use_case_catalogue` requires its
+  twelve sections. All 24 use cases are rewritten to it from the seed scenarios and the catalogue;
+  the sections the owner approved for UC-W8, W19 and W20 are kept.
 
 ## Algorithm / approach
 

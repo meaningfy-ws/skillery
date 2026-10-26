@@ -32,7 +32,9 @@
   generators in their skill, no skill link outside its folder, `top_level_folders`.
 - **8 done** (#90, after group 9): CHANGELOG complete for every PR; the gates green.
 - **Group 10 done** (`arch/release-rule`, D-14): only released items are installable.
-- **Next:** group 11 (use cases), then the owner's install check from `#dist` at the first release; then merge #89, #91, #90 in
+- **Group 11 done** (`arch/use-cases-deepened`, D-15): the use-case template; all 24 rewritten; the
+  confidence and first open question per use case in `docs/use-cases.md` ("What needs the owner").
+- **Next:** the owner answers the open points; the owner's install check from `#dist` at the first release; then merge #89, #91, #90 in
   that order and archive the change with `spec-stewardship`. 7.1 stays optional.
 - **Waits for the owner:** 7.1
   (optional; pushes a test branch). No model runs in this change.
@@ -156,6 +158,16 @@
       `dual-cli-distribution` delta, CHANGELOG. **Accept:** no install line reads `#develop`;
       `openspec validate rebundle-by-activity --strict` green.
 
+## 11. Use cases for an agent catalogue (`arch/use-cases-deepened`, D-15)
+
+- [x] 11.1 The template `docs/development/use-case-template.md` and its register row; the
+      `use_case_catalogue` section check, test first. **Accept:** the test fails without the code.
+- [x] 11.2 All 24 use cases rewritten to the template; UC-W8's approved sections kept as the worked
+      example; W19, W20's approved sections kept. **Accept:** `use_case_catalogue` clean; each Open
+      Points states a confidence.
+- [x] 11.3 The `catalogue-architecture` delta; CHANGELOG. **Accept:** `make validate` and
+      `openspec validate rebundle-by-activity --strict` green.
+
 ## 8. Release documentation and verification
 
 - [x] 8.1 CHANGELOG under Unreleased, per merged PR, written for the installer.
@@ -174,6 +186,7 @@
 - [ ] 7.1 · [x] 7.2 · [x] 7.3
 - [x] 9.1 · [x] 9.2 · [x] 9.3 · [x] 9.4 · [x] 9.5 · [x] 9.6 · [x] 9.7 · [x] 9.8 · [x] 9.9 · [x] 9.10
 - [x] 10.1 · [x] 10.2 · [x] 10.3
+- [x] 11.1 · [x] 11.2 · [x] 11.3
 - [x] 8.1 · [x] 8.2
 
 Order: 0, then 1 before 4 (coverage must exist before agents are added), 2 before 3 and 4 (the new
