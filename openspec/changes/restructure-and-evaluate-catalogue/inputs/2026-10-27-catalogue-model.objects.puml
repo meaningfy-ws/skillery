@@ -1,0 +1,293 @@
+@startuml catalogue-model-objects
+' SNAPSHOT of 2026-10-27, not maintained (design D-16): the live gap map is docs/use-cases.md.
+' The catalogue as instances (rev. 2, 2026-10-27), coloured by what happens to each in this EPIC
+' and its roadmap. Classes as in 2026-10-27-catalogue-model.class.puml.
+' Planned agent and skill names are provisional (design D-19 decides them).
+' Lanes (top to bottom): distribution, knowledge, action, external, intent, assurance.
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundCorner 12
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 11
+skinparam ArrowColor #546E7A
+skinparam ArrowFontColor #37474F
+skinparam ArrowFontSize 9
+skinparam ObjectBorderColor #455A64
+skinparam PackageBorderColor #90A4AE
+skinparam PackageFontSize 14
+skinparam PackageFontStyle bold
+
+title Skillery catalogue: what stays, what changes, what is missing (rev. 2)
+
+package "1. Distribution" <<Rectangle>> #F5F9FF {
+  object "meaningfy-skillery : Catalogue" as cat #C8E6C9 {
+    version = 3.2.0
+  }
+  object "meaningfy-core : Bundle" as bCore #FFE0B2 {
+    change = gains meaningfy-voice
+  }
+  object "consulting, architecture, building : Bundle" as bOther #FFE0B2 {
+    change = re-bundling by activity
+  }
+  object "vault-assistant : Bundle" as bVault #FFE0B2 {
+    change = local vault config
+  }
+  object "meaningfy-sales : Bundle" as bSales #FFCDD2 {
+    change = add-sales-bundle
+    source = outside repo
+  }
+  object "meaningfy-devops : Bundle" as bDevops #FFCDD2 {
+    change = add-devops-bundle
+    source = outside repo
+  }
+  object "AGENTS.md, CLAUDE.md : Binding" as bind #C8E6C9
+  object "hooks/inventory.yaml : ConfigItem" as cfgHooks #C8E6C9 {
+    kind = hook
+  }
+  object "opsx commands : ConfigItem" as cfgCmd #C8E6C9 {
+    kind = command
+  }
+  object "rules, settings : ConfigItem" as cfgLater #FFCDD2 {
+    kind = rule, setting
+    status = later
+  }
+}
+
+package "2. Knowledge" <<Rectangle>> #F6FBF6 {
+  object "executive-communication : Skill" as sExec #FFE0B2 {
+    kind = method
+    change = batch C; voice moves out
+  }
+  object "explanatory-writing : Skill" as sExpl #FFE0B2 {
+    kind = method
+    change = cite voice by name; batch A3
+  }
+  object "proposal-writing, estimation : Skill" as sProp #FFE0B2 {
+    kind = method
+    change = batch A1
+  }
+  object "architecture, cosmic-python : Skill" as sBig #FFE0B2 {
+    kind = method
+    change = batch B (size)
+  }
+  object "conceptual-modelling : Skill" as sCm #FFE0B2 {
+    kind = method
+    change = batch A1
+  }
+  object "vault-planning : Skill" as sPlan #FFE0B2 {
+    kind = method
+    change = five horizons (wave 3)
+  }
+  object "17 more batch A skills : Skill" as sBatchA #FFE0B2 {
+    change = description rewrite (A1 to A4)
+  }
+  object "7 skills unchanged : Skill" as sOther #C8E6C9 {
+    names = technical-writing, git-workflow,
+    names2 = semantic-consulting-coach, clarity-gate,
+    names3 = bdd-gherkin, vault-promote, vault-tidy
+  }
+  object "meaningfy-voice : Skill" as fVoice #FFCDD2 {
+    kind = foundation
+    task = 3.3
+  }
+  object "meaningfy-visual-identity : Skill" as fVisual #FFCDD2 {
+    kind = foundation
+    wave = 4
+  }
+  object "odoo-memory : Skill" as fOdoo #FFCDD2 {
+    kind = tool
+    wave = infrastructure
+  }
+  object "qualification, commercial-structure : Skill" as sComm #FFCDD2 {
+    kind = method
+    usecases = UC-W9 to UC-W12
+  }
+  object "company-voice.md : Resource" as rVoice #FFE0B2 {
+    kind = reference
+    scope = private, becomes shared
+  }
+  object "project-setup assets and scripts : Resource" as rPs #C8E6C9 {
+    kind = asset, script
+    scope = private
+  }
+  object "skill allowed-tools : ToolPolicy" as tpSkill #FFCDD2 {
+    note = no skill declares one today
+  }
+}
+
+package "3. Action" <<Rectangle>> #FFFAF3 {
+  object "epic-planner, implementer : Agent" as aBuild #C8E6C9 {
+    type = delegated
+    mode = subagent
+  }
+  object "code-reviewer : Agent" as aCr #C8E6C9 {
+    type = delegated
+    mode = subagent
+  }
+  object "code-reviewer tools : ToolPolicy" as tpCr #C8E6C9 {
+    allowed = Read, Grep, Glob, Bash
+  }
+  object "sales-assistant : Agent" as aSales #FFCDD2 {
+    mode = primary
+    usecase = UC-W7
+  }
+  object "devops-engineer : Agent" as aDevops #FFCDD2 {
+    mode = both
+    usecase = UC-W6
+  }
+  object "dev team lead : Agent" as aLead #FFCDD2 {
+    type = lead
+    mode = primary
+    usecase = UC-W18
+  }
+  object "offer-writer : Agent" as aOffer #FFCDD2 {
+    usecase = UC-W8
+  }
+  object "system-architect, conceptual-modeller : Agent" as aDesign #FFCDD2 {
+    usecases = UC-W19, UC-W20
+  }
+  object "commercial agents : Agent" as aComm #FFCDD2 {
+    usecases = UC-W9 to UC-W13
+  }
+  object "business partners : Agent" as aBiz #FFCDD2 {
+    usecases = UC-W14, UC-W15
+  }
+  object "personal agents : Agent" as aPers #FFCDD2 {
+    usecases = UC-W2 to UC-W5
+  }
+  object "producers : Agent" as aProd #FFCDD2 {
+    usecases = UC-W16, UC-W17, UC-W21
+  }
+  object "cli, desktop : Runtime" as rtNow #C8E6C9 {
+    note = sales agent runs on desktop today
+  }
+  object "server, local-cron : Runtime" as rtSrv #FFCDD2 {
+    note = OpenClaw or cron, TBD
+  }
+}
+
+package "4. External" <<Rectangle>> #FFF7FA {
+  object "obsidian-skills, superpowers : ExternalDependency" as exPlug #FFE0B2 {
+    kind = plugin
+    declared = compatibility.md table
+    change = add pin, installCheck
+  }
+  object "openspec, gitnexus CLI : ExternalDependency" as exCli #FFE0B2 {
+    kind = cli-tool
+    declared = compatibility.md table
+    change = add pin, installCheck
+  }
+  object "MCP servers : ExternalDependency" as exMcp #FFE0B2 {
+    kind = mcp-server
+    examples = odoo, calendar, overleaf, neo4j, miro
+    declared = partly (mcp-setup.md)
+  }
+  object "neo4j, graphwise, metaphacts : ExternalDependency" as exSvc #FFCDD2 {
+    kind = service
+    usecase = UC-W21
+    declared = nowhere
+  }
+  object "odoo, confluence : MemoryStore" as mOrg #FFE0B2 {
+    declared = nowhere
+  }
+  object "vault : MemoryStore" as mVault #C8E6C9 {
+    declared = vault-assistant
+  }
+  object "cognee brains : MemoryStore" as mCognee #FFE0B2 {
+    declared = nowhere
+  }
+}
+
+package "5. Intent" <<Rectangle>> #FBF5FC {
+  object "UC-W1 to UC-W21 : UseCase" as scen #FFCDD2 {
+    home = use-cases/ (task 3.2)
+    seed = inputs/2026-10-27-scenarios.md
+  }
+}
+
+package "6. Assurance and docs" <<Rectangle>> #F7F9FA {
+  object "tests/trigger_probes.yaml : Test" as tProbes #FFE0B2 {
+    change = probes per revised description
+  }
+  object "tests/features/agents : Test" as tGherkin #C8E6C9 {
+    kind = gherkin
+  }
+  object "evals quotation-bind : Test" as tSeed #C8E6C9 {
+    kind = eval-case
+  }
+  object "bundle suites, agent eval cases : Test" as tSuites #FFCDD2 {
+    task = 4.2, 4.3
+  }
+  object "use_case_catalogue, cross_skill_paths : Test" as tLint #FFCDD2 {
+    kind = lint-check
+  }
+  object "README.md : Doc" as dReadme #FFE0B2 {
+    change = three doors
+  }
+  object "facets.yaml : Doc" as dFacets #FFE0B2 {
+    change = new area and kind values
+  }
+  object "docs/development-method.md : Doc" as dMethod #C8E6C9
+  object "docs/use-cases.md : Doc" as dScen #FFCDD2 {
+    door = use (generated)
+  }
+  object "docs/catalogue-architecture.md : Doc" as dArch #FFCDD2 {
+    door = develop
+  }
+  object "restructure-and-evaluate-catalogue : Change" as cThis #FFE0B2 {
+    change = reshaped 2026-10-27
+  }
+  object "add-sales-bundle, add-devops-bundle : Change" as cDrafted #FFE0B2 {
+    change = read the target structure
+  }
+  object "re-bundling, agent-template, dependency register : Change" as cInfra #FFCDD2
+}
+
+' --- lane order (hidden) ---
+cat -[hidden]down- sExec
+sExec -[hidden]down- aBuild
+aBuild -[hidden]down- exPlug
+exPlug -[hidden]down- scen
+scen -[hidden]down- tProbes
+
+' --- key links ---
+bCore o-- fVoice
+fVoice *-- rVoice : will own
+sExec ..> fVoice : requires by name
+sExpl ..> fVoice : requires by name
+bOther o-- aBuild
+bOther o-- aCr
+aCr *-- tpCr
+bSales o-- aSales
+bDevops o-- aDevops
+aLead ..> aBuild : delegates to
+aLead ..> aCr : delegates to
+aOffer --> sProp
+aOffer --> fVisual
+aDesign --> sBig
+aDesign --> sCm
+aComm --> sComm
+aSales --> mOrg
+aSales --> rtNow
+aDevops --> rtSrv
+aPers --> sPlan
+aPers --> mVault
+aProd --> exSvc
+fOdoo --> mOrg
+bVault --> exPlug : requires
+cfgHooks ..> sOther : enforces rules of
+tGherkin --> aCr : proves
+tSuites --> tGherkin : runs
+dScen --> scen : generated from
+cThis --> scen : starts from
+
+legend right
+  |= Status |= Meaning |
+  | <#C8E6C9> as is | exists and is used unchanged |
+  | <#FFE0B2> modified | exists; this EPIC or a named follow-on changes it |
+  | <#FFCDD2> missing | does not exist in the repo yet |
+  Planned names are provisional (design D-19).
+endlegend
+
+@enduml
