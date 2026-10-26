@@ -671,3 +671,63 @@ def test_folder_prefix_covers_nested_docs(tmp_path):
     (tmp_path / "docs" / "ai-sales" / "x").mkdir(parents=True)
     (tmp_path / "docs" / "ai-sales" / "x" / "y.md").write_text("x", encoding="utf-8")
     assert lint.doc_register_complete(tmp_path) == []
+
+
+# ------------------------------------------- use-case catalogue (restructure-and-evaluate D-14)
+_UC = {"id": "UC-W1", "title": "Vault work", "primary_actor": "the owner", "trigger": "t",
+       "success_guarantee": "g", "area": "personal", "served_by": {"agents": [], "skills": ["s"]},
+       "status": "covered"}
+
+
+def _uc_repo(tmp_path, fm, name="UC-W1-vault-work.md", body="## Brief Description\n\nx"):
+    (tmp_path / "facets.yaml").write_text(
+        yaml.safe_dump({"facets": {"area": {"personal": "x"}}}), encoding="utf-8")
+    if not (tmp_path / "skills" / "s").exists():
+        _skill_fm(tmp_path, "s", {"name": "s", "description": "x"})
+    (tmp_path / "use-cases").mkdir(exist_ok=True)
+    (tmp_path / "use-cases" / name).write_text(
+        f"---\n{yaml.safe_dump(fm, sort_keys=False)}---\n\n{body}\n", encoding="utf-8")
+
+
+def test_valid_use_case_passes(tmp_path):
+    _uc_repo(tmp_path, _UC)
+    assert lint.use_case_catalogue(tmp_path) == []
+
+
+def test_use_case_unknown_area_is_flagged(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "area": "selling"})
+    assert any("area 'selling'" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_missing_field_is_flagged(tmp_path):
+    fm = {k: v for k, v in _UC.items() if k != "success_guarantee"}
+    _uc_repo(tmp_path, fm)
+    assert any("success_guarantee" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_id_must_match_file_name(tmp_path):
+    _uc_repo(tmp_path, _UC, name="UC-W2-vault-work.md")
+    assert any("does not match" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_duplicate_id_is_flagged(tmp_path):
+    _uc_repo(tmp_path, _UC)
+    _uc_repo(tmp_path, _UC, name="UC-W1-other.md")
+    assert any("duplicate id" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_unknown_served_by_name_is_flagged(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "served_by": {"agents": ["ghost"], "skills": ["nope"]}})
+    errs = lint.use_case_catalogue(tmp_path)
+    assert any("agent 'ghost'" in e for e in errs) and any("skill 'nope'" in e for e in errs)
+
+
+def test_use_case_bad_status_is_flagged(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "status": "done"})
+    assert any("status 'done'" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_body_needs_brief_and_no_lifted_sections(tmp_path):
+    _uc_repo(tmp_path, _UC, body="## Trigger\n\nx")
+    errs = lint.use_case_catalogue(tmp_path)
+    assert any("Brief Description" in e for e in errs) and any("'Trigger'" in e for e in errs)

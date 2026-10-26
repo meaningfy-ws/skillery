@@ -268,6 +268,63 @@ def facets_declared(repo: Path) -> list[str]:
     return out
 
 
+USE_CASES_DIR = "use-cases"
+USE_CASE_FIELDS = ("id", "title", "primary_actor", "trigger", "success_guarantee", "area",
+                   "served_by", "status")
+USE_CASE_STATUSES = ("covered", "partial", "missing")
+# Lifted into frontmatter (D-14), so they never appear as body sections.
+_UC_LIFTED = ("Trigger", "Success Guarantee", "Primary Actor")
+
+
+def use_case_catalogue(repo: Path) -> list[str]:
+    """Every `use-cases/*.md` holds a White use case whose frontmatter passes D-14's "Checked"
+    column (restructure-and-evaluate-catalogue). Silent where the repo has no use-cases/."""
+    root = repo / USE_CASES_DIR
+    if not root.exists():
+        return []
+    vocab = (yaml.safe_load((repo / FACETS_FILE).read_text(encoding="utf-8")) or {}).get(
+        "facets", {}) if (repo / FACETS_FILE).exists() else {}
+    areas = vocab.get("area", {})
+    skills = set(_skill_paths(repo))
+    agents = {p.stem for p in (repo / "agents").glob("*.md")} if (repo / "agents").exists() else set()
+    seen: dict[str, str] = {}
+    out: list[str] = []
+    for p in sorted(root.glob("*.md")):
+        rel = f"{USE_CASES_DIR}/{p.name}"
+        text = p.read_text(encoding="utf-8")
+        fm = _frontmatter(text)
+        if not isinstance(fm, dict):
+            out.append(f"{rel}: no YAML frontmatter")
+            continue
+        out += [f"{rel}: missing '{k}'" for k in USE_CASE_FIELDS if not fm.get(k) and k != "served_by"]
+        if "served_by" not in fm:
+            out.append(f"{rel}: missing 'served_by'")
+        uid = str(fm.get("id", ""))
+        if uid and not p.stem.startswith(f"{uid}-"):
+            out.append(f"{rel}: id '{uid}' does not match the file name")
+        if uid in seen:
+            out.append(f"{rel}: duplicate id '{uid}' (also {seen[uid]})")
+        seen.setdefault(uid, rel)
+        if fm.get("area") and fm["area"] not in areas:
+            out.append(f"{rel}: area '{fm['area']}' is not in {FACETS_FILE}")
+        if fm.get("status") and fm["status"] not in USE_CASE_STATUSES:
+            out.append(f"{rel}: status '{fm['status']}'; allowed: {', '.join(USE_CASE_STATUSES)}")
+        served = fm.get("served_by") or {}
+        if not isinstance(served, dict):
+            out.append(f"{rel}: served_by must be {{agents: [...], skills: [...]}}")
+            served = {}
+        out += [f"{rel}: served_by agent '{a}' is not in agents/"
+                for a in served.get("agents") or [] if a not in agents]
+        out += [f"{rel}: served_by skill '{s}' is not in skills/"
+                for s in served.get("skills") or [] if s not in skills]
+        headings = re.findall(r"^##\s+(.+?)\s*$", _body(text), re.MULTILINE)
+        if "Brief Description" not in headings:
+            out.append(f"{rel}: body has no '## Brief Description'")
+        out += [f"{rel}: '{h}' is a body section; it belongs in frontmatter only"
+                for h in headings if h.split(" (")[0] in _UC_LIFTED]
+    return out
+
+
 def bundle_requirements(repo: Path) -> list[str]:
     """Cross-bundle "depends on" edges point into core or a required bundle; core requires
     nothing; required bundles exist; the requirement graph is acyclic (define-catalogue-model D-8).
@@ -924,7 +981,7 @@ ALL_CHECKS = (
     broken_links, skill_too_long, orphan_agent_references,
     boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
-    bundle_gates, facets_declared, bundle_requirements, doc_register_complete,
+    bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

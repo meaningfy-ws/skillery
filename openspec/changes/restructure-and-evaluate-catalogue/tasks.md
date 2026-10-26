@@ -62,7 +62,7 @@ One PR per task group. Each starts with the check or generator and a failing fix
 
 - [x] 3.1 **Area terms** (D-20): add `operations`, `business`, `legal`, `design` to `area` in
       `facets.yaml`, each with its one-line definition. **Accept:** `make validate` green.
-- [ ] 3.2 **Use-case catalogue** (D-14): the `use_case_catalogue` lint check with negative tests;
+- [x] 3.2 **Use-case catalogue** (D-14): the `use_case_catalogue` lint check with negative tests;
       `use-cases/UC-W1…UC-W21-*.md` seeded from `inputs/2026-10-27-scenarios.md` (S<n> → UC-W<n>),
       each with a success guarantee; `make skill-inventory` renders `docs/use-cases.md` (by area,
       status, change), with
