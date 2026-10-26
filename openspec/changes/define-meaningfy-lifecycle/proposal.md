@@ -21,7 +21,7 @@ EPIC — appetite is unchanged, because naming a gap costs nothing to build.
 
 ## Why
 
-`docs/ai-coding/` carries **two live, contradictory definitions of how we build**. v1
+`docs/practice/ai-coding/` carries **two live, contradictory definitions of how we build**. v1
 (`ai-coding-runbook.md`) still describes a single-file `EPIC.md` holding spec+plan+roadmap and routes
 work through `gherkin-writer` and `documenter` agents that **do not exist in `agents/`** — and it is
 the more obviously-named file (no `v1` in the filename), so a developer who opens it first gets the
@@ -51,7 +51,7 @@ live definitions is real before they can cite it.
 **One doc owns the build plane, end to end, with every step naming its single owning skill — and
 saying who steers it and who executes it.**
 
-`docs/ai-coding/two-tier-methodology.md` becomes `docs/ai-coding/build-lifecycle.md`: the same three
+`docs/practice/ai-coding/two-tier-methodology.md` becomes `docs/practice/ai-coding/build-lifecycle.md`: the same three
 correct v2 foundations (EPIC/PLAN split, single-owner ownership table, no-double-spec normative
 layering) carried forward, with the PROJECT tier expanded from four bullets into **named steps that
 cite their owners** — Requirements & UC (a capability at two depths, `architecture`'s UC White/Blue),
@@ -89,12 +89,12 @@ Outcomes that tell us it worked:
   nesting itself is still the accurate description of "runs once, up front" vs "runs per Epic", and it
   matches the Employee Handbook's own project anatomy — Conception (charter) → shaping & building →
   progressive shipping (handbook seed §1).
-- **DEC-2**: **Successor path is `docs/ai-coding/build-lifecycle.md`** (rewrite + rename, not a new
+- **DEC-2**: **Successor path is `docs/practice/ai-coding/build-lifecycle.md`** (rewrite + rename, not a new
   file alongside). "Build" names the plane (a P2 software contract), keeping it clearly distinct from
   epic 1's engagement docs, epic 3's delivery gates, and epic 5's umbrella doc — whose name space
   (`How We Work` / `Meaningfy Delivery Model` / `Meaningfy Lifecycle Guide`) this epic must not
   occupy. Cost is six inbound link retargets; `repo_lint.broken_links` (a blocking check that already
-  covers `docs/ai-coding/`) is the safety net.
+  covers `docs/practice/ai-coding/`) is the safety net.
 - **DEC-3**: **"SDLC" is scoped to the EPIC-tier build loop only.** ADLC and MDLC-lite are PROJECT-tier
   *siblings* of the SDLC loop, not sub-steps of it. Rationale: seed §1's explicit terminology rule.
 - **DEC-4**: **ADLC is named explicitly as a PROJECT-tier step, owner `architecture`** (ADRs, C4,
@@ -146,16 +146,16 @@ Outcomes that tell us it worked:
   nothing left for this epic to touch. The **diagram's** Delivery & Release terminal node still points
   to `dod-quality-gates.md` per DEC-9, unaffected by this correction — DEC-9 and DEC-11 were two
   different artifacts (diagram vs. ownership table) that had been conflated.
-- **DEC-12**: **`docs/ai-coding/` is dropped from `FROZEN_GLOBS` in `tools/repo_lint/lint.py`.** Two
+- **DEC-12**: **`docs/practice/ai-coding/` is dropped from `FROZEN_GLOBS` in `tools/repo_lint/lint.py`.** Two
   reasons, both verified in the code: (i) the constant's premise — "content must never be edited" —
   becomes false the moment this epic rewrites the doc, so leaving it is a lie in the guardrail; (ii)
   its only *blocking* effect today is exempting the directory from `orphan_agent_references`, an
   exemption that exists solely because v1 names `gherkin-writer`/`documenter`. With v1 deleted the
   successor must not name them either (the old→new mapping already lives, lint-exempt by filename, in
-  `docs/environment-setup.md` §6). `broken_links` already covers `docs/ai-coding/` regardless of the
+  `docs/environment-setup.md` §6). `broken_links` already covers `docs/practice/ai-coding/` regardless of the
   freeze; the advisory prose checks (`duplicate_fact_candidates`) start applying, which is desirable
   for a doc whose whole job is to point rather than restate.
-- **DEC-13**: **`docs/environment-setup.md` §6's claim that "the `docs/ai-coding/` runbook … still
+- **DEC-13**: **`docs/environment-setup.md` §6's claim that "the `docs/practice/ai-coding/` runbook … still
   names the older agents" is corrected** — one sentence, a necessary consequence of DEC-7. The
   old→new mapping table itself stays (it is useful history and lint exempts that file by name).
 - **DEC-14**: **New capability `build-lifecycle`** carries the spec delta. No existing spec in
@@ -204,7 +204,7 @@ Outcomes that tell us it worked:
 
 ## Rabbit-holes
 
-- **Don't let the rename become a `docs/ai-coding/` reorganisation.** `opsx-runbook.md`,
+- **Don't let the rename become a `docs/practice/ai-coding/` reorganisation.** `opsx-runbook.md`,
   `openspec-setup-guide.md` and `dod-quality-gates.md` keep their names, scopes and owners; they get a
   link retarget and nothing else.
 - **Un-freezing (DEC-12) may surface advisory prose findings in the sibling docs.** Fix **broken
@@ -224,7 +224,7 @@ Outcomes that tell us it worked:
   moment it grows a table of its own it has become epic 4's roles work or epic 3's DoD work.
 - **Don't re-argue the settled divergences** (front-loaded architecture vs canonical Shape Up; EARS
   dropped). Carried forward in substance (DEC-15).
-- **Don't add navigation infrastructure** (mkdocs nav, a `docs/ai-coding/README.md`, an index page).
+- **Don't add navigation infrastructure** (mkdocs nav, a `docs/practice/ai-coding/README.md`, an index page).
   One line in the root `README.md` docs table is the whole navigation change.
 
 ### Known gaps — named here, deliberately not closed
@@ -304,12 +304,12 @@ sign-off (DEC-18) and OpenSpec change folders rather than tickets.
 
 ## What Changes
 
-- **BREAKING** (documentation): delete `docs/ai-coding/ai-coding-methodology.md`,
-  `docs/ai-coding/ai-coding-runbook.md`, `docs/ai-coding/ai-coding-setup-guide.md` (DEC-7).
-- **BREAKING** (path): `docs/ai-coding/two-tier-methodology.md` → `docs/ai-coding/build-lifecycle.md`
+- **BREAKING** (documentation): delete `docs/practice/ai-coding/ai-coding-methodology.md`,
+  `docs/practice/ai-coding/ai-coding-runbook.md`, `docs/practice/ai-coding/ai-coding-setup-guide.md` (DEC-7).
+- **BREAKING** (path): `docs/practice/ai-coding/two-tier-methodology.md` → `docs/practice/ai-coding/build-lifecycle.md`
   (DEC-2), with all six live inbound links retargeted: `docs/engagement/README.md` (×2),
-  `docs/engagement/phases.md` (×1), `docs/ai-coding/opsx-runbook.md`,
-  `docs/ai-coding/openspec-setup-guide.md`, `docs/ai-coding/dod-quality-gates.md` (×1 each).
+  `docs/engagement/phases.md` (×1), `docs/practice/ai-coding/opsx-runbook.md`,
+  `docs/practice/ai-coding/openspec-setup-guide.md`, `docs/practice/ai-coding/dod-quality-gates.md` (×1 each).
 - Rewrite the successor doc: retitled and de-"two-tier"-framed (DEC-1); PROJECT tier expanded into
   named, owner-citing steps — Requirements & UC at two depths (DEC-6), ADLC (DEC-4), MDLC-lite +
   the MDLC-standalone gap line (DEC-5), project/repo setup; SDLC scoped to the EPIC-tier loop
@@ -324,10 +324,10 @@ sign-off (DEC-18) and OpenSpec change folders rather than tickets.
   corrects the `CD / release` row in place (its DEC-6/DEC-7); if that epic has not landed yet, this
   epic removes only the false `EPIC-10, future` claim, leaving the row otherwise as-is for epic 3 to
   replace.
-- `tools/repo_lint/lint.py`: drop `docs/ai-coding/` from `FROZEN_GLOBS`, comment updated to say why
+- `tools/repo_lint/lint.py`: drop `docs/practice/ai-coding/` from `FROZEN_GLOBS`, comment updated to say why
   the freeze is gone (DEC-12); exempt `openspec/changes/` from `orphan_agent_references` (DEC-16).
 - `docs/environment-setup.md` §6: correct the one sentence claiming a live v1 runbook (DEC-13).
-- Root `README.md` docs table: update the `docs/ai-coding/` row's description and the referenced
+- Root `README.md` docs table: update the `docs/practice/ai-coding/` row's description and the referenced
   filename.
 - Add `openspec/changes/define-meaningfy-lifecycle/specs/build-lifecycle/spec.md` (DEC-14).
 - Add `inputs/2026-07-26-handbook-findings.md` (already written; the round-2 seed excerpt).
@@ -343,30 +343,30 @@ sign-off (DEC-18) and OpenSpec change folders rather than tickets.
   and verify, every gate has a cheap human check) and names its method spine by citation; the doc's
   diagram and responsibility table reflect the current artifact vocabulary (EPIC ≡ `proposal.md`,
   PLAN ≡ `design.md` + `tasks.md`) and the three-wrapper agent roster; no deprecated parallel
-  lifecycle doc exists in `docs/ai-coding/`.
+  lifecycle doc exists in `docs/practice/ai-coding/`.
 
 ### Modified Capabilities
 
-None. No spec in `openspec/specs/` currently references `docs/ai-coding/` or the two-tier methodology
+None. No spec in `openspec/specs/` currently references `docs/practice/ai-coding/` or the two-tier methodology
 (verified) — the delivery/release requirements this doc points at are
 `define-delivery-release-lifecycle`'s to add or modify.
 
 ## Impact
 
-**Files:** `docs/ai-coding/build-lifecycle.md` (renamed + rewritten); three `docs/ai-coding/ai-coding-*.md`
+**Files:** `docs/practice/ai-coding/build-lifecycle.md` (renamed + rewritten); three `docs/practice/ai-coding/ai-coding-*.md`
 deleted; link-only edits in `docs/engagement/README.md`, `docs/engagement/phases.md`,
-`docs/ai-coding/opsx-runbook.md`, `docs/ai-coding/openspec-setup-guide.md`,
-`docs/ai-coding/dod-quality-gates.md`; one-line edits in `README.md` and `docs/environment-setup.md`;
+`docs/practice/ai-coding/opsx-runbook.md`, `docs/practice/ai-coding/openspec-setup-guide.md`,
+`docs/practice/ai-coding/dod-quality-gates.md`; one-line edits in `README.md` and `docs/environment-setup.md`;
 two one-line rules in `tools/repo_lint/lint.py`.
 
 **Gates:**
 
 | Gate | State today | After this change |
 |---|---|---|
-| `repo_lint.broken_links` (blocking; already covers `docs/ai-coding/`) | green | green — catches any missed link retarget from the rename |
+| `repo_lint.broken_links` (blocking; already covers `docs/practice/ai-coding/`) | green | green — catches any missed link retarget from the rename |
 | `repo_lint.orphan_agent_references` (blocking; `tests/test_repo_lint.py`) | **red** — `inputs/handover-analysis.md` names both retired agents | green via DEC-16 (exempt `openspec/changes/`), plus the successor doc no longer names them |
-| `repo_lint.duplicate_fact_candidates` (advisory, non-blocking) | skips `docs/ai-coding/` | applies to the successor — expect pointer-vs-restatement notes to review |
-| `tests/test_repo_lint_negative.py` | no test pins `docs/ai-coding/` as frozen (verified) | unchanged — DEC-12 needs no test edit |
+| `repo_lint.duplicate_fact_candidates` (advisory, non-blocking) | skips `docs/practice/ai-coding/` | applies to the successor — expect pointer-vs-restatement notes to review |
+| `tests/test_repo_lint_negative.py` | no test pins `docs/practice/ai-coding/` as frozen (verified) | unchanged — DEC-12 needs no test edit |
 
 **Not affected:** no runtime code, no `.claude-plugin/marketplace.json` (no skill/bundle change), no
 `.opencode/` regeneration (the generated tree carries skills and agents, not `docs/`), no

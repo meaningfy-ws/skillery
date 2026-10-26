@@ -44,18 +44,18 @@ hand off to* → *Your done*), bullet-list format per design.md, one screen (~12
       `docs/how-we-work/README.md`.
 - [ ] 4.2 Add the fixed "start here" link line (design.md's Decisions) to
       `docs/engagement/README.md` (`define-blc-engagement-model`'s output).
-- [ ] 4.3 Add the fixed "start here" link line to `docs/ai-coding/build-lifecycle.md`
+- [ ] 4.3 Add the fixed "start here" link line to `docs/practice/ai-coding/build-lifecycle.md`
       (`define-meaningfy-lifecycle`'s output).
-- [ ] 4.4 Add the fixed "start here" link line to `docs/ai-coding/dod-quality-gates.md`
+- [ ] 4.4 Add the fixed "start here" link line to `docs/practice/ai-coding/dod-quality-gates.md`
       (`define-delivery-release-lifecycle`'s output).
-- [ ] 4.5 Add the fixed "start here" link line to `docs/roles-and-raci.md`
+- [ ] 4.5 Add the fixed "start here" link line to `docs/practice/roles-and-raci.md`
       (`define-roles-and-raci`'s output).
 
 ## 5. Validation
 
 - [ ] 5.1 Run `make validate` (`repo_lint`'s `broken_links` gate) — zero broken links across the
       seven new files and the four edited sibling outputs.
-- [ ] 5.2 Verify bidirectional role/playbook coverage by hand against `docs/roles-and-raci.md`'s six
+- [ ] 5.2 Verify bidirectional role/playbook coverage by hand against `docs/practice/roles-and-raci.md`'s six
       role definitions (spec requirement: bidirectional coverage).
 - [ ] 5.3 Run the pointer-discipline self-check (design.md's Decisions): confirm every non-
       orientation declarative sentence in `README.md` and each playbook carries an adjacent link to

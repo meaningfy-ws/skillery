@@ -44,7 +44,7 @@ reconciled afterwards across four documents instead of fixed once here.
 
 ## Solution outline
 
-One document, `docs/roles-and-raci.md`, with two halves that together let any other doc name an owner
+One document, `docs/practice/roles-and-raci.md`, with two halves that together let any other doc name an owner
 by citation instead of by restating ownership:
 
 1. **Six role definitions** — Sales/Presales, Technical Consultant, Solution Architect, **Work
@@ -72,10 +72,10 @@ sibling docs can cite a role name instead of describing an owner.
 
 ## Key decisions
 
-- **DEC-1**: **One file at `docs/roles-and-raci.md`** — not a `docs/roles/` directory with a file per
+- **DEC-1**: **One file at `docs/practice/roles-and-raci.md`** — not a `docs/roles/` directory with a file per
   role. Rationale: `define-lifecycle-playbooks` already owns one short playbook per role, so a
   per-role file here would create a second per-role home and a permanent sync burden between the two.
-  Docs *root* rather than `docs/engagement/` (commercial-only) or `docs/ai-coding/` (build-tier home,
+  Docs *root* rather than `docs/engagement/` (commercial-only) or `docs/practice/ai-coding/` (build-tier home,
   and listed in `FROZEN_GLOBS` at `tools/repo_lint/lint.py:39`) because roles span both planes;
   `docs/skill-inventory.md` and `docs/environment-setup.md` set the precedent that cross-cutting docs
   sit at docs root.
@@ -264,7 +264,7 @@ sibling docs can cite a role name instead of describing an owner.
   positions. This doc covers **project roles** only.
 - **No resolution of the agent-wrapper fork** (DEC-3). It ships open, on purpose, priority order and
   all.
-- **No edits to `docs/ai-coding/**` or `docs/engagement/**`.** Those files are owned by siblings 1-3
+- **No edits to `docs/practice/ai-coding/**` or `docs/engagement/**`.** Those files are owned by siblings 1-3
   in this same round; editing them here would create write collisions in a parallel shaping round.
   Inbound links are the siblings' to add when they rewrite; discoverability here rests on `README.md`
   plus the umbrella doc from `define-lifecycle-playbooks`.
@@ -292,7 +292,7 @@ EPIC; each is stated so a reader stops looking for it elsewhere.
 
 ## What Changes
 
-- Add **`docs/roles-and-raci.md`**, containing:
+- Add **`docs/practice/roles-and-raci.md`**, containing:
   - **six** role definition blocks (mandate / accountable for / skills drawn on / artifacts
     produced) — Sales/Presales, Technical Consultant, Solution Architect, **Work Shaper**, Solution
     Builder, Solution Shipper — with the Work Shaper block naming `epic-planning` as the skill it
@@ -337,9 +337,9 @@ None. No existing spec in `openspec/specs/` mentions roles or accountability (ch
 
 ## Impact
 
-- **Docs:** one new file at `docs/roles-and-raci.md`; `README.md` (one table row + one structure
+- **Docs:** one new file at `docs/practice/roles-and-raci.md`; `README.md` (one table row + one structure
   line).
-- **Validation:** unlike `docs/ai-coding/` (frozen, `tools/repo_lint/lint.py:39`), a doc at docs root
+- **Validation:** unlike `docs/practice/ai-coding/` (frozen, `tools/repo_lint/lint.py:39`), a doc at docs root
   is subject to the link check (`broken_links`, `tools/repo_lint/lint.py:230`) — every relative link
   to a skill or sibling doc must resolve or `make validate` fails. Docs-root files are *not*
   `_is_illustrative`, so there is no exemption.

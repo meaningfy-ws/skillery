@@ -47,7 +47,7 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **Four `area` facet values:** `operations`, `business`, `legal`, `design`.
 - **[`docs/catalogue-architecture.md`](docs/development/catalogue-architecture.md):** the catalogue's model, where
   each part lives, and the proposed target bundles, agent roster and roadmap.
-- **[`evals/README.md`](evals/README.md):** how to run a skill's trigger set or an outcome suite, and
+- **[`evals/README.md`](tests/evals/README.md):** how to run a skill's trigger set or an outcome suite, and
   that every model run is approved with its estimate first.
 
 ### Changed

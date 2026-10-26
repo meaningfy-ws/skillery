@@ -55,7 +55,7 @@ The root `AGENTS.md` SHALL mandate the repo work loop — the change path (EPIC 
 
 #### Scenario: One checklist
 - **WHEN** a contributor looks for what "done" means for a skill or agent change
-- **THEN** `AGENTS.md` and `CONTRIBUTING.md` both route to `docs/development/README.md` §9, and no other file carries a done or submission checklist for changes to this repository's skills and agents (`docs/ai-coding/` defines the product-project Definition of Done and is out of scope)
+- **THEN** `AGENTS.md` and `CONTRIBUTING.md` both route to `docs/development/README.md` §9, and no other file carries a done or submission checklist for changes to this repository's skills and agents (`docs/practice/ai-coding/` defines the product-project Definition of Done and is out of scope)
 
 #### Scenario: The checklist matches the tooling
 - **WHEN** the Definition of Done names a command

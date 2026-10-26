@@ -124,7 +124,7 @@ command. What gets projected and how to refresh the pinned copy:
 ## Step 9 — Optional: hooks, MCP servers
 
 - **Hooks** — written for you by `project-setup` as `.opencode/plugin/` bindings. Reference:
-  [`../../../hooks/README.md`](../../../hooks/README.md).
+  [`../../../hooks/README.md`](../../development/hooks.md).
 - **MCP servers** (GitNexus, Atlassian, Google Workspace, Odoo, Neo4j, MongoDB, context7, …) —
   install one by one into `opencode.json` under `mcp`; per-tool packages/links and config
   templates in [`mcp-setup.md`](mcp-setup.md).

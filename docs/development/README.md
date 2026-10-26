@@ -73,7 +73,7 @@ If a change helps the agent but confuses the user, it is not done.
 10. **Installable or it does not exist.** A skill belongs to exactly one bundle; an agent to exactly
     one bundle; every external dependency is declared; a fresh install on both CLIs is the last check.
 11. **A rule that must hold every time is a hook, not skill prose.** Declare its intent in
-    [`hooks/inventory.yaml`](../../hooks/inventory.yaml), rendered per CLI; never in skill frontmatter
+    [`hooks.yaml`](../../hooks.yaml), rendered per CLI; never in skill frontmatter
     `hooks`, which only Claude Code reads.
 
 ## 3. Lifecycle — skills
@@ -212,21 +212,21 @@ at any depth below it.
 | `docs/use-cases.md` | generated | the use-case catalogue [`use-cases/`](../../use-cases/) (one White use case per file, `use_case_catalogue` check) and [`facets.yaml`](../../facets.yaml): the gap map by area | `make skill-inventory` |
 | `docs/development/catalogue-architecture.md` | hand-written | the catalogue's conceptual model (class view source `docs/development/catalogue-architecture.class.puml`), where each class lives, the area↔domain mapping, the target structure and the built agents | — |
 | `docs/future-features.md` | hand-written | the features still to build: use cases, bundle, agents and skills to build, material needed and in hand, and the change (`use_case_changes_registered` checks every partial or missing use case's change is listed) | — |
-| `evals/README.md` | hand-written | how to run trigger sets and outcome suites, isolated and within an approved spend | — |
+| `tests/evals/README.md` | hand-written | how to run trigger sets and outcome suites, isolated and within an approved spend | — |
 | `README.md` | hand-written | What the catalogue is and how to install it | — |
 | `AGENTS.md` | hand-written | The repo operating rules for any CLI, including the [dual-CLI authoring rules](../../AGENTS.md#dual-cli-authoring-rules) | — |
 | `CLAUDE.md` | hand-written | Claude Code-only additions to `AGENTS.md` | — |
 | `docs/development/README.md` | hand-written | How skills and agents are built, changed and accepted | — |
-| `docs/roles-and-raci.md` | hand-written | Roles and who is accountable | — |
+| `docs/practice/roles-and-raci.md` | hand-written | Roles and who is accountable | — |
 | `docs/environment/setup.md` | hand-written | Installing, external dependencies | — |
 | `docs/environment/openspec-setup-guide.md` | hand-written | Setting up OpenSpec in a project | — |
 | `docs/environment/vault-assistant.md` | hand-written | Using the vault-assistant bundle | — |
 | `docs/environment/dual-cli/**` | hand-written | Dual-CLI setup, mapping and gates; the dependency tables in `compatibility.md` and `mcp-setup.md` are generated from [`dependencies.yaml`](../../dependencies.yaml) between `GENERATED:dependencies` markers | `make skill-inventory` (those tables) |
-| `docs/ai-coding/**` | hand-written | The AI-assisted build lifecycle and its role playbooks | — |
-| `docs/ai-consulting/**` | hand-written | The advisory runbook, methods and playbook | — |
-| `docs/ai-sales/**` | hand-written | The sales runbook, service offers and playbook | — |
-| `docs/engineering-standards/**` | hand-written | Engineering standards for Meaningfy code projects | — |
-| `docs/philosophy/**` | hand-written | Essays on working with an LLM | — |
+| `docs/practice/ai-coding/**` | hand-written | The AI-assisted build lifecycle and its role playbooks | — |
+| `docs/practice/ai-consulting/**` | hand-written | The advisory runbook, methods and playbook | — |
+| `docs/practice/ai-sales/**` | hand-written | The sales runbook, service offers and playbook | — |
+| `docs/practice/engineering-standards/**` | hand-written | Engineering standards for Meaningfy code projects | — |
+| `docs/practice/philosophy/**` | hand-written | Essays on working with an LLM | — |
 | `docs/development/governance.md` | hand-written | Artifact types and placement rules | — |
 | `docs/development/agent-skills-spec.md` | hand-written | The skill file format and metadata | — |
 | `docs/development/skill-template.md` | hand-written | The skill file template | — |
@@ -237,6 +237,9 @@ at any depth below it.
 | `docs/development/workflows.md` | hand-written | The `/opsx` verbs and how superpowers lands in the spine | — |
 | `docs/development/epic-change-memory-mapping.md` | hand-written | EPIC ≡ change, and memory = `openspec/specs/` + `context:` | — |
 | `docs/development/lessons-loop.md` | hand-written | How lessons flow back into skills and specs | — |
+| `docs/development/hooks.md` | hand-written | The hook intent register (`hooks.yaml`) and how to read it | — |
+| `docs/development/hook-bindings.md` | hand-written | How each hook intent is bound on each CLI | — |
+| `docs/environment/global-prompt.md` | hand-written | A developer's personal always-on routing prompt | — |
 | `CONTRIBUTING.md` | hand-written | Submission checklist and PR process | — |
 | `tests/ownership.yaml` | hand-written | Which skill owns which fact | — |
 | `tests/trigger_probes.yaml` | hand-written | Trigger probes per skill | — |
@@ -257,7 +260,7 @@ Routing for questions the table does not answer by name:
   [`environment/setup.md`](../environment/setup.md).
 - Commits, branches, PRs: [`skills/meaningfy-git-workflow`](../../skills/meaningfy-git-workflow);
   versions and releases: [`skills/meaningfy-release`](../../skills/meaningfy-release); roles:
-  [`roles-and-raci.md`](../roles-and-raci.md).
+  [`roles-and-raci.md`](../practice/roles-and-raci.md).
 
 ## 9. Definition of Done
 

@@ -7,7 +7,7 @@ layout on a project repo.
 runs on. This doc **describes**; the **mechanics** of scaffolding a repo are the
 [`project-setup`](../../skills/project-setup/SKILL.md) skill (EPIC-09) — this doc does
 not duplicate them. For the methodology see
-[`docs/ai-coding/build-lifecycle.md`](../ai-coding/build-lifecycle.md); for
+[`docs/practice/ai-coding/build-lifecycle.md`](../practice/ai-coding/build-lifecycle.md); for
 the spine conventions see [`docs/development/spine.md`](../development/spine.md).
 
 ---

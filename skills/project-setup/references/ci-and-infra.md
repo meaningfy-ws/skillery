@@ -65,7 +65,7 @@ print a reminder that it must have passed, but does not score it.
 ### The CI-automatable gates (R8) — and the one that is NOT
 
 CI runs the **CI-automatable** build-tier gates as `make` targets — this is the gate set, pinned
-in [`../../../docs/ai-coding/dod-quality-gates.md`](../../../docs/ai-coding/dod-quality-gates.md):
+in [`../../../docs/ai-coding/dod-quality-gates.md`](../../../docs/practice/ai-coding/dod-quality-gates.md):
 
 | Gate | `make` target | Archetype |
 |------|---------------|-----------|
@@ -78,7 +78,7 @@ in [`../../../docs/ai-coding/dod-quality-gates.md`](../../../docs/ai-coding/dod-
 > **`clarity-gate` is NOT a CI step.** It is the *semantic* gate that scores the PLAN (`design.md` +
 > `tasks.md`) ≥9/10 — a human/agent judgement that cannot be reduced to a deterministic check. This
 > is the **automation boundary** (single source:
-> [`dod-quality-gates.md`](../../../docs/ai-coding/dod-quality-gates.md)). CI may **emit a reminder**
+> [`dod-quality-gates.md`](../../../docs/practice/ai-coding/dod-quality-gates.md)). CI may **emit a reminder**
 > ("confirm the PLAN passed clarity-gate before merge") but must never claim to enforce it.
 
 A `doc-only` repo has no code CI: it gets `openspec validate --strict` (if it carries `openspec/`),

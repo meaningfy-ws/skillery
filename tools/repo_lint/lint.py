@@ -43,7 +43,7 @@ ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "system-archi
 # without a local skills/<name>/ dir). Namespaced skills (e.g. `superpowers:tdd`) are external by form.
 EXTERNAL_SKILLS = {"stream-coding"}
 # Files/dirs whose content must never be edited (frozen) — excluded from prose checks.
-# `docs/ai-coding/` was the only entry and is no longer frozen as of the
+# `docs/practice/ai-coding/` was the only entry and is no longer frozen as of the
 # `define-meaningfy-lifecycle` change: its premise ("content must never be edited") became
 # false the moment that change rewrote `build-lifecycle.md` in place. Left empty (not deleted)
 # so the mechanism stays available for a future freeze without speculative re-engineering.
@@ -897,7 +897,7 @@ def reciprocal_related_report(repo: Path) -> list[str]:
 
 # ------------------------------------------- dual-CLI foundation invariants (DEC-12/13)
 VERSION_FILE = "VERSION"
-HOOKS_INVENTORY = "hooks/inventory.yaml"
+HOOKS_INVENTORY = "hooks.yaml"
 _VALID_MECHANISM = {"git", "ci", "agent"}
 _VALID_PHASE = {"quality", "phase-gate"}
 # The ONLY skill bodies allowed to carry a CLI-specific (/opsx: or .claude/) reference.

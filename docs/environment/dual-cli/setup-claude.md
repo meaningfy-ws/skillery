@@ -101,7 +101,7 @@ command. What gets projected and how to refresh the pinned copy:
 ## Step 8 — Optional: hooks, MCP servers, extra plugins
 
 - **Hooks** — written for you by `project-setup` when you scaffold a repo. Reference:
-  [`../../../hooks/README.md`](../../../hooks/README.md).
+  [`../../../hooks/README.md`](../../development/hooks.md).
 - **MCP servers** (GitNexus, Atlassian, Google Workspace, Odoo, Neo4j, MongoDB, context7, …) —
   install one by one, per-tool packages/links and config templates in
   [`mcp-setup.md`](mcp-setup.md).

@@ -89,7 +89,7 @@ docs/
   owns BPMN/ArchiMate but scoped to modelling *what Meaningfy builds*, not the client's existing
   AS-IS organisational landscape. `conceptual-modelling` is scoped to product-development projects
   only.
-- **The Shipper's DoD in `docs/ai-coding/dod-quality-gates.md` (lines 54-72) is not cleanly
+- **The Shipper's DoD in `docs/practice/ai-coding/dod-quality-gates.md` (lines 54-72) is not cleanly
   relocatable in one piece**: the DoD definition itself (lines 54-64) is commercial-plane and could
   move to an `ai-sales` DoD file, but the Disagreement rule (lines 69-72) explicitly states it
   governs **both** DoDs and is stated once, canonically, in that file — moving it would either

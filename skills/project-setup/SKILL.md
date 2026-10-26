@@ -87,7 +87,7 @@ hold: "automate almost everything" + TDD.** The archetype decides the *condition
   **product** points at the `ci-cd-delivery` GHCR image path + gets `SECURITY.md`; **doc-only** gets
   neither. This skill owns *when/into what repo*; the release content/intent lives in `meaningfy-release`.
 - **`clarity-gate` is NOT a CI step** — it is a human/agent semantic gate (the automation boundary is
-  pinned in [`../../docs/ai-coding/dod-quality-gates.md`](../../docs/ai-coding/dod-quality-gates.md)).
+  pinned in [`../../docs/ai-coding/dod-quality-gates.md`](../../docs/practice/ai-coding/dod-quality-gates.md)).
 
 > **Non-negotiables** (hardest to reverse, most-violated by default): no `/src`, all tool config in
 > the root, **canonical `AGENTS.md` with a thin `CLAUDE.md` pointer, never a symlink** (D8), a

@@ -107,7 +107,7 @@ the field when the agent loads from a plugin, which is the only way this reposit
 | `disallowedTools` | no | Adopted | `permission: deny`; some tools gapped | deterministic before prose; a specifier still removes the whole tool |
 | `color` | no | Adopted, optional | mapped to a theme colour | cosmetic |
 | `permissionMode` | yes | Not adoptable | — | ignored in plugins |
-| `hooks` | yes | Not adoptable | — | ignored in plugins; hook intent lives in `hooks/inventory.yaml` |
+| `hooks` | yes | Not adoptable | — | ignored in plugins; hook intent lives in `hooks.yaml` |
 | `mcpServers` | yes | Not adoptable | `opencode.json` `mcp` | ignored in plugins; MCP is an install concern |
 | `maxTurns` | no | Recorded, not adopted | `steps` | no current agent needs a turn cap |
 | `isolation: worktree` | no | Recorded, not adopted | no analogue | one task per dispatch; parallel runs are not shipped |

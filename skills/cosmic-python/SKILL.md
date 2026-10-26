@@ -367,11 +367,11 @@ This approach requires **team discipline**. One developer ignoring layers breaks
 
 - The **stream-coding** skill (external — see `docs/environment/setup.md`) owns the documentation-first method: 40/40/20 split, mandatory spec sections, Rule of Divergence.
 - The **clarity-gate** skill owns AI-ready specs + the 13-item Clarity Gate and scoring rubric.
-- Meaningfy adaptation notes live in `docs/engineering-standards/references/` (`stream-coding-notes.md`, `strategic-blueprint-checklist.md`).
+- Meaningfy adaptation notes live in `docs/practice/engineering-standards/references/` (`stream-coding-notes.md`, `strategic-blueprint-checklist.md`).
 
 ### Company Standards & Principles
 
-- The full standard in prose: `docs/engineering-standards/coding-prompt.md` — the full Meaningfy engineering culture (project structure, layering, SOLID, CI/CD, security). **This SKILL.md is the operational version of that standard.**
+- The full standard in prose: `docs/practice/engineering-standards/coding-prompt.md` — the full Meaningfy engineering culture (project structure, layering, SOLID, CI/CD, security). **This SKILL.md is the operational version of that standard.**
 
 ---
 

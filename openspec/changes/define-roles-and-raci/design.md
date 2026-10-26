@@ -22,7 +22,7 @@ content.
 ## Goals / Non-Goals
 
 **Goals:**
-- Lay out `docs/roles-and-raci.md` so the six role blocks, the legend + invariants, the one matrix,
+- Lay out `docs/practice/roles-and-raci.md` so the six role blocks, the legend + invariants, the one matrix,
   the two adaptation notes, the open question, and the Known-gaps subsection each have an
   unambiguous, single home in the file (no content duplicated between sections).
 - Keep the one-A-per-row invariant mechanically checkable by eye on the matrix as laid out —
@@ -36,7 +36,7 @@ content.
   settled or deliberately open in the EPIC.
 - No tooling, no matrix validator (proposal.md rabbit-holes: "Do not write a validator for the
   matrix").
-- No edits outside `openspec/changes/define-roles-and-raci/` in this round — `docs/roles-and-raci.md`
+- No edits outside `openspec/changes/define-roles-and-raci/` in this round — `docs/practice/roles-and-raci.md`
   and `README.md` are written by a later implementation phase from `tasks.md`, not by this PLAN.
 
 ## Decisions

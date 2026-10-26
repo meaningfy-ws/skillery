@@ -23,8 +23,8 @@ The model has no machine-readable source. The files below are the truth; the pic
 |---|---|---|---|
 | distribution | **Catalogue** | [`VERSION`](../../VERSION), rendered into `.claude-plugin/marketplace.json` and `tools/opencode-catalogue.json` | `bundle_gates` (version sync) |
 | distribution | **Bundle** | [`bundles.yaml`](../../bundles.yaml), rendered by `make bundles` | `bundle_gates`, `bundle_requirements`, `expected_bundle_membership` |
-| distribution | **Binding** | [`AGENTS.md`](../../AGENTS.md), [`CLAUDE.md`](../../CLAUDE.md), [`prompts/`](../../prompts/README.md) | `agents_canonical_invariant` |
-| distribution | **ConfigItem** | hooks only: [`hooks/inventory.yaml`](../../hooks/inventory.yaml); commands, rules and settings are planned (change `add-config-items`, later) | `hooks_inventory_shape` |
+| distribution | **Binding** | [`AGENTS.md`](../../AGENTS.md), [`CLAUDE.md`](../../CLAUDE.md), `project-setup`'s agentic templates ([`AGENTS.md.tmpl`](../../skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl)) | `agents_canonical_invariant` |
+| distribution | **ConfigItem** | hooks only: [`hooks.yaml`](../../hooks.yaml); commands, rules and settings are planned (change `add-config-items`, later) | `hooks_inventory_shape` |
 | knowledge | **Skill** | `skills/<name>/SKILL.md`, its six facets from [`facets.yaml`](../../facets.yaml); `kind` stays conceptual | `frontmatter_*`, `facets_declared`, `boundary_section_present` |
 | knowledge | **Resource** | every other file in a skill folder (`references/`, `assets/`, `scripts/`); shared ones sit in a foundation skill such as `meaningfy-voice` | `cross_skill_paths` |
 | knowledge | **ToolPolicy** | an agent's `tools` / `disallowedTools`; a skill's optional `allowed-tools` (none declared today) | `agent_conformance`, `frontmatter_keys` |
@@ -34,7 +34,7 @@ The model has no machine-readable source. The files below are the truth; the pic
 | external | **ExternalDependency** | prose tables in [`compatibility.md`](../environment/dual-cli/compatibility.md) and [`mcp-setup.md`](../environment/dual-cli/mcp-setup.md); a structured register is planned (change `add-external-dependency-register`) | — |
 | external | **MemoryStore** | planned (change `add-odoo-memory-skill` for Odoo; the others with the agent that needs them) | — |
 | intent | **UseCase** | [`use-cases/`](../../use-cases/), one White use case per file; the view [`use-cases.md`](../use-cases.md) | `use_case_catalogue`, the drift test of `make skill-inventory` |
-| assurance | **Test** | probes [`tests/trigger_probes.yaml`](../../tests/trigger_probes.yaml), trigger sets and eval cases in [`evals/`](../../evals/README.md), agent Gherkin in `tests/features/agents/`, lint checks in `tools/repo_lint/` | `make validate` |
+| assurance | **Test** | probes [`tests/trigger_probes.yaml`](../../tests/trigger_probes.yaml), trigger sets and eval cases in [`tests/evals/`](../../tests/evals/README.md), agent Gherkin in `tests/features/agents/`, lint checks in `tools/repo_lint/` | `make validate` |
 | assurance | **Doc** | the register in [§8 of the method](README.md#8-where-things-live); `door` lands with the README's three doors | `doc_register_complete`, `broken_links` |
 | assurance | **Change** | an EPIC in [`openspec/changes/`](../../openspec/changes/) | `make validate-spine` |
 

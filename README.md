@@ -8,8 +8,8 @@ any project. Runs identically on **Claude Code** and **opencode** from one set o
 ## What this is
 
 A curated, self-validating catalogue. **Skills** carry reusable knowledge; **agents** are thin
-execution wrappers; `docs/` is written for people (method, engineering standards, philosophy);
-`prompts/` holds the agentic-file templates. The root binding is **`AGENTS.md`-canonical**:
+execution wrappers; `docs/` is written for people (the development method, company practice, setup);
+`project-setup` ships the agentic-file templates. The root binding is **`AGENTS.md`-canonical**:
 `AGENTS.md` is the CLI-agnostic operating manual (read natively by opencode) and `CLAUDE.md` is a
 thin pointer that adds only Claude-specific guidance (no symlink between them). It also carries the
 **spine** — *the durable, traceable spec backbone*
@@ -159,11 +159,11 @@ Find the agent or skill that does your job, then its Quick Start.
 | Where | What | Read it when… |
 |---|---|---|
 | [`docs/use-cases.md`](docs/use-cases.md) | every use case the catalogue serves, by area, with the agents and skills that serve it and what is still missing | you want to know what the catalogue can do for you |
-| [`docs/ai-coding/`](docs/ai-coding/) | the build-plane lifecycle + the `/opsx` runbook + DoD/quality gates + role playbooks | you're learning how we build with agents |
-| [`docs/ai-sales/`](docs/ai-sales/engagement-lifecycle.md) | the commercial engagement lifecycle, the sales runbook and DoD, and the sellable services catalogue (one page per Semantic Layer building block, or a named gap) | you're scoping or describing a commercial offering to a client |
-| [`docs/ai-consulting/`](docs/ai-consulting/advisory-runbook.md) | the Deep-tier advisory runbook, the consulting DoD, and the method docs (gap analysis, and four named-but-unowned technique stubs) | you're running or reviewing a Discovery & Onboarding Deep-tier engagement |
-| [`docs/roles-and-raci.md`](docs/roles-and-raci.md) | the six project roles and the RACI matrix, cited by every domain's playbooks | you want to know who is accountable for what |
-| [`docs/philosophy/`](docs/philosophy/) | the mindset behind it all | you want the *why* |
+| [`docs/practice/ai-coding/`](docs/practice/ai-coding/) | the build-plane lifecycle + the `/opsx` runbook + DoD/quality gates + role playbooks | you're learning how we build with agents |
+| [`docs/practice/ai-sales/`](docs/practice/ai-sales/engagement-lifecycle.md) | the commercial engagement lifecycle, the sales runbook and DoD, and the sellable services catalogue (one page per Semantic Layer building block, or a named gap) | you're scoping or describing a commercial offering to a client |
+| [`docs/practice/ai-consulting/`](docs/practice/ai-consulting/advisory-runbook.md) | the Deep-tier advisory runbook, the consulting DoD, and the method docs (gap analysis, and four named-but-unowned technique stubs) | you're running or reviewing a Discovery & Onboarding Deep-tier engagement |
+| [`docs/practice/roles-and-raci.md`](docs/practice/roles-and-raci.md) | the six project roles and the RACI matrix, cited by every domain's playbooks | you want to know who is accountable for what |
+| [`docs/practice/philosophy/`](docs/practice/philosophy/) | the mindset behind it all | you want the *why* |
 
 ### Develop
 
@@ -174,7 +174,7 @@ Change the catalogue itself: add or fix a skill, an agent or a bundle.
 | [`docs/development/README.md`](docs/development/README.md) | the skillery development method, its one home: how skills and agents are conceived, documented, tested, installed, improved and retired, the authoring guide and templates, governance, the catalogue model, and how to work in this repo | you're writing, changing, reviewing or reporting on a skill or agent, or deciding where something belongs |
 | [`docs/future-features.md`](docs/future-features.md) | the features still to build, the material each needs, and the change that will build it | you want to know what is coming, or have material for a feature |
 | [`openspec/specs/catalogue-governance/`](openspec/specs/catalogue-governance/spec.md) | the governance contract the validator enforces | you need the rule behind a `make validate` failure |
-| [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the full engineering standards |
+| [`docs/practice/engineering-standards/`](docs/practice/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the full engineering standards |
 
 > **Coming:** the durable docs (`engineering-standards/`, `philosophy/`, architecture/ADRs) will be
 > published to **GitHub Pages** via AsciiDoc + Antora — skillery applying its own documentation
@@ -187,7 +187,7 @@ skillery/
 ├── skills/        # flat: skills/<skill>/  (bundles group them in bundles.yaml)
 ├── agents/        # thin wrappers (no knowledge), each shipped with its primary skill's bundle
 ├── docs/          # development/ (the method's one home) · practice/ (company practice) · environment/ · use cases, catalogue map, future features
-├── prompts/       # AGENTS.md.template, global-prompt.md (AGENTS.md-canonical; CLAUDE.md is a thin pointer)
+├── use-cases/     # one White use case per file: what the catalogue serves (the golden thread's root)
 ├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery runs the spine on itself)
 ├── tools/ + tests/# the validator (make validate), the bundle renderer (make bundles), the opencode installer
 ├── bundles.yaml   # the one bundle definition: each skill and agent in exactly one bundle

@@ -123,7 +123,7 @@
       **Accept:** `spec/` gone; `broken_links` clean.
 - [x] 9.3 `spine/`: `golden-thread.md` → `epic-planning`; the version pin → `openspec/`; the rest →
       `docs/development/`; every skill link into `spine/` removed per D-13. **Accept:** `spine/` gone.
-- [ ] 9.4 `hooks/`, `prompts/`, `evals/` and the company-practice docs per D-13. **Accept:** those
+- [x] 9.4 `hooks/`, `prompts/`, `evals/` and the company-practice docs per D-13. **Accept:** those
       folders gone; `hooks_inventory_shape` reads `hooks.yaml`; `plugin-eval.yml` reads `tests/evals/`.
 - [ ] 9.5 `tools/linkml_neo4j/` → the skill; `scaffold.sh` per D-13; the `linkml-engineering` delta.
       **Accept:** `pytest tests/test_linkml_neo4j_generators.py` green.

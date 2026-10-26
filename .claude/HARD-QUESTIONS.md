@@ -12,8 +12,8 @@
 
 ### HQ-UX.1 — Publish the durable canon to GitHub Pages via AsciiDoc + Antora?
 The catalogue-UX brainstorm decided (D7) to dogfood the split-by-churn standard: keep high-churn
-agent-loop docs (`docs/ai-coding/`, `.claude/`, `docs/ai-sales/`) as Markdown, but migrate the
-**durable canon** (`docs/engineering-standards/`, `docs/philosophy/`, architecture/ADRs) to
+agent-loop docs (`docs/practice/ai-coding/`, `.claude/`, `docs/practice/ai-sales/`) as Markdown, but migrate the
+**durable canon** (`docs/practice/engineering-standards/`, `docs/practice/philosophy/`, architecture/ADRs) to
 **AsciiDoc + Antora** and publish it to **GitHub Pages** — skillery applying its own documentation
 standard to itself. This is a substantial migration (Antora playbook, `.adoc` conversion, a Pages CI
 workflow) and was **deferred to its own follow-up EPIC**. The README "Documentation" section already
@@ -92,7 +92,7 @@ nice-to-have. Confirm whether you want the real harness built later.
 Q8.2's note: the wider commercial mechanics — qualification, pre-sale, sale,
 marketing, CRM & lead communication, service packaging, fit-for-market — are
 **still to be developed, brainstormed, debated, and crystallised**. I stubbed a
-clearly-labelled "Known gaps" section in `docs/ai-sales/engagement-lifecycle.md` and the DoD
+clearly-labelled "Known gaps" section in `docs/practice/ai-sales/engagement-lifecycle.md` and the DoD
 ladder rather than inventing it. **This is a whole future workstream** (a possible
 EPIC-11+). Decide when/how to shape it.
 **Answer:**

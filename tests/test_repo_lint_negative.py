@@ -249,8 +249,7 @@ def test_agents_canonical_clean_passes(tmp_path):
 
 def test_hooks_inventory_bad_mechanism_is_flagged(tmp_path):
     (tmp_path / "VERSION").write_text("9.9.9\n", encoding="utf-8")
-    (tmp_path / "hooks").mkdir()
-    (tmp_path / "hooks" / "inventory.yaml").write_text(
+    (tmp_path / "hooks.yaml").write_text(
         'version: "9.9.9"\nhooks:\n'
         "  - id: h1\n    intent: x\n    provenance: {skill: s}\n"
         "    bindings: [{mechanism: nope, phase: quality}]\n", encoding="utf-8")
@@ -259,8 +258,7 @@ def test_hooks_inventory_bad_mechanism_is_flagged(tmp_path):
 
 def test_hooks_inventory_version_mismatch_is_flagged(tmp_path):
     (tmp_path / "VERSION").write_text("1.0.0\n", encoding="utf-8")
-    (tmp_path / "hooks").mkdir()
-    (tmp_path / "hooks" / "inventory.yaml").write_text(
+    (tmp_path / "hooks.yaml").write_text(
         'version: "2.0.0"\nhooks:\n'
         "  - id: h1\n    intent: x\n    provenance: {skill: s}\n"
         "    bindings: [{mechanism: git, phase: quality}]\n", encoding="utf-8")

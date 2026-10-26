@@ -69,7 +69,7 @@ No MCP server is a gap: every referenced server's transport is expressible in `o
 ## Agent-hook gaps (cross-reference)
 
 The only recorded *capability* gap is on the agent-hook surface, owned by
-[`../../../hooks/bindings.md`](../../../hooks/bindings.md):
+[`../../../hooks/bindings.md`](../../development/hook-bindings.md):
 
 | Intent | Claude binding | opencode | Gap / degradation |
 |---|---|---|---|
@@ -98,8 +98,8 @@ Two things are **never** shared or generated identically across CLIs — they ar
 
 1. **Slash-command registration/invocation** — only the command *content/template* derives from a
    shared source; the registration form is `/opsx:<id>` (Claude) vs `opsx-<id>` (opencode).
-2. **Agent-hook bindings** — the *intent* is shared (`hooks/inventory.yaml`); the binding is a
-   Claude `settings.json` hook vs an opencode plugin handler. See `hooks/bindings.md`.
+2. **Agent-hook bindings** — the *intent* is shared (`hooks.yaml`); the binding is a
+   Claude `settings.json` hook vs an opencode plugin handler. See `docs/development/hook-bindings.md`.
 
 Everything else — the root binding (`AGENTS.md`), skill bodies, command content, the hook *intent*
 inventory — is single-sourced and shared.

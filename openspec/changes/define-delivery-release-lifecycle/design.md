@@ -7,13 +7,13 @@
 
 ## Context
 
-`docs/ai-coding/dod-quality-gates.md` currently serves two audiences from one file (`Q8.2=A`): an
+`docs/practice/ai-coding/dod-quality-gates.md` currently serves two audiences from one file (`Q8.2=A`): an
 **"Engagement gates (human / commercial)"** table + a "Commercial layer — TODO" blockquote, and the
 **build-tier DoD** (the gate-set table, the automation boundary, task/Epic DoD checklists, "The two
 questions"). The engagement content is a near-verbatim duplicate of
 `docs/engagement/README.md` §35 — two homes, no owner (DEC-1).
 
-Separately, `docs/ai-coding/two-tier-methodology.md` §5's single-owner ownership table still carries
+Separately, `docs/practice/ai-coding/two-tier-methodology.md` §5's single-owner ownership table still carries
 `CD / release | ci-cd-delivery (EPIC-10, future)`, though `ci-cd-delivery`, `meaningfy-release`, and
 `meaningfy-git-workflow` have all shipped.
 
@@ -98,7 +98,7 @@ New, made while designing:
 
 Two-file edit sequence, order-independent (no dependency between them), plus one spec delta:
 
-1. **`docs/ai-coding/dod-quality-gates.md`**
+1. **`docs/practice/ai-coding/dod-quality-gates.md`**
    a. Delete the "Engagement gates (human / commercial)" section in full: the four-row table, the
       "Commercial layer — TODO" blockquote, and the `Q8.2=A` paragraph in the intro. Replace with one
       sentence pointing to `docs/engagement/`.
@@ -115,7 +115,7 @@ Two-file edit sequence, order-independent (no dependency between them), plus one
       unchanged, plus a third bullet naming the contract-conformance question and pointing at the
       Shipper's DoD (no new answering content — DEC-4).
    e. Leave "The automation boundary" byte-for-byte unchanged (DEC-5).
-2. **`docs/ai-coding/two-tier-methodology.md` §5 (or wherever the table lives if `define-meaningfy-
+2. **`docs/practice/ai-coding/two-tier-methodology.md` §5 (or wherever the table lives if `define-meaningfy-
    lifecycle` relocated it first — DEC-7)**: replace the one stale row with the two rows above; amend
    the "CI vs CD do not overlap" note to name them.
 3. **`openspec/changes/define-delivery-release-lifecycle/specs/delivery-release-dod/spec.md`**: one

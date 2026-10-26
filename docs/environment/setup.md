@@ -21,7 +21,7 @@ The catalogue runs on **Claude Code** and **opencode** from the same sources, at
 with gate-verified parity. There are **four role bundles**; install `meaningfy-core` plus the role(s)
 you wear. A fifth, **workflow** bundle, `vault-assistant`, is only for people who keep a personal
 Obsidian vault ([`vault-assistant.md`](vault-assistant.md)). The step-by-step install sequence (add marketplace/registry → install bundles → mandatory
-deps → root binding → spine commands → hooks/MCP → verify) is owned by the per-CLI runbooks — this
+deps → root binding → spine commands → docs/development/MCP → verify) is owned by the per-CLI runbooks — this
 page does not restate it:
 
 | Your CLI | Install runbook |
@@ -113,8 +113,9 @@ prompt; the repo file carries only what is specific and local, so the two compos
 > **AGENTS.md-canonical.** `AGENTS.md` is the canonical, CLI-agnostic root binding (opencode reads it
 > natively); `CLAUDE.md` is a thin pointer that tells Claude Code to read `AGENTS.md` and adds only
 > Claude-specific addenda — there is no symlink between them (see
-> [`dual-cli-distribution`](../../openspec/specs/dual-cli-distribution/spec.md)). Templates live in
-> [`../../prompts/`](../../prompts/) (`AGENTS.md.template`, `global-prompt.md`).
+> [`dual-cli-distribution`](../../openspec/specs/dual-cli-distribution/spec.md)). The repo template is
+> `project-setup`'s [`AGENTS.md.tmpl`](../../skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl);
+> the personal one is [`global-prompt.md`](global-prompt.md).
 
 ## 4. Project projection (bootstrap)
 
@@ -151,7 +152,7 @@ The CD building blocks and the DevOps decisions to ratify are in the
 
 Earlier versions of this repo shipped five sub-agents. The catalog now ships the **knowledge
 as skills** plus **three thin wrappers** (`implementer`, `code-reviewer`, `epic-planner`).
-The `docs/ai-coding/` build lifecycle doc no longer names the older agents; the mapping below is
+The `docs/practice/ai-coding/` build lifecycle doc no longer names the older agents; the mapping below is
 kept as historical reference for anyone who encounters the old names elsewhere:
 
 | Old agent | Now |

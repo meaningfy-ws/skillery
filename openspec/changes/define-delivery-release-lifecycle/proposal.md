@@ -25,7 +25,7 @@ stop and re-scope.
 
 ## Why
 
-[`docs/ai-coding/dod-quality-gates.md`](../../../docs/ai-coding/dod-quality-gates.md) calls itself
+[`docs/practice/ai-coding/dod-quality-gates.md`](../../../docs/practice/ai-coding/dod-quality-gates.md) calls itself
 "the single authority" for the gate ladder but serves two audiences from one file by an explicit past
 decision (`Q8.2=A`, quoted in its own preamble): human/commercial engagement gates *and* the
 automated build-tier DoD. That decision produced the opposite of a single authority — its
@@ -41,7 +41,7 @@ not a missing paragraph in a build doc; it is a whole step of how Meaningfy alre
 never carried into the repo. The Employee Handbook's shipping chapter opens the Shipping Process with
 **"Contractual Validation: review the deliverables against the contractual agreement"** — real,
 practised, and entirely absent from `docs/`. Second, the ownership table in
-[`docs/ai-coding/build-lifecycle.md`](../../../docs/ai-coding/build-lifecycle.md) §5
+[`docs/practice/ai-coding/build-lifecycle.md`](../../../docs/practice/ai-coding/build-lifecycle.md) §5
 still points CD/release at `ci-cd-delivery (EPIC-10, future)` when `ci-cd-delivery`,
 `meaningfy-release`, and `meaningfy-git-workflow` all shipped months ago — a reader following that
 row concludes we have no release capability at all.
@@ -147,7 +147,7 @@ for the *how* rather than restating any of it.
   *contract between the two documents* rather than to one file's contents is what keeps the invariant
   enforceable after DEC-11's split. `release-lifecycle` and `catalogue-governance` were checked and
   are **not** modified — the former governs the `meaningfy-release` skill's ownership, not the
-  `docs/ai-coding/` narrative.
+  `docs/practice/ai-coding/` narrative.
 - **DEC-10**: **When the two DoDs disagree, it is a divergence to re-shape — not an override.** If the
   Builder's DoD passes and the Shipper's fails (or the reverse), neither role's verdict wins by
   seniority; the mismatch means the EPIC and the contract have drifted apart, which is
@@ -158,7 +158,7 @@ for the *how* rather than restating any of it.
   written once, in `dod-quality-gates.md`, explicitly scoped to both DoDs *regardless of which file
   each lives in*; the engagement side cites that sentence rather than restating it. The doc **cites**
   the re-shape path; it does not invent an escalation ladder.
-- **DEC-11**: **The Shipper's DoD moves out of `docs/ai-coding/` and into `docs/engagement/`; the
+- **DEC-11**: **The Shipper's DoD moves out of `docs/practice/ai-coding/` and into `docs/engagement/`; the
   build doc keeps a one-line pointer.** *(New in round 2 — the human explicitly reopened this
   change's own No-go: "unless you decide to put the second dod there". Decision: move it.)*
   Rationale, in the human's words: *"this shipping/business delivery is clearly a document part of the
@@ -287,7 +287,7 @@ Named here, deliberately not closed by this change. Each is a real absence, not 
 ## What Changes
 
 - **BREAKING (doc contract)** — Remove the **"Engagement gates (human / commercial)"** section from
-  `docs/ai-coding/dod-quality-gates.md` in full: the four-row table (including its `Build DoD` row,
+  `docs/practice/ai-coding/dod-quality-gates.md` in full: the four-row table (including its `Build DoD` row,
   which is redundant with the build-tier table below it), the **"Commercial layer — TODO"** blockquote,
   and the `Q8.2=A` "one ladder with two clearly-separated halves" paragraph. Replace with a single
   pointer to `docs/engagement/`. Any consumer relying on that file for engagement gates must follow
@@ -313,7 +313,7 @@ Named here, deliberately not closed by this change. Each is a real absence, not 
   build-tier gate and is not listed there; its non-automatable status is a required element of the
   content contract instead.
 - Replace the stale `CD / release | ci-cd-delivery (EPIC-10, future)` row in the ownership table
-  (today `docs/ai-coding/two-tier-methodology.md` §5) with two concern-split rows citing the existing
+  (today `docs/practice/ai-coding/two-tier-methodology.md` §5) with two concern-split rows citing the existing
   skills, preserving the "CI vs CD do not overlap" note (DEC-6, DEC-7).
 - Add the `delivery-release-dod` spec delta (DEC-9), carrying DEC-12's six required elements of the
   Shipper's DoD as RFC-2119 requirements on the engagement-side document.
@@ -338,7 +338,7 @@ Named here, deliberately not closed by this change. Each is a real absence, not 
 ### Modified Capabilities
 
 None. `release-lifecycle` and `catalogue-governance` were both checked: neither's requirements change
-(the former scopes the `meaningfy-release` skill's ownership, not the `docs/ai-coding/` narrative).
+(the former scopes the `meaningfy-release` skill's ownership, not the `docs/practice/ai-coding/` narrative).
 
 ## Impact
 
@@ -346,8 +346,8 @@ None. `release-lifecycle` and `catalogue-governance` were both checked: neither'
 
 | File | Change |
 |---|---|
-| [`docs/ai-coding/dod-quality-gates.md`](../../../docs/ai-coding/dod-quality-gates.md) | Sections removed (engagement gates, commercial TODO, `Q8.2=A` paragraph); Delivery & Release section added (Builder's DoD + pointer + disagreement rule + mechanics citations); purpose header and "two questions" revised. Automation boundary **untouched** (DEC-5) |
-| [`docs/ai-coding/build-lifecycle.md`](../../../docs/ai-coding/build-lifecycle.md) §5 | One stale ownership row → two correct rows. Path already moved by `define-meaningfy-lifecycle` (DEC-7); follow the content |
+| [`docs/practice/ai-coding/dod-quality-gates.md`](../../../docs/practice/ai-coding/dod-quality-gates.md) | Sections removed (engagement gates, commercial TODO, `Q8.2=A` paragraph); Delivery & Release section added (Builder's DoD + pointer + disagreement rule + mechanics citations); purpose header and "two questions" revised. Automation boundary **untouched** (DEC-5) |
+| [`docs/practice/ai-coding/build-lifecycle.md`](../../../docs/practice/ai-coding/build-lifecycle.md) §5 | One stale ownership row → two correct rows. Path already moved by `define-meaningfy-lifecycle` (DEC-7); follow the content |
 
 **Files specified but not edited (1):** a file under `docs/engagement/` gains the Shipper's DoD per
 DEC-12's content contract, authored by `define-blc-engagement-model`. Exact file and wording are epic
@@ -356,12 +356,12 @@ so it cannot be lost between the two changes (DEC-13).
 
 **Inbound links — verified safe.** Every live inbound reference to `dod-quality-gates.md` targets the
 **build-tier** half, so the deletion breaks no link:
-`docs/engineering-standards/testing-standard.md:56` (coverage), `docs/ai-coding/opsx-runbook.md:8`,
-`docs/ai-coding/two-tier-methodology.md:8` ("the build-tier gate set"),
+`docs/practice/engineering-standards/testing-standard.md:56` (coverage), `docs/practice/ai-coding/opsx-runbook.md:8`,
+`docs/practice/ai-coding/two-tier-methodology.md:8` ("the build-tier gate set"),
 `skills/project-setup/SKILL.md:85` and `skills/project-setup/references/{ci-and-infra.md:62,68,81,
 spine-projection.md:96, interview.md:50}` (all the automation boundary — which DEC-5's revision now
 leaves entirely unmodified, removing the only risk to those five citations). The only inbound
-reference from v1 (`docs/ai-coding/ai-coding-methodology.md:11,239`) is being retired by
+reference from v1 (`docs/practice/ai-coding/ai-coding-methodology.md:11,239`) is being retired by
 `define-meaningfy-lifecycle` and is not touched here.
 
 **Dual-CLI mirror:** none needed. `.opencode/skills/**` is generated from `skills/**`; this change

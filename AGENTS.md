@@ -15,7 +15,7 @@ exactly one of four types (defined in [`docs/development/governance.md`](docs/de
 | **Skill** | `skills/` | Reusable knowledge; single source of authority per fact |
 | **Agent** | `agents/` | Thin wrapper — see [`docs/development/agent-template.md`](docs/development/agent-template.md) |
 | **Doc** | `docs/` | Written for people; narrates and points, never restates skill rules |
-| **Binding** | `prompts/` + root agentic files (`AGENTS.md`, `CLAUDE.md`) | Mandates and routes; never carries the standard |
+| **Binding** | root agentic files (`AGENTS.md`, `CLAUDE.md`) + `project-setup`'s agentic templates | Mandates and routes; never carries the standard |
 
 **Single-source-of-authority rule:** if a fact belongs to a skill, it lives there and nowhere else.
 See [`docs/development/governance.md`](docs/development/governance.md) for placement rules.
@@ -97,8 +97,8 @@ update an artifact, keep both CLIs working — the gates in `make validate` enfo
 - **Specs & versions** — `make bundles` writes the root `VERSION` into its three rendered files:
   `.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json` and `package.json`; the
   version-sync gate fails on any mismatch. Hook *intent* is single-sourced in
-  [`hooks/inventory.yaml`](hooks/inventory.yaml) and rendered per CLI (see
-  [`hooks/bindings.md`](hooks/bindings.md)).
+  [`hooks.yaml`](hooks.yaml) and rendered per CLI (see
+  [`docs/development/hook-bindings.md`](docs/development/hook-bindings.md)).
 
 Full per-CLI setup and the compatibility matrix: [`docs/environment/dual-cli/`](docs/environment/dual-cli/README.md).
 
@@ -117,7 +117,7 @@ and agent renderer). See
   [`skills/meaningfy-git-workflow`](skills/meaningfy-git-workflow) skill for the full standard.
 - **Spine / OpenSpec conventions** — the durable spec spine lives in [`openspec/`](openspec/) (the live OpenSpec instance + the forked `meaningfy` schema); how this repo runs it is in [`docs/development/spine.md`](docs/development/spine.md).
 - **External method skills land in the spine (binding).** `superpowers` (brainstorming, writing-plans, executing-plans, TDD, …) provides *disciplines*, not a parallel spec system. In a spine-wired repo, their artifacts MUST land in the spine, never in a `docs/superpowers/` tree: a **brainstorming** design feeds the **EPIC** (`openspec/changes/<id>/proposal.md`); **writing-plans is SUPERSEDED** by the **PLAN** (`design.md` + `tasks.md`, gated by `clarity-gate`); execution uses `superpowers:test-driven-development` / `subagent-driven-development`, tracked via the opsx apply command (`/opsx:apply` on Claude, `opsx-apply` on opencode). The verb↔artifact map is in [`docs/development/workflows.md`](docs/development/workflows.md#superpowers--spine). skillery **dogfoods this**: its own non-trivial changes are `openspec/changes/` EPICs.
-- **Hooks** — hook *intent* is single-sourced in [`hooks/inventory.yaml`](hooks/inventory.yaml) (see [`hooks/README.md`](hooks/README.md)); git-mechanism hooks are shared across CLIs, agent-mechanism hooks are rendered per CLI.
+- **Hooks** — hook *intent* is single-sourced in [`hooks.yaml`](hooks.yaml) (see [`docs/development/hooks.md`](docs/development/hooks.md)); git-mechanism hooks are shared across CLIs, agent-mechanism hooks are rendered per CLI.
 
 GitNexus scope in this repo: the code in `tools/` and `tests/`. This block lives here only (not in
 `CLAUDE.md`, a lint check enforces it); re-index with `npx gitnexus analyze --skip-agents-md`, which

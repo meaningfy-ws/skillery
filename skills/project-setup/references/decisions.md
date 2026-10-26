@@ -17,7 +17,7 @@ Multiple deployable units → multiple top-level packages (e.g. `myproject/`, `m
 
 **Why.** The `/src` layout buys import-isolation during testing but costs a layer of indirection
 in every path, tool config (`from = "src"`), and mental model. Meaningfy's engineering standard
-(`docs/engineering-standards/project-structure.md`) is explicit: "A repo contains one or more
+(`docs/practice/engineering-standards/project-structure.md`) is explicit: "A repo contains one or more
 **root modules** (top-level packages, one per deployable unit) rather than a single `/src`."
 
 **Consequence.** `pytest.ini` sets `pythonpath = .`; Poetry uses `packages = [{include="myproject"}]`
@@ -99,11 +99,11 @@ the tier graph. Checked by `make check-architecture` and in CI. See
 code-anatomy.md dependency map — then translate to contracts).
 
 **Note.** Convention-only layering erodes; the enforced approach stays clean. We
-adopt the import-linter approach (`docs/engineering-standards/architectural-guardrails.md`: "import-linter
+adopt the import-linter approach (`docs/practice/engineering-standards/architectural-guardrails.md`: "import-linter
 in every repo").
 
 **Reconciliation — `domain/` vs `models/`.** The org standard
-(`docs/engineering-standards/project-structure.md`) still mandates `models/` as the innermost
+(`docs/practice/engineering-standards/project-structure.md`) still mandates `models/` as the innermost
 layer's code name, but this skill standardises on **`domain/`** going forward (matching the
 agent instruction file: "the innermost layer is called `domain` (not `models`)"). **`domain/` wins**
 here; `project-structure.md` should be updated upstream to match. This is a deliberate divergence,

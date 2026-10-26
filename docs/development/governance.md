@@ -12,7 +12,7 @@ Every artifact is exactly one of these, and that decides its home:
 | **Skill** | Agents | On demand | `skills/` | Reusable knowledge; single source of *authority* per fact |
 | **Agent** | Harness | Isolated context | `agents/` | Thin wrapper — see [`agent-template.md`](agent-template.md) |
 | **Doc** | Humans | Never auto-loaded | `docs/` | Written for people; narrates & points, never restates skill rules |
-| **Binding** | Harness (every session) | Always | `prompts/` + root `AGENTS.md`, `CLAUDE.md` | Mandates & routes to skills; never carries the standard |
+| **Binding** | Harness (every session) | Always | root agentic files (`AGENTS.md`, `CLAUDE.md`) + `project-setup`'s agentic templates | Mandates & routes to skills; never carries the standard |
 
 Authoring governance (`docs/development/`, incl. `docs/development/skill-template.md`) and distribution
 (`bundles.yaml`, rendered to `.claude-plugin/`, `bundles/` and

@@ -189,7 +189,7 @@ note right of UseCase
 end note
 
 note right of ConfigItem
-  Keep in mind: hooks (hooks/inventory.yaml),
+  Keep in mind: hooks (hooks.yaml),
   commands, rules and settings that a bundle
   or a project's config folder may carry.
 end note

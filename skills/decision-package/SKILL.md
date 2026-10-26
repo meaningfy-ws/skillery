@@ -89,7 +89,7 @@ ontology engineering) into the Decision Package; the real model is built later, 
 ## The free → paid boundary (R6)
 
 Only **presale** is free — everything else, including the Deep tier, is paid. See
-[`docs/ai-sales/engagement-lifecycle.md`](../../docs/ai-sales/engagement-lifecycle.md) for the
+[`docs/practice/ai-sales/engagement-lifecycle.md`](../../docs/practice/ai-sales/engagement-lifecycle.md) for the
 full commercial model; this skill operates **only inside the paid Deep tier**. Do not blur Decision Package production into free coaching: if the
 work being asked for is still presale, it has not crossed the boundary, and this skill should not be
 producing a paid artefact yet — that is the coach's territory (`semantic-consulting-coach`), and the
