@@ -52,6 +52,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Changed
 
+- **`project-setup` now copies the OpenSpec `meaningfy` schema when installed:** the schema ships in
+  the skill (`assets/openspec-schema/meaningfy/`); the old path never resolved.
+- **`semantic-consulting-coach` carries Meaningfy's engagement lifecycle**
+  (`references/engagement-lifecycle.md`, moved from `docs/ai-sales/`), so an installed coach has
+  the commercial model it applies.
 - **`linkml-engineering` ships its Neo4j generators** in `scripts/linkml_neo4j/`, so an installed
   skill has them. `project-setup`'s `scaffold.sh --neo4j` takes their folder from
   `--linkml-generators` (or `LINKML_NEO4J_DIR`) when the skills are installed.

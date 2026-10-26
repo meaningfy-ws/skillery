@@ -198,12 +198,13 @@ scaffold_openspec() {
   render "$TPL/openspec/specs-README.md.tmpl"  "$TARGET/openspec/specs/README.md"
   render "$TPL/openspec/changes-README.md.tmpl" "$TARGET/openspec/changes/README.md"
   keepdir "openspec/changes/archive" "Archived (completed) changes land here after /opsx:archive."
-  # Copy the meaningfy schema PINNED from skillery (record the pin from openspec/openspec-version.txt).
-  local schema_src="$SCRIPT_DIR/../../../../openspec/schemas/meaningfy"
+  # Copy the meaningfy schema PINNED from this skill's assets (skillery's openspec/schemas/meaningfy
+  # links here; the pin is OPENSPEC_PIN, kept in sync with skillery's openspec/openspec-version.txt).
+  local schema_src="$SCRIPT_DIR/../assets/openspec-schema/meaningfy"
   if [[ "$DRY_RUN" -eq 1 ]]; then
     [[ -d "$TARGET/openspec/schemas/meaningfy" ]] \
       && echo "  = keep   openspec/schemas/meaningfy/ (pinned @ $OPENSPEC_PIN)" \
-      || echo "  + create openspec/schemas/meaningfy/ (pinned @ $OPENSPEC_PIN, copied from skillery)"
+      || echo "  + create openspec/schemas/meaningfy/ (pinned @ $OPENSPEC_PIN, copied from the skill)"
   elif [[ -d "$schema_src" ]]; then
     local schema_dst="$TARGET/openspec/schemas/meaningfy"
     if [[ -d "$schema_dst" && "$FORCE" -ne 1 ]]; then
@@ -217,7 +218,7 @@ scaffold_openspec() {
       echo "  copied openspec/schemas/meaningfy/ (PINNED @ $OPENSPEC_PIN — refresh via --force; see references/spine-projection.md)"
     fi
   else
-    echo "  NOTE: meaningfy schema source not found ($schema_src) — copy openspec/schemas/meaningfy/ from skillery manually (pin $OPENSPEC_PIN)."
+    echo "  NOTE: meaningfy schema not found in the skill ($schema_src) — reinstall project-setup."
   fi
 }
 

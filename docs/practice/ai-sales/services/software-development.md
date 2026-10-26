@@ -57,5 +57,5 @@ scaffolds the container and routes to the other two for the content.
 
 Software development is usually the block that turns the model and the architecture into something
 a client can actually run; see
-[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../engagement-lifecycle.md#the-outcome-semantic-layer-adoption)
+[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption)
 for how it composes into the whole Semantic Layer.

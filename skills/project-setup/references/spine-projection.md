@@ -19,7 +19,7 @@ openspec/
 | Path | Rendered from | Notes |
 |------|---------------|-------|
 | `openspec/config.yaml` | `assets/templates/openspec/config.yaml.tmpl` | `schema: meaningfy`; a project-specific `context:` (repo, layering, branch, commit + artifact conventions); the **3 thin per-artifact rules** (proposal no-gos, specs SHALL+GWT, tasks cite-your-parent). |
-| `openspec/schemas/meaningfy/` | **copied** from skillery's `openspec/schemas/meaningfy/` | **PINNED** — the copy is frozen per repo (see the refresh path below). |
+| `openspec/schemas/meaningfy/` | **copied** from this skill's `assets/openspec-schema/meaningfy/` | **PINNED** — the copy is frozen per repo (see the refresh path below). |
 | `openspec/specs/README.md` | `assets/templates/openspec/specs-README.md.tmpl` | states `specs/` is the truth; `.claude/` is a regenerable index. |
 | `openspec/changes/README.md` | `assets/templates/openspec/changes-README.md.tmpl` | documents the per-change layout incl. the **`inputs/` seed convention**. |
 | `openspec/changes/archive/` | `keepdir` | empty until the first archive. |
@@ -85,5 +85,4 @@ it only as a *possible future mode* once several repos have actually needed a co
 
 `openspec validate --strict` (structural) checks the artifact shape + spec-delta format and is
 **CI-automated** (a `make` target). The **clarity gate** (semantic, scores the PLAN ≥9/10) is a
-human/agent gate and is **NOT** CI — see `ci-and-infra.md` and
-skillery's `docs/practice/ai-coding/dod-quality-gates.md` for the automation boundary.
+human/agent gate and is **NOT** CI — see `ci-and-infra.md` for the automation boundary.

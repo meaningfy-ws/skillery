@@ -1,7 +1,7 @@
 # Semantic Layer services
 
 Every engagement leads to Semantic Layer adoption: see
-[`engagement-lifecycle.md`](engagement-lifecycle.md#the-outcome-semantic-layer-adoption)
+[`engagement-lifecycle.md`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption)
 for what that means and the building blocks it decomposes into (modelling/ontology, software
 development, data mappings & integration, analytics/BI connections, agentic framework development,
 training & capability building).

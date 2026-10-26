@@ -11,7 +11,7 @@ For the commercial-plane Shipper's DoD (contract conformance), see
 [`docs/practice/ai-sales/sales-dod.md`](../ai-sales/sales-dod.md) (a different audience, cadence, and
 accountable role, owned and defined there, not here). For the business-side (human/commercial)
 stage gates (the Discovery & Onboarding safeguards, for example), see
-[`docs/practice/ai-sales/engagement-lifecycle.md`](../ai-sales/engagement-lifecycle.md).
+[`skills/semantic-consulting-coach/references/engagement-lifecycle.md`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md).
 
 ## The build-tier gate set
 

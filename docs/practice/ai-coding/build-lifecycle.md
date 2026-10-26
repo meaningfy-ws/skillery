@@ -36,7 +36,7 @@ up front; they are not sub-steps of the SDLC loop.
 1. **Requirements & use-case elicitation**: one capability invoked at two depths, not a pipeline
    stage. The **shallow** depth (White use cases only) feeds Discovery & Onboarding's Deep tier and is
    documented in
-   [`docs/practice/ai-sales/engagement-lifecycle.md`](../ai-sales/engagement-lifecycle.md)
+   [`skills/semantic-consulting-coach/references/engagement-lifecycle.md`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md)
    (cited here, not restated). The **deep** depth (White + Blue) feeds architecture below, whether
    handed off from a completed Deep-tier engagement or elicited fresh when a client comes straight to
    build.

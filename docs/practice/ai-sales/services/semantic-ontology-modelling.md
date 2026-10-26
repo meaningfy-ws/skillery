@@ -58,5 +58,5 @@ work being stretched to fit.
 ## Where it fits
 
 This is the foundation the other five building blocks build on; see
-[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../engagement-lifecycle.md#the-outcome-semantic-layer-adoption)
+[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption)
 for how it composes into the whole Semantic Layer.
