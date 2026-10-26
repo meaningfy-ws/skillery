@@ -51,6 +51,7 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   `CLAUDE.md` the pointer.
 - `docs/engineering-standards/coding-prompt.md` keeps its full text; its header now explains that
   `prompts/global-prompt.md` is only a pointer, so there is nothing to keep in sync.
+- `prompts/CLAUDE.md.template` is renamed `prompts/AGENTS.md.template`, after the file it fills.
 - A vault `skill-change` note now has the fields of the GitHub defect form, so it can be filed as an
   issue by copying.
 

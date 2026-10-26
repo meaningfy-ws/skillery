@@ -96,7 +96,7 @@ prompt; the repo file carries only what is specific and local, so the two compos
 > natively); `CLAUDE.md` is a thin pointer that tells Claude Code to read `AGENTS.md` and adds only
 > Claude-specific addenda — there is no symlink between them (see
 > [`dual-cli-distribution`](../../openspec/specs/dual-cli-distribution/spec.md)). Templates live in
-> [`../../prompts/`](../../prompts/) (`CLAUDE.md.template`, `global-prompt.md`).
+> [`../../prompts/`](../../prompts/) (`AGENTS.md.template`, `global-prompt.md`).
 
 ## 4. Project projection (bootstrap)
 

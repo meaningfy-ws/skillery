@@ -5,10 +5,10 @@ The thin "always-on" layer that wires skills into a project. Two tiers:
 | File | Tier | Goes where | Purpose |
 |------|------|-----------|---------|
 | `global-prompt.md` | Personal default | `~/.claude/CLAUDE.md` | per-developer routing + non-negotiables |
-| `CLAUDE.md.template` | Committed project binding | `<repo>/AGENTS.md` | company-wide, team-shared binding for a repo |
+| `AGENTS.md.template` | Committed project binding | `<repo>/AGENTS.md` | company-wide, team-shared binding for a repo |
 
-`CLAUDE.md.template` is the **single canonical binding template**. Despite its name, it fills the
-repo's `AGENTS.md`, the canonical, CLI-agnostic file; `CLAUDE.md` is only a pointer to it.
+`AGENTS.md.template` is the **single canonical binding template**. It fills the repo's `AGENTS.md`,
+the canonical, CLI-agnostic file; `CLAUDE.md` is only a pointer to it.
 
 ## Rules
 

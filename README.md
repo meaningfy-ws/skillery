@@ -153,7 +153,7 @@ skillery/
 ├── skills/        # flat: skills/<skill>/  (bundles group them in bundles.yaml)
 ├── agents/        # three thin wrappers (no knowledge): epic-planner, implementer, code-reviewer
 ├── docs/          # ai-coding/ · ai-sales/ · ai-consulting/ · engineering-standards/ · philosophy/ · roles-and-raci.md · environment/
-├── prompts/       # CLAUDE.md.template, global-prompt.md (AGENTS.md-canonical; CLAUDE.md is a thin pointer)
+├── prompts/       # AGENTS.md.template, global-prompt.md (AGENTS.md-canonical; CLAUDE.md is a thin pointer)
 ├── spec/          # authoring spec, governance, skill-template.md, CREATING_SKILLS.md
 ├── spine/         # the spec-backbone conventions
 ├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery runs the spine on itself)
