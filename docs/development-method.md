@@ -195,19 +195,53 @@ Rules of the loop:
 
 ## 8. Where things live
 
-| Question | Read |
-|---|---|
-| What is a skill / agent / doc / binding; placement rules | [`spec/skill-repo-governance.md`](../spec/skill-repo-governance.md) |
-| The skill file format and metadata | [`spec/agent-skills-spec.md`](../spec/agent-skills-spec.md), [`spec/skill-template.md`](../spec/skill-template.md) |
-| Step-by-step authoring, structure, scripts, assets | [`spec/CREATING_SKILLS.md`](../spec/CREATING_SKILLS.md) |
-| Submission checklist and PR process | [`CONTRIBUTING.md`](../CONTRIBUTING.md) |
-| The agent contract (type, dispatch, body cap) | [spec/agent-template.md](../spec/agent-template.md) |
-| Which skill owns which fact; trigger probes | [`tests/ownership.yaml`](../tests/ownership.yaml), [`tests/trigger_probes.yaml`](../tests/trigger_probes.yaml) |
-| Per-skill purpose and dependencies | [`skill-inventory.md`](skill-inventory.md) |
-| Dual-CLI rules and gates | [`AGENTS.md`](../AGENTS.md#dual-cli-authoring-rules), [`environment/dual-cli/`](environment/dual-cli/README.md) |
-| Installing, external dependencies | [`environment/setup.md`](environment/setup.md) |
-| Commits, branches, PRs; versions and releases | [`skills/meaningfy-git-workflow`](../skills/meaningfy-git-workflow), [`skills/meaningfy-release`](../skills/meaningfy-release) |
-| Roles and who is accountable | [`roles-and-raci.md`](roles-and-raci.md) |
+This is the register of every documentation view in the repo. A file under `docs/`, or `README.md`,
+`AGENTS.md` or `CLAUDE.md`, that no row matches fails `make validate` (`doc_register_complete`).
+A view is an exact path from the repo root, or a folder written `folder/**`, which covers every file
+at any depth below it.
+
+| View | Kind | Source or topic | Rendered by |
+|---|---|---|---|
+| `docs/skill-inventory.md` | generated | [`bundles.yaml`](../bundles.yaml), [`facets.yaml`](../facets.yaml), the skill and agent files | `make skill-inventory` |
+| `README.md` | hand-written | What the catalogue is and how to install it | — |
+| `AGENTS.md` | hand-written | The repo operating rules for any CLI, including the [dual-CLI authoring rules](../AGENTS.md#dual-cli-authoring-rules) | — |
+| `CLAUDE.md` | hand-written | Claude Code-only additions to `AGENTS.md` | — |
+| `docs/development-method.md` | hand-written | How skills and agents are built, changed and accepted | — |
+| `docs/roles-and-raci.md` | hand-written | Roles and who is accountable | — |
+| `docs/environment/setup.md` | hand-written | Installing, external dependencies | — |
+| `docs/environment/openspec-setup-guide.md` | hand-written | Setting up OpenSpec in a project | — |
+| `docs/environment/vault-assistant.md` | hand-written | Using the vault-assistant bundle | — |
+| `docs/environment/dual-cli/**` | hand-written | Dual-CLI setup, mapping and gates | — |
+| `docs/ai-coding/**` | hand-written | The AI-assisted build lifecycle and its role playbooks | — |
+| `docs/ai-consulting/**` | hand-written | The advisory runbook, methods and playbook | — |
+| `docs/ai-sales/**` | hand-written | The sales runbook, service offers and playbook | — |
+| `docs/engineering-standards/**` | hand-written | Engineering standards for Meaningfy code projects | — |
+| `docs/philosophy/**` | hand-written | Essays on working with an LLM | — |
+| `spec/skill-repo-governance.md` | hand-written | Artifact types and placement rules | — |
+| `spec/agent-skills-spec.md` | hand-written | The skill file format and metadata | — |
+| `spec/skill-template.md` | hand-written | The skill file template | — |
+| `spec/CREATING_SKILLS.md` | hand-written | Step-by-step authoring, structure, scripts, assets | — |
+| `spec/agent-template.md` | hand-written | The agent contract (type, dispatch, body cap) | — |
+| `CONTRIBUTING.md` | hand-written | Submission checklist and PR process | — |
+| `tests/ownership.yaml` | hand-written | Which skill owns which fact | — |
+| `tests/trigger_probes.yaml` | hand-written | Trigger probes per skill | — |
+| `facets.yaml` | hand-written | The facet vocabulary | — |
+
+Routing for questions the table does not answer by name:
+
+- Placement rules: [`spec/skill-repo-governance.md`](../spec/skill-repo-governance.md); authoring:
+  [`spec/CREATING_SKILLS.md`](../spec/CREATING_SKILLS.md); the agent contract:
+  [`spec/agent-template.md`](../spec/agent-template.md).
+- Fact ownership and probes: [`tests/ownership.yaml`](../tests/ownership.yaml),
+  [`tests/trigger_probes.yaml`](../tests/trigger_probes.yaml); facets:
+  [`facets.yaml`](../facets.yaml); per-skill purpose, facets and dependencies:
+  [`skill-inventory.md`](skill-inventory.md).
+- Dual-CLI rules and gates: [`AGENTS.md`](../AGENTS.md#dual-cli-authoring-rules),
+  [`environment/dual-cli/`](environment/dual-cli/README.md); installing:
+  [`environment/setup.md`](environment/setup.md).
+- Commits, branches, PRs: [`skills/meaningfy-git-workflow`](../skills/meaningfy-git-workflow);
+  versions and releases: [`skills/meaningfy-release`](../skills/meaningfy-release); roles:
+  [`roles-and-raci.md`](roles-and-raci.md).
 
 ## 9. Definition of Done
 
