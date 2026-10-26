@@ -11,8 +11,9 @@
 
 - **All task groups merged** into `develop` (#81–#94); the EPIC was re-shaped four times by the owner
   (proposal "Re-shape log", DEC-12–DEC-15; design D-13–D-16).
-- **Not done:** 7.1 (optional route-A re-test, never approved). **Owed at the first release:** the
-  install check from `meaningfy-ws/skillery#dist` (7.2's acceptance, postponed by the owner).
+- **7.1 done 2026-10-27** (owner-approved): route A fails from GitHub too (the `agents` list is
+  ignored); D-8 stays route B (`inputs/2026-10-26-spike-root-source.md`). **Owed at the first
+  release:** the install check from `meaningfy-ws/skillery#dist` (7.2's acceptance).
 - **Open for the owner:** the Open Points of every use case (`docs/use-cases.md`, "What needs the
   owner"). Archived on 2026-10-27 with `spec-stewardship`.
 
@@ -85,7 +86,7 @@
 
 ## 7. Bundles as metadata (`arch/dist-branch`, then `arch/bundles-generated`)
 
-- [ ] 7.1 *(Optional, owner's approval needed: it pushes a test branch.)* Re-test route A on a
+- [x] 7.1 *(Optional, owner's approval needed: it pushes a test branch.)* Re-test route A on a
       GitHub-hosted branch with the spike's entries. **Accept:** the result recorded in
       `inputs/2026-10-26-spike-root-source.md`; if it passes, D-8 is revised before 7.2.
 - [x] 7.2 `.github/workflows/dist.yml` (D-8) while `bundles/` is still committed. **Accept:** after
@@ -160,7 +161,7 @@
 - [x] 4.1 · [x] 4.2 · [x] 4.3
 - [x] 5.1 · [x] 5.2 · [x] 5.3
 - [x] 6.1 · [x] 6.2 · [x] 6.3
-- [ ] 7.1 · [x] 7.2 · [x] 7.3
+- [x] 7.1 · [x] 7.2 · [x] 7.3
 - [x] 9.1 · [x] 9.2 · [x] 9.3 · [x] 9.4 · [x] 9.5 · [x] 9.6 · [x] 9.7 · [x] 9.8 · [x] 9.9 · [x] 9.10
 - [x] 10.1 · [x] 10.2 · [x] 10.3
 - [x] 11.1 · [x] 11.2 · [x] 11.3

@@ -12,3 +12,4 @@
 | 2026-10-27 | D-14 | `bundles.yaml` listing is the release marker, built as group 10 | chose "bundles.yaml listing" and "Group 10 of rebundle" |
 | 2026-10-27 | D-15 | all use cases deepened, each with its confidence and the points needing the owner | "all uc (and indicate which ones you are confident about and which need human extension…)" |
 | 2026-10-27 | merge | #89 → #91 → #90 → #92 → #93 → #94 merged, #89 before the `#dist` install check | "merge #89 to #94 in order" |
+| 2026-10-27 | 7.1 | the route-A re-test on a pushed throwaway branch; result: fails, route B kept | "retest 7.1, archive, merge #95 and delete the branch" |

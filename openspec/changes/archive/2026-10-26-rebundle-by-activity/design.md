@@ -285,8 +285,9 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
     MODIFIED delta was added with 7.3.
   - `broken_links`' exemption for placeholder links narrows from the whole old `spec/` folder to
     `*-template.md` files.
-  - The `#dist` install check (7.2) moved to the first release (owner, R2); 7.1, the route-A re-test,
-    was not run (optional, never approved).
+  - The `#dist` install check (7.2) moved to the first release (owner, R2). 7.1, the route-A re-test,
+    ran on 2026-10-27 after the owner approved it: from GitHub the `agents` list is still ignored, so
+    D-8 stays route B.
   - The opencode installer tests ran at the end of the restructure, as the owner asked, not after
     each group.
 
