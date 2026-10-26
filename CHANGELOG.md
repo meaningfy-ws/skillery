@@ -9,7 +9,15 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
-## [Unreleased]
+## [3.1.0] - 2026-10-26
+
+### Action needed (repos scaffolded with `project-setup`)
+
+- `project-setup` now makes `AGENTS.md` the canonical agent instructions and `CLAUDE.md` a thin
+  pointer that imports it, as two regular files. If your repo has the old symlink
+  `AGENTS.md -> CLAUDE.md`: remove the symlink, move the content of `CLAUDE.md` into `AGENTS.md`, and
+  make `CLAUDE.md` a pointer (`@AGENTS.md`). Repos that are not converted keep working; re-running the
+  scaffold reports the symlink instead of replacing it.
 
 ### Action needed (vault owners)
 
