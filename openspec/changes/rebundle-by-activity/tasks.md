@@ -30,7 +30,9 @@
 - **Group 9 done** (`arch/repo-folders`, D-13): one development home in `docs/development/`, `spine/`,
   `spec/`, `hooks/`, `prompts/`, `evals/` gone, company practice in `docs/practice/`, the linkml
   generators in their skill, no skill link outside its folder, `top_level_folders`.
-- **Next:** 8 (#90, rebased on group 9).
+- **8 done** (#90, after group 9): CHANGELOG complete for every PR; the gates green.
+- **Next:** the owner's install check from `#dist` at the first release; then merge #89, #91, #90 in
+  that order and archive the change with `spec-stewardship`. 7.1 stays optional.
 - **Waits for the owner:** 7.1
   (optional; pushes a test branch). No model runs in this change.
 
@@ -139,8 +141,8 @@
 
 ## 8. Release documentation and verification
 
-- [ ] 8.1 CHANGELOG under Unreleased, per merged PR, written for the installer.
-- [ ] 8.2 `make validate`, `make validate-spine`, `npm run test:opencode-installer`, `openspec
+- [x] 8.1 CHANGELOG under Unreleased, per merged PR, written for the installer.
+- [x] 8.2 `make validate`, `make validate-spine`, `npm run test:opencode-installer`, `openspec
       validate rebundle-by-activity --strict`. **Accept:** all green.
 
 ## Roadmap
@@ -154,7 +156,7 @@
 - [x] 6.1 · [x] 6.2 · [x] 6.3
 - [ ] 7.1 · [x] 7.2 · [x] 7.3
 - [x] 9.1 · [x] 9.2 · [x] 9.3 · [x] 9.4 · [x] 9.5 · [x] 9.6 · [x] 9.7 · [x] 9.8
-- [ ] 8.1 · [ ] 8.2
+- [x] 8.1 · [x] 8.2
 
 Order: 0, then 1 before 4 (coverage must exist before agents are added), 2 before 3 and 4 (the new
 skills' and agents' purposes use the new values), 3 before 4 (`proposal-writer` lands in

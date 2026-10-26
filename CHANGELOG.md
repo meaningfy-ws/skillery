@@ -59,6 +59,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   five broken links to old skill paths are gone; each skill states the fact or names the skill.
 - **The README's documentation section has three doors:** Install, Use (starting from the use cases)
   and Develop.
+- **UC-W8, UC-W19 and UC-W20 are full use cases:** stakeholders, preconditions, minimal guarantees
+  and a main success scenario, which their agents' scenarios follow. UC-W19 and UC-W20 are now
+  `covered`; UC-W8 stays `partial` until the company-style PDF exists.
 - **`linkml-engineering` and `modelling-conventions` have trigger probes** against their
   neighbours, so a request about LinkML authoring or modelling conventions is checked to reach the
   right skill.
