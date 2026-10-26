@@ -166,7 +166,7 @@
       **Accept:** (a) both notes are in `.trash/`, the link is reported and the `mv` prompt appeared;
       (b) nothing moved and the collision is named; (c) the folder is in `07 Perso/` with
       `private: true` on every file. Transcript excerpts are in the PR.
-- [ ] 9.3 **(Claude part passed; opencode part not run: no provider authenticated, see inputs/2026-10-26-verification.md)** In the same scratch vault, run the scheduler's exact Claude command line
+- [ ] 9.3 **Recorded gap at archive (2026-10-26):** Claude part passed; opencode part not run, no opencode provider authenticated (see inputs/2026-10-26-verification.md). In the same scratch vault, run the scheduler's exact Claude command line
       (`--permission-mode acceptEdits` plus the 3.3 flag) and the `opencode run` line, each prompted
       to move a note. **Accept:** both refuse the move. If either moves, stop: revise D-5b before
       merging.
