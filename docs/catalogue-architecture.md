@@ -2,7 +2,7 @@
 
 What the catalogue is made of, where each part lives, and where it is going. The model is the
 owner's revision 2 (2026-10-27) from the
-[`restructure-and-evaluate-catalogue`](../openspec/changes/restructure-and-evaluate-catalogue/proposal.md)
+[`restructure-and-evaluate-catalogue`](../openspec/changes/archive/2026-10-26-restructure-and-evaluate-catalogue/proposal.md)
 EPIC. The live gap map is [`use-cases.md`](use-cases.md); this page explains the parts behind it.
 
 ## The model

@@ -79,7 +79,7 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   from that paragraph and puts the see-also in its own paragraph of the Boundary section, after a blank
   line. This is the rule already used for four hand-offs in task 3.3 of the restructure change
   (`inputs/evidence/foundation.md` there), which extended its
-  [D-9 rule](../restructure-and-evaluate-catalogue/design.md#decisions--evaluation-track-d-1d-13) from Related pairs to delegations.
+  [D-9 rule](../archive/2026-10-26-restructure-and-evaluate-catalogue/design.md#decisions--evaluation-track-d-1d-13) from Related pairs to delegations.
   `bundle_requirements` proves the result.
 - **D-5. The three agents** (DEC-5, DEC-6), each to [`spec/agent-template.md`](../../../spec/agent-template.md),
   with a `tests/features/agents/<name>.feature` holding a `Background` that names every skill, and at

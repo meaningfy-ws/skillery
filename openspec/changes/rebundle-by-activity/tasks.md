@@ -11,16 +11,15 @@
 
 - **Shaped and gated:** EPIC (`proposal.md`), PLAN revision 3 at 9.2/10 (0.2), the `purpose` table
   approved (2.1, `inputs/approvals.md`). Spike: `inputs/2026-10-26-spike-root-source.md`.
-- **Open PRs, merge in this order:** #77 → #78 → #79 → #80 (each stacked on the one before).
-- **Next:** 0.1 (close `restructure-and-evaluate-catalogue` 7.1–7.2 and archive it with
-  `spec-stewardship`), then task groups 1 to 8 in the Roadmap order, one PR each from `arch/<group>`
-  off `develop`.
+- **Merged:** #77 → #78 → #79 → #80. **0.1 done:** `restructure-and-evaluate-catalogue` archived
+  (`archive/2026-10-26-restructure-and-evaluate-catalogue`), `catalogue-architecture` is a living spec.
+- **Next:** task groups 1 to 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
 - **Waits for the owner:** 4.3 (status of UC-W8, W19, W20), 6.2 (any changed register cell), 7.1
   (optional; pushes a test branch). No model runs in this change.
 
 ## 0. Preconditions
 
-- [ ] 0.1 PRs #77, #78 and the split are merged; `restructure-and-evaluate-catalogue` 7.1–7.2 done and
+- [x] 0.1 PRs #77, #78 and the split are merged; `restructure-and-evaluate-catalogue` 7.1–7.2 done and
       the change archived (`spec-stewardship`). **Accept:** `openspec/specs/catalogue-architecture/`
       exists; `openspec validate --all` green.
 - [x] 0.2 Score this PLAN with the full `clarity-gate`. **Accept:** ≥ 9/10, the score in the header
@@ -108,7 +107,7 @@
 
 ## Roadmap
 
-- [ ] 0.1 · [x] 0.2
+- [x] 0.1 · [x] 0.2
 - [ ] 1.1 · [ ] 1.2
 - [x] 2.1 · [ ] 2.2
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3
