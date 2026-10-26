@@ -13,6 +13,7 @@
   structure re-check (#74). Evidence in `inputs/evidence/D.md`, `E.md`, `docs.md`.
 - **Reshaped** on 2026-10-27 (`inputs/2026-10-27-reshaping-qa.md`): architecture track added
   (section 3), Haiku is the record model (D-4), D-13 adopted, agent evals run their Gherkin (D-3).
+- **Reshape PR:** #76 (`docs/reshape-restructure-epic` → `develop`); merge it before starting section 3.
 - **Next:** **section 3, the architecture track** (the PLAN passed the clarity gate, 9.1/10). **No evals run until
   section 3 is done** (owner, 2026-10-27: "we shall not test anything yet, until systematisation is
   ready"). Batch C (2.4) waits until then; its Haiku re-estimate (about $1) fits the ≈ $3.19 left of
