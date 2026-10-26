@@ -26,10 +26,14 @@ much of the apparatus you deploy. Match the weight to the artefact.
 ## When NOT to use
 
 - Casual conversation, code, or a quick factual lookup.
+- A contractual document (quotation, SoW, tender): write only its cover message or executive
+  summary; its structure belongs to the offer skill
+  ([`proposal-writing`](../proposal-writing/SKILL.md)).
 
 ## Start here: diagnose before you structure
 
-Before reaching for any framework, answer three questions. They take a minute and
+Before reaching for any framework, state the register (teach / decide / bind, see
+`references/company-voice.md`), then answer three questions. They take a minute and
 they decide everything that follows.
 
 1. **Who decides, and what decision do they face?** A message with no decision is
@@ -134,7 +138,8 @@ apply it unless the user names another voice. Two rules matter most here:
 
 1. **Register follows purpose.** Teaching something technical? Use the analytical,
    example-rich register. Driving a decision? Use the concise executive register.
-   Either way the **structure never changes**.
+   Binding the company (quotation, offer, SoW, tender)? Use the formal, contractual
+   register. Whatever the register, the **structure never changes**.
 2. **Concision wins for decisions.** The technical register's longer sentences
    suit explainers, not board papers. Never trade answer-first clarity for texture.
 
@@ -192,7 +197,7 @@ one sentence:
 > Workbench is built and proven on live engagements; a licence sells it again
 > without selling more of our time, and two clients are already asking.
 >
-> **2. It is defensible because the moat is our mapping method, not the tool.**
+> **2. It holds because the moat is our mapping method, not the tool.**
 > Competitors can buy a triple store; they cannot buy our mapping patterns. The
 > product packages the patterns we want to scale while the bespoke method stays
 > scarce.

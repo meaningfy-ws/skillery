@@ -68,7 +68,7 @@ badly doesn't make the prose wrong, it makes the argument land somewhere the rea
 
 1. Name the single genre the prose belongs to (`SKILL.md`'s genre map). If you can't answer in one
    word, the artefact may already be fused (U1).
-2. Apply the unguarded defects (U1–U6) without further judgement — they hold regardless of genre.
+2. Apply the unguarded defects (U1–U8) without further judgement — they hold regardless of genre.
 3. For anything genre-conditional, open that genre's reference file, not the full matrix — you
    only need the ~13 rows relevant to the genre you're in, not all of them.
 4. When a rule from a different genre seems to apply, check the guard question before applying
