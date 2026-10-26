@@ -99,3 +99,16 @@ probes:
   - probe: "break this feature into an EPIC with its tasks and acceptance criteria"
     expect: epic-planning
     near_miss_of: estimation
+  # Batch D (restructure-and-evaluate-catalogue): the two skills that had no probe.
+  - probe: "derive a LinkML schema from this UML model and generate Pydantic and SHACL from it"
+    expect: linkml-engineering
+    near_miss_of: conceptual-modelling
+  - probe: "decide what concepts our domain has and how they relate, before we pick a modelling language"
+    expect: conceptual-modelling
+    near_miss_of: linkml-engineering
+  - probe: "review this model for naming anti-patterns and attributes that should be reusable properties"
+    expect: modelling-conventions
+    near_miss_of: conceptual-modelling
+  - probe: "draw the C4 container view and record the decision in an ADR"
+    expect: architecture
+    near_miss_of: modelling-conventions
