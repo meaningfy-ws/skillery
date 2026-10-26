@@ -138,6 +138,21 @@ push, PR or release, no third-party platform, no opencode runner.
   together with batch C (task 0.2). Outcome suites use
   `--max-cost-usd` as well.
 
+- **D-13 (proposed 2026-10-27, awaiting the owner): trigger sets run through `claude plugin eval`,
+  not `run_eval.py`.** In Claude Code 2.1.310, `run_eval.py`'s command-file registration never
+  reaches the model's skill list, so it cannot measure triggering (evidence C). Instead, a short
+  converter turns `evals/triggers/<skill>.json` into one case per query, in a temporary plugin that
+  holds only the skill under test (the candidate description is written into the copy for the
+  "after"):
+  - a should-trigger query gets a `tool_used` grader on `Skill` with `min: 1`;
+  - a near-miss gets `min: 0, max: 0`;
+  - 3 runs each, `--ablation none`, `--model sonnet` for the record and `haiku` for drafts,
+    `--max-cost-usd` set to the approved amount.
+
+  `claude plugin eval` loads none of the owner's settings, plugins, `CLAUDE.md` or skills, so the
+  isolation of D-2 comes built in, and the `/tmp` + `CLAUDE_CONFIG_DIR` set-up is no longer needed.
+  The pass rule of D-2 is unchanged. If adopted, `evals/README.md` and D-2 are updated to match.
+
 ## Algorithm / approach
 
 For each batch, in order:
@@ -183,6 +198,7 @@ reproduces the measurement within noise, which is why each set runs 3 times per 
 | Failure mode | Expected handling |
 |---|---|
 | A batch would exceed the approved amount | Suites stop at `--max-cost-usd`. Trigger batches never start more runs than the D-12 count allows; the rest wait for a new approval |
+| `run_eval.py` reports 0 for every should-trigger query | Check that the skill reaches the session's skill list (stream-json `init` event); in Claude Code 2.1.310 it does not: use D-13 |
 | A trigger set runs in a session with the plugin installed | Invalid measurement: rerun in the isolated environment (D-2); the evidence row names the environment |
 | "After" is worse than "before" | Revert the edit; the evidence row says "reverted" with the scores |
 | A trigger set misfires on a near-miss after the rewrite | Treat it as a failed "after": adjust the description or revert; never delete the near-miss |

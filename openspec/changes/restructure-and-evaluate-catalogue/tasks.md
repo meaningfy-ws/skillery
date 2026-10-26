@@ -7,13 +7,29 @@
 > of that batch's estimate** (D-5). GitNexus `impact` before editing a symbol in `tools/`;
 > `detect_changes` before each commit.
 
+## Current state (2026-10-27): how to continue
+
+- **Done and merged into `develop`:** batch D with the scaffolding (#72), batch E (#73), the docs and
+  structure re-check (#74). Evidence in `inputs/evidence/D.md`, `E.md`, `docs.md`.
+- **Batch C is paused** on branch `eval/C-exec-comm`. Calibration is done (`sonnet` $0.0295,
+  `haiku` $0.0038 per query; `inputs/approvals.md`). The `run_eval.py` "before" was invalid
+  (`inputs/evidence/C.md`). About $1.81 of the $5 approval is spent; about $3.19 remains.
+- **The owner decides one of three, then continue at task 2.4:**
+  1. raise C's cap to $6.50 and adopt D-13 (`claude plugin eval` with `Skill` graders) — recommended;
+  2. keep $5: run only the Sonnet "before" with D-13 now, approve the "after" separately;
+  3. pause C until D-13 is reviewed.
+- **Next after C:** task 2.6 (C's PR), then Phase 2 (task 3.1: the owner approves ≈ $8 and the key
+  skills).
+- **Not blocking:** the `ANTHROPIC_API_KEY` repository secret (the owner will add it); until then
+  every run is local on the owner's login, approved per batch.
+
 ## 0. Preconditions
 
 - [x] 0.1 Score this PLAN with the full `clarity-gate`. **Accept:** ≥ 9/10.
-- [ ] 0.2 The owner approves the calibration (two queries, a few cents) together with batch C's
+- [x] 0.2 The owner approves the calibration (two queries, a few cents) together with batch C's
       provisional estimate (D-5, ≈ $5). **Accept:** the approval, its date and amount, recorded in
       `inputs/approvals.md`.
-- [ ] 0.3 Set up the isolated trigger environment (D-2: a `/tmp` scratch directory with its own
+- [x] 0.3 Set up the isolated trigger environment (D-2: a `/tmp` scratch directory with its own
       `.claude/`, a fresh `CLAUDE_CONFIG_DIR`, and a login) and calibrate (D-12): one query on
       `sonnet` and one on `haiku` with `claude -p --output-format json`; record each
       `total_cost_usd` and the model id the CLI reports, and re-estimate D-5. **Accept:** both unit
@@ -53,7 +69,7 @@
       `inputs/evidence/docs.md` lists every register row with a finding or "clean"; hand-offs are
       written into the owning changes' `inputs/`.
 - [ ] 2.6 Phase 1 PRs: one per batch (D, E, C, docs), each with its evidence file and a regenerated
-      catalogue map. **Accept:** all merged into `develop` with CI green.
+      catalogue map. *(D #72, E #73, docs #74 merged; C pending.)* **Accept:** all merged into `develop` with CI green.
 
 ## 3. Phase 2: outcome suites and agents (after approval)
 
@@ -121,9 +137,9 @@ Sonnet after → evidence → PR. Each sub-batch's run count is capped by D-12.
 
 ## Roadmap
 
-- [x] 0.1 · [ ] 0.2 · [ ] 0.3
+- [x] 0.1 · [x] 0.2 · [x] 0.3
 - [x] 1.1 · [x] 1.2
-- [x] 2.1 · [x] 2.2 · [x] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
+- [x] 2.1 · [x] 2.2 · [x] 2.3 · [ ] 2.4 · [x] 2.5 · [ ] 2.6
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4
 - [ ] 4.0 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4
 - [ ] 5.1 · [ ] 5.2 · [ ] 5.3
