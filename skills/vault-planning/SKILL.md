@@ -56,7 +56,8 @@ A plan the owner did not state is not written. If the owner wants no plan for a 
    touched; for a month, quarter or year, the reviews of the shorter periods inside it; and the plan
    that was set for the period.
 2. **Weekly only, the GTD sweep:** list the items waiting in `00 Inbox/` and `00 Inbox/proposed/`, every
-   active project without a session this week, and `To-Do.md` items older than two weeks. Ask what to
+   active project without a session this week (in both project homes, as
+   [`vault-conventions`](../vault-conventions/SKILL.md) defines them), and `To-Do.md` items older than two weeks. Ask what to
    do with each (the owner acts, or names a skill such as `vault-promote`); change nothing yourself.
 3. **Ask** for wins, misses (with one line of why), what carries over, and what the next period should
    focus on. Offer what the records show; the owner confirms.
