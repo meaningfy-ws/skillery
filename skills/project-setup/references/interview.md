@@ -111,7 +111,7 @@ and frameworks apply. A `library` skips them (no process); a `doc-only` skips Gr
 - Options: **MongoDB** (motor), **PostgreSQL** (SQLAlchemy/asyncpg), **Redis** (cache/streams),
   **Neo4j** (`neomodel`), *none / in-memory*.
 - **Neo4j + LinkML model source (Q4.5) together** additionally project the vendored
-  `gen-neo4j-constraints`/`gen-neomodel` custom generators (repo tooling at `tools/linkml_neo4j/`,
+  `gen-neo4j-constraints`/`gen-neomodel` custom generators (shipped by `linkml-engineering` in its `scripts/linkml_neo4j/`,
   documented by `linkml-engineering`) into `scripts/` — see `checklists.md` and `layout.md`.
 - Drives runtime deps, the `adapters/` repository skeleton, `infra/compose.yaml` services,
   `infra/.env.example`, integration-test markers (`tests/integration/`), and the

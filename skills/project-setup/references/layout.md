@@ -55,7 +55,7 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 │   └── schema.yaml               #   the domain source; make generate-models renders the targets
 │
 ├── scripts/                      # PINNED, projected generators — only if LinkML + Neo4j (Q4.5+Q5.1)
-│   ├── gen_neo4j_constraints.py  #   copied from skillery's tools/linkml_neo4j/; refresh
+│   ├── gen_neo4j_constraints.py  #   copied from linkml-engineering's scripts/linkml_neo4j/; refresh
 │   └── gen_neomodel.py           #   = re-run project-setup, review the diff (never silent)
 │
 ├── openspec/                     # the SPINE (see spine-projection.md) — projected into every repo

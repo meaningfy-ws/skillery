@@ -35,6 +35,8 @@ Options:
       --deployable       this repo ships a deployable artifact -> CD TODO stub (ci-cd-delivery)
       --neo4j            project the PINNED gen-neo4j-constraints/gen-neomodel generators into
                           scripts/ (product + LinkML only — see references/checklists.md)
+      --linkml-generators DIR  the linkml-engineering skill's scripts/linkml_neo4j/ folder
+                         (default: $LINKML_NEO4J_DIR, else the sibling skill in a source checkout)
       --python VER       Python version           (default: 3.12)
       --org ORG          GitHub org               (default: meaningfy-ws)
       --branch BRANCH    default/PR branch        (default: develop)
@@ -76,6 +78,7 @@ while [[ $# -gt 0 ]]; do
     --target)     TARGET="$2"; shift 2;;
     --deployable) DEPLOYABLE=1; shift;;
     --neo4j)      NEO4J=1; shift;;
+    --linkml-generators) LINKML_NEO4J_DIR="$2"; shift 2;;
     --minimal)    MINIMAL=1; shift;;
     --no-docs)    WITH_DOCS=0; shift;;
     --no-infra)   WITH_INFRA=0; shift;;
@@ -219,12 +222,13 @@ scaffold_openspec() {
 }
 
 # scaffold_neo4j_generators : project the PINNED gen-neo4j-constraints/gen-neomodel
-# generators (tools/linkml_neo4j/ — maintained, tested code; NOT a skill asset, see
-# linkml-engineering's generation-and-templates.md for why) into scripts/. Only
+# generators, shipped by the linkml-engineering skill in its scripts/linkml_neo4j/, into scripts/.
+# An installed skill lives in its own plugin folder, so the caller passes that folder
+# (--linkml-generators or LINKML_NEO4J_DIR); a source checkout finds the sibling skill. Only
 # meaningful for a product using LinkML with a Neo4j target (--neo4j); see
 # references/checklists.md.
 scaffold_neo4j_generators() {
-  local gen_src="$SCRIPT_DIR/../../../tools/linkml_neo4j"
+  local gen_src="${LINKML_NEO4J_DIR:-$SCRIPT_DIR/../../linkml-engineering/scripts/linkml_neo4j}"
   local gen_dst="$TARGET/scripts"
   if [[ "$DRY_RUN" -eq 1 ]]; then
     [[ -d "$gen_dst" && -f "$gen_dst/gen_neo4j_constraints.py" ]] \
@@ -241,7 +245,7 @@ scaffold_neo4j_generators() {
       fi
     done
   else
-    echo "  NOTE: linkml-engineering generators not found ($gen_src) — copy scripts/gen_neo4j_constraints.py + scripts/gen_neomodel.py from skillery manually."
+    echo "  NOTE: linkml-engineering generators not found ($gen_src) — pass --linkml-generators <the linkml-engineering skill's scripts/linkml_neo4j/>."
   fi
 }
 
