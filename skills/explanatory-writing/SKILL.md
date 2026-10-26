@@ -100,4 +100,4 @@ beneath it.
 | `clarity-gate` | the check | actionable · current · specific refs · single-source |
 | `executive-communication` | structure | *not invoked here* (no decision). If it were a recommendation, its answer-first pyramid would win by precedence |
 
-**Related:** `technical-writing`, `executive-communication`, `clarity-gate`, `writing-antipatterns` (genre-conditional failure modes, including where this skill's own craft moves invert).
+**Related:** `technical-writing`, `executive-communication`, `writing-antipatterns` (genre-conditional failure modes, including where this skill's own craft moves invert).

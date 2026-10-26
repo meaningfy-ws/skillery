@@ -77,5 +77,7 @@ principles.
 - Representation-specific mechanics generally (UML profiles, OWL axioms) → the skill owning that
   representation. Nothing representation-specific belongs here.
 
-**Related:** `conceptual-modelling`, `linkml-engineering`, `architecture`, `cosmic-python` (the same
-reuse-layer pattern for code).
+See also `architecture` for the system-level notations (C4, UML, ArchiMate) that sit above a domain
+model, and `cosmic-python` for the same reuse-layer pattern applied to code.
+
+**Related:** `conceptual-modelling`, `linkml-engineering`.

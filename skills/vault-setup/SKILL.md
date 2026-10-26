@@ -77,4 +77,6 @@ kind templates, and the guided setup of Obsidian, sync, memory, connectors and t
 `obsidian@obsidian-skills` plugin; the ingestion pipeline itself → the company's infrastructure
 repository and its private runbook.
 
-**Related:** `vault-conventions`, `vault-daily`, `project-setup`.
+A vault is not a code repository: see also `project-setup` for scaffolding a software project.
+
+**Related:** `vault-conventions`, `vault-daily`.
