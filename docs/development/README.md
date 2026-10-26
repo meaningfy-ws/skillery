@@ -241,6 +241,7 @@ at any depth below it.
 | `docs/development/workflows.md` | hand-written | The `/opsx` verbs and how superpowers lands in the spine | — |
 | `docs/development/epic-change-memory-mapping.md` | hand-written | EPIC ≡ change, and memory = `openspec/specs/` + `context:` | — |
 | `docs/development/lessons-loop.md` | hand-written | How lessons flow back into skills and specs | — |
+| `docs/development/use-case-template.md` | hand-written | How a use case is written: the Cockburn core plus slices, artefacts, evidence and the feedback loop (`use_case_catalogue` checks its sections) | — |
 | `docs/development/hooks.md` | hand-written | The hook intent register (`hooks.yaml`) and how to read it | — |
 | `docs/development/hook-bindings.md` | hand-written | How each hook intent is bound on each CLI | — |
 | `docs/environment/global-prompt.md` | hand-written | A developer's personal always-on routing prompt | — |

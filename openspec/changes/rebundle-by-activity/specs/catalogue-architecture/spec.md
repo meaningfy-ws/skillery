@@ -26,3 +26,32 @@ a change that appears in that file.
 
 - **WHEN** UC-W17 has status `missing` and change `add-visual-design`
 - **THEN** `docs/future-features.md` has a row for `add-visual-design` listing UC-W17
+
+## MODIFIED Requirements
+
+### Requirement: Use cases are catalogued one file each
+
+Each use case the catalogue serves SHALL be one file `use-cases/<id>-<slug>.md`, a White use case in the
+Cockburn convention of the `architecture` skill, with frontmatter `id` (`UC-W<n>`, matching the file
+name), `title`, `primary_actor`, `trigger`, `success_guarantee`, `area`, `served_by` and `status`,
+and optionally `change`, with a body holding every section of
+`docs/development/use-case-template.md` in its order: Brief Description, Stakeholders and Interests,
+Preconditions, Minimal Guarantees, Main Success Scenario, Extensions, Out of Scope, Artefacts,
+Evidence, Feedback Loop, Slices and Open Points (the last opening with a confidence rating). `area` SHALL be a term of
+the `area` facet, and every name in `served_by` SHALL exist in the catalogue. Validation SHALL fail otherwise.
+
+#### Scenario: Adding a use case
+
+- **WHEN** a contributor adds `use-cases/UC-W22-<slug>.md` with valid frontmatter
+- **THEN** validation passes and the regenerated `docs/use-cases.md` lists it under its area, with no
+  other file edited by hand
+
+#### Scenario: A use case naming a skill that does not exist
+
+- **WHEN** a use case's `served_by.skills` names `offer-writer` and no such skill exists
+- **THEN** validation fails, naming the use case and the unknown skill
+
+#### Scenario: A use case without its evidence
+
+- **WHEN** a use case has no `## Evidence` section
+- **THEN** validation fails, naming the use case and the missing section

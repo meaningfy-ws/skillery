@@ -56,6 +56,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Changed
 
+- **Every use case is written out in full:** who is served and how, the steps (with the points
+  where you decide), what comes out, how success is shown, how a miss becomes a fix, and what is
+  released or planned. Each says how confident its text is and what only the owner can answer.
 - **`project-setup` now copies the OpenSpec `meaningfy` schema when installed:** the schema ships in
   the skill (`assets/openspec-schema/meaningfy/`); the old path never resolved.
 - **`semantic-consulting-coach` carries Meaningfy's engagement lifecycle**
@@ -79,6 +82,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Action needed (contributors)
 
+- **A use case follows [`docs/development/use-case-template.md`](docs/development/use-case-template.md):**
+  the Cockburn core plus Extensions, Out of Scope, Artefacts, Evidence, Feedback Loop, Slices and Open
+  Points (with a confidence rating); `use_case_catalogue` fails a missing section.
 - **A skill or agent in no bundle is work in progress, not an error.** It may live on `develop`; the
   catalogue map lists it under "Unreleased (WIP)", `dist` leaves it out of every release, and nothing
   released may delegate to or load it (`wip_isolation`). Listing it in `bundles.yaml` releases it.

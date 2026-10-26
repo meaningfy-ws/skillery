@@ -50,15 +50,17 @@ def test_use_cases_render_groups_by_area_in_facet_order():
     facets = {"area": {"coding": "c", "personal": "p", "legal": "l"}}
     ucs = [
         {"id": "UC-W2", "title": "B", "area": "coding", "status": "partial", "file": "UC-W2-b.md",
-         "primary_actor": "dev", "served_by": {"skills": ["x"]}, "change": "add-x"},
+         "primary_actor": "dev", "served_by": {"skills": ["x"]}, "change": "add-x",
+         "confidence": "high", "question": "Which repo?"},
         {"id": "UC-W1", "title": "A", "area": "personal", "status": "missing", "file": "UC-W1-a.md",
-         "primary_actor": "owner", "served_by": {}},
+         "primary_actor": "owner", "served_by": {}, "confidence": "high / low", "question": ""},
     ]
     text = skill_inventory.render_use_cases(ucs, facets)
     assert text.index("## coding") < text.index("## personal")
     assert "## legal" not in text  # an area with no use case gets no table
-    assert "| [UC-W2](../use-cases/UC-W2-b.md) B | dev | `partial` | `x` | `add-x` |" in text
-    assert "| [UC-W1](../use-cases/UC-W1-a.md) A | owner | `missing` | — | — |" in text
+    assert "| [UC-W2](../use-cases/UC-W2-b.md) B | dev | `partial` | `x` | `add-x` | high |" in text
+    assert "| [UC-W1](../use-cases/UC-W1-a.md) A | owner | `missing` | — | — | high / low |" in text
+    assert "| [UC-W2](../use-cases/UC-W2-b.md) | high | Which repo? |" in text
     assert "| `coding` | 0 | 1 | 0 |" in text
 
 
@@ -93,3 +95,10 @@ def test_unreleased_section_lists_wip_skills_and_agents():
     assert text.startswith("## Unreleased (WIP)")
     assert "| `draft-skill` | skill | Drafts things. |" in text and "| `draft-agent` | agent |" in text
     assert skill_inventory.render_unreleased({}, []) == ""
+
+
+def test_confidence_and_first_question_are_read_from_open_points():
+    body = ("## Open Points\n\n**Confidence:** high for year to day; low for the life plan.\n\n"
+            "- What shape does the life plan take?\n- Another?\n")
+    assert skill_inventory._open_points(body) == ("high / low", "What shape does the life plan take?")
+    assert skill_inventory._open_points("no section") == ("—", "")

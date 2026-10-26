@@ -685,7 +685,10 @@ _UC = {"id": "UC-W1", "title": "Vault work", "primary_actor": "the owner", "trig
        "status": "covered"}
 
 
-def _uc_repo(tmp_path, fm, name="UC-W1-vault-work.md", body="## Brief Description\n\nx"):
+_UC_BODY = "\n\n".join(f"## {h}\n\nx" for h in lint.USE_CASE_SECTIONS)
+
+
+def _uc_repo(tmp_path, fm, name="UC-W1-vault-work.md", body=_UC_BODY):
     (tmp_path / "facets.yaml").write_text(
         yaml.safe_dump({"facets": {"area": {"personal": "x"}}}), encoding="utf-8")
     if not (tmp_path / "skills" / "s").exists():
@@ -731,6 +734,12 @@ def test_use_case_unknown_served_by_name_is_flagged(tmp_path):
 def test_use_case_bad_status_is_flagged(tmp_path):
     _uc_repo(tmp_path, {**_UC, "status": "done"})
     assert any("status 'done'" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_missing_a_template_section_is_flagged(tmp_path):
+    # rebundle-by-activity group 11: every section of docs/development/use-case-template.md.
+    _uc_repo(tmp_path, _UC, body=_UC_BODY.replace("## Evidence\n\nx", ""))
+    assert lint.use_case_catalogue(tmp_path) == ["use-cases/UC-W1-vault-work.md: body has no '## Evidence'"]
 
 
 def test_use_case_body_needs_brief_and_no_lifted_sections(tmp_path):

@@ -461,11 +461,31 @@ def generate(repo: Path) -> str:
     return out + ("\n" + wip if wip else "")
 
 
+_CONFIDENCE = re.compile(r"\*\*Confidence:\*\*\s*([^\n]+)")
+_LEVELS = ("high", "medium", "low")
+
+
+def _open_points(text: str) -> tuple[str, str]:
+    """(the confidence levels named on the Open Points' Confidence line, in order, joined by " / ";
+    the first open question) — docs/development/use-case-template.md."""
+    section = text.split("## Open Points", 1)[1] if "## Open Points" in text else ""
+    m = _CONFIDENCE.search(section)
+    if not m:
+        return "—", ""
+    levels = list(dict.fromkeys(w for w in re.findall(r"[a-z]+", m.group(1).lower()) if w in _LEVELS))
+    q = re.search(r"^- (.+(?:\n[ \t]+\S.*)*)", section[m.end():], re.MULTILINE)  # with wrapped lines
+    return " / ".join(levels) or "—", " ".join(q.group(1).split()) if q else ""
+
+
 def collect_use_cases(repo: Path) -> list[dict]:
-    """Each use-cases/*.md frontmatter, plus its file name, ordered by UC-W number."""
+    """Each use-cases/*.md frontmatter, plus its file name, confidence and first open question,
+    ordered by UC-W number."""
     root = repo / USE_CASES_DIR
-    ucs = [{**_frontmatter(p.read_text(encoding="utf-8")), "file": p.name}
-           for p in root.glob("*.md")] if root.exists() else []
+    ucs = []
+    for p in (root.glob("*.md") if root.exists() else []):
+        text = p.read_text(encoding="utf-8")
+        confidence, question = _open_points(text)
+        ucs.append({**_frontmatter(text), "file": p.name, "confidence": confidence, "question": question})
     return sorted(ucs, key=lambda u: int(re.sub(r"\D", "", str(u.get("id"))) or 0))
 
 
@@ -496,7 +516,8 @@ def render_use_cases(ucs: list[dict], facets: dict[str, dict[str, str]]) -> str:
     out.append("")
     for a in areas:
         out += [f"## {a}", "", facets["area"][a][:1].upper() + facets["area"][a][1:] + ".", "",
-                "| Use case | Primary actor | Status | Served by | Change |", "|---|---|---|---|---|"]
+                "| Use case | Primary actor | Status | Served by | Change | Confidence |",
+                "|---|---|---|---|---|---|"]
         for u in (u for u in ucs if u.get("area") == a):
             served = u.get("served_by") or {}
             names = [f"`{n}` *(agent)*" for n in served.get("agents") or []]
@@ -504,8 +525,16 @@ def render_use_cases(ucs: list[dict], facets: dict[str, dict[str, str]]) -> str:
             change = f"`{u['change']}`" if u.get("change") else "—"
             out.append(f"| [{u['id']}](../{USE_CASES_DIR}/{u['file']}) {u['title']} | "
                        f"{u.get('primary_actor', '—')} | `{u.get('status')}` | "
-                       f"{', '.join(names) or '—'} | {change} |")
+                       f"{', '.join(names) or '—'} | {change} | {u.get('confidence', '—')} |")
         out.append("")
+    out += ["## What needs the owner", "",
+            "How sure each use case's text is (its Open Points) and the first question only the owner "
+            "can answer. **high**: restates decisions taken; **medium**: extrapolated from the brief and "
+            "the catalogue; **low**: a first guess to extend.", "",
+            "| Use case | Confidence | First open question |", "|---|---|---|"]
+    out += [f"| [{u['id']}](../{USE_CASES_DIR}/{u['file']}) | {u.get('confidence', '—')} | "
+            f"{u.get('question') or '—'} |" for u in ucs]
+    out.append("")
     return "\n".join(out)
 
 
