@@ -31,7 +31,8 @@ only if that role is yours.
 | `meaningfy-core` | …do anything (cross-cutting basics) — **always install this one** |
 | `meaningfy-building` | …build software with the spine |
 | `meaningfy-architecture` | …design systems or model a domain |
-| `meaningfy-consulting` | …do advisory / front-of-funnel work |
+| `meaningfy-consulting` | …do advisory work |
+| `meaningfy-sales` | …write proposals and offers, or estimate work (requires `meaningfy-consulting`; `skillery-opencode install meaningfy-sales`). `proposal-writing` and `estimation` moved here from `meaningfy-consulting` |
 | `vault-assistant` | …keep a personal Obsidian vault (workflow bundle; see [`../vault-assistant.md`](../vault-assistant.md) for its prerequisites) |
 
 Install one or more bundles into the current project:

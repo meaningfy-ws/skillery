@@ -262,5 +262,8 @@ technique, design questions) and the coaching working modes (Exploration / Align
 & Onboarding tiers, and Semantic Layer building blocks are company fact, owned by
 [`docs/ai-sales/engagement-lifecycle.md`](../../docs/ai-sales/engagement-lifecycle.md).
 **Delegates:** persuasive framing/voice → `executive-communication`; the paid Decision Package deliverable
-→ `decision-package`; proposal/SoW authoring → `proposal-writing`; effort/sequencing → `estimation`.
+→ `decision-package`.
 **Related:** `decision-package`, `proposal-writing`, `executive-communication`, `writing-antipatterns` (Coaching-dialogue genre failure modes — where premature structure is a defection, not craft).
+
+Proposal or SoW authoring and effort sequencing are sales hand-offs: see also `proposal-writing`
+and `estimation` (in `meaningfy-sales`).

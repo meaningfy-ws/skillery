@@ -5,7 +5,7 @@
      agent's frontmatter (agents/*.md), bundles.yaml and facets.yaml.
      tests/test_skill_inventory.py fails the build if this drifts. -->
 
-33 skills and 3 agents across 5 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
+33 skills and 3 agents across 6 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
 
 ## Map
 
@@ -25,9 +25,11 @@ flowchart LR
   subgraph b_meaningfy_consulting["meaningfy-consulting"]
     s_semantic_consulting_coach["semantic-consulting-coach"]
     s_decision_package["decision-package"]
+    s_executive_communication["executive-communication"]
+  end
+  subgraph b_meaningfy_sales["meaningfy-sales"]
     s_proposal_writing["proposal-writing"]
     s_estimation["estimation"]
-    s_executive_communication["executive-communication"]
   end
   subgraph b_meaningfy_architecture["meaningfy-architecture"]
     s_architecture["architecture"]
@@ -116,9 +118,10 @@ flowchart LR
 
   style b_meaningfy_core fill:#eaf3ff,stroke:#999,stroke-width:1px
   style b_meaningfy_consulting fill:#fff2e0,stroke:#999,stroke-width:1px
-  style b_meaningfy_architecture fill:#eafaf0,stroke:#999,stroke-width:1px
-  style b_meaningfy_building fill:#f5eaff,stroke:#999,stroke-width:1px
-  style b_vault_assistant fill:#eaf3ff,stroke:#999,stroke-width:1px
+  style b_meaningfy_sales fill:#eafaf0,stroke:#999,stroke-width:1px
+  style b_meaningfy_architecture fill:#f5eaff,stroke:#999,stroke-width:1px
+  style b_meaningfy_building fill:#eaf3ff,stroke:#999,stroke-width:1px
+  style b_vault_assistant fill:#fff2e0,stroke:#999,stroke-width:1px
   style p_software_development fill:#fdf6e3,color:#000000,stroke:#333,stroke-width:1.5px
   style p_modelling fill:#fdeef7,color:#000000,stroke:#333,stroke-width:1.5px
   style p_advising fill:#eafaf5,color:#000000,stroke:#333,stroke-width:1.5px
@@ -173,15 +176,17 @@ An arrow is *requires* (bundle → bundle it needs installed too), from `require
 flowchart LR
   b_meaningfy_core["meaningfy-core"]
   b_meaningfy_consulting["meaningfy-consulting"]
+  b_meaningfy_sales["meaningfy-sales"]
   b_meaningfy_architecture["meaningfy-architecture"]
   b_meaningfy_building["meaningfy-building"]
   b_vault_assistant["vault-assistant"]
+  b_meaningfy_sales --> b_meaningfy_consulting
   b_meaningfy_building --> b_meaningfy_architecture
 ```
 
 ## Relations
 
-Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (66 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (90 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 156 relation edges plus 33 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
+Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (63 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (92 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 155 relation edges plus 33 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
 
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 12, 'rankSpacing': 45, 'curve': 'basis'}}}%%
@@ -197,9 +202,11 @@ flowchart LR
   subgraph b_meaningfy_consulting["meaningfy-consulting"]
     s_semantic_consulting_coach["semantic-consulting-coach"]
     s_decision_package["decision-package"]
+    s_executive_communication["executive-communication"]
+  end
+  subgraph b_meaningfy_sales["meaningfy-sales"]
     s_proposal_writing["proposal-writing"]
     s_estimation["estimation"]
-    s_executive_communication["executive-communication"]
   end
   subgraph b_meaningfy_architecture["meaningfy-architecture"]
     s_architecture["architecture"]
@@ -241,7 +248,6 @@ flowchart LR
   s_cosmic_python ==> s_guardrails
   s_decision_package ==> s_semantic_consulting_coach
   s_decision_package ==> s_executive_communication
-  s_decision_package ==> s_proposal_writing
   s_epic_planning ==> s_clarity_gate
   s_epic_planning ==> s_spec_stewardship
   s_epic_planning ==> s_bdd_gherkin
@@ -268,8 +274,6 @@ flowchart LR
   s_proposal_writing ==> s_semantic_consulting_coach
   s_semantic_consulting_coach ==> s_executive_communication
   s_semantic_consulting_coach ==> s_decision_package
-  s_semantic_consulting_coach ==> s_proposal_writing
-  s_semantic_consulting_coach ==> s_estimation
   s_spec_stewardship ==> s_epic_planning
   s_spec_stewardship ==> s_clarity_gate
   s_vault_capture ==> s_vault_conventions
@@ -319,6 +323,7 @@ flowchart LR
   s_cosmic_python -.-> s_meaningfy_code_review
   s_cosmic_python -.-> s_bdd_gherkin
   s_cosmic_python -.-> s_ci_cd_delivery
+  s_decision_package -.-> s_proposal_writing
   s_decision_package -.-> s_estimation
   s_decision_package -.-> s_writing_antipatterns
   s_epic_planning -.-> s_architecture
@@ -354,6 +359,7 @@ flowchart LR
   s_project_setup -.-> s_meaningfy_release
   s_project_setup -.-> s_linkml_engineering
   s_proposal_writing -.-> s_writing_antipatterns
+  s_semantic_consulting_coach -.-> s_proposal_writing
   s_semantic_consulting_coach -.-> s_writing_antipatterns
   s_spec_stewardship -.-> s_bdd_gherkin
   s_technical_writing -.-> s_clarity_gate
@@ -390,9 +396,10 @@ flowchart LR
 
   style b_meaningfy_core fill:#eaf3ff,stroke:#999,stroke-width:1px
   style b_meaningfy_consulting fill:#fff2e0,stroke:#999,stroke-width:1px
-  style b_meaningfy_architecture fill:#eafaf0,stroke:#999,stroke-width:1px
-  style b_meaningfy_building fill:#f5eaff,stroke:#999,stroke-width:1px
-  style b_vault_assistant fill:#eaf3ff,stroke:#999,stroke-width:1px
+  style b_meaningfy_sales fill:#eafaf0,stroke:#999,stroke-width:1px
+  style b_meaningfy_architecture fill:#f5eaff,stroke:#999,stroke-width:1px
+  style b_meaningfy_building fill:#eaf3ff,stroke:#999,stroke-width:1px
+  style b_vault_assistant fill:#fff2e0,stroke:#999,stroke-width:1px
   style s_architecture fill:#6b1f4d,color:#ffffff,stroke:#000
   style s_bdd_gherkin fill:#7a5c00,color:#ffffff,stroke:#000
   style s_ci_cd_delivery fill:#1f4f6b,color:#ffffff,stroke:#000
@@ -443,15 +450,22 @@ Cross-cutting basics everyone installs: clear technical writing, explanatory-wri
 
 ## meaningfy-consulting
 
-The advisory / front-of-funnel role: semantic-technologies coaching, the Decision Package, proposals, estimation, and executive communication.
+The advisory role: semantic-technologies coaching, the Decision Package, and executive communication.
 
 | Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
 |---|---|---|---|---|---|---|---|---|---|
-| [`semantic-consulting-coach`](../skills/semantic-consulting-coach/SKILL.md) | Use when someone running or building a semantic-technologies / data consulting business (ontologies, knowledge graphs, data governance, MDM, semantic interoperability) is thinking through a business, service-design, pricing, partnering, engagement-process, client-situation (B2B sale or B2G tender), negotiation, or executive-message decision and wants to think it through before committing, rather than have delivery work done or a quick factual answer given. | `advising` | `consulting` | `semantic-data` | `precise` | `advise` | `stable` | `executive-communication`, `decision-package`, `proposal-writing`, `estimation` | `decision-package`, `proposal-writing`, `executive-communication`, `writing-antipatterns` |
-| [`decision-package`](../skills/decision-package/SKILL.md) | Produce the Decision Package — the paid keystone deliverable of a semantic/data consulting engagement's P1 Decision Phase. | `advising` | `consulting` | `semantic-data` | `profiled` | `advise` | `stable` | `semantic-consulting-coach`, `executive-communication`, `proposal-writing` | `semantic-consulting-coach`, `executive-communication`, `proposal-writing`, `estimation`, `writing-antipatterns` |
+| [`semantic-consulting-coach`](../skills/semantic-consulting-coach/SKILL.md) | Use when someone running or building a semantic-technologies / data consulting business (ontologies, knowledge graphs, data governance, MDM, semantic interoperability) is thinking through a business, service-design, pricing, partnering, engagement-process, client-situation (B2B sale or B2G tender), negotiation, or executive-message decision and wants to think it through before committing, rather than have delivery work done or a quick factual answer given. | `advising` | `consulting` | `semantic-data` | `precise` | `advise` | `stable` | `executive-communication`, `decision-package` | `decision-package`, `proposal-writing`, `executive-communication`, `writing-antipatterns` |
+| [`decision-package`](../skills/decision-package/SKILL.md) | Produce the Decision Package — the paid keystone deliverable of a semantic/data consulting engagement's P1 Decision Phase. | `advising` | `consulting` | `semantic-data` | `profiled` | `advise` | `stable` | `semantic-consulting-coach`, `executive-communication` | `semantic-consulting-coach`, `executive-communication`, `proposal-writing`, `estimation`, `writing-antipatterns` |
+| [`executive-communication`](../skills/executive-communication/SKILL.md) | Use when turning rough input into a clear, concise, persuasive executive message or analysis: a board paper, proposal, client recommendation, email or Slack note, spoken narrative, slide outline, or a strategic problem to be solved. | `content` | `cross-cutting` | `generic` | `profiled` | `any` | `stable` | `technical-writing`, `meaningfy-voice` | `meaningfy-voice`, `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` |
+
+## meaningfy-sales
+
+The commercial role: proposal and offer writing, and estimation.
+
+| Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
+|---|---|---|---|---|---|---|---|---|---|
 | [`proposal-writing`](../skills/proposal-writing/SKILL.md) | Produce the proposal + Statement of Work (SoW) that frames the paid Decision Phase (P1) offer — with an explicit in/out scope boundary, priced as a fixed frame. | `proposals` | `sales` | `semantic-data` | `profiled` | `sell` | `stable` | `estimation`, `executive-communication`, `decision-package`, `semantic-consulting-coach` | `estimation`, `decision-package`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` |
 | [`estimation`](../skills/estimation/SKILL.md) | A lightweight fixed-cost scoping / estimation discipline that de-risks fixed-cost bids — a CHECKLIST + METHOD, not a heavy model. | `offers` | `sales` | `generic` | `reusable` | `sell` | `stable` | `proposal-writing`, `decision-package` | `proposal-writing`, `decision-package` |
-| [`executive-communication`](../skills/executive-communication/SKILL.md) | Use when turning rough input into a clear, concise, persuasive executive message or analysis: a board paper, proposal, client recommendation, email or Slack note, spoken narrative, slide outline, or a strategic problem to be solved. | `content` | `cross-cutting` | `generic` | `profiled` | `any` | `stable` | `technical-writing`, `meaningfy-voice` | `meaningfy-voice`, `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` |
 
 ## meaningfy-architecture
 
@@ -536,7 +550,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `generic` | no domain knowledge; transfers anywhere | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`, `estimation`, `executive-communication`, `clarity-gate`, `bdd-gherkin` |
+| `generic` | no domain knowledge; transfers anywhere | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`, `executive-communication`, `estimation`, `clarity-gate`, `bdd-gherkin` |
 | `semantic-data` | semantic technologies, ontologies, data governance | `semantic-consulting-coach`, `decision-package`, `proposal-writing`, `linkml-engineering` |
 | `modelling` | conceptual and system modelling | `architecture`, `conceptual-modelling`, `modelling-conventions` |
 | `python` | Python code and repositories | `meaningfy-code-review`, `cosmic-python`, `project-setup`, `implementer` *(agent)*, `code-reviewer` *(agent)* |
@@ -550,7 +564,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | Value | Meaning | Skills and agents |
 |---|---|---|
 | `reusable` | R: a reusable core; a fix adds no domain content | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `guardrails`, `estimation`, `architecture`, `modelling-conventions`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin` |
-| `profiled` | C: a core with profiles; a fix adds a switch or a profile | `decision-package`, `proposal-writing`, `executive-communication` |
+| `profiled` | C: a core with profiles; a fix adds a switch or a profile | `decision-package`, `executive-communication`, `proposal-writing` |
 | `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `semantic-consulting-coach`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 
 ### stage
@@ -571,5 +585,5 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | Value | Meaning | Skills and agents |
 |---|---|---|
 | `experimental` | in trial; may change or go | — |
-| `stable` | in use and maintained | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `meaningfy-git-workflow`, `guardrails`, `semantic-consulting-coach`, `decision-package`, `proposal-writing`, `estimation`, `executive-communication`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
+| `stable` | in use and maintained | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `meaningfy-git-workflow`, `guardrails`, `semantic-consulting-coach`, `decision-package`, `executive-communication`, `proposal-writing`, `estimation`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `deprecated` | kept for now; do not start using it | — |

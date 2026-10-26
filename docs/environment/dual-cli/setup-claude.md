@@ -36,7 +36,8 @@ Pick your role(s) from the table, then run the matching install command(s). Ever
 | `meaningfy-core` | …do anything (cross-cutting basics) — **always install this one** |
 | `meaningfy-building` | …build software with the spine |
 | `meaningfy-architecture` | …design systems or model a domain |
-| `meaningfy-consulting` | …do advisory / front-of-funnel work |
+| `meaningfy-consulting` | …do advisory work |
+| `meaningfy-sales` | …write proposals and offers, or estimate work (requires `meaningfy-consulting`; `/plugin install meaningfy-sales@meaningfy-skillery`). `proposal-writing` and `estimation` moved here from `meaningfy-consulting` |
 | `vault-assistant` | …keep a personal Obsidian vault (workflow bundle; see [`../vault-assistant.md`](../vault-assistant.md) for its prerequisites) |
 
 ```bash
@@ -114,8 +115,8 @@ Run:
 /plugin
 ```
 Confirm `meaningfy-core` (and any other bundle you installed in Step 3) shows as **enabled**, and
-that each bundle loads exactly its own skills and agents (skills / agents): `meaningfy-core` 5 / 0,
-`meaningfy-consulting` 5 / 0, `meaningfy-architecture` 4 / 0, `meaningfy-building` 9 / 3,
+that each bundle loads exactly its own skills and agents (skills / agents): `meaningfy-core` 6 / 0,
+`meaningfy-consulting` 3 / 0, `meaningfy-sales` 2 / 0, `meaningfy-architecture` 4 / 0, `meaningfy-building` 9 / 3,
 `vault-assistant` 9 / 0 (`claude plugin details <bundle>` lists them). Then
 confirm the spine registered by running `/opsx:propose` — it should prompt you for a change
 description rather than say the command is unknown.

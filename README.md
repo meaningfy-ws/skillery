@@ -27,7 +27,7 @@ Bundles are organised by the **role (hat) you wear** — install `meaningfy-core
 
 ## What's inside
 
-32 skills in **4 role bundles and 1 workflow bundle** — every skill and every agent lives in exactly one bundle (no duplication); the
+33 skills in **5 role bundles and 1 workflow bundle** — every skill and every agent lives in exactly one bundle (no duplication); the
 table below is bundle-level only. For the per-skill picture — purpose, which cross-cutting concern
 each one serves, and which skills depend on which — see
 [`docs/skill-inventory.md`](docs/skill-inventory.md) (a generated map + tables, not hand-maintained).
@@ -35,7 +35,8 @@ each one serves, and which skills depend on which — see
 | Bundle | Skills | Install if you… |
 |--------|--------|-----------------|
 | **meaningfy-core** | **technical-writing** · **explanatory-writing** · **writing-antipatterns** · **meaningfy-voice** · **meaningfy-git-workflow** · **guardrails** | …do anything (cross-cutting basics) |
-| **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **proposal-writing** · **estimation** · **executive-communication** | …do advisory / front-of-funnel work |
+| **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **executive-communication** | …do advisory work |
+| **meaningfy-sales** | **proposal-writing** · **estimation** | …write proposals and offers, or estimate work; requires `meaningfy-consulting` |
 | **meaningfy-architecture** | **architecture** · **conceptual-modelling** · **modelling-conventions** · **linkml-engineering** | …design systems or model a domain |
 | **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
 | **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/environment/vault-assistant.md`](docs/environment/vault-assistant.md)) |
@@ -45,6 +46,10 @@ Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implem
 **`meaningfy-building`** bundle only; install it to get them. `meaningfy-building` requires
 `meaningfy-architecture` (install both); every bundle's requirements are in the
 [catalogue map](docs/skill-inventory.md).
+
+> **Moved:** `proposal-writing` and `estimation` left `meaningfy-consulting` for the new
+> **`meaningfy-sales`** bundle. Install it with `/plugin install meaningfy-sales@meaningfy-skillery`
+> (Claude Code) or `skillery-opencode install meaningfy-sales` (opencode).
 
 > **The spine is a *capability*, not a bundle.** `meaningfy-building` carries the skills that drive
 > it; the durable spine **assets** (`openspec/` + the forked schema + `spine/` docs) are *projected*

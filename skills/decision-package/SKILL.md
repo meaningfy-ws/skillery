@@ -143,7 +143,9 @@ items recast for decision-readiness.
   *whether/how* to run the Deep tier; this skill builds its deliverable.
 - Executive framing and voice (Governing Thought, SCQA, Minto) →
   `executive-communication`.
-- Proposal / Statement of Work for the engagement → `proposal-writing` (EPIC-08, future).
+
+The proposal or Statement of Work for the engagement is a sales hand-off, not a peer: see also
+`proposal-writing` (in `meaningfy-sales`).
 
 The first-cut conceptual model fragment (sketch only; no modelling depth here) and the system/solution
 architecture that descends from the package are hand-offs, not peers: see also `conceptual-modelling`

@@ -11,6 +11,14 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Action needed (users)
+
+- **`proposal-writing` and `estimation` moved from `meaningfy-consulting` to the new
+  `meaningfy-sales` bundle**, which requires `meaningfy-consulting`. If you use either skill, install
+  `meaningfy-sales`: on Claude, `/plugin install meaningfy-sales@meaningfy-skillery`; on opencode,
+  `skillery-opencode install meaningfy-sales`. `meaningfy-consulting` keeps
+  `semantic-consulting-coach`, `decision-package` and `executive-communication`.
+
 ### Added
 
 - **`meaningfy-voice`** in `meaningfy-core`: the Meaningfy company voice profile as its own
