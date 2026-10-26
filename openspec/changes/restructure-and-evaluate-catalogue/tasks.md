@@ -14,16 +14,11 @@
 - **Reshaped** on 2026-10-27 (`inputs/2026-10-27-reshaping-qa.md`): architecture track added
   (section 3), Haiku is the record model (D-4), D-13 adopted, agent evals run their Gherkin (D-3).
 - **Reshape PR:** #76, merged 2026-10-26.
-- **Section 3 (2026-10-26):** 3.1 PR #77 (`arch/area-terms`); 3.2, 3.3 and the 3.4–3.6 work on
-  `arch/use-cases`, stacked on it. **Open:** 3.4 needs the class-view SVG rendered by the owner from
-  `docs/catalogue-architecture.class.puml` (no renderer here) and linked from the page; 3.5's target
-  structure, roster and roadmap are drafted in `docs/catalogue-architecture.md` and wait for the
-  owner's approval in `inputs/approvals.md`. Rule-of-two candidates for the owner are listed in
-  `inputs/evidence/foundation.md`.
-- **Next:** the owner renders the SVG and approves 3.5; then section 3 closes. **No evals run until
-  section 3 is done** (owner, 2026-10-27: "we shall not test anything yet, until systematisation is
-  ready"). Batch C (2.4) waits until then; its Haiku re-estimate (about $1) fits the ≈ $3.19 left of
-  the $5 approval, and the owner confirms the switch from Sonnet when it resumes.
+- **Section 3 done (2026-10-26):** 3.1 PR #77 (`arch/area-terms`); 3.2–3.6 PR #78
+  (`arch/use-cases`, stacked). The owner rendered the class-view SVG and approved 3.5
+  (`inputs/approvals.md`).
+- **Next:** 2.4 (batch C on Haiku), then section 4, within the ≈ $3.19 left of the $5 approval;
+  Haiku only, no Opus.
 - **Not blocking:** the `ANTHROPIC_API_KEY` repository secret; until then every run is local on the
   owner's login, approved per batch.
 
@@ -85,12 +80,12 @@ One PR per task group. Each starts with the check or generator and a failing fix
       **Accept:** `cross_skill_paths` clean in `make validate`; `meaningfy-voice` is in
       `meaningfy-core` and every citing bundle is core or requires it (checked by reading
       `bundles.yaml` in the PR); the resolved paths listed in `inputs/evidence/foundation.md`.
-- [ ] 3.4 **The model** (D-16): `docs/catalogue-architecture.md` with the class view (rev. 2) from
+- [x] 3.4 **The model** (D-16): `docs/catalogue-architecture.md` with the class view (rev. 2) from
       `inputs/2026-10-27-catalogue-model.class.puml` and its rendered SVG, the area↔domain mapping
       with `define-ai-domains` (D-20), and a register row. **Accept:** every class names a file or
       check that exists, or is marked "planned (change …)"; the SVG is re-rendered by hand from the
       committed source in the same commit.
-- [ ] 3.5 **Target structure, roster and roadmap** (D-17, D-19): in
+- [x] 3.5 **Target structure, roster and roadmap** (D-17, D-19): in
       `docs/catalogue-architecture.md`, the target bundles by activity, the agent roster (agent, type,
       use cases, bundle, change) and the roadmap (follow-on changes in waves, including the
       infrastructure changes of D-19); set `change` in every use case. The owner approves.
@@ -166,7 +161,7 @@ D-12.
 - [x] 0.1 · [x] 0.2 · [x] 0.3 · [x] 0.4
 - [x] 1.1 · [x] 1.2
 - [x] 2.1 · [x] 2.2 · [x] 2.3 · [ ] 2.4 · [x] 2.5 · [ ] 2.6
-- [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 3.6
+- [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.5 · [x] 3.6
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4
 - [ ] 5.0 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 5.4
 - [ ] 6.1 · [ ] 6.2 · [ ] 6.3

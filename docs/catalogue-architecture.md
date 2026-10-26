@@ -13,6 +13,8 @@ source changes). It has six lanes: **distribution** (what gets installed), **kno
 know), **action** (what agents do and where), **external** (what it relies on), **intent** (why it
 exists) and **assurance and docs** (how we know and tell).
 
+![The catalogue's conceptual model, class view, revision 2](catalogue-architecture.class.svg)
+
 The model has no machine-readable source. The files below are the truth; the picture names them.
 
 ### Where each class lives
@@ -56,7 +58,7 @@ area without a domain needs no domain doc until it has a process to describe.
 
 ## Target structure
 
-*Proposal, awaiting the owner's approval (task 3.5).* Bundles by activity, existing and planned. The
+*Approved by the owner, 2026-10-26.* Bundles by activity, existing and planned. The
 re-bundling itself is the change `rebundle-by-activity`; moving a skill between bundles happens there,
 not here.
 
@@ -74,7 +76,7 @@ not here.
 
 ## Agent roster
 
-*Proposal, awaiting the owner's approval (task 3.5).* One row per agent. `type` is the agent
+*Approved by the owner, 2026-10-26.* One row per agent. `type` is the agent
 template's; `partner` is the open fourth type (Q-2), settled by `extend-agent-template`.
 
 | Agent | Type | Use cases | Bundle | Change |
@@ -103,7 +105,7 @@ template's; `partner` is the open fourth type (Q-2), settled by `extend-agent-te
 
 ## Roadmap
 
-*Proposal, awaiting the owner's approval (task 3.5).* Follow-on changes in waves, from this month's
+*Approved by the owner, 2026-10-26.* Follow-on changes in waves, from this month's
 priorities. Each use case's `change` names one of them, so [`use-cases.md`](use-cases.md) shows what
 each change closes.
 
