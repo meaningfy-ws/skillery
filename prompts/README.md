@@ -5,27 +5,31 @@ The thin "always-on" layer that wires skills into a project. Two tiers:
 | File | Tier | Goes where | Purpose |
 |------|------|-----------|---------|
 | `global-prompt.md` | Personal default | `~/.claude/CLAUDE.md` | per-developer routing + non-negotiables |
-| `CLAUDE.md.template` | Committed project binding | `<repo>/CLAUDE.md` | company-wide, team-shared binding for a repo |
+| `CLAUDE.md.template` | Committed project binding | `<repo>/AGENTS.md` | company-wide, team-shared binding for a repo |
 
-`CLAUDE.md.template` is the **single canonical binding template**. There is no separate
-`AGENTS.md.template`.
+`CLAUDE.md.template` is the **single canonical binding template**. Despite its name, it fills the
+repo's `AGENTS.md`, the canonical, CLI-agnostic file; `CLAUDE.md` is only a pointer to it.
 
 ## Rules
 
 - A binding **routes and mandates**; it never carries the standard (standards live in skills and `docs/`).
-- **Single source of authority**: fill in `CLAUDE.md` and keep it as the one source; do not duplicate
+- **Single source of authority**: fill in `AGENTS.md` and keep it as the one source; do not duplicate
   policy across multiple agentic files.
 - Each template carries a `meaningfy-template-version` stamp so a consuming repo can tell when it is
   behind. Refresh with `scripts/init-meaningfy-project.sh` (see `docs/environment/setup.md`).
 
-## Optional AGENTS.md symlink
+## AGENTS.md canonical, CLAUDE.md a pointer
 
-Some tools (e.g. OpenAI Codex, other AGENTS.md-reading tools) load `AGENTS.md` instead of
-`CLAUDE.md`. To serve those tools without duplicating policy, create a symlink:
+opencode and other AGENTS.md-reading tools load `AGENTS.md`; Claude Code loads `CLAUDE.md`. Serve
+both from one source: `AGENTS.md` holds the binding, and `CLAUDE.md` is a short regular file that
+says "read `AGENTS.md`", imports it with a line `@AGENTS.md`, and adds only Claude Code-specific
+guidance:
 
-```bash
-ln -s CLAUDE.md AGENTS.md
+```markdown
+**Read `AGENTS.md` first.** This file adds only Claude Code-specific guidance.
+
+@AGENTS.md
 ```
 
-This means both files point to the same content. **Do not maintain a separate `AGENTS.md` with
-divergent content** — a symlink is the correct pattern whenever cross-tool support is needed.
+**Never symlink** one file to the other, in either direction, and never keep two copies in sync with
+a hook. This repo follows the same rule (see the root `CLAUDE.md` and `AGENTS.md`).

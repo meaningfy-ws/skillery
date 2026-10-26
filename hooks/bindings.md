@@ -99,7 +99,7 @@ intent degrades to a `Stop`/`session.idle` binding on opencode.
 So a Claude-only repo gets (1)+(2)+(3)+Claude bindings; a dual-target repo additionally gets the
 opencode plugin bindings — and the git/CI layer is never duplicated.
 
-> Scope note: `project-setup` today renders the Claude agent layer (`settings.json`) and is
-> `CLAUDE.md`-canonical. Aligning its root-binding convention with this change's AGENTS-canonical
-> model (DEC-12) and adding the opencode agent-binding renderer are tracked as the project-setup
-> reconciliation follow-up, not this foundation change.
+> Scope note: `project-setup` now follows the same root-binding convention as this repo —
+> `AGENTS.md` canonical, `CLAUDE.md` a thin pointer, never a symlink. It still renders only the
+> Claude agent layer (`settings.json`); adding the opencode agent-binding renderer is tracked as the
+> project-setup reconciliation follow-up, not this foundation change.

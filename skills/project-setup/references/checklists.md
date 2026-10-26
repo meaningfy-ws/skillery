@@ -38,8 +38,8 @@ multi-component) apply only if the interview selected them.
       pin (`spine-projection.md`), never silently overwritten.
 - [ ] **Tests** (code) — drop the `tests/` tree with the marker-injecting `conftest.py` and one
       smoke unit test + one example feature (`testing-setup.md`).
-- [ ] **Agentic** — render the canonical `CLAUDE.md`; create the `AGENTS.md` symlink
-      (`ln -s CLAUDE.md AGENTS.md`); seed `.claude/memory/MEMORY.md` (regenerable index)
+- [ ] **Agentic** — render the canonical `AGENTS.md` and the thin `CLAUDE.md` pointer (both
+      regular files, never a symlink); seed `.claude/memory/MEMORY.md` (regenerable index)
       (`agentic-setup.md`).
 - [ ] **Spine** — project `openspec/` (config + the PINNED `meaningfy` schema + `specs/` +
       `changes/` + `archive/`); install `/opsx:*` core profile; golden thread pre-wired
@@ -52,7 +52,7 @@ multi-component) apply only if the interview selected them.
 - [ ] **Install & verify** — `make install`; then `make check-all`.
 - [ ] **First commit** — only on explicit developer consent; conventional message via the
       `meaningfy-git-workflow` skill.
-- [ ] **Spine + skillery + ponytail** — install so `CLAUDE.md` routing + `/opsx:*` resolve:
+- [ ] **Spine + skillery + ponytail** — install so `AGENTS.md` routing + `/opsx:*` resolve:
       `npx -y @fission-ai/openspec@1.4.1 init --tools claude --profile core`;
       `/plugin marketplace add meaningfy-ws/skillery`;
       `/plugin install meaningfy-core@meaningfy-skillery` (and `meaningfy-building@meaningfy-skillery`);
@@ -72,14 +72,14 @@ multi-component) apply only if the interview selected them.
       keep the empty skeleton green).
 - [ ] `make test` runs and the placeholder unit test + example feature pass; coverage gate
       configured (≥80%).
-- [ ] `CLAUDE.md` is canonical and `AGENTS.md` is a **symlink** to it (`ls -l AGENTS.md` shows the
-      arrow); the symlink is documented in the README; the repo `CLAUDE.md` routes to (not restates)
-      the global `~/.claude/CLAUDE.md` standard.
+- [ ] `AGENTS.md` is canonical and `CLAUDE.md` is a thin pointer that imports it (`@AGENTS.md`);
+      both are regular files, **never a symlink**; the repo `AGENTS.md` routes to (not restates)
+      the global standard.
 - [ ] `.claude/memory/MEMORY.md` seeded as a ≤200-line **regenerable index** (truth = `openspec/specs/`).
 - [ ] **Spine projected** — `openspec/` has `config.yaml`, the PINNED `schemas/meaningfy/`, `specs/`,
       and `changes/` (+ `archive/`); `openspec validate --strict` passes; `/opsx:*` core profile installed.
 - [ ] **Skillery + ponytail installed** — the Meaningfy plugins and `ponytail` are present so the
-      skill routing in `CLAUDE.md` resolves (no unresolved skill references).
+      skill routing in `AGENTS.md` resolves (no unresolved skill references).
 - [ ] **No `/src`** — the package is top-level; `pytest.ini` has `pythonpath = .`;
       `pyproject.toml` `packages` include has no `from`.
 - [ ] `pyproject.toml` is **minimal** — only `[project]`, `[tool.poetry]`,
@@ -90,7 +90,7 @@ multi-component) apply only if the interview selected them.
 - [ ] **Infra** (if selected): `infra/compose.yaml` validates (`docker compose … config`);
       `Dockerfile.dockerignore` co-located; `.env.example` present, real `.env` git-ignored.
 - [ ] **CI** present: `ci.yaml` exists and calls `make` targets (mirrors the local gates).
-- [ ] `README.md` is accurate — how to install, run, test, build docs; documents the symlink.
+- [ ] `README.md` is accurate — how to install, run, test, build docs; points to `AGENTS.md` as the agent instructions.
 - [ ] `.gitignore` covers `.venv/`, caches, build artefacts, `infra/.env`, secrets.
 - [ ] First commit is clean and conventional (only on developer consent).
 
@@ -110,7 +110,7 @@ make check-architecture            # poetry run lint-imports --config .importlin
 make test                          # pytest (markers stamped by tests/conftest.py)
 
 # agentic + spine + layout sanity
-ls -l AGENTS.md                    # → AGENTS.md -> CLAUDE.md (CLAUDE-canonical)
+test ! -L AGENTS.md && test ! -L CLAUDE.md && grep -qx '@AGENTS.md' CLAUDE.md && echo "agent files OK"
 test -f .claude/memory/MEMORY.md && echo "MEMORY.md present"
 test -f openspec/config.yaml && test -d openspec/schemas/meaningfy && echo "spine projected"
 ls -d <<PACKAGE>>/                 # top-level package exists (no src/)

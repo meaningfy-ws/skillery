@@ -1,6 +1,6 @@
 <!-- meaningfy-template-version: 3.0.0 -->
-<!-- Binding template — copy to <repo>/CLAUDE.md and fill in the Project specifics section. -->
-<!-- This is the SINGLE canonical binding template. AGENTS.md is an optional symlink (see prompts/README.md). -->
+<!-- Binding template — copy to <repo>/AGENTS.md (the canonical file) and fill in the Project specifics section. -->
+<!-- <repo>/CLAUDE.md is a thin pointer that imports it (@AGENTS.md); never a symlink (see prompts/README.md). -->
 
 # Project: <PROJECT-NAME>
 

@@ -7,8 +7,8 @@ standards. Where the two repos disagree, the **newer conventions win** and the r
 **The non-negotiables.** Most decisions below have an "override" path. A few do not — they are the
 hardest to reverse and the most-violated by default, and getting any wrong yields a repo that looks
 fine but is structurally off-standard: **no `/src`** (D1), **all tool config in the root** + a
-**minimal `pyproject.toml`** (D2), a **canonical `CLAUDE.md`** with `AGENTS.md` symlinked (D8 —
-CLAUDE-canonical, DEC-4), and the **`openspec/` spine projected** (D13).
+**minimal `pyproject.toml`** (D2), a **canonical `AGENTS.md`** with a thin `CLAUDE.md` pointer, never a
+symlink (D8), and the **`openspec/` spine projected** (D13).
 
 ## D1 — No `/src`; top-level package
 
@@ -121,25 +121,33 @@ than contradict it by accident — flagged so they are not mistaken for errors:
   genuinely need to test across multiple interpreter versions — the single-version default does
   not.
 
-## D8 — Single agent instruction file (CLAUDE.md canonical, AGENTS.md → symlink) — DEC-4
+## D8 — AGENTS.md canonical, CLAUDE.md a pointer, never a symlink
 
-`CLAUDE.md` is the single source of truth — Claude Code loads it directly. `AGENTS.md` is an optional
-**symlink** to it (`ln -s CLAUDE.md AGENTS.md`), so AGENTS.md-aware tools read the same canon. This
-**inverts** the older AGENTS-canonical convention (DEC-4): a symlink makes drift structurally
-impossible, and `CLAUDE.md` is Claude Code's first-class file, so making it the source removes a
-layer of indirection while staying tool-neutral.
+`AGENTS.md` is the single source of truth, written CLI-agnostic: opencode reads it natively, and
+Claude Code reads it through a thin `CLAUDE.md` that says "read `AGENTS.md`", imports it with a line
+`@AGENTS.md`, and adds only Claude Code-specific guidance. Both are regular files — **never a
+symlink** between them, in either direction, and no copy-sync hook. This is the rule of the
+`dual-cli-distribution` spec (requirement "AGENTS.md canonical, CLAUDE.md pointer, no symlink"),
+which skillery itself follows.
 
-**The global vs repo split (DEC-12).** There are two `CLAUDE.md` files. The **global**
-`~/.claude/CLAUDE.md` carries the company-wide standard. The **repo** `./CLAUDE.md` is the repo
-operating manual: it **ROUTES** to the global standard and to the installed skills + the spine, and
-records only repo-specific facts — it never restates the standard.
+**Supersedes DEC-4.** An earlier version of this skill chose the opposite: `CLAUDE.md` canonical
+with `AGENTS.md` an optional symlink to it, plus a Windows copy-hook fallback. That choice is
+retired: a symlink fails silently on checkouts that cannot materialise links (the file becomes the
+literal text `CLAUDE.md`), a copy-hook drifts, and both tied the canonical file to one CLI. The
+`@AGENTS.md` import gives one source on both CLIs with neither failure.
 
-**Why.** The explicit requirement ("only one canonical file"). Mirrored copies rot; a symlink cannot.
-Document the symlink in the README so contributors don't "fix" it. Content: skill-routing table, the
-spine pointers, implementation loop, project specifics. Carry the `meaningfy-template-version` stamp.
+**The global vs repo split (DEC-12).** The **global** instructions (`~/.claude/CLAUDE.md` on
+Claude Code, `~/.config/opencode/AGENTS.md` on opencode) carry the company-wide standard. The
+**repo** `./AGENTS.md` is the repo operating manual: it **ROUTES** to the global standard and to
+the installed skills + the spine, and records only repo-specific facts — it never restates the
+standard.
 
-**Override.** If a tool on the team cannot follow symlinks on checkout (rare; some Windows setups),
-fall back to two files + a pre-commit hook that copies `CLAUDE.md → AGENTS.md`. Note it in the README.
+**Why.** The explicit requirement ("only one canonical file") on both CLIs. Content of `AGENTS.md`:
+skill-routing table, the spine pointers, implementation loop, project specifics. Both templates
+carry the `meaningfy-template-version` stamp.
+
+**Override.** None — this is a non-negotiable. An existing repo with a symlink or two divergent
+files is reconciled into this shape (`modernizing-existing-projects.md`).
 
 ## D9 — `.claude/` is a regenerable index; the spine holds the work memory
 

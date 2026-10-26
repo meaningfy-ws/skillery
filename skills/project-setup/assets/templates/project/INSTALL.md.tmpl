@@ -67,4 +67,5 @@ make preview-docs   # serve at http://localhost:8080
 
 - **Wrong Python interpreter** — always invoke tools through Poetry (`poetry run …`) or `make`,
   never a global `python`/`pytest`.
-- **`CLAUDE.md` looks like a duplicate** — it is a symlink to `AGENTS.md`. Leave it alone.
+- **`CLAUDE.md` looks almost empty** — it is a thin pointer that imports `AGENTS.md` (`@AGENTS.md`).
+  Edit `AGENTS.md`; keep both as regular files, never a symlink.

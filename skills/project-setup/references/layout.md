@@ -14,9 +14,9 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 
 ```
 <repo-root>/
-├── CLAUDE.md                     # CANONICAL agent instructions (D8 — CLAUDE-canonical, DEC-4)
-├── AGENTS.md → CLAUDE.md         # SYMLINK — never a second copy
-├── README.md                     # documents the symlink + how to run
+├── AGENTS.md                     # CANONICAL, CLI-agnostic agent instructions (D8)
+├── CLAUDE.md                     # thin pointer: imports @AGENTS.md — a regular file, never a symlink
+├── README.md                     # how to install, run, test
 ├── LICENSE
 ├── VERSION                       # single source of the version string
 │
@@ -27,7 +27,7 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 ├── pytest.ini                    # pythonpath=. ; markers ; NO coverage flags here (D5)
 ├── .coveragerc                   # coverage config (≥80%)
 ├── .importlinter                 # architecture contracts (D7) — checked by make check-architecture
-├── .pre-commit-config.yaml       # ruff hook (+ optional AGENTS.md sync on Windows)
+├── .pre-commit-config.yaml       # ruff hook
 ├── sonar-project.properties      # SonarQube key/sources
 ├── Makefile                      # the dev UX — install / check-all / test / build-docs / up…
 ├── .gitignore
