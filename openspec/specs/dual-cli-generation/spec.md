@@ -75,7 +75,7 @@ The opencode agent renderer SHALL target a single opencode version recorded in `
 - **THEN** the targeted opencode version is the one in `.opencode-version`, not "latest available"
 
 ### Requirement: Deterministic output and drift gate
-Rendering from unchanged sources SHALL produce byte-identical committed output, and `make validate` SHALL fail when `marketplace.json`, `tools/opencode-catalogue.json` or the `bundles/` tree differs from a fresh render.
+Rendering from unchanged sources SHALL produce byte-identical output, and `make validate` SHALL fail when `marketplace.json` or `tools/opencode-catalogue.json` differs from a fresh render, or, where a `bundles/` tree exists, when it differs from a fresh render. CI SHALL generate `bundles/` and fail when the generation changes a committed file or leaves a wrong link.
 
 #### Scenario: Re-run is a no-op
 - **WHEN** `make bundles` runs twice with no source changes between runs
@@ -84,6 +84,10 @@ Rendering from unchanged sources SHALL produce byte-identical committed output, 
 #### Scenario: Drifted rendering fails validation
 - **WHEN** `bundles.yaml` or an agent's frontmatter changes but `make bundles` is not run, or a `bundles/` entry is missing, retargeted, orphaned, or a real copy instead of a symlink
 - **THEN** `make validate` fails and names each drifted artefact
+
+#### Scenario: A fresh checkout has no bundles tree
+- **WHEN** `make validate` runs where no `bundles/` tree exists
+- **THEN** the link check is skipped and the committed renderings are still checked
 
 ### Requirement: Parity and version-sync gates
 CI SHALL fail when any first-party agent cannot be rendered for opencode, and `make validate` SHALL fail when `marketplace.json`, `tools/opencode-catalogue.json` or `package.json` declares a version differing from `VERSION`. Parity and gap reports SHALL be produced on demand and SHALL NOT be committed.
@@ -108,15 +112,15 @@ The bundle renderer SHALL run through `make bundles`, the parity/gap report thro
 - **THEN** `marketplace.json`, `tools/opencode-catalogue.json` and the `bundles/` tree are updated to match `bundles.yaml`, `agents/` and `VERSION`
 
 ### Requirement: Generated artefacts are not committed unless a CLI's installer requires it
-Rendered artefacts SHALL NOT be committed unless the CLI or installer that consumes them reads them from the repository itself. Only three renderings SHALL be committed — `.claude-plugin/marketplace.json` and the `bundles/` symlink tree (read by Claude Code's marketplace clone) and `tools/opencode-catalogue.json` (bundle membership and parsed agent frontmatter, read by the opencode installer) — and opencode agent files, parity reports and gap reports SHALL be produced at install time or on demand.
+Rendered artefacts SHALL NOT be committed unless the CLI or installer that consumes them reads them from the repository itself. Only two renderings SHALL be committed on `develop` — `.claude-plugin/marketplace.json` (read by Claude Code's marketplace clone) and `tools/opencode-catalogue.json` (bundle membership and parsed agent frontmatter, read by the opencode installer). The `bundles/` symlink tree SHALL be generated, ignored on `develop`, and published on the `dist` branch; opencode agent files, parity reports and gap reports SHALL be produced at install time or on demand.
 
 #### Scenario: opencode output is absent from git
 - **WHEN** the repository is inspected
 - **THEN** no `.opencode/` directory, `opencode.json` version carrier, `PARITY.md` or `GAP.md` is tracked, and `.opencode/` is listed in `.gitignore`
 
 #### Scenario: Claude renderings are committed
-- **WHEN** the repository is inspected
-- **THEN** `.claude-plugin/marketplace.json`, `bundles/` and `tools/opencode-catalogue.json` are tracked and equal a fresh render of `bundles.yaml`, `agents/` and `VERSION`
+- **WHEN** the `develop` branch is inspected
+- **THEN** `.claude-plugin/marketplace.json` and `tools/opencode-catalogue.json` are tracked and equal a fresh render of `bundles.yaml`, `agents/` and `VERSION`, `bundles/` is untracked and listed in `.gitignore`, and the `dist` branch holds the generated `bundles/` tree
 
 ### Requirement: Agent type is rendered per CLI
 The opencode agent renderer SHALL render an agent's `type` as the opencode `mode` through the

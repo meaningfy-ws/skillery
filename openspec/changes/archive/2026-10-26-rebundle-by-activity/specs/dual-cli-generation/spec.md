@@ -22,6 +22,6 @@ Rendered artefacts SHALL NOT be committed unless the CLI or installer that consu
 - **WHEN** the repository is inspected
 - **THEN** no `.opencode/` directory, `opencode.json` version carrier, `PARITY.md` or `GAP.md` is tracked, and `.opencode/` is listed in `.gitignore`
 
-#### Scenario: Claude renderings are committed, the bundles tree is published
+#### Scenario: Claude renderings are committed
 - **WHEN** the `develop` branch is inspected
 - **THEN** `.claude-plugin/marketplace.json` and `tools/opencode-catalogue.json` are tracked and equal a fresh render of `bundles.yaml`, `agents/` and `VERSION`, `bundles/` is untracked and listed in `.gitignore`, and the `dist` branch holds the generated `bundles/` tree

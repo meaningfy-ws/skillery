@@ -274,6 +274,22 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   rating. The template is `docs/development/use-case-template.md`; `use_case_catalogue` requires its
   twelve sections. All 24 use cases are rewritten to it from the seed scenarios and the catalogue;
   the sections the owner approved for UC-W8, W19 and W20 are kept.
+- **D-16. Smaller decisions taken during implementation** (each recorded in `inputs/approvals.md`
+  or the Q&A inputs):
+  - UC-W8, UC-W19 and UC-W20 were deepened before their agents' Gherkin (owner-approved sections);
+    UC-W19 and UC-W20 are `covered`, UC-W8 stays `partial` until the company-style PDF exists (4.3).
+  - The `Seeded from S<n>` provenance notes were removed from every use case (owner): a use case
+    carries its own content; the seed file stays in the archived restructure change.
+  - The first register render changed six name cells (6.2, owner-approved).
+  - The PLAN missed that the living `dual-cli-generation` spec required a committed `bundles/`; a
+    MODIFIED delta was added with 7.3.
+  - `broken_links`' exemption for placeholder links narrows from the whole old `spec/` folder to
+    `*-template.md` files.
+  - The `#dist` install check (7.2) moved to the first release (owner, R2). 7.1, the route-A re-test,
+    ran on 2026-10-27 after the owner approved it: from GitHub the `agents` list is still ignored, so
+    D-8 stays route B.
+  - The opencode installer tests ran at the end of the restructure, as the owner asked, not after
+    each group.
 
 ## Algorithm / approach
 

@@ -7,37 +7,15 @@
 > `develop` (D-11). No model runs (DEC-11). GitNexus `impact` before editing a symbol in `tools/`;
 > `detect_changes` before each commit.
 
-## Current state (2026-10-26): how to continue
+## Current state (2026-10-27): done, archived
 
-- **Shaped and gated:** EPIC (`proposal.md`), PLAN revision 3 at 9.2/10 (0.2), the `purpose` table
-  approved (2.1, `inputs/approvals.md`). Spike: `inputs/2026-10-26-spike-root-source.md`.
-- **Merged:** #77 → #78 → #79 → #80. **0.1 done:** `restructure-and-evaluate-catalogue` archived
-  (`archive/2026-10-26-restructure-and-evaluate-catalogue`), `catalogue-architecture` is a living spec.
-- **Group 1 done** (`arch/use-case-coverage`): `use_case_coverage`, UC-W22–W24.
-- **Group 2 done** (`arch/purpose-activities`): the ten activity values, 36 items re-tagged.
-- **Group 3 done** (`arch/sales-bundle`): `meaningfy-sales`, three hand-offs now see-also, move announced.
-- **Group 4 done** (`arch/agents-architecture-sales`): three agents with Gherkin traced to the
-  deepened UC-W8, W19, W20; 4.3 applied (W19, W20 `covered`; W8 `partial`). `npm run test:opencode-installer` deferred by the owner to after group 7.
-- **Group 5 done** (`arch/future-features`): `docs/future-features.md`, `use_case_changes_registered`,
-  the voice channel placeholders.
-- **Group 6 built** (`arch/dependency-register`): register, check, renderer; the six changed name cells
-  approved (6.2).
-- **7.2 done** (#88); **D-8 revised** (owner, 2026-10-26, `inputs/2026-10-26-release-and-folders-qa.md`):
-  `dist` is published on release tags only, with a `<tag>-dist` tag. The install check from `#dist`
-  moves to the first release; 7.3 (#89) merges then.
-- **7.3 written** (#89): `bundles/` ignored and untracked, CI link check, `#dist` install lines,
-  migration note, the `dual-cli-generation` delta.
-- **Group 9 done** (`arch/repo-folders`, D-13): one development home in `docs/development/`, `spine/`,
-  `spec/`, `hooks/`, `prompts/`, `evals/` gone, company practice in `docs/practice/`, the linkml
-  generators in their skill, no skill link outside its folder, `top_level_folders`.
-- **8 done** (#90, after group 9): CHANGELOG complete for every PR; the gates green.
-- **Group 10 done** (`arch/release-rule`, D-14): only released items are installable.
-- **Group 11 done** (`arch/use-cases-deepened`, D-15): the use-case template; all 24 rewritten; the
-  confidence and first open question per use case in `docs/use-cases.md` ("What needs the owner").
-- **Next:** the owner answers the open points; the owner's install check from `#dist` at the first release; then merge #89, #91, #90 in
-  that order and archive the change with `spec-stewardship`. 7.1 stays optional.
-- **Waits for the owner:** 7.1
-  (optional; pushes a test branch). No model runs in this change.
+- **All task groups merged** into `develop` (#81–#94); the EPIC was re-shaped four times by the owner
+  (proposal "Re-shape log", DEC-12–DEC-15; design D-13–D-16).
+- **7.1 done 2026-10-27** (owner-approved): route A fails from GitHub too (the `agents` list is
+  ignored); D-8 stays route B (`inputs/2026-10-26-spike-root-source.md`). **Owed at the first
+  release:** the install check from `meaningfy-ws/skillery#dist` (7.2's acceptance).
+- **Open for the owner:** the Open Points of every use case (`docs/use-cases.md`, "What needs the
+  owner"). Archived on 2026-10-27 with `spec-stewardship`.
 
 ## 0. Preconditions
 
@@ -108,7 +86,7 @@
 
 ## 7. Bundles as metadata (`arch/dist-branch`, then `arch/bundles-generated`)
 
-- [ ] 7.1 *(Optional, owner's approval needed: it pushes a test branch.)* Re-test route A on a
+- [x] 7.1 *(Optional, owner's approval needed: it pushes a test branch.)* Re-test route A on a
       GitHub-hosted branch with the spike's entries. **Accept:** the result recorded in
       `inputs/2026-10-26-spike-root-source.md`; if it passes, D-8 is revised before 7.2.
 - [x] 7.2 `.github/workflows/dist.yml` (D-8) while `bundles/` is still committed. **Accept:** after
@@ -183,7 +161,7 @@
 - [x] 4.1 · [x] 4.2 · [x] 4.3
 - [x] 5.1 · [x] 5.2 · [x] 5.3
 - [x] 6.1 · [x] 6.2 · [x] 6.3
-- [ ] 7.1 · [x] 7.2 · [x] 7.3
+- [x] 7.1 · [x] 7.2 · [x] 7.3
 - [x] 9.1 · [x] 9.2 · [x] 9.3 · [x] 9.4 · [x] 9.5 · [x] 9.6 · [x] 9.7 · [x] 9.8 · [x] 9.9 · [x] 9.10
 - [x] 10.1 · [x] 10.2 · [x] 10.3
 - [x] 11.1 · [x] 11.2 · [x] 11.3
