@@ -15,7 +15,9 @@ Claude Code reads `CLAUDE.md`, not `AGENTS.md`. One line imports the vault's age
 Applies to every session started at the vault root. Deny rules win over allow rules, so the shell is
 not denied wholesale (that would also block the Obsidian CLI): `obsidian` is allowed, and any other
 command needs the owner's approval in an interactive session and is refused in a scheduled one.
-Commands that move, delete or fetch (`mv`, `rm`, `curl`, `wget`) are denied outright. The read-only
+Commands that fetch (`curl`, `wget`) are denied outright. Commands that move or delete (`mv`, `rm`)
+always ask, so the owner approves each move or delete they requested (`vault-conventions`, Moving and
+deleting); the scheduled run denies them on its command line ([`scheduler.md`](scheduler.md)). The read-only
 mail and calendar tools and the memory `recall` are allowed, so neither an interactive session nor a
 scheduled one stops to ask for them. Any other shell
 command is a **stated gap**: tell the owner to refuse it when asked.
@@ -71,13 +73,15 @@ command is a **stated gap**: tell the owner to refuse it when asked.
       "mcp__<memory-server>__forget",
       "WebFetch",
       "WebSearch",
-      "Bash(mv:*)",
-      "Bash(rm:*)",
       "Bash(curl:*)",
       "Bash(wget:*)",
       "Edit(/.claude/**)",
       "Edit(/AGENTS.md)",
       "Edit(/CLAUDE.md)"
+    ],
+    "ask": [
+      "Bash(mv:*)",
+      "Bash(rm:*)"
     ]
   }
 }

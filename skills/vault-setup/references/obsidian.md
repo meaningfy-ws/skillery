@@ -1,7 +1,8 @@
 # Obsidian, its CLI, and the obsidian-skills plugin
 
-The moving skills (`vault-promote`, `vault-tidy`, `vault-project close`) move notes only through the
-Obsidian CLI, which updates wikilinks. It needs Obsidian **1.12.7 or later, running**, with its CLI
+The moving skills (`vault-promote`, `vault-tidy`, `vault-project close`) prefer the Obsidian CLI, which
+updates wikilinks; without it they fall back to a checked file move (`vault-conventions`, Moving and
+deleting). It needs Obsidian **1.12.7 or later, running**, with its CLI
 registered ([Obsidian CLI](https://obsidian.md/help/cli)).
 
 ## 1. Install Obsidian

@@ -12,7 +12,7 @@ stay unavailable until it is fixed. Never mark an item present without looking.
 | 5a | Folder trusted (Claude Code) | an interactive `claude` at the vault root shows no trust prompt | the allow rules, and so the scheduled run |
 | 5 | Permission settings | the CLI's file from `permissions-*.md` exists at the vault root; the CLI's permission list shows every deny (never test with a real send) | safe `vault-daily` |
 | 6 | Obsidian | installed, version 1.12.7 or later | the moving skills |
-| 7 | Obsidian CLI | with Obsidian running, `obsidian version` answers | `vault-promote`, `vault-tidy`, `vault-project close` |
+| 7 | Obsidian CLI (recommended) | with Obsidian running, `obsidian version` answers | nothing: without it the moving skills use a checked file move |
 | 8 | Link updating | Obsidian setting "Automatically update internal links" is on | link-safe moves |
 | 9 | obsidian-skills | the plugin is installed for the user and absent from the vault | syntax and CLI guidance |
 | 10 | Sync | the vault syncs; `.obsidian/workspace*.json` is ignored (Insync) | multi-machine use |
@@ -20,7 +20,8 @@ stay unavailable until it is fixed. Never mark an item present without looking.
 | 12 | Connectors | mail and calendar connectors connected | `vault-daily` |
 | 13 | No skills in the vault | no `SKILL.md` anywhere under `vault/` | the single-copy rule |
 | 14 | Ingestion (optional) | the pipeline entry exists; only the three in-scope folders are shared | sharing with the company |
-| 15 | Scheduled run (optional) | the entry exists and one manual run wrote a note | the morning note arriving by itself |
+| 15 | Scheduled run (optional) | the entry exists, carries the `mv`/`rm` deny of `scheduler.md`, and one manual run wrote a note | the morning note arriving by itself |
+| 16 | README | `README.md` exists at the vault root; its folder table lists the same folders as the `vault-conventions` Layout (name every difference) | a person finding their way |
 
 End with the list of missing items in the order the owner should fix them: 3 and 5 first, then 6 to 9,
-then 11 and 12.
+then 11 and 12, then 16.

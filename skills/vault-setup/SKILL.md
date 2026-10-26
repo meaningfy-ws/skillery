@@ -42,11 +42,15 @@ settings exist, a session at the vault root may not edit them. If the working fo
      `00 Inbox/proposed/`, `04 Daily/reviews/` and `X/Templates/`, and `vault-files/_shared/`;
    - one template per kind, copied from [`assets/templates/`](assets/templates/) into `X/Templates/`;
    - `05 To Do/To-Do.md` from its template;
-   - `AGENTS.md` from [`assets/AGENTS.md`](assets/AGENTS.md), with the profile filled in.
+   - `AGENTS.md` from [`assets/AGENTS.md`](assets/AGENTS.md), with the profile filled in;
+   - `README.md` from [`assets/README.md`](assets/README.md), the page a person reads first, with its
+     blanks filled in. It never overwrites an existing `README.md`: compare and report the differences,
+     and the owner decides.
 4. **Write the permission settings** for the CLI in use, exactly as its reference says:
    [`references/permissions-claude-code.md`](references/permissions-claude-code.md) or
-   [`references/permissions-opencode.md`](references/permissions-opencode.md). Tell the person any deny
-   the CLI cannot express.
+   [`references/permissions-opencode.md`](references/permissions-opencode.md) (opencode also gets
+   `opencode.scheduled.json` when the daily run is scheduled). Tell the person any deny or ask the CLI
+   cannot express.
 5. **Guide the machine and accounts**, each from its reference, skipping what is already in place:
    - Obsidian, its CLI and the obsidian-skills plugin →
      [`references/obsidian.md`](references/obsidian.md);
