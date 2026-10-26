@@ -119,6 +119,16 @@
       file lists each finding with its skill and number, and every finding belongs to exactly one
       batch.
 
+- [ ] 6.6 Write the EPIC for roadmap step 4: `openspec/changes/restructure-and-evaluate-catalogue/`
+      (`proposal.md` plus `inputs/`), using the epic-planning procedure: seed intake from
+      `inputs/baseline-audit.md` (6.5) and `design.md` §8, an owner Q&A, then appetite, why,
+      solution outline, decisions, rabbit holes and no-gos. It covers a rigorous restructuring and
+      evaluation of the current repo: which skills, docs and bundles are revised, the evaluation
+      protocol (D-1 baseline runs, the agentskills.io trigger method with `skill-creator`, the
+      on-demand `claude plugin eval` per bundle, before/after records), and the order relative to
+      `define-catalogue-model`. **Accept:** the proposal exists, cites the audit as its golden-thread
+      parent, has no-gos and DEC ids, and passes the lightweight `clarity-gate` readiness check.
+
 ## Roadmap
 
 - [ ] 0.1 · [x] 0.2
@@ -127,7 +137,7 @@
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5
 - [ ] 5.1 · [ ] 5.2
-- [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 · [ ] 6.5
+- [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 · [ ] 6.5 · [ ] 6.6
 
 Groups 1, 2, 3 and 4 are independent after 0; group 5 follows them; group 6 comes last.
 
