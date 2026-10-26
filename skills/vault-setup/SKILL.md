@@ -39,7 +39,8 @@ settings exist, a session at the vault root may not edit them. If the working fo
    to opt in to the ingestion pipeline now; whether to schedule the daily note, and at what time.
 3. **Create the vault files** (skip what exists):
    - the layout from [`vault-conventions`](../vault-conventions/SKILL.md), including
-     `00 Inbox/proposed/`, `04 Daily/reviews/` and `X/Templates/`, and `vault-files/_shared/`;
+     `00 Inbox/proposed/`, `04 Daily/reviews/`, `X/Templates/` and the trash folder `.trash/`, and
+     `vault-files/_shared/`;
    - one template per kind, copied from [`assets/templates/`](assets/templates/) into `X/Templates/`;
    - `05 To Do/To-Do.md` from its template;
    - `AGENTS.md` from [`assets/AGENTS.md`](assets/AGENTS.md), with the profile filled in;

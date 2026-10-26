@@ -5,7 +5,7 @@ stay unavailable until it is fixed. Never mark an item present without looking.
 
 | # | Check | How | Missing blocks |
 |---|---|---|---|
-| 1 | Layout | every folder of the `vault-conventions` layout exists, plus `vault-files/_shared/` | all skills |
+| 1 | Layout | every folder of the `vault-conventions` layout exists, plus `.trash/` and `vault-files/_shared/` | all skills; without `.trash/`, deletes need a folder created first |
 | 2 | Templates | one file per kind of `vault-conventions` `references/kinds.md` in `X/Templates/` | consistent notes |
 | 3 | Owner profile | `AGENTS.md` has mail connector, calendar connector, time zone | `vault-daily` |
 | 4 | Write rules | `AGENTS.md` has the hard rules and the pointer to `vault-conventions` | safe writes |
