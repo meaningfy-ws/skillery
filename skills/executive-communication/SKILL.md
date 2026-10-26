@@ -1,6 +1,6 @@
 ---
 name: executive-communication
-description: Use when turning rough input into a clear, concise, persuasive executive message or analysis: a board paper, proposal, client recommendation, email or Slack note, spoken narrative, slide outline, or a strategic problem to be solved. Triggers include "structure this", "make this persuasive", "write this up for a board or client", "turn this into a recommendation", "tighten this message", or any request for McKinsey-style, Minto, SCQA, or pyramid communication. Not for casual chat or code.
+description: "Use when turning rough input into a clear, concise, persuasive executive message or analysis: a board paper, proposal, client recommendation, email or Slack note, spoken narrative, slide outline, or a strategic problem to be solved. Triggers include \"structure this\", \"make this persuasive\", \"write this up for a board or client\", \"turn this into a recommendation\", \"tighten this message\", or any request for McKinsey-style, Minto, SCQA, or pyramid communication. Not for casual chat or code."
 license: Apache 2.0
 version: 1.0.0
 ---

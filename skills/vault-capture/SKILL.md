@@ -1,6 +1,6 @@
 ---
 name: vault-capture
-description: File what matters into one project's files in a Meaningfy Obsidian vault: at the end of a work session (from the conversation) or at any time from raw call or meeting notes the owner pastes. Writes a dated `sessions.md` entry, and only what applies to `tasks.md`, `decisions.md`, `index.md` and `resources.md`; keeps the owner's hedges, never invents substance, never calls remember. Use when the owner, working in their vault, says "capture this into the project", "file these notes in the vault", "log this session in the vault", "end of session for project X", "update the vault project files", "here are my notes from the call, file them under project X". Starting a session is vault-resume.
+description: "File what matters into one project's files in a Meaningfy Obsidian vault: at the end of a work session (from the conversation) or at any time from raw call or meeting notes the owner pastes. Writes a dated `sessions.md` entry, and only what applies to `tasks.md`, `decisions.md`, `index.md` and `resources.md`; keeps the owner's hedges, never invents substance, never calls remember. Use when the owner, working in their vault, says \"capture this into the project\", \"file these notes in the vault\", \"log this session in the vault\", \"end of session for project X\", \"update the vault project files\", \"here are my notes from the call, file them under project X\". Starting a session is vault-resume."
 license: Apache 2.0
 argument-hint: "<project> [notes]"
 metadata:

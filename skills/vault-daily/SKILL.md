@@ -1,6 +1,6 @@
 ---
 name: vault-daily
-description: Write today's morning note in a Meaningfy Obsidian vault (`04 Daily/YYYY-MM-DD.md`, private) from live sources: the calendar, the inbox and sent mail since the previous note, the master to-do list `05 To Do/To-Do.md`, this week's plans: keep the master list current (ticks flow back, waiting-on-replies tracked), and create reply drafts, never sending anything. Reads the owner's mail and calendar connectors from the vault's owner profile, so one skill serves Gmail and Outlook users. Invoke explicitly: "daily", "morning note", "start my day", "create my daily note", or from the owner's scheduled run.
+description: "Write today's morning note in a Meaningfy Obsidian vault (`04 Daily/YYYY-MM-DD.md`, private) from live sources: the calendar, the inbox and sent mail since the previous note, the master to-do list `05 To Do/To-Do.md`, this week's plans: keep the master list current (ticks flow back, waiting-on-replies tracked), and create reply drafts, never sending anything. Reads the owner's mail and calendar connectors from the vault's owner profile, so one skill serves Gmail and Outlook users. Invoke explicitly: \"daily\", \"morning note\", \"start my day\", \"create my daily note\", or from the owner's scheduled run."
 license: Apache 2.0
 disable-model-invocation: true
 metadata:

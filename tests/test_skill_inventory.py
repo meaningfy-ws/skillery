@@ -1,5 +1,5 @@
 """Codegen-freshness gate for docs/skill-inventory.md — same pattern as
-tools/opencode_gen's drift check: regenerate and diff against the committed
+tools/bundle_gen's gate: regenerate and diff against the committed
 file, so a skill/bundle change without regeneration fails the build."""
 
 from pathlib import Path

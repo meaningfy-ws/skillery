@@ -1,4 +1,4 @@
-.PHONY: install validate lint test validate-spine fix-spec-links generate-opencode skill-inventory
+.PHONY: install validate lint test validate-spine fix-spec-links bundles opencode-report skill-inventory
 
 install:
 	python3 -m venv .venv && . .venv/bin/activate && pip install -q -r requirements-dev.txt
@@ -15,17 +15,22 @@ lint:
 fix-spec-links:
 	. .venv/bin/activate && python -m tools.repo_lint --fix
 
-# generate-opencode = regenerate the committed .opencode/ tree from source
-# (skills, agents, commands, manifests, parity/gap reports) and sync versions.
-# The drift/parity/version-sync/coverage gates run inside `lint` (repo_lint).
-generate-opencode:
-	. .venv/bin/activate && python -m tools.opencode_gen generate
+# bundles = render everything derived from bundles.yaml (+ agent frontmatter + VERSION):
+# .claude-plugin/marketplace.json, the bundles/ symlink tree, tools/opencode-catalogue.json,
+# and package.json version. Run after a membership, agent-frontmatter or VERSION change; the
+# gate (bundle_gates) runs inside `lint`.
+bundles:
+	. .venv/bin/activate && python -m tools.bundle_gen generate
+
+# opencode-report = print the opencode parity and gap tables (every agent rendered; nothing written).
+opencode-report:
+	node tools/skillery-opencode.mjs report
 
 test:
 	. .venv/bin/activate && python -m pytest tests/ -q
 
 # skill-inventory = regenerate docs/skill-inventory.md (purpose + related skills,
-# derived from each SKILL.md + marketplace.json). Freshness enforced by
+# derived from each SKILL.md + bundles.yaml). Freshness enforced by
 # tests/test_skill_inventory.py, part of `make test`.
 skill-inventory:
 	. .venv/bin/activate && python -m tools.skill_inventory

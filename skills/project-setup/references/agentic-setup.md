@@ -154,7 +154,8 @@ npx -y @fission-ai/openspec@<pin> init --tools claude --profile core
 
 # the skillery (the skill routing target set)
 /plugin marketplace add meaningfy-ws/skillery
-/plugin install meaningfy-core meaningfy-building
+/plugin install meaningfy-core@meaningfy-skillery
+/plugin install meaningfy-building@meaningfy-skillery
 /plugin install superpowers@claude-plugins-official
 # ponytail — YAGNI / minimal-code discipline (its own marketplace; pairs with cosmic-python)
 /plugin marketplace add DietrichGebert/ponytail

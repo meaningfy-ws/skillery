@@ -343,7 +343,7 @@ None. No existing spec in `openspec/specs/` mentions roles or accountability (ch
   is subject to the link check (`broken_links`, `tools/repo_lint/lint.py:230`) — every relative link
   to a skill or sibling doc must resolve or `make validate` fails. Docs-root files are *not*
   `_is_illustrative`, so there is no exemption.
-- **No regeneration:** no skill, agent, or marketplace change → no `make generate-opencode`, and
+- **No regeneration:** no skill, agent, or marketplace change → no `make bundles`, and
   `docs/skill-inventory.md` is unaffected (it indexes skills, not docs).
 - **Consumers:** `define-lifecycle-playbooks`' per-role playbooks are filtered views over this
   matrix — **six playbooks, including a Work Shaper playbook**, following DEC-2R;

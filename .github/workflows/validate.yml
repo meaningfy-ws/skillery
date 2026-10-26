@@ -27,3 +27,14 @@ jobs:
           test "$v" = "$installed"
       - name: Validate the meaningfy schema + changes (structural gate)
         run: make validate-spine
+
+  # The opencode installer (skillery-opencode) and its agent renderer. No `npm install`:
+  # the package has no dependencies (single-source-distribution D6, D16).
+  opencode-installer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm run test:opencode-installer

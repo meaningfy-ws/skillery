@@ -1,0 +1,38 @@
+{
+  "modelAliases": {
+    "opus": "anthropic/claude-opus-4-8",
+    "sonnet": "anthropic/claude-sonnet-4-6",
+    "haiku": "anthropic/claude-haiku-4-5"
+  },
+  "toolNames": {
+    "Read": "read",
+    "Edit": "edit",
+    "Write": "write",
+    "Bash": "bash",
+    "Grep": "grep",
+    "Glob": "glob",
+    "WebFetch": "webfetch",
+    "Skill": "skill"
+  },
+  "toolPermission": {
+    "Edit": "edit",
+    "Write": "edit",
+    "Bash": "bash",
+    "WebFetch": "webfetch"
+  },
+  "agentModes": {
+    "delegated": "subagent",
+    "lead": "primary",
+    "scheduled": "subagent"
+  },
+  "colors": {
+    "red": "error",
+    "blue": "info",
+    "green": "success",
+    "yellow": "warning",
+    "purple": "secondary",
+    "orange": "warning",
+    "pink": "accent",
+    "cyan": "primary"
+  }
+}

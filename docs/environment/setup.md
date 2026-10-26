@@ -11,7 +11,7 @@ them. This page is the single source for what to install and how to wire a proje
 > [`docs/environment/dual-cli/setup-claude.md`](dual-cli/setup-claude.md) and
 > [`docs/environment/dual-cli/setup-opencode.md`](dual-cli/setup-opencode.md). You should not need to open
 > anything else to install the catalogue. (If you're *extending* the catalogue rather than
-> installing it — adding a skill, keeping both CLIs generated in parity — that's a different
+> installing it — adding a skill, keeping both CLIs in parity — that's a different
 > audience: start at [`AGENTS.md` → How to maintain / extend](../../AGENTS.md#how-to-maintain--extend-the-catalogue),
 > which points at the contributor-facing contract docs in [`docs/environment/dual-cli/`](dual-cli/README.md).)
 
@@ -85,7 +85,7 @@ Installation splits across two scopes. Put each thing where it belongs and avoid
 | | **User / machine level** (install once) | **Project / repo level** (per repo) |
 |---|---|---|
 | **Skills** | Install the bundles + external skills (superpowers, stream-coding, ponytail, OpenSpec; optional commit-commands / code-review / gitnexus / context7) globally via `/plugin`, so every repo can reach them | Pin the bundles a given project actually uses; wire the `openspec/` instance via `project-setup` |
-| **CLAUDE.md** | The global `~/.claude/CLAUDE.md` holds the durable coding prompt — engineering standards, layering rules, the *constitution* that applies everywhere | The repo `./CLAUDE.md` holds the repo operating manual + routing (what this repo is, how to maintain/validate it), complementing — not restating — the global file |
+| **Root binding** | The global `~/.claude/CLAUDE.md` holds the durable coding prompt — engineering standards, layering rules, the *constitution* that applies everywhere | The repo `./AGENTS.md` holds the repo operating manual + routing (`./CLAUDE.md` points to it) (what this repo is, how to maintain/validate it), complementing — not restating — the global file |
 
 **Why this split.** Skills are machine-wide tooling, so they live once at user level and propagate
 through `/plugin update`; per-project pinning only records which of them a repo relies on. The
@@ -141,5 +141,5 @@ kept as historical reference for anyone who encounters the old names elsewhere:
 | `gherkin-writer` | the `bdd-gherkin` skill |
 | `documenter` | the `technical-writing` skill |
 | `code-reviewer` | thin wrapper loading `meaningfy-code-review` (read-only, opus) |
-| `epic-planner` | thin wrapper loading `epic-planning` + `clarity-gate` |
+| `epic-planner` | thin wrapper loading `epic-planning`, `clarity-gate`, `bdd-gherkin`, external `stream-coding` |
 | `implementer` | thin wrapper loading `cosmic-python` + external `stream-coding` + `superpowers` TDD |

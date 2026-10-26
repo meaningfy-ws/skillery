@@ -1,0 +1,59 @@
+# bundles.yaml — the one bundle definition (single-source-distribution DEC-2).
+# After any membership change, or any agent-frontmatter change, run `make bundles`.
+# Never edit .claude-plugin/marketplace.json, bundles/ or tools/opencode-catalogue.json by hand.
+name: meaningfy-skillery
+owner: {name: Meaningfy, email: info@meaningfy.ws}
+description: Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently
+bundles:
+  - name: meaningfy-core
+    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy git/PR workflow, and agentic guardrails"
+    skills:
+      - technical-writing
+      - explanatory-writing
+      - writing-antipatterns
+      - meaningfy-git-workflow
+      - guardrails
+    agents: []
+  - name: meaningfy-consulting
+    description: "The advisory / front-of-funnel role: semantic-technologies coaching, the Decision Package, proposals, estimation, and executive communication"
+    skills:
+      - semantic-consulting-coach
+      - decision-package
+      - proposal-writing
+      - estimation
+      - executive-communication
+    agents: []
+  - name: meaningfy-architecture
+    description: "The design / modelling role: system architecture (C4, ArchiMate/UML, ADRs, contracts), the living conceptual model, the shared modelling conventions, and the LinkML craft (LinkML → typed artefacts + OWL/SHACL)"
+    skills:
+      - architecture
+      - conceptual-modelling
+      - modelling-conventions
+      - linkml-engineering
+    agents: []
+  - name: meaningfy-building
+    description: "The delivery / developer role: the spine build loop (epic-planning, spec-stewardship, clarity-gate, BDD, code review), clean layered Python (cosmic-python), repo scaffolding (project-setup), CD/deploy (ci-cd-delivery), and the release lifecycle (meaningfy-release)"
+    skills:
+      - epic-planning
+      - spec-stewardship
+      - clarity-gate
+      - bdd-gherkin
+      - meaningfy-code-review
+      - cosmic-python
+      - project-setup
+      - ci-cd-delivery
+      - meaningfy-release
+    agents: [epic-planner, implementer, code-reviewer]
+  - name: vault-assistant
+    description: "The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily). Needs the external obsidian@obsidian-skills plugin and the company memory"
+    skills:
+      - vault-setup
+      - vault-conventions
+      - vault-project
+      - vault-resume
+      - vault-capture
+      - vault-promote
+      - vault-tidy
+      - vault-planning
+      - vault-daily
+    agents: []

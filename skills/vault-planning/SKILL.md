@@ -1,6 +1,6 @@
 ---
 name: vault-planning
-description: Plan and review the owner's objectives in a Meaningfy Obsidian vault across four horizons: year, quarter (OKRs: objectives with measurable key results), month and week: kept in `05 To Do/Objectives YYYY.md` with its own change log, and reviewed into `04 Daily/reviews/`. Runs a planning session or a review session for one horizon; every objective comes from the owner. Use when the owner, in a vault, says "plan my week/month/quarter/year", "set my OKRs", "weekly review", "monthly/quarterly/yearly review", "what should I focus on this week", "how did this week go". The day's plan is vault-daily.
+description: "Plan and review the owner's objectives in a Meaningfy Obsidian vault across four horizons: year, quarter (OKRs: objectives with measurable key results), month and week: kept in `05 To Do/Objectives YYYY.md` with its own change log, and reviewed into `04 Daily/reviews/`. Runs a planning session or a review session for one horizon; every objective comes from the owner. Use when the owner, in a vault, says \"plan my week/month/quarter/year\", \"set my OKRs\", \"weekly review\", \"monthly/quarterly/yearly review\", \"what should I focus on this week\", \"how did this week go\". The day's plan is vault-daily."
 license: Apache 2.0
 argument-hint: "plan|review week|month|quarter|year"
 metadata:

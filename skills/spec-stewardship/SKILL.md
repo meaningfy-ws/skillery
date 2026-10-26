@@ -22,7 +22,7 @@ conventions (those live in [`spine/`](../../spine/README.md)) — it *runs* them
 
 ```
 author in openspec/changes/<id>/     (epic-planning: proposal.md + design.md + tasks.md + specs/ deltas)
-  → implement            /opsx:apply  (TDD; the implementer skill drives this)
+  → implement            /opsx:apply  (TDD; the implementer agent drives this)
   → verify               /opsx:verify (change satisfies its specs)
   → sync / archive       /opsx:sync | /opsx:archive
         archive validates the deltas, merges them into openspec/specs/<cap>/spec.md

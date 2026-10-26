@@ -1,6 +1,6 @@
 {
   "name": "meaningfy-skillery",
-  "version": "2.11.0",
+  "version": "3.0.0",
   "description": "Meaningfy skill catalogue and OpenCode bundle installer",
   "type": "module",
   "private": true,
@@ -9,8 +9,10 @@
     "skillery-opencode": "tools/skillery-opencode.mjs"
   },
   "files": [
-    ".opencode/skills",
-    ".opencode/bundles.json",
+    "skills",
+    "agents",
+    "tools/opencode-catalogue.json",
+    "tools/opencode-agent-map.json",
     "tools/opencode-plugin.mjs",
     "tools/opencode-bundle-lib.mjs",
     "tools/skillery-opencode.mjs",
