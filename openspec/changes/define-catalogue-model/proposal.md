@@ -9,6 +9,15 @@
 > - `define-ai-domains` owns the word "domain" for business areas (DEC-2).
 > - `add-devops-bundle` and `add-sales-bundle` should land after this, so their skills are born with
 >   facets and their bundles with `requires:`.
+> - **Roadmap position (owner, 2026-10-26):** step 3 of 5. The steps:
+>   1. implement `skill-crafting-method`;
+>   2. record the baseline audit against the method;
+>   3. **this EPIC**;
+>   4. revision batches from the audit, each its own change;
+>   5. bundles redesigned by activity
+>      ([`inputs/2026-10-26-plan-confirmation.md`](inputs/2026-10-26-plan-confirmation.md)).
+
+>   The roadmap is recorded in `skill-crafting-method`'s `design.md` §8.
 
 ## Appetite
 
