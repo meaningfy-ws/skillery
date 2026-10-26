@@ -18,7 +18,3 @@ change: add-business-partners
 ## Brief Description
 
 Business coach and strategic/tactical partner: becoming a successful businessman, out of cash-flow issues, then scaling; business and lean canvases, business plans for grant schemes, angel and VC pitches. "Less is more"; specific pitch skills later. Only a client-facing coach exists.
-
-## Notes and Business Rules
-
-- Seeded from S14 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: partner.

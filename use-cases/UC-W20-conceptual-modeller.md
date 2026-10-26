@@ -6,7 +6,8 @@ trigger: a domain is to be modelled or a model to be evolved
 success_guarantee: the domain has a model-driven, data-centric conceptual model, built with LLM assistance
 area: coding
 served_by:
-  agents: []
+  agents:
+  - conceptual-modeller
   skills:
   - conceptual-modelling
   - modelling-conventions
@@ -20,7 +21,3 @@ change: add-engineering-agents
 ## Brief Description
 
 Conceptual modeller and ontology engineer, LLM-assisted, model-driven, data-centric; the owner has new ideas from recent talks. Skills exist; no agent.
-
-## Notes and Business Rules
-
-- Seeded from S20 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: partner.

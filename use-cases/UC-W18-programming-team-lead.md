@@ -31,7 +31,3 @@ status: covered
 ## Brief Description
 
 Programming partner and team lead of developers, architects, designers, product developers and modellers, using all Meaningfy conventions, SDLC steps and roles. The most developed area.
-
-## Notes and Business Rules
-
-- Seeded from S18 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: lead.

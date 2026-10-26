@@ -17,7 +17,3 @@ change: add-demo-builder
 ## Brief Description
 
 Demo builder: quick demos in Neo4j, GraphWise or others, synthetic data on a demo domain, interaction shown through metaphacts, Linkurious and AI agents.
-
-## Notes and Business Rules
-
-- Seeded from S21 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: producer.

@@ -17,7 +17,3 @@ change: add-commercial-chain
 ## Brief Description
 
 Market research: identify a target market and its buyers, so commercial structures can target them.
-
-## Notes and Business Rules
-
-- Seeded from S11 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: producer.

@@ -17,7 +17,3 @@ change: add-delivery-management
 ## Brief Description
 
 Client delivery and communication, including project management: planning the work, reporting status, handing over deliveries and keeping the client informed. Nothing in the catalogue serves it yet.
-
-## Notes and Business Rules
-
-- Added by rebundle-by-activity D-1 (2026-10-26) from the owner's activity list and Q1 of its shaping Q&A.

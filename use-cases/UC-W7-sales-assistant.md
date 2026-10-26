@@ -17,7 +17,3 @@ change: add-sales-bundle
 ## Brief Description
 
 Sales assistant: groom the CRM, keep accounts, write customised emails in a predefined style; "keeping track of what to tell whom". Skills are defined outside the repo; the change is drafted.
-
-## Notes and Business Rules
-
-- Seeded from S7 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: operator.

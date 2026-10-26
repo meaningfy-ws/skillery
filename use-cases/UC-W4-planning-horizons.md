@@ -19,7 +19,3 @@ change: add-personal-assistants
 ## Brief Description
 
 Planning across horizons: daily grooming, weekly, monthly, quarterly, a life planner "including how I want to die". Day and week exist today.
-
-## Notes and Business Rules
-
-- Seeded from S4 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: producer.

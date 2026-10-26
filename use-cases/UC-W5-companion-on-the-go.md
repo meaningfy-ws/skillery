@@ -18,7 +18,3 @@ change: add-personal-assistants
 ## Brief Description
 
 Quick companion on the go: at a conference, pick a type of companion, get tasks done, save results to one or more memories, or a quick note to the vault. Only vault capture exists.
-
-## Notes and Business Rules
-
-- Seeded from S5 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: any.

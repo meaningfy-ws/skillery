@@ -17,7 +17,3 @@ change: add-commercial-chain
 ## Brief Description
 
 Commercial structure and offer: a complete, clear commercial structure, then an irresistible proposition (Hormozi, Tony Robbins or other frameworks; reference materials exist elsewhere).
-
-## Notes and Business Rules
-
-- Seeded from S12 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: producer.

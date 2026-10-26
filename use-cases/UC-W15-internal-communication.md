@@ -17,7 +17,3 @@ change: add-business-partners
 ## Brief Description
 
 Internal communication, a people's person: monthly executive briefings; weekly or daily messages based on the employee handbook, current projects, victories and achievements (much is in Odoo).
-
-## Notes and Business Rules
-
-- Seeded from S15 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: operator.

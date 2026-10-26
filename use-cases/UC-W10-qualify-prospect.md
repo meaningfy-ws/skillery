@@ -17,7 +17,3 @@ change: add-commercial-chain
 ## Brief Description
 
 Qualify a prospect in a sales conversation: against a commercial structure, the domain and readiness to buy.
-
-## Notes and Business Rules
-
-- Seeded from S10 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: partner.
