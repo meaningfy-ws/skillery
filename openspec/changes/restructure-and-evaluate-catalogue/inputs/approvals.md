@@ -34,6 +34,8 @@ seed-case rerun (about $0.10) = about $4.10, within the $5 approved. Run cap: 12
 | 2026-10-27 | harness checks | 2 `haiku` queries to inspect which commands and skills a session loads | 2 | ≈ $0.008 (est.) | yes (diagnostic) |
 | 2026-10-27 | C, Sonnet "before" | `run_eval.py`, 20 queries × 3 runs | 60 | ≈ $1.77 (est.) | **no**: the harness cannot register the skill in Claude Code 2.1.310 (design D-13) |
 
+| 2026-10-26 | C, harness smoke test | `claude plugin eval`, 1 case × 1 run on `haiku` (the skill fired) | 1 | $0.003 (measured) | yes (diagnostic) |
+
 **Total so far:** ≈ $1.81 of the $5 approved for calibration + C. **Remaining:** ≈ $3.19.
 **Re-estimate for C with D-13:** ≈ $4.10 (Sonnet before and after, 120 runs; Haiku drafts; the seed
 case) → C would end at ≈ $5.90, about $1 over the approval. **The owner decides** (tasks.md,
@@ -47,3 +49,9 @@ The owner set Haiku as the record model for all evals (`2026-10-27-reshaping-qa.
 was adopted. Batch C re-estimated on Haiku: 120 record runs + up to 120 draft runs at $0.0038 + the
 seed case ≈ $1, within the ≈ $3.19 left of the $5 approval. Task 2.4 records the owner's confirmation
 of this scope change before C runs.
+
+## Batch C dropped, 2026-10-26
+
+The owner stopped batch C before its record runs: "drop this eval of executive communication
+completely; not now; focus on systematisation". Nothing beyond the smoke test ran. Total spend
+stays ≈ $1.81.
