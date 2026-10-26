@@ -145,7 +145,7 @@
       `npx --yes @fission-ai/openspec@$(cat spine/openspec-version.txt) validate agent-authoring-standard --strict`
       green; GitNexus `detect_changes({scope: "compare", base_ref: "develop"})` shows only expected
       symbols. **Accept:** all exit 0.
-- [ ] 9.2 Spec sync at archive (`spec-stewardship`): archive the change, `make fix-spec-links`, groom
+- [x] 9.2 (archived 2026-10-26 after v3.0.0) Spec sync at archive (`spec-stewardship`): archive the change, `make fix-spec-links`, groom
       the two ADDED requirements in `openspec/specs/catalogue-governance/spec.md` and
       `openspec/specs/dual-cli-generation/spec.md`. **Accept:** `make validate` + `make validate-spine`
       green after archive.
