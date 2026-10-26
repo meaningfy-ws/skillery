@@ -31,7 +31,8 @@
   `spec/`, `hooks/`, `prompts/`, `evals/` gone, company practice in `docs/practice/`, the linkml
   generators in their skill, no skill link outside its folder, `top_level_folders`.
 - **8 done** (#90, after group 9): CHANGELOG complete for every PR; the gates green.
-- **Next:** the owner's install check from `#dist` at the first release; then merge #89, #91, #90 in
+- **Group 10 done** (`arch/release-rule`, D-14): only released items are installable.
+- **Next:** group 11 (use cases), then the owner's install check from `#dist` at the first release; then merge #89, #91, #90 in
   that order and archive the change with `spec-stewardship`. 7.1 stays optional.
 - **Waits for the owner:** 7.1
   (optional; pushes a test branch). No model runs in this change.
@@ -144,6 +145,17 @@
       `make validate-spine`, `openspec validate --all --strict` green; `ls` shows only the allowed
       folders.
 
+## 10. Only released items are installable (`arch/release-rule`, D-14)
+
+- [x] 10.1 Tests first: an unbundled skill passes lint; a released skill delegating to a WIP skill
+      and a released agent loading one each fail `wip_isolation`; `unreleased()` lists exactly the
+      WIP paths; the catalogue map shows a WIP section. **Accept:** they fail for the expected reasons.
+- [x] 10.2 The checks, `bundle_gen unreleased`, the inventory section, `dist.yml`. **Accept:** the
+      tests pass; `make validate` green.
+- [x] 10.3 Install routes to `#dist` (opencode installer, `npx skills add`), the method's §6, the
+      `dual-cli-distribution` delta, CHANGELOG. **Accept:** no install line reads `#develop`;
+      `openspec validate rebundle-by-activity --strict` green.
+
 ## 8. Release documentation and verification
 
 - [x] 8.1 CHANGELOG under Unreleased, per merged PR, written for the installer.
@@ -161,6 +173,7 @@
 - [x] 6.1 · [x] 6.2 · [x] 6.3
 - [ ] 7.1 · [x] 7.2 · [x] 7.3
 - [x] 9.1 · [x] 9.2 · [x] 9.3 · [x] 9.4 · [x] 9.5 · [x] 9.6 · [x] 9.7 · [x] 9.8 · [x] 9.9 · [x] 9.10
+- [x] 10.1 · [x] 10.2 · [x] 10.3
 - [x] 8.1 · [x] 8.2
 
 Order: 0, then 1 before 4 (coverage must exist before agents are added), 2 before 3 and 4 (the new

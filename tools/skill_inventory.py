@@ -433,14 +433,32 @@ def render(bundles: list[dict], skills: dict[str, dict], agents: dict[str, dict]
     return "\n".join(header + body + render_by_facet(bundles, skills, agents, facets))
 
 
+def render_unreleased(wip_skills: dict[str, dict], wip_agents: list[str]) -> str:
+    """Skills and agents listed in no bundle: work in progress, never published
+    (rebundle-by-activity D-14). Empty when there are none."""
+    if not wip_skills and not wip_agents:
+        return ""
+    rows = [f"| `{n}` | skill | {d['summary']} |" for n, d in sorted(wip_skills.items())]
+    rows += [f"| `{n}` | agent | |" for n in sorted(wip_agents)]
+    return "\n".join(["## Unreleased (WIP)", "",
+                      "Listed in no bundle: on `develop` only, never in a release or an install.", "",
+                      "| Name | Kind | Summary |", "|---|---|---|", *rows, ""])
+
+
 def generate(repo: Path) -> str:
-    bundles, skills = collect(repo)
+    bundles, all_skills = collect(repo)
+    bundled = {s for b in bundles for s in b["skills"]}
+    skills = {n: d for n, d in all_skills.items() if n in bundled}
     agents = collect_agents(repo, bundles, skills)
     facets = load_facets(repo)
     gaps = facet_gaps(bundles, skills, agents, facets)
     if gaps:
         raise ValueError(f"facet gaps (see {FACETS_FILE}): {gaps}")
-    return render(bundles, skills, agents, facets)
+    wip_agents = sorted(p.stem for p in (repo / "agents").glob("*.md") if p.stem not in agents) \
+        if (repo / "agents").exists() else []
+    wip = render_unreleased({n: d for n, d in all_skills.items() if n not in bundled}, wip_agents)
+    out = render(bundles, skills, agents, facets)
+    return out + ("\n" + wip if wip else "")
 
 
 def collect_use_cases(repo: Path) -> list[dict]:

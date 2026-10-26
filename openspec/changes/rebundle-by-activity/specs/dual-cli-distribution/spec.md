@@ -25,3 +25,21 @@ The change SHALL provide a committed compatibility matrix recording, for each ex
 #### Scenario: Baseline packs are identified per CLI
 - **WHEN** the catalogue or its workflow assumes a capability provided by a CLI's baseline pack
 - **THEN** the matrix names the equivalent baseline capability on each CLI or records a gap
+
+## ADDED Requirements
+
+### Requirement: Only released items are installable
+A skill or agent SHALL be released only when `bundles.yaml` lists it in a bundle; one listed in no
+bundle is work in progress, MAY exist on `develop`, and SHALL NOT be published or installable on
+either CLI. The release branch `dist` SHALL omit work-in-progress skills and agents, every
+documented install route SHALL read `dist`, and validation SHALL fail when a released skill delegates
+to, or a released agent loads, a work-in-progress skill.
+
+#### Scenario: A draft skill on develop
+- **WHEN** `skills/<draft>/` exists on `develop` and no bundle lists it
+- **THEN** `make validate` passes, the catalogue map lists it under "Unreleased (WIP)", and the next
+  release's `dist` tree does not contain it
+
+#### Scenario: A released agent loads a draft
+- **WHEN** a bundled agent's `skills:` names a skill that no bundle lists
+- **THEN** `make validate` fails, naming the agent and the skill

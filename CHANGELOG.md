@@ -13,6 +13,10 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Action needed (users)
 
+- **opencode installs now come from the `dist` branch too:** replace `#develop` with `#dist` in the
+  `npm exec --package='git+https://github.com/meaningfy-ws/skillery.git#…'` command and in
+  `npx skills add meaningfy-ws/skillery#…`. Only released skills and agents are installable on
+  either CLI.
 - **Claude Code installs now come from the `dist` branch.** `develop` no longer carries the
   generated `bundles/` tree, so a marketplace added from `meaningfy-ws/skillery` stops loading the
   bundles. Re-add it once: `/plugin marketplace remove meaningfy-skillery`, then
@@ -75,6 +79,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Action needed (contributors)
 
+- **A skill or agent in no bundle is work in progress, not an error.** It may live on `develop`; the
+  catalogue map lists it under "Unreleased (WIP)", `dist` leaves it out of every release, and nothing
+  released may delegate to or load it (`wip_isolation`). Listing it in `bundles.yaml` releases it.
 - **Folders moved (git history follows each file):** `docs/development-method.md` →
   `docs/development/README.md`, the method's one home, which also holds `docs/catalogue-architecture.*`,
   `spec/*.md` (now `creating-skills.md`, `governance.md`, `agent-template.md`, `skill-template.md`,
