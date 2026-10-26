@@ -42,7 +42,9 @@ each one serves, and which skills depend on which — see
 
 Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implementer`,
 `code-reviewer` — they pin a model + tools and load the skills above. They ship with the
-**`meaningfy-building`** bundle only; install it to get them.
+**`meaningfy-building`** bundle only; install it to get them. `meaningfy-building` requires
+`meaningfy-architecture` (install both); every bundle's requirements are in the
+[catalogue map](docs/skill-inventory.md).
 
 > **The spine is a *capability*, not a bundle.** `meaningfy-building` carries the skills that drive
 > it; the durable spine **assets** (`openspec/` + the forked schema + `spine/` docs) are *projected*

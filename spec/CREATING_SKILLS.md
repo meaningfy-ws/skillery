@@ -49,7 +49,7 @@ The fields and their limits are the specification's. On top of it:
 
 - Frontmatter is strict YAML. Quote a `description` that contains `: `
   (`description: "Use for: x"`).
-- Set `metadata.category`, and a `PURPOSE_OF` entry at registration (below). Every `metadata`
+- Declare the six facets under `metadata` (see *Facets and requirements* below). Every `metadata`
   value is a string.
 - No top-level `version`; use `metadata.version` if you need one.
 - Claude-only keys are allowed only from the recorded list (see
@@ -122,9 +122,9 @@ Put the before/after on the failure case in the PR.
    the skill serves rather than adding a bundle. Then run `make bundles`, which renders
    `.claude-plugin/marketplace.json`, `bundles/` and `tools/opencode-catalogue.json`. Never edit
    those by hand.
-2. Add a `PURPOSE_OF` entry in [`tools/skill_inventory.py`](../tools/skill_inventory.py) and run
-   `make skill-inventory` to regenerate [`docs/skill-inventory.md`](../docs/skill-inventory.md). Run
-   it again after any rename, re-bundle, re-description or re-categorisation.
+2. Run `make skill-inventory` to regenerate the catalogue map
+   [`docs/skill-inventory.md`](../docs/skill-inventory.md). Run it again after any rename,
+   re-bundle, description or facet change.
 3. Add the skill to its bundle's cell in the README's **What's inside** table and update the skill
    count above it.
 4. Run `make validate` until it is green.
@@ -133,6 +133,18 @@ A later edit to a skill's content needs no regeneration; a membership change doe
 
 An agent is registered the same way, in its bundle's `agents` list; how to write one is in
 [`agent-template.md`](agent-template.md).
+
+## Facets and requirements
+
+- **Facets.** Every skill and agent declares one value for each facet of
+  [`facets.yaml`](../facets.yaml) (`purpose`, `area`, `subject`, `posture`, `stage`, `maturity`)
+  under `metadata`. A value that is not in the file is a one-line PR to `facets.yaml` first.
+- **Requirements.** A skill named on another skill's `**Delegates:**` line in a different bundle
+  needs that bundle in the delegating bundle's `requires:` list in `bundles.yaml`.
+  `meaningfy-core` requires nothing, and cycles are not allowed. When a hand-off would break that,
+  name the skill on the Related line instead.
+- **Where docs go.** A new documentation file needs a row in the register,
+  [§8 of the development method](../docs/development-method.md#8-where-things-live).
 
 ## Document and ship
 

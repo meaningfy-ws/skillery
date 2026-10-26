@@ -13,6 +13,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Action needed (contributors)
 
+- Every skill and agent now declares six facets under `metadata` (`purpose`, `area`, `subject`,
+  `posture`, `stage`, `maturity`), each from the vocabulary in `facets.yaml`; `metadata.category` is
+  gone. `make validate` fails a missing or unknown value.
+- A skill named on another skill's `**Delegates:**` line in a different bundle needs that bundle in
+  `requires:` in `bundles.yaml`; `meaningfy-core` requires nothing, and cycles fail validation.
+- A new documentation file needs a row in the register (`docs/development-method.md` §8).
 - `make validate` now rejects skill frontmatter keys outside the Agent Skills specification (except
   the Claude-only `argument-hint` and `disable-model-invocation`), non-string `metadata` values, and
   descriptions over 1,024 characters. Put a skill version under `metadata.version`, not at the top
@@ -20,6 +26,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Changed
 
+- Five skills point to neighbours in other bundles as "related" instead of handing off to them
+  (`guardrails`, `estimation`, `executive-communication`, `linkml-engineering`, `vault-setup`), so
+  installing one bundle never leaves a hand-off dangling.
 - The skill-development method now cites the published methods instead of restating them:
   superpowers `writing-skills` for writing and testing a skill, the agentskills.io specification for
   format, size and descriptions, and OWASP Agentic Skills Top 10 for third-party content.
@@ -33,6 +42,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
+- **Install note:** `meaningfy-building` now requires `meaningfy-architecture`. If you use the
+  developer bundle, install the architecture bundle too.
+- The catalogue map (`docs/skill-inventory.md`) shows skills **and agents** by bundle and by facet
+  (purpose, area, subject, posture, stage, maturity), with each bundle's requirements.
+- The documentation register in `docs/development-method.md` §8: every doc, whether generated or
+  hand-written, and what it owns.
 - An on-demand GitHub Actions workflow, `plugin-eval`, that runs `claude plugin eval` for one bundle
   with a cost ceiling; it never runs on pull requests or releases and needs the `ANTHROPIC_API_KEY`
   repository secret. A first suite lives in `evals/meaningfy-consulting/`.

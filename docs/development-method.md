@@ -76,8 +76,8 @@ If a change helps the agent but confuses the user, it is not done.
 Wording, link, probe, or description tweak that moves no boundary → a direct PR from a feature branch.
 When unsure, EPIC.
 
-**Name the posture before you edit** an existing skill (R reusable core, C core with profiles, P
-precise house standard; [`catalogue-governance`](../openspec/specs/catalogue-governance/spec.md)).
+**Read the posture before you edit** an existing skill: it is recorded as `metadata.posture`
+(`reusable` R, `profiled` C, `precise` P; [`catalogue-governance`](../openspec/specs/catalogue-governance/spec.md)).
 An R fix adds no domain content to `SKILL.md`; a C fix adds a switch or a profile, never a silent
 default; a P fix adds a guardrail with an enforcement home.
 
@@ -88,7 +88,7 @@ default; a P fix adds a guardrail with an enforcement home.
 | 3 | **Shape the boundary** — name, the `## Boundary & Related Skills` body section, owned facts, description-as-trigger | Frontmatter and boundary-section draft; `ownership.yaml` entries | [`spec/agent-skills-spec.md`](../spec/agent-skills-spec.md) |
 | 4 | **Write it lean** — template, Quick Start with one worked example, "when not to use", details in `references/` | `skills/<name>/` | [`spec/skill-template.md`](../spec/skill-template.md), [`spec/CREATING_SKILLS.md`](../spec/CREATING_SKILLS.md) |
 | 5 | **Prove it** — one positive probe, one near-miss probe for the closest neighbour; baseline or before/after per principle 5; evals with `skill-creator` (used as is) or the hand-started workflow `.github/workflows/plugin-eval.yml`; opencode has no eval runner (a recorded gap) | `tests/trigger_probes.yaml` entries; baseline or before/after in the PR | [`tests/trigger_probes.yaml`](../tests/trigger_probes.yaml) |
-| 6 | **Register and regenerate** — bundle (`bundles.yaml` + `make bundles`), `PURPOSE_OF`, inventory, validate | Green `make validate` | [`AGENTS.md` → How to maintain](../AGENTS.md#how-to-maintain--extend-the-catalogue) |
+| 6 | **Register and regenerate** — bundle (`bundles.yaml` + `make bundles`), the six facets, inventory, validate | Green `make validate` | [`AGENTS.md` → How to maintain](../AGENTS.md#how-to-maintain--extend-the-catalogue) |
 | 7 | **Document for the user** — README "I want to…" row if it is a new entry point; CHANGELOG line in user language ("you can now…", not "refactored…") | README, CHANGELOG | [`README.md`](../README.md) |
 | 8 | **Ship** — conventional commit, PR, review; version only via the release flow | A release note users can read | [`skills/meaningfy-git-workflow`](../skills/meaningfy-git-workflow), [`skills/meaningfy-release`](../skills/meaningfy-release) |
 
@@ -257,7 +257,7 @@ A skill or agent change is done when every line below is true. It is the review 
 - [ ] Agent: type declared, dispatch contract present, body holds no method, scenarios in
       `tests/features/`.
 - [ ] Probes: one positive, one near-miss; before/after kept.
-- [ ] Exactly one bundle; `PURPOSE_OF` entry; `make skill-inventory`; `make bundles` if membership
+- [ ] Exactly one bundle; the six facets of `facets.yaml` declared; `make skill-inventory`; `make bundles` if membership
       or agent frontmatter changed; `make validate` green.
 - [ ] Licence and provenance recorded for vendored or third-party content — per-skill `LICENSE.txt`
       where it differs from the repo's, `THIRD_PARTY_NOTICES.md`, and a provenance note (source,
