@@ -4,7 +4,7 @@
 
 **Purpose:** the day-to-day operational script for a client relationship, presale through
 repeat-client. For the commercial facts each stage rests on (durations, tiers, safeguards, the
-free→paid boundary), see [`engagement-lifecycle.md`](engagement-lifecycle.md); for who is
+free→paid boundary), see [`engagement-lifecycle.md`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md); for who is
 accountable at each stage, see [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix). This
 runbook points to both; it restates neither.
 
@@ -18,14 +18,14 @@ role's view of it.
 
 Qualify the relationship and hold the free→paid boundary. No deliverable exists yet, and none is
 owed. See
-[`engagement-lifecycle.md#presale-free-no-deliverable`](engagement-lifecycle.md#presale-free-no-deliverable)
+[`engagement-lifecycle.md#presale-free-no-deliverable`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#presale-free-no-deliverable)
 for the boundary itself, and [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for who is
 accountable.
 
 ## 2. Discovery & Onboarding (Light or Deep)
 
 Move the qualified relationship into the paid package, at whichever depth the client chooses. See
-[`engagement-lifecycle.md#discovery--onboarding-paid-two-depths`](engagement-lifecycle.md#discovery--onboarding-paid-two-depths)
+[`engagement-lifecycle.md#discovery--onboarding-paid-two-depths`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#discovery--onboarding-paid-two-depths)
 for the two tiers and their safeguards, and
 [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for the accountability split with the
 Technical Consultant.
@@ -34,14 +34,14 @@ Technical Consultant.
 
 Once Discovery & Onboarding produces its outcome (the Decision Package, at the Deep tier), the
 engagement either hands off into a build contract or closes without one. See
-[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](engagement-lifecycle.md#the-outcome-semantic-layer-adoption)
+[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption)
 for what that hand-off carries, and [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for
 where your accountability ends and the Technical Consultant's or Solution Architect's begins.
 
 ## 4. Repeat-client relationship
 
 Once a contract closes, the relationship does not. See
-[`engagement-lifecycle.md#repeat-clients`](engagement-lifecycle.md#repeat-clients) for what that
+[`engagement-lifecycle.md#repeat-clients`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#repeat-clients) for what that
 relationship work is and why it has no closing condition, and
 [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for the Solution Shipper's hand-off into
 this stage.

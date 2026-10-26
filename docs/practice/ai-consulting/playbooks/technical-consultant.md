@@ -10,7 +10,7 @@
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
 - **Discovery & Onboarding, Deep tier (paid):** you are accountable (`A/R`) for producing the
   Decision Package. See
-  [`../../ai-sales/engagement-lifecycle.md`](../../ai-sales/engagement-lifecycle.md#discovery--onboarding-paid-two-depths).
+  [`../../ai-sales/engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#discovery--onboarding-paid-two-depths).
 - **Requirements & UC, shallow depth:** carried via the Deep tier, you are accountable (`A/R`)
   for the White use cases feeding the Decision. See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
@@ -34,7 +34,7 @@ Full list: [`roles-and-raci.md`](../../roles-and-raci.md#technical-consultant).
 
 - The Decision Package's ready-to-contract execution brief hands off to the build tier, becoming
   the parent of the first architecture/requirement artefacts (the golden thread). See
-  [`../../ai-sales/engagement-lifecycle.md`](../../ai-sales/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
+  [`../../ai-sales/engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
 - Deep Requirements & UC (White + Blue) past this hand-off is the **Solution Architect**'s
   accountability, not yours. See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
@@ -44,4 +44,4 @@ Full list: [`roles-and-raci.md`](../../roles-and-raci.md#technical-consultant).
 The Deep tier is done when the Decision Package exists (recommendation, in/out scope, pilot→scale
 roadmap, buy/build/defer, and the execution brief) and the engagement has explicitly stated that
 execution is always a separate engagement. See
-[`../../ai-sales/engagement-lifecycle.md`](../../ai-sales/engagement-lifecycle.md#discovery--onboarding-paid-two-depths).
+[`../../ai-sales/engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#discovery--onboarding-paid-two-depths).

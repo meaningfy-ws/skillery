@@ -30,7 +30,7 @@ Full list: [`roles-and-raci.md`](../../roles-and-raci.md#solution-architect).
 
 - The **Technical Consultant**, via the Decision Package's execution brief, or direct-to-build's
   own elicitation, hands you the decided scope for deep requirements/architecture work. See
-  [`../../ai-sales/engagement-lifecycle.md`](../../ai-sales/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
+  [`../../ai-sales/engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
 
 ## You hand off to
 

@@ -2,7 +2,7 @@
 
 The narrate-and-point detail behind the `ai-sales` domain. The canonical *coaching* intentions
 of each stage live in the coach's
-[`engagement-model.md`](../../../skills/semantic-consulting-coach/references/engagement-model.md);
+[`engagement-model.md`](engagement-model.md);
 this file states the commercial facts, maps each stage to its owning skill(s), and the boundary
 that protects it. It restates no skill's rules.
 
@@ -24,7 +24,7 @@ this relevant?"* to *"what should we do?"* or *"build this for us"*, presale has
 boundary and the next step is Discovery & Onboarding or direct-to-build below, not more free
 discussion.
 
-- **Owner:** [`semantic-consulting-coach`](../../../skills/semantic-consulting-coach/SKILL.md):
+- **Owner:** [`semantic-consulting-coach`](../SKILL.md):
   it holds the free→paid line and coaches which paid path fits.
 
 ---
@@ -60,15 +60,15 @@ a formal stop with partial delivery**, never a silent overrun.
 
 The skills behind Discovery & Onboarding, and what each owns:
 
-- [`semantic-consulting-coach`](../../../skills/semantic-consulting-coach/SKILL.md) coaches which
+- [`semantic-consulting-coach`](../SKILL.md) coaches which
   depth fits and holds the free→paid line into the Light tier.
-- [`proposal-writing`](../../../skills/proposal-writing/SKILL.md) is the **entry skill** for the Deep
+- `proposal-writing` is the **entry skill** for the Deep
   tier: qualifies the need, frames the offer, prices it as a fixed frame, and writes the
   **proposal + SoW** with an explicit in/out scope boundary.
-- [`estimation`](../../../skills/estimation/SKILL.md) is the **pricing/scoping** discipline
+- `estimation` is the **pricing/scoping** discipline
   (PERT + work breakdown + ranges + contingency) that `proposal-writing` invokes for the numbers;
   independently triggerable.
-- [`decision-package`](../../../skills/decision-package/SKILL.md) **produces** the Deep tier's
+- `decision-package` **produces** the Deep tier's
   deliverable: recommendation, in/out scope, pilot→scale roadmap, buy/build/defer, and the
   ready-to-contract execution brief that hands off to a build contract.
 
@@ -90,7 +90,7 @@ input to a proposal). Use-case elicitation produces `architecture`'s UC White (c
 UC Blue (realisation-level) behaviour specifications; at the business level expect at most a sketchy
 UC White, and often not even that: real use-case work happens once the build contract starts.
 
-- **Pointer:** [`../ai-coding/build-lifecycle.md`](../ai-coding/build-lifecycle.md) (the
+- **Pointer:** `../ai-coding/build-lifecycle.md` (the
   PROJECT and Epic tiers).
 
 ---
@@ -114,14 +114,14 @@ The Semantic Layer decomposes into **building blocks**:
 A commercial project scopes against **one** of these blocks, **several** of them, or the **whole**
 Semantic Layer, always in a controlled, scoped way. This is composable, not a menu of fixed
 contract types: a client buys exactly the blocks it needs today, and nothing stops it adding more
-later. See [`semantic-layer-services.md`](semantic-layer-services.md) for where each block is
+later. See `semantic-layer-services.md` for where each block is
 catalogued as a sellable line.
 
 The hand-off into a build contract is Discovery & Onboarding's ready-to-contract execution brief
-(see [`decision-package`](../../../skills/decision-package/SKILL.md)), which becomes the parent of
+(see `decision-package`), which becomes the parent of
 the first architecture/requirement artefacts; direct-to-build hands off via its own
 start-of-contract elicitation instead. See
-[`../ai-coding/build-lifecycle.md`](../ai-coding/build-lifecycle.md) for what happens next.
+`../ai-coding/build-lifecycle.md` for what happens next.
 
 ---
 
@@ -136,16 +136,15 @@ The relationship work that follows (governance support, semantic operations, cap
 building, sustaining and evolving what was built) is real and continues; it is described here as
 **relationship work**, not phase work, and it has an owner: **Sales/Presales leads the
 repeat-client relationship**, drawing on
-[`executive-communication`](../../../skills/executive-communication/SKILL.md) for the client-facing
+`executive-communication` for the client-facing
 messaging and board-level framing Sales/Presales uses in that role.
 
 ### Hand-off into the relationship
 
-Once the contract-conformance check (see
-[`docs/practice/ai-coding/dod-quality-gates.md`](../ai-coding/dod-quality-gates.md#delivery--release))
+Once the contract-conformance check (Meaningfy's delivery Definition of Done)
 closes a contract, the **Solution Shipper** informs Sales/Presales, who takes the relationship from
 there. See
-[`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for the accountability cells.
+`roles-and-raci.md` for the accountability cells.
 
 ### Your done
 
@@ -162,7 +161,7 @@ crystallised**, and must not be invented here. Open items:
 - **Qualification:** the criteria and signals that move a prospect to a paid stage.
 - **Pre-sale:** nurture, discovery cadence, when to propose.
 - **Sale:** closing mechanics, the proposal/SoW motion (skill exists:
-  [`proposal-writing`](../../../skills/proposal-writing/SKILL.md); the *commercial process*
+  `proposal-writing`; the *commercial process*
   around it does not).
 - **Marketing:** positioning, content, demand generation.
 - **CRM & lead communication:** pipeline, follow-up, lead nurture.
@@ -172,5 +171,5 @@ These are placeholders, not commitments. For the full, numbered list of named ga
 process itself, demo preparation, CRM/lead skill, strategic-negotiation thinking, the safeguards'
 contractual mechanics, services-inventory population, and MDLC-standalone ontology
 methodology), see the **Known gaps** table in
-[`define-blc-engagement-model`'s proposal](../../../openspec/changes/define-blc-engagement-model/proposal.md#known-gaps),
+`define-blc-engagement-model`'s proposal,
 which is the single place to check; it is not duplicated here.

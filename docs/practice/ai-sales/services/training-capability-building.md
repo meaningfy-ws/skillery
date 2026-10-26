@@ -42,6 +42,6 @@ turns up nothing to cite instead.
 
 Training & capability building is one of the six building blocks the Semantic Layer decomposes into;
 see
-[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
+[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
 Meaningfy already sells and delivers this; it just does so without a codified method to check the
 work against.

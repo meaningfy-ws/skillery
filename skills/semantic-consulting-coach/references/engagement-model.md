@@ -8,14 +8,14 @@ cognitive states, and the design questions that pressure-test an engagement.
 Discovery & Onboarding package and its two tiers, Semantic Layer adoption and
 its building blocks, the repeat-client rule — is company fact, decided and
 owned by
-`docs/practice/ai-sales/engagement-lifecycle.md`.
+[`engagement-lifecycle.md`](engagement-lifecycle.md).
 This file cites that model; it does not restate it.** Treat the *coaching
 method* below — how to elicit, how to hold a boundary, which questions to
 ask — as a working draft to pressure-test; the commercial facts it cites are
 not a draft.
 
 > **Modes ≠ Stages.** The engagement stages in
-> `docs/practice/ai-sales/engagement-lifecycle.md`
+> [`engagement-lifecycle.md`](engagement-lifecycle.md)
 > are the *commercial engagement model* the user is designing. The coach's Exploration / Alignment /
 > Synthesis are *conversation modes*. See SKILL.md. Don't conflate them.
 
@@ -31,14 +31,14 @@ of a communication artefact, the one-sentence takeaway defined in the
 The unit of value is **decision-readiness**, a *deliverable state* in which the
 organisation knows: what to do next, why, what success looks like, and what comes
 later. This is not vague advisory; it is a defined outcome. The whole point of the
-engagement structure in `docs/practice/ai-sales/engagement-lifecycle.md` is to protect that value.
+engagement structure in [`engagement-lifecycle.md`](engagement-lifecycle.md) is to protect that value.
 
 ## The free → paid boundary
 
 Only **presale** is free — because it produces no deliverable. Everything past
 it (Discovery & Onboarding at either tier, direct-to-build, or any Semantic
 Layer building block) is paid; see
-`docs/practice/ai-sales/engagement-lifecycle.md`
+[`engagement-lifecycle.md`](engagement-lifecycle.md)
 for the full statement and each stage's detail.
 
 When a conversation moves from **"is this relevant?"** to **"what should we
@@ -65,7 +65,7 @@ architecture?" · "What before a pilot?" · "How do we avoid shelfware?"
 ## The engagement stages: intentions, not instructions
 
 **Internal principle: do not collapse the stages.** Each has a distinct purpose,
-boundary, and commercial model (all stated in `docs/practice/ai-sales/engagement-lifecycle.md`, not
+boundary, and commercial model (all stated in [`engagement-lifecycle.md`](engagement-lifecycle.md), not
 here). The skill's job is to help the user make each stage's *intent* sharp and
 its *boundary* defensible, not to dictate the activities inside it or to restate
 its commercial facts.
@@ -119,7 +119,7 @@ while the frame does not (see
 `engagement-lifecycle.md`
 for the stated rule).
 
-**Boundary safeguard (principle, stated as a rule in `docs/practice/ai-sales/engagement-lifecycle.md`):**
+**Boundary safeguard (principle, stated as a rule in [`engagement-lifecycle.md`](engagement-lifecycle.md)):**
 if agreed outcomes can't be reached for reasons outside Meaningfy's control,
 **signal it explicitly** and offer a scope reduction, short extension, or clean
 stop with partial delivery, never silent overwork. **Clean handover:** execution

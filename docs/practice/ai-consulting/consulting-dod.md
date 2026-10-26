@@ -26,7 +26,7 @@ tier's deliverable is the Decision Package: a recommendation, in/out scope, a pi
 roadmap, and a buy/build/defer call, produced by running gap analysis against the client's
 strategic ambition (a distinct, separately-sellable offering from a formal maturity assessment).
 No DoD for that deliverable has been written until now, as detailed in
-[`docs/practice/ai-sales/engagement-lifecycle.md`](../ai-sales/engagement-lifecycle.md).
+[`skills/semantic-consulting-coach/references/engagement-lifecycle.md`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md).
 
 ## What it depends on
 

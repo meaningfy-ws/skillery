@@ -135,6 +135,11 @@
 - [x] 9.6 Every remaining skill link out of its folder replaced (D-13). **Accept:** the widened
       `cross_skill_paths` clean.
 - [x] 9.7 HARD-QUESTIONS and the worktree leftovers per D-13; worktrees pruned.
+- [x] 9.9 The `meaningfy` schema moves into `project-setup` (symlinked back); `scaffold.sh` copies it
+      from the skill. **Accept:** a real scaffold writes `openspec/schemas/meaningfy/`;
+      `openspec schema validate meaningfy` green.
+- [x] 9.10 The engagement lifecycle moves into `semantic-consulting-coach`; attribution-only mentions
+      of skillery docs removed from skills. **Accept:** `make validate` green.
 - [x] 9.8 Living-spec deltas; CHANGELOG line for every moved path. **Accept:** `make validate`,
       `make validate-spine`, `openspec validate --all --strict` green; `ls` shows only the allowed
       folders.
@@ -155,7 +160,7 @@
 - [x] 5.1 · [x] 5.2 · [x] 5.3
 - [x] 6.1 · [x] 6.2 · [x] 6.3
 - [ ] 7.1 · [x] 7.2 · [x] 7.3
-- [x] 9.1 · [x] 9.2 · [x] 9.3 · [x] 9.4 · [x] 9.5 · [x] 9.6 · [x] 9.7 · [x] 9.8
+- [x] 9.1 · [x] 9.2 · [x] 9.3 · [x] 9.4 · [x] 9.5 · [x] 9.6 · [x] 9.7 · [x] 9.8 · [x] 9.9 · [x] 9.10
 - [x] 8.1 · [x] 8.2
 
 Order: 0, then 1 before 4 (coverage must exist before agents are added), 2 before 3 and 4 (the new

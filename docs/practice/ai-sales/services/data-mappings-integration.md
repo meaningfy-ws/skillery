@@ -47,6 +47,6 @@ same as knowing how to design the mapping it executes.
 
 Data mappings & integration is one of the six building blocks the Semantic Layer decomposes into;
 see
-[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
+[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
 A client can still buy and receive this block today; the missing piece is a dedicated method, not
 the willingness to deliver it.

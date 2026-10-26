@@ -36,7 +36,7 @@ Full list: [`roles-and-raci.md`](../../roles-and-raci.md#solution-shipper).
 - Once the contract-conformance check closes a contract, you inform **Sales/Presales**, who leads
   the repeat-client relationship from there. See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix) and
-  [`../../ai-sales/engagement-lifecycle.md#repeat-clients`](../../ai-sales/engagement-lifecycle.md#repeat-clients).
+  [`../../ai-sales/engagement-lifecycle.md#repeat-clients`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#repeat-clients).
 - Where your verdict and the Builder's DoD disagree, neither overrides the other; you hand the
   mismatch to a logged re-shape rather than resolving it unilaterally. See
   [`dod-quality-gates.md`](../dod-quality-gates.md#delivery--release).

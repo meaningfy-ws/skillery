@@ -38,7 +38,7 @@ Full list: [`roles-and-raci.md`](../../roles-and-raci.md#work-shaper).
 
 - **Sales/Presales** and the **Technical Consultant**, via the Decision Package's execution brief or
   direct-to-build's own elicitation, hand you the decided scope to shape into a bet. See
-  [`../../ai-sales/engagement-lifecycle.md`](../../ai-sales/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
+  [`../../ai-sales/engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
 - The **Solution Architect** consults (`C`) during Epic shaping (documented collaboration, not
   a conflation). See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).

@@ -2,12 +2,12 @@
 
 Every Meaningfy engagement leads to the same place: **Semantic Layer adoption**, but no two
 clients buy the same slice of it. A client's first paid step is
-[Discovery & Onboarding](../engagement-lifecycle.md), whose Deep tier produces the **Decision
+[Discovery & Onboarding](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md), whose Deep tier produces the **Decision
 Package** (a recommendation, in/out scope, a pilot-to-scale roadmap, and a buy/build/defer call);
 from there, a build contract scopes against **one** of the
 building blocks below, **several** of them, or the **whole** Semantic Layer, always as a controlled,
 priced piece of work (see
-[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../engagement-lifecycle.md#the-outcome-semantic-layer-adoption)).
+[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption)).
 This page is the sellable catalogue of those blocks: the page a salesperson or a client-facing
 consultant uses to describe what's actually on offer, one line per service, with what it includes,
 what it produces, and who in the catalogue does the work.

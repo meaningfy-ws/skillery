@@ -46,5 +46,5 @@ client-facing agent product. Naming it as this block's owner would overstate wha
 
 Agentic framework development is one of the six building blocks the Semantic Layer decomposes into;
 see
-[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
+[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
 Meaningfy can still scope and deliver this today; only the dedicated build method is missing.

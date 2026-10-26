@@ -58,14 +58,12 @@ all in the baseline template yet — wire them when the repo needs them):
 + code-review             (pre-PR review step)
 ```
 
-`clarity-gate` is **never** a CI step — it is the human/agent semantic gate (see
-`dod-quality-gates.md`); CI may
+`clarity-gate` is **never** a CI step — it is the human/agent semantic gate; CI may
 print a reminder that it must have passed, but does not score it.
 
 ### The CI-automatable gates (R8) — and the one that is NOT
 
-CI runs the **CI-automatable** build-tier gates as `make` targets — this is the gate set, pinned
-in `docs/practice/ai-coding/dod-quality-gates.md`:
+CI runs the **CI-automatable** build-tier gates as `make` targets — this is the gate set:
 
 | Gate | `make` target | Archetype |
 |------|---------------|-----------|
@@ -77,8 +75,7 @@ in `docs/practice/ai-coding/dod-quality-gates.md`:
 
 > **`clarity-gate` is NOT a CI step.** It is the *semantic* gate that scores the PLAN (`design.md` +
 > `tasks.md`) ≥9/10 — a human/agent judgement that cannot be reduced to a deterministic check. This
-> is the **automation boundary** (single source:
-> `dod-quality-gates.md`). CI may **emit a reminder**
+> is the **automation boundary**. CI may **emit a reminder**
 > ("confirm the PLAN passed clarity-gate before merge") but must never claim to enforce it.
 
 A `doc-only` repo has no code CI: it gets `openspec validate --strict` (if it carries `openspec/`),

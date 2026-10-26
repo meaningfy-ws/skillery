@@ -143,5 +143,4 @@ It is the routing target for "keep the code minimal" in `AGENTS.md` — the rest
 
 - The spine projection (openspec/, schema pin, /opsx:*) → `spine-projection.md`.
 - Planning / EPIC content → **epic-planning** skill; spec readiness → **clarity-gate** skill.
-- The AGENTS.md-canonical + spine target layout → skillery's `docs/environment/openspec-setup-guide.md`.
 - Architecture guardrails (how `code-anatomy.md` feeds `.importlinter`) → `architecture-guardrails.md`.

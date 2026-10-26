@@ -241,6 +241,17 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   `../../../openspec/` has the same installed-path gap as the generators; it is recorded in
   `docs/future-features.md`, not fixed here.
 
+  **Follow-up (owner, 2026-10-27):** "what is that scaffold.sh for? … if so then fix it"; "fix the
+  links if we need them if not then remove them". `scaffold.sh` is `project-setup`'s executable and
+  stays; the skill now owns the schema it projects (`git mv openspec/schemas/meaningfy` →
+  `skills/project-setup/assets/openspec-schema/meaningfy`, with `openspec/schemas/meaningfy` a
+  relative symlink to it), so the copy works installed; the old path went one folder too far and
+  never worked. The engagement lifecycle is needed at run time by `semantic-consulting-coach` (its
+  references cite it and do not restate it), so it moves into that skill
+  (`references/engagement-lifecycle.md`); the people docs link to it there and `decision-package`
+  names the coach. Mentions of skillery docs that only attribute a fact the skill already states are
+  removed.
+
 ## Algorithm / approach
 
 Each task group: write the check or generator test first and see it fail; make the change; run the

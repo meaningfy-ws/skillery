@@ -7,16 +7,16 @@
 
 - **Presale (free)**: qualify the relationship and hold the free→paid boundary; no deliverable
   yet. See
-  [`../engagement-lifecycle.md`](../engagement-lifecycle.md#presale-free-no-deliverable).
+  [`../engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#presale-free-no-deliverable).
 - **Discovery & Onboarding, Light tier (paid)**: commercial lead; you are accountable (`A`), the
   Technical Consultant does the assessment work (`R`). See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
 - **Discovery & Onboarding, Deep tier (paid)**: commercial lead; you are accountable (`A`) while
   the Technical Consultant and Decision-Package skills produce the content. See
-  [`../engagement-lifecycle.md`](../engagement-lifecycle.md#discovery--onboarding-paid-two-depths).
+  [`../engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#discovery--onboarding-paid-two-depths).
 - **Partnership/account-nurture**: once a client has closed two or more contracts, you lead the
   repeat-client relationship. See
-  [`../engagement-lifecycle.md#repeat-clients`](../engagement-lifecycle.md#repeat-clients).
+  [`../engagement-lifecycle.md#repeat-clients`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#repeat-clients).
 
 ## Skills you invoke
 
@@ -44,13 +44,13 @@ Full list: [`roles-and-raci.md`](../../roles-and-raci.md#salespresales).
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
 - The Deep tier's own hand-off into a build contract is the Decision Package's execution brief;
   not yours to carry, that belongs to the Technical Consultant / `decision-package` skill. See
-  [`../engagement-lifecycle.md`](../engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
+  [`../engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
 
 ## Your done
 
 Presale is done (and a paid tier is reached) the moment the conversation shifts from "is this
 relevant?" to "what should we do?" or "build this for us"; teach generously but never deeply
 customise before that boundary. See
-[`../engagement-lifecycle.md`](../engagement-lifecycle.md#presale-free-no-deliverable).
+[`../engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#presale-free-no-deliverable).
 Partnership/account-nurture has no closing condition: it continues for as long as the
-relationship does. See [`../engagement-lifecycle.md#repeat-clients`](../engagement-lifecycle.md#repeat-clients).
+relationship does. See [`../engagement-lifecycle.md#repeat-clients`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#repeat-clients).

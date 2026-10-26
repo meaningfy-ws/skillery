@@ -23,7 +23,7 @@ it, instead of the model and the reporting layer staying two disconnected effort
 **No skill in this catalogue owns dashboarding or BI-tool connection work.** A search of the full
 skill set for business-intelligence, dashboard, or analytics-engineering content turned up nothing.
 The block is named in the commercial model (see
-[`engagement-lifecycle.md`](../engagement-lifecycle.md)) as something
+[`engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md)) as something
 Meaningfy sells, but no skill here yet defines how it actually gets built or checked.
 
 ## What you get (deliverable)
@@ -41,6 +41,6 @@ needing, but has nothing to say about BI tooling or analytics connections specif
 
 Analytics / BI connections is one of the six building blocks the Semantic Layer decomposes into;
 see
-[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
+[`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
 The block is real and sellable now; what's missing is a dedicated method for building the
 analytics/BI wiring itself.

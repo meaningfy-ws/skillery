@@ -6,7 +6,7 @@ engagement.
 **Purpose:** the day-to-day operational script for a Deep-tier engagement, from intake to hand-off.
 The techniques a step might call on live in [`methods/`](methods/); the commercial facts (tiers,
 durations, safeguards) live in
-[`docs/practice/ai-sales/engagement-lifecycle.md`](../ai-sales/engagement-lifecycle.md); the deliverable
+[`skills/semantic-consulting-coach/references/engagement-lifecycle.md`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md); the deliverable
 itself is owned by the [`decision-package`](../../../skills/decision-package/SKILL.md) skill. This
 runbook sequences those pieces; it does not restate any of them.
 
