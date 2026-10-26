@@ -8,6 +8,10 @@
 > `define-catalogue-model` (step 3), because a revision reads the skill's recorded posture first and
 > batch E needs the resolved edges. It **precedes** the bundle redesign by activity (step 5).
 
+> **Status, 2026-10-27:** Phase 1 three-quarters done (batches D, E and the docs re-check merged);
+> batch C paused on a tool incompatibility, with a proposed fix (design D-13) awaiting the owner. See
+> `tasks.md`, "Current state", for how to continue.
+
 ## Appetite
 
 **Large, in gated batches: about four to six weeks part time, spread over several PRs.** Each batch
