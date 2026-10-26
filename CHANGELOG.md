@@ -16,6 +16,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **`meaningfy-voice`** in `meaningfy-core`: the Meaningfy company voice profile as its own
   foundation skill, so every skill that writes for Meaningfy loads the same voice. Installing
   `meaningfy-core` brings it.
+- **Three more use cases:** advisory engagement (UC-W22), client delivery and project management
+  (UC-W23) and content creation for LinkedIn and blogs (UC-W24); every skill now serves at least one
+  use case.
 - **The use-case catalogue** (`use-cases/`, 21 White use cases) and its gap map
   [`docs/use-cases.md`](docs/use-cases.md): what the catalogue serves today, by area and status.
 - **Four `area` facet values:** `operations`, `business`, `legal`, `design`.
@@ -39,6 +42,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - A skill never links into another skill's folder; it names the skill (`cross_skill_paths` in
   `make validate`). A resource two skills need moves into a foundation skill.
 - A file in `use-cases/` must pass `use_case_catalogue`; `make skill-inventory` renders the gap map.
+- Every skill and agent must appear in some use case's `served_by` (`use_case_coverage` in
+  `make validate`); a new one comes with its use case.
 - A skill's trigger set lives in `evals/triggers/<skill>.json` (20 queries, seeded from its probes);
   `executive-communication` has the first one.
 

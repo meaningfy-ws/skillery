@@ -733,6 +733,27 @@ def test_use_case_body_needs_brief_and_no_lifted_sections(tmp_path):
     assert any("Brief Description" in e for e in errs) and any("'Trigger'" in e for e in errs)
 
 
+# -------------------------------------------------- use-case coverage (rebundle-by-activity D-2)
+def test_skill_serving_no_use_case_is_flagged(tmp_path):
+    _uc_repo(tmp_path, _UC)
+    _skill_fm(tmp_path, "orphan", {"name": "orphan", "description": "x"})
+    assert lint.use_case_coverage(tmp_path) == [
+        "skills/orphan: serves no use case (add it to a use case's served_by)"]
+
+
+def test_agent_serving_no_use_case_is_flagged(tmp_path):
+    _uc_repo(tmp_path, _UC)
+    (tmp_path / "agents").mkdir()
+    (tmp_path / "agents" / "lonely.md").write_text("x", encoding="utf-8")
+    assert lint.use_case_coverage(tmp_path) == [
+        "agents/lonely: serves no use case (add it to a use case's served_by)"]
+
+
+def test_coverage_is_silent_without_use_cases(tmp_path):
+    _skill_fm(tmp_path, "orphan", {"name": "orphan", "description": "x"})
+    assert lint.use_case_coverage(tmp_path) == []
+
+
 # ------------------------------------------------ foundation skills (restructure-and-evaluate D-15)
 def test_link_into_another_skill_is_flagged(tmp_path):
     _skill_fm(tmp_path, "b", {"name": "b", "description": "x"})

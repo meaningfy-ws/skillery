@@ -13,7 +13,8 @@
   approved (2.1, `inputs/approvals.md`). Spike: `inputs/2026-10-26-spike-root-source.md`.
 - **Merged:** #77 → #78 → #79 → #80. **0.1 done:** `restructure-and-evaluate-catalogue` archived
   (`archive/2026-10-26-restructure-and-evaluate-catalogue`), `catalogue-architecture` is a living spec.
-- **Next:** task groups 1 to 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
+- **Group 1 done** (`arch/use-case-coverage`): `use_case_coverage`, UC-W22–W24.
+- **Next:** task groups 2 to 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
 - **Waits for the owner:** 4.3 (status of UC-W8, W19, W20), 6.2 (any changed register cell), 7.1
   (optional; pushes a test branch). No model runs in this change.
 
@@ -27,10 +28,10 @@
 
 ## 1. Use cases and coverage (`arch/use-case-coverage`)
 
-- [ ] 1.1 `use_case_coverage` (D-2) with negative tests: an orphan skill and an orphan agent are each
+- [x] 1.1 `use_case_coverage` (D-2) with negative tests: an orphan skill and an orphan agent are each
       flagged; a repo without `use-cases/` is silent. **Accept:** the tests pass; on the real repo the
       check lists exactly the six orphans of the Context.
-- [ ] 1.2 Write UC-W22, UC-W23, UC-W24 (D-1); add the three skills to UC-W18; `make skill-inventory`.
+- [x] 1.2 Write UC-W22, UC-W23, UC-W24 (D-1); add the three skills to UC-W18; `make skill-inventory`.
       **Accept:** `use_case_coverage` clean; `docs/use-cases.md` lists 24 use cases.
 
 ## 2. The `purpose` facet (`arch/purpose-activities`)
@@ -108,7 +109,7 @@
 ## Roadmap
 
 - [x] 0.1 · [x] 0.2
-- [ ] 1.1 · [ ] 1.2
+- [x] 1.1 · [x] 1.2
 - [x] 2.1 · [ ] 2.2
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3

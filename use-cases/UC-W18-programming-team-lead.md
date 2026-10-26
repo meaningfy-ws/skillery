@@ -20,6 +20,9 @@ served_by:
   - project-setup
   - ci-cd-delivery
   - meaningfy-release
+  - meaningfy-git-workflow
+  - guardrails
+  - technical-writing
 status: covered
 ---
 

@@ -4,17 +4,18 @@
      DO NOT hand-edit. Source: use-cases/*.md frontmatter and facets.yaml.
      tests/test_skill_inventory.py fails the build if this drifts. -->
 
-21 White use cases in [`use-cases/`](../use-cases/), one file each. **Status** is `covered` when the agents and skills that serve it do the whole job, `partial` when they do part of it or a drafted change holds its materials, `missing` when nothing in the catalogue serves it. **Change** is the follow-on change that closes it.
+24 White use cases in [`use-cases/`](../use-cases/), one file each. **Status** is `covered` when the agents and skills that serve it do the whole job, `partial` when they do part of it or a drafted change holds its materials, `missing` when nothing in the catalogue serves it. **Change** is the follow-on change that closes it.
 
 ## Gap map
 
 | Area | covered | partial | missing |
 |---|---|---|---|
 | `coding` | 1 | 2 | 0 |
+| `consulting` | 0 | 1 | 1 |
 | `sales` | 0 | 2 | 5 |
 | `personal` | 1 | 2 | 2 |
 | `operations` | 0 | 1 | 0 |
-| `business` | 0 | 1 | 2 |
+| `business` | 0 | 2 | 2 |
 | `legal` | 0 | 0 | 1 |
 | `design` | 0 | 0 | 1 |
 
@@ -24,9 +25,18 @@ Building software with AI agents.
 
 | Use case | Primary actor | Status | Served by | Change |
 |---|---|---|---|---|
-| [UC-W18](../use-cases/UC-W18-programming-team-lead.md) Programming partner and team lead | a Meaningfy developer | `covered` | `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release` | — |
+| [UC-W18](../use-cases/UC-W18-programming-team-lead.md) Programming partner and team lead | a Meaningfy developer | `covered` | `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `meaningfy-git-workflow`, `guardrails`, `technical-writing` | — |
 | [UC-W19](../use-cases/UC-W19-system-architect.md) System architect | a Meaningfy architect | `partial` | `architecture` | `add-engineering-agents` |
 | [UC-W20](../use-cases/UC-W20-conceptual-modeller.md) Conceptual modeller and ontology engineer | a Meaningfy modeller | `partial` | `conceptual-modelling`, `modelling-conventions`, `linkml-engineering` | `add-engineering-agents` |
+
+## consulting
+
+Advising clients.
+
+| Use case | Primary actor | Status | Served by | Change |
+|---|---|---|---|---|
+| [UC-W22](../use-cases/UC-W22-advisory-engagement.md) Advisory engagement | a Meaningfy consultant | `partial` | `semantic-consulting-coach`, `decision-package`, `executive-communication` | `add-advisory-agent` |
+| [UC-W23](../use-cases/UC-W23-client-delivery-and-project-management.md) Client delivery and project management | a Meaningfy project lead | `missing` | — | `add-delivery-management` |
 
 ## sales
 
@@ -71,6 +81,7 @@ Running and growing the company, negotiation and internal communication.
 | [UC-W13](../use-cases/UC-W13-negotiation-partner.md) Negotiation thinking partner | the owner | `missing` | — | `add-commercial-chain` |
 | [UC-W14](../use-cases/UC-W14-business-coach.md) Business coach and strategic partner | the owner | `partial` | `semantic-consulting-coach` | `add-business-partners` |
 | [UC-W15](../use-cases/UC-W15-internal-communication.md) Internal communication | the owner | `missing` | — | `add-business-partners` |
+| [UC-W24](../use-cases/UC-W24-content-creation.md) Content creation for LinkedIn and blogs | the owner | `partial` | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice` | `add-content-creation` |
 
 ## legal
 

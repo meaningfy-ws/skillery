@@ -325,6 +325,24 @@ def use_case_catalogue(repo: Path) -> list[str]:
     return out
 
 
+def use_case_coverage(repo: Path) -> list[str]:
+    """Every skill and agent appears in the served_by of at least one use case (rebundle-by-activity
+    D-2). Silent where the repo has no use-cases/."""
+    root = repo / USE_CASES_DIR
+    if not root.exists():
+        return []
+    served: set[str] = set()
+    for p in root.glob("*.md"):
+        by = (_frontmatter(p.read_text(encoding="utf-8")) or {}).get("served_by") or {}
+        if isinstance(by, dict):
+            served |= {f"agents/{a}" for a in by.get("agents") or []}
+            served |= {f"skills/{s}" for s in by.get("skills") or []}
+    agents = sorted(p.stem for p in (repo / "agents").glob("*.md")) if (repo / "agents").exists() else []
+    return [f"{item}: serves no use case (add it to a use case's served_by)"
+            for item in [f"skills/{s}" for s in sorted(_skill_paths(repo))] + [f"agents/{a}" for a in agents]
+            if item not in served]
+
+
 def cross_skill_paths(repo: Path) -> list[str]:
     """No link from one skill's files resolves into another skill's folder (D-15): a skill names
     another skill; a resource two skills need moves into a foundation skill."""
@@ -1001,7 +1019,7 @@ ALL_CHECKS = (
     boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
-    cross_skill_paths,
+    cross_skill_paths, use_case_coverage,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a
