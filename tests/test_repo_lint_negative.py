@@ -754,6 +754,38 @@ def test_coverage_is_silent_without_use_cases(tmp_path):
     assert lint.use_case_coverage(tmp_path) == []
 
 
+# --------------------------------------- use-case changes on the register (rebundle-by-activity D-12)
+def _features(tmp_path, text="| Visual design | UC-W1 | `add-visual-design` |"):
+    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "docs" / "future-features.md").write_text(text, encoding="utf-8")
+
+
+def test_missing_use_case_with_unregistered_change_is_flagged(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "status": "missing", "change": "add-ghost"})
+    _features(tmp_path)
+    assert lint.use_case_changes_registered(tmp_path) == [
+        "use-cases/UC-W1-vault-work.md: change 'add-ghost' is not in docs/future-features.md"]
+
+
+def test_partial_use_case_without_change_is_flagged(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "status": "partial"})
+    _features(tmp_path)
+    assert lint.use_case_changes_registered(tmp_path) == [
+        "use-cases/UC-W1-vault-work.md: status 'partial' needs a change listed in docs/future-features.md"]
+
+
+def test_registered_change_and_covered_use_case_pass(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "status": "missing", "change": "add-visual-design"})
+    _uc_repo(tmp_path, {**_UC, "id": "UC-W2"}, name="UC-W2-covered.md")
+    _features(tmp_path)
+    assert lint.use_case_changes_registered(tmp_path) == []
+
+
+def test_changes_check_is_silent_without_the_register(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "status": "missing"})
+    assert lint.use_case_changes_registered(tmp_path) == []
+
+
 # ------------------------------------------------ foundation skills (restructure-and-evaluate D-15)
 def test_link_into_another_skill_is_flagged(tmp_path):
     _skill_fm(tmp_path, "b", {"name": "b", "description": "x"})

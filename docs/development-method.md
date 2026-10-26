@@ -204,7 +204,8 @@ at any depth below it.
 |---|---|---|---|
 | `docs/skill-inventory.md` | generated | [`bundles.yaml`](../bundles.yaml), [`facets.yaml`](../facets.yaml), the skill and agent files | `make skill-inventory` |
 | `docs/use-cases.md` | generated | the use-case catalogue [`use-cases/`](../use-cases/) (one White use case per file, `use_case_catalogue` check) and [`facets.yaml`](../facets.yaml): the gap map by area | `make skill-inventory` |
-| `docs/catalogue-architecture.md` | hand-written | the catalogue's conceptual model (class view source `docs/catalogue-architecture.class.puml`), where each class lives, the area↔domain mapping, the target structure, the agent roster and the roadmap | — |
+| `docs/catalogue-architecture.md` | hand-written | the catalogue's conceptual model (class view source `docs/catalogue-architecture.class.puml`), where each class lives, the area↔domain mapping, the target structure and the built agents | — |
+| `docs/future-features.md` | hand-written | the features still to build: use cases, bundle, agents and skills to build, material needed and in hand, and the change (`use_case_changes_registered` checks every partial or missing use case's change is listed) | — |
 | `evals/README.md` | hand-written | how to run trigger sets and outcome suites, isolated and within an approved spend | — |
 | `README.md` | hand-written | What the catalogue is and how to install it | — |
 | `AGENTS.md` | hand-written | The repo operating rules for any CLI, including the [dual-CLI authoring rules](../AGENTS.md#dual-cli-authoring-rules) | — |

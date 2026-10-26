@@ -64,67 +64,27 @@ not here.
 
 | Bundle | Areas | Skills | Agents | Requires |
 |---|---|---|---|---|
-| `meaningfy-core` | cross-cutting | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `meaningfy-git-workflow`, `guardrails` | — | — |
-| `meaningfy-building` | coding | the nine build skills | `epic-planner`, `implementer`, `code-reviewer` | `meaningfy-architecture` |
-| `meaningfy-architecture` | coding | `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering` | planned: `system-architect`, `conceptual-modeller` | — |
-| `meaningfy-consulting` | consulting | `semantic-consulting-coach`, `decision-package`, `proposal-writing`, `estimation`, `executive-communication` | — | — |
 | `meaningfy-sales` *(planned)* | sales | the sales package's skills; the commercial chain | planned: `sales-assistant`, `qualifier`, `offer-designer`, `proposal-writer`, `demo-builder` | `meaningfy-consulting` |
 | `meaningfy-devops` *(planned)* | operations | the devops package's skills | planned: `devops-engineer` | `meaningfy-building` |
-| `vault-assistant` | personal | the nine vault skills | planned: `planner`, `secretary`, `life-coach`, `companion` | — |
 | `meaningfy-business` *(planned)* | business, legal | negotiation, internal communication, contracts | planned: `business-coach`, `negotiation-partner`, `internal-comms`, `contract-drafter` | `meaningfy-consulting` |
 | `meaningfy-design` *(planned)* | design | visual identity, diagram and slide styles | planned: `graphic-designer` | — |
 
 ## Agent roster
 
-*Approved by the owner, 2026-10-26.* One row per agent. `type` is the agent
-template's; `partner` is the open fourth type (Q-2), settled by `extend-agent-template`.
+*Approved by the owner, 2026-10-26; the built agents only.* One row per agent; `type` is the agent
+template's (a thinking partner is a `lead` agent). The agents still to build are in
+[`future-features.md`](future-features.md).
 
 | Agent | Type | Use cases | Bundle | Change |
 |---|---|---|---|---|
 | `epic-planner` | delegated | UC-W18 | `meaningfy-building` | exists |
 | `implementer` | delegated | UC-W18 | `meaningfy-building` | exists |
 | `code-reviewer` | delegated | UC-W18 | `meaningfy-building` | exists |
-| `system-architect` | partner | UC-W19 | `meaningfy-architecture` | `add-engineering-agents` |
-| `conceptual-modeller` | partner | UC-W20 | `meaningfy-architecture` | `add-engineering-agents` |
-| `sales-assistant` | scheduled | UC-W7 | `meaningfy-sales` | `add-sales-bundle` |
-| `devops-engineer` | delegated | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
-| `proposal-writer` | delegated | UC-W8 | `meaningfy-sales` | `add-commercial-chain` |
-| `qualifier` | partner | UC-W9, UC-W10 (one method, three variants) | `meaningfy-sales` | `add-commercial-chain` |
-| `market-researcher` | delegated | UC-W11 | `meaningfy-sales` | `add-commercial-chain` |
-| `offer-designer` | delegated | UC-W12 | `meaningfy-sales` | `add-commercial-chain` |
-| `negotiation-partner` | partner | UC-W13 | `meaningfy-business` | `add-commercial-chain` |
-| `planner` | delegated | UC-W4 | `vault-assistant` | `add-personal-assistants` |
-| `secretary` | scheduled | UC-W3 | `vault-assistant` | `add-personal-assistants` |
-| `life-coach` | partner | UC-W2 | `vault-assistant` | `add-personal-assistants` |
-| `companion` | open | UC-W5 | `vault-assistant` | `add-personal-assistants` |
-| `graphic-designer` | delegated | UC-W17 | `meaningfy-design` | `add-visual-design` |
-| `business-coach` | partner | UC-W14 | `meaningfy-business` | `add-business-partners` |
-| `internal-comms` | scheduled | UC-W15 | `meaningfy-business` | `add-business-partners` |
-| `contract-drafter` | delegated | UC-W16 | `meaningfy-business` | `add-legal-documents` |
-| `demo-builder` | delegated | UC-W21 | `meaningfy-sales` | `add-demo-builder` |
+| `system-architect` | lead | UC-W19 | `meaningfy-architecture` | exists |
+| `conceptual-modeller` | lead | UC-W20 | `meaningfy-architecture` | exists |
+| `proposal-writer` | delegated | UC-W8 | `meaningfy-sales` | exists |
 
 ## Roadmap
 
-*Approved by the owner, 2026-10-26; `rebundle-by-activity` moved first and the evaluation split
-out the same day.* Follow-on changes in waves, from this month's priorities. Each use case's `change` names one of them, so [`use-cases.md`](use-cases.md) shows what
-each change closes.
-
-| Wave | Change | Closes | Kind |
-|---|---|---|---|
-| 0 | `restructure-and-evaluate-catalogue` | this page, the use-case catalogue, `meaningfy-voice` | infrastructure |
-| 1 | `rebundle-by-activity` | the target structure above, every use case catalogued, the agents that today's skills can serve, and the feature roadmap for the rest | infrastructure |
-| 1 | `evaluate-catalogue` | behavioural evidence for every skill and agent, after the re-bundling (parked) | assurance |
-| 1 | `add-sales-bundle` | UC-W7 | use cases |
-| 1 | `add-engineering-agents` | UC-W19, UC-W20 | use cases |
-| 1 | `extend-agent-template` | the agent aspects (runtime, memory, dependencies, tool policy) and the `partner` type (Q-2) | infrastructure |
-| 1 | `add-external-dependency-register` | one structured entry per external dependency, the source of `compatibility.md` and `mcp-setup.md` | infrastructure |
-| 2 | `add-devops-bundle` | UC-W6 | use cases |
-| 2 | `add-commercial-chain` | UC-W8 to UC-W13 | use cases |
-| 2 | `add-odoo-memory-skill` | how to store and find things in Odoo | infrastructure |
-| 3 | `add-personal-assistants` | UC-W2 to UC-W5 | use cases |
-| 3 | `add-vault-local-config` | UC-W1 (colleagues' local variations, DEC-13) | use cases |
-| 4 | `add-visual-design` | UC-W17 | use cases |
-| 4 | `add-business-partners` | UC-W14, UC-W15 | use cases |
-| 4 | `add-legal-documents` | UC-W16 | use cases |
-| 4 | `add-demo-builder` | UC-W21 | use cases |
-| later | `add-config-items` | rules and settings a bundle or project may ship | infrastructure |
+The features still to build, with the material each needs and the change that will build it, are in
+[`future-features.md`](future-features.md).
