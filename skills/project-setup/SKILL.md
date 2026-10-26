@@ -181,4 +181,7 @@ model + generation → [`../conceptual-modelling/SKILL.md`](../conceptual-modell
 content → [`../ci-cd-delivery/SKILL.md`](../ci-cd-delivery/SKILL.md); EPIC/PLAN content + spec
 stewardship → `epic-planning` and the spine; doc prose → `technical-writing`; git mechanics →
 `meaningfy-git-workflow`. This skill creates the *containers*; those skills fill them.
-**Related:** all of the above, plus the external `superpowers` and `stream-coding` skills.
+**Related:** the delegation targets above, plus `ci-cd-delivery` (the CD side of the CI this skill
+scaffolds), `meaningfy-release` (the release workflow a scaffolded repo adopts), `linkml-engineering`
+(its gates and per-module layout, when the project uses LinkML), and the external `superpowers` and
+`stream-coding` skills.

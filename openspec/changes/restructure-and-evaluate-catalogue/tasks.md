@@ -22,25 +22,25 @@
 
 ## 1. Shared scaffolding (no model runs)
 
-- [ ] 1.1 Write `evals/README.md` (D-11): how to run a trigger set (`run_eval.py` command, flags, the
+- [x] 1.1 Write `evals/README.md` (D-11): how to run a trigger set (`run_eval.py` command, flags, the
       pinned `skill-creator` copy and its date) and an outcome suite (local `claude plugin eval` with
       a temporary plugin; the `plugin-eval` workflow), the default models (D-4) and the cost
       ceilings. Add a register row for it in `docs/development-method.md` §8. **Accept:** `make
       validate` green; the README names both commands with their flags, the isolation steps (D-2), the run-count cap (D-12) and the
       suite options (D-3); `grep -n "evals/README.md" docs/development-method.md` hits in §8.
-- [ ] 1.2 Write `inputs/evidence/TEMPLATE.md` with the D-1 columns. **Accept:** the template's header is
+- [x] 1.2 Write `inputs/evidence/TEMPLATE.md` with the D-1 columns. **Accept:** the template's header is
       exactly the ten columns of D-1.
 
 ## 2. Phase 1: batches D, E, C and the re-check
 
-- [ ] 2.1 **Batch D** (no model runs): a positive and a near-miss probe for `linkml-engineering` and
+- [x] 2.1 **Batch D** (no model runs): a positive and a near-miss probe for `linkml-engineering` and
       `modelling-conventions` (`near_miss_of` the closest neighbour). **Accept:** the
       `trigger-probe` advisory no longer lists either skill; `inputs/evidence/D.md` lists the 4 probes.
-- [ ] 2.2 **Batch E** (no model runs): re-count the one-way Related pairs at the start (20 on
+- [x] 2.2 **Batch E** (no model runs): re-count the one-way Related pairs at the start (20 on
       2026-10-27; 19 in the audit), then resolve each by D-9. **Accept:** `inputs/evidence/E.md` has
       a row per pair; `reciprocal_related_report` lists only the pairs whose row says why they stay
       one-way.
-- [ ] 2.3 **Batch C** trigger set: write `evals/triggers/executive-communication.json` (10
+- [x] 2.3 **Batch C** trigger set: write `evals/triggers/executive-communication.json` (10
       should-trigger, 10 near-misses, seeded from the probes). **Accept:** 20 entries, valid JSON, in
       the `{query, should_trigger}` format.
 - [ ] 2.4 **Batch C** in the isolated environment (D-2, D-4, D-12): Sonnet "before"; draft the
@@ -122,8 +122,8 @@ Sonnet after → evidence → PR. Each sub-batch's run count is capped by D-12.
 ## Roadmap
 
 - [x] 0.1 · [ ] 0.2 · [ ] 0.3
-- [ ] 1.1 · [ ] 1.2
-- [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
+- [x] 1.1 · [x] 1.2
+- [x] 2.1 · [x] 2.2 · [x] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4
 - [ ] 4.0 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4
 - [ ] 5.1 · [ ] 5.2 · [ ] 5.3

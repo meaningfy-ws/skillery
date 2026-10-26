@@ -150,8 +150,12 @@ items recast for decision-readiness.
 - System/solution architecture that descends from the package →
   [`../architecture/SKILL.md`](../architecture/SKILL.md).
 
-**Related:** `semantic-consulting-coach`, `executive-communication`, `conceptual-modelling`,
-`architecture`, `writing-antipatterns` (Decision genre failure modes).
+The first-cut model and the downstream architecture are hand-offs, not peers: see also
+`conceptual-modelling` for the model sketch and `architecture` for the system design that follows.
+
+**Related:** `semantic-consulting-coach`, `executive-communication`, `proposal-writing` (the SoW that
+sells the Decision Phase), `estimation` (effort ranges for the sequenced options),
+`writing-antipatterns` (Decision genre failure modes).
 
 ## Tone & style
 

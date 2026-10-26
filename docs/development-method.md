@@ -203,6 +203,7 @@ at any depth below it.
 | View | Kind | Source or topic | Rendered by |
 |---|---|---|---|
 | `docs/skill-inventory.md` | generated | [`bundles.yaml`](../bundles.yaml), [`facets.yaml`](../facets.yaml), the skill and agent files | `make skill-inventory` |
+| `evals/README.md` | hand-written | how to run trigger sets and outcome suites, isolated and within an approved spend | — |
 | `README.md` | hand-written | What the catalogue is and how to install it | — |
 | `AGENTS.md` | hand-written | The repo operating rules for any CLI, including the [dual-CLI authoring rules](../AGENTS.md#dual-cli-authoring-rules) | — |
 | `CLAUDE.md` | hand-written | Claude Code-only additions to `AGENTS.md` | — |

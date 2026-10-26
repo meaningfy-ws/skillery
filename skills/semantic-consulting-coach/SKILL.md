@@ -263,4 +263,4 @@ technique, design questions) and the coaching working modes (Exploration / Align
 [`docs/ai-sales/engagement-lifecycle.md`](../../docs/ai-sales/engagement-lifecycle.md).
 **Delegates:** persuasive framing/voice → `executive-communication`; the paid Decision Package deliverable
 → `decision-package`; proposal/SoW authoring → `proposal-writing`; effort/sequencing → `estimation`.
-**Related:** `decision-package`, `proposal-writing`, `executive-communication`, `estimation`, `writing-antipatterns` (Coaching-dialogue genre failure modes — where premature structure is a defection, not craft).
+**Related:** `decision-package`, `proposal-writing`, `executive-communication`, `writing-antipatterns` (Coaching-dialogue genre failure modes — where premature structure is a defection, not craft).

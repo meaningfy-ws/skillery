@@ -83,5 +83,6 @@ A no to the move is a complete close: the status and final entry stand, the fold
 project homes and the move procedure → `vault-conventions`; starting and ending work sessions →
 [`vault-resume`](../vault-resume/SKILL.md) and [`vault-capture`](../vault-capture/SKILL.md).
 
-**Related:** `vault-conventions`, `vault-resume`, `vault-capture`, `vault-tidy`, `vault-planning`,
-`epic-planning` (software EPICs, not vault projects).
+A software EPIC is not a vault project: see also `epic-planning` for shaping one.
+
+**Related:** `vault-conventions`, `vault-resume`, `vault-capture`, `vault-tidy`, `vault-planning`.
