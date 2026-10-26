@@ -22,12 +22,12 @@
   the voice channel placeholders.
 - **Group 6 built** (`arch/dependency-register`): register, check, renderer; the six changed name cells
   approved (6.2).
-- **7.2 done** (#88): `dist` published by the workflow on the merge of #88; its tree matches
-  `bundles.yaml` exactly (all links). The install check from `#dist` is postponed by the owner
-  (2026-10-26) and must pass before the 7.3 PR merges.
-- **7.3 written** (`arch/bundles-generated`): `bundles/` ignored and untracked, CI link check,
-  `#dist` install lines, migration note; adds the `dual-cli-generation` delta the PLAN missed.
-- **Next:** 8 (release documentation and verification).
+- **7.2 done** (#88); **D-8 revised** (owner, 2026-10-26, `inputs/2026-10-26-release-and-folders-qa.md`):
+  `dist` is published on release tags only, with a `<tag>-dist` tag. The install check from `#dist`
+  moves to the first release; 7.3 (#89) merges then.
+- **7.3 written** (#89): `bundles/` ignored and untracked, CI link check, `#dist` install lines,
+  migration note, the `dual-cli-generation` delta.
+- **Next:** task group 9 (folder restructure, owner R3/R4), then 8.
 - **Waits for the owner:** 7.1
   (optional; pushes a test branch). No model runs in this change.
 

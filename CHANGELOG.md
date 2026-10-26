@@ -17,8 +17,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   generated `bundles/` tree, so a marketplace added from `meaningfy-ws/skillery` stops loading the
   bundles. Re-add it once: `/plugin marketplace remove meaningfy-skillery`, then
   `/plugin marketplace add meaningfy-ws/skillery#dist`, then reinstall your bundles
-  (`/plugin install <bundle>@meaningfy-skillery`). Later updates work as before with
-  `/plugin marketplace update`. opencode installs are unchanged.
+  (`/plugin install <bundle>@meaningfy-skillery`). `dist` moves at each release; later updates work as
+  before with `/plugin marketplace update`. opencode installs are unchanged.
 - **`proposal-writing` and `estimation` moved from `meaningfy-consulting` to the new
   `meaningfy-sales` bundle**, which requires `meaningfy-consulting`. If you use either skill, install
   `meaningfy-sales`: on Claude, `/plugin install meaningfy-sales@meaningfy-skillery`; on opencode,
@@ -63,8 +63,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 ### Action needed (contributors)
 
 - **`bundles/` is no longer committed:** it is git-ignored, `make bundles` creates it locally, and
-  `.github/workflows/dist.yml` publishes it on `dist`. To test a branch on Claude Code before merge,
-  push a throwaway branch with the tree force-added (`git add -f bundles`).
+  `.github/workflows/dist.yml` publishes it on `dist` at each release. To test unreleased work on
+  Claude Code, push a throwaway branch with the tree force-added (`git add -f bundles`).
 - **The `purpose` facet now names Meaningfy's activities:** `software-development`, `modelling`,
   `client-delivery`, `advising`, `content`, `offers`, `proposals`, `crm`, `devops`, `knowledge`
   (`facets.yaml`). `writing`, `offering`, `planning`, `building`, `quality` and `delivery` are gone;
@@ -72,9 +72,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - A skill never links into another skill's folder; it names the skill (`cross_skill_paths` in
   `make validate`). A resource two skills need moves into a foundation skill.
 - A file in `use-cases/` must pass `use_case_catalogue`; `make skill-inventory` renders the gap map.
-- **The `dist` branch** is published by `.github/workflows/dist.yml` on every push to `develop`:
-  `develop`'s tree plus the generated `bundles/` links, one appended commit per push. Never edit
-  or force-push it.
+- **The `dist` branch** is published by `.github/workflows/dist.yml` on each release tag `v*`: the
+  release's tree plus the generated `bundles/` links, one appended commit per release, tagged
+  `<tag>-dist`. Its commits never enter `develop`; never edit or force-push it.
 - **External dependencies live in [`dependencies.yaml`](dependencies.yaml)**, one entry each (source,
   pin, provenance, opencode status, per-CLI install). The dependency tables in
   `docs/environment/dual-cli/compatibility.md` and `mcp-setup.md` are generated from it by

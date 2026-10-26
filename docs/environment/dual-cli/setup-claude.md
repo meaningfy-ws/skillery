@@ -122,7 +122,7 @@ confirm the spine registered by running `/opsx:propose` — it should prompt you
 description rather than say the command is unknown.
 
 **Testing a branch** (maintainers): a feature branch carries no `bundles/` (it is generated), so it
-cannot be installed as it is. Test after merge from `#dist`, or push a throwaway branch with the
+cannot be installed as it is. `#dist` moves only at releases. To test unreleased work, push a throwaway branch with the
 generated tree added (`make bundles && git add -f bundles`) and install that
 (`/plugin marketplace add meaningfy-ws/skillery#<branch>`); never install from a local path — a
 local-path marketplace does not load the bundles' agents.
