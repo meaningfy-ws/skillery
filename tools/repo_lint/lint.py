@@ -231,11 +231,11 @@ def skill_size_report(repo: Path) -> list[str]:
     """Advisory: SKILL.md bodies above the specification's budget."""
     out: list[str] = []
     for name in _skill_dirs(repo):
-        text = _skill_md(repo, name)
+        text = _body(_skill_md(repo, name))
         lines, tokens = len(text.splitlines()), len(text) // 4
         if lines > ADVISORY_SKILL_LINES or tokens > ADVISORY_SKILL_TOKENS:
-            out.append(f"{name}: SKILL.md is {lines} lines, ~{tokens} tokens "
-                       f"(budget {ADVISORY_SKILL_LINES} lines / {ADVISORY_SKILL_TOKENS} tokens)")
+            out.append(f"{name}: SKILL.md body is {lines} lines, ~{tokens} tokens "
+                       f"(body budget {ADVISORY_SKILL_LINES} lines / {ADVISORY_SKILL_TOKENS} tokens)")
     return out
 
 
@@ -359,12 +359,18 @@ def broken_links(repo: Path) -> list[str]:
     return out
 
 
+def _body(text: str) -> str:
+    """SKILL.md without its frontmatter: size budgets apply to the body (agentskills.io)."""
+    m = _FRONTMATTER.match(text)
+    return text[m.end():] if m else text
+
+
 def skill_too_long(repo: Path, limit: int = MAX_SKILL_LINES) -> list[str]:
     out: list[str] = []
     for name in _skill_dirs(repo):
-        n = len(_skill_md(repo, name).splitlines())
+        n = len(_body(_skill_md(repo, name)).splitlines())
         if n > limit:
-            out.append(f"{name}: SKILL.md is {n} lines (> {limit})")
+            out.append(f"{name}: SKILL.md body is {n} lines (> {limit})")
     return out
 
 
@@ -691,7 +697,7 @@ def body_agnosticism(repo: Path) -> list[str]:
 # ------------------------------------------- agent authoring standard (spec/agent-template.md)
 MAX_AGENT_BODY_LINES = 40
 AGENT_REQUIRED_FIELDS = ("name", "description", "type", "model", "tools", "skills")
-AGENT_OPTIONAL_FIELDS = ("disallowedTools", "color")
+AGENT_OPTIONAL_FIELDS = ("disallowedTools", "color", "metadata")
 CLAUDE_AGENT_COLORS = {"red", "blue", "green", "yellow", "purple", "orange", "pink", "cyan"}
 _AGENT_LIST_FIELDS = ("tools", "skills", "disallowedTools")
 _CONTRACT_LABELS = ("Input", "Output", "Side effects", "Refuses")
