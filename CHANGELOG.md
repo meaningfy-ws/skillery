@@ -21,17 +21,26 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **Four `area` facet values:** `operations`, `business`, `legal`, `design`.
 - **[`docs/catalogue-architecture.md`](docs/catalogue-architecture.md):** the catalogue's model, where
   each part lives, and the proposed target bundles, agent roster and roadmap.
+- **[`evals/README.md`](evals/README.md):** how to run a skill's trigger set or an outcome suite, and
+  that every model run is approved with its estimate first.
 
 ### Changed
 
 - **The README's documentation section has three doors:** Install, Use (starting from the use cases)
   and Develop.
+- **`linkml-engineering` and `modelling-conventions` have trigger probes** against their
+  neighbours, so a request about LinkML authoring or modelling conventions is checked to reach the
+  right skill.
+- **Related links between skills are now reciprocal or deliberately one-way:** nine pairs gained
+  their return link; eleven stay one-way as a "see also" sentence.
 
 ### Action needed (contributors)
 
 - A skill never links into another skill's folder; it names the skill (`cross_skill_paths` in
   `make validate`). A resource two skills need moves into a foundation skill.
 - A file in `use-cases/` must pass `use_case_catalogue`; `make skill-inventory` renders the gap map.
+- A skill's trigger set lives in `evals/triggers/<skill>.json` (20 queries, seeded from its probes);
+  `executive-communication` has the first one.
 
 ## [3.2.0] - 2026-10-26
 

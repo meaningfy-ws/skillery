@@ -18,8 +18,8 @@
   (`arch/use-cases`, stacked). The owner rendered the class-view SVG and approved 3.5
   (`inputs/approvals.md`).
 - **Split (owner, 2026-10-26):** the evaluation still to do (2.4, sections 4–6, 7.3) moved to the
-  parked change `evaluate-catalogue`, with the `catalogue-evaluation` spec delta. What remains here is
-  7.1–7.2; then this change is archived. Next: `rebundle-by-activity`.
+  parked change `evaluate-catalogue`, with the `catalogue-evaluation` spec delta. 7.1–7.2 done and the change
+  archived on 2026-10-26. Next: `rebundle-by-activity`.
 - **Not blocking:** the `ANTHROPIC_API_KEY` repository secret; until then every run is local on the
   owner's login, approved per batch.
 
@@ -90,10 +90,10 @@ One PR per task group. Each starts with the check or generator and a failing fix
 
 ## 7. Release documentation and verification
 
-- [ ] 7.1 CHANGELOG under Unreleased, per merged PR, written for the reader: the use-case catalogue
+- [x] 7.1 CHANGELOG under Unreleased, per merged PR, written for the reader: the use-case catalogue
       and doors (users), `meaningfy-voice` (installers of core), skills that now trigger where they
       should, the eval suites (contributors).
-- [ ] 7.2 `make validate`, `make validate-spine`, `npm run test:opencode-installer` and
+- [x] 7.2 `make validate`, `make validate-spine`, `npm run test:opencode-installer` and
       `openspec validate restructure-and-evaluate-catalogue --strict`. **Accept:** all green.
 
 ## Roadmap
@@ -102,7 +102,7 @@ One PR per task group. Each starts with the check or generator and a failing fix
 - [x] 1.1 · [x] 1.2
 - [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.5 · [x] 2.6
 - [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.5 · [x] 3.6
-- [ ] 7.1 · [ ] 7.2
+- [x] 7.1 · [x] 7.2
 
 Within section 3: 3.1 before 3.2 and 3.4; 3.2 before 3.5; 3.4 before 3.5; 3.2 and 3.4 before 3.6;
 3.3 is independent. The evaluation tasks moved to `evaluate-catalogue` (2026-10-26).
