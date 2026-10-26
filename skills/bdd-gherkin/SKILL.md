@@ -3,7 +3,7 @@ name: bdd-gherkin
 description: Write BDD Gherkin feature files and fabricate test data from a specification. Use to project a use case catalogue (Cockburn White/Blue) or turn acceptance criteria or an EPIC into business-language `.feature` scenarios — Scenario Outline with Examples, explicit edge cases, no implementation detail, traced back to use cases. Trigger on "write Gherkin", "write feature files", "BDD scenarios for this acceptance criterion", "derive scenarios from use cases", "fabricate test data".
 license: Apache 2.0
 metadata:
-  purpose: quality
+  purpose: software-development
   area: coding
   subject: generic
   posture: reusable

@@ -3,7 +3,7 @@ name: guardrails
 description: Apply agentic guardrails to every step where an LLM agent acts — decision bounds, output validation, and prompt-injection defence. Use to make an agent step safe before it runs tools, writes files, or trusts external content. Guardrails validate agent BEHAVIOUR (is this action in bounds, is this output well-formed, is this input trustworthy); clarity-gate/tests/review validate CONTENT. Trigger on "add guardrails", "is this agent step safe", "bound this agent's decisions", "validate this agent output", "defend against prompt injection", "what can this agent be allowed to do". Each guardrail points to a concrete enforcement home.
 license: Apache 2.0
 metadata:
-  purpose: quality
+  purpose: software-development
   area: coding
   subject: generic
   posture: reusable

@@ -39,6 +39,10 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Action needed (contributors)
 
+- **The `purpose` facet now names Meaningfy's activities:** `software-development`, `modelling`,
+  `client-delivery`, `advising`, `content`, `offers`, `proposals`, `crm`, `devops`, `knowledge`
+  (`facets.yaml`). `writing`, `offering`, `planning`, `building`, `quality` and `delivery` are gone;
+  every skill and agent is re-tagged, and a new skill or agent picks the activity it serves.
 - A skill never links into another skill's folder; it names the skill (`cross_skill_paths` in
   `make validate`). A resource two skills need moves into a foundation skill.
 - A file in `use-cases/` must pass `use_case_catalogue`; `make skill-inventory` renders the gap map.

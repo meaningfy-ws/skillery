@@ -4,7 +4,7 @@ description: "Use when turning rough input into a clear, concise, persuasive exe
 license: Apache 2.0
 metadata:
   version: "1.0.0"
-  purpose: writing
+  purpose: content
   area: cross-cutting
   subject: generic
   posture: profiled

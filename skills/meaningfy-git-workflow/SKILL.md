@@ -3,7 +3,7 @@ name: meaningfy-git-workflow
 description: Meaningfy git and GitHub conventions — Conventional Commits (imperative, no trailing punctuation), branch naming, rebase/merge etiquette, the pull-request workflow, free-tier GitHub constraints, and dev-environment hygiene. Use when committing, branching, opening or maintaining a PR, or setting up a development environment for a Meaningfy project.
 license: Apache 2.0
 metadata:
-  purpose: delivery
+  purpose: software-development
   area: coding
   subject: git-release
   posture: precise

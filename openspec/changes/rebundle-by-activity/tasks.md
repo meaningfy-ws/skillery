@@ -14,7 +14,8 @@
 - **Merged:** #77 → #78 → #79 → #80. **0.1 done:** `restructure-and-evaluate-catalogue` archived
   (`archive/2026-10-26-restructure-and-evaluate-catalogue`), `catalogue-architecture` is a living spec.
 - **Group 1 done** (`arch/use-case-coverage`): `use_case_coverage`, UC-W22–W24.
-- **Next:** task groups 2 to 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
+- **Group 2 done** (`arch/purpose-activities`): the ten activity values, 36 items re-tagged.
+- **Next:** task groups 3 to 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
 - **Waits for the owner:** 4.3 (status of UC-W8, W19, W20), 6.2 (any changed register cell), 7.1
   (optional; pushes a test branch). No model runs in this change.
 
@@ -37,7 +38,7 @@
 ## 2. The `purpose` facet (`arch/purpose-activities`)
 
 - [x] 2.1 The owner approves D-3's table. **Accept:** dated in `inputs/approvals.md`.
-- [ ] 2.2 Replace `purpose` in `facets.yaml`; re-tag every skill and agent per D-3 (frontmatter
+- [x] 2.2 Replace `purpose` in `facets.yaml`; re-tag every skill and agent per D-3 (frontmatter
       `metadata.purpose` only); `make bundles`, `make skill-inventory`. **Accept:** `facets_declared`
       clean; `git diff` touches no `description` and no body.
 
@@ -110,7 +111,7 @@
 
 - [x] 0.1 · [x] 0.2
 - [x] 1.1 · [x] 1.2
-- [x] 2.1 · [ ] 2.2
+- [x] 2.1 · [x] 2.2
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3
 - [ ] 5.1 · [ ] 5.2 · [ ] 5.3

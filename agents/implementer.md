@@ -15,7 +15,7 @@ skills:
   - superpowers:systematic-debugging
   - superpowers:verification-before-completion
 metadata:
-  purpose: building
+  purpose: software-development
   area: coding
   subject: python
   posture: precise
