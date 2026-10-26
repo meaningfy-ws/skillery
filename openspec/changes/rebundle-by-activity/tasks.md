@@ -27,7 +27,9 @@
   (2026-10-26) and must pass before the 7.3 PR merges.
 - **7.3 written** (`arch/bundles-generated`): `bundles/` ignored and untracked, CI link check,
   `#dist` install lines, migration note; adds the `dual-cli-generation` delta the PLAN missed.
-- **Next:** 8 (release documentation and verification).
+- **8 done** (`arch/release-verification`): CHANGELOG complete for every PR; the four gates green.
+- **Next:** the owner's install check from `#dist`, then merge #89 and this PR; 7.1 stays optional.
+  Then archive the change with `spec-stewardship`.
 - **Waits for the owner:** 7.1
   (optional; pushes a test branch). No model runs in this change.
 
@@ -115,8 +117,8 @@
 
 ## 8. Release documentation and verification
 
-- [ ] 8.1 CHANGELOG under Unreleased, per merged PR, written for the installer.
-- [ ] 8.2 `make validate`, `make validate-spine`, `npm run test:opencode-installer`, `openspec
+- [x] 8.1 CHANGELOG under Unreleased, per merged PR, written for the installer.
+- [x] 8.2 `make validate`, `make validate-spine`, `npm run test:opencode-installer`, `openspec
       validate rebundle-by-activity --strict`. **Accept:** all green.
 
 ## Roadmap
@@ -129,7 +131,7 @@
 - [x] 5.1 · [x] 5.2 · [x] 5.3
 - [x] 6.1 · [x] 6.2 · [x] 6.3
 - [ ] 7.1 · [x] 7.2 · [x] 7.3
-- [ ] 8.1 · [ ] 8.2
+- [x] 8.1 · [x] 8.2
 
 Order: 0, then 1 before 4 (coverage must exist before agents are added), 2 before 3 and 4 (the new
 skills' and agents' purposes use the new values), 3 before 4 (`proposal-writer` lands in
