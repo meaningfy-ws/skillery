@@ -29,3 +29,12 @@ seed-case rerun (about $0.10) = about $4.10, within the $5 approved. Run cap: 12
 **Re-estimate for C with D-13:** ≈ $4.10 (Sonnet before and after, 120 runs; Haiku drafts; the seed
 case) → C would end at ≈ $5.90, about $1 over the approval. **The owner decides** (tasks.md,
 "Current state").
+
+*(The "owner decides" note above is superseded by the reshape below.)*
+
+## Reshape, 2026-10-27
+
+The owner set Haiku as the record model for all evals (`2026-10-27-reshaping-qa.md`, R3), and D-13
+was adopted. Batch C re-estimated on Haiku: 120 record runs + up to 120 draft runs at $0.0038 + the
+seed case ≈ $1, within the ≈ $3.19 left of the $5 approval. Task 2.4 records the owner's confirmation
+of this scope change before C runs.
