@@ -17,8 +17,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   generated `bundles/` tree, so a marketplace added from `meaningfy-ws/skillery` stops loading the
   bundles. Re-add it once: `/plugin marketplace remove meaningfy-skillery`, then
   `/plugin marketplace add meaningfy-ws/skillery#dist`, then reinstall your bundles
-  (`/plugin install <bundle>@meaningfy-skillery`). Later updates work as before with
-  `/plugin marketplace update`. opencode installs are unchanged.
+  (`/plugin install <bundle>@meaningfy-skillery`). `dist` moves at each release; later updates work as
+  before with `/plugin marketplace update`. opencode installs are unchanged.
 - **`proposal-writing` and `estimation` moved from `meaningfy-consulting` to the new
   `meaningfy-sales` bundle**, which requires `meaningfy-consulting`. If you use either skill, install
   `meaningfy-sales`: on Claude, `/plugin install meaningfy-sales@meaningfy-skillery`; on opencode,
@@ -45,13 +45,18 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **The use-case catalogue** (`use-cases/`, 21 White use cases) and its gap map
   [`docs/use-cases.md`](docs/use-cases.md): what the catalogue serves today, by area and status.
 - **Four `area` facet values:** `operations`, `business`, `legal`, `design`.
-- **[`docs/catalogue-architecture.md`](docs/catalogue-architecture.md):** the catalogue's model, where
+- **[`docs/catalogue-architecture.md`](docs/development/catalogue-architecture.md):** the catalogue's model, where
   each part lives, and the proposed target bundles, agent roster and roadmap.
-- **[`evals/README.md`](evals/README.md):** how to run a skill's trigger set or an outcome suite, and
+- **[`evals/README.md`](tests/evals/README.md):** how to run a skill's trigger set or an outcome suite, and
   that every model run is approved with its estimate first.
 
 ### Changed
 
+- **`linkml-engineering` ships its Neo4j generators** in `scripts/linkml_neo4j/`, so an installed
+  skill has them. `project-setup`'s `scaffold.sh --neo4j` takes their folder from
+  `--linkml-generators` (or `LINKML_NEO4J_DIR`) when the skills are installed.
+- **Installed skills no longer carry links that lead nowhere:** links into this repo's docs and
+  five broken links to old skill paths are gone; each skill states the fact or names the skill.
 - **The README's documentation section has three doors:** Install, Use (starting from the use cases)
   and Develop.
 - **UC-W8, UC-W19 and UC-W20 are full use cases:** stakeholders, preconditions, minimal guarantees
@@ -65,9 +70,21 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Action needed (contributors)
 
+- **Folders moved (git history follows each file):** `docs/development-method.md` →
+  `docs/development/README.md`, the method's one home, which also holds `docs/catalogue-architecture.*`,
+  `spec/*.md` (now `creating-skills.md`, `governance.md`, `agent-template.md`, `skill-template.md`,
+  `agent-skills-spec.md`), the spine docs (`spine/README.md` → `spine.md`) and the hook docs;
+  `spine/golden-thread.md` → `skills/epic-planning/references/`; `spine/openspec-version.txt` →
+  `openspec/`; `hooks/inventory.yaml` → `hooks.yaml`; `prompts/global-prompt.md` →
+  `docs/environment/` (the AGENTS template is `project-setup`'s); `evals/` → `tests/evals/`;
+  `docs/{ai-coding,ai-consulting,ai-sales,engineering-standards,philosophy}/` and
+  `docs/roles-and-raci.md` → `docs/practice/`; `tools/linkml_neo4j/` →
+  `skills/linkml-engineering/scripts/linkml_neo4j/`. Only `skills/`, `agents/`, `use-cases/`,
+  `openspec/`, `docs/`, `tools/`, `tests/`, `.github/` and `.claude-plugin/` may sit at the top level
+  (`top_level_folders`), and a skill may link nothing outside its own folder (`cross_skill_paths`).
 - **`bundles/` is no longer committed:** it is git-ignored, `make bundles` creates it locally, and
-  `.github/workflows/dist.yml` publishes it on `dist`. To test a branch on Claude Code before merge,
-  push a throwaway branch with the tree force-added (`git add -f bundles`).
+  `.github/workflows/dist.yml` publishes it on `dist` at each release. To test unreleased work on
+  Claude Code, push a throwaway branch with the tree force-added (`git add -f bundles`).
 - **The `purpose` facet now names Meaningfy's activities:** `software-development`, `modelling`,
   `client-delivery`, `advising`, `content`, `offers`, `proposals`, `crm`, `devops`, `knowledge`
   (`facets.yaml`). `writing`, `offering`, `planning`, `building`, `quality` and `delivery` are gone;
@@ -75,9 +92,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - A skill never links into another skill's folder; it names the skill (`cross_skill_paths` in
   `make validate`). A resource two skills need moves into a foundation skill.
 - A file in `use-cases/` must pass `use_case_catalogue`; `make skill-inventory` renders the gap map.
-- **The `dist` branch** is published by `.github/workflows/dist.yml` on every push to `develop`:
-  `develop`'s tree plus the generated `bundles/` links, one appended commit per push. Never edit
-  or force-push it.
+- **The `dist` branch** is published by `.github/workflows/dist.yml` on each release tag `v*`: the
+  release's tree plus the generated `bundles/` links, one appended commit per release, tagged
+  `<tag>-dist`. Its commits never enter `develop`; never edit or force-push it.
 - **External dependencies live in [`dependencies.yaml`](dependencies.yaml)**, one entry each (source,
   pin, provenance, opencode status, per-CLI install). The dependency tables in
   `docs/environment/dual-cli/compatibility.md` and `mcp-setup.md` are generated from it by

@@ -22,14 +22,17 @@
   the voice channel placeholders.
 - **Group 6 built** (`arch/dependency-register`): register, check, renderer; the six changed name cells
   approved (6.2).
-- **7.2 done** (#88): `dist` published by the workflow on the merge of #88; its tree matches
-  `bundles.yaml` exactly (all links). The install check from `#dist` is postponed by the owner
-  (2026-10-26) and must pass before the 7.3 PR merges.
-- **7.3 written** (`arch/bundles-generated`): `bundles/` ignored and untracked, CI link check,
-  `#dist` install lines, migration note; adds the `dual-cli-generation` delta the PLAN missed.
-- **8 done** (`arch/release-verification`): CHANGELOG complete for every PR; the four gates green.
-- **Next:** the owner's install check from `#dist`, then merge #89 and this PR; 7.1 stays optional.
-  Then archive the change with `spec-stewardship`.
+- **7.2 done** (#88); **D-8 revised** (owner, 2026-10-26, `inputs/2026-10-26-release-and-folders-qa.md`):
+  `dist` is published on release tags only, with a `<tag>-dist` tag. The install check from `#dist`
+  moves to the first release; 7.3 (#89) merges then.
+- **7.3 written** (#89): `bundles/` ignored and untracked, CI link check, `#dist` install lines,
+  migration note, the `dual-cli-generation` delta.
+- **Group 9 done** (`arch/repo-folders`, D-13): one development home in `docs/development/`, `spine/`,
+  `spec/`, `hooks/`, `prompts/`, `evals/` gone, company practice in `docs/practice/`, the linkml
+  generators in their skill, no skill link outside its folder, `top_level_folders`.
+- **8 done** (#90, after group 9): CHANGELOG complete for every PR; the gates green.
+- **Next:** the owner's install check from `#dist` at the first release; then merge #89, #91, #90 in
+  that order and archive the change with `spec-stewardship`. 7.1 stays optional.
 - **Waits for the owner:** 7.1
   (optional; pushes a test branch). No model runs in this change.
 
@@ -115,6 +118,27 @@
       "Skills and agents are installed from their single source". **Accept:** `make validate` green
       without `bundles/`; `make bundles` recreates it locally; `npm run test:opencode-installer` green.
 
+## 9. Folder restructure (`arch/repo-folders`, D-13)
+
+- [x] 9.1 Tests first: `top_level_folders` (an unknown folder fails) and the widened
+      `cross_skill_paths` (a link from a skill into `docs/` fails). **Accept:** they fail for the
+      expected reasons.
+- [x] 9.2 The development home: `docs/development-method.md`, `docs/catalogue-architecture.*` and
+      `spec/*.md` → `docs/development/`; pointers in `AGENTS.md`, README, `CONTRIBUTING.md`.
+      **Accept:** `spec/` gone; `broken_links` clean.
+- [x] 9.3 `spine/`: `golden-thread.md` → `epic-planning`; the version pin → `openspec/`; the rest →
+      `docs/development/`; every skill link into `spine/` removed per D-13. **Accept:** `spine/` gone.
+- [x] 9.4 `hooks/`, `prompts/`, `evals/` and the company-practice docs per D-13. **Accept:** those
+      folders gone; `hooks_inventory_shape` reads `hooks.yaml`; `plugin-eval.yml` reads `tests/evals/`.
+- [x] 9.5 `tools/linkml_neo4j/` → the skill; `scaffold.sh` per D-13; the `linkml-engineering` delta.
+      **Accept:** `pytest tests/test_linkml_neo4j_generators.py` green.
+- [x] 9.6 Every remaining skill link out of its folder replaced (D-13). **Accept:** the widened
+      `cross_skill_paths` clean.
+- [x] 9.7 HARD-QUESTIONS and the worktree leftovers per D-13; worktrees pruned.
+- [x] 9.8 Living-spec deltas; CHANGELOG line for every moved path. **Accept:** `make validate`,
+      `make validate-spine`, `openspec validate --all --strict` green; `ls` shows only the allowed
+      folders.
+
 ## 8. Release documentation and verification
 
 - [x] 8.1 CHANGELOG under Unreleased, per merged PR, written for the installer.
@@ -131,12 +155,13 @@
 - [x] 5.1 · [x] 5.2 · [x] 5.3
 - [x] 6.1 · [x] 6.2 · [x] 6.3
 - [ ] 7.1 · [x] 7.2 · [x] 7.3
+- [x] 9.1 · [x] 9.2 · [x] 9.3 · [x] 9.4 · [x] 9.5 · [x] 9.6 · [x] 9.7 · [x] 9.8
 - [x] 8.1 · [x] 8.2
 
 Order: 0, then 1 before 4 (coverage must exist before agents are added), 2 before 3 and 4 (the new
 skills' and agents' purposes use the new values), 3 before 4 (`proposal-writer` lands in
 `meaningfy-sales`), 5 after 1 and 4, 6 independent after 0, 7.2 after 3 (so `dist` publishes the new
-bundles), 7.3 last before 8.
+bundles), 7.3, then 9 (the folder restructure, owner 2026-10-26), then 8.
 
 ## Verification
 

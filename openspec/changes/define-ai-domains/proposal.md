@@ -3,7 +3,7 @@
 **Golden-thread parent:** [`inputs/2026-07-26-ai-domains-brainstorm-seed.md`](inputs/2026-07-26-ai-domains-brainstorm-seed.md)
 — a live exploration with the company owner, immediately following the `docs/how-we-work/` +
 `docs/services/` restructure and its writing-antipatterns audit. No requirement/architecture parent
-sits above it; per [`spine/golden-thread.md`](../../../spine/golden-thread.md) the seed is the root.
+sits above it; per [`spine/golden-thread.md`](../../../skills/epic-planning/references/golden-thread.md) the seed is the root.
 
 **Supersedes, in part:** `define-lifecycle-playbooks` (its `docs/how-we-work/` deliverable retires
 entirely under this EPIC — that change is still `in-progress`/unarchived, so this is a logged
@@ -23,7 +23,7 @@ content is future work, named here, not written here.
 
 ## Why
 
-Two structures currently describe "how Meaningfy builds": `docs/ai-coding/` (standards-flavoured) and
+Two structures currently describe "how Meaningfy builds": `docs/practice/ai-coding/` (standards-flavoured) and
 `docs/how-we-work/build/` (role-flavoured) — competing rather than layered, because nobody had named
 the pattern they're both instances of. Once named — **"[domain]-standards, applied by AI agents, to
 the [domain] process"** — it's obvious `ai-coding` isn't uniquely a build-plane thing; it's a template,
@@ -77,7 +77,7 @@ docs/
 
   environment/                  new cluster (DEC-11)
     setup.md                    (was docs/environment-setup.md)
-    openspec-setup-guide.md     (was docs/ai-coding/openspec-setup-guide.md)
+    openspec-setup-guide.md     (was docs/practice/ai-coding/openspec-setup-guide.md)
     dual-cli/                   (was docs/dual-cli/, relocated wholesale, contents untouched)
 ```
 
@@ -213,27 +213,27 @@ or build-plane facts.
 - **BREAKING (path)**: `docs/how-we-work/` retires entirely. Every live inbound link to any file under
   it is retargeted to the new location.
 - Move `docs/how-we-work/build/playbooks/{solution-architect,solution-builder,solution-shipper}.md`
-  and `docs/how-we-work/playbooks/work-shaper.md` → `docs/ai-coding/playbooks/` (DEC-4).
-- Move `docs/how-we-work/overview.md`'s content into a rewritten `docs/ai-coding/build-lifecycle.md`
+  and `docs/how-we-work/playbooks/work-shaper.md` → `docs/practice/ai-coding/playbooks/` (DEC-4).
+- Move `docs/how-we-work/overview.md`'s content into a rewritten `docs/practice/ai-coding/build-lifecycle.md`
   cross-reference and a new `ai-sales`/`ai-consulting` equivalent narrative — the single combined map
   retires in favour of each domain owning its own lifecycle doc (no replacement "map" file is created;
   see Rabbit-holes' overrun guard).
 - Move `docs/how-we-work/business/discovery-and-onboarding.md` + `repeat-clients.md` →
-  `docs/ai-sales/engagement-lifecycle.md`, with the DEC-8 maturity-assessment wording correction.
-- Move `docs/how-we-work/business/playbooks/sales-presales.md` → `docs/ai-sales/playbooks/`.
-- Move `docs/how-we-work/business/playbooks/technical-consultant.md` → `docs/ai-consulting/playbooks/`
+  `docs/practice/ai-sales/engagement-lifecycle.md`, with the DEC-8 maturity-assessment wording correction.
+- Move `docs/how-we-work/business/playbooks/sales-presales.md` → `docs/practice/ai-sales/playbooks/`.
+- Move `docs/how-we-work/business/playbooks/technical-consultant.md` → `docs/practice/ai-consulting/playbooks/`
   (DEC-6).
-- Move `docs/services/` → `docs/ai-sales/services/` wholesale (DEC-5).
-- Move `docs/how-we-work/roles-and-raci.md` → `docs/roles-and-raci.md` (back to top-level; it moved
+- Move `docs/services/` → `docs/practice/ai-sales/services/` wholesale (DEC-5).
+- Move `docs/how-we-work/roles-and-raci.md` → `docs/practice/roles-and-raci.md` (back to top-level; it moved
   into `how-we-work/` in the prior round, now un-moves).
-- Add `docs/ai-sales/sales-runbook.md`, `docs/ai-sales/sales-dod.md` (new; DEC-7).
-- Add `docs/ai-consulting/advisory-runbook.md` (new, written for real — DEC-10),
-  `docs/ai-consulting/consulting-dod.md` (new, extension-point scaffold — DEC-7).
-- Add `docs/ai-consulting/methods/{gap-analysis,data-maturity-assessment,semantic-maturity-assessment,wardley-mapping,enterprise-process-modelling}.md`
+- Add `docs/practice/ai-sales/sales-runbook.md`, `docs/practice/ai-sales/sales-dod.md` (new; DEC-7).
+- Add `docs/practice/ai-consulting/advisory-runbook.md` (new, written for real — DEC-10),
+  `docs/practice/ai-consulting/consulting-dod.md` (new, extension-point scaffold — DEC-7).
+- Add `docs/practice/ai-consulting/methods/{gap-analysis,data-maturity-assessment,semantic-maturity-assessment,wardley-mapping,enterprise-process-modelling}.md`
   (new — one thin pointer, four extension-point stubs; DEC-9).
-- Edit `docs/ai-coding/dod-quality-gates.md`: remove the Shipper's-DoD-definition prose (relocated),
+- Edit `docs/practice/ai-coding/dod-quality-gates.md`: remove the Shipper's-DoD-definition prose (relocated),
   keep the Disagreement rule and Builder's DoD in place, add a citation to `ai-sales/sales-dod.md`.
-- Move `docs/ai-coding/openspec-setup-guide.md`, `docs/environment-setup.md` (renamed `setup.md`), and
+- Move `docs/practice/ai-coding/openspec-setup-guide.md`, `docs/environment-setup.md` (renamed `setup.md`), and
   `docs/dual-cli/` → `docs/environment/` (DEC-11).
 - Fix every live inbound cross-link across the repo (root `README.md`, `skills/**`, other
   `openspec/changes/*/proposal.md` files' *live* citations — historical citations in already-archived

@@ -38,8 +38,8 @@ skill-inventory:
 # validate-spine = the structural gate on the OpenSpec spine (needs node + npx).
 # Kept separate from `validate` so the Python guardrail runs without a node
 # toolchain. The clarity gate (semantic, on the PLAN) is run by a human/agent,
-# not here. Pinned version lives in spine/openspec-version.txt.
+# not here. Pinned version lives in openspec/openspec-version.txt.
 validate-spine:
-	@v=$$(cat spine/openspec-version.txt); \
+	@v=$$(cat openspec/openspec-version.txt); \
 	npx --yes @fission-ai/openspec@$$v schema validate meaningfy && \
 	npx --yes @fission-ai/openspec@$$v validate --all --strict

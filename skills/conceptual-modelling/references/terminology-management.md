@@ -33,7 +33,7 @@ The model's terms are the **ubiquitous language** the specs are written in:
 - **OpenSpec specs reference model classes by name.** A requirement that talks about an `Invoice`
   means the modelled `Invoice` — same term, same definition, same IRI. The spec states the *rules*;
   the model owns the *vocabulary and meaning* (see the boundary in the SKILL: normative requirements
-  delegate to the spine specs at [`../../../../spine/README.md`](../../../../spine/README.md)).
+  delegate to the OpenSpec specs).
 - **The model is the glossary the spine points at.** When a spec introduces a term that is not yet
   modelled, that is a signal to model it — close the loop so specs never invent free-floating
   vocabulary.

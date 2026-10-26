@@ -26,7 +26,7 @@ jobs:
           node-version: "20"
       - name: Verify OpenSpec version pin matches
         run: |
-          v=$(cat spine/openspec-version.txt)
+          v=$(cat openspec/openspec-version.txt)
           installed=$(npx --yes @fission-ai/openspec@"$v" --version)
           echo "pinned=$v installed=$installed"
           test "$v" = "$installed"

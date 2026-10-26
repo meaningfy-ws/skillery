@@ -64,7 +64,7 @@ what's mandatory.
 ```
 
 **4c. OpenSpec** — the spine engine (`/opsx:*` commands). Upstream: https://github.com/Fission-AI/OpenSpec.
-Pinned version: [`../../../spine/openspec-version.txt`](../../../spine/openspec-version.txt).
+Pinned version: [`../../../spine/openspec-version.txt`](../../../openspec/openspec-version.txt).
 ```bash
 npm i -g @fission-ai/openspec
 ```
@@ -101,7 +101,7 @@ command. What gets projected and how to refresh the pinned copy:
 ## Step 8 — Optional: hooks, MCP servers, extra plugins
 
 - **Hooks** — written for you by `project-setup` when you scaffold a repo. Reference:
-  [`../../../hooks/README.md`](../../../hooks/README.md).
+  [`../../../hooks/README.md`](../../development/hooks.md).
 - **MCP servers** (GitNexus, Atlassian, Google Workspace, Odoo, Neo4j, MongoDB, context7, …) —
   install one by one, per-tool packages/links and config templates in
   [`mcp-setup.md`](mcp-setup.md).
@@ -122,7 +122,7 @@ confirm the spine registered by running `/opsx:propose` — it should prompt you
 description rather than say the command is unknown.
 
 **Testing a branch** (maintainers): a feature branch carries no `bundles/` (it is generated), so it
-cannot be installed as it is. Test after merge from `#dist`, or push a throwaway branch with the
+cannot be installed as it is. `#dist` moves only at releases. To test unreleased work, push a throwaway branch with the
 generated tree added (`make bundles && git add -f bundles`) and install that
 (`/plugin marketplace add meaningfy-ws/skillery#<branch>`); never install from a local path — a
 local-path marketplace does not load the bundles' agents.

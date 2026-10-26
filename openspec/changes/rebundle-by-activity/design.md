@@ -81,7 +81,7 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   (`inputs/evidence/foundation.md` there), which extended its
   [D-9 rule](../archive/2026-10-26-restructure-and-evaluate-catalogue/design.md#decisions--evaluation-track-d-1d-13) from Related pairs to delegations.
   `bundle_requirements` proves the result.
-- **D-5. The three agents** (DEC-5, DEC-6), each to [`spec/agent-template.md`](../../../spec/agent-template.md),
+- **D-5. The three agents** (DEC-5, DEC-6), each to [`spec/agent-template.md`](../../../docs/development/agent-template.md),
   with a `tests/features/agents/<name>.feature` holding a `Background` that names every skill, and at
   least one return and one refusal Scenario Outline with `Examples:` (written with `bdd-gherkin` before
   the agent file):
@@ -121,7 +121,7 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   evidence. The three names are added to `ALL_AGENT_NAMES` in `tools/repo_lint/lint.py`, so
   `orphan_agent_references` protects them.
 - **D-6. `docs/future-features.md`** (DEC-7), hand-written, with a register row in
-  [§8 of the method](../../../docs/development-method.md#8-where-things-live).
+  [§8 of the method](../../../docs/development/README.md#8-where-things-live).
   One table: `Feature | Use cases | Bundle | Agents to build | Skills to build | Material needed |
   Material in hand? | Change`. `docs/catalogue-architecture.md`'s Roadmap section is replaced by a
   two-line pointer to it; its Agent roster keeps the built agents and links the file for the rest.
@@ -177,9 +177,16 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
      only when `bundles/` exists; write the migration note.
 
   An optional route-A re-test on a GitHub-hosted test branch runs before (1), only with the owner's
-  approval (it pushes a branch); if it passes, D-8 switches to route A. DEC-8's "the release flow
-  publishing" is met by publishing from `develop`, the branch installs follow; release tags stay as
-  they are.
+  approval (it pushes a branch); if it passes, D-8 switches to route A.
+
+  **Revised 2026-10-26 (owner): `dist` is published on release only.** The trigger becomes `on: push:
+  tags: ["v*", "!v*-dist"]` (plus `workflow_dispatch` to re-publish a tag); each run checks out the
+  release tag, appends one commit `dist: <tag> (<sha>)` to `dist` and pushes the tag `<tag>-dist` on
+  it (an unchanged tree is only tagged). `dist` stays a branch because `/plugin marketplace update`
+  re-fetches the installed ref and a tag never moves; the `-dist` tag lets anyone pin a release. The
+  `dist` commits never enter `develop`; the source tag `vX.Y.Z` stays where the release flow puts it.
+  DEC-8's "the release flow publishing" is met literally. The install check from `#dist` moves to the
+  release (owner, 2026-10-26), so PR (2) merges at the first release, after that check.
 - **D-9. Moves are announced** (EPIC "No silent moves"): the CHANGELOG's Unreleased "Action needed
   (users)" names each moved skill, its new bundle and both CLIs' install commands; the README bundle
   table and `docs/environment/dual-cli/setup-claude.md` / `setup-opencode.md` follow `bundles.yaml`.
@@ -194,6 +201,45 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   `docs/future-features.md`) reports, for each use case whose `status` is `partial` or `missing`, a
   `change` that is empty or appears nowhere in `docs/future-features.md`:
   `use-cases/UC-W17-graphic-designer.md: change 'add-visual-design' is not in docs/future-features.md`.
+
+- **D-13. Folder restructure** (owner R3/R4 and the group-9 brief, 2026-10-26,
+  [`inputs/2026-10-26-release-and-folders-qa.md`](inputs/2026-10-26-release-and-folders-qa.md)). The
+  top level keeps only `skills/`, `agents/`, `use-cases/`, `openspec/`, `docs/`, `tools/`, `tests/`,
+  `.github/` and `.claude-plugin/` (plus root files). Every move is a `git mv` followed by path fixes;
+  no file is rewritten. The skillery development method has **one home, `docs/development/`**: how to
+  build skills and agents, governance, the catalogue model and how to work in this repo. `AGENTS.md`,
+  the README's Develop door and `CONTRIBUTING.md` point to `docs/development/README.md` and restate
+  nothing; it is not a skill, is in no bundle and is never installed.
+
+  | From | To |
+  |---|---|
+  | `docs/development-method.md` | `docs/development/README.md` |
+  | `docs/catalogue-architecture.{md,class.puml,class.svg}` | `docs/development/` |
+  | `spec/CREATING_SKILLS.md`, `skill-repo-governance.md`, `agent-template.md`, `skill-template.md`, `agent-skills-spec.md` | `docs/development/creating-skills.md`, `governance.md`, `agent-template.md`, `skill-template.md`, `agent-skills-spec.md` |
+  | `spine/golden-thread.md` | `skills/epic-planning/references/golden-thread.md` (its repo links become name citations) |
+  | `spine/openspec-version.txt` | `openspec/openspec-version.txt` (Makefile, `validate.yml`, the `scaffold.sh` comment) |
+  | `spine/README.md`, every other `spine/*.md` | `docs/development/spine.md`, `docs/development/<same name>` |
+  | `hooks/inventory.yaml` | `hooks.yaml` (root, beside `bundles.yaml`, `facets.yaml`, `dependencies.yaml`) |
+  | `hooks/README.md`, `hooks/bindings.md` | `docs/development/hooks.md`, `docs/development/hook-bindings.md` |
+  | `prompts/AGENTS.md.template` | deleted: `skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl` already holds all of it (stamp, routing, implementation loop, project specifics); its only extra, the `.claude/memory` convention, is the one the `.tmpl` retired |
+  | `prompts/global-prompt.md` | `docs/environment/global-prompt.md`; `prompts/README.md` deleted |
+  | `evals/` | `tests/evals/` |
+  | `docs/{ai-coding,ai-consulting,ai-sales,engineering-standards,philosophy}/`, `docs/roles-and-raci.md` | `docs/practice/` |
+  | `tools/linkml_neo4j/` | `skills/linkml-engineering/scripts/linkml_neo4j/` (owner, 2026-10-26); `scaffold.sh` takes the generators' folder from `--linkml-generators` or `LINKML_NEO4J_DIR`, falling back to the sibling skill in a source checkout |
+  | `.claude/HARD-QUESTIONS.md` | `inputs/hard-questions-v2.md` of this change; the two answered items become `docs/future-features.md` rows |
+  | the `eval/C-exec-comm` worktree's uncommitted `tools/trigger_cases.py`, its test and approvals line | `openspec/changes/evaluate-catalogue/inputs/batch-c-worktree/`; both leftover worktrees pruned |
+
+  **An installed skill links nothing outside its own folder.** `cross_skill_paths` widens from "no
+  link into another skill" to "no link outside the skill's own folder"; each of today's links out
+  (about 70: into `spine/`, `docs/`, `spec/`, `openspec/`, and five already broken) is deleted where
+  the skill already states the fact, or becomes one sentence or a citation of the owning skill by name
+  (golden thread → `epic-planning`; OpenSpec pin → `scaffold.sh`'s `OPENSPEC_PIN`; `/opsx` verbs →
+  OpenSpec). `AGENTS.md`'s Binding row and `governance.md` read "root agentic files + project-setup's
+  agentic templates". A lint check `top_level_folders` allows only the folders above. Living-spec
+  paths change through MODIFIED deltas (`catalogue-governance`, `skill-crafting-method`,
+  `linkml-engineering`); archived changes are not touched. `scaffold.sh`'s schema copy from
+  `../../../openspec/` has the same installed-path gap as the generators; it is recorded in
+  `docs/future-features.md`, not fixed here.
 
 ## Algorithm / approach
 

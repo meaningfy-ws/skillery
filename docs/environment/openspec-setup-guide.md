@@ -7,8 +7,8 @@ layout on a project repo.
 runs on. This doc **describes**; the **mechanics** of scaffolding a repo are the
 [`project-setup`](../../skills/project-setup/SKILL.md) skill (EPIC-09) — this doc does
 not duplicate them. For the methodology see
-[`docs/ai-coding/build-lifecycle.md`](../ai-coding/build-lifecycle.md); for
-the spine conventions see [`spine/README.md`](../../spine/README.md).
+[`docs/practice/ai-coding/build-lifecycle.md`](../practice/ai-coding/build-lifecycle.md); for
+the spine conventions see [`docs/development/spine.md`](../development/spine.md).
 
 ---
 
@@ -25,7 +25,7 @@ openspec/
 ```
 
 - **`schemas/meaningfy/`** — the thin Meaningfy fork of OpenSpec's schema (Shape-Up `proposal.md`
-  template + native contract). See [`spine/README.md`](../../spine/README.md#where-things-live).
+  template + native contract). See [`docs/development/spine.md`](../development/spine.md#where-things-live).
 - **`specs/`** — the merged, machine-validated truth; deltas merge here on `archive`.
 - **`changes/<id>/`** — `proposal.md` (EPIC), `design.md` + `tasks.md` (PLAN), `specs/` deltas, and
   `inputs/` (preserved seeds).
@@ -45,7 +45,7 @@ If a generated digest is ever wanted, it is regenerated **deterministically** fr
 changes **into `context:`** (like codegen, with a CI sync-check) — never a hand-curated parallel
 file. The full policy is owned by
 [`spec-stewardship`](../../skills/spec-stewardship/SKILL.md) and defined in
-[`spine/epic-change-memory-mapping.md`](../../spine/epic-change-memory-mapping.md).
+[`docs/development/epic-change-memory-mapping.md`](../development/epic-change-memory-mapping.md).
 
 ---
 
@@ -61,7 +61,7 @@ the source:
 
 This is the migration away from the legacy `.claude/memory/epics/` pattern (frozen-but-local specs
 dying at implementation) towards the durable `openspec/` store — see
-[`spine/epic-change-memory-mapping.md`](../../spine/epic-change-memory-mapping.md#migration-claudememoryepics--spine).
+[`docs/development/epic-change-memory-mapping.md`](../development/epic-change-memory-mapping.md#migration-claudememoryepics--spine).
 
 ---
 

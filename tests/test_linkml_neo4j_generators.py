@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-GENERATORS_DIR = Path(__file__).resolve().parents[1] / "tools/linkml_neo4j"
+GENERATORS_DIR = Path(__file__).resolve().parents[1] / "skills/linkml-engineering/scripts/linkml_neo4j"
 SYNTHETIC_SCHEMA = Path(__file__).resolve().parent / "fixtures/linkml/synthetic/library.yaml"
 HULUBUL_SCHEMA = Path(__file__).resolve().parent / "fixtures/linkml/hulubul/hulubul.yaml"
 

@@ -1,4 +1,4 @@
-# Traces to: agents/epic-planner.md (Dispatch contract); spec/agent-template.md; D-7, D-8.
+# Traces to: agents/epic-planner.md (Dispatch contract); docs/development/agent-template.md; D-7, D-8.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: epic-planner shapes an EPIC and derives a gated PLAN through question rounds
   A delegated run cannot ask the human, so open decisions come back to the caller

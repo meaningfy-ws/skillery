@@ -18,11 +18,11 @@ There is no single file. The full lifecycle spans two layers:
    `docs/engagement/phases.md`. Phase intentions are owned by
    `skills/semantic-consulting-coach/references/engagement-model.md`.
 2. **P2 build tier** (what people usually mean by "the SDLC") — the **current canon** is:
-   - `docs/ai-coding/two-tier-methodology.md` — the *why/what* (PROJECT tier + EPIC tier, v2)
-   - `docs/ai-coding/opsx-runbook.md` — the *how* (day-to-day `/opsx:<verb>` sequence)
-   - `docs/ai-coding/dod-quality-gates.md` — the gate ladder (engagement gates + build-tier DoD)
-   - `docs/ai-coding/openspec-setup-guide.md` — the repo layout
-3. **Deprecated v1** — `docs/ai-coding/ai-coding-methodology.md` + `docs/ai-coding/ai-coding-runbook.md`,
+   - `docs/practice/ai-coding/two-tier-methodology.md` — the *why/what* (PROJECT tier + EPIC tier, v2)
+   - `docs/practice/ai-coding/opsx-runbook.md` — the *how* (day-to-day `/opsx:<verb>` sequence)
+   - `docs/practice/ai-coding/dod-quality-gates.md` — the gate ladder (engagement gates + build-tier DoD)
+   - `docs/practice/ai-coding/openspec-setup-guide.md` — the repo layout
+3. **Deprecated v1** — `docs/practice/ai-coding/ai-coding-methodology.md` + `docs/practice/ai-coding/ai-coding-runbook.md`,
    both banner-marked "retained for reference... until the first real engagement closes."
 4. **Machine-readable tripwire** — `tests/ownership.yaml` (single-owner capability map, guards
    against re-specifying an owned capability elsewhere).
@@ -48,7 +48,7 @@ There is no single file. The full lifecycle spans two layers:
    describe P1/P2 as live commercial stages, it's worth checking whether that trigger condition has
    already been met and removal is simply overdue, versus genuinely still pending.
 
-4. **`docs/ai-coding/ai-coding-methodology.md` §6 ("Development Lifecycle") is a stub that just
+4. **`docs/practice/ai-coding/ai-coding-methodology.md` §6 ("Development Lifecycle") is a stub that just
    points elsewhere** ("The lifecycle diagram... are in the AI Coding Runbook") — in the *deprecated*
    doc, pointing to the *other deprecated* doc. Neither half of v1's own internal cross-reference
    leads anywhere current.
@@ -58,7 +58,7 @@ There is no single file. The full lifecycle spans two layers:
    has no defined answer to "how do we keep this alive" once P2 delivery ends.
 
 6. **The "commercial layer TODO" is flagged independently in two files** —
-   `docs/ai-coding/dod-quality-gates.md` ("Commercial layer — TODO (to be shaped)") and
+   `docs/practice/ai-coding/dod-quality-gates.md` ("Commercial layer — TODO (to be shaped)") and
    `docs/engagement/README.md` ("The commercial layer — TODO (to be shaped)") — near-identical prose,
    duplicated rather than one file owning it and the other pointing. Minor, but the two-tier
    methodology's own rule (§6, "no double-spec") argues against it.

@@ -41,9 +41,9 @@ rather than restating them:
 | Commits, branches, PRs | `meaningfy-git-workflow` |
 | TDD discipline while implementing | `superpowers:test-driven-development` |
 
-The spine conventions it lays down are documented in [`../../spine/README.md`](../../spine/README.md);
-the target layout in [`../../docs/environment/openspec-setup-guide.md`](../../docs/environment/openspec-setup-guide.md).
-**This skill DOES; those docs DESCRIBE.**
+The spine it lays down is OpenSpec with the `meaningfy` schema (the golden thread is owned by
+`epic-planning`); the projection mechanics are in
+[`references/spine-projection.md`](references/spine-projection.md).
 
 ## Modes
 
@@ -87,7 +87,7 @@ hold: "automate almost everything" + TDD.** The archetype decides the *condition
   **product** points at the `ci-cd-delivery` GHCR image path + gets `SECURITY.md`; **doc-only** gets
   neither. This skill owns *when/into what repo*; the release content/intent lives in `meaningfy-release`.
 - **`clarity-gate` is NOT a CI step** — it is a human/agent semantic gate (the automation boundary is
-  pinned in [`../../docs/ai-coding/dod-quality-gates.md`](../../docs/ai-coding/dod-quality-gates.md)).
+  pinned in `docs/practice/ai-coding/dod-quality-gates.md`).
 
 > **Non-negotiables** (hardest to reverse, most-violated by default): no `/src`, all tool config in
 > the root, **canonical `AGENTS.md` with a thin `CLAUDE.md` pointer, never a symlink** (D8), a

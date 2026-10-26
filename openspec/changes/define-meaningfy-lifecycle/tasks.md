@@ -4,7 +4,7 @@
 
 ## 1. Rename and rewrite the successor doc
 
-- [ ] 1.1 `git mv docs/ai-coding/two-tier-methodology.md docs/ai-coding/build-lifecycle.md`.
+- [ ] 1.1 `git mv docs/practice/ai-coding/two-tier-methodology.md docs/practice/ai-coding/build-lifecycle.md`.
 - [ ] 1.2 Retitle the doc and remove the "two-tier" framing from its title and prose (DEC-1); keep the
       PROJECT-tier/EPIC-tier nesting itself.
 - [ ] 1.3 Expand the PROJECT tier into named steps, each citing exactly one owning skill: Requirements
@@ -41,24 +41,24 @@
       `../ai-coding/two-tier-methodology.md` → `../ai-coding/build-lifecycle.md` (link only, no prose
       change — epic 1 owns this file's content).
 - [ ] 2.2 `docs/engagement/phases.md` line 60: retarget the same link, same constraint.
-- [ ] 2.3 `docs/ai-coding/opsx-runbook.md` line 6: retarget `two-tier-methodology.md` →
+- [ ] 2.3 `docs/practice/ai-coding/opsx-runbook.md` line 6: retarget `two-tier-methodology.md` →
       `build-lifecycle.md`.
-- [ ] 2.4 `docs/ai-coding/openspec-setup-guide.md` line 9: retarget the same link.
-- [ ] 2.5 `docs/ai-coding/dod-quality-gates.md` line 8: retarget the same link (link only — no other
+- [ ] 2.4 `docs/practice/ai-coding/openspec-setup-guide.md` line 9: retarget the same link.
+- [ ] 2.5 `docs/practice/ai-coding/dod-quality-gates.md` line 8: retarget the same link (link only — no other
       edit to this file; its content is epic 3's).
 - [ ] 2.6 Verify: `grep -rn "two-tier-methodology" docs/ README.md` returns zero matches (outside
       `openspec/changes/*/inputs/` historical seeds, which are preserved records).
 
 ## 3. Delete the three v1 files
 
-- [ ] 3.1 `git rm docs/ai-coding/ai-coding-methodology.md docs/ai-coding/ai-coding-runbook.md docs/ai-coding/ai-coding-setup-guide.md`
+- [ ] 3.1 `git rm docs/practice/ai-coding/ai-coding-methodology.md docs/practice/ai-coding/ai-coding-runbook.md docs/practice/ai-coding/ai-coding-setup-guide.md`
       (DEC-7) — only after tasks 1 and 2 are complete, so no link ever points at a missing or
       stale-content file.
 
 ## 4. Update tools/repo_lint/lint.py
 
-- [ ] 4.1 Change `FROZEN_GLOBS = ("docs/ai-coding/",)` to `FROZEN_GLOBS = ()`; update the comment
-      above it to say `docs/ai-coding/` was the only frozen path and is no longer frozen as of this
+- [ ] 4.1 Change `FROZEN_GLOBS = ("docs/practice/ai-coding/",)` to `FROZEN_GLOBS = ()`; update the comment
+      above it to say `docs/practice/ai-coding/` was the only frozen path and is no longer frozen as of this
       change, and why (DEC-12).
 - [ ] 4.2 In `orphan_agent_references`, extend the existing skip condition
       (`_is_frozen(repo, f) or f.name.startswith("EPIC-setup") or f.name == "environment-setup.md"`)
@@ -66,13 +66,13 @@
       exempt, matching the existing archive-level exemption (DEC-16).
 - [ ] 4.3 Run the full `repo_lint` check suite; confirm `broken_links` and `orphan_agent_references`
       are both green, and note (do not fix) any new `duplicate_fact_candidates` findings against the
-      now-unfrozen `docs/ai-coding/` for the owning sibling epics to pick up.
+      now-unfrozen `docs/practice/ai-coding/` for the owning sibling epics to pick up.
 
 ## 5. Fix the two stale cross-references
 
-- [ ] 5.1 `docs/environment-setup.md` §6: correct the sentence claiming "the `docs/ai-coding/` runbook
+- [ ] 5.1 `docs/environment-setup.md` §6: correct the sentence claiming "the `docs/practice/ai-coding/` runbook
       … still names the older agents" — it no longer does (DEC-13). Keep the old→new mapping table.
-- [ ] 5.2 Root `README.md` docs table row for `docs/ai-coding/`: update the description off "two-tier
+- [ ] 5.2 Root `README.md` docs table row for `docs/practice/ai-coding/`: update the description off "two-tier
       method" framing and confirm the link still resolves (it points at the directory, not the
       renamed file, so no path change is required — verify only).
 

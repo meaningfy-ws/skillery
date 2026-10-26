@@ -53,7 +53,7 @@ rules to **all layers**, including `adapters` and `entrypoints` — not only `mo
 The implement phase SHALL include a survey-&-reuse step: before writing a new file/class, read the
 sibling files and search for existing constants, enums, models, and helpers, then decide
 reuse / extend / refactor-to-fit. This SHALL be enforced on a surface the harness honours
-(the `implementer` agent wrapper) and recorded in `spine/workflows.md`.
+(the `implementer` agent wrapper) and recorded in `docs/development/workflows.md`.
 
 #### Scenario: Implementer surveys before creating a file
 

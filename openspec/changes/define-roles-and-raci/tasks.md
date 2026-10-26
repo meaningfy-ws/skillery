@@ -2,7 +2,7 @@
 
 ## 1. Role definitions
 
-- [ ] 1.1 Create `docs/roles-and-raci.md` with title + one-paragraph framing, and the Sales/Presales
+- [ ] 1.1 Create `docs/practice/roles-and-raci.md` with title + one-paragraph framing, and the Sales/Presales
       and Technical Consultant role blocks (mandate / accountable for / skills drawn on / artifacts
       produced), per design.md's fixed four-line shape.
 - [ ] 1.2 Add the Solution Architect role block.
@@ -46,7 +46,7 @@
 ## 5. Cross-repo wiring
 
 - [ ] 5.1 Add one row to `README.md`'s Documentation table, after the `docs/engagement/` row,
-      pointing at `docs/roles-and-raci.md`.
+      pointing at `docs/practice/roles-and-raci.md`.
 - [ ] 5.2 Extend the `docs/` line in `README.md`'s Repository-structure block to list
       `roles-and-raci.md` alongside `ai-coding/ · engineering-standards/ · philosophy/ · engagement/
       · environment-setup.md`.
@@ -65,7 +65,7 @@
 ## 7. Validation
 
 - [ ] 7.1 Run `make validate` — confirm `broken_links` passes for every relative link in
-      `docs/roles-and-raci.md` and the two `README.md` edits (docs-root files get no illustrative
+      `docs/practice/roles-and-raci.md` and the two `README.md` edits (docs-root files get no illustrative
       exemption, `tools/repo_lint/lint.py:230`).
 
 ## Roadmap

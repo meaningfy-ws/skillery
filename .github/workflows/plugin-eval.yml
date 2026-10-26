@@ -1,7 +1,7 @@
 # On-demand behavioural evals for one bundle (skill-crafting-method D-3, design H-7).
 # Started by hand only (Actions → plugin-eval → Run workflow); never on push, pull request or release.
 # Needs the repository secret ANTHROPIC_API_KEY, which a maintainer adds; without it the job stops at
-# step 0. Suites live in evals/<bundle>/<case>/ (prompt.md + graders/), never under bundles/ (rendered).
+# step 0. Suites live in tests/evals/<bundle>/<case>/ (prompt.md + graders/), never under bundles/ (rendered).
 name: plugin-eval
 
 on:
@@ -50,8 +50,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check a suite exists
         run: |
-          if [ ! -d "evals/$BUNDLE" ]; then
-            echo "::error::No suite for $BUNDLE (expected evals/$BUNDLE/<case>/)."
+          if [ ! -d "tests/evals/$BUNDLE" ]; then
+            echo "::error::No suite for $BUNDLE (expected tests/evals/$BUNDLE/<case>/)."
             exit 1
           fi
       - uses: actions/setup-python@v5
@@ -71,7 +71,7 @@ jobs:
           mkdir -p "$P/.claude-plugin"
           cp -rL "bundles/$BUNDLE/." "$P/"
           printf '{"name": "%s", "version": "%s"}\n' "$BUNDLE" "$(cat VERSION)" > "$RUNNER_TEMP/plugin/.claude-plugin/plugin.json"
-          cp -r "evals/$BUNDLE" "$P/evals"
+          cp -r "tests/evals/$BUNDLE" "$P/evals"
       - name: Run the evals
         env:
           CASE: ${{ inputs.case }}
