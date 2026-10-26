@@ -63,6 +63,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - A skill never links into another skill's folder; it names the skill (`cross_skill_paths` in
   `make validate`). A resource two skills need moves into a foundation skill.
 - A file in `use-cases/` must pass `use_case_catalogue`; `make skill-inventory` renders the gap map.
+- **The `dist` branch** is published by `.github/workflows/dist.yml` on every push to `develop`:
+  `develop`'s tree plus the generated `bundles/` links, one appended commit per push. Never edit
+  or force-push it.
 - **External dependencies live in [`dependencies.yaml`](dependencies.yaml)**, one entry each (source,
   pin, provenance, opencode status, per-CLI install). The dependency tables in
   `docs/environment/dual-cli/compatibility.md` and `mcp-setup.md` are generated from it by
