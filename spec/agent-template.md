@@ -141,6 +141,13 @@ tools: [Read, Grep, Glob]
 skills:
   - <primary-skill>
   - <other-skill>
+metadata:
+  purpose: <purpose>
+  area: <area>
+  subject: <subject>
+  posture: <posture>
+  stage: <stage>
+  maturity: <maturity>
 ---
 
 You are the **<Role>**. <the job>.

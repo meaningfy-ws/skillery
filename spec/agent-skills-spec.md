@@ -10,7 +10,8 @@ as written; this page does not restate it. How to write a skill in this reposito
 
 - **`metadata` is a map of string to string.** A number or a list as a value fails validation; quote
   it.
-- **`metadata.category`** is in use today on most skills; set it on a new skill.
+- **`metadata` carries the six catalogue facets**, one value each from
+  [`facets.yaml`](../facets.yaml); see [`CREATING_SKILLS.md`](CREATING_SKILLS.md#facets-and-requirements).
 - **No top-level `version`.** Use `metadata.version` (a string) if a skill needs one. The catalogue's
   own version is the root [`VERSION`](../VERSION) file.
 - **Claude-only keys.** `argument-hint` and `disable-model-invocation` are allowed although the

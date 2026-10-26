@@ -1,7 +1,8 @@
 # Documentation Standard (Engineering Standard)
 
-Governs where documentation lives and which format it uses. Applies to this repository
-(**agent-skills / skillery**) and all projected Meaningfy repositories.
+Governs where documentation lives and which format it uses. Applies to the Meaningfy
+repositories `project-setup` projects. skillery's own `docs/` is still Markdown; publishing it
+through Antora is a tracked follow-up.
 
 Decision reference: **DEC-3** (split-by-churn).
 
@@ -13,7 +14,7 @@ Documentation lives in one of two homes, chosen by how fast it changes.
 
 | Home | Format | What belongs here |
 |------|--------|-------------------|
-| `.claude/` and repo root | **Markdown** | HIGH-CHURN, agent-loop artifacts: EPICs, PLANs, runbooks, memory indexes, agentic instructions, READMEs, working state |
+| `openspec/`, `.claude/` and repo root | **Markdown** | HIGH-CHURN, agent-loop artifacts: EPICs, PLANs, runbooks, memory indexes, agentic instructions, READMEs, working state |
 | `docs/` (Antora / AsciiDoc) | **AsciiDoc** | DURABLE published docs: architecture decisions (ADRs), requirements specifications, user-facing documentation, cross-referenced reference material |
 
 ## Choosing Heuristic
@@ -27,7 +28,7 @@ Ask two questions:
 
 | Rate of change | Audience | Home |
 |---------------|----------|------|
-| High — sprint-level or faster | Agent loop / working-tree developers | Markdown in `.claude/` or repo root |
+| High — sprint-level or faster | Agent loop / working-tree developers | Markdown in `openspec/`, `.claude/` or repo root |
 | Low — stabilises after authoring | Published doc site readers | AsciiDoc in `docs/` |
 
 When in doubt, prefer Markdown until the content stabilises, then promote it to AsciiDoc.

@@ -35,8 +35,8 @@ If a change helps the agent but confuses the user, it is not done.
 3. **One owner per fact.** A rule lives in exactly one skill; everything else cites it
    (`tests/ownership.yaml` is the tripwire). Duplication is the most common way a catalogue rots.
 4. **Reference, don't copy.** External skills (superpowers, stream-coding, obsidian-skills, …) are
-   dependencies, declared and linked. Vendor one only with a provenance note (source, commit,
-   licence, date) and a review; never install from a directory sight-unseen.
+   dependencies, declared and linked. Vendor one only with the provenance note and the review set
+   out below; never install from a directory sight-unseen.
    **Third-party content.** Read every file of an external skill, and every URL it tells the agent to
    read, before declaring or vendoring it (AST01). Pin it to a commit or content hash and record a
    provenance note: source, commit, licence, date, reviewer (AST02, AST07). A skill body never tells
@@ -262,7 +262,6 @@ A skill or agent change is done when every line below is true. It is the review 
       or agent frontmatter changed; `make validate` green.
 - [ ] Licence and provenance recorded for vendored or third-party content — per-skill `LICENSE.txt`
       where it differs from the repo's, `THIRD_PARTY_NOTICES.md`, and a provenance note (source,
-      commit, licence, date) per the provenance rule in
-      [`spec/skill-repo-governance.md`](../spec/skill-repo-governance.md#placement-rules) (rule 1).
+      commit, licence, date, reviewer) per [principle 4](#2-principles).
 - [ ] README row if it is a new entry point; CHANGELOG line in user language; issue referenced.
 - [ ] Fresh install on both CLIs shows the expected skills (release-time).

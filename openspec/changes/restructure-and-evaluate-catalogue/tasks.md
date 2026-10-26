@@ -48,7 +48,7 @@
       "after"; rerun the seed case `quotation-bind`; add positive and near-miss probes for the new
       description. **Accept:** `inputs/evidence/C.md` has the row with both scores and the cost; the
       D-2 pass rule holds on Sonnet, or the row says "reverted".
-- [ ] 2.5 **Docs and structure re-check** (D-10, no model runs): read each hand-written row of the
+- [x] 2.5 **Docs and structure re-check** (D-10, no model runs): read each hand-written row of the
       register against the method; fix the small findings; hand off the rest. **Accept:**
       `inputs/evidence/docs.md` lists every register row with a finding or "clean"; hand-offs are
       written into the owning changes' `inputs/`.
