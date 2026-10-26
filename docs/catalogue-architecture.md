@@ -105,13 +105,15 @@ template's; `partner` is the open fourth type (Q-2), settled by `extend-agent-te
 
 ## Roadmap
 
-*Approved by the owner, 2026-10-26.* Follow-on changes in waves, from this month's
-priorities. Each use case's `change` names one of them, so [`use-cases.md`](use-cases.md) shows what
+*Approved by the owner, 2026-10-26; `rebundle-by-activity` moved first and the evaluation split
+out the same day.* Follow-on changes in waves, from this month's priorities. Each use case's `change` names one of them, so [`use-cases.md`](use-cases.md) shows what
 each change closes.
 
 | Wave | Change | Closes | Kind |
 |---|---|---|---|
 | 0 | `restructure-and-evaluate-catalogue` | this page, the use-case catalogue, `meaningfy-voice` | infrastructure |
+| 1 | `rebundle-by-activity` | the target structure above, every use case catalogued, the agents that today's skills can serve, and the feature roadmap for the rest | infrastructure |
+| 1 | `evaluate-catalogue` | behavioural evidence for every skill and agent, after the re-bundling (parked) | assurance |
 | 1 | `add-sales-bundle` | UC-W7 | use cases |
 | 1 | `add-engineering-agents` | UC-W19, UC-W20 | use cases |
 | 1 | `extend-agent-template` | the agent aspects (runtime, memory, dependencies, tool policy) and the `partner` type (Q-2) | infrastructure |
@@ -119,7 +121,6 @@ each change closes.
 | 2 | `add-devops-bundle` | UC-W6 | use cases |
 | 2 | `add-commercial-chain` | UC-W8 to UC-W13 | use cases |
 | 2 | `add-odoo-memory-skill` | how to store and find things in Odoo | infrastructure |
-| 2 | `rebundle-by-activity` | the target structure above | infrastructure |
 | 3 | `add-personal-assistants` | UC-W2 to UC-W5 | use cases |
 | 3 | `add-vault-local-config` | UC-W1 (colleagues' local variations, DEC-13) | use cases |
 | 4 | `add-visual-design` | UC-W17 | use cases |

@@ -13,6 +13,12 @@
 > **Siblings (cited, never restated):** `define-ai-domains` (the `ai-*` domain docs template),
 > `add-devops-bundle`, `add-sales-bundle`.
 
+> **Split, 2026-10-26 (owner).** The evaluation still to do (batch C, the outcome suites, batches A
+> and B) moved to the parked change `evaluate-catalogue`, with the `catalogue-evaluation` spec delta.
+> This change closes with the architecture track and the evaluation already done (D, E, the docs
+> re-check). The sections below are kept as shaped; where they describe the moved work, that change
+> now owns it.
+
 > **Status, 2026-10-27 (reshaped).** Phase 1 is three-quarters done: batches D, E and the docs
 > re-check are merged (#72, #73, #74); batch C is paused and resumes on Haiku with D-13, after the architecture
 > track: no evals run until the catalogue is systematised (owner, 2026-10-27). See `tasks.md`, "Current state".
