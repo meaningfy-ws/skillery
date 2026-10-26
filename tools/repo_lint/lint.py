@@ -18,6 +18,7 @@ from urllib.parse import unquote
 import yaml
 
 from tools.bundle_gen import gen as bundle_gen
+from tools import skill_inventory
 
 SKILLS_DIR = "skills"
 README = "README.md"
@@ -237,6 +238,118 @@ def skill_size_report(repo: Path) -> list[str]:
             out.append(f"{name}: SKILL.md body is {lines} lines, ~{tokens} tokens "
                        f"(body budget {ADVISORY_SKILL_LINES} lines / {ADVISORY_SKILL_TOKENS} tokens)")
     return out
+
+
+FACETS_FILE = "facets.yaml"
+CORE_BUNDLE = "meaningfy-core"
+_REGISTER_FILE = "docs/development-method.md"
+_REGISTER_SECTION = "## 8. Where things live"
+
+
+def facets_declared(repo: Path) -> list[str]:
+    """Every skill and agent declares one allowed value per facet of facets.yaml under `metadata`
+    (define-catalogue-model DEC-1, D-2). Silent where the repo has no facets.yaml."""
+    path = repo / FACETS_FILE
+    if not path.exists():
+        return []
+    vocab = (yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("facets", {})
+    files = [(n, p) for n, p in _skill_paths(repo).items()]
+    if (repo / "agents").exists():
+        files += [(f"agents/{p.stem}", p) for p in sorted((repo / "agents").glob("*.md"))]
+    out: list[str] = []
+    for label, p in files:
+        meta = (_frontmatter(p.read_text(encoding="utf-8")) or {}).get("metadata") or {}
+        for facet, values in vocab.items():
+            v = meta.get(facet) if isinstance(meta, dict) else None
+            if v is None:
+                out.append(f"{label}: missing facet 'metadata.{facet}'")
+            elif not isinstance(v, str) or v not in values:
+                out.append(f"{label}: facet '{facet}' is {v!r}; allowed: {', '.join(values)}")
+    return out
+
+
+def bundle_requirements(repo: Path) -> list[str]:
+    """Cross-bundle "depends on" edges point into core or a required bundle; core requires
+    nothing; required bundles exist; the requirement graph is acyclic (define-catalogue-model D-8).
+    Edges come from the inventory's own parser, so there is one reading of the Delegates lines."""
+    try:
+        bundles = (yaml.safe_load((repo / bundle_gen.BUNDLES_FILE).read_text(encoding="utf-8")) or {}).get("bundles", [])
+    except (OSError, yaml.YAMLError):
+        return []  # bundle_gates reports an unreadable bundles.yaml
+    names = {b["name"] for b in bundles}
+    requires = {b["name"]: list(b.get("requires") or []) for b in bundles}
+    out: list[str] = []
+    for b, reqs in requires.items():
+        for req in reqs:
+            if req not in names:
+                out.append(f"bundle '{b}' requires unknown bundle '{req}'")
+            if req == CORE_BUNDLE:
+                out.append(f"bundle '{b}' lists '{CORE_BUNDLE}', which is implicit")
+    if requires.get(CORE_BUNDLE):
+        out.append(f"'{CORE_BUNDLE}' must require nothing")
+    state: dict[str, int] = {}
+    def visit(node: str, trail: list[str]) -> None:
+        if state.get(node) == 1:
+            out.append("bundle requirement cycle: " + " -> ".join(trail[trail.index(node):] + [node]))
+            return
+        if state.get(node) == 2:
+            return
+        state[node] = 1
+        for nxt in requires.get(node, []):
+            if nxt in names:
+                visit(nxt, trail + [node])
+        state[node] = 2
+    for b in sorted(names):
+        visit(b, [])
+    bundle_of = {s: b["name"] for b in bundles for s in b.get("skills", [])}
+    skill_names = set(bundle_of)
+    for name in _skill_dirs(repo):
+        src = bundle_of.get(name)
+        if src is None:
+            continue
+        for dep in skill_inventory._depends_on(_skill_md(repo, name), skill_names, name):
+            dst = bundle_of[dep]
+            if dst == src or dst == CORE_BUNDLE:
+                continue
+            if src == CORE_BUNDLE:
+                out.append(f"'{name}' ({CORE_BUNDLE}) delegates to '{dep}' ({dst}); {CORE_BUNDLE} "
+                           "requires nothing: reword the hand-off as Related")
+            elif dst not in requires.get(src, []):
+                out.append(f"'{name}' ({src}) delegates to '{dep}' ({dst}), but '{src}' does not "
+                           f"require '{dst}': add it to requires or reword the hand-off as Related")
+    return out
+
+
+def _register_views(repo: Path) -> list[str] | None:
+    path = repo / _REGISTER_FILE
+    if not path.exists():
+        return None
+    text = path.read_text(encoding="utf-8")
+    start = text.find(_REGISTER_SECTION)
+    if start < 0:
+        return []
+    end = text.find("\n## ", start + 1)
+    section = text[start:end if end > 0 else len(text)]
+    views = []
+    for line in section.splitlines():
+        m = re.match(r"^\|\s*\[?`([^`]+)`", line)
+        if m:
+            views.append(m.group(1))
+    return views
+
+
+def doc_register_complete(repo: Path) -> list[str]:
+    """Every documentation file matches a row of the register in the method's section 8: an exact
+    path, or a `folder/**` prefix covering every file below it (define-catalogue-model D-8, D-10)."""
+    views = _register_views(repo)
+    if views is None:
+        return []
+    exact = {v for v in views if not v.endswith("/**")}
+    prefixes = tuple(v[:-2] for v in views if v.endswith("/**"))
+    docs = sorted(p.relative_to(repo).as_posix() for p in (repo / "docs").rglob("*.md")) if (repo / "docs").exists() else []
+    docs += [f for f in ("README.md", "AGENTS.md", "CLAUDE.md") if (repo / f).exists()]
+    return [f"{f}: not in the documentation register ({_REGISTER_FILE} §8)"
+            for f in docs if f not in exact and not f.startswith(prefixes)]
 
 
 def frontmatter_strict_yaml(repo: Path) -> list[str]:
@@ -811,7 +924,7 @@ ALL_CHECKS = (
     broken_links, skill_too_long, orphan_agent_references,
     boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
-    bundle_gates,
+    bundle_gates, facets_declared, bundle_requirements, doc_register_complete,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a
