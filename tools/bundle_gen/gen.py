@@ -217,7 +217,8 @@ def _version_errors(repo: Path, ver: str) -> list[str]:
 
 
 def gate_errors(repo: Path) -> list[str]:
-    """Renderings match bundles.yaml + agents, links are links, versions agree. [] == clean."""
+    """Renderings match bundles.yaml + agents, links are links (when bundles/ exists), versions
+    agree. [] == clean."""
     try:
         market, links, catalogue = render(repo)
     except ValueError as exc:
@@ -227,6 +228,7 @@ def gate_errors(repo: Path) -> list[str]:
         path = repo / rel
         if not path.exists() or path.read_bytes() != data:
             out.append(f"{rel} {_STALE}")
-    out += _link_errors(repo, links)
+    if (repo / BUNDLES_DIR).exists():  # generated, never committed: a fresh checkout has none (D-8)
+        out += _link_errors(repo, links)
     out += _version_errors(repo, version(repo))
     return out

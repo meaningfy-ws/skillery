@@ -133,7 +133,7 @@ references in step 4 still govern each piece.
    the `/opsx:*` workflow resolve, then summarise what was created, what is stubbed, and next steps:
    ```
    npx -y @fission-ai/openspec@1.4.1 init --tools claude --profile core
-   /plugin marketplace add meaningfy-ws/skillery
+   /plugin marketplace add meaningfy-ws/skillery#dist
    /plugin install meaningfy-core@meaningfy-skillery
    /plugin install meaningfy-building@meaningfy-skillery
    /plugin install superpowers@claude-plugins-official

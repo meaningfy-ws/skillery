@@ -13,6 +13,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Action needed (users)
 
+- **Claude Code installs now come from the `dist` branch.** `develop` no longer carries the
+  generated `bundles/` tree, so a marketplace added from `meaningfy-ws/skillery` stops loading the
+  bundles. Re-add it once: `/plugin marketplace remove meaningfy-skillery`, then
+  `/plugin marketplace add meaningfy-ws/skillery#dist`, then reinstall your bundles
+  (`/plugin install <bundle>@meaningfy-skillery`). Later updates work as before with
+  `/plugin marketplace update`. opencode installs are unchanged.
 - **`proposal-writing` and `estimation` moved from `meaningfy-consulting` to the new
   `meaningfy-sales` bundle**, which requires `meaningfy-consulting`. If you use either skill, install
   `meaningfy-sales`: on Claude, `/plugin install meaningfy-sales@meaningfy-skillery`; on opencode,
@@ -56,6 +62,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Action needed (contributors)
 
+- **`bundles/` is no longer committed:** it is git-ignored, `make bundles` creates it locally, and
+  `.github/workflows/dist.yml` publishes it on `dist`. To test a branch on Claude Code before merge,
+  push a throwaway branch with the tree force-added (`git add -f bundles`).
 - **The `purpose` facet now names Meaningfy's activities:** `software-development`, `modelling`,
   `client-delivery`, `advising`, `content`, `offers`, `proposals`, `crm`, `devops`, `knowledge`
   (`facets.yaml`). `writing`, `offering`, `planning`, `building`, `quality` and `delivery` are gone;

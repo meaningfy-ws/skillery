@@ -54,7 +54,7 @@ multi-component) apply only if the interview selected them.
       `meaningfy-git-workflow` skill.
 - [ ] **Spine + skillery + ponytail** — install so `AGENTS.md` routing + `/opsx:*` resolve:
       `npx -y @fission-ai/openspec@1.4.1 init --tools claude --profile core`;
-      `/plugin marketplace add meaningfy-ws/skillery`;
+      `/plugin marketplace add meaningfy-ws/skillery#dist`;
       `/plugin install meaningfy-core@meaningfy-skillery` (and `meaningfy-building@meaningfy-skillery`);
       `/plugin install superpowers@claude-plugins-official`;
       `/plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail`.

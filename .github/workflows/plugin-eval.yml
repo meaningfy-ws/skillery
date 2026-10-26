@@ -11,7 +11,7 @@ on:
         description: Bundle to evaluate
         required: true
         type: choice
-        options: [meaningfy-core, meaningfy-consulting, meaningfy-architecture, meaningfy-building, vault-assistant]
+        options: [meaningfy-core, meaningfy-consulting, meaningfy-sales, meaningfy-architecture, meaningfy-building, vault-assistant]
       case:
         description: Case name glob
         default: "*"
@@ -54,6 +54,12 @@ jobs:
             echo "::error::No suite for $BUNDLE (expected evals/$BUNDLE/<case>/)."
             exit 1
           fi
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-dev.txt
+      - name: Generate bundles/ (not committed, rebundle-by-activity D-8)
+        run: python -m tools.bundle_gen generate
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

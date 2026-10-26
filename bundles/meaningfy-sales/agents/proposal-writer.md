@@ -1,1 +1,0 @@
-../../../agents/proposal-writer.md
