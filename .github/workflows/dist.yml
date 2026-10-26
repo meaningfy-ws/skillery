@@ -1,0 +1,38 @@
+# Publishes the install branch `dist` (rebundle-by-activity D-8): develop's tree plus the generated
+# bundles/ symlink tree, appended as one commit per develop push. Never force-pushed and never edited
+# by hand, so installed marketplaces update with `/plugin marketplace update`.
+name: dist
+on:
+  push:
+    branches: [develop]
+concurrency:
+  group: dist
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-dev.txt
+      # CI has no .venv, which `make bundles` activates.
+      - run: python -m tools.bundle_gen generate
+      - name: Append develop's tree plus bundles/ to dist
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -f bundles
+          tree=$(git write-tree)
+          parent=()
+          if git fetch --depth=1 origin dist; then
+            if [ "$(git rev-parse FETCH_HEAD^{tree})" = "$tree" ]; then
+              echo "dist already holds this tree"; exit 0
+            fi
+            parent=(-p FETCH_HEAD)
+          fi
+          commit=$(git commit-tree "$tree" "${parent[@]}" -m "dist: $GITHUB_SHA")
+          git push origin "$commit:refs/heads/dist"

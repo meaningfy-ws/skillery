@@ -22,7 +22,10 @@
   the voice channel placeholders.
 - **Group 6 built** (`arch/dependency-register`): register, check, renderer; 6.2 waits for the owner's
   approval of six changed name cells (listed in the PR).
-- **Next:** task groups 7 and 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
+- **7.2 written** (`arch/dist-branch`): `dist.yml`, simulated locally (create, skip, append). Its Accept
+  runs after merge: `dist` exists and an install from `meaningfy-ws/skillery#dist` lists exactly the
+  `bundles.yaml` members; the owner checks it before 7.3.
+- **Next:** 7.3 after that check, then 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
 - **Waits for the owner:** 6.2 (any changed register cell), 7.1
   (optional; pushes a test branch). No model runs in this change.
 
