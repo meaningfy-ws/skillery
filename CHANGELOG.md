@@ -9,6 +9,46 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [Unreleased]
+
+### Action needed (vault owners)
+
+1. **Re-run `vault-setup`** from your owner folder. It adds the `.trash/` folder, the root
+   `README.md`, the `impact-filter` and `work-shape` templates and the new `skill-change` template,
+   and reports the permission changes below. It never overwrites a file you have; compare and copy
+   what it reports.
+2. **Update your permission settings:** `mv` and `rm` now ask instead of being denied, and the
+   scheduled `vault-daily` command line gains `--disallowedTools "Bash(mv:*)" "Bash(rm:*)"` (see
+   `vault-setup`'s `scheduler.md`).
+3. **Remove your local rules** for `artefacts/`, `07 Perso/` projects and `04 Daily/<agent>/` from
+   your vault's `AGENTS.md` ("Vault-specific conventions"): the skills now carry them.
+
+### Added
+
+- **Vault:** you can ask an agent to delete, move or rename notes in the session. It lists the paths,
+  names the notes that will show a broken link, moves deleted notes to `.trash/`, and works with
+  Obsidian closed when the note's name is unique.
+- **Vault:** personal projects live in `07 Perso/` (private, never shared); every project keeps its
+  standing files at the root and everything else in `artefacts/`; deployed agents write their run
+  notes in `04 Daily/<agent>/`.
+- **Vault:** new kinds `impact-filter` and `work-shape`; `vault-promote` checks a kind's required
+  sections as well as its properties.
+- **Vault:** a root `README.md` that tells a person what each folder is for; agents answer questions
+  about your projects from the vault, not from chat memory.
+- **Writing:** `writing-antipatterns` flags claims that promise more than the method delivers (U7)
+  and verbs impossible for their subject (U8), and treats negative framing by genre (A14).
+- **Writing:** `executive-communication` asks for the register first (teach, decide or bind). For a
+  quotation, SoW or tender it writes only the cover message and keeps the formal register.
+
+### Changed
+
+- The vault skills resolve projects and move notes through one rule in `vault-conventions`.
+- The engineering-standards and dual-CLI setup docs are shorter: they link to the skills instead of
+  restating them. If you copied `docs/engineering-standards/coding-prompt.md` into your global
+  `CLAUDE.md`, sync your copy.
+- A vault `skill-change` note now has the fields of the GitHub defect form, so it can be filed as an
+  issue by copying.
+
 ## [3.0.0] - 2026-10-26
 
 ### Action needed
