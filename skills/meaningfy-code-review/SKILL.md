@@ -83,7 +83,7 @@ construction and survives catalogue growth. Every lens subagent runs the **same 
 scoped to its region:
 
 1. **Scope in.** Open this lens's region — the catalogue
-   ([`cosmic-python:references/principles-and-anti-patterns.md`](../cosmic-python/references/principles-and-anti-patterns.md))
+   (`cosmic-python`: principles and anti-patterns)
    filtered to the lens, plus the matching `cosmic-python` SKILL sections (see the Lenses table). The
    *region*, not a sample, is your checklist.
 2. **Gather.** Read the diff (new + touched code), the EPIC requirements/specs, and the covering

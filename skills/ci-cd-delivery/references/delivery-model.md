@@ -27,7 +27,7 @@ must not cross.
 Examples: `ted-rdf-conversion-pipeline`, `entity-resolution-service`.
 
 - **CI** (build, test, lint, coverage, architecture, docs) — owned by
-  [`project-setup`](../../project-setup/SKILL.md), not here.
+  `project-setup`, not here.
 - **CD** (release the artifact + trigger the deploy) — owned by this skill.
 
 ## The gap this skill closes

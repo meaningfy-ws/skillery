@@ -1,7 +1,7 @@
 # Tutorial
 
 **Register signature:** second person, literal steps, low surprise. **Owning skill:**
-[`technical-writing`](../../technical-writing/SKILL.md).
+`technical-writing`.
 
 Pointer table only — full entries live in [`inversion-matrix.md`](inversion-matrix.md). See
 [`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U8), which apply here too.

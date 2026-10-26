@@ -76,7 +76,7 @@ runs with prospects are in `references/presales-discovery.md`.
 
 - The user wants a quick factual answer, not coaching → answer directly.
 - The user wants delivery artefacts (an ontology, a mapping, a catalogue config) built → that is engineering work, not this coaching skill.
-- The user wants the **Decision Package itself produced** (the Deep tier's paid deliverable) → that is the [`decision-package`](../decision-package/SKILL.md) skill. This skill *coaches* the design and protects the free→paid boundary; `decision-package` *produces* the artifact.
+- The user wants the **Decision Package itself produced** (the Deep tier's paid deliverable) → that is the `decision-package` skill. This skill *coaches* the design and protects the free→paid boundary; `decision-package` *produces* the artifact.
 - Technical architecture modelling → use the relevant technical skill.
 
 ## The three layers: always name the one you are in

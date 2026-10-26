@@ -34,7 +34,7 @@ each one serves, and which skills depend on which — see
 
 | Bundle | Skills | Install if you… |
 |--------|--------|-----------------|
-| **meaningfy-core** | **technical-writing** · **explanatory-writing** · **writing-antipatterns** · **meaningfy-git-workflow** · **guardrails** | …do anything (cross-cutting basics) |
+| **meaningfy-core** | **technical-writing** · **explanatory-writing** · **writing-antipatterns** · **meaningfy-voice** · **meaningfy-git-workflow** · **guardrails** | …do anything (cross-cutting basics) |
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **proposal-writing** · **estimation** · **executive-communication** | …do advisory / front-of-funnel work |
 | **meaningfy-architecture** | **architecture** · **conceptual-modelling** · **modelling-conventions** · **linkml-engineering** | …design systems or model a domain |
 | **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |

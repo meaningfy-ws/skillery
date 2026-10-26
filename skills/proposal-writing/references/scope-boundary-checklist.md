@@ -6,7 +6,7 @@ on a fixed-frame price. Run this before the proposal + SoW ship.
 
 ## The one invariant
 
-> **The SoW "out of scope" list = the [`estimation`](../../estimation/SKILL.md) worksheet's
+> **The SoW "out of scope" list = the `estimation` worksheet's
 > exclusions.** One list, two documents. If `estimation` excluded it from the number, the SoW must
 > exclude it from the commitment, and vice versa.
 
@@ -15,7 +15,7 @@ on a fixed-frame price. Run this before the proposal + SoW ship.
 - [ ] Every in-scope item maps to a deliverable in the SoW (Section 2) and a leaf in the work
       breakdown the estimate decomposed against.
 - [ ] The Decision Package is named as the primary deliverable (per
-      [`decision-package`](../../decision-package/SKILL.md)).
+      `decision-package`).
 - [ ] Each in-scope item has a stated boundary — where it stops, not just that it is included.
 
 ## Out-of-scope checks
@@ -31,7 +31,7 @@ on a fixed-frame price. Run this before the proposal + SoW ship.
 - [ ] **Stop/extend mechanics** are present: scope reduction, short extension, or clean stop with
       partial delivery if outcomes can't be reached for reasons outside our control. Never silent
       overwork (the boundary safeguard from
-      [`engagement-model.md`](../../semantic-consulting-coach/references/engagement-model.md)).
+      `semantic-consulting-coach`: engagement model).
 
 ## Handover check
 

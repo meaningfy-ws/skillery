@@ -1,7 +1,7 @@
 # Explanation
 
 **Register signature:** one metaphor, example beside claim, rhythm. **Owning skill:**
-[`explanatory-writing`](../../explanatory-writing/SKILL.md).
+`explanatory-writing`.
 
 Pointer table only — full entries live in [`inversion-matrix.md`](inversion-matrix.md). See
 [`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U8), which apply here too.

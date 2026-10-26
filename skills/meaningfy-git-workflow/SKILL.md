@@ -53,7 +53,7 @@ those belong to *commit messages*, not branches.
 
 Prefer the ticketing system's branch-name feature (e.g. Jira) to generate a `feature/` name. The
 `release/` + `hotfix/` *lifecycle* (cut-from, back-merge, tagging) is owned by
-[`meaningfy-release`](../meaningfy-release/SKILL.md) — this skill owns only the branch *shape*.
+`meaningfy-release` — this skill owns only the branch *shape*.
 
 ## Workflow
 

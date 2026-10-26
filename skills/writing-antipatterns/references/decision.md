@@ -1,8 +1,8 @@
 # Decision (persuasive)
 
 **Register signature:** answer first, MECE pyramid, hedging banned. **Owning skill:**
-[`executive-communication`](../../executive-communication/SKILL.md),
-[`proposal-writing`](../../proposal-writing/SKILL.md).
+`executive-communication`,
+`proposal-writing`.
 
 Pointer table only — full entries live in [`inversion-matrix.md`](inversion-matrix.md). See
 [`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U8), which apply here too.

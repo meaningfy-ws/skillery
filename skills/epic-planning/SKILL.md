@@ -23,7 +23,7 @@ never a parallel `EPIC.md`/`PLAN.md` file. Ask before assuming; never ship a spe
 assumptions (Human Sovereignty).
 
 This skill **authors**. The living-spec lifecycle after authoring — archive, grooming `specs/`,
-regenerating the orientation index — belongs to [`spec-stewardship`](../spec-stewardship/SKILL.md).
+regenerating the orientation index — belongs to `spec-stewardship`.
 
 ## Procedure (maps to the `/opsx` build-tier flow — see [`spine/workflows.md`](../../spine/workflows.md))
 
@@ -35,7 +35,7 @@ regenerating the orientation index — belongs to [`spec-stewardship`](../spec-s
    assumption **before** writing the EPIC. After each round, summarise what you understood and
    confirm. Make no silent assumptions. **Include a test-scenario interview**: help the human enumerate
    what the EPIC must *prove* — key assertions, scenarios, edge cases — so the design phase can author
-   `.feature` coverage (handed to [`bdd-gherkin`](../bdd-gherkin/SKILL.md); the PLAN's design half
+   `.feature` coverage (handed to `bdd-gherkin`; the PLAN's design half
    references that coverage and `clarity-gate` scores it). Step definitions stay in implement.
    When run as a delegated agent, return the open concerns as one question round to the caller
    instead of asking.
@@ -49,7 +49,7 @@ regenerating the orientation index — belongs to [`spec-stewardship`](../spec-s
    derives from — see [`spine/golden-thread.md`](../../spine/golden-thread.md)). Keep it at shaping
    altitude — leave implementation room.
 5. **EPIC readiness check** (lightweight). Before deriving the PLAN, run the **lightweight variant**
-   of [`clarity-gate`](../clarity-gate/SKILL.md) over the EPIC — a quick readiness pass that catches
+   of `clarity-gate` over the EPIC — a quick readiness pass that catches
    bet-level ambiguity (vague problem, missing no-gos, undecided key decisions). This is *not* the
    full ≥9/10 gate (the Shape-Up bet stays deliberately looser); it just stops a vague EPIC producing
    a vague PLAN.
@@ -82,13 +82,13 @@ of wrongness — handle them differently:
 
 **Owns:** the **authoring** practice — seed intake, elicitation, EPIC shaping (= `proposal.md`), the
 lightweight EPIC readiness check, and PLAN derivation (= `design.md` + `tasks.md`).
-**Delegates:** PLAN scoring → [`clarity-gate`](../clarity-gate/SKILL.md); the living-spec lifecycle
-(archive, grooming, memory-index regen) → [`spec-stewardship`](../spec-stewardship/SKILL.md);
-Gherkin → [`bdd-gherkin`](../bdd-gherkin/SKILL.md); code → [`cosmic-python`](../cosmic-python/SKILL.md);
+**Delegates:** PLAN scoring → `clarity-gate`; the living-spec lifecycle
+(archive, grooming, memory-index regen) → `spec-stewardship`;
+Gherkin → `bdd-gherkin`; code → `cosmic-python`;
 the doc-first build loop → external `stream-coding`. For the **texture** of the EPIC/PLAN narrative
 prose (the proposal "why" and "solution outline" are Explanation-quadrant), the writing family applies:
-[`technical-writing`](../technical-writing/SKILL.md) and
-[`explanatory-writing`](../explanatory-writing/SKILL.md) — referenced, not restated.
+`technical-writing` and
+`explanatory-writing` — referenced, not restated.
 **Not an EPIC:** a team's Shape Up work shape kept in a personal vault is a `work-shape` note
-([`vault-conventions`](../vault-conventions/SKILL.md)); it may feed an EPIC but is not one.
+(`vault-conventions`); it may feed an EPIC but is not one.
 **Related:** `clarity-gate`, `spec-stewardship`, `bdd-gherkin`, `architecture`, `technical-writing`, `stream-coding` (external).

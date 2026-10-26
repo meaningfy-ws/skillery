@@ -160,7 +160,7 @@ A small service stays **one level** — just the four layers. A larger project i
   imports none of them; it has no `entrypoints/`.
 - Boundaries are **enforced, not hoped**: import-linter contracts for per-component layers, a tier hierarchy
   across components, and `commons` isolation — owned by
-  [`project-setup`](../project-setup/references/architecture-guardrails.md), which also sets the **grooming
+  `project-setup` (architecture guardrails), which also sets the **grooming
   cadence** (revise the contracts on every refactor / new component; the agent asks the developer
   periodically whether they still fit).
 

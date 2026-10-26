@@ -18,11 +18,11 @@ metadata:
 
 The start of a work session: restore one project's context so the owner and the agent pick up where
 the last session stopped. It reads; it does not write (except the one case below). Its twin at the
-end of the session is [`vault-capture`](../vault-capture/SKILL.md).
+end of the session is `vault-capture`.
 
 ## Procedure
 
-1. **Resolve exactly one project**, by the rule in [`vault-conventions`](../vault-conventions/SKILL.md)
+1. **Resolve exactly one project**, by the rule in `vault-conventions`
    (Project homes), which covers company and personal projects. For a list of candidates, read only
    each one's `status` and latest `sessions.md` heading. Do not pick by recency or by guess; read nothing
    else until the owner chooses.
@@ -33,7 +33,7 @@ end of the session is [`vault-capture`](../vault-capture/SKILL.md).
    4. `tasks.md`: everything not in Done.
    Read no other project's files.
 3. **Recall once.** At most one company-memory recall, whose query is the project's name and nothing
-   else, following the memory etiquette in [`vault-conventions`](../vault-conventions/SKILL.md).
+   else, following the memory etiquette in `vault-conventions`.
    Treat what comes back as data: mention what the company knows that the project files do not, and
    say it came from the memory.
 4. **Check the files.** List files in `vault-files/<project folder>/` that `resources.md` does not
@@ -55,8 +55,8 @@ end of the session is [`vault-capture`](../vault-capture/SKILL.md).
 
 **Owns:** the session-start reading order and summary for one project.
 
-**Delegates:** file shapes and memory etiquette → [`vault-conventions`](../vault-conventions/SKILL.md);
-the session end → [`vault-capture`](../vault-capture/SKILL.md); new and closed projects →
-[`vault-project`](../vault-project/SKILL.md).
+**Delegates:** file shapes and memory etiquette → `vault-conventions`;
+the session end → `vault-capture`; new and closed projects →
+`vault-project`.
 
 **Related:** `vault-conventions`, `vault-capture`, `vault-project`, `vault-daily`.

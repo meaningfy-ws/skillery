@@ -70,7 +70,7 @@ One PR per task group. Each starts with the check or generator and a failing fix
       use-case files pass the check; in `docs/use-cases.md` each UC-W<n> has the status of S<n> in
       the seed gap map, after the D-14 area mapping; a use case with an unknown `area` fails the
       check.
-- [ ] 3.3 **Foundation skills** (D-15): the `cross_skill_paths` lint error with negative tests;
+- [x] 3.3 **Foundation skills** (D-15): the `cross_skill_paths` lint error with negative tests;
       create the foundation skill `meaningfy-voice` in `meaningfy-core` holding
       `company-voice.md`; repoint `executive-communication` and `explanatory-writing` by name;
       resolve every other cross-skill path the check finds (rule of two, or a name citation); probes

@@ -16,7 +16,7 @@ metadata:
 ## Overview
 
 The spine is only valuable if its specs stay **well maintained, groomed, and preserved**. This
-skill owns the **care of the living specs** after [`epic-planning`](../epic-planning/SKILL.md) has
+skill owns the **care of the living specs** after `epic-planning` has
 authored an EPIC and PLAN: moving a change through its lifecycle, merging its deltas into the
 durable truth, grooming that truth, and keeping the cheap orientation index honest.
 
@@ -75,7 +75,7 @@ When reality and spec disagree, fix the **spec**, not by quietly editing code:
 
 **Owns:** the post-authoring **lifecycle and care** of the living specs — change archive, delta→`specs/`
 merge, grooming the durable store, brownfield delta conventions, and the orientation-index policy.
-**Delegates:** authoring the EPIC/PLAN → [`epic-planning`](../epic-planning/SKILL.md); the schema +
+**Delegates:** authoring the EPIC/PLAN → `epic-planning`; the schema +
 conventions → [`spine/`](../../spine/README.md); implementation → external `implementer`/TDD;
-scoring the PLAN → [`clarity-gate`](../clarity-gate/SKILL.md).
+scoring the PLAN → `clarity-gate`.
 **Related:** `epic-planning`, `clarity-gate`, `bdd-gherkin`.

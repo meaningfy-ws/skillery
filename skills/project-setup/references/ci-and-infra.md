@@ -181,7 +181,7 @@ Read the Docs hosting instead, ship a `.readthedocs.yaml` that runs Antora to
 
 CI (this pillar) covers build/test/lint/coverage/architecture/docs. **Continuous Delivery — the
 deploy trigger, the reusable deploy mechanism, the release/image standard — is owned by the
-[`ci-cd-delivery`](../../ci-cd-delivery/SKILL.md) skill**, and `project-setup` only *renders* its
+`ci-cd-delivery` skill**, and `project-setup` only *renders* its
 templates. The two never overlap.
 
 - **Deployable `product` →** the interview's deployable question (Q6.4) is **yes**. Per

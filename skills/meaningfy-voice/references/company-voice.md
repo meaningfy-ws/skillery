@@ -67,7 +67,7 @@ register.
 - No contractions, no rhetorical questions, no casual asides, no persuasion.
 - Plain vocabulary is not casual: keep the words plain and the tone formal.
 - Its defects are those of the Contract / specification genre in
-  [`writing-antipatterns`](../../writing-antipatterns/references/contract.md).
+  `writing-antipatterns` (contract).
 - For a contractual document, this skill writes only the cover message or the
   executive summary; the document's structure belongs to the offer skill.
 

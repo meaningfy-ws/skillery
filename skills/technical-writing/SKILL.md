@@ -29,7 +29,7 @@ established terminology (read `MEMORY.md` and existing docs first).
 
 ## Clarity check (apply to everything you write)
 
-Apply the **lightweight clarity check owned by [`clarity-gate`](../clarity-gate/SKILL.md)**
+Apply the **lightweight clarity check owned by `clarity-gate`**
 (actionable · current · specific references · single-source). It is defined there; this skill
 *applies* it to prose and does not restate the criteria. The full 13-item gate (for specs) also
 lives in `clarity-gate`.
@@ -45,7 +45,7 @@ lives in `clarity-gate`.
 
 The defaults above suit Reference and How-to docs. When the page is a Diátaxis **Explanation** (an
 explainer, a "how X works" narrative, broad-audience teaching prose), borrow the texture craft from
-[`explanatory-writing`](../explanatory-writing/SKILL.md) — one controlling metaphor, a concrete
+`explanatory-writing` — one controlling metaphor, a concrete
 example beside every abstract claim, self-answered question pivots. The terse/tables default still
 governs Reference and How-to output.
 

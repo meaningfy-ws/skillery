@@ -100,7 +100,7 @@ and frameworks apply. A `library` skips them (no process); a `doc-only` skips Gr
   *other ontology tooling*. Never silently defaulted.
 - Drives the `model/` directory + the `make generate-models` bridge (Pydantic / JSON Schema / OWL /
   SHACL). The model *source* and the generators are owned by the
-  [`conceptual-modelling`](../../conceptual-modelling/SKILL.md) skill; `project-setup` only lays
+  `conceptual-modelling` skill; `project-setup` only lays
   down `model/` and a seed schema. `library`/`doc-only` skip `model/`.
 
 ---
@@ -141,7 +141,7 @@ Each is a yes/no with a recommended default keyed off the archetype.
 
 **Q6.4 Deployable? — the CD seam (R10).**
 - Default: **no**. Ask only for `product`. **Yes** → render the CD/release templates owned by the
-  [`ci-cd-delivery`](../../ci-cd-delivery/SKILL.md) skill — BUT per its §6, only **after DevOps
+  `ci-cd-delivery` skill — BUT per its §6, only **after DevOps
   ratification**; until then scaffold a clearly-marked `deploy.yaml` **TODO stub** + the boundary
   docs (`--deployable`). `library`/`doc-only` get **no** deploy workflow.
 

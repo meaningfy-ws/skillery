@@ -6,11 +6,12 @@ owner: {name: Meaningfy, email: info@meaningfy.ws}
 description: Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently
 bundles:
   - name: meaningfy-core
-    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy git/PR workflow, and agentic guardrails"
+    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, and agentic guardrails"
     skills:
       - technical-writing
       - explanatory-writing
       - writing-antipatterns
+      - meaningfy-voice
       - meaningfy-git-workflow
       - guardrails
     agents: []

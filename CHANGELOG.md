@@ -9,6 +9,23 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [Unreleased]
+
+### Added
+
+- **`meaningfy-voice`** in `meaningfy-core`: the Meaningfy company voice profile as its own
+  foundation skill, so every skill that writes for Meaningfy loads the same voice. Installing
+  `meaningfy-core` brings it.
+- **The use-case catalogue** (`use-cases/`, 21 White use cases) and its gap map
+  [`docs/use-cases.md`](docs/use-cases.md): what the catalogue serves today, by area and status.
+- **Four `area` facet values:** `operations`, `business`, `legal`, `design`.
+
+### Action needed (contributors)
+
+- A skill never links into another skill's folder; it names the skill (`cross_skill_paths` in
+  `make validate`). A resource two skills need moves into a foundation skill.
+- A file in `use-cases/` must pass `use_case_catalogue`; `make skill-inventory` renders the gap map.
+
 ## [3.2.0] - 2026-10-26
 
 ### Action needed (users)

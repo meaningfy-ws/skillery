@@ -731,3 +731,20 @@ def test_use_case_body_needs_brief_and_no_lifted_sections(tmp_path):
     _uc_repo(tmp_path, _UC, body="## Trigger\n\nx")
     errs = lint.use_case_catalogue(tmp_path)
     assert any("Brief Description" in e for e in errs) and any("'Trigger'" in e for e in errs)
+
+
+# ------------------------------------------------ foundation skills (restructure-and-evaluate D-15)
+def test_link_into_another_skill_is_flagged(tmp_path):
+    _skill_fm(tmp_path, "b", {"name": "b", "description": "x"})
+    (tmp_path / "skills" / "b" / "references").mkdir()
+    (tmp_path / "skills" / "b" / "references" / "r.md").write_text("x", encoding="utf-8")
+    _skill_fm(tmp_path, "a", {"name": "a", "description": "x"},
+              body="See [r](../b/references/r.md#top).")
+    errs = lint.cross_skill_paths(tmp_path)
+    assert len(errs) == 1 and "skills/a/SKILL.md" in errs[0] and "'b'" in errs[0]
+
+
+def test_link_inside_own_skill_and_outside_skills_passes(tmp_path):
+    _skill_fm(tmp_path, "a", {"name": "a", "description": "x"},
+              body="[r](references/r.md) [m](../../docs/m.md) [w](https://x.org/skills/b/r.md)")
+    assert lint.cross_skill_paths(tmp_path) == []

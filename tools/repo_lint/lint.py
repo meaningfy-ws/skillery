@@ -325,6 +325,25 @@ def use_case_catalogue(repo: Path) -> list[str]:
     return out
 
 
+def cross_skill_paths(repo: Path) -> list[str]:
+    """No link from one skill's files resolves into another skill's folder (D-15): a skill names
+    another skill; a resource two skills need moves into a foundation skill."""
+    dirs = {p.parent.resolve(): name for name, p in _skill_paths(repo).items()}
+    out: list[str] = []
+    for src_dir, src in dirs.items():
+        for f in sorted(src_dir.rglob("*.md")):
+            for target in _MD_LINK.findall(f.read_text(encoding="utf-8")):
+                target = unquote(target.split("#")[0].strip())
+                if not target or re.match(r"^[a-z]+:", target):
+                    continue
+                resolved = (f.parent / target).resolve()
+                owner = next((n for d, n in dirs.items() if resolved.is_relative_to(d)), None)
+                if owner and owner != src:
+                    out.append(f"{f.relative_to(repo.resolve()).as_posix()}: links into skill "
+                               f"'{owner}' ({target}); name the skill instead")
+    return out
+
+
 def bundle_requirements(repo: Path) -> list[str]:
     """Cross-bundle "depends on" edges point into core or a required bundle; core requires
     nothing; required bundles exist; the requirement graph is acyclic (define-catalogue-model D-8).
@@ -982,6 +1001,7 @@ ALL_CHECKS = (
     boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
+    cross_skill_paths,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

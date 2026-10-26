@@ -75,7 +75,7 @@ From the chosen source, code, contracts, and documentation are generated **deter
 outside the LLM path** — reproducible, diffable, CI-checkable. This skill owns *that this is how the
 model becomes artefacts*; it does **not** own the LinkML authoring, the generator wiring, the custom
 templates, or the quality gates — those belong to
-[`../linkml-engineering/SKILL.md`](../linkml-engineering/SKILL.md). The semantic core (Pydantic, JSON
+`linkml-engineering`. The semantic core (Pydantic, JSON
 Schema, OWL, SHACL) and the enable-on-demand targets are catalogued there; see
 [`references/generators.md`](references/generators.md) for the pointer.
 
@@ -105,22 +105,22 @@ terminology / definitions / glossary management (ubiquitous language).
 
 **This skill REUSES:**
 - Representation-agnostic modelling craft (reusable-property and URI-everywhere *principles*, naming,
-  anti-patterns, guardrails) → [`../modelling-conventions/SKILL.md`](../modelling-conventions/SKILL.md).
+  anti-patterns, guardrails) → `modelling-conventions`.
   This skill applies those conventions; it does not restate them.
 
 **This skill DELEGATES:**
 - The LinkML craft — authoring, generation, custom templates, quality gates, per-module output →
-  [`../linkml-engineering/SKILL.md`](../linkml-engineering/SKILL.md). This skill picks the source and
+  `linkml-engineering`. This skill picks the source and
   owns the model; `linkml-engineering` executes the LinkML.
 - System/solution architecture — C4 levels, ADRs, the contract-first *order of artifacts* →
-  [`../architecture/SKILL.md`](../architecture/SKILL.md). Architecture authors *which* contracts
+  `architecture`. Architecture authors *which* contracts
   exist; this skill owns the domain model that backs them.
-- Code layering and what consumes the generated contract →
-  [`../cosmic-python/SKILL.md`](../cosmic-python/SKILL.md). `entrypoints/api` *consumes* the
-  generated contract; this skill owns the model that produces it.
 - Normative requirements and the spec spine → the spine specs (see
   [`../../spine/README.md`](../../spine/README.md)). Model classes are *ubiquitous language*
   that specs reference; specs state the *rules*.
+
+Code layering and what consumes the generated contract belong to the related skill `cosmic-python`:
+`entrypoints/api` *consumes* the generated contract; this skill owns the model that produces it.
 
 **Conditional:** product-development (programming) projects only — see the Overview.
 

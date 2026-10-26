@@ -7,7 +7,7 @@ detail is owned by the LinkML craft skill.
 **The `make generate-models` wiring, the first-class target set (Pydantic / JSON Schema / OWL / SHACL),
 the enable-on-demand targets, custom generator templates, per-module output, and the
 model2owl-as-prerequisite flow all live in
-[`../../linkml-engineering/SKILL.md`](../../linkml-engineering/SKILL.md)** and its references:
+`linkml-engineering`** and its references:
 
 - Deriving LinkML from an existing model/spec → `linkml-engineering/references/deriving-linkml.md`
 - Generation, custom templates, automation, per-module output →

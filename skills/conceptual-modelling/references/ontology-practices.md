@@ -3,7 +3,7 @@
 The conceptual model is an ontology in the engineering sense: identified concepts with stable meaning.
 This file owns the **concept-level policy** — the decisions made once, at the model level. The
 representation-agnostic *conventions* (reusable properties, URI-everywhere, naming, vocabulary reuse as
-a principle) live in [`../../modelling-conventions/SKILL.md`](../../modelling-conventions/SKILL.md); the
+a principle) live in `modelling-conventions`; the
 LinkML *mechanics* that realise them (minted `prefixes`, implicit `class_uri`/`slot_uri`, the
 URI-as-datatype artifice) live in `linkml-engineering`. This file states policy and delegates both.
 
@@ -11,7 +11,7 @@ URI-as-datatype artifice) live in `linkml-engineering`. This file states policy 
 
 The *principle* that everything is identified by a stable URI, implicit by default, is a shared
 convention — see
-[`../../modelling-conventions/references/naming-and-identity.md`](../../modelling-conventions/references/naming-and-identity.md).
+`modelling-conventions` (naming and identity).
 The **policy decisions** are owned here:
 
 - **Mint a base namespace per model** you own (e.g. `https://data.meaningfy.ws/<domain>/`) and declare
@@ -49,5 +49,5 @@ This is an **explicit decision point, never silently defaulted**, and it is owne
 
 We do **not** abstract these behind a source-adapter interface (YAGNI). Pick one consciously per project.
 Once chosen, the LinkML execution (deriving, authoring, generating) is owned by
-[`../../linkml-engineering/SKILL.md`](../../linkml-engineering/SKILL.md); configuring model2owl itself is
+`linkml-engineering`; configuring model2owl itself is
 a future dedicated skill.
