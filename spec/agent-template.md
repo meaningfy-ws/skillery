@@ -22,6 +22,7 @@ A closed allowlist. Any other field fails the validator.
 | `skills` | yes | non-empty YAML list; the first local skill (no `:`, not external) is the agent's **primary skill** |
 | `disallowedTools` | no | YAML list |
 | `color` | no | one of `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan` |
+| `metadata` | in practice yes | the six catalogue facets, as for skills (vocabulary in [`../facets.yaml`](../facets.yaml)); not rendered for opencode. A change to `metadata` only is not behavioural and needs no new Gherkin scenario |
 | anything else (`bundle`, `primary`, `permissionMode`, `memory`, `maxTurns`, …) | forbidden | see *Field adoption* |
 
 After any frontmatter edit, run `make bundles` (the opencode catalogue carries the parsed frontmatter).

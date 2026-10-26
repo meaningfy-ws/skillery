@@ -3,7 +3,12 @@ name: meaningfy-release
 description: The Meaningfy release lifecycle — semantic versioning policy (MAJOR/MINOR/PATCH + -rc.N pre-releases), GitFlow release/hotfix branches, changelog + GitHub release notes, semi-automated releases via release-please, publishing Python libraries to PyPI with Trusted Publishing (OIDC, no tokens), opt-in supply-chain hardening (signing/provenance/SBOM), and release governance (SECURITY.md, yanking, deprecation). Use when cutting, versioning, publishing, or documenting a release. Trigger on "cut a release", "bump the version", "publish to PyPI", "write release notes", "release branch / hotfix", "yank a bad release", "how do we version this", "set up the release workflow".
 license: Apache 2.0
 metadata:
-  category: engineering
+  purpose: delivery
+  area: coding
+  subject: git-release
+  posture: precise
+  stage: release
+  maturity: stable
 ---
 
 # Meaningfy Release Lifecycle

@@ -14,6 +14,13 @@ skills:
   - superpowers:test-driven-development
   - superpowers:systematic-debugging
   - superpowers:verification-before-completion
+metadata:
+  purpose: building
+  area: coding
+  subject: python
+  posture: precise
+  stage: build
+  maturity: stable
 ---
 
 You are the **Implementer**. You turn one ready task into tested production code that matches its spec.

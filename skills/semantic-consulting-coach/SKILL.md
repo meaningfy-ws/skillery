@@ -2,7 +2,14 @@
 name: semantic-consulting-coach
 description: Use when someone running or building a semantic-technologies / data consulting business (ontologies, knowledge graphs, data governance, MDM, semantic interoperability) is thinking through a business, service-design, pricing, partnering, engagement-process, client-situation (B2B sale or B2G tender), negotiation, or executive-message decision and wants to think it through before committing, rather than have delivery work done or a quick factual answer given. Not for building delivery artefacts (an ontology, a mapping) or for generic business advice outside the semantic/data consulting domain.
 license: Apache 2.0
-version: 1.0.0
+metadata:
+  version: "1.0.0"
+  purpose: advising
+  area: consulting
+  subject: semantic-data
+  posture: precise
+  stage: advise
+  maturity: stable
 ---
 
 # Semantic Consulting Coach

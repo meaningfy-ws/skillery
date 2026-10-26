@@ -3,7 +3,12 @@ name: decision-package
 description: Produce the Decision Package — the paid keystone deliverable of a semantic/data consulting engagement's P1 Decision Phase. Use to write the recommendation, the in/out scope, the sequenced (pilot → scale) roadmap, the buy/build/defer decisions, and the ready-to-contract execution brief that hands off to the build/architecture tier. The unit of value is decision-readiness; the artefact sits ABOVE architecture (it justifies and scopes the build before a repo exists). Triggers — "produce a decision package", "write the recommendation / scope / roadmap / buy-build-defer", "decision-readiness deliverable", "execution brief for the build", "scope this engagement", "Semantic Readiness & Direction / Decision Foundation deliverable". This skill PRODUCES the artefact; it does NOT coach the engagement design or hold the free→paid line (that is semantic-consulting-coach — "produce" vs "coach"). Not for free P0 orientation, not for delivery artefacts (an ontology, a mapping), not for code architecture.
 license: Apache 2.0
 metadata:
-  category: consulting
+  purpose: advising
+  area: consulting
+  subject: semantic-data
+  posture: profiled
+  stage: advise
+  maturity: stable
 ---
 
 # Decision Package

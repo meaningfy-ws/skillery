@@ -4,10 +4,10 @@ How skills and agents are conceived, written, documented, tested, installed, imp
 this catalogue — so that someone who did not write them can **install one bundle, understand what they
 got, use it on the first try, and report what went wrong**. Everything here serves that reader.
 
-> **Status:** working method, in force. It is also the hypothesis under test in the EPIC
-> `skill-crafting-method` (not yet published), which compares it
-> section by section with the published methods and decides what skillery keeps, adopts by reference,
-> or separates out.
+> **Status:** working method, in force. The `skill-crafting-method` change compared it with the
+> published methods: the governance rows stay skillery's own, the authoring and testing craft is
+> cited from the methods below, and the method is not separated from this repo for now
+> ([`catalogue-governance`](../openspec/specs/catalogue-governance/spec.md)).
 
 This document defines the method. The binding that mandates it is
 [`AGENTS.md` → Skills and agents development method](../AGENTS.md#skills-and-agents-development-method);
@@ -37,18 +37,38 @@ If a change helps the agent but confuses the user, it is not done.
 4. **Reference, don't copy.** External skills (superpowers, stream-coding, obsidian-skills, …) are
    dependencies, declared and linked. Vendor one only with a provenance note (source, commit,
    licence, date) and a review; never install from a directory sight-unseen.
+   **Third-party content.** Read every file of an external skill, and every URL it tells the agent to
+   read, before declaring or vendoring it (AST01). Pin it to a commit or content hash and record a
+   provenance note: source, commit, licence, date, reviewer (AST02, AST07). A skill body never tells
+   the agent to fetch and follow live remote instructions; snapshot them into `references/` (AST05).
+   An agent gets the fewest tools its job needs, and a tool denial survives rendering to every CLI or
+   is recorded as a gap (AST03, AST10). Ids from the
+   [OWASP Agentic Skills Top 10](https://owasp.org/www-project-agentic-skills-top-10/) (v1.0).
 5. **Failure-first.** A skill or agent exists because an agent did something badly without it. That
-   case is written down before the first line of the skill, and it becomes the acceptance test.
+   case is written down before the first line of the skill, and it becomes the acceptance test. The
+   test is proportionate: a new skill, a boundary move or a discipline rule is proven by a behavioural
+   baseline (the same scenarios without the skill, or with its previous version, then with it); a
+   wording, link or description change is proven by probes only. How to run a baseline:
+   superpowers [`writing-skills`](https://github.com/obra/superpowers/tree/main/skills/writing-skills)
+   (7.0.0) and agentskills.io [*Evaluating skills*](https://agentskills.io/skill-creation/evaluating-skills).
 6. **Trigger is the product.** The `description` is the only text the agent reads before deciding to
-   load a skill. Write it as *when to use / when not to use*, and prove it with probes.
-7. **Progressive disclosure.** SKILL.md holds the method in a few hundred words; details, tables and
-   templates go to `references/`, `assets/`, `scripts/`. Context is the scarcest resource.
+   load a skill. It says what the skill does and when to use it, in the imperative ("Use this skill
+   when…"), in at most 1,024 characters (a gate) and ideally 600 (advisory); add `Not for…` only where
+   a near-miss probe needs it. Prove it with probes; the method is agentskills.io
+   [*Optimizing descriptions*](https://agentskills.io/skill-creation/optimizing-descriptions).
+7. **Progressive disclosure.** SKILL.md holds the method; details, tables and templates go to
+   `references/`, `assets/`, `scripts/`, within the budget of the
+   [agentskills.io specification](https://agentskills.io/specification) (body under 500 lines and
+   5,000 tokens; references one level deep). Context is the scarcest resource.
 8. **CLI-agnostic bodies.** Skills and agents run on Claude Code and opencode from one source; the
    body names no CLI command forms or paths (the `body_agnosticism` gate checks).
 9. **Nothing secret, nothing local.** No hosts, credentials, ports, personal paths or client names in
    a skill or agent; method only.
 10. **Installable or it does not exist.** A skill belongs to exactly one bundle; an agent to exactly
     one bundle; every external dependency is declared; a fresh install on both CLIs is the last check.
+11. **A rule that must hold every time is a hook, not skill prose.** Declare its intent in
+    [`hooks/inventory.yaml`](../hooks/inventory.yaml), rendered per CLI; never in skill frontmatter
+    `hooks`, which only Claude Code reads.
 
 ## 3. Lifecycle — skills
 
@@ -56,8 +76,8 @@ If a change helps the agent but confuses the user, it is not done.
 Wording, link, probe, or description tweak that moves no boundary → a direct PR from a feature branch.
 When unsure, EPIC.
 
-**Name the posture before you edit** an existing skill (R reusable core, C core with profiles, P
-precise house standard; [`catalogue-governance`](../openspec/specs/catalogue-governance/spec.md)).
+**Read the posture before you edit** an existing skill: it is recorded as `metadata.posture`
+(`reusable` R, `profiled` C, `precise` P; [`catalogue-governance`](../openspec/specs/catalogue-governance/spec.md)).
 An R fix adds no domain content to `SKILL.md`; a C fix adds a switch or a profile, never a silent
 default; a P fix adds a guardrail with an enforcement home.
 
@@ -65,10 +85,10 @@ default; a P fix adds a guardrail with an enforcement home.
 |---|---|---|---|
 | 1 | **Decide it is a skill** — not an agent (acts), doc (narrates) or binding (mandates); not already owned; not already external | A one-line job statement | [`spec/skill-repo-governance.md`](../spec/skill-repo-governance.md), [`skill-inventory.md`](skill-inventory.md), [`tests/ownership.yaml`](../tests/ownership.yaml) |
 | 2 | **Write the failure case** — the prompt, what came out, what should have | A dated note in the EPIC's `inputs/` or the PR | — |
-| 3 | **Shape the boundary** — name, `boundary`, `related_skills`, owned facts, description-as-trigger | Frontmatter draft; `ownership.yaml` entries | [`spec/agent-skills-spec.md`](../spec/agent-skills-spec.md) |
+| 3 | **Shape the boundary** — name, the `## Boundary & Related Skills` body section, owned facts, description-as-trigger | Frontmatter and boundary-section draft; `ownership.yaml` entries | [`spec/agent-skills-spec.md`](../spec/agent-skills-spec.md) |
 | 4 | **Write it lean** — template, Quick Start with one worked example, "when not to use", details in `references/` | `skills/<name>/` | [`spec/skill-template.md`](../spec/skill-template.md), [`spec/CREATING_SKILLS.md`](../spec/CREATING_SKILLS.md) |
-| 5 | **Prove it** — one positive probe, one near-miss probe for the closest neighbour; before/after on the failure case; `skill-creator` evals where available | `tests/trigger_probes.yaml` entries; before/after in the PR | [`tests/trigger_probes.yaml`](../tests/trigger_probes.yaml) |
-| 6 | **Register and regenerate** — bundle (`bundles.yaml` + `make bundles`), `PURPOSE_OF`, inventory, validate | Green `make validate` | [`AGENTS.md` → How to maintain](../AGENTS.md#how-to-maintain--extend-the-catalogue) |
+| 5 | **Prove it** — one positive probe, one near-miss probe for the closest neighbour; baseline or before/after per principle 5; evals with `skill-creator` (used as is) or the hand-started workflow `.github/workflows/plugin-eval.yml`; opencode has no eval runner (a recorded gap) | `tests/trigger_probes.yaml` entries; baseline or before/after in the PR | [`tests/trigger_probes.yaml`](../tests/trigger_probes.yaml) |
+| 6 | **Register and regenerate** — bundle (`bundles.yaml` + `make bundles`), the six facets, inventory, validate | Green `make validate` | [`AGENTS.md` → How to maintain](../AGENTS.md#how-to-maintain--extend-the-catalogue) |
 | 7 | **Document for the user** — README "I want to…" row if it is a new entry point; CHANGELOG line in user language ("you can now…", not "refactored…") | README, CHANGELOG | [`README.md`](../README.md) |
 | 8 | **Ship** — conventional commit, PR, review; version only via the release flow | A release note users can read | [`skills/meaningfy-git-workflow`](../skills/meaningfy-git-workflow), [`skills/meaningfy-release`](../skills/meaningfy-release) |
 
@@ -98,8 +118,8 @@ A stranger must be able to use it from its own files, without asking the author.
 
 **Every skill**
 
-- `description`: one or two sentences, trigger-shaped (*Use when… / Not for…*), listing the phrases
-  that should fire it.
+- `description`: what it does and when to use it (principle 6), listing the phrases that should
+  fire it.
 - **Quick Start**: the shortest path to a result, with one real worked example (input → output).
 - **When not to use** (the boundary) and **Related skills** (cited by name, never restated).
 - Detail in `references/`, each file named for its question (`principles-and-anti-patterns.md`, not
@@ -175,32 +195,69 @@ Rules of the loop:
 
 ## 8. Where things live
 
-| Question | Read |
-|---|---|
-| What is a skill / agent / doc / binding; placement rules | [`spec/skill-repo-governance.md`](../spec/skill-repo-governance.md) |
-| The skill file format and metadata | [`spec/agent-skills-spec.md`](../spec/agent-skills-spec.md), [`spec/skill-template.md`](../spec/skill-template.md) |
-| Step-by-step authoring, structure, scripts, assets | [`spec/CREATING_SKILLS.md`](../spec/CREATING_SKILLS.md) |
-| Submission checklist and PR process | [`CONTRIBUTING.md`](../CONTRIBUTING.md) |
-| The agent contract (type, dispatch, body cap) | [spec/agent-template.md](../spec/agent-template.md) |
-| Which skill owns which fact; trigger probes | [`tests/ownership.yaml`](../tests/ownership.yaml), [`tests/trigger_probes.yaml`](../tests/trigger_probes.yaml) |
-| Per-skill purpose and dependencies | [`skill-inventory.md`](skill-inventory.md) |
-| Dual-CLI rules and gates | [`AGENTS.md`](../AGENTS.md#dual-cli-authoring-rules), [`environment/dual-cli/`](environment/dual-cli/README.md) |
-| Installing, external dependencies | [`environment/setup.md`](environment/setup.md) |
-| Commits, branches, PRs; versions and releases | [`skills/meaningfy-git-workflow`](../skills/meaningfy-git-workflow), [`skills/meaningfy-release`](../skills/meaningfy-release) |
-| Roles and who is accountable | [`roles-and-raci.md`](roles-and-raci.md) |
+This is the register of every documentation view in the repo. A file under `docs/`, or `README.md`,
+`AGENTS.md` or `CLAUDE.md`, that no row matches fails `make validate` (`doc_register_complete`).
+A view is an exact path from the repo root, or a folder written `folder/**`, which covers every file
+at any depth below it.
+
+| View | Kind | Source or topic | Rendered by |
+|---|---|---|---|
+| `docs/skill-inventory.md` | generated | [`bundles.yaml`](../bundles.yaml), [`facets.yaml`](../facets.yaml), the skill and agent files | `make skill-inventory` |
+| `README.md` | hand-written | What the catalogue is and how to install it | — |
+| `AGENTS.md` | hand-written | The repo operating rules for any CLI, including the [dual-CLI authoring rules](../AGENTS.md#dual-cli-authoring-rules) | — |
+| `CLAUDE.md` | hand-written | Claude Code-only additions to `AGENTS.md` | — |
+| `docs/development-method.md` | hand-written | How skills and agents are built, changed and accepted | — |
+| `docs/roles-and-raci.md` | hand-written | Roles and who is accountable | — |
+| `docs/environment/setup.md` | hand-written | Installing, external dependencies | — |
+| `docs/environment/openspec-setup-guide.md` | hand-written | Setting up OpenSpec in a project | — |
+| `docs/environment/vault-assistant.md` | hand-written | Using the vault-assistant bundle | — |
+| `docs/environment/dual-cli/**` | hand-written | Dual-CLI setup, mapping and gates | — |
+| `docs/ai-coding/**` | hand-written | The AI-assisted build lifecycle and its role playbooks | — |
+| `docs/ai-consulting/**` | hand-written | The advisory runbook, methods and playbook | — |
+| `docs/ai-sales/**` | hand-written | The sales runbook, service offers and playbook | — |
+| `docs/engineering-standards/**` | hand-written | Engineering standards for Meaningfy code projects | — |
+| `docs/philosophy/**` | hand-written | Essays on working with an LLM | — |
+| `spec/skill-repo-governance.md` | hand-written | Artifact types and placement rules | — |
+| `spec/agent-skills-spec.md` | hand-written | The skill file format and metadata | — |
+| `spec/skill-template.md` | hand-written | The skill file template | — |
+| `spec/CREATING_SKILLS.md` | hand-written | Step-by-step authoring, structure, scripts, assets | — |
+| `spec/agent-template.md` | hand-written | The agent contract (type, dispatch, body cap) | — |
+| `CONTRIBUTING.md` | hand-written | Submission checklist and PR process | — |
+| `tests/ownership.yaml` | hand-written | Which skill owns which fact | — |
+| `tests/trigger_probes.yaml` | hand-written | Trigger probes per skill | — |
+| `facets.yaml` | hand-written | The facet vocabulary | — |
+
+Routing for questions the table does not answer by name:
+
+- Placement rules: [`spec/skill-repo-governance.md`](../spec/skill-repo-governance.md); authoring:
+  [`spec/CREATING_SKILLS.md`](../spec/CREATING_SKILLS.md); the agent contract:
+  [`spec/agent-template.md`](../spec/agent-template.md).
+- Fact ownership and probes: [`tests/ownership.yaml`](../tests/ownership.yaml),
+  [`tests/trigger_probes.yaml`](../tests/trigger_probes.yaml); facets:
+  [`facets.yaml`](../facets.yaml); per-skill purpose, facets and dependencies:
+  [`skill-inventory.md`](skill-inventory.md).
+- Dual-CLI rules and gates: [`AGENTS.md`](../AGENTS.md#dual-cli-authoring-rules),
+  [`environment/dual-cli/`](environment/dual-cli/README.md); installing:
+  [`environment/setup.md`](environment/setup.md).
+- Commits, branches, PRs: [`skills/meaningfy-git-workflow`](../skills/meaningfy-git-workflow);
+  versions and releases: [`skills/meaningfy-release`](../skills/meaningfy-release); roles:
+  [`roles-and-raci.md`](roles-and-raci.md).
 
 ## 9. Definition of Done
 
 A skill or agent change is done when every line below is true. It is the review checklist.
 
 - [ ] A failure case is recorded (EPIC inputs or PR).
-- [ ] One job; the description is trigger-shaped; `boundary` and `related_skills` set.
+- [ ] One job; the description says what and when (principle 6); a `## Boundary & Related Skills`
+      body section is present.
+- [ ] Test proportionate to the change (principle 5): a baseline run for a new skill, a boundary move
+      or a discipline rule; probes only for wording, links and descriptions.
 - [ ] No fact is stated that another skill owns (`ownership.yaml` checked or updated).
 - [ ] SKILL.md is lean; detail is in `references/`; Quick Start has one worked example.
 - [ ] Agent: type declared, dispatch contract present, body holds no method, scenarios in
       `tests/features/`.
 - [ ] Probes: one positive, one near-miss; before/after kept.
-- [ ] Exactly one bundle; `PURPOSE_OF` entry; `make skill-inventory`; `make bundles` if membership
+- [ ] Exactly one bundle; the six facets of `facets.yaml` declared; `make skill-inventory`; `make bundles` if membership
       or agent frontmatter changed; `make validate` green.
 - [ ] Licence and provenance recorded for vendored or third-party content — per-skill `LICENSE.txt`
       where it differs from the repo's, `THIRD_PARTY_NOTICES.md`, and a provenance note (source,

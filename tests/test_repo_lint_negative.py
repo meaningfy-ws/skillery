@@ -537,3 +537,137 @@ def test_agent_feature_skill_named_outside_background_is_flagged(tmp_path):
     f.write_text(text + "\n  Scenario: aside\n    Given installed with skills `cosmic-python`\n", encoding="utf-8")
     assert lint.agent_conformance(tmp_path) == [
         "tests/features/agents/x.feature Background does not name skill 'cosmic-python'"]
+
+
+def _skill_fm(root: Path, name: str, fm: dict, body: str = "## Boundary & Related Skills\n\nx"):
+    d = root / "skills" / name
+    d.mkdir(parents=True)
+    (d / "SKILL.md").write_text(f"---\n{yaml.safe_dump(fm, sort_keys=False)}---\n\n{body}\n", encoding="utf-8")
+
+
+def test_top_level_version_is_rejected(tmp_path):
+    _skill_fm(tmp_path, "s", {"name": "s", "description": "x", "version": "1.0.0"})
+    assert any("'version'" in e for e in lint.frontmatter_keys(tmp_path))
+
+
+def test_non_string_metadata_is_rejected(tmp_path):
+    _skill_fm(tmp_path, "s", {"name": "s", "description": "x", "metadata": {"version": 1}})
+    assert any("string values" in e for e in lint.frontmatter_keys(tmp_path))
+
+
+def test_claude_only_and_metadata_version_pass(tmp_path):
+    _skill_fm(tmp_path, "s", {"name": "s", "description": "x", "argument-hint": "<x>",
+                              "disable-model-invocation": True, "metadata": {"version": "1.0.0"}})
+    assert lint.frontmatter_keys(tmp_path) == []
+
+
+def test_description_over_1024_is_rejected(tmp_path):
+    _skill_fm(tmp_path, "s", {"name": "s", "description": "x" * 1025})
+    assert lint.description_too_long(tmp_path) and lint.description_too_long(tmp_path, 1025) == []
+
+
+def test_method_checks_run_on_a_minimal_tree(tmp_path):
+    # skill-crafting-method H-6: the method checks hold in any repo with only skills/.
+    assert all(c in lint.ALL_CHECKS for c in lint.METHOD_CHECKS)
+    _skill_fm(tmp_path, "foo", {"name": "foo", "description": "Use this skill when testing."})
+    assert [e for c in lint.METHOD_CHECKS for e in c(tmp_path)] == []
+
+
+# --------------------------------------------------- catalogue model (define-catalogue-model)
+_VOCAB = {"facets": {"purpose": {"writing": "x"}, "posture": {"reusable": "x", "precise": "x"}}}
+
+
+def _facets_repo(tmp_path, skill_meta, agent_meta=None):
+    (tmp_path / "facets.yaml").write_text(yaml.safe_dump(_VOCAB), encoding="utf-8")
+    _skill_fm(tmp_path, "s", {"name": "s", "description": "x", "metadata": skill_meta})
+    if agent_meta is not None:
+        _agent(tmp_path, "a", {"name": "a", "description": "x", "metadata": agent_meta})
+
+
+def test_missing_facet_is_flagged(tmp_path):
+    _facets_repo(tmp_path, {"purpose": "writing"})
+    assert any("metadata.posture" in e for e in lint.facets_declared(tmp_path))
+
+
+def test_list_facet_value_is_flagged(tmp_path):
+    _facets_repo(tmp_path, {"purpose": ["writing"], "posture": "reusable"})
+    assert any("'purpose'" in e for e in lint.facets_declared(tmp_path))
+
+
+def test_unknown_facet_value_is_flagged(tmp_path):
+    _facets_repo(tmp_path, {"purpose": "selling", "posture": "reusable"})
+    assert any("allowed: writing" in e for e in lint.facets_declared(tmp_path))
+
+
+def test_agent_without_facets_is_flagged(tmp_path):
+    _facets_repo(tmp_path, {"purpose": "writing", "posture": "reusable"}, agent_meta={})
+    errs = lint.facets_declared(tmp_path)
+    assert errs and all(e.startswith("agents/a") for e in errs)
+
+
+def _req_repo(tmp_path, bundles, delegations):
+    """bundles: {name: (skills, requires)}; delegations: {skill: [delegated skills]}."""
+    doc = {"name": "m", "owner": {"name": "o", "email": "o@x"}, "description": "d", "bundles": []}
+    for name, (skills, req) in bundles.items():
+        b = {"name": name, "description": "d", "skills": skills, "agents": []}
+        if req:
+            b["requires"] = req
+        doc["bundles"].append(b)
+        for s in skills:
+            dels = " ".join(f"`{d}`" for d in delegations.get(s, []))
+            _skill_fm(tmp_path, s, {"name": s, "description": "x"},
+                      body=f"## Boundary & Related Skills\n\n**Delegates:** {dels or 'nothing'}.\n")
+    (tmp_path / "bundles.yaml").write_text(yaml.safe_dump(doc), encoding="utf-8")
+
+
+def test_undeclared_cross_bundle_edge_is_flagged(tmp_path):
+    _req_repo(tmp_path, {"meaningfy-core": (["c"], []), "cons": (["e"], []), "build": (["p"], [])},
+              {"e": ["p"]})
+    assert any("does not require 'build'" in e for e in lint.bundle_requirements(tmp_path))
+
+
+def test_declared_edge_passes(tmp_path):
+    _req_repo(tmp_path, {"meaningfy-core": (["c"], []), "cons": (["e"], ["build"]), "build": (["p"], [])},
+              {"e": ["p"], "p": ["c"]})
+    assert lint.bundle_requirements(tmp_path) == []
+
+
+def test_requirement_cycle_is_flagged(tmp_path):
+    _req_repo(tmp_path, {"meaningfy-core": (["c"], []), "a": (["x"], ["b"]), "b": (["y"], ["a"])}, {})
+    assert any("cycle" in e for e in lint.bundle_requirements(tmp_path))
+
+
+def test_core_requiring_a_bundle_is_flagged(tmp_path):
+    _req_repo(tmp_path, {"meaningfy-core": (["c"], ["b"]), "b": (["y"], [])}, {})
+    assert any("must require nothing" in e for e in lint.bundle_requirements(tmp_path))
+
+
+def test_core_skill_delegating_outward_is_flagged(tmp_path):
+    _req_repo(tmp_path, {"meaningfy-core": (["c"], []), "b": (["y"], [])}, {"c": ["y"]})
+    assert any("requires nothing" in e for e in lint.bundle_requirements(tmp_path))
+
+
+def test_unknown_required_bundle_is_flagged(tmp_path):
+    _req_repo(tmp_path, {"meaningfy-core": (["c"], []), "b": (["y"], ["ghost"])}, {})
+    assert any("unknown bundle 'ghost'" in e for e in lint.bundle_requirements(tmp_path))
+
+
+def _register(tmp_path, rows):
+    (tmp_path / "docs").mkdir(exist_ok=True)
+    table = "\n".join(f"| `{r}` | hand-written | t | — |" for r in rows)
+    (tmp_path / "docs" / "development-method.md").write_text(
+        f"# M\n\n## 8. Where things live\n\n| View | Kind | Source or topic | Rendered by |\n|---|---|---|---|\n{table}\n\n## 9. Done\n",
+        encoding="utf-8")
+
+
+def test_unregistered_doc_is_flagged(tmp_path):
+    _register(tmp_path, ["docs/development-method.md"])
+    (tmp_path / "docs" / "new-guide.md").write_text("x", encoding="utf-8")
+    assert lint.doc_register_complete(tmp_path) == ["docs/new-guide.md: not in the documentation register (docs/development-method.md §8)"]
+
+
+def test_folder_prefix_covers_nested_docs(tmp_path):
+    _register(tmp_path, ["docs/development-method.md", "docs/ai-sales/**"])
+    (tmp_path / "docs" / "ai-sales" / "x").mkdir(parents=True)
+    (tmp_path / "docs" / "ai-sales" / "x" / "y.md").write_text("x", encoding="utf-8")
+    assert lint.doc_register_complete(tmp_path) == []

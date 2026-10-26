@@ -1,9 +1,10 @@
-# Trigger-probe fixtures (Q4.2=B) — a NON-BLOCKING aid for catching trigger
-# collisions after skill descriptions grow or move. Each probe is a representative
-# user phrase; `expect` is the skill that should fire. The validator checks
-# deterministically that every `expect` names a real skill and that every skill
-# has at least one probe (coverage). Actual LLM trigger-matching is out of scope
-# for CI (non-deterministic) — see HARD-QUESTIONS HQ-04.1 for the future harness.
+# Trigger-probe fixtures: repo data, not a model run. Each probe is a representative user phrase;
+# `expect` is the skill that should fire, and `near_miss_of` (optional) the neighbour that must not.
+# The validator checks deterministically that every `expect` names a real skill and that every skill
+# has a probe. Behavioural trigger testing follows the agentskills.io method (about 20 queries, half
+# near-misses, 3 runs each) with `skill-creator`, seeded from these probes; CI never runs a model.
+# The on-demand `claude plugin eval` workflow (.github/workflows/plugin-eval.yml) runs bundle suites
+# from evals/ when a maintainer starts it.
 probes:
   - probe: "help me price this ontology / knowledge-graph consulting engagement"
     expect: semantic-consulting-coach
@@ -91,3 +92,10 @@ probes:
   - probe: "the copy says our method keeps data consistent, is that claim sound"
     expect: writing-antipatterns
     near_miss_of: executive-communication
+  # estimation's description no longer delegates to epic-planning (define-catalogue-model §B).
+  - probe: "give me a fixed-price estimate with contingency for this bid"
+    expect: estimation
+    near_miss_of: proposal-writing
+  - probe: "break this feature into an EPIC with its tasks and acceptance criteria"
+    expect: epic-planning
+    near_miss_of: estimation

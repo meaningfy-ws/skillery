@@ -140,12 +140,19 @@ and whose `near_miss_of` names the skill that should not. Every `near_miss_of` S
 The development method SHALL require that a change to a skill names the skill's posture before the
 edit: R (reusable core: no domain content enters `SKILL.md`), C (core with profiles: a fix adds a
 switch or a profile, never a silent default) or P (precise house standard: a fix adds a guardrail with
-an enforcement home).
+an enforcement home). The posture SHALL be recorded on every skill and agent as `metadata.posture`
+(`reusable`, `profiled` or `precise`), so a contributor reads it instead of deciding it again.
 
 #### Scenario: A reusable skill receives a domain fact
 
 - **WHEN** a fix to an R skill would add a fact about one client domain to its `SKILL.md`
 - **THEN** the fact goes in a reference file or a profile instead
+
+#### Scenario: A contributor fixes a skill
+
+- **WHEN** a contributor prepares a fix to `executive-communication`
+- **THEN** its frontmatter states `posture: profiled`, so the fix adds a switch or a profile and no
+  silent default
 
 ### Requirement: Repo documentation states each fact once
 
@@ -157,4 +164,72 @@ fact that had no home.
 
 - **WHEN** the same setup step is written out in two documents
 - **THEN** one keeps it and the other links to it
+
+### Requirement: Skill frontmatter follows the Agent Skills specification
+
+Every `skills/<name>/SKILL.md` frontmatter SHALL use only the top-level keys of the agentskills.io
+specification (`name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`) or a
+key on the recorded Claude-only list (`argument-hint`, `disable-model-invocation`), and every
+`metadata` value SHALL be a string. A description longer than 1,024 characters SHALL fail
+validation. Descriptions longer than 600 characters and `SKILL.md` bodies over 500 lines or about
+5,000 tokens SHALL be reported as advisory notes.
+
+#### Scenario: A skill declares a version at the top level
+
+- **WHEN** a skill's frontmatter has `version: 1.2.0` as a top-level key
+- **THEN** validation fails and names the key, and `metadata.version` is accepted instead
+
+#### Scenario: A description is too long
+
+- **WHEN** a skill description has 1,025 characters
+- **THEN** validation fails for that skill
+
+#### Scenario: A long body is reported
+
+- **WHEN** a `SKILL.md` body has 520 lines
+- **THEN** validation passes and the advisory notes list the skill
+
+### Requirement: Authoring guidance has one home
+
+Step-by-step authoring guidance for this repository SHALL live in `spec/CREATING_SKILLS.md` as
+Meaningfy deltas plus citations of the adopted methods. `CONTRIBUTING.md` SHALL be a short entry page
+that links to that guide and to the Definition of Done. `spec/agent-skills-spec.md` SHALL cite the
+agentskills.io specification and carry only skillery's field notes.
+
+#### Scenario: A contributor opens CONTRIBUTING.md
+
+- **WHEN** a contributor reads `CONTRIBUTING.md`
+- **THEN** it links to `spec/CREATING_SKILLS.md` and to `docs/development-method.md` §9, and holds no
+  authoring steps of its own
+
+#### Scenario: Boundary and related skills are described correctly
+
+- **WHEN** `AGENTS.md` or the Definition of Done describes a skill's boundary and related skills
+- **THEN** it names the body section `## Boundary & Related Skills`, not frontmatter keys
+
+### Requirement: Bundles declare the bundles they require
+
+A bundle in `bundles.yaml` SHALL list, under `requires:`, every other bundle that one of its skills
+depends on; `meaningfy-core` is implicit and SHALL NOT be listed. `meaningfy-core` SHALL require no
+bundle, and the requirement graph SHALL be acyclic. Every "depends on" edge between skills (a skill
+named on another skill's `**Delegates:**` line) that crosses bundles SHALL point into `meaningfy-core`
+or into a required bundle. A hand-off that would break one of these rules SHALL be reworded as
+"related" or the skill moved; a requirement SHALL NOT be added to hide a cycle.
+
+#### Scenario: An undeclared cross-bundle dependency
+
+- **WHEN** a skill in `meaningfy-consulting` names a `meaningfy-building` skill on its `**Delegates:**`
+  line and `meaningfy-consulting` does not require `meaningfy-building`
+- **THEN** validation fails, naming the edge and the missing requirement
+
+#### Scenario: A cycle between bundles
+
+- **WHEN** `meaningfy-building` requires `meaningfy-architecture` and `meaningfy-architecture`
+  requires `meaningfy-building`
+- **THEN** validation fails and names the cycle
+
+#### Scenario: Core depends outward
+
+- **WHEN** a `meaningfy-core` skill names a skill of another bundle on its `**Delegates:**` line
+- **THEN** validation fails, because `meaningfy-core` requires nothing
 

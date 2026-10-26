@@ -18,12 +18,23 @@ from urllib.parse import unquote
 import yaml
 
 from tools.bundle_gen import gen as bundle_gen
+from tools import skill_inventory
 
 SKILLS_DIR = "skills"
 README = "README.md"
 # Hard ceiling that flags genuinely bloated files; ~500 stays the soft target
 # in CONTRIBUTING. The established `architecture` skill is ~618 lines and fine.
 MAX_SKILL_LINES = 650
+# The Agent Skills specification's top-level frontmatter keys (agentskills.io/specification), and
+# the Claude-only keys skillery accepts on top of them (ignored by opencode; recorded dual-CLI gap).
+SPEC_SKILL_KEYS = ("name", "description", "license", "compatibility", "metadata", "allowed-tools")
+CLAUDE_ONLY_SKILL_KEYS = ("argument-hint", "disable-model-invocation")
+MAX_DESCRIPTION_CHARS = 1024  # the specification's hard limit
+# Advisory review thresholds (reported, never failing): the method's description target and the
+# specification's body budget (characters / 4 approximates tokens).
+ADVISORY_DESCRIPTION_CHARS = 600
+ADVISORY_SKILL_LINES = 500
+ADVISORY_SKILL_TOKENS = 5000
 
 # documenter, gherkin-writer: DEC-7 backlog candidates (spec/agent-template.md), not retired names
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner"}
@@ -181,6 +192,166 @@ def frontmatter_errors(repo: Path) -> list[str]:
     return errs
 
 
+def frontmatter_keys(repo: Path) -> list[str]:
+    """Skill frontmatter uses only the specification's keys plus the recorded Claude-only ones,
+    and `metadata` is a map of strings (the specification's extension point)."""
+    allowed = SPEC_SKILL_KEYS + CLAUDE_ONLY_SKILL_KEYS
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        fm = _frontmatter(_skill_md(repo, name)) or {}
+        for key in fm:
+            if key not in allowed:
+                out.append(f"{name}: frontmatter key '{key}' is not in the Agent Skills specification "
+                           f"({', '.join(SPEC_SKILL_KEYS)}) nor Claude-only ({', '.join(CLAUDE_ONLY_SKILL_KEYS)})")
+        meta = fm.get("metadata")
+        if meta is not None and not (isinstance(meta, dict) and all(isinstance(v, str) for v in meta.values())):
+            out.append(f"{name}: 'metadata' must map keys to string values")
+    return out
+
+
+def description_too_long(repo: Path, limit: int = MAX_DESCRIPTION_CHARS) -> list[str]:
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        desc = str((_frontmatter(_skill_md(repo, name)) or {}).get("description", ""))
+        if len(desc) > limit:
+            out.append(f"{name}: description is {len(desc)} characters (> {limit})")
+    return out
+
+
+def description_length_report(repo: Path) -> list[str]:
+    """Advisory: descriptions above the method's target length."""
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        n = len(str((_frontmatter(_skill_md(repo, name)) or {}).get("description", "")))
+        if n > ADVISORY_DESCRIPTION_CHARS:
+            out.append(f"{name}: description is {n} characters (target <= {ADVISORY_DESCRIPTION_CHARS})")
+    return out
+
+
+def skill_size_report(repo: Path) -> list[str]:
+    """Advisory: SKILL.md bodies above the specification's budget."""
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        text = _body(_skill_md(repo, name))
+        lines, tokens = len(text.splitlines()), len(text) // 4
+        if lines > ADVISORY_SKILL_LINES or tokens > ADVISORY_SKILL_TOKENS:
+            out.append(f"{name}: SKILL.md body is {lines} lines, ~{tokens} tokens "
+                       f"(body budget {ADVISORY_SKILL_LINES} lines / {ADVISORY_SKILL_TOKENS} tokens)")
+    return out
+
+
+FACETS_FILE = "facets.yaml"
+CORE_BUNDLE = "meaningfy-core"
+_REGISTER_FILE = "docs/development-method.md"
+_REGISTER_SECTION = "## 8. Where things live"
+
+
+def facets_declared(repo: Path) -> list[str]:
+    """Every skill and agent declares one allowed value per facet of facets.yaml under `metadata`
+    (define-catalogue-model DEC-1, D-2). Silent where the repo has no facets.yaml."""
+    path = repo / FACETS_FILE
+    if not path.exists():
+        return []
+    vocab = (yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("facets", {})
+    files = [(n, p) for n, p in _skill_paths(repo).items()]
+    if (repo / "agents").exists():
+        files += [(f"agents/{p.stem}", p) for p in sorted((repo / "agents").glob("*.md"))]
+    out: list[str] = []
+    for label, p in files:
+        meta = (_frontmatter(p.read_text(encoding="utf-8")) or {}).get("metadata") or {}
+        for facet, values in vocab.items():
+            v = meta.get(facet) if isinstance(meta, dict) else None
+            if v is None:
+                out.append(f"{label}: missing facet 'metadata.{facet}'")
+            elif not isinstance(v, str) or v not in values:
+                out.append(f"{label}: facet '{facet}' is {v!r}; allowed: {', '.join(values)}")
+    return out
+
+
+def bundle_requirements(repo: Path) -> list[str]:
+    """Cross-bundle "depends on" edges point into core or a required bundle; core requires
+    nothing; required bundles exist; the requirement graph is acyclic (define-catalogue-model D-8).
+    Edges come from the inventory's own parser, so there is one reading of the Delegates lines."""
+    try:
+        bundles = (yaml.safe_load((repo / bundle_gen.BUNDLES_FILE).read_text(encoding="utf-8")) or {}).get("bundles", [])
+    except (OSError, yaml.YAMLError):
+        return []  # bundle_gates reports an unreadable bundles.yaml
+    names = {b["name"] for b in bundles}
+    requires = {b["name"]: list(b.get("requires") or []) for b in bundles}
+    out: list[str] = []
+    for b, reqs in requires.items():
+        for req in reqs:
+            if req not in names:
+                out.append(f"bundle '{b}' requires unknown bundle '{req}'")
+            if req == CORE_BUNDLE:
+                out.append(f"bundle '{b}' lists '{CORE_BUNDLE}', which is implicit")
+    if requires.get(CORE_BUNDLE):
+        out.append(f"'{CORE_BUNDLE}' must require nothing")
+    state: dict[str, int] = {}
+    def visit(node: str, trail: list[str]) -> None:
+        if state.get(node) == 1:
+            out.append("bundle requirement cycle: " + " -> ".join(trail[trail.index(node):] + [node]))
+            return
+        if state.get(node) == 2:
+            return
+        state[node] = 1
+        for nxt in requires.get(node, []):
+            if nxt in names:
+                visit(nxt, trail + [node])
+        state[node] = 2
+    for b in sorted(names):
+        visit(b, [])
+    bundle_of = {s: b["name"] for b in bundles for s in b.get("skills", [])}
+    skill_names = set(bundle_of)
+    for name in _skill_dirs(repo):
+        src = bundle_of.get(name)
+        if src is None:
+            continue
+        for dep in skill_inventory._depends_on(_skill_md(repo, name), skill_names, name):
+            dst = bundle_of[dep]
+            if dst == src or dst == CORE_BUNDLE:
+                continue
+            if src == CORE_BUNDLE:
+                out.append(f"'{name}' ({CORE_BUNDLE}) delegates to '{dep}' ({dst}); {CORE_BUNDLE} "
+                           "requires nothing: reword the hand-off as Related")
+            elif dst not in requires.get(src, []):
+                out.append(f"'{name}' ({src}) delegates to '{dep}' ({dst}), but '{src}' does not "
+                           f"require '{dst}': add it to requires or reword the hand-off as Related")
+    return out
+
+
+def _register_views(repo: Path) -> list[str] | None:
+    path = repo / _REGISTER_FILE
+    if not path.exists():
+        return None
+    text = path.read_text(encoding="utf-8")
+    start = text.find(_REGISTER_SECTION)
+    if start < 0:
+        return []
+    end = text.find("\n## ", start + 1)
+    section = text[start:end if end > 0 else len(text)]
+    views = []
+    for line in section.splitlines():
+        m = re.match(r"^\|\s*\[?`([^`]+)`", line)
+        if m:
+            views.append(m.group(1))
+    return views
+
+
+def doc_register_complete(repo: Path) -> list[str]:
+    """Every documentation file matches a row of the register in the method's section 8: an exact
+    path, or a `folder/**` prefix covering every file below it (define-catalogue-model D-8, D-10)."""
+    views = _register_views(repo)
+    if views is None:
+        return []
+    exact = {v for v in views if not v.endswith("/**")}
+    prefixes = tuple(v[:-2] for v in views if v.endswith("/**"))
+    docs = sorted(p.relative_to(repo).as_posix() for p in (repo / "docs").rglob("*.md")) if (repo / "docs").exists() else []
+    docs += [f for f in ("README.md", "AGENTS.md", "CLAUDE.md") if (repo / f).exists()]
+    return [f"{f}: not in the documentation register ({_REGISTER_FILE} §8)"
+            for f in docs if f not in exact and not f.startswith(prefixes)]
+
+
 def frontmatter_strict_yaml(repo: Path) -> list[str]:
     """Strict loaders (opencode, `npx skills`) skip a skill whose frontmatter is not valid YAML, so
     every skill and agent frontmatter block must parse with `yaml.safe_load` to a dict. The tolerant
@@ -301,12 +472,18 @@ def broken_links(repo: Path) -> list[str]:
     return out
 
 
+def _body(text: str) -> str:
+    """SKILL.md without its frontmatter: size budgets apply to the body (agentskills.io)."""
+    m = _FRONTMATTER.match(text)
+    return text[m.end():] if m else text
+
+
 def skill_too_long(repo: Path, limit: int = MAX_SKILL_LINES) -> list[str]:
     out: list[str] = []
     for name in _skill_dirs(repo):
-        n = len(_skill_md(repo, name).splitlines())
+        n = len(_body(_skill_md(repo, name)).splitlines())
         if n > limit:
-            out.append(f"{name}: SKILL.md is {n} lines (> {limit})")
+            out.append(f"{name}: SKILL.md body is {n} lines (> {limit})")
     return out
 
 
@@ -403,21 +580,6 @@ def readme_inventory_gaps(repo: Path) -> list[str]:
         if not re.search(rf"(^|[^\w-]){re.escape(name)}([^\w-]|$)", readme):
             out.append(f"README does not list skill '{name}'")
     return out
-
-
-def templates_mirrored(repo: Path) -> list[str]:
-    claude = repo / "prompts/CLAUDE.md.template"
-    agents = repo / "prompts/AGENTS.md.template"
-    if not (claude.exists() and agents.exists()):
-        return []  # WS4 concern; skip until both exist
-    skills = set(_skill_dirs(repo)) | {s for ss in _bundle_membership(repo).values() for s in ss}
-
-    def named(text: str) -> set[str]:
-        return {s for s in skills if s in text}
-    cset, aset = named(claude.read_text()), named(agents.read_text())
-    if cset != aset:
-        return [f"CLAUDE/AGENTS template skill sets differ: {cset ^ aset}"]
-    return []
 
 
 def duplicate_fact_candidates(repo: Path) -> list[str]:
@@ -648,7 +810,7 @@ def body_agnosticism(repo: Path) -> list[str]:
 # ------------------------------------------- agent authoring standard (spec/agent-template.md)
 MAX_AGENT_BODY_LINES = 40
 AGENT_REQUIRED_FIELDS = ("name", "description", "type", "model", "tools", "skills")
-AGENT_OPTIONAL_FIELDS = ("disallowedTools", "color")
+AGENT_OPTIONAL_FIELDS = ("disallowedTools", "color", "metadata")
 CLAUDE_AGENT_COLORS = {"red", "blue", "green", "yellow", "purple", "orange", "pink", "cyan"}
 _AGENT_LIST_FIELDS = ("tools", "skills", "disallowedTools")
 _CONTRACT_LABELS = ("Input", "Output", "Side effects", "Refuses")
@@ -756,12 +918,21 @@ def bundle_gates(repo: Path) -> list[str]:
 
 ALL_CHECKS = (
     missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
-    frontmatter_errors, frontmatter_strict_yaml, name_mismatch, expected_bundle_membership,
+    frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long,
+    name_mismatch, expected_bundle_membership,
     agent_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
     boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
-    bundle_gates,
+    bundle_gates, facets_declared, bundle_requirements, doc_register_complete,
+)
+
+# The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a
+# `skills/` directory. The rest of ALL_CHECKS guards skillery's own tree and distribution.
+METHOD_CHECKS = (
+    frontmatter_present_errors, frontmatter_errors, frontmatter_strict_yaml, name_mismatch,
+    skill_too_long, boundary_section_present, frontmatter_keys, description_too_long,
+    body_agnosticism,
 )
 
 
@@ -770,6 +941,8 @@ def _print_trigger_notes(repo: Path) -> None:
         ("trigger-probe (Q4.2=B)", trigger_probe_report(repo)),
         ("ownership-tripwire (Q5.2=B)", ownership_claim_report(repo)),
         ("reciprocal-Related (DEC-12 advisory)", reciprocal_related_report(repo)),
+        ("description-length (method target)", description_length_report(repo)),
+        ("skill-size (specification budget)", skill_size_report(repo)),
     ):
         if notes:
             print(f"\n(assist) {len(notes)} {label} note(s) — non-blocking:")

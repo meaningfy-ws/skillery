@@ -27,6 +27,7 @@ AGENTS_DIR = "agents"
 _TOP_KEYS = ("name", "owner", "description", "bundles")
 _OWNER_KEYS = ("name", "email")
 _BUNDLE_KEYS = ("name", "description", "skills", "agents")
+_BUNDLE_OPTIONAL_KEYS = ("requires",)  # define-catalogue-model D-6; the graph rules live in repo_lint
 _KEBAB = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _FRONTMATTER = re.compile(r"^---\n(.*?)\n---\n?(.*)$", re.DOTALL)
 _STALE = "is stale — run make bundles"
@@ -37,10 +38,10 @@ def version(repo: Path) -> str:
     return (repo / VERSION_FILE).read_text(encoding="utf-8").strip()
 
 
-def _exact_keys(obj, keys: tuple[str, ...], where: str) -> None:
+def _exact_keys(obj, keys: tuple[str, ...], where: str, optional: tuple[str, ...] = ()) -> None:
     if not isinstance(obj, dict):
         raise ValueError(f"{BUNDLES_FILE}: {where} must be a mapping")
-    unknown = [k for k in obj if k not in keys]
+    unknown = [k for k in obj if k not in keys and k not in optional]
     missing = [k for k in keys if k not in obj]
     if unknown:
         raise ValueError(f"{BUNDLES_FILE}: {where} has unknown key(s) {', '.join(map(str, unknown))}")
@@ -60,7 +61,7 @@ def _str_list(value, key: str, where: str) -> list[str]:
 
 
 def _bundle(raw, index: int, seen: set[str]) -> dict:
-    _exact_keys(raw, _BUNDLE_KEYS, f"bundle #{index + 1}")
+    _exact_keys(raw, _BUNDLE_KEYS, f"bundle #{index + 1}", optional=_BUNDLE_OPTIONAL_KEYS)
     name = raw["name"]
     where = f"bundle '{name}'"
     if not isinstance(name, str) or not _KEBAB.match(name):
@@ -71,9 +72,12 @@ def _bundle(raw, index: int, seen: set[str]) -> dict:
     desc = raw["description"]
     if not isinstance(desc, str) or not desc.strip() or "\n" in desc:
         raise ValueError(f"{BUNDLES_FILE}: {where} key 'description' must be one non-empty line")
-    return {"name": name, "description": desc,
-            "skills": _str_list(raw["skills"], "skills", where),
-            "agents": _str_list(raw["agents"], "agents", where)}
+    out = {"name": name, "description": desc,
+           "skills": _str_list(raw["skills"], "skills", where),
+           "agents": _str_list(raw["agents"], "agents", where)}
+    if "requires" in raw:
+        out["requires"] = _str_list(raw["requires"], "requires", where)
+    return out
 
 
 def load(repo: Path) -> dict:

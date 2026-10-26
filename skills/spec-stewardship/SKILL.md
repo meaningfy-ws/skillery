@@ -3,7 +3,12 @@ name: spec-stewardship
 description: Steward the living specification spine after an EPIC is authored — the EPIC↔change lifecycle, archiving completed changes, grooming the durable specs/ store, and keeping the orientation index in sync. Use when finishing/archiving a change, merging spec deltas into the truth, grooming or reviewing the living specs, or refreshing project context/memory. Trigger on "archive this change", "groom the specs", "sync the spec deltas", "what's the lifecycle of a change", "regenerate the memory index", "merge into specs". For authoring the EPIC/PLAN use epic-planning; for the schema/conventions see the spine docs.
 license: Apache 2.0
 metadata:
-  category: ai-coding
+  purpose: planning
+  area: coding
+  subject: spec-driven
+  posture: reusable
+  stage: shape
+  maturity: stable
 ---
 
 # Spec Stewardship

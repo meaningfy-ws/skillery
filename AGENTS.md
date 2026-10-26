@@ -43,7 +43,7 @@ improvement loop and the Definition of Done. This binding mandates it; it does n
 - **Failure-first.** No skill or agent is written or changed without a recorded failure case; it
   becomes the acceptance test.
 - **Proven triggers.** Every description change ships with trigger probes (one positive, one
-  near-miss); every agent change ships with a Gherkin scenario under `tests/features/`.
+  near-miss); every behavioural agent change ships with a Gherkin scenario under `tests/features/`.
 - **One owner, one bundle.** A fact lives in one skill; a skill and an agent each live in exactly one
   bundle; agents carry no method in their body.
 - **User-facing docs are part of the change.** Quick Start with a worked example, README entry-point
@@ -57,16 +57,17 @@ improvement loop and the Definition of Done. This binding mandates it; it does n
 ## How to maintain / extend the catalogue
 
 - **Adding or changing a skill** — follow the **Skills and agents development method** above; the structural detail is in [`spec/CREATING_SKILLS.md`](spec/CREATING_SKILLS.md). After any
-  add, rename, re-bundle, re-describe or re-categorise, run `make skill-inventory` to regenerate
-  [`docs/skill-inventory.md`](docs/skill-inventory.md) (drift is caught by
-  `tests/test_skill_inventory.py` in `make validate`); a new skill also needs a `PURPOSE_OF` entry in
-  [`tools/skill_inventory.py`](tools/skill_inventory.py).
+  add, rename, re-bundle, re-describe or facet change, run `make skill-inventory` to regenerate the
+  catalogue map [`docs/skill-inventory.md`](docs/skill-inventory.md) (drift is caught by
+  `tests/test_skill_inventory.py` in `make validate`); every skill and agent declares the six facets
+  of [`facets.yaml`](facets.yaml) under `metadata`.
 - **Assigning to a bundle** — every skill and every agent is declared in exactly one bundle of
   [`bundles.yaml`](bundles.yaml), the one bundle definition. Then run `make bundles`, which renders
   `.claude-plugin/marketplace.json`, the `bundles/` symlink tree and `tools/opencode-catalogue.json`;
   never hand-edit those.
-- **Boundary / related-skills** — every skill's frontmatter must declare its `boundary` and list
-  any `related_skills`. This keeps triggers crisp and prevents collisions with external neighbours.
+- **Boundary / related-skills** — every skill's body carries a `## Boundary & Related Skills`
+  section (a body section, not frontmatter) that states its boundary and names its related skills.
+  This keeps triggers crisp and prevents collisions with external neighbours.
 - **Versioning** — the root [`VERSION`](VERSION) file is the single source of version truth; both
   CLI distributions derive their version from it.
 - **Dual-CLI parity** — anything you add or change must work on **both** CLIs; the rules are below.

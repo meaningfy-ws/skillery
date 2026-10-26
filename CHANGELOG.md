@@ -9,6 +9,56 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [3.2.0] - 2026-10-26
+
+### Action needed (users)
+
+- **If you use `meaningfy-building`, also install `meaningfy-architecture`.** The developer bundle
+  now declares it as a requirement: `cosmic-python` and `project-setup` hand off to the architecture
+  skills. On Claude: `/plugin install meaningfy-architecture@meaningfy-skillery`; on opencode:
+  `skillery-opencode install meaningfy-architecture`. The catalogue map lists every bundle's
+  requirements.
+
+### Action needed (contributors)
+
+- Every skill and agent now declares six facets under `metadata` (`purpose`, `area`, `subject`,
+  `posture`, `stage`, `maturity`), each from the vocabulary in `facets.yaml`; `metadata.category` is
+  gone. `make validate` fails a missing or unknown value.
+- A skill named on another skill's `**Delegates:**` line in a different bundle needs that bundle in
+  `requires:` in `bundles.yaml`; `meaningfy-core` requires nothing, and cycles fail validation.
+- A new documentation file needs a row in the register (`docs/development-method.md` §8).
+- `make validate` now rejects skill frontmatter keys outside the Agent Skills specification (except
+  the Claude-only `argument-hint` and `disable-model-invocation`), non-string `metadata` values, and
+  descriptions over 1,024 characters. Put a skill version under `metadata.version`, not at the top
+  level.
+
+### Changed
+
+- Five skills point to neighbours in other bundles as "related" instead of handing off to them
+  (`guardrails`, `estimation`, `executive-communication`, `linkml-engineering`, `vault-setup`), so
+  installing one bundle never leaves a hand-off dangling.
+- The skill-development method now cites the published methods instead of restating them:
+  superpowers `writing-skills` for writing and testing a skill, the agentskills.io specification for
+  format, size and descriptions, and OWASP Agentic Skills Top 10 for third-party content.
+- Tests are proportionate: a new skill, a boundary move or a discipline rule needs a baseline run; a
+  wording, link or description change needs probes only.
+- Descriptions say what a skill does and when to use it ("Use this skill when…"); 600 characters is
+  the target, reported as an advisory note.
+- A rule that must hold every time is a hook in `hooks/inventory.yaml`, not skill prose.
+- One authoring guide: `spec/CREATING_SKILLS.md` (CONTRIBUTING.md is now a short entry page; the
+  authoring texts went from 1,414 to about 700 lines).
+
+### Added
+
+- The catalogue map (`docs/skill-inventory.md`) shows skills **and agents** by bundle and by facet
+  (purpose, area, subject, posture, stage, maturity), with each bundle's requirements.
+- The documentation register in `docs/development-method.md` §8: every doc, whether generated or
+  hand-written, and what it owns.
+- An on-demand GitHub Actions workflow, `plugin-eval`, that runs `claude plugin eval` for one bundle
+  with a cost ceiling; it never runs on pull requests or releases and needs the `ANTHROPIC_API_KEY`
+  repository secret. A first suite lives in `evals/meaningfy-consulting/`.
+- Advisory notes for long descriptions and for skills over the specification's size budget.
+
 ## [3.1.0] - 2026-10-26
 
 ### Action needed (repos scaffolded with `project-setup`)

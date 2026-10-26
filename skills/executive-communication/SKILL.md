@@ -2,7 +2,14 @@
 name: executive-communication
 description: "Use when turning rough input into a clear, concise, persuasive executive message or analysis: a board paper, proposal, client recommendation, email or Slack note, spoken narrative, slide outline, or a strategic problem to be solved. Triggers include \"structure this\", \"make this persuasive\", \"write this up for a board or client\", \"turn this into a recommendation\", \"tighten this message\", or any request for McKinsey-style, Minto, SCQA, or pyramid communication. Not for casual chat or code."
 license: Apache 2.0
-version: 1.0.0
+metadata:
+  version: "1.0.0"
+  purpose: writing
+  area: cross-cutting
+  subject: generic
+  posture: profiled
+  stage: any
+  maturity: stable
 ---
 
 # Executive Communication
@@ -238,5 +245,5 @@ the language is plain, with no em dash and no throat-clearing.
 
 **Owns:** the persuasive-communication method — Governing Thought, SCQA, the Minto pyramid, answer-first
 structure, and the Meaningfy company voice (`references/company-voice.md`).
-**Delegates:** spec/EPIC readiness → `clarity-gate`; doc prose mechanics → `technical-writing`.
-**Related:** `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` (Decision/Decision-record genre failure modes).
+**Delegates:** doc prose mechanics → `technical-writing`.
+**Related:** `clarity-gate` (spec or EPIC readiness), `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` (Decision/Decision-record genre failure modes).

@@ -2,7 +2,14 @@
 name: cosmic-python
 description: Clean Architecture and Cosmic Python guidance for well-tested, layered Python systems. Use for designing Python projects with layered architecture (models, adapters, services, entrypoints), enforcing Clean Code and SOLID principles, testing strategies (unit tests, BDD, Gherkin), CI/CD setup (pytest, tox, importlinter), and architectural decision-making (ADRs). Applicable to systems requiring strict boundary enforcement, clean separation of concerns, and comprehensive test coverage.
 license: Apache 2.0
-version: 1.0.0
+metadata:
+  version: "1.0.0"
+  purpose: building
+  area: coding
+  subject: python
+  posture: precise
+  stage: build
+  maturity: stable
 ---
 
 # Cosmic Python: Code Architecture for Production Systems
