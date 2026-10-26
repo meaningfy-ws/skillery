@@ -14,8 +14,8 @@
 
 **Large: about six weeks part time, in about seven PRs, each one a stopping point.** Use cases and
 the coverage check first, then bundles and the `purpose` facet, then the three agents, then the
-feature register, then the infrastructure items (the symlink re-test, the external dependency
-register, the voice channel profiles). If the work turns into writing the sales or devops skills
+future-features file, then bundles as metadata only, then the external dependency register and
+the voice profile placeholders. If the work turns into writing the sales or devops skills
 themselves, stop: those land with `add-sales-bundle` and `add-devops-bundle`.
 
 ## Why
@@ -48,13 +48,16 @@ would measure skills that are about to move.
 4. **The agents that today's skills can serve, built:** `system-architect` (UC-W19) and
    `conceptual-modeller` (UC-W20) as `lead` agents that think with the user and say briefly what they
    think and plan; `proposal-writer` (UC-W8) as a `delegated` agent. Each with its Gherkin.
-5. **A feature register.** One table of the features still to build in this repo (the sales agents,
-   the devops agent, the commercial chain, the personal assistants, ...): their use cases, bundle,
-   agents and skills, the material each needs and whether it exists. A parked change exists only where
-   its material is in hand.
-6. **Infrastructure the structure needs:** re-test whether Claude Code still needs the `bundles/`
-   symlink tree; a structured external dependency register that the compatibility tables are
-   rendered from; channel profiles in `meaningfy-voice` (LinkedIn, blog, offer, internal message).
+5. **A future-features file.** One table of the features still to build in this repo (the sales
+   agents, the devops agent, the commercial chain, the personal assistants, the voice channel
+   profiles, ...): their use cases, bundle, agents and skills, the material each needs and whether it
+   exists. A parked change exists only where its material is in hand.
+6. **Bundles are metadata only.** `bundles.yaml` is the one place bundles are groomed; the `bundles/`
+   folder leaves git and is generated on demand (`make bundles`) for human review and local Claude
+   Code use. Installs from GitHub keep working throughout.
+7. **Infrastructure the structure needs:** a structured external dependency register that the
+   compatibility tables are rendered from, and placeholders for the voice channel profiles (LinkedIn,
+   blog, offer, internal message), filled later.
 
 ## Key decisions
 
@@ -74,18 +77,29 @@ would measure skills that are about to move.
   `restructure-and-evaluate-catalogue`; the agent template's types do not change.
 - **DEC-6: The three agents are built from existing skills only.** An agent whose method is missing
   is a register row, not a thin agent with nothing to load.
-- **DEC-7: The feature register lives in `docs/catalogue-architecture.md`**, replacing the roadmap
-  table it extends; a parked change stub is created only when the feature's material is in hand
-  (today: `add-sales-bundle`, `add-devops-bundle`, both already drafted).
-- **DEC-8: The `bundles/` symlink tree is re-tested, not assumed.** It is replaced by root-source
-  marketplace entries only if a spike on the current Claude Code shows that a bundle with no agents
-  loads no agents and that installs and updates work; otherwise it stays, and the result is recorded.
+- **DEC-7: Future features live in one file, `docs/future-features.md`**, which takes over the
+  roadmap table of `docs/catalogue-architecture.md` (that page links to it); a parked change stub is
+  created only when the feature's material is in hand (today: `add-sales-bundle`,
+  `add-devops-bundle`, both already drafted).
+- **DEC-8: Bundles are metadata; `bundles/` is generated, never committed** (owner, 2026-10-26: "create
+  bundles only on demand, not commit them ... groom only the bundles files, as they are the same as
+  claude plugins"). Because the default branch `develop` is what `/plugin marketplace add` clones,
+  the folder leaves git in the same PR that makes installs independent of it, by route A or B:
+  **A** (preferred) root-source marketplace entries that list each bundle's skills and agents, if a
+  spike on the current Claude Code shows that only the listed skills and agents load (including a
+  bundle with no agents) and that install and update work; **B** otherwise, `bundles/` ignored on
+  `develop` and the release flow publishing the generated tree on a distribution branch the
+  marketplace points at. Until one route passes, `develop` keeps the tree.
+  *Spike, 2026-10-26* ([`inputs/2026-10-26-spike-root-source.md`](inputs/2026-10-26-spike-root-source.md)):
+  route A fails on Claude Code 2.1.310 (an entry's `agents` list is ignored), so route B is the plan
+  unless a GitHub-hosted re-test of route A passes first.
 - **DEC-9: One structured external dependency register** (plugins, skills, CLI tools, MCP servers,
   services, frameworks: source, pin, provenance, install check, CLI support) becomes the source of the
   tables in `docs/environment/dual-cli/compatibility.md` and `mcp-setup.md`.
-- **DEC-10: Voice channel profiles are resources of `meaningfy-voice`.** The voice stays one; a
-  profile per channel says how it sounds there. Each profile starts from a recorded failure case or an
-  owner-supplied example (failure-first).
+- **DEC-10: Voice channel profiles are resources of `meaningfy-voice`, placeholders for now.** The
+  voice stays one; a profile per channel says how it sounds there. This EPIC ships one placeholder per
+  channel (pointing to the default profile) and a future-features row; each profile is written later
+  from a recorded failure case or the owner's examples (failure-first).
 - **DEC-11: No evaluation here.** No model runs; `evaluate-catalogue` measures the result afterwards.
 
 ## Rabbit-holes
@@ -96,8 +110,8 @@ would measure skills that are about to move.
   of the restructure change, never by a cycle.
 - **Re-tagging `purpose` turns into re-describing skills.** Re-tag the facet only; descriptions are
   `evaluate-catalogue`'s.
-- **Channel profiles invented from nothing.** Without the owner's examples a profile is a guess; ship
-  only the profiles that have material, and list the rest on the register.
+- **Channel profiles invented from nothing.** Without the owner's examples a profile is a guess; the
+  placeholders say so and add no rules.
 - **The dependency register grows into a package manager.** It records and renders; it does not
   install.
 
@@ -120,10 +134,11 @@ would measure skills that are about to move.
 - `facets.yaml` `purpose` values replaced by the activities; every skill and agent re-tagged.
 - New agents `system-architect`, `conceptual-modeller` (`meaningfy-architecture`) and `proposal-writer`
   (`meaningfy-sales`), each with a `.feature`.
-- `docs/catalogue-architecture.md`: the feature register replaces the roadmap table.
+- `docs/future-features.md`: the features still to build, taking over the roadmap table.
 - A structured external dependency register and the rendering of the two compatibility docs from it.
-- Channel profiles under `skills/meaningfy-voice/references/`.
-- The symlink re-test, recorded; `bundles/` replaced only if it passes.
+- Channel profile placeholders under `skills/meaningfy-voice/references/`.
+- **BREAKING (contributors):** `bundles/` is no longer committed; `make bundles` generates it locally.
+  The marketplace entries change shape (route A) or point at a distribution branch (route B).
 
 ## Capabilities
 
@@ -135,7 +150,7 @@ would measure skills that are about to move.
 - `catalogue-architecture` (from `restructure-and-evaluate-catalogue`): the coverage rule and the
   feature register.
 - `catalogue-model`: the `purpose` vocabulary.
-- `dual-cli-distribution`: only if the symlink re-test replaces `bundles/`.
+- `dual-cli-distribution`: Claude bundles reach their skills without a committed symlink tree.
 
 ## Impact
 
