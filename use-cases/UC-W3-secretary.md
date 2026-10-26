@@ -9,6 +9,7 @@ served_by:
   agents: []
   skills: []
 status: missing
+change: add-personal-assistants
 ---
 
 # UC-W3 Secretary

@@ -25,8 +25,8 @@ Building software with AI agents.
 | Use case | Primary actor | Status | Served by | Change |
 |---|---|---|---|---|
 | [UC-W18](../use-cases/UC-W18-programming-team-lead.md) Programming partner and team lead | a Meaningfy developer | `covered` | `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release` | — |
-| [UC-W19](../use-cases/UC-W19-system-architect.md) System architect | a Meaningfy architect | `partial` | `architecture` | — |
-| [UC-W20](../use-cases/UC-W20-conceptual-modeller.md) Conceptual modeller and ontology engineer | a Meaningfy modeller | `partial` | `conceptual-modelling`, `modelling-conventions`, `linkml-engineering` | — |
+| [UC-W19](../use-cases/UC-W19-system-architect.md) System architect | a Meaningfy architect | `partial` | `architecture` | `add-engineering-agents` |
+| [UC-W20](../use-cases/UC-W20-conceptual-modeller.md) Conceptual modeller and ontology engineer | a Meaningfy modeller | `partial` | `conceptual-modelling`, `modelling-conventions`, `linkml-engineering` | `add-engineering-agents` |
 
 ## sales
 
@@ -35,12 +35,12 @@ Winning and pricing work.
 | Use case | Primary actor | Status | Served by | Change |
 |---|---|---|---|---|
 | [UC-W7](../use-cases/UC-W7-sales-assistant.md) Sales assistant | a Meaningfy salesperson | `partial` | — | `add-sales-bundle` |
-| [UC-W8](../use-cases/UC-W8-proposals-and-offers.md) Proposals and formal offers | a Meaningfy salesperson or consultant | `partial` | `proposal-writing`, `estimation`, `decision-package`, `executive-communication` | — |
-| [UC-W9](../use-cases/UC-W9-qualify-leads-and-partnerships.md) Qualify leads and partnerships | a Meaningfy salesperson | `missing` | — | — |
-| [UC-W10](../use-cases/UC-W10-qualify-prospect.md) Qualify a prospect in a sales conversation | a Meaningfy salesperson | `missing` | — | — |
-| [UC-W11](../use-cases/UC-W11-market-research.md) Market research | the owner | `missing` | — | — |
-| [UC-W12](../use-cases/UC-W12-commercial-structure-and-offer.md) Commercial structure and offer | the owner | `missing` | — | — |
-| [UC-W21](../use-cases/UC-W21-demo-builder.md) Demo builder | a Meaningfy pre-sales consultant | `missing` | — | — |
+| [UC-W8](../use-cases/UC-W8-proposals-and-offers.md) Proposals and formal offers | a Meaningfy salesperson or consultant | `partial` | `proposal-writing`, `estimation`, `decision-package`, `executive-communication` | `add-commercial-chain` |
+| [UC-W9](../use-cases/UC-W9-qualify-leads-and-partnerships.md) Qualify leads and partnerships | a Meaningfy salesperson | `missing` | — | `add-commercial-chain` |
+| [UC-W10](../use-cases/UC-W10-qualify-prospect.md) Qualify a prospect in a sales conversation | a Meaningfy salesperson | `missing` | — | `add-commercial-chain` |
+| [UC-W11](../use-cases/UC-W11-market-research.md) Market research | the owner | `missing` | — | `add-commercial-chain` |
+| [UC-W12](../use-cases/UC-W12-commercial-structure-and-offer.md) Commercial structure and offer | the owner | `missing` | — | `add-commercial-chain` |
+| [UC-W21](../use-cases/UC-W21-demo-builder.md) Demo builder | a Meaningfy pre-sales consultant | `missing` | — | `add-demo-builder` |
 
 ## personal
 
@@ -48,11 +48,11 @@ The owner's own vault and rhythm.
 
 | Use case | Primary actor | Status | Served by | Change |
 |---|---|---|---|---|
-| [UC-W1](../use-cases/UC-W1-vault-work.md) Vault work | a Meaningfy colleague working in a personal vault | `covered` | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` | — |
-| [UC-W2](../use-cases/UC-W2-life-coach.md) Life coach and personal growth | the owner | `missing` | — | — |
-| [UC-W3](../use-cases/UC-W3-secretary.md) Secretary | the owner | `missing` | — | — |
-| [UC-W4](../use-cases/UC-W4-planning-horizons.md) Planning across horizons | the owner | `partial` | `vault-planning`, `vault-daily` | — |
-| [UC-W5](../use-cases/UC-W5-companion-on-the-go.md) Quick companion on the go | the owner, away from the desk | `partial` | `vault-capture` | — |
+| [UC-W1](../use-cases/UC-W1-vault-work.md) Vault work | a Meaningfy colleague working in a personal vault | `covered` | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` | `add-vault-local-config` |
+| [UC-W2](../use-cases/UC-W2-life-coach.md) Life coach and personal growth | the owner | `missing` | — | `add-personal-assistants` |
+| [UC-W3](../use-cases/UC-W3-secretary.md) Secretary | the owner | `missing` | — | `add-personal-assistants` |
+| [UC-W4](../use-cases/UC-W4-planning-horizons.md) Planning across horizons | the owner | `partial` | `vault-planning`, `vault-daily` | `add-personal-assistants` |
+| [UC-W5](../use-cases/UC-W5-companion-on-the-go.md) Quick companion on the go | the owner, away from the desk | `partial` | `vault-capture` | `add-personal-assistants` |
 
 ## operations
 
@@ -68,9 +68,9 @@ Running and growing the company, negotiation and internal communication.
 
 | Use case | Primary actor | Status | Served by | Change |
 |---|---|---|---|---|
-| [UC-W13](../use-cases/UC-W13-negotiation-partner.md) Negotiation thinking partner | the owner | `missing` | — | — |
-| [UC-W14](../use-cases/UC-W14-business-coach.md) Business coach and strategic partner | the owner | `partial` | `semantic-consulting-coach` | — |
-| [UC-W15](../use-cases/UC-W15-internal-communication.md) Internal communication | the owner | `missing` | — | — |
+| [UC-W13](../use-cases/UC-W13-negotiation-partner.md) Negotiation thinking partner | the owner | `missing` | — | `add-commercial-chain` |
+| [UC-W14](../use-cases/UC-W14-business-coach.md) Business coach and strategic partner | the owner | `partial` | `semantic-consulting-coach` | `add-business-partners` |
+| [UC-W15](../use-cases/UC-W15-internal-communication.md) Internal communication | the owner | `missing` | — | `add-business-partners` |
 
 ## legal
 
@@ -78,7 +78,7 @@ Contracts, NDAs and other legal documents.
 
 | Use case | Primary actor | Status | Served by | Change |
 |---|---|---|---|---|
-| [UC-W16](../use-cases/UC-W16-contracts-and-ndas.md) Contracts and NDAs | the owner | `missing` | — | — |
+| [UC-W16](../use-cases/UC-W16-contracts-and-ndas.md) Contracts and NDAs | the owner | `missing` | — | `add-legal-documents` |
 
 ## design
 
@@ -86,4 +86,4 @@ Graphics, visuals and diagrams in company style.
 
 | Use case | Primary actor | Status | Served by | Change |
 |---|---|---|---|---|
-| [UC-W17](../use-cases/UC-W17-graphic-designer.md) Graphic designer | a Meaningfy colleague who needs a visual | `missing` | — | — |
+| [UC-W17](../use-cases/UC-W17-graphic-designer.md) Graphic designer | a Meaningfy colleague who needs a visual | `missing` | — | `add-visual-design` |

@@ -13,8 +13,14 @@
   structure re-check (#74). Evidence in `inputs/evidence/D.md`, `E.md`, `docs.md`.
 - **Reshaped** on 2026-10-27 (`inputs/2026-10-27-reshaping-qa.md`): architecture track added
   (section 3), Haiku is the record model (D-4), D-13 adopted, agent evals run their Gherkin (D-3).
-- **Reshape PR:** #76 (`docs/reshape-restructure-epic` → `develop`); merge it before starting section 3.
-- **Next:** **section 3, the architecture track** (the PLAN passed the clarity gate, 9.1/10). **No evals run until
+- **Reshape PR:** #76, merged 2026-10-26.
+- **Section 3 (2026-10-26):** 3.1 PR #77 (`arch/area-terms`); 3.2, 3.3 and the 3.4–3.6 work on
+  `arch/use-cases`, stacked on it. **Open:** 3.4 needs the class-view SVG rendered by the owner from
+  `docs/catalogue-architecture.class.puml` (no renderer here) and linked from the page; 3.5's target
+  structure, roster and roadmap are drafted in `docs/catalogue-architecture.md` and wait for the
+  owner's approval in `inputs/approvals.md`. Rule-of-two candidates for the owner are listed in
+  `inputs/evidence/foundation.md`.
+- **Next:** the owner renders the SVG and approves 3.5; then section 3 closes. **No evals run until
   section 3 is done** (owner, 2026-10-27: "we shall not test anything yet, until systematisation is
   ready"). Batch C (2.4) waits until then; its Haiku re-estimate (about $1) fits the ≈ $3.19 left of
   the $5 approval, and the owner confirms the switch from Sonnet when it resumes.
@@ -90,7 +96,7 @@ One PR per task group. Each starts with the check or generator and a failing fix
       infrastructure changes of D-19); set `change` in every use case. The owner approves.
       **Accept:** approval dated in `inputs/approvals.md`; every use case with `status` `partial` or
       `missing` has a `change` that appears in the roadmap.
-- [ ] 3.6 **Three doors** (D-18): the README documentation section becomes Install / Use / Develop,
+- [x] 3.6 **Three doors** (D-18): the README documentation section becomes Install / Use / Develop,
       linking `docs/use-cases.md` and `docs/catalogue-architecture.md`. **Accept:** each door has at
       least one link and every link resolves (`make validate`); nothing else in the README changes.
 

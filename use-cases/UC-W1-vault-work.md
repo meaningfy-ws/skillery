@@ -18,6 +18,7 @@ served_by:
   - vault-planning
   - vault-daily
 status: covered
+change: add-vault-local-config
 ---
 
 # UC-W1 Vault work

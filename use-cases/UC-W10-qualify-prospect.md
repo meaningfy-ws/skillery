@@ -9,6 +9,7 @@ served_by:
   agents: []
   skills: []
 status: missing
+change: add-commercial-chain
 ---
 
 # UC-W10 Qualify a prospect in a sales conversation

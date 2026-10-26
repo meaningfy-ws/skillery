@@ -10,6 +10,7 @@ served_by:
   skills:
   - vault-capture
 status: partial
+change: add-personal-assistants
 ---
 
 # UC-W5 Quick companion on the go

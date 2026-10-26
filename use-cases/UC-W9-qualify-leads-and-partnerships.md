@@ -9,6 +9,7 @@ served_by:
   agents: []
   skills: []
 status: missing
+change: add-commercial-chain
 ---
 
 # UC-W9 Qualify leads and partnerships

@@ -10,6 +10,7 @@ served_by:
   skills:
   - architecture
 status: partial
+change: add-engineering-agents
 ---
 
 # UC-W19 System architect

@@ -9,6 +9,7 @@ served_by:
   agents: []
   skills: []
 status: missing
+change: add-commercial-chain
 ---
 
 # UC-W13 Negotiation thinking partner

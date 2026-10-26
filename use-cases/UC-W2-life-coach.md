@@ -9,6 +9,7 @@ served_by:
   agents: []
   skills: []
 status: missing
+change: add-personal-assistants
 ---
 
 # UC-W2 Life coach and personal growth

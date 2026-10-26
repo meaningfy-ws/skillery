@@ -19,6 +19,13 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **The use-case catalogue** (`use-cases/`, 21 White use cases) and its gap map
   [`docs/use-cases.md`](docs/use-cases.md): what the catalogue serves today, by area and status.
 - **Four `area` facet values:** `operations`, `business`, `legal`, `design`.
+- **[`docs/catalogue-architecture.md`](docs/catalogue-architecture.md):** the catalogue's model, where
+  each part lives, and the proposed target bundles, agent roster and roadmap.
+
+### Changed
+
+- **The README's documentation section has three doors:** Install, Use (starting from the use cases)
+  and Develop.
 
 ### Action needed (contributors)
 

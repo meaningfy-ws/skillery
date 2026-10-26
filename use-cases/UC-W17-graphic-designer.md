@@ -9,6 +9,7 @@ served_by:
   agents: []
   skills: []
 status: missing
+change: add-visual-design
 ---
 
 # UC-W17 Graphic designer

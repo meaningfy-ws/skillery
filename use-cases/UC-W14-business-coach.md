@@ -10,6 +10,7 @@ served_by:
   skills:
   - semantic-consulting-coach
 status: partial
+change: add-business-partners
 ---
 
 # UC-W14 Business coach and strategic partner

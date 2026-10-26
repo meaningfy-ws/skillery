@@ -11,6 +11,7 @@ served_by:
   - vault-planning
   - vault-daily
 status: partial
+change: add-personal-assistants
 ---
 
 # UC-W4 Planning across horizons

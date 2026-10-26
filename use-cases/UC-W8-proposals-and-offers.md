@@ -13,6 +13,7 @@ served_by:
   - decision-package
   - executive-communication
 status: partial
+change: add-commercial-chain
 ---
 
 # UC-W8 Proposals and formal offers

@@ -9,6 +9,7 @@ served_by:
   agents: []
   skills: []
 status: missing
+change: add-business-partners
 ---
 
 # UC-W15 Internal communication

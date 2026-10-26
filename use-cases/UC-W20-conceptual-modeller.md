@@ -12,6 +12,7 @@ served_by:
   - modelling-conventions
   - linkml-engineering
 status: partial
+change: add-engineering-agents
 ---
 
 # UC-W20 Conceptual modeller and ontology engineer
