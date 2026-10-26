@@ -60,3 +60,29 @@ def test_use_cases_render_groups_by_area_in_facet_order():
     assert "| [UC-W2](../use-cases/UC-W2-b.md) B | dev | `partial` | `x` | `add-x` |" in text
     assert "| [UC-W1](../use-cases/UC-W1-a.md) A | owner | `missing` | — | — |" in text
     assert "| `coding` | 0 | 1 | 0 |" in text
+
+
+_DEP = {"name": "stream-coding", "kind": "skill", "summary": "doc-first method", "used_by": "clarity-gate",
+        "opencode_status": "claude-compat", "claude_install": "plugin", "opencode_install": "copy it"}
+_COMPAT = "docs/environment/dual-cli/compatibility.md"
+
+
+def test_dependency_status_keyword_renders_in_todays_form():
+    table = skill_inventory.render_dependencies([_DEP, {**_DEP, "name": "x",
+                                                 "opencode_status": "unverified (plain files)"}], "plugins")
+    assert "| **stream-coding** (doc-first method) | clarity-gate | `.claude/`-compat | plugin | copy it |" in table
+    assert "| **x** (doc-first method) | clarity-gate | **UNVERIFIED** (plain files) |" in table
+
+
+def test_dependency_register_edit_without_regeneration_is_drift(tmp_path, monkeypatch):
+    import yaml
+    monkeypatch.setattr(skill_inventory, "generate", lambda r: "")
+    (tmp_path / skill_inventory.OUTPUT).parent.mkdir(parents=True)
+    (tmp_path / skill_inventory.OUTPUT).write_text("", encoding="utf-8")
+    (tmp_path / _COMPAT).parent.mkdir(parents=True)
+    (tmp_path / _COMPAT).write_text(
+        "intro\n<!-- GENERATED:dependencies:plugins -->\nold table\n<!-- /GENERATED -->\noutro\n",
+        encoding="utf-8")
+    (tmp_path / "dependencies.yaml").write_text(yaml.safe_dump([_DEP]), encoding="utf-8")
+    assert skill_inventory.drift_errors(tmp_path) == [
+        f"{_COMPAT} is stale — regenerate with `make skill-inventory`"]

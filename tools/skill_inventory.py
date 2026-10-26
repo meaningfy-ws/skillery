@@ -42,6 +42,13 @@ FACETS_FILE = "facets.yaml"
 OUTPUT = "docs/skill-inventory.md"
 USE_CASES_DIR = "use-cases"
 USE_CASES_OUTPUT = "docs/use-cases.md"
+DEPENDENCIES_FILE = "dependencies.yaml"
+# The docs whose tables render from the register, between GENERATED:dependencies:<table> markers.
+DEPENDENCY_DOCS = ("docs/environment/dual-cli/compatibility.md", "docs/environment/dual-cli/mcp-setup.md")
+DEPENDENCY_KINDS = ("plugin", "skill", "cli-tool", "mcp-server", "service", "framework")
+# opencode_status keyword -> how the matrix shows it; the qualifier after the keyword is kept.
+DEPENDENCY_STATUSES = {"native": "native", "claude-compat": "`.claude/`-compat",
+                       "unsupported": "unsupported", "unverified": "**UNVERIFIED**"}
 USE_CASE_STATUSES = ("covered", "partial", "missing")
 CORE_BUNDLE = "meaningfy-core"
 
@@ -488,6 +495,40 @@ def generate_use_cases(repo: Path) -> str:
     return render_use_cases(collect_use_cases(repo), load_facets(repo))
 
 
+_DEP_TABLES = {
+    "plugins": (lambda d: d["kind"] != "mcp-server",
+                ("Dependency", "Used by", "opencode status", "Claude install", "opencode install / gap"),
+                ("used_by", "opencode_status", "claude_install", "opencode_install")),
+    "mcp": (lambda d: d["kind"] == "mcp-server",
+            ("MCP server", "Transport", "opencode status", "Notes"),
+            ("transport", "opencode_status", "notes")),
+    "mcp-setup": (lambda d: d["kind"] == "mcp-server" and "why" in d,
+                  ("Server", "Why", "Local package or hosted?"), ("why", "hosting")),
+}
+_DEP_BLOCK = re.compile(r"(<!-- GENERATED:dependencies:([a-z-]+) -->\n).*?(<!-- /GENERATED -->)", re.DOTALL)
+
+
+def _dep_status(status: str) -> str:
+    key, _, rest = status.partition(" ")
+    return DEPENDENCY_STATUSES.get(key, key) + (f" {rest}" if rest else "")
+
+
+def render_dependencies(entries: list[dict], table: str) -> str:
+    """One table of the external dependency register (rebundle-by-activity D-7); cells hold the
+    register's Markdown as written, only the name is made bold."""
+    keep, heads, fields = _DEP_TABLES[table]
+    lines = ["| " + " | ".join(heads) + " |", "|" + "---|" * len(heads)]
+    for d in filter(keep, entries):
+        name = f"**{d['name']}**" + (f" ({d['summary']})" if d.get("summary") else "")
+        cells = [_dep_status(d[f]) if f == "opencode_status" else str(d.get(f, "")) for f in fields]
+        lines.append("| " + " | ".join([name] + cells) + " |")
+    return "\n".join(lines) + "\n"
+
+
+def splice_dependencies(text: str, entries: list[dict]) -> str:
+    return _DEP_BLOCK.sub(lambda m: m.group(1) + render_dependencies(entries, m.group(2)) + m.group(3), text)
+
+
 def drift_errors(repo: Path) -> list[str]:
     out = []
     for rel, expected in _outputs(repo):
@@ -503,6 +544,10 @@ def _outputs(repo: Path) -> list[tuple[str, str]]:
     outs = [(OUTPUT, generate(repo))]
     if (repo / USE_CASES_DIR).exists():
         outs.append((USE_CASES_OUTPUT, generate_use_cases(repo)))
+    if (repo / DEPENDENCIES_FILE).exists():
+        entries = yaml.safe_load((repo / DEPENDENCIES_FILE).read_text(encoding="utf-8")) or []
+        outs += [(rel, splice_dependencies((repo / rel).read_text(encoding="utf-8"), entries))
+                 for rel in DEPENDENCY_DOCS if (repo / rel).exists()]
     return outs
 
 
