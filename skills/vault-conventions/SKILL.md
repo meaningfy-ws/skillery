@@ -29,18 +29,39 @@ describes its owner. Report the clash as a `skill-change` note (see Staging belo
 | Folder | Holds |
 |---|---|
 | `00 Inbox/` | raw captures; `proposed/` holds claims nobody asked for (Staging) |
-| `01 Projects/YYYY-MM-DD Name/` | one folder per project, with its five standing files |
+| `01 Projects/YYYY-MM-DD Name/` | one folder per company project (Project homes) |
 | `02 Ideas/` | ideas that are not yet projects |
 | `03 Resources/` | lasting notes: assessments, memos, explainers, references |
-| `04 Daily/` | daily notes (`YYYY-MM-DD.md`) and `reviews/` (period reviews) |
+| `04 Daily/` | daily notes (`YYYY-MM-DD.md`), `reviews/` (period reviews), and `<agent>/` run notes of deployed agents |
 | `05 To Do/` | the master list `To-Do.md` and the plans `Objectives YYYY.md` |
 | `06 Archive/` | closed projects and retired notes, moved there only by a person or after a person's yes |
-| `07 Perso/` | personal notes, never shared |
+| `07 Perso/` | personal notes, and personal projects (Project homes); never shared |
 | `08 How to/` | how-to notes for the owner's own routines |
 | `X/Templates/` | one template per kind |
 
 The date prefix of a project folder is the day it was created; the name keeps the owner's casing and
-spacing. Folders are never created, renamed or deleted except as the vault's write rules allow.
+spacing. Folders are never created, renamed or deleted except as the vault's write rules allow or the
+owner asks in the session (Moving and deleting).
+
+## Project homes
+
+The one definition of where projects live; every other `vault-*` skill cites it and names no path of
+its own.
+
+- **Two homes.** Company work: `01 Projects/YYYY-MM-DD Name/`. Personal work: `07 Perso/YYYY-MM-DD Name/`,
+  where every note carries `private: true` and `memory` is never set. Personal notes that are not
+  projects stay loose at the root of `07 Perso/`.
+- **One shape in both.** The folder root holds only the five standing files
+  ([`references/project-files.md`](references/project-files.md)). Every other note for the project
+  goes in its `artefacts/` subfolder, created when the first artefact is filed. Binaries go in
+  `vault-files/<project folder>/`, never in `artefacts/` (Binaries).
+- **Resolving a project name.** Match the name against the folders of both homes. One match: use it.
+  Several matches or a vague name: list them with their status and last session date, and let the
+  owner choose. No match: write nothing and offer `vault-project new`.
+- **Agents are not projects.** A deployed agent's run notes, reviews and working registers go in
+  `04 Daily/<agent>/`; the project that builds the agent never receives them, and the run notes link
+  it in `project:`.
+- A closed project, personal or not, moves to `06 Archive/`.
 
 ## Every note
 
@@ -69,6 +90,15 @@ shape: [`references/project-files.md`](references/project-files.md).
 - **Machine-neutral always.** Never an absolute local path, a user name in a path, or a `file:///`
   link. Files outside the vault are linked by their cloud-drive web URL.
 
+## Formatting
+
+Obsidian's table syntax comes from `obsidian@obsidian-skills`. Before saving a note that holds a table,
+check three things, because Obsidian shows a table that breaks them as raw pipe text:
+
+1. one blank line before and after every table, including after a heading, a bold label or a list;
+2. every row has as many cells as the header;
+3. a literal `|` inside a cell is escaped as `\|`, also in a wikilink alias (`[[note\|alias]]`).
+
 ## Binaries
 
 Binaries (PDF, office documents, images that are deliverables) never enter the vault.
@@ -80,6 +110,32 @@ Binaries (PDF, office documents, images that are deliverables) never enter the v
 - Each file is listed in the project's `resources.md`, under **Provided** (brought in) or **Generated**
   (produced), with its web link. An agent that cannot obtain the link writes `ASK OWNER` in the Link column
   instead; it never writes a local path instead.
+
+## Moving and deleting
+
+The one procedure for moving, renaming and deleting notes and folders. `vault-tidy`, `vault-promote`
+and `vault-project` cite it.
+
+1. **Only on request.** An agent acts when the owner asks in the session and names the notes or
+   identifies them unambiguously ("the other two debugging notes"), or when the owner approved a
+   written plan (`vault-tidy`). Never on its own initiative: an unrequested reorganisation is a
+   `vault-tidy` plan or a staged note. An ambiguous request gets the candidate list and a question.
+2. **List first.** One list of every path to delete or move, with each move's destination. When the
+   owner already named the notes, no second confirmation is needed.
+3. **Say what it breaks.** Before a delete, search for inbound wikilinks and name the notes that will
+   show a broken link (or update them, when the owner asked for a merge). Before a note with
+   `memory: common` leaves `01 Projects/` or `03 Resources/`, or is renamed, say that the company memory
+   changes at the next run.
+4. **Move.** Use the Obsidian CLI when it answers, so every link follows. Otherwise move the file:
+   links are by note name, so a move keeps them, provided no other note in the vault has the same name.
+   Check that first; on a collision, move nothing and name the colliding note.
+5. **Delete to the trash.** A delete moves the note into the vault's `.trash/` (create it if absent).
+   The trash is not synced, so a trashed note is recoverable only on that machine. Permanent deletion
+   happens only when the owner explicitly asks for it, after the agent says it cannot be undone.
+6. **`vault-files/_shared/`** changes only by a person. The rest of `vault-files/` follows this
+   procedure.
+7. **When the tools cannot act** (no shell, a refused permission), say so in one line and list the
+   exact paths for the owner; offer no workaround.
 
 ## Staging
 
@@ -96,6 +152,7 @@ kinds arrive the same way.
 
 Facts go into the **vault**. The ingestion pipeline carries only what a person opted in (`memory:
 common` on a note in `01 Projects/` or `03 Resources/`, or a file under `vault-files/_shared/`).
+`memory` is never set in `07 Perso/`.
 
 From a vault session:
 - call **`recall` only**; never `remember`, never `forget`. A remembered fact has no original: when the
@@ -106,7 +163,7 @@ From a vault session:
 - when the memory server does not answer, skip the recall and say so in one line.
 
 Moving a shared note out of `01 Projects/` or `03 Resources/`, or renaming it, changes what the memory
-holds at the next run: say so before doing it.
+holds at the next run: say so before doing it (Moving and deleting).
 
 When the owner asks for something to reach the company ("share this", "make sure the company memory
 knows"), the answer is always the same: write it into the right note in the vault, then tell the owner
@@ -123,10 +180,11 @@ self-contained one about that subject (a `meeting`, `memo` or `assessment` note,
 
 ## Boundary & Related Skills
 
-**Owns:** the vault layout and folder purposes, kinds and their required properties, the property
+**Owns:** the vault layout and folder purposes, the project homes and how a project name resolves,
+the move and delete procedure, kinds and their required properties and sections, the property
 vocabularies (`status`, `private`, `memory`), the standing files' shape, link and tag style, binaries
 and their linking, machine-neutral paths, staging and the skill-change note, and the memory etiquette
-of a vault session.
+of a vault session, and the table check before saving.
 
 **Delegates:** Obsidian syntax and file operations → external `obsidian@obsidian-skills`; the owner
 profile and write rules → the vault's `AGENTS.md`; creating a vault → [`vault-setup`](../vault-setup/SKILL.md).
