@@ -1,28 +1,32 @@
 #!/usr/bin/env python3
-"""Generate the skill inventory (docs/skill-inventory.md): a Mermaid map plus
-per-bundle tables — not a flat database dump.
+"""Generate the catalogue map (docs/skill-inventory.md): Mermaid diagrams plus
+per-bundle and per-facet tables — not a flat database dump.
 
 Deterministic — a pure function of `skills/*/SKILL.md` frontmatter/body,
-`bundles.yaml` (read via `tools/bundle_gen`), and two small hand-curated mappings
-(`PURPOSE_OF` + `PURPOSE_BLURB`, below — the one piece of judgement this file
-can't derive mechanically). DO NOT hand-edit the generated doc; regenerate via
-`python -m tools.skill_inventory` (or `make skill-inventory`).
-`tests/test_skill_inventory.py` fails the build on drift, the same
-codegen-freshness pattern as `tools/bundle_gen`'s gate.
+`agents/*.md` frontmatter, `bundles.yaml` (read via `tools/bundle_gen`) and
+`facets.yaml` (the one facet vocabulary, each value with its one-line
+explanation). Every skill and agent declares one value per facet under its
+frontmatter `metadata`; a missing or unknown value fails generation (see
+`facet_gaps`) rather than silently dropping the artifact from a table.
+DO NOT hand-edit the generated doc; regenerate via `python -m tools.skill_inventory`
+(or `make skill-inventory`). `tests/test_skill_inventory.py` fails the build on
+drift, the same codegen-freshness pattern as `tools/bundle_gen`'s gate.
 
-The Mermaid map shows three relationships:
-  - containment    (bundle -> skill)     one subgraph per bundle, skills inside
-  - classification (skill -> purpose)    solid line; a small, curated set of
-                                          purpose cards cutting across bundles
-  - dependency     (skill -> skill)      dashed line; mechanically parsed from
-                                          each skill's own "**Delegates:**" /
-                                          "**This skill DELEGATES:**" text —
-                                          not hand-curated, not the full
-                                          "Related" cross-reference graph
-                                          (that stays in the per-bundle tables;
-                                          at 20+ cross-bundle pairs alone it's
-                                          a hairball at this node count, and
-                                          "related" is weaker than "depends on")
+The Map shows four relationships:
+  - containment    (bundle -> skill/agent) one subgraph per bundle
+  - classification (skill/agent -> purpose) solid line to a light card, one per
+                                          `metadata.purpose` value in use
+  - loads          (agent -> skill)       dotted line; the agent's own `skills:`
+                                          list, first-party skills only
+  - requires       (bundle -> bundle)     a separate small graph from
+                                          bundles.yaml `requires:`
+The Relations diagram shows skill -> skill dependency/related edges:
+  - dependency     dashed thick line; mechanically parsed from each skill's own
+                   "**Delegates:**" / "**This skill DELEGATES:**" text — not
+                   hand-curated, not the full "Related" cross-reference graph
+                   (that stays in the per-bundle tables; at 20+ cross-bundle
+                   pairs alone it's a hairball at this node count, and
+                   "related" is weaker than "depends on")
 """
 from __future__ import annotations
 
@@ -34,7 +38,9 @@ import yaml
 from tools.bundle_gen import gen as bundle_gen
 
 SKILLS_DIR = "skills"
+FACETS_FILE = "facets.yaml"
 OUTPUT = "docs/skill-inventory.md"
+CORE_BUNDLE = "meaningfy-core"
 
 _FRONTMATTER = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
 _RELATED = re.compile(r"\*\*Related:\*\*\s*(.+?)(?:\n\n|\Z)", re.DOTALL)
@@ -43,90 +49,21 @@ _DELEGATES = re.compile(
 )
 _BACKTICKED = re.compile(r"`([a-z0-9][a-z0-9-]*)`")
 
-# The one hand-curated judgement call: which small, cross-cutting purpose
-# category each skill serves, and a one-line explanation of each category.
-# Everything else in this file is mechanically derived. Adding a skill without
-# adding it here fails the build (see `category_gaps`) rather than silently
-# rendering it uncategorised.
-PURPOSE_OF: dict[str, str] = {
-    # Writing & Communication
-    "technical-writing": "Writing & Communication",
-    "explanatory-writing": "Writing & Communication",
-    "executive-communication": "Writing & Communication",
-    "writing-antipatterns": "Writing & Communication",
-    # Modelling & Architecture
-    "architecture": "Modelling & Architecture",
-    "conceptual-modelling": "Modelling & Architecture",
-    "modelling-conventions": "Modelling & Architecture",
-    "linkml-engineering": "Modelling & Architecture",
-    "cosmic-python": "Modelling & Architecture",
-    # Process & Governance (the spine build loop + agentic guardrails)
-    "epic-planning": "Process & Governance",
-    "spec-stewardship": "Process & Governance",
-    "clarity-gate": "Process & Governance",
-    "guardrails": "Process & Governance",
-    # Quality & Review
-    "bdd-gherkin": "Quality & Review",
-    "meaningfy-code-review": "Quality & Review",
-    # Delivery & Ops
-    "project-setup": "Delivery & Ops",
-    "ci-cd-delivery": "Delivery & Ops",
-    "meaningfy-release": "Delivery & Ops",
-    "meaningfy-git-workflow": "Delivery & Ops",
-    # Consulting & Business
-    "semantic-consulting-coach": "Consulting & Business",
-    "decision-package": "Consulting & Business",
-    "proposal-writing": "Consulting & Business",
-    "estimation": "Consulting & Business",
-    # Personal Vault (the vault-assistant workflow bundle)
-    "vault-setup": "Personal Vault",
-    "vault-conventions": "Personal Vault",
-    "vault-project": "Personal Vault",
-    "vault-resume": "Personal Vault",
-    "vault-capture": "Personal Vault",
-    "vault-promote": "Personal Vault",
-    "vault-tidy": "Personal Vault",
-    "vault-planning": "Personal Vault",
-    "vault-daily": "Personal Vault",
-}
-
-PURPOSE_BLURB: dict[str, str] = {
-    "Writing & Communication": "clear prose, persuasion, teaching",
-    "Modelling & Architecture": "domain models, system design, LinkML",
-    "Process & Governance": "the spine build loop + agentic guardrails",
-    "Quality & Review": "tests, BDD, pre-PR review",
-    "Delivery & Ops": "scaffolding, CI/CD, releases",
-    "Consulting & Business": "front-of-funnel advisory work",
-    "Personal Vault": "a personal Obsidian vault and its daily rhythm",
-}
-
 # Light-but-distinct fills so each purpose reads as a card, not a container —
-# deliberately whiter/less saturated than the bundle fades below.
-_PURPOSE_FILLS = {
-    "Writing & Communication": "#fdf6e3",
-    "Modelling & Architecture": "#eafaf5",
-    "Process & Governance": "#eef1fb",
-    "Quality & Review": "#fdeef0",
-    "Delivery & Ops": "#f6f5ef",
-    "Consulting & Business": "#fdeef7",
-    "Personal Vault": "#eef7fb",
-}
+# deliberately whiter/less saturated than the bundle fades below. Assigned by
+# position in facets.yaml's `purpose` order, so a new value needs no code change.
+_PURPOSE_FILLS = ["#fdf6e3", "#fdeef7", "#fff4ea", "#eafaf5", "#eef1fb",
+                  "#f1f8e9", "#fdeef0", "#f6f5ef", "#eef7fb"]
 
 _SKILL_FILL = "#1e1e1e"
 _SKILL_TEXT = "#ffffff"
+_AGENT_FILL = "#5a2d82"
 
 # Dark, hue-paired-with-_PURPOSE_FILLS variants for the Relations diagram's
 # skill boxes — same white text, but colour-coded by purpose so a dense
 # relation graph is still parseable without tracing every line back to a card.
-_SKILL_FILLS_BY_CATEGORY = {
-    "Writing & Communication": "#7a5c00",
-    "Modelling & Architecture": "#0f5c48",
-    "Process & Governance": "#2b3a67",
-    "Quality & Review": "#7a2030",
-    "Delivery & Ops": "#4a4a3a",
-    "Consulting & Business": "#6b1f4d",
-    "Personal Vault": "#1f4f6b",
-}
+_SKILL_FILLS_BY_PURPOSE = ["#7a5c00", "#6b1f4d", "#8a4a10", "#0f5c48", "#2b3a67",
+                           "#3d5c1f", "#7a2030", "#4a4a3a", "#1f4f6b"]
 
 # Pastel, distinct-enough fills for a fade/contained look — one per bundle, in
 # bundles.yaml's own order.
@@ -196,15 +133,27 @@ def _depends_on(body: str, all_names: set[str], self_name: str) -> list[str]:
     return [n for n in found if n in all_names and n != self_name]
 
 
+def _metadata(fm: dict) -> dict:
+    meta = fm.get("metadata")
+    return meta if isinstance(meta, dict) else {}
+
+
+def load_facets(repo: Path) -> dict[str, dict[str, str]]:
+    """facets.yaml as {facet: {value: one-line explanation}}, in file order."""
+    return yaml.safe_load((repo / FACETS_FILE).read_text(encoding="utf-8"))["facets"]
+
+
 def _bundles(repo: Path) -> list[dict]:
-    """Bundles in bundles.yaml's own order, each with its blurb + skill list."""
-    return [{"name": b["name"], "description": b["description"], "skills": b["skills"]}
+    """Bundles in bundles.yaml's own order, each with its blurb, skill and agent
+    lists and its explicit requirements (core is implicit, never listed)."""
+    return [{"name": b["name"], "description": b["description"], "skills": b["skills"],
+             "agents": b["agents"], "requires": b.get("requires", [])}
             for b in bundle_gen.load(repo)["bundles"]]
 
 
 def collect(repo: Path) -> tuple[list[dict], dict[str, dict]]:
     """Returns (bundles, skills_by_name) — skills_by_name carries
-    purpose/related/depends_on/description."""
+    summary/related/depends_on/facets."""
     bundles = _bundles(repo)
     paths = _skill_dirs(repo)
     all_names = set(paths)
@@ -213,59 +162,119 @@ def collect(repo: Path) -> tuple[list[dict], dict[str, dict]]:
         text = path.read_text(encoding="utf-8")
         fm = _frontmatter(text)
         skills[name] = {
-            "purpose": _first_sentence(fm.get("description", "")),
+            "summary": _first_sentence(fm.get("description", "")),
             "related": _related(text),
             "depends_on": _depends_on(text, all_names, name),
-            "category": PURPOSE_OF.get(name),
+            "facets": _metadata(fm),
         }
     return bundles, skills
 
 
-def category_gaps(bundles: list[dict], skills: dict[str, dict]) -> list[str]:
-    """A skill with no PURPOSE_OF entry — fails generation instead of silently
-    rendering uncategorised (every listed skill must be classified — nothing is
-    silently dropped)."""
-    named = {name for b in bundles for name in b["skills"]}
-    return sorted(name for name in named if skills.get(name, {}).get("category") is None)
+def collect_agents(repo: Path, bundles: list[dict], skills: dict[str, dict]) -> dict[str, dict]:
+    """Agents in bundle order, each with its summary, facets and the skills it
+    loads (`loads` = first-party only, the Map's edges; `skills` = the full list)."""
+    agents: dict[str, dict] = {}
+    for b in bundles:
+        for name in b["agents"]:
+            fm = bundle_gen.agent_frontmatter(repo, name)[0]
+            listed = fm.get("skills") or []
+            agents[name] = {
+                "summary": _first_sentence(str(fm.get("description", ""))),
+                "skills": listed,
+                "loads": [s for s in listed if s in skills],
+                "facets": _metadata(fm),
+            }
+    return agents
+
+
+def facet_gaps(bundles: list[dict], skills: dict[str, dict], agents: dict[str, dict],
+               facets: dict[str, dict[str, str]]) -> list[str]:
+    """Every listed skill and agent must declare every facet with a value from
+    facets.yaml — fails generation instead of silently leaving a table row out."""
+    named = [(n, skills.get(n)) for b in bundles for n in b["skills"] if n in skills]
+    named += list(agents.items())
+    gaps = []
+    for name, data in named:
+        for facet, values in facets.items():
+            value = data["facets"].get(facet)
+            if value is None:
+                gaps.append(f"{name}: missing metadata.{facet}")
+            elif value not in values:
+                gaps.append(f"{name}: metadata.{facet} '{value}' is not in {FACETS_FILE}")
+    return sorted(gaps)
 
 
 def _node_id(name: str) -> str:
     return "s_" + name.replace("-", "_")
 
 
-def _category_id(category: str) -> str:
-    return "p_" + re.sub(r"[^a-z0-9]+", "_", category.lower()).strip("_")
+def _agent_id(name: str) -> str:
+    return "a_" + name.replace("-", "_")
 
 
-def render_map(bundles: list[dict], skills: dict[str, dict]) -> str:
-    """Containment + classification only — one edge type, kept clean."""
+def _bundle_id(name: str) -> str:
+    return "b_" + name.replace("-", "_")
+
+
+def _purpose_id(purpose: str) -> str:
+    return "p_" + re.sub(r"[^a-z0-9]+", "_", purpose.lower()).strip("_")
+
+
+def _purpose_index(purpose: str, facets: dict[str, dict[str, str]]) -> int:
+    order = list(facets["purpose"])
+    return order.index(purpose) if purpose in order else -1
+
+
+def render_map(bundles: list[dict], skills: dict[str, dict], agents: dict[str, dict],
+               facets: dict[str, dict[str, str]]) -> str:
+    """Containment + classification + agent loads — kept apart from the
+    skill<->skill relations, which live in their own diagram."""
     lines = ["```mermaid", _INIT_DIRECTIVE, "flowchart LR"]
     for b in bundles:
-        bid = "b_" + b["name"].replace("-", "_")
-        lines.append(f'  subgraph {bid}["{b["name"]}"]')
+        lines.append(f'  subgraph {_bundle_id(b["name"])}["{b["name"]}"]')
         for name in b["skills"]:
             if name in skills:  # external skills (e.g. superpowers) aren't first-party rows
                 lines.append(f'    {_node_id(name)}["{name}"]')
+        for name in b["agents"]:
+            lines.append(f'    {_agent_id(name)}{{{{"{name}"}}}}')
         lines.append("  end")
     lines.append("")
-    categories = sorted({s["category"] for s in skills.values() if s["category"]})
-    for category in categories:
-        blurb = PURPOSE_BLURB.get(category, "")
-        label = f"{category}<br/><sub>{blurb}</sub>" if blurb else category
-        lines.append(f'  {_category_id(category)}("{label}")')
+    members = {**skills, **agents}
+    used = {d["facets"].get("purpose") for d in members.values()}
+    purposes = [p for p in facets["purpose"] if p in used]
+    for purpose in purposes:
+        lines.append(f'  {_purpose_id(purpose)}("{purpose}<br/><sub>{facets["purpose"][purpose]}</sub>")')
     lines.append("")
     for name, data in skills.items():
-        if data["category"]:
-            lines.append(f"  {_node_id(name)} --> {_category_id(data['category'])}")
+        lines.append(f"  {_node_id(name)} --> {_purpose_id(data['facets']['purpose'])}")
+    for name, data in agents.items():
+        lines.append(f"  {_agent_id(name)} --> {_purpose_id(data['facets']['purpose'])}")
+    lines.append("")
+    for name, data in agents.items():
+        for target in data["loads"]:
+            lines.append(f"  {_agent_id(name)} -.-> {_node_id(target)}")
     lines.append("")
     for i, b in enumerate(bundles):
-        bid = "b_" + b["name"].replace("-", "_")
-        lines.append(f"  style {bid} fill:{_BUNDLE_FILLS[i % len(_BUNDLE_FILLS)]},stroke:#999,stroke-width:1px")
-    for category in categories:
-        fill = _PURPOSE_FILLS.get(category, "#ffffff")
-        lines.append(f"  style {_category_id(category)} fill:{fill},color:#000000,stroke:#333,stroke-width:1.5px")
+        lines.append(f"  style {_bundle_id(b['name'])} fill:{_BUNDLE_FILLS[i % len(_BUNDLE_FILLS)]},stroke:#999,stroke-width:1px")
+    for purpose in purposes:
+        fill = _PURPOSE_FILLS[_purpose_index(purpose, facets) % len(_PURPOSE_FILLS)]
+        lines.append(f"  style {_purpose_id(purpose)} fill:{fill},color:#000000,stroke:#333,stroke-width:1.5px")
     for name in skills:
         lines.append(f"  style {_node_id(name)} fill:{_SKILL_FILL},color:{_SKILL_TEXT},stroke:#000")
+    for name in agents:
+        lines.append(f"  style {_agent_id(name)} fill:{_AGENT_FILL},color:{_SKILL_TEXT},stroke:#000")
+    lines.append("```")
+    return "\n".join(lines)
+
+
+def render_requirements(bundles: list[dict]) -> str:
+    """bundle -> required bundle, from bundles.yaml `requires:` (core implicit)."""
+    lines = ["```mermaid", "flowchart LR"]
+    for b in bundles:
+        lines.append(f'  {_bundle_id(b["name"])}["{b["name"]}"]')
+    for b in bundles:
+        for target in b["requires"]:
+            lines.append(f"  {_bundle_id(b['name'])} --> {_bundle_id(target)}")
     lines.append("```")
     return "\n".join(lines)
 
@@ -277,18 +286,18 @@ def _related_only(name: str, data: dict, skills: dict[str, dict]) -> list[str]:
     return [t for t in data["related"] if t in skills and t != name and t not in data["depends_on"]]
 
 
-def render_relations(bundles: list[dict], skills: dict[str, dict]) -> str:
+def render_relations(bundles: list[dict], skills: dict[str, dict],
+                     facets: dict[str, dict[str, str]]) -> str:
     """Both skill<->skill relations in one diagram, grouped by bundle (same
     containers/colours as the Map) and skill boxes colour-coded by purpose
-    category — a plain uniform-dark box graph at ~90 edges was unreadable;
+    — a plain uniform-dark box graph at ~90 edges was unreadable;
     grouping + colour-coding was the fix, confirmed by rendering both ways.
     Two distinct line styles: a **thick solid** arrow is *depends on*
     (stronger — mechanically parsed from "Delegates" text); a **thin dashed**
     arrow is *related* (weaker — everything else in the "Related" list)."""
     lines = ["```mermaid", _INIT_DIRECTIVE, "flowchart LR"]
     for b in bundles:
-        bid = "b_" + b["name"].replace("-", "_")
-        lines.append(f'  subgraph {bid}["{b["name"]}"]')
+        lines.append(f'  subgraph {_bundle_id(b["name"])}["{b["name"]}"]')
         for name in b["skills"]:
             if name in skills:
                 lines.append(f'    {_node_id(name)}["{name}"]')
@@ -303,54 +312,87 @@ def render_relations(bundles: list[dict], skills: dict[str, dict]) -> str:
             lines.append(f"  {_node_id(name)} -.-> {_node_id(target)}")
     lines.append("")
     for i, b in enumerate(bundles):
-        bid = "b_" + b["name"].replace("-", "_")
-        lines.append(f"  style {bid} fill:{_BUNDLE_FILLS[i % len(_BUNDLE_FILLS)]},stroke:#999,stroke-width:1px")
+        lines.append(f"  style {_bundle_id(b['name'])} fill:{_BUNDLE_FILLS[i % len(_BUNDLE_FILLS)]},stroke:#999,stroke-width:1px")
     for name, data in skills.items():
-        fill = _SKILL_FILLS_BY_CATEGORY.get(data["category"], _SKILL_FILL)
+        index = _purpose_index(data["facets"].get("purpose"), facets)
+        fill = _SKILL_FILLS_BY_PURPOSE[index % len(_SKILL_FILLS_BY_PURPOSE)] if index >= 0 else _SKILL_FILL
         lines.append(f"  style {_node_id(name)} fill:{fill},color:#ffffff,stroke:#000")
     lines.append("```")
     return "\n".join(lines)
 
 
-def render(bundles: list[dict], skills: dict[str, dict]) -> str:
-    total = sum(len(b["skills"]) for b in bundles)
+def _codes(names: list[str]) -> str:
+    return ", ".join(f"`{x}`" for x in names) if names else "—"
+
+
+def render_by_facet(bundles: list[dict], skills: dict[str, dict], agents: dict[str, dict],
+                    facets: dict[str, dict[str, str]]) -> list[str]:
+    """One table per facet: value (with its facets.yaml line) -> skills and agents."""
+    members = [n for b in bundles for n in b["skills"] if n in skills] + list(agents)
+    out = ["## By facet", "",
+           f"One table per facet in [`{FACETS_FILE}`](../{FACETS_FILE}): each value, its one-line "
+           "explanation, and the skills and agents (*agent* marked) that declare it.", ""]
+    for facet, values in facets.items():
+        out += [f"### {facet}", "", "| Value | Meaning | Skills and agents |", "|---|---|---|"]
+        for value, meaning in values.items():
+            names = [f"`{n}` *(agent)*" if n in agents else f"`{n}`" for n in members
+                     if (agents.get(n) or skills[n])["facets"].get(facet) == value]
+            out.append(f"| `{value}` | {meaning} | {', '.join(names) if names else '—'} |")
+        out.append("")
+    return out
+
+
+def render(bundles: list[dict], skills: dict[str, dict], agents: dict[str, dict],
+           facets: dict[str, dict[str, str]]) -> str:
+    total = sum(len([s for s in b["skills"] if s in skills]) for b in bundles)
     dependency_count = sum(len(s["depends_on"]) for s in skills.values())
     related_count = sum(len(_related_only(n, d, skills)) for n, d in skills.items())
+    facet_names = list(facets)
     header = [
-        "# Skill inventory",
+        "# Catalogue map",
         "",
         "<!-- GENERATED by `python -m tools.skill_inventory` (or `make skill-inventory`) —",
-        "     DO NOT hand-edit. Source: each skill's SKILL.md frontmatter/body,",
-        "     bundles.yaml, and this file's own PURPOSE_OF/PURPOSE_BLURB",
-        "     mappings. tests/test_skill_inventory.py fails the build if this drifts. -->",
+        "     DO NOT hand-edit. Source: each skill's SKILL.md frontmatter/body, each",
+        "     agent's frontmatter (agents/*.md), bundles.yaml and facets.yaml.",
+        "     tests/test_skill_inventory.py fails the build if this drifts. -->",
         "",
-        f"{total} skills across {len(bundles)} bundles (role bundles plus the `vault-assistant` workflow "
-        "bundle). Install `meaningfy-core` plus the bundle(s) matching your role — see the root "
+        f"{total} skills and {len(agents)} agents across {len(bundles)} bundles (role bundles plus the "
+        "`vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your "
+        "role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root "
         "[`README.md`](../README.md).",
         "",
         "## Map",
         "",
-        "**Containers** are bundles. **Dark rectangles** are skills. **Light rounded cards** are "
-        "the small set of purposes a skill's description was sorted into, cutting across bundles "
-        "— each with a one-line explanation of what it covers. The line is *classified as* "
-        "(skill → purpose).",
+        "**Containers** are bundles. **Dark rectangles** are skills; **purple hexagons** are agents. "
+        "**Light rounded cards** are the `purpose` values in use (from "
+        f"[`{FACETS_FILE}`](../{FACETS_FILE})), cutting across bundles — each with its one-line "
+        "explanation. A solid line is *classified as* (skill or agent → purpose); a dotted line is "
+        "*loads* (agent → a first-party skill in its `skills:` list).",
         "",
-        render_map(bundles, skills),
+        render_map(bundles, skills, agents, facets),
+        "",
+        "## Bundle requirements",
+        "",
+        "An arrow is *requires* (bundle → bundle it needs installed too), from `requires:` in "
+        f"[`bundles.yaml`](../bundles.yaml). Every bundle implicitly requires `{CORE_BUNDLE}`, which is "
+        "never drawn.",
+        "",
+        render_requirements(bundles),
         "",
         "## Relations",
         "",
         "Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** "
-        "(the same six categories, one dark shade each) instead of uniform dark — at this many "
+        "(one dark shade per value) instead of uniform dark — at this many "
         "edges, colour is what makes the grouping legible without tracing every line. Two line "
         f"types, not one: a **thick solid** arrow is *depends on* ({dependency_count} edges, "
         'mechanically parsed from each skill\'s own "Delegates" text — a skill explicitly handing '
         f"something off to another); a **thin dashed** arrow is *related* ({related_count} edges, "
         'everything else in the "Related" list — weaker, a "see also" rather than a hand-off). '
         f"Kept separate from the Map's classification edges — {dependency_count + related_count} "
-        f"relation edges plus {len(PURPOSE_OF)} classification edges in one diagram was tried and was a "
+        f"relation edges plus {len(skills)} classification edges in one diagram was tried and was a "
         "long-crossing-line mess, confirmed by actually rendering it.",
         "",
-        render_relations(bundles, skills),
+        render_relations(bundles, skills, facets),
         "",
     ]
     body = []
@@ -359,27 +401,36 @@ def render(bundles: list[dict], skills: dict[str, dict]) -> str:
         body.append("")
         body.append(b["description"] + ".")
         body.append("")
-        body.append("| Skill | Purpose | Depends on | Related |")
-        body.append("|---|---|---|---|")
+        body.append("| Skill / agent | Summary | " + " | ".join(facet_names) + " | Depends on / loads | Related |")
+        body.append("|---|---|" + "---|" * len(facet_names) + "---|---|")
         for name in b["skills"]:
             data = skills.get(name)
             if data is None:  # external (e.g. superpowers) — no first-party SKILL.md to describe
                 continue
-            depends = ", ".join(f"`{x}`" for x in data["depends_on"]) if data["depends_on"] else "—"
-            related = ", ".join(f"`{x}`" for x in data["related"]) if data["related"] else "—"
+            cells = " | ".join(f"`{data['facets'].get(f, '—')}`" for f in facet_names)
             body.append(
-                f"| [`{name}`](../skills/{name}/SKILL.md) | {data['purpose']} | {depends} | {related} |"
+                f"| [`{name}`](../skills/{name}/SKILL.md) | {data['summary']} | {cells} | "
+                f"{_codes(data['depends_on'])} | {_codes(data['related'])} |"
+            )
+        for name in b["agents"]:
+            data = agents[name]
+            cells = " | ".join(f"`{data['facets'].get(f, '—')}`" for f in facet_names)
+            body.append(
+                f"| [`{name}`](../agents/{name}.md) *(agent)* | {data['summary']} | {cells} | "
+                f"{_codes(data['skills'])} | — |"
             )
         body.append("")
-    return "\n".join(header + body)
+    return "\n".join(header + body + render_by_facet(bundles, skills, agents, facets))
 
 
 def generate(repo: Path) -> str:
     bundles, skills = collect(repo)
-    gaps = category_gaps(bundles, skills)
+    agents = collect_agents(repo, bundles, skills)
+    facets = load_facets(repo)
+    gaps = facet_gaps(bundles, skills, agents, facets)
     if gaps:
-        raise ValueError(f"skill(s) missing from PURPOSE_OF in tools/skill_inventory.py: {gaps}")
-    return render(bundles, skills)
+        raise ValueError(f"facet gaps (see {FACETS_FILE}): {gaps}")
+    return render(bundles, skills, agents, facets)
 
 
 def drift_errors(repo: Path) -> list[str]:

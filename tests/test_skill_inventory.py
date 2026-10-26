@@ -33,3 +33,14 @@ def test_tolerant_frontmatter_survives_unquoted_colon():
     fm = skill_inventory._frontmatter(text)
     assert fm["name"] == "x"
     assert "description" in fm
+
+
+def test_facet_gaps_names_missing_and_unknown_values():
+    facets = {"purpose": {"writing": "x"}, "stage": {"any": "y"}}
+    bundles = [{"skills": ["a", "ext"], "agents": ["ag"]}]
+    skills = {"a": {"facets": {"purpose": "writing"}}}
+    agents = {"ag": {"facets": {"purpose": "writing", "stage": "nope"}}}
+    assert skill_inventory.facet_gaps(bundles, skills, agents, facets) == [
+        "a: missing metadata.stage",
+        "ag: metadata.stage 'nope' is not in facets.yaml",
+    ]
