@@ -5,7 +5,7 @@ this catalogue — so that someone who did not write them can **install one bund
 got, use it on the first try, and report what went wrong**. Everything here serves that reader.
 
 > **Status:** working method, in force. It is also the hypothesis under test in the EPIC
-> [`skill-crafting-method`](../openspec/changes/skill-crafting-method/proposal.md), which compares it
+> `skill-crafting-method` (not yet published), which compares it
 > section by section with the published methods and decides what skillery keeps, adopts by reference,
 > or separates out.
 
