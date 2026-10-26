@@ -112,6 +112,13 @@
       secret. **Accept:** the run completes under its cost ceiling and uploads results; if the secret
       is absent, recorded as a gap at archive.
 
+- [ ] 6.5 Baseline audit (roadmap step 2, `design.md` §8): run `make validate` on the merged change
+      and write `inputs/baseline-audit.md`, listing every blocking finding (expected none) and every
+      advisory finding (descriptions over 600 characters, bodies over 500 lines or about 5,000
+      tokens), grouped into proposed revision batches with a one-line scope each. **Accept:** the
+      file lists each finding with its skill and number, and every finding belongs to exactly one
+      batch.
+
 ## Roadmap
 
 - [ ] 0.1 · [x] 0.2
@@ -120,7 +127,7 @@
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5
 - [ ] 5.1 · [ ] 5.2
-- [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4
+- [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 · [ ] 6.5
 
 Groups 1, 2, 3 and 4 are independent after 0; group 5 follows them; group 6 comes last.
 

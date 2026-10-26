@@ -275,6 +275,23 @@ Derived from §2, §4, §6 and D-1…D-4. Acceptance criteria are the spec delta
 | A merged-guide link breaks | `broken_links` fails in `make validate` |
 | A method check fails on a tree without skillery's files | The H-6 test fails; the check is either fixed or moved out of `METHOD_CHECKS` |
 
+## 8. Roadmap after this change (owner, 2026-10-26)
+
+The owner asked whether, once this method is implemented, the current repo can be revised against it.
+Yes, in five steps. Each later step is its own change.
+
+| # | Step | Where it is planned | Output |
+|---|---|---|---|
+| 1 | Implement this change (half two) | this `tasks.md` | the method as deltas plus citations; the new gates and reports; the on-demand eval workflow |
+| 2 | **Baseline audit** of the repo against the method | this `tasks.md`, task 6.5 | `inputs/baseline-audit.md`: every blocking and advisory finding of the new checks, grouped into revision batches |
+| 3 | The catalogue model: facets including posture, bundle requirements, the map, the documentation register | `openspec/changes/define-catalogue-model/` (PLAN gated) | every skill and agent classified; cross-bundle dependencies resolved |
+| 4 | **Revision batches** from the audit (for example the 21 descriptions over 600 characters; the two oversized skills), each with probes, or a baseline run where D-1 requires one | one change per batch, shaped from step 2's file | skills that meet the method |
+| 5 | Bundles redesigned around Meaningfy's activities | a later EPIC, seeded in `define-catalogue-model/inputs/2026-10-26-plan-confirmation.md` | bundles that match how Meaningfy works, built on step 3's model |
+
+Order matters: step 2 measures before anything is revised; step 3 records postures before step 4
+revises skills, because a revision names the skill's posture first; step 5 reuses step 3's facets and
+`requires:`.
+
 ## Owner decisions (2026-10-26)
 
 Recorded in [`inputs/2026-10-26-half-one-decisions.md`](inputs/2026-10-26-half-one-decisions.md).
