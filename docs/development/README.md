@@ -152,11 +152,15 @@ A stranger must be able to use it from its own files, without asking the author.
 
 ## 6. Installability and reuse
 
-- **One bundle per role ("the hat you wear").** A skill is in exactly one; an agent in exactly one.
-  Membership is declared once, in `bundles.yaml`.
-- **Both CLIs, one source.** Claude Code installs bundles from the marketplace; opencode and the
-  other agents install skills from `skills/` (`npx skills add meaningfy-ws/skillery`, or the opencode
-  installer). The body-agnosticism gate keeps the text valid for both.
+- **One bundle per role ("the hat you wear").** A released skill is in exactly one; an agent in
+  exactly one. Membership is declared once, in `bundles.yaml`.
+- **Only released items are installable (hard rule).** A skill or agent listed in no bundle is work
+  in progress: it may live on `develop`, the catalogue map lists it under "Unreleased (WIP)", nothing
+  released may depend on it (`wip_isolation`), and the release (`dist`) leaves it out.
+- **Both CLIs, one source, one release.** Every install reads the `dist` branch, which moves only at
+  a release: the Claude marketplace (`meaningfy-ws/skillery#dist`), the opencode installer
+  (`git+…skillery.git#dist`) and `npx skills add meaningfy-ws/skillery#dist`. The body-agnosticism
+  gate keeps the text valid for both CLIs.
 - **Declared dependencies.** External skills, MCP servers and tools a bundle needs are listed where
   the user installs (`docs/environment/setup.md`), with the exact command and the version that was
   tested.

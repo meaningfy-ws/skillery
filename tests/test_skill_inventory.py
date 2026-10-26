@@ -86,3 +86,10 @@ def test_dependency_register_edit_without_regeneration_is_drift(tmp_path, monkey
     (tmp_path / "dependencies.yaml").write_text(yaml.safe_dump([_DEP]), encoding="utf-8")
     assert skill_inventory.drift_errors(tmp_path) == [
         f"{_COMPAT} is stale — regenerate with `make skill-inventory`"]
+
+
+def test_unreleased_section_lists_wip_skills_and_agents():
+    text = skill_inventory.render_unreleased({"draft-skill": {"summary": "Drafts things."}}, ["draft-agent"])
+    assert text.startswith("## Unreleased (WIP)")
+    assert "| `draft-skill` | skill | Drafts things. |" in text and "| `draft-agent` | agent |" in text
+    assert skill_inventory.render_unreleased({}, []) == ""

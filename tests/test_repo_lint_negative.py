@@ -63,10 +63,12 @@ def test_missing_skill_dir_is_flagged(tmp_path):
     assert any("cosmic-python" in e for e in lint.missing_skill_dirs(tmp_path))
 
 
-def test_unregistered_skill_is_flagged(tmp_path):
+def test_unbundled_skill_is_wip_and_passes(tmp_path):
+    # rebundle-by-activity D-14: listed in no bundle = work in progress, allowed on develop.
     _skill(tmp_path, "cosmic-python")
-    _bundles(tmp_path, [])
-    assert lint.unregistered_skill_dirs(tmp_path)
+    _bundles(tmp_path, [{"name": "meaningfy-core", "skills": []}])
+    assert lint.expected_bundle_membership(tmp_path) == []
+    assert lint.wip_isolation(tmp_path) == []
 
 
 def test_missing_frontmatter_is_flagged(tmp_path):
@@ -91,13 +93,22 @@ def test_skill_in_multiple_bundles_is_flagged(tmp_path):
         "skill 'cosmic-python' is in multiple bundles: meaningfy-core, meaningfy-building"]
 
 
-def test_unregistered_skill_dir_is_flagged(tmp_path):
-    # TC-09: every skill dir must be placed in some bundle (bundles.yaml is the truth).
-    _skill(tmp_path, "cosmic-python")
-    _bundles(tmp_path, [{"name": "meaningfy-core", "skills": []}])
-    # sibling review finding 7: reported once, by unregistered_skill_dirs
-    errs = lint.expected_bundle_membership(tmp_path) + lint.unregistered_skill_dirs(tmp_path)
-    assert errs == ["skills/cosmic-python exists but is not registered in bundles.yaml"]
+def test_released_skill_delegating_to_wip_is_flagged(tmp_path):
+    _skill_fm(tmp_path, "a", {"name": "a", "description": "x"},
+              body="## Boundary & Related Skills\n\n**Delegates:** drafts → `b`.")
+    _skill(tmp_path, "b")
+    _bundles(tmp_path, [{"name": "core", "skills": ["a"]}])
+    assert lint.wip_isolation(tmp_path) == [
+        "skills/a is released but delegates to WIP skill 'b' (in no bundle); release 'b' or drop the hand-off"]
+
+
+def test_released_agent_loading_wip_skill_is_flagged(tmp_path):
+    _skill(tmp_path, "a")
+    _skill(tmp_path, "b")
+    _agent(tmp_path, "ag", {"name": "ag", "description": "x", "skills": ["a", "b", "ext:thing"]})
+    _bundles(tmp_path, [{"name": "core", "skills": ["a"], "agents": ["ag"]}])
+    assert lint.wip_isolation(tmp_path) == [
+        "agents/ag is released but loads WIP skill 'b' (in no bundle); release 'b' or drop it"]
 
 
 def test_new_bundle_name_is_not_flagged(tmp_path):
@@ -112,7 +123,6 @@ def test_agent_bundle_membership_messages(tmp_path):
         _agent(tmp_path, a)
     _bundles(tmp_path, [{"name": "b1", "agents": ["twice", "ghost"]}, {"name": "b2", "agents": ["twice"]}])
     assert sorted(lint.agent_bundle_membership(tmp_path)) == sorted([
-        "agent 'lonely' is in no bundle in bundles.yaml",
         "agent 'twice' is in multiple bundles: b1, b2",
         "bundles.yaml lists agent 'ghost' but agents/ghost.md does not exist",
     ])
@@ -280,7 +290,6 @@ def test_clean_fixture_passes_all(tmp_path):
     _skill(tmp_path, "project-setup")
     _bundles(tmp_path, [{"name": "meaningfy-building", "skills": ["cosmic-python", "project-setup"]}])
     assert lint.missing_skill_dirs(tmp_path) == []
-    assert lint.unregistered_skill_dirs(tmp_path) == []
     assert lint.frontmatter_present_errors(tmp_path) == []
     assert lint.expected_bundle_membership(tmp_path) == []
     assert lint.broken_links(tmp_path) == []
@@ -330,7 +339,6 @@ def test_invalid_bundles_yaml_is_reported_once(tmp_path):
     _skill(tmp_path, "cosmic-python")
     _agent(tmp_path, "solo")
     (tmp_path / "bundles.yaml").write_text("bundles: {not: a list}\n", encoding="utf-8")
-    assert lint.unregistered_skill_dirs(tmp_path) == []
     assert lint.missing_skill_dirs(tmp_path) == []
     assert lint.expected_bundle_membership(tmp_path) == []
     assert lint.agent_bundle_membership(tmp_path) == []

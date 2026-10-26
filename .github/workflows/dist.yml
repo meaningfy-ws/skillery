@@ -1,6 +1,6 @@
-# Publishes the install branch `dist` (rebundle-by-activity D-8) on each release: the released tree
-# plus the generated bundles/ symlink tree, appended as one commit per release and tagged
-# `<release tag>-dist`. Never force-pushed and never edited by hand, so installed marketplaces update
+# Publishes the install branch `dist` (rebundle-by-activity D-8, D-14) on each release: the released
+# tree minus work in progress (skills/agents in no bundle) plus the generated bundles/ symlink tree,
+# appended as one commit per release and tagged `<release tag>-dist`. Never force-pushed and never edited by hand, so installed marketplaces update
 # with `/plugin marketplace update`. These commits never enter develop.
 name: dist
 on:
@@ -29,6 +29,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -f bundles
+          # only released items ship: drop skills/agents listed in no bundle (D-14)
+          python -m tools.bundle_gen unreleased | xargs -r git rm -r -q --cached --
           tree=$(git write-tree)
           parent=()
           commit=""

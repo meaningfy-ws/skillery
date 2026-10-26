@@ -164,12 +164,26 @@ def missing_skill_dirs(repo: Path) -> list[str]:
             for s in _marketplace_skills(repo) if s not in dirs]
 
 
-def unregistered_skill_dirs(repo: Path) -> list[str]:
-    if _bundle_list(repo) is None:
+def wip_isolation(repo: Path) -> list[str]:
+    """A skill or agent listed in no bundle is work in progress and never released
+    (rebundle-by-activity D-14); nothing released may depend on it."""
+    bundles = _bundle_list(repo)
+    if bundles is None:
         return []  # reported by bundle_gates
-    registered = set(_marketplace_skills(repo))
-    return [f"skills/{s} exists but is not registered in bundles.yaml"
-            for s in _skill_dirs(repo) if s not in registered]
+    paths = _skill_paths(repo)
+    released = {s for b in bundles for s in b["skills"]}
+    wip = set(paths) - released
+    out: list[str] = []
+    for s in sorted(released & set(paths)):
+        deps = skill_inventory._depends_on(paths[s].read_text(encoding="utf-8"), set(paths), s)
+        out += [f"skills/{s} is released but delegates to WIP skill '{d}' (in no bundle); "
+                f"release '{d}' or drop the hand-off" for d in deps if d in wip]
+    for a in sorted({a for b in bundles for a in b["agents"]}):
+        fm = _frontmatter(_read(repo, f"agents/{a}.md")) if (repo / "agents" / f"{a}.md").exists() else None
+        skills = (fm or {}).get("skills") or []
+        out += [f"agents/{a} is released but loads WIP skill '{s}' (in no bundle); release '{s}' or drop it"
+                for s in skills if isinstance(s, str) and s in wip]
+    return out
 
 
 def frontmatter_present_errors(repo: Path) -> list[str]:
@@ -563,7 +577,7 @@ def _bundle_membership(repo: Path) -> dict[str, set[str]]:
 
 def expected_bundle_membership(repo: Path) -> list[str]:
     """Placement check with bundles.yaml as the source of truth: every skill lives in at most
-    one bundle (a skill dir in none is `unregistered_skill_dirs`'). Bundle names are not pinned
+    one bundle (a skill dir in none is work in progress, see `wip_isolation`). Bundle names are not pinned
     (a second bundle definition would drift)."""
     if _bundle_list(repo) is None:
         return []  # reported by bundle_gates
@@ -576,7 +590,8 @@ def expected_bundle_membership(repo: Path) -> list[str]:
 
 
 def agent_bundle_membership(repo: Path) -> list[str]:
-    """Every agents/*.md is in exactly one bundle of bundles.yaml, and every listed agent exists
+    """Every agents/*.md is in at most one bundle of bundles.yaml (none = work in progress,
+    rebundle-by-activity D-14), and every listed agent exists
     (single-source-distribution DEC-3), and its one bundle lists its primary skill
     (agent-authoring-standard D-4)."""
     bundles = _bundle_list(repo)
@@ -589,8 +604,6 @@ def agent_bundle_membership(repo: Path) -> list[str]:
             agent_to_bundles.setdefault(a, []).append(b["name"])
     files = {p.stem for p in (repo / "agents").glob("*.md")} if (repo / "agents").exists() else set()
     out: list[str] = []
-    for a in sorted(files - set(agent_to_bundles)):
-        out.append(f"agent '{a}' is in no bundle in bundles.yaml")
     for a, bundles in sorted(agent_to_bundles.items()):
         if len(bundles) > 1:
             out.append(f"agent '{a}' is in multiple bundles: {', '.join(bundles)}")
@@ -1089,7 +1102,7 @@ def bundle_gates(repo: Path) -> list[str]:
 
 
 ALL_CHECKS = (
-    missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
+    missing_skill_dirs, wip_isolation, frontmatter_present_errors,
     frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long,
     name_mismatch, expected_bundle_membership,
     agent_bundle_membership,

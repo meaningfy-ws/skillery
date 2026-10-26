@@ -12,7 +12,7 @@ def test_every_bundled_skill_exists():
 
 
 def test_every_skill_is_registered():
-    assert lint.unregistered_skill_dirs(REPO) == []
+    assert lint.wip_isolation(REPO) == []
 
 
 def test_all_skills_have_frontmatter():

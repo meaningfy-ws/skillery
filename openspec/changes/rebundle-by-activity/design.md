@@ -251,6 +251,21 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   (`references/engagement-lifecycle.md`); the people docs link to it there and `decision-package`
   names the coach. Mentions of skillery docs that only attribute a fact the skill already states are
   removed.
+- **D-14. Only released items are installable** (owner, 2026-10-27, a hard rule: "only the features
+  (skills or agents or bundles/plugins) that have been released are visible and installable in
+  claude or opencode"). The one marker is `bundles.yaml`: a skill or agent listed in a bundle is
+  released; one listed in none is work in progress (WIP), allowed on `develop` and shown under
+  "Unreleased (WIP)" in the catalogue map. No second marker in the skill (it would be a second source
+  that can disagree). Enforcement:
+  - lint: `unregistered_skill_dirs` and the agent "in no bundle" error go; a new `wip_isolation`
+    check fails a released skill whose Delegates names a WIP skill, and a released agent whose
+    `skills:` lists a WIP skill. `use_case_coverage` still applies to WIP items.
+  - `python -m tools.bundle_gen unreleased` prints the WIP paths (`skills/<name>`,
+    `agents/<name>.md`); `dist.yml` drops them from the published tree, so the release holds only
+    released items.
+  - every install route reads `#dist`: the Claude marketplace (7.3), the opencode installer
+    (`git+…skillery.git#dist`) and `npx skills add meaningfy-ws/skillery#dist`.
+  - a `dual-cli-distribution` delta states the rule.
 
 ## Algorithm / approach
 
