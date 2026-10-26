@@ -51,25 +51,25 @@ superseded by the PLAN (`design.md` + `tasks.md`), and execution is tracked via 
   `docs/superpowers/specs/` file
 
 ### Requirement: The repo work loop and the done-checklist are normative
-The root `AGENTS.md` SHALL mandate the repo work loop — the change path (EPIC under `openspec/changes/` for a new, renamed, re-bounded or retired skill or agent; a direct PR from a feature branch for a change that moves no boundary), the branch flow (feature branch off `develop`, PR into `develop`), and the Definition of Done — and SHALL route to their substance rather than restate it. The Definition of Done SHALL exist as exactly one checklist, in `docs/development-method.md` §9; `CONTRIBUTING.md` SHALL link to it and SHALL NOT carry a second checklist.
+The root `AGENTS.md` SHALL mandate the repo work loop — the change path (EPIC under `openspec/changes/` for a new, renamed, re-bounded or retired skill or agent; a direct PR from a feature branch for a change that moves no boundary), the branch flow (feature branch off `develop`, PR into `develop`), and the Definition of Done — and SHALL route to their substance rather than restate it. The Definition of Done SHALL exist as exactly one checklist, in `docs/development/README.md` §9; `CONTRIBUTING.md` SHALL link to it and SHALL NOT carry a second checklist.
 
 #### Scenario: One checklist
 - **WHEN** a contributor looks for what "done" means for a skill or agent change
-- **THEN** `AGENTS.md` and `CONTRIBUTING.md` both route to `docs/development-method.md` §9, and no other file carries a done or submission checklist for changes to this repository's skills and agents (`docs/ai-coding/` defines the product-project Definition of Done and is out of scope)
+- **THEN** `AGENTS.md` and `CONTRIBUTING.md` both route to `docs/development/README.md` §9, and no other file carries a done or submission checklist for changes to this repository's skills and agents (`docs/practice/ai-coding/` defines the product-project Definition of Done and is out of scope)
 
 #### Scenario: The checklist matches the tooling
 - **WHEN** the Definition of Done names a command
 - **THEN** that command is a `make` target that exists, and no step names `make generate-opencode`
 
 ### Requirement: External skills are referenced, vendored only with provenance
-External skills SHALL be declared as dependencies and linked, not copied into `skills/`; this rule SHALL be stated in `spec/skill-repo-governance.md` and checked by the Definition of Done. A skill adopted into `skills/` from an external source SHALL carry a provenance note (source, commit, licence, date) and SHALL be reviewed in full before any upstream change is pulled.
+External skills SHALL be declared as dependencies and linked, not copied into `skills/`; this rule SHALL be stated in `docs/development/governance.md` and checked by the Definition of Done. A skill adopted into `skills/` from an external source SHALL carry a provenance note (source, commit, licence, date) and SHALL be reviewed in full before any upstream change is pulled.
 
 #### Scenario: A vendored skill carries provenance
 - **WHEN** a reviewer finds a skill under `skills/` whose content originates outside Meaningfy
 - **THEN** it carries a provenance note naming source, commit, licence and date, or the review rejects it
 
 ### Requirement: Agents conform to the agent authoring standard
-Every `agents/<name>.md` SHALL conform to the agent standard in `spec/agent-template.md` — its closed
+Every `agents/<name>.md` SHALL conform to the agent standard in `docs/development/agent-template.md` — its closed
 frontmatter contract (including a declared `type` of `delegated`, `lead` or `scheduled`), its body cap,
 its `## Dispatch contract` section with the labels **Input**, **Output**, **Side effects** and
 **Refuses**, and CLI-agnostic body text — and the validator SHALL reject any agent that does not. The
@@ -191,15 +191,15 @@ validation. Descriptions longer than 600 characters and `SKILL.md` bodies over 5
 
 ### Requirement: Authoring guidance has one home
 
-Step-by-step authoring guidance for this repository SHALL live in `spec/CREATING_SKILLS.md` as
+Step-by-step authoring guidance for this repository SHALL live in `docs/development/creating-skills.md` as
 Meaningfy deltas plus citations of the adopted methods. `CONTRIBUTING.md` SHALL be a short entry page
-that links to that guide and to the Definition of Done. `spec/agent-skills-spec.md` SHALL cite the
+that links to that guide and to the Definition of Done. `docs/development/agent-skills-spec.md` SHALL cite the
 agentskills.io specification and carry only skillery's field notes.
 
 #### Scenario: A contributor opens CONTRIBUTING.md
 
 - **WHEN** a contributor reads `CONTRIBUTING.md`
-- **THEN** it links to `spec/CREATING_SKILLS.md` and to `docs/development-method.md` §9, and holds no
+- **THEN** it links to `docs/development/creating-skills.md` and to `docs/development/README.md` §9, and holds no
   authoring steps of its own
 
 #### Scenario: Boundary and related skills are described correctly

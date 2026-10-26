@@ -1,6 +1,6 @@
 # Code Principles, Best-Practices & Anti-Patterns Catalogue
 
-> **Single source of authority** (per [`spec/skill-repo-governance.md`](../../../spec/skill-repo-governance.md)).
+> **Single source of authority:** each fact has one owner.
 > `cosmic-python` owns this catalogue. Every other skill, agent, or binding **cites an entry by its id**
 > and never restates the rule text. Append-friendly: new code-review findings land here.
 

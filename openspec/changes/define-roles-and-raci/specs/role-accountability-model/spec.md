@@ -3,11 +3,11 @@
 ### Requirement: The role set is closed at six, and each role is named
 The catalogue SHALL document a closed set of exactly six project roles — Sales/Presales, Technical
 Consultant, Solution Architect, Work Shaper, Solution Builder, Solution Shipper — in a single file,
-`docs/roles-and-raci.md`. No project role beyond these six SHALL be added as a named role or as a
+`docs/practice/roles-and-raci.md`. No project role beyond these six SHALL be added as a named role or as a
 matrix column.
 
 #### Scenario: The role set is counted
-- **WHEN** the role definitions in `docs/roles-and-raci.md` are counted
+- **WHEN** the role definitions in `docs/practice/roles-and-raci.md` are counted
 - **THEN** exactly six role blocks are present, named Sales/Presales, Technical Consultant, Solution
   Architect, Work Shaper, Solution Builder, Solution Shipper, and no other role block exists
 
@@ -38,7 +38,7 @@ SHALL NOT be published.
   R, C, I, or `–` instead
 
 ### Requirement: Roles are documented as responsibilities-in-a-process, not competences or headcount
-The catalogue SHALL state, in `docs/roles-and-raci.md`, that a role is a set of responsibilities in
+The catalogue SHALL state, in `docs/practice/roles-and-raci.md`, that a role is a set of responsibilities in
 a process rather than a competence/profile or a headcount commitment. This distinction SHALL be
 stated explicitly, not left implicit in the role blocks alone.
 
@@ -58,7 +58,7 @@ stated explicitly, not left implicit in the role blocks alone.
 The catalogue SHALL document the Work Shaper role with: its mandate (developing the WBS, roadmap,
 and Epic pitch, identifying risks, and mapping Epic scope into stories with the Builder), the skill
 it owns and steers (`skills/epic-planning/SKILL.md`, cited by path, not restated), and its
-positioning on the Architect–Builder spectrum, leaning Builder. `docs/roles-and-raci.md` SHALL be
+positioning on the Architect–Builder spectrum, leaning Builder. `docs/practice/roles-and-raci.md` SHALL be
 the authoritative source for this positioning statement; any other document that needs it SHALL
 cite this file rather than restate the positioning independently.
 
@@ -71,7 +71,7 @@ cite this file rather than restate the positioning independently.
 #### Scenario: Another document needs the Architect-Builder positioning
 - **WHEN** another document (e.g. a per-role playbook) needs to describe where Work Shaper sits
   relative to Solution Architect and Solution Builder
-- **THEN** it cites `docs/roles-and-raci.md`'s positioning statement rather than asserting its own
+- **THEN** it cites `docs/practice/roles-and-raci.md`'s positioning statement rather than asserting its own
   independent version of that positioning
 
 #### Scenario: The Work Shaper is confused with Solution Architect or Solution Shipper

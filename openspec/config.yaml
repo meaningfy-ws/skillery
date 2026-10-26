@@ -4,7 +4,7 @@ schema: meaningfy
 # This is OpenSpec's native project-context sink (Q2.4). The durable truth is
 # openspec/specs/; this string is the orientation index. If a generated index is
 # ever wanted, regenerate it deterministically into this field (see
-# spine/epic-change-memory-mapping.md) — do not hand-curate a parallel MEMORY.md.
+# docs/development/epic-change-memory-mapping.md) — do not hand-curate a parallel MEMORY.md.
 context: |
   Repo: skillery — Meaningfy's company-wide Claude Code skills/agents/docs catalogue.
   This openspec/ instance dogfoods the Meaningfy spine on skillery itself.

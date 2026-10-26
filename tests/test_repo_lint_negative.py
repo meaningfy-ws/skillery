@@ -249,8 +249,7 @@ def test_agents_canonical_clean_passes(tmp_path):
 
 def test_hooks_inventory_bad_mechanism_is_flagged(tmp_path):
     (tmp_path / "VERSION").write_text("9.9.9\n", encoding="utf-8")
-    (tmp_path / "hooks").mkdir()
-    (tmp_path / "hooks" / "inventory.yaml").write_text(
+    (tmp_path / "hooks.yaml").write_text(
         'version: "9.9.9"\nhooks:\n'
         "  - id: h1\n    intent: x\n    provenance: {skill: s}\n"
         "    bindings: [{mechanism: nope, phase: quality}]\n", encoding="utf-8")
@@ -259,8 +258,7 @@ def test_hooks_inventory_bad_mechanism_is_flagged(tmp_path):
 
 def test_hooks_inventory_version_mismatch_is_flagged(tmp_path):
     (tmp_path / "VERSION").write_text("1.0.0\n", encoding="utf-8")
-    (tmp_path / "hooks").mkdir()
-    (tmp_path / "hooks" / "inventory.yaml").write_text(
+    (tmp_path / "hooks.yaml").write_text(
         'version: "2.0.0"\nhooks:\n'
         "  - id: h1\n    intent: x\n    provenance: {skill: s}\n"
         "    bindings: [{mechanism: git, phase: quality}]\n", encoding="utf-8")
@@ -376,7 +374,7 @@ def test_agent_missing_field_is_flagged(tmp_path):
 
 def test_agent_bundle_field_is_flagged(tmp_path):
     assert _conforming(tmp_path, {"bundle": "meaningfy-building"}) == [
-        "agents/x.md: frontmatter field 'bundle' is not in the agent contract (spec/agent-template.md)"]
+        "agents/x.md: frontmatter field 'bundle' is not in the agent contract (docs/development/agent-template.md)"]
 
 
 def test_agent_name_mismatch_is_flagged(tmp_path):
@@ -653,21 +651,21 @@ def test_unknown_required_bundle_is_flagged(tmp_path):
 
 
 def _register(tmp_path, rows):
-    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "docs" / "development").mkdir(parents=True, exist_ok=True)
     table = "\n".join(f"| `{r}` | hand-written | t | — |" for r in rows)
-    (tmp_path / "docs" / "development-method.md").write_text(
+    (tmp_path / "docs" / "development" / "README.md").write_text(
         f"# M\n\n## 8. Where things live\n\n| View | Kind | Source or topic | Rendered by |\n|---|---|---|---|\n{table}\n\n## 9. Done\n",
         encoding="utf-8")
 
 
 def test_unregistered_doc_is_flagged(tmp_path):
-    _register(tmp_path, ["docs/development-method.md"])
+    _register(tmp_path, ["docs/development/README.md"])
     (tmp_path / "docs" / "new-guide.md").write_text("x", encoding="utf-8")
-    assert lint.doc_register_complete(tmp_path) == ["docs/new-guide.md: not in the documentation register (docs/development-method.md §8)"]
+    assert lint.doc_register_complete(tmp_path) == ["docs/new-guide.md: not in the documentation register (docs/development/README.md §8)"]
 
 
 def test_folder_prefix_covers_nested_docs(tmp_path):
-    _register(tmp_path, ["docs/development-method.md", "docs/ai-sales/**"])
+    _register(tmp_path, ["docs/development/README.md", "docs/ai-sales/**"])
     (tmp_path / "docs" / "ai-sales" / "x").mkdir(parents=True)
     (tmp_path / "docs" / "ai-sales" / "x" / "y.md").write_text("x", encoding="utf-8")
     assert lint.doc_register_complete(tmp_path) == []
@@ -797,10 +795,27 @@ def test_link_into_another_skill_is_flagged(tmp_path):
     assert len(errs) == 1 and "skills/a/SKILL.md" in errs[0] and "'b'" in errs[0]
 
 
-def test_link_inside_own_skill_and_outside_skills_passes(tmp_path):
+def test_link_inside_own_skill_and_web_links_pass(tmp_path):
     _skill_fm(tmp_path, "a", {"name": "a", "description": "x"},
-              body="[r](references/r.md) [m](../../docs/m.md) [w](https://x.org/skills/b/r.md)")
+              body="[r](references/r.md) [w](https://x.org/skills/b/r.md)")
     assert lint.cross_skill_paths(tmp_path) == []
+
+
+def test_link_out_of_the_skill_folder_is_flagged(tmp_path):
+    # An installed skill has only its own folder (rebundle-by-activity D-13).
+    _skill_fm(tmp_path, "a", {"name": "a", "description": "x"}, body="[m](../../docs/m.md)")
+    assert lint.cross_skill_paths(tmp_path) == [
+        "skills/a/SKILL.md: links outside its skill folder (../../docs/m.md); "
+        "state the fact or name the owning skill"]
+
+
+# --------------------------------------------- top-level folders (rebundle-by-activity D-13)
+def test_unknown_top_level_folder_is_flagged(tmp_path):
+    for d in ("skills", "docs", "spine", ".venv", "bundles"):
+        (tmp_path / d).mkdir()
+    assert lint.top_level_folders(tmp_path) == [
+        "spine/: not an allowed top-level folder (allowed: skills, agents, use-cases, openspec, docs, "
+        "tools, tests, .github, .claude-plugin)"]
 
 
 # ------------------------------------------ external dependency register (rebundle-by-activity D-7)

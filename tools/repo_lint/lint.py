@@ -36,14 +36,14 @@ ADVISORY_DESCRIPTION_CHARS = 600
 ADVISORY_SKILL_LINES = 500
 ADVISORY_SKILL_TOKENS = 5000
 
-# documenter, gherkin-writer: DEC-7 backlog candidates (spec/agent-template.md), not retired names
+# documenter, gherkin-writer: DEC-7 backlog candidates (docs/development/agent-template.md), not retired names
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "system-architect",
                    "conceptual-modeller", "proposal-writer"}
 # Non-namespaced skills that legitimately live in OTHER plugins (so an agent may load them
 # without a local skills/<name>/ dir). Namespaced skills (e.g. `superpowers:tdd`) are external by form.
 EXTERNAL_SKILLS = {"stream-coding"}
 # Files/dirs whose content must never be edited (frozen) — excluded from prose checks.
-# `docs/ai-coding/` was the only entry and is no longer frozen as of the
+# `docs/practice/ai-coding/` was the only entry and is no longer frozen as of the
 # `define-meaningfy-lifecycle` change: its premise ("content must never be edited") became
 # false the moment that change rewrote `build-lifecycle.md` in place. Left empty (not deleted)
 # so the mechanism stays available for a future freeze without speculative re-engineering.
@@ -243,7 +243,7 @@ def skill_size_report(repo: Path) -> list[str]:
 
 FACETS_FILE = "facets.yaml"
 CORE_BUNDLE = "meaningfy-core"
-_REGISTER_FILE = "docs/development-method.md"
+_REGISTER_FILE = "docs/development/README.md"
 _REGISTER_SECTION = "## 8. Where things live"
 
 
@@ -401,9 +401,24 @@ def use_case_changes_registered(repo: Path) -> list[str]:
     return out
 
 
+TOP_LEVEL_FOLDERS = ("skills", "agents", "use-cases", "openspec", "docs", "tools", "tests", ".github",
+                     ".claude-plugin")
+_GENERATED_FOLDERS = ("bundles",)  # make bundles, git-ignored (rebundle-by-activity D-8)
+
+
+def top_level_folders(repo: Path) -> list[str]:
+    """Only the allowed folders sit at the top level (rebundle-by-activity D-13); other hidden
+    folders (.git, .venv, a CLI's own) and generated ones are not the repo's structure."""
+    return [f"{d.name}/: not an allowed top-level folder (allowed: {', '.join(TOP_LEVEL_FOLDERS)})"
+            for d in sorted(repo.iterdir())
+            if d.is_dir() and not d.name.startswith(".") and d.name not in TOP_LEVEL_FOLDERS
+            and d.name not in _GENERATED_FOLDERS]
+
+
 def cross_skill_paths(repo: Path) -> list[str]:
-    """No link from one skill's files resolves into another skill's folder (D-15): a skill names
-    another skill; a resource two skills need moves into a foundation skill."""
+    """No link from a skill's files resolves outside that skill's folder (restructure D-15,
+    widened by rebundle-by-activity D-13): an installed skill has only its own folder, so it names
+    another skill and states any other fact itself."""
     dirs = {p.parent.resolve(): name for name, p in _skill_paths(repo).items()}
     out: list[str] = []
     for src_dir, src in dirs.items():
@@ -413,10 +428,14 @@ def cross_skill_paths(repo: Path) -> list[str]:
                 if not target or re.match(r"^[a-z]+:", target):
                     continue
                 resolved = (f.parent / target).resolve()
+                if resolved.is_relative_to(src_dir):
+                    continue
+                rel = f.relative_to(repo.resolve()).as_posix()
                 owner = next((n for d, n in dirs.items() if resolved.is_relative_to(d)), None)
-                if owner and owner != src:
-                    out.append(f"{f.relative_to(repo.resolve()).as_posix()}: links into skill "
-                               f"'{owner}' ({target}); name the skill instead")
+                out.append(f"{rel}: links into skill '{owner}' ({target}); name the skill instead"
+                           if owner else
+                           f"{rel}: links outside its skill folder ({target}); "
+                           f"state the fact or name the owning skill")
     return out
 
 
@@ -605,7 +624,8 @@ def _primary_skill_errors(repo: Path, agent: str, bundle: str, skills: set[str])
 # files. Navigational docs (README, docs/, SKILL.md, plan files) are still
 # checked — that is where a moved file leaves a real dangling link.
 def _is_illustrative(rel_parts: tuple[str, ...]) -> bool:
-    return rel_parts[0] in ("template", "spec") or "references" in rel_parts
+    # templates carry placeholder links (`references/<question-it-answers>.md`)
+    return rel_parts[0] == "template" or rel_parts[-1].endswith("-template.md") or "references" in rel_parts
 
 
 def broken_links(repo: Path) -> list[str]:
@@ -676,7 +696,7 @@ def orphan_path_mentions(repo: Path, banned: list[str]) -> list[str]:
 
 # Top-level repo dirs a spec may link into; bounds the auto-fixer so it never
 # rewrites an incidental same-named sibling file.
-_LINKABLE_TOPDIRS = {"skills", "docs", "spine", "openspec", "prompts", "agents", "spec", "tools", "tests"}
+_LINKABLE_TOPDIRS = {"skills", "docs", "openspec", "agents", "tools", "tests", "use-cases"}
 
 
 def groomed_spec_purpose(repo: Path) -> list[str]:
@@ -877,7 +897,7 @@ def reciprocal_related_report(repo: Path) -> list[str]:
 
 # ------------------------------------------- dual-CLI foundation invariants (DEC-12/13)
 VERSION_FILE = "VERSION"
-HOOKS_INVENTORY = "hooks/inventory.yaml"
+HOOKS_INVENTORY = "hooks.yaml"
 _VALID_MECHANISM = {"git", "ci", "agent"}
 _VALID_PHASE = {"quality", "phase-gate"}
 # The ONLY skill bodies allowed to carry a CLI-specific (/opsx: or .claude/) reference.
@@ -959,7 +979,7 @@ def body_agnosticism(repo: Path) -> list[str]:
     return out
 
 
-# ------------------------------------------- agent authoring standard (spec/agent-template.md)
+# ------------------------------------------- agent authoring standard (docs/development/agent-template.md)
 MAX_AGENT_BODY_LINES = 40
 AGENT_REQUIRED_FIELDS = ("name", "description", "type", "model", "tools", "skills")
 AGENT_OPTIONAL_FIELDS = ("disallowedTools", "color", "metadata")
@@ -982,7 +1002,7 @@ def _agent_modes(repo: Path) -> set[str] | None:
 def _agent_frontmatter_errors(rel: str, stem: str, fm: dict, modes: set[str] | None) -> list[str]:
     out = [f"{rel}: missing required frontmatter field '{k}'" for k in AGENT_REQUIRED_FIELDS if k not in fm]
     allowed = AGENT_REQUIRED_FIELDS + AGENT_OPTIONAL_FIELDS
-    out += [f"{rel}: frontmatter field '{k}' is not in the agent contract (spec/agent-template.md)"
+    out += [f"{rel}: frontmatter field '{k}' is not in the agent contract (docs/development/agent-template.md)"
             for k in fm if k not in allowed]
     if "name" in fm and fm["name"] != stem:
         out.append(f"{rel}: name '{fm['name']}' does not match the filename")
@@ -1041,7 +1061,7 @@ def _agent_feature_errors(repo: Path, rel: str, stem: str, skills) -> list[str]:
 
 
 def agent_conformance(repo: Path) -> list[str]:
-    """Every agents/*.md conforms to spec/agent-template.md: closed frontmatter contract, body cap,
+    """Every agents/*.md conforms to docs/development/agent-template.md: closed frontmatter contract, body cap,
     dispatch contract, CLI-agnostic body, Gherkin feature file (agent-authoring-standard)."""
     agents_dir = repo / "agents"
     if not agents_dir.exists():
@@ -1078,6 +1098,7 @@ ALL_CHECKS = (
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
+    top_level_folders,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

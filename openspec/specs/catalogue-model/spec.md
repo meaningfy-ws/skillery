@@ -53,7 +53,7 @@ existing drift test SHALL fail when the file differs from what the generator pro
 
 ### Requirement: The documentation register covers every documentation view
 
-`docs/development-method.md` §8 SHALL hold the documentation register. Each row SHALL name a view (a
+`docs/development/README.md` §8 SHALL hold the documentation register. Each row SHALL name a view (a
 path or a glob), its kind (generated or hand-written), its source or the one topic it owns, and the
 make target that renders it when it is generated. Every `docs/**/*.md` file, and `README.md`,
 `AGENTS.md` and `CLAUDE.md`, SHALL match a row. Validation SHALL fail for a file that matches none.

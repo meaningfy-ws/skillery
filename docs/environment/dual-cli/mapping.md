@@ -21,7 +21,7 @@ implement, and the reason behind the steps of [`setup-claude.md`](setup-claude.m
 | command content | `/opsx:<id>`, `/<name>` (native registration) | `.opencode/commands/<id>.md` (`template` + `$ARGUMENTS`) |
 | root binding | `CLAUDE.md` (pointer → `AGENTS.md`) | `AGENTS.md` (read natively) |
 | `VERSION` | `marketplace.json` `metadata.version` (`make bundles`) | `tools/opencode-catalogue.json` `version` and `package.json` `version` (`make bundles`) |
-| hook *intent* (`hooks/inventory.yaml`) | `settings.json` hooks (agent) + pre-commit/CI (git/ci) | `.opencode/plugin/*` (agent) + the same pre-commit/CI |
+| hook *intent* (`hooks.yaml`) | `settings.json` hooks (agent) + pre-commit/CI (git/ci) | `.opencode/plugin/*` (agent) + the same pre-commit/CI |
 | MCP (documented, not generated) | `.mcp.json` `mcpServers` | `opencode.json` `mcp` |
 
 ## Frontmatter field mapping (agents)
@@ -40,7 +40,7 @@ implement, and the reason behind the steps of [`setup-claude.md`](setup-claude.m
 | invocation name `meaningfy-<bundle>:<agent>` | opencode agent name |
 
 `type` itself is never emitted into the opencode file. The per-type contract rules are in
-[`spec/agent-template.md`](../../../spec/agent-template.md#types).
+[`docs/development/agent-template.md`](../../development/agent-template.md#types).
 
 **Recorded agent gaps:**
 

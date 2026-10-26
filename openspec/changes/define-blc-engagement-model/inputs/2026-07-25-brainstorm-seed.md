@@ -6,8 +6,8 @@ when the two disagree, the proposal is authoritative and the disagreement should
 `DEC-` in the proposal. Do not edit, condense, or "update" this file — it is a dated record.
 
 **Provenance:** a long `/opsx:explore` session between Claude Code and Eugeniu Costetchi
-(2026-07-25), auditing `docs/ai-coding/`, `docs/engagement/`, `docs/engineering-standards/`,
-`docs/philosophy/`, and the 23-skill catalogue. The full synthesis covers five parallel epics; the
+(2026-07-25), auditing `docs/practice/ai-coding/`, `docs/engagement/`, `docs/practice/engineering-standards/`,
+`docs/practice/philosophy/`, and the 23-skill catalogue. The full synthesis covers five parallel epics; the
 excerpt below is the slice that this change is shaped from — **§1 (why the work exists), §2 (the
 corrected commercial model), and the §8 scope slice** naming this epic, its siblings, the parked
 item, and the round's scope discipline. Sections 3–7 of the synthesis (the SDLC/MDLC/CBLC planes,
@@ -90,7 +90,7 @@ no deliverable                                                                  
 
 1. **`define-blc-engagement-model`** — Rewrite `docs/engagement/README.md` + `phases.md` and
    `semantic-consulting-coach/references/engagement-model.md` for the corrected commercial model
-   (§2). Does not touch `docs/ai-coding/`.
+   (§2). Does not touch `docs/practice/ai-coding/`.
 
 The four sibling epics, named here for citation only (their content is owned by their own
 proposals): `define-meaningfy-lifecycle` (retire v1, rewrite `two-tier-methodology.md`, resolve

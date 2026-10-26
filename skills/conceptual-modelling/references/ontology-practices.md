@@ -18,7 +18,7 @@ The **policy decisions** are owned here:
   it once. Choosing the namespace is a model-level decision, not a per-element one.
 - **Identifiers are opaque and permanent**; do not encode mutable facts (version, owner, location) into
   the local name. Minted at authoring time, human-readable, like the other golden-thread IDs
-  (`EPIC-`, `ADR-`, `R<n>` — see [`../../../spine/golden-thread.md`](../../../spine/golden-thread.md)).
+  (`EPIC-`, `ADR-`, `R<n>`; the golden thread is owned by `epic-planning`).
 - **Cross-repo citation.** When the model lives in its own repo, downstream code and specs cite these
   IRIs — the cross-repo rung of the golden thread.
 

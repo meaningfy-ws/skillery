@@ -31,7 +31,7 @@ multi-component) apply only if the interview selected them.
       (`conceptual-modelling`).
 - [ ] **Neo4j generators** (product, LinkML model source + Neo4j datastore selected, Q4.5 + Q5.1) —
       project a **pinned copy** of `gen-neo4j-constraints`/`gen-neomodel` (repo tooling at
-      `tools/linkml_neo4j/` — documented, not owned, by `linkml-engineering`) into `scripts/`; wire
+      shipped by `linkml-engineering` in its `scripts/linkml_neo4j/`) into `scripts/`; wire
       `make neo4j-constraints` / `make neomodel` targets alongside the existing `make
       generate-models` ones. Refresh path:
       re-run `project-setup`, review the diff — same discipline as the `meaningfy` OpenSpec schema

@@ -1,13 +1,13 @@
 ## ADDED Requirements
 
 ### Requirement: Build-tier-only scope for the build DoD document
-`docs/ai-coding/dod-quality-gates.md` SHALL carry only build-tier Definition of Done content. It
+`docs/practice/ai-coding/dod-quality-gates.md` SHALL carry only build-tier Definition of Done content. It
 SHALL NOT contain an engagement-gates table, a commercial-layer TODO block, or any other
 human/commercial engagement-sign-off content; such content SHALL be replaced by a single pointer to
 `docs/engagement/`.
 
 #### Scenario: Reader looks for commercial gates in the build DoD file
-- **WHEN** a reader opens `docs/ai-coding/dod-quality-gates.md` looking for engagement or commercial
+- **WHEN** a reader opens `docs/practice/ai-coding/dod-quality-gates.md` looking for engagement or commercial
   sign-off gates
 - **THEN** they find no engagement-gates table and no commercial-layer TODO block, only a pointer
   directing them to `docs/engagement/`
@@ -18,7 +18,7 @@ shipped increment conforms to the EPIC and the architecture — explicitly label
 with its accountability named and a link to the role's definition rather than a restated definition.
 
 #### Scenario: Reader checks what the Builder's DoD covers
-- **WHEN** a reader reads the Delivery & Release section of `docs/ai-coding/dod-quality-gates.md`
+- **WHEN** a reader reads the Delivery & Release section of `docs/practice/ai-coding/dod-quality-gates.md`
 - **THEN** they find the Builder's DoD stated in full (verification and validation against the EPIC
   and architecture), labelled as the Builder's accountability, with a link to where the Builder role
   is defined rather than a role description restated in this file
@@ -36,7 +36,7 @@ cited and not restated; (6) light-touch framing — the check is a human judgeme
 agent-assisted, not a mandated tool, required artifact, or automated gate.
 
 #### Scenario: Reader follows the Shipper's DoD pointer and checks the content contract
-- **WHEN** a reader follows the pointer from `docs/ai-coding/dod-quality-gates.md` to the Shipper's
+- **WHEN** a reader follows the pointer from `docs/practice/ai-coding/dod-quality-gates.md` to the Shipper's
   DoD under `docs/engagement/`
 - **THEN** the landed content names the concrete document trail, states the Shipper's
   "did we deliver what was promised?" accountability with the role definition linked elsewhere, marks
@@ -66,7 +66,7 @@ and neither pointer SHALL present one DoD as substituting for, or sequentially f
 ### Requirement: Disagreement between the two DoDs routes to a logged re-shape
 When the Builder's DoD and the Shipper's DoD disagree, neither verdict SHALL override the other; the
 disagreement SHALL be treated as a divergence between the EPIC and the contract, resolved by a
-logged re-shape. This rule SHALL be stated exactly once, in `docs/ai-coding/dod-quality-gates.md`,
+logged re-shape. This rule SHALL be stated exactly once, in `docs/practice/ai-coding/dod-quality-gates.md`,
 scoped explicitly to both DoDs regardless of which file each lives in; every other reference to this
 rule SHALL cite it rather than restate it.
 
@@ -79,7 +79,7 @@ rule SHALL cite it rather than restate it.
 #### Scenario: A second document needs to reference the disagreement rule
 - **WHEN** the Shipper's DoD document (or any other document) needs to reference what happens on
   disagreement
-- **THEN** it contains a one-line citation of the rule stated in `docs/ai-coding/dod-quality-gates.md`
+- **THEN** it contains a one-line citation of the rule stated in `docs/practice/ai-coding/dod-quality-gates.md`
   and does not restate the rule's substance in its own words
 
 ### Requirement: Delivery, release, and CD ownership cites only existing skills

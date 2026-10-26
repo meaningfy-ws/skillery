@@ -1,7 +1,7 @@
 # EPIC: Re-bundle by activity — every use case catalogued, every buildable agent built, the rest on a feature register
 
 > **Golden thread.** Parents: the approved target structure, agent roster and roadmap in
-> [`docs/catalogue-architecture.md`](../../../docs/catalogue-architecture.md) (approved 2026-10-26 in
+> [`docs/catalogue-architecture.md`](../../../docs/development/catalogue-architecture.md) (approved 2026-10-26 in
 > `restructure-and-evaluate-catalogue`, `inputs/approvals.md`), the owner's activity list of
 > 2026-10-26 (archived `define-catalogue-model`, `inputs/2026-10-26-plan-confirmation.md`) and the
 > use-case catalogue [`use-cases/`](../../../use-cases/). Shaping record:

@@ -7,7 +7,7 @@ trace to a leaf, an assumption, and a technique.
 
 - [ ] Engagement broken into **leaves** small enough for a three-point estimate.
 - [ ] Where build work is involved, leaves decompose against the EPIC/PLAN breakdown from
-      [`epic-planning`](../../../ai-coding/epic-planning/SKILL.md) — no parallel breakdown invented.
+      `epic-planning` — no parallel breakdown invented.
 - [ ] No leaf is a black box ("integration", "misc") hiding unestimated work.
 
 ## PERT (default technique)

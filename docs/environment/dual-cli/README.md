@@ -19,7 +19,7 @@ The contributor-facing contract docs this page indexes:
 | Change bundle membership (or agent frontmatter) | edit `bundles.yaml` / the agent, then `make bundles` (gated by `make validate`) |
 | Check an external plugin/skill/MCP server's opencode support | [`compatibility.md`](compatibility.md) |
 | See the skill-body CLI-agnosticism audit | [`body-agnosticism-audit.md`](body-agnosticism-audit.md) |
-| Understand hook intent → per-CLI binding | [`../../../hooks/README.md`](../../../hooks/README.md) |
+| Understand hook intent → per-CLI binding | [`../../../hooks/README.md`](../../development/hooks.md) |
 
 The authoring rule that ties these together lives in
 [`AGENTS.md` → How to maintain / extend](../../../AGENTS.md#how-to-maintain--extend-the-catalogue) —

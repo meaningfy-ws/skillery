@@ -16,8 +16,8 @@ metadata:
 ## Overview
 
 Specifications-first. Architecture and human intent are turned into **shaped EPICs**, each of
-which derives a gated **PLAN**. In the Meaningfy spine the artifacts are OpenSpec-native (see the
-[spine](../../spine/README.md)): the **EPIC ≡ `proposal.md`** (the Shape-Up work shape) and the
+which derives a gated **PLAN**. In the Meaningfy spine the artifacts are OpenSpec-native (the `meaningfy`
+schema): the **EPIC ≡ `proposal.md`** (the Shape-Up work shape) and the
 **PLAN ≡ `design.md` + `tasks.md`** (the pair the clarity gate scores). One artifact per concept —
 never a parallel `EPIC.md`/`PLAN.md` file. Ask before assuming; never ship a spec with hidden
 assumptions (Human Sovereignty).
@@ -25,7 +25,7 @@ assumptions (Human Sovereignty).
 This skill **authors**. The living-spec lifecycle after authoring — archive, grooming `specs/`,
 regenerating the orientation index — belongs to `spec-stewardship`.
 
-## Procedure (maps to the `/opsx` build-tier flow — see [`spine/workflows.md`](../../spine/workflows.md))
+## Procedure (maps to the OpenSpec `/opsx` build-tier flow)
 
 1. **Seed intake** (`/opsx:explore`). Read every human seed and supporting input — seed notes,
    architecture/ADRs, sample/test data, free notes, and for brownfield an existing-codebase analysis
@@ -42,11 +42,11 @@ regenerating the orientation index — belongs to `spec-stewardship`.
 3. **Archive the seeds.** Write the captured seeds and the Q&A record to `changes/<id>/inputs/`,
    marked **secondary** and **never deleted or groomed** — the authored EPIC supersedes them but does
    not replace them (the EPIC is the primary, shaped truth).
-4. **Shape the EPIC** (`/opsx:propose` → `proposal.md`). Use the spine template
-   ([`openspec/schemas/meaningfy/templates/proposal.md`](../../openspec/schemas/meaningfy/templates/proposal.md)):
+4. **Shape the EPIC** (`/opsx:propose` → `proposal.md`). Use the `meaningfy` schema's
+   `proposal.md` template (`openspec/schemas/meaningfy/templates/proposal.md` in a spine-wired repo):
    appetite, why, solution outline, **key decisions** (each with a citeable `DEC-` id), rabbit-holes,
    **no-gos** (mandatory). Cite the EPIC's **golden-thread parents** (the requirement/architecture it
-   derives from — see [`spine/golden-thread.md`](../../spine/golden-thread.md)). Keep it at shaping
+   derives from — see [`references/golden-thread.md`](references/golden-thread.md)). Keep it at shaping
    altitude — leave implementation room.
 5. **EPIC readiness check** (lightweight). Before deriving the PLAN, run the **lightweight variant**
    of `clarity-gate` over the EPIC — a quick readiness pass that catches

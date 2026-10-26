@@ -40,7 +40,7 @@ spec capability.
 - No new skill, agent, or role — No-gos.
 - No populating the services skeleton beyond the fields this EPIC already decided (P1's frame,
   P0-advisory's duration) — DEC-18, Known gap G-7.
-- No edit under `docs/ai-coding/` — that is `define-meaningfy-lifecycle` /
+- No edit under `docs/practice/ai-coding/` — that is `define-meaningfy-lifecycle` /
   `define-delivery-release-lifecycle`'s surface (No-gos).
 - No redesign of `decision-package` or `proposal-writing` beyond the cited label/pointer passages
   (DEC-11).
@@ -78,7 +78,7 @@ re-explained. New planning-level choices for this PLAN:
   the named document trail (RfO, offer, contract, meeting minutes/documented exchanges); (2) the
   Shipper accountability statement ("did we deliver what was promised?", role defined only by
   `define-roles-and-raci`); (3) the human-sign-off verdict status (not CI-automatable); (4) a
-  one-line pointer to the Builder's DoD in `docs/ai-coding/dod-quality-gates.md` stating the two
+  one-line pointer to the Builder's DoD in `docs/practice/ai-coding/dod-quality-gates.md` stating the two
   close together on two planes and neither substitutes for the other; (5) a one-line citation (not
   restatement) of the disagreement/re-shape rule that `dod-quality-gates.md` states once; (6) the
   light-touch/agent-assisted framing. Rationale: this is `define-delivery-release-lifecycle`'s

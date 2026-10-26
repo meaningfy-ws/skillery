@@ -1,7 +1,7 @@
 # Proposal — template
 
 The fillable template for the **proposal**: the persuasive, executive-facing half of the offer. Write
-it answer-first with the [`executive-communication`](../../../communication/executive-communication/SKILL.md)
+it answer-first with the `executive-communication`
 skill (SCQA + a 3-point pyramid; trade-offs and scope boundaries explicit; short close). The offer it
 frames is the **P1 Decision Phase**, whose deliverable is defined by
 `decision-package`. The numbers come from

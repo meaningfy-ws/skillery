@@ -99,12 +99,9 @@ neomodel OGM** (below), and further **custom generators** as a project needs the
 
 ### Neo4j constraints + neomodel OGM
 
-Two custom generators, both subclassing LinkML's `Generator` per the mechanism above. Documented
-here because the behavior is LinkML-generator knowledge — but the code itself is **not a skill
-asset**: a Skill's home is reusable *knowledge* (`spec/skill-repo-governance.md`), not a maintained,
-tested codebase. The generators live as repo tooling at `tools/linkml_neo4j/` (tested by skillery's
-own `tests/`, same pattern as `tools/repo_lint`/`tools/bundle_gen`), and `project-setup` is the one
-that projects a pinned copy into a consuming repo — this skill cites them, it doesn't own them.
+Two custom generators, both subclassing LinkML's `Generator` per the mechanism above. They ship with
+this skill in `scripts/linkml_neo4j/`, so an installed skill has them; skillery's own tests cover
+them, and `project-setup` projects a pinned copy into a consuming repo.
 Enable when a project targets Neo4j:
 
 - **`gen-neo4j-constraints`** emits Cypher DDL (uniqueness, existence, property-type constraints, and
@@ -131,7 +128,7 @@ Pick your role:
 |---|---|
 | **Scaffolding a new project** with `project-setup` | Answer LinkML (Q4.5) + Neo4j (Q5.1) in the interview, or pass `--neo4j` directly to `scaffold.sh` (product archetype only). This copies both generators into your repo's `scripts/`, pinned. |
 | **Adding it to an existing project** | Re-run `project-setup` (`scaffold.sh ... --neo4j --skip-existing`) — additive, never touches unrelated files. |
-| **Working inside skillery itself** | No install needed — run them directly from `tools/linkml_neo4j/`. |
+| **Working inside skillery itself** | No install needed — run them directly from this skill's `scripts/linkml_neo4j/`. |
 
 The pinned copy in your repo is a **snapshot**, not a live link back to skillery — refresh it by
 re-running `project-setup` with `--force` (shows what changed; never silently overwritten), same
