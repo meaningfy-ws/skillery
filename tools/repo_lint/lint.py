@@ -24,6 +24,16 @@ README = "README.md"
 # Hard ceiling that flags genuinely bloated files; ~500 stays the soft target
 # in CONTRIBUTING. The established `architecture` skill is ~618 lines and fine.
 MAX_SKILL_LINES = 650
+# The Agent Skills specification's top-level frontmatter keys (agentskills.io/specification), and
+# the Claude-only keys skillery accepts on top of them (ignored by opencode; recorded dual-CLI gap).
+SPEC_SKILL_KEYS = ("name", "description", "license", "compatibility", "metadata", "allowed-tools")
+CLAUDE_ONLY_SKILL_KEYS = ("argument-hint", "disable-model-invocation")
+MAX_DESCRIPTION_CHARS = 1024  # the specification's hard limit
+# Advisory review thresholds (reported, never failing): the method's description target and the
+# specification's body budget (characters / 4 approximates tokens).
+ADVISORY_DESCRIPTION_CHARS = 600
+ADVISORY_SKILL_LINES = 500
+ADVISORY_SKILL_TOKENS = 5000
 
 # documenter, gherkin-writer: DEC-7 backlog candidates (spec/agent-template.md), not retired names
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner"}
@@ -179,6 +189,54 @@ def frontmatter_errors(repo: Path) -> list[str]:
             if not fm.get(field):
                 errs.append(f"{name}: missing '{field}'")
     return errs
+
+
+def frontmatter_keys(repo: Path) -> list[str]:
+    """Skill frontmatter uses only the specification's keys plus the recorded Claude-only ones,
+    and `metadata` is a map of strings (the specification's extension point)."""
+    allowed = SPEC_SKILL_KEYS + CLAUDE_ONLY_SKILL_KEYS
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        fm = _frontmatter(_skill_md(repo, name)) or {}
+        for key in fm:
+            if key not in allowed:
+                out.append(f"{name}: frontmatter key '{key}' is not in the Agent Skills specification "
+                           f"({', '.join(SPEC_SKILL_KEYS)}) nor Claude-only ({', '.join(CLAUDE_ONLY_SKILL_KEYS)})")
+        meta = fm.get("metadata")
+        if meta is not None and not (isinstance(meta, dict) and all(isinstance(v, str) for v in meta.values())):
+            out.append(f"{name}: 'metadata' must map keys to string values")
+    return out
+
+
+def description_too_long(repo: Path, limit: int = MAX_DESCRIPTION_CHARS) -> list[str]:
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        desc = str((_frontmatter(_skill_md(repo, name)) or {}).get("description", ""))
+        if len(desc) > limit:
+            out.append(f"{name}: description is {len(desc)} characters (> {limit})")
+    return out
+
+
+def description_length_report(repo: Path) -> list[str]:
+    """Advisory: descriptions above the method's target length."""
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        n = len(str((_frontmatter(_skill_md(repo, name)) or {}).get("description", "")))
+        if n > ADVISORY_DESCRIPTION_CHARS:
+            out.append(f"{name}: description is {n} characters (target <= {ADVISORY_DESCRIPTION_CHARS})")
+    return out
+
+
+def skill_size_report(repo: Path) -> list[str]:
+    """Advisory: SKILL.md bodies above the specification's budget."""
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        text = _skill_md(repo, name)
+        lines, tokens = len(text.splitlines()), len(text) // 4
+        if lines > ADVISORY_SKILL_LINES or tokens > ADVISORY_SKILL_TOKENS:
+            out.append(f"{name}: SKILL.md is {lines} lines, ~{tokens} tokens "
+                       f"(budget {ADVISORY_SKILL_LINES} lines / {ADVISORY_SKILL_TOKENS} tokens)")
+    return out
 
 
 def frontmatter_strict_yaml(repo: Path) -> list[str]:
@@ -403,21 +461,6 @@ def readme_inventory_gaps(repo: Path) -> list[str]:
         if not re.search(rf"(^|[^\w-]){re.escape(name)}([^\w-]|$)", readme):
             out.append(f"README does not list skill '{name}'")
     return out
-
-
-def templates_mirrored(repo: Path) -> list[str]:
-    claude = repo / "prompts/CLAUDE.md.template"
-    agents = repo / "prompts/AGENTS.md.template"
-    if not (claude.exists() and agents.exists()):
-        return []  # WS4 concern; skip until both exist
-    skills = set(_skill_dirs(repo)) | {s for ss in _bundle_membership(repo).values() for s in ss}
-
-    def named(text: str) -> set[str]:
-        return {s for s in skills if s in text}
-    cset, aset = named(claude.read_text()), named(agents.read_text())
-    if cset != aset:
-        return [f"CLAUDE/AGENTS template skill sets differ: {cset ^ aset}"]
-    return []
 
 
 def duplicate_fact_candidates(repo: Path) -> list[str]:
@@ -756,12 +799,21 @@ def bundle_gates(repo: Path) -> list[str]:
 
 ALL_CHECKS = (
     missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
-    frontmatter_errors, frontmatter_strict_yaml, name_mismatch, expected_bundle_membership,
+    frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long,
+    name_mismatch, expected_bundle_membership,
     agent_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
     boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
     bundle_gates,
+)
+
+# The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a
+# `skills/` directory. The rest of ALL_CHECKS guards skillery's own tree and distribution.
+METHOD_CHECKS = (
+    frontmatter_present_errors, frontmatter_errors, frontmatter_strict_yaml, name_mismatch,
+    skill_too_long, boundary_section_present, frontmatter_keys, description_too_long,
+    body_agnosticism,
 )
 
 
@@ -770,6 +822,8 @@ def _print_trigger_notes(repo: Path) -> None:
         ("trigger-probe (Q4.2=B)", trigger_probe_report(repo)),
         ("ownership-tripwire (Q5.2=B)", ownership_claim_report(repo)),
         ("reciprocal-Related (DEC-12 advisory)", reciprocal_related_report(repo)),
+        ("description-length (method target)", description_length_report(repo)),
+        ("skill-size (specification budget)", skill_size_report(repo)),
     ):
         if notes:
             print(f"\n(assist) {len(notes)} {label} note(s) — non-blocking:")

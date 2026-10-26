@@ -9,6 +9,35 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [Unreleased]
+
+### Action needed (contributors)
+
+- `make validate` now rejects skill frontmatter keys outside the Agent Skills specification (except
+  the Claude-only `argument-hint` and `disable-model-invocation`), non-string `metadata` values, and
+  descriptions over 1,024 characters. Put a skill version under `metadata.version`, not at the top
+  level.
+
+### Changed
+
+- The skill-development method now cites the published methods instead of restating them:
+  superpowers `writing-skills` for writing and testing a skill, the agentskills.io specification for
+  format, size and descriptions, and OWASP Agentic Skills Top 10 for third-party content.
+- Tests are proportionate: a new skill, a boundary move or a discipline rule needs a baseline run; a
+  wording, link or description change needs probes only.
+- Descriptions say what a skill does and when to use it ("Use this skill when…"); 600 characters is
+  the target, reported as an advisory note.
+- A rule that must hold every time is a hook in `hooks/inventory.yaml`, not skill prose.
+- One authoring guide: `spec/CREATING_SKILLS.md` (CONTRIBUTING.md is now a short entry page; the
+  authoring texts went from 1,414 to about 700 lines).
+
+### Added
+
+- An on-demand GitHub Actions workflow, `plugin-eval`, that runs `claude plugin eval` for one bundle
+  with a cost ceiling; it never runs on pull requests or releases and needs the `ANTHROPIC_API_KEY`
+  repository secret. A first suite lives in `evals/meaningfy-consulting/`.
+- Advisory notes for long descriptions and for skills over the specification's size budget.
+
 ## [3.1.0] - 2026-10-26
 
 ### Action needed (repos scaffolded with `project-setup`)

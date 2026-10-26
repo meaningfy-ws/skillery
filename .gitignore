@@ -243,3 +243,4 @@ node_modules/
 
 # opencode installer `--project` output (skillery-opencode install <bundle> --project) — local, never committed.
 .opencode/
+evals/*/results/

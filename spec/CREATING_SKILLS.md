@@ -1,511 +1,154 @@
-# Creating Agent Skills
+# Creating Skills
 
-This guide covers everything you need to know to create a new Agent Skill.
+The step-by-step authoring guide for this repository. It holds only what Meaningfy adds to the
+published methods; everything else is cited. The method it serves (principles, lifecycles, the
+Definition of Done) is [`docs/development-method.md`](../docs/development-method.md); this guide does
+not restate it.
 
-## What is an Agent Skill?
+## What we adopt, and from where
 
-An Agent Skill is a self-contained package containing:
-- **SKILL.md** - Core instructions and metadata
-- **scripts/** (optional) - Executable code (Python, Shell, JavaScript)
-- **references/** (optional) - Detailed documentation for complex topics
-- **assets/** (optional) - Templates, images, and resources
-- **LICENSE.txt** (optional) - Skill-specific licensing
+| Topic | Source (follow it as written) |
+|---|---|
+| Writing and testing one skill: failing baseline first, then the skill, then closing loopholes | superpowers [`writing-skills`](https://github.com/obra/superpowers/tree/v7.0.0/skills/writing-skills) (7.0.0) |
+| `SKILL.md` format: frontmatter fields, name rules, description and size limits, directory layout | the [Agent Skills specification](https://agentskills.io/specification) (read 2026-10-26); skillery's field notes are in [`agent-skills-spec.md`](agent-skills-spec.md) |
+| Body craft: progressive disclosure, gotchas, when to load each reference, defaults rather than menus | agentskills.io [best practices](https://agentskills.io/skill-creation/best-practices) |
+| Writing the description | agentskills.io [*Optimizing descriptions*](https://agentskills.io/skill-creation/optimizing-descriptions) |
+| Measuring behaviour (trigger and output evals) | agentskills.io [*Evaluating skills*](https://agentskills.io/skill-creation/evaluating-skills), run with `skill-creator` |
 
-Skills are designed to be discovered and activated by Claude when relevant to a user's task.
+Where a Meaningfy rule below differs from a source, the Meaningfy rule wins in this repository.
 
-## Quick Start (5 Minutes)
+## Before you write
 
-### 1. Copy the Template
+1. **Pick the change path.** A new skill, a rename, a boundary move or a retirement is an EPIC in
+   `openspec/changes/`. A wording, link, probe or description tweak that moves no boundary is a
+   direct PR. When unsure, EPIC.
+2. **Decide it is a skill**, not an agent, doc or binding, and that nothing in the catalogue or among
+   the declared external skills already owns the job: check
+   [`skill-repo-governance.md`](skill-repo-governance.md),
+   [`docs/skill-inventory.md`](../docs/skill-inventory.md) and
+   [`tests/ownership.yaml`](../tests/ownership.yaml).
+3. **Record the failure case**: the prompt, what came out, what should have. It goes in the EPIC's
+   `inputs/` or the PR and becomes the acceptance test.
+4. **Editing an existing skill? Name its posture first** (R, C or P) and follow the rule for it in
+   [§3 of the method](../docs/development-method.md#3-lifecycle--skills).
 
-Skills are flat — one directory per skill directly under `skills/` (bundles group them, not
-folders). Then register it in one bundle in
-[`bundles.yaml`](../bundles.yaml) and run `make bundles`.
+## Write it
+
+Start from the template:
 
 ```bash
 mkdir -p skills/my-new-skill
 cp spec/skill-template.md skills/my-new-skill/SKILL.md
 ```
 
-### 2. Edit the YAML Frontmatter
+Skills are flat: one directory per skill directly under `skills/`. Bundles group them, not folders.
 
-Open `skills/my-new-skill/SKILL.md` and update:
+### Frontmatter
 
-```yaml
----
-name: my-new-skill
-description: What this skill does and when to use it (1-1024 chars)
-license: Apache 2.0
----
-```
+The fields and their limits are the specification's. On top of it:
 
-### 3. Write the Content
+- Frontmatter is strict YAML. Quote a `description` that contains `: `
+  (`description: "Use for: x"`).
+- Set `metadata.category`, and a `PURPOSE_OF` entry at registration (below). Every `metadata`
+  value is a string.
+- No top-level `version`; use `metadata.version` if you need one.
+- Claude-only keys are allowed only from the recorded list (see
+  [`agent-skills-spec.md`](agent-skills-spec.md)).
 
-Replace the template content with your skill's:
-- Overview
-- Quick start guide
-- Common workflows
-- Tips and best practices
+### Description
 
-### 4. Register the Skill
+Follow *Optimizing descriptions*: say what the skill does and when to use it, in the imperative
+("Use this skill when …; it …"), and list the phrases that should fire it. Meaningfy delta:
 
-Add it to one bundle's `skills` list in [`bundles.yaml`](../bundles.yaml), then run `make bundles`:
+- add a `Not for …` clause only when a near-miss probe needs it to separate the skill from a
+  neighbour;
+- the validator fails a description over the specification's limit and reports long ones as an
+  advisory note; aim well under the limit.
 
-```yaml
-bundles:
-  - name: meaningfy-building
-    skills: [clarity-gate, my-new-skill]
-```
+### Body
 
-Done! Your skill is now registered.
+Size and disclosure follow the specification and the best-practices page. Meaningfy delta, required
+in every skill:
 
-> **Dual-CLI obligation.** The catalogue ships to Claude Code **and** opencode from one source. Keep
-> the skill **body CLI-agnostic** (no `/opsx:` or `.claude/` paths). The full rules and
-> the gates that enforce them are in
-> [`AGENTS.md` → Dual-CLI authoring rules](../AGENTS.md#dual-cli-authoring-rules).
+- **Quick Start** with one real worked example (input → output), the shortest path to a result.
+- **`## Boundary & Related Skills`** as a body section: what the skill owns, what it does not own
+  (and who does), and related skills cited by name, never restated. The validator checks the
+  heading.
+- Files in `references/` named for the question they answer (`clarity-gate-checklist.md`, not
+  `REFERENCE.md` or `notes.md`), linked from `SKILL.md` where they are needed.
+- No "Overview" that repeats the description, no history, no TODOs (those are issues).
+- One owner per fact: if another skill owns a rule, name that skill; do not copy the rule.
 
-## Detailed Skill Structure
+### Both CLIs
 
-### Minimum Viable Skill
+The catalogue ships to Claude Code and opencode from one source. Keep the body CLI-agnostic: no
+`/opsx:`-style command forms and no `.claude/` paths, unless the case is on the recorded allow-list.
+The rules and their gates are in
+[`AGENTS.md` → Dual-CLI authoring rules](../AGENTS.md#dual-cli-authoring-rules).
 
-Every skill needs at minimum:
+### Scripts, assets and third-party content
 
-```
-skills/my-skill/
-└── SKILL.md
-```
+Keep scripts small, deterministic and with their dependencies stated. Content taken from outside
+Meaningfy is declared as a dependency and linked, not copied; a vendored skill carries a provenance
+note and an entry in [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md)
+([`skill-repo-governance.md`](skill-repo-governance.md)). A skill under another licence carries its
+own `LICENSE.txt`.
 
-With this structure in SKILL.md:
+## Prove it
 
-```yaml
----
-name: my-skill
-description: Clear, actionable description
----
+How much testing a change needs is set by the proportionate test rule in
+[§2 of the method](../docs/development-method.md#2-principles): a behavioural baseline run for a new
+skill, a boundary move or a discipline rule; probes only for wording, links and descriptions. For the
+baseline and the evals, follow `writing-skills` and *Evaluating skills*.
 
-# Skill Title
-
-Core instructions and examples here.
-```
-
-### Recommended Full Structure
-
-For skills with more complexity:
-
-```
-skills/my-skill/
-├── SKILL.md                    # Quick-start guide (~500 lines)
-├── scripts/                    # Executable code
-│   ├── helper.py
-│   ├── utility.sh
-│   └── config.json
-├── references/                 # Detailed documentation
-│   ├── ADVANCED.md            # Complex patterns
-│   ├── REFERENCE.md           # Complete API docs
-│   ├── EXAMPLES.md            # Detailed examples
-│   └── TROUBLESHOOTING.md     # Common issues
-├── assets/                     # Resources (not loaded into context)
-│   ├── templates/
-│   │   └── sample.txt
-│   └── images/
-│       └── guide.png
-└── LICENSE.txt                 # Skill-specific license
-```
-
-## SKILL.md: The Core File
-
-### YAML Frontmatter
-
-Required fields:
+Every description change ships with two probes in
+[`tests/trigger_probes.yaml`](../tests/trigger_probes.yaml): one that should fire the skill, and one
+near miss that should fire its closest neighbour instead:
 
 ```yaml
----
-name: skill-name-with-hyphens
-description: What the skill does and when to use it
----
+  - probe: "this explainer reads flat, add a controlling metaphor and a concrete example"
+    expect: explanatory-writing
+  - probe: "explain how the bundle generator works, for the repo docs"
+    expect: technical-writing
+    near_miss_of: explanatory-writing   # the skill that must not fire
 ```
 
-Frontmatter must be strict YAML: quote a `description` that contains `: ` (`description: "Use for: x"`).
+Put the before/after on the failure case in the PR.
 
-Optional fields:
+## Register it
 
-```yaml
----
-name: skill-name
-description: Description here
-license: Apache 2.0
-version: 1.0.0
-metadata:
-  category: domain or category
-  tags: tag1, tag2
-  compatibility: Python 3.8+, Unix-like systems
-allowed-tools: write read execute  # Space-delimited
----
-```
+1. Add the skill to exactly one bundle in [`bundles.yaml`](../bundles.yaml), the one bundle
+   definition. Bundles follow roles (`meaningfy-core` plus one per role); use the bundle whose role
+   the skill serves rather than adding a bundle. Then run `make bundles`, which renders
+   `.claude-plugin/marketplace.json`, `bundles/` and `tools/opencode-catalogue.json`. Never edit
+   those by hand.
+2. Add a `PURPOSE_OF` entry in [`tools/skill_inventory.py`](../tools/skill_inventory.py) and run
+   `make skill-inventory` to regenerate [`docs/skill-inventory.md`](../docs/skill-inventory.md). Run
+   it again after any rename, re-bundle, re-description or re-categorisation.
+3. Add the skill to its bundle's cell in the README's **What's inside** table and update the skill
+   count above it.
+4. Run `make validate` until it is green.
 
-### Key Guidelines
+A later edit to a skill's content needs no regeneration; a membership change does.
 
-**Name Requirements:**
-- 1-64 characters
-- Lowercase letters, numbers, hyphens only
-- Must match directory name
-- Use hyphens to separate words (e.g., `data-analyzer`, `ml-workflow`)
+An agent is registered the same way, in its bundle's `agents` list; how to write one is in
+[`agent-template.md`](agent-template.md).
 
-**Description Requirements:**
-- 1-1024 characters
-- **This is how Claude discovers when to use your skill**
-- Start with what it does
-- Include practical use cases
-- Example: "Analyze CSV and JSON data. Use when you need to parse files, perform calculations, summarize statistics, or export to different formats."
+## Document and ship
 
-### Markdown Content Structure
+- If the skill is a new entry point, add a README "I want to…" row.
+- Write the CHANGELOG line for the person who installs it: what they can now do, what they must do
+  (reinstall, rename), what went away and what replaces it.
+- Commit with a conventional commit and open a PR into `develop`
+  ([`meaningfy-git-workflow`](../skills/meaningfy-git-workflow)). Versions change only through the
+  release flow ([`meaningfy-release`](../skills/meaningfy-release)).
 
-Keep SKILL.md concise (~500 lines max). Use this structure:
+## Retiring a skill
 
-```markdown
----
-name: skill-name
-description: Clear description
----
+Retirement is an EPIC. Remove the skill from `bundles.yaml`, run `make bundles` and
+`make skill-inventory`, and name its replacement in the CHANGELOG line.
 
-# Skill Title
+## When you are done
 
-## Overview
-What the skill does and the problems it solves.
-
-## Quick Start
-Concrete example showing the core workflow. Users should be able to follow this immediately.
-
-## Key Features
-- Feature 1
-- Feature 2
-- Feature 3
-
-## Common Workflows
-
-### Workflow 1
-Step-by-step instructions.
-
-### Workflow 2
-Step-by-step instructions.
-
-## Scripts
-- `scripts/helper.py` - Does X
-- `scripts/utility.sh` - Does Y
-
-## Advanced Features
-For complex topics, reference external docs:
-- See [ADVANCED.md](references/ADVANCED.md) for patterns
-- See [REFERENCE.md](references/REFERENCE.md) for API docs
-
-## Tips & Best Practices
-- Practice 1
-- Practice 2
-- Common pitfall and how to avoid it
-
-## Limitations
-- Limitation 1
-- Limitation 2
-```
-
-## Organizing Complex Content
-
-When your skill needs extensive documentation, use the **progressive disclosure** pattern:
-
-| Content | Location | Size | When Loaded |
-|---------|----------|------|-------------|
-| Metadata + core concepts | SKILL.md | <500 lines | Always |
-| Quick-start examples | SKILL.md | Inline | Always |
-| Detailed API docs | references/REFERENCE.md | Unlimited | On demand |
-| Advanced patterns | references/ADVANCED.md | Unlimited | On demand |
-| Real-world examples | references/EXAMPLES.md | Unlimited | On demand |
-| Templates, images | assets/ | Unlimited | Via scripts only |
-
-This keeps Claude's context window efficient while maintaining comprehensive documentation.
-
-### Example: References Organization
-
-For a data processing skill:
-
-```
-skills/data-processor/
-├── SKILL.md                    # Quick-start only
-├── references/
-│   ├── REFERENCE.md           # Complete API
-│   ├── FORMATS.md             # Supported formats
-│   ├── EXAMPLES.md            # Real use cases
-│   └── PERFORMANCE.md         # Optimization tips
-├── scripts/
-│   ├── parser.py
-│   └── validator.py
-└── assets/
-    ├── templates/
-    │   ├── template1.json
-    │   └── template2.json
-    └── sample-data/
-        └── example.csv
-```
-
-## Scripts Organization
-
-Use the `scripts/` directory for executable code:
-
-**Best Practices:**
-- Keep scripts focused and deterministic
-- Use clear, descriptive names
-- Include comments for complex logic
-- Handle errors gracefully
-- Document any external dependencies
-
-**Supported Languages:**
-- Python (`.py`)
-- Shell scripts (`.sh`, `.bash`)
-- JavaScript (`.js`)
-
-**Example: helper.py**
-
-```python
-#!/usr/bin/env python3
-"""
-Helper script for skill operations.
-"""
-
-def process_data(input_data):
-    """Process input and return results."""
-    # Implementation here
-    pass
-
-if __name__ == "__main__":
-    # CLI entry point
-    pass
-```
-
-## Assets Directory
-
-Use `assets/` for non-code resources:
-
-```
-assets/
-├── templates/          # Boilerplate for output
-│   ├── report.md
-│   └── config.json
-├── images/            # Visual guides
-│   ├── workflow.png
-│   └── example.png
-├── fonts/             # Custom fonts (if needed)
-└── sample-data/       # Example input files
-```
-
-**Important:** Files in `assets/` are NOT automatically loaded into Claude's context. They're used by:
-- Your scripts
-- Generated output
-- User downloads
-- Visual references
-
-## Skill Registration
-
-Add your skill to exactly one bundle in [`bundles.yaml`](../bundles.yaml), then run `make bundles`
-(it renders `.claude-plugin/marketplace.json`, `bundles/` and `tools/opencode-catalogue.json`; never
-edit those by hand):
-
-```yaml
-bundles:
-  - name: your-skill-group
-    description: Group description
-    skills: [my-new-skill, another-skill]
-    agents: []
-```
-
-**Grouping Skills:** bundles follow the role you wear (`meaningfy-core` plus one bundle per role);
-add a skill to the existing bundle whose role it serves rather than creating a new bundle. An agent
-goes in one bundle's `agents` list; how to write one is in [`agent-template.md`](agent-template.md).
-
-## Best Practices
-
-### Writing Descriptions (Critical!)
-
-The `description` field is how Claude discovers your skill. Write descriptions that:
-
-✅ **Good Description:**
-```
-description: Transform and validate JSON and CSV data. Use when you need
-to parse files, convert between formats, validate against schemas,
-filter records, or generate reports.
-```
-
-❌ **Poor Description:**
-```
-description: Data processing skill
-```
-
-### Clarity and Conciseness
-
-✅ **Do:**
-- Keep core content focused and concise
-- Use examples to show real usage
-- Cross-reference advanced topics
-- Document limitations upfront
-- Include practical tips from experience
-
-❌ **Don't:**
-- Overload SKILL.md (move details to references/)
-- Duplicate documentation
-- Include overly complex technical specs in SKILL.md
-- Assume users know the domain
-- Skip error handling or limitations
-
-### Organization
-
-✅ **Do:**
-- Use consistent file naming
-- Organize by domain/category
-- Group similar skills together
-- Document skill relationships
-
-❌ **Don't:**
-- Mix multiple domains in one skill
-- Hardcode file paths
-- Create circular references
-- Name skills too generally
-
-## Examples
-
-### Simple Skill Example: Text Formatter
-
-```
-skills/text-formatter/
-├── SKILL.md
-├── scripts/
-│   ├── formatter.py
-│   └── validator.py
-└── LICENSE.txt
-```
-
-**SKILL.md Content:**
-
-```markdown
----
-name: text-formatter
-description: Format and validate text. Supports markdown, JSON prettification,
-YAML formatting, and custom transformations.
----
-
-# Text Formatter
-
-## Overview
-Quick formatting for common text formats.
-
-## Quick Start
-
-### Format Markdown
-Automatically format markdown with proper spacing and hierarchy.
-
-### Prettify JSON
-Convert minified JSON to readable format with consistent indentation.
-
-### YAML Conversion
-Convert between JSON, YAML, and TOML formats.
-
-## Scripts
-- `scripts/formatter.py` - Main formatting engine
-- `scripts/validator.py` - Format validation
-
-## Supported Formats
-- Markdown (.md)
-- JSON (.json)
-- YAML (.yaml, .yml)
-- TOML (.toml)
-
-## Tips
-- Always validate before converting
-- Preserve comments where possible
-- Check encoding for special characters
-```
-
-### Complex Skill Example: Data Analyzer
-
-```
-skills/data-analyzer/
-├── SKILL.md
-├── scripts/
-│   ├── analyzer.py
-│   ├── charts.py
-│   └── stats.py
-├── references/
-│   ├── REFERENCE.md
-│   ├── EXAMPLES.md
-│   └── PERFORMANCE.md
-├── assets/
-│   ├── templates/
-│   │   └── report.html
-│   └── sample-data/
-│       └── dataset.csv
-└── LICENSE.txt
-```
-
-**SKILL.md:**
-```markdown
----
-name: data-analyzer
-description: Analyze CSV and JSON datasets. Supports statistical analysis,
-data visualization, format conversion, and generating reports.
----
-
-# Data Analyzer
-
-## Quick Start
-[Basic examples here, keeping it focused]
-
-## Features
-- Statistical analysis
-- Data visualization
-- Format conversion
-- Report generation
-
-## Advanced Features
-For detailed API documentation, patterns, and examples:
-- See [REFERENCE.md](references/REFERENCE.md) for complete API
-- See [EXAMPLES.md](references/EXAMPLES.md) for real use cases
-- See [PERFORMANCE.md](references/PERFORMANCE.md) for optimization
-
-## Scripts
-- `scripts/analyzer.py` - Core analysis engine
-- `scripts/charts.py` - Visualization generation
-- `scripts/stats.py` - Statistical functions
-```
-
-## Testing Your Skill
-
-Before registering:
-
-1. **Verify YAML Frontmatter**
-   - `name` matches directory name
-   - `description` is clear and actionable
-   - All required fields present
-
-2. **Check File Structure**
-   - SKILL.md exists
-   - All referenced files are present
-   - Scripts have proper permissions
-
-3. **Test Discoverability**
-   - Does your description clearly state what it does?
-   - Would Claude activate it for relevant tasks?
-   - Is the language natural and actionable?
-
-4. **Review Documentation**
-   - Is SKILL.md under 500 lines?
-   - Are complex topics moved to references/?
-   - Are examples clear and practical?
-
-## Next Steps
-
-1. **Review the [Specification](agent-skills-spec.md)** for formal requirements
-2. **Check existing skills** in `skills/` for examples
-3. **Follow [Contributing Guidelines](../CONTRIBUTING.md)** to add to repository
-4. **Test with Claude** after registration
-
-## Questions?
-
-- See [Specification](agent-skills-spec.md) for detailed requirements
-- Check existing skills for patterns and examples
-- Refer to [Contributing Guidelines](../CONTRIBUTING.md) for submission help
+The checklist is the [Definition of Done](../docs/development-method.md#9-definition-of-done). This
+guide carries none of its own.

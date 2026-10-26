@@ -537,3 +537,37 @@ def test_agent_feature_skill_named_outside_background_is_flagged(tmp_path):
     f.write_text(text + "\n  Scenario: aside\n    Given installed with skills `cosmic-python`\n", encoding="utf-8")
     assert lint.agent_conformance(tmp_path) == [
         "tests/features/agents/x.feature Background does not name skill 'cosmic-python'"]
+
+
+def _skill_fm(root: Path, name: str, fm: dict, body: str = "## Boundary & Related Skills\n\nx"):
+    d = root / "skills" / name
+    d.mkdir(parents=True)
+    (d / "SKILL.md").write_text(f"---\n{yaml.safe_dump(fm, sort_keys=False)}---\n\n{body}\n", encoding="utf-8")
+
+
+def test_top_level_version_is_rejected(tmp_path):
+    _skill_fm(tmp_path, "s", {"name": "s", "description": "x", "version": "1.0.0"})
+    assert any("'version'" in e for e in lint.frontmatter_keys(tmp_path))
+
+
+def test_non_string_metadata_is_rejected(tmp_path):
+    _skill_fm(tmp_path, "s", {"name": "s", "description": "x", "metadata": {"version": 1}})
+    assert any("string values" in e for e in lint.frontmatter_keys(tmp_path))
+
+
+def test_claude_only_and_metadata_version_pass(tmp_path):
+    _skill_fm(tmp_path, "s", {"name": "s", "description": "x", "argument-hint": "<x>",
+                              "disable-model-invocation": True, "metadata": {"version": "1.0.0"}})
+    assert lint.frontmatter_keys(tmp_path) == []
+
+
+def test_description_over_1024_is_rejected(tmp_path):
+    _skill_fm(tmp_path, "s", {"name": "s", "description": "x" * 1025})
+    assert lint.description_too_long(tmp_path) and lint.description_too_long(tmp_path, 1025) == []
+
+
+def test_method_checks_run_on_a_minimal_tree(tmp_path):
+    # skill-crafting-method H-6: the method checks hold in any repo with only skills/.
+    assert all(c in lint.ALL_CHECKS for c in lint.METHOD_CHECKS)
+    _skill_fm(tmp_path, "foo", {"name": "foo", "description": "Use this skill when testing."})
+    assert [e for c in lint.METHOD_CHECKS for e in c(tmp_path)] == []

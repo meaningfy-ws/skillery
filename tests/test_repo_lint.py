@@ -51,10 +51,6 @@ def test_readme_lists_every_skill():
     assert lint.readme_inventory_gaps(REPO) == []
 
 
-def test_claude_agents_templates_mirrored():
-    assert lint.templates_mirrored(REPO) == []
-
-
 def test_skills_are_flat():
     # The catalogue is flat: skills/<skill>/SKILL.md. Bundles group only in
     # bundles.yaml, so there are no phase/role subfolders.

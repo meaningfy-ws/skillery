@@ -1,63 +1,31 @@
 ---
 name: skill-name
-description: A clear, concise description of what this skill does and when to use it. Include practical triggers and use cases here (not in the body).
+description: Use this skill when <the situation or request that should fire it, with the phrases a user would say>; it <what the skill does and produces>. Not for <the closest neighbour's job> (only when a near-miss probe needs it).
 license: Apache 2.0
+metadata:
+  category: <category>
 ---
 
 # Skill Title
 
-## Overview
-
-Provide a high-level explanation of what this skill does and the problems it solves.
-
 ## Quick Start
 
-Include the core workflow with a concrete example that users can immediately understand and apply.
+The shortest path to a result, with one real worked example: the input, what you do, and the output.
 
-## Key Features
+## Workflow
 
-- **Feature 1**: Brief description of capability
-- **Feature 2**: Brief description of capability
-- **Feature 3**: Brief description of capability
+The steps of the core job, with the defaults to use. Say when to load each reference:
 
-## Common Workflows
+- Read [`references/<question-it-answers>.md`](references/<question-it-answers>.md) when <situation>.
 
-Describe the most frequently used patterns and approaches.
+## Gotchas
 
-### Workflow 1
-Step-by-step instructions for a common task.
+- The mistakes an agent makes here without this skill, and what to do instead.
 
-### Workflow 2
-Step-by-step instructions for another common task.
+## Boundary & Related Skills
 
-## Advanced Usage
+**Owns:** the facts and rules this skill is the single home for.
 
-Reference detailed documentation for complex patterns:
-- See [ADVANCED.md](references/ADVANCED.md) for detailed patterns
-- See [REFERENCE.md](references/REFERENCE.md) for complete API documentation
-- See [EXAMPLES.md](references/EXAMPLES.md) for additional examples
+**Does NOT own:** the neighbouring jobs, and which skill owns each.
 
-## Scripts
-
-This skill includes the following helper scripts:
-
-- `scripts/utility.py` - Performs X task
-- `scripts/helper.sh` - Performs Y task
-
-## Tips & Best Practices
-
-- **Best Practice 1**: Brief explanation
-- **Best Practice 2**: Brief explanation
-- **Edge Case**: How to handle or avoid common issues
-
-## Limitations
-
-Note any constraints or boundaries of this skill:
-- Limitation 1
-- Limitation 2
-
-## Related Skills
-
-If applicable, mention complementary skills or resources:
-- Related Skill A
-- Related Skill B
+**Related:** other skills cited by name, with one line on when to use them; never restated here.
