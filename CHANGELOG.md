@@ -63,6 +63,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - A skill never links into another skill's folder; it names the skill (`cross_skill_paths` in
   `make validate`). A resource two skills need moves into a foundation skill.
 - A file in `use-cases/` must pass `use_case_catalogue`; `make skill-inventory` renders the gap map.
+- **External dependencies live in [`dependencies.yaml`](dependencies.yaml)**, one entry each (source,
+  pin, provenance, opencode status, per-CLI install). The dependency tables in
+  `docs/environment/dual-cli/compatibility.md` and `mcp-setup.md` are generated from it by
+  `make skill-inventory`; edit the register, not the tables (`dependencies_register` and the drift
+  test in `make validate`).
 - A `partial` or `missing` use case must name a `change` listed in `docs/future-features.md`
   (`use_case_changes_registered` in `make validate`).
 - Every skill and agent must appear in some use case's `served_by` (`use_case_coverage` in

@@ -20,7 +20,9 @@
   deepened UC-W8, W19, W20; 4.3 applied (W19, W20 `covered`; W8 `partial`). `npm run test:opencode-installer` deferred by the owner to after group 7.
 - **Group 5 done** (`arch/future-features`): `docs/future-features.md`, `use_case_changes_registered`,
   the voice channel placeholders.
-- **Next:** task groups 6 to 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
+- **Group 6 built** (`arch/dependency-register`): register, check, renderer; 6.2 waits for the owner's
+  approval of six changed name cells (listed in the PR).
+- **Next:** task groups 7 and 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
 - **Waits for the owner:** 6.2 (any changed register cell), 7.1
   (optional; pushes a test branch). No model runs in this change.
 
@@ -82,13 +84,13 @@
 
 ## 6. External dependency register (`arch/dependency-register`)
 
-- [ ] 6.1 Tests first: the `dependencies_register` check (an unknown `kind`, a missing `pin`, an
+- [x] 6.1 Tests first: the `dependencies_register` check (an unknown `kind`, a missing `pin`, an
       `opencode_status` that starts with none of the four keywords each fail) and the render drift test. **Accept:** they fail for the expected
       reasons.
 - [ ] 6.2 `dependencies.yaml` seeded from today's tables; the renderer in `tools/skill_inventory.py`;
       the markers in both docs; the register row. **Accept:** the tests pass; every row of today's
       three tables is rendered, and any changed cell is listed in the PR and approved by the owner.
-- [ ] 6.3 The `dual-cli-distribution` delta for the matrix requirement (the matrix is rendered from
+- [x] 6.3 The `dual-cli-distribution` delta for the matrix requirement (the matrix is rendered from
       the register). **Accept:** `openspec validate rebundle-by-activity --strict` green.
 
 ## 7. Bundles as metadata (`arch/dist-branch`, then `arch/bundles-generated`)
@@ -120,7 +122,7 @@
 - [x] 3.1 · [x] 3.2 · [x] 3.3
 - [x] 4.1 · [x] 4.2 · [x] 4.3
 - [x] 5.1 · [x] 5.2 · [x] 5.3
-- [ ] 6.1 · [ ] 6.2 · [ ] 6.3
+- [x] 6.1 · [ ] 6.2 · [x] 6.3
 - [ ] 7.1 · [ ] 7.2 · [ ] 7.3
 - [ ] 8.1 · [ ] 8.2
 

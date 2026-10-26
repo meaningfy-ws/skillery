@@ -6,17 +6,20 @@ top to bottom for each server; copy a template and fill in your own paths and ke
 
 ## Step 1 — Decide what you need
 
-Install only what you use, from the ones this catalogue's skills/agents reference:
+Install only what you use, from the ones this catalogue's skills/agents reference (generated from
+[`dependencies.yaml`](../../../dependencies.yaml)):
 
+<!-- GENERATED:dependencies:mcp-setup -->
 | Server | Why | Local package or hosted? |
 |---|---|---|
 | **GitNexus** | code intelligence, impact analysis (`implementer`/`code-reviewer` agents) | local (npm) |
-| **Atlassian** (Confluence / Jira, Rovo) | ticket/doc lookups | hosted (Atlassian-run endpoint) |
-| **Google Workspace** (Gmail / Drive / Calendar) | mail/doc/calendar lookups | hosted (OAuth) or CLI-native connector |
-| **Odoo** (odoo-mcp-multi) | ERP data access | local (PyPI) |
-| **Neo4j** (per database) | graph queries | local (`uvx`) |
+| **Atlassian / Rovo** (Confluence, Jira) | ticket/doc lookups | hosted (Atlassian-run endpoint) |
+| **Google Workspace** (Gmail, Drive, Calendar) | mail/doc/calendar lookups | hosted (OAuth) or CLI-native connector |
+| **Odoo** | ERP data access | local (PyPI) |
+| **Neo4j** (per DB) | graph queries | local (`uvx`) |
 | **MongoDB** | document-store queries | local (`npx`) |
-| **Context7** | live library documentation | local (`npx`) |
+| **Context7** (library docs) | live library documentation | local (`npx`) |
+<!-- /GENERATED -->
 
 ## Step 2 — Open your CLI's config file
 

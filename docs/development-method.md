@@ -215,7 +215,7 @@ at any depth below it.
 | `docs/environment/setup.md` | hand-written | Installing, external dependencies | — |
 | `docs/environment/openspec-setup-guide.md` | hand-written | Setting up OpenSpec in a project | — |
 | `docs/environment/vault-assistant.md` | hand-written | Using the vault-assistant bundle | — |
-| `docs/environment/dual-cli/**` | hand-written | Dual-CLI setup, mapping and gates | — |
+| `docs/environment/dual-cli/**` | hand-written | Dual-CLI setup, mapping and gates; the dependency tables in `compatibility.md` and `mcp-setup.md` are generated from [`dependencies.yaml`](../dependencies.yaml) between `GENERATED:dependencies` markers | `make skill-inventory` (those tables) |
 | `docs/ai-coding/**` | hand-written | The AI-assisted build lifecycle and its role playbooks | — |
 | `docs/ai-consulting/**` | hand-written | The advisory runbook, methods and playbook | — |
 | `docs/ai-sales/**` | hand-written | The sales runbook, service offers and playbook | — |
@@ -230,6 +230,7 @@ at any depth below it.
 | `tests/ownership.yaml` | hand-written | Which skill owns which fact | — |
 | `tests/trigger_probes.yaml` | hand-written | Trigger probes per skill | — |
 | `facets.yaml` | hand-written | The facet vocabulary | — |
+| `dependencies.yaml` | hand-written | The external dependency register: one entry per plugin, skill-pack, CLI tool or MCP server the catalogue references (`dependencies_register` check) | — |
 
 Routing for questions the table does not answer by name:
 

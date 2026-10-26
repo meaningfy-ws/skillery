@@ -344,6 +344,39 @@ def use_case_coverage(repo: Path) -> list[str]:
             if item not in served]
 
 
+_DEP_REQUIRED = ("name", "kind", "source", "pin", "provenance", "used_by", "opencode_status",
+                 "claude_install", "opencode_install")
+_DEP_OPTIONAL = ("summary", "transport", "notes", "why", "hosting")
+
+
+def dependencies_register(repo: Path) -> list[str]:
+    """dependencies.yaml entries carry the D-7 fields (rebundle-by-activity): known keys, a known
+    kind, the required fields, and an opencode_status that starts with a status keyword."""
+    path = repo / skill_inventory.DEPENDENCIES_FILE
+    if not path.exists():
+        return []
+    entries = yaml.safe_load(path.read_text(encoding="utf-8")) or []
+    if not isinstance(entries, list):
+        return [f"{path.name}: must be a list of entries"]
+    keywords = list(skill_inventory.DEPENDENCY_STATUSES)
+    out: list[str] = []
+    for d in entries:
+        if not isinstance(d, dict):
+            out.append(f"{path.name}: entry {d!r} is not a mapping")
+            continue
+        who = f"{path.name}: '{d.get('name', '?')}'"
+        out += [f"{who} unknown key '{k}'" for k in d if k not in _DEP_REQUIRED + _DEP_OPTIONAL]
+        out += [f"{who} missing '{k}'" for k in _DEP_REQUIRED if not d.get(k)]
+        if d.get("kind") and d["kind"] not in skill_inventory.DEPENDENCY_KINDS:
+            out.append(f"{who} kind '{d['kind']}'; allowed: {', '.join(skill_inventory.DEPENDENCY_KINDS)}")
+        if d.get("kind") == "mcp-server" and not d.get("transport"):
+            out.append(f"{who} missing 'transport' (required for an mcp-server)")
+        status = str(d.get("opencode_status") or "")
+        if status and status.split(" ")[0] not in keywords:
+            out.append(f"{who} opencode_status must start with {', '.join(keywords[:-1])} or {keywords[-1]}")
+    return out
+
+
 FUTURE_FEATURES = "docs/future-features.md"
 
 
@@ -1044,7 +1077,7 @@ ALL_CHECKS = (
     boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
-    cross_skill_paths, use_case_coverage, use_case_changes_registered,
+    cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

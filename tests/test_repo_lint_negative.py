@@ -801,3 +801,44 @@ def test_link_inside_own_skill_and_outside_skills_passes(tmp_path):
     _skill_fm(tmp_path, "a", {"name": "a", "description": "x"},
               body="[r](references/r.md) [m](../../docs/m.md) [w](https://x.org/skills/b/r.md)")
     assert lint.cross_skill_paths(tmp_path) == []
+
+
+# ------------------------------------------ external dependency register (rebundle-by-activity D-7)
+_DEP = {"name": "obsidian-skills", "kind": "plugin", "source": "kepano/obsidian-skills",
+        "pin": "unpinned: marketplace head", "provenance": "MIT, not reviewed", "used_by": "vault-*",
+        "opencode_status": "unverified (plain SKILL.md files)", "claude_install": "x",
+        "opencode_install": "y"}
+
+
+def _deps(tmp_path, *entries):
+    (tmp_path / "dependencies.yaml").write_text(yaml.safe_dump(list(entries)), encoding="utf-8")
+    return lint.dependencies_register(tmp_path)
+
+
+def test_valid_dependency_passes(tmp_path):
+    assert _deps(tmp_path, _DEP) == []
+
+
+def test_dependency_unknown_kind_is_flagged(tmp_path):
+    errs = _deps(tmp_path, {**_DEP, "kind": "library"})
+    assert errs and errs[0].startswith("dependencies.yaml: 'obsidian-skills' kind 'library'; allowed: ")
+
+
+def test_dependency_missing_pin_is_flagged(tmp_path):
+    assert _deps(tmp_path, {k: v for k, v in _DEP.items() if k != "pin"}) == [
+        "dependencies.yaml: 'obsidian-skills' missing 'pin'"]
+
+
+def test_dependency_status_without_keyword_is_flagged(tmp_path):
+    assert _deps(tmp_path, {**_DEP, "opencode_status": "maybe"}) == [
+        "dependencies.yaml: 'obsidian-skills' opencode_status must start with native, claude-compat,"
+        " unsupported or unverified"]
+
+
+def test_dependency_unknown_key_is_flagged(tmp_path):
+    assert _deps(tmp_path, {**_DEP, "licence": "MIT"}) == [
+        "dependencies.yaml: 'obsidian-skills' unknown key 'licence'"]
+
+
+def test_register_check_is_silent_without_the_file(tmp_path):
+    assert lint.dependencies_register(tmp_path) == []
