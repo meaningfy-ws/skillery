@@ -100,9 +100,25 @@ same thing, it's drift.
 *Fix:* one term, defined once — see the guarded **Deferred definitions** entry, which is about
 *when* a term is defined; this is about whether it *stays* the same term.
 
+**U7. Claim exceeds the mechanism.** A claim promises an outcome, an intensifier ("exactly"), a
+vague evaluative word ("defensible", "seamless") or a category the method cannot guarantee or an
+outsider cannot check. Semantic consulting: "our mapping shows where meaning breaks down". SME/AI:
+"a seamless AI assistant for your team".
+*Cue:* can an outsider check the claim, and does the method actually deliver it? If not, it exceeds
+the mechanism.
+*Fix:* name the mechanism or the checkable property — "shows where meaning conflicts or is poorly
+specified"; "an assistant that answers from your own documents and cites them".
+
+**U8. Impossible predicate.** A verb that is not physically or logically possible for its subject.
+Semantic consulting: "the data disagrees". SME/AI: "the assistant understands your business".
+*Cue:* could this subject literally do this verb? An abstract subject with a human or physical verb
+fails.
+*Fix:* use the literal verb, or name the real actor — "the two datasets give conflicting values";
+"the assistant retrieves answers from your documents".
+
 ## Guarded (genre-conditional) antipatterns
 
-Thirteen entries, each stating where a move fails, where the same move is required, the guard
+Fourteen entries, each stating where a move fails, where the same move is required, the guard
 question that tells them apart, and the fix — full text in
 [`references/inversion-matrix.md`](references/inversion-matrix.md). Load only the genre you need:
 

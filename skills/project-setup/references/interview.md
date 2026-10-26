@@ -115,11 +115,11 @@ and frameworks apply. A `library` skips them (no process); a `doc-only` skips Gr
   documented by `linkml-engineering`) into `scripts/` — see `checklists.md` and `layout.md`.
 - Drives runtime deps, the `adapters/` repository skeleton, `infra/compose.yaml` services,
   `infra/.env.example`, integration-test markers (`tests/integration/`), and the
-  `Datastores / external systems` bullet in `CLAUDE.md`.
+  `Datastores / external systems` bullet in `AGENTS.md`.
 
 **Q5.2 External systems / APIs to integrate?**
 - Free text (e.g. "an OpenAPI client to engine X", "an S3 bucket").
-- Drives `adapters/` gateway stubs and the "external systems" note in `CLAUDE.md`.
+- Drives `adapters/` gateway stubs and the "external systems" note in `AGENTS.md`.
 
 ---
 
@@ -163,7 +163,7 @@ Each is a yes/no with a recommended default keyed off the archetype.
 
 **Q7.3 Default branch.**
 - Options: **develop** (recommended at Meaningfy), `main`.
-- Drives `<<DEFAULT_BRANCH>>` in `CLAUDE.md`, CI triggers, branch-protection guidance.
+- Drives `<<DEFAULT_BRANCH>>` in `AGENTS.md`, CI triggers, branch-protection guidance.
 
 ---
 

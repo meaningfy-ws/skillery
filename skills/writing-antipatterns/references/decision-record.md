@@ -4,7 +4,7 @@
 [`architecture`](../../architecture/SKILL.md) (ADR).
 
 Pointer table only — full entries live in [`inversion-matrix.md`](inversion-matrix.md). See
-[`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U6), which apply here too.
+[`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U8), which apply here too.
 
 | Move | Status | Entry |
 |------|--------|-------|
@@ -21,3 +21,4 @@ Pointer table only — full entries live in [`inversion-matrix.md`](inversion-ma
 | Premature structure | welcome | [A11](inversion-matrix.md#a11-premature-structure) |
 | Options shown, not just the choice | **required** — the ADR's whole reason to exist, years later | [A12](inversion-matrix.md#a12-options-shown-not-just-the-choice) |
 | Curse of knowledge | welcome — the reader is a future engineer, already fluent | [A13](inversion-matrix.md#a13-curse-of-knowledge) |
+| Negative framing | welcome — names what was ruled out | [A14](inversion-matrix.md#a14-negative-framing) |

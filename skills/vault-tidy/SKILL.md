@@ -1,6 +1,6 @@
 ---
 name: vault-tidy
-description: "Tidy a Meaningfy Obsidian vault on the owner's request: survey it, present a written plan of every move, merge and rename (and every wikilink each affects), and apply the plan only after an explicit yes, moving with the Obsidian CLI so links follow. Invoke explicitly: \"tidy my vault\", \"clean up the inbox\", \"reorganise these notes\", \"merge these duplicate notes\". Never runs on an agent's own initiative. Promoting one staged note is vault-promote."
+description: "Tidy a Meaningfy Obsidian vault on the owner's request: survey it, present a written plan of every move, merge, rename and delete (and every wikilink each affects), and apply the plan only after an explicit yes, moving so links follow. Invoke explicitly: \"tidy my vault\", \"clean up the inbox\", \"reorganise these notes\", \"merge these duplicate notes\". Never runs on an agent's own initiative. Promoting one staged note is vault-promote."
 license: Apache 2.0
 argument-hint: "[scope, e.g. 00 Inbox or a project]"
 disable-model-invocation: true
@@ -21,7 +21,9 @@ blur: **a plan**, then, after a yes, **the change**.
 Survey the scope the owner names (the whole vault if none), against
 [`vault-conventions`](../vault-conventions/SKILL.md). Look for: notes in the wrong folder for their
 kind, notes without `kind`, staging items older than two weeks, duplicate or near-duplicate notes,
-names that break the conventions, and links that resolve to nothing.
+names that break the conventions, links that resolve to nothing, notes other than the standing files at
+a project's root (a move into its `artefacts/`), and personal projects in `01 Projects/` (a move to
+`07 Perso/`, offered as a question). Project homes are as `vault-conventions` defines them.
 
 Present the plan as one numbered table, and nothing else happens yet:
 
@@ -41,7 +43,9 @@ confirms in the plan; it never touches `memory` or `private`.
   nothing is summarised away.
 - Findings that need the owner's judgement (are two projects the same? is this note still wanted?) go
   under the table as questions, not as actions.
-- Deletions are never planned; a note the owner wants gone is moved to `06 Archive/`.
+- A **delete** row appears only for a note the owner asked to have gone; it goes to the trash, per
+  `vault-conventions` (Moving and deleting), with its inbound links in the Links column. Retired notes
+  the owner may want again go to `06 Archive/` instead.
 
 ## 2. Wait for the yes
 
@@ -51,20 +55,21 @@ change request, means **nothing moves**; revise and present the plan again.
 
 ## 3. Apply
 
-- Moves and renames go through the Obsidian CLI (the `obsidian-cli` skill of the external
-  `obsidian@obsidian-skills` plugin), which updates every wikilink. Check the CLI answers before the
-  first row; if it does not, stop before changing anything. **Never** use file tools for a move.
-- Merges: write the surviving note, then move the absorbed note to `06 Archive/` with the CLI, so links
-  to it still resolve.
+- Moves, renames and deletes follow `vault-conventions` (Moving and deleting): the Obsidian CLI when it
+  answers, else a file move after the unique-name check, and deletes to the trash. Decide the route
+  before the first row.
+- Merges: write the surviving note, then move the absorbed note to `06 Archive/`, so links to it still
+  resolve.
 - If a row fails, **stop there**: report the rows applied, the failing row and its reason, and the rows
-  not applied. Never finish a failed row with file tools.
+  not applied. Never improvise a different route for a failed row.
 - After the last row, report what was done row by row.
 
 ## Red flags: stop and return to the plan
 
 - "The owner seemed to agree." Only an explicit yes counts.
 - "It's only one small move, no need to list it." Every change is a row.
-- "The CLI isn't running, `mv` is equivalent." It is not: links break.
+- "The CLI isn't running, so I'll skip the name check." A file move keeps links only when the name is
+  unique.
 - "These two notes say the same thing, I'll keep the better one." Merges keep everything.
 
 ## Boundary & Related Skills
@@ -72,7 +77,7 @@ change request, means **nothing moves**; revise and present the plan again.
 **Owns:** the tidy survey, the plan format, the yes rule, and applying an approved plan.
 
 **Delegates:** what "tidy" means (folders, kinds, names) → [`vault-conventions`](../vault-conventions/SKILL.md);
-moves and renames → the external `obsidian-cli` skill; a single staged note →
+the move and delete procedure → `vault-conventions`; a single staged note →
 [`vault-promote`](../vault-promote/SKILL.md); closing a project → [`vault-project`](../vault-project/SKILL.md).
 
 **Related:** `vault-conventions`, `vault-promote`, `vault-project`.

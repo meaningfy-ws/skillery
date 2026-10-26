@@ -3,7 +3,7 @@
 The canonical, single-sourced list of genre-conditional antipatterns. Per-genre files
 (`tutorial.md`, `how-to.md`, `reference.md`, `explanation.md`, `decision.md`,
 `decision-record.md`, `contract.md`, `coaching.md`) link to entries here; they do not restate them.
-See [`../SKILL.md`](../SKILL.md) for the genre map and the unguarded defects (U1–U6).
+See [`../SKILL.md`](../SKILL.md) for the genre map and the unguarded defects (U1–U8).
 
 ## Compact form
 
@@ -24,6 +24,7 @@ Required · welcome · avoid · harmful · n/a. Bold marks the reversals worth m
 | A11 Premature structure | n/a | n/a | n/a | welcome | welcome | welcome | required | **harmful** |
 | A12 Options shown, not just the choice | avoid | avoid | n/a | welcome | avoid | **required** | avoid | required |
 | A13 Curse of knowledge | **harmful** | avoid | required | **harmful** | welcome | welcome | required | avoid |
+| A14 Negative framing | avoid | avoid (except warnings) | welcome | avoid | **harmful** | welcome | **required** | avoid |
 
 ---
 
@@ -127,6 +128,9 @@ entered at random.
 
 **Cue:** measure the gap between a term's first use and its definition — more than a page, in a
 linear document, is the defect.
+
+**Acronyms** are terms too: spell out an acronym at first use, in every genre read through — "FAIR
+(Findable, Accessible, Interoperable, Reusable)", then "FAIR" thereafter.
 
 ## A6. Hedging
 
@@ -264,3 +268,25 @@ right now?
 
 **Cue:** read the opening as someone one level less expert than you. Losing them is the defect in
 Tutorial/Explanation; it is expected, and correct, in Reference/Contract.
+
+## A14. Negative framing
+
+**Smell:** a claim stated by what something is not, or by double negation ("not unlike", "no
+solution without governance", "never lose track of your data").
+
+**Fails in** Decision — a headline, slogan or governing thought framed negatively makes the reader
+negate it to find the claim, and plants the very word it denies. Avoid it in Tutorial, Explanation
+and Coaching, where the positive form is clearer.
+
+**Required in** Contract / specification, where a prohibition is stated as a prohibition ("the
+service MUST NOT store the token"). Welcome in Reference (stating constraints) and Decision record
+(naming what was ruled out). In How-to, keep it for warnings ("do not run this on production").
+
+**Guard:** is this sentence a prohibition or a constraint the reader will be held to? If yes, state
+it negatively. If it is a claim meant to persuade or teach, state it in the positive.
+
+**Cue:** count the negations in headings and opening sentences; two in one sentence is double
+negation in any genre.
+
+**Fix:** restate in the positive ("keeps every change to your data traceable"), or, in Contract,
+make the prohibition explicit and enumerable.

@@ -58,10 +58,8 @@ have a specific reason to use one of those.
 
 ## Step 4 — Install the mandatory external dependencies
 
-These are referenced by skillery's skills but are separate installs. `superpowers` and `ponytail`
-each ship a native opencode plugin (add one line to `opencode.json`); `stream-coding` is a plain
-skill file (opencode reads `.claude/skills/` natively, so the install is: put the file there);
-`openspec` is a global npm package, identical to Claude Code. Pinned versions and the full
+These are referenced by skillery's skills but are separate installs (opencode reads
+`.claude/skills/` natively, so `stream-coding` is installed by placing its file there). Pinned versions and the full
 optional-dependency list live in
 [`setup.md`](../setup.md#2-external-dependencies) — this step only covers
 what's mandatory.
@@ -116,14 +114,10 @@ openspec update --tools opencode    # registers opsx-propose, opsx-apply, …
 
 ## Step 8 — Project the `meaningfy` schema into a repo
 
-Step 7 only registers the `opsx-*` *commands* — it does not give you skillery's forked `meaningfy`
-OpenSpec schema (the templates and rules behind `openspec/config.yaml`'s `schema: meaningfy`).
-That's a **separate action**: in the target repo, ask your agent to run the **`project-setup`**
-skill — e.g. say *"scaffold this repo with project-setup"* or *"project the spine / set up
-openspec here"* (it's a conversational skill invocation, not a shell command). It then copies
-`openspec/schemas/meaningfy/` into the repo as a frozen, per-repo **pinned copy** and writes
-`openspec/config.yaml` to point at it. What exactly gets projected, and how to refresh the pinned
-copy later (re-run `project-setup`, review the diff, never silently overwritten):
+Step 7 only registers the `opsx-*` *commands* — skillery's forked `meaningfy` OpenSpec schema is a
+**separate action**: in the target repo, ask your agent to run the **`project-setup`** skill (e.g.
+*"project the spine / set up openspec here"*); it is a conversational skill invocation, not a shell
+command. What gets projected and how to refresh the pinned copy:
 [`../../../skills/project-setup/references/spine-projection.md`](../../../skills/project-setup/references/spine-projection.md).
 
 ## Step 9 — Optional: hooks, MCP servers

@@ -139,7 +139,7 @@ Conventions for every task:
 
 ## 6. CI (D16)
 
-- [ ] 6.1 (C4) *(deferred: needs push — job added and green locally)* Add an `opencode-installer` job to `.github/workflows/validate.yml`:
+- [x] 6.1 (C4) *(green in CI on #58, #59, #60)* Add an `opencode-installer` job to `.github/workflows/validate.yml`:
       `actions/checkout@v4`, `actions/setup-node@v4` (node 20), `npm run test:opencode-installer`.
       **Gate:** the job is green on the pushed branch.
 
@@ -266,9 +266,9 @@ It must be empty, except for intended migration text in `CHANGELOG.md`. `.openco
 
 ## 10. Spec-delta sync (after merge to `develop`)
 
-- [ ] 10.1 *(deferred: after merge to develop)* Archive the change (`/opsx:archive` on Claude, `opsx-archive` on opencode), then run
+- [x] 10.1 *(archived 2026-10-26 after v3.0.0)* Archive the change (`/opsx:archive` on Claude, `opsx-archive` on opencode), then run
       `make fix-spec-links`.
-- [ ] 10.2 *(deferred: after merge to develop)* Groom the `dual-cli-generation` and `dual-cli-distribution` Purposes (D4/D6 wording), and
+- [x] 10.2 *(groomed 2026-10-26)* Groom the `dual-cli-generation` and `dual-cli-distribution` Purposes (D4/D6 wording), and
       check that no MODIFIED requirement lost a scenario. **Gate:** `make validate-spine` and
       `groomed_spec_purpose` green.
 

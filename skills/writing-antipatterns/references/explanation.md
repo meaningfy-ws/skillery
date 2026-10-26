@@ -4,7 +4,7 @@
 [`explanatory-writing`](../../explanatory-writing/SKILL.md).
 
 Pointer table only — full entries live in [`inversion-matrix.md`](inversion-matrix.md). See
-[`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U6), which apply here too.
+[`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U8), which apply here too.
 
 | Move | Status | Entry |
 |------|--------|-------|
@@ -21,6 +21,7 @@ Pointer table only — full entries live in [`inversion-matrix.md`](inversion-ma
 | Premature structure | welcome | [A11](inversion-matrix.md#a11-premature-structure) |
 | Options shown, not just the choice | welcome | [A12](inversion-matrix.md#a12-options-shown-not-just-the-choice) |
 | Curse of knowledge | **harmful** — must build understanding from an accessible start | [A13](inversion-matrix.md#a13-curse-of-knowledge) |
+| Negative framing | avoid | [A14](inversion-matrix.md#a14-negative-framing) |
 
 **Precedence when Explanation competes with Decision** (e.g. an explainer that is also a client
 recommendation): structure outranks texture — lead with the answer (A9), then apply the slow-burn

@@ -1,6 +1,6 @@
 ---
 name: project-setup
-description: Scaffold or modernise a Meaningfy-standard repo and PROJECT the Meaningfy spine into it — a top-level package (no src/), Poetry + dedicated root tool configs, cosmic-python layering with import-linter guardrails, TDD+BDD tests, a CLAUDE-canonical agentic setup (CLAUDE.md is canonical; AGENTS.md is an optional symlink), the openspec/ spine (config + pinned meaningfy schema + /opsx:* commands + golden thread), three archetypes (product/library/doc-only) with fixed gate profiles, conditional model/ and CD seam, Antora docs, infra, and CI. Use when starting a new repo or bringing an existing one up to standard. Trigger on "set up a new project", "scaffold a repo", "bootstrap a Python project", "new Meaningfy project", "initialise project structure", "add the standard tooling/docs/CI", "project the spine / set up openspec", "modernise/revamp an existing repo", "bring this project up to standard", "gap analysis against Meaningfy standards".
+description: Scaffold or modernise a Meaningfy-standard repo and PROJECT the Meaningfy spine into it — a top-level package (no src/), Poetry + dedicated root tool configs, cosmic-python layering with import-linter guardrails, TDD+BDD tests, an AGENTS.md-canonical agentic setup (AGENTS.md is canonical; CLAUDE.md is a thin pointer that imports it, never a symlink), the openspec/ spine (config + pinned meaningfy schema + /opsx:* commands + golden thread), three archetypes (product/library/doc-only) with fixed gate profiles, conditional model/ and CD seam, Antora docs, infra, and CI. Use when starting a new repo or bringing an existing one up to standard. Trigger on "set up a new project", "scaffold a repo", "bootstrap a Python project", "new Meaningfy project", "initialise project structure", "add the standard tooling/docs/CI", "project the spine / set up openspec", "modernise/revamp an existing repo", "bring this project up to standard", "gap analysis against Meaningfy standards".
 license: Apache 2.0
 metadata:
   category: engineering
@@ -13,9 +13,9 @@ metadata:
 Interview the developer, then scaffold a complete Meaningfy-standard repository **and project the
 Meaningfy spine into it**: a **top-level package** (never `/src`), all tool config in the
 **repository root**, cosmic-python layering enforced by **import-linter**, a **TDD+BDD** test
-layout, a **CLAUDE-canonical** agentic setup (`CLAUDE.md` is the source; `AGENTS.md` is an optional
-symlink), the **`openspec/` spine** (config + pinned `meaningfy` schema + `/opsx:*` commands + the
-golden thread), an **Antora** documentation site, optional **Docker/infra**, and **GitHub Actions
+layout, an **AGENTS.md-canonical** agentic setup (`AGENTS.md` is the source; `CLAUDE.md` is a
+thin pointer that imports it, never a symlink), the **`openspec/` spine** (config + pinned
+`meaningfy` schema + `/opsx:*` commands + the golden thread), an **Antora** documentation site, optional **Docker/infra**, and **GitHub Actions
 CI** that calls `make` targets.
 
 This skill provides the *concrete scaffolding artifacts* (templates, checklists, precise file
@@ -44,8 +44,8 @@ the target layout in [`../../docs/environment/openspec-setup-guide.md`](../../do
 
 - **Greenfield** — scaffold a clean repo from nothing (the default procedure below) and project the
   spine into it.
-- **Minimal** (`--minimal`) — write *only* the agentic files (`CLAUDE.md` + `AGENTS.md` symlink), the
-  `.claude/` index, and print the install commands. Absorbs the old init-script bootstrap as one
+- **Minimal** (`--minimal`) — write *only* the agentic files (`AGENTS.md` + the `CLAUDE.md`
+  pointer), the `.claude/` index, and print the install commands. Absorbs the old init-script bootstrap as one
   mode of the single scaffolder — no second bootstrap path.
 - **Brownfield (modernization)** — bring an *existing* repo up to standard. **Audit → imagine the
   ideal target → propose the upgrade as a shaped EPIC + PLAN (an OpenSpec change) → human approves →
@@ -85,8 +85,8 @@ hold: "automate almost everything" + TDD.** The archetype decides the *condition
   pinned in [`../../docs/ai-coding/dod-quality-gates.md`](../../docs/ai-coding/dod-quality-gates.md)).
 
 > **Non-negotiables** (hardest to reverse, most-violated by default): no `/src`, all tool config in
-> the root, **canonical `CLAUDE.md` with `AGENTS.md` symlinked** (DEC-4), a minimal `pyproject.toml`,
-> and the `openspec/` spine projected. See [`references/decisions.md`](references/decisions.md).
+> the root, **canonical `AGENTS.md` with a thin `CLAUDE.md` pointer, never a symlink** (D8), a
+> minimal `pyproject.toml`, and the `openspec/` spine projected. See [`references/decisions.md`](references/decisions.md).
 
 ## Procedure
 
@@ -107,8 +107,9 @@ references in step 4 still govern each piece.
        [--deployable] [--minimal] [--python 3.12] [--slug my-project] [--org meaningfy-ws] \
        [--branch develop] [--no-docs] [--no-infra] [--no-ci]
    ```
-   It renders every template, creates the package/tests/`.claude`/**`openspec/`** trees, symlinks
-   **`AGENTS.md → CLAUDE.md`**, copies the **pinned** `meaningfy` schema, and runs `poetry lock`.
+   It renders every template, creates the package/tests/`.claude`/**`openspec/`** trees, renders
+   **`AGENTS.md`** (canonical) and the **`CLAUDE.md`** pointer as regular files, copies the
+   **pinned** `meaningfy` schema, and runs `poetry lock`.
    Idempotent; never clobbers without asking (`--force` / `--skip-existing`). `--minimal` writes only
    the agentic files + `.claude/` layout. Or create files by hand from `assets/templates/` using
    [`references/layout.md`](references/layout.md) + [`references/config-files.md`](references/config-files.md).
@@ -117,13 +118,13 @@ references in step 4 still govern each piece.
    - Tooling & config files → [`references/config-files.md`](references/config-files.md);
      application settings (the mandated `PR-CONFIG-DECOUPLED` pattern) → [`references/settings-pattern.md`](references/settings-pattern.md)
    - Tests (TDD+BDD) → [`references/testing-setup.md`](references/testing-setup.md)
-   - Agentic setup (CLAUDE-canonical, memory index) → [`references/agentic-setup.md`](references/agentic-setup.md)
+   - Agentic setup (AGENTS.md canonical, CLAUDE.md pointer, memory index) → [`references/agentic-setup.md`](references/agentic-setup.md)
    - The spine (openspec/, pinned schema, /opsx:*, golden thread) → [`references/spine-projection.md`](references/spine-projection.md)
    - Documentation (Antora) → [`references/antora-docs.md`](references/antora-docs.md)
    - CI & infra & the CD seam → [`references/ci-and-infra.md`](references/ci-and-infra.md)
 5. **Verify** — run the Definition-of-Done checklist in [`references/checklists.md`](references/checklists.md)
    (`make install && make check-all` must pass on the empty skeleton).
-6. **Hand off** — install the spine commands + the Meaningfy skillery so `CLAUDE.md`'s routing and
+6. **Hand off** — install the spine commands + the Meaningfy skillery so `AGENTS.md`'s routing and
    the `/opsx:*` workflow resolve, then summarise what was created, what is stubbed, and next steps:
    ```
    npx -y @fission-ai/openspec@1.4.1 init --tools claude --profile core
@@ -150,7 +151,7 @@ These are the defaults the templates implement. Deviate only with a stated reaso
 | Architecture | **import-linter** (`.importlinter`) | manual review (erodes silently) |
 | Spine | **OpenSpec** (`openspec/`, pinned `meaningfy` schema, `/opsx:*`) | bespoke `.claude/memory/epics/` (drifts; dies at impl) |
 | Domain model (product) | **LinkML** `model/` + `make generate-models` | hand-maintained models (spec-drift) |
-| Agent file | **`CLAUDE.md` canonical** + `AGENTS.md` symlink (DEC-4) | two divergent files; AGENTS-canonical |
+| Agent file | **`AGENTS.md` canonical** + thin `CLAUDE.md` pointer (D8) | a symlink either way; two divergent files; CLAUDE-only |
 | Docs | **Antora** (AsciiDoc) | Sphinx (weaker cross-refs), bare MD |
 | Task runner | **Makefile** (the dev UX) | tox (env-matrix only; not needed) |
 
@@ -160,14 +161,14 @@ See [`references/decisions.md`](references/decisions.md) for the rationale behin
 
 The scaffold is done when every box in [`references/checklists.md`](references/checklists.md) is
 ticked — chiefly: `make install` succeeds; `make check-all` is green on the empty skeleton (lint,
-types, architecture, `openspec validate --strict`, a placeholder test); **`CLAUDE.md` exists with
-`AGENTS.md` symlinked to it**; `openspec/` is projected (config + pinned schema + `specs/` +
-`changes/`); `docs/` builds (`make build-docs`) if docs were selected; CI workflow is present.
+types, architecture, `openspec validate --strict`, a placeholder test); **`AGENTS.md` exists and
+`CLAUDE.md` imports it (both regular files)**; `openspec/` is projected (config + pinned schema +
+`specs/` + `changes/`); `docs/` builds (`make build-docs`) if docs were selected; CI workflow is present.
 
 ## Boundary & Related Skills
 
 **Owns:** the repository scaffold + the spine projection — directory layout, root tool configs, test
-harness, the CLAUDE-canonical agentic files, the `openspec/` spine (config + pinned schema + golden
+harness, the AGENTS.md-canonical agentic files, the `openspec/` spine (config + pinned schema + golden
 thread), Antora skeleton, CI/infra templates, the conditional `model/` home and the CD TODO stub, and
 the setup checklists.
 **Delegates:** layering rationale → `cosmic-python`; system design/ADRs → `architecture`; the domain

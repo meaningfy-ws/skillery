@@ -14,7 +14,7 @@ exactly one of four types (defined in [`spec/skill-repo-governance.md`](spec/ski
 |------|------|------|
 | **Skill** | `skills/` | Reusable knowledge; single source of authority per fact |
 | **Agent** | `agents/` | Thin wrapper — see [`spec/agent-template.md`](spec/agent-template.md) |
-| **Doc** | `docs/` | Human canon; narrates and points, never restates skill rules |
+| **Doc** | `docs/` | Written for people; narrates and points, never restates skill rules |
 | **Binding** | `prompts/` + root agentic files (`AGENTS.md`, `CLAUDE.md`) | Mandates and routes; never carries the standard |
 
 **Single-source-of-authority rule:** if a fact belongs to a skill, it lives there and nowhere else.
@@ -30,7 +30,7 @@ that adds only Claude-specific guidance.
 
 ## Skills and agents development method
 
-The method is canon in [`docs/development-method.md`](docs/development-method.md) — principles,
+The method is defined in [`docs/development-method.md`](docs/development-method.md) — principles,
 the skill and agent lifecycles, the documentation standard, installability, the issue-driven
 improvement loop and the Definition of Done. This binding mandates it; it does not restate it.
 

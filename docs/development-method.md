@@ -9,7 +9,7 @@ got, use it on the first try, and report what went wrong**. Everything here serv
 > section by section with the published methods and decides what skillery keeps, adopts by reference,
 > or separates out.
 
-This document is the human canon for the method. The binding that mandates it is
+This document defines the method. The binding that mandates it is
 [`AGENTS.md` → Skills and agents development method](../AGENTS.md#skills-and-agents-development-method);
 the structural references it routes to are listed in [§8](#8-where-things-live).
 
@@ -55,6 +55,11 @@ If a change helps the agent but confuses the user, it is not done.
 **Change path.** New skill, rename, boundary move, retirement → an EPIC in `openspec/changes/`.
 Wording, link, probe, or description tweak that moves no boundary → a direct PR from a feature branch.
 When unsure, EPIC.
+
+**Name the posture before you edit** an existing skill (R reusable core, C core with profiles, P
+precise house standard; [`catalogue-governance`](../openspec/specs/catalogue-governance/spec.md)).
+An R fix adds no domain content to `SKILL.md`; a C fix adds a switch or a profile, never a silent
+default; a P fix adds a guardrail with an enforcement home.
 
 | # | Step | Produces | Route |
 |---|---|---|---|
@@ -141,7 +146,9 @@ A stranger must be able to use it from its own files, without asking the author.
 
 Defects and ideas arrive as **GitHub issues**; they leave as probes, fixes, EPICs or a documented
 "won't do". Templates under [`.github/ISSUE_TEMPLATE/`](../.github/ISSUE_TEMPLATE/) ask for exactly
-what the loop needs.
+what the loop needs. A vault `kind: skill-change` note is a valid intake for a defect: its sections
+are the defect form's fields, so copy it into a **Defect** issue field by field, then mark the note
+`Filed #N`.
 
 | I want to… | Open | It becomes |
 |---|---|---|

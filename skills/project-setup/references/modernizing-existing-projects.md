@@ -53,9 +53,9 @@ mechanical gap list:
 scripts/scaffold.sh -p <existing_package> -n "<Project Name>" -a <archetype> --dry-run
 ```
 
-`--dry-run` also flags the agent file specifically: it tells you whether `AGENTS.md` is already a
-symlink to the canonical `CLAUDE.md`, a divergent copy needing reconciliation (DEC-4 —
-CLAUDE-canonical), or absent.
+`--dry-run` also flags the agent files specifically: it reports an `AGENTS.md` or `CLAUDE.md` that
+is a symlink as needing reconciliation (D8 — `AGENTS.md` canonical, `CLAUDE.md` a pointer, never a
+symlink); otherwise each shows as `= keep` or `+ create`.
 
 Then assess the dimensions a file-presence check **cannot** see, using this rubric (✅ conformant /
 ⚠️ partial / ❌ missing):
@@ -68,7 +68,7 @@ Then assess the dimensions a file-presence check **cannot** see, using this rubr
 | **Lint/format** | Ruff, or legacy black/isort/flake8/pylint? | `decisions.md` D4 |
 | **Tests** | type-split dirs + marker hook? pytest-bdd? coverage gate ≥80%? | `testing-setup.md` |
 | **Architecture** | `.importlinter` present and enforced in CI? layers respected? | `architecture-guardrails.md` |
-| **Agent file** | canonical `CLAUDE.md` + `AGENTS.md` symlink, or two divergent files? (DEC-4) | `agentic-setup.md` |
+| **Agent file** | canonical `AGENTS.md` + thin `CLAUDE.md` pointer (`@AGENTS.md`), both regular files? Or a symlink / two divergent files? (D8) | `agentic-setup.md` |
 | **Spine** | `openspec/` present (config + pinned schema + specs/ + changes/)? `/opsx:*` installed? | `spine-projection.md` |
 | **Memory** | `.claude/memory/MEMORY.md` a ≤200-line regenerable INDEX (truth = `openspec/specs/`)? | `agentic-setup.md` |
 | **Docs** | Antora component with the Diátaxis IA? | `antora-docs.md` |
@@ -83,7 +83,7 @@ involved). That report is the input to the plan.
 > is not a no-go, a decision, or a finding, and mentioning it is noise that misreads as "a constraint
 > of this change". The EPIC's no-gos and decisions carry only the `+ create` / ⚠️ / ❌ dimensions —
 > what *this* repo actually violates. And **cite the standard, don't recite it**: a convention (e.g.
-> "no `/src`", DEC-4) earns a line only when it is a detected violation this change addresses — its
+> "no `/src`", D8) earns a line only when it is a detected violation this change addresses — its
 > authority stays in this skill (single source), the EPIC points to it. Listing one standard while
 > silently satisfying ten others is misleading; surface the detected set, stay silent on the rest.
 
@@ -100,10 +100,12 @@ The recommended order (skip steps already conformant):
 2. **Spine projection** — project `openspec/` (config + the PINNED meaningfy schema + `specs/` +
    `changes/`) and install the `/opsx:*` core profile. Additive; never touches code. This is also
    what lets you *author the modernization itself* as a change. Recipe: `spine-projection.md`. Commit.
-3. **Agent file reconciliation** — collapse two divergent `CLAUDE.md`/`AGENTS.md` into the canonical
-   `CLAUDE.md` + an `AGENTS.md` symlink (DEC-4 — CLAUDE-canonical). Split the content: the global
-   standard stays in `~/.claude/CLAUDE.md` (DEC-12); the repo `CLAUDE.md` routes + carries "Project
-   specifics" + the spine pointers. Commit.
+3. **Agent file reconciliation** — collapse a symlink or two divergent `CLAUDE.md`/`AGENTS.md` into
+   the canonical `AGENTS.md` + a thin `CLAUDE.md` pointer (D8): replace any symlink with a regular
+   file, merge the repo-specific content into `AGENTS.md`, and reduce `CLAUDE.md` to "read
+   `AGENTS.md`", the `@AGENTS.md` import and Claude-specific guidance only. Split the content: the
+   global standard stays in the global instructions (DEC-12); the repo `AGENTS.md` routes + carries
+   "Project specifics" + the spine pointers. Commit.
 4. **pyproject normalization** — strip `[tool.*]` blocks into the dedicated files now present,
    leaving pyproject minimal. Recipe: `config-files.md` §"Migrating an existing repo's
    `pyproject.toml`". Commit.
@@ -163,7 +165,7 @@ step on red.
 |----------------|--------|
 | Strip `[tool.*]` from `pyproject.toml` into dedicated files | `config-files.md` §"Migrating an existing repo's `pyproject.toml`" |
 | Lift `src/<pkg>/` → top-level `<pkg>/` and re-point configs | `layout.md` §"Contrast: the `/src` layout" + `config-files.md` |
-| Reconcile two `CLAUDE.md`/`AGENTS.md` files → canonical `CLAUDE.md` + symlink | `agentic-setup.md` §"CLAUDE-canonical" |
+| Reconcile a symlink or two `CLAUDE.md`/`AGENTS.md` files → canonical `AGENTS.md` + `CLAUDE.md` pointer | `agentic-setup.md` §"AGENTS.md canonical" |
 | Project the spine (`openspec/`, pinned schema, `/opsx:*`) | `spine-projection.md` |
 | Migrate legacy `.claude/memory/epics/` → `openspec/changes/` + `specs/` | `spine-projection.md` + `agentic-setup.md` |
 | Author `.importlinter` from a prose dependency spec | `architecture-guardrails.md` §"The two-step method" |
@@ -171,9 +173,10 @@ step on red.
 
 ## Migrating a legacy agentic bootstrap
 
-A repo bootstrapped by the older convention (two mirrored `CLAUDE.md`/`AGENTS.md` files, or
-AGENTS-canonical, with a hand-maintained `.claude/memory/epics/` tree) is brought up to standard by
-the steps above: collapse to **canonical `CLAUDE.md` + `AGENTS.md` symlink** (DEC-4), and migrate the
+A repo bootstrapped by an older convention (two mirrored `CLAUDE.md`/`AGENTS.md` files, a symlink
+between them in either direction, or a `CLAUDE.md`-canonical layout, with a hand-maintained
+`.claude/memory/epics/` tree) is brought up to standard by the steps above: collapse to **canonical
+`AGENTS.md` + a thin `CLAUDE.md` pointer, both regular files** (D8), and migrate the
 local epics into the spine (`openspec/changes/` for in-flight work; `openspec/specs/` for preserved
 truth; `openspec/config.yaml: context:` for orientation). See `agentic-setup.md` and
 `spine-projection.md`.

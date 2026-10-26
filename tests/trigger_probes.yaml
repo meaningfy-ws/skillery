@@ -65,3 +65,29 @@ probes:
     expect: vault-planning
   - probe: "write my morning daily note with calendar and mail"
     expect: vault-daily
+  # Near-miss probes (fix-accumulated-skill-defects G1): `near_miss_of` names the neighbour that must
+  # NOT fire for this phrase. Data only; the linter reads `expect`.
+  - probe: "explain how the bundle generator works, for the repo docs"
+    expect: technical-writing
+    near_miss_of: explanatory-writing
+  - probe: "why does this ADR read badly"
+    expect: writing-antipatterns
+    near_miss_of: executive-communication
+  - probe: "tighten the cover email for this quotation"
+    expect: executive-communication
+    near_miss_of: proposal-writing
+  - probe: "write the proposal and SoW for the Decision Phase"
+    expect: proposal-writing
+    near_miss_of: executive-communication
+  - probe: "move this proposed note into the project"
+    expect: vault-promote
+    near_miss_of: vault-tidy
+  - probe: "reorganise the notes in my inbox"
+    expect: vault-tidy
+    near_miss_of: vault-promote
+  - probe: "delete these two notes from my vault"
+    expect: vault-conventions
+    near_miss_of: vault-tidy
+  - probe: "the copy says our method keeps data consistent, is that claim sound"
+    expect: writing-antipatterns
+    near_miss_of: executive-communication

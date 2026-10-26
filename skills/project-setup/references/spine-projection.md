@@ -65,7 +65,7 @@ The cite-your-parent convention is pre-wired in two places at scaffold time:
 
 - **`openspec/config.yaml`** — the `tasks` rule mandates the PLAN cite its parent EPIC id on the
   first line; the `proposal`/`specs` rules keep EPICs shaped and specs testable.
-- **the repo `CLAUDE.md`** — a "Golden thread" note in the spine section restates the chain (EPIC →
+- **the repo `AGENTS.md`** — a "Golden thread" note in the spine section restates the chain (EPIC →
   PLAN → specs → commit) so an agent honours it without re-reading `spine/`.
 
 The upper rungs (requirement → architecture) stay convention-only for now — see
