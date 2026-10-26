@@ -1,0 +1,41 @@
+# Production playbook — builds from the published git branch.
+# Used by CI and `make build-docs`. For fast local iteration use antora-playbook.local.yml.
+site:
+  title: <<PROJECT_NAME>>
+  start_page: <<PROJECT_SLUG>>::index.adoc
+
+content:
+  sources:
+    - url: https://github.com/<<GITHUB_ORG>>/<<PROJECT_SLUG>>.git
+      start_path: docs
+      branches: [<<DEFAULT_BRANCH>>]
+      tags: []
+      edit_url: false
+
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+  supplemental_files: ./supplemental-ui
+
+output:
+  dir: ./build/site
+
+asciidoc:
+  attributes:
+    experimental: ''
+    idprefix: ''
+    idseparator: '-'
+    page-pagination: ''
+
+antora:
+  extensions:
+    # Mermaid diagrams rendered client-side from `[mermaid]` blocks.
+    - require: '@sntke/antora-mermaid-extension'
+      mermaid_library_url: https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs
+      script_stem: header-scripts
+      mermaid_initialize_options:
+        start_on_load: true
+    # Lunr full-text search index (wired into the supplemental-ui search box).
+    - require: '@antora/lunr-extension'
+      snippet_length: 250

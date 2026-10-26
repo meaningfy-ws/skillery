@@ -1,0 +1,203 @@
+# External dependency register (rebundle-by-activity D-7): one entry per dependency the catalogue
+# references but does not ship. `make skill-inventory` renders the tables in
+# docs/environment/dual-cli/compatibility.md and mcp-setup.md; `make validate` checks the fields.
+- name: superpowers
+  kind: plugin
+  summary: brainstorming, test-driven-development, systematic-debugging, verification-before-completion,
+    requesting/receiving-code-review
+  source: obra/superpowers
+  pin: 'unpinned: installed from the source head'
+  provenance: not reviewed
+  used_by: CLAUDE.md/AGENTS.md routing, epic-planning, guardrails, spec-stewardship
+  opencode_status: native (own opencode plugin)
+  claude_install: plugin marketplace
+  opencode_install: 'ships its own opencode plugin — `{"plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]}`
+    in `opencode.json`. Not a `.claude/skills/` copy; see [superpowers'' own opencode install doc](https://github.com/obra/superpowers/blob/main/docs/README.opencode.md).'
+- name: ponytail
+  kind: plugin
+  summary: laziness/YAGNI discipline
+  source: '@dietrichgebert/ponytail'
+  pin: 'unpinned: installed from the source head'
+  provenance: not reviewed
+  used_by: project-setup routing, CLAUDE.md
+  opencode_status: native (own opencode plugin)
+  claude_install: plugin marketplace
+  opencode_install: 'ships its own opencode plugin — `{"plugin": ["@dietrichgebert/ponytail"]}` in `opencode.json`;
+    `/ponytail` slash form → opencode `ponytail` command (delegated).'
+- name: stream-coding
+  kind: skill
+  summary: doc-first method
+  source: repo skill (a single SKILL.md)
+  pin: 'unpinned: installed from the source head'
+  provenance: not reviewed
+  used_by: clarity-gate, cosmic-python (external method)
+  opencode_status: claude-compat
+  claude_install: plugin / repo skill
+  opencode_install: it's a single `SKILL.md`, not a package — copy it into `.claude/skills/stream-coding/`;
+    opencode reads that path natively.
+- name: commit-commands
+  kind: plugin
+  summary: '`commit-commands:commit`'
+  source: claude-plugins-official
+  pin: 'unpinned: installed from the source head'
+  provenance: not reviewed
+  used_by: meaningfy-git-workflow
+  opencode_status: native (command)
+  claude_install: plugin command
+  opencode_install: opencode `.opencode/commands/`; the *content* derives from the shared command source,
+    registration is per-CLI (tool-native boundary).
+- name: OpenSpec
+  kind: cli-tool
+  summary: '`@fission-ai/openspec`, the spine engine + `/opsx:*`'
+  source: npm @fission-ai/openspec
+  pin: 'unpinned: installed from the source head'
+  provenance: not reviewed
+  used_by: the spine (project-setup, epic-planning, spec-stewardship)
+  opencode_status: native
+  claude_install: '`npm i -g @fission-ai/openspec`; `openspec update --tools claude`'
+  opencode_install: same npm package; `openspec update --tools opencode` registers `opsx-<id>`. Registration
+    form is tool-native (differs by design), not a gap.
+- name: obsidian-skills
+  kind: plugin
+  summary: '`obsidian@obsidian-skills`: obsidian-markdown, obsidian-bases, obsidian-cli; MIT, [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills)'
+  source: kepano/obsidian-skills
+  pin: 'unpinned: installed from the source head'
+  provenance: MIT, not reviewed
+  used_by: every `vault-*` skill (mandatory for `vault-assistant`)
+  opencode_status: unverified (plain `SKILL.md` files)
+  claude_install: '`/plugin marketplace add kepano/obsidian-skills` + `/plugin install obsidian@obsidian-skills`'
+  opencode_install: 'clone into the user''s global opencode skills folder, never into a vault. Gaps for
+    `vault-assistant` on opencode: explicit-only skills are invoked by name (no slash form); vault permission
+    settings **UNVERIFIED** (see `skills/vault-setup/references/permissions-opencode.md`; a 2026-09-15
+    test run was inconclusive because the opencode provider did not answer).'
+- name: code-review
+  kind: plugin
+  summary: read-only PR-review *runner*
+  source: claude-plugins-official
+  pin: 'unpinned: installed from the source head'
+  provenance: not reviewed
+  used_by: optional pair for `meaningfy-code-review`
+  opencode_status: unsupported (Claude plugin)
+  claude_install: '`/plugin install code-review@claude-plugins-official`'
+  opencode_install: '**gap (optional)** — no opencode plugin equivalent; on opencode run the `meaningfy-code-review`
+    skill directly or opencode''s native review. The review *checklist* (the skill) works on both CLIs,
+    so no workflow is blocked.'
+- name: GitNexus
+  kind: mcp-server
+  source: npm gitnexus
+  pin: 'unpinned: latest at install'
+  provenance: not reviewed
+  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  opencode_status: native
+  claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  transport: local (stdio)
+  notes: '`command[]` in `opencode.json` mcp; identical capability.'
+  why: code intelligence, impact analysis (`implementer`/`code-reviewer` agents)
+  hosting: local (npm)
+- name: Atlassian / Rovo
+  kind: mcp-server
+  summary: Confluence, Jira
+  source: 'hosted: https://mcp.atlassian.com/v1/sse'
+  pin: 'unpinned: latest at install'
+  provenance: not reviewed
+  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  opencode_status: native
+  claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  transport: remote (http)
+  notes: '`type: remote` + `headers`.'
+  why: ticket/doc lookups
+  hosting: hosted (Atlassian-run endpoint)
+- name: Google Workspace
+  kind: mcp-server
+  summary: Gmail, Drive, Calendar
+  source: 'hosted: Google''s MCP endpoint'
+  pin: 'unpinned: latest at install'
+  provenance: not reviewed
+  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  opencode_status: native
+  claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  transport: remote (OAuth)
+  notes: per-product or gateway endpoint; OAuth identical.
+  why: mail/doc/calendar lookups
+  hosting: hosted (OAuth) or CLI-native connector
+- name: Odoo
+  kind: mcp-server
+  source: PyPI odoo-mcp-multi
+  pin: 'unpinned: latest at install'
+  provenance: not reviewed
+  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  opencode_status: native
+  claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  transport: local
+  notes: '`odoo-mcp` CLI; env-var credentials.'
+  why: ERP data access
+  hosting: local (PyPI)
+- name: Neo4j
+  kind: mcp-server
+  summary: per DB
+  source: uvx mcp-neo4j-cypher
+  pin: 'unpinned: latest at install'
+  provenance: not reviewed
+  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  opencode_status: native
+  claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  transport: local
+  notes: one server per database, same on both CLIs.
+  why: graph queries
+  hosting: local (`uvx`)
+- name: MongoDB
+  kind: mcp-server
+  source: npx mongodb-mcp-server
+  pin: 'unpinned: latest at install'
+  provenance: not reviewed
+  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  opencode_status: native
+  claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  transport: local
+  notes: '`mongodb-mcp-server`.'
+  why: document-store queries
+  hosting: local (`npx`)
+- name: Context7
+  kind: mcp-server
+  summary: library docs
+  source: npx @upstash/context7-mcp
+  pin: 'unpinned: latest at install'
+  provenance: not reviewed
+  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  opencode_status: native
+  claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  transport: local
+  notes: '`@upstash/context7-mcp`.'
+  why: live library documentation
+  hosting: local (`npx`)
+- name: Slack
+  kind: mcp-server
+  source: hosted
+  pin: 'unpinned: latest at install'
+  provenance: not reviewed
+  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  opencode_status: native
+  claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  transport: remote
+  notes: interactively-authenticated; may be absent in headless/cron runs on either CLI (documented caveat,
+    not a per-CLI gap).
+- name: Miro
+  kind: mcp-server
+  source: hosted
+  pin: 'unpinned: latest at install'
+  provenance: not reviewed
+  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  opencode_status: native
+  claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  transport: remote
+  notes: interactively-authenticated; may be absent in headless/cron runs on either CLI (documented caveat,
+    not a per-CLI gap).

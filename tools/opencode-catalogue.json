@@ -1,0 +1,259 @@
+{
+  "version": "3.2.0",
+  "bundles": [
+    {
+      "name": "meaningfy-core",
+      "skills": [
+        "technical-writing",
+        "explanatory-writing",
+        "writing-antipatterns",
+        "meaningfy-voice",
+        "meaningfy-git-workflow",
+        "guardrails"
+      ],
+      "agents": []
+    },
+    {
+      "name": "meaningfy-consulting",
+      "skills": [
+        "semantic-consulting-coach",
+        "decision-package",
+        "executive-communication"
+      ],
+      "agents": []
+    },
+    {
+      "name": "meaningfy-sales",
+      "skills": [
+        "proposal-writing",
+        "estimation"
+      ],
+      "agents": [
+        "proposal-writer"
+      ]
+    },
+    {
+      "name": "meaningfy-architecture",
+      "skills": [
+        "architecture",
+        "conceptual-modelling",
+        "modelling-conventions",
+        "linkml-engineering"
+      ],
+      "agents": [
+        "system-architect",
+        "conceptual-modeller"
+      ]
+    },
+    {
+      "name": "meaningfy-building",
+      "skills": [
+        "epic-planning",
+        "spec-stewardship",
+        "clarity-gate",
+        "bdd-gherkin",
+        "meaningfy-code-review",
+        "cosmic-python",
+        "project-setup",
+        "ci-cd-delivery",
+        "meaningfy-release"
+      ],
+      "agents": [
+        "epic-planner",
+        "implementer",
+        "code-reviewer"
+      ]
+    },
+    {
+      "name": "vault-assistant",
+      "skills": [
+        "vault-setup",
+        "vault-conventions",
+        "vault-project",
+        "vault-resume",
+        "vault-capture",
+        "vault-promote",
+        "vault-tidy",
+        "vault-planning",
+        "vault-daily"
+      ],
+      "agents": []
+    }
+  ],
+  "agents": {
+    "code-reviewer": {
+      "name": "code-reviewer",
+      "description": "Reviews a change through exactly one review lens (L1–L5) and reports prioritised findings; read-only. Use when a caller fans out a pre-PR review, one code-reviewer per lens (a full review is five dispatches, per meaningfy-code-review). Not for fixing code (implementer) or discussing findings.\n",
+      "type": "delegated",
+      "model": "opus",
+      "color": "yellow",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash"
+      ],
+      "disallowedTools": [
+        "Write",
+        "Edit",
+        "NotebookEdit"
+      ],
+      "skills": [
+        "meaningfy-code-review",
+        "cosmic-python"
+      ],
+      "metadata": {
+        "purpose": "software-development",
+        "area": "coding",
+        "subject": "python",
+        "posture": "precise",
+        "stage": "verify",
+        "maturity": "stable"
+      }
+    },
+    "conceptual-modeller": {
+      "name": "conceptual-modeller",
+      "description": "Builds and evolves a domain's conceptual model with the user, model-driven and data-centric, choosing the model source and rendering. Use when modelling a domain or evolving an ontology. Not for delegation; not for system architecture (system-architect).\n",
+      "type": "lead",
+      "model": "opus",
+      "color": "green",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Write",
+        "Edit",
+        "Skill"
+      ],
+      "skills": [
+        "conceptual-modelling",
+        "modelling-conventions",
+        "linkml-engineering"
+      ],
+      "metadata": {
+        "purpose": "modelling",
+        "area": "coding",
+        "subject": "modelling",
+        "posture": "precise",
+        "stage": "design",
+        "maturity": "experimental"
+      }
+    },
+    "epic-planner": {
+      "name": "epic-planner",
+      "description": "Shapes an EPIC from human seeds and derives its clarity-gated PLAN (≥9/10) as an OpenSpec change, returning question rounds to the caller until no decision is open. Use when starting or refining an epic. Not for archiving or grooming living specs (spec-stewardship) or for writing code (implementer).\n",
+      "type": "delegated",
+      "model": "opus",
+      "color": "cyan",
+      "tools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Grep",
+        "Glob",
+        "Bash",
+        "Skill"
+      ],
+      "skills": [
+        "epic-planning",
+        "clarity-gate",
+        "bdd-gherkin",
+        "stream-coding"
+      ],
+      "metadata": {
+        "purpose": "software-development",
+        "area": "coding",
+        "subject": "spec-driven",
+        "posture": "precise",
+        "stage": "shape",
+        "maturity": "stable"
+      }
+    },
+    "implementer": {
+      "name": "implementer",
+      "description": "Implements one ready task of an OpenSpec change as tested production code, test-first. Use when a task in tasks.md is ready (PLAN gated ≥9/10, Gherkin written). Not for planning (epic-planner), reviewing (code-reviewer) or committing.\n",
+      "type": "delegated",
+      "model": "sonnet",
+      "color": "blue",
+      "tools": [
+        "Read",
+        "Edit",
+        "Write",
+        "Glob",
+        "Grep",
+        "Bash",
+        "Skill"
+      ],
+      "skills": [
+        "cosmic-python",
+        "stream-coding",
+        "superpowers:test-driven-development",
+        "superpowers:systematic-debugging",
+        "superpowers:verification-before-completion"
+      ],
+      "metadata": {
+        "purpose": "software-development",
+        "area": "coding",
+        "subject": "python",
+        "posture": "precise",
+        "stage": "build",
+        "maturity": "stable"
+      }
+    },
+    "proposal-writer": {
+      "name": "proposal-writer",
+      "description": "Writes a sendable proposal or offer email from client requirements, asking the questions it needs through its output, with estimate and executive framing. Use when a client asks for an offer. Not for pricing strategy alone (estimation).\n",
+      "type": "delegated",
+      "model": "sonnet",
+      "color": "orange",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Write",
+        "Skill"
+      ],
+      "skills": [
+        "proposal-writing",
+        "estimation",
+        "executive-communication"
+      ],
+      "metadata": {
+        "purpose": "proposals",
+        "area": "sales",
+        "subject": "semantic-data",
+        "posture": "profiled",
+        "stage": "sell",
+        "maturity": "experimental"
+      }
+    },
+    "system-architect": {
+      "name": "system-architect",
+      "description": "Designs a new system with the user before code: use cases, architectural decisions and system diagrams, stating its view and plan briefly before each step. Use when starting or reshaping a system's architecture. Not for delegation; not for code (implementer).\n",
+      "type": "lead",
+      "model": "opus",
+      "color": "purple",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Write",
+        "Edit",
+        "Skill"
+      ],
+      "skills": [
+        "architecture",
+        "modelling-conventions",
+        "conceptual-modelling"
+      ],
+      "metadata": {
+        "purpose": "modelling",
+        "area": "coding",
+        "subject": "modelling",
+        "posture": "reusable",
+        "stage": "design",
+        "maturity": "experimental"
+      }
+    }
+  }
+}

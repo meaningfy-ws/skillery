@@ -1,0 +1,80 @@
+# Antora documentation build + deploy for <<PROJECT_NAME>>
+# ============================================================================
+# Builds the Antora site (`make build-docs`) on every push/PR that touches
+# docs/**, and publishes it to GitHub Pages on pushes to <<DEFAULT_BRANCH>>.
+# The build job runs on PRs too (catching broken docs before merge); only the
+# deploy job is gated to <<DEFAULT_BRANCH>>.
+#
+# Prerequisites:
+#   - `make build-docs` produces the site at docs/build/site/.
+#   - GitHub Pages is enabled for the repo with source = "GitHub Actions"
+#     (Settings -> Pages -> Build and deployment -> Source).
+
+name: Docs Build & Deploy
+
+on:
+  push:
+    branches: [<<DEFAULT_BRANCH>>]
+    paths:
+      - "docs/**"
+      - "Makefile"
+  pull_request:
+    branches: [<<DEFAULT_BRANCH>>]
+    paths:
+      - "docs/**"
+      - "Makefile"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Antora Site
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('Makefile') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Build docs
+        run: make build-docs
+
+      - name: Upload site artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/<<DEFAULT_BRANCH>>'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/build/site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name == 'push' && github.ref == 'refs/heads/<<DEFAULT_BRANCH>>'
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

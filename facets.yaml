@@ -1,0 +1,53 @@
+# facets.yaml — the one vocabulary of catalogue facets (define-catalogue-model DEC-1).
+# Every skill and agent declares one value per facet under frontmatter `metadata`; the validator and
+# the catalogue map (`make skill-inventory`) read this file. A new value is one line here, in a PR.
+# Starting vocabularies confirmed by the owner on 2026-10-26; the bundle redesign by activity will
+# revise `purpose` and `stage`.
+facets:
+  purpose:
+    software-development: "build software with agents: plan, build, test, review, version"
+    modelling: ontology, conceptual and system modelling
+    client-delivery: deliver to a client and manage the project
+    advising: coach a client's decisions
+    content: "write and explain for people: docs, posts, blogs, messages"
+    offers: commercial offers, packaging, pitch and pricing
+    proposals: proposal and offer documents
+    crm: create, manage and groom deals and contacts
+    devops: environments, CI/CD, releases and operations
+    knowledge: the owner's personal notes, plans and rhythm
+  area:
+    coding: building software with AI agents
+    consulting: advising clients
+    sales: winning and pricing work
+    personal: the owner's own vault and rhythm
+    operations: running infrastructure, CI/CD and monitoring
+    business: running and growing the company, negotiation and internal communication
+    legal: contracts, NDAs and other legal documents
+    design: graphics, visuals and diagrams in company style
+    cross-cutting: used in every area
+  subject:
+    generic: no domain knowledge; transfers anywhere
+    semantic-data: semantic technologies, ontologies, data governance
+    modelling: conceptual and system modelling
+    python: Python code and repositories
+    spec-driven: specification-first work (OpenSpec, EPICs)
+    git-release: git, versions and releases
+    delivery-infra: deployment and infrastructure
+    obsidian: Obsidian vaults
+  posture:
+    reusable: "R: a reusable core; a fix adds no domain content"
+    profiled: "C: a core with profiles; a fix adds a switch or a profile"
+    precise: "P: a precise house standard; a fix adds a guardrail"
+  stage:
+    sell: winning the work
+    advise: the decision phase with a client
+    shape: shaping work and its plan
+    design: designing the system or model
+    build: writing the code
+    verify: testing and reviewing
+    release: shipping and operating
+    any: no single stage
+  maturity:
+    experimental: in trial; may change or go
+    stable: in use and maintained
+    deprecated: kept for now; do not start using it
