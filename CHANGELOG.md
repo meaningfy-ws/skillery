@@ -9,7 +9,15 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
-## [Unreleased]
+## [3.2.0] - 2026-10-26
+
+### Action needed (users)
+
+- **If you use `meaningfy-building`, also install `meaningfy-architecture`.** The developer bundle
+  now declares it as a requirement: `cosmic-python` and `project-setup` hand off to the architecture
+  skills. On Claude: `/plugin install meaningfy-architecture@meaningfy-skillery`; on opencode:
+  `skillery-opencode install meaningfy-architecture`. The catalogue map lists every bundle's
+  requirements.
 
 ### Action needed (contributors)
 
@@ -42,8 +50,6 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
-- **Install note:** `meaningfy-building` now requires `meaningfy-architecture`. If you use the
-  developer bundle, install the architecture bundle too.
 - The catalogue map (`docs/skill-inventory.md`) shows skills **and agents** by bundle and by facet
   (purpose, area, subject, posture, stage, maturity), with each bundle's requirements.
 - The documentation register in `docs/development-method.md` §8: every doc, whether generated or
