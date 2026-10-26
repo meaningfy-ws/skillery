@@ -1,6 +1,6 @@
 # Testing Standard (Engineering Standard)
 
-Human-readable canon for how Meaningfy projects test. This document **narrates and points** — the
+How Meaningfy projects test, written for people. This document **narrates and points** — the
 operational rules live in the skills it links. It carries no rule those skills own.
 
 Authorities:
@@ -24,11 +24,6 @@ reference for the mechanism).
 | **Integration** | `integration` | Exercise an adapter against a real dependency (datastore, queue). | Not the place for business-logic assertions. | integration lane (needs a running datastore / testcontainers) |
 | **e2e** | `e2e` | Drive a near-real stack end to end. | Kept few; slow. | slow lane |
 
-Which layer gets which test is owned by
-[`cosmic-python`](../../skills/cosmic-python/SKILL.md) (models/adapters/services/
-entrypoints each test their own responsibilities). BDD scenario authoring is owned by
-[`bdd-gherkin`](../../skills/bdd-gherkin/SKILL.md).
-
 ## Test data & conftest conventions
 
 - **`test_data/`** holds fixtures/sample files, used sparingly; load them via the `load_text_file`
@@ -37,10 +32,6 @@ entrypoints each test their own responsibilities). BDD scenario authoring is own
   keep fixture scope as narrow as the tests need.
 - **polyfactory** for fabricating model instances; **testcontainers** for spinning up real
   dependencies in the integration lane.
-
-The exact layout, the conftest hook, and the fixture wiring are owned by
-[`project-setup`](../../skills/project-setup/references/testing-setup.md) — this doc does
-not restate them.
 
 ## Tools
 

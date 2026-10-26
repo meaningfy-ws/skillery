@@ -18,8 +18,8 @@ what the owner opted in (see [`vault-conventions`](../vault-conventions/SKILL.md
 
 ## Procedure
 
-1. **Resolve one project**, as `vault-resume` does: one match continues; several or a vague name, ask;
-   none, write nothing and offer `vault-project new`. Never create a project here.
+1. **Resolve one project** by the rule in [`vault-conventions`](../vault-conventions/SKILL.md) (Project
+   homes). Never create a project here.
 2. **Pick the source.** Notes the owner pasted, or this session's conversation. For a session, also ask:
    "Anything done or decided outside this conversation that should go in?" File only what the owner
    answers.
@@ -39,7 +39,8 @@ what the owner opted in (see [`vault-conventions`](../vault-conventions/SKILL.md
    The session entry is one dated entry for today, extended if today's exists.
 
    **A meeting or call** (the source is notes of one meeting) also gets its own note: `kind: meeting`
-   in the project folder, named `YYYY-MM-DD <topic>.md`, holding what was said, decided and left open,
+   in the project's `artefacts/` (created if absent; every note other than the five standing files goes
+   there), named `YYYY-MM-DD <topic>.md`, holding what was said, decided and left open,
    with `date`, `attendees` and `project`. The session entry links to it. This note, not `sessions.md`,
    is what the owner shares with the company when they want to (`memory: common`, set by them).
 
@@ -63,7 +64,7 @@ what the owner opted in (see [`vault-conventions`](../vault-conventions/SKILL.md
 its `kind: meeting` note), and the hedge-keeping rules of that filing.
 
 **Delegates:** file shapes and memory etiquette → [`vault-conventions`](../vault-conventions/SKILL.md);
-project resolution style and session start → [`vault-resume`](../vault-resume/SKILL.md); new projects →
+project resolution → `vault-conventions` (Project homes); session start → [`vault-resume`](../vault-resume/SKILL.md); new projects →
 [`vault-project`](../vault-project/SKILL.md).
 
 **Related:** `vault-conventions`, `vault-resume`, `vault-project`, `vault-daily`, `vault-promote`.

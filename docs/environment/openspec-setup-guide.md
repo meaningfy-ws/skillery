@@ -65,17 +65,20 @@ dying at implementation) towards the durable `openspec/` store — see
 
 ---
 
-## 4. CLAUDE-canonical — `AGENTS.md` is a root symlink
+## 4. `AGENTS.md` canonical — `CLAUDE.md` is a thin pointer
 
-The repo is **CLAUDE-canonical**: `CLAUDE.md` at the root is the one agentic-instructions file, and
-`AGENTS.md` is a **symlink** to it (so both Claude Code and AGENTS.md-aware tools read the same
-canon — no two files to drift). One source, two entry points.
+`AGENTS.md` at the root is the one, CLI-agnostic agent-instructions file (opencode reads it
+natively). `CLAUDE.md` is a short regular file that says "read `AGENTS.md`", imports it with a line
+`@AGENTS.md`, and adds only Claude Code-specific guidance. Both are regular files — **never a
+symlink** between them, in either direction, and no copy-sync hook. One source, two entry points.
+The rule is the `dual-cli-distribution` spec's requirement "AGENTS.md canonical, CLAUDE.md pointer,
+no symlink".
 
 ---
 
 ## 5. What does the scaffolding
 
 This guide describes the *target* layout. Laying it down on a fresh or existing repo — creating
-`openspec/`, wiring `config.yaml`, the `AGENTS.md` symlink, the layered package, tooling, and CI —
+`openspec/`, wiring `config.yaml`, `AGENTS.md` and its `CLAUDE.md` pointer, the layered package, tooling, and CI —
 is the [`project-setup`](../../skills/project-setup/SKILL.md) skill (EPIC-09). **This
 doc DESCRIBES; project-setup DOES.**

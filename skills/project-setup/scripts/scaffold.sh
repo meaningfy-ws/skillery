@@ -40,7 +40,7 @@ Options:
       --branch BRANCH    default/PR branch        (default: develop)
       --desc "TEXT"      one-line description      (default: "")
       --target DIR       repo root to scaffold     (default: current directory)
-      --minimal          MINIMAL mode: write ONLY the agentic files (CLAUDE.md + AGENTS symlink),
+      --minimal          MINIMAL mode: write ONLY the agentic files (AGENTS.md + CLAUDE.md pointer),
                          the .claude/ layout, and print the install commands. Nothing else.
       --no-docs          skip the Antora docs pillar
       --no-infra         skip the Docker/infra pillar
@@ -168,26 +168,24 @@ keepdir() {
   [[ -e "$TARGET/$rel/.gitkeep" ]] || printf '%s' "$note" > "$TARGET/$rel/.gitkeep"
 }
 
-# scaffold_agentic : the CLAUDE-canonical agentic layer (DEC-4). CLAUDE.md is canonical;
-# AGENTS.md is an OPTIONAL symlink -> CLAUDE.md. The .claude/ memory is a regenerable INDEX —
-# the truth is openspec/specs/ (so we DO NOT render the retired EPIC/PLAN/task forms here).
+# scaffold_agentic : the agentic layer. AGENTS.md is the canonical, CLI-agnostic instruction file;
+# CLAUDE.md is a thin pointer that imports it (@AGENTS.md). Both are REGULAR files — never a
+# symlink. An existing symlink in either name is reported for reconciliation, never replaced.
+# The .claude/ memory is a regenerable INDEX — the truth is openspec/specs/ (so we DO NOT render
+# the retired EPIC/PLAN/task forms here).
 scaffold_agentic() {
-  render "$TPL/agentic/CLAUDE.md.tmpl"  "$TARGET/CLAUDE.md"
+  local f
+  for f in AGENTS.md CLAUDE.md; do
+    if [[ -L "$TARGET/$f" ]]; then
+      if [[ "$DRY_RUN" -eq 1 ]]; then echo "  ! $f is a symlink — would need reconciling (references/agentic-setup.md)"
+      else echo "  WARNING: $f is a symlink — leaving it; reconcile by hand (see references/agentic-setup.md)"; fi
+    else
+      render "$TPL/agentic/$f.tmpl" "$TARGET/$f"
+    fi
+  done
   render "$TPL/agentic/MEMORY.md.tmpl"  "$TARGET/.claude/memory/MEMORY.md"
   keepdir ".claude/skills"  "Project-specific skills only — do NOT vendor the skillery here."
   keepdir ".claude/agents"  "Optional thin local agent wrappers — usually rely on installed skillery agents."
-  # AGENTS.md is a SYMLINK to CLAUDE.md (DEC-4) — single source of truth, CLAUDE-canonical.
-  if [[ "$DRY_RUN" -eq 1 ]]; then
-    if [[ -L "$TARGET/AGENTS.md" ]]; then echo "  = keep   AGENTS.md (symlink)"
-    elif [[ -e "$TARGET/AGENTS.md" ]]; then echo "  ! AGENTS.md exists but is NOT a symlink — would need reconciling (DEC-4)"
-    else echo "  + create AGENTS.md -> CLAUDE.md (symlink)"; fi
-  else
-    if [[ -L "$TARGET/AGENTS.md" || ! -e "$TARGET/AGENTS.md" ]]; then
-      ln -sf CLAUDE.md "$TARGET/AGENTS.md"; echo "  symlinked AGENTS.md -> CLAUDE.md"
-    else
-      echo "  WARNING: AGENTS.md exists and is not a symlink — leaving it (see references/agentic-setup.md)"
-    fi
-  fi
 }
 
 # scaffold_openspec : project the spine (openspec/) — config, the PINNED meaningfy schema,
@@ -249,11 +247,11 @@ scaffold_neo4j_generators() {
 
 # ---- minimal mode: agentic files + .claude/ layout only -------------------
 if [[ "$MINIMAL" -eq 1 ]]; then
-  echo "MINIMAL mode — agentic files (CLAUDE.md + AGENTS symlink) + .claude/ layout only."
+  echo "MINIMAL mode — agentic files (AGENTS.md + CLAUDE.md pointer) + .claude/ layout only."
   scaffold_agentic
   cat <<EOF
 
-Minimal scaffold complete. Install the spine + skillery so CLAUDE.md's routing resolves:
+Minimal scaffold complete. Install the spine + skillery so AGENTS.md's routing resolves:
   npx -y @fission-ai/openspec@$OPENSPEC_PIN init --tools claude --profile core
   /plugin marketplace add meaningfy-ws/skillery
   /plugin install meaningfy-core@meaningfy-skillery
@@ -374,7 +372,7 @@ pyinit "tests/e2e"; pyinit "tests/integration"
 [[ "$DRY_RUN" -eq 0 ]] && mkdir -p "$TARGET/tests/test_data"
 fi
 
-# ---- 5. agentic layer (CLAUDE-canonical) + spine (openspec/) ---------------
+# ---- 5. agentic layer (AGENTS.md canonical) + spine (openspec/) ---------------
 scaffold_agentic
 scaffold_openspec
 [[ "$PRODUCT" -eq 1 && "$NEO4J" -eq 1 ]] && scaffold_neo4j_generators
@@ -460,7 +458,7 @@ Done. Next steps:
   4. Install the OpenSpec /opsx:* commands (core profile) so the spine is drivable:
        npx -y @fission-ai/openspec@$OPENSPEC_PIN init --tools claude --profile core
      (the meaningfy schema under openspec/schemas/meaningfy/ is already PINNED @ $OPENSPEC_PIN)
-  5. Install the Meaningfy skillery (+ ponytail) so CLAUDE.md's skill routing resolves:
+  5. Install the Meaningfy skillery (+ ponytail) so AGENTS.md's skill routing resolves:
        /plugin marketplace add meaningfy-ws/skillery
        /plugin install meaningfy-core@meaningfy-skillery
        /plugin install meaningfy-building@meaningfy-skillery

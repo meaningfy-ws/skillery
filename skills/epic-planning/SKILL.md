@@ -84,4 +84,6 @@ the doc-first build loop → external `stream-coding`. For the **texture** of th
 prose (the proposal "why" and "solution outline" are Explanation-quadrant), the writing family applies:
 [`technical-writing`](../technical-writing/SKILL.md) and
 [`explanatory-writing`](../explanatory-writing/SKILL.md) — referenced, not restated.
+**Not an EPIC:** a team's Shape Up work shape kept in a personal vault is a `work-shape` note
+([`vault-conventions`](../vault-conventions/SKILL.md)); it may feed an EPIC but is not one.
 **Related:** `clarity-gate`, `spec-stewardship`, `bdd-gherkin`, `architecture`, `technical-writing`, `explanatory-writing`, `stream-coding` (external).

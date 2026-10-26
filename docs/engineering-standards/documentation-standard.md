@@ -14,7 +14,7 @@ Documentation lives in one of two homes, chosen by how fast it changes.
 | Home | Format | What belongs here |
 |------|--------|-------------------|
 | `.claude/` and repo root | **Markdown** | HIGH-CHURN, agent-loop artifacts: EPICs, PLANs, runbooks, memory indexes, agentic instructions, READMEs, working state |
-| `docs/` (Antora / AsciiDoc) | **AsciiDoc** | DURABLE published canon: architecture decisions (ADRs), requirements specifications, user-facing documentation, cross-referenced reference material |
+| `docs/` (Antora / AsciiDoc) | **AsciiDoc** | DURABLE published docs: architecture decisions (ADRs), requirements specifications, user-facing documentation, cross-referenced reference material |
 
 ## Choosing Heuristic
 

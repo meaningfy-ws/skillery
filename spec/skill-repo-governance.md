@@ -11,7 +11,7 @@ Every artifact is exactly one of these, and that decides its home:
 |------|----------|--------|------|------|
 | **Skill** | Agents | On demand | `skills/` | Reusable knowledge; single source of *authority* per fact |
 | **Agent** | Harness | Isolated context | `agents/` | Thin wrapper — see [`agent-template.md`](agent-template.md) |
-| **Doc** | Humans | Never auto-loaded | `docs/` | Human canon; narrates & points, never restates skill rules |
+| **Doc** | Humans | Never auto-loaded | `docs/` | Written for people; narrates & points, never restates skill rules |
 | **Binding** | Harness (every session) | Always | `prompts/` | Mandates & routes to skills; never carries the standard |
 
 Authoring governance (`spec/`, incl. `spec/skill-template.md`) and distribution
@@ -33,7 +33,7 @@ spec **spine** (`spine/` + `openspec/`) is projected into project repos by the
    restriction can enforce are enforced, not written — see
    [`agent-template.md`](agent-template.md#deterministic-before-prose).
 3. **A doc narrates and points.** Single source of *authority* + marked derivations (e.g. a human
-   "coding prompt" canon whose operational twin is a skill — say which is operational).
+   "coding prompt" document whose operational twin is a skill — say which is operational).
 4. **A binding routes and mandates.** It is thin and always-on; it never restates the standard.
 
 ## Agents

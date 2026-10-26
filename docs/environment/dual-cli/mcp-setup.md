@@ -1,10 +1,8 @@
 # MCP server setup (Claude Code & opencode)
 
-The catalogue does **not** ship committed MCP server configs. MCP servers carry credentials and
-are environment-specific, so each developer installs the servers they need **one by one**,
-locally, following the steps below. This page is reference-only in one sense — copy a template,
-fill in your own paths/keys, never commit secrets — but the steps themselves are literal: follow
-them top to bottom for each server you add.
+The catalogue ships no MCP server configs: servers carry credentials and are
+environment-specific. Install the ones you need **one by one**, locally, following the steps below
+top to bottom for each server; copy a template and fill in your own paths and keys.
 
 ## Step 1 — Decide what you need
 
@@ -179,5 +177,4 @@ The two config shapes are structurally equivalent: `command`+`env` (local/stdio)
 | enable toggle | (omit to enable) | `enabled: true` |
 
 > ⚠️ These templates are **illustrative defaults** — confirm the exact command/endpoint/auth against
-> each tool's own current docs before use. Endpoints and package names change. Keep all secrets in
-> environment variables.
+> each tool's own current docs before use. Endpoints and package names change.

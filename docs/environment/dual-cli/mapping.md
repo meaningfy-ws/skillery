@@ -5,11 +5,10 @@ artifacts (skills, agents, commands, hooks), read by whoever adds a skill/agent 
 `make bundles` and the opencode installer. It is not install documentation; if you're installing the catalogue, see
 [`docs/environment/setup.md`](../setup.md) instead.
 
-One set of sources, two CLIs. This is the shared translation table both
-[`setup-claude.md`](setup-claude.md) and [`setup-opencode.md`](setup-opencode.md) were *written
-against* (it explains why each runbook's steps look the way they do). It records *what derives from
-what* — the contract `make bundles` (`tools/bundle_gen`) and the opencode installer
-(`tools/skillery-opencode.mjs`) implement (this page generates nothing).
+One set of sources, two CLIs. This table records *what derives from what* — the contract that
+`make bundles` (`tools/bundle_gen`) and the opencode installer (`tools/skillery-opencode.mjs`)
+implement, and the reason behind the steps of [`setup-claude.md`](setup-claude.md) and
+[`setup-opencode.md`](setup-opencode.md). This page generates nothing.
 
 ## Artifact mapping
 

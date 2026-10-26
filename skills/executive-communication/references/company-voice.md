@@ -20,7 +20,11 @@ if the user names another voice or audience register.
 - **Honest and direct.** Name trade-offs, risks, and what you do not know. No
   overclaiming, no spin.
 - **Rhetorical questions and casual interjections** are welcome, but used
-  sparingly for emphasis. If one does not earn its place, cut it.
+  sparingly for emphasis. If one does not earn its place, cut it. (Not in the
+  bind register.)
+- **Brand assets.** Client-facing documents use the company logo and the "Made in
+  Luxembourg" label from the company Brand folder, described in
+  `meaningfy_brand_assets.md`. Name the asset by that location, never by a local path.
 
 ## SMILE: the values behind the tone
 
@@ -34,10 +38,12 @@ if the user names another voice or audience register.
 
 Net tone: **friendly, honest, assured, curious. Warm, but never woolly.**
 
-## Two registers: choose by purpose
+## Three registers: choose by purpose
 
-**Selection rule:** are you trying to **teach** something, or to **get a
-decision**? Teach → technical register. Decide → general register.
+**Selection rule:** state the purpose before drafting. Are you trying to **teach**
+something, to **get a decision**, or to **bind** the company to what it will
+deliver? Teach → technical register. Decide → general register. Bind → formal
+register.
 
 ### Technical / educational
 *(explainers, articles, documentation, deep client material)*
@@ -54,6 +60,17 @@ decision**? Teach → technical register. Decide → general register.
 - A mix of simple and compound sentences for a clear, rhythmic flow.
 - Illustrative examples where they help; conversational enough for a wide audience.
 
+### Bind
+*(formal and contractual: quotations, offers, statements of work, tenders)*
+- Full sentences, defined terms used consistently, neutral commitment verbs
+  ("Meaningfy will provide", "the client will supply").
+- No contractions, no rhetorical questions, no casual asides, no persuasion.
+- Plain vocabulary is not casual: keep the words plain and the tone formal.
+- Its defects are those of the Contract / specification genre in
+  [`writing-antipatterns`](../../writing-antipatterns/references/contract.md).
+- For a contractual document, this skill writes only the cover message or the
+  executive summary; the document's structure belongs to the offer skill.
+
 ## Reconciling voice with executive concision (the trap)
 
 The executive-communication method demands answer-first structure and concision.
@@ -66,16 +83,24 @@ doubt: structure and clarity beat length.
 
 **Executive.**
 - Bland: "We are pleased to present a comprehensive suite of solutions designed to optimise your data ecosystem."
-- Company voice: "Here is what we propose, and why it pays off. Your data sits in three silos that do not talk to each other, and that is costing you. We can fix it in two steps."
+- Company voice: "Here is what we propose, and why it pays off. Your data sits in three systems that cannot exchange records, and that is costing you. We can fix it in two steps."
+
+**Executive (SME digitalisation).**
+- Bland: "Unlock the power of AI with a seamless assistant that transforms how your team works."
+- Company voice: "Your team told us they spend about a day a week finding answers in old emails and shared folders. We set up an assistant that answers from your own documents and cites them, so anyone can check the source. You can try it on one team in four weeks."
+
+**Bind.**
+- Casual: "We'll sort out the data model for you and make sure everything's consistent."
+- Company voice: "Meaningfy will provide a conceptual data model covering the entities listed in Annex A. The model will be delivered in LinkML and validated against the acceptance criteria in Section 4."
 
 **Technical.**
 - Dry: "Ontology alignment ensures semantic interoperability across heterogeneous schemas."
-- Company voice: "Picture two teams using the same words for different things. Ontology alignment is how you get them to agree on meaning, so that 'customer' means the same in finance as it does in sales. Without it, your systems connect but quietly disagree."
+- Company voice: "Picture two teams using the same words for different things. Ontology alignment is how you get them to agree on meaning, so that 'customer' means the same in finance as it does in sales. Without it, your systems connect but give conflicting answers."
 
 ## Quick checklist
 
 - British English, and no em dash?
-- Right register: teaching or deciding?
+- Right register: teaching, deciding or binding?
 - Honest about the trade-offs and the unknowns?
 - Helpful: does it answer the real question, and what comes next?
 - Any rhetorical question or aside that did not earn its place? Cut it.

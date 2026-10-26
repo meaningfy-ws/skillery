@@ -91,15 +91,10 @@ openspec update --tools claude    # registers /opsx:propose, /opsx:apply, …
 
 ## Step 7 — Project the `meaningfy` schema into a repo
 
-Step 6 only registers the `/opsx:*` *commands* — it does not give you skillery's forked `meaningfy`
-OpenSpec schema (the templates and rules behind `openspec/config.yaml`'s `schema: meaningfy`).
-That's a **separate action**: in the target repo, ask Claude Code to run the **`project-setup`**
-skill — e.g. say *"scaffold this repo with project-setup"* or *"project the spine / set up
-openspec here"* (it's a conversational skill invocation, not a shell command, so there is no
-`/plugin`-style command for it). It then copies `openspec/schemas/meaningfy/` into the repo as a
-frozen, per-repo **pinned copy** and writes `openspec/config.yaml` to point at it. What exactly
-gets projected, and how to refresh the pinned copy later (re-run `project-setup`, review the diff,
-never silently overwritten):
+Step 6 only registers the `/opsx:*` *commands* — skillery's forked `meaningfy` OpenSpec schema is a
+**separate action**: in the target repo, ask Claude Code to run the **`project-setup`** skill (e.g.
+*"project the spine / set up openspec here"*); it is a conversational skill invocation, not a shell
+command. What gets projected and how to refresh the pinned copy:
 [`../../../skills/project-setup/references/spine-projection.md`](../../../skills/project-setup/references/spine-projection.md).
 
 ## Step 8 — Optional: hooks, MCP servers, extra plugins

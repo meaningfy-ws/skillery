@@ -17,13 +17,10 @@ end of the session is [`vault-capture`](../vault-capture/SKILL.md).
 
 ## Procedure
 
-1. **Resolve exactly one project.** Match the name against the folders in `01 Projects/`.
-   - One match: continue.
-   - Several matches, or a vague name ("the onboarding work"): list the candidates with their `status`
-     and last session date (read only each candidate's `status` and latest `sessions.md` heading for
-     this) and **ask which one**. Do not pick by recency or by guess; read nothing else until the owner
-     chooses.
-   - No match: say so and offer `vault-project new`.
+1. **Resolve exactly one project**, by the rule in [`vault-conventions`](../vault-conventions/SKILL.md)
+   (Project homes), which covers company and personal projects. For a list of candidates, read only
+   each one's `status` and latest `sessions.md` heading. Do not pick by recency or by guess; read nothing
+   else until the owner chooses.
 2. **Read that project only**, in this order:
    1. `index.md`: the charter answers, `status`, current status line;
    2. `sessions.md`: the latest three entries (more only if the owner asks);

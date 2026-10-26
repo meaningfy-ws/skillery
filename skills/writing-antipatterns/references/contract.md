@@ -5,7 +5,7 @@
 [`architecture`](../../architecture/SKILL.md) (OpenAPI/AsyncAPI/LinkML, use cases).
 
 Pointer table only — full entries live in [`inversion-matrix.md`](inversion-matrix.md). See
-[`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U6), which apply here too.
+[`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U8), which apply here too.
 
 | Move | Status | Entry |
 |------|--------|-------|
@@ -22,3 +22,4 @@ Pointer table only — full entries live in [`inversion-matrix.md`](inversion-ma
 | Premature structure | required once alignment is confirmed | [A11](inversion-matrix.md#a11-premature-structure) |
 | Options shown, not just the choice | avoid | [A12](inversion-matrix.md#a12-options-shown-not-just-the-choice) |
 | Curse of knowledge | required — assuming domain fluency is the explicit contract | [A13](inversion-matrix.md#a13-curse-of-knowledge) |
+| Negative framing | **required** — a prohibition is stated as a prohibition | [A14](inversion-matrix.md#a14-negative-framing) |

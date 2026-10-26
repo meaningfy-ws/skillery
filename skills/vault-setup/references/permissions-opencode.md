@@ -12,7 +12,7 @@ opencode reads `AGENTS.md` at the vault root natively; no pointer file is needed
 {
   "$schema": "https://opencode.ai/config.json",
   "permission": {
-    "bash": { "*": "ask", "obsidian *": "allow", "mv *": "deny", "rm *": "deny", "curl *": "deny", "wget *": "deny" },
+    "bash": { "*": "ask", "obsidian *": "allow", "mv *": "ask", "rm *": "ask", "curl *": "deny", "wget *": "deny" },
     "webfetch": "deny",
     "websearch": "deny",
     "edit": "ask",
@@ -37,7 +37,20 @@ opencode reads `AGENTS.md` at the vault root natively; no pointer file is needed
 Replace each `<…-server>` with the MCP server name as opencode shows it; opencode names MCP tools
 `<server>_<tool>`. Within a pattern map **the last matching rule wins**, so the catch-all `"*"` comes
 first and the specific rules after it. The older top-level `tools` block is deprecated; use
-`permission` only.
+`permission` only. `mv` and `rm` ask, so the owner approves each move or delete they requested
+(`vault-conventions`, Moving and deleting).
+
+## `opencode.scheduled.json` at the vault root
+
+Loaded only by the scheduled run ([`scheduler.md`](scheduler.md)) through `OPENCODE_CONFIG`, on top of
+`opencode.json`, so an unattended run can never move or delete:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": { "bash": { "*": "deny", "obsidian *": "allow", "mv *": "deny", "rm *": "deny" } }
+}
+```
 
 ## Gaps against Claude Code
 

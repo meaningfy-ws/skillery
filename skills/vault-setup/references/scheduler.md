@@ -12,7 +12,9 @@ otherwise the owner runs the skill by hand.
 A headless run cannot answer a permission prompt, so any tool that would ask is refused. The
 read-only connector tools are allowed in the vault's settings (see
 [`permissions-claude-code.md`](permissions-claude-code.md)); `--permission-mode acceptEdits` accepts
-the run's own file edits (today's note, `To-Do.md`); every deny rule still applies.
+the run's own file edits (today's note, `To-Do.md`); every deny rule still applies. Because
+`acceptEdits` may also approve file commands, the command line denies `mv` and `rm` explicitly
+(`--disallowedTools`): an unattended run never moves or deletes a note.
 
 Claude Code applies a folder's allow rules only once the folder is trusted: start `claude` at the vault
 root interactively once and accept the trust prompt. Decide it knowingly, since everyone who can edit
@@ -27,7 +29,7 @@ The run log goes to the owner folder, outside the vault, so it is never synced a
 
 ```
 PATH=<folder of claude>:/usr/local/bin:/usr/bin:/bin
-30 7 * * 1-5 cd "<vault path>" && claude -p "/vault-daily" --permission-mode acceptEdits >> "<owner folder>/vault-daily.log" 2>&1
+30 7 * * 1-5 cd "<vault path>" && claude -p "/vault-daily" --permission-mode acceptEdits --disallowedTools "Bash(mv:*)" "Bash(rm:*)" >> "<owner folder>/vault-daily.log" 2>&1
 ```
 
 ## Windows (Task Scheduler)
@@ -38,7 +40,7 @@ short and free of nested quotes:
 ```
 @echo off
 cd /d "<vault path>"
-claude -p /vault-daily --permission-mode acceptEdits >> "<owner folder>\vault-daily.log" 2>&1
+claude -p /vault-daily --permission-mode acceptEdits --disallowedTools "Bash(mv:*)" "Bash(rm:*)" >> "<owner folder>\vault-daily.log" 2>&1
 ```
 
 Then, in `cmd`:
@@ -49,8 +51,10 @@ schtasks /create /tn "vault-daily" /sc weekly /d MON,TUE,WED,THU,FRI /st 07:30 /
 
 ## opencode
 
-opencode has no slash invocation for skills; use `opencode run "run the vault-daily skill"` in the same
-entry. **UNVERIFIED.**
+opencode has no slash invocation for skills; use
+`OPENCODE_CONFIG=opencode.scheduled.json opencode run "run the vault-daily skill"` in the same entry
+(on Windows, `set OPENCODE_CONFIG=opencode.scheduled.json` on the line before). The scheduled config
+denies `mv` and `rm` ([`permissions-opencode.md`](permissions-opencode.md)). **UNVERIFIED.**
 
 ## Check
 

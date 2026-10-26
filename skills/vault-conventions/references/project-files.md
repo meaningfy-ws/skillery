@@ -4,7 +4,11 @@ The files whose shape every `vault-*` skill relies on. Their frontmatter follows
 [`kinds.md`](kinds.md); the bodies below are the fixed sections. Add prose inside a section freely;
 never rename or drop a section.
 
-## A project's five files (`01 Projects/YYYY-MM-DD Name/`)
+## A project's five files
+
+They sit at the root of the project folder, in either home (`01 Projects/` or `07 Perso/`, see Project
+homes in `vault-conventions`), and nothing else does: every other note for the project goes in its
+`artefacts/` subfolder.
 
 ### `index.md`, the charter
 

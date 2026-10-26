@@ -1,50 +1,26 @@
-# Meaningfy Coding Prompt for Claude
+# Meaningfy Coding Prompt
 
-> **Human canon.** This is the readable source of Meaningfy's engineering culture. The
-> **operational** version — what agents actually load and follow — is the `cosmic-python`
-> skill (code structure), with `architecture`, `meaningfy-git-workflow`, and the `superpowers`
-> skills covering the rest. Edit behaviour *there*; keep this as the narrative standard.
+The full statement of Meaningfy's engineering culture, written for people to read. Agents follow
+the same rules through the installed skills: `cosmic-python` for code structure and the code
+principles, `architecture` for design, `meaningfy-git-workflow` for commits and PRs, and the
+`superpowers` skills for TDD and debugging. To change how agents behave, change the skill; keep this
+document in step with it.
 
+## Where this standard lives
 
-## Authority chain & where this standard lives
+| File | What it is |
+|------|------------|
+| this document | the full standard, in prose |
+| [`prompts/global-prompt.md`](../../prompts/global-prompt.md) | a short, always-on routing policy for a developer's global prompt (`~/.claude/CLAUDE.md` on Claude Code); it points here and to the skills, and carries no copy of this document, so there is nothing to keep in sync |
+| a project's `AGENTS.md` | the project's operating manual (canonical for every CLI); its `CLAUDE.md` is a thin pointer that imports it, never a symlink. Both route to the skills and record only what is specific to the project |
 
-This standard exists in three co-equal forms. They must never diverge.
+> For the **code principles, best practices and anti-patterns**, the single source is the
+> [`cosmic-python` catalogue](../../skills/cosmic-python/references/principles-and-anti-patterns.md)
+> (stable ids: `PR-…` / `BP-…` / `AP-…`). This document **cites** those ids; it does not restate the
+> rules.
 
-| Form | Path | Role |
-|------|------|------|
-| **User-global prompt** | `~/.claude/CLAUDE.md` | **OPERATIONAL** — loaded by Claude Code on every session; this is what agents actually execute against. |
-| **Human canon** (this file) | `docs/engineering-standards/coding-prompt.md` | **NARRATING** — the readable, version-controlled source of truth; edit here to change the standard, then sync to the global prompt. |
-| **Repo constitution** _(forthcoming)_ | `openspec/project.md` in a projected standards repo (EPIC-09) | **NARRATING** — the cross-repo, public-facing declaration; will point here, not duplicate it. |
-
-The authority chain is flat: all three forms carry the same content at any given moment.
-No form overrides another; they are the same standard expressed in different contexts.
-All other files that reference this standard (e.g. `./CLAUDE.md` in any project repo) **point** to this canon — they do not fork or restate it.
-
-> For the **operational code principles, best-practices, and anti-patterns**, the single source of
-> authority is the [`cosmic-python` catalogue](../../skills/cosmic-python/references/principles-and-anti-patterns.md)
-> (stable ids: `PR-…` / `BP-…` / `AP-…`). This narrative **cites** those ids; it does not restate the rules.
-
-### User-level vs repo-level CLAUDE.md (DEC-12)
-
-Two distinct `CLAUDE.md` files serve different scopes:
-
-- **User-level** (`~/.claude/CLAUDE.md`) — the **durable, cross-project coding prompt**.
-  Carries the full engineering standards (this document's content).
-  Installed once per developer workstation. Applies to every project.
-  This is the operational form above.
-
-- **Repo-level** (`./CLAUDE.md` at a project root) — the **repo-specific operating manual**.
-  Contains: repo context, project-specific routing instructions, tool configuration, and
-  pointers to the global standard. Committed to the project repository.
-  Does **not** restate the engineering standards.
-
-**Rule: they complement, never duplicate.**
-The repo-level file routes to the global standard; it never copies or overrides it.
-If you find yourself writing coding-style rules in a repo-level `CLAUDE.md`, move them
-to the user-global prompt and replace them with a pointer.
-
-> Note: installation instructions for the user-global prompt (onboarding, setup steps)
-> are governed by EPIC-04, not documented here.
+**Global and project files complement, never duplicate.** If you find yourself writing coding-style
+rules into a project's `AGENTS.md`, they belong in the skills (or here); replace them with a pointer.
 
 
 You are a senior developer and pair-programming assistant working with Meaningfy.

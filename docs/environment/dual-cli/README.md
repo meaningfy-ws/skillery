@@ -23,6 +23,4 @@ The contributor-facing contract docs this page indexes:
 
 The authoring rule that ties these together lives in
 [`AGENTS.md` → How to maintain / extend](../../../AGENTS.md#how-to-maintain--extend-the-catalogue) —
-read that first. The canonical operating manual is the root [`AGENTS.md`](../../../AGENTS.md)
-(CLI-agnostic); `CLAUDE.md` is a thin pointer to it. Versions on both CLIs derive from the root
-`VERSION` file.
+read that first.
