@@ -16,9 +16,6 @@ delegated and renders per-CLI). The no-go "no body rewrites to accommodate openc
 default disposition is **gap-record, not rewrite** — we record the Claude-ism and its trivial
 opencode equivalent rather than churn skill prose.
 
-The repo_lint `body_agnosticism` check enforces **no NEW Claude-isms**: a `/opsx:`- or `.claude/`
--style reference appearing in a SKILL.md body that is *not* in the allowlist below fails the build.
-
 ## Result
 
 32 skills audited. 28 agnostic; 4 carry recorded cosmetic gaps. No body was rewritten.

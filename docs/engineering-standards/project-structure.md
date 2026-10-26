@@ -8,8 +8,7 @@ guidance lives in the `cosmic-python` skill; this document is the readable canon
 ## Root modules vs. /src
 
 A repo contains one or more **root modules** (top-level packages, one per deployable unit)
-rather than a single `/src`. The Cosmic Python book uses a single `/src` with `/domain` and
-`/service_layer`; we map those onto our canonical names below.
+rather than a single `/src`.
 
 ## Scaling up: component-first for larger projects
 
@@ -22,18 +21,9 @@ Component + tier boundaries are enforced and **groomed** by import-linter — se
 
 ## Layers inside a module (or component)
 
-| Folder | Holds | Depends on |
-|--------|-------|-----------|
-| `models/` | Domain entities, value objects, domain services. No I/O, no frameworks. | — |
-| `adapters/` | Persistence and I/O (repositories, gateways, clients). | `models` |
-| `services/` | Application/use-case orchestration; units of work, transaction boundaries. | `models`, `adapters` |
-| `entrypoints/` | Primary/driving adapters that drive the app. | `services` |
-
-**Dependency direction (strict):** `entrypoints → services → models`, and `adapters → models`.
-`models` never imports from `services`/`adapters`/`entrypoints`.
-
-**Canonical vocabulary:** `models/` = the book's `/domain`; `services/` = the book's
-`/service_layer`. Use the canonical names in code.
+The four layers (`models/`, `adapters/`, `services/`, `entrypoints/`), their dependency direction and
+the canonical vocabulary (the book's `/domain` and `/service_layer` are `models/` and `services/`):
+follow the [`cosmic-python`](../../skills/cosmic-python/SKILL.md) skill.
 
 ### entrypoints/ sub-taxonomy
 `api` (handlers) · `openapi` (OpenAPI v3, API-first via Connexion) · `ui` (Flask pages) ·

@@ -22,8 +22,9 @@ the infrastructure owner.
 
 1. Install the bundle: [`dual-cli/setup-claude.md`](dual-cli/setup-claude.md) or
    [`dual-cli/setup-opencode.md`](dual-cli/setup-opencode.md), Step 3.
-2. From your owner folder (`obsidian/<you>/`, not inside the vault), run `vault-setup` and follow it to
-   its final check.
+2. From your owner folder (`obsidian/<you>/`, not inside the vault), run
+   [`vault-setup`](../../skills/vault-setup/SKILL.md) and follow it to its final check. It also writes
+   the vault's `README.md` from its README asset (never over an existing one).
 3. Open Obsidian on the `vault/` folder, and start sessions at the vault root.
 
 ## The skills, by moment
@@ -40,7 +41,8 @@ the infrastructure owner.
 | the week, month, quarter, year | `vault-planning plan <horizon>`, or `review <horizon>` |
 | every morning | `vault-daily` |
 
-`vault-conventions` is used by all of them whenever a note is written.
+`vault-conventions` is used by all of them whenever a note is written. Moving, renaming and deleting
+notes follow its one procedure: [Moving and deleting](../../skills/vault-conventions/SKILL.md#moving-and-deleting).
 
 ## On opencode
 
@@ -50,5 +52,5 @@ are unverified. See [`dual-cli/compatibility.md`](dual-cli/compatibility.md).
 
 ## Changing the method
 
-Agents never edit these skills. When something is wrong, the agent (or you) writes a `kind:
-skill-change` note in `00 Inbox/proposed/`, and a person opens a pull request here.
+Agents never edit these skills. When something is wrong, the agent (or you) stages a `skill-change` note
+([`vault-conventions` → Staging](../../skills/vault-conventions/SKILL.md#staging)), and a person opens a pull request here.
