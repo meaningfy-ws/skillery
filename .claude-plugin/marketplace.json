@@ -16,8 +16,13 @@
     },
     {
       "name": "meaningfy-consulting",
-      "description": "The advisory / front-of-funnel role: semantic-technologies coaching, the Decision Package, proposals, estimation, and executive communication",
+      "description": "The advisory role: semantic-technologies coaching, the Decision Package, and executive communication",
       "source": "./bundles/meaningfy-consulting"
+    },
+    {
+      "name": "meaningfy-sales",
+      "description": "The commercial role: proposal and offer writing, and estimation",
+      "source": "./bundles/meaningfy-sales"
     },
     {
       "name": "meaningfy-architecture",

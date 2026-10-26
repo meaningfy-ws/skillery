@@ -18,9 +18,15 @@
       "skills": [
         "semantic-consulting-coach",
         "decision-package",
-        "proposal-writing",
-        "estimation",
         "executive-communication"
+      ],
+      "agents": []
+    },
+    {
+      "name": "meaningfy-sales",
+      "skills": [
+        "proposal-writing",
+        "estimation"
       ],
       "agents": []
     },
