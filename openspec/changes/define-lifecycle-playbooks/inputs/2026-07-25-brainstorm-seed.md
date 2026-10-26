@@ -16,7 +16,7 @@ The verbatim synthesis follows.
 # Meaningfy BLC/SDLC redefinition — brainstorming synthesis
 
 **Source:** a long `/opsx:explore` session between Claude Code and Eugeniu Costetchi (2026-07-25),
-auditing `docs/ai-coding/`, `docs/engagement/`, `docs/engineering-standards/`, `docs/philosophy/`,
+auditing `docs/practice/ai-coding/`, `docs/engagement/`, `docs/practice/engineering-standards/`, `docs/practice/philosophy/`,
 and the 23-skill catalogue. This document is the distilled record of every decision made in that
 session. It is a **seed**, not a shaped EPIC — archive it verbatim (or the relevant excerpt) into
 each change's `inputs/`, then shape the EPIC from it. Do not silently drop any decision below; if
@@ -233,7 +233,7 @@ exercised. Do not create new agent stubs in any of these five epics.
 
 ## 7. v1 / v2 doc findings (from the earlier audit — still valid, feed Epic B directly)
 
-- **v1** = `docs/ai-coding/ai-coding-methodology.md`, `ai-coding-runbook.md`, `ai-coding-setup-guide.md`.
+- **v1** = `docs/practice/ai-coding/ai-coding-methodology.md`, `ai-coding-runbook.md`, `ai-coding-setup-guide.md`.
   Marked "retained for reference until the first real engagement closes" (no owner, no date — that
   condition is itself stale/vague and should just be resolved by deleting once the successor content
   exists). v1's **only genuinely good, worth-keeping content**: the lifecycle Mermaid diagram and the
@@ -242,7 +242,7 @@ exercised. Do not create new agent stubs in any of these five epics.
   **Do not port these verbatim** — the human was explicit: adapt them to current reality (the
   EPIC/PLAN split, the 3-agent roster `epic-planner`/`implementer`/`code-reviewer`, OpenSpec-native
   artifacts, no `MEMORY.md`-as-truth — all of which v1's diagram/table predate).
-- **v2** = `docs/ai-coding/two-tier-methodology.md`, `opsx-runbook.md`, `dod-quality-gates.md`,
+- **v2** = `docs/practice/ai-coding/two-tier-methodology.md`, `opsx-runbook.md`, `dod-quality-gates.md`,
   `openspec-setup-guide.md`. The EPIC/PLAN split, the single-owner ownership table, and the
   "no double-spec" layering rule are all correct and should be kept. But: `two-tier-methodology.md`
   §1's PROJECT tier is four one-line bullets that don't name ADLC or MDLC-lite at all, even though
@@ -261,7 +261,7 @@ exercised. Do not create new agent stubs in any of these five epics.
   `docs/engagement/README.md`) should move fully into `docs/engagement/`, leaving
   `dod-quality-gates.md` as pure build-tier DoD, extended with the Builder/Shipper dual-DoD at
   Delivery & Release (see §4 above).
-- No live file outside `docs/ai-coding/` itself links to the v1 files (checked); only archived
+- No live file outside `docs/practice/ai-coding/` itself links to the v1 files (checked); only archived
   historical planning docs reference them, which is fine to leave alone. Deleting v1 is a clean,
   same-day change once the diagram/table are adapted and ported into the successor.
 
@@ -274,7 +274,7 @@ Ordered by real dependency; each item names its change-id, its bet, and what it 
 
 1. **`define-blc-engagement-model`** — Rewrite `docs/engagement/README.md` + `phases.md` and
    `semantic-consulting-coach/references/engagement-model.md` for the corrected commercial model
-   (§2). Does not touch `docs/ai-coding/`.
+   (§2). Does not touch `docs/practice/ai-coding/`.
 2. **`define-meaningfy-lifecycle`** *(existing change folder — already has
    `inputs/handover-analysis.md` from an earlier audit; preserve it, add this seed alongside it, do
    not delete or groom it)* — Retire v1, rewrite `two-tier-methodology.md` with the ADLC/MDLC-lite

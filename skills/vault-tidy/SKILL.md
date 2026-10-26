@@ -24,7 +24,7 @@ blur: **a plan**, then, after a yes, **the change**.
 ## 1. Survey and plan (writes nothing)
 
 Survey the scope the owner names (the whole vault if none), against
-[`vault-conventions`](../vault-conventions/SKILL.md). Look for: notes in the wrong folder for their
+`vault-conventions`. Look for: notes in the wrong folder for their
 kind, notes without `kind`, staging items older than two weeks, duplicate or near-duplicate notes,
 names that break the conventions, links that resolve to nothing, notes other than the standing files at
 a project's root (a move into its `artefacts/`), and personal projects in `01 Projects/` (a move to
@@ -81,8 +81,8 @@ change request, means **nothing moves**; revise and present the plan again.
 
 **Owns:** the tidy survey, the plan format, the yes rule, and applying an approved plan.
 
-**Delegates:** what "tidy" means (folders, kinds, names) → [`vault-conventions`](../vault-conventions/SKILL.md);
+**Delegates:** what "tidy" means (folders, kinds, names) → `vault-conventions`;
 the move and delete procedure → `vault-conventions`; a single staged note →
-[`vault-promote`](../vault-promote/SKILL.md); closing a project → [`vault-project`](../vault-project/SKILL.md).
+`vault-promote`; closing a project → `vault-project`.
 
 **Related:** `vault-conventions`, `vault-promote`, `vault-project`.

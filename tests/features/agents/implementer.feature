@@ -1,4 +1,4 @@
-# Traces to: agents/implementer.md (Dispatch contract, Glue); spec/agent-template.md; D-7, D-14.
+# Traces to: agents/implementer.md (Dispatch contract, Glue); docs/development/agent-template.md; D-7, D-14.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: implementer turns one ready task into tested code and reports back
   A delegated run cannot obtain consent, so it never commits: it reports,

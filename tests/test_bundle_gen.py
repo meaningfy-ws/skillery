@@ -234,3 +234,20 @@ def test_tc24_catalogue(tmp_path):
 # ------------------------------------------------------------- live repo
 def test_tc22_live_repo_renderings_in_sync():
     assert gen.gate_errors(REPO) == []
+
+
+def test_link_gate_is_skipped_without_a_bundles_tree(tmp_path):
+    # bundles/ is generated, not committed (rebundle-by-activity D-8): a fresh checkout has none.
+    repo = _repo(tmp_path)
+    gen.write(repo)
+    shutil.rmtree(repo / "bundles")
+    assert gen.gate_errors(repo) == []
+
+
+def test_unreleased_lists_the_wip_paths(tmp_path):
+    # rebundle-by-activity D-14: what dist.yml drops from the published tree.
+    repo = _repo(tmp_path)
+    (repo / "skills" / "s3").mkdir()
+    (repo / "skills" / "s3" / "SKILL.md").write_text("---\nname: s3\ndescription: x\n---\n", encoding="utf-8")
+    (repo / "agents" / "ag2.md").write_text("---\nname: ag2\ndescription: x\n---\n", encoding="utf-8")
+    assert gen.unreleased(repo) == ["agents/ag2.md", "skills/s3"]

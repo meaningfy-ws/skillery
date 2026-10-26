@@ -3,7 +3,7 @@ name: meaningfy-code-review
 description: The Meaningfy pre-PR review — two modes (standalone = five lens subagents fanned out in parallel, one lens each; interactive main-thread), a methodical catalogue-complete review procedure (traverse the whole `cosmic-python` region a lens owns, not a fixed subset), and a fit-and-refactoring investigation, reported by priority. Use to supply the review criteria, modes, and dispatch contract for a Meaningfy change. Trigger on "Meaningfy review checklist", "architecture-conformance review", "review against cosmic-python layers", "pre-PR review criteria", "review modes", "review lenses". For the read-only standalone run, use the external `code-review` command or the `code-reviewer` wrapper.
 license: Apache 2.0
 metadata:
-  purpose: quality
+  purpose: software-development
   area: coding
   subject: python
   posture: precise
@@ -83,7 +83,7 @@ construction and survives catalogue growth. Every lens subagent runs the **same 
 scoped to its region:
 
 1. **Scope in.** Open this lens's region — the catalogue
-   ([`cosmic-python:references/principles-and-anti-patterns.md`](../cosmic-python/references/principles-and-anti-patterns.md))
+   (`cosmic-python`: principles and anti-patterns)
    filtered to the lens, plus the matching `cosmic-python` SKILL sections (see the Lenses table). The
    *region*, not a sample, is your checklist.
 2. **Gather.** Read the diff (new + touched code), the EPIC requirements/specs, and the covering

@@ -5,9 +5,9 @@ The knobs are stated as **positive defaults** (what to do), not prohibitions. Ea
 linked source wins.** This skill inherits the baseline; it does not fork a second copy of it.
 
 Primary source:
-[`company-voice.md`](../../executive-communication/references/company-voice.md).
-Secondary: the **Writing style** section of [`technical-writing`](../../technical-writing/SKILL.md) and
-[`clarity-gate`](../../clarity-gate/SKILL.md).
+`meaningfy-voice`.
+Secondary: the **Writing style** section of `technical-writing` and
+`clarity-gate`.
 
 | Knob | Positive default | Authority | Foreign-voice flip |
 |------|------------------|-----------|--------------------|

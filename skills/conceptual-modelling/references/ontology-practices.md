@@ -3,7 +3,7 @@
 The conceptual model is an ontology in the engineering sense: identified concepts with stable meaning.
 This file owns the **concept-level policy** — the decisions made once, at the model level. The
 representation-agnostic *conventions* (reusable properties, URI-everywhere, naming, vocabulary reuse as
-a principle) live in [`../../modelling-conventions/SKILL.md`](../../modelling-conventions/SKILL.md); the
+a principle) live in `modelling-conventions`; the
 LinkML *mechanics* that realise them (minted `prefixes`, implicit `class_uri`/`slot_uri`, the
 URI-as-datatype artifice) live in `linkml-engineering`. This file states policy and delegates both.
 
@@ -11,14 +11,14 @@ URI-as-datatype artifice) live in `linkml-engineering`. This file states policy 
 
 The *principle* that everything is identified by a stable URI, implicit by default, is a shared
 convention — see
-[`../../modelling-conventions/references/naming-and-identity.md`](../../modelling-conventions/references/naming-and-identity.md).
+`modelling-conventions` (naming and identity).
 The **policy decisions** are owned here:
 
 - **Mint a base namespace per model** you own (e.g. `https://data.meaningfy.ws/<domain>/`) and declare
   it once. Choosing the namespace is a model-level decision, not a per-element one.
 - **Identifiers are opaque and permanent**; do not encode mutable facts (version, owner, location) into
   the local name. Minted at authoring time, human-readable, like the other golden-thread IDs
-  (`EPIC-`, `ADR-`, `R<n>` — see [`../../../spine/golden-thread.md`](../../../spine/golden-thread.md)).
+  (`EPIC-`, `ADR-`, `R<n>`; the golden thread is owned by `epic-planning`).
 - **Cross-repo citation.** When the model lives in its own repo, downstream code and specs cite these
   IRIs — the cross-repo rung of the golden thread.
 
@@ -49,5 +49,5 @@ This is an **explicit decision point, never silently defaulted**, and it is owne
 
 We do **not** abstract these behind a source-adapter interface (YAGNI). Pick one consciously per project.
 Once chosen, the LinkML execution (deriving, authoring, generating) is owned by
-[`../../linkml-engineering/SKILL.md`](../../linkml-engineering/SKILL.md); configuring model2owl itself is
+`linkml-engineering`; configuring model2owl itself is
 a future dedicated skill.

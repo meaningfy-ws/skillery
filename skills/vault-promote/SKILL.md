@@ -25,7 +25,7 @@ owner makes it *shared*, by setting `memory: common` later.
 ## Procedure
 
 1. **Find the note** in `00 Inbox/proposed/`. Several or no matches: list and ask.
-2. **Check it** against [`vault-conventions`](../vault-conventions/SKILL.md) (`references/kinds.md`):
+2. **Check it** against `vault-conventions` (`references/kinds.md`):
    - `kind` is present;
    - every property that kind requires is present and non-empty (a property allowed to be empty, such
      as `project` on a meeting with no project, counts as present);
@@ -55,7 +55,7 @@ owner makes it *shared*, by setting `memory: common` later.
 **Owns:** the promotion check at the staging boundary and the promotion move.
 
 **Delegates:** kinds, required properties and sections, and the move procedure →
-[`vault-conventions`](../vault-conventions/SKILL.md); reorganising many notes →
-[`vault-tidy`](../vault-tidy/SKILL.md).
+`vault-conventions`; reorganising many notes →
+`vault-tidy`.
 
 **Related:** `vault-conventions`, `vault-tidy`, `vault-capture`, `vault-planning`.

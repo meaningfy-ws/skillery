@@ -43,7 +43,7 @@ settings exist, a session at the vault root may not edit them. If the working fo
    Outlook); calendar connector; time zone; sync client (Insync for Google Drive, or OneDrive); whether
    to opt in to the ingestion pipeline now; whether to schedule the daily note, and at what time.
 3. **Create the vault files** (skip what exists):
-   - the layout from [`vault-conventions`](../vault-conventions/SKILL.md), including
+   - the layout from `vault-conventions`, including
      `00 Inbox/proposed/`, `04 Daily/reviews/`, `X/Templates/` and the trash folder `.trash/`, and
      `vault-files/_shared/`;
    - one template per kind, copied from [`assets/templates/`](assets/templates/) into `X/Templates/`;
@@ -73,8 +73,10 @@ settings exist, a session at the vault root may not edit them. If the working fo
 kind templates, and the guided setup of Obsidian, sync, memory, connectors and the scheduled run.
 
 **Delegates:** the layout, kinds and properties the templates follow →
-[`vault-conventions`](../vault-conventions/SKILL.md); Obsidian's own syntax and CLI → the external
+`vault-conventions`; Obsidian's own syntax and CLI → the external
 `obsidian@obsidian-skills` plugin; the ingestion pipeline itself → the company's infrastructure
 repository and its private runbook.
 
-**Related:** `vault-conventions`, `vault-daily`, `project-setup`.
+A vault is not a code repository: see also `project-setup` for scaffolding a software project.
+
+**Related:** `vault-conventions`, `vault-daily`.

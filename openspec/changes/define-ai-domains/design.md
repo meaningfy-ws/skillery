@@ -28,8 +28,8 @@ the moves):
 | `docs/how-we-work/playbooks/work-shaper.md` | 59 | — |
 | `docs/how-we-work/roles-and-raci.md` | 213 | `#work-shaper`, `#raci-matrix`, `#solution-builder`, `#solution-shipper`, `#technical-consultant`, `#salespresales`, `#solution-architect`, `#open-question--agent-wrappers` |
 | `docs/services/index.md` + 6 pages | — | `docs/services/agentic-framework-development.md` etc. already use the exact **"No skill in this catalogue owns X"** phrasing this EPIC needs for the four `methods/` stubs (see Decisions) |
-| `docs/ai-coding/dod-quality-gates.md` | 106 | lines 54-64 (Shipper's DoD definition, to relocate), lines 69-72 (Disagreement rule, canonical, stays) |
-| `docs/ai-coding/openspec-setup-guide.md` | 81 | already `../../`-depth (under `docs/ai-coding/`) |
+| `docs/practice/ai-coding/dod-quality-gates.md` | 106 | lines 54-64 (Shipper's DoD definition, to relocate), lines 69-72 (Disagreement rule, canonical, stays) |
+| `docs/practice/ai-coding/openspec-setup-guide.md` | 81 | already `../../`-depth (under `docs/practice/ai-coding/`) |
 | `docs/environment-setup.md` | 145 | currently `../`-depth (directly under `docs/`) |
 | `docs/dual-cli/` | 6 files | moves wholesale, contents untouched (proposal, Rabbit-holes) |
 | `skills/decision-package/references/discovery-flow.md` §3 | — | the gap-analysis owner `methods/gap-analysis.md` points to |
@@ -43,13 +43,13 @@ per the repo's existing convention, needing no edit):
 - `AGENTS.md` (lines 27, 58, 63, 71 — all `docs/dual-cli/...`)
 - `THIRD_PARTY_NOTICES.md` (line 10 — `docs/environment-setup.md`)
 - `hooks/bindings.md` (line 86 — `docs/dual-cli/compatibility.md`)
-- `skills/project-setup/SKILL.md` (line 40 — `docs/ai-coding/openspec-setup-guide.md`)
+- `skills/project-setup/SKILL.md` (line 40 — `docs/practice/ai-coding/openspec-setup-guide.md`)
 - `skills/decision-package/SKILL.md` (line 87 — `docs/how-we-work/business/`)
 - `skills/semantic-consulting-coach/SKILL.md` (7 sites) and its 3 `references/*.md` files (12 sites
   total) — all `docs/how-we-work/business/...`
-- `docs/ai-coding/dod-quality-gates.md` (4 sites) and `docs/ai-coding/build-lifecycle.md` (4 sites) —
+- `docs/practice/ai-coding/dod-quality-gates.md` (4 sites) and `docs/practice/ai-coding/build-lifecycle.md` (4 sites) —
   internal cross-links into `../how-we-work/...` and same-dir `openspec-setup-guide.md`
-- `docs/ai-coding/opsx-runbook.md` (1 site — same-dir `openspec-setup-guide.md`)
+- `docs/practice/ai-coding/opsx-runbook.md` (1 site — same-dir `openspec-setup-guide.md`)
 - `.opencode/**` mirrors every `skills/**` hit above — **regenerated, never hand-edited** (README.md
   Repository-structure block: `make bundles`)
 
@@ -205,7 +205,7 @@ New planning-level choices made while deriving this PLAN:
   Changes (single destination file named once, `engagement-lifecycle.md`), not reopened here; the
   only planning-level addition is fixing the exact anchor (`#repeat-clients`) so the two live inbound
   links (`skills/semantic-consulting-coach/references/engagement-model.md` line 80,
-  `docs/ai-coding/dod-quality-gates.md`'s sibling `solution-shipper.md`-style citations once moved)
+  `docs/practice/ai-coding/dod-quality-gates.md`'s sibling `solution-shipper.md`-style citations once moved)
   resolve to that section rather than a whole-file link.
 
 - **Heading-anchor preservation rule.** Every moved file's internal heading text stays byte-identical
@@ -220,7 +220,7 @@ New planning-level choices made while deriving this PLAN:
   `docs/environment-setup.md` (currently depth-1 under `docs/`, using single `../` links to
   `README.md`, `AGENTS.md`, `spine/`, `openspec/specs/`, `prompts/`, `skills/`) into
   `docs/environment/setup.md` (depth-2) requires every one of those single-`../` links to become
-  `../../`. Moving `docs/ai-coding/openspec-setup-guide.md` (already depth-2, using `../../` links)
+  `../../`. Moving `docs/practice/ai-coding/openspec-setup-guide.md` (already depth-2, using `../../` links)
   into `docs/environment/openspec-setup-guide.md` (also depth-2) requires **no change** to its
   outbound links — same depth, different depth-2 parent. `docs/dual-cli/` moves wholesale alongside
   `setup.md` into the same `docs/environment/` parent, so `setup.md`'s same-directory links to
@@ -328,7 +328,7 @@ sound — only two small items had no successor anywhere and are now folded into
 old `ai-coding-methodology.md` §7 practitioner-experience notes (roadmap-driven development, planning
 mode first, stating project structure upfront, a "needs manual attention" list) and one `/context`
 token-monitoring tip from the old `ai-coding-setup-guide.md` §8 troubleshooting table. Both land in
-`docs/ai-coding/opsx-runbook.md`, adapted to the current three-wrapper agent model. Everything else
+`docs/practice/ai-coding/opsx-runbook.md`, adapted to the current three-wrapper agent model. Everything else
 checked (v1's other content, `two-tier-methodology.md`→`build-lifecycle.md`, the engagement docs'
 two rewrites, `dod-quality-gates.md`, `opsx-runbook.md`, `openspec-setup-guide.md`,
 `environment-setup.md`, `dual-cli/`) carried forward cleanly with no loss.

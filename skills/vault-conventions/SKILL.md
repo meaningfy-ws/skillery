@@ -192,7 +192,7 @@ and their linking, machine-neutral paths, staging and the skill-change note, and
 of a vault session, and the table check before saving.
 
 **Delegates:** Obsidian syntax and file operations → external `obsidian@obsidian-skills`; the owner
-profile and write rules → the vault's `AGENTS.md`; creating a vault → [`vault-setup`](../vault-setup/SKILL.md).
+profile and write rules → the vault's `AGENTS.md`; creating a vault → `vault-setup`.
 
 **Related:** `vault-setup`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`,
 `vault-tidy`, `vault-planning`, `vault-daily`.

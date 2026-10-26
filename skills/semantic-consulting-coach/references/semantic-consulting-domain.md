@@ -70,7 +70,7 @@ and *Research & Development*. Frameworks/standards in play: **SEMIC Style Guide*
 four-step funnel (*Discovery → Proposal → Implementation → Delivery*); the
 internal model is presale plus Discovery & Onboarding (Light/Deep tiers) and
 Semantic Layer adoption's building blocks (see
-[`docs/ai-sales/engagement-lifecycle.md`](../../../docs/ai-sales/engagement-lifecycle.md)
+[`engagement-lifecycle.md`](engagement-lifecycle.md)
 and `engagement-model.md`'s coaching frame). They are different axes (a
 sales/delivery funnel vs. a free→paid value structure). A recurring coaching
 task is aligning the public story with the internal boundaries so the paid

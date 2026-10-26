@@ -3,7 +3,7 @@ name: writing-antipatterns
 description: The register/genre-conditional catalogue of how writing fails — a genre map (Tutorial, How-to, Reference, Explanation, Decision, Decision record, Contract/specification, Coaching dialogue), a short list of defects that apply regardless of genre, and an inversion matrix of antipatterns whose correctness depends on genre (a rhetorical question is craft in an explainer and a defect in an ADR). Use when reviewing prose for a specific genre, when a rule from one writing skill seems to be misapplied in another context, or when asked "why does this read badly" for a document that mixes genres. Trigger on "antipattern", "why is this hard to read", "review this document/plan", "does this rule apply here", "genre mismatch". Cited by every writing-family skill; never restated by them.
 license: Apache 2.0
 metadata:
-  purpose: writing
+  purpose: content
   area: cross-cutting
   subject: generic
   posture: reusable
@@ -64,8 +64,8 @@ plan** (no current skill owns a team's own working plan; it defaults to Referenc
 reads as inventory) — noted here, not solved here; a future `plan-writing` skill is the fix.
 Model- and diagram-structure antipatterns (free strings where a controlled vocabulary belongs,
 god-classes, unlabelled duplication in a C4 diagram) are a **different axis** — prose vs model
-structure — owned by [`modelling-conventions`](../modelling-conventions/SKILL.md) and
-[`architecture`](../architecture/SKILL.md) respectively, cited here, never duplicated.
+structure — owned by `modelling-conventions` and
+`architecture` respectively, cited here, never duplicated.
 
 ## Unguarded defects — apply in every genre, no lookup needed
 
@@ -163,13 +163,13 @@ self-application check against the catalogue's own output — see
 **Owns:** the genre map (the cross-cutting synthesis no other skill states), the unguarded defect
 list, and the canonical inversion matrix of genre-conditional antipatterns.
 
-**Does NOT own:** the voice profile ([`company-voice.md`](../executive-communication/references/company-voice.md)),
+**Does NOT own:** the voice profile (`meaningfy-voice`),
 the Diátaxis quadrant definitions or the craft moves that realise them
-([`explanatory-writing`](../explanatory-writing/SKILL.md)), doc placement/form
-([`technical-writing`](../technical-writing/SKILL.md)), the persuasive structure method
-([`executive-communication`](../executive-communication/SKILL.md)), or model/diagram-structure
-antipatterns ([`modelling-conventions`](../modelling-conventions/SKILL.md),
-[`architecture`](../architecture/SKILL.md)).
+(`explanatory-writing`), doc placement/form
+(`technical-writing`), the persuasive structure method
+(`executive-communication`), or model/diagram-structure
+antipatterns (`modelling-conventions`,
+`architecture`).
 
-**Related:** `technical-writing`, `explanatory-writing`, `executive-communication`,
+**Related:** `meaningfy-voice`, `technical-writing`, `explanatory-writing`, `executive-communication`,
 `proposal-writing`, `decision-package`, `architecture`, `semantic-consulting-coach`.

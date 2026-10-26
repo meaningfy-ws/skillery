@@ -44,8 +44,8 @@ set — deliberately deferred, see *Known gaps*.
 
 The corrected model (seed §2-§5) is legible only to someone who reads four separate documents and
 holds the whole thing in their head: the commercial funnel lives in `docs/engagement/`, the build
-loop in `docs/ai-coding/two-tier-methodology.md`, the dual delivery DoD in
-`docs/ai-coding/dod-quality-gates.md`, and the roles/RACI in a fifth new place. Nobody joining
+loop in `docs/practice/ai-coding/two-tier-methodology.md`, the dual delivery DoD in
+`docs/practice/ai-coding/dod-quality-gates.md`, and the roles/RACI in a fifth new place. Nobody joining
 Meaningfy — and no agent orienting itself — has an entry point that shows presale → P0-advisory →
 P1 → P2 service-line contract → Delivery & Release → repeat-client relationship as one continuous
 flow, and nobody has a view filtered to *their own* role: which stages they touch, which skills they
@@ -99,7 +99,7 @@ from the repository README in one hop.
 - **DEC-2**: Paths are `docs/how-we-work/README.md` (the map) and
   `docs/how-we-work/playbooks/<role>.md` — six files: `sales-presales.md`,
   `technical-consultant.md`, `work-shaper.md`, `solution-architect.md`, `solution-builder.md`,
-  `solution-shipper.md`. One folder, sibling to `docs/engagement/` and `docs/ai-coding/`, because
+  `solution-shipper.md`. One folder, sibling to `docs/engagement/` and `docs/practice/ai-coding/`, because
   the map spans both and belongs to neither. Playbooks sit with the flow they filter, **not** with
   epic 4's role definitions — a playbook is a view of the lifecycle, the role definition is a view
   of the organisation, and co-locating them would invite the two to merge.
@@ -289,9 +289,9 @@ Notes on the first three, which are the ones most likely to be misread as oversi
   genuinely needed, it is **named in *Known gaps* and nowhere else**: naming is in scope, building
   and designing are not.
 - **No edits to lifecycle content owned elsewhere**: `docs/engagement/**`,
-  `docs/ai-coding/build-lifecycle.md` (`define-meaningfy-lifecycle` renames this from
+  `docs/practice/ai-coding/build-lifecycle.md` (`define-meaningfy-lifecycle` renames this from
   `two-tier-methodology.md` in the same round — follow the content, not the pre-rename path),
-  `docs/ai-coding/dod-quality-gates.md`,
+  `docs/practice/ai-coding/dod-quality-gates.md`,
   `skills/semantic-consulting-coach/references/engagement-model.md`, or epic 4's roles/RACI doc.
   Link lines only, per DEC-14. If one of those documents is wrong, that is a finding for its owning
   epic.
@@ -340,7 +340,7 @@ No breaking changes: every edit is additive, and no existing document's content 
   direction) and the pointer-discipline rule that no normative lifecycle statement originates in
   `docs/how-we-work/`.~~ **(superseded)** This conflicted with `define-ai-domains`'s own DEC-3/DEC-12,
   which retires `docs/how-we-work/` entirely and redistributes its content across three named
-  `ai-*` domains (`docs/ai-coding/`, `docs/ai-sales/`, `docs/ai-consulting/`), each carrying its own
+  `ai-*` domains (`docs/practice/ai-coding/`, `docs/practice/ai-sales/`, `docs/practice/ai-consulting/`), each carrying its own
   runbook, DoD, and role-filtered playbooks. This capability's requirements assert properties of a
   tree (`docs/how-we-work/`) that no longer exists once that EPIC lands — this change was still
   in-progress and unarchived at the time, so the capability was never merged into
@@ -379,4 +379,4 @@ cites them rather than modifying them.
   checkable rather than remembered.
 - **Reader-facing surface change**: the root README gains a new recommended first stop for
   "how does Meaningfy actually work", which shifts the default onboarding path away from
-  `docs/ai-coding/` for non-Builder roles.
+  `docs/practice/ai-coding/` for non-Builder roles.

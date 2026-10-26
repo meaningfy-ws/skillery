@@ -20,7 +20,7 @@ Mail, calendar, the vault and the company memory each know part of what today ne
 them together. The owner reads it, ticks, edits and decides; replies wait as drafts until the owner
 sends them. The note's exact layout is in
 [`references/daily-note-format.md`](references/daily-note-format.md); file shapes and memory etiquette
-come from [`vault-conventions`](../vault-conventions/SKILL.md).
+come from `vault-conventions`.
 
 ## Before anything
 
@@ -64,7 +64,7 @@ it; every other section is still written.
 
 ## Voice of the drafts
 
-Follow the company voice (`company-voice.md` in the `executive-communication` skill's references; if
+Follow the company voice (`meaningfy-voice`; if
 that skill is not installed: British English, neutral, factual, plain). Pay attention to the person: when a message carries attitude, implication or
 emotion (frustration, urgency, praise, a veiled worry), the draft acknowledges it in one sentence and
 then answers the substance. Never mirror hostility, never promise what the owner has not promised.
@@ -96,9 +96,9 @@ interactive run does.
 waiting-on-replies, and reply drafts.
 
 **Delegates:** file shapes, the owner profile's place and memory etiquette →
-[`vault-conventions`](../vault-conventions/SKILL.md); the week's plans →
-[`vault-planning`](../vault-planning/SKILL.md); the voice →
-[`company-voice.md`](../executive-communication/references/company-voice.md); connectors, permission
-settings and the scheduler → [`vault-setup`](../vault-setup/SKILL.md).
+`vault-conventions`; the week's plans →
+`vault-planning`; the voice →
+`meaningfy-voice`; connectors, permission
+settings and the scheduler → `vault-setup`.
 
-**Related:** `vault-planning`, `vault-conventions`, `vault-setup`, `vault-capture`, `vault-resume`.
+**Related:** `meaningfy-voice`, `vault-planning`, `vault-conventions`, `vault-setup`, `vault-capture`, `vault-resume`.

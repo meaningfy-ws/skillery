@@ -4,7 +4,7 @@ description: Clean Architecture and Cosmic Python guidance for well-tested, laye
 license: Apache 2.0
 metadata:
   version: "1.0.0"
-  purpose: building
+  purpose: software-development
   area: coding
   subject: python
   posture: precise
@@ -160,7 +160,7 @@ A small service stays **one level** — just the four layers. A larger project i
   imports none of them; it has no `entrypoints/`.
 - Boundaries are **enforced, not hoped**: import-linter contracts for per-component layers, a tier hierarchy
   across components, and `commons` isolation — owned by
-  [`project-setup`](../project-setup/references/architecture-guardrails.md), which also sets the **grooming
+  `project-setup` (architecture guardrails), which also sets the **grooming
   cadence** (revise the contracts on every refactor / new component; the agent asks the developer
   periodically whether they still fit).
 
@@ -365,13 +365,12 @@ This approach requires **team discipline**. One developer ignoring layers breaks
 
 ### Documentation-First Methodology (Stream Coding)
 
-- The **stream-coding** skill (external — see `docs/environment/setup.md`) owns the documentation-first method: 40/40/20 split, mandatory spec sections, Rule of Divergence.
+- The **stream-coding** skill (external, installed separately) owns the documentation-first method: 40/40/20 split, mandatory spec sections, Rule of Divergence.
 - The **clarity-gate** skill owns AI-ready specs + the 13-item Clarity Gate and scoring rubric.
-- Meaningfy adaptation notes live in `docs/engineering-standards/references/` (`stream-coding-notes.md`, `strategic-blueprint-checklist.md`).
 
 ### Company Standards & Principles
 
-- The full standard in prose: `docs/engineering-standards/coding-prompt.md` — the full Meaningfy engineering culture (project structure, layering, SOLID, CI/CD, security). **This SKILL.md is the operational version of that standard.**
+- The full standard in prose is Meaningfy's engineering coding prompt (project structure, layering, SOLID, CI/CD, security). **This SKILL.md is the operational version of that standard.**
 
 ---
 

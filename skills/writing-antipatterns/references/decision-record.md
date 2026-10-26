@@ -1,7 +1,7 @@
 # Decision record
 
 **Register signature:** context first, options visible, consequences named. **Owning skill:**
-[`architecture`](../../architecture/SKILL.md) (ADR).
+`architecture` (ADR).
 
 Pointer table only — full entries live in [`inversion-matrix.md`](inversion-matrix.md). See
 [`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U8), which apply here too.

@@ -9,6 +9,124 @@ of record for a release is the git tag `vX.Y.Z`.
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
+## [Unreleased]
+
+## [3.3.0] - 2026-10-27
+
+### Action needed (users)
+
+- **opencode installs now come from the `dist` branch too:** replace `#develop` with `#dist` in the
+  `npm exec --package='git+https://github.com/meaningfy-ws/skillery.git#…'` command and in
+  `npx skills add meaningfy-ws/skillery#…`. Only released skills and agents are installable on
+  either CLI.
+- **Claude Code installs now come from the `dist` branch.** `develop` no longer carries the
+  generated `bundles/` tree, so a marketplace added from `meaningfy-ws/skillery` stops loading the
+  bundles. Re-add it once: `/plugin marketplace remove meaningfy-skillery`, then
+  `/plugin marketplace add meaningfy-ws/skillery#dist`, then reinstall your bundles
+  (`/plugin install <bundle>@meaningfy-skillery`). `dist` moves at each release; later updates work as
+  before with `/plugin marketplace update`. opencode installs are unchanged.
+- **`proposal-writing` and `estimation` moved from `meaningfy-consulting` to the new
+  `meaningfy-sales` bundle**, which requires `meaningfy-consulting`. If you use either skill, install
+  `meaningfy-sales`: on Claude, `/plugin install meaningfy-sales@meaningfy-skillery`; on opencode,
+  `skillery-opencode install meaningfy-sales`. `meaningfy-consulting` keeps
+  `semantic-consulting-coach`, `decision-package` and `executive-communication`.
+
+### Added
+
+- **`meaningfy-voice`** in `meaningfy-core`: the Meaningfy company voice profile as its own
+  foundation skill, so every skill that writes for Meaningfy loads the same voice. Installing
+  `meaningfy-core` brings it.
+- **Three agents:** `system-architect` and `conceptual-modeller` (in `meaningfy-architecture`) are
+  thinking partners that design a system or build a domain model with you, saying what they think
+  and plan before each step; `proposal-writer` (in `meaningfy-sales`) turns a client's requirements
+  into a proposal or offer email. All three are `experimental`.
+- **[`docs/future-features.md`](docs/future-features.md):** every feature still to build, which use
+  cases it serves, the material it needs, and the change that will build it. It replaces the roadmap
+  in `docs/catalogue-architecture.md`.
+- **Voice channel placeholders** in `meaningfy-voice` (`references/channels/`: LinkedIn, blog,
+  offer, internal message); until each is written, the default voice applies.
+- **Three more use cases:** advisory engagement (UC-W22), client delivery and project management
+  (UC-W23) and content creation for LinkedIn and blogs (UC-W24); every skill now serves at least one
+  use case.
+- **The use-case catalogue** (`use-cases/`, 21 White use cases) and its gap map
+  [`docs/use-cases.md`](docs/use-cases.md): what the catalogue serves today, by area and status.
+- **Four `area` facet values:** `operations`, `business`, `legal`, `design`.
+- **[`docs/catalogue-architecture.md`](docs/development/catalogue-architecture.md):** the catalogue's model, where
+  each part lives, and the proposed target bundles, agent roster and roadmap.
+- **[`evals/README.md`](tests/evals/README.md):** how to run a skill's trigger set or an outcome suite, and
+  that every model run is approved with its estimate first.
+
+### Changed
+
+- **Every use case is written out in full:** who is served and how, the steps (with the points
+  where you decide), what comes out, how success is shown, how a miss becomes a fix, and what is
+  released or planned. Each says how confident its text is and what only the owner can answer.
+- **`project-setup` now copies the OpenSpec `meaningfy` schema when installed:** the schema ships in
+  the skill (`assets/openspec-schema/meaningfy/`); the old path never resolved.
+- **`semantic-consulting-coach` carries Meaningfy's engagement lifecycle**
+  (`references/engagement-lifecycle.md`, moved from `docs/ai-sales/`), so an installed coach has
+  the commercial model it applies.
+- **`linkml-engineering` ships its Neo4j generators** in `scripts/linkml_neo4j/`, so an installed
+  skill has them. `project-setup`'s `scaffold.sh --neo4j` takes their folder from
+  `--linkml-generators` (or `LINKML_NEO4J_DIR`) when the skills are installed.
+- **Installed skills no longer carry links that lead nowhere:** links into this repo's docs and
+  five broken links to old skill paths are gone; each skill states the fact or names the skill.
+- **The README's documentation section has three doors:** Install, Use (starting from the use cases)
+  and Develop.
+- **UC-W8, UC-W19 and UC-W20 are full use cases:** stakeholders, preconditions, minimal guarantees
+  and a main success scenario, which their agents' scenarios follow. UC-W19 and UC-W20 are now
+  `covered`; UC-W8 stays `partial` until the company-style PDF exists.
+- **`linkml-engineering` and `modelling-conventions` have trigger probes** against their
+  neighbours, so a request about LinkML authoring or modelling conventions is checked to reach the
+  right skill.
+- **Related links between skills are now reciprocal or deliberately one-way:** nine pairs gained
+  their return link; eleven stay one-way as a "see also" sentence.
+
+### Action needed (contributors)
+
+- **A use case follows [`docs/development/use-case-template.md`](docs/development/use-case-template.md):**
+  the Cockburn core plus Extensions, Out of Scope, Artefacts, Evidence, Feedback Loop, Slices and Open
+  Points (with a confidence rating); `use_case_catalogue` fails a missing section.
+- **A skill or agent in no bundle is work in progress, not an error.** It may live on `develop`; the
+  catalogue map lists it under "Unreleased (WIP)", `dist` leaves it out of every release, and nothing
+  released may delegate to or load it (`wip_isolation`). Listing it in `bundles.yaml` releases it.
+- **Folders moved (git history follows each file):** `docs/development-method.md` →
+  `docs/development/README.md`, the method's one home, which also holds `docs/catalogue-architecture.*`,
+  `spec/*.md` (now `creating-skills.md`, `governance.md`, `agent-template.md`, `skill-template.md`,
+  `agent-skills-spec.md`), the spine docs (`spine/README.md` → `spine.md`) and the hook docs;
+  `spine/golden-thread.md` → `skills/epic-planning/references/`; `spine/openspec-version.txt` →
+  `openspec/`; `hooks/inventory.yaml` → `hooks.yaml`; `prompts/global-prompt.md` →
+  `docs/environment/` (the AGENTS template is `project-setup`'s); `evals/` → `tests/evals/`;
+  `docs/{ai-coding,ai-consulting,ai-sales,engineering-standards,philosophy}/` and
+  `docs/roles-and-raci.md` → `docs/practice/`; `tools/linkml_neo4j/` →
+  `skills/linkml-engineering/scripts/linkml_neo4j/`. Only `skills/`, `agents/`, `use-cases/`,
+  `openspec/`, `docs/`, `tools/`, `tests/`, `.github/` and `.claude-plugin/` may sit at the top level
+  (`top_level_folders`), and a skill may link nothing outside its own folder (`cross_skill_paths`).
+- **`bundles/` is no longer committed:** it is git-ignored, `make bundles` creates it locally, and
+  `.github/workflows/dist.yml` publishes it on `dist` at each release. To test unreleased work on
+  Claude Code, push a throwaway branch with the tree force-added (`git add -f bundles`).
+- **The `purpose` facet now names Meaningfy's activities:** `software-development`, `modelling`,
+  `client-delivery`, `advising`, `content`, `offers`, `proposals`, `crm`, `devops`, `knowledge`
+  (`facets.yaml`). `writing`, `offering`, `planning`, `building`, `quality` and `delivery` are gone;
+  every skill and agent is re-tagged, and a new skill or agent picks the activity it serves.
+- A skill never links into another skill's folder; it names the skill (`cross_skill_paths` in
+  `make validate`). A resource two skills need moves into a foundation skill.
+- A file in `use-cases/` must pass `use_case_catalogue`; `make skill-inventory` renders the gap map.
+- **The `dist` branch** is published by `.github/workflows/dist.yml` on each release tag `v*`: the
+  release's tree plus the generated `bundles/` links, one appended commit per release, tagged
+  `<tag>-dist`. Its commits never enter `develop`; never edit or force-push it.
+- **External dependencies live in [`dependencies.yaml`](dependencies.yaml)**, one entry each (source,
+  pin, provenance, opencode status, per-CLI install). The dependency tables in
+  `docs/environment/dual-cli/compatibility.md` and `mcp-setup.md` are generated from it by
+  `make skill-inventory`; edit the register, not the tables (`dependencies_register` and the drift
+  test in `make validate`).
+- A `partial` or `missing` use case must name a `change` listed in `docs/future-features.md`
+  (`use_case_changes_registered` in `make validate`).
+- Every skill and agent must appear in some use case's `served_by` (`use_case_coverage` in
+  `make validate`); a new one comes with its use case.
+- A skill's trigger set lives in `evals/triggers/<skill>.json` (20 queries, seeded from its probes);
+  `executive-communication` has the first one.
+
 ## [3.2.0] - 2026-10-26
 
 ### Action needed (users)

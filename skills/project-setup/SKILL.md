@@ -3,7 +3,7 @@ name: project-setup
 description: Scaffold or modernise a Meaningfy-standard repo and PROJECT the Meaningfy spine into it — a top-level package (no src/), Poetry + dedicated root tool configs, cosmic-python layering with import-linter guardrails, TDD+BDD tests, an AGENTS.md-canonical agentic setup (AGENTS.md is canonical; CLAUDE.md is a thin pointer that imports it, never a symlink), the openspec/ spine (config + pinned meaningfy schema + /opsx:* commands + golden thread), three archetypes (product/library/doc-only) with fixed gate profiles, conditional model/ and CD seam, Antora docs, infra, and CI. Use when starting a new repo or bringing an existing one up to standard. Trigger on "set up a new project", "scaffold a repo", "bootstrap a Python project", "new Meaningfy project", "initialise project structure", "add the standard tooling/docs/CI", "project the spine / set up openspec", "modernise/revamp an existing repo", "bring this project up to standard", "gap analysis against Meaningfy standards".
 license: Apache 2.0
 metadata:
-  purpose: building
+  purpose: software-development
   area: coding
   subject: python
   posture: precise
@@ -32,18 +32,18 @@ rather than restating them:
 | Layering, SOLID, the four patterns, CI tools | `cosmic-python` |
 | Minimal code — YAGNI, avoid over-engineering | `ponytail` (third-party) |
 | System design, C4, ADRs, contracts | `architecture` |
-| The domain `model/` (product) | [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md) |
-| LinkML gates, `make generate-models` automation, per-module output (if the project uses LinkML) | [`../linkml-engineering/SKILL.md`](../linkml-engineering/SKILL.md) |
-| Deploy / versioned image (CD seam) | [`../ci-cd-delivery/SKILL.md`](../ci-cd-delivery/SKILL.md) |
-| Release lifecycle — versioning, release notes, PyPI publish, `SECURITY.md` | [`../meaningfy-release/SKILL.md`](../meaningfy-release/SKILL.md) |
+| The domain `model/` (product) | `conceptual-modelling` |
+| LinkML gates, `make generate-models` automation, per-module output (if the project uses LinkML) | `linkml-engineering` |
+| Deploy / versioned image (CD seam) | `ci-cd-delivery` |
+| Release lifecycle — versioning, release notes, PyPI publish, `SECURITY.md` | `meaningfy-release` |
 | EPIC (work shape) + PLAN, the spine workflow | `epic-planning` + the `/opsx:*` commands |
 | Docs writing, AsciiDoc/Antora prose | `technical-writing` |
 | Commits, branches, PRs | `meaningfy-git-workflow` |
 | TDD discipline while implementing | `superpowers:test-driven-development` |
 
-The spine conventions it lays down are documented in [`../../spine/README.md`](../../spine/README.md);
-the target layout in [`../../docs/environment/openspec-setup-guide.md`](../../docs/environment/openspec-setup-guide.md).
-**This skill DOES; those docs DESCRIBE.**
+The spine it lays down is OpenSpec with the `meaningfy` schema (the golden thread is owned by
+`epic-planning`); the projection mechanics are in
+[`references/spine-projection.md`](references/spine-projection.md).
 
 ## Modes
 
@@ -73,21 +73,21 @@ hold: "automate almost everything" + TDD.** The archetype decides the *condition
   needed elements, what "good" means) before scaffolding gates — never assume. See
   [`references/interview.md`](references/interview.md) Q2.2.
 - **Conditional `model/`** (product): scaffolds `model/` (LinkML default) — the model itself owned by
-  [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md). **When the project uses
+  `conceptual-modelling`. **When the project uses
   LinkML**, also scaffold the LinkML layer owned by
-  [`../linkml-engineering/SKILL.md`](../linkml-engineering/SKILL.md): the `make generate-models`
+  `linkml-engineering`: the `make generate-models`
   automation (incl. diagrams), custom generator templates, **per-module dedicated-artefact output** (one
   artefact set per module, not unified), and the **quality gates chosen with the user** (lint-no-mute,
   codegen-freshness, example round-trip). **When the project does not use LinkML**, skip this layer
   entirely — do not scaffold LinkML gates or automation.
 - **CD seam** (deployable product): renders the `ci-cd-delivery` CD templates **only after DevOps
   ratifies §6**; until then a clearly-marked `deploy.yaml` TODO stub + boundary docs (`--deployable`).
-- **Release seam** (per archetype — content owned by [`../meaningfy-release/SKILL.md`](../meaningfy-release/SKILL.md)):
+- **Release seam** (per archetype — content owned by `meaningfy-release`):
   **library** projects a `release.yml` stub (release-please + PyPI Trusted Publishing) + `SECURITY.md`;
   **product** points at the `ci-cd-delivery` GHCR image path + gets `SECURITY.md`; **doc-only** gets
   neither. This skill owns *when/into what repo*; the release content/intent lives in `meaningfy-release`.
-- **`clarity-gate` is NOT a CI step** — it is a human/agent semantic gate (the automation boundary is
-  pinned in [`../../docs/ai-coding/dod-quality-gates.md`](../../docs/ai-coding/dod-quality-gates.md)).
+- **`clarity-gate` is NOT a CI step** — it is a human/agent semantic gate (the automation boundary, in
+  `references/ci-and-infra.md`).
 
 > **Non-negotiables** (hardest to reverse, most-violated by default): no `/src`, all tool config in
 > the root, **canonical `AGENTS.md` with a thin `CLAUDE.md` pointer, never a symlink** (D8), a
@@ -110,8 +110,11 @@ references in step 4 still govern each piece.
    ```
    scripts/scaffold.sh -p <package> -n "<Project Name>" -a <product|library|doc-only> \
        [--deployable] [--minimal] [--python 3.12] [--slug my-project] [--org meaningfy-ws] \
-       [--branch develop] [--no-docs] [--no-infra] [--no-ci]
+       [--branch develop] [--no-docs] [--no-infra] [--no-ci] \
+       [--neo4j --linkml-generators <linkml-engineering skill folder>/scripts/linkml_neo4j]
    ```
+   With `--neo4j`, pass the installed `linkml-engineering` skill's folder: each skill is installed on
+   its own, so the scaffolder cannot find a sibling skill by itself.
    It renders every template, creates the package/tests/`.claude`/**`openspec/`** trees, renders
    **`AGENTS.md`** (canonical) and the **`CLAUDE.md`** pointer as regular files, copies the
    **pinned** `meaningfy` schema, and runs `poetry lock`.
@@ -133,7 +136,7 @@ references in step 4 still govern each piece.
    the `/opsx:*` workflow resolve, then summarise what was created, what is stubbed, and next steps:
    ```
    npx -y @fission-ai/openspec@1.4.1 init --tools claude --profile core
-   /plugin marketplace add meaningfy-ws/skillery
+   /plugin marketplace add meaningfy-ws/skillery#dist
    /plugin install meaningfy-core@meaningfy-skillery
    /plugin install meaningfy-building@meaningfy-skillery
    /plugin install superpowers@claude-plugins-official
@@ -177,8 +180,11 @@ harness, the AGENTS.md-canonical agentic files, the `openspec/` spine (config + 
 thread), Antora skeleton, CI/infra templates, the conditional `model/` home and the CD TODO stub, and
 the setup checklists.
 **Delegates:** layering rationale → `cosmic-python`; system design/ADRs → `architecture`; the domain
-model + generation → [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md); CD/release
-content → [`../ci-cd-delivery/SKILL.md`](../ci-cd-delivery/SKILL.md); EPIC/PLAN content + spec
+model + generation → `conceptual-modelling`; CD/release
+content → `ci-cd-delivery`; EPIC/PLAN content + spec
 stewardship → `epic-planning` and the spine; doc prose → `technical-writing`; git mechanics →
 `meaningfy-git-workflow`. This skill creates the *containers*; those skills fill them.
-**Related:** all of the above, plus the external `superpowers` and `stream-coding` skills.
+**Related:** the delegation targets above, plus `ci-cd-delivery` (the CD side of the CI this skill
+scaffolds), `meaningfy-release` (the release workflow a scaffolded repo adopts), `linkml-engineering`
+(its gates and per-module layout, when the project uses LinkML), and the external `superpowers` and
+`stream-coding` skills.

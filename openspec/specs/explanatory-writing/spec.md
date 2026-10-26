@@ -36,7 +36,7 @@ trace. It SHALL NOT own document structure (`executive-communication`), doc plac
 ### Requirement: The new skill inherits the house voice rather than forking it
 
 The knob defaults SHALL be cross-linked to their authoritative house sources — primary
-[`company-voice.md`](../../../skills/executive-communication/references/company-voice.md),
+[`company-voice.md`](../../../skills/meaningfy-voice/references/company-voice.md),
 secondary the Writing-style section of
 [`technical-writing/SKILL.md`](../../../skills/technical-writing/SKILL.md) and
 [`clarity-gate/SKILL.md`](../../../skills/clarity-gate/SKILL.md) — and SHALL NOT restate them.

@@ -7,16 +7,16 @@
 
 ## Context
 
-`docs/ai-coding/` today holds two live, contradictory build-plane docs: `ai-coding-runbook.md` (+
+`docs/practice/ai-coding/` today holds two live, contradictory build-plane docs: `ai-coding-runbook.md` (+
 `ai-coding-methodology.md`, `ai-coding-setup-guide.md`) describing a retired single-file `EPIC.md`
 model and naming two agents (`gherkin-writer`, `documenter`) that no longer exist in `agents/`; and
 `two-tier-methodology.md`, which is right about artifacts but has no diagram, a four-bullet PROJECT
 tier, and a stale `CD / release | ci-cd-delivery (EPIC-10, future)` ownership row. Six live files link
 into `two-tier-methodology.md` by name (verified by grep): `docs/engagement/README.md` (lines 22,
-30), `docs/engagement/phases.md` (line 60), `docs/ai-coding/opsx-runbook.md` (line 6),
-`docs/ai-coding/openspec-setup-guide.md` (line 9), `docs/ai-coding/dod-quality-gates.md` (line 8).
+30), `docs/engagement/phases.md` (line 60), `docs/practice/ai-coding/opsx-runbook.md` (line 6),
+`docs/practice/ai-coding/openspec-setup-guide.md` (line 9), `docs/practice/ai-coding/dod-quality-gates.md` (line 8).
 
-`tools/repo_lint/lint.py` currently: (a) lists `docs/ai-coding/` in `FROZEN_GLOBS` (a 1-tuple), which
+`tools/repo_lint/lint.py` currently: (a) lists `docs/practice/ai-coding/` in `FROZEN_GLOBS` (a 1-tuple), which
 exempts the whole directory from prose checks including `orphan_agent_references`; (b)
 `orphan_agent_references` (line ~255) already skips frozen paths, `EPIC-setup*` files, and
 `environment-setup.md` by name, but has **no exemption for active `openspec/changes/` trees** — only
@@ -68,9 +68,9 @@ cited, not re-argued, below.
   that is renamed but still narratively wrong (still "two-tier", still missing ADLC/MDLC-lite), which
   is exactly the confusion this EPIC exists to remove.
 - **`FROZEN_GLOBS` edit is a deletion of the tuple's only element, not a rewrite of the mechanism.**
-  `FROZEN_GLOBS = ("docs/ai-coding/",)` becomes `FROZEN_GLOBS = ()` (empty tuple), with the comment
+  `FROZEN_GLOBS = ("docs/practice/ai-coding/",)` becomes `FROZEN_GLOBS = ()` (empty tuple), with the comment
   above it (`# Files/dirs whose content must never be edited (frozen)...`) updated to note that
-  `docs/ai-coding/` was the only entry and is no longer frozen as of this change, and why (DEC-12).
+  `docs/practice/ai-coding/` was the only entry and is no longer frozen as of this change, and why (DEC-12).
   Keeping it as an empty tuple (rather than deleting the constant) preserves the mechanism for any
   future freeze without speculative re-engineering (YAGNI).
 - **`orphan_agent_references` exemption is scoped to the function's own file loop, mirroring the
@@ -90,7 +90,7 @@ cited, not re-argued, below.
 Worked sequencing for the file-level change (idempotent — re-running any step on an already-updated
 repo is a no-op or a clean error, never silent corruption):
 
-1. `git mv docs/ai-coding/two-tier-methodology.md docs/ai-coding/build-lifecycle.md`.
+1. `git mv docs/practice/ai-coding/two-tier-methodology.md docs/practice/ai-coding/build-lifecycle.md`.
 2. Rewrite `build-lifecycle.md` in place: retitle, drop "two-tier" framing (DEC-1), expand PROJECT
    tier into named steps citing owners (DEC-4, DEC-5, DEC-6), add the method-spine passage (DEC-17),
    add the governance paragraph (DEC-18), redraw the Mermaid diagram and responsibility table
@@ -101,7 +101,7 @@ repo is a no-op or a clean error, never silent corruption):
    current file (DEC-15).
 3. Retarget the six inbound links (mechanical `s/two-tier-methodology/build-lifecycle/` at each of the
    six call sites listed in Context — no other text in those files changes, per the EPIC's No-gos).
-4. `git rm docs/ai-coding/ai-coding-methodology.md docs/ai-coding/ai-coding-runbook.md docs/ai-coding/ai-coding-setup-guide.md`.
+4. `git rm docs/practice/ai-coding/ai-coding-methodology.md docs/practice/ai-coding/ai-coding-runbook.md docs/practice/ai-coding/ai-coding-setup-guide.md`.
 5. Edit `tools/repo_lint/lint.py`: empty `FROZEN_GLOBS`, add the `openspec/changes/` clause to
    `orphan_agent_references`.
 6. Edit `docs/environment-setup.md` §6 (one sentence: drop "predates this change and still names the

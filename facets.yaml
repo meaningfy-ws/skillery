@@ -5,20 +5,25 @@
 # revise `purpose` and `stage`.
 facets:
   purpose:
-    writing: produce or review prose
-    advising: coach client decisions
-    offering: scope, price and propose work
-    modelling: domain models and system design
-    planning: shape work and keep specs
-    building: structure code and scaffold repos
-    quality: tests, gates, review and guardrails
-    delivery: version control, CI/CD and releases
-    knowledge: capture and curate personal notes and plans
+    software-development: "build software with agents: plan, build, test, review, version"
+    modelling: ontology, conceptual and system modelling
+    client-delivery: deliver to a client and manage the project
+    advising: coach a client's decisions
+    content: "write and explain for people: docs, posts, blogs, messages"
+    offers: commercial offers, packaging, pitch and pricing
+    proposals: proposal and offer documents
+    crm: create, manage and groom deals and contacts
+    devops: environments, CI/CD, releases and operations
+    knowledge: the owner's personal notes, plans and rhythm
   area:
     coding: building software with AI agents
     consulting: advising clients
     sales: winning and pricing work
     personal: the owner's own vault and rhythm
+    operations: running infrastructure, CI/CD and monitoring
+    business: running and growing the company, negotiation and internal communication
+    legal: contracts, NDAs and other legal documents
+    design: graphics, visuals and diagrams in company style
     cross-cutting: used in every area
   subject:
     generic: no domain knowledge; transfers anywhere

@@ -3,7 +3,7 @@ name: estimation
 description: "A lightweight fixed-cost scoping / estimation discipline that de-risks fixed-cost bids — a CHECKLIST + METHOD, not a heavy model. Produces a work breakdown plus PERT-weighted effort estimates, uncertainty ranges, assumptions & exclusions, and contingency, feeding the SoW scope boundary. PERT (three-point: optimistic / most-likely / pessimistic) is the default technique; analogous, parametric, and bottom-up are alternatives. Gantt charts / scheduling are rendered in EXTERNAL tools (Smartsheet, MS Project) from the work breakdown — this skill produces the breakdown + estimates, not the chart. It OWNS the estimation/scoping discipline; it DELEGATES the proposal/SoW wrapper to `proposal-writing` and sequencing to `decision-package`, and pairs with `epic-planning` for the build breakdown. Triggers — \"estimate this engagement\", \"PERT estimate\", \"fixed-cost scoping\", \"work breakdown for estimation\", \"contingency / uncertainty range\". Independently triggerable; also the pricing step of the `proposal-writing` flow."
 license: Apache 2.0
 metadata:
-  purpose: offering
+  purpose: offers
   area: sales
   subject: generic
   posture: reusable
@@ -25,23 +25,23 @@ explicit **assumptions & exclusions**, and **contingency** — then hand those t
 and the scope boundary rest on the same evidence.
 
 It is independently triggerable (any "estimate this" / "PERT estimate" request) and is also the
-**pricing step** of the [`proposal-writing`](../proposal-writing/SKILL.md) flow.
+**pricing step** of the `proposal-writing` flow.
 
 It composes by reference: the estimate decomposes against the build breakdown owned by
-[`epic-planning`](../epic-planning/SKILL.md), and its sequencing/roadmap framing comes
-from [`decision-package`](../decision-package/SKILL.md). It restates neither.
+`epic-planning`, and its sequencing/roadmap framing comes
+from `decision-package`. It restates neither.
 
 ## What it covers (R4)
 
 1. **Decomposition (work breakdown).** Break the engagement into estimable leaf items — small enough
    that each can carry a three-point estimate. For build-tier work, decompose against the EPIC/PLAN
-   breakdown from [`epic-planning`](../epic-planning/SKILL.md); do not invent a parallel
+   breakdown from `epic-planning`; do not invent a parallel
    breakdown.
 2. **Uncertainty ranges.** Each leaf gets a range, not a point. PERT (below) is how the range becomes
    a weighted estimate plus a variance you can roll up.
 3. **Assumptions & exclusions.** State what the number assumes (inputs, access, decisions,
    availability) and what it explicitly excludes. **The exclusions are the SoW out-of-scope list** —
-   one list, two documents (see [`proposal-writing`](../proposal-writing/SKILL.md)).
+   one list, two documents (see `proposal-writing`).
 4. **Contingency.** A buffer sized from the rolled-up variance and the assumption risk — not a flat
    guess. The [worksheet](references/pert-worksheet.md) shows the roll-up.
 5. **Link to the SoW scope boundary.** The breakdown's leaves are the in-scope items; the exclusions
@@ -81,7 +81,7 @@ This skill produces the **work breakdown + estimates**. It does **not** draw Gan
 schedules. Scheduling (dependencies, calendar, resource levelling, the Gantt itself) is rendered in
 **external tools — Smartsheet or MS Project** — by importing the work breakdown. Do not attempt to
 draw Gantts in-repo; produce a clean breakdown that those tools can consume. Sequencing *intent*
-(pilot → scale order) comes from [`decision-package`](../decision-package/SKILL.md); the calendar
+(pilot → scale order) comes from `decision-package`; the calendar
 rendering of it is the external tool's job.
 
 ## The checklist
@@ -110,11 +110,14 @@ consume.
 
 **This skill DELEGATES:**
 - The proposal / SoW wrapper (and the scope-boundary discipline the exclusions feed) →
-  [`proposal-writing`](../proposal-writing/SKILL.md).
-- Sequencing / roadmap intent (pilot → scale) → [`decision-package`](../decision-package/SKILL.md).
+  `proposal-writing`.
+- Sequencing / roadmap intent (pilot → scale) → `decision-package`.
 - The calendar/Gantt rendering → **external tools** (Smartsheet, MS Project) — out of repo.
 
-**Related:** `proposal-writing`, `epic-planning`, `decision-package`.
+See also `epic-planning` for the build breakdown an estimate decomposes against; the link is
+one-way, since shaping an EPIC needs no estimate.
+
+**Related:** `proposal-writing`, `decision-package`.
 
 ## Tone & style
 

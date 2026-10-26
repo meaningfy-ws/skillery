@@ -3,7 +3,7 @@ name: technical-writing
 description: Produce clear documentation, explanations, summaries, and docstrings — AsciiDoc/Antora or Markdown — with a lightweight clarity check. Use to write or improve project docs, explain how a module works, summarise an area, or add docstrings. Trigger on "document this", "write docs/README", "explain how X works", "add docstrings", "summarise this module".
 license: Apache 2.0
 metadata:
-  purpose: writing
+  purpose: content
   area: cross-cutting
   subject: generic
   posture: reusable
@@ -29,7 +29,7 @@ established terminology (read `MEMORY.md` and existing docs first).
 
 ## Clarity check (apply to everything you write)
 
-Apply the **lightweight clarity check owned by [`clarity-gate`](../clarity-gate/SKILL.md)**
+Apply the **lightweight clarity check owned by `clarity-gate`**
 (actionable · current · specific references · single-source). It is defined there; this skill
 *applies* it to prose and does not restate the criteria. The full 13-item gate (for specs) also
 lives in `clarity-gate`.
@@ -45,7 +45,7 @@ lives in `clarity-gate`.
 
 The defaults above suit Reference and How-to docs. When the page is a Diátaxis **Explanation** (an
 explainer, a "how X works" narrative, broad-audience teaching prose), borrow the texture craft from
-[`explanatory-writing`](../explanatory-writing/SKILL.md) — one controlling metaphor, a concrete
+`explanatory-writing` — one controlling metaphor, a concrete
 example beside every abstract claim, self-answered question pivots. The terse/tables default still
 governs Reference and How-to output.
 
@@ -53,4 +53,4 @@ governs Reference and How-to output.
 
 **Owns:** documentation, explanations, summaries, docstrings. **Does NOT** plan (`epic-planning`),
 run the full clarity gate (`clarity-gate`), or write/modify production code or tests.
-**Related:** `clarity-gate` (full gate), `epic-planning`, `explanatory-writing` (Explanation-quadrant texture), `writing-antipatterns` (genre-conditional failure modes for Tutorial/How-to/Reference).
+**Related:** `clarity-gate` (full gate), `epic-planning`, `explanatory-writing` (Explanation-quadrant texture), `writing-antipatterns` (genre-conditional failure modes for Tutorial/How-to/Reference), `executive-communication` (answer-first structure when a document carries a recommendation).

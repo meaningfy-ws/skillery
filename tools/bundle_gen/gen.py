@@ -216,8 +216,20 @@ def _version_errors(repo: Path, ver: str) -> list[str]:
     return out
 
 
+def unreleased(repo: Path) -> list[str]:
+    """Paths of skills and agents listed in no bundle: work in progress, never published
+    (rebundle-by-activity D-14). dist.yml drops them from the release tree."""
+    doc = load(repo)
+    skills = {s for b in doc["bundles"] for s in b["skills"]}
+    agents = {a for b in doc["bundles"] for a in b["agents"]}
+    out = [f"skills/{p.parent.name}" for p in (repo / "skills").glob("*/SKILL.md") if p.parent.name not in skills]
+    out += [f"agents/{p.name}" for p in (repo / "agents").glob("*.md") if p.stem not in agents]
+    return sorted(out)
+
+
 def gate_errors(repo: Path) -> list[str]:
-    """Renderings match bundles.yaml + agents, links are links, versions agree. [] == clean."""
+    """Renderings match bundles.yaml + agents, links are links (when bundles/ exists), versions
+    agree. [] == clean."""
     try:
         market, links, catalogue = render(repo)
     except ValueError as exc:
@@ -227,6 +239,7 @@ def gate_errors(repo: Path) -> list[str]:
         path = repo / rel
         if not path.exists() or path.read_bytes() != data:
             out.append(f"{rel} {_STALE}")
-    out += _link_errors(repo, links)
+    if (repo / BUNDLES_DIR).exists():  # generated, never committed: a fresh checkout has none (D-8)
+        out += _link_errors(repo, links)
     out += _version_errors(repo, version(repo))
     return out

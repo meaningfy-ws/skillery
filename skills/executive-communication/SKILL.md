@@ -4,7 +4,7 @@ description: "Use when turning rough input into a clear, concise, persuasive exe
 license: Apache 2.0
 metadata:
   version: "1.0.0"
-  purpose: writing
+  purpose: content
   area: cross-cutting
   subject: generic
   posture: profiled
@@ -35,12 +35,12 @@ much of the apparatus you deploy. Match the weight to the artefact.
 - Casual conversation, code, or a quick factual lookup.
 - A contractual document (quotation, SoW, tender): write only its cover message or executive
   summary; its structure belongs to the offer skill
-  ([`proposal-writing`](../proposal-writing/SKILL.md)).
+  (`proposal-writing`).
 
 ## Start here: diagnose before you structure
 
 Before reaching for any framework, state the register (teach / decide / bind, see
-`references/company-voice.md`), then answer three questions. They take a minute and
+`meaningfy-voice`), then answer three questions. They take a minute and
 they decide everything that follows.
 
 1. **Who decides, and what decision do they face?** A message with no decision is
@@ -139,8 +139,8 @@ then pour the result into the structure above.
 
 ## Voice
 
-Write in the **company voice**, not corporate-bland. The default profile is in
-`references/company-voice.md` (Meaningfy's voice, grounded in its SMILE values);
+Write in the **company voice**, not corporate-bland. The default profile is the
+`meaningfy-voice` skill (Meaningfy's voice, grounded in its SMILE values);
 apply it unless the user names another voice. Two rules matter most here:
 
 1. **Register follows purpose.** Teaching something technical? Use the analytical,
@@ -151,11 +151,11 @@ apply it unless the user names another voice. Two rules matter most here:
    suit explainers, not board papers. Never trade answer-first clarity for texture.
 
 Hard constraints: British English; no em dash; plain, current vocabulary; honest
-about trade-offs and unknowns. Full guidance and examples in `company-voice.md`.
+about trade-offs and unknowns. Full guidance and examples in `meaningfy-voice`.
 
 For the **texture** of the technical/educational register (explainers, client teaching
 material) — controlling metaphor, concrete-beside-abstract, question pivots — use
-[`explanatory-writing`](../explanatory-writing/SKILL.md). Structure still wins over texture:
+`explanatory-writing`. Structure still wins over texture:
 never trade answer-first clarity for it.
 
 **The bland trap:** a structurally perfect message can still say nothing. Once the
@@ -244,6 +244,9 @@ the language is plain, with no em dash and no throat-clearing.
 ## Boundary & Related Skills
 
 **Owns:** the persuasive-communication method — Governing Thought, SCQA, the Minto pyramid, answer-first
-structure, and the Meaningfy company voice (`references/company-voice.md`).
-**Delegates:** doc prose mechanics → `technical-writing`.
-**Related:** `clarity-gate` (spec or EPIC readiness), `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` (Decision/Decision-record genre failure modes).
+structure, and applying the company voice.
+**Delegates:** doc prose mechanics → `technical-writing`; the voice profile → `meaningfy-voice`.
+
+See also `clarity-gate` for checking that a spec or EPIC is ready; it judges readiness, not persuasion.
+
+**Related:** `meaningfy-voice`, `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` (Decision/Decision-record genre failure modes).

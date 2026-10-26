@@ -3,7 +3,7 @@ name: proposal-writing
 description: "Produce the proposal + Statement of Work (SoW) that frames the paid Decision Phase (P1) offer — with an explicit in/out scope boundary, priced as a fixed frame. This is the ENTRY skill of the consulting front-of-funnel: it qualifies the need, frames the Decision Phase offer, prices it (delegating the numbers to `estimation`), and writes the proposal + SoW. It OWNS proposal/SoW production and the scope-boundary discipline; it DELEGATES pricing/effort to `estimation`, executive framing to `executive-communication`, and the P1 deliverable definition to `decision-package`. Triggers — \"write a proposal\", \"draft the SoW / Statement of Work\", \"scope boundary for this engagement\", \"fixed-cost proposal\", \"frame the Decision Phase offer\". Not for producing the Decision Package itself (that is `decision-package`), not for free P0 orientation (that is `semantic-consulting-coach`)."
 license: Apache 2.0
 metadata:
-  purpose: offering
+  purpose: proposals
   area: sales
   subject: semantic-data
   posture: profiled
@@ -30,12 +30,12 @@ need a full proposal wrapper).
 
 It composes by reference and restates nothing:
 - the offer being framed — the P1 Decision Phase — is defined by
-  [`decision-package`](../decision-package/SKILL.md) (what P1 *delivers*) and the engagement model in
-  [`semantic-consulting-coach`](../semantic-consulting-coach/references/engagement-model.md) (the
+  `decision-package` (what P1 *delivers*) and the engagement model in
+  `semantic-consulting-coach` (the
   free→paid boundary and the fixed-frame intent);
-- the pricing and effort numbers come from [`estimation`](../estimation/SKILL.md);
+- the pricing and effort numbers come from `estimation`;
 - the structure and persuasion come from
-  [`executive-communication`](../executive-communication/SKILL.md) — a proposal is
+  `executive-communication` — a proposal is
   an executive artefact (SCQA + a 3-point pyramid; trade-offs and scope boundaries explicit).
 
 ## Flow (R2)
@@ -46,20 +46,20 @@ It composes by reference and restates nothing:
 1. **Qualify the need.** Confirm the prospect has crossed the free→paid boundary — they are asking
    *"what do we do first, and why?"*, not *"is this relevant?"*. If they have not, this is still
    presale (or, at most, P0-advisory); do **not** write a paid P1 proposal yet (see the boundary discipline in
-   [`engagement-model.md`](../semantic-consulting-coach/references/engagement-model.md)). Capture the
+   `semantic-consulting-coach`: engagement model). Capture the
    problem, the deciding persona, the measurable outcome, and the constraints.
 2. **Frame the Decision Phase offer.** State what P1 delivers — the Decision Package (recommendation,
    in/out scope, pilot→scale roadmap, buy/build/defer, ready-to-contract execution brief; see
-   [`decision-package`](../decision-package/SKILL.md)). Frame it answer-first as the offer that makes
+   `decision-package`). Frame it answer-first as the offer that makes
    committing safe, not as open-ended discovery.
-3. **Price it as a fixed frame** — via [`estimation`](../estimation/SKILL.md). Hand `estimation` the
+3. **Price it as a fixed frame** — via `estimation`. Hand `estimation` the
    work breakdown the offer implies; take back the effort range, the contingency, and the
    assumptions/exclusions. The SoW scope boundary and the estimate's exclusions are the **same list**
    — keep them in lock-step (see the [scope-boundary checklist](references/scope-boundary-checklist.md)).
 4. **Write the proposal + SoW.** Use the templates in
    [`references/proposal-template.md`](references/proposal-template.md) and
    [`references/sow-template.md`](references/sow-template.md). Write the proposal in the executive
-   voice ([`executive-communication`](../executive-communication/SKILL.md));
+   voice (`executive-communication`);
    write the SoW as the contractual companion that pins scope, deliverables, price, and exclusions.
 
 ## The scope boundary (in/out) — load-bearing
@@ -92,14 +92,14 @@ discipline** — including the fixed-frame framing and the stop/extend mechanics
 honest.
 
 **This skill DELEGATES:**
-- Pricing / effort / contingency numbers → [`estimation`](../estimation/SKILL.md) (the entry flow
+- Pricing / effort / contingency numbers → `estimation` (the entry flow
   invokes it; it also stands alone).
 - Executive framing and voice (SCQA, Minto pyramid, answer-first) →
-  [`executive-communication`](../executive-communication/SKILL.md).
+  `executive-communication`.
 - The P1 deliverable definition (what the Decision Phase actually produces) →
-  [`decision-package`](../decision-package/SKILL.md).
+  `decision-package`.
 - Coaching whether/how to run P1 and holding the free→paid boundary →
-  [`semantic-consulting-coach`](../semantic-consulting-coach/SKILL.md).
+  `semantic-consulting-coach`.
 
 **Related:** `estimation`, `decision-package`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` (Contract/specification genre failure modes for the SoW half of this skill's output).
 

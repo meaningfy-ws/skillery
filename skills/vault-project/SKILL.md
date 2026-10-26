@@ -18,14 +18,14 @@ metadata:
 
 A project folder is a promise to keep five files current. This skill opens that promise only when
 the owner can say what done looks like, and closes it cleanly. Everything between (resuming, filing)
-belongs to [`vault-resume`](../vault-resume/SKILL.md) and [`vault-capture`](../vault-capture/SKILL.md).
+belongs to `vault-resume` and `vault-capture`.
 
-The file shapes, kinds and properties come from [`vault-conventions`](../vault-conventions/SKILL.md);
+The file shapes, kinds and properties come from `vault-conventions`;
 the vault's write rules come from its `AGENTS.md`.
 
 ## `new <name>`
 
-1. **Check for an existing project** in both homes ([`vault-conventions`](../vault-conventions/SKILL.md),
+1. **Check for an existing project** in both homes (`vault-conventions`,
    Project homes). If a folder already covers this work, show it and ask whether to use it instead;
    create nothing until the owner answers. Then ask whether the project is **personal** (not
    Meaningfy work): a personal project goes in `07 Perso/`, the others in `01 Projects/`.
@@ -79,9 +79,10 @@ A no to the move is a complete close: the status and final entry stand, the fold
 
 **Owns:** the charter gate, creating a project folder, and closing and archiving a project.
 
-**Delegates:** file shapes, kinds and properties → [`vault-conventions`](../vault-conventions/SKILL.md);
+**Delegates:** file shapes, kinds and properties → `vault-conventions`;
 project homes and the move procedure → `vault-conventions`; starting and ending work sessions →
-[`vault-resume`](../vault-resume/SKILL.md) and [`vault-capture`](../vault-capture/SKILL.md).
+`vault-resume` and `vault-capture`.
 
-**Related:** `vault-conventions`, `vault-resume`, `vault-capture`, `vault-tidy`, `vault-planning`,
-`epic-planning` (software EPICs, not vault projects).
+A software EPIC is not a vault project: see also `epic-planning` for shaping one.
+
+**Related:** `vault-conventions`, `vault-resume`, `vault-capture`, `vault-tidy`, `vault-planning`.

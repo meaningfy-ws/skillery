@@ -5,7 +5,7 @@ Seven moves. Each carries a before/after example. The "after" examples obey the 
 each move is named so you can tell when it earns its place and when it does not.
 
 > **Vetting rule (DEC-8).** Every example here is checked against
-> [`company-voice.md`](../../executive-communication/references/company-voice.md) and the clarity
+> `meaningfy-voice` and the clarity
 > check. If an example reads punchier than the house voice, it is wrong and gets re-authored.
 
 ---

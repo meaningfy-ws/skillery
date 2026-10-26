@@ -18,13 +18,13 @@ metadata:
 
 Each horizon frames the next: the year sets a few objectives, each quarter turns them into objectives
 with measurable key results, the month picks what to push, the week names a few outcomes, and
-[`vault-daily`](../vault-daily/SKILL.md) turns the week into today. A **planning** session sets a
+`vault-daily` turns the week into today. A **planning** session sets a
 horizon's plan; a **review** session looks back on a finished period and feeds the next plan. The
 method draws on multi-scale planning, OKRs and the GTD weekly review:
 [`references/planning-practices.md`](references/planning-practices.md).
 
 The plans file and the review note have fixed shapes, owned by
-[`vault-conventions`](../vault-conventions/SKILL.md) (`references/project-files.md`).
+`vault-conventions` (`references/project-files.md`).
 
 ## The one rule
 
@@ -62,7 +62,7 @@ A plan the owner did not state is not written. If the owner wants no plan for a 
    that was set for the period.
 2. **Weekly only, the GTD sweep:** list the items waiting in `00 Inbox/` and `00 Inbox/proposed/`, every
    active project without a session this week (in both project homes, as
-   [`vault-conventions`](../vault-conventions/SKILL.md) defines them), and `To-Do.md` items older than two weeks. Ask what to
+   `vault-conventions` defines them), and `To-Do.md` items older than two weeks. Ask what to
    do with each (the owner acts, or names a skill such as `vault-promote`); change nothing yourself.
 3. **Ask** for wins, misses (with one line of why), what carries over, and what the next period should
    focus on. Offer what the records show; the owner confirms.
@@ -76,15 +76,15 @@ A plan the owner did not state is not written. If the owner wants no plan for a 
 - Never invent an objective, key result, deadline or metric.
 - Never rewrite the change log; it is append-only.
 - Never plan a project into existence: new work that needs a folder goes through
-  [`vault-project`](../vault-project/SKILL.md).
+  `vault-project`.
 
 ## Boundary & Related Skills
 
 **Owns:** planning and review sessions over week, month, quarter and year, and the cascade rules
 between horizons.
 
-**Delegates:** the plans file and review-note shapes → [`vault-conventions`](../vault-conventions/SKILL.md);
-the day → [`vault-daily`](../vault-daily/SKILL.md); promoting and tidying what the weekly sweep finds →
-[`vault-promote`](../vault-promote/SKILL.md), [`vault-tidy`](../vault-tidy/SKILL.md).
+**Delegates:** the plans file and review-note shapes → `vault-conventions`;
+the day → `vault-daily`; promoting and tidying what the weekly sweep finds →
+`vault-promote`, `vault-tidy`.
 
 **Related:** `vault-daily`, `vault-project`, `vault-conventions`, `vault-promote`.

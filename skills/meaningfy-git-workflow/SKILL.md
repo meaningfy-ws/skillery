@@ -3,7 +3,7 @@ name: meaningfy-git-workflow
 description: Meaningfy git and GitHub conventions — Conventional Commits (imperative, no trailing punctuation), branch naming, rebase/merge etiquette, the pull-request workflow, free-tier GitHub constraints, and dev-environment hygiene. Use when committing, branching, opening or maintaining a PR, or setting up a development environment for a Meaningfy project.
 license: Apache 2.0
 metadata:
-  purpose: delivery
+  purpose: software-development
   area: coding
   subject: git-release
   posture: precise
@@ -53,7 +53,7 @@ those belong to *commit messages*, not branches.
 
 Prefer the ticketing system's branch-name feature (e.g. Jira) to generate a `feature/` name. The
 `release/` + `hotfix/` *lifecycle* (cut-from, back-merge, tagging) is owned by
-[`meaningfy-release`](../meaningfy-release/SKILL.md) — this skill owns only the branch *shape*.
+`meaningfy-release` — this skill owns only the branch *shape*.
 
 ## Workflow
 

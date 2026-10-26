@@ -47,7 +47,7 @@ not)?
 
 **Cue:** list the first column of every table — three or more identical value sets in a
 read-through document is the defect. For cardinality: is the count domain-driven (a catalogue) or
-convention-driven (a decomposition — see [`architecture`](../../architecture/SKILL.md)'s
+convention-driven (a decomposition — see `architecture`'s
 per-C4-level typical counts: L1 2–3, L2 3–5, L3 2–4, L4 1–2 per system/container, summing to
 roughly 8–14 — a range, not a flat "14+ is too many" threshold).
 
@@ -94,7 +94,7 @@ commitment.
 
 **Fix:** add one real artefact for Explanation. Strip benefit framing out of Contract/Decision
 record into the paired Decision document instead —
-[`proposal-writing`](../../proposal-writing/SKILL.md) already keeps executive voice in the
+`proposal-writing` already keeps executive voice in the
 proposal and "precise, enumerated, no marketing prose" in the SoW.
 
 ## A4. Label headings
@@ -141,7 +141,7 @@ page.
 indecision); **fails outright** in Contract and Decision record.
 
 **Required as a per-claim marker** in Explanation of contested material, in Reference documenting
-version-dependent behaviour, and in [`estimation`](../../estimation/SKILL.md)'s uncertainty ranges,
+version-dependent behaviour, and in `estimation`'s uncertainty ranges,
 where naming a range honestly is the entire job.
 
 **Guard:** hedge the specific claim, never the register. State the epistemic principle once at the
@@ -175,7 +175,7 @@ accumulates as the reader moves down it.
 **Fails in** Explanation, Decision.
 
 **Required in** Reference, How-to —
-[`technical-writing`](../../technical-writing/SKILL.md)'s own "prefer tables and lists over long
+`technical-writing`'s own "prefer tables and lists over long
 prose" default, correctly scoped to these two quadrants.
 
 **Guard:** does the reader need the relations between the items, or the items themselves?
@@ -196,7 +196,7 @@ is the experience; giving it away up front removes the reason to follow the step
 
 **Guard:** is the reader deciding/acting now, or auditing/discovering? Explanation sits with
 Decision here, because structure outranks texture —
-[`explanatory-writing`](../../explanatory-writing/SKILL.md)'s own precedence rule: lead with the
+`explanatory-writing`'s own precedence rule: lead with the
 answer, apply slow-burn texture beneath it.
 
 Independently corroborated outside this catalogue's source material: "burying the lede" names the
@@ -221,7 +221,7 @@ genre).
 ## A11. Premature structure
 
 **Smell:** producing a framework, canvas, or pyramid before the thinking is settled — named
-directly in [`semantic-consulting-coach`](../../semantic-consulting-coach/SKILL.md)'s own defection
+directly in `semantic-consulting-coach`'s own defection
 table: "they called me the expert and asked me to design it, so I should produce it."
 
 **Fails in** Coaching dialogue (structure ends exploration, anchors the user on a shape they have
@@ -258,7 +258,7 @@ in this catalogue's original source drafts, added after independent verification
 
 **Fails in** Tutorial (must assume zero prior knowledge) and Explanation (must build understanding
 from an accessible starting point — ties to
-[`explanatory-writing`](../../explanatory-writing/SKILL.md)'s coin-and-explain craft move).
+`explanatory-writing`'s coin-and-explain craft move).
 
 **Required/acceptable in** Reference and Contract, where assuming domain fluency *is* the explicit
 contract with that reader — that assumption is what makes Reference fast to use.

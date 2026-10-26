@@ -6,18 +6,23 @@
   },
   "metadata": {
     "description": "Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently",
-    "version": "3.2.0"
+    "version": "3.3.0"
   },
   "plugins": [
     {
       "name": "meaningfy-core",
-      "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy git/PR workflow, and agentic guardrails",
+      "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, and agentic guardrails",
       "source": "./bundles/meaningfy-core"
     },
     {
       "name": "meaningfy-consulting",
-      "description": "The advisory / front-of-funnel role: semantic-technologies coaching, the Decision Package, proposals, estimation, and executive communication",
+      "description": "The advisory role: semantic-technologies coaching, the Decision Package, and executive communication",
       "source": "./bundles/meaningfy-consulting"
+    },
+    {
+      "name": "meaningfy-sales",
+      "description": "The commercial role: proposal and offer writing, and estimation",
+      "source": "./bundles/meaningfy-sales"
     },
     {
       "name": "meaningfy-architecture",

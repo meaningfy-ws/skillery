@@ -13,7 +13,7 @@ skills:
   - meaningfy-code-review
   - cosmic-python
 metadata:
-  purpose: quality
+  purpose: software-development
   area: coding
   subject: python
   posture: precise

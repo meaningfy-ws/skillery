@@ -4,7 +4,7 @@
 # has a probe. Behavioural trigger testing follows the agentskills.io method (about 20 queries, half
 # near-misses, 3 runs each) with `skill-creator`, seeded from these probes; CI never runs a model.
 # The on-demand `claude plugin eval` workflow (.github/workflows/plugin-eval.yml) runs bundle suites
-# from evals/ when a maintainer starts it.
+# from tests/evals/ when a maintainer starts it.
 probes:
   - probe: "help me price this ontology / knowledge-graph consulting engagement"
     expect: semantic-consulting-coach
@@ -99,3 +99,23 @@ probes:
   - probe: "break this feature into an EPIC with its tasks and acceptance criteria"
     expect: epic-planning
     near_miss_of: estimation
+  # Batch D (restructure-and-evaluate-catalogue): the two skills that had no probe.
+  - probe: "derive a LinkML schema from this UML model and generate Pydantic and SHACL from it"
+    expect: linkml-engineering
+    near_miss_of: conceptual-modelling
+  - probe: "decide what concepts our domain has and how they relate, before we pick a modelling language"
+    expect: conceptual-modelling
+    near_miss_of: linkml-engineering
+  - probe: "review this model for naming anti-patterns and attributes that should be reusable properties"
+    expect: modelling-conventions
+    near_miss_of: conceptual-modelling
+  - probe: "draw the C4 container view and record the decision in an ADR"
+    expect: architecture
+    near_miss_of: modelling-conventions
+  # meaningfy-voice: the foundation skill holding the company voice (restructure-and-evaluate D-15).
+  - probe: "is this paragraph on-voice for Meaningfy, British English and no em dash"
+    expect: meaningfy-voice
+    near_miss_of: explanatory-writing
+  - probe: "restructure this board memo answer-first with a governing thought"
+    expect: executive-communication
+    near_miss_of: meaningfy-voice

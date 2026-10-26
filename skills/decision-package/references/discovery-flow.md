@@ -2,7 +2,7 @@
 
 The structured flow that produces the Decision Package. It runs **inside paid P1** only (the coach
 holds the free → paid line — see
-[`../../semantic-consulting-coach/references/engagement-model.md`](../../semantic-consulting-coach/references/engagement-model.md)).
+`semantic-consulting-coach`: engagement model).
 This is **one coherent framework**: the still-relevant product-blueprint items are absorbed into the
 steps below (reconciliation in [`blueprint-absorbed.md`](blueprint-absorbed.md)), not run as a
 second lens.
@@ -59,7 +59,7 @@ blocking gaps it closes. Aim for a small, MECE set (typically 2–3).
 
 A **first-cut conceptual model** of the domain often helps here, to ground the options in the actual
 entities at stake. Produce that sketch with the
-[`../../../engineering/conceptual-modelling/SKILL.md`](../../../engineering/conceptual-modelling/SKILL.md)
+`conceptual-modelling`
 skill — a sketch in service of the decision, not a built model.
 
 ## 5. Sequencing

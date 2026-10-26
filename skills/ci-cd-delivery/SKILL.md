@@ -3,7 +3,7 @@ name: ci-cd-delivery
 description: Standardise the application-repo Continuous Delivery side of Meaningfy systems — the deploy trigger, the reusable deploy mechanism, and the release/image standard. Use to set up a CD/deploy workflow, release and push a versioned Docker image to a registry (recommended GHCR, tagged by semver + git sha), standardise or migrate the deploy trigger, kill the duplicated SSH/bastion/rsync/.env deploy block by consuming the canonical reusable workflow, or understand the three-repo deploy model. CI (build, test, lint, coverage, architecture, docs publish) is NOT here — that is owned by project-setup; this skill owns only CD + release + the delivery contract. Trigger on "set up CD / deploy workflow", "release and push a versioned image", "GHCR image build", "standardise the deploy trigger", "migrate the duplicated deploy block", "how do we deploy this repo".
 license: Apache 2.0
 metadata:
-  purpose: delivery
+  purpose: devops
   area: coding
   subject: delivery-infra
   posture: precise
@@ -22,7 +22,7 @@ documents the *contract* to the two infrastructure repos without restating their
 It carries the **delivery contract** (how an app repo asks for a deploy and ships a release), a
 **reusable-mechanism pointer + illustrative template**, and a **release/image standard**. It owns
 **CD only**. Everything CI — build, unit/integration tests, lint, coverage, architecture
-guardrails, docs publish — is owned by [`project-setup`](../project-setup/SKILL.md). The two never
+guardrails, docs publish — is owned by `project-setup`. The two never
 overlap.
 
 > **C1 — review with DevOps before adoption.** The §6 decisions below are DevOps's to ratify. Do
@@ -122,7 +122,7 @@ execute it without re-deriving the pattern.
 
 ## Projection seam (→ project-setup, EPIC-09)
 
-[`project-setup`](../project-setup/SKILL.md) scaffolds these CD/release templates **only for a
+`project-setup` scaffolds these CD/release templates **only for a
 deployable project**, and **only renders the chosen template after DevOps ratifies §6**. Until then
 a deployable repo receives a clearly-marked **TODO stub** plus the boundary docs — never a
 half-guessed runnable deploy workflow. This skill owns the *content* of those templates;
@@ -134,12 +134,12 @@ half-guessed runnable deploy workflow. This skill owns the *content* of those te
 pointer + illustrative template, the release/image standard (semver + git sha → GHCR), and the
 per-repo migration runbook.
 **Delegates:** CI (build, test, lint, coverage, architecture guardrails, docs publish) →
-[`project-setup`](../project-setup/SKILL.md); code layering / structure →
-[`cosmic-python`](../cosmic-python/SKILL.md).
+`project-setup`; code layering / structure →
+`cosmic-python`.
 **Documents-only (authoritative boundary, never automated or duplicated here):**
 `cloud-infrastructure` (Terraform/Ansible), `infrastructure-stacks` (Compose stacks + deploy
 Actions), **Vaultwarden** (secret source of truth), and the **bastion/SSH** break-glass procedure.
-**Related:** [`project-setup`](../project-setup/SKILL.md), [`cosmic-python`](../cosmic-python/SKILL.md),
-[`meaningfy-release`](../meaningfy-release/SKILL.md) — the release *lifecycle* (versioning, release
+**Related:** `project-setup`, `cosmic-python`,
+`meaningfy-release` — the release *lifecycle* (versioning, release
 notes, PyPI publish, the release/hotfix runbook); it cites this skill for the GHCR image path and does
 not restate it.

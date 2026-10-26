@@ -1,7 +1,7 @@
 # GitFlow release & hotfix runbook
 
 The release-specific branch lifecycle. Branch *mechanics* — rebase vs merge, force-push etiquette,
-branch-name shape — are owned by [`meaningfy-git-workflow`](../../meaningfy-git-workflow/SKILL.md);
+branch-name shape — are owned by `meaningfy-git-workflow`;
 follow it for those. This file covers only what is release-specific.
 
 ## Release branch — `release/X.Y.Z`

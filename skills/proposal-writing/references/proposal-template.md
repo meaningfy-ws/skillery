@@ -1,11 +1,11 @@
 # Proposal — template
 
 The fillable template for the **proposal**: the persuasive, executive-facing half of the offer. Write
-it answer-first with the [`executive-communication`](../../../communication/executive-communication/SKILL.md)
+it answer-first with the `executive-communication`
 skill (SCQA + a 3-point pyramid; trade-offs and scope boundaries explicit; short close). The offer it
 frames is the **P1 Decision Phase**, whose deliverable is defined by
-[`decision-package`](../../decision-package/SKILL.md). The numbers come from
-[`estimation`](../../estimation/SKILL.md). The contractual companion is the
+`decision-package`. The numbers come from
+`estimation`. The contractual companion is the
 [SoW](sow-template.md).
 
 Keep it tight. Cut anything that could appear in any consultancy's deck about any client.

@@ -1,8 +1,8 @@
 # Contract / specification
 
 **Register signature:** enumerated, precise, no persuasion, no metaphor. **Owning skill:**
-[`proposal-writing`](../../proposal-writing/SKILL.md) (SoW),
-[`architecture`](../../architecture/SKILL.md) (OpenAPI/AsyncAPI/LinkML, use cases).
+`proposal-writing` (SoW),
+`architecture` (OpenAPI/AsyncAPI/LinkML, use cases).
 
 Pointer table only — full entries live in [`inversion-matrix.md`](inversion-matrix.md). See
 [`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U8), which apply here too.

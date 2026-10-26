@@ -3,7 +3,7 @@ name: spec-stewardship
 description: Steward the living specification spine after an EPIC is authored — the EPIC↔change lifecycle, archiving completed changes, grooming the durable specs/ store, and keeping the orientation index in sync. Use when finishing/archiving a change, merging spec deltas into the truth, grooming or reviewing the living specs, or refreshing project context/memory. Trigger on "archive this change", "groom the specs", "sync the spec deltas", "what's the lifecycle of a change", "regenerate the memory index", "merge into specs". For authoring the EPIC/PLAN use epic-planning; for the schema/conventions see the spine docs.
 license: Apache 2.0
 metadata:
-  purpose: planning
+  purpose: software-development
   area: coding
   subject: spec-driven
   posture: reusable
@@ -16,14 +16,14 @@ metadata:
 ## Overview
 
 The spine is only valuable if its specs stay **well maintained, groomed, and preserved**. This
-skill owns the **care of the living specs** after [`epic-planning`](../epic-planning/SKILL.md) has
+skill owns the **care of the living specs** after `epic-planning` has
 authored an EPIC and PLAN: moving a change through its lifecycle, merging its deltas into the
 durable truth, grooming that truth, and keeping the cheap orientation index honest.
 
 It does **not** author EPICs/PLANs (that is `epic-planning`) and does **not** define the schema or
-conventions (those live in [`spine/`](../../spine/README.md)) — it *runs* them.
+conventions (those are OpenSpec's and the `meaningfy` schema's) — it *runs* them.
 
-## The change lifecycle (maps to `/opsx` — see [`spine/workflows.md`](../../spine/workflows.md))
+## The change lifecycle (maps to the OpenSpec `/opsx` verbs)
 
 ```
 author in openspec/changes/<id>/     (epic-planning: proposal.md + design.md + tasks.md + specs/ deltas)
@@ -54,7 +54,7 @@ author in openspec/changes/<id>/     (epic-planning: proposal.md + design.md + t
 
 ## The orientation index (memory) — keep it honest, don't let it pretend to be truth
 
-Per the spine decision ([`spine/epic-change-memory-mapping.md`](../../spine/epic-change-memory-mapping.md)):
+Per the spine decision (one EPIC is one OpenSpec change):
 
 - **Truth = `openspec/specs/`.** There is no bespoke `MEMORY.md`-as-truth.
 - **Orientation = `openspec/config.yaml`'s `context:` field** (OpenSpec's native sink, injected into
@@ -75,7 +75,7 @@ When reality and spec disagree, fix the **spec**, not by quietly editing code:
 
 **Owns:** the post-authoring **lifecycle and care** of the living specs — change archive, delta→`specs/`
 merge, grooming the durable store, brownfield delta conventions, and the orientation-index policy.
-**Delegates:** authoring the EPIC/PLAN → [`epic-planning`](../epic-planning/SKILL.md); the schema +
-conventions → [`spine/`](../../spine/README.md); implementation → external `implementer`/TDD;
-scoring the PLAN → [`clarity-gate`](../clarity-gate/SKILL.md).
+**Delegates:** authoring the EPIC/PLAN → `epic-planning`; the schema +
+conventions → OpenSpec and the `meaningfy` schema; implementation → external `implementer`/TDD;
+scoring the PLAN → `clarity-gate`.
 **Related:** `epic-planning`, `clarity-gate`, `bdd-gherkin`.

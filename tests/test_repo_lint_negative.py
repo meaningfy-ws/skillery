@@ -63,10 +63,12 @@ def test_missing_skill_dir_is_flagged(tmp_path):
     assert any("cosmic-python" in e for e in lint.missing_skill_dirs(tmp_path))
 
 
-def test_unregistered_skill_is_flagged(tmp_path):
+def test_unbundled_skill_is_wip_and_passes(tmp_path):
+    # rebundle-by-activity D-14: listed in no bundle = work in progress, allowed on develop.
     _skill(tmp_path, "cosmic-python")
-    _bundles(tmp_path, [])
-    assert lint.unregistered_skill_dirs(tmp_path)
+    _bundles(tmp_path, [{"name": "meaningfy-core", "skills": []}])
+    assert lint.expected_bundle_membership(tmp_path) == []
+    assert lint.wip_isolation(tmp_path) == []
 
 
 def test_missing_frontmatter_is_flagged(tmp_path):
@@ -91,13 +93,22 @@ def test_skill_in_multiple_bundles_is_flagged(tmp_path):
         "skill 'cosmic-python' is in multiple bundles: meaningfy-core, meaningfy-building"]
 
 
-def test_unregistered_skill_dir_is_flagged(tmp_path):
-    # TC-09: every skill dir must be placed in some bundle (bundles.yaml is the truth).
-    _skill(tmp_path, "cosmic-python")
-    _bundles(tmp_path, [{"name": "meaningfy-core", "skills": []}])
-    # sibling review finding 7: reported once, by unregistered_skill_dirs
-    errs = lint.expected_bundle_membership(tmp_path) + lint.unregistered_skill_dirs(tmp_path)
-    assert errs == ["skills/cosmic-python exists but is not registered in bundles.yaml"]
+def test_released_skill_delegating_to_wip_is_flagged(tmp_path):
+    _skill_fm(tmp_path, "a", {"name": "a", "description": "x"},
+              body="## Boundary & Related Skills\n\n**Delegates:** drafts → `b`.")
+    _skill(tmp_path, "b")
+    _bundles(tmp_path, [{"name": "core", "skills": ["a"]}])
+    assert lint.wip_isolation(tmp_path) == [
+        "skills/a is released but delegates to WIP skill 'b' (in no bundle); release 'b' or drop the hand-off"]
+
+
+def test_released_agent_loading_wip_skill_is_flagged(tmp_path):
+    _skill(tmp_path, "a")
+    _skill(tmp_path, "b")
+    _agent(tmp_path, "ag", {"name": "ag", "description": "x", "skills": ["a", "b", "ext:thing"]})
+    _bundles(tmp_path, [{"name": "core", "skills": ["a"], "agents": ["ag"]}])
+    assert lint.wip_isolation(tmp_path) == [
+        "agents/ag is released but loads WIP skill 'b' (in no bundle); release 'b' or drop it"]
 
 
 def test_new_bundle_name_is_not_flagged(tmp_path):
@@ -112,7 +123,6 @@ def test_agent_bundle_membership_messages(tmp_path):
         _agent(tmp_path, a)
     _bundles(tmp_path, [{"name": "b1", "agents": ["twice", "ghost"]}, {"name": "b2", "agents": ["twice"]}])
     assert sorted(lint.agent_bundle_membership(tmp_path)) == sorted([
-        "agent 'lonely' is in no bundle in bundles.yaml",
         "agent 'twice' is in multiple bundles: b1, b2",
         "bundles.yaml lists agent 'ghost' but agents/ghost.md does not exist",
     ])
@@ -249,8 +259,7 @@ def test_agents_canonical_clean_passes(tmp_path):
 
 def test_hooks_inventory_bad_mechanism_is_flagged(tmp_path):
     (tmp_path / "VERSION").write_text("9.9.9\n", encoding="utf-8")
-    (tmp_path / "hooks").mkdir()
-    (tmp_path / "hooks" / "inventory.yaml").write_text(
+    (tmp_path / "hooks.yaml").write_text(
         'version: "9.9.9"\nhooks:\n'
         "  - id: h1\n    intent: x\n    provenance: {skill: s}\n"
         "    bindings: [{mechanism: nope, phase: quality}]\n", encoding="utf-8")
@@ -259,8 +268,7 @@ def test_hooks_inventory_bad_mechanism_is_flagged(tmp_path):
 
 def test_hooks_inventory_version_mismatch_is_flagged(tmp_path):
     (tmp_path / "VERSION").write_text("1.0.0\n", encoding="utf-8")
-    (tmp_path / "hooks").mkdir()
-    (tmp_path / "hooks" / "inventory.yaml").write_text(
+    (tmp_path / "hooks.yaml").write_text(
         'version: "2.0.0"\nhooks:\n'
         "  - id: h1\n    intent: x\n    provenance: {skill: s}\n"
         "    bindings: [{mechanism: git, phase: quality}]\n", encoding="utf-8")
@@ -282,7 +290,6 @@ def test_clean_fixture_passes_all(tmp_path):
     _skill(tmp_path, "project-setup")
     _bundles(tmp_path, [{"name": "meaningfy-building", "skills": ["cosmic-python", "project-setup"]}])
     assert lint.missing_skill_dirs(tmp_path) == []
-    assert lint.unregistered_skill_dirs(tmp_path) == []
     assert lint.frontmatter_present_errors(tmp_path) == []
     assert lint.expected_bundle_membership(tmp_path) == []
     assert lint.broken_links(tmp_path) == []
@@ -332,7 +339,6 @@ def test_invalid_bundles_yaml_is_reported_once(tmp_path):
     _skill(tmp_path, "cosmic-python")
     _agent(tmp_path, "solo")
     (tmp_path / "bundles.yaml").write_text("bundles: {not: a list}\n", encoding="utf-8")
-    assert lint.unregistered_skill_dirs(tmp_path) == []
     assert lint.missing_skill_dirs(tmp_path) == []
     assert lint.expected_bundle_membership(tmp_path) == []
     assert lint.agent_bundle_membership(tmp_path) == []
@@ -376,7 +382,7 @@ def test_agent_missing_field_is_flagged(tmp_path):
 
 def test_agent_bundle_field_is_flagged(tmp_path):
     assert _conforming(tmp_path, {"bundle": "meaningfy-building"}) == [
-        "agents/x.md: frontmatter field 'bundle' is not in the agent contract (spec/agent-template.md)"]
+        "agents/x.md: frontmatter field 'bundle' is not in the agent contract (docs/development/agent-template.md)"]
 
 
 def test_agent_name_mismatch_is_flagged(tmp_path):
@@ -653,21 +659,218 @@ def test_unknown_required_bundle_is_flagged(tmp_path):
 
 
 def _register(tmp_path, rows):
-    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "docs" / "development").mkdir(parents=True, exist_ok=True)
     table = "\n".join(f"| `{r}` | hand-written | t | — |" for r in rows)
-    (tmp_path / "docs" / "development-method.md").write_text(
+    (tmp_path / "docs" / "development" / "README.md").write_text(
         f"# M\n\n## 8. Where things live\n\n| View | Kind | Source or topic | Rendered by |\n|---|---|---|---|\n{table}\n\n## 9. Done\n",
         encoding="utf-8")
 
 
 def test_unregistered_doc_is_flagged(tmp_path):
-    _register(tmp_path, ["docs/development-method.md"])
+    _register(tmp_path, ["docs/development/README.md"])
     (tmp_path / "docs" / "new-guide.md").write_text("x", encoding="utf-8")
-    assert lint.doc_register_complete(tmp_path) == ["docs/new-guide.md: not in the documentation register (docs/development-method.md §8)"]
+    assert lint.doc_register_complete(tmp_path) == ["docs/new-guide.md: not in the documentation register (docs/development/README.md §8)"]
 
 
 def test_folder_prefix_covers_nested_docs(tmp_path):
-    _register(tmp_path, ["docs/development-method.md", "docs/ai-sales/**"])
+    _register(tmp_path, ["docs/development/README.md", "docs/ai-sales/**"])
     (tmp_path / "docs" / "ai-sales" / "x").mkdir(parents=True)
     (tmp_path / "docs" / "ai-sales" / "x" / "y.md").write_text("x", encoding="utf-8")
     assert lint.doc_register_complete(tmp_path) == []
+
+
+# ------------------------------------------- use-case catalogue (restructure-and-evaluate D-14)
+_UC = {"id": "UC-W1", "title": "Vault work", "primary_actor": "the owner", "trigger": "t",
+       "success_guarantee": "g", "area": "personal", "served_by": {"agents": [], "skills": ["s"]},
+       "status": "covered"}
+
+
+_UC_BODY = "\n\n".join(f"## {h}\n\nx" for h in lint.USE_CASE_SECTIONS)
+
+
+def _uc_repo(tmp_path, fm, name="UC-W1-vault-work.md", body=_UC_BODY):
+    (tmp_path / "facets.yaml").write_text(
+        yaml.safe_dump({"facets": {"area": {"personal": "x"}}}), encoding="utf-8")
+    if not (tmp_path / "skills" / "s").exists():
+        _skill_fm(tmp_path, "s", {"name": "s", "description": "x"})
+    (tmp_path / "use-cases").mkdir(exist_ok=True)
+    (tmp_path / "use-cases" / name).write_text(
+        f"---\n{yaml.safe_dump(fm, sort_keys=False)}---\n\n{body}\n", encoding="utf-8")
+
+
+def test_valid_use_case_passes(tmp_path):
+    _uc_repo(tmp_path, _UC)
+    assert lint.use_case_catalogue(tmp_path) == []
+
+
+def test_use_case_unknown_area_is_flagged(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "area": "selling"})
+    assert any("area 'selling'" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_missing_field_is_flagged(tmp_path):
+    fm = {k: v for k, v in _UC.items() if k != "success_guarantee"}
+    _uc_repo(tmp_path, fm)
+    assert any("success_guarantee" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_id_must_match_file_name(tmp_path):
+    _uc_repo(tmp_path, _UC, name="UC-W2-vault-work.md")
+    assert any("does not match" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_duplicate_id_is_flagged(tmp_path):
+    _uc_repo(tmp_path, _UC)
+    _uc_repo(tmp_path, _UC, name="UC-W1-other.md")
+    assert any("duplicate id" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_unknown_served_by_name_is_flagged(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "served_by": {"agents": ["ghost"], "skills": ["nope"]}})
+    errs = lint.use_case_catalogue(tmp_path)
+    assert any("agent 'ghost'" in e for e in errs) and any("skill 'nope'" in e for e in errs)
+
+
+def test_use_case_bad_status_is_flagged(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "status": "done"})
+    assert any("status 'done'" in e for e in lint.use_case_catalogue(tmp_path))
+
+
+def test_use_case_missing_a_template_section_is_flagged(tmp_path):
+    # rebundle-by-activity group 11: every section of docs/development/use-case-template.md.
+    _uc_repo(tmp_path, _UC, body=_UC_BODY.replace("## Evidence\n\nx", ""))
+    assert lint.use_case_catalogue(tmp_path) == ["use-cases/UC-W1-vault-work.md: body has no '## Evidence'"]
+
+
+def test_use_case_body_needs_brief_and_no_lifted_sections(tmp_path):
+    _uc_repo(tmp_path, _UC, body="## Trigger\n\nx")
+    errs = lint.use_case_catalogue(tmp_path)
+    assert any("Brief Description" in e for e in errs) and any("'Trigger'" in e for e in errs)
+
+
+# -------------------------------------------------- use-case coverage (rebundle-by-activity D-2)
+def test_skill_serving_no_use_case_is_flagged(tmp_path):
+    _uc_repo(tmp_path, _UC)
+    _skill_fm(tmp_path, "orphan", {"name": "orphan", "description": "x"})
+    assert lint.use_case_coverage(tmp_path) == [
+        "skills/orphan: serves no use case (add it to a use case's served_by)"]
+
+
+def test_agent_serving_no_use_case_is_flagged(tmp_path):
+    _uc_repo(tmp_path, _UC)
+    (tmp_path / "agents").mkdir()
+    (tmp_path / "agents" / "lonely.md").write_text("x", encoding="utf-8")
+    assert lint.use_case_coverage(tmp_path) == [
+        "agents/lonely: serves no use case (add it to a use case's served_by)"]
+
+
+def test_coverage_is_silent_without_use_cases(tmp_path):
+    _skill_fm(tmp_path, "orphan", {"name": "orphan", "description": "x"})
+    assert lint.use_case_coverage(tmp_path) == []
+
+
+# --------------------------------------- use-case changes on the register (rebundle-by-activity D-12)
+def _features(tmp_path, text="| Visual design | UC-W1 | `add-visual-design` |"):
+    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "docs" / "future-features.md").write_text(text, encoding="utf-8")
+
+
+def test_missing_use_case_with_unregistered_change_is_flagged(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "status": "missing", "change": "add-ghost"})
+    _features(tmp_path)
+    assert lint.use_case_changes_registered(tmp_path) == [
+        "use-cases/UC-W1-vault-work.md: change 'add-ghost' is not in docs/future-features.md"]
+
+
+def test_partial_use_case_without_change_is_flagged(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "status": "partial"})
+    _features(tmp_path)
+    assert lint.use_case_changes_registered(tmp_path) == [
+        "use-cases/UC-W1-vault-work.md: status 'partial' needs a change listed in docs/future-features.md"]
+
+
+def test_registered_change_and_covered_use_case_pass(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "status": "missing", "change": "add-visual-design"})
+    _uc_repo(tmp_path, {**_UC, "id": "UC-W2"}, name="UC-W2-covered.md")
+    _features(tmp_path)
+    assert lint.use_case_changes_registered(tmp_path) == []
+
+
+def test_changes_check_is_silent_without_the_register(tmp_path):
+    _uc_repo(tmp_path, {**_UC, "status": "missing"})
+    assert lint.use_case_changes_registered(tmp_path) == []
+
+
+# ------------------------------------------------ foundation skills (restructure-and-evaluate D-15)
+def test_link_into_another_skill_is_flagged(tmp_path):
+    _skill_fm(tmp_path, "b", {"name": "b", "description": "x"})
+    (tmp_path / "skills" / "b" / "references").mkdir()
+    (tmp_path / "skills" / "b" / "references" / "r.md").write_text("x", encoding="utf-8")
+    _skill_fm(tmp_path, "a", {"name": "a", "description": "x"},
+              body="See [r](../b/references/r.md#top).")
+    errs = lint.cross_skill_paths(tmp_path)
+    assert len(errs) == 1 and "skills/a/SKILL.md" in errs[0] and "'b'" in errs[0]
+
+
+def test_link_inside_own_skill_and_web_links_pass(tmp_path):
+    _skill_fm(tmp_path, "a", {"name": "a", "description": "x"},
+              body="[r](references/r.md) [w](https://x.org/skills/b/r.md)")
+    assert lint.cross_skill_paths(tmp_path) == []
+
+
+def test_link_out_of_the_skill_folder_is_flagged(tmp_path):
+    # An installed skill has only its own folder (rebundle-by-activity D-13).
+    _skill_fm(tmp_path, "a", {"name": "a", "description": "x"}, body="[m](../../docs/m.md)")
+    assert lint.cross_skill_paths(tmp_path) == [
+        "skills/a/SKILL.md: links outside its skill folder (../../docs/m.md); "
+        "state the fact or name the owning skill"]
+
+
+# --------------------------------------------- top-level folders (rebundle-by-activity D-13)
+def test_unknown_top_level_folder_is_flagged(tmp_path):
+    for d in ("skills", "docs", "spine", ".venv", "bundles"):
+        (tmp_path / d).mkdir()
+    assert lint.top_level_folders(tmp_path) == [
+        "spine/: not an allowed top-level folder (allowed: skills, agents, use-cases, openspec, docs, "
+        "tools, tests, .github, .claude-plugin)"]
+
+
+# ------------------------------------------ external dependency register (rebundle-by-activity D-7)
+_DEP = {"name": "obsidian-skills", "kind": "plugin", "source": "kepano/obsidian-skills",
+        "pin": "unpinned: marketplace head", "provenance": "MIT, not reviewed", "used_by": "vault-*",
+        "opencode_status": "unverified (plain SKILL.md files)", "claude_install": "x",
+        "opencode_install": "y"}
+
+
+def _deps(tmp_path, *entries):
+    (tmp_path / "dependencies.yaml").write_text(yaml.safe_dump(list(entries)), encoding="utf-8")
+    return lint.dependencies_register(tmp_path)
+
+
+def test_valid_dependency_passes(tmp_path):
+    assert _deps(tmp_path, _DEP) == []
+
+
+def test_dependency_unknown_kind_is_flagged(tmp_path):
+    errs = _deps(tmp_path, {**_DEP, "kind": "library"})
+    assert errs and errs[0].startswith("dependencies.yaml: 'obsidian-skills' kind 'library'; allowed: ")
+
+
+def test_dependency_missing_pin_is_flagged(tmp_path):
+    assert _deps(tmp_path, {k: v for k, v in _DEP.items() if k != "pin"}) == [
+        "dependencies.yaml: 'obsidian-skills' missing 'pin'"]
+
+
+def test_dependency_status_without_keyword_is_flagged(tmp_path):
+    assert _deps(tmp_path, {**_DEP, "opencode_status": "maybe"}) == [
+        "dependencies.yaml: 'obsidian-skills' opencode_status must start with native, claude-compat,"
+        " unsupported or unverified"]
+
+
+def test_dependency_unknown_key_is_flagged(tmp_path):
+    assert _deps(tmp_path, {**_DEP, "licence": "MIT"}) == [
+        "dependencies.yaml: 'obsidian-skills' unknown key 'licence'"]
+
+
+def test_register_check_is_silent_without_the_file(tmp_path):
+    assert lint.dependencies_register(tmp_path) == []

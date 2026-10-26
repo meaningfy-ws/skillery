@@ -2,22 +2,22 @@
 
 ### Requirement: Bidirectional role-to-playbook coverage
 The `docs/how-we-work/playbooks/` directory SHALL contain exactly one playbook file per role
-defined in `docs/roles-and-raci.md` (owned by `define-roles-and-raci`), and every playbook file
+defined in `docs/practice/roles-and-raci.md` (owned by `define-roles-and-raci`), and every playbook file
 SHALL correspond to exactly one role defined there. Neither an orphan role (a defined role with no
 playbook) nor an orphan playbook (a playbook file with no corresponding defined role) SHALL exist.
 
 #### Scenario: Every defined role has a matching playbook
-- **WHEN** the set of roles enumerated in `docs/roles-and-raci.md`'s role-definition blocks is
+- **WHEN** the set of roles enumerated in `docs/practice/roles-and-raci.md`'s role-definition blocks is
   compared against the set of files under `docs/how-we-work/playbooks/`
 - **THEN** every role name has exactly one playbook file whose content is that role's filtered view
 
 #### Scenario: Every playbook maps back to a defined role
 - **WHEN** a file exists under `docs/how-we-work/playbooks/`
-- **THEN** it corresponds to exactly one role defined in `docs/roles-and-raci.md`, and no playbook
+- **THEN** it corresponds to exactly one role defined in `docs/practice/roles-and-raci.md`, and no playbook
   file exists for a role that document does not define
 
 #### Scenario: A role added later gets a matching playbook
-- **WHEN** a future change adds a seventh role to `docs/roles-and-raci.md`
+- **WHEN** a future change adds a seventh role to `docs/practice/roles-and-raci.md`
 - **THEN** the coverage check fails until a matching seventh playbook file is added, and the
   reverse also holds if a playbook is added before its role is defined
 
@@ -28,7 +28,7 @@ No normative lifecycle statement (a rule, gate, threshold, phase duration, price
 - **WHEN** `docs/how-we-work/README.md` states a fact about a gate, a threshold, a duration, a price
   boundary, a role definition, or a RACI cell
 - **THEN** that statement is accompanied by a link to the document (in `docs/engagement/`,
-  `docs/ai-coding/`, or `docs/roles-and-raci.md`) that owns the fact
+  `docs/practice/ai-coding/`, or `docs/practice/roles-and-raci.md`) that owns the fact
 
 #### Scenario: A normative claim in a playbook carries its citation
 - **WHEN** a playbook under `docs/how-we-work/playbooks/` states a role boundary, a RACI cell, or

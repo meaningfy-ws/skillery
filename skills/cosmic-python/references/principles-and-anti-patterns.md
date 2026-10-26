@@ -1,6 +1,6 @@
 # Code Principles, Best-Practices & Anti-Patterns Catalogue
 
-> **Single source of authority** (per [`spec/skill-repo-governance.md`](../../../spec/skill-repo-governance.md)).
+> **Single source of authority:** each fact has one owner.
 > `cosmic-python` owns this catalogue. Every other skill, agent, or binding **cites an entry by its id**
 > and never restates the rule text. Append-friendly: new code-review findings land here.
 
@@ -16,8 +16,8 @@ Each entry has a stable slug id. Cite as e.g. `cosmic-python:AP-DICT-AS-MODEL`.
 | `PR-SSOT-DRY` | single-source-of-truth-&-DRY | Any fact, constant, mapping, or rule has exactly one home; everything else reads/derives/cites it. Applies to code (shared constants in one module), config (one version source), and docs (cite, don't restate). |
 | `PR-MODELS-OVER-DICTS` | prefer-models-over-dicts | A structured payload that crosses a function/file boundary or is returned to a caller is a **Pydantic model**, not a raw dict. Raw-dict handling stays at the I/O edge of an adapter and is converted promptly. |
 | `PR-REUSE-COMPACT` | design-for-reuse-and-compactness | Prefer the smallest correct, reusable shape. Lift shared logic to a common home; collapse near-duplicate code into one parameterised form. Compactness is explicit — not merely implied by reuse. A small enabling refactor for clean integration is part of the task, not scope creep. |
-| `PR-COMPONENT-FIRST` | organise-by-component-for-larger-projects | A larger project is organised **component-first**: `<root>/<component>/{models,adapters,services,entrypoints}`, plus one **`core`/`commons`** component that every other component may import (and which imports none of them). Layers live *inside* each component — never the reverse (no top-level `services/<component>/`). A small single service may stay one-level (just the four layers). Pick ONE layout per package; never run component-first and layer-first in parallel. Component + tier boundaries are enforced by import-linter — see [`project-setup`](../../project-setup/references/architecture-guardrails.md). |
-| `PR-CONFIG-DECOUPLED` | config-consumption-decoupled-from-source | Code consumes configuration **without knowing where the value comes from**: typed config classes whose fields resolve through an injected resolver (env, default, …), keyed by the field name. Maintainable and testable (swap the resolver). **Mandated when a project has settings**; skip entirely when it has none. The reference implementation (`env_property` + `ConfigResolverABC`) lives in [`project-setup`](../../project-setup/references/settings-pattern.md) — the *principle* is mandatory, the *impl* is a starting point. |
+| `PR-COMPONENT-FIRST` | organise-by-component-for-larger-projects | A larger project is organised **component-first**: `<root>/<component>/{models,adapters,services,entrypoints}`, plus one **`core`/`commons`** component that every other component may import (and which imports none of them). Layers live *inside* each component — never the reverse (no top-level `services/<component>/`). A small single service may stay one-level (just the four layers). Pick ONE layout per package; never run component-first and layer-first in parallel. Component + tier boundaries are enforced by import-linter — see `project-setup` (architecture guardrails). |
+| `PR-CONFIG-DECOUPLED` | config-consumption-decoupled-from-source | Code consumes configuration **without knowing where the value comes from**: typed config classes whose fields resolve through an injected resolver (env, default, …), keyed by the field name. Maintainable and testable (swap the resolver). **Mandated when a project has settings**; skip entirely when it has none. The reference implementation (`env_property` + `ConfigResolverABC`) lives in `project-setup` (settings pattern) — the *principle* is mandatory, the *impl* is a starting point. |
 
 ## Best-practices (the "do")
 
@@ -52,6 +52,6 @@ Each entry has a stable slug id. Cite as e.g. `cosmic-python:AP-DICT-AS-MODEL`.
 ## Cross-links (owned elsewhere — cite, don't restate)
 
 - TDD ritual (red-green-refactor) → `superpowers:test-driven-development`.
-- Sensitive-data / self-hosted-model interaction safety → [`guardrails`](../../guardrails/SKILL.md).
+- Sensitive-data / self-hosted-model interaction safety → `guardrails`.
 - ADR template → `architecture`. Domain-model contract + `make generate-models` → `conceptual-modelling`.
-- The clarity-gate lightweight check → [`clarity-gate`](../../clarity-gate/SKILL.md).
+- The clarity-gate lightweight check → `clarity-gate`.

@@ -17,6 +17,10 @@ Status legend:
 - **`.claude/`-compat** — opencode reads the artifact from `.claude/` natively (skills) or the same
   config shape works on both; no port needed.
 - **unsupported** — no opencode equivalent at the pinned version → **gap** (with the degradation).
+- **UNVERIFIED** — not yet tested on opencode.
+
+The two dependency tables below are generated from [`dependencies.yaml`](../../../dependencies.yaml):
+to add or change a row, edit its entry there and run `make skill-inventory`.
 
 > Pinned opencode version: tracked in `.opencode-version`; the installer's agent renderer
 > (`renderAgent` in `tools/opencode-bundle-lib.mjs`) targets that version. This matrix targets
@@ -25,6 +29,7 @@ Status legend:
 
 ## External skill-packs / plugins
 
+<!-- GENERATED:dependencies:plugins -->
 | Dependency | Used by | opencode status | Claude install | opencode install / gap |
 |---|---|---|---|---|
 | **superpowers** (brainstorming, test-driven-development, systematic-debugging, verification-before-completion, requesting/receiving-code-review) | CLAUDE.md/AGENTS.md routing, epic-planning, guardrails, spec-stewardship | native (own opencode plugin) | plugin marketplace | ships its own opencode plugin — `{"plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]}` in `opencode.json`. Not a `.claude/skills/` copy; see [superpowers' own opencode install doc](https://github.com/obra/superpowers/blob/main/docs/README.opencode.md). |
@@ -34,6 +39,7 @@ Status legend:
 | **OpenSpec** (`@fission-ai/openspec`, the spine engine + `/opsx:*`) | the spine (project-setup, epic-planning, spec-stewardship) | native | `npm i -g @fission-ai/openspec`; `openspec update --tools claude` | same npm package; `openspec update --tools opencode` registers `opsx-<id>`. Registration form is tool-native (differs by design), not a gap. |
 | **obsidian-skills** (`obsidian@obsidian-skills`: obsidian-markdown, obsidian-bases, obsidian-cli; MIT, [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills)) | every `vault-*` skill (mandatory for `vault-assistant`) | **UNVERIFIED** (plain `SKILL.md` files) | `/plugin marketplace add kepano/obsidian-skills` + `/plugin install obsidian@obsidian-skills` | clone into the user's global opencode skills folder, never into a vault. Gaps for `vault-assistant` on opencode: explicit-only skills are invoked by name (no slash form); vault permission settings **UNVERIFIED** (see `skills/vault-setup/references/permissions-opencode.md`; a 2026-09-15 test run was inconclusive because the opencode provider did not answer). |
 | **code-review** (read-only PR-review *runner*) | optional pair for `meaningfy-code-review` | unsupported (Claude plugin) | `/plugin install code-review@claude-plugins-official` | **gap (optional)** — no opencode plugin equivalent; on opencode run the `meaningfy-code-review` skill directly or opencode's native review. The review *checklist* (the skill) works on both CLIs, so no workflow is blocked. |
+<!-- /GENERATED -->
 
 > **gitnexus** and **context7** are MCP servers, not skill-packs — both **native** on opencode; see the
 > *MCP servers* table below.
@@ -44,6 +50,7 @@ All MCP servers are **documented per-tool setup**, not generated (DEC-9). "nativ
 opencode supports the same transport in `opencode.json` `mcp`; see
 [`mcp-setup.md`](mcp-setup.md) for the per-tool templates.
 
+<!-- GENERATED:dependencies:mcp -->
 | MCP server | Transport | opencode status | Notes |
 |---|---|---|---|
 | **GitNexus** | local (stdio) | native | `command[]` in `opencode.json` mcp; identical capability. |
@@ -53,14 +60,16 @@ opencode supports the same transport in `opencode.json` `mcp`; see
 | **Neo4j** (per DB) | local | native | one server per database, same on both CLIs. |
 | **MongoDB** | local | native | `mongodb-mcp-server`. |
 | **Context7** (library docs) | local | native | `@upstash/context7-mcp`. |
-| **Slack**, **Miro** | remote | native | interactively-authenticated; may be absent in headless/cron runs on either CLI (documented caveat, not a per-CLI gap). |
+| **Slack** | remote | native | interactively-authenticated; may be absent in headless/cron runs on either CLI (documented caveat, not a per-CLI gap). |
+| **Miro** | remote | native | interactively-authenticated; may be absent in headless/cron runs on either CLI (documented caveat, not a per-CLI gap). |
+<!-- /GENERATED -->
 
 No MCP server is a gap: every referenced server's transport is expressible in `opencode.json`.
 
 ## Agent-hook gaps (cross-reference)
 
 The only recorded *capability* gap is on the agent-hook surface, owned by
-[`../../../hooks/bindings.md`](../../../hooks/bindings.md):
+[`../../../hooks/bindings.md`](../../development/hook-bindings.md):
 
 | Intent | Claude binding | opencode | Gap / degradation |
 |---|---|---|---|
@@ -89,8 +98,8 @@ Two things are **never** shared or generated identically across CLIs — they ar
 
 1. **Slash-command registration/invocation** — only the command *content/template* derives from a
    shared source; the registration form is `/opsx:<id>` (Claude) vs `opsx-<id>` (opencode).
-2. **Agent-hook bindings** — the *intent* is shared (`hooks/inventory.yaml`); the binding is a
-   Claude `settings.json` hook vs an opencode plugin handler. See `hooks/bindings.md`.
+2. **Agent-hook bindings** — the *intent* is shared (`hooks.yaml`); the binding is a
+   Claude `settings.json` hook vs an opencode plugin handler. See `docs/development/hook-bindings.md`.
 
 Everything else — the root binding (`AGENTS.md`), skill bodies, command content, the hook *intent*
 inventory — is single-sourced and shared.

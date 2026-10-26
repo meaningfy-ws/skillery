@@ -14,7 +14,7 @@ skills:
   - bdd-gherkin
   - stream-coding
 metadata:
-  purpose: planning
+  purpose: software-development
   area: coding
   subject: spec-driven
   posture: precise

@@ -6,23 +6,29 @@ owner: {name: Meaningfy, email: info@meaningfy.ws}
 description: Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently
 bundles:
   - name: meaningfy-core
-    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy git/PR workflow, and agentic guardrails"
+    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, and agentic guardrails"
     skills:
       - technical-writing
       - explanatory-writing
       - writing-antipatterns
+      - meaningfy-voice
       - meaningfy-git-workflow
       - guardrails
     agents: []
   - name: meaningfy-consulting
-    description: "The advisory / front-of-funnel role: semantic-technologies coaching, the Decision Package, proposals, estimation, and executive communication"
+    description: "The advisory role: semantic-technologies coaching, the Decision Package, and executive communication"
     skills:
       - semantic-consulting-coach
       - decision-package
-      - proposal-writing
-      - estimation
       - executive-communication
     agents: []
+  - name: meaningfy-sales
+    description: "The commercial role: proposal and offer writing, and estimation"
+    skills:
+      - proposal-writing
+      - estimation
+    agents: [proposal-writer]
+    requires: [meaningfy-consulting]
   - name: meaningfy-architecture
     description: "The design / modelling role: system architecture (C4, ArchiMate/UML, ADRs, contracts), the living conceptual model, the shared modelling conventions, and the LinkML craft (LinkML → typed artefacts + OWL/SHACL)"
     skills:
@@ -30,7 +36,7 @@ bundles:
       - conceptual-modelling
       - modelling-conventions
       - linkml-engineering
-    agents: []
+    agents: [system-architect, conceptual-modeller]
   - name: meaningfy-building
     description: "The delivery / developer role: the spine build loop (epic-planning, spec-stewardship, clarity-gate, BDD, code review), clean layered Python (cosmic-python), repo scaffolding (project-setup), CD/deploy (ci-cd-delivery), and the release lifecycle (meaningfy-release)"
     skills:

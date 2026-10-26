@@ -7,7 +7,7 @@ on-demand evals, and why the method stays inside skillery for now.
 ## Requirements
 ### Requirement: The method states what it owns and what it adopts by reference
 
-`docs/development-method.md` SHALL keep as its own text only what no published method covers: the
+`docs/development/README.md` SHALL keep as its own text only what no published method covers: the
 three readers, the principles of ownership and installability, the change path, the posture rule,
 the agent lifecycle, the issue loop, and the Definition of Done. For writing and testing a single
 skill, it SHALL cite the adopted methods instead of restating them: superpowers `writing-skills`,
@@ -56,12 +56,12 @@ characters. A `Not for…` clause SHALL appear only where a near-miss probe need
 ### Requirement: Rules that must hold every time are hooks
 
 The method SHALL state that a rule which must hold every time belongs in a hook, declared in
-`hooks/inventory.yaml` and rendered per CLI, not in skill prose and not in skill frontmatter.
+`hooks.yaml` and rendered per CLI, not in skill prose and not in skill frontmatter.
 
 #### Scenario: A skill rule keeps being skipped
 
 - **WHEN** an agent repeatedly skips a rule that must never be skipped
-- **THEN** the fix is a hook intent in `hooks/inventory.yaml`, not stronger wording in the skill
+- **THEN** the fix is a hook intent in `hooks.yaml`, not stronger wording in the skill
 
 ### Requirement: Third-party content is read, pinned and recorded
 
@@ -88,7 +88,7 @@ opencode eval runner SHALL be stated in the method as a gap.
 #### Scenario: Someone wants evidence for a bundle
 
 - **WHEN** a maintainer starts the eval workflow for `meaningfy-consulting` with a cost ceiling of 5 USD
-- **THEN** the suite under `evals/meaningfy-consulting/` runs, stops before exceeding the ceiling, and
+- **THEN** the suite under `tests/evals/meaningfy-consulting/` runs, stops before exceeding the ceiling, and
   its results are uploaded as an artefact
 
 #### Scenario: A pull request is opened

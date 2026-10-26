@@ -24,7 +24,7 @@ It is deliberately **not a greenfield schema-authoring skill**. LinkML is always
 representation of a model that already exists (a UML model, a text specification, a model2owl output,
 another existing model). If no model exists yet, that is `conceptual-modelling`'s job first.
 
-This skill **reuses** [`../modelling-conventions/SKILL.md`](../modelling-conventions/SKILL.md) for the
+This skill **reuses** `modelling-conventions` for the
 representation-agnostic craft (reusable properties, URI-everywhere, anti-patterns, naming) and adds the
 **LinkML-specific mechanics** that realise those principles. It is not an ontology-authoring skill —
 but it keeps ontologies in mind, because a well-authored schema must generate complete, correct OWL and
@@ -79,14 +79,15 @@ the guided quality-gate process.
 
 **This skill REUSES:**
 - Generic modelling craft (reusable-property and URI-everywhere *principles*, anti-patterns, naming,
-  guardrails) → [`../modelling-conventions/SKILL.md`](../modelling-conventions/SKILL.md). This skill
+  guardrails) → `modelling-conventions`. This skill
   states the LinkML *mechanism*; it does not restate the principle.
 
 **This skill DELEGATES:**
 - The representation-agnostic model, UML conceptual modelling, terminology, and the LinkML-vs-model2owl
-  **source decision** → [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md).
-- Where the generated Pydantic/JSON Schema contract is *consumed* (a service's `entrypoints/api`) →
-  [`../cosmic-python/SKILL.md`](../cosmic-python/SKILL.md).
+  **source decision** → `conceptual-modelling`.
+
+Where the generated Pydantic/JSON Schema contract is *consumed* (a service's `entrypoints/api`) is
+the related skill `cosmic-python`.
 
 Scaffolding the gates, automation and per-module layout into a repo is the job of the related
 skill `project-setup`, when the project uses LinkML.

@@ -1,7 +1,7 @@
 # Coaching dialogue
 
 **Register signature:** questions over statements, no structure until asked. **Owning skill:**
-[`semantic-consulting-coach`](../../semantic-consulting-coach/SKILL.md).
+`semantic-consulting-coach`.
 
 Pointer table only — full entries live in [`inversion-matrix.md`](inversion-matrix.md). See
 [`../SKILL.md`](../SKILL.md) for the unguarded defects (U1–U8), which apply here too.
