@@ -202,6 +202,45 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   `change` that is empty or appears nowhere in `docs/future-features.md`:
   `use-cases/UC-W17-graphic-designer.md: change 'add-visual-design' is not in docs/future-features.md`.
 
+- **D-13. Folder restructure** (owner R3/R4 and the group-9 brief, 2026-10-26,
+  [`inputs/2026-10-26-release-and-folders-qa.md`](inputs/2026-10-26-release-and-folders-qa.md)). The
+  top level keeps only `skills/`, `agents/`, `use-cases/`, `openspec/`, `docs/`, `tools/`, `tests/`,
+  `.github/` and `.claude-plugin/` (plus root files). Every move is a `git mv` followed by path fixes;
+  no file is rewritten. The skillery development method has **one home, `docs/development/`**: how to
+  build skills and agents, governance, the catalogue model and how to work in this repo. `AGENTS.md`,
+  the README's Develop door and `CONTRIBUTING.md` point to `docs/development/README.md` and restate
+  nothing; it is not a skill, is in no bundle and is never installed.
+
+  | From | To |
+  |---|---|
+  | `docs/development-method.md` | `docs/development/README.md` |
+  | `docs/catalogue-architecture.{md,class.puml,class.svg}` | `docs/development/` |
+  | `spec/CREATING_SKILLS.md`, `skill-repo-governance.md`, `agent-template.md`, `skill-template.md`, `agent-skills-spec.md` | `docs/development/creating-skills.md`, `governance.md`, `agent-template.md`, `skill-template.md`, `agent-skills-spec.md` |
+  | `spine/golden-thread.md` | `skills/epic-planning/references/golden-thread.md` (its repo links become name citations) |
+  | `spine/openspec-version.txt` | `openspec/openspec-version.txt` (Makefile, `validate.yml`, the `scaffold.sh` comment) |
+  | `spine/README.md`, every other `spine/*.md` | `docs/development/spine.md`, `docs/development/<same name>` |
+  | `hooks/inventory.yaml` | `hooks.yaml` (root, beside `bundles.yaml`, `facets.yaml`, `dependencies.yaml`) |
+  | `hooks/README.md`, `hooks/bindings.md` | `docs/development/hooks.md`, `docs/development/hook-bindings.md` |
+  | `prompts/AGENTS.md.template` | deleted: `skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl` already holds all of it (stamp, routing, implementation loop, project specifics); its only extra, the `.claude/memory` convention, is the one the `.tmpl` retired |
+  | `prompts/global-prompt.md` | `docs/environment/global-prompt.md`; `prompts/README.md` deleted |
+  | `evals/` | `tests/evals/` |
+  | `docs/{ai-coding,ai-consulting,ai-sales,engineering-standards,philosophy}/`, `docs/roles-and-raci.md` | `docs/practice/` |
+  | `tools/linkml_neo4j/` | `skills/linkml-engineering/scripts/linkml_neo4j/` (owner, 2026-10-26); `scaffold.sh` takes the generators' folder from `--linkml-generators` or `LINKML_NEO4J_DIR`, falling back to the sibling skill in a source checkout |
+  | `.claude/HARD-QUESTIONS.md` | `inputs/hard-questions-v2.md` of this change; the two answered items become `docs/future-features.md` rows |
+  | the `eval/C-exec-comm` worktree's uncommitted `tools/trigger_cases.py`, its test and approvals line | `openspec/changes/evaluate-catalogue/inputs/batch-c-worktree/`; both leftover worktrees pruned |
+
+  **An installed skill links nothing outside its own folder.** `cross_skill_paths` widens from "no
+  link into another skill" to "no link outside the skill's own folder"; each of today's links out
+  (about 70: into `spine/`, `docs/`, `spec/`, `openspec/`, and five already broken) is deleted where
+  the skill already states the fact, or becomes one sentence or a citation of the owning skill by name
+  (golden thread → `epic-planning`; OpenSpec pin → `scaffold.sh`'s `OPENSPEC_PIN`; `/opsx` verbs →
+  OpenSpec). `AGENTS.md`'s Binding row and `governance.md` read "root agentic files + project-setup's
+  agentic templates". A lint check `top_level_folders` allows only the folders above. Living-spec
+  paths change through MODIFIED deltas (`catalogue-governance`, `skill-crafting-method`,
+  `linkml-engineering`); archived changes are not touched. `scaffold.sh`'s schema copy from
+  `../../../openspec/` has the same installed-path gap as the generators; it is recorded in
+  `docs/future-features.md`, not fixed here.
+
 ## Algorithm / approach
 
 Each task group: write the check or generator test first and see it fail; make the change; run the

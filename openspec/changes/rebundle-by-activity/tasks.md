@@ -113,6 +113,27 @@
       "Skills and agents are installed from their single source". **Accept:** `make validate` green
       without `bundles/`; `make bundles` recreates it locally; `npm run test:opencode-installer` green.
 
+## 9. Folder restructure (`arch/repo-folders`, D-13)
+
+- [ ] 9.1 Tests first: `top_level_folders` (an unknown folder fails) and the widened
+      `cross_skill_paths` (a link from a skill into `docs/` fails). **Accept:** they fail for the
+      expected reasons.
+- [ ] 9.2 The development home: `docs/development-method.md`, `docs/catalogue-architecture.*` and
+      `spec/*.md` → `docs/development/`; pointers in `AGENTS.md`, README, `CONTRIBUTING.md`.
+      **Accept:** `spec/` gone; `broken_links` clean.
+- [ ] 9.3 `spine/`: `golden-thread.md` → `epic-planning`; the version pin → `openspec/`; the rest →
+      `docs/development/`; every skill link into `spine/` removed per D-13. **Accept:** `spine/` gone.
+- [ ] 9.4 `hooks/`, `prompts/`, `evals/` and the company-practice docs per D-13. **Accept:** those
+      folders gone; `hooks_inventory_shape` reads `hooks.yaml`; `plugin-eval.yml` reads `tests/evals/`.
+- [ ] 9.5 `tools/linkml_neo4j/` → the skill; `scaffold.sh` per D-13; the `linkml-engineering` delta.
+      **Accept:** `pytest tests/test_linkml_neo4j_generators.py` green.
+- [ ] 9.6 Every remaining skill link out of its folder replaced (D-13). **Accept:** the widened
+      `cross_skill_paths` clean.
+- [ ] 9.7 HARD-QUESTIONS and the worktree leftovers per D-13; worktrees pruned.
+- [ ] 9.8 Living-spec deltas; CHANGELOG line for every moved path. **Accept:** `make validate`,
+      `make validate-spine`, `openspec validate --all --strict` green; `ls` shows only the allowed
+      folders.
+
 ## 8. Release documentation and verification
 
 - [ ] 8.1 CHANGELOG under Unreleased, per merged PR, written for the installer.
@@ -129,12 +150,13 @@
 - [x] 5.1 · [x] 5.2 · [x] 5.3
 - [x] 6.1 · [x] 6.2 · [x] 6.3
 - [ ] 7.1 · [x] 7.2 · [x] 7.3
+- [ ] 9.1 · [ ] 9.2 · [ ] 9.3 · [ ] 9.4 · [ ] 9.5 · [ ] 9.6 · [ ] 9.7 · [ ] 9.8
 - [ ] 8.1 · [ ] 8.2
 
 Order: 0, then 1 before 4 (coverage must exist before agents are added), 2 before 3 and 4 (the new
 skills' and agents' purposes use the new values), 3 before 4 (`proposal-writer` lands in
 `meaningfy-sales`), 5 after 1 and 4, 6 independent after 0, 7.2 after 3 (so `dist` publishes the new
-bundles), 7.3 last before 8.
+bundles), 7.3, then 9 (the folder restructure, owner 2026-10-26), then 8.
 
 ## Verification
 
