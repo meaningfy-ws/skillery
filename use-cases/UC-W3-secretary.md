@@ -17,7 +17,3 @@ change: add-personal-assistants
 ## Brief Description
 
 Secretary: organises calendar and tasks, personal and business life (calendar connector available).
-
-## Notes and Business Rules
-
-- Seeded from S3 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: operator.

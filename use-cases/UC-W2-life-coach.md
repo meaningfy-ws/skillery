@@ -17,7 +17,3 @@ change: add-personal-assistants
 ## Brief Description
 
 Life coach and personal-growth assistant: "I will provide many ideas and objectives, and will need him to help me organise and realise them … quite an important one."
-
-## Notes and Business Rules
-
-- Seeded from S2 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: partner.

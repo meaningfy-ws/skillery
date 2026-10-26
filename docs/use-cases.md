@@ -10,7 +10,7 @@
 
 | Area | covered | partial | missing |
 |---|---|---|---|
-| `coding` | 1 | 2 | 0 |
+| `coding` | 3 | 0 | 0 |
 | `consulting` | 0 | 1 | 1 |
 | `sales` | 0 | 2 | 5 |
 | `personal` | 1 | 2 | 2 |
@@ -26,8 +26,8 @@ Building software with AI agents.
 | Use case | Primary actor | Status | Served by | Change |
 |---|---|---|---|---|
 | [UC-W18](../use-cases/UC-W18-programming-team-lead.md) Programming partner and team lead | a Meaningfy developer | `covered` | `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `meaningfy-git-workflow`, `guardrails`, `technical-writing` | — |
-| [UC-W19](../use-cases/UC-W19-system-architect.md) System architect | a Meaningfy architect | `partial` | `architecture` | `add-engineering-agents` |
-| [UC-W20](../use-cases/UC-W20-conceptual-modeller.md) Conceptual modeller and ontology engineer | a Meaningfy modeller | `partial` | `conceptual-modelling`, `modelling-conventions`, `linkml-engineering` | `add-engineering-agents` |
+| [UC-W19](../use-cases/UC-W19-system-architect.md) System architect | a Meaningfy architect | `covered` | `system-architect` *(agent)*, `architecture` | — |
+| [UC-W20](../use-cases/UC-W20-conceptual-modeller.md) Conceptual modeller and ontology engineer | a Meaningfy modeller | `covered` | `conceptual-modeller` *(agent)*, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering` | — |
 
 ## consulting
 
@@ -45,7 +45,7 @@ Winning and pricing work.
 | Use case | Primary actor | Status | Served by | Change |
 |---|---|---|---|---|
 | [UC-W7](../use-cases/UC-W7-sales-assistant.md) Sales assistant | a Meaningfy salesperson | `partial` | — | `add-sales-bundle` |
-| [UC-W8](../use-cases/UC-W8-proposals-and-offers.md) Proposals and formal offers | a Meaningfy salesperson or consultant | `partial` | `proposal-writing`, `estimation`, `decision-package`, `executive-communication` | `add-commercial-chain` |
+| [UC-W8](../use-cases/UC-W8-proposals-and-offers.md) Proposals and formal offers | a Meaningfy salesperson or consultant | `partial` | `proposal-writer` *(agent)*, `proposal-writing`, `estimation`, `decision-package`, `executive-communication` | `add-commercial-chain` |
 | [UC-W9](../use-cases/UC-W9-qualify-leads-and-partnerships.md) Qualify leads and partnerships | a Meaningfy salesperson | `missing` | — | `add-commercial-chain` |
 | [UC-W10](../use-cases/UC-W10-qualify-prospect.md) Qualify a prospect in a sales conversation | a Meaningfy salesperson | `missing` | — | `add-commercial-chain` |
 | [UC-W11](../use-cases/UC-W11-market-research.md) Market research | the owner | `missing` | — | `add-commercial-chain` |

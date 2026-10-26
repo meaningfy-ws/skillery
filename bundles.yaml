@@ -27,7 +27,7 @@ bundles:
     skills:
       - proposal-writing
       - estimation
-    agents: []
+    agents: [proposal-writer]
     requires: [meaningfy-consulting]
   - name: meaningfy-architecture
     description: "The design / modelling role: system architecture (C4, ArchiMate/UML, ADRs, contracts), the living conceptual model, the shared modelling conventions, and the LinkML craft (LinkML → typed artefacts + OWL/SHACL)"
@@ -36,7 +36,7 @@ bundles:
       - conceptual-modelling
       - modelling-conventions
       - linkml-engineering
-    agents: []
+    agents: [system-architect, conceptual-modeller]
   - name: meaningfy-building
     description: "The delivery / developer role: the spine build loop (epic-planning, spec-stewardship, clarity-gate, BDD, code review), clean layered Python (cosmic-python), repo scaffolding (project-setup), CD/deploy (ci-cd-delivery), and the release lifecycle (meaningfy-release)"
     skills:

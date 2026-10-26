@@ -17,7 +17,3 @@ change: add-legal-documents
 ## Brief Description
 
 Contracts and NDAs in LaTeX on Overleaf (Overleaf connector available).
-
-## Notes and Business Rules
-
-- Seeded from S16 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: producer.

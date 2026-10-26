@@ -26,7 +26,3 @@ change: add-vault-local-config
 ## Brief Description
 
 Vault work with a renamed structure ("not projects but works/tasks"); colleagues' local variations anchored in one shared spine.
-
-## Notes and Business Rules
-
-- Seeded from S1 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: operator.

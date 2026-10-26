@@ -20,7 +20,3 @@ change: add-advisory-agent
 ## Brief Description
 
 An advisory engagement: coaching a client through a decision, from discovery to a decision package and its executive framing. The skills exist; no agent leads the engagement.
-
-## Notes and Business Rules
-
-- Added by rebundle-by-activity D-1 (2026-10-26) from the owner's activity list and Q1 of its shaping Q&A.

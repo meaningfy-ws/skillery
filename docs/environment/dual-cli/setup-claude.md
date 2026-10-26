@@ -116,7 +116,7 @@ Run:
 ```
 Confirm `meaningfy-core` (and any other bundle you installed in Step 3) shows as **enabled**, and
 that each bundle loads exactly its own skills and agents (skills / agents): `meaningfy-core` 6 / 0,
-`meaningfy-consulting` 3 / 0, `meaningfy-sales` 2 / 0, `meaningfy-architecture` 4 / 0, `meaningfy-building` 9 / 3,
+`meaningfy-consulting` 3 / 0, `meaningfy-sales` 2 / 1, `meaningfy-architecture` 4 / 2, `meaningfy-building` 9 / 3,
 `vault-assistant` 9 / 0 (`claude plugin details <bundle>` lists them). Then
 confirm the spine registered by running `/opsx:propose` — it should prompt you for a change
 description rather than say the command is unknown.

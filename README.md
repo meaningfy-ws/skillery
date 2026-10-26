@@ -41,9 +41,10 @@ each one serves, and which skills depend on which — see
 | **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
 | **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/environment/vault-assistant.md`](docs/environment/vault-assistant.md)) |
 
-Thin **agent** wrappers live in [`agents/`](agents/) — `epic-planner`, `implementer`,
-`code-reviewer` — they pin a model + tools and load the skills above. They ship with the
-**`meaningfy-building`** bundle only; install it to get them. `meaningfy-building` requires
+Thin **agent** wrappers live in [`agents/`](agents/) — they pin a model + tools and load the skills
+above, and ship with the bundle of their primary skill: `epic-planner`, `implementer` and
+`code-reviewer` with **`meaningfy-building`**; `system-architect` and `conceptual-modeller` with
+**`meaningfy-architecture`**; `proposal-writer` with **`meaningfy-sales`**. `meaningfy-building` requires
 `meaningfy-architecture` (install both); every bundle's requirements are in the
 [catalogue map](docs/skill-inventory.md).
 

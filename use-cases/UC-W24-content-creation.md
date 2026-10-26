@@ -24,5 +24,4 @@ Content creation: LinkedIn posts, blogs and other public text explaining what Me
 
 ## Notes and Business Rules
 
-- Added by rebundle-by-activity D-1 (2026-10-26) from the owner's activity list and Q1 of its shaping Q&A.
 - Area `business`: the company speaking for itself, like UC-W15, not selling a given offer.

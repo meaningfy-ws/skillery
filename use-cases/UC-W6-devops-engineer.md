@@ -19,7 +19,3 @@ change: add-devops-bundle
 ## Brief Description
 
 DevOps engineer: the Meaningfy way of infrastructure, CI/CD, monitoring, daily reviews, interventions; also developing, testing, operationalising and monitoring new infrastructure stacks. "I need this badly." Materials exist outside the repo; the change is drafted.
-
-## Notes and Business Rules
-
-- Seeded from S6 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: operator.

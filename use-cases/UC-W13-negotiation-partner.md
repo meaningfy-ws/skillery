@@ -17,7 +17,3 @@ change: add-commercial-chain
 ## Brief Description
 
 Negotiation thinking partner for difficult commercial and business situations (Chris Voss, Robert Greene, Sun Tzu and other relevant authors).
-
-## Notes and Business Rules
-
-- Seeded from S13 of the restructure-and-evaluate-catalogue scenarios (2026-10-27); seed kind: partner.

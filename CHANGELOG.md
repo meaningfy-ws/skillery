@@ -24,6 +24,10 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **`meaningfy-voice`** in `meaningfy-core`: the Meaningfy company voice profile as its own
   foundation skill, so every skill that writes for Meaningfy loads the same voice. Installing
   `meaningfy-core` brings it.
+- **Three agents:** `system-architect` and `conceptual-modeller` (in `meaningfy-architecture`) are
+  thinking partners that design a system or build a domain model with you, saying what they think
+  and plan before each step; `proposal-writer` (in `meaningfy-sales`) turns a client's requirements
+  into a proposal or offer email. All three are `experimental`.
 - **Three more use cases:** advisory engagement (UC-W22), client delivery and project management
   (UC-W23) and content creation for LinkedIn and blogs (UC-W24); every skill now serves at least one
   use case.

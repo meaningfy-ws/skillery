@@ -16,8 +16,10 @@
 - **Group 1 done** (`arch/use-case-coverage`): `use_case_coverage`, UC-W22–W24.
 - **Group 2 done** (`arch/purpose-activities`): the ten activity values, 36 items re-tagged.
 - **Group 3 done** (`arch/sales-bundle`): `meaningfy-sales`, three hand-offs now see-also, move announced.
-- **Next:** task groups 4 to 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
-- **Waits for the owner:** 4.3 (status of UC-W8, W19, W20), 6.2 (any changed register cell), 7.1
+- **Group 4 done** (`arch/agents-architecture-sales`): three agents with Gherkin traced to the
+  deepened UC-W8, W19, W20; 4.3 applied (W19, W20 `covered`; W8 `partial`). `npm run test:opencode-installer` deferred by the owner to after group 7.
+- **Next:** task groups 5 to 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
+- **Waits for the owner:** 6.2 (any changed register cell), 7.1
   (optional; pushes a test branch). No model runs in this change.
 
 ## 0. Preconditions
@@ -54,15 +56,15 @@
 
 ## 4. The agents (`arch/agents-architecture-sales`)
 
-- [ ] 4.1 With `bdd-gherkin`, write `tests/features/agents/system-architect.feature`,
+- [x] 4.1 With `bdd-gherkin`, write `tests/features/agents/system-architect.feature`,
       `conceptual-modeller.feature`, `proposal-writer.feature`, each with a return and a refusal
       Scenario Outline. **Accept:** the three files exist; each has a `Background` naming every skill of D-5 and a return
       and a refusal Scenario Outline with `Examples:` (checked by reading them in the PR).
-- [ ] 4.2 Write the three agents per D-5; add them to `bundles.yaml`; set `served_by.agents` in UC-W19,
+- [x] 4.2 Write the three agents per D-5; add them to `bundles.yaml`; set `served_by.agents` in UC-W19,
       UC-W20, UC-W8; add the names to `ALL_AGENT_NAMES`; `make bundles`, `make skill-inventory`. **Accept:** `agent_conformance`,
       `agent_bundle_membership` and `use_case_coverage` clean; `npm run test:opencode-installer`
       green.
-- [ ] 4.3 Propose to the owner the status of UC-W8, UC-W19, UC-W20 (`covered` or still `partial`).
+- [x] 4.3 Propose to the owner the status of UC-W8, UC-W19, UC-W20 (`covered` or still `partial`).
       **Accept:** the owner's answer applied and dated in `inputs/approvals.md`.
 
 ## 5. Future features (`arch/future-features`)
@@ -114,7 +116,7 @@
 - [x] 1.1 · [x] 1.2
 - [x] 2.1 · [x] 2.2
 - [x] 3.1 · [x] 3.2 · [x] 3.3
-- [ ] 4.1 · [ ] 4.2 · [ ] 4.3
+- [x] 4.1 · [x] 4.2 · [x] 4.3
 - [ ] 5.1 · [ ] 5.2 · [ ] 5.3
 - [ ] 6.1 · [ ] 6.2 · [ ] 6.3
 - [ ] 7.1 · [ ] 7.2 · [ ] 7.3
