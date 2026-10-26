@@ -69,7 +69,7 @@
       shows only `workflow_dispatch`; `grep -n 'RUNNER_TEMP/plugin/.claude-plugin/plugin.json'` and
       `grep -n "ANTHROPIC_API_KEY"` both hit in the file; `actionlint` (if installed) or a YAML
       parse passes.
-- [ ] 3.5 Tell the owner that the job needs the `ANTHROPIC_API_KEY` repository secret (it is not
+- [ ] 3.5 **Recorded gap at archive (2026-10-26):** the owner will add the secret later. Tell the owner that the job needs the `ANTHROPIC_API_KEY` repository secret (it is not
       added by the change). **Accept:** stated in the PR body and in the workflow file's header
       comment.
 
@@ -108,7 +108,7 @@
       1,414 to ≤ 800 lines (design §4 estimate: about 700); the counts are recorded in the PR.
 - [x] 6.3 GitNexus `detect_changes` against `develop`. **Accept:** only `tools/repo_lint/lint.py`
       and the tests are in scope; risk reported in the PR.
-- [ ] 6.4 Start the eval workflow once by hand for `meaningfy-consulting` after the owner adds the
+- [ ] 6.4 **Recorded gap at archive (2026-10-26):** not run, the `ANTHROPIC_API_KEY` secret is not yet set. Start the eval workflow once by hand for `meaningfy-consulting` after the owner adds the
       secret. **Accept:** the run completes under its cost ceiling and uploads results; if the secret
       is absent, recorded as a gap at archive.
 
