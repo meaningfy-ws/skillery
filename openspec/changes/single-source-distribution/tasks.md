@@ -251,11 +251,11 @@ It must be empty, except for intended migration text in `CHANGELOG.md`. `.openco
 
 - [x] 9.1 `make validate`, `make validate-spine` (the 0.1 exceptions only) and
       `npm run test:opencode-installer` are green.
-- [ ] 9.2 *(deferred: needs push — approximated locally, see design.md Implementation notes)* Run IT-03 and IT-04 on the pushed branch, including the `npx skills … --list` loader check,
+- [x] 9.2 *(run 2026-10-26 on the pushed branch: IT-03 9 skills + 3 agents, loader 0 skipped; IT-04 219 files, nothing under .opencode/ or bundles/)* Run IT-03 and IT-04 on the pushed branch, including the `npx skills … --list` loader check,
       and paste the output into the PR.
-- [ ] 9.3 *(deferred: needs push — approximated locally, counts match)* Run IT-01 and IT-02 in a fresh `CLAUDE_CONFIG_DIR` from the pushed branch (method:
+- [x] 9.3 *(run 2026-10-26: IT-01 and IT-02 counts equal Verification counts; IT-02 updated in place, no reinstall)* Run IT-01 and IT-02 in a fresh `CLAUDE_CONFIG_DIR` from the pushed branch (method:
       `spike-dec5.md` "How to reproduce"). **Gate:** the counts equal design.md "Verification counts".
-- [ ] 9.4 *(deferred: manual — not run)* IT-05 (manual, best-effort): install `meaningfy-core` and `meaningfy-building` from the
+- [ ] 9.4 *(not run — no Cowork/Desktop run in this release; CHANGELOG item 5 stands)* IT-05 (manual, best-effort): install `meaningfy-core` and `meaningfy-building` from the
       pushed branch in Cowork or Claude Desktop, and record the counts. If nobody can run it, write
       "not run" in the PR. The CHANGELOG item 5 then stands as written.
 - [x] 9.5 Run GitNexus `detect_changes({scope: "compare", base_ref: "develop"})`. Affected symbols

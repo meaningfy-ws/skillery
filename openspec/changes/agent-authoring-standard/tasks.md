@@ -81,7 +81,7 @@
 
 ## 6. Load test on both CLIs (Cross-EPIC contract item 7; D-8, D-15)
 
-- [ ] 6.1 (deferred: needs push; local approximation in design.md Implementation notes 11. **Merge gate**: when run,
+- [x] 6.1 (run 2026-10-26, Claude Code CLI, as plugin subagents `meaningfy-building:<agent>`: code-reviewer stayed in L3 and cited cosmic-python entry ids; implementer fixed the file and did not commit; epic-planner returned a question round. `claude --agent` as main thread does NOT preload `skills:`. Original: **Merge gate**: when run,
       ask the dispatched `code-reviewer` to quote a line of `meaningfy-code-review` to prove the preload, and
       check `claude --debug` for unrecognised-field and skipped-skill warnings — review-implementation F-8) Push the branch. In a fresh `CLAUDE_CONFIG_DIR`: `claude plugin marketplace add
       meaningfy-ws/skillery#<branch>`, `claude plugin install meaningfy-building@meaningfy-skillery`.
@@ -90,7 +90,7 @@
       each has its skills in context. Record the working plugin-scoped agent name and the exact
       `claude --agent …` literal (used by 7.2, 8.1). **Accept:** all three behave per their first
       Examples row; results (CLI, version, pass/fail) in the PR description.
-- [ ] 6.2 (deferred: needs push; local approximation in design.md Implementation notes 11) On opencode, install `meaningfy-building` from the same pushed branch with the sibling's
+- [ ] 6.2 (partial 2026-10-26: rendered files checked — mode subagent, no skills key, Skills body line, color; dispatches not run, opencode not installed) On opencode, install `meaningfy-building` from the same pushed branch with the sibling's
       installer command; check each rendered file has `mode: subagent`, no `skills` key, the D-15 body
       line, a theme `color`; run the same three dispatches and confirm the skills were loaded.
       **Accept:** as 6.1; any failure fixed or recorded as a gap in mapping.md.
@@ -141,7 +141,7 @@
 
 ## 9. Verify and sync
 
-- [ ] 9.1 (all green except `make validate-spine`: the 4 known sibling failures; see design.md Implementation notes) `make validate`, `npm run test:opencode-installer`, `make validate-spine` and
+- [x] 9.1 (all green 2026-10-26 on a clean checkout of the branch; the 4 sibling proposals are not shipped) `make validate`, `npm run test:opencode-installer`, `make validate-spine` and
       `npx --yes @fission-ai/openspec@$(cat spine/openspec-version.txt) validate agent-authoring-standard --strict`
       green; GitNexus `detect_changes({scope: "compare", base_ref: "develop"})` shows only expected
       symbols. **Accept:** all exit 0.
