@@ -92,3 +92,10 @@ probes:
   - probe: "the copy says our method keeps data consistent, is that claim sound"
     expect: writing-antipatterns
     near_miss_of: executive-communication
+  # estimation's description no longer delegates to epic-planning (define-catalogue-model §B).
+  - probe: "give me a fixed-price estimate with contingency for this bid"
+    expect: estimation
+    near_miss_of: proposal-writing
+  - probe: "break this feature into an EPIC with its tasks and acceptance criteria"
+    expect: epic-planning
+    near_miss_of: estimation

@@ -4,7 +4,12 @@ description: "File what matters into one project's files in a Meaningfy Obsidian
 license: Apache 2.0
 argument-hint: "<project> [notes]"
 metadata:
-  category: vault
+  purpose: knowledge
+  area: personal
+  subject: obsidian
+  posture: precise
+  stage: any
+  maturity: stable
 ---
 
 # Vault Capture

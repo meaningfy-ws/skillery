@@ -3,7 +3,12 @@ name: linkml-engineering
 description: The operational LinkML craft, downstream of an existing model or spec — never greenfield. Use to derive a LinkML schema from a UML model, a text spec, a model2owl output, or another existing model; to author/refine it (reusable slots, the URI-as-datatype artifice, implicit class_uri/slot_uri, enums, schema-level constraints); to generate the full target set (Pydantic/JSON Schema/OWL/SHACL/TS/SQL) with custom templates and make-target automation including diagrams; and to establish LinkML quality gates. Trigger on "write/derive a LinkML schema", "generate models/OWL/SHACL from LinkML", "custom Pydantic template", "LinkML quality gates", "per-module generation", "make generate-models". Reuses modelling-conventions for generic craft; defers the model concept to conceptual-modelling. Not an ontology-authoring skill.
 license: Apache 2.0
 metadata:
-  category: engineering
+  purpose: modelling
+  area: coding
+  subject: semantic-data
+  posture: precise
+  stage: design
+  maturity: stable
 ---
 
 # LinkML Engineering
@@ -82,8 +87,9 @@ the guided quality-gate process.
   **source decision** → [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md).
 - Where the generated Pydantic/JSON Schema contract is *consumed* (a service's `entrypoints/api`) →
   [`../cosmic-python/SKILL.md`](../cosmic-python/SKILL.md).
-- Scaffolding the gates/automation/per-module layout into a repo → `project-setup` (conditional on the
-  project using LinkML).
+
+Scaffolding the gates, automation and per-module layout into a repo is the job of the related
+skill `project-setup`, when the project uses LinkML.
 
 **Conditional:** product-development projects that use LinkML. A project modelling only in OWL/UML
 without a LinkML pivot does not need this skill.

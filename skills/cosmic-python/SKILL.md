@@ -4,6 +4,12 @@ description: Clean Architecture and Cosmic Python guidance for well-tested, laye
 license: Apache 2.0
 metadata:
   version: "1.0.0"
+  purpose: building
+  area: coding
+  subject: python
+  posture: precise
+  stage: build
+  maturity: stable
 ---
 
 # Cosmic Python: Code Architecture for Production Systems

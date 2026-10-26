@@ -4,7 +4,12 @@ description: "Start a work session on one project in a Meaningfy Obsidian vault:
 license: Apache 2.0
 argument-hint: "<project>"
 metadata:
-  category: vault
+  purpose: knowledge
+  area: personal
+  subject: obsidian
+  posture: precise
+  stage: any
+  maturity: stable
 ---
 
 # Vault Resume

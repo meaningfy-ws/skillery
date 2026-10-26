@@ -3,7 +3,12 @@ name: technical-writing
 description: Produce clear documentation, explanations, summaries, and docstrings — AsciiDoc/Antora or Markdown — with a lightweight clarity check. Use to write or improve project docs, explain how a module works, summarise an area, or add docstrings. Trigger on "document this", "write docs/README", "explain how X works", "add docstrings", "summarise this module".
 license: Apache 2.0
 metadata:
-  category: ai-coding
+  purpose: writing
+  area: cross-cutting
+  subject: generic
+  posture: reusable
+  stage: any
+  maturity: stable
 ---
 
 # Technical Writing

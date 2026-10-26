@@ -146,7 +146,7 @@ flowchart LR
 
 ## Relations
 
-Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (the same six categories, one dark shade each) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (63 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (85 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 148 relation edges plus 32 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
+Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (the same six categories, one dark shade each) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (56 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (92 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 148 relation edges plus 32 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
 
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 12, 'rankSpacing': 45, 'curve': 'basis'}}}%%
@@ -210,14 +210,8 @@ flowchart LR
   s_epic_planning ==> s_technical_writing
   s_epic_planning ==> s_explanatory_writing
   s_estimation ==> s_proposal_writing
-  s_estimation ==> s_epic_planning
   s_estimation ==> s_decision_package
-  s_executive_communication ==> s_clarity_gate
   s_executive_communication ==> s_technical_writing
-  s_guardrails ==> s_clarity_gate
-  s_guardrails ==> s_cosmic_python
-  s_guardrails ==> s_meaningfy_code_review
-  s_linkml_engineering ==> s_project_setup
   s_project_setup ==> s_cosmic_python
   s_project_setup ==> s_architecture
   s_project_setup ==> s_epic_planning
@@ -253,7 +247,6 @@ flowchart LR
   s_vault_resume ==> s_vault_capture
   s_vault_resume ==> s_vault_project
   s_vault_setup ==> s_vault_conventions
-  s_vault_setup ==> s_project_setup
   s_vault_tidy ==> s_vault_conventions
   s_vault_tidy ==> s_vault_promote
   s_vault_tidy ==> s_vault_project
@@ -284,6 +277,8 @@ flowchart LR
   s_decision_package -.-> s_architecture
   s_decision_package -.-> s_writing_antipatterns
   s_epic_planning -.-> s_architecture
+  s_estimation -.-> s_epic_planning
+  s_executive_communication -.-> s_clarity_gate
   s_executive_communication -.-> s_proposal_writing
   s_executive_communication -.-> s_decision_package
   s_executive_communication -.-> s_semantic_consulting_coach
@@ -293,10 +288,14 @@ flowchart LR
   s_explanatory_writing -.-> s_executive_communication
   s_explanatory_writing -.-> s_clarity_gate
   s_explanatory_writing -.-> s_writing_antipatterns
+  s_guardrails -.-> s_clarity_gate
+  s_guardrails -.-> s_cosmic_python
+  s_guardrails -.-> s_meaningfy_code_review
   s_linkml_engineering -.-> s_modelling_conventions
   s_linkml_engineering -.-> s_conceptual_modelling
   s_linkml_engineering -.-> s_architecture
   s_linkml_engineering -.-> s_cosmic_python
+  s_linkml_engineering -.-> s_project_setup
   s_meaningfy_code_review -.-> s_cosmic_python
   s_meaningfy_code_review -.-> s_guardrails
   s_meaningfy_code_review -.-> s_meaningfy_git_workflow
@@ -336,6 +335,7 @@ flowchart LR
   s_vault_promote -.-> s_vault_planning
   s_vault_resume -.-> s_vault_daily
   s_vault_setup -.-> s_vault_daily
+  s_vault_setup -.-> s_project_setup
   s_writing_antipatterns -.-> s_technical_writing
   s_writing_antipatterns -.-> s_explanatory_writing
   s_writing_antipatterns -.-> s_executive_communication
@@ -393,7 +393,7 @@ Cross-cutting basics everyone installs: clear technical writing, explanatory-wri
 | [`explanatory-writing`](../skills/explanatory-writing/SKILL.md) | Apply explanatory craft so that Explanation-quadrant prose reads clearly — one controlling metaphor, a concrete example beside every abstract claim, self-answered question pivots, short declaratives, coin-and-explain, a confident grounded close. | — | `technical-writing`, `executive-communication`, `clarity-gate`, `writing-antipatterns` |
 | [`writing-antipatterns`](../skills/writing-antipatterns/SKILL.md) | The register/genre-conditional catalogue of how writing fails — a genre map (Tutorial, How-to, Reference, Explanation, Decision, Decision record, Contract/specification, Coaching dialogue), a short list of defects that apply regardless of genre, and an inversion matrix of antipatterns whose correctness depends on genre (a rhetorical question is craft in an explainer and a defect in an ADR). | — | `technical-writing`, `explanatory-writing`, `executive-communication`, `proposal-writing`, `decision-package`, `architecture`, `semantic-consulting-coach` |
 | [`meaningfy-git-workflow`](../skills/meaningfy-git-workflow/SKILL.md) | Meaningfy git and GitHub conventions — Conventional Commits (imperative, no trailing punctuation), branch naming, rebase/merge etiquette, the pull-request workflow, free-tier GitHub constraints, and dev-environment hygiene. | — | `cosmic-python`, `meaningfy-release`, `commit-commands`, `code-review`, `meaningfy-code-review` |
-| [`guardrails`](../skills/guardrails/SKILL.md) | Apply agentic guardrails to every step where an LLM agent acts — decision bounds, output validation, and prompt-injection defence. | `clarity-gate`, `cosmic-python`, `meaningfy-code-review` | `clarity-gate`, `meaningfy-code-review`, `cosmic-python` |
+| [`guardrails`](../skills/guardrails/SKILL.md) | Apply agentic guardrails to every step where an LLM agent acts — decision bounds, output validation, and prompt-injection defence. | — | `clarity-gate`, `cosmic-python`, `meaningfy-code-review` |
 
 ## meaningfy-consulting
 
@@ -404,8 +404,8 @@ The advisory / front-of-funnel role: semantic-technologies coaching, the Decisio
 | [`semantic-consulting-coach`](../skills/semantic-consulting-coach/SKILL.md) | Use when someone running or building a semantic-technologies / data consulting business (ontologies, knowledge graphs, data governance, MDM, semantic interoperability) is thinking through a business, service-design, pricing, partnering, engagement-process, client-situation (B2B sale or B2G tender), negotiation, or executive-message decision and wants to think it through before committing, rather than have delivery work done or a quick factual answer given. | `executive-communication`, `decision-package`, `proposal-writing`, `estimation` | `decision-package`, `proposal-writing`, `executive-communication`, `estimation`, `writing-antipatterns` |
 | [`decision-package`](../skills/decision-package/SKILL.md) | Produce the Decision Package — the paid keystone deliverable of a semantic/data consulting engagement's P1 Decision Phase. | `proposal-writing` | `semantic-consulting-coach`, `executive-communication`, `conceptual-modelling`, `architecture`, `writing-antipatterns` |
 | [`proposal-writing`](../skills/proposal-writing/SKILL.md) | Produce the proposal + Statement of Work (SoW) that frames the paid Decision Phase (P1) offer — with an explicit in/out scope boundary, priced as a fixed frame. | `estimation`, `executive-communication`, `decision-package`, `semantic-consulting-coach` | `estimation`, `decision-package`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` |
-| [`estimation`](../skills/estimation/SKILL.md) | A lightweight fixed-cost scoping / estimation discipline that de-risks fixed-cost bids — a CHECKLIST + METHOD, not a heavy model. | `proposal-writing`, `epic-planning`, `decision-package` | `proposal-writing`, `epic-planning`, `decision-package` |
-| [`executive-communication`](../skills/executive-communication/SKILL.md) | Use when turning rough input into a clear, concise, persuasive executive message or analysis: a board paper, proposal, client recommendation, email or Slack note, spoken narrative, slide outline, or a strategic problem to be solved. | `clarity-gate`, `technical-writing` | `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` |
+| [`estimation`](../skills/estimation/SKILL.md) | A lightweight fixed-cost scoping / estimation discipline that de-risks fixed-cost bids — a CHECKLIST + METHOD, not a heavy model. | `proposal-writing`, `decision-package` | `proposal-writing`, `epic-planning`, `decision-package` |
+| [`executive-communication`](../skills/executive-communication/SKILL.md) | Use when turning rough input into a clear, concise, persuasive executive message or analysis: a board paper, proposal, client recommendation, email or Slack note, spoken narrative, slide outline, or a strategic problem to be solved. | `technical-writing` | `clarity-gate`, `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` |
 
 ## meaningfy-architecture
 
@@ -416,7 +416,7 @@ The design / modelling role: system architecture (C4, ArchiMate/UML, ADRs, contr
 | [`architecture`](../skills/architecture/SKILL.md) | System-level solution architecture — C4 levels (Context, Container, Component, Code), ArchiMate and UML notations, ADRs, and contracts (OpenAPI/AsyncAPI/LinkML). | — | `cosmic-python`, `stream-coding`, `epic-planning`, `writing-antipatterns` |
 | [`conceptual-modelling`](../skills/conceptual-modelling/SKILL.md) | Build and evolve a living, representation-agnostic conceptual model for a product (programming) project — the domain's entities, attributes, relationships, and meaning — and choose how it is rendered. | `linkml-engineering` | `modelling-conventions`, `linkml-engineering`, `architecture`, `cosmic-python` |
 | [`modelling-conventions`](../skills/modelling-conventions/SKILL.md) | The shared, representation-agnostic modelling craft reused across the modelling skills — naming discipline, modelling anti-patterns, and the guardrails a modeller follows while working, plus the two load-bearing principles (decouple attributes into reusable first-class properties; identify everything by a stable URI, implicit by default). | — | `conceptual-modelling`, `linkml-engineering`, `architecture`, `cosmic-python` |
-| [`linkml-engineering`](../skills/linkml-engineering/SKILL.md) | The operational LinkML craft, downstream of an existing model or spec — never greenfield. | `project-setup` | `modelling-conventions`, `conceptual-modelling`, `architecture`, `cosmic-python`, `project-setup` |
+| [`linkml-engineering`](../skills/linkml-engineering/SKILL.md) | The operational LinkML craft, downstream of an existing model or spec — never greenfield. | — | `modelling-conventions`, `conceptual-modelling`, `architecture`, `cosmic-python`, `project-setup` |
 
 ## meaningfy-building
 
@@ -440,7 +440,7 @@ The workflow bundle for people who keep a personal Obsidian vault: set it up (va
 
 | Skill | Purpose | Depends on | Related |
 |---|---|---|---|
-| [`vault-setup`](../skills/vault-setup/SKILL.md) | Bootstrap or complete a Meaningfy personal Obsidian vault and its tooling, the way project-setup does for a repository: create the vault layout and its `vault-files/` sibling, the templates for every kind, the vault's agent instructions (`AGENTS.md` with the owner profile and write rules) and the per-CLI permission settings; then guide, per operating system (Windows or Linux), installing Obsidian with its CLI, the external obsidian-skills plugin, sync through Google Drive (Insync) or OneDrive, the company memory's MCP server, mail and calendar connectors, the optional ingestion opt-in and a scheduled daily run; end with a check of every prerequisite. | `vault-conventions`, `project-setup` | `vault-conventions`, `vault-daily`, `project-setup` |
+| [`vault-setup`](../skills/vault-setup/SKILL.md) | Bootstrap or complete a Meaningfy personal Obsidian vault and its tooling, the way project-setup does for a repository: create the vault layout and its `vault-files/` sibling, the templates for every kind, the vault's agent instructions (`AGENTS.md` with the owner profile and write rules) and the per-CLI permission settings; then guide, per operating system (Windows or Linux), installing Obsidian with its CLI, the external obsidian-skills plugin, sync through Google Drive (Insync) or OneDrive, the company memory's MCP server, mail and calendar connectors, the optional ingestion opt-in and a scheduled daily run; end with a check of every prerequisite. | `vault-conventions` | `vault-conventions`, `vault-daily`, `project-setup` |
 | [`vault-conventions`](../skills/vault-conventions/SKILL.md) | Meaningfy's conventions for notes in a personal Obsidian vault: the folder layout and what each folder holds, the `kind` of every note and its required properties, the project's standing files, link and tag style, where binaries go, machine-neutral paths, the `00 Inbox/proposed/` staging area, and how a vault session may use the company memory (recall only, never remember). | `vault-setup` | `vault-setup`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
 | [`vault-project`](../skills/vault-project/SKILL.md) | Start or close a project folder in a Meaningfy Obsidian vault. | `vault-conventions`, `vault-resume`, `vault-capture` | `vault-conventions`, `vault-resume`, `vault-capture`, `vault-tidy`, `vault-planning`, `epic-planning` |
 | [`vault-resume`](../skills/vault-resume/SKILL.md) | Start a work session on one project in a Meaningfy Obsidian vault: read that project's charter (`index.md`), its latest `sessions.md` entries, `decisions.md` and `tasks.md`, make at most one memory recall naming the project, and summarise where things stand and what is next. | `vault-conventions`, `vault-capture`, `vault-project` | `vault-conventions`, `vault-capture`, `vault-project`, `vault-daily` |

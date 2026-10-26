@@ -1,0 +1,48 @@
+# facets.yaml — the one vocabulary of catalogue facets (define-catalogue-model DEC-1).
+# Every skill and agent declares one value per facet under frontmatter `metadata`; the validator and
+# the catalogue map (`make skill-inventory`) read this file. A new value is one line here, in a PR.
+# Starting vocabularies confirmed by the owner on 2026-10-26; the bundle redesign by activity will
+# revise `purpose` and `stage`.
+facets:
+  purpose:
+    writing: produce or review prose
+    advising: coach client decisions
+    offering: scope, price and propose work
+    modelling: domain models and system design
+    planning: shape work and keep specs
+    building: structure code and scaffold repos
+    quality: tests, gates, review and guardrails
+    delivery: version control, CI/CD and releases
+    knowledge: capture and curate personal notes and plans
+  area:
+    coding: building software with AI agents
+    consulting: advising clients
+    sales: winning and pricing work
+    personal: the owner's own vault and rhythm
+    cross-cutting: used in every area
+  subject:
+    generic: no domain knowledge; transfers anywhere
+    semantic-data: semantic technologies, ontologies, data governance
+    modelling: conceptual and system modelling
+    python: Python code and repositories
+    spec-driven: specification-first work (OpenSpec, EPICs)
+    git-release: git, versions and releases
+    delivery-infra: deployment and infrastructure
+    obsidian: Obsidian vaults
+  posture:
+    reusable: "R: a reusable core; a fix adds no domain content"
+    profiled: "C: a core with profiles; a fix adds a switch or a profile"
+    precise: "P: a precise house standard; a fix adds a guardrail"
+  stage:
+    sell: winning the work
+    advise: the decision phase with a client
+    shape: shaping work and its plan
+    design: designing the system or model
+    build: writing the code
+    verify: testing and reviewing
+    release: shipping and operating
+    any: no single stage
+  maturity:
+    experimental: in trial; may change or go
+    stable: in use and maintained
+    deprecated: kept for now; do not start using it

@@ -3,7 +3,12 @@ name: epic-planning
 description: Shape an EPIC from human seeds, then derive its clarity-gated PLAN. Specifications-first, Shape-Up style — the EPIC is the work shape (appetite, problem, solution outline, key decisions, rabbit-holes, no-gos) and IS the OpenSpec proposal; the PLAN is the derived executable breakdown (design + tasks) scored by the clarity gate (≥9/10). Drives seed intake and a myriad of clarifying questions, makes no silent assumptions. Trigger on "write/refine an EPIC", "shape this work", "plan this epic", "derive the plan", "turn these seed notes into an epic". For the living-spec lifecycle (archive, grooming, memory) use spec-stewardship; for the doc-first build loop use external stream-coding.
 license: Apache 2.0
 metadata:
-  category: ai-coding
+  purpose: planning
+  area: coding
+  subject: spec-driven
+  posture: reusable
+  stage: shape
+  maturity: stable
 ---
 
 # EPIC Planning
