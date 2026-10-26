@@ -1,5 +1,5 @@
-<!-- PLAN (design half). PLAN = this file + tasks.md. Document type: Implementation. Revision 1
-     (2026-10-26). The clarity gate scores the pair (≥ 9/10). -->
+<!-- PLAN (design half). PLAN = this file + tasks.md. Document type: Implementation. Revision 3
+     (2026-10-26). Clarity gate: 7.5 → 8.8 → 9.2/10 (revision 3), task 0.2. The clarity gate scores the pair (≥ 9/10). -->
 
 > Derived from EPIC: rebundle-by-activity (`proposal.md`, DEC-1…DEC-11). Decisions below are D-n,
 > the PLAN's own; DEC-n are cited, never restated.
@@ -36,7 +36,10 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   |---|---|---|---|---|---|
   | UC-W22 | Advisory engagement | `consulting` | `semantic-consulting-coach`, `decision-package`, `executive-communication` | `partial` (no agent) | `add-advisory-agent` |
   | UC-W23 | Client delivery and project management | `consulting` | — | `missing` | `add-delivery-management` |
-  | UC-W24 | Content creation for LinkedIn and blogs | `sales` | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice` | `partial` (no channel profiles, no agent) | `add-content-creation` |
+  | UC-W24 | Content creation for LinkedIn and blogs | `business` | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice` | `partial` (no channel profiles, no agent) | `add-content-creation` |
+
+  UC-W24's area is `business`: general communication about what Meaningfy does and why is the
+  company speaking for itself, like UC-W15, not selling a given offer.
 
   UC-W18 gains `meaningfy-git-workflow`, `guardrails` and `technical-writing` in `served_by.skills`.
   After D-1 no skill or agent is an orphan.
@@ -70,11 +73,18 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   `decision-package`, `executive-communication`, `semantic-consulting-coach`; `estimation` →
   `decision-package`). Consulting's three hand-offs into sales (`decision-package` →
   `proposal-writing`; `semantic-consulting-coach` → `proposal-writing`, `estimation`) become "see
-  also" sentences in each source's Boundary section, by the D-9 rule of the restructure change, so the
-  requirement graph stays acyclic. `bundle_requirements` proves it.
-- **D-5. The three agents** (DEC-5, DEC-6), each to `spec/agent-template.md`, with a
-  `tests/features/agents/<name>.feature` holding at least one return and one refusal Scenario
-  Outline (written with `bdd-gherkin` before the agent file):
+  also" sentences, so the requirement graph stays acyclic. **Mechanics:** the inventory parser reads
+  edges from the `**Delegates:**` / `**This skill DELEGATES:**` paragraph (`_DELEGATES` in
+  `tools/skill_inventory.py`) up to the first blank line, so the edit removes the backticked target
+  from that paragraph and puts the see-also in its own paragraph of the Boundary section, after a blank
+  line. This is the rule already used for four hand-offs in task 3.3 of the restructure change
+  (`inputs/evidence/foundation.md` there), which extended its
+  [D-9 rule](../restructure-and-evaluate-catalogue/design.md#decisions--evaluation-track-d-1d-13) from Related pairs to delegations.
+  `bundle_requirements` proves the result.
+- **D-5. The three agents** (DEC-5, DEC-6), each to [`spec/agent-template.md`](../../../spec/agent-template.md),
+  with a `tests/features/agents/<name>.feature` holding a `Background` that names every skill, and at
+  least one return and one refusal Scenario Outline with `Examples:` (written with `bdd-gherkin` before
+  the agent file):
 
   | Agent | Type | Model | Skills (primary first) | Tools | Delegates to | Bundle | Use case |
   |---|---|---|---|---|---|---|---|
@@ -82,11 +92,36 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   | `conceptual-modeller` | `lead` | `opus` | `conceptual-modelling`, `modelling-conventions`, `linkml-engineering` | Read, Grep, Glob, Write, Edit, Skill | none | `meaningfy-architecture` | UC-W20 |
   | `proposal-writer` | `delegated` | `sonnet` | `proposal-writing`, `estimation`, `executive-communication` | Read, Grep, Glob, Write, Skill | — | `meaningfy-sales` | UC-W8 |
 
+  Facets (`metadata`), copied from each agent's primary skill except `purpose` (D-3):
+
+  | Agent | purpose | area | subject | posture | stage | maturity |
+  |---|---|---|---|---|---|---|
+  | `system-architect` | `modelling` | `coding` | `modelling` | `reusable` | `design` | `experimental` |
+  | `conceptual-modeller` | `modelling` | `coding` | `modelling` | `precise` | `design` | `experimental` |
+  | `proposal-writer` | `proposals` | `sales` | `semantic-data` | `profiled` | `sell` | `experimental` |
+
+  Draft descriptions (the template's form; a lead also says `Not for delegation`):
+  - `system-architect`: "Designs a new system with the user before code: use cases, architectural
+    decisions and system diagrams, stating its view and plan briefly before each step. Use when
+    starting or reshaping a system's architecture. Not for delegation; not for code (implementer)."
+  - `conceptual-modeller`: "Builds and evolves a domain's conceptual model with the user, model-driven
+    and data-centric, choosing the model source and rendering. Use when modelling a domain or evolving
+    an ontology. Not for delegation; not for system architecture (system-architect)."
+  - `proposal-writer`: "Writes a sendable proposal or offer email from client requirements, asking the
+    questions it needs through its output, with estimate and executive framing. Use when a client asks
+    for an offer. Not for pricing strategy alone (estimation)."
+
   A lead's Glue states the thinking-partner posture once: state the view and the plan in a few lines,
   ask before deciding, then act. Its stop condition is the artefact the use case's success guarantee
-  names (the architecture's use cases, decisions and diagrams; the conceptual model). `opus` follows
-  the three existing agents; the "no Opus" rule of the owner is about eval runs, not agent models.
-- **D-6. `docs/future-features.md`** (DEC-7), hand-written, with a register row in §8 of the method.
+  names (the architecture's use cases, decisions and diagrams; the conceptual model). **Models:** the
+  two leads are `opus` because they hold a long, judgement-heavy conversation with the user, as
+  `epic-planner` and `code-reviewer` (both `opus`) do for planning and review; `proposal-writer` is
+  `sonnet`, like `implementer`, because it executes one bounded document job. The owner's "no Opus"
+  is about eval runs, not agent models. `maturity` is `experimental` until `evaluate-catalogue` gives
+  evidence. The three names are added to `ALL_AGENT_NAMES` in `tools/repo_lint/lint.py`, so
+  `orphan_agent_references` protects them.
+- **D-6. `docs/future-features.md`** (DEC-7), hand-written, with a register row in
+  [§8 of the method](../../../docs/development-method.md#8-where-things-live).
   One table: `Feature | Use cases | Bundle | Agents to build | Skills to build | Material needed |
   Material in hand? | Change`. `docs/catalogue-architecture.md`'s Roadmap section is replaced by a
   two-line pointer to it; its Agent roster keeps the built agents and links the file for the rest.
@@ -95,29 +130,56 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   the demo builder (UC-W21), the personal assistants (UC-W2–5), the vault local config (UC-W1), visual
   design (UC-W17), the business partners (UC-W14–15), legal documents (UC-W16), the advisory agent
   (UC-W22), delivery management (UC-W23), content creation with the voice channel profiles (UC-W24),
+  the deeper engineering agents (UC-W19, UC-W20 while `partial`, `add-engineering-agents`),
   the Odoo memory skill, config items, the agent aspects (runtime, memory), and the evaluation
-  (`evaluate-catalogue`). Every use case's `change` names the change in its feature's row.
+  (`evaluate-catalogue`). Every use case's `change` names the change in its feature's row; the check
+  is D-12. A use case the owner marks `covered` in task 4.3 may drop its `change`.
 - **D-7. The external dependency register** (DEC-9): root `dependencies.yaml`, one entry per
-  dependency: `name`, `kind` (`plugin` · `skill` · `cli-tool` · `mcp-server` · `service` ·
-  `framework`), `source`, `pin` (a version, commit or hash, or `unpinned: <reason>`), `provenance`
-  (`<licence>, reviewed <date> by <who>` or `not reviewed`), `used_by`, `claude` and `opencode`
-  (each `{status, install}`; status `native` · `claude-compat` · `unsupported` · `unverified`), and for
-  MCP servers `transport`. `make skill-inventory` renders, between `<!-- GENERATED:dependencies -->`
-  markers, the "External skill-packs / plugins" and "MCP servers" tables of `compatibility.md` and the
-  Step 1 table of `mcp-setup.md`; the prose around them stays hand-written. Drift fails
-  `tests/test_skill_inventory.py`. A `dependencies_register` lint check validates the keys and
-  values. Seeded from today's tables, so the first render changes no visible row (proved by a diff
-  in the PR).
-- **D-8. Bundles as metadata, route B** (DEC-8, the spike). A workflow `.github/workflows/dist.yml`
-  runs on push to `develop` and on a `v*` tag: checkout, `make bundles`, then publish the tree to a
-  `dist` branch (an orphan commit of the generated working tree with `bundles/`, force-pushed by the
-  workflow's `GITHUB_TOKEN`). Install becomes `/plugin marketplace add meaningfy-ws/skillery#dist`.
-  Two PRs, in this order: (1) add the workflow while `bundles/` is still committed; after it has
-  published `dist` once and an install from `#dist` is verified, (2) add `bundles/` to `.gitignore`,
-  delete the tree, switch every install line to `#dist`, make the `bundle_gates` link check run only
-  when `bundles/` exists, have the `plugin-eval` workflow run `make bundles` first, and write the
-  migration note. An optional route-A re-test on a GitHub-hosted test branch runs before (1), only
-  with the owner's approval (it pushes a branch); if it passes, D-8 switches to route A.
+  dependency. Fields, and the table column each renders into:
+
+  | Field | Required | Renders into |
+  |---|---|---|
+  | `name` | yes | the first column of every table (bold) |
+  | `kind` | yes: `plugin` · `skill` · `cli-tool` · `mcp-server` · `service` · `framework` | which table the entry lands in (`mcp-server` → the MCP tables; the rest → "External skill-packs / plugins") |
+  | `summary` | no | the parenthesis after the name (today's "(doc-first method)") |
+  | `source`, `pin`, `provenance` | yes (`pin` may be `unpinned: <reason>`; `provenance` may be `not reviewed`) | not rendered yet (new facts) |
+  | `used_by` | yes, free text | compatibility "Used by" |
+  | `opencode_status` | yes, free text that starts with `native`, `claude-compat`, `unsupported` or `unverified` | compatibility "opencode status" (the qualifier after the keyword is kept verbatim) |
+  | `claude_install`, `opencode_install` | yes, free Markdown | compatibility "Claude install" and "opencode install / gap" |
+  | `transport` | MCP only, free text | compatibility "Transport" |
+  | `notes` | MCP only | compatibility MCP "Notes" |
+  | `why`, `hosting` | MCP only | `mcp-setup.md` Step 1 "Why" and "Local package or hosted?" |
+
+  Free-text fields hold today's cell text unchanged, so the first render reproduces today's rows.
+  `make skill-inventory` renders the three tables between `<!-- GENERATED:dependencies:<table> -->`
+  and `<!-- /GENERATED -->` markers; the prose around them stays hand-written. Drift fails
+  `tests/test_skill_inventory.py`. A `dependencies_register` lint check rejects an unknown key, an
+  unknown `kind`, an `opencode_status` that starts with none of the four keywords, and a missing
+  required field.
+- **D-8. Bundles as metadata, route B** (DEC-8, the spike). A workflow `.github/workflows/dist.yml`,
+  `on: push: branches: [develop]` only (one trigger, so nothing races), with `permissions: contents:
+  write`: check out `develop`, run `python -m tools.bundle_gen generate` (CI has no `.venv`, which
+  the `make bundles` target activates), then fetch `dist` (created on the first run) and
+  add **one new commit** on top of it whose tree is `develop`'s tree plus `bundles/`, with the message
+  `dist: <develop sha>`; push without force. `dist` is never edited by hand and has no branch-protection rule (the
+  workflow's `GITHUB_TOKEN` must be able to push it). Because history is only appended, installed marketplaces update with
+  `/plugin marketplace update` as they do today. Install becomes `/plugin marketplace add
+  meaningfy-ws/skillery#dist`. Two PRs, in this order:
+  1. add the workflow while `bundles/` is still committed; after it has published `dist` once and an
+     install from `#dist` is verified,
+  2. add `bundles/` to `.gitignore` and delete the tree; switch every install line to `#dist`; add a
+     link check to the `validate` job of `.github/workflows/validate.yml`, **after**
+     `python -m tools.repo_lint` (so a stale committed rendering still fails `bundle_gates` first):
+     `python -m tools.bundle_gen generate`, then `git diff --exit-code -- .claude-plugin
+     tools/opencode-catalogue.json package.json` (generation changed no committed file), then
+     `python -m tools.bundle_gen check` (the links); `plugin-eval.yml` runs `python -m
+     tools.bundle_gen generate` before it copies a bundle; locally, `bundle_gates` checks the links
+     only when `bundles/` exists; write the migration note.
+
+  An optional route-A re-test on a GitHub-hosted test branch runs before (1), only with the owner's
+  approval (it pushes a branch); if it passes, D-8 switches to route A. DEC-8's "the release flow
+  publishing" is met by publishing from `develop`, the branch installs follow; release tags stay as
+  they are.
 - **D-9. Moves are announced** (EPIC "No silent moves"): the CHANGELOG's Unreleased "Action needed
   (users)" names each moved skill, its new bundle and both CLIs' install commands; the README bundle
   table and `docs/environment/dual-cli/setup-claude.md` / `setup-opencode.md` follow `bundles.yaml`.
@@ -127,6 +189,11 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   `meaningfy-voice`'s SKILL.md names the folder in one sentence.
 - **D-11. One PR per task group**, from a branch `arch/<group>` off `develop`, in the order of
   `tasks.md`.
+- **D-12. Use-case changes are on the register**: a lint check `use_case_changes_registered` in
+  `tools/repo_lint/lint.py` (in `ALL_CHECKS`; silent without `use-cases/` or without
+  `docs/future-features.md`) reports, for each use case whose `status` is `partial` or `missing`, a
+  `change` that is empty or appears nowhere in `docs/future-features.md`:
+  `use-cases/UC-W17-graphic-designer.md: change 'add-visual-design' is not in docs/future-features.md`.
 
 ## Algorithm / approach
 
@@ -144,35 +211,62 @@ generators; `make validate` green; open the PR. Worked examples:
   ```yaml
   - name: obsidian-skills
     kind: plugin
+    summary: "`obsidian@obsidian-skills`: obsidian-markdown, obsidian-bases, obsidian-cli; MIT, [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills)"
     source: kepano/obsidian-skills
     pin: "unpinned: installed from the marketplace head"
     provenance: MIT, not reviewed
-    used_by: [vault-assistant]
-    claude: {status: native, install: "/plugin marketplace add kepano/obsidian-skills"}
-    opencode: {status: unverified, install: "clone into the global opencode skills folder"}
+    used_by: "every `vault-*` skill (mandatory for `vault-assistant`)"
+    opencode_status: "unverified (plain `SKILL.md` files)"
+    claude_install: "`/plugin marketplace add kepano/obsidian-skills` + `/plugin install obsidian@obsidian-skills`"
+    opencode_install: "clone into the user's global opencode skills folder, never into a vault. ..."
   ```
+
+  (`opencode_install` is shortened here only; the register holds today's full cell.) The renderer
+  shows each status keyword in today's form: `native` → native, `claude-compat` → `` `.claude/`-compat ``,
+  `unsupported` → unsupported, `unverified` → **UNVERIFIED**; the qualifier after the keyword is kept.
+  Free-text cells hold their Markdown as written (so "**gap (optional)**" stays bold); the renderer adds
+  bold only to `name`.
 
 ### Anti-patterns
 
-- ❌ An empty bundle in `bundles.yaml` to "reserve" a planned bundle (DEC-1).
-- ❌ Breaking a requirement cycle by adding `requires` both ways.
-- ❌ Re-describing a skill while re-tagging its `purpose` (the descriptions are `evaluate-catalogue`'s).
-- ❌ Deleting `bundles/` before `dist` is published and an install from it is verified.
-- ❌ A thin agent over a skill that does not exist (DEC-6).
-- ❌ Voice rules written into the placeholders.
+| Don't | Do instead | Why |
+|---|---|---|
+| ❌ add an empty bundle to "reserve" a planned one | keep it as a `docs/future-features.md` row | an empty plugin installs nothing (DEC-1) |
+| ❌ break a requirement cycle with `requires` both ways | turn one direction into a see-also (D-4) | `bundle_requirements` rejects cycles |
+| ❌ re-describe a skill while re-tagging `purpose` | change `metadata.purpose` only | descriptions are measured in `evaluate-catalogue` |
+| ❌ delete `bundles/` before `dist` is published and verified | the two-PR order of D-8 | installs clone `develop` until then |
+| ❌ write a thin agent over a missing skill | a register row instead | DEC-6 |
+| ❌ write voice rules into the placeholders | point to the default profile | no material yet (DEC-10) |
+| ❌ force-push `dist` | append one commit per `develop` push | installed marketplaces must update cleanly |
+
+#### Test cases
+
+| Check | Input | Expected |
+|---|---|---|
+| `use_case_coverage` | a skill no use case names | `skills/<s>: serves no use case (add it to a use case's served_by)` |
+| `use_case_coverage` | an agent no use case names | `agents/<a>: serves no use case (...)` |
+| `use_case_coverage` | no `use-cases/` directory | no error |
+| `use_case_changes_registered` | a `missing` use case whose `change` is absent from the file | the D-12 message |
+| `use_case_changes_registered` | a `covered` use case with no `change` | no error |
+| `dependencies_register` | `kind: library` | `dependencies.yaml: '<name>' kind 'library'; allowed: ...` |
+| `dependencies_register` | no `pin` | `dependencies.yaml: '<name>' missing 'pin'` |
+| `dependencies_register` | `opencode_status: maybe` | `dependencies.yaml: '<name>' opencode_status must start with native, claude-compat, unsupported or unverified` |
+| render drift | `dependencies.yaml` edited, docs not regenerated | the drift test fails naming `make skill-inventory` |
 
 ## Error matrix
 
-| Failure | Handling |
-|---|---|
-| `use_case_coverage` fails after a new skill or agent | add the name to a use case's `served_by`, or write the use case |
-| `bundle_requirements` reports a cycle or an undeclared edge | apply D-4's see-also rule to the edge from the bundle that must not require the other |
-| A re-tag uses a value not in `facets.yaml` | `facets_declared` fails, naming the value; fix the value, never the vocabulary, unless the owner approved it |
-| `agent_conformance` fails for a new agent | fix the agent file to the template; never relax the check |
-| The `dist` workflow fails or cannot push | `bundles/` stays committed; the switch PR does not open |
-| A colleague's install from `develop` breaks after the switch | the migration note: `/plugin marketplace remove meaningfy-skillery`, then add `meaningfy-ws/skillery#dist` and reinstall |
-| The first register render changes a visible row | fix the seed data until the diff of the rendered tables is empty |
-| A rendered doc is edited by hand inside the markers | the drift test fails; regenerate |
+| Failure | Detected by | Handling |
+|---|---|---|
+| A new skill or agent serves no use case | `use_case_coverage` | add the name to a use case's `served_by`, or write the use case |
+| A cycle or an undeclared cross-bundle edge | `bundle_requirements` | apply D-4's mechanics to the edge from the bundle that must not require the other |
+| A re-tag uses a value not in `facets.yaml` | `facets_declared` | fix the value; the vocabulary changes only with the owner's approval |
+| A new agent breaks the template | `agent_conformance` | fix the agent file; never relax the check |
+| A partial or missing use case points nowhere | `use_case_changes_registered` (D-12) | add the row to `docs/future-features.md` or fix the `change` |
+| The `dist` workflow fails or cannot push | the workflow run, red | `bundles/` stays committed; the switch PR does not open |
+| A colleague's install from `develop` breaks after the switch | the colleague, then the migration note | `/plugin marketplace remove meaningfy-skillery`, then add `meaningfy-ws/skillery#dist` and reinstall |
+| The first register render changes a visible cell | the PR diff inside the markers | fix the seed text until the diff is empty, or list the change in the PR for the owner |
+| A rendered table is edited by hand | the drift test | regenerate |
+| A link under `bundles/` is wrong after the switch | `bundle_gates` in CI (after `make bundles`) | fix `bundles.yaml` or the generator |
 
 ## Risks / Trade-offs
 
