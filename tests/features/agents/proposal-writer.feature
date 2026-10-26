@@ -1,4 +1,4 @@
-# Traces to: UC-W8 (Proposals and formal offers); agents/proposal-writer.md (Dispatch contract);
+# Traces to: UC-W8 (Proposals and formal offers): Main Success Scenario 1-6, Minimal Guarantees; agents/proposal-writer.md (Dispatch contract);
 # spec/agent-template.md; rebundle-by-activity D-5.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: proposal-writer turns client requirements into a sendable proposal or offer email

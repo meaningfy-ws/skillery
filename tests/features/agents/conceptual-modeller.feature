@@ -1,4 +1,5 @@
-# Traces to: UC-W20 (Conceptual modeller and ontology engineer); agents/conceptual-modeller.md
+# Traces to: UC-W20 (Conceptual modeller and ontology engineer): Main Success Scenario 2-6,
+# Minimal Guarantees; agents/conceptual-modeller.md
 # (Dispatch contract); spec/agent-template.md; rebundle-by-activity D-5.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: conceptual-modeller builds and evolves a domain's conceptual model with the user
@@ -21,6 +22,12 @@ Feature: conceptual-modeller builds and evolves a domain's conceptual model with
       | no model yet                   | the model source and its rendering         | is created in the chosen source             |
       | a model and a new requirement  | a new entity and its relationships         | gains the entity, following the conventions |
       | a model with naming drift      | renaming terms to the shared conventions   | uses the agreed terms throughout            |
+
+  Scenario: A rejected term change leaves the model whole
+    Given an existing conceptual model
+    When the user rejects a renaming the conceptual-modeller proposes
+    Then the model is unchanged
+    And no file of the model is left half-edited
 
   Scenario Outline: Work outside the conceptual model is refused
     When the user asks the conceptual-modeller to <request>

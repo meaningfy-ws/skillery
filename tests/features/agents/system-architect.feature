@@ -1,4 +1,4 @@
-# Traces to: UC-W19 (System architect); agents/system-architect.md (Dispatch contract);
+# Traces to: UC-W19 (System architect): Main Success Scenario 2-5, Minimal Guarantees; agents/system-architect.md (Dispatch contract);
 # spec/agent-template.md; rebundle-by-activity D-5.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: system-architect designs a new system with the user before code
@@ -21,6 +21,17 @@ Feature: system-architect designs a new system with the user before code
       | the system's goal and its actors        | use cases               | the system's use cases                     |
       | two candidate integration approaches    | architectural decisions | a decision record naming the chosen option |
       | the agreed decisions                    | system diagrams         | the system's context and container views   |
+
+  Scenario: Nothing unagreed is written, and agreed decisions stay recorded
+    Given the user has agreed two architectural decisions
+    When the user rejects the third decision the system-architect proposes
+    Then no decision record is written for the rejected decision
+    And the two agreed decision records are unchanged
+
+  Scenario: The design is handed over, not implemented
+    Given the use cases, decisions and diagrams are agreed and written
+    When the system-architect finishes
+    Then it hands the design over to the implementer
 
   Scenario Outline: Work outside the architecture is refused
     When the user asks the system-architect to <request>
