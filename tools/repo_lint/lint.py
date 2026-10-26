@@ -401,9 +401,24 @@ def use_case_changes_registered(repo: Path) -> list[str]:
     return out
 
 
+TOP_LEVEL_FOLDERS = ("skills", "agents", "use-cases", "openspec", "docs", "tools", "tests", ".github",
+                     ".claude-plugin")
+_GENERATED_FOLDERS = ("bundles",)  # make bundles, git-ignored (rebundle-by-activity D-8)
+
+
+def top_level_folders(repo: Path) -> list[str]:
+    """Only the allowed folders sit at the top level (rebundle-by-activity D-13); other hidden
+    folders (.git, .venv, a CLI's own) and generated ones are not the repo's structure."""
+    return [f"{d.name}/: not an allowed top-level folder (allowed: {', '.join(TOP_LEVEL_FOLDERS)})"
+            for d in sorted(repo.iterdir())
+            if d.is_dir() and not d.name.startswith(".") and d.name not in TOP_LEVEL_FOLDERS
+            and d.name not in _GENERATED_FOLDERS]
+
+
 def cross_skill_paths(repo: Path) -> list[str]:
-    """No link from one skill's files resolves into another skill's folder (D-15): a skill names
-    another skill; a resource two skills need moves into a foundation skill."""
+    """No link from a skill's files resolves outside that skill's folder (restructure D-15,
+    widened by rebundle-by-activity D-13): an installed skill has only its own folder, so it names
+    another skill and states any other fact itself."""
     dirs = {p.parent.resolve(): name for name, p in _skill_paths(repo).items()}
     out: list[str] = []
     for src_dir, src in dirs.items():
@@ -413,10 +428,14 @@ def cross_skill_paths(repo: Path) -> list[str]:
                 if not target or re.match(r"^[a-z]+:", target):
                     continue
                 resolved = (f.parent / target).resolve()
+                if resolved.is_relative_to(src_dir):
+                    continue
+                rel = f.relative_to(repo.resolve()).as_posix()
                 owner = next((n for d, n in dirs.items() if resolved.is_relative_to(d)), None)
-                if owner and owner != src:
-                    out.append(f"{f.relative_to(repo.resolve()).as_posix()}: links into skill "
-                               f"'{owner}' ({target}); name the skill instead")
+                out.append(f"{rel}: links into skill '{owner}' ({target}); name the skill instead"
+                           if owner else
+                           f"{rel}: links outside its skill folder ({target}); "
+                           f"state the fact or name the owning skill")
     return out
 
 
@@ -1078,6 +1097,7 @@ ALL_CHECKS = (
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
+    top_level_folders,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

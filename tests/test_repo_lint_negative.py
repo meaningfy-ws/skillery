@@ -797,10 +797,27 @@ def test_link_into_another_skill_is_flagged(tmp_path):
     assert len(errs) == 1 and "skills/a/SKILL.md" in errs[0] and "'b'" in errs[0]
 
 
-def test_link_inside_own_skill_and_outside_skills_passes(tmp_path):
+def test_link_inside_own_skill_and_web_links_pass(tmp_path):
     _skill_fm(tmp_path, "a", {"name": "a", "description": "x"},
-              body="[r](references/r.md) [m](../../docs/m.md) [w](https://x.org/skills/b/r.md)")
+              body="[r](references/r.md) [w](https://x.org/skills/b/r.md)")
     assert lint.cross_skill_paths(tmp_path) == []
+
+
+def test_link_out_of_the_skill_folder_is_flagged(tmp_path):
+    # An installed skill has only its own folder (rebundle-by-activity D-13).
+    _skill_fm(tmp_path, "a", {"name": "a", "description": "x"}, body="[m](../../docs/m.md)")
+    assert lint.cross_skill_paths(tmp_path) == [
+        "skills/a/SKILL.md: links outside its skill folder (../../docs/m.md); "
+        "state the fact or name the owning skill"]
+
+
+# --------------------------------------------- top-level folders (rebundle-by-activity D-13)
+def test_unknown_top_level_folder_is_flagged(tmp_path):
+    for d in ("skills", "docs", "spine", ".venv", "bundles"):
+        (tmp_path / d).mkdir()
+    assert lint.top_level_folders(tmp_path) == [
+        "spine/: not an allowed top-level folder (allowed: skills, agents, use-cases, openspec, docs, "
+        "tools, tests, .github, .claude-plugin)"]
 
 
 # ------------------------------------------ external dependency register (rebundle-by-activity D-7)

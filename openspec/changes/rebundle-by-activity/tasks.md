@@ -115,7 +115,7 @@
 
 ## 9. Folder restructure (`arch/repo-folders`, D-13)
 
-- [ ] 9.1 Tests first: `top_level_folders` (an unknown folder fails) and the widened
+- [x] 9.1 Tests first: `top_level_folders` (an unknown folder fails) and the widened
       `cross_skill_paths` (a link from a skill into `docs/` fails). **Accept:** they fail for the
       expected reasons.
 - [ ] 9.2 The development home: `docs/development-method.md`, `docs/catalogue-architecture.*` and
