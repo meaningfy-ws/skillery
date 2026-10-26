@@ -68,6 +68,10 @@ copy-paste step-by-step (bundles, mandatory deps, root binding, spine commands, 
 want one, and a verify step) from there. You shouldn't need to go looking for any other doc to get
 installed.
 
+> **Installed Claude Code from `meaningfy-ws/skillery` before the `dist` branch?** Re-add the
+> marketplace once: `/plugin marketplace remove meaningfy-skillery`, then
+> `/plugin marketplace add meaningfy-ws/skillery#dist`, and reinstall your bundles.
+
 ## Getting started
 
 **Skill or agent? The rule of thumb.**
@@ -184,7 +188,7 @@ Change the catalogue itself: add or fix a skill, an agent or a bundle.
 ```
 skillery/
 ├── skills/        # flat: skills/<skill>/  (bundles group them in bundles.yaml)
-├── agents/        # three thin wrappers (no knowledge): epic-planner, implementer, code-reviewer
+├── agents/        # thin wrappers (no knowledge), each shipped with its primary skill's bundle
 ├── docs/          # ai-coding/ · ai-sales/ · ai-consulting/ · engineering-standards/ · philosophy/ · roles-and-raci.md · environment/
 ├── prompts/       # AGENTS.md.template, global-prompt.md (AGENTS.md-canonical; CLAUDE.md is a thin pointer)
 ├── spec/          # authoring spec, governance, skill-template.md, CREATING_SKILLS.md
@@ -192,9 +196,9 @@ skillery/
 ├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery runs the spine on itself)
 ├── tools/ + tests/# the validator (make validate), the bundle renderer (make bundles), the opencode installer
 ├── bundles.yaml   # the one bundle definition: each skill and agent in exactly one bundle
-├── bundles/       # RENDERED per-bundle plugin roots (symlinks into skills/ + agents/); make bundles — never hand-edit
+├── bundles/       # GENERATED, git-ignored per-bundle plugin roots (symlinks); make bundles locally, published on the dist branch
 ├── tools/opencode-catalogue.json  # RENDERED opencode catalogue (membership + agent frontmatter); make bundles — never hand-edit
-└── .claude-plugin/# RENDERED marketplace (4 role bundles + 1 workflow bundle); make bundles — never hand-edit
+└── .claude-plugin/# RENDERED marketplace (5 role bundles + 1 workflow bundle); make bundles — never hand-edit
 ```
 
 ## Contributing

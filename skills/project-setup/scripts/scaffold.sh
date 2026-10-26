@@ -253,7 +253,7 @@ if [[ "$MINIMAL" -eq 1 ]]; then
 
 Minimal scaffold complete. Install the spine + skillery so AGENTS.md's routing resolves:
   npx -y @fission-ai/openspec@$OPENSPEC_PIN init --tools claude --profile core
-  /plugin marketplace add meaningfy-ws/skillery
+  /plugin marketplace add meaningfy-ws/skillery#dist
   /plugin install meaningfy-core@meaningfy-skillery
   /plugin install meaningfy-building@meaningfy-skillery
   /plugin install superpowers@claude-plugins-official
@@ -459,7 +459,7 @@ Done. Next steps:
        npx -y @fission-ai/openspec@$OPENSPEC_PIN init --tools claude --profile core
      (the meaningfy schema under openspec/schemas/meaningfy/ is already PINNED @ $OPENSPEC_PIN)
   5. Install the Meaningfy skillery (+ ponytail) so AGENTS.md's skill routing resolves:
-       /plugin marketplace add meaningfy-ws/skillery
+       /plugin marketplace add meaningfy-ws/skillery#dist
        /plugin install meaningfy-core@meaningfy-skillery
        /plugin install meaningfy-building@meaningfy-skillery
        /plugin install superpowers@claude-plugins-official

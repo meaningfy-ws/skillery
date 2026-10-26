@@ -177,9 +177,16 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
      only when `bundles/` exists; write the migration note.
 
   An optional route-A re-test on a GitHub-hosted test branch runs before (1), only with the owner's
-  approval (it pushes a branch); if it passes, D-8 switches to route A. DEC-8's "the release flow
-  publishing" is met by publishing from `develop`, the branch installs follow; release tags stay as
-  they are.
+  approval (it pushes a branch); if it passes, D-8 switches to route A.
+
+  **Revised 2026-10-26 (owner): `dist` is published on release only.** The trigger becomes `on: push:
+  tags: ["v*", "!v*-dist"]` (plus `workflow_dispatch` to re-publish a tag); each run checks out the
+  release tag, appends one commit `dist: <tag> (<sha>)` to `dist` and pushes the tag `<tag>-dist` on
+  it (an unchanged tree is only tagged). `dist` stays a branch because `/plugin marketplace update`
+  re-fetches the installed ref and a tag never moves; the `-dist` tag lets anyone pin a release. The
+  `dist` commits never enter `develop`; the source tag `vX.Y.Z` stays where the release flow puts it.
+  DEC-8's "the release flow publishing" is met literally. The install check from `#dist` moves to the
+  release (owner, 2026-10-26), so PR (2) merges at the first release, after that check.
 - **D-9. Moves are announced** (EPIC "No silent moves"): the CHANGELOG's Unreleased "Action needed
   (users)" names each moved skill, its new bundle and both CLIs' install commands; the README bundle
   table and `docs/environment/dual-cli/setup-claude.md` / `setup-opencode.md` follow `bundles.yaml`.

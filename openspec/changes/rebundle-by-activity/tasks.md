@@ -22,10 +22,12 @@
   the voice channel placeholders.
 - **Group 6 built** (`arch/dependency-register`): register, check, renderer; the six changed name cells
   approved (6.2).
-- **7.2 written** (`arch/dist-branch`): `dist.yml`, simulated locally (create, skip, append). Its Accept
-  runs after merge: `dist` exists and an install from `meaningfy-ws/skillery#dist` lists exactly the
-  `bundles.yaml` members; the owner checks it before 7.3.
-- **Next:** 7.3 after that check, then 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
+- **7.2 done** (#88); **D-8 revised** (owner, 2026-10-26, `inputs/2026-10-26-release-and-folders-qa.md`):
+  `dist` is published on release tags only, with a `<tag>-dist` tag. The install check from `#dist`
+  moves to the first release; 7.3 (#89) merges then.
+- **7.3 written** (#89): `bundles/` ignored and untracked, CI link check, `#dist` install lines,
+  migration note, the `dual-cli-generation` delta.
+- **Next:** task group 9 (folder restructure, owner R3/R4), then 8.
 - **Waits for the owner:** 7.1
   (optional; pushes a test branch). No model runs in this change.
 
@@ -101,11 +103,11 @@
 - [ ] 7.1 *(Optional, owner's approval needed: it pushes a test branch.)* Re-test route A on a
       GitHub-hosted branch with the spike's entries. **Accept:** the result recorded in
       `inputs/2026-10-26-spike-root-source.md`; if it passes, D-8 is revised before 7.2.
-- [ ] 7.2 `.github/workflows/dist.yml` (D-8) while `bundles/` is still committed. **Accept:** after
+- [x] 7.2 `.github/workflows/dist.yml` (D-8) while `bundles/` is still committed. **Accept:** after
       merge, the `dist` branch exists and `claude plugin details meaningfy-core@meaningfy-skillery`
       from `meaningfy-ws/skillery#dist` lists exactly the `bundles.yaml` members (the
       [installing-a-bundle scenario](../../specs/dual-cli-distribution/spec.md#requirement-installing-a-bundle-loads-exactly-that-bundle)).
-- [ ] 7.3 The switch PR (D-8): ignore and delete `bundles/`; the CI link check of D-8 in `validate.yml`
+- [x] 7.3 The switch PR (D-8): ignore and delete `bundles/`; the CI link check of D-8 in `validate.yml`
       and the generate step in `plugin-eval.yml`; `bundle_gates`, install lines,
       `AGENTS.md`'s distribution sentence, the migration note; the `dual-cli-distribution` delta for
       "Skills and agents are installed from their single source". **Accept:** `make validate` green
@@ -126,7 +128,7 @@
 - [x] 4.1 · [x] 4.2 · [x] 4.3
 - [x] 5.1 · [x] 5.2 · [x] 5.3
 - [x] 6.1 · [x] 6.2 · [x] 6.3
-- [ ] 7.1 · [ ] 7.2 · [ ] 7.3
+- [ ] 7.1 · [x] 7.2 · [x] 7.3
 - [ ] 8.1 · [ ] 8.2
 
 Order: 0, then 1 before 4 (coverage must exist before agents are added), 2 before 3 and 4 (the new

@@ -23,7 +23,7 @@ The source→CLI contract behind these steps is in [`mapping.md`](mapping.md).
 ## Step 2 — Add the skillery marketplace
 
 ```bash
-/plugin marketplace add meaningfy-ws/skillery
+/plugin marketplace add meaningfy-ws/skillery#dist
 ```
 
 ## Step 3 — Install the bundle(s) for your role
@@ -121,9 +121,11 @@ that each bundle loads exactly its own skills and agents (skills / agents): `mea
 confirm the spine registered by running `/opsx:propose` — it should prompt you for a change
 description rather than say the command is unknown.
 
-**Testing a branch** (maintainers): install from the pushed branch
-(`/plugin marketplace add meaningfy-ws/skillery#<branch>`), never from a local path — a local-path
-marketplace does not load the bundles' agents.
+**Testing a branch** (maintainers): a feature branch carries no `bundles/` (it is generated), so it
+cannot be installed as it is. `#dist` moves only at releases. To test unreleased work, push a throwaway branch with the
+generated tree added (`make bundles && git add -f bundles`) and install that
+(`/plugin marketplace add meaningfy-ws/skillery#<branch>`); never install from a local path — a
+local-path marketplace does not load the bundles' agents.
 
 There are no recorded Claude-side capability gaps; if you're curious what differs on opencode, see
 [`compatibility.md`](compatibility.md).

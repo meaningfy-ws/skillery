@@ -1,1 +1,0 @@
-../../../agents/system-architect.md
