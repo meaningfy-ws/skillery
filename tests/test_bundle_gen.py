@@ -152,7 +152,8 @@ def test_tc06_version_sync_catalogue(tmp_path):
 
 # ------------------------------------------------------------------ load
 @pytest.mark.parametrize("mutate, needle", [
-    (lambda d: d["bundles"][0].update(requires=["x"]), "requires"),
+    (lambda d: d["bundles"][0].update(provides=["x"]), "provides"),
+    (lambda d: d["bundles"][0].update(requires=["Not_Kebab"]), "Not_Kebab"),
     (lambda d: d["bundles"][0].pop("description"), "description"),
     (lambda d: d["bundles"][1].update(name="b-one"), "duplicate"),
     (lambda d: d["bundles"][1].pop("agents"), "agents"),
@@ -175,6 +176,12 @@ def test_tc07b_load_shape(tmp_path):
     assert gen.load(_repo(tmp_path)) == _doc()
 
 
+def test_requires_is_optional_and_kept(tmp_path):
+    doc = _doc()
+    doc["bundles"][1]["requires"] = [doc["bundles"][0]["name"]]
+    assert gen.load(_repo(tmp_path, doc))["bundles"][1]["requires"] == [doc["bundles"][0]["name"]]
+
+
 def test_load_bad_yaml_raises_value_error(tmp_path):
     repo = _repo(tmp_path)
     (repo / "bundles.yaml").write_text("bundles: [\n", encoding="utf-8")
@@ -184,8 +191,8 @@ def test_load_bad_yaml_raises_value_error(tmp_path):
 
 def test_gate_reports_load_error_instead_of_raising(tmp_path):
     doc = _doc()
-    doc["bundles"][0]["requires"] = []
-    assert any("requires" in e for e in gen.gate_errors(_repo(tmp_path, doc)))
+    doc["bundles"][0]["provides"] = []
+    assert any("provides" in e for e in gen.gate_errors(_repo(tmp_path, doc)))
 
 
 # ------------------------------------------------------- agent_frontmatter

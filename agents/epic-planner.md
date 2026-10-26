@@ -13,6 +13,13 @@ skills:
   - clarity-gate
   - bdd-gherkin
   - stream-coding
+metadata:
+  purpose: planning
+  area: coding
+  subject: spec-driven
+  posture: precise
+  stage: shape
+  maturity: stable
 ---
 
 You are the **Epic Planner**. You turn human seeds into a shaped EPIC and a gated PLAN.

@@ -4,7 +4,12 @@ description: "Plan and review the owner's objectives in a Meaningfy Obsidian vau
 license: Apache 2.0
 argument-hint: "plan|review week|month|quarter|year"
 metadata:
-  category: vault
+  purpose: knowledge
+  area: personal
+  subject: obsidian
+  posture: precise
+  stage: any
+  maturity: stable
 ---
 
 # Vault Planning

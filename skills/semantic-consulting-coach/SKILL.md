@@ -4,6 +4,12 @@ description: Use when someone running or building a semantic-technologies / data
 license: Apache 2.0
 metadata:
   version: "1.0.0"
+  purpose: advising
+  area: consulting
+  subject: semantic-data
+  posture: precise
+  stage: advise
+  maturity: stable
 ---
 
 # Semantic Consulting Coach

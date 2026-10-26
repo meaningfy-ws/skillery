@@ -5,7 +5,12 @@ license: Apache 2.0
 argument-hint: "[owner folder]"
 disable-model-invocation: true
 metadata:
-  category: vault
+  purpose: knowledge
+  area: personal
+  subject: obsidian
+  posture: precise
+  stage: any
+  maturity: stable
 ---
 
 # Vault Setup
@@ -70,6 +75,6 @@ kind templates, and the guided setup of Obsidian, sync, memory, connectors and t
 **Delegates:** the layout, kinds and properties the templates follow →
 [`vault-conventions`](../vault-conventions/SKILL.md); Obsidian's own syntax and CLI → the external
 `obsidian@obsidian-skills` plugin; the ingestion pipeline itself → the company's infrastructure
-repository and its private runbook; repository scaffolding → [`project-setup`](../project-setup/SKILL.md).
+repository and its private runbook.
 
 **Related:** `vault-conventions`, `vault-daily`, `project-setup`.

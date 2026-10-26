@@ -89,7 +89,15 @@
       "skills": [
         "meaningfy-code-review",
         "cosmic-python"
-      ]
+      ],
+      "metadata": {
+        "purpose": "quality",
+        "area": "coding",
+        "subject": "python",
+        "posture": "precise",
+        "stage": "verify",
+        "maturity": "stable"
+      }
     },
     "epic-planner": {
       "name": "epic-planner",
@@ -111,7 +119,15 @@
         "clarity-gate",
         "bdd-gherkin",
         "stream-coding"
-      ]
+      ],
+      "metadata": {
+        "purpose": "planning",
+        "area": "coding",
+        "subject": "spec-driven",
+        "posture": "precise",
+        "stage": "shape",
+        "maturity": "stable"
+      }
     },
     "implementer": {
       "name": "implementer",
@@ -134,7 +150,15 @@
         "superpowers:test-driven-development",
         "superpowers:systematic-debugging",
         "superpowers:verification-before-completion"
-      ]
+      ],
+      "metadata": {
+        "purpose": "building",
+        "area": "coding",
+        "subject": "python",
+        "posture": "precise",
+        "stage": "build",
+        "maturity": "stable"
+      }
     }
   }
 }

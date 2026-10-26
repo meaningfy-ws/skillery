@@ -3,7 +3,12 @@ name: meaningfy-code-review
 description: The Meaningfy pre-PR review — two modes (standalone = five lens subagents fanned out in parallel, one lens each; interactive main-thread), a methodical catalogue-complete review procedure (traverse the whole `cosmic-python` region a lens owns, not a fixed subset), and a fit-and-refactoring investigation, reported by priority. Use to supply the review criteria, modes, and dispatch contract for a Meaningfy change. Trigger on "Meaningfy review checklist", "architecture-conformance review", "review against cosmic-python layers", "pre-PR review criteria", "review modes", "review lenses". For the read-only standalone run, use the external `code-review` command or the `code-reviewer` wrapper.
 license: Apache 2.0
 metadata:
-  category: ai-coding
+  purpose: quality
+  area: coding
+  subject: python
+  posture: precise
+  stage: verify
+  maturity: stable
 ---
 
 # Meaningfy Code-Review

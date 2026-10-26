@@ -4,7 +4,12 @@ description: Start or close a project folder in a Meaningfy Obsidian vault. `new
 license: Apache 2.0
 argument-hint: "new <name> | close <project>"
 metadata:
-  category: vault
+  purpose: knowledge
+  area: personal
+  subject: obsidian
+  posture: precise
+  stage: any
+  maturity: stable
 ---
 
 # Vault Project

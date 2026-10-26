@@ -417,3 +417,9 @@ test("finding 3: reinstall prunes managed skills and agents dropped from the bun
   assert.deepEqual(manifest.managedSkills, ["alpha"]);
   assert.deepEqual(manifest.managedAgents, []);
 });
+
+test("catalogue facets in agent metadata are not rendered for opencode (define-catalogue-model D-7)", () => {
+  const { content } = renderAgent(
+    { ...AGENT, metadata: { purpose: "quality", area: "coding", posture: "precise" } }, "\nBody\n", MAP);
+  assert.doesNotMatch(content, /metadata|purpose:|posture:/);
+});

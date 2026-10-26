@@ -2,6 +2,13 @@
 name: architecture
 description: System-level solution architecture — C4 levels (Context, Container, Component, Code), ArchiMate and UML notations, ADRs, and contracts (OpenAPI/AsyncAPI/LinkML). Use for system and solution design, architecture documentation, and architectural decision-making. Distinct from code structure inside a service (see the cosmic-python skill).
 license: Apache 2.0
+metadata:
+  purpose: modelling
+  area: coding
+  subject: modelling
+  posture: reusable
+  stage: design
+  maturity: stable
 ---
 
 # Solution Architecture Skill

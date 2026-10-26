@@ -33,6 +33,7 @@ implement, and the reason behind the steps of [`setup-claude.md`](setup-claude.m
 | `disallowedTools: […]` | folded into opencode `permission` (deny) |
 | `skills: […]` | not an opencode field; rendered as a load-skills body line (`Load these skills first with the skill tool: …`) |
 | `color: yellow` | theme colour via `colors` in `tools/opencode-agent-map.json` (`color: warning`) |
+| `metadata: {purpose, area, …}` (catalogue facets) | not rendered, by design: the facets serve the catalogue map and the validator, not the runtime. An intended omission, not a gap |
 | `type: delegated` (Claude: a subagent spawned by the caller) | `mode: subagent` (via `agentModes`) |
 | `type: lead` (Claude: `claude --agent meaningfy-<bundle>:<name>`; gaps G-1, G-2) | `mode: primary` |
 | `type: scheduled` (Claude: an external scheduler runs `claude -p --agent meaningfy-<bundle>:<name> "<trigger prompt>"`; gap G-4) | `mode: subagent` + gap G-5 |

@@ -3,7 +3,12 @@ name: guardrails
 description: Apply agentic guardrails to every step where an LLM agent acts — decision bounds, output validation, and prompt-injection defence. Use to make an agent step safe before it runs tools, writes files, or trusts external content. Guardrails validate agent BEHAVIOUR (is this action in bounds, is this output well-formed, is this input trustworthy); clarity-gate/tests/review validate CONTENT. Trigger on "add guardrails", "is this agent step safe", "bound this agent's decisions", "validate this agent output", "defend against prompt injection", "what can this agent be allowed to do". Each guardrail points to a concrete enforcement home.
 license: Apache 2.0
 metadata:
-  category: ai-coding
+  purpose: quality
+  area: coding
+  subject: generic
+  posture: reusable
+  stage: verify
+  maturity: stable
 ---
 
 # Guardrails
@@ -80,8 +85,8 @@ already exists; this skill is the map.
 ## Boundary & Related Skills
 
 **Owns:** the guardrails *concern* and the map from each guardrail type to its enforcement home.
-**Delegates:** content quality → [`clarity-gate`](../clarity-gate/SKILL.md); structural validation →
-the spine (`openspec validate --strict`) and `cosmic-python`/import-linter; review →
-[`meaningfy-code-review`](../meaningfy-code-review/SKILL.md). It does not re-implement those gates —
-it points agentic steps at them.
-**Related:** `clarity-gate`, `meaningfy-code-review`, `cosmic-python`.
+**Delegates:** nothing. It does not re-implement the content, structure and review gates; it points
+agentic steps at them, listed under Related.
+
+**Related:** `clarity-gate` (content quality), `cosmic-python` (structural validation with
+import-linter, alongside the spine's `openspec validate --strict`), `meaningfy-code-review` (review).

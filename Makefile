@@ -29,9 +29,9 @@ opencode-report:
 test:
 	. .venv/bin/activate && python -m pytest tests/ -q
 
-# skill-inventory = regenerate docs/skill-inventory.md (purpose + related skills,
-# derived from each SKILL.md + bundles.yaml). Freshness enforced by
-# tests/test_skill_inventory.py, part of `make test`.
+# skill-inventory = regenerate the catalogue map docs/skill-inventory.md (skills and agents by
+# bundle and by facet, bundle requirements, relations), derived from each SKILL.md, each agent,
+# bundles.yaml and facets.yaml. Freshness enforced by tests/test_skill_inventory.py (`make test`).
 skill-inventory:
 	. .venv/bin/activate && python -m tools.skill_inventory
 

@@ -3,7 +3,12 @@ name: modelling-conventions
 description: The shared, representation-agnostic modelling craft reused across the modelling skills — naming discipline, modelling anti-patterns, and the guardrails a modeller follows while working, plus the two load-bearing principles (decouple attributes into reusable first-class properties; identify everything by a stable URI, implicit by default). Use when authoring or reviewing ANY model regardless of representation (conceptual, UML, LinkML, ontology). Trigger on "modelling conventions", "naming conventions for a model", "modelling anti-patterns", "reusable properties/slots", "should this attribute be shared", "URI/identity discipline", "review this model for smells". This is the cosmic-python-style reuse layer for modelling — cited by conceptual-modelling and linkml-engineering, never restated by them.
 license: Apache 2.0
 metadata:
-  category: engineering
+  purpose: modelling
+  area: coding
+  subject: modelling
+  posture: reusable
+  stage: design
+  maturity: stable
 ---
 
 # Modelling Conventions

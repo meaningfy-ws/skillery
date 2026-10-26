@@ -56,6 +56,11 @@ not restated here, so the version number has exactly one home.
 | `stream-coding` | The documentation-first delivery method (Work Shape → spec → generate-verify-integrate) | [`frmoretto/stream-coding`](https://github.com/frmoretto/stream-coding) — a single `SKILL.md`, not a plugin package; copied into `.claude/skills/stream-coding/` (both CLIs read it from there) |
 | `@fission-ai/openspec` | **The spec-spine engine.** OpenSpec is the artifact-lifecycle engine the Meaningfy spine is built on — it provides the `/opsx:*` slash-commands (`propose`, `explore`, `apply`, `sync`, `archive` on the core profile) and the change → durable-spec store | [`Fission-AI/OpenSpec`](https://github.com/Fission-AI/OpenSpec), npm `@fission-ai/openspec`. Pinned version: [`../../spine/openspec-version.txt`](../../spine/openspec-version.txt) (currently `1.4.1`). See [`../../spine/README.md`](../../spine/README.md) and [`../../spine/workflows.md`](../../spine/workflows.md) |
 
+### Bundle requirements
+
+`meaningfy-building` requires `meaningfy-architecture`: install both. Other bundles need only
+`meaningfy-core`. The [catalogue map](../skill-inventory.md) lists every bundle's requirements.
+
 ### Adopted skill-authoring methods (for contributors)
 
 The skill-development method ([`docs/development-method.md`](../development-method.md)) cites these
