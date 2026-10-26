@@ -178,7 +178,7 @@ Change the catalogue itself: add or fix a skill, an agent or a bundle.
 
 > **Coming:** the durable docs (`engineering-standards/`, `philosophy/`, architecture/ADRs) will be
 > published to **GitHub Pages** via AsciiDoc + Antora — skillery applying its own documentation
-> standard to itself. Tracked as a follow-up (`.claude/HARD-QUESTIONS.md`).
+> standard to itself. Tracked in [`docs/future-features.md`](docs/future-features.md).
 
 ## Repository structure
 

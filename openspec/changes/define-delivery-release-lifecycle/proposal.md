@@ -7,7 +7,7 @@
 > (round-2 human directives + the Employee Handbook's "Project shipping / Contractual Validation"
 > content — full source at
 > [`define-lifecycle-playbooks/inputs/`](../define-lifecycle-playbooks/inputs/));
-> [`.claude/HARD-QUESTIONS.md`](../../../.claude/HARD-QUESTIONS.md) HQ-08.1 (the commercial layer is
+> [`.claude/HARD-QUESTIONS.md`](../rebundle-by-activity/inputs/hard-questions-v2.md) HQ-08.1 (the commercial layer is
 > unshaped — this change removes its second copy);
 > [`spine/golden-thread.md`](../../../skills/epic-planning/references/golden-thread.md) (citation discipline).
 > **Sibling changes, cited not restated:** `define-blc-engagement-model` (owns `docs/engagement/` —

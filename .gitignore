@@ -235,7 +235,7 @@ Thumbs.db
 node_modules/
 
 # Local Claude Code tool state — machine-specific or tool-regenerated; never commit.
-# (Intentional planning docs like .claude/HARD-QUESTIONS.md stay tracked.)
+# (Planning docs belong in openspec/changes/<id>/inputs/, not in .claude/.)
 .claude/settings.json
 .claude/settings.local.json
 .claude/commands/

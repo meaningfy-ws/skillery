@@ -129,7 +129,7 @@
       **Accept:** `pytest tests/test_linkml_neo4j_generators.py` green.
 - [x] 9.6 Every remaining skill link out of its folder replaced (D-13). **Accept:** the widened
       `cross_skill_paths` clean.
-- [ ] 9.7 HARD-QUESTIONS and the worktree leftovers per D-13; worktrees pruned.
+- [x] 9.7 HARD-QUESTIONS and the worktree leftovers per D-13; worktrees pruned.
 - [ ] 9.8 Living-spec deltas; CHANGELOG line for every moved path. **Accept:** `make validate`,
       `make validate-spine`, `openspec validate --all --strict` green; `ls` shows only the allowed
       folders.

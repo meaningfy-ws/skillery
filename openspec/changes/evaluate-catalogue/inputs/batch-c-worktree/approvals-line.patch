@@ -1,0 +1,12 @@
+diff --git a/openspec/changes/restructure-and-evaluate-catalogue/inputs/approvals.md b/openspec/changes/restructure-and-evaluate-catalogue/inputs/approvals.md
+index e2adc30..a5534f0 100644
+--- a/openspec/changes/restructure-and-evaluate-catalogue/inputs/approvals.md
++++ b/openspec/changes/restructure-and-evaluate-catalogue/inputs/approvals.md
+@@ -6,6 +6,7 @@ owner's Claude login in the isolated trigger environment, or `ANTHROPIC_API_KEY`
+ | Date | Batch | Approved | Scope | Notes |
+ |---|---|---|---|---|
+ | 2026-10-27 | calibration + C | up to $5 | 2 calibration queries; `executive-communication` Sonnet before/after on its 20-query trigger set (120 runs), Haiku drafts, one rerun of the seed case `quotation-bind` | if calibration puts C above $5, ask again before running it (task 0.3) |
++| 2026-10-27 | C (raised) | up to $6.50 in total for calibration + C | as above, run through `claude plugin eval` (design D-13, adopted by the owner the same day) | owner chose option 1: raise the cap and adopt D-13; the invalid `run_eval.py` spend counts against it |
+ 
+ ## Calibration (task 0.3)
+ 

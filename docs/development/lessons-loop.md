@@ -27,5 +27,5 @@ loop turns delivery experience back into the catalogue, so skillery compounds.
 Running the spine on **this very series** (skillery's own EPICs) *is* the loop
 the method applied to itself — the internal reference run (EPIC-00 §6, Q0.3=C). The first real
 client engagement then stress-tests the consulting tier. Hard questions raised
-mid-flight are parked in [`../.claude/HARD-QUESTIONS.md`](../../.claude/HARD-QUESTIONS.md)
+mid-flight are parked in [`docs/future-features.md`](../future-features.md) (open questions)
 and a PLAN's `design.md` Open Questions, not guessed.

@@ -1,5 +1,9 @@
 # HARD questions — parked for Eugeniu
 
+> Moved here from `.claude/HARD-QUESTIONS.md` on 2026-10-27 (rebundle-by-activity D-13), text
+> unchanged except this note and one link. HQ-UX.1 and HQ-02.1 are answered and became rows of
+> `docs/future-features.md`; the open ones are listed there too.
+
 > Running log of genuine open decisions surfaced while implementing the Skillery
 > v2 EPIC series autonomously. These are **not** blockers I guessed past silently
 > — each has a recorded working assumption so the build proceeds, but each
@@ -12,8 +16,8 @@
 
 ### HQ-UX.1 — Publish the durable canon to GitHub Pages via AsciiDoc + Antora?
 The catalogue-UX brainstorm decided (D7) to dogfood the split-by-churn standard: keep high-churn
-agent-loop docs (`docs/practice/ai-coding/`, `.claude/`, `docs/practice/ai-sales/`) as Markdown, but migrate the
-**durable canon** (`docs/practice/engineering-standards/`, `docs/practice/philosophy/`, architecture/ADRs) to
+agent-loop docs (`docs/ai-coding/`, `.claude/`, `docs/ai-sales/`) as Markdown, but migrate the
+**durable canon** (`docs/engineering-standards/`, `docs/philosophy/`, architecture/ADRs) to
 **AsciiDoc + Antora** and publish it to **GitHub Pages** — skillery applying its own documentation
 standard to itself. This is a substantial migration (Antora playbook, `.adoc` conversion, a Pages CI
 workflow) and was **deferred to its own follow-up EPIC**. The README "Documentation" section already
@@ -31,7 +35,7 @@ Q2.3's answer flagged the `requirement → ADR → model-entity → epic → cha
 task → test → commit` chain as possibly dangerous: ADRs/model-entities are only
 *parts* of architecture, and the architecture-documentation standard is not yet
 specified. I made the chain deliberately coarse (see
-[`../spine/golden-thread.md`](../skills/epic-planning/references/golden-thread.md)):
+[`../spine/golden-thread.md`](../../../../skills/epic-planning/references/golden-thread.md)):
 `product/requirement spec → architecture (scenarios, ADRs, use cases, C4 +
 ArchiMate, contracts, …) → epic/change → task → test → commit`.
 **Working assumption:** keep it coarse; harden after the architecture-doc
@@ -92,7 +96,7 @@ nice-to-have. Confirm whether you want the real harness built later.
 Q8.2's note: the wider commercial mechanics — qualification, pre-sale, sale,
 marketing, CRM & lead communication, service packaging, fit-for-market — are
 **still to be developed, brainstormed, debated, and crystallised**. I stubbed a
-clearly-labelled "Known gaps" section in `docs/practice/ai-sales/engagement-lifecycle.md` and the DoD
+clearly-labelled "Known gaps" section in `docs/ai-sales/engagement-lifecycle.md` and the DoD
 ladder rather than inventing it. **This is a whole future workstream** (a possible
 EPIC-11+). Decide when/how to shape it.
 **Answer:**
