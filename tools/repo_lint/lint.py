@@ -696,7 +696,7 @@ def orphan_path_mentions(repo: Path, banned: list[str]) -> list[str]:
 
 # Top-level repo dirs a spec may link into; bounds the auto-fixer so it never
 # rewrites an incidental same-named sibling file.
-_LINKABLE_TOPDIRS = {"skills", "docs", "spine", "openspec", "prompts", "agents", "spec", "tools", "tests"}
+_LINKABLE_TOPDIRS = {"skills", "docs", "openspec", "agents", "tools", "tests", "use-cases"}
 
 
 def groomed_spec_purpose(repo: Path) -> list[str]:

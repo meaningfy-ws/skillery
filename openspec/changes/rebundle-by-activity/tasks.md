@@ -27,7 +27,10 @@
   moves to the first release; 7.3 (#89) merges then.
 - **7.3 written** (#89): `bundles/` ignored and untracked, CI link check, `#dist` install lines,
   migration note, the `dual-cli-generation` delta.
-- **Next:** task group 9 (folder restructure, owner R3/R4), then 8.
+- **Group 9 done** (`arch/repo-folders`, D-13): one development home in `docs/development/`, `spine/`,
+  `spec/`, `hooks/`, `prompts/`, `evals/` gone, company practice in `docs/practice/`, the linkml
+  generators in their skill, no skill link outside its folder, `top_level_folders`.
+- **Next:** 8 (#90, rebased on group 9).
 - **Waits for the owner:** 7.1
   (optional; pushes a test branch). No model runs in this change.
 
@@ -130,7 +133,7 @@
 - [x] 9.6 Every remaining skill link out of its folder replaced (D-13). **Accept:** the widened
       `cross_skill_paths` clean.
 - [x] 9.7 HARD-QUESTIONS and the worktree leftovers per D-13; worktrees pruned.
-- [ ] 9.8 Living-spec deltas; CHANGELOG line for every moved path. **Accept:** `make validate`,
+- [x] 9.8 Living-spec deltas; CHANGELOG line for every moved path. **Accept:** `make validate`,
       `make validate-spine`, `openspec validate --all --strict` green; `ls` shows only the allowed
       folders.
 
@@ -150,7 +153,7 @@
 - [x] 5.1 · [x] 5.2 · [x] 5.3
 - [x] 6.1 · [x] 6.2 · [x] 6.3
 - [ ] 7.1 · [x] 7.2 · [x] 7.3
-- [ ] 9.1 · [ ] 9.2 · [ ] 9.3 · [ ] 9.4 · [ ] 9.5 · [ ] 9.6 · [ ] 9.7 · [ ] 9.8
+- [x] 9.1 · [x] 9.2 · [x] 9.3 · [x] 9.4 · [x] 9.5 · [x] 9.6 · [x] 9.7 · [x] 9.8
 - [ ] 8.1 · [ ] 8.2
 
 Order: 0, then 1 before 4 (coverage must exist before agents are added), 2 before 3 and 4 (the new
