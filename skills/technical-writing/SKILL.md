@@ -53,4 +53,4 @@ governs Reference and How-to output.
 
 **Owns:** documentation, explanations, summaries, docstrings. **Does NOT** plan (`epic-planning`),
 run the full clarity gate (`clarity-gate`), or write/modify production code or tests.
-**Related:** `clarity-gate` (full gate), `epic-planning`, `explanatory-writing` (Explanation-quadrant texture), `writing-antipatterns` (genre-conditional failure modes for Tutorial/How-to/Reference).
+**Related:** `clarity-gate` (full gate), `epic-planning`, `explanatory-writing` (Explanation-quadrant texture), `writing-antipatterns` (genre-conditional failure modes for Tutorial/How-to/Reference), `executive-communication` (answer-first structure when a document carries a recommendation).

@@ -36,7 +36,7 @@
 - [x] 2.1 **Batch D** (no model runs): a positive and a near-miss probe for `linkml-engineering` and
       `modelling-conventions` (`near_miss_of` the closest neighbour). **Accept:** the
       `trigger-probe` advisory no longer lists either skill; `inputs/evidence/D.md` lists the 4 probes.
-- [ ] 2.2 **Batch E** (no model runs): re-count the one-way Related pairs at the start (20 on
+- [x] 2.2 **Batch E** (no model runs): re-count the one-way Related pairs at the start (20 on
       2026-10-27; 19 in the audit), then resolve each by D-9. **Accept:** `inputs/evidence/E.md` has
       a row per pair; `reciprocal_related_report` lists only the pairs whose row says why they stay
       one-way.
@@ -123,7 +123,7 @@ Sonnet after → evidence → PR. Each sub-batch's run count is capped by D-12.
 
 - [x] 0.1 · [ ] 0.2 · [ ] 0.3
 - [x] 1.1 · [x] 1.2
-- [x] 2.1 · [ ] 2.2 · [x] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
+- [x] 2.1 · [x] 2.2 · [x] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4
 - [ ] 4.0 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4
 - [ ] 5.1 · [ ] 5.2 · [ ] 5.3

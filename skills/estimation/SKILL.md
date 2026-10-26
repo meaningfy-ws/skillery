@@ -114,7 +114,10 @@ consume.
 - Sequencing / roadmap intent (pilot → scale) → [`decision-package`](../decision-package/SKILL.md).
 - The calendar/Gantt rendering → **external tools** (Smartsheet, MS Project) — out of repo.
 
-**Related:** `proposal-writing`, `epic-planning`, `decision-package`.
+See also `epic-planning` for the build breakdown an estimate decomposes against; the link is
+one-way, since shaping an EPIC needs no estimate.
+
+**Related:** `proposal-writing`, `decision-package`.
 
 ## Tone & style
 
