@@ -168,7 +168,8 @@ Change the catalogue itself: add or fix a skill, an agent or a bundle.
 | Where | What | Read it when… |
 |---|---|---|
 | [`docs/development-method.md`](docs/development-method.md) | how skills and agents are conceived, documented, tested, installed, improved and retired — principles, lifecycles, the documentation standard, the issue loop, the Definition of Done | you're writing, changing, reviewing or reporting on a skill or agent |
-| [`docs/catalogue-architecture.md`](docs/catalogue-architecture.md) | the catalogue's model, where each part lives, the target structure, the agent roster and the roadmap | you're deciding where something new belongs |
+| [`docs/catalogue-architecture.md`](docs/catalogue-architecture.md) | the catalogue's model, where each part lives, the target structure and the built agents | you're deciding where something new belongs |
+| [`docs/future-features.md`](docs/future-features.md) | the features still to build, the material each needs, and the change that will build it | you want to know what is coming, or have material for a feature |
 | [`openspec/specs/catalogue-governance/`](openspec/specs/catalogue-governance/spec.md) | the governance contract the validator enforces | you need the rule behind a `make validate` failure |
 | [`spec/`](spec/) | how to author a skill (governance + template) | you're contributing a skill |
 | [`spine/`](spine/) | the spec-backbone conventions (workflows, golden thread, lifecycle) | you're working with `openspec/` / the spine |

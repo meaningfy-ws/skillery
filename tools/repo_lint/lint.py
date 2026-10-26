@@ -344,6 +344,30 @@ def use_case_coverage(repo: Path) -> list[str]:
             if item not in served]
 
 
+FUTURE_FEATURES = "docs/future-features.md"
+
+
+def use_case_changes_registered(repo: Path) -> list[str]:
+    """A partial or missing use case names a change that docs/future-features.md lists
+    (rebundle-by-activity D-12). Silent without use-cases/ or without the register."""
+    root, register = repo / USE_CASES_DIR, repo / FUTURE_FEATURES
+    if not root.exists() or not register.exists():
+        return []
+    text = register.read_text(encoding="utf-8")
+    out: list[str] = []
+    for p in sorted(root.glob("*.md")):
+        fm = _frontmatter(p.read_text(encoding="utf-8")) or {}
+        status, change = fm.get("status"), str(fm.get("change") or "")
+        if status not in ("partial", "missing"):
+            continue
+        rel = f"{USE_CASES_DIR}/{p.name}"
+        if not change:
+            out.append(f"{rel}: status '{status}' needs a change listed in {FUTURE_FEATURES}")
+        elif not re.search(rf"(?<![\w-]){re.escape(change)}(?![\w-])", text):
+            out.append(f"{rel}: change '{change}' is not in {FUTURE_FEATURES}")
+    return out
+
+
 def cross_skill_paths(repo: Path) -> list[str]:
     """No link from one skill's files resolves into another skill's folder (D-15): a skill names
     another skill; a resource two skills need moves into a foundation skill."""
@@ -1020,7 +1044,7 @@ ALL_CHECKS = (
     boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
-    cross_skill_paths, use_case_coverage,
+    cross_skill_paths, use_case_coverage, use_case_changes_registered,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

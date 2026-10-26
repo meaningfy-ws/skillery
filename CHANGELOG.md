@@ -28,6 +28,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   thinking partners that design a system or build a domain model with you, saying what they think
   and plan before each step; `proposal-writer` (in `meaningfy-sales`) turns a client's requirements
   into a proposal or offer email. All three are `experimental`.
+- **[`docs/future-features.md`](docs/future-features.md):** every feature still to build, which use
+  cases it serves, the material it needs, and the change that will build it. It replaces the roadmap
+  in `docs/catalogue-architecture.md`.
+- **Voice channel placeholders** in `meaningfy-voice` (`references/channels/`: LinkedIn, blog,
+  offer, internal message); until each is written, the default voice applies.
 - **Three more use cases:** advisory engagement (UC-W22), client delivery and project management
   (UC-W23) and content creation for LinkedIn and blogs (UC-W24); every skill now serves at least one
   use case.
@@ -58,6 +63,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - A skill never links into another skill's folder; it names the skill (`cross_skill_paths` in
   `make validate`). A resource two skills need moves into a foundation skill.
 - A file in `use-cases/` must pass `use_case_catalogue`; `make skill-inventory` renders the gap map.
+- A `partial` or `missing` use case must name a `change` listed in `docs/future-features.md`
+  (`use_case_changes_registered` in `make validate`).
 - Every skill and agent must appear in some use case's `served_by` (`use_case_coverage` in
   `make validate`); a new one comes with its use case.
 - A skill's trigger set lives in `evals/triggers/<skill>.json` (20 queries, seeded from its probes);

@@ -18,7 +18,9 @@
 - **Group 3 done** (`arch/sales-bundle`): `meaningfy-sales`, three hand-offs now see-also, move announced.
 - **Group 4 done** (`arch/agents-architecture-sales`): three agents with Gherkin traced to the
   deepened UC-W8, W19, W20; 4.3 applied (W19, W20 `covered`; W8 `partial`). `npm run test:opencode-installer` deferred by the owner to after group 7.
-- **Next:** task groups 5 to 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
+- **Group 5 done** (`arch/future-features`): `docs/future-features.md`, `use_case_changes_registered`,
+  the voice channel placeholders.
+- **Next:** task groups 6 to 8 in the Roadmap order, one PR each from `arch/<group>` off `develop`.
 - **Waits for the owner:** 6.2 (any changed register cell), 7.1
   (optional; pushes a test branch). No model runs in this change.
 
@@ -69,13 +71,13 @@
 
 ## 5. Future features (`arch/future-features`)
 
-- [ ] 5.1 Write `docs/future-features.md` (D-6) and its register row; replace the Roadmap section of
+- [x] 5.1 Write `docs/future-features.md` (D-6) and its register row; replace the Roadmap section of
       `docs/catalogue-architecture.md` with the pointer. **Accept:** `doc_register_complete` and
       `broken_links` clean; every row's use cases exist.
-- [ ] 5.2 `use_case_changes_registered` (D-12) with the negative tests of design "Test cases"; align
+- [x] 5.2 `use_case_changes_registered` (D-12) with the negative tests of design "Test cases"; align
       every use case's `change` with the feature rows; `make skill-inventory`. **Accept:** the check is
       clean on the real repo.
-- [ ] 5.3 The voice placeholders (D-10). **Accept:** four files, none with a rule; `meaningfy-voice`
+- [x] 5.3 The voice placeholders (D-10). **Accept:** four files, none with a rule; `meaningfy-voice`
       names the folder.
 
 ## 6. External dependency register (`arch/dependency-register`)
@@ -117,7 +119,7 @@
 - [x] 2.1 · [x] 2.2
 - [x] 3.1 · [x] 3.2 · [x] 3.3
 - [x] 4.1 · [x] 4.2 · [x] 4.3
-- [ ] 5.1 · [ ] 5.2 · [ ] 5.3
+- [x] 5.1 · [x] 5.2 · [x] 5.3
 - [ ] 6.1 · [ ] 6.2 · [ ] 6.3
 - [ ] 7.1 · [ ] 7.2 · [ ] 7.3
 - [ ] 8.1 · [ ] 8.2
