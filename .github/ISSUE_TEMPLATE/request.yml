@@ -1,0 +1,40 @@
+name: Request — a new skill, agent, or change to the method
+description: Something the catalogue should teach or do that it does not today.
+title: "[request] <one line>"
+labels: ["request"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: ["new skill", "new agent", "extend an existing skill or agent", "change to the development method"]
+    validations: { required: true }
+  - type: textarea
+    id: job
+    attributes:
+      label: The job, in one sentence
+      description: What should an agent be able to do, or do better, once this exists?
+    validations: { required: true }
+  - type: textarea
+    id: failure
+    attributes:
+      label: The failure case
+      description: A concrete task where the agent did badly today without it — prompt, output, expected output.
+    validations: { required: true }
+  - type: textarea
+    id: today
+    attributes:
+      label: What exists today
+      description: Skills or agents (ours or external, e.g. superpowers) that come close, and why they do not cover it.
+    validations: { required: true }
+  - type: input
+    id: second_user
+    attributes:
+      label: Who is the second user?
+      description: A skill with one user and one project is a project file, not a catalogue entry.
+    validations: { required: true }
+  - type: dropdown
+    id: role
+    attributes:
+      label: Which hat (bundle) would install it?
+      options: ["meaningfy-core", "meaningfy-consulting", "meaningfy-architecture", "meaningfy-building", "vault-assistant", "a new bundle (say which role)"]
