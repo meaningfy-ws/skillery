@@ -1,0 +1,22 @@
+[
+  {"query": "turn this rough input into a board-ready recommendation", "should_trigger": true},
+  {"query": "tighten the cover email for this quotation", "should_trigger": true},
+  {"query": "write the cover email to send with our formal quotation to the client", "should_trigger": true},
+  {"query": "structure these notes into a recommendation for the steering committee", "should_trigger": true},
+  {"query": "make this message to the client's CEO shorter and more persuasive", "should_trigger": true},
+  {"query": "write the executive summary that goes on top of our tender response", "should_trigger": true},
+  {"query": "rewrite this Slack update to leadership so the decision we need comes first", "should_trigger": true},
+  {"query": "turn this analysis into a one-page board paper using the pyramid principle", "should_trigger": true},
+  {"query": "draft the covering letter for the statement of work we are sending tomorrow", "should_trigger": true},
+  {"query": "outline the slides for presenting our recommendation to the client's board", "should_trigger": true},
+  {"query": "write the statement of work and scope boundary for the decision phase", "should_trigger": false},
+  {"query": "why does this architecture decision record read so badly", "should_trigger": false},
+  {"query": "estimate this engagement with PERT and add contingency", "should_trigger": false},
+  {"query": "write the README and docstrings for this module", "should_trigger": false},
+  {"query": "explain how ontology alignment works for a blog post, with a good metaphor", "should_trigger": false},
+  {"query": "produce the decision package with the buy, build or defer analysis", "should_trigger": false},
+  {"query": "write a commit message for this change", "should_trigger": false},
+  {"query": "help me price this knowledge-graph consulting engagement", "should_trigger": false},
+  {"query": "score this spec with the clarity gate before we implement it", "should_trigger": false},
+  {"query": "check this claim in our copy: does it promise more than the method delivers", "should_trigger": false}
+]
