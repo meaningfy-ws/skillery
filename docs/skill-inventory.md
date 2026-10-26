@@ -512,6 +512,10 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | `consulting` | advising clients | `semantic-consulting-coach`, `decision-package` |
 | `sales` | winning and pricing work | `proposal-writing`, `estimation` |
 | `personal` | the owner's own vault and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
+| `operations` | running infrastructure, CI/CD and monitoring | — |
+| `business` | running and growing the company, negotiation and internal communication | — |
+| `legal` | contracts, NDAs and other legal documents | — |
+| `design` | graphics, visuals and diagrams in company style | — |
 | `cross-cutting` | used in every area | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `executive-communication`, `clarity-gate` |
 
 ### subject

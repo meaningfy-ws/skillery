@@ -19,6 +19,10 @@ facets:
     consulting: advising clients
     sales: winning and pricing work
     personal: the owner's own vault and rhythm
+    operations: running infrastructure, CI/CD and monitoring
+    business: running and growing the company, negotiation and internal communication
+    legal: contracts, NDAs and other legal documents
+    design: graphics, visuals and diagrams in company style
     cross-cutting: used in every area
   subject:
     generic: no domain knowledge; transfers anywhere
