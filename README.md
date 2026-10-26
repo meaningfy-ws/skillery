@@ -34,7 +34,7 @@ each one serves, and which skills depend on which — see
 
 | Bundle | Skills | Install if you… |
 |--------|--------|-----------------|
-| **meaningfy-core** | **technical-writing** · **explanatory-writing** · **writing-antipatterns** · **meaningfy-git-workflow** · **guardrails** | …do anything (cross-cutting basics) |
+| **meaningfy-core** | **technical-writing** · **explanatory-writing** · **writing-antipatterns** · **meaningfy-voice** · **meaningfy-git-workflow** · **guardrails** | …do anything (cross-cutting basics) |
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **proposal-writing** · **estimation** · **executive-communication** | …do advisory / front-of-funnel work |
 | **meaningfy-architecture** | **architecture** · **conceptual-modelling** · **modelling-conventions** · **linkml-engineering** | …design systems or model a domain |
 | **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
@@ -131,18 +131,42 @@ natively instead.
 
 ## Documentation
 
+Three doors, by what you came to do.
+
+### Install
+
+Set up the catalogue on your machine, for Claude Code or opencode.
+
 | Where | What | Read it when… |
 |---|---|---|
+| [`docs/environment/`](docs/environment/setup.md) | machine/tooling setup: external deps, the dual-CLI reference annex, the `openspec/` setup guide | you're installing or extending the catalogue |
+| [`docs/environment/dual-cli/`](docs/environment/dual-cli/README.md) | per-CLI setup, the source→CLI mapping and the external-dependency compatibility matrix | you're installing on one CLI or checking what works on both |
+
+### Use
+
+Find the agent or skill that does your job, then its Quick Start.
+
+| Where | What | Read it when… |
+|---|---|---|
+| [`docs/use-cases.md`](docs/use-cases.md) | every use case the catalogue serves, by area, with the agents and skills that serve it and what is still missing | you want to know what the catalogue can do for you |
 | [`docs/ai-coding/`](docs/ai-coding/) | the build-plane lifecycle + the `/opsx` runbook + DoD/quality gates + role playbooks | you're learning how we build with agents |
 | [`docs/ai-sales/`](docs/ai-sales/engagement-lifecycle.md) | the commercial engagement lifecycle, the sales runbook and DoD, and the sellable services catalogue (one page per Semantic Layer building block, or a named gap) | you're scoping or describing a commercial offering to a client |
 | [`docs/ai-consulting/`](docs/ai-consulting/advisory-runbook.md) | the Deep-tier advisory runbook, the consulting DoD, and the method docs (gap analysis, and four named-but-unowned technique stubs) | you're running or reviewing a Discovery & Onboarding Deep-tier engagement |
 | [`docs/roles-and-raci.md`](docs/roles-and-raci.md) | the six project roles and the RACI matrix, cited by every domain's playbooks | you want to know who is accountable for what |
-| [`docs/environment/`](docs/environment/setup.md) | machine/tooling setup: external deps, the dual-CLI reference annex, the `openspec/` setup guide | you're installing or extending the catalogue |
-| [`spine/`](spine/) | the spec-backbone conventions (workflows, golden thread, lifecycle) | you're working with `openspec/` / the spine |
-| [`docs/development-method.md`](docs/development-method.md) | how skills and agents are conceived, documented, tested, installed, improved and retired — principles, lifecycles, the documentation standard, the issue loop, the Definition of Done | you're writing, changing, reviewing or reporting on a skill or agent |
-| [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the full engineering standards |
 | [`docs/philosophy/`](docs/philosophy/) | the mindset behind it all | you want the *why* |
+
+### Develop
+
+Change the catalogue itself: add or fix a skill, an agent or a bundle.
+
+| Where | What | Read it when… |
+|---|---|---|
+| [`docs/development-method.md`](docs/development-method.md) | how skills and agents are conceived, documented, tested, installed, improved and retired — principles, lifecycles, the documentation standard, the issue loop, the Definition of Done | you're writing, changing, reviewing or reporting on a skill or agent |
+| [`docs/catalogue-architecture.md`](docs/catalogue-architecture.md) | the catalogue's model, where each part lives, the target structure, the agent roster and the roadmap | you're deciding where something new belongs |
+| [`openspec/specs/catalogue-governance/`](openspec/specs/catalogue-governance/spec.md) | the governance contract the validator enforces | you need the rule behind a `make validate` failure |
 | [`spec/`](spec/) | how to author a skill (governance + template) | you're contributing a skill |
+| [`spine/`](spine/) | the spec-backbone conventions (workflows, golden thread, lifecycle) | you're working with `openspec/` / the spine |
+| [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the full engineering standards |
 
 > **Coming:** the durable docs (`engineering-standards/`, `philosophy/`, architecture/ADRs) will be
 > published to **GitHub Pages** via AsciiDoc + Antora — skillery applying its own documentation

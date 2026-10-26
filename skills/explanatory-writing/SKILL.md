@@ -18,7 +18,7 @@ metadata:
 The craft that makes explanatory prose read clean: coherent, concrete, with momentum and warmth.
 It owns **texture** — how the sentences land — not structure and not placement. It executes the
 **technical/educational register** already defined in the Meaningfy house voice
-([`company-voice.md`](../executive-communication/references/company-voice.md)); it adds the
+(`meaningfy-voice`); it adds the
 *how-to-write-it-well* layer that the voice profile does not carry, and restates none of its rules.
 
 The voice baseline is inherited, never forked. Where a knob default and its linked house source
@@ -34,7 +34,7 @@ disagree, **the source wins** (see [`references/knobs.md`](references/knobs.md))
 | **Reference** (lookup) | No | Must stay dry and declarative. The craft is actively harmful here. |
 
 If the request is Reference or How-to, decline and point back to
-[`technical-writing`](../technical-writing/SKILL.md) / how-to form.
+`technical-writing` / how-to form.
 
 ## The craft moves
 
@@ -49,8 +49,8 @@ coin-and-explain · a confident grounded close.
   decide → general/executive.* This skill executes the **technical/educational** register and
   introduces no parallel dial.
 - **Knobs are positive defaults, cross-linked** to the house sources (primary `company-voice.md`;
-  secondary the Writing-style section of [`technical-writing`](../technical-writing/SKILL.md) and
-  [`clarity-gate`](../clarity-gate/SKILL.md)) — see [`references/knobs.md`](references/knobs.md).
+  secondary the Writing-style section of `technical-writing` and
+  `clarity-gate`) — see [`references/knobs.md`](references/knobs.md).
 - **The 8-axis voice schema** (the diffable structure of a voice) is in
   [`references/voice-schema.md`](references/voice-schema.md).
 
@@ -82,10 +82,9 @@ Per-piece quick check:
 schema, the positive-default knobs, and variant-batch validation.
 
 **Does NOT own:** document **structure** / answer-first persuasion
-([`executive-communication`](../executive-communication/SKILL.md)); doc **placement, format, and type**
-([`technical-writing`](../technical-writing/SKILL.md)); the **voice profile** itself
-([`company-voice.md`](../executive-communication/references/company-voice.md), owned by
-`executive-communication`); the **clarity check** ([`clarity-gate`](../clarity-gate/SKILL.md)).
+(`executive-communication`); doc **placement, format, and type**
+(`technical-writing`); the **voice profile** itself
+(`meaningfy-voice`); the **clarity check** (`clarity-gate`).
 
 **Precedence when directives compete:** **structure > clarity > texture.** If answer-first structure
 conflicts with a slow-burn metaphor lede, structure wins: lead with the answer, then apply texture
@@ -100,4 +99,4 @@ beneath it.
 | `clarity-gate` | the check | actionable · current · specific refs · single-source |
 | `executive-communication` | structure | *not invoked here* (no decision). If it were a recommendation, its answer-first pyramid would win by precedence |
 
-**Related:** `technical-writing`, `executive-communication`, `writing-antipatterns` (genre-conditional failure modes, including where this skill's own craft moves invert).
+**Related:** `meaningfy-voice`, `technical-writing`, `executive-communication`, `writing-antipatterns` (genre-conditional failure modes, including where this skill's own craft moves invert).

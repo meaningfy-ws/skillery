@@ -28,7 +28,7 @@ trace to a leaf, an assumption, and a technique.
 - [ ] Assumptions listed: client inputs, data access, SME availability, decision authority, timing.
 - [ ] Each **risky** assumption has either an exclusion or a stop/extend trigger.
 - [ ] **Exclusions = the SoW out-of-scope list** — the invariant owned by
-      [`proposal-writing`](../../proposal-writing/SKILL.md). One list, two documents.
+      `proposal-writing`. One list, two documents.
 
 ## Triangulation (large bids)
 
@@ -42,4 +42,4 @@ trace to a leaf, an assumption, and a technique.
       does not draw the Gantt).
 - [ ] PERT total + contingency handed to `proposal-writing` as the **fixed-frame price**.
 - [ ] Sequencing intent (pilot → scale) sourced from
-      [`decision-package`](../../decision-package/SKILL.md), not invented here.
+      `decision-package`, not invented here.

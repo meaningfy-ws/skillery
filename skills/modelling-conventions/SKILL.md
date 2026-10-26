@@ -71,9 +71,9 @@ principles.
 
 **This skill DELEGATES:**
 - The living conceptual model, UML conceptual data modelling, terminology, and the model-source
-  decision → [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md).
+  decision → `conceptual-modelling`.
 - LinkML mechanics that realise these principles (top-level `slots:`, the URI-as-datatype artifice,
-  generation) → [`../linkml-engineering/SKILL.md`](../linkml-engineering/SKILL.md).
+  generation) → `linkml-engineering`.
 - Representation-specific mechanics generally (UML profiles, OWL axioms) → the skill owning that
   representation. Nothing representation-specific belongs here.
 

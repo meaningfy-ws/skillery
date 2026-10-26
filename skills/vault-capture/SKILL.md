@@ -17,13 +17,13 @@ metadata:
 ## Overview
 
 The end of a work session, or a quick filing at any time: the project's files absorb what happened,
-so the next [`vault-resume`](../vault-resume/SKILL.md) starts from the truth. Capture is the vault's
+so the next `vault-resume` starts from the truth. Capture is the vault's
 way of remembering. It writes to the vault, never to the company memory: the ingestion pipeline carries
-what the owner opted in (see [`vault-conventions`](../vault-conventions/SKILL.md)).
+what the owner opted in (see `vault-conventions`).
 
 ## Procedure
 
-1. **Resolve one project** by the rule in [`vault-conventions`](../vault-conventions/SKILL.md) (Project
+1. **Resolve one project** by the rule in `vault-conventions` (Project
    homes). Never create a project here.
 2. **Pick the source.** Notes the owner pasted, or this session's conversation. For a session, also ask:
    "Anything done or decided outside this conversation that should go in?" File only what the owner
@@ -68,8 +68,8 @@ what the owner opted in (see [`vault-conventions`](../vault-conventions/SKILL.md
 **Owns:** filing a session or raw notes into one project's five files (and, for one meeting's notes,
 its `kind: meeting` note), and the hedge-keeping rules of that filing.
 
-**Delegates:** file shapes and memory etiquette → [`vault-conventions`](../vault-conventions/SKILL.md);
-project resolution → `vault-conventions` (Project homes); session start → [`vault-resume`](../vault-resume/SKILL.md); new projects →
-[`vault-project`](../vault-project/SKILL.md).
+**Delegates:** file shapes and memory etiquette → `vault-conventions`;
+project resolution → `vault-conventions` (Project homes); session start → `vault-resume`; new projects →
+`vault-project`.
 
 **Related:** `vault-conventions`, `vault-resume`, `vault-project`, `vault-daily`, `vault-promote`.

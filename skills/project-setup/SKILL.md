@@ -32,10 +32,10 @@ rather than restating them:
 | Layering, SOLID, the four patterns, CI tools | `cosmic-python` |
 | Minimal code — YAGNI, avoid over-engineering | `ponytail` (third-party) |
 | System design, C4, ADRs, contracts | `architecture` |
-| The domain `model/` (product) | [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md) |
-| LinkML gates, `make generate-models` automation, per-module output (if the project uses LinkML) | [`../linkml-engineering/SKILL.md`](../linkml-engineering/SKILL.md) |
-| Deploy / versioned image (CD seam) | [`../ci-cd-delivery/SKILL.md`](../ci-cd-delivery/SKILL.md) |
-| Release lifecycle — versioning, release notes, PyPI publish, `SECURITY.md` | [`../meaningfy-release/SKILL.md`](../meaningfy-release/SKILL.md) |
+| The domain `model/` (product) | `conceptual-modelling` |
+| LinkML gates, `make generate-models` automation, per-module output (if the project uses LinkML) | `linkml-engineering` |
+| Deploy / versioned image (CD seam) | `ci-cd-delivery` |
+| Release lifecycle — versioning, release notes, PyPI publish, `SECURITY.md` | `meaningfy-release` |
 | EPIC (work shape) + PLAN, the spine workflow | `epic-planning` + the `/opsx:*` commands |
 | Docs writing, AsciiDoc/Antora prose | `technical-writing` |
 | Commits, branches, PRs | `meaningfy-git-workflow` |
@@ -73,16 +73,16 @@ hold: "automate almost everything" + TDD.** The archetype decides the *condition
   needed elements, what "good" means) before scaffolding gates — never assume. See
   [`references/interview.md`](references/interview.md) Q2.2.
 - **Conditional `model/`** (product): scaffolds `model/` (LinkML default) — the model itself owned by
-  [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md). **When the project uses
+  `conceptual-modelling`. **When the project uses
   LinkML**, also scaffold the LinkML layer owned by
-  [`../linkml-engineering/SKILL.md`](../linkml-engineering/SKILL.md): the `make generate-models`
+  `linkml-engineering`: the `make generate-models`
   automation (incl. diagrams), custom generator templates, **per-module dedicated-artefact output** (one
   artefact set per module, not unified), and the **quality gates chosen with the user** (lint-no-mute,
   codegen-freshness, example round-trip). **When the project does not use LinkML**, skip this layer
   entirely — do not scaffold LinkML gates or automation.
 - **CD seam** (deployable product): renders the `ci-cd-delivery` CD templates **only after DevOps
   ratifies §6**; until then a clearly-marked `deploy.yaml` TODO stub + boundary docs (`--deployable`).
-- **Release seam** (per archetype — content owned by [`../meaningfy-release/SKILL.md`](../meaningfy-release/SKILL.md)):
+- **Release seam** (per archetype — content owned by `meaningfy-release`):
   **library** projects a `release.yml` stub (release-please + PyPI Trusted Publishing) + `SECURITY.md`;
   **product** points at the `ci-cd-delivery` GHCR image path + gets `SECURITY.md`; **doc-only** gets
   neither. This skill owns *when/into what repo*; the release content/intent lives in `meaningfy-release`.
@@ -177,8 +177,8 @@ harness, the AGENTS.md-canonical agentic files, the `openspec/` spine (config + 
 thread), Antora skeleton, CI/infra templates, the conditional `model/` home and the CD TODO stub, and
 the setup checklists.
 **Delegates:** layering rationale → `cosmic-python`; system design/ADRs → `architecture`; the domain
-model + generation → [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md); CD/release
-content → [`../ci-cd-delivery/SKILL.md`](../ci-cd-delivery/SKILL.md); EPIC/PLAN content + spec
+model + generation → `conceptual-modelling`; CD/release
+content → `ci-cd-delivery`; EPIC/PLAN content + spec
 stewardship → `epic-planning` and the spine; doc prose → `technical-writing`; git mechanics →
 `meaningfy-git-workflow`. This skill creates the *containers*; those skills fill them.
 **Related:** the delegation targets above, plus `ci-cd-delivery` (the CD side of the CI this skill

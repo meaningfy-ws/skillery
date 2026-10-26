@@ -21,9 +21,9 @@ never restates them.
 
 | Concern | Authority | Here |
 |---------|-----------|------|
-| Commit/branch/PR conventions | [`meaningfy-git-workflow`](../meaningfy-git-workflow/SKILL.md) | cite; add only the release/hotfix branch *lifecycle* |
-| GHCR image build/tag/push, deploy, secrets/Vaultwarden | [`ci-cd-delivery`](../ci-cd-delivery/SKILL.md) | cite for deployable repos; never restate the image flow |
-| CI + scaffolding/projection | [`project-setup`](../project-setup/SKILL.md) | cite; it projects the release workflow + `SECURITY.md` |
+| Commit/branch/PR conventions | `meaningfy-git-workflow` | cite; add only the release/hotfix branch *lifecycle* |
+| GHCR image build/tag/push, deploy, secrets/Vaultwarden | `ci-cd-delivery` | cite for deployable repos; never restate the image flow |
+| CI + scaffolding/projection | `project-setup` | cite; it projects the release workflow + `SECURITY.md` |
 | **Versioning, changelog, release notes, PyPI publish, supply-chain, yank/deprecation** | **this skill** | **own** |
 
 ## 1. Versioning policy
@@ -41,7 +41,7 @@ never restates them.
 ## 2. Release & hotfix branches
 
 GitFlow for public/client repos (a simpler flow internally — that policy lives in
-[`meaningfy-git-workflow`](../meaningfy-git-workflow/SKILL.md)). The branch *mechanics* (rebase/merge,
+`meaningfy-git-workflow`). The branch *mechanics* (rebase/merge,
 force-push etiquette) are owned there; the *release-specific lifecycle* is owned here and detailed in
 [`references/gitflow-release-runbook.md`](references/gitflow-release-runbook.md):
 
@@ -73,7 +73,7 @@ tag vX.Y.Z  →  GitHub Release drafted  →  publish job runs (§5)
 ```
 
 This honours GitFlow + four-eyes and is free-tier-safe (no draft PRs needed — see the GitHub
-constraints in [`meaningfy-git-workflow`](../meaningfy-git-workflow/SKILL.md#free-tier-github-constraints)).
+constraints in `meaningfy-git-workflow`).
 
 ## 5. Publishing
 
@@ -81,7 +81,7 @@ constraints in [`meaningfy-git-workflow`](../meaningfy-git-workflow/SKILL.md#fre
   [`references/pypi-publishing.md`](references/pypi-publishing.md): a `release` GitHub environment,
   `id-token: write`, `pypa/gh-action-pypi-publish`, and a **TestPyPI dry-run gate** before the real
   upload.
-- **Deployable service → GHCR image** — owned by [`ci-cd-delivery`](../ci-cd-delivery/SKILL.md#3-release--image-standard-r5)
+- **Deployable service → GHCR image** — owned by `ci-cd-delivery`
   (semver + git sha → registry). This skill does not restate it; the tag from §4 is its version source.
 
 ## 6. Supply-chain hardening (recommended, not required)
@@ -94,7 +94,7 @@ GitHub Release.
 ## 7. Governance
 
 - **`SECURITY.md` + coordinated disclosure** via GitHub Security Advisories (private report → fix → CVE
-  → publish). Required for public repos; projected by [`project-setup`](../project-setup/SKILL.md).
+  → publish). Required for public repos; projected by `project-setup`.
 - **Yank, don't delete.** A broken release already on PyPI is **yanked** (stays installable for existing
   pins, hidden from new resolves) and superseded by a PATCH. Deleting breaks downstream pinned installs.
 - **Deprecate before you break.** A MAJOR bump that removes public API is preceded by a deprecation
@@ -116,8 +116,8 @@ GitHub Release.
 **Owns:** the release lifecycle — versioning policy, the release/hotfix branch lifecycle, changelog +
 GitHub release notes, the release-please engine, PyPI Trusted Publishing, opt-in supply-chain, and
 release governance (`SECURITY.md`, yank, deprecation).
-**Does NOT own:** commit/branch/PR mechanics ([`meaningfy-git-workflow`](../meaningfy-git-workflow/SKILL.md)),
-the GHCR image + deploy + secrets flow ([`ci-cd-delivery`](../ci-cd-delivery/SKILL.md)), or CI +
-scaffolding/projection ([`project-setup`](../project-setup/SKILL.md)).
-**Related:** [`meaningfy-git-workflow`](../meaningfy-git-workflow/SKILL.md),
-[`ci-cd-delivery`](../ci-cd-delivery/SKILL.md), [`project-setup`](../project-setup/SKILL.md).
+**Does NOT own:** commit/branch/PR mechanics (`meaningfy-git-workflow`),
+the GHCR image + deploy + secrets flow (`ci-cd-delivery`), or CI +
+scaffolding/projection (`project-setup`).
+**Related:** `meaningfy-git-workflow`,
+`ci-cd-delivery`, `project-setup`.

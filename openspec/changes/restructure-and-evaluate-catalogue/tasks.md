@@ -13,11 +13,12 @@
   structure re-check (#74). Evidence in `inputs/evidence/D.md`, `E.md`, `docs.md`.
 - **Reshaped** on 2026-10-27 (`inputs/2026-10-27-reshaping-qa.md`): architecture track added
   (section 3), Haiku is the record model (D-4), D-13 adopted, agent evals run their Gherkin (D-3).
-- **Reshape PR:** #76 (`docs/reshape-restructure-epic` → `develop`); merge it before starting section 3.
-- **Next:** **section 3, the architecture track** (the PLAN passed the clarity gate, 9.1/10). **No evals run until
-  section 3 is done** (owner, 2026-10-27: "we shall not test anything yet, until systematisation is
-  ready"). Batch C (2.4) waits until then; its Haiku re-estimate (about $1) fits the ≈ $3.19 left of
-  the $5 approval, and the owner confirms the switch from Sonnet when it resumes.
+- **Reshape PR:** #76, merged 2026-10-26.
+- **Section 3 done (2026-10-26):** 3.1 PR #77 (`arch/area-terms`); 3.2–3.6 PR #78
+  (`arch/use-cases`, stacked). The owner rendered the class-view SVG and approved 3.5
+  (`inputs/approvals.md`).
+- **Next:** 2.4 (batch C on Haiku), then section 4, within the ≈ $3.19 left of the $5 approval;
+  Haiku only, no Opus.
 - **Not blocking:** the `ANTHROPIC_API_KEY` repository secret; until then every run is local on the
   owner's login, approved per batch.
 
@@ -62,7 +63,7 @@ One PR per task group. Each starts with the check or generator and a failing fix
 
 - [x] 3.1 **Area terms** (D-20): add `operations`, `business`, `legal`, `design` to `area` in
       `facets.yaml`, each with its one-line definition. **Accept:** `make validate` green.
-- [ ] 3.2 **Use-case catalogue** (D-14): the `use_case_catalogue` lint check with negative tests;
+- [x] 3.2 **Use-case catalogue** (D-14): the `use_case_catalogue` lint check with negative tests;
       `use-cases/UC-W1…UC-W21-*.md` seeded from `inputs/2026-10-27-scenarios.md` (S<n> → UC-W<n>),
       each with a success guarantee; `make skill-inventory` renders `docs/use-cases.md` (by area,
       status, change), with
@@ -70,7 +71,7 @@ One PR per task group. Each starts with the check or generator and a failing fix
       use-case files pass the check; in `docs/use-cases.md` each UC-W<n> has the status of S<n> in
       the seed gap map, after the D-14 area mapping; a use case with an unknown `area` fails the
       check.
-- [ ] 3.3 **Foundation skills** (D-15): the `cross_skill_paths` lint error with negative tests;
+- [x] 3.3 **Foundation skills** (D-15): the `cross_skill_paths` lint error with negative tests;
       create the foundation skill `meaningfy-voice` in `meaningfy-core` holding
       `company-voice.md`; repoint `executive-communication` and `explanatory-writing` by name;
       resolve every other cross-skill path the check finds (rule of two, or a name citation); probes
@@ -79,18 +80,18 @@ One PR per task group. Each starts with the check or generator and a failing fix
       **Accept:** `cross_skill_paths` clean in `make validate`; `meaningfy-voice` is in
       `meaningfy-core` and every citing bundle is core or requires it (checked by reading
       `bundles.yaml` in the PR); the resolved paths listed in `inputs/evidence/foundation.md`.
-- [ ] 3.4 **The model** (D-16): `docs/catalogue-architecture.md` with the class view (rev. 2) from
+- [x] 3.4 **The model** (D-16): `docs/catalogue-architecture.md` with the class view (rev. 2) from
       `inputs/2026-10-27-catalogue-model.class.puml` and its rendered SVG, the area↔domain mapping
       with `define-ai-domains` (D-20), and a register row. **Accept:** every class names a file or
       check that exists, or is marked "planned (change …)"; the SVG is re-rendered by hand from the
       committed source in the same commit.
-- [ ] 3.5 **Target structure, roster and roadmap** (D-17, D-19): in
+- [x] 3.5 **Target structure, roster and roadmap** (D-17, D-19): in
       `docs/catalogue-architecture.md`, the target bundles by activity, the agent roster (agent, type,
       use cases, bundle, change) and the roadmap (follow-on changes in waves, including the
       infrastructure changes of D-19); set `change` in every use case. The owner approves.
       **Accept:** approval dated in `inputs/approvals.md`; every use case with `status` `partial` or
       `missing` has a `change` that appears in the roadmap.
-- [ ] 3.6 **Three doors** (D-18): the README documentation section becomes Install / Use / Develop,
+- [x] 3.6 **Three doors** (D-18): the README documentation section becomes Install / Use / Develop,
       linking `docs/use-cases.md` and `docs/catalogue-architecture.md`. **Accept:** each door has at
       least one link and every link resolves (`make validate`); nothing else in the README changes.
 
@@ -160,7 +161,7 @@ D-12.
 - [x] 0.1 · [x] 0.2 · [x] 0.3 · [x] 0.4
 - [x] 1.1 · [x] 1.2
 - [x] 2.1 · [x] 2.2 · [x] 2.3 · [ ] 2.4 · [x] 2.5 · [ ] 2.6
-- [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 3.6
+- [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.5 · [x] 3.6
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4
 - [ ] 5.0 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 5.4
 - [ ] 6.1 · [ ] 6.2 · [ ] 6.3

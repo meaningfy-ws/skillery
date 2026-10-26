@@ -1,7 +1,7 @@
 # LinkML authoring mechanics
 
 How LinkML's own constructs realise the shared modelling conventions
-([`../../modelling-conventions/SKILL.md`](../../modelling-conventions/SKILL.md)). This file owns the
+(`modelling-conventions`). This file owns the
 *mechanism*; the *principle* (reusable properties, URI-everywhere, conceptual definitions) lives in
 `modelling-conventions` and is not restated here. The SEMIC styleguide and the **model2owl conventions
 and checkers** are the cited authority for the URI/naming/datatype slice; the LinkML metamodel is the
@@ -119,7 +119,7 @@ correct.
 
 - **`description` on every class, slot, and enum** — it *is* the definition. Definitions are
   **conceptual, not technical**: describe what the concept *means*, even when the concept is technical
-  (see [`../../modelling-conventions/references/naming-and-identity.md`](../../modelling-conventions/references/naming-and-identity.md)).
+  (see `modelling-conventions`: naming and identity).
 - Add **`title`** (a human-readable label) and **`aliases`** (synonyms) where they aid understanding —
   they feed docs and disambiguation.
 - Add **`examples:`** to slots with non-obvious values, as much as possible — they feed docs and are

@@ -7,6 +7,15 @@ owner's Claude login in the isolated trigger environment, or `ANTHROPIC_API_KEY`
 |---|---|---|---|---|
 | 2026-10-27 | calibration + C | up to $5 | 2 calibration queries; `executive-communication` Sonnet before/after on its 20-query trigger set (120 runs), Haiku drafts, one rerun of the seed case `quotation-bind` | if calibration puts C above $5, ask again before running it (task 0.3) |
 
+## Section 3 approvals (2026-10-26)
+
+- **Task 3.5:** the owner approves the target structure, the agent roster and the roadmap in
+  `docs/catalogue-architecture.md` as proposed ("yes go ahead with your proposals").
+- **Foundation placement:** the owner accepts that foundation skills install as part of
+  `meaningfy-core` even when a given skill uses only some of them.
+- **Evals resume on Haiku only** ("stick to haiku for now, no opus"), within $5 in total for the
+  approval above, so ≈ $3.19 remains. This confirms the switch for batch C (task 2.4).
+
 ## Calibration (task 0.3)
 
 | Model alias | Model id reported | `total_cost_usd` per query | Measured on |

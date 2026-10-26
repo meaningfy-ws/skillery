@@ -2,7 +2,7 @@
 
 The fillable template for the **SoW**: the contractual companion to the [proposal](proposal-template.md).
 Precise and enumerated, no marketing prose. Its **out-of-scope list is the same list** as the
-exclusions in the [`estimation`](../../estimation/SKILL.md) worksheet — keep them in lock-step (see
+exclusions in the `estimation` worksheet — keep them in lock-step (see
 the [scope-boundary checklist](scope-boundary-checklist.md)).
 
 ---

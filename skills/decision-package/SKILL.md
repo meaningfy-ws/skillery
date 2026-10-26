@@ -29,14 +29,14 @@ Package is the consulting-tier **root of the golden thread**.
 
 **Provenance.** The coach (`semantic-consulting-coach`) shapes *whether and how* to run the Deep
 tier and holds the **free → paid boundary**; the design intent of the Decision Phase lives in its
-[`engagement-model.md`](../semantic-consulting-coach/references/engagement-model.md). This skill picks
+`semantic-consulting-coach` (engagement model). This skill picks
 up *after* that line is crossed and the client has bought the Deep tier: it **builds the
 deliverable**. Keep the boundary crisp — **produce** here, **coach** there.
 
 ## The deliverable: five parts (R1)
 
 The Decision Package is an **executive artefact** framed around decision-readiness. Frame and write
-it with the [`executive-communication`](../executive-communication/SKILL.md) skill
+it with the `executive-communication` skill
 (Governing Thought → SCQA → Minto pyramid, answer-first); this skill supplies the *what*, that skill
 supplies the *how it reads*. Its five required parts:
 
@@ -82,7 +82,7 @@ Detail, including gap-analysis and buy/build/defer guidance, is in
 
 A **first-cut conceptual model** of the domain often surfaces during discovery (a sketch of the key
 entities and relationships, to ground scope and options). When it does, produce that fragment with
-the [`conceptual-modelling`](../conceptual-modelling/SKILL.md) skill — but keep it a
+the `conceptual-modelling` skill — but keep it a
 *sketch in service of the decision*. Do **not** pull modelling depth (LinkML authoring, generation,
 ontology engineering) into the Decision Package; the real model is built later, in the build tier.
 
@@ -139,19 +139,15 @@ items recast for decision-readiness.
 
 **This skill DELEGATES:**
 - Coaching the engagement design and **holding the free → paid boundary** →
-  [`../semantic-consulting-coach/SKILL.md`](../semantic-consulting-coach/SKILL.md). The coach decides
+  `semantic-consulting-coach`. The coach decides
   *whether/how* to run the Deep tier; this skill builds its deliverable.
 - Executive framing and voice (Governing Thought, SCQA, Minto) →
-  [`../executive-communication/SKILL.md`](../executive-communication/SKILL.md).
-- The **first-cut conceptual model** fragment →
-  [`../conceptual-modelling/SKILL.md`](../conceptual-modelling/SKILL.md)
-  (sketch only; no modelling depth here).
+  `executive-communication`.
 - Proposal / Statement of Work for the engagement → `proposal-writing` (EPIC-08, future).
-- System/solution architecture that descends from the package →
-  [`../architecture/SKILL.md`](../architecture/SKILL.md).
 
-The first-cut model and the downstream architecture are hand-offs, not peers: see also
-`conceptual-modelling` for the model sketch and `architecture` for the system design that follows.
+The first-cut conceptual model fragment (sketch only; no modelling depth here) and the system/solution
+architecture that descends from the package are hand-offs, not peers: see also `conceptual-modelling`
+for the model sketch and `architecture` for the system design that follows.
 
 **Related:** `semantic-consulting-coach`, `executive-communication`, `proposal-writing` (the SoW that
 sells the Decision Phase), `estimation` (effort ranges for the sequenced options),

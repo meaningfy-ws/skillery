@@ -5,7 +5,7 @@ diffable structure a captured profile uses, and the contract a future style-capt
 
 Four axes are realised by the craft moves in [`craft-moves.md`](craft-moves.md). The other four are
 **owned by the house voice** — link
-[`company-voice.md`](../../executive-communication/references/company-voice.md), do not restate it.
+`meaningfy-voice`, do not restate it.
 
 | # | Axis | Owned by | This skill's contribution |
 |---|------|----------|---------------------------|

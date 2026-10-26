@@ -44,3 +44,19 @@ def test_facet_gaps_names_missing_and_unknown_values():
         "a: missing metadata.stage",
         "ag: metadata.stage 'nope' is not in facets.yaml",
     ]
+
+
+def test_use_cases_render_groups_by_area_in_facet_order():
+    facets = {"area": {"coding": "c", "personal": "p", "legal": "l"}}
+    ucs = [
+        {"id": "UC-W2", "title": "B", "area": "coding", "status": "partial", "file": "UC-W2-b.md",
+         "primary_actor": "dev", "served_by": {"skills": ["x"]}, "change": "add-x"},
+        {"id": "UC-W1", "title": "A", "area": "personal", "status": "missing", "file": "UC-W1-a.md",
+         "primary_actor": "owner", "served_by": {}},
+    ]
+    text = skill_inventory.render_use_cases(ucs, facets)
+    assert text.index("## coding") < text.index("## personal")
+    assert "## legal" not in text  # an area with no use case gets no table
+    assert "| [UC-W2](../use-cases/UC-W2-b.md) B | dev | `partial` | `x` | `add-x` |" in text
+    assert "| [UC-W1](../use-cases/UC-W1-a.md) A | owner | `missing` | — | — |" in text
+    assert "| `coding` | 0 | 1 | 0 |" in text

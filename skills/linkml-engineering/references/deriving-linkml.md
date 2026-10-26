@@ -50,6 +50,6 @@ into one source of truth.
 ## After derivation
 
 Whatever the source, the draft is not done until it clears the conventions
-([`../../modelling-conventions/references/editor-guardrails.md`](../../modelling-conventions/references/editor-guardrails.md))
+(`modelling-conventions`: editor guardrails)
 and the LinkML mechanics in [`authoring-mechanics.md`](authoring-mechanics.md): reusable slots, implicit
 URIs everywhere, enums for closed sets, constraints in the schema, a description on every class and slot.

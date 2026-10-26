@@ -112,3 +112,10 @@ probes:
   - probe: "draw the C4 container view and record the decision in an ADR"
     expect: architecture
     near_miss_of: modelling-conventions
+  # meaningfy-voice: the foundation skill holding the company voice (restructure-and-evaluate D-15).
+  - probe: "is this paragraph on-voice for Meaningfy, British English and no em dash"
+    expect: meaningfy-voice
+    near_miss_of: explanatory-writing
+  - probe: "restructure this board memo answer-first with a governing thought"
+    expect: executive-communication
+    near_miss_of: meaningfy-voice

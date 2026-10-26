@@ -3,7 +3,7 @@
 The Meaningfy way to publish a Python library: **no API tokens anywhere.** PyPI's Trusted Publishing
 exchanges a short-lived OIDC identity token (minted by GitHub Actions, valid ~15 min) for a one-shot
 upload token. This removes the long-lived secret that token-based publishing leaves lying around — and
-keeps the [secrets boundary in `ci-cd-delivery`](../../ci-cd-delivery/SKILL.md#the-secrets-model)
+keeps the secrets boundary in `ci-cd-delivery`
 intact (nothing to store in Vaultwarden or GitHub Secrets for publishing).
 
 References: [PyPI Trusted Publishers](https://docs.pypi.org/trusted-publishers/) ·
