@@ -7,37 +7,14 @@
 > `develop` (D-11). No model runs (DEC-11). GitNexus `impact` before editing a symbol in `tools/`;
 > `detect_changes` before each commit.
 
-## Current state (2026-10-26): how to continue
+## Current state (2026-10-27): done, archived
 
-- **Shaped and gated:** EPIC (`proposal.md`), PLAN revision 3 at 9.2/10 (0.2), the `purpose` table
-  approved (2.1, `inputs/approvals.md`). Spike: `inputs/2026-10-26-spike-root-source.md`.
-- **Merged:** #77 → #78 → #79 → #80. **0.1 done:** `restructure-and-evaluate-catalogue` archived
-  (`archive/2026-10-26-restructure-and-evaluate-catalogue`), `catalogue-architecture` is a living spec.
-- **Group 1 done** (`arch/use-case-coverage`): `use_case_coverage`, UC-W22–W24.
-- **Group 2 done** (`arch/purpose-activities`): the ten activity values, 36 items re-tagged.
-- **Group 3 done** (`arch/sales-bundle`): `meaningfy-sales`, three hand-offs now see-also, move announced.
-- **Group 4 done** (`arch/agents-architecture-sales`): three agents with Gherkin traced to the
-  deepened UC-W8, W19, W20; 4.3 applied (W19, W20 `covered`; W8 `partial`). `npm run test:opencode-installer` deferred by the owner to after group 7.
-- **Group 5 done** (`arch/future-features`): `docs/future-features.md`, `use_case_changes_registered`,
-  the voice channel placeholders.
-- **Group 6 built** (`arch/dependency-register`): register, check, renderer; the six changed name cells
-  approved (6.2).
-- **7.2 done** (#88); **D-8 revised** (owner, 2026-10-26, `inputs/2026-10-26-release-and-folders-qa.md`):
-  `dist` is published on release tags only, with a `<tag>-dist` tag. The install check from `#dist`
-  moves to the first release; 7.3 (#89) merges then.
-- **7.3 written** (#89): `bundles/` ignored and untracked, CI link check, `#dist` install lines,
-  migration note, the `dual-cli-generation` delta.
-- **Group 9 done** (`arch/repo-folders`, D-13): one development home in `docs/development/`, `spine/`,
-  `spec/`, `hooks/`, `prompts/`, `evals/` gone, company practice in `docs/practice/`, the linkml
-  generators in their skill, no skill link outside its folder, `top_level_folders`.
-- **8 done** (#90, after group 9): CHANGELOG complete for every PR; the gates green.
-- **Group 10 done** (`arch/release-rule`, D-14): only released items are installable.
-- **Group 11 done** (`arch/use-cases-deepened`, D-15): the use-case template; all 24 rewritten; the
-  confidence and first open question per use case in `docs/use-cases.md` ("What needs the owner").
-- **Next:** the owner answers the open points; the owner's install check from `#dist` at the first release; then merge #89, #91, #90 in
-  that order and archive the change with `spec-stewardship`. 7.1 stays optional.
-- **Waits for the owner:** 7.1
-  (optional; pushes a test branch). No model runs in this change.
+- **All task groups merged** into `develop` (#81–#94); the EPIC was re-shaped four times by the owner
+  (proposal "Re-shape log", DEC-12–DEC-15; design D-13–D-16).
+- **Not done:** 7.1 (optional route-A re-test, never approved). **Owed at the first release:** the
+  install check from `meaningfy-ws/skillery#dist` (7.2's acceptance, postponed by the owner).
+- **Open for the owner:** the Open Points of every use case (`docs/use-cases.md`, "What needs the
+  owner"). Archived on 2026-10-27 with `spec-stewardship`.
 
 ## 0. Preconditions
 

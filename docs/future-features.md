@@ -30,7 +30,7 @@ empty bundle is never created to reserve a place.
 ## Open questions
 
 Parked decisions from the v2 work, kept verbatim in
-[`hard-questions-v2.md`](../openspec/changes/rebundle-by-activity/inputs/hard-questions-v2.md); each
+[`hard-questions-v2.md`](../openspec/changes/archive/2026-10-26-rebundle-by-activity/inputs/hard-questions-v2.md); each
 becomes a row above when it is answered: HQ-02.2 (EPIC and change, one artifact or two), HQ-02.3 (a
 generated orientation index), HQ-02.4 (the `core` or expanded `/opsx` profile), HQ-02.5 (fork
 housekeeping), HQ-04.1 (a trigger-precision harness), HQ-08.1 (the commercial layer), HQ-00.1 (the

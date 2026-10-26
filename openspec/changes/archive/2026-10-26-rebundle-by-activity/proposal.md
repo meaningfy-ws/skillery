@@ -102,6 +102,34 @@ would measure skills that are about to move.
   from a recorded failure case or the owner's examples (failure-first).
 - **DEC-11: No evaluation here.** No model runs; `evaluate-catalogue` measures the result afterwards.
 
+- **DEC-12: `dist` is published on release only** *(re-shape 2026-10-26)*. Releases tag the build
+  commit `<tag>-dist`; `dist` stays a branch so installed marketplaces update; its commits never
+  enter `develop` (design D-8 revised).
+- **DEC-13: The repository has a minimal, checked top level** *(re-shape 2026-10-26)*: `skills/`,
+  `agents/`, `use-cases/`, `openspec/`, `docs/`, `tools/`, `tests/`, `.github/`, `.claude-plugin/`.
+  The development method has one home, `docs/development/`; company practice lives in
+  `docs/practice/`; an installed skill links nothing outside its own folder, so whatever a skill
+  needs at run time ships inside it (design D-13).
+- **DEC-14: Only released items are installable** *(re-shape 2026-10-27, a hard rule)*. Being listed
+  in `bundles.yaml` is the one release marker; an unlisted skill or agent is work in progress, never
+  published, and nothing released may depend on it; every install route reads `dist` (design D-14).
+- **DEC-15: Use cases are written for an agent catalogue** *(re-shape 2026-10-27)*: the Cockburn White
+  core plus slices, artefacts, evidence, a feedback loop and open points with a confidence rating;
+  every use case is rewritten to it (design D-15).
+
+## Re-shape log
+
+| Date | Owner's words (abridged) | Effect |
+|---|---|---|
+| 2026-10-26 | "eliminate the reference to S<n> completly as the knowledge will be already in the usecase itself"; deepen UC-W8, W19, W20 first | the three use cases deepened before their agents' Gherkin; seed notes removed (design D-16) |
+| 2026-10-26 | "can we do dual clis only on release? … not commits that ever get into develop" | DEC-12 |
+| 2026-10-26 | "there is also a new task to rethink around the folder structure … lets address it now as well" | DEC-13, task group 9 |
+| 2026-10-27 | "only the features … that have been released are visible and installable … some sort of marker for life cycle management" | DEC-14, task group 10 |
+| 2026-10-27 | "we might want to be a bit more explicit? e.g. on feedback loops? on expected artefacts/evidence?"; "update all the UCs" | DEC-15, task group 11 |
+
+The appetite grew from the six weeks shaped to cover these; the no-gos still hold, and DEC-11 (no
+model runs) was kept throughout.
+
 ## Rabbit-holes
 
 - **Requirement cycles.** `decision-package` (consulting) hands the Statement of Work to
@@ -138,7 +166,14 @@ would measure skills that are about to move.
 - A structured external dependency register and the rendering of the two compatibility docs from it.
 - Channel profile placeholders under `skills/meaningfy-voice/references/`.
 - **BREAKING (contributors):** `bundles/` is no longer committed; `make bundles` generates it locally.
-  The marketplace entries change shape (route A) or point at a distribution branch (route B).
+  Route B was taken: installs read the `dist` branch, published on each release tag.
+- **BREAKING (installers):** every install reads `meaningfy-ws/skillery#dist`, the Claude marketplace,
+  the opencode installer and `npx skills add`; only released skills and agents are installable.
+- **BREAKING (contributors):** the folder restructure: `spec/`, `spine/`, `hooks/`, `prompts/`,
+  `evals/` are gone (their content moved by `git mv`); company practice is under `docs/practice/`;
+  the Neo4j generators and the `meaningfy` schema ship inside their skills.
+- Every use case rewritten to `docs/development/use-case-template.md`, with a confidence table in
+  `docs/use-cases.md`.
 
 ## Capabilities
 
@@ -150,7 +185,12 @@ would measure skills that are about to move.
 - `catalogue-architecture` (from `restructure-and-evaluate-catalogue`): the coverage rule and the
   feature register.
 - `catalogue-model`: the `purpose` vocabulary.
-- `dual-cli-distribution`: Claude bundles reach their skills without a committed symlink tree.
+- `dual-cli-distribution`: Claude bundles reach their skills without a committed symlink tree; only
+  released items are installable.
+- `dual-cli-generation`: `bundles/` is generated and published on `dist`, not committed.
+- `catalogue-governance`: one development home; skills link nothing outside their folder; the allowed
+  top-level folders.
+- `linkml-engineering`: the Neo4j generators ship with the skill.
 
 ## Impact
 
@@ -158,4 +198,7 @@ would measure skills that are about to move.
 `tests/features/agents/`, `use-cases/`, `tools/repo_lint/` (the coverage check),
 `tools/skill_inventory.py` (if the register is rendered), `docs/catalogue-architecture.md`,
 `docs/environment/dual-cli/`, `README.md`, `CHANGELOG.md`, and the rendered `marketplace.json`,
-`bundles/` and `tools/opencode-catalogue.json`.
+`bundles/` and `tools/opencode-catalogue.json`; after the re-shapes also `.github/workflows/`,
+`tools/bundle_gen/`, `skills/project-setup/`, `skills/linkml-engineering/scripts/`,
+`skills/semantic-consulting-coach/references/`, `docs/development/`, `docs/practice/`, `hooks.yaml`,
+`tests/evals/` and every file in `use-cases/`.

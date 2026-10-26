@@ -160,16 +160,40 @@ layout, and skip them otherwise.
 - **WHEN** the project does not use LinkML
 - **THEN** it skips the LinkML scaffolding entirely
 
-### Requirement: Tested Neo4j-targeting custom generators, referenced not vendored
+### Requirement: Dual-CLI parity and deferred scope
+
+The skill SHALL ship to both Claude Code and opencode from its single source in `skills/` (installed
+from there on both CLIs, with no committed per-CLI copy), and its body SHALL stay CLI-agnostic. This
+skill SHALL NOT introduce a model2owl configuration/transformation skill, an ontology/semantic-modelling
+skill, or a greenfield LinkML workflow. Custom generator code IS in scope for the
+skill — tested, projectable scripts shipped in its `scripts/linkml_neo4j/` (see the generators
+requirement above); the prior blanket deferral of "new tooling or CLI" applied to the skill's
+original, documentation-only scope and does not extend to this narrower, tested-and-projected class of
+scripts.
+
+#### Scenario: The catalogue is validated
+
+- **WHEN** `make validate` runs over the change
+- **THEN** `linkml-engineering` resolves under `meaningfy-architecture` in `bundles.yaml`, the bundle
+  renderings are in sync, the version-sync gate passes, and no deferred artefact (model2owl skill,
+  ontology skill, new tooling) is present
+
+#### Scenario: A new custom generator is proposed
+
+- **WHEN** a change proposes adding a custom generator as tested code with a `project-setup`
+  projection path
+- **THEN** it is in scope for `linkml-engineering`, distinguishing it from the general "new tooling or
+  CLI" deferral, and its code lives in the skill's `scripts/`
+
+### Requirement: Tested Neo4j-targeting custom generators, shipped with the skill
 
 The catalogue SHALL provide two custom LinkML generators — a Neo4j Cypher-constraint generator and
-a neomodel OGM generator — as tested repo tooling under `tools/linkml_neo4j/`, each built on
-LinkML's `Generator` base class per the existing custom-generator mechanism. Per the skill-repo
-governance rule that a Skill is reusable knowledge, not a maintained/tested codebase, the
-generators SHALL NOT live inside `skills/linkml-engineering/`; the `linkml-engineering` skill SHALL
-document and cite them (in `references/generation-and-templates.md`) without owning them — the same
-"referenced, not vendored" pattern already used for the OpenSpec schema pin at
-`openspec/schemas/meaningfy/`. Both generators SHALL resolve relationship targets correctly when
+a neomodel OGM generator — as tested code shipped with the `linkml-engineering` skill under
+`skills/linkml-engineering/scripts/linkml_neo4j/`, each built on LinkML's `Generator` base class per
+the existing custom-generator mechanism. They SHALL live in the skill's `scripts/` (owner,
+2026-10-26, rebundle-by-activity D-13) because an installed skill can reach only its own folder;
+skillery's own tests cover them, and the skill documents them in
+`references/generation-and-templates.md`. Both generators SHALL resolve relationship targets correctly when
 the LinkML range is an abstract class, by mirroring the schema's `is_a` hierarchy as real
 inheritance in generated code rather than producing a reference to an undefined class. The Cypher
 generator SHALL emit only constraint and index forms verified to work on Neo4j Community Edition,
@@ -178,7 +202,8 @@ an opt-in LinkML slot annotation that lowers to a generated index statement. Nei
 SHALL emit application-layer validation (triggers, procedures, or any construct standing in for
 something Neo4j cannot natively enforce) as a substitute for what the neomodel generator's own
 Python-layer validation already covers. `project-setup` SHALL project both generators into a
-consuming repository as a pinned, refreshable copy (sourced from `tools/linkml_neo4j/`),
+consuming repository as a pinned, refreshable copy (sourced from the skill's `scripts/linkml_neo4j/`,
+whose folder the caller passes when the skills are installed),
 conditional on the project using LinkML with a Neo4j target, following the same projection
 discipline already used for the `meaningfy` OpenSpec schema.
 
@@ -204,7 +229,7 @@ discipline already used for the `meaningfy` OpenSpec schema.
 #### Scenario: Projecting the generators into a consuming project
 
 - **WHEN** `project-setup` scaffolds or modernises a project that uses LinkML with a Neo4j target
-- **THEN** it projects a pinned copy of both generators from `tools/linkml_neo4j/`, refreshable
+- **THEN** it projects a pinned copy of both generators from the skill's `scripts/linkml_neo4j/`, refreshable
   later by re-running the skill and reviewing the diff, the same discipline already used for the
   `meaningfy` OpenSpec schema
 
@@ -218,32 +243,6 @@ discipline already used for the `meaningfy` OpenSpec schema.
 #### Scenario: A generator's code is proposed for placement inside the skill
 
 - **WHEN** a change proposes adding or modifying generator code under `skills/linkml-engineering/`
-- **THEN** it is rejected on skill-repo-governance grounds and redirected to `tools/linkml_neo4j/`,
-  with `linkml-engineering` updated to cite it, not host it
-
-### Requirement: Dual-CLI parity and deferred scope
-
-The skill SHALL ship to both Claude Code and opencode from its single source in `skills/` (installed
-from there on both CLIs, with no committed per-CLI copy), and its body SHALL stay CLI-agnostic. This
-skill SHALL NOT introduce a model2owl configuration/transformation skill, an ontology/semantic-modelling
-skill, or a greenfield LinkML workflow. Custom generator tooling IS in scope for the skill to
-*document and cite* — as tested, projectable repo tooling at `tools/linkml_neo4j/` (see the generators
-requirement above) — but SHALL NOT be vendored as a skill asset; the prior blanket deferral of "new
-tooling or CLI" applied to the skill's original, documentation-only scope and does not extend to
-referencing this narrower, tested-and-projected class of repo tooling.
-
-#### Scenario: The catalogue is validated
-
-- **WHEN** `make validate` runs over the change
-- **THEN** `linkml-engineering` resolves under `meaningfy-architecture` in `bundles.yaml`, the bundle
-  renderings are in sync, the version-sync gate passes, and no deferred artefact (model2owl skill,
-  ontology skill, new tooling) is present
-
-#### Scenario: A new custom generator is proposed
-
-- **WHEN** a change proposes adding a custom generator as tested repo tooling with a
-  `project-setup` projection path
-- **THEN** it is in scope for `linkml-engineering` to document and cite, distinguishing it from the
-  general "new tooling or CLI" deferral, provided the generator's code itself lives outside the
-  skill directory
+- **THEN** it is accepted when the code lives in `scripts/linkml_neo4j/` and passes the generators'
+  tests in skillery's `tests/`
 

@@ -60,11 +60,11 @@ discipline already used for the `meaningfy` OpenSpec schema.
 - **THEN** neither generator emits a substitute enforcement mechanism for it; the neomodel
   generator's existing Python-layer validation remains the only enforcement for that construct
 
-#### Scenario: A generator's code changes
+#### Scenario: A generator's code is proposed for placement inside the skill
 
-- **WHEN** a change adds or modifies generator code
-- **THEN** the code lives under `skills/linkml-engineering/scripts/linkml_neo4j/` and the change
-  passes the generators' tests in skillery's `tests/`
+- **WHEN** a change proposes adding or modifying generator code under `skills/linkml-engineering/`
+- **THEN** it is accepted when the code lives in `scripts/linkml_neo4j/` and passes the generators'
+  tests in skillery's `tests/`
 
 ### Requirement: Dual-CLI parity and deferred scope
 
