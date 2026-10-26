@@ -77,6 +77,17 @@ widened the bet ([`inputs/2026-10-26-plan-decisions.md`](inputs/2026-10-26-plan-
 - **DEC-10: Vault permissions put `mv` and `rm` on ask** (owner's choice). Deletion still goes to
   `.trash/` by default; `rm` is for an explicit request for permanent deletion.
 
+### Owner directives of 2026-10-26, after the first implementation pass (logged event)
+
+- **DEC-11: `AGENTS.md` is always canonical; `CLAUDE.md` references it, never a symlink** — in this
+  repo and in every repo `project-setup` scaffolds. `project-setup` (skill, references, templates,
+  `scaffold.sh`), `prompts/` and the setup docs are flipped from the earlier CLAUDE-canonical DEC-4.
+- **DEC-12: No "canon" labels.** "Human canon" and similar wording is replaced by plain words
+  ("written for people", "defines", "the full standard").
+- **DEC-13: `coding-prompt.md` stays the broad, full standard.** The docs pass restores it; only its
+  header changes, to describe the files that actually exist (`prompts/global-prompt.md` is a pointer,
+  so nothing needs syncing).
+
 ## Rabbit-holes
 
 - **Do not refactor a skill while fixing it.** A fix changes the line that is wrong; restructuring a

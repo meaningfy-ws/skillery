@@ -44,8 +44,13 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 - The vault skills resolve projects and move notes through one rule in `vault-conventions`.
 - The engineering-standards and dual-CLI setup docs are shorter: they link to the skills instead of
-  restating them. If you copied `docs/engineering-standards/coding-prompt.md` into your global
-  `CLAUDE.md`, sync your copy.
+  restating them.
+- **`project-setup`:** a scaffolded repo now gets `AGENTS.md` as the canonical agent instructions and a
+  thin `CLAUDE.md` that imports it, as two regular files. There is no symlink any more. If your repo
+  has `AGENTS.md -> CLAUDE.md`, replace the symlink: move the content into `AGENTS.md` and make
+  `CLAUDE.md` the pointer.
+- `docs/engineering-standards/coding-prompt.md` keeps its full text; its header now explains that
+  `prompts/global-prompt.md` is only a pointer, so there is nothing to keep in sync.
 - A vault `skill-change` note now has the fields of the GitHub defect form, so it can be filed as an
   issue by copying.
 

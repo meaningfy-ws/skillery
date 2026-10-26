@@ -16,6 +16,14 @@ summarised, not pasted, because they contain no more than the excerpts below.
 Also observed: `--allowedTools "Bash(mv:*)"` on the command line does **not** override the vault's
 `ask` rule in a headless run.
 
+## 9.2 follow-up: the interactive prompt (owner directive, point 2)
+
+An interactive Claude Code session (v2.1.310) was driven through a pseudo-terminal in the scratch
+vault, with the shipped settings (`mv` and `rm` on ask), in the CLI's **default auto mode**. The
+owner asked to delete a named note. Claude Code showed: *"Ask rule Bash(mv:*) overrides auto mode for
+this command. Do you want to proceed? 1. Yes 2. No"*. Choosing Yes moved the note into `.trash/`.
+So the vault's ask rule holds even in auto mode, and the approval path works.
+
 ## 9.2: owner-requested moves (scratch vault)
 
 The owner's approval of the `mv` prompt was simulated by allowing `mv` in the scratch vault's

@@ -59,6 +59,10 @@ same facts), **keep** (no change). All candidate rows are closed (applied) unles
 
 ### `docs/engineering-standards/coding-prompt.md` (task 7.2)
 
+> **Reversed by the owner on 2026-10-26 (DEC-13):** the full previous text is restored (524 lines);
+> only the header changed. The candidate-set total after the pass is therefore 1529 + 327 = 1856
+> lines, still below the 2218 before.
+
 | Fact / section | Owner | Duplicate location | Action | Claimed by |
 |---|---|---|---|---|
 | Header, authority chain, catalogue pointer | this file | — | keep | none |
