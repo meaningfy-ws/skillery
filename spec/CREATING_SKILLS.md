@@ -19,9 +19,8 @@ Where a Meaningfy rule below differs from a source, the Meaningfy rule wins in t
 
 ## Before you write
 
-1. **Pick the change path.** A new skill, a rename, a boundary move or a retirement is an EPIC in
-   `openspec/changes/`. A wording, link, probe or description tweak that moves no boundary is a
-   direct PR. When unsure, EPIC.
+1. **Pick the change path**, EPIC or direct PR, by the rule in
+   [§3 of the method](../docs/development-method.md#3-lifecycle--skills).
 2. **Decide it is a skill**, not an agent, doc or binding, and that nothing in the catalogue or among
    the declared external skills already owns the job: check
    [`skill-repo-governance.md`](skill-repo-governance.md),
@@ -91,7 +90,7 @@ The rules and their gates are in
 Keep scripts small, deterministic and with their dependencies stated. Content taken from outside
 Meaningfy is declared as a dependency and linked, not copied; a vendored skill carries a provenance
 note and an entry in [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md)
-([`skill-repo-governance.md`](skill-repo-governance.md)). A skill under another licence carries its
+([principle 4 of the method](../docs/development-method.md#2-principles)). A skill under another licence carries its
 own `LICENSE.txt`.
 
 ## Prove it

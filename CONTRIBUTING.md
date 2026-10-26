@@ -8,8 +8,8 @@ Thank you for contributing. This page is the entry point; the detail lives in th
    **Defect** for a skill or agent that misbehaved, fired wrongly or failed to install; **Request**
    for a new skill or agent. The loop they feed is
    [§7 of the development method](docs/development-method.md#7-feedback-and-improvement-loop).
-2. **Choose the path.** A new skill or agent, a rename, a boundary move or a retirement is an EPIC in
-   `openspec/changes/`; a wording, link, probe or description tweak is a direct PR. When unsure, EPIC.
+2. **Choose the path**, EPIC or direct PR, by the change-path rule in
+   [§3 of the development method](docs/development-method.md#3-lifecycle--skills).
 3. **Branch from `develop`** (fork first if you are external) and follow the authoring guide,
    [`spec/CREATING_SKILLS.md`](spec/CREATING_SKILLS.md). Agents follow
    [`spec/agent-template.md`](spec/agent-template.md).

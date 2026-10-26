@@ -12,7 +12,7 @@ Every artifact is exactly one of these, and that decides its home:
 | **Skill** | Agents | On demand | `skills/` | Reusable knowledge; single source of *authority* per fact |
 | **Agent** | Harness | Isolated context | `agents/` | Thin wrapper — see [`agent-template.md`](agent-template.md) |
 | **Doc** | Humans | Never auto-loaded | `docs/` | Written for people; narrates & points, never restates skill rules |
-| **Binding** | Harness (every session) | Always | `prompts/` | Mandates & routes to skills; never carries the standard |
+| **Binding** | Harness (every session) | Always | `prompts/` + root `AGENTS.md`, `CLAUDE.md` | Mandates & routes to skills; never carries the standard |
 
 Authoring governance (`spec/`, incl. `spec/skill-template.md`) and distribution
 (`bundles.yaml`, rendered to `.claude-plugin/`, `bundles/` and
@@ -24,8 +24,8 @@ spec **spine** (`spine/` + `openspec/`) is projected into project repos by the
 
 1. **Knowledge → a skill.** If two skills could own a fact, the more specific one owns it; the
    other points by name. External skills (superpowers, stream-coding, …) are **referenced, not
-   vendored**; an adopted copy carries a provenance note (source, commit, licence, date) and is
-   reviewed before upstream changes are pulled.
+   vendored**; an adopted copy carries a provenance note and a review, as set out in
+   [principle 4 of the development method](../docs/development-method.md#2-principles).
 2. **An agent carries no knowledge.** Keep an agent only when it is a named worker others dispatch,
    needs a declared runtime type, or needs a model pin or a tool denial that must hold on both CLIs
    (skill-level `model`, `allowed-tools`, `context: fork` are Claude-only; a tool restriction holds on
@@ -43,11 +43,12 @@ The agent authoring standard is [`agent-template.md`](agent-template.md), checke
 
 ## Validation as guardrail
 
-A repo this method produces validates itself (see `tools/repo_lint`): `bundles.yaml`↔dirs
-consistency (skills and agents), strict-YAML frontmatter, frontmatter present + `name`==dir, bundle composition, no broken navigational
-links, skill length, no orphan references to dropped artifacts, rendered bundle files in sync with
-`bundles.yaml` (`bundle_gates`), agents conforming to [`agent-template.md`](agent-template.md)
-(`agent_conformance`), README inventory, template mirroring. Run it in CI. The validator is the reusable guardrail — adopt it alongside this spec.
+A repo this method produces validates itself (see `tools/repo_lint`). The checks are the
+`ALL_CHECKS` list in `tools/repo_lint/lint.py`: among them `bundles.yaml`↔dirs consistency,
+strict-YAML frontmatter with `name`==dir, declared facets, no broken navigational links, skill
+size, rendered bundle files in sync with `bundles.yaml` (`bundle_gates`), agents conforming to
+[`agent-template.md`](agent-template.md) (`agent_conformance`) and a complete documentation
+register (`doc_register_complete`). Run it in CI. The validator is the reusable guardrail — adopt it alongside this spec.
 
 ## Beyond verification
 

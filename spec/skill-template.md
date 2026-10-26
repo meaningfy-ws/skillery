@@ -3,7 +3,12 @@ name: skill-name
 description: Use this skill when <the situation or request that should fire it, with the phrases a user would say>; it <what the skill does and produces>. Not for <the closest neighbour's job> (only when a near-miss probe needs it).
 license: Apache 2.0
 metadata:
-  category: <category>
+  purpose: <purpose>
+  area: <area>
+  subject: <subject>
+  posture: <posture>
+  stage: <stage>
+  maturity: <maturity>
 ---
 
 # Skill Title
