@@ -47,7 +47,7 @@ archetype the basics hold: "automate almost everything" + TDD.** The archetype d
 - The old `service`/`pipeline`/`cli` answers all **map to `product`** (they differ only in the
   entrypoint/framework, asked in Group 4) — pick `product` and resolve the flavour there.
 - `clarity-gate` is in **no** profile as a CI step — it is a human/agent semantic gate (the
-  automation boundary, `../../../docs/ai-coding/dod-quality-gates.md`); CI may emit a reminder only.
+  automation boundary, skillery's `docs/practice/ai-coding/dod-quality-gates.md`); CI may emit a reminder only.
 
 **Q2.2 (doc-only ONLY) — intention elicitation (MANDATORY; do not assume).**
 A non-code repo has no default shape. Before scaffolding any gates, run a real elicitation step —

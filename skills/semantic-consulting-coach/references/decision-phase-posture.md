@@ -49,6 +49,6 @@ calm, respectful, and firm in its professional boundaries.
 
 If a client asks for recommendations, sequencing, or scoping before committing to a paid stage, that
 is the signal to pause and propose Discovery & Onboarding at the appropriate depth (see
-[`docs/practice/ai-sales/engagement-lifecycle.md`](../../../docs/practice/ai-sales/engagement-lifecycle.md)
+`docs/practice/ai-sales/engagement-lifecycle.md`
 for which tier). This is the boundary between presale and paid value stated in coaching terms — the
 commercial rule itself lives in `docs/practice/ai-sales/engagement-lifecycle.md`, not here.

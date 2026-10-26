@@ -59,7 +59,7 @@ blocking gaps it closes. Aim for a small, MECE set (typically 2–3).
 
 A **first-cut conceptual model** of the domain often helps here, to ground the options in the actual
 entities at stake. Produce that sketch with the
-[`../../../engineering/conceptual-modelling/SKILL.md`](../../../engineering/conceptual-modelling/SKILL.md)
+`conceptual-modelling`
 skill — a sketch in service of the decision, not a built model.
 
 ## 5. Sequencing

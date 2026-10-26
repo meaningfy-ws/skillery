@@ -8,14 +8,14 @@ cognitive states, and the design questions that pressure-test an engagement.
 Discovery & Onboarding package and its two tiers, Semantic Layer adoption and
 its building blocks, the repeat-client rule — is company fact, decided and
 owned by
-[`docs/practice/ai-sales/engagement-lifecycle.md`](../../../docs/practice/ai-sales/engagement-lifecycle.md).
+`docs/practice/ai-sales/engagement-lifecycle.md`.
 This file cites that model; it does not restate it.** Treat the *coaching
 method* below — how to elicit, how to hold a boundary, which questions to
 ask — as a working draft to pressure-test; the commercial facts it cites are
 not a draft.
 
 > **Modes ≠ Stages.** The engagement stages in
-> [`docs/practice/ai-sales/engagement-lifecycle.md`](../../../docs/practice/ai-sales/engagement-lifecycle.md)
+> `docs/practice/ai-sales/engagement-lifecycle.md`
 > are the *commercial engagement model* the user is designing. The coach's Exploration / Alignment /
 > Synthesis are *conversation modes*. See SKILL.md. Don't conflate them.
 
@@ -38,7 +38,7 @@ engagement structure in `docs/practice/ai-sales/engagement-lifecycle.md` is to p
 Only **presale** is free — because it produces no deliverable. Everything past
 it (Discovery & Onboarding at either tier, direct-to-build, or any Semantic
 Layer building block) is paid; see
-[`docs/practice/ai-sales/engagement-lifecycle.md`](../../../docs/practice/ai-sales/engagement-lifecycle.md)
+`docs/practice/ai-sales/engagement-lifecycle.md`
 for the full statement and each stage's detail.
 
 When a conversation moves from **"is this relevant?"** to **"what should we
@@ -72,12 +72,12 @@ its commercial facts.
 
 | Stage | Purpose / question it answers | Pointer |
 |-------|-------------------------------|---------|
-| **Presale** | Mutual recognition: "Are we even relevant to each other?" | [`engagement-lifecycle.md`](../../../docs/practice/ai-sales/engagement-lifecycle.md#presale-free-no-deliverable) |
-| **Discovery & Onboarding — Light tier** | A fast, expert, paid read — distinct from and not a substitute for the Deep tier's Decision Package | [`engagement-lifecycle.md`](../../../docs/practice/ai-sales/engagement-lifecycle.md#discovery--onboarding-paid-two-depths) |
+| **Presale** | Mutual recognition: "Are we even relevant to each other?" | `engagement-lifecycle.md` |
+| **Discovery & Onboarding — Light tier** | A fast, expert, paid read — distinct from and not a substitute for the Deep tier's Decision Package | `engagement-lifecycle.md` |
 | **Discovery & Onboarding — Deep tier** | Make a safe, informed commitment possible: "What is the right next step, and why?" | intent detailed below |
-| **Direct-to-build** | "We know what we want — build it," with its elicitation done at the start of the contract | [`engagement-lifecycle.md`](../../../docs/practice/ai-sales/engagement-lifecycle.md#direct-to-build) |
-| **Semantic Layer building blocks** | Build what was decided (modelling/ontology, software, data mappings & integration, analytics/BI, agentic frameworks, training) | [`engagement-lifecycle.md`](../../../docs/practice/ai-sales/engagement-lifecycle.md#the-outcome-semantic-layer-adoption) |
-| **Repeat client** | Sustain, scale, evolve what was built — a fact, not a phase, led by `executive-communication` | [`engagement-lifecycle.md#repeat-clients`](../../../docs/practice/ai-sales/engagement-lifecycle.md#repeat-clients) |
+| **Direct-to-build** | "We know what we want — build it," with its elicitation done at the start of the contract | `engagement-lifecycle.md` |
+| **Semantic Layer building blocks** | Build what was decided (modelling/ontology, software, data mappings & integration, analytics/BI, agentic frameworks, training) | `engagement-lifecycle.md` |
+| **Repeat client** | Sustain, scale, evolve what was built — a fact, not a phase, led by `executive-communication` | `engagement-lifecycle.md#repeat-clients` |
 
 When coaching the Light tier, direct-to-build, or a Semantic Layer building
 block (or refining the Deep tier), work from intent outward: *what is this
@@ -116,7 +116,7 @@ this and execute with someone else."*
 **Duration and shape (resolved):** **4–6 weeks, calendar-boxed, at a fixed
 price and fixed duration** — calendar-based, not effort-based, so depth varies
 while the frame does not (see
-[`engagement-lifecycle.md`](../../../docs/practice/ai-sales/engagement-lifecycle.md#discovery--onboarding-paid-two-depths)
+`engagement-lifecycle.md`
 for the stated rule).
 
 **Boundary safeguard (principle, stated as a rule in `docs/practice/ai-sales/engagement-lifecycle.md`):**

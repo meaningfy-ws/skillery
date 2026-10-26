@@ -127,7 +127,7 @@
       folders gone; `hooks_inventory_shape` reads `hooks.yaml`; `plugin-eval.yml` reads `tests/evals/`.
 - [x] 9.5 `tools/linkml_neo4j/` → the skill; `scaffold.sh` per D-13; the `linkml-engineering` delta.
       **Accept:** `pytest tests/test_linkml_neo4j_generators.py` green.
-- [ ] 9.6 Every remaining skill link out of its folder replaced (D-13). **Accept:** the widened
+- [x] 9.6 Every remaining skill link out of its folder replaced (D-13). **Accept:** the widened
       `cross_skill_paths` clean.
 - [ ] 9.7 HARD-QUESTIONS and the worktree leftovers per D-13; worktrees pruned.
 - [ ] 9.8 Living-spec deltas; CHANGELOG line for every moved path. **Accept:** `make validate`,

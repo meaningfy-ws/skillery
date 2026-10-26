@@ -1,7 +1,7 @@
 # Decision Package — template
 
 The fillable template for the deliverable. It is an **executive artefact**: write it answer-first
-with the [`../../../communication/executive-communication/SKILL.md`](../../../communication/executive-communication/SKILL.md)
+with the `executive-communication`
 skill (Governing Thought → SCQA → Minto pyramid). The five R1 parts are the fixed structure; the
 cover label MAY be relabelled per engagement (see SKILL.md, R8). It lands at
 `openspec/decisions/<id>.md` (golden-thread root).

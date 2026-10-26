@@ -86,4 +86,4 @@ it only as a *possible future mode* once several repos have actually needed a co
 `openspec validate --strict` (structural) checks the artifact shape + spec-delta format and is
 **CI-automated** (a `make` target). The **clarity gate** (semantic, scores the PLAN ≥9/10) is a
 human/agent gate and is **NOT** CI — see `ci-and-infra.md` and
-`../../../docs/ai-coding/dod-quality-gates.md` for the automation boundary.
+skillery's `docs/practice/ai-coding/dod-quality-gates.md` for the automation boundary.
