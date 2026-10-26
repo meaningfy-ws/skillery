@@ -240,3 +240,6 @@ node_modules/
 .claude/settings.local.json
 .claude/commands/
 .claude/skills/
+
+# opencode installer `--project` output (skillery-opencode install <bundle> --project) — local, never committed.
+.opencode/

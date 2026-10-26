@@ -1,7 +1,7 @@
 # Dual-CLI reference annex
 
 **Audience: skillery contributors/maintainers** extending or auditing dual-CLI parity (adding a
-skill, keeping the generated `.opencode/` tree honest, checking an external dependency's opencode
+skill, keeping the rendered bundle files honest, checking an external dependency's opencode
 support). **Not** for installing the catalogue — if that's you, go to
 [`docs/environment/setup.md`](../setup.md) (front door: [`README.md`](../../../README.md))
 instead; nothing here restates its content.
@@ -16,7 +16,7 @@ The contributor-facing contract docs this page indexes:
 | If you want to… | Read |
 |---|---|
 | Understand source → CLI translation (what generates what) | [`mapping.md`](mapping.md) |
-| Regenerate the committed `.opencode/` tree | run `make generate-opencode` (gated by `make validate`) |
+| Change bundle membership (or agent frontmatter) | edit `bundles.yaml` / the agent, then `make bundles` (gated by `make validate`) |
 | Check an external plugin/skill/MCP server's opencode support | [`compatibility.md`](compatibility.md) |
 | See the skill-body CLI-agnosticism audit | [`body-agnosticism-audit.md`](body-agnosticism-audit.md) |
 | Understand hook intent → per-CLI binding | [`../../../hooks/README.md`](../../../hooks/README.md) |

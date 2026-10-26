@@ -1,0 +1,49 @@
+name: Defect — a skill or agent misbehaved
+description: It fired at the wrong time, gave a wrong result, failed to install, or its docs misled you.
+title: "[defect] <skill-or-agent>: <one line>"
+labels: ["defect"]
+body:
+  - type: input
+    id: subject
+    attributes:
+      label: Skill or agent
+      placeholder: e.g. clarity-gate, code-reviewer, or "install / docs"
+    validations: { required: true }
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: ["trigger (fired / did not fire)", "content (wrong or missing guidance)", "agent behaviour", "install / packaging", "docs", "dual-CLI (works on one CLI only)"]
+    validations: { required: true }
+  - type: dropdown
+    id: cli
+    attributes:
+      label: Where
+      options: ["Claude Code", "Claude Desktop / Cowork", "opencode", "other"]
+    validations: { required: true }
+  - type: input
+    id: version
+    attributes:
+      label: Catalogue version
+      description: The root VERSION, or the plugin version shown by your CLI.
+    validations: { required: true }
+  - type: textarea
+    id: prompt
+    attributes:
+      label: What you asked (the prompt, verbatim)
+      description: This becomes the failure case and the trigger probe. Without it the issue is answered, not fixed.
+    validations: { required: true }
+  - type: textarea
+    id: got
+    attributes:
+      label: What came out
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have come out
+    validations: { required: true }
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else (links, files, which neighbouring skill fired instead)

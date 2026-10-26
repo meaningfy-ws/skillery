@@ -5,7 +5,8 @@ CLI-specific reference to prose, and update the table if the `body_agnosticism` 
 flags a new one. Not install documentation.
 
 Skill *bodies* should read identically on Claude Code and opencode. The structural mapping
-(frontmatter, tool names, command registration) is the generator's job; the **prose** must not
+(frontmatter, tool names, command registration) is the job of `make bundles` and the opencode
+installer; the **prose** must not
 silently assume one CLI.
 
 This audit covers **every first-party skill**. A skill is `agnostic` if its body names no

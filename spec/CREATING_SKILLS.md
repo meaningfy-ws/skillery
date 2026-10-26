@@ -17,19 +17,18 @@ Skills are designed to be discovered and activated by Claude when relevant to a 
 
 ### 1. Copy the Template
 
-Skills are nested by **phase subfolder** — pick the one your skill belongs to
-(`consulting/`, `communication/`, `engineering/`, `ai-coding/`) and place the
-skill under it. Then register it in the matching bundle in
-[`.claude-plugin/marketplace.json`](../.claude-plugin/marketplace.json).
+Skills are flat — one directory per skill directly under `skills/` (bundles group them, not
+folders). Then register it in one bundle in
+[`bundles.yaml`](../bundles.yaml) and run `make bundles`.
 
 ```bash
-mkdir -p skills/<phase>/my-new-skill        # e.g. skills/my-new-skill
-cp spec/skill-template.md skills/<phase>/my-new-skill/SKILL.md
+mkdir -p skills/my-new-skill
+cp spec/skill-template.md skills/my-new-skill/SKILL.md
 ```
 
 ### 2. Edit the YAML Frontmatter
 
-Open `skills/<phase>/my-new-skill/SKILL.md` and update:
+Open `skills/my-new-skill/SKILL.md` and update:
 
 ```yaml
 ---
@@ -49,24 +48,18 @@ Replace the template content with your skill's:
 
 ### 4. Register the Skill
 
-Add to `.claude-plugin/marketplace.json`:
+Add it to one bundle's `skills` list in [`bundles.yaml`](../bundles.yaml), then run `make bundles`:
 
-```json
-{
-  "plugins": [
-    {
-      "name": "meaningfy-skills",
-      "skills": ["my-new-skill"]
-    }
-  ]
-}
+```yaml
+bundles:
+  - name: meaningfy-building
+    skills: [clarity-gate, my-new-skill]
 ```
 
 Done! Your skill is now registered.
 
-> **Dual-CLI obligation.** The catalogue ships to Claude Code **and** opencode from one source. After
-> adding or editing a skill, run `make generate-opencode` and commit the regenerated `.opencode/`
-> tree, and keep the skill **body CLI-agnostic** (no `/opsx:` or `.claude/` paths). The full rules and
+> **Dual-CLI obligation.** The catalogue ships to Claude Code **and** opencode from one source. Keep
+> the skill **body CLI-agnostic** (no `/opsx:` or `.claude/` paths). The full rules and
 > the gates that enforce them are in
 > [`AGENTS.md` → Dual-CLI authoring rules](../AGENTS.md#dual-cli-authoring-rules).
 
@@ -130,6 +123,8 @@ name: skill-name-with-hyphens
 description: What the skill does and when to use it
 ---
 ```
+
+Frontmatter must be strict YAML: quote a `description` that contains `: ` (`description: "Use for: x"`).
 
 Optional fields:
 
@@ -308,30 +303,21 @@ assets/
 
 ## Skill Registration
 
-Add your skill to `.claude-plugin/marketplace.json`:
+Add your skill to exactly one bundle in [`bundles.yaml`](../bundles.yaml), then run `make bundles`
+(it renders `.claude-plugin/marketplace.json`, `bundles/` and `tools/opencode-catalogue.json`; never
+edit those by hand):
 
-```json
-{
-  "name": "meaningfy-skillery",
-  "owner": "Your Team",
-  "version": "1.0.0",
-  "description": "Collection description",
-  "plugins": [
-    {
-      "name": "your-skill-group",
-      "description": "Group description",
-      "skills": ["my-new-skill", "another-skill"],
-      "strict": false,
-      "source": "local"
-    }
-  ]
-}
+```yaml
+bundles:
+  - name: your-skill-group
+    description: Group description
+    skills: [my-new-skill, another-skill]
+    agents: []
 ```
 
-**Grouping Skills:**
-- Group related skills under one plugin
-- Example: "document-skills" for Word, Excel, PDF
-- Example: "data-tools" for CSV, JSON, database utilities
+**Grouping Skills:** bundles follow the role you wear (`meaningfy-core` plus one bundle per role);
+add a skill to the existing bundle whose role it serves rather than creating a new bundle. An agent
+goes in one bundle's `agents` list; how to write one is in [`agent-template.md`](agent-template.md).
 
 ## Best Practices
 

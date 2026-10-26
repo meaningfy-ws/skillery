@@ -1,6 +1,6 @@
 ---
 name: vault-tidy
-description: Tidy a Meaningfy Obsidian vault on the owner's request: survey it, present a written plan of every move, merge and rename (and every wikilink each affects), and apply the plan only after an explicit yes, moving with the Obsidian CLI so links follow. Invoke explicitly: "tidy my vault", "clean up the inbox", "reorganise these notes", "merge these duplicate notes". Never runs on an agent's own initiative. Promoting one staged note is vault-promote.
+description: "Tidy a Meaningfy Obsidian vault on the owner's request: survey it, present a written plan of every move, merge and rename (and every wikilink each affects), and apply the plan only after an explicit yes, moving with the Obsidian CLI so links follow. Invoke explicitly: \"tidy my vault\", \"clean up the inbox\", \"reorganise these notes\", \"merge these duplicate notes\". Never runs on an agent's own initiative. Promoting one staged note is vault-promote."
 license: Apache 2.0
 argument-hint: "[scope, e.g. 00 Inbox or a project]"
 disable-model-invocation: true

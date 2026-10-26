@@ -119,7 +119,7 @@ spec as it lands. Order follows PLAN-D2:
 7. Apply the five cited one-passage consistency edits (DEC-11): coach `SKILL.md`, `decision-
    package/SKILL.md`, `proposal-writing/SKILL.md`, coach's `semantic-consulting-domain.md`, root
    `README.md`.
-8. Regenerate `.opencode/` (`make generate-opencode`) and `docs/skill-inventory.md`
+8. Regenerate `.opencode/` (`make bundles`) and `docs/skill-inventory.md`
    (`make skill-inventory`).
 
 **Idempotency:** every step is a file edit or a deterministic regen command — safe to re-run;
@@ -161,7 +161,7 @@ sibling epic can cite it instead of re-deriving the rule.
 | This change merges before `define-delivery-release-lifecycle` and the DEC-19 subsection cites a disagreement rule not yet written in `dod-quality-gates.md` | The one-line citation is written as a citation-by-topic ("see the Builder/Shipper disagreement rule in `dod-quality-gates.md`"), not a section anchor, so it resolves once the sibling lands; `broken_links` treats the directory-level reference as valid |
 | A future contributor adds a price or rate to `services-and-packages.md` | Out of `openspec validate`'s reach (prose, not schema) — caught at review time by the DEC-18 rationale note in the doc header and by this design's anti-pattern list |
 | `openspec validate --strict` fails on the new spec (missing scenario, wrong hashtag count) | Fix before commit — the four-hashtag `#### Scenario:` rule is easy to miscount; each requirement is checked to have ≥1 scenario before tasks.md is marked done |
-| `make generate-opencode` or `make skill-inventory` produces a diff after the skill edits but it isn't committed | `make lint` gates this (existing repo convention); task 8's verification step runs both makes and re-checks git status is clean |
+| `make bundles` or `make skill-inventory` produces a diff after the skill edits but it isn't committed | `make lint` gates this (existing repo convention); task 8's verification step runs both makes and re-checks git status is clean |
 
 ## Risks / Trade-offs
 

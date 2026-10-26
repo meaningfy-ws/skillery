@@ -6,80 +6,33 @@
   },
   "metadata": {
     "description": "Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently",
-    "version": "2.11.0"
+    "version": "3.0.0"
   },
   "plugins": [
     {
       "name": "meaningfy-core",
       "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy git/PR workflow, and agentic guardrails",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/technical-writing",
-        "./skills/explanatory-writing",
-        "./skills/writing-antipatterns",
-        "./skills/meaningfy-git-workflow",
-        "./skills/guardrails"
-      ]
+      "source": "./bundles/meaningfy-core"
     },
     {
       "name": "meaningfy-consulting",
       "description": "The advisory / front-of-funnel role: semantic-technologies coaching, the Decision Package, proposals, estimation, and executive communication",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/semantic-consulting-coach",
-        "./skills/decision-package",
-        "./skills/proposal-writing",
-        "./skills/estimation",
-        "./skills/executive-communication"
-      ]
+      "source": "./bundles/meaningfy-consulting"
     },
     {
       "name": "meaningfy-architecture",
       "description": "The design / modelling role: system architecture (C4, ArchiMate/UML, ADRs, contracts), the living conceptual model, the shared modelling conventions, and the LinkML craft (LinkML → typed artefacts + OWL/SHACL)",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/architecture",
-        "./skills/conceptual-modelling",
-        "./skills/modelling-conventions",
-        "./skills/linkml-engineering"
-      ]
+      "source": "./bundles/meaningfy-architecture"
     },
     {
       "name": "meaningfy-building",
       "description": "The delivery / developer role: the spine build loop (epic-planning, spec-stewardship, clarity-gate, BDD, code review), clean layered Python (cosmic-python), repo scaffolding (project-setup), CD/deploy (ci-cd-delivery), and the release lifecycle (meaningfy-release)",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/epic-planning",
-        "./skills/spec-stewardship",
-        "./skills/clarity-gate",
-        "./skills/bdd-gherkin",
-        "./skills/meaningfy-code-review",
-        "./skills/cosmic-python",
-        "./skills/project-setup",
-        "./skills/ci-cd-delivery",
-        "./skills/meaningfy-release"
-      ]
+      "source": "./bundles/meaningfy-building"
     },
     {
       "name": "vault-assistant",
       "description": "The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily). Needs the external obsidian@obsidian-skills plugin and the company memory",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/vault-setup",
-        "./skills/vault-conventions",
-        "./skills/vault-project",
-        "./skills/vault-resume",
-        "./skills/vault-capture",
-        "./skills/vault-promote",
-        "./skills/vault-tidy",
-        "./skills/vault-planning",
-        "./skills/vault-daily"
-      ]
+      "source": "./bundles/vault-assistant"
     }
   ]
 }

@@ -51,7 +51,7 @@ per the repo's existing convention, needing no edit):
   internal cross-links into `../how-we-work/...` and same-dir `openspec-setup-guide.md`
 - `docs/ai-coding/opsx-runbook.md` (1 site — same-dir `openspec-setup-guide.md`)
 - `.opencode/**` mirrors every `skills/**` hit above — **regenerated, never hand-edited** (README.md
-  Repository-structure block: `make generate-opencode`)
+  Repository-structure block: `make bundles`)
 
 ## Goals / Non-Goals
 
@@ -271,7 +271,7 @@ pattern.
 - ❌ **Deleting `docs/how-we-work/` before every destination is verified.** See the write-order
   dependency above — this is the one step where "move fast" directly causes data loss.
 - ❌ **Hand-editing `.opencode/**` to fix a link.** It is a generated mirror
-  (`make generate-opencode`); a hand-edit there drifts from `skills/**` and both CLIs' parity breaks
+  (`make bundles`); a hand-edit there drifts from `skills/**` and both CLIs' parity breaks
   silently until the next generation run overwrites it.
 - ❌ **Retargeting a plain-text path mention in a sibling `openspec/changes/*/proposal.md` as if it
   were a live link.** Verified: none of the five sibling proposals contain actual markdown-link
@@ -295,7 +295,7 @@ pattern.
 | A link-retarget in group (g) misses a file | `repo_lint.broken_links` (blocking, `make validate`) catches every missed **markdown-link-syntax** site immediately — but it does **not** scan plain-text path mentions (verified: `_MD_LINK` regex only). A prose reference that names a moved path without `[text]` + `(path)` syntax will not be caught mechanically; task 10's validation step includes one manual `grep -rn` sweep for the literal strings `how-we-work`, `docs/services/`, `docs/environment-setup`, `ai-coding/openspec-setup-guide`, `docs/dual-cli` across the whole repo (outside `openspec/changes/*` and `.opencode/`) as the human-verified backstop for exactly this gap. |
 | `dod-quality-gates.md`'s edit lands before `sales-dod.md` exists (mid-implementation ordering slip) | Task group (e) is sequenced strictly after (b) in `tasks.md`, and both are part of one change — never committed separately. If an implementer nonetheless commits (e) alone, the Disagreement-rule citation in `dod-quality-gates.md` would point at a file that doesn't exist yet; `broken_links` catches this the same way as any other dangling link, so the failure is mechanically caught even if the sequencing discipline slips. |
 | A moved file's heading text changes incidentally (not per DEC-8) and an external anchor citing it silently 404s | Anchors are not scanned by `broken_links` (it only checks the pre-`#` file path, per the tool's own `target.split("#")[0]` logic) — a heading rename inside a moved file is **invisible to CI**. The heading-anchor-preservation rule (Decisions) is the only guard; task 10 adds a manual check of every anchor listed in this design's Context table against the moved file's final headings. |
-| `.opencode/**` is hand-edited instead of regenerated | Drifts from `skills/**`; the next `make generate-opencode` run silently overwrites the hand-edit, and until then the two CLIs' catalogues disagree. Task 7 ends with `make generate-opencode`, not a manual `.opencode/` edit. |
+| `.opencode/**` is hand-edited instead of regenerated | Drifts from `skills/**`; the next `make bundles` run silently overwrites the hand-edit, and until then the two CLIs' catalogues disagree. Task 7 ends with `make bundles`, not a manual `.opencode/` edit. |
 | `define-lifecycle-playbooks` is archived by someone else mid-implementation of this EPIC | Its capability would then live in `openspec/specs/lifecycle-playbooks/spec.md` instead of its own change dir — the annotation target in Decisions' supersession resolution moves from that change's `proposal.md` to a proper `## REMOVED`/`## MODIFIED` delta in `define-ai-domains/specs/lifecycle-playbooks/spec.md` against the now-archived durable spec. Task 9 checks `openspec/specs/lifecycle-playbooks/` for existence immediately before writing the annotation, and switches mechanism if it now exists. |
 | The `docs/environment/` depth-arithmetic (Decisions) is applied backwards — `openspec-setup-guide.md`'s already-correct `../../` links get an erroneous extra `../` added "for consistency" with `setup.md`'s fix | Every `../../`-prefixed link in the moved `openspec-setup-guide.md` would then 404 (resolving one level above the repo root). Task 6 states the two files' link-depth deltas separately and explicitly (zero change vs. one extra `../`), not as one shared instruction, specifically to prevent this. |
 

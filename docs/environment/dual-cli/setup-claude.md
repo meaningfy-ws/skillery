@@ -11,6 +11,14 @@ The source→CLI contract behind these steps is in [`mapping.md`](mapping.md).
   ```bash
   node -v
   ```
+- **Windows only:** each bundle is a folder of symlinks, so git must check symlinks out as links.
+  Enable Developer Mode, then:
+  ```bash
+  git config --global core.symlinks true
+  ```
+  If you added the skillery marketplace before enabling `core.symlinks`, remove and re-add it
+  (`/plugin marketplace remove meaningfy-skillery`, then Step 2) — an update keeps the links as text
+  files.
 
 ## Step 2 — Add the skillery marketplace
 
@@ -110,9 +118,16 @@ Run:
 ```bash
 /plugin
 ```
-Confirm `meaningfy-core` (and any other bundle you installed in Step 3) shows as **enabled**. Then
+Confirm `meaningfy-core` (and any other bundle you installed in Step 3) shows as **enabled**, and
+that each bundle loads exactly its own skills and agents (skills / agents): `meaningfy-core` 5 / 0,
+`meaningfy-consulting` 5 / 0, `meaningfy-architecture` 4 / 0, `meaningfy-building` 9 / 3,
+`vault-assistant` 9 / 0 (`claude plugin details <bundle>` lists them). Then
 confirm the spine registered by running `/opsx:propose` — it should prompt you for a change
 description rather than say the command is unknown.
+
+**Testing a branch** (maintainers): install from the pushed branch
+(`/plugin marketplace add meaningfy-ws/skillery#<branch>`), never from a local path — a local-path
+marketplace does not load the bundles' agents.
 
 There are no recorded Claude-side capability gaps; if you're curious what differs on opencode, see
 [`compatibility.md`](compatibility.md).

@@ -10,12 +10,13 @@ Every artifact is exactly one of these, and that decides its home:
 | Type | Audience | Loaded | Home | Rule |
 |------|----------|--------|------|------|
 | **Skill** | Agents | On demand | `skills/` | Reusable knowledge; single source of *authority* per fact |
-| **Agent** | Harness | Isolated context | `agents/` | Thin wrapper: role + model + tools + `skills:` + glue; **no knowledge** |
+| **Agent** | Harness | Isolated context | `agents/` | Thin wrapper — see [`agent-template.md`](agent-template.md) |
 | **Doc** | Humans | Never auto-loaded | `docs/` | Human canon; narrates & points, never restates skill rules |
 | **Binding** | Harness (every session) | Always | `prompts/` | Mandates & routes to skills; never carries the standard |
 
 Authoring governance (`spec/`, incl. `spec/skill-template.md`) and distribution
-(`.claude-plugin/`) sit alongside as supporting infrastructure. The durable
+(`bundles.yaml`, rendered to `.claude-plugin/`, `bundles/` and
+`tools/opencode-catalogue.json`) sit alongside as supporting infrastructure. The durable
 spec **spine** (`spine/` + `openspec/`) is projected into project repos by the
 `project-setup` skill.
 
@@ -23,19 +24,30 @@ spec **spine** (`spine/` + `openspec/`) is projected into project repos by the
 
 1. **Knowledge → a skill.** If two skills could own a fact, the more specific one owns it; the
    other points by name. External skills (superpowers, stream-coding, …) are **referenced, not
-   vendored**.
-2. **An agent carries no knowledge.** Keep an agent only when it provides a capability a skill
-   cannot — model pinning, read-only tools, isolation. Otherwise drop it; the skill suffices.
+   vendored**; an adopted copy carries a provenance note (source, commit, licence, date) and is
+   reviewed before upstream changes are pulled.
+2. **An agent carries no knowledge.** Keep an agent only when it is a named worker others dispatch,
+   needs a declared runtime type, or needs a model pin or a tool denial that must hold on both CLIs
+   (skill-level `model`, `allowed-tools`, `context: fork` are Claude-only; a tool restriction holds on
+   both CLIs only as a denial, `disallowedTools`). Refusals a tool
+   restriction can enforce are enforced, not written — see
+   [`agent-template.md`](agent-template.md#deterministic-before-prose).
 3. **A doc narrates and points.** Single source of *authority* + marked derivations (e.g. a human
    "coding prompt" canon whose operational twin is a skill — say which is operational).
 4. **A binding routes and mandates.** It is thin and always-on; it never restates the standard.
 
+## Agents
+
+The agent authoring standard is [`agent-template.md`](agent-template.md), checked by
+`agent_conformance` in `tools/repo_lint`.
+
 ## Validation as guardrail
 
-A repo this method produces validates itself (see `tools/repo_lint`): marketplace↔dirs
-consistency, frontmatter present + `name`==dir, bundle composition, no broken navigational
-links, skill length, no orphan references to dropped artifacts, README inventory, template
-mirroring. Run it in CI. The validator is the reusable guardrail — adopt it alongside this spec.
+A repo this method produces validates itself (see `tools/repo_lint`): `bundles.yaml`↔dirs
+consistency (skills and agents), strict-YAML frontmatter, frontmatter present + `name`==dir, bundle composition, no broken navigational
+links, skill length, no orphan references to dropped artifacts, rendered bundle files in sync with
+`bundles.yaml` (`bundle_gates`), agents conforming to [`agent-template.md`](agent-template.md)
+(`agent_conformance`), README inventory, template mirroring. Run it in CI. The validator is the reusable guardrail — adopt it alongside this spec.
 
 ## Beyond verification
 

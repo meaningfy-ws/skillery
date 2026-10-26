@@ -2,12 +2,58 @@
 
 All notable changes to the Meaningfy Skillery catalogue are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/), and the
-catalogue version is the `metadata.version` in
-[`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json). The version
+catalogue version is the root [`VERSION`](VERSION) file (`make bundles` writes it into
+`.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json` and `package.json`). The version
 of record for a release is the git tag `vX.Y.Z`.
 
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
+
+## [3.0.0] - 2026-10-26
+
+### Action needed
+
+1. **Claude, if you use `epic-planner`, `implementer` or `code-reviewer`:** these agents now come
+   only with the `meaningfy-building` bundle. The ids `meaningfy-core:code-reviewer`,
+   `meaningfy-consulting:…`, `meaningfy-architecture:…` and `vault-assistant:…` for them disappear.
+   Install `meaningfy-building` to keep them.
+2. **Claude, everyone:** run `claude plugin marketplace update meaningfy-skillery`, then
+   `claude plugin update <bundle>@meaningfy-skillery` for each bundle you have. No reinstall is
+   needed.
+3. **Windows:** enable Developer Mode and run `git config --global core.symlinks true`. If you added
+   the marketplace before that, remove and re-add it (`claude plugin marketplace remove
+   meaningfy-skillery`, then `claude plugin marketplace add meaningfy-ws/skillery`): an update keeps
+   the bundle links as text files, and the bundle then loads no skills.
+4. **opencode:** rerun your install command. With `--global` or `--project` it now also installs the
+   bundle's agents; if an agent file of the same name is already there and the installer did not
+   put it there, it stops and names the file (move it, or rerun with `--force`). The
+   `OPENCODE_CONFIG_DIR=.opencode` direct-checkout route is gone; from a
+   checkout, run `node tools/skillery-opencode.mjs install <bundle> --project` instead.
+5. **Cowork / Claude Desktop:** this layout was verified on the Claude Code CLI only. If a bundle
+   loads different skills or agents there, report it with the Defect issue template.
+
+### Changed
+
+- **Bundles are declared once, in `bundles.yaml`.** Claude bundles now load exactly their own skills
+  and agents: 3 agent registrations instead of 15, and a plugin cache of about 1.9 MB instead of
+  about 57 MB. opencode installs skills straight from `skills/`, and renders the bundle's agents at install time
+  (`--global` / `--project`; `--target` installs skills only). Rerunning `skillery-opencode install`
+  removes the skills and agents it installed earlier that no installed bundle carries any more.
+- **12 skill descriptions are quoted** (`conceptual-modelling`, `estimation`,
+  `executive-communication`, `proposal-writing` and eight `vault-*` skills) so strict loaders
+  (opencode, `npx skills`) read them instead of skipping them. The wording is unchanged.
+- **Agents follow one written standard** (`spec/agent-template.md`), checked by `make validate`.
+  `implementer` no longer commits: it reports, you commit. `code-reviewer` reviews one lens per
+  dispatch; ask for a lens (L1–L5), or five for a full review. `epic-planner` returns question rounds
+  for you to answer instead of asking mid-run.
+- **opencode agents** are rendered from their declared `type` (`mode: subagent` for all three), load
+  their skills through a body line instead of an unsupported `skills` field, and get a theme colour.
+
+### Removed
+
+- The committed `.opencode/` tree, `opencode.json` and `make generate-opencode`.
+- The opencode direct-checkout route (`OPENCODE_CONFIG_DIR=.opencode`).
+- The committed `PARITY.md` / `GAP.md` reports; run `make opencode-report` to print them.
 
 ## [2.11.0] - 2026-09-15
 

@@ -406,7 +406,7 @@ Detail where the human was specific:
     vs. internal-`P0–P3`-axis note re-labelled.
   - root [`README.md`](../../../README.md) — the docs-table row "the P0–P3 engagement model".
 - **Add `openspec/specs/engagement-model/spec.md`** via this change's spec delta (DEC-12).
-- **Regenerate** the `.opencode/` mirror (`make generate-opencode`) and
+- **Regenerate** the `.opencode/` mirror (`make bundles`) and
   `docs/skill-inventory.md` (`make skill-inventory`) after the skill edits.
 
 ## Capabilities

@@ -6,7 +6,7 @@ installer following [`setup-claude.md`](setup-claude.md)/[`setup-opencode.md`](s
 already gets the correct per-CLI command; come here to double-check *why*, or to add a new
 dependency's row.
 
-First-party artifacts (`skills/`, `agents/`, every bundle) are generated with verified parity —
+First-party artifacts (`skills/`, `agents/`, every bundle) ship from one source to both CLIs —
 they are *not* in this matrix. This page covers the **external boundary**: third-party plugins,
 skill-packs, and MCP servers the catalogue references but cannot generate (DEC-11). Each row records
 opencode support and a per-CLI install path or a gap.
@@ -18,9 +18,10 @@ Status legend:
   config shape works on both; no port needed.
 - **unsupported** — no opencode equivalent at the pinned version → **gap** (with the degradation).
 
-> Pinned opencode version: tracked in `.opencode-version`, established by the `dual-cli-generator`
-> change. This matrix targets opencode's current documented config schema (`.opencode/skills`,
-> `.opencode/agents`, `.opencode/commands`, `opencode.json` `mcp`); re-confirm rows on each version bump.
+> Pinned opencode version: tracked in `.opencode-version`; the installer's agent renderer
+> (`renderAgent` in `tools/opencode-bundle-lib.mjs`) targets that version. This matrix targets
+> opencode's current documented config schema (`skills/`, `agents/` and `commands/` under
+> `.opencode/`, `opencode.json` `mcp`); re-confirm rows on each version bump.
 
 ## External skill-packs / plugins
 

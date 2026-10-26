@@ -6,14 +6,20 @@ import path from "node:path";
 import process from "node:process";
 import { parseArgs } from "node:util";
 import {
-  GENERATED_SKILLS_ROOT,
+  agentBody,
+  agentsForBundles,
+  assertSafeNames,
+  loadAgentMap,
   loadCatalogue,
+  renderAgent,
+  SKILLS_ROOT,
   skillDirectories,
   skillsForBundles,
   validateBundles,
 } from "./opencode-bundle-lib.mjs";
 
 const MANIFEST_NAME = ".skillery-manifest.json";
+const TARGET_AGENT_GAP = "gap: agents not installed with --target (use --global or --project)";
 
 function usage() {
   return `Usage:
@@ -21,11 +27,14 @@ function usage() {
   skillery-opencode install <bundle> [<bundle> ...] [--global | --project | --target <dir>] [--force] [--dry-run]
   skillery-opencode uninstall <bundle> [<bundle> ...] [--global | --project | --target <dir>] [--dry-run]
   skillery-opencode status [--global | --project | --target <dir>]
+  skillery-opencode report
 
 Targets:
-  --global       ~/.config/opencode/skills (default)
-  --project      <cwd>/.opencode/skills
-  --target DIR   Explicit skills directory
+  --global       skills in ~/.config/opencode/skills, agents in ~/.config/opencode/agents (default)
+  --project      skills in <cwd>/.opencode/skills, agents in <cwd>/.opencode/agents
+  --target DIR   skills in DIR; agents are not installed
+
+report prints the parity and gap tables for every skill and agent (nothing is written).
 
 Examples:
   skillery-opencode install meaningfy-core --global
@@ -54,12 +63,13 @@ function parseCli(argv) {
   return { command, bundles, ...parsed.values, dryRun: parsed.values["dry-run"] };
 }
 
-function targetRoot(options) {
+// { skills, agents }: agents is null for --target (D7: never guess where opencode agents belong).
+function targetRoots(options) {
   const selected = [options.global, options.project, Boolean(options.target)].filter(Boolean).length;
   if (selected > 1) throw new Error("Choose only one of --global, --project, or --target");
-  if (options.target) return path.resolve(options.target);
-  if (options.project) return path.join(process.cwd(), ".opencode", "skills");
-  return path.join(os.homedir(), ".config", "opencode", "skills");
+  if (options.target) return { skills: path.resolve(options.target), agents: null };
+  const base = options.project ? path.join(process.cwd(), ".opencode") : path.join(os.homedir(), ".config", "opencode");
+  return { skills: path.join(base, "skills"), agents: path.join(base, "agents") };
 }
 
 function manifestPath(target) {
@@ -73,6 +83,7 @@ function emptyInstallManifest(catalogue) {
     source: "meaningfy-ws/skillery",
     installedBundles: {},
     managedSkills: [],
+    managedAgents: [],
   };
 }
 
@@ -88,13 +99,16 @@ function readInstallManifest(target, catalogue) {
   if (parsed.schemaVersion !== 1 || !parsed.installedBundles || !Array.isArray(parsed.managedSkills)) {
     throw new Error(`Unsupported or invalid Skillery installation manifest: ${filename}`);
   }
+  if (!Array.isArray(parsed.managedAgents)) parsed.managedAgents = []; // a v2.11 manifest has none
+  // The manifest is user-local and hand-editable; its names feed rmSync, so check them first.
+  assertSafeNames([...Object.keys(parsed.installedBundles), ...parsed.managedSkills, ...parsed.managedAgents], filename);
   return parsed;
 }
 
-function writeJsonAtomic(filename, value) {
+function writeFileAtomic(filename, text) {
   fs.mkdirSync(path.dirname(filename), { recursive: true });
   const temporary = `${filename}.tmp-${process.pid}`;
-  fs.writeFileSync(temporary, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+  fs.writeFileSync(temporary, text, "utf8");
   try {
     fs.renameSync(temporary, filename);
   } catch (error) {
@@ -104,32 +118,51 @@ function writeJsonAtomic(filename, value) {
   }
 }
 
+function writeJsonAtomic(filename, value) {
+  writeFileAtomic(filename, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+const notBytecode = (source) => {
+  const name = path.basename(source);
+  return name !== "__pycache__" && !name.endsWith(".pyc") && !name.endsWith(".pyo");
+};
+
 function copyDirectoryAtomic(source, destination) {
   const parent = path.dirname(destination);
   fs.mkdirSync(parent, { recursive: true });
   const temporary = path.join(parent, `.skillery-${path.basename(destination)}-${process.pid}-${Date.now()}`);
   fs.rmSync(temporary, { recursive: true, force: true });
-  fs.cpSync(source, temporary, { recursive: true, force: true });
+  fs.cpSync(source, temporary, { recursive: true, force: true, filter: notBytecode });
   fs.rmSync(destination, { recursive: true, force: true });
   fs.renameSync(temporary, destination);
 }
 
-function recomputeManagedSkills(catalogue, installedBundles) {
-  const names = Object.keys(installedBundles).filter((name) => Object.hasOwn(catalogue.bundles, name));
-  return skillsForBundles(catalogue, names);
+function installedNames(catalogue, installedBundles) {
+  return Object.keys(installedBundles).filter((name) => catalogue.bundles.some((entry) => entry.name === name));
+}
+
+function renderBundleAgents(catalogue, stems) {
+  const map = loadAgentMap();
+  return stems.map((stem) => {
+    const frontmatter = catalogue.agents[stem];
+    if (!frontmatter) throw new Error(`Catalogue lists agent '${stem}' without its frontmatter`);
+    return { name: stem, ...renderAgent(frontmatter, agentBody(stem), map) };
+  });
 }
 
 function commandList(catalogue) {
-  for (const bundle of Object.keys(catalogue.bundles).sort()) {
-    console.log(`${bundle} (${catalogue.bundles[bundle].length})`);
-    for (const skill of catalogue.bundles[bundle]) console.log(`  - ${skill}`);
+  for (const entry of [...catalogue.bundles].sort((a, b) => a.name.localeCompare(b.name))) {
+    console.log(`${entry.name} (${entry.skills.length} skills, ${entry.agents.length} agents)`);
+    for (const skill of entry.skills) console.log(`  - ${skill}`);
+    for (const agent of entry.agents) console.log(`  - agent: ${agent}`);
   }
 }
 
 function commandStatus(catalogue, options) {
-  const target = targetRoot(options);
-  const manifest = readInstallManifest(target, catalogue);
-  console.log(`Target: ${target}`);
+  const roots = targetRoots(options);
+  const manifest = readInstallManifest(roots.skills, catalogue);
+  console.log(`Target: ${roots.skills}`);
+  if (roots.agents) console.log(`Agents: ${roots.agents}`);
   console.log(`Catalogue: ${catalogue.version}`);
   const bundles = Object.keys(manifest.installedBundles).sort();
   if (bundles.length === 0) {
@@ -141,72 +174,135 @@ function commandStatus(catalogue, options) {
     const installed = manifest.installedBundles[bundle];
     console.log(`  - ${bundle} (${installed.catalogueVersion})`);
   }
+  console.log(`Managed: ${manifest.managedSkills.length} skills, ${manifest.managedAgents.length} agent(s)`);
+}
+
+function refuseUnmanaged(kind, name, destination, managed, force) {
+  if (fs.existsSync(destination) && !managed.has(name) && !force) {
+    throw new Error(
+      `Refusing to overwrite unmanaged ${kind} '${name}' at ${destination}. ` +
+        "Move it, remove it, or rerun with --force.",
+    );
+  }
 }
 
 function commandInstall(catalogue, requested, options) {
   const bundles = validateBundles(catalogue, requested);
   if (bundles.length === 0) throw new Error("Specify at least one bundle to install");
-  const target = targetRoot(options);
-  const manifest = readInstallManifest(target, catalogue);
-  const currentlyManaged = new Set(manifest.managedSkills);
-  const skills = skillDirectories(catalogue, bundles, GENERATED_SKILLS_ROOT);
+  const roots = targetRoots(options);
+  const manifest = readInstallManifest(roots.skills, catalogue);
+  const skills = skillDirectories(catalogue, bundles, SKILLS_ROOT);
+  const stems = agentsForBundles(catalogue, bundles);
+  const agents = roots.agents ? renderBundleAgents(catalogue, stems) : [];
 
+  // Every destination is checked before anything is written.
+  const managedSkills = new Set(manifest.managedSkills);
+  const managedAgents = new Set(manifest.managedAgents);
   for (const skill of skills) {
-    const destination = path.join(target, skill.name);
-    if (fs.existsSync(destination) && !currentlyManaged.has(skill.name) && !options.force) {
-      throw new Error(
-        `Refusing to overwrite unmanaged skill '${skill.name}' at ${destination}. ` +
-          "Move it, remove it, or rerun with --force.",
-      );
-    }
+    refuseUnmanaged("skill", skill.name, path.join(roots.skills, skill.name), managedSkills, options.force);
+  }
+  for (const agent of agents) {
+    refuseUnmanaged("agent", agent.name, path.join(roots.agents, `${agent.name}.md`), managedAgents, options.force);
   }
 
-  console.log(`${options.dryRun ? "Would install" : "Installing"} ${bundles.join(", ")} into ${target}`);
+  console.log(`${options.dryRun ? "Would install" : "Installing"} ${bundles.join(", ")} into ${roots.skills}`);
   for (const skill of skills) {
-    const destination = path.join(target, skill.name);
     console.log(`  ${options.dryRun ? "would copy" : "copy"} ${skill.name}`);
-    if (!options.dryRun) copyDirectoryAtomic(skill.directory, destination);
+    if (!options.dryRun) copyDirectoryAtomic(skill.directory, path.join(roots.skills, skill.name));
   }
+  for (const agent of agents) {
+    const destination = path.join(roots.agents, `${agent.name}.md`);
+    console.log(`  ${options.dryRun ? "would write" : "write"} agent ${agent.name} -> ${destination}`);
+    if (!options.dryRun) writeFileAtomic(destination, agent.content);
+  }
+  for (const agent of agents) for (const gap of agent.gaps) console.log(`gap: agent '${agent.name}': ${gap}`);
+  if (!roots.agents && stems.length > 0) console.log(TARGET_AGENT_GAP);
 
   if (options.dryRun) return;
   for (const bundle of bundles) {
+    const entry = catalogue.bundles.find((candidate) => candidate.name === bundle);
     manifest.installedBundles[bundle] = {
       catalogueVersion: catalogue.version,
-      skills: [...catalogue.bundles[bundle]],
+      skills: [...entry.skills],
+      agents: roots.agents ? [...entry.agents] : [],
     };
   }
+  const names = installedNames(catalogue, manifest.installedBundles);
+  const nowSkills = skillsForBundles(catalogue, names);
+  // Without an agents root (--target) the agents this manifest manages are left as they are.
+  const nowAgents = roots.agents ? agentsForBundles(catalogue, names) : manifest.managedAgents;
+  // Upgrade: remove what this manifest managed but the catalogue no longer puts in an installed bundle.
+  for (const skill of manifest.managedSkills.filter((name) => !nowSkills.includes(name))) {
+    console.log(`  remove ${skill} (no longer in the installed bundles)`);
+    fs.rmSync(path.join(roots.skills, skill), { recursive: true, force: true });
+  }
+  if (roots.agents) {
+    for (const agent of manifest.managedAgents.filter((name) => !nowAgents.includes(name))) {
+      console.log(`  remove agent ${agent} (no longer in the installed bundles)`);
+      fs.rmSync(path.join(roots.agents, `${agent}.md`), { force: true });
+    }
+  }
   manifest.catalogueVersion = catalogue.version;
-  manifest.managedSkills = recomputeManagedSkills(catalogue, manifest.installedBundles);
-  writeJsonAtomic(manifestPath(target), manifest);
-  console.log("Restart OpenCode so it refreshes skill discovery.");
+  manifest.managedSkills = nowSkills;
+  manifest.managedAgents = nowAgents;
+  writeJsonAtomic(manifestPath(roots.skills), manifest); // last, so an interrupted run converges
+  console.log("Restart OpenCode so it refreshes skill and agent discovery.");
 }
 
 function commandUninstall(catalogue, requested, options) {
   const bundles = validateBundles(catalogue, requested);
   if (bundles.length === 0) throw new Error("Specify at least one bundle to uninstall");
-  const target = targetRoot(options);
-  const manifest = readInstallManifest(target, catalogue);
-  const previouslyManaged = new Set(manifest.managedSkills);
+  const roots = targetRoots(options);
+  const manifest = readInstallManifest(roots.skills, catalogue);
   for (const bundle of bundles) delete manifest.installedBundles[bundle];
-  const stillManaged = new Set(recomputeManagedSkills(catalogue, manifest.installedBundles));
-  const removable = [...previouslyManaged].filter((skill) => !stillManaged.has(skill)).sort();
+  const names = installedNames(catalogue, manifest.installedBundles);
+  const stillSkills = new Set(skillsForBundles(catalogue, names));
+  // Without an agents root (--target) this run removes no agent, so it keeps every managed one.
+  const stillAgents = new Set(roots.agents ? agentsForBundles(catalogue, names) : manifest.managedAgents);
+  const removableSkills = manifest.managedSkills.filter((skill) => !stillSkills.has(skill)).sort();
+  const removableAgents = manifest.managedAgents.filter((agent) => !stillAgents.has(agent)).sort();
 
-  console.log(`${options.dryRun ? "Would uninstall" : "Uninstalling"} ${bundles.join(", ")} from ${target}`);
-  for (const skill of removable) {
-    const destination = path.join(target, skill);
+  console.log(`${options.dryRun ? "Would uninstall" : "Uninstalling"} ${bundles.join(", ")} from ${roots.skills}`);
+  for (const skill of removableSkills) {
     console.log(`  ${options.dryRun ? "would remove" : "remove"} ${skill}`);
-    if (!options.dryRun) fs.rmSync(destination, { recursive: true, force: true });
+    if (!options.dryRun) fs.rmSync(path.join(roots.skills, skill), { recursive: true, force: true });
+  }
+  for (const agent of removableAgents) {
+    console.log(`  ${options.dryRun ? "would remove" : "remove"} agent ${agent}`);
+    if (!options.dryRun) fs.rmSync(path.join(roots.agents, `${agent}.md`), { force: true });
   }
 
   if (options.dryRun) return;
   manifest.catalogueVersion = catalogue.version;
-  manifest.managedSkills = [...stillManaged];
+  manifest.managedSkills = [...stillSkills];
+  manifest.managedAgents = [...stillAgents];
   if (Object.keys(manifest.installedBundles).length === 0) {
-    fs.rmSync(manifestPath(target), { force: true });
+    fs.rmSync(manifestPath(roots.skills), { force: true });
   } else {
-    writeJsonAtomic(manifestPath(target), manifest);
+    writeJsonAtomic(manifestPath(roots.skills), manifest);
   }
-  console.log("Restart OpenCode so it refreshes skill discovery.");
+  console.log("Restart OpenCode so it refreshes skill and agent discovery.");
+}
+
+// Parity and gap tables on demand (D8): every skill is a pass-through; every agent is rendered.
+function commandReport(catalogue) {
+  const names = catalogue.bundles.map((entry) => entry.name);
+  const agents = renderBundleAgents(catalogue, Object.keys(catalogue.agents).sort());
+  const rows = [
+    ...skillsForBundles(catalogue, names).map((skill) => [`skill:${skill}`, 0]),
+    ...agents.map((agent) => [`agent:${agent.name}`, agent.gaps.length]),
+  ].sort((a, b) => a[0].localeCompare(b[0]));
+  console.log(`# Parity report (catalogue ${catalogue.version})\n`);
+  console.log("| Artifact | Claude | opencode | Gaps |\n|---|---|---|---|");
+  for (const [artifact, count] of rows) console.log(`| \`${artifact}\` | ✓ | ✓ | ${count} |`);
+  console.log(`\n# Gap report (catalogue ${catalogue.version})\n`);
+  const gaps = agents.flatMap((agent) => agent.gaps.map((gap) => [`agents/${agent.name}.md`, gap]));
+  if (gaps.length === 0) {
+    console.log("No gaps — every source artifact has a native opencode equivalent.");
+    return;
+  }
+  console.log("| Source | CLI | Reason |\n|---|---|---|");
+  for (const [source, gap] of gaps) console.log(`| \`${source}\` | opencode | ${gap} |`);
 }
 
 function main() {
@@ -234,6 +330,9 @@ function main() {
       return;
     case "uninstall":
       commandUninstall(catalogue, options.bundles, options);
+      return;
+    case "report":
+      commandReport(catalogue);
       return;
     default:
       throw new Error(`Unknown command '${options.command}'\n\n${usage()}`);

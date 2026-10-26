@@ -46,9 +46,13 @@ npm exec --yes \
   --package='git+https://github.com/meaningfy-ws/skillery.git#develop' \
   -- skillery-opencode install meaningfy-core --global
 ```
-Restart opencode afterwards so it refreshes skill discovery. Want to preview first? Add `--dry-run`
-to either command — it prints what it *would* copy without touching disk. Other install routes (the
-opencode plugin alias, a direct-checkout dev mode) are documented in this file's
+`--project` and `--global` also install the bundle's **agents** (into `.opencode/agents/` or
+`~/.config/opencode/agents/`) and print one `gap:` line per agent field opencode cannot express.
+`--target <dir>` installs skills only; when the bundles have agents it prints
+`gap: agents not installed with --target (use --global or --project)`.
+Restart opencode afterwards so it refreshes skill and agent discovery. Want to preview first? Add
+`--dry-run` to either command — it prints what it *would* copy without touching disk. Other install
+routes (the opencode plugin alias, installing from a local checkout) are documented in this file's
 [Alternate install routes](#alternate-install-routes) section — use the installer above unless you
 have a specific reason to use one of those.
 
@@ -140,9 +144,17 @@ npm exec --yes \
   -- skillery-opencode status --project
 ```
 Expected output: `Installed bundles:` followed by each bundle you installed and the catalogue
-version it's pinned to (not `Installed bundles: none`). Then confirm the spine registered by
+version it's pinned to (not `Installed bundles: none`), then a `Managed:` line with the skill and
+agent counts — e.g. `Managed: 9 skills, 3 agent(s)` for `meaningfy-building` alone (agents are
+counted only for `--project`/`--global`). Then confirm the spine registered by
 running `opsx-propose` — it should prompt you for a change description rather than say the command
 is unknown.
+
+To check that a strict loader reads every skill (none skipped for a YAML error), list the repo
+with the `skills` CLI; the output must contain no `Skipped` line:
+```bash
+npx skills add meaningfy-ws/skillery#develop --list
+```
 
 One recorded gap worth knowing before you rely on it: `persist-before-compaction` has no `PreCompact`
 event on opencode and degrades to a `session.idle` binding. Full matrix (every other dependency's
@@ -162,19 +174,21 @@ opencode plugin --global \
 ```
 The plugin can alternatively be configured under its canonical package name and passed one or more
 bundle names through plugin options or `MEANINGFY_SKILLERY_BUNDLES`. This route uses opencode's
-plugin `config()` hook to add generated skill directories to `skills.paths`; some opencode versions
+plugin `config()` hook to add the bundle's `skills/<name>` directories to `skills.paths`. It
+installs **skills only**: agents are a recorded gap on this route (use the Step 3 installer for
+them). Some opencode versions
 have initialized or cached skill discovery before that hook became visible, so the Step 3 installer
 is the compatibility-safe default — this route is retained for versions where plugin-provided skill
 paths are discovered correctly.
 
-**Direct checkout** (repository development) — point `OPENCODE_CONFIG_DIR` at the generated tree to
-expose the whole catalogue, unfiltered by bundle:
+**From a local checkout** (repository development) — run the installer from the clone; it copies
+the checkout's own `skills/` and renders its `agents/` into the current project:
 ```bash
-git clone --branch develop https://github.com/meaningfy-ws/skillery.git
-OPENCODE_CONFIG_DIR="$PWD/skillery/.opencode" opencode
+node path/to/skillery/tools/skillery-opencode.mjs install meaningfy-building --project
 ```
 
-**Uninstall / update a bundle** — rerun the Step 3 install command to update; uninstall with:
+**Uninstall / update a bundle** — rerun the Step 3 install command to update (it also removes the skills and
+agents it installed earlier that no installed bundle carries any more); uninstall with:
 ```bash
 npm exec --yes \
   --package='git+https://github.com/meaningfy-ws/skillery.git#develop' \
@@ -182,7 +196,7 @@ npm exec --yes \
 ```
 
 The installer records ownership in `.skillery-manifest.json` and refuses to replace unrelated local
-skills unless `--force` is supplied.
+skills or agents unless `--force` is supplied.
 
 ### Scoping skill permissions
 
