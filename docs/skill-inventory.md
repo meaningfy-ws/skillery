@@ -5,7 +5,7 @@
      agent's frontmatter (agents/*.md), bundles.yaml and facets.yaml.
      tests/test_skill_inventory.py fails the build if this drifts. -->
 
-33 skills and 3 agents across 6 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
+33 skills and 6 agents across 6 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
 
 ## Map
 
@@ -30,12 +30,15 @@ flowchart LR
   subgraph b_meaningfy_sales["meaningfy-sales"]
     s_proposal_writing["proposal-writing"]
     s_estimation["estimation"]
+    a_proposal_writer{{"proposal-writer"}}
   end
   subgraph b_meaningfy_architecture["meaningfy-architecture"]
     s_architecture["architecture"]
     s_conceptual_modelling["conceptual-modelling"]
     s_modelling_conventions["modelling-conventions"]
     s_linkml_engineering["linkml-engineering"]
+    a_system_architect{{"system-architect"}}
+    a_conceptual_modeller{{"conceptual-modeller"}}
   end
   subgraph b_meaningfy_building["meaningfy-building"]
     s_epic_planning["epic-planning"]
@@ -105,10 +108,22 @@ flowchart LR
   s_vault_setup --> p_knowledge
   s_vault_tidy --> p_knowledge
   s_writing_antipatterns --> p_content
+  a_proposal_writer --> p_proposals
+  a_system_architect --> p_modelling
+  a_conceptual_modeller --> p_modelling
   a_epic_planner --> p_software_development
   a_implementer --> p_software_development
   a_code_reviewer --> p_software_development
 
+  a_proposal_writer -.-> s_proposal_writing
+  a_proposal_writer -.-> s_estimation
+  a_proposal_writer -.-> s_executive_communication
+  a_system_architect -.-> s_architecture
+  a_system_architect -.-> s_modelling_conventions
+  a_system_architect -.-> s_conceptual_modelling
+  a_conceptual_modeller -.-> s_conceptual_modelling
+  a_conceptual_modeller -.-> s_modelling_conventions
+  a_conceptual_modeller -.-> s_linkml_engineering
   a_epic_planner -.-> s_epic_planning
   a_epic_planner -.-> s_clarity_gate
   a_epic_planner -.-> s_bdd_gherkin
@@ -163,6 +178,9 @@ flowchart LR
   style s_vault_setup fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_vault_tidy fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_writing_antipatterns fill:#1e1e1e,color:#ffffff,stroke:#000
+  style a_proposal_writer fill:#5a2d82,color:#ffffff,stroke:#000
+  style a_system_architect fill:#5a2d82,color:#ffffff,stroke:#000
+  style a_conceptual_modeller fill:#5a2d82,color:#ffffff,stroke:#000
   style a_epic_planner fill:#5a2d82,color:#ffffff,stroke:#000
   style a_implementer fill:#5a2d82,color:#ffffff,stroke:#000
   style a_code_reviewer fill:#5a2d82,color:#ffffff,stroke:#000
@@ -466,6 +484,7 @@ The commercial role: proposal and offer writing, and estimation.
 |---|---|---|---|---|---|---|---|---|---|
 | [`proposal-writing`](../skills/proposal-writing/SKILL.md) | Produce the proposal + Statement of Work (SoW) that frames the paid Decision Phase (P1) offer — with an explicit in/out scope boundary, priced as a fixed frame. | `proposals` | `sales` | `semantic-data` | `profiled` | `sell` | `stable` | `estimation`, `executive-communication`, `decision-package`, `semantic-consulting-coach` | `estimation`, `decision-package`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` |
 | [`estimation`](../skills/estimation/SKILL.md) | A lightweight fixed-cost scoping / estimation discipline that de-risks fixed-cost bids — a CHECKLIST + METHOD, not a heavy model. | `offers` | `sales` | `generic` | `reusable` | `sell` | `stable` | `proposal-writing`, `decision-package` | `proposal-writing`, `decision-package` |
+| [`proposal-writer`](../agents/proposal-writer.md) *(agent)* | Writes a sendable proposal or offer email from client requirements, asking the questions it needs through its output, with estimate and executive framing. | `proposals` | `sales` | `semantic-data` | `profiled` | `sell` | `experimental` | `proposal-writing`, `estimation`, `executive-communication` | — |
 
 ## meaningfy-architecture
 
@@ -477,6 +496,8 @@ The design / modelling role: system architecture (C4, ArchiMate/UML, ADRs, contr
 | [`conceptual-modelling`](../skills/conceptual-modelling/SKILL.md) | Build and evolve a living, representation-agnostic conceptual model for a product (programming) project — the domain's entities, attributes, relationships, and meaning — and choose how it is rendered. | `modelling` | `coding` | `modelling` | `precise` | `design` | `stable` | `linkml-engineering`, `architecture` | `modelling-conventions`, `linkml-engineering`, `architecture`, `cosmic-python` |
 | [`modelling-conventions`](../skills/modelling-conventions/SKILL.md) | The shared, representation-agnostic modelling craft reused across the modelling skills — naming discipline, modelling anti-patterns, and the guardrails a modeller follows while working, plus the two load-bearing principles (decouple attributes into reusable first-class properties; identify everything by a stable URI, implicit by default). | `modelling` | `coding` | `modelling` | `reusable` | `design` | `stable` | `conceptual-modelling`, `linkml-engineering` | `conceptual-modelling`, `linkml-engineering` |
 | [`linkml-engineering`](../skills/linkml-engineering/SKILL.md) | The operational LinkML craft, downstream of an existing model or spec — never greenfield. | `modelling` | `coding` | `semantic-data` | `precise` | `design` | `stable` | `conceptual-modelling` | `modelling-conventions`, `conceptual-modelling`, `architecture`, `cosmic-python`, `project-setup` |
+| [`system-architect`](../agents/system-architect.md) *(agent)* | Designs a new system with the user before code: use cases, architectural decisions and system diagrams, stating its view and plan briefly before each step. | `modelling` | `coding` | `modelling` | `reusable` | `design` | `experimental` | `architecture`, `modelling-conventions`, `conceptual-modelling` | — |
+| [`conceptual-modeller`](../agents/conceptual-modeller.md) *(agent)* | Builds and evolves a domain's conceptual model with the user, model-driven and data-centric, choosing the model source and rendering. | `modelling` | `coding` | `modelling` | `precise` | `design` | `experimental` | `conceptual-modelling`, `modelling-conventions`, `linkml-engineering` | — |
 
 ## meaningfy-building
 
@@ -522,12 +543,12 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | Value | Meaning | Skills and agents |
 |---|---|---|
 | `software-development` | build software with agents: plan, build, test, review, version | `meaningfy-git-workflow`, `guardrails`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
-| `modelling` | ontology, conceptual and system modelling | `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering` |
+| `modelling` | ontology, conceptual and system modelling | `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
 | `client-delivery` | deliver to a client and manage the project | — |
 | `advising` | coach a client's decisions | `semantic-consulting-coach`, `decision-package` |
 | `content` | write and explain for people: docs, posts, blogs, messages | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `executive-communication` |
 | `offers` | commercial offers, packaging, pitch and pricing | `estimation` |
-| `proposals` | proposal and offer documents | `proposal-writing` |
+| `proposals` | proposal and offer documents | `proposal-writing`, `proposal-writer` *(agent)* |
 | `crm` | create, manage and groom deals and contacts | — |
 | `devops` | environments, CI/CD, releases and operations | `ci-cd-delivery`, `meaningfy-release` |
 | `knowledge` | the owner's personal notes, plans and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
@@ -536,9 +557,9 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `coding` | building software with AI agents | `meaningfy-git-workflow`, `guardrails`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
+| `coding` | building software with AI agents | `meaningfy-git-workflow`, `guardrails`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `consulting` | advising clients | `semantic-consulting-coach`, `decision-package` |
-| `sales` | winning and pricing work | `proposal-writing`, `estimation` |
+| `sales` | winning and pricing work | `proposal-writing`, `estimation`, `proposal-writer` *(agent)* |
 | `personal` | the owner's own vault and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
 | `operations` | running infrastructure, CI/CD and monitoring | — |
 | `business` | running and growing the company, negotiation and internal communication | — |
@@ -551,8 +572,8 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | Value | Meaning | Skills and agents |
 |---|---|---|
 | `generic` | no domain knowledge; transfers anywhere | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`, `executive-communication`, `estimation`, `clarity-gate`, `bdd-gherkin` |
-| `semantic-data` | semantic technologies, ontologies, data governance | `semantic-consulting-coach`, `decision-package`, `proposal-writing`, `linkml-engineering` |
-| `modelling` | conceptual and system modelling | `architecture`, `conceptual-modelling`, `modelling-conventions` |
+| `semantic-data` | semantic technologies, ontologies, data governance | `semantic-consulting-coach`, `decision-package`, `proposal-writing`, `linkml-engineering`, `proposal-writer` *(agent)* |
+| `modelling` | conceptual and system modelling | `architecture`, `conceptual-modelling`, `modelling-conventions`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
 | `python` | Python code and repositories | `meaningfy-code-review`, `cosmic-python`, `project-setup`, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `spec-driven` | specification-first work (OpenSpec, EPICs) | `epic-planning`, `spec-stewardship`, `epic-planner` *(agent)* |
 | `git-release` | git, versions and releases | `meaningfy-git-workflow`, `meaningfy-release` |
@@ -563,18 +584,18 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `reusable` | R: a reusable core; a fix adds no domain content | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `guardrails`, `estimation`, `architecture`, `modelling-conventions`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin` |
-| `profiled` | C: a core with profiles; a fix adds a switch or a profile | `decision-package`, `executive-communication`, `proposal-writing` |
-| `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `semantic-consulting-coach`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
+| `reusable` | R: a reusable core; a fix adds no domain content | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `guardrails`, `estimation`, `architecture`, `modelling-conventions`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `system-architect` *(agent)* |
+| `profiled` | C: a core with profiles; a fix adds a switch or a profile | `decision-package`, `executive-communication`, `proposal-writing`, `proposal-writer` *(agent)* |
+| `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `semantic-consulting-coach`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 
 ### stage
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `sell` | winning the work | `proposal-writing`, `estimation` |
+| `sell` | winning the work | `proposal-writing`, `estimation`, `proposal-writer` *(agent)* |
 | `advise` | the decision phase with a client | `semantic-consulting-coach`, `decision-package` |
 | `shape` | shaping work and its plan | `epic-planning`, `spec-stewardship`, `clarity-gate`, `epic-planner` *(agent)* |
-| `design` | designing the system or model | `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering` |
+| `design` | designing the system or model | `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
 | `build` | writing the code | `meaningfy-git-workflow`, `cosmic-python`, `project-setup`, `implementer` *(agent)* |
 | `verify` | testing and reviewing | `guardrails`, `bdd-gherkin`, `meaningfy-code-review`, `code-reviewer` *(agent)* |
 | `release` | shipping and operating | `ci-cd-delivery`, `meaningfy-release` |
@@ -584,6 +605,6 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `experimental` | in trial; may change or go | — |
+| `experimental` | in trial; may change or go | `proposal-writer` *(agent)*, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
 | `stable` | in use and maintained | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `meaningfy-git-workflow`, `guardrails`, `semantic-consulting-coach`, `decision-package`, `executive-communication`, `proposal-writing`, `estimation`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `deprecated` | kept for now; do not start using it | — |
