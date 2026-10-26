@@ -13,7 +13,8 @@
 >   1. implement `skill-crafting-method`;
 >   2. record the baseline audit against the method;
 >   3. **this EPIC**;
->   4. revision batches from the audit, each its own change;
+>   4. a rigorous restructuring and evaluation of the repo, shaped as its own EPIC
+>      (`restructure-and-evaluate-catalogue`) from the audit;
 >   5. bundles redesigned by activity
 >      ([`inputs/2026-10-26-plan-confirmation.md`](inputs/2026-10-26-plan-confirmation.md)).
 
