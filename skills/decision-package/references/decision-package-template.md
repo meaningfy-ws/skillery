@@ -69,6 +69,6 @@ conceptual-modelling skill as a sketch in service of the decision — NOT a buil
 ## Golden-thread note
 
 Downstream architecture/requirement artefacts cite this package as parent:
-`DEC-<n> → requirement/architecture → conceptual model → EPIC → task → test → commit`. See
-[`../../../../spine/golden-thread.md`](../../../../spine/golden-thread.md).
+`DEC-<n> → requirement/architecture → conceptual model → EPIC → task → test → commit` (the golden
+thread, owned by `epic-planning`).
 ```

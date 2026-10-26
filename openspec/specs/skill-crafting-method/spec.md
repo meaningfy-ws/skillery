@@ -7,7 +7,7 @@ on-demand evals, and why the method stays inside skillery for now.
 ## Requirements
 ### Requirement: The method states what it owns and what it adopts by reference
 
-`docs/development-method.md` SHALL keep as its own text only what no published method covers: the
+`docs/development/README.md` SHALL keep as its own text only what no published method covers: the
 three readers, the principles of ownership and installability, the change path, the posture rule,
 the agent lifecycle, the issue loop, and the Definition of Done. For writing and testing a single
 skill, it SHALL cite the adopted methods instead of restating them: superpowers `writing-skills`,

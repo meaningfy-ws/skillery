@@ -6,7 +6,7 @@
 > [`inputs/2026-07-26-handbook-findings.md`](inputs/2026-07-26-handbook-findings.md), the excerpt of
 > *Employee Handbook — Second Edition (2026)* (pp. 65–68) that names Meaningfy's six existing project
 > roles and supplies the Work Shaper's written mandate. No requirement or architecture artifact sits
-> above them; per [`spine/golden-thread.md`](../../../spine/golden-thread.md) the root for a repo not
+> above them; per [`spine/golden-thread.md`](../../../skills/epic-planning/references/golden-thread.md) the root for a repo not
 > starting from a paid engagement is the requirement/seed itself.
 > **Re-shape event (round 2, 2026-07-26).** The handbook invalidated part of the round-1 bet, not just
 > its plan: **DEC-2 is reversed by DEC-2R** (Work Shaper *is* a role). Logged here as a deliberate,

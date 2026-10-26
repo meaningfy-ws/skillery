@@ -2,7 +2,7 @@
 
 The step-by-step authoring guide for this repository. It holds only what Meaningfy adds to the
 published methods; everything else is cited. The method it serves (principles, lifecycles, the
-Definition of Done) is [`docs/development-method.md`](../docs/development-method.md); this guide does
+Definition of Done) is [`docs/development/README.md`](README.md); this guide does
 not restate it.
 
 ## What we adopt, and from where
@@ -20,16 +20,16 @@ Where a Meaningfy rule below differs from a source, the Meaningfy rule wins in t
 ## Before you write
 
 1. **Pick the change path**, EPIC or direct PR, by the rule in
-   [§3 of the method](../docs/development-method.md#3-lifecycle--skills).
+   [§3 of the method](README.md#3-lifecycle--skills).
 2. **Decide it is a skill**, not an agent, doc or binding, and that nothing in the catalogue or among
    the declared external skills already owns the job: check
-   [`skill-repo-governance.md`](skill-repo-governance.md),
-   [`docs/skill-inventory.md`](../docs/skill-inventory.md) and
-   [`tests/ownership.yaml`](../tests/ownership.yaml).
+   [`skill-repo-governance.md`](governance.md),
+   [`docs/skill-inventory.md`](../skill-inventory.md) and
+   [`tests/ownership.yaml`](../../tests/ownership.yaml).
 3. **Record the failure case**: the prompt, what came out, what should have. It goes in the EPIC's
    `inputs/` or the PR and becomes the acceptance test.
 4. **Editing an existing skill? Name its posture first** (R, C or P) and follow the rule for it in
-   [§3 of the method](../docs/development-method.md#3-lifecycle--skills).
+   [§3 of the method](README.md#3-lifecycle--skills).
 
 ## Write it
 
@@ -37,7 +37,7 @@ Start from the template:
 
 ```bash
 mkdir -p skills/my-new-skill
-cp spec/skill-template.md skills/my-new-skill/SKILL.md
+cp docs/development/skill-template.md skills/my-new-skill/SKILL.md
 ```
 
 Skills are flat: one directory per skill directly under `skills/`. Bundles group them, not folders.
@@ -83,25 +83,25 @@ in every skill:
 The catalogue ships to Claude Code and opencode from one source. Keep the body CLI-agnostic: no
 `/opsx:`-style command forms and no `.claude/` paths, unless the case is on the recorded allow-list.
 The rules and their gates are in
-[`AGENTS.md` → Dual-CLI authoring rules](../AGENTS.md#dual-cli-authoring-rules).
+[`AGENTS.md` → Dual-CLI authoring rules](../../AGENTS.md#dual-cli-authoring-rules).
 
 ### Scripts, assets and third-party content
 
 Keep scripts small, deterministic and with their dependencies stated. Content taken from outside
 Meaningfy is declared as a dependency and linked, not copied; a vendored skill carries a provenance
-note and an entry in [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md)
-([principle 4 of the method](../docs/development-method.md#2-principles)). A skill under another licence carries its
+note and an entry in [`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md)
+([principle 4 of the method](README.md#2-principles)). A skill under another licence carries its
 own `LICENSE.txt`.
 
 ## Prove it
 
 How much testing a change needs is set by the proportionate test rule in
-[§2 of the method](../docs/development-method.md#2-principles): a behavioural baseline run for a new
+[§2 of the method](README.md#2-principles): a behavioural baseline run for a new
 skill, a boundary move or a discipline rule; probes only for wording, links and descriptions. For the
 baseline and the evals, follow `writing-skills` and *Evaluating skills*.
 
 Every description change ships with two probes in
-[`tests/trigger_probes.yaml`](../tests/trigger_probes.yaml): one that should fire the skill, and one
+[`tests/trigger_probes.yaml`](../../tests/trigger_probes.yaml): one that should fire the skill, and one
 near miss that should fire its closest neighbour instead:
 
 ```yaml
@@ -116,13 +116,13 @@ Put the before/after on the failure case in the PR.
 
 ## Register it
 
-1. Add the skill to exactly one bundle in [`bundles.yaml`](../bundles.yaml), the one bundle
+1. Add the skill to exactly one bundle in [`bundles.yaml`](../../bundles.yaml), the one bundle
    definition. Bundles follow roles (`meaningfy-core` plus one per role); use the bundle whose role
    the skill serves rather than adding a bundle. Then run `make bundles`, which renders
    `.claude-plugin/marketplace.json`, `bundles/` and `tools/opencode-catalogue.json`. Never edit
    those by hand.
 2. Run `make skill-inventory` to regenerate the catalogue map
-   [`docs/skill-inventory.md`](../docs/skill-inventory.md). Run it again after any rename,
+   [`docs/skill-inventory.md`](../skill-inventory.md). Run it again after any rename,
    re-bundle, description or facet change.
 3. Add the skill to its bundle's cell in the README's **What's inside** table and update the skill
    count above it.
@@ -136,14 +136,14 @@ An agent is registered the same way, in its bundle's `agents` list; how to write
 ## Facets and requirements
 
 - **Facets.** Every skill and agent declares one value for each facet of
-  [`facets.yaml`](../facets.yaml) (`purpose`, `area`, `subject`, `posture`, `stage`, `maturity`)
+  [`facets.yaml`](../../facets.yaml) (`purpose`, `area`, `subject`, `posture`, `stage`, `maturity`)
   under `metadata`. A value that is not in the file is a one-line PR to `facets.yaml` first.
 - **Requirements.** A skill named on another skill's `**Delegates:**` line in a different bundle
   needs that bundle in the delegating bundle's `requires:` list in `bundles.yaml`.
   `meaningfy-core` requires nothing, and cycles are not allowed. When a hand-off would break that,
   name the skill on the Related line instead.
 - **Where docs go.** A new documentation file needs a row in the register,
-  [§8 of the development method](../docs/development-method.md#8-where-things-live).
+  [§8 of the development method](README.md#8-where-things-live).
 
 ## Document and ship
 
@@ -151,8 +151,8 @@ An agent is registered the same way, in its bundle's `agents` list; how to write
 - Write the CHANGELOG line for the person who installs it: what they can now do, what they must do
   (reinstall, rename), what went away and what replaces it.
 - Commit with a conventional commit and open a PR into `develop`
-  ([`meaningfy-git-workflow`](../skills/meaningfy-git-workflow)). Versions change only through the
-  release flow ([`meaningfy-release`](../skills/meaningfy-release)).
+  ([`meaningfy-git-workflow`](../../skills/meaningfy-git-workflow)). Versions change only through the
+  release flow ([`meaningfy-release`](../../skills/meaningfy-release)).
 
 ## Retiring a skill
 
@@ -161,5 +161,5 @@ Retirement is an EPIC. Remove the skill from `bundles.yaml`, run `make bundles` 
 
 ## When you are done
 
-The checklist is the [Definition of Done](../docs/development-method.md#9-definition-of-done). This
+The checklist is the [Definition of Done](README.md#9-definition-of-done). This
 guide carries none of its own.

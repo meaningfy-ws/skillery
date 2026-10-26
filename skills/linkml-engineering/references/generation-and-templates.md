@@ -101,7 +101,7 @@ neomodel OGM** (below), and further **custom generators** as a project needs the
 
 Two custom generators, both subclassing LinkML's `Generator` per the mechanism above. Documented
 here because the behavior is LinkML-generator knowledge — but the code itself is **not a skill
-asset**: a Skill's home is reusable *knowledge* (`spec/skill-repo-governance.md`), not a maintained,
+asset**: a Skill's home is reusable *knowledge* (`docs/development/governance.md`), not a maintained,
 tested codebase. The generators live as repo tooling at `tools/linkml_neo4j/` (tested by skillery's
 own `tests/`, same pattern as `tools/repo_lint`/`tools/bundle_gen`), and `project-setup` is the one
 that projects a pinned copy into a consuming repo — this skill cites them, it doesn't own them.

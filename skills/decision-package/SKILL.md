@@ -107,8 +107,7 @@ It is **not** forced into `openspec/specs/` — those are RFC-2119 behaviour con
 Package is an **executive narrative**, a different genre. It gets its own home so the genres do not
 collide.
 
-It is the **consulting-tier root of the golden thread** (see
-[`../../spine/golden-thread.md`](../../spine/golden-thread.md)). The first `specs/` /
+It is the **consulting-tier root of the golden thread** (owned by `epic-planning`). The first `specs/` /
 architecture entries **cite it as their parent**:
 
 ```

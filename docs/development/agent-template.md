@@ -2,7 +2,7 @@
 
 The one canonical standard for an `agents/<name>.md` file in this repository. An agent is a **thin
 wrapper**: role, job, dispatch contract and glue. Every reusable method lives in a skill (see
-[`skill-repo-governance.md`](skill-repo-governance.md) placement rule 2). The validator checks this
+[`skill-repo-governance.md`](governance.md) placement rule 2). The validator checks this
 standard (`agent_conformance` and `agent_bundle_membership` in `tools/repo_lint/lint.py`); the living
 requirement is "Agents conform to the agent authoring standard" in
 `openspec/specs/catalogue-governance/spec.md`. The skill counterpart is
@@ -22,7 +22,7 @@ A closed allowlist. Any other field fails the validator.
 | `skills` | yes | non-empty YAML list; the first local skill (no `:`, not external) is the agent's **primary skill** |
 | `disallowedTools` | no | YAML list |
 | `color` | no | one of `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan` |
-| `metadata` | in practice yes | the six catalogue facets, as for skills (vocabulary in [`../facets.yaml`](../facets.yaml)); not rendered for opencode. A change to `metadata` only is not behavioural and needs no new Gherkin scenario |
+| `metadata` | in practice yes | the six catalogue facets, as for skills (vocabulary in [`../facets.yaml`](../../facets.yaml)); not rendered for opencode. A change to `metadata` only is not behavioural and needs no new Gherkin scenario |
 | anything else (`bundle`, `primary`, `permissionMode`, `memory`, `maxTurns`, …) | forbidden | see *Field adoption* |
 
 After any frontmatter edit, run `make bundles` (the opencode catalogue carries the parsed frontmatter).
@@ -31,7 +31,7 @@ After any frontmatter edit, run `make bundles` (the opencode catalogue carries t
 
 One job, three runtimes. The type decides what the dispatch contract must also state. How each type
 is rendered on each CLI, and the recorded gaps, live in
-[`../docs/environment/dual-cli/mapping.md`](../docs/environment/dual-cli/mapping.md).
+[`../docs/environment/dual-cli/mapping.md`](../environment/dual-cli/mapping.md).
 
 | `type` | The dispatch contract must also state |
 |---|---|

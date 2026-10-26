@@ -20,14 +20,14 @@ role's view of it.
 OpenSpec exposes the build loop as `/opsx:<verb>` commands. skillery ships the **core profile**
 (`propose`, `explore`, `apply`, `sync`, `archive`); an expanded set (`new`, `continue`, `ff`,
 `verify`, `bulk-archive`, `onboard`) is opt-in per repo. The full table and the command→driving-skill
-map are the single source in [`spine/workflows.md`](../../spine/workflows.md#verb-roster); do not
+map are the single source in [`docs/development/workflows.md`](../development/workflows.md#verb-roster); do not
 re-list verbs elsewhere.
 
 ---
 
 ## 2. The build-tier command sequence
 
-The main per-Epic loop (see [`spine/workflows.md`](../../spine/workflows.md#named-meaningfy-workflow-patterns)
+The main per-Epic loop (see [`docs/development/workflows.md`](../development/workflows.md#named-meaningfy-workflow-patterns)
 for the canonical pattern):
 
 ```
@@ -41,7 +41,7 @@ for the canonical pattern):
 ```
 
 Each verb has exactly one driving discipline; see the command→skill map in
-[`spine/workflows.md`](../../spine/workflows.md#command--driving-meaningfy-discipline).
+[`docs/development/workflows.md`](../development/workflows.md#command--driving-meaningfy-discipline).
 
 ---
 
@@ -76,7 +76,7 @@ Once the change is implemented and verified, the living-spec lifecycle is owned 
 
 The full lifecycle (grooming the durable store, brownfield delta conventions, the orientation-index
 policy) lives in [`spec-stewardship`](../../skills/spec-stewardship/SKILL.md); the
-mapping of nouns to files in [`spine/epic-change-memory-mapping.md`](../../spine/epic-change-memory-mapping.md).
+mapping of nouns to files in [`docs/development/epic-change-memory-mapping.md`](../development/epic-change-memory-mapping.md).
 
 ---
 

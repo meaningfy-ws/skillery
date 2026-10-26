@@ -46,8 +46,8 @@ The model is a first-class asset with a home of its own. Pick the mode explicitl
 
 **Golden-thread implication.** Model entities carry stable IDs (see ontology practices). When the
 model lives in its own repo, downstream code and specs **cite those entity IDs across repos** — the
-cross-repo rung of the golden thread (see [`../../spine/golden-thread.md`](../../spine/golden-thread.md),
-which notes cross-repo IDs are convention-only for now).
+cross-repo rung of the golden thread (owned by `epic-planning`; cross-repo IDs are convention-only
+for now).
 
 ## The source: LinkML by default, not by default-only
 
@@ -115,8 +115,7 @@ terminology / definitions / glossary management (ubiquitous language).
 - System/solution architecture — C4 levels, ADRs, the contract-first *order of artifacts* →
   `architecture`. Architecture authors *which* contracts
   exist; this skill owns the domain model that backs them.
-- Normative requirements and the spec spine → the spine specs (see
-  [`../../spine/README.md`](../../spine/README.md)). Model classes are *ubiquitous language*
+- Normative requirements and the spec spine → the OpenSpec specs (`openspec/specs/`). Model classes are *ubiquitous language*
   that specs reference; specs state the *rules*.
 
 Code layering and what consumes the generated contract belong to the related skill `cosmic-python`:

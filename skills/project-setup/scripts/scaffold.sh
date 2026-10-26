@@ -17,7 +17,7 @@ ORG="meaningfy-ws" ; BRANCH="develop" ; DESC="" ; YEAR="$(date +%Y)"
 ARCHETYPE="product" ; TARGET="$(pwd)"
 WITH_DOCS=1 ; WITH_INFRA=1 ; WITH_CI=1 ; DEPLOYABLE=0
 FORCE=0 ; SKIP_EXISTING=0 ; NO_LOCK=0 ; DRY_RUN=0 ; MINIMAL=0 ; NEO4J=0
-# OpenSpec version this skill pins schemas against (kept in sync with spine/openspec-version.txt).
+# OpenSpec version this skill pins schemas against (kept in sync with openspec/openspec-version.txt).
 OPENSPEC_PIN="1.4.1"
 
 usage() {
@@ -195,7 +195,7 @@ scaffold_openspec() {
   render "$TPL/openspec/specs-README.md.tmpl"  "$TARGET/openspec/specs/README.md"
   render "$TPL/openspec/changes-README.md.tmpl" "$TARGET/openspec/changes/README.md"
   keepdir "openspec/changes/archive" "Archived (completed) changes land here after /opsx:archive."
-  # Copy the meaningfy schema PINNED from skillery (record the pin from spine/openspec-version.txt).
+  # Copy the meaningfy schema PINNED from skillery (record the pin from openspec/openspec-version.txt).
   local schema_src="$SCRIPT_DIR/../../../../openspec/schemas/meaningfy"
   if [[ "$DRY_RUN" -eq 1 ]]; then
     [[ -d "$TARGET/openspec/schemas/meaningfy" ]] \

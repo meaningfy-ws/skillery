@@ -41,9 +41,9 @@ rather than restating them:
 | Commits, branches, PRs | `meaningfy-git-workflow` |
 | TDD discipline while implementing | `superpowers:test-driven-development` |
 
-The spine conventions it lays down are documented in [`../../spine/README.md`](../../spine/README.md);
-the target layout in [`../../docs/environment/openspec-setup-guide.md`](../../docs/environment/openspec-setup-guide.md).
-**This skill DOES; those docs DESCRIBE.**
+The spine it lays down is OpenSpec with the `meaningfy` schema (the golden thread is owned by
+`epic-planning`); the projection mechanics are in
+[`references/spine-projection.md`](references/spine-projection.md).
 
 ## Modes
 

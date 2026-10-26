@@ -4,9 +4,9 @@
 §§1, 3, 4, 7, 8; [`inputs/2026-07-26-handbook-findings.md`](inputs/2026-07-26-handbook-findings.md)
 §§1–5 (Employee Handbook 2nd ed. excerpt + the round-2 governance quote); and
 [`inputs/handover-analysis.md`](inputs/handover-analysis.md) (findings 1–4);
-spine conventions [`spine/workflows.md`](../../../spine/workflows.md),
-[`spine/golden-thread.md`](../../../spine/golden-thread.md),
-[`spine/epic-change-memory-mapping.md`](../../../spine/epic-change-memory-mapping.md).
+spine conventions [`spine/workflows.md`](../../../docs/development/workflows.md),
+[`spine/golden-thread.md`](../../../skills/epic-planning/references/golden-thread.md),
+[`spine/epic-change-memory-mapping.md`](../../../docs/development/epic-change-memory-mapping.md).
 **Siblings (cited, never restated):** `define-blc-engagement-model` (engagement/commercial),
 `define-delivery-release-lifecycle` (DoD + delivery/release), `define-roles-and-raci` (roles + RACI),
 `define-lifecycle-playbooks` (big-picture + per-role views).

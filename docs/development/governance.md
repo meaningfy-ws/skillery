@@ -14,10 +14,10 @@ Every artifact is exactly one of these, and that decides its home:
 | **Doc** | Humans | Never auto-loaded | `docs/` | Written for people; narrates & points, never restates skill rules |
 | **Binding** | Harness (every session) | Always | `prompts/` + root `AGENTS.md`, `CLAUDE.md` | Mandates & routes to skills; never carries the standard |
 
-Authoring governance (`spec/`, incl. `spec/skill-template.md`) and distribution
+Authoring governance (`docs/development/`, incl. `docs/development/skill-template.md`) and distribution
 (`bundles.yaml`, rendered to `.claude-plugin/`, `bundles/` and
 `tools/opencode-catalogue.json`) sit alongside as supporting infrastructure. The durable
-spec **spine** (`spine/` + `openspec/`) is projected into project repos by the
+spec **spine** (`docs/development/` + `openspec/`) is projected into project repos by the
 `project-setup` skill.
 
 ## Placement rules
@@ -25,7 +25,7 @@ spec **spine** (`spine/` + `openspec/`) is projected into project repos by the
 1. **Knowledge → a skill.** If two skills could own a fact, the more specific one owns it; the
    other points by name. External skills (superpowers, stream-coding, …) are **referenced, not
    vendored**; an adopted copy carries a provenance note and a review, as set out in
-   [principle 4 of the development method](../docs/development-method.md#2-principles).
+   [principle 4 of the development method](README.md#2-principles).
 2. **An agent carries no knowledge.** Keep an agent only when it is a named worker others dispatch,
    needs a declared runtime type, or needs a model pin or a tool denial that must hold on both CLIs
    (skill-level `model`, `allowed-tools`, `context: fork` are Claude-only; a tool restriction holds on

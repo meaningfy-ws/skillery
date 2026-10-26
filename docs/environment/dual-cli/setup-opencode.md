@@ -88,7 +88,7 @@ cp /tmp/stream-coding/SKILL.md ~/.claude/skills/stream-coding/SKILL.md   # adjus
 ```
 
 **4d. OpenSpec** — the spine engine (`opsx-*` commands). Upstream: https://github.com/Fission-AI/OpenSpec.
-Pinned version: [`../../../spine/openspec-version.txt`](../../../spine/openspec-version.txt).
+Pinned version: [`../../../spine/openspec-version.txt`](../../../openspec/openspec-version.txt).
 ```bash
 npm i -g @fission-ai/openspec
 ```

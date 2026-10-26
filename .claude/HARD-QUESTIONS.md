@@ -31,7 +31,7 @@ Q2.3's answer flagged the `requirement → ADR → model-entity → epic → cha
 task → test → commit` chain as possibly dangerous: ADRs/model-entities are only
 *parts* of architecture, and the architecture-documentation standard is not yet
 specified. I made the chain deliberately coarse (see
-[`../spine/golden-thread.md`](../spine/golden-thread.md)):
+[`../spine/golden-thread.md`](../skills/epic-planning/references/golden-thread.md)):
 `product/requirement spec → architecture (scenarios, ADRs, use cases, C4 +
 ArchiMate, contracts, …) → epic/change → task → test → commit`.
 **Working assumption:** keep it coarse; harden after the architecture-doc

@@ -118,10 +118,10 @@
 - [x] 9.1 Tests first: `top_level_folders` (an unknown folder fails) and the widened
       `cross_skill_paths` (a link from a skill into `docs/` fails). **Accept:** they fail for the
       expected reasons.
-- [ ] 9.2 The development home: `docs/development-method.md`, `docs/catalogue-architecture.*` and
+- [x] 9.2 The development home: `docs/development-method.md`, `docs/catalogue-architecture.*` and
       `spec/*.md` → `docs/development/`; pointers in `AGENTS.md`, README, `CONTRIBUTING.md`.
       **Accept:** `spec/` gone; `broken_links` clean.
-- [ ] 9.3 `spine/`: `golden-thread.md` → `epic-planning`; the version pin → `openspec/`; the rest →
+- [x] 9.3 `spine/`: `golden-thread.md` → `epic-planning`; the version pin → `openspec/`; the rest →
       `docs/development/`; every skill link into `spine/` removed per D-13. **Accept:** `spine/` gone.
 - [ ] 9.4 `hooks/`, `prompts/`, `evals/` and the company-practice docs per D-13. **Accept:** those
       folders gone; `hooks_inventory_shape` reads `hooks.yaml`; `plugin-eval.yml` reads `tests/evals/`.

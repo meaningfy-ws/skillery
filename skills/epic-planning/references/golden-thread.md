@@ -11,7 +11,7 @@ justifies it. This matters for explainability positioning (DORA, the EU AI Act).
 > much of the architecture documentation (use cases, C4/ArchiMate views,
 > scenarios, contracts) is not yet specified. Pinning a rigid chain now would
 > bake in an incomplete model. We refine it once the architecture documentation
-> standard is fully shaped (a [HARD question](../.claude/HARD-QUESTIONS.md)).
+> standard is fully shaped (an open question).
 
 ## The chain (coarse form)
 
@@ -25,7 +25,7 @@ Decision Package      (consulting-tier root — openspec/decisions/<id>.md; the 
             → commit    (Conventional Commit referencing the change)
 ```
 
-The **Decision Package** (owned by the [`decision-package`](../skills/decision-package/SKILL.md)
+The **Decision Package** (owned by the `decision-package`
 skill, EPIC-07) is the consulting-tier **root** when an engagement starts there: it is a durable
 *executive narrative* artifact (recommendation, scope, buy/build/defer, execution brief), so it lives
 at `openspec/decisions/<id>.md` — **not** in `openspec/specs/` (which are RFC-2119 behaviour
@@ -35,7 +35,7 @@ begin with a consulting engagement, the root is simply the requirement specifica
 > **Convention, not yet a schema type.** `openspec/decisions/` is the *intended* home; the forked
 > `meaningfy` schema does not yet define a `decisions` artifact type, so `openspec validate --strict`
 > does not validate it. Until it does, this is a documented convention (a plain Markdown artifact),
-> hardened alongside the golden-thread refinement (see [HARD-QUESTIONS](../.claude/HARD-QUESTIONS.md)).
+> hardened alongside the golden-thread refinement.
 
 Each layer **cites the one above it** ("cite your parent").
 
@@ -44,8 +44,7 @@ Each layer **cites the one above it** ("cite your parent").
 The "EPIC" and the OpenSpec "change" are currently **one artifact** with two
 faces: the EPIC text is a Shape-Up *work shape*, while a plain OpenSpec change
 may carry other structure. The spine reconciles them by mapping the EPIC onto
-the change's `proposal.md` (see
-[`epic-change-memory-mapping.md`](epic-change-memory-mapping.md)) — one artifact,
+the change's `proposal.md` — one artifact,
 no proliferation. Whether they should ever diverge is left open on purpose.
 
 ## IDs: human-readable, minted at authoring time (Q2.3=A)

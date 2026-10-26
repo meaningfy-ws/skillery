@@ -1,6 +1,6 @@
 @startuml catalogue-model-class
 ' The catalogue's conceptual model (class view), revision 2 (2026-10-27, owner's review).
-' Published in docs/catalogue-architecture.md; copied from the restructure-and-evaluate-catalogue
+' Published in docs/development/catalogue-architecture.md; copied from the restructure-and-evaluate-catalogue
 ' EPIC's inputs/2026-10-27-catalogue-model.class.puml (that copy is the dated record).
 ' Lanes (top to bottom): distribution, knowledge, action, external, intent, assurance.
 

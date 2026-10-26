@@ -40,7 +40,7 @@ implement, and the reason behind the steps of [`setup-claude.md`](setup-claude.m
 | invocation name `meaningfy-<bundle>:<agent>` | opencode agent name |
 
 `type` itself is never emitted into the opencode file. The per-type contract rules are in
-[`spec/agent-template.md`](../../../spec/agent-template.md#types).
+[`docs/development/agent-template.md`](../../development/agent-template.md#types).
 
 **Recorded agent gaps:**
 

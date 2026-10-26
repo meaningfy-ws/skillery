@@ -8,17 +8,17 @@ CLI-specific guidance lives in that CLI's binding, never here.
 ## What this repo is
 
 A company-wide skills/agents/docs catalogue for **Claude Code and opencode**. Every artifact is
-exactly one of four types (defined in [`spec/skill-repo-governance.md`](spec/skill-repo-governance.md)):
+exactly one of four types (defined in [`docs/development/governance.md`](docs/development/governance.md)):
 
 | Type | Home | Rule |
 |------|------|------|
 | **Skill** | `skills/` | Reusable knowledge; single source of authority per fact |
-| **Agent** | `agents/` | Thin wrapper — see [`spec/agent-template.md`](spec/agent-template.md) |
+| **Agent** | `agents/` | Thin wrapper — see [`docs/development/agent-template.md`](docs/development/agent-template.md) |
 | **Doc** | `docs/` | Written for people; narrates and points, never restates skill rules |
 | **Binding** | `prompts/` + root agentic files (`AGENTS.md`, `CLAUDE.md`) | Mandates and routes; never carries the standard |
 
 **Single-source-of-authority rule:** if a fact belongs to a skill, it lives there and nowhere else.
-See [`spec/skill-repo-governance.md`](spec/skill-repo-governance.md) for placement rules.
+See [`docs/development/governance.md`](docs/development/governance.md) for placement rules.
 
 ## Dual-CLI distribution
 
@@ -32,7 +32,7 @@ generated `bundles/` tree; `bundles/` is never committed on `develop`.
 
 ## Skills and agents development method
 
-The method is defined in [`docs/development-method.md`](docs/development-method.md) — principles,
+The method is defined in [`docs/development/README.md`](docs/development/README.md) — principles,
 the skill and agent lifecycles, the documentation standard, installability, the issue-driven
 improvement loop and the Definition of Done. This binding mandates it; it does not restate it.
 
@@ -53,12 +53,12 @@ improvement loop and the Definition of Done. This binding mandates it; it does n
 - **Issues drive improvement.** Defects and requests come in through the templates in
   [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) and leave as a probe, a fix in the owning
   skill, an EPIC, or a written decline.
-- **Done** means the checklist in [§9 of the method](docs/development-method.md#9-definition-of-done)
+- **Done** means the checklist in [§9 of the method](docs/development/README.md#9-definition-of-done)
   is true and `make validate` is green.
 
 ## How to maintain / extend the catalogue
 
-- **Adding or changing a skill** — follow the **Skills and agents development method** above; the structural detail is in [`spec/CREATING_SKILLS.md`](spec/CREATING_SKILLS.md). After any
+- **Adding or changing a skill** — follow the **Skills and agents development method** above; the structural detail is in [`docs/development/creating-skills.md`](docs/development/creating-skills.md). After any
   add, rename, re-bundle, re-describe or facet change, run `make skill-inventory` to regenerate the
   catalogue map [`docs/skill-inventory.md`](docs/skill-inventory.md) (drift is caught by
   `tests/test_skill_inventory.py` in `make validate`); every skill and agent declares the six facets
@@ -107,7 +107,7 @@ Full per-CLI setup and the compatibility matrix: [`docs/environment/dual-cli/`](
 `make validate` is the guardrail. Run it before every PR; CI runs it too, plus the
 `validate-spine` job (`make validate-spine`) and the `opencode-installer` job (`npm run test:opencode-installer`, the node tests of the opencode installer
 and agent renderer). See
-[`spec/skill-repo-governance.md`](spec/skill-repo-governance.md) for what the validator enforces.
+[`docs/development/governance.md`](docs/development/governance.md) for what the validator enforces.
 
 ## Common Meaningfy practices
 
@@ -115,8 +115,8 @@ and agent renderer). See
   [`skills/cosmic-python`](skills/cosmic-python) skill when designing non-trivial additions).
 - **Commits** — conventional commits are mandatory; see the
   [`skills/meaningfy-git-workflow`](skills/meaningfy-git-workflow) skill for the full standard.
-- **Spine / OpenSpec conventions** — the durable spec spine lives in [`spine/`](spine/) (docs) and [`openspec/`](openspec/) (the live OpenSpec instance + the forked `meaningfy` schema). See [`spine/README.md`](spine/README.md).
-- **External method skills land in the spine (binding).** `superpowers` (brainstorming, writing-plans, executing-plans, TDD, …) provides *disciplines*, not a parallel spec system. In a spine-wired repo, their artifacts MUST land in the spine, never in a `docs/superpowers/` tree: a **brainstorming** design feeds the **EPIC** (`openspec/changes/<id>/proposal.md`); **writing-plans is SUPERSEDED** by the **PLAN** (`design.md` + `tasks.md`, gated by `clarity-gate`); execution uses `superpowers:test-driven-development` / `subagent-driven-development`, tracked via the opsx apply command (`/opsx:apply` on Claude, `opsx-apply` on opencode). The verb↔artifact map is in [`spine/workflows.md`](spine/workflows.md#superpowers--spine). skillery **dogfoods this**: its own non-trivial changes are `openspec/changes/` EPICs.
+- **Spine / OpenSpec conventions** — the durable spec spine lives in [`openspec/`](openspec/) (the live OpenSpec instance + the forked `meaningfy` schema); how this repo runs it is in [`docs/development/spine.md`](docs/development/spine.md).
+- **External method skills land in the spine (binding).** `superpowers` (brainstorming, writing-plans, executing-plans, TDD, …) provides *disciplines*, not a parallel spec system. In a spine-wired repo, their artifacts MUST land in the spine, never in a `docs/superpowers/` tree: a **brainstorming** design feeds the **EPIC** (`openspec/changes/<id>/proposal.md`); **writing-plans is SUPERSEDED** by the **PLAN** (`design.md` + `tasks.md`, gated by `clarity-gate`); execution uses `superpowers:test-driven-development` / `subagent-driven-development`, tracked via the opsx apply command (`/opsx:apply` on Claude, `opsx-apply` on opencode). The verb↔artifact map is in [`docs/development/workflows.md`](docs/development/workflows.md#superpowers--spine). skillery **dogfoods this**: its own non-trivial changes are `openspec/changes/` EPICs.
 - **Hooks** — hook *intent* is single-sourced in [`hooks/inventory.yaml`](hooks/inventory.yaml) (see [`hooks/README.md`](hooks/README.md)); git-mechanism hooks are shared across CLIs, agent-mechanism hooks are rendered per CLI.
 
 GitNexus scope in this repo: the code in `tools/` and `tests/`. This block lives here only (not in

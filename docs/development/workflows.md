@@ -7,7 +7,7 @@ rather than re-listing verbs.
 ## The canonical `/opsx` verb roster {#verb-roster}
 
 OpenSpec exposes these workflow verbs as `/opsx:<verb>` slash-commands / skills
-(authoritative for the pinned version — see [`openspec-version.txt`](openspec-version.txt)):
+(authoritative for the pinned version — see [`openspec-version.txt`](../../openspec/openspec-version.txt)):
 
 | Verb | What it does |
 |---|---|
@@ -70,16 +70,16 @@ Which skill / superpowers discipline owns each verb. This is the concrete
 
 | `/opsx` verb | Driven by |
 |---|---|
-| `explore` | `superpowers:brainstorming` + [`epic-planning`](../skills/epic-planning) elicitation |
-| `propose` | [`epic-planning`](../skills/epic-planning) (shapes the EPIC = proposal.md) |
-| derive PLAN | [`epic-planning`](../skills/epic-planning) (design.md + tasks.md) + [`bdd-gherkin`](../skills/bdd-gherkin) authors `.feature` coverage as a **design-phase** PLAN artifact off the SHALL+GWT |
-| clarity gate | [`clarity-gate`](../skills/clarity-gate) (semantic ≥9/10 on the PLAN **incl. scenario coverage**) |
-| `apply` | `superpowers:test-driven-development` (step definitions + code) + [`cosmic-python`](../skills/cosmic-python) (incl. `PR-SURVEY-FIRST`) |
-| `verify` | [`meaningfy-code-review`](../skills/meaningfy-code-review) + `superpowers:verification-before-completion` |
+| `explore` | `superpowers:brainstorming` + [`epic-planning`](../../skills/epic-planning) elicitation |
+| `propose` | [`epic-planning`](../../skills/epic-planning) (shapes the EPIC = proposal.md) |
+| derive PLAN | [`epic-planning`](../../skills/epic-planning) (design.md + tasks.md) + [`bdd-gherkin`](../../skills/bdd-gherkin) authors `.feature` coverage as a **design-phase** PLAN artifact off the SHALL+GWT |
+| clarity gate | [`clarity-gate`](../../skills/clarity-gate) (semantic ≥9/10 on the PLAN **incl. scenario coverage**) |
+| `apply` | `superpowers:test-driven-development` (step definitions + code) + [`cosmic-python`](../../skills/cosmic-python) (incl. `PR-SURVEY-FIRST`) |
+| `verify` | [`meaningfy-code-review`](../../skills/meaningfy-code-review) + `superpowers:verification-before-completion` |
 | `sync` / `archive` | spine convention (deterministic; kept out of the LLM path) |
 
 > The clarity gate (PLAN, semantic) and `openspec validate --strict` (structure,
-> CI) are complementary — see [`README.md`](README.md#two-gates-two-natures).
+> CI) are complementary — see [`README.md`](spine.md#two-gates-two-natures).
 
 ## superpowers ↔ spine
 
@@ -90,11 +90,11 @@ tree (a Binding in the repo `CLAUDE.md` enforces this). Map:
 | superpowers | role here | lands as |
 |---|---|---|
 | `brainstorming` | thinking method during `explore` / shaping | feeds the **EPIC** (`proposal.md`) — not a separate `docs/superpowers/specs/` design |
-| `writing-plans` | **superseded** inside a spine repo | the **PLAN** (`design.md` + `tasks.md`), derived by [`epic-planning`](../skills/epic-planning/SKILL.md) and gated by [`clarity-gate`](../skills/clarity-gate/SKILL.md) |
-| `test-driven-development` | the build discipline | `apply` — TDD inside [`cosmic-python`](../skills/cosmic-python/SKILL.md) layers |
+| `writing-plans` | **superseded** inside a spine repo | the **PLAN** (`design.md` + `tasks.md`), derived by [`epic-planning`](../../skills/epic-planning/SKILL.md) and gated by [`clarity-gate`](../../skills/clarity-gate/SKILL.md) |
+| `test-driven-development` | the build discipline | `apply` — TDD inside [`cosmic-python`](../../skills/cosmic-python/SKILL.md) layers |
 | `subagent-driven-development` / `executing-plans` | execution harness | runs `tasks.md`, tracked via `/opsx:apply` |
 | `systematic-debugging`, `verification-before-completion` | quality disciplines | used during `apply` / `verify` |
 
 **Why:** one durable, traceable spec system (the spine), not two. The lifecycle (archive, grooming,
-the orientation index) is owned by [`spec-stewardship`](../skills/spec-stewardship/SKILL.md). Forking
+the orientation index) is owned by [`spec-stewardship`](../../skills/spec-stewardship/SKILL.md). Forking
 superpowers into Meaningfy skills is the documented fallback **only if** this Binding proves leaky.

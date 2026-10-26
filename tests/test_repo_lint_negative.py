@@ -376,7 +376,7 @@ def test_agent_missing_field_is_flagged(tmp_path):
 
 def test_agent_bundle_field_is_flagged(tmp_path):
     assert _conforming(tmp_path, {"bundle": "meaningfy-building"}) == [
-        "agents/x.md: frontmatter field 'bundle' is not in the agent contract (spec/agent-template.md)"]
+        "agents/x.md: frontmatter field 'bundle' is not in the agent contract (docs/development/agent-template.md)"]
 
 
 def test_agent_name_mismatch_is_flagged(tmp_path):
@@ -653,21 +653,21 @@ def test_unknown_required_bundle_is_flagged(tmp_path):
 
 
 def _register(tmp_path, rows):
-    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "docs" / "development").mkdir(parents=True, exist_ok=True)
     table = "\n".join(f"| `{r}` | hand-written | t | — |" for r in rows)
-    (tmp_path / "docs" / "development-method.md").write_text(
+    (tmp_path / "docs" / "development" / "README.md").write_text(
         f"# M\n\n## 8. Where things live\n\n| View | Kind | Source or topic | Rendered by |\n|---|---|---|---|\n{table}\n\n## 9. Done\n",
         encoding="utf-8")
 
 
 def test_unregistered_doc_is_flagged(tmp_path):
-    _register(tmp_path, ["docs/development-method.md"])
+    _register(tmp_path, ["docs/development/README.md"])
     (tmp_path / "docs" / "new-guide.md").write_text("x", encoding="utf-8")
-    assert lint.doc_register_complete(tmp_path) == ["docs/new-guide.md: not in the documentation register (docs/development-method.md §8)"]
+    assert lint.doc_register_complete(tmp_path) == ["docs/new-guide.md: not in the documentation register (docs/development/README.md §8)"]
 
 
 def test_folder_prefix_covers_nested_docs(tmp_path):
-    _register(tmp_path, ["docs/development-method.md", "docs/ai-sales/**"])
+    _register(tmp_path, ["docs/development/README.md", "docs/ai-sales/**"])
     (tmp_path / "docs" / "ai-sales" / "x").mkdir(parents=True)
     (tmp_path / "docs" / "ai-sales" / "x" / "y.md").write_text("x", encoding="utf-8")
     assert lint.doc_register_complete(tmp_path) == []

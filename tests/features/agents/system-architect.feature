@@ -1,5 +1,5 @@
 # Traces to: UC-W19 (System architect): Main Success Scenario 2-5, Minimal Guarantees; agents/system-architect.md (Dispatch contract);
-# spec/agent-template.md; rebundle-by-activity D-5.
+# docs/development/agent-template.md; rebundle-by-activity D-5.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: system-architect designs a new system with the user before code
   A lead agent is a thinking partner: it states its view and plan in a few lines,

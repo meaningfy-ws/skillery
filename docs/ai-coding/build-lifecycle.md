@@ -77,9 +77,9 @@ EPIC-tier loop below.
 7. **Archive**: deltas merged into the durable truth. Owner:
    [`spec-stewardship`](../../skills/spec-stewardship/SKILL.md).
 
-These map directly onto the `/opsx` build-tier loop; see [`spine/workflows.md`](../../spine/workflows.md#verb-roster)
+These map directly onto the `/opsx` build-tier loop; see [`docs/development/workflows.md`](../development/workflows.md#verb-roster)
 for the verb roster and the command→skill map. The EPIC↔change↔file mapping is defined in
-[`spine/epic-change-memory-mapping.md`](../../spine/epic-change-memory-mapping.md). Delivery & release
+[`docs/development/epic-change-memory-mapping.md`](../development/epic-change-memory-mapping.md). Delivery & release
 sits past the archive step, as a separate lane; see the diagram below and
 [dod-quality-gates.md](dod-quality-gates.md).
 
@@ -156,7 +156,7 @@ This is a *chosen* divergence, not an oversight. For semantic / knowledge-graph 
 model (ontology, entities, contracts) must stabilise before the problem can be sliced sensibly: an
 Epic carved against a fluid conceptual model churns. We accept the cost (less mid-flight
 architectural freedom) to buy a stable spine. The golden thread
-([`spine/golden-thread.md`](../../spine/golden-thread.md)) records architecture as the parent of
+([`skills/epic-planning/references/golden-thread.md`](../../skills/epic-planning/references/golden-thread.md)) records architecture as the parent of
 every EPIC for exactly this reason.
 
 ---
@@ -168,7 +168,7 @@ execution** ([`stream-coding`](https://github.com/frmoretto/stream-coding), exte
 work, code is the printout; a failing implementation sends you back to the spec, not around it);
 **OpenSpec-native artifacts** (EPIC ≡ `proposal.md`; PLAN ≡ `design.md` + `tasks.md`; a change lives
 under `openspec/changes/<id>/` until archived into `openspec/specs/`; conventions in
-[`spine/`](../../spine/README.md)); and the **Meaningfy build-skill roster** tuned for advanced LLM
+[`docs/development/`](../development/spine.md)); and the **Meaningfy build-skill roster** tuned for advanced LLM
 agents: [`bdd-gherkin`](../../skills/bdd-gherkin/SKILL.md) for design-phase feature coverage,
 [`cosmic-python`](../../skills/cosmic-python/SKILL.md) + TDD for implementation,
 [`meaningfy-code-review`](../../skills/meaningfy-code-review/SKILL.md) for multi-lens review,
@@ -208,11 +208,11 @@ Model tiers (cost/capability matched to the task):
 
 Every capability is owned by exactly one place; no other skill re-specifies it. This prose narrates
 the machine-readable map in [`tests/ownership.yaml`](../../tests/ownership.yaml) (the validator's
-tripwire) and the command→skill map in [`spine/workflows.md`](../../spine/workflows.md#command--driving-meaningfy-discipline).
+tripwire) and the command→skill map in [`docs/development/workflows.md`](../development/workflows.md#command--driving-meaningfy-discipline).
 
 | Capability | Owner |
 |---|---|
-| **Artifact lifecycle**: `specs/` store, change/delta authoring, `validate --strict`, archive, the `/opsx` verbs | **OpenSpec** (external engine; conventions in [`spine/`](../../spine/README.md)) |
+| **Artifact lifecycle**: `specs/` store, change/delta authoring, `validate --strict`, archive, the `/opsx` verbs | **OpenSpec** (external engine; conventions in [`docs/development/`](../development/spine.md)) |
 | **Doc-first philosophy + generate-verify-integrate execution loop** | **stream-coding** (external skill) |
 | **Brainstorming, TDD (red-green-refactor), systematic-debugging, verification-before-completion, subagent-driven-development** | **superpowers** (external); note: `writing-plans` is **SUPERSEDED** by the PLAN / `tasks.md` inside a spine repo |
 | **EPIC + PLAN authoring** | [`epic-planning`](../../skills/epic-planning/SKILL.md) |

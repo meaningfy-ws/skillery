@@ -1,6 +1,6 @@
 # Traces to: UC-W20 (Conceptual modeller and ontology engineer): Main Success Scenario 2-6,
 # Minimal Guarantees; agents/conceptual-modeller.md
-# (Dispatch contract); spec/agent-template.md; rebundle-by-activity D-5.
+# (Dispatch contract); docs/development/agent-template.md; rebundle-by-activity D-5.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: conceptual-modeller builds and evolves a domain's conceptual model with the user
   A lead agent is a thinking partner: it states its view and plan in a few lines,

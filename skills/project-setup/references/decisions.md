@@ -170,7 +170,7 @@ orientation index of record is `openspec/config.yaml`'s `context:` field. See `a
 
 The scaffolder projects `openspec/` into every repo: `config.yaml` (`schema: meaningfy` + injected
 `context:` + the 3 thin per-artifact rules), the **pinned** `schemas/meaningfy/` (copied from
-skillery, recorded against `../../../spine/openspec-version.txt`), durable `specs/`, and `changes/`
+skillery, recorded against `OPENSPEC_PIN` in `scripts/scaffold.sh`), durable `specs/`, and `changes/`
 (+ `archive/`, with the `inputs/` seed convention). The `/opsx:*` commands install on the **core
 profile** (`openspec init --tools claude --profile core`).
 

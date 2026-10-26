@@ -3,7 +3,7 @@
 **Golden-thread parent:** [`inputs/2026-07-26-ai-domains-brainstorm-seed.md`](inputs/2026-07-26-ai-domains-brainstorm-seed.md)
 — a live exploration with the company owner, immediately following the `docs/how-we-work/` +
 `docs/services/` restructure and its writing-antipatterns audit. No requirement/architecture parent
-sits above it; per [`spine/golden-thread.md`](../../../spine/golden-thread.md) the seed is the root.
+sits above it; per [`spine/golden-thread.md`](../../../skills/epic-planning/references/golden-thread.md) the seed is the root.
 
 **Supersedes, in part:** `define-lifecycle-playbooks` (its `docs/how-we-work/` deliverable retires
 entirely under this EPIC — that change is still `in-progress`/unarchived, so this is a logged

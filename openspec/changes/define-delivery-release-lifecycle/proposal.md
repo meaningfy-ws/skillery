@@ -9,7 +9,7 @@
 > [`define-lifecycle-playbooks/inputs/`](../define-lifecycle-playbooks/inputs/));
 > [`.claude/HARD-QUESTIONS.md`](../../../.claude/HARD-QUESTIONS.md) HQ-08.1 (the commercial layer is
 > unshaped — this change removes its second copy);
-> [`spine/golden-thread.md`](../../../spine/golden-thread.md) (citation discipline).
+> [`spine/golden-thread.md`](../../../skills/epic-planning/references/golden-thread.md) (citation discipline).
 > **Sibling changes, cited not restated:** `define-blc-engagement-model` (owns `docs/engagement/` —
 > the destination for both the removed engagement gates **and** the Shipper's DoD, per DEC-11),
 > `define-meaningfy-lifecycle` (owns the PROJECT-tier / ADLC / MDLC narrative and may relocate the

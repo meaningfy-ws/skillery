@@ -6,7 +6,7 @@ direct commercial correction), the round-2 seed
 [`inputs/2026-07-26-handbook-and-advisory-findings.md`](inputs/2026-07-26-handbook-and-advisory-findings.md)
 (the Decision-Phase advisory and Employee Handbook excerpts, plus the human's inline review
 directives on round 1), and the spine's traceability convention
-[`spine/golden-thread.md`](../../../spine/golden-thread.md). This is a business/commercial-layer
+[`spine/golden-thread.md`](../../../skills/epic-planning/references/golden-thread.md). This is a business/commercial-layer
 change with no requirement or architecture parent — the seeds *are* the root. The two round-2 source
 documents are archived in full at
 [`define-lifecycle-playbooks/inputs/`](../define-lifecycle-playbooks/inputs/) and cited, not copied.

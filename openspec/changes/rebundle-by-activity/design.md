@@ -81,7 +81,7 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   (`inputs/evidence/foundation.md` there), which extended its
   [D-9 rule](../archive/2026-10-26-restructure-and-evaluate-catalogue/design.md#decisions--evaluation-track-d-1d-13) from Related pairs to delegations.
   `bundle_requirements` proves the result.
-- **D-5. The three agents** (DEC-5, DEC-6), each to [`spec/agent-template.md`](../../../spec/agent-template.md),
+- **D-5. The three agents** (DEC-5, DEC-6), each to [`spec/agent-template.md`](../../../docs/development/agent-template.md),
   with a `tests/features/agents/<name>.feature` holding a `Background` that names every skill, and at
   least one return and one refusal Scenario Outline with `Examples:` (written with `bdd-gherkin` before
   the agent file):
@@ -121,7 +121,7 @@ to any skill body beyond the hand-off sentences of D-4 and the voice placeholder
   evidence. The three names are added to `ALL_AGENT_NAMES` in `tools/repo_lint/lint.py`, so
   `orphan_agent_references` protects them.
 - **D-6. `docs/future-features.md`** (DEC-7), hand-written, with a register row in
-  [§8 of the method](../../../docs/development-method.md#8-where-things-live).
+  [§8 of the method](../../../docs/development/README.md#8-where-things-live).
   One table: `Feature | Use cases | Bundle | Agents to build | Skills to build | Material needed |
   Material in hand? | Change`. `docs/catalogue-architecture.md`'s Roadmap section is replaced by a
   two-line pointer to it; its Agent roster keeps the built agents and links the file for the rest.
