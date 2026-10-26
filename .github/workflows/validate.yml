@@ -10,6 +10,11 @@ jobs:
           python-version: "3.11"
       - run: pip install -r requirements-dev.txt
       - run: python -m tools.repo_lint
+      # bundles/ is generated, not committed (rebundle-by-activity D-8): generate it, prove generation
+      # changed no committed file, then check the links.
+      - run: python -m tools.bundle_gen generate
+      - run: git diff --exit-code -- .claude-plugin tools/opencode-catalogue.json package.json
+      - run: python -m tools.bundle_gen check
       - run: python -m pytest tests/ -q
 
   validate-spine:
@@ -21,7 +26,7 @@ jobs:
           node-version: "20"
       - name: Verify OpenSpec version pin matches
         run: |
-          v=$(cat spine/openspec-version.txt)
+          v=$(cat openspec/openspec-version.txt)
           installed=$(npx --yes @fission-ai/openspec@"$v" --version)
           echo "pinned=$v installed=$installed"
           test "$v" = "$installed"

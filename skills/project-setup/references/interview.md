@@ -47,7 +47,7 @@ archetype the basics hold: "automate almost everything" + TDD.** The archetype d
 - The old `service`/`pipeline`/`cli` answers all **map to `product`** (they differ only in the
   entrypoint/framework, asked in Group 4) — pick `product` and resolve the flavour there.
 - `clarity-gate` is in **no** profile as a CI step — it is a human/agent semantic gate (the
-  automation boundary, `../../../docs/ai-coding/dod-quality-gates.md`); CI may emit a reminder only.
+  automation boundary); CI may emit a reminder only.
 
 **Q2.2 (doc-only ONLY) — intention elicitation (MANDATORY; do not assume).**
 A non-code repo has no default shape. Before scaffolding any gates, run a real elicitation step —
@@ -111,7 +111,7 @@ and frameworks apply. A `library` skips them (no process); a `doc-only` skips Gr
 - Options: **MongoDB** (motor), **PostgreSQL** (SQLAlchemy/asyncpg), **Redis** (cache/streams),
   **Neo4j** (`neomodel`), *none / in-memory*.
 - **Neo4j + LinkML model source (Q4.5) together** additionally project the vendored
-  `gen-neo4j-constraints`/`gen-neomodel` custom generators (repo tooling at `tools/linkml_neo4j/`,
+  `gen-neo4j-constraints`/`gen-neomodel` custom generators (shipped by `linkml-engineering` in its `scripts/linkml_neo4j/`,
   documented by `linkml-engineering`) into `scripts/` — see `checklists.md` and `layout.md`.
 - Drives runtime deps, the `adapters/` repository skeleton, `infra/compose.yaml` services,
   `infra/.env.example`, integration-test markers (`tests/integration/`), and the

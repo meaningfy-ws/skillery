@@ -3,7 +3,7 @@
 The fillable worksheet for the default technique. PERT (three-point) turns each work-breakdown leaf
 into a weighted estimate and a variance that rolls up into a defensible **contingency**. The
 arithmetic is fixed; fill the O / M / P columns from the breakdown (decomposed against the
-[`epic-planning`](../../../ai-coding/epic-planning/SKILL.md) build breakdown where build work is
+`epic-planning` build breakdown where build work is
 involved).
 
 ## Formulae

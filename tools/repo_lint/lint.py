@@ -36,14 +36,14 @@ ADVISORY_DESCRIPTION_CHARS = 600
 ADVISORY_SKILL_LINES = 500
 ADVISORY_SKILL_TOKENS = 5000
 
-# documenter, gherkin-writer: DEC-7 backlog candidates (spec/agent-template.md), not retired names
+# documenter, gherkin-writer: DEC-7 backlog candidates (docs/development/agent-template.md), not retired names
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "system-architect",
                    "conceptual-modeller", "proposal-writer"}
 # Non-namespaced skills that legitimately live in OTHER plugins (so an agent may load them
 # without a local skills/<name>/ dir). Namespaced skills (e.g. `superpowers:tdd`) are external by form.
 EXTERNAL_SKILLS = {"stream-coding"}
 # Files/dirs whose content must never be edited (frozen) — excluded from prose checks.
-# `docs/ai-coding/` was the only entry and is no longer frozen as of the
+# `docs/practice/ai-coding/` was the only entry and is no longer frozen as of the
 # `define-meaningfy-lifecycle` change: its premise ("content must never be edited") became
 # false the moment that change rewrote `build-lifecycle.md` in place. Left empty (not deleted)
 # so the mechanism stays available for a future freeze without speculative re-engineering.
@@ -164,12 +164,26 @@ def missing_skill_dirs(repo: Path) -> list[str]:
             for s in _marketplace_skills(repo) if s not in dirs]
 
 
-def unregistered_skill_dirs(repo: Path) -> list[str]:
-    if _bundle_list(repo) is None:
+def wip_isolation(repo: Path) -> list[str]:
+    """A skill or agent listed in no bundle is work in progress and never released
+    (rebundle-by-activity D-14); nothing released may depend on it."""
+    bundles = _bundle_list(repo)
+    if bundles is None:
         return []  # reported by bundle_gates
-    registered = set(_marketplace_skills(repo))
-    return [f"skills/{s} exists but is not registered in bundles.yaml"
-            for s in _skill_dirs(repo) if s not in registered]
+    paths = _skill_paths(repo)
+    released = {s for b in bundles for s in b["skills"]}
+    wip = set(paths) - released
+    out: list[str] = []
+    for s in sorted(released & set(paths)):
+        deps = skill_inventory._depends_on(paths[s].read_text(encoding="utf-8"), set(paths), s)
+        out += [f"skills/{s} is released but delegates to WIP skill '{d}' (in no bundle); "
+                f"release '{d}' or drop the hand-off" for d in deps if d in wip]
+    for a in sorted({a for b in bundles for a in b["agents"]}):
+        fm = _frontmatter(_read(repo, f"agents/{a}.md")) if (repo / "agents" / f"{a}.md").exists() else None
+        skills = (fm or {}).get("skills") or []
+        out += [f"agents/{a} is released but loads WIP skill '{s}' (in no bundle); release '{s}' or drop it"
+                for s in skills if isinstance(s, str) and s in wip]
+    return out
 
 
 def frontmatter_present_errors(repo: Path) -> list[str]:
@@ -243,7 +257,7 @@ def skill_size_report(repo: Path) -> list[str]:
 
 FACETS_FILE = "facets.yaml"
 CORE_BUNDLE = "meaningfy-core"
-_REGISTER_FILE = "docs/development-method.md"
+_REGISTER_FILE = "docs/development/README.md"
 _REGISTER_SECTION = "## 8. Where things live"
 
 
@@ -273,6 +287,10 @@ USE_CASES_DIR = "use-cases"
 USE_CASE_FIELDS = ("id", "title", "primary_actor", "trigger", "success_guarantee", "area",
                    "served_by", "status")
 USE_CASE_STATUSES = ("covered", "partial", "missing")
+# The body sections, in order (docs/development/use-case-template.md).
+USE_CASE_SECTIONS = ("Brief Description", "Stakeholders and Interests", "Preconditions",
+                     "Minimal Guarantees", "Main Success Scenario", "Extensions", "Out of Scope",
+                     "Artefacts", "Evidence", "Feedback Loop", "Slices", "Open Points")
 # Lifted into frontmatter (D-14), so they never appear as body sections.
 _UC_LIFTED = ("Trigger", "Success Guarantee", "Primary Actor")
 
@@ -319,8 +337,7 @@ def use_case_catalogue(repo: Path) -> list[str]:
         out += [f"{rel}: served_by skill '{s}' is not in skills/"
                 for s in served.get("skills") or [] if s not in skills]
         headings = re.findall(r"^##\s+(.+?)\s*$", _body(text), re.MULTILINE)
-        if "Brief Description" not in headings:
-            out.append(f"{rel}: body has no '## Brief Description'")
+        out += [f"{rel}: body has no '## {h}'" for h in USE_CASE_SECTIONS if h not in headings]
         out += [f"{rel}: '{h}' is a body section; it belongs in frontmatter only"
                 for h in headings if h.split(" (")[0] in _UC_LIFTED]
     return out
@@ -401,9 +418,24 @@ def use_case_changes_registered(repo: Path) -> list[str]:
     return out
 
 
+TOP_LEVEL_FOLDERS = ("skills", "agents", "use-cases", "openspec", "docs", "tools", "tests", ".github",
+                     ".claude-plugin")
+_GENERATED_FOLDERS = ("bundles",)  # make bundles, git-ignored (rebundle-by-activity D-8)
+
+
+def top_level_folders(repo: Path) -> list[str]:
+    """Only the allowed folders sit at the top level (rebundle-by-activity D-13); other hidden
+    folders (.git, .venv, a CLI's own) and generated ones are not the repo's structure."""
+    return [f"{d.name}/: not an allowed top-level folder (allowed: {', '.join(TOP_LEVEL_FOLDERS)})"
+            for d in sorted(repo.iterdir())
+            if d.is_dir() and not d.name.startswith(".") and d.name not in TOP_LEVEL_FOLDERS
+            and d.name not in _GENERATED_FOLDERS]
+
+
 def cross_skill_paths(repo: Path) -> list[str]:
-    """No link from one skill's files resolves into another skill's folder (D-15): a skill names
-    another skill; a resource two skills need moves into a foundation skill."""
+    """No link from a skill's files resolves outside that skill's folder (restructure D-15,
+    widened by rebundle-by-activity D-13): an installed skill has only its own folder, so it names
+    another skill and states any other fact itself."""
     dirs = {p.parent.resolve(): name for name, p in _skill_paths(repo).items()}
     out: list[str] = []
     for src_dir, src in dirs.items():
@@ -413,10 +445,14 @@ def cross_skill_paths(repo: Path) -> list[str]:
                 if not target or re.match(r"^[a-z]+:", target):
                     continue
                 resolved = (f.parent / target).resolve()
+                if resolved.is_relative_to(src_dir):
+                    continue
+                rel = f.relative_to(repo.resolve()).as_posix()
                 owner = next((n for d, n in dirs.items() if resolved.is_relative_to(d)), None)
-                if owner and owner != src:
-                    out.append(f"{f.relative_to(repo.resolve()).as_posix()}: links into skill "
-                               f"'{owner}' ({target}); name the skill instead")
+                out.append(f"{rel}: links into skill '{owner}' ({target}); name the skill instead"
+                           if owner else
+                           f"{rel}: links outside its skill folder ({target}); "
+                           f"state the fact or name the owning skill")
     return out
 
 
@@ -544,7 +580,7 @@ def _bundle_membership(repo: Path) -> dict[str, set[str]]:
 
 def expected_bundle_membership(repo: Path) -> list[str]:
     """Placement check with bundles.yaml as the source of truth: every skill lives in at most
-    one bundle (a skill dir in none is `unregistered_skill_dirs`'). Bundle names are not pinned
+    one bundle (a skill dir in none is work in progress, see `wip_isolation`). Bundle names are not pinned
     (a second bundle definition would drift)."""
     if _bundle_list(repo) is None:
         return []  # reported by bundle_gates
@@ -557,7 +593,8 @@ def expected_bundle_membership(repo: Path) -> list[str]:
 
 
 def agent_bundle_membership(repo: Path) -> list[str]:
-    """Every agents/*.md is in exactly one bundle of bundles.yaml, and every listed agent exists
+    """Every agents/*.md is in at most one bundle of bundles.yaml (none = work in progress,
+    rebundle-by-activity D-14), and every listed agent exists
     (single-source-distribution DEC-3), and its one bundle lists its primary skill
     (agent-authoring-standard D-4)."""
     bundles = _bundle_list(repo)
@@ -570,8 +607,6 @@ def agent_bundle_membership(repo: Path) -> list[str]:
             agent_to_bundles.setdefault(a, []).append(b["name"])
     files = {p.stem for p in (repo / "agents").glob("*.md")} if (repo / "agents").exists() else set()
     out: list[str] = []
-    for a in sorted(files - set(agent_to_bundles)):
-        out.append(f"agent '{a}' is in no bundle in bundles.yaml")
     for a, bundles in sorted(agent_to_bundles.items()):
         if len(bundles) > 1:
             out.append(f"agent '{a}' is in multiple bundles: {', '.join(bundles)}")
@@ -605,7 +640,8 @@ def _primary_skill_errors(repo: Path, agent: str, bundle: str, skills: set[str])
 # files. Navigational docs (README, docs/, SKILL.md, plan files) are still
 # checked — that is where a moved file leaves a real dangling link.
 def _is_illustrative(rel_parts: tuple[str, ...]) -> bool:
-    return rel_parts[0] in ("template", "spec") or "references" in rel_parts
+    # templates carry placeholder links (`references/<question-it-answers>.md`)
+    return rel_parts[0] == "template" or rel_parts[-1].endswith("-template.md") or "references" in rel_parts
 
 
 def broken_links(repo: Path) -> list[str]:
@@ -676,7 +712,7 @@ def orphan_path_mentions(repo: Path, banned: list[str]) -> list[str]:
 
 # Top-level repo dirs a spec may link into; bounds the auto-fixer so it never
 # rewrites an incidental same-named sibling file.
-_LINKABLE_TOPDIRS = {"skills", "docs", "spine", "openspec", "prompts", "agents", "spec", "tools", "tests"}
+_LINKABLE_TOPDIRS = {"skills", "docs", "openspec", "agents", "tools", "tests", "use-cases"}
 
 
 def groomed_spec_purpose(repo: Path) -> list[str]:
@@ -877,7 +913,7 @@ def reciprocal_related_report(repo: Path) -> list[str]:
 
 # ------------------------------------------- dual-CLI foundation invariants (DEC-12/13)
 VERSION_FILE = "VERSION"
-HOOKS_INVENTORY = "hooks/inventory.yaml"
+HOOKS_INVENTORY = "hooks.yaml"
 _VALID_MECHANISM = {"git", "ci", "agent"}
 _VALID_PHASE = {"quality", "phase-gate"}
 # The ONLY skill bodies allowed to carry a CLI-specific (/opsx: or .claude/) reference.
@@ -959,7 +995,7 @@ def body_agnosticism(repo: Path) -> list[str]:
     return out
 
 
-# ------------------------------------------- agent authoring standard (spec/agent-template.md)
+# ------------------------------------------- agent authoring standard (docs/development/agent-template.md)
 MAX_AGENT_BODY_LINES = 40
 AGENT_REQUIRED_FIELDS = ("name", "description", "type", "model", "tools", "skills")
 AGENT_OPTIONAL_FIELDS = ("disallowedTools", "color", "metadata")
@@ -982,7 +1018,7 @@ def _agent_modes(repo: Path) -> set[str] | None:
 def _agent_frontmatter_errors(rel: str, stem: str, fm: dict, modes: set[str] | None) -> list[str]:
     out = [f"{rel}: missing required frontmatter field '{k}'" for k in AGENT_REQUIRED_FIELDS if k not in fm]
     allowed = AGENT_REQUIRED_FIELDS + AGENT_OPTIONAL_FIELDS
-    out += [f"{rel}: frontmatter field '{k}' is not in the agent contract (spec/agent-template.md)"
+    out += [f"{rel}: frontmatter field '{k}' is not in the agent contract (docs/development/agent-template.md)"
             for k in fm if k not in allowed]
     if "name" in fm and fm["name"] != stem:
         out.append(f"{rel}: name '{fm['name']}' does not match the filename")
@@ -1041,7 +1077,7 @@ def _agent_feature_errors(repo: Path, rel: str, stem: str, skills) -> list[str]:
 
 
 def agent_conformance(repo: Path) -> list[str]:
-    """Every agents/*.md conforms to spec/agent-template.md: closed frontmatter contract, body cap,
+    """Every agents/*.md conforms to docs/development/agent-template.md: closed frontmatter contract, body cap,
     dispatch contract, CLI-agnostic body, Gherkin feature file (agent-authoring-standard)."""
     agents_dir = repo / "agents"
     if not agents_dir.exists():
@@ -1069,7 +1105,7 @@ def bundle_gates(repo: Path) -> list[str]:
 
 
 ALL_CHECKS = (
-    missing_skill_dirs, unregistered_skill_dirs, frontmatter_present_errors,
+    missing_skill_dirs, wip_isolation, frontmatter_present_errors,
     frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long,
     name_mismatch, expected_bundle_membership,
     agent_bundle_membership,
@@ -1078,6 +1114,7 @@ ALL_CHECKS = (
     agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
+    top_level_folders,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

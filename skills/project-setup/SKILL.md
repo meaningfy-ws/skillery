@@ -41,9 +41,9 @@ rather than restating them:
 | Commits, branches, PRs | `meaningfy-git-workflow` |
 | TDD discipline while implementing | `superpowers:test-driven-development` |
 
-The spine conventions it lays down are documented in [`../../spine/README.md`](../../spine/README.md);
-the target layout in [`../../docs/environment/openspec-setup-guide.md`](../../docs/environment/openspec-setup-guide.md).
-**This skill DOES; those docs DESCRIBE.**
+The spine it lays down is OpenSpec with the `meaningfy` schema (the golden thread is owned by
+`epic-planning`); the projection mechanics are in
+[`references/spine-projection.md`](references/spine-projection.md).
 
 ## Modes
 
@@ -86,8 +86,8 @@ hold: "automate almost everything" + TDD.** The archetype decides the *condition
   **library** projects a `release.yml` stub (release-please + PyPI Trusted Publishing) + `SECURITY.md`;
   **product** points at the `ci-cd-delivery` GHCR image path + gets `SECURITY.md`; **doc-only** gets
   neither. This skill owns *when/into what repo*; the release content/intent lives in `meaningfy-release`.
-- **`clarity-gate` is NOT a CI step** — it is a human/agent semantic gate (the automation boundary is
-  pinned in [`../../docs/ai-coding/dod-quality-gates.md`](../../docs/ai-coding/dod-quality-gates.md)).
+- **`clarity-gate` is NOT a CI step** — it is a human/agent semantic gate (the automation boundary, in
+  `references/ci-and-infra.md`).
 
 > **Non-negotiables** (hardest to reverse, most-violated by default): no `/src`, all tool config in
 > the root, **canonical `AGENTS.md` with a thin `CLAUDE.md` pointer, never a symlink** (D8), a
@@ -110,8 +110,11 @@ references in step 4 still govern each piece.
    ```
    scripts/scaffold.sh -p <package> -n "<Project Name>" -a <product|library|doc-only> \
        [--deployable] [--minimal] [--python 3.12] [--slug my-project] [--org meaningfy-ws] \
-       [--branch develop] [--no-docs] [--no-infra] [--no-ci]
+       [--branch develop] [--no-docs] [--no-infra] [--no-ci] \
+       [--neo4j --linkml-generators <linkml-engineering skill folder>/scripts/linkml_neo4j]
    ```
+   With `--neo4j`, pass the installed `linkml-engineering` skill's folder: each skill is installed on
+   its own, so the scaffolder cannot find a sibling skill by itself.
    It renders every template, creates the package/tests/`.claude`/**`openspec/`** trees, renders
    **`AGENTS.md`** (canonical) and the **`CLAUDE.md`** pointer as regular files, copies the
    **pinned** `meaningfy` schema, and runs `poetry lock`.
@@ -133,7 +136,7 @@ references in step 4 still govern each piece.
    the `/opsx:*` workflow resolve, then summarise what was created, what is stubbed, and next steps:
    ```
    npx -y @fission-ai/openspec@1.4.1 init --tools claude --profile core
-   /plugin marketplace add meaningfy-ws/skillery
+   /plugin marketplace add meaningfy-ws/skillery#dist
    /plugin install meaningfy-core@meaningfy-skillery
    /plugin install meaningfy-building@meaningfy-skillery
    /plugin install superpowers@claude-plugins-official

@@ -17,7 +17,7 @@ The source→CLI contract behind these steps is in [`mapping.md`](mapping.md).
 
 ```bash
 npm exec --yes \
-  --package='git+https://github.com/meaningfy-ws/skillery.git#develop' \
+  --package='git+https://github.com/meaningfy-ws/skillery.git#dist' \
   -- skillery-opencode list
 ```
 
@@ -38,13 +38,13 @@ only if that role is yours.
 Install one or more bundles into the current project:
 ```bash
 npm exec --yes \
-  --package='git+https://github.com/meaningfy-ws/skillery.git#develop' \
+  --package='git+https://github.com/meaningfy-ws/skillery.git#dist' \
   -- skillery-opencode install meaningfy-core meaningfy-building --project
 ```
 Or globally, for every project:
 ```bash
 npm exec --yes \
-  --package='git+https://github.com/meaningfy-ws/skillery.git#develop' \
+  --package='git+https://github.com/meaningfy-ws/skillery.git#dist' \
   -- skillery-opencode install meaningfy-core --global
 ```
 `--project` and `--global` also install the bundle's **agents** (into `.opencode/agents/` or
@@ -88,7 +88,7 @@ cp /tmp/stream-coding/SKILL.md ~/.claude/skills/stream-coding/SKILL.md   # adjus
 ```
 
 **4d. OpenSpec** — the spine engine (`opsx-*` commands). Upstream: https://github.com/Fission-AI/OpenSpec.
-Pinned version: [`../../../spine/openspec-version.txt`](../../../spine/openspec-version.txt).
+Pinned version: [`../../../spine/openspec-version.txt`](../../../openspec/openspec-version.txt).
 ```bash
 npm i -g @fission-ai/openspec
 ```
@@ -124,7 +124,7 @@ command. What gets projected and how to refresh the pinned copy:
 ## Step 9 — Optional: hooks, MCP servers
 
 - **Hooks** — written for you by `project-setup` as `.opencode/plugin/` bindings. Reference:
-  [`../../../hooks/README.md`](../../../hooks/README.md).
+  [`../../../hooks/README.md`](../../development/hooks.md).
 - **MCP servers** (GitNexus, Atlassian, Google Workspace, Odoo, Neo4j, MongoDB, context7, …) —
   install one by one into `opencode.json` under `mcp`; per-tool packages/links and config
   templates in [`mcp-setup.md`](mcp-setup.md).
@@ -135,7 +135,7 @@ Restart opencode, then check the installer's own record of what's there — use 
 `--project`/`--global`/`--target` flag you installed with in Step 3:
 ```bash
 npm exec --yes \
-  --package='git+https://github.com/meaningfy-ws/skillery.git#develop' \
+  --package='git+https://github.com/meaningfy-ws/skillery.git#dist' \
   -- skillery-opencode status --project
 ```
 Expected output: `Installed bundles:` followed by each bundle you installed and the catalogue
@@ -148,7 +148,7 @@ is unknown.
 To check that a strict loader reads every skill (none skipped for a YAML error), list the repo
 with the `skills` CLI; the output must contain no `Skipped` line:
 ```bash
-npx skills add meaningfy-ws/skillery#develop --list
+npx skills add meaningfy-ws/skillery#dist --list
 ```
 
 One recorded gap worth knowing before you rely on it: `persist-before-compaction` has no `PreCompact`
@@ -165,7 +165,7 @@ status): [`compatibility.md`](compatibility.md).
 alias selects the bundle:
 ```bash
 opencode plugin --global \
-  'meaningfy-core@git+https://github.com/meaningfy-ws/skillery.git#develop'
+  'meaningfy-core@git+https://github.com/meaningfy-ws/skillery.git#dist'
 ```
 The plugin can alternatively be configured under its canonical package name and passed one or more
 bundle names through plugin options or `MEANINGFY_SKILLERY_BUNDLES`. This route uses opencode's
@@ -186,7 +186,7 @@ node path/to/skillery/tools/skillery-opencode.mjs install meaningfy-building --p
 agents it installed earlier that no installed bundle carries any more); uninstall with:
 ```bash
 npm exec --yes \
-  --package='git+https://github.com/meaningfy-ws/skillery.git#develop' \
+  --package='git+https://github.com/meaningfy-ws/skillery.git#dist' \
   -- skillery-opencode uninstall meaningfy-core --global
 ```
 

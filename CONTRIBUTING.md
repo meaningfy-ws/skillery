@@ -7,12 +7,12 @@ Thank you for contributing. This page is the entry point; the detail lives in th
 1. **Raise or pick an issue.** Use the templates in [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/):
    **Defect** for a skill or agent that misbehaved, fired wrongly or failed to install; **Request**
    for a new skill or agent. The loop they feed is
-   [§7 of the development method](docs/development-method.md#7-feedback-and-improvement-loop).
+   [§7 of the development method](docs/development/README.md#7-feedback-and-improvement-loop).
 2. **Choose the path**, EPIC or direct PR, by the change-path rule in
-   [§3 of the development method](docs/development-method.md#3-lifecycle--skills).
+   [§3 of the development method](docs/development/README.md#3-lifecycle--skills).
 3. **Branch from `develop`** (fork first if you are external) and follow the authoring guide,
-   [`spec/CREATING_SKILLS.md`](spec/CREATING_SKILLS.md). Agents follow
-   [`spec/agent-template.md`](spec/agent-template.md).
+   [`docs/development/creating-skills.md`](docs/development/creating-skills.md). Agents follow
+   [`docs/development/agent-template.md`](docs/development/agent-template.md).
 4. **Run `make validate`** until it is green. CI runs it again on the PR.
 5. **Open a pull request into `develop`** with a conventional-commit title, what changed and why,
    the linked issue, and the before/after on the failure case. Branch naming and PR mechanics are
@@ -21,7 +21,7 @@ Thank you for contributing. This page is the entry point; the detail lives in th
 
 ## When is it done?
 
-When every line of the [Definition of Done](docs/development-method.md#9-definition-of-done) is true
+When every line of the [Definition of Done](docs/development/README.md#9-definition-of-done) is true
 and `make validate` is green. That is the only checklist; this page has none of its own.
 
 ## Licence

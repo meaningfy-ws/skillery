@@ -1,19 +1,24 @@
-"""Entrypoint: `python -m tools.bundle_gen [generate|check] [repo]`.
+"""Entrypoint: `python -m tools.bundle_gen [generate|check|unreleased] [repo]`.
 
 `generate` (default) writes the renderings and syncs `package.json` version.
 `check` runs the read-only gate (`make lint` runs the same gate via repo_lint).
+`unreleased` prints the work-in-progress paths (listed in no bundle), one per line.
 """
 import sys
 from pathlib import Path
 
-from tools.bundle_gen.gen import gate_errors, write
+from tools.bundle_gen.gen import gate_errors, unreleased, write
 
 
 def main(argv: list[str] | None = None) -> int:
     args = list(argv or [])
-    cmd = args[0] if args and args[0] in ("generate", "check") else "generate"
-    rest = [a for a in args if a not in ("generate", "check")]
+    cmd = args[0] if args and args[0] in ("generate", "check", "unreleased") else "generate"
+    rest = [a for a in args if a not in ("generate", "check", "unreleased")]
     repo = Path(rest[0]) if rest else Path(__file__).resolve().parents[2]
+
+    if cmd == "unreleased":
+        print("\n".join(unreleased(repo)))
+        return 0
 
     if cmd == "check":
         problems = gate_errors(repo)

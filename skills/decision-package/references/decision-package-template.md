@@ -1,7 +1,7 @@
 # Decision Package — template
 
 The fillable template for the deliverable. It is an **executive artefact**: write it answer-first
-with the [`../../../communication/executive-communication/SKILL.md`](../../../communication/executive-communication/SKILL.md)
+with the `executive-communication`
 skill (Governing Thought → SCQA → Minto pyramid). The five R1 parts are the fixed structure; the
 cover label MAY be relabelled per engagement (see SKILL.md, R8). It lands at
 `openspec/decisions/<id>.md` (golden-thread root).
@@ -69,6 +69,6 @@ conceptual-modelling skill as a sketch in service of the decision — NOT a buil
 ## Golden-thread note
 
 Downstream architecture/requirement artefacts cite this package as parent:
-`DEC-<n> → requirement/architecture → conceptual model → EPIC → task → test → commit`. See
-[`../../../../spine/golden-thread.md`](../../../../spine/golden-thread.md).
+`DEC-<n> → requirement/architecture → conceptual model → EPIC → task → test → commit` (the golden
+thread, owned by `epic-planning`).
 ```

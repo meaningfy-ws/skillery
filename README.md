@@ -8,13 +8,13 @@ any project. Runs identically on **Claude Code** and **opencode** from one set o
 ## What this is
 
 A curated, self-validating catalogue. **Skills** carry reusable knowledge; **agents** are thin
-execution wrappers; `docs/` is written for people (method, engineering standards, philosophy);
-`prompts/` holds the agentic-file templates. The root binding is **`AGENTS.md`-canonical**:
+execution wrappers; `docs/` is written for people (the development method, company practice, setup);
+`project-setup` ships the agentic-file templates. The root binding is **`AGENTS.md`-canonical**:
 `AGENTS.md` is the CLI-agnostic operating manual (read natively by opencode) and `CLAUDE.md` is a
 thin pointer that adds only Claude-specific guidance (no symlink between them). It also carries the
 **spine** — *the durable, traceable spec backbone*
 (an [OpenSpec](https://github.com/Fission-AI/OpenSpec) instance + a forked `meaningfy` schema under
-[`openspec/`](openspec) and [`spine/`](spine)) — that threads a requirement all the way to a commit.
+[`openspec/`](openspec) and [`docs/development/spine.md`](docs/development/spine.md)) — that threads a requirement all the way to a commit.
 External skills (superpowers, stream-coding, …) are **referenced, not copied**.
 
 ## Who it's for
@@ -53,7 +53,7 @@ above, and ship with the bundle of their primary skill: `epic-planner`, `impleme
 > (Claude Code) or `skillery-opencode install meaningfy-sales` (opencode).
 
 > **The spine is a *capability*, not a bundle.** `meaningfy-building` carries the skills that drive
-> it; the durable spine **assets** (`openspec/` + the forked schema + `spine/` docs) are *projected*
+> it; the durable spine **assets** (`openspec/` + the forked schema + `docs/development/` docs) are *projected*
 > into your repo by the `project-setup` skill. A spine repo reuses OpenSpec-native artifacts: an
 > **EPIC** is the OpenSpec `proposal.md`; a **PLAN** is `design.md` + `tasks.md`.
 
@@ -68,6 +68,10 @@ copy-paste step-by-step (bundles, mandatory deps, root binding, spine commands, 
 want one, and a verify step) from there. You shouldn't need to go looking for any other doc to get
 installed.
 
+> **Installed Claude Code from `meaningfy-ws/skillery` before the `dist` branch?** Re-add the
+> marketplace once: `/plugin marketplace remove meaningfy-skillery`, then
+> `/plugin marketplace add meaningfy-ws/skillery#dist`, and reinstall your bundles.
+
 ## Getting started
 
 **Skill or agent? The rule of thumb.**
@@ -78,8 +82,8 @@ installed.
   a type: `delegated`, `lead` or `scheduled`.
 - **skill = teach / guide me; agent = delegate a whole task.** The Meaningfy agents
   (`epic-planner`, `implementer`, `code-reviewer`) each just load the relevant skills and run them in
-  isolation. How an agent is written: [`spec/agent-template.md`](spec/agent-template.md), next to the
-  skill template [`spec/skill-template.md`](spec/skill-template.md).
+  isolation. How an agent is written: [`docs/development/agent-template.md`](docs/development/agent-template.md), next to the
+  skill template [`docs/development/skill-template.md`](docs/development/skill-template.md).
 - Example invocations: "use the code-reviewer agent with lens L3 on this diff" (a full review is five,
   one per lens); "use the implementer agent on task 2.1 of change `<id>`" (it reports, you commit);
   "use the epic-planner agent on these seeds; answer its question round".
@@ -102,7 +106,7 @@ installed.
 | Cut / publish a release | `meaningfy-release` (versioning, release branches, PyPI, release notes) |
 
 **The build loop, step by step** (one epic). Drives the OpenSpec `/opsx` verbs — full map in
-[`spine/workflows.md`](spine/workflows.md):
+[`docs/development/workflows.md`](docs/development/workflows.md):
 
 | # | Step | `/opsx` verb | Driven by |
 |---|------|-------------|-----------|
@@ -155,11 +159,11 @@ Find the agent or skill that does your job, then its Quick Start.
 | Where | What | Read it when… |
 |---|---|---|
 | [`docs/use-cases.md`](docs/use-cases.md) | every use case the catalogue serves, by area, with the agents and skills that serve it and what is still missing | you want to know what the catalogue can do for you |
-| [`docs/ai-coding/`](docs/ai-coding/) | the build-plane lifecycle + the `/opsx` runbook + DoD/quality gates + role playbooks | you're learning how we build with agents |
-| [`docs/ai-sales/`](docs/ai-sales/engagement-lifecycle.md) | the commercial engagement lifecycle, the sales runbook and DoD, and the sellable services catalogue (one page per Semantic Layer building block, or a named gap) | you're scoping or describing a commercial offering to a client |
-| [`docs/ai-consulting/`](docs/ai-consulting/advisory-runbook.md) | the Deep-tier advisory runbook, the consulting DoD, and the method docs (gap analysis, and four named-but-unowned technique stubs) | you're running or reviewing a Discovery & Onboarding Deep-tier engagement |
-| [`docs/roles-and-raci.md`](docs/roles-and-raci.md) | the six project roles and the RACI matrix, cited by every domain's playbooks | you want to know who is accountable for what |
-| [`docs/philosophy/`](docs/philosophy/) | the mindset behind it all | you want the *why* |
+| [`docs/practice/ai-coding/`](docs/practice/ai-coding/) | the build-plane lifecycle + the `/opsx` runbook + DoD/quality gates + role playbooks | you're learning how we build with agents |
+| [`docs/practice/ai-sales/`](docs/practice/ai-sales/sales-runbook.md) | the sales runbook and DoD (the commercial [engagement lifecycle](skills/semantic-consulting-coach/references/engagement-lifecycle.md) ships with `semantic-consulting-coach`), and the sellable services catalogue (one page per Semantic Layer building block, or a named gap) | you're scoping or describing a commercial offering to a client |
+| [`docs/practice/ai-consulting/`](docs/practice/ai-consulting/advisory-runbook.md) | the Deep-tier advisory runbook, the consulting DoD, and the method docs (gap analysis, and four named-but-unowned technique stubs) | you're running or reviewing a Discovery & Onboarding Deep-tier engagement |
+| [`docs/practice/roles-and-raci.md`](docs/practice/roles-and-raci.md) | the six project roles and the RACI matrix, cited by every domain's playbooks | you want to know who is accountable for what |
+| [`docs/practice/philosophy/`](docs/practice/philosophy/) | the mindset behind it all | you want the *why* |
 
 ### Develop
 
@@ -167,44 +171,39 @@ Change the catalogue itself: add or fix a skill, an agent or a bundle.
 
 | Where | What | Read it when… |
 |---|---|---|
-| [`docs/development-method.md`](docs/development-method.md) | how skills and agents are conceived, documented, tested, installed, improved and retired — principles, lifecycles, the documentation standard, the issue loop, the Definition of Done | you're writing, changing, reviewing or reporting on a skill or agent |
-| [`docs/catalogue-architecture.md`](docs/catalogue-architecture.md) | the catalogue's model, where each part lives, the target structure and the built agents | you're deciding where something new belongs |
+| [`docs/development/README.md`](docs/development/README.md) | the skillery development method, its one home: how skills and agents are conceived, documented, tested, installed, improved and retired, the authoring guide and templates, governance, the catalogue model, and how to work in this repo | you're writing, changing, reviewing or reporting on a skill or agent, or deciding where something belongs |
 | [`docs/future-features.md`](docs/future-features.md) | the features still to build, the material each needs, and the change that will build it | you want to know what is coming, or have material for a feature |
 | [`openspec/specs/catalogue-governance/`](openspec/specs/catalogue-governance/spec.md) | the governance contract the validator enforces | you need the rule behind a `make validate` failure |
-| [`spec/`](spec/) | how to author a skill (governance + template) | you're contributing a skill |
-| [`spine/`](spine/) | the spec-backbone conventions (workflows, golden thread, lifecycle) | you're working with `openspec/` / the spine |
-| [`docs/engineering-standards/`](docs/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the full engineering standards |
+| [`docs/practice/engineering-standards/`](docs/practice/engineering-standards/) | testing standard, project structure, coding prompt — these **narrate**; the operational rules are the [code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md) | you want the full engineering standards |
 
 > **Coming:** the durable docs (`engineering-standards/`, `philosophy/`, architecture/ADRs) will be
 > published to **GitHub Pages** via AsciiDoc + Antora — skillery applying its own documentation
-> standard to itself. Tracked as a follow-up (`.claude/HARD-QUESTIONS.md`).
+> standard to itself. Tracked in [`docs/future-features.md`](docs/future-features.md).
 
 ## Repository structure
 
 ```
 skillery/
 ├── skills/        # flat: skills/<skill>/  (bundles group them in bundles.yaml)
-├── agents/        # three thin wrappers (no knowledge): epic-planner, implementer, code-reviewer
-├── docs/          # ai-coding/ · ai-sales/ · ai-consulting/ · engineering-standards/ · philosophy/ · roles-and-raci.md · environment/
-├── prompts/       # AGENTS.md.template, global-prompt.md (AGENTS.md-canonical; CLAUDE.md is a thin pointer)
-├── spec/          # authoring spec, governance, skill-template.md, CREATING_SKILLS.md
-├── spine/         # the spec-backbone conventions
+├── agents/        # thin wrappers (no knowledge), each shipped with its primary skill's bundle
+├── docs/          # development/ (the method's one home) · practice/ (company practice) · environment/ · use cases, catalogue map, future features
+├── use-cases/     # one White use case per file: what the catalogue serves (the golden thread's root)
 ├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery runs the spine on itself)
 ├── tools/ + tests/# the validator (make validate), the bundle renderer (make bundles), the opencode installer
 ├── bundles.yaml   # the one bundle definition: each skill and agent in exactly one bundle
-├── bundles/       # RENDERED per-bundle plugin roots (symlinks into skills/ + agents/); make bundles — never hand-edit
+├── bundles/       # GENERATED, git-ignored per-bundle plugin roots (symlinks); make bundles locally, published on the dist branch
 ├── tools/opencode-catalogue.json  # RENDERED opencode catalogue (membership + agent frontmatter); make bundles — never hand-edit
-└── .claude-plugin/# RENDERED marketplace (4 role bundles + 1 workflow bundle); make bundles — never hand-edit
+└── .claude-plugin/# RENDERED marketplace (5 role bundles + 1 workflow bundle); make bundles — never hand-edit
 ```
 
 ## Contributing
 
 How skills and agents are conceived, documented, tested, installed, improved and retired:
-[`docs/development-method.md`](docs/development-method.md) (mandated by `AGENTS.md`). Report a defect or
+[`docs/development/README.md`](docs/development/README.md) (mandated by `AGENTS.md`). Report a defect or
 ask for a skill/agent through the [issue templates](.github/ISSUE_TEMPLATE/).
-Structural detail: [CONTRIBUTING.md](CONTRIBUTING.md) and the [Creating Skills guide](spec/CREATING_SKILLS.md).
+Structural detail: [CONTRIBUTING.md](CONTRIBUTING.md) and the [Creating Skills guide](docs/development/creating-skills.md).
 Run `make validate` before opening a PR; CI runs it too. The governance method is in
-[`spec/skill-repo-governance.md`](spec/skill-repo-governance.md).
+[`docs/development/governance.md`](docs/development/governance.md).
 
 ## Licensing
 

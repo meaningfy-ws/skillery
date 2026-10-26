@@ -6,7 +6,7 @@ direct commercial correction), the round-2 seed
 [`inputs/2026-07-26-handbook-and-advisory-findings.md`](inputs/2026-07-26-handbook-and-advisory-findings.md)
 (the Decision-Phase advisory and Employee Handbook excerpts, plus the human's inline review
 directives on round 1), and the spine's traceability convention
-[`spine/golden-thread.md`](../../../spine/golden-thread.md). This is a business/commercial-layer
+[`spine/golden-thread.md`](../../../skills/epic-planning/references/golden-thread.md). This is a business/commercial-layer
 change with no requirement or architecture parent — the seeds *are* the root. The two round-2 source
 documents are archived in full at
 [`define-lifecycle-playbooks/inputs/`](../define-lifecycle-playbooks/inputs/) and cited, not copied.
@@ -74,7 +74,7 @@ rule). The coach's `references/engagement-model.md` keeps what is genuinely reus
 knowledge* — the three client cognitive states, the state-2 signals, how to hold a boundary under
 pressure, the design questions that pressure-test an engagement — and cites the doc for Meaningfy's
 instantiated model instead of restating it. This follows the precedent already in the repo:
-[`docs/ai-coding/dod-quality-gates.md`](../../../docs/ai-coding/dod-quality-gates.md) owns the DoD
+[`docs/practice/ai-coding/dod-quality-gates.md`](../../../docs/practice/ai-coding/dod-quality-gates.md) owns the DoD
 standard and the `project-setup` skill cites it. It also fixes today's inversion, where
 `docs/engagement/README.md` declares the coach's reference canonical while that reference calls its
 own specifics "a working draft to pressure-test, not doctrine" — leaving the model owned by nobody.
@@ -238,7 +238,7 @@ change actually closes (service packaging, answered for P0-advisory and given a 
   with named rows and empty cells is editable by anyone, citeable by future skills, and impossible to
   mistake for a priced catalogue. Populating it is Known gaps G-7.
 - **DEC-19**: **`docs/engagement/` hosts the contract-conformance (Shipper) side of Delivery &
-  Release; `docs/ai-coding/dod-quality-gates.md` keeps the Builder side.** `phases.md` gains a short
+  Release; `docs/practice/ai-coding/dod-quality-gates.md` keeps the Builder side.** `phases.md` gains a short
   subsection naming what a contract-conformance check runs against — the written trail of **request
   for offer, offer, contract, and meeting minutes / documented exchanges** — adapted from the
   Employee Handbook's *Contractual Validation* step and stated for light human sign-off with
@@ -333,7 +333,7 @@ Detail where the human was specific:
 - **No new skills and no new agents** — including no partnership/governance phase-owner skill to
   replace the deleted "to be shaped" placeholder (DEC-7), no skill for any Known gap, and no agent
   stub for any commercial role. Gaps are named in the Known gaps section and nowhere else.
-- **No edits anywhere under `docs/ai-coding/`.** Retiring v1, rewriting `two-tier-methodology.md`,
+- **No edits anywhere under `docs/practice/ai-coding/`.** Retiring v1, rewriting `two-tier-methodology.md`,
   and restructuring `dod-quality-gates.md` (including *removing* its duplicated commercial-TODO
   block, and reducing the Shipper's DoD to a pointer per DEC-19) belong to
   `define-meaningfy-lifecycle` and `define-delivery-release-lifecycle`. This epic owns only the
@@ -440,7 +440,7 @@ cross-reference list this change does not alter.
   and must be regenerated; `docs/skill-inventory.md` regenerates because the coach's
   `Owns:`/`Related:` lines change. Both are gated inside `make lint`.
 - **Gates:** `repo_lint`'s `broken_links` check covers the new cross-links between `skills/` and
-  `docs/engagement/` (the `docs/ai-coding/` ↔ `project-setup` links prove the pattern passes);
+  `docs/engagement/` (the `docs/practice/ai-coding/` ↔ `project-setup` links prove the pattern passes);
   `openspec validate --strict` covers the new spec.
 - **Downstream (documentation only, no code):** `define-delivery-release-lifecycle` depends on this
   epic owning the surviving commercial-TODO block before it deletes the copy in

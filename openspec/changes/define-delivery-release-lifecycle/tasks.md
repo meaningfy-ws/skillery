@@ -1,6 +1,6 @@
 > Derived from EPIC: define-delivery-release-lifecycle (openspec/changes/define-delivery-release-lifecycle/proposal.md)
 
-## 1. `docs/ai-coding/dod-quality-gates.md` — split the audiences
+## 1. `docs/practice/ai-coding/dod-quality-gates.md` — split the audiences
 
 - [ ] 1.1 Remove the "Engagement gates (human / commercial)" section in full: the four-row table
       (including its `Build DoD` row), the "Commercial layer — TODO" blockquote, and the `Q8.2=A`
@@ -24,7 +24,7 @@
 
 ## 2. Ownership table — correct the stale row
 
-- [ ] 2.1 Locate the single-owner ownership table (today `docs/ai-coding/two-tier-methodology.md`
+- [ ] 2.1 Locate the single-owner ownership table (today `docs/practice/ai-coding/two-tier-methodology.md`
       §5; if `define-meaningfy-lifecycle` has already renamed/relocated the file, edit it there
       instead — DEC-7, no second copy under any path).
 - [ ] 2.2 Replace the stale `CD / release | ci-cd-delivery (EPIC-10, future)` row with two rows:

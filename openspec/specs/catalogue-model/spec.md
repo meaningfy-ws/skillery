@@ -53,7 +53,7 @@ existing drift test SHALL fail when the file differs from what the generator pro
 
 ### Requirement: The documentation register covers every documentation view
 
-`docs/development-method.md` §8 SHALL hold the documentation register. Each row SHALL name a view (a
+`docs/development/README.md` §8 SHALL hold the documentation register. Each row SHALL name a view (a
 path or a glob), its kind (generated or hand-written), its source or the one topic it owns, and the
 make target that renders it when it is generated. Every `docs/**/*.md` file, and `README.md`,
 `AGENTS.md` and `CLAUDE.md`, SHALL match a row. Validation SHALL fail for a file that matches none.
@@ -67,4 +67,16 @@ make target that renders it when it is generated. Every `docs/**/*.md` file, and
 
 - **WHEN** a reader looks up `docs/skill-inventory.md` in the register
 - **THEN** its row says it is generated, from which sources, by `make skill-inventory`
+
+### Requirement: The purpose facet names Meaningfy's activities
+
+The values of the `purpose` facet in `facets.yaml` SHALL be Meaningfy's activities (software
+development, modelling, client delivery, advising, content, offers, proposals, CRM, devops and
+personal knowledge, as approved by the owner), and a new value SHALL be added only with the owner's
+approval. A bundle's skills and agents SHALL each declare the activity they serve.
+
+#### Scenario: A skill tagged with a retired purpose
+
+- **WHEN** a skill declares `metadata.purpose: quality` after the vocabulary change
+- **THEN** validation fails, naming the skill and listing the activity values
 

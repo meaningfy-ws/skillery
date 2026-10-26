@@ -2,13 +2,8 @@
 
 How `project-setup` projects the **Meaningfy spine** into a target repo: the `openspec/` tree, the
 pinned schema, the `/opsx:*` commands, and the golden-thread pre-wiring. The spine's *conventions*
-are owned by `spine/`; this doc is the **mechanics** of laying them down (EPIC-09). It DESCRIBES the
+are OpenSpec's and the `meaningfy` schema's (the golden thread is owned by `epic-planning`); this doc is the **mechanics** of laying them down (EPIC-09). It DESCRIBES the
 projection; `scripts/scaffold.sh` DOES it.
-
-> Background reading (skillery repo root): the spine README, the EPIC↔change mapping, the workflow
-> roster, and the golden thread — `../../../spine/README.md`, `../../../spine/epic-change-memory-mapping.md`,
-> `../../../spine/workflows.md`, `../../../spine/golden-thread.md`. The target layout is described in
-> `../../../docs/environment/openspec-setup-guide.md`.
 
 ## What gets scaffolded
 
@@ -24,7 +19,7 @@ openspec/
 | Path | Rendered from | Notes |
 |------|---------------|-------|
 | `openspec/config.yaml` | `assets/templates/openspec/config.yaml.tmpl` | `schema: meaningfy`; a project-specific `context:` (repo, layering, branch, commit + artifact conventions); the **3 thin per-artifact rules** (proposal no-gos, specs SHALL+GWT, tasks cite-your-parent). |
-| `openspec/schemas/meaningfy/` | **copied** from skillery's `openspec/schemas/meaningfy/` | **PINNED** — the copy is frozen per repo (see the refresh path below). |
+| `openspec/schemas/meaningfy/` | **copied** from this skill's `assets/openspec-schema/meaningfy/` | **PINNED** — the copy is frozen per repo (see the refresh path below). |
 | `openspec/specs/README.md` | `assets/templates/openspec/specs-README.md.tmpl` | states `specs/` is the truth; `.claude/` is a regenerable index. |
 | `openspec/changes/README.md` | `assets/templates/openspec/changes-README.md.tmpl` | documents the per-change layout incl. the **`inputs/` seed convention**. |
 | `openspec/changes/archive/` | `keepdir` | empty until the first archive. |
@@ -55,9 +50,8 @@ npx -y @fission-ai/openspec@<pin> init --tools claude --profile core
 ```
 
 The pin is recorded in the scaffolder (`OPENSPEC_PIN`, kept in sync with
-`../../../spine/openspec-version.txt`). The expanded verb set (`new`, `continue`, `ff`, `verify`,
-`bulk-archive`, `onboard`) is opt-in per repo via `openspec config` — see
-`../../../spine/workflows.md#verb-roster`.
+skillery's `openspec/openspec-version.txt`). The expanded verb set (`new`, `continue`, `ff`, `verify`,
+`bulk-archive`, `onboard`) is opt-in per repo via `openspec config` (OpenSpec's own verb roster).
 
 ## Golden thread pre-wiring (cite your parent)
 
@@ -66,15 +60,14 @@ The cite-your-parent convention is pre-wired in two places at scaffold time:
 - **`openspec/config.yaml`** — the `tasks` rule mandates the PLAN cite its parent EPIC id on the
   first line; the `proposal`/`specs` rules keep EPICs shaped and specs testable.
 - **the repo `AGENTS.md`** — a "Golden thread" note in the spine section restates the chain (EPIC →
-  PLAN → specs → commit) so an agent honours it without re-reading `spine/`.
+  PLAN → specs → commit) so an agent honours it without re-reading the skill.
 
-The upper rungs (requirement → architecture) stay convention-only for now — see
-`../../../spine/golden-thread.md`.
+The upper rungs (requirement → architecture) stay convention-only for now (the golden thread, owned by `epic-planning`).
 
 ## Schema refresh path (PINNED per repo — YAGNI)
 
 The schema under `openspec/schemas/meaningfy/` is **pinned**: it is a frozen copy taken at scaffold
-time, recorded against the OpenSpec pin (`OPENSPEC_PIN` / `../../../spine/openspec-version.txt`).
+time, recorded against the OpenSpec pin (`OPENSPEC_PIN` in `scripts/scaffold.sh`).
 
 **To refresh it, re-run `project-setup`** against the repo:
 
@@ -92,5 +85,4 @@ it only as a *possible future mode* once several repos have actually needed a co
 
 `openspec validate --strict` (structural) checks the artifact shape + spec-delta format and is
 **CI-automated** (a `make` target). The **clarity gate** (semantic, scores the PLAN ≥9/10) is a
-human/agent gate and is **NOT** CI — see `ci-and-infra.md` and
-`../../../docs/ai-coding/dod-quality-gates.md` for the automation boundary.
+human/agent gate and is **NOT** CI — see `ci-and-infra.md` for the automation boundary.

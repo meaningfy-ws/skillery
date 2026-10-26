@@ -22,4 +22,16 @@ empty bundle is never created to reserve a place.
 | Odoo memory skill | — | to decide | — | how to store and find things in Odoo | the Odoo model and access | no | `add-odoo-memory-skill` |
 | Config items | — | — | — | rules and settings a bundle or project may ship | a first bundle that needs one | no | `add-config-items` |
 | Agent aspects | — | — | — | the agent template's runtime, memory, dependency and tool-policy aspects | the needs of the scheduled and mobile agents above | no | `extend-agent-template` |
+| Docs site | — | — | — | — | the durable docs migrated to AsciiDoc + Antora and published on GitHub Pages (owner, HQ-UX.1: propose the migration as dogfood, execute later) | no | `add-docs-site` |
+| Architecture standards and the golden thread | UC-W19 | `meaningfy-architecture` | — | architecture documentation standards and templates, with the golden-thread decision and its variants for agile projects without architecture (owner, HQ-02.1) | the standards' examples | no | `define-architecture-standards` |
+| Installed scaffold paths | — | `meaningfy-building` | — | `project-setup` copying the `meaningfy` schema when installed (today `scaffold.sh` reaches `../../../openspec/`, which an installed skill lacks) | a decision: ship the schema in the skill or pass its folder | no | `fix-installed-scaffold-paths` |
 | Evaluation | every skill and agent | — | — | — (trigger sets and outcome suites) | the approved per-batch estimates | yes, parked | `evaluate-catalogue` |
+
+## Open questions
+
+Parked decisions from the v2 work, kept verbatim in
+[`hard-questions-v2.md`](../openspec/changes/archive/2026-10-26-rebundle-by-activity/inputs/hard-questions-v2.md); each
+becomes a row above when it is answered: HQ-02.2 (EPIC and change, one artifact or two), HQ-02.3 (a
+generated orientation index), HQ-02.4 (the `core` or expanded `/opsx` profile), HQ-02.5 (fork
+housekeeping), HQ-04.1 (a trigger-precision harness), HQ-08.1 (the commercial layer), HQ-00.1 (the
+dogfood gate).

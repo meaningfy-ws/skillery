@@ -1,10 +1,12 @@
-# Publishes the install branch `dist` (rebundle-by-activity D-8): develop's tree plus the generated
-# bundles/ symlink tree, appended as one commit per develop push. Never force-pushed and never edited
-# by hand, so installed marketplaces update with `/plugin marketplace update`.
+# Publishes the install branch `dist` (rebundle-by-activity D-8, D-14) on each release: the released
+# tree minus work in progress (skills/agents in no bundle) plus the generated bundles/ symlink tree,
+# appended as one commit per release and tagged `<release tag>-dist`. Never force-pushed and never edited by hand, so installed marketplaces update
+# with `/plugin marketplace update`. These commits never enter develop.
 name: dist
 on:
   push:
-    branches: [develop]
+    tags: ["v*", "!v*-dist"]
+  workflow_dispatch:  # re-publish a release: run it on the release tag
 concurrency:
   group: dist
   cancel-in-progress: false
@@ -12,6 +14,7 @@ permissions:
   contents: write
 jobs:
   publish:
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,18 +24,24 @@ jobs:
       - run: pip install -r requirements-dev.txt
       # CI has no .venv, which `make bundles` activates.
       - run: python -m tools.bundle_gen generate
-      - name: Append develop's tree plus bundles/ to dist
+      - name: Append the release tree plus bundles/ to dist and tag it
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -f bundles
+          # only released items ship: drop skills/agents listed in no bundle (D-14)
+          python -m tools.bundle_gen unreleased | xargs -r git rm -r -q --cached --
           tree=$(git write-tree)
           parent=()
+          commit=""
           if git fetch --depth=1 origin dist; then
             if [ "$(git rev-parse FETCH_HEAD^{tree})" = "$tree" ]; then
-              echo "dist already holds this tree"; exit 0
+              commit=$(git rev-parse FETCH_HEAD)  # dist already holds this tree: only tag it
             fi
             parent=(-p FETCH_HEAD)
           fi
-          commit=$(git commit-tree "$tree" "${parent[@]}" -m "dist: $GITHUB_SHA")
-          git push origin "$commit:refs/heads/dist"
+          if [ -z "$commit" ]; then
+            commit=$(git commit-tree "$tree" "${parent[@]}" -m "dist: $GITHUB_REF_NAME ($GITHUB_SHA)")
+            git push origin "$commit:refs/heads/dist"
+          fi
+          git push origin "$commit:refs/tags/$GITHUB_REF_NAME-dist"

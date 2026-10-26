@@ -4,7 +4,7 @@
 # has a probe. Behavioural trigger testing follows the agentskills.io method (about 20 queries, half
 # near-misses, 3 runs each) with `skill-creator`, seeded from these probes; CI never runs a model.
 # The on-demand `claude plugin eval` workflow (.github/workflows/plugin-eval.yml) runs bundle suites
-# from evals/ when a maintainer starts it.
+# from tests/evals/ when a maintainer starts it.
 probes:
   - probe: "help me price this ontology / knowledge-graph consulting engagement"
     expect: semantic-consulting-coach

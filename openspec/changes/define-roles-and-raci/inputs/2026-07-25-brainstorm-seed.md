@@ -4,8 +4,8 @@
 (`../proposal.md`) supersedes this as the primary truth but does not replace it.
 
 **Provenance:** a long `/opsx:explore` session between Claude Code and Eugeniu Costetchi
-(2026-07-25), auditing `docs/ai-coding/`, `docs/engagement/`, `docs/engineering-standards/`,
-`docs/philosophy/` and the 23-skill catalogue. The full synthesis covers five parallel epics; this
+(2026-07-25), auditing `docs/practice/ai-coding/`, `docs/engagement/`, `docs/practice/engineering-standards/`,
+`docs/practice/philosophy/` and the 23-skill catalogue. The full synthesis covers five parallel epics; this
 file archives the slice that seeds **this** change — §1 (why the work exists), §5 (the five roles),
 §6 (the draft RACI), and the relevant part of §8 (epic split). Sections 2, 3, 4 and 7 of the
 synthesis seed the sibling epics `define-blc-engagement-model`, `define-meaningfy-lifecycle` and

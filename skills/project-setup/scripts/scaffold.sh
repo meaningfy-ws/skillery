@@ -17,7 +17,7 @@ ORG="meaningfy-ws" ; BRANCH="develop" ; DESC="" ; YEAR="$(date +%Y)"
 ARCHETYPE="product" ; TARGET="$(pwd)"
 WITH_DOCS=1 ; WITH_INFRA=1 ; WITH_CI=1 ; DEPLOYABLE=0
 FORCE=0 ; SKIP_EXISTING=0 ; NO_LOCK=0 ; DRY_RUN=0 ; MINIMAL=0 ; NEO4J=0
-# OpenSpec version this skill pins schemas against (kept in sync with spine/openspec-version.txt).
+# OpenSpec version this skill pins schemas against (kept in sync with openspec/openspec-version.txt).
 OPENSPEC_PIN="1.4.1"
 
 usage() {
@@ -35,6 +35,8 @@ Options:
       --deployable       this repo ships a deployable artifact -> CD TODO stub (ci-cd-delivery)
       --neo4j            project the PINNED gen-neo4j-constraints/gen-neomodel generators into
                           scripts/ (product + LinkML only — see references/checklists.md)
+      --linkml-generators DIR  the linkml-engineering skill's scripts/linkml_neo4j/ folder
+                         (default: $LINKML_NEO4J_DIR, else the sibling skill in a source checkout)
       --python VER       Python version           (default: 3.12)
       --org ORG          GitHub org               (default: meaningfy-ws)
       --branch BRANCH    default/PR branch        (default: develop)
@@ -76,6 +78,7 @@ while [[ $# -gt 0 ]]; do
     --target)     TARGET="$2"; shift 2;;
     --deployable) DEPLOYABLE=1; shift;;
     --neo4j)      NEO4J=1; shift;;
+    --linkml-generators) LINKML_NEO4J_DIR="$2"; shift 2;;
     --minimal)    MINIMAL=1; shift;;
     --no-docs)    WITH_DOCS=0; shift;;
     --no-infra)   WITH_INFRA=0; shift;;
@@ -195,12 +198,13 @@ scaffold_openspec() {
   render "$TPL/openspec/specs-README.md.tmpl"  "$TARGET/openspec/specs/README.md"
   render "$TPL/openspec/changes-README.md.tmpl" "$TARGET/openspec/changes/README.md"
   keepdir "openspec/changes/archive" "Archived (completed) changes land here after /opsx:archive."
-  # Copy the meaningfy schema PINNED from skillery (record the pin from spine/openspec-version.txt).
-  local schema_src="$SCRIPT_DIR/../../../../openspec/schemas/meaningfy"
+  # Copy the meaningfy schema PINNED from this skill's assets (skillery's openspec/schemas/meaningfy
+  # links here; the pin is OPENSPEC_PIN, kept in sync with skillery's openspec/openspec-version.txt).
+  local schema_src="$SCRIPT_DIR/../assets/openspec-schema/meaningfy"
   if [[ "$DRY_RUN" -eq 1 ]]; then
     [[ -d "$TARGET/openspec/schemas/meaningfy" ]] \
       && echo "  = keep   openspec/schemas/meaningfy/ (pinned @ $OPENSPEC_PIN)" \
-      || echo "  + create openspec/schemas/meaningfy/ (pinned @ $OPENSPEC_PIN, copied from skillery)"
+      || echo "  + create openspec/schemas/meaningfy/ (pinned @ $OPENSPEC_PIN, copied from the skill)"
   elif [[ -d "$schema_src" ]]; then
     local schema_dst="$TARGET/openspec/schemas/meaningfy"
     if [[ -d "$schema_dst" && "$FORCE" -ne 1 ]]; then
@@ -214,17 +218,18 @@ scaffold_openspec() {
       echo "  copied openspec/schemas/meaningfy/ (PINNED @ $OPENSPEC_PIN — refresh via --force; see references/spine-projection.md)"
     fi
   else
-    echo "  NOTE: meaningfy schema source not found ($schema_src) — copy openspec/schemas/meaningfy/ from skillery manually (pin $OPENSPEC_PIN)."
+    echo "  NOTE: meaningfy schema not found in the skill ($schema_src) — reinstall project-setup."
   fi
 }
 
 # scaffold_neo4j_generators : project the PINNED gen-neo4j-constraints/gen-neomodel
-# generators (tools/linkml_neo4j/ — maintained, tested code; NOT a skill asset, see
-# linkml-engineering's generation-and-templates.md for why) into scripts/. Only
+# generators, shipped by the linkml-engineering skill in its scripts/linkml_neo4j/, into scripts/.
+# An installed skill lives in its own plugin folder, so the caller passes that folder
+# (--linkml-generators or LINKML_NEO4J_DIR); a source checkout finds the sibling skill. Only
 # meaningful for a product using LinkML with a Neo4j target (--neo4j); see
 # references/checklists.md.
 scaffold_neo4j_generators() {
-  local gen_src="$SCRIPT_DIR/../../../tools/linkml_neo4j"
+  local gen_src="${LINKML_NEO4J_DIR:-$SCRIPT_DIR/../../linkml-engineering/scripts/linkml_neo4j}"
   local gen_dst="$TARGET/scripts"
   if [[ "$DRY_RUN" -eq 1 ]]; then
     [[ -d "$gen_dst" && -f "$gen_dst/gen_neo4j_constraints.py" ]] \
@@ -241,7 +246,7 @@ scaffold_neo4j_generators() {
       fi
     done
   else
-    echo "  NOTE: linkml-engineering generators not found ($gen_src) — copy scripts/gen_neo4j_constraints.py + scripts/gen_neomodel.py from skillery manually."
+    echo "  NOTE: linkml-engineering generators not found ($gen_src) — pass --linkml-generators <the linkml-engineering skill's scripts/linkml_neo4j/>."
   fi
 }
 
@@ -253,7 +258,7 @@ if [[ "$MINIMAL" -eq 1 ]]; then
 
 Minimal scaffold complete. Install the spine + skillery so AGENTS.md's routing resolves:
   npx -y @fission-ai/openspec@$OPENSPEC_PIN init --tools claude --profile core
-  /plugin marketplace add meaningfy-ws/skillery
+  /plugin marketplace add meaningfy-ws/skillery#dist
   /plugin install meaningfy-core@meaningfy-skillery
   /plugin install meaningfy-building@meaningfy-skillery
   /plugin install superpowers@claude-plugins-official
@@ -459,7 +464,7 @@ Done. Next steps:
        npx -y @fission-ai/openspec@$OPENSPEC_PIN init --tools claude --profile core
      (the meaningfy schema under openspec/schemas/meaningfy/ is already PINNED @ $OPENSPEC_PIN)
   5. Install the Meaningfy skillery (+ ponytail) so AGENTS.md's skill routing resolves:
-       /plugin marketplace add meaningfy-ws/skillery
+       /plugin marketplace add meaningfy-ws/skillery#dist
        /plugin install meaningfy-core@meaningfy-skillery
        /plugin install meaningfy-building@meaningfy-skillery
        /plugin install superpowers@claude-plugins-official

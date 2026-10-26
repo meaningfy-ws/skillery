@@ -1,4 +1,4 @@
-# Traces to: agents/code-reviewer.md (Dispatch contract); spec/agent-template.md; D-16.
+# Traces to: agents/code-reviewer.md (Dispatch contract); docs/development/agent-template.md; D-16.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: code-reviewer reviews one change through exactly one lens
   A caller fans out a full pre-PR review as five dispatches, one lens each,
