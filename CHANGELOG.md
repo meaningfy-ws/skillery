@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-10-27
+
 ### Action needed (users)
 
 - **opencode installs now come from the `dist` branch too:** replace `#develop` with `#dist` in the
