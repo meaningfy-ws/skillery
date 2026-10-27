@@ -24,6 +24,7 @@ VERSION_FILE = "VERSION"
 SKILLS_DIR = "skills"
 AGENTS_DIR = "agents"
 # Copies, not symlinks: claude.ai's marketplace sync fails on a repo with symlinks.
+_CACHE = ("__pycache__", "*.pyc")  # created by running scripts; git-ignored, never copied or compared
 SCHEMA_COPY = ("openspec/schemas/meaningfy", "../../skills/project-setup/assets/openspec-schema/meaningfy")
 
 _TOP_KEYS = ("name", "owner", "description", "bundles")
@@ -180,7 +181,7 @@ def write(repo: Path) -> list[str]:
         dst.parent.mkdir(parents=True, exist_ok=True)
         src = dst.parent / target
         if src.is_dir():
-            shutil.copytree(src, dst)
+            shutil.copytree(src, dst, ignore=shutil.ignore_patterns(*_CACHE))
         else:
             shutil.copy2(src, dst)
     _sync_package_version(repo, version(repo))
@@ -194,7 +195,8 @@ def _schema_copy(repo: Path) -> dict[str, str]:
 
 def _tree(path: Path) -> dict[str, tuple[bytes, bool]]:
     """Every file under path (or path itself) with its bytes and executable bit."""
-    files = [path] if path.is_file() else sorted(p for p in path.rglob("*") if p.is_file())
+    files = [path] if path.is_file() else sorted(
+        p for p in path.rglob("*") if p.is_file() and not any(p.match(c) or c in p.parts for c in _CACHE))
     return {p.relative_to(path).as_posix(): (p.read_bytes(), os.access(p, os.X_OK)) for p in files}
 
 

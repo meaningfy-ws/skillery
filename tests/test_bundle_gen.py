@@ -263,3 +263,13 @@ def test_schema_copy_is_written_and_gated(tmp_path):
     assert not copy.is_symlink() and (copy / "schema.yaml").read_text() == "name: meaningfy\n"
     (copy / "schema.yaml").write_text("edited", encoding="utf-8")
     assert any(e.startswith("stale copy") and "openspec/schemas/meaningfy" in e for e in gen.gate_errors(repo))
+
+
+def test_python_cache_is_neither_copied_nor_compared(tmp_path):
+    repo = _repo(tmp_path)
+    gen.write(repo)
+    (repo / "skills/s1/__pycache__").mkdir()
+    (repo / "skills/s1/__pycache__/x.cpython-311.pyc").write_bytes(b"\0")
+    assert gen.gate_errors(repo) == []
+    gen.write(repo)
+    assert not (repo / "bundles/b-one/skills/s1/__pycache__").exists()
