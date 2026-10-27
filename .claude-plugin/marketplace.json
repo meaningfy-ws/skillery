@@ -6,43 +6,43 @@
   },
   "metadata": {
     "description": "Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently",
-    "version": "3.3.0"
+    "version": "3.3.1"
   },
   "plugins": [
     {
       "name": "meaningfy-core",
       "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, and agentic guardrails",
-      "version": "3.3.0",
+      "version": "3.3.1",
       "source": "./bundles/meaningfy-core"
     },
     {
       "name": "meaningfy-consulting",
       "description": "The advisory role: semantic-technologies coaching, the Decision Package, and executive communication",
-      "version": "3.3.0",
+      "version": "3.3.1",
       "source": "./bundles/meaningfy-consulting"
     },
     {
       "name": "meaningfy-sales",
       "description": "The commercial role: proposal and offer writing, and estimation",
-      "version": "3.3.0",
+      "version": "3.3.1",
       "source": "./bundles/meaningfy-sales"
     },
     {
       "name": "meaningfy-architecture",
       "description": "The design / modelling role: system architecture (C4, ArchiMate/UML, ADRs, contracts), the living conceptual model, the shared modelling conventions, and the LinkML craft (LinkML → typed artefacts + OWL/SHACL)",
-      "version": "3.3.0",
+      "version": "3.3.1",
       "source": "./bundles/meaningfy-architecture"
     },
     {
       "name": "meaningfy-building",
       "description": "The delivery / developer role: the spine build loop (epic-planning, spec-stewardship, clarity-gate, BDD, code review), clean layered Python (cosmic-python), repo scaffolding (project-setup), CD/deploy (ci-cd-delivery), and the release lifecycle (meaningfy-release)",
-      "version": "3.3.0",
+      "version": "3.3.1",
       "source": "./bundles/meaningfy-building"
     },
     {
       "name": "vault-assistant",
       "description": "The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily). Needs the external obsidian@obsidian-skills plugin and the company memory",
-      "version": "3.3.0",
+      "version": "3.3.1",
       "source": "./bundles/vault-assistant"
     }
   ]
