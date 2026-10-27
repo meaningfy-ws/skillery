@@ -117,9 +117,9 @@ that each bundle loads exactly its own skills and agents (skills / agents): `mea
 confirm the spine registered by running `/opsx:propose` — it should prompt you for a change
 description rather than say the command is unknown.
 
-**Testing a branch** (maintainers): a feature branch carries no `bundles/` (it is generated), so it
-cannot be installed as it is. `#releases` moves only at releases ([`releasing.md`](../../development/releasing.md)). To test unreleased work, push a throwaway branch with the
-generated tree added (`make bundles && git add -f bundles`) and install that
+**Testing a branch** (maintainers): every branch carries the committed `bundles/` symlink tree, so
+`#releases` moves only at releases ([`releasing.md`](../../development/releasing.md)). To test unreleased work, push a throwaway branch (after
+`make bundles`) and install that
 (`/plugin marketplace add meaningfy-ws/skillery#<branch>`); never install from a local path — a
 local-path marketplace does not load the bundles' agents.
 

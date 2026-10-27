@@ -257,7 +257,7 @@ otherwise.
 ### Requirement: Only the agreed top-level folders exist
 The repository's top level SHALL hold only the folders `skills/`, `agents/`, `use-cases/`,
 `openspec/`, `docs/`, `tools/`, `tests/`, `.github/` and `.claude-plugin/`, besides root files, hidden
-tool folders and the generated, git-ignored `bundles/`. Validation SHALL fail otherwise.
+tool folders and the generated, committed `bundles/`. Validation SHALL fail otherwise.
 
 #### Scenario: A new top-level folder appears
 - **WHEN** a change adds a top-level folder outside that list

@@ -1,7 +1,7 @@
-# Publishes a release on the `releases` branch, the only branch that holds the generated bundles/ and
-# the only one users install from (repo convention: docs/development/releasing.md). It runs when a
+# Publishes a release on the `releases` branch, the only one Claude Code and opencode users install from,
+# with bundles/ as real files (repo convention: docs/development/releasing.md). It runs when a
 # release/X.Y.Z merge lands on main: the released tree minus work in progress (skills/agents in no
-# bundle) plus bundles/, appended as one commit, tagged vVERSION on that commit, with a GitHub Release
+# bundle) with bundles/ dereferenced, appended as one commit, tagged vVERSION on that commit, with a GitHub Release
 # from the CHANGELOG section. Never force-pushed and never edited by hand; its commits never enter
 # develop or main.
 name: releases
