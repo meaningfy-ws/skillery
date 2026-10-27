@@ -1,5 +1,5 @@
 # Traces to: UC-W6; agents/infra-reviewer.md (Dispatch contract);
-# openspec/changes/add-devops-bundle/specs (operations-practice), design.md TC-04 and IT-4.
+# openspec/specs (operations-practice), openspec/changes/archive/2026-10-27-add-devops-bundle/design.md TC-04 and IT-4.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: infra-reviewer gives an infrastructure change its second reading
   A delegated, read-only review. It returns a report the caller posts on the PR; it never approves,

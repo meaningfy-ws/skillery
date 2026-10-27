@@ -1,5 +1,5 @@
 # Traces to: UC-W6; agents/ops-watch.md (Dispatch contract);
-# openspec/changes/add-devops-bundle/specs (unattended-operations, operations-practice), design.md TC-04, IT-2, IT-3.
+# openspec/specs (unattended-operations, operations-practice), openspec/changes/archive/2026-10-27-add-devops-bundle/design.md TC-04, IT-2, IT-3.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: ops-watch checks the fleet and answers alerts with no human present
   It acts only where the unattended-action policy returns act, through allow-listed operations, and
