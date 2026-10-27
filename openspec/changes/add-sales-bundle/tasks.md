@@ -114,10 +114,10 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 - [x] 7.1 `make bundles`; confirm `bundles/meaningfy-sales/` lists the five skills and the agent.
 - [x] 7.2 `npm run test:opencode-installer` green; `make opencode-report` shows the G-5 gap for
       `sales-agent`.
-- [ ] 7.3 Run `opencode run --agent sales-agent "close day"` against a read-only prompt once; if it
+- [x] 7.3 Run `opencode run --agent sales-agent "close day"` against a read-only prompt once; if it
       refuses, apply D-9's fallback. **Accept:** result recorded in `mapping.md`.
-      *Outcome 2026-10-27: not verified (opencode free usage limit); recorded in `mapping.md` G-5,
-      open until the first real opencode run.*
+      *Outcome 2026-10-27: the subagent-mode agent started from a project install (opencode 2.1.4);
+      no fallback needed; recorded in `mapping.md` G-5.*
 
 ## 8. Close
 
@@ -133,7 +133,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 - [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 ·
   [x] 3.2 · [x] 4.1 · [x] 4.2 · [x] 5.1 · [x] 5.2 · [x] 5.3 · [x] 6.1 · [x] 6.2 · [x] 6.3 · [x] 6.4 ·
-  [x] 7.1 · [x] 7.2 · [ ] 7.3 · [x] 8.1 · [x] 8.2 · [ ] 8.3 · [x] 8.4
+  [x] 7.1 · [x] 7.2 · [x] 7.3 · [x] 8.1 · [x] 8.2 · [ ] 8.3 · [x] 8.4
 
 ## Verification
 
