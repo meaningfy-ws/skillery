@@ -1,0 +1,45 @@
+= Reference
+:navtitle: Reference Overview
+
+Reference material is _information-oriented_: exhaustive, accurate, and dry. The reader is looking
+something up, not learning. Keep narrative out; put it in tutorials or explanations instead.
+
+== What lives here
+
+* *REST API reference* — request/response schemas for every endpoint (auto-generated, see below).
+* *Configuration reference* — every environment variable, its default, and its effect.
+* *CLI reference* — commands, flags, and exit codes, if the project ships a CLI.
+
+== Auto-generating the API reference from OpenAPI
+
+Do not hand-write endpoint docs. Generate AsciiDoc from the service's OpenAPI schema so the
+reference can never drift from the code. The pipeline (mirrored from the reference project) is:
+
+. The service exports its OpenAPI schema (`make openapi`) — a FastAPI app can dump it from
+  `app.openapi()`.
+. The `openapi-generator-cli` `asciidoc` generator renders the schema into pages under
+  `modules/ROOT/pages/api-docs/`.
+. A `make api-docs` target wraps both steps; `make update-api-docs` (in the docs repo) clones the
+  service, runs `api-docs`, and copies the result in.
+
+[source,bash]
+----
+make openapi      # export the OpenAPI schema(s) to resources/
+make api-docs     # render AsciiDoc into modules/ROOT/pages/api-docs/
+----
+
+[NOTE]
+====
+Generated API pages are build artefacts. Add the generated `api-docs/` subtree to the docs
+repo's `.gitignore` (or commit it deliberately and regenerate in CI) — but never edit it by hand.
+====
+
+== Configuration reference (skeleton)
+
+[cols="2,1,4",options="header"]
+|===
+| Variable | Default | Description
+
+| `LOG_LEVEL` | `INFO` | Application log level.
+| `REQUEST_TIMEOUT_SECONDS` | `30` | Per-request upstream timeout.
+|===

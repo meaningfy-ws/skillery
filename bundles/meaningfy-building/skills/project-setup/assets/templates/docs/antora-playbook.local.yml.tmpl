@@ -1,0 +1,41 @@
+# Local-build playbook — builds from the working tree, no remote git fetch.
+# Use for fast preview while editing: `make preview-docs`.
+site:
+  title: <<PROJECT_NAME>>
+  start_page: <<PROJECT_SLUG>>::index.adoc
+
+content:
+  sources:
+    # '.' resolves to the local repository; HEAD + worktrees picks up uncommitted edits.
+    - url: ./..
+      start_path: docs
+      branches: [HEAD]
+      worktrees: true
+      tags: []
+      edit_url: false
+
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+  supplemental_files: ./supplemental-ui
+
+output:
+  dir: ./build/site
+
+asciidoc:
+  attributes:
+    experimental: ''
+    idprefix: ''
+    idseparator: '-'
+    page-pagination: ''
+
+antora:
+  extensions:
+    - require: '@sntke/antora-mermaid-extension'
+      mermaid_library_url: https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs
+      script_stem: header-scripts
+      mermaid_initialize_options:
+        start_on_load: true
+    - require: '@antora/lunr-extension'
+      snippet_length: 250

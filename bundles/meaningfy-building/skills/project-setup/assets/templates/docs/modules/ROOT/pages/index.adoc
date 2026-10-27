@@ -1,0 +1,43 @@
+= <<PROJECT_NAME>> Documentation
+
+Welcome to the documentation for *<<PROJECT_NAME>>*.
+This site is organised around the https://diataxis.fr[Diátaxis] framework, so each page has a single, predictable job: teach you, walk you through a task, give you facts, or explain a concept.
+
+[TIP]
+====
+New here? Start with the xref:tutorials/getting-started.adoc[Getting Started] tutorial — it takes you from a clean checkout to a running instance.
+====
+
+== Find your way around
+
+[cols="1,3",options="header"]
+|===
+| Section | When to read it
+
+| xref:tutorials/getting-started.adoc[Tutorials]
+| Learning-oriented, step-by-step lessons. Read these first when the project is new to you.
+
+| xref:how-to/example-how-to.adoc[How-to guides]
+| Task-oriented recipes that solve a specific, concrete problem ("how do I …").
+
+| xref:reference/index.adoc[Reference]
+| Information-oriented, exhaustive descriptions: REST API, configuration variables, CLI flags.
+
+| xref:architecture/system-context.adoc[Architecture]
+| Understanding-oriented explanation: C4 views, the conceptual model, and why the system is shaped this way.
+
+| xref:requirements/index.adoc[Requirements]
+| The requirement specifications and use cases the system is built to satisfy.
+
+| xref:adr/adr-0001-record-architecture-decisions.adoc[Decision Records]
+| The log of significant architectural decisions and their rationale.
+
+| xref:user-guide/index.adoc[User Guide]
+| End-user task guides for people operating the running system.
+|===
+
+== About this site
+
+This documentation is built with https://antora.org[Antora] from AsciiDoc sources under `docs/`.
+Diagrams use Mermaid; the search box is powered by Lunr.
+To build it locally, see xref:tutorials/getting-started.adoc[Getting Started] or run `make preview-docs`.

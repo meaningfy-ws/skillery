@@ -35,7 +35,7 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:
         print(f"FAIL — {exc}")
         return 1
-    print(f"rendered {len(written)} file(s)/link(s) from bundles.yaml.")
+    print(f"rendered {len(written)} file(s)/copies from bundles.yaml.")
     return 0
 
 

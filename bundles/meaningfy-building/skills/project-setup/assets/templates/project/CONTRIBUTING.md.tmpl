@@ -1,0 +1,66 @@
+# Contributing to <<PROJECT_NAME>>
+
+Thank you for contributing. This guide covers the workflow, the architectural constraints that keep
+the codebase healthy, and the testing and review expectations.
+
+## Workflow
+
+1. Create a branch off `<<DEFAULT_BRANCH>>` following the naming convention (see
+   [git workflow](#commits-and-pull-requests)).
+2. Implement the change with tests (TDD/BDD — see [Testing](#testing-expectations)).
+3. Run `make check-all` locally and ensure it is green.
+4. Open a pull request against `<<DEFAULT_BRANCH>>`.
+
+## Architecture constraints
+
+This project uses a **cosmic-python layered architecture**, enforced by `import-linter`
+(`make check-architecture`). Respect the dependency direction:
+
+```
+entrypoints  →  services  →  domain
+adapters     →  domain
+```
+
+- `domain/` holds domain models and pure logic — it imports **nothing** from upper layers and no
+  frameworks or I/O.
+- `adapters/` holds infrastructure (DB, HTTP, queues) and depends only on `domain`.
+- `services/` orchestrates use cases over domain and adapters.
+- `entrypoints/` (API, CLI, workers) parse input, call services, format output.
+
+When there are multiple components, a **tier hierarchy** applies (`commons` < foundation <
+orchestration < entrypoint APIs): a component may import a lower tier, never a same/higher one.
+Tier peers must not import each other. The contracts live in `.importlinter`.
+
+Avoid free strings for symbolic values — use constants/enums. Keep observability (logging, tracing)
+out of `domain`.
+
+## Testing expectations
+
+- **Write tests first.** Unit tests precede production code (RED-GREEN-REFACTOR).
+- **Test by layer**: `tests/unit/` mirrors the code tree; `tests/feature/` holds Gherkin
+  (`pytest-bdd`) scenarios written from acceptance criteria, mirroring business capabilities.
+- **Coverage gate ≥ 80%** on the suite; keep new/critical code higher.
+- Markers (`unit`, `feature`, `e2e`, `integration`) are applied automatically by path — do not add
+  per-file `pytestmark`.
+
+```bash
+make test           # full suite with coverage
+make test-unit      # fast layer
+```
+
+## Commits and pull requests
+
+Follow the Meaningfy git conventions — see the **`meaningfy-git-workflow`** skill for the
+authoritative rules. In short:
+
+- **Conventional Commits**, imperative mood, no trailing punctuation
+  (e.g. `feat(api): add request timeout setting`).
+- One conceptually atomic change per commit; do not mix unrelated changes.
+- PRs target `<<DEFAULT_BRANCH>>`. Confirm with maintainers whether a change should be a
+  **stacked PR** (based on a previous feature branch) or a **direct PR**.
+- CI must be green; `make check-all` mirrors the CI gate.
+
+## Documentation
+
+User-facing changes need docs. Documentation lives under `docs/` (Antora/AsciiDoc); see the
+**`technical-writing`** skill for prose conventions. Build locally with `make preview-docs`.

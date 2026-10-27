@@ -16,7 +16,7 @@ fix-spec-links:
 	. .venv/bin/activate && python -m tools.repo_lint --fix
 
 # bundles = render everything derived from bundles.yaml (+ agent frontmatter + VERSION):
-# .claude-plugin/marketplace.json, the bundles/ symlink tree, tools/opencode-catalogue.json,
+# .claude-plugin/marketplace.json, the bundles/ copy tree (+ openspec/schemas/meaningfy), tools/opencode-catalogue.json,
 # and package.json version. Run after a membership, agent-frontmatter or VERSION change; the
 # gate (bundle_gates) runs inside `lint`.
 bundles:
