@@ -15,9 +15,13 @@ The source→CLI contract behind these steps is in [`mapping.md`](mapping.md).
 
 ## Step 2 — List available bundles
 
+Every command below reads `#releases`, the only branch that holds released skills and agents
+([`releasing.md`](../../development/releasing.md)); pin one release with `#vX.Y.Z` (releases after
+3.3.0).
+
 ```bash
 npm exec --yes \
-  --package='git+https://github.com/meaningfy-ws/skillery.git#dist' \
+  --package='git+https://github.com/meaningfy-ws/skillery.git#releases' \
   -- skillery-opencode list
 ```
 
@@ -38,13 +42,13 @@ only if that role is yours.
 Install one or more bundles into the current project:
 ```bash
 npm exec --yes \
-  --package='git+https://github.com/meaningfy-ws/skillery.git#dist' \
+  --package='git+https://github.com/meaningfy-ws/skillery.git#releases' \
   -- skillery-opencode install meaningfy-core meaningfy-building --project
 ```
 Or globally, for every project:
 ```bash
 npm exec --yes \
-  --package='git+https://github.com/meaningfy-ws/skillery.git#dist' \
+  --package='git+https://github.com/meaningfy-ws/skillery.git#releases' \
   -- skillery-opencode install meaningfy-core --global
 ```
 `--project` and `--global` also install the bundle's **agents** (into `.opencode/agents/` or
@@ -135,7 +139,7 @@ Restart opencode, then check the installer's own record of what's there — use 
 `--project`/`--global`/`--target` flag you installed with in Step 3:
 ```bash
 npm exec --yes \
-  --package='git+https://github.com/meaningfy-ws/skillery.git#dist' \
+  --package='git+https://github.com/meaningfy-ws/skillery.git#releases' \
   -- skillery-opencode status --project
 ```
 Expected output: `Installed bundles:` followed by each bundle you installed and the catalogue
@@ -148,7 +152,7 @@ is unknown.
 To check that a strict loader reads every skill (none skipped for a YAML error), list the repo
 with the `skills` CLI; the output must contain no `Skipped` line:
 ```bash
-npx skills add meaningfy-ws/skillery#dist --list
+npx skills add meaningfy-ws/skillery#releases --list
 ```
 
 One recorded gap worth knowing before you rely on it: `persist-before-compaction` has no `PreCompact`
@@ -165,7 +169,7 @@ status): [`compatibility.md`](compatibility.md).
 alias selects the bundle:
 ```bash
 opencode plugin --global \
-  'meaningfy-core@git+https://github.com/meaningfy-ws/skillery.git#dist'
+  'meaningfy-core@git+https://github.com/meaningfy-ws/skillery.git#releases'
 ```
 The plugin can alternatively be configured under its canonical package name and passed one or more
 bundle names through plugin options or `MEANINGFY_SKILLERY_BUNDLES`. This route uses opencode's
@@ -186,7 +190,7 @@ node path/to/skillery/tools/skillery-opencode.mjs install meaningfy-building --p
 agents it installed earlier that no installed bundle carries any more); uninstall with:
 ```bash
 npm exec --yes \
-  --package='git+https://github.com/meaningfy-ws/skillery.git#dist' \
+  --package='git+https://github.com/meaningfy-ws/skillery.git#releases' \
   -- skillery-opencode uninstall meaningfy-core --global
 ```
 

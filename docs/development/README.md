@@ -156,11 +156,12 @@ A stranger must be able to use it from its own files, without asking the author.
   exactly one. Membership is declared once, in `bundles.yaml`.
 - **Only released items are installable (hard rule).** A skill or agent listed in no bundle is work
   in progress: it may live on `develop`, the catalogue map lists it under "Unreleased (WIP)", nothing
-  released may depend on it (`wip_isolation`), and the release (`dist`) leaves it out.
-- **Both CLIs, one source, one release.** Every install reads the `dist` branch, which moves only at
-  a release: the Claude marketplace (`meaningfy-ws/skillery#dist`), the opencode installer
-  (`git+…skillery.git#dist`) and `npx skills add meaningfy-ws/skillery#dist`. The body-agnosticism
-  gate keeps the text valid for both CLIs.
+  released may depend on it (`wip_isolation`), and the `releases` branch leaves it out.
+- **Both CLIs, one source, one release branch.** Every install reads the `releases` branch, which
+  moves only at a release and carries the release tags: the Claude marketplace
+  (`meaningfy-ws/skillery#releases`), the opencode installer (`git+…skillery.git#releases`) and
+  `npx skills add meaningfy-ws/skillery#releases`. How a release is cut and published:
+  [`releasing.md`](releasing.md). The body-agnosticism gate keeps the text valid for both CLIs.
 - **Declared dependencies.** External skills, MCP servers and tools a bundle needs are listed where
   the user installs (`docs/environment/setup.md`), with the exact command and the version that was
   tested.
@@ -241,6 +242,7 @@ at any depth below it.
 | `docs/development/workflows.md` | hand-written | The `/opsx` verbs and how superpowers lands in the spine | — |
 | `docs/development/epic-change-memory-mapping.md` | hand-written | EPIC ≡ change, and memory = `openspec/specs/` + `context:` | — |
 | `docs/development/lessons-loop.md` | hand-written | How lessons flow back into skills and specs | — |
+| `docs/development/releasing.md` | hand-written | Skillery's release convention: install only from the `releases` branch, tags on it, and the release steps | — |
 | `docs/development/use-case-template.md` | hand-written | How a use case is written: the Cockburn core plus slices, artefacts, evidence and the feedback loop (`use_case_catalogue` checks its sections) | — |
 | `docs/development/hooks.md` | hand-written | The hook intent register (`hooks.yaml`) and how to read it | — |
 | `docs/development/hook-bindings.md` | hand-written | How each hook intent is bound on each CLI | — |

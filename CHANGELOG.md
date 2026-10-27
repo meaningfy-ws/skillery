@@ -11,6 +11,31 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.3.1] - 2026-10-27
+
+### Action needed (users)
+
+- **Install from the `releases` branch** (it replaces `dist`): on Claude,
+  `/plugin marketplace remove meaningfy-skillery`, then
+  `/plugin marketplace add meaningfy-ws/skillery#releases` and reinstall your bundles; on opencode,
+  use `git+https://github.com/meaningfy-ws/skillery.git#releases`. A marketplace added from
+  `develop` (the default) or `#dist` does not follow releases.
+
+### Changed
+
+- **`/plugin` shows the release number** (each bundle carries `VERSION`) instead of a commit id.
+- **Release tags are on the `releases` branch**, so `meaningfy-ws/skillery#vX.Y.Z` installs one exact
+  release (from the next release on).
+- **Bundles on `releases` are real files, not symlinks**, so the marketplace syncs on claude.ai and
+  Claude Desktop too (re-add it there after the next release), and Windows no longer needs
+  `core.symlinks`.
+
+### Action needed (contributors)
+
+- **[`docs/development/releasing.md`](docs/development/releasing.md) is the release convention:**
+  `.github/workflows/releases.yml` (was `dist.yml`) publishes `releases` and tags it when a
+  `release/X.Y.Z` merge lands on `main`; do not tag by hand.
+
 ## [3.3.0] - 2026-10-27
 
 ### Action needed (users)

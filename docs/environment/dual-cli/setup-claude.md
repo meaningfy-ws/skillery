@@ -11,20 +11,16 @@ The source→CLI contract behind these steps is in [`mapping.md`](mapping.md).
   ```bash
   node -v
   ```
-- **Windows only:** each bundle is a folder of symlinks, so git must check symlinks out as links.
-  Enable Developer Mode, then:
-  ```bash
-  git config --global core.symlinks true
-  ```
-  If you added the skillery marketplace before enabling `core.symlinks`, remove and re-add it
-  (`/plugin marketplace remove meaningfy-skillery`, then Step 2) — an update keeps the links as text
-  files.
 
 ## Step 2 — Add the skillery marketplace
 
 ```bash
-/plugin marketplace add meaningfy-ws/skillery#dist
+/plugin marketplace add meaningfy-ws/skillery#releases
 ```
+
+Keep the `#releases`: it is the only branch that holds released bundles. Without it the marketplace
+tracks `develop`, which has no bundles and unreleased work. To pin one release, use `#vX.Y.Z`
+(releases after 3.3.0). See [`releasing.md`](../../development/releasing.md).
 
 ## Step 3 — Install the bundle(s) for your role
 
@@ -64,7 +60,7 @@ what's mandatory.
 ```
 
 **4c. OpenSpec** — the spine engine (`/opsx:*` commands). Upstream: https://github.com/Fission-AI/OpenSpec.
-Pinned version: [`../../../spine/openspec-version.txt`](../../../openspec/openspec-version.txt).
+Pinned version: [`openspec/openspec-version.txt`](../../../openspec/openspec-version.txt).
 ```bash
 npm i -g @fission-ai/openspec
 ```
@@ -122,7 +118,7 @@ confirm the spine registered by running `/opsx:propose` — it should prompt you
 description rather than say the command is unknown.
 
 **Testing a branch** (maintainers): a feature branch carries no `bundles/` (it is generated), so it
-cannot be installed as it is. `#dist` moves only at releases. To test unreleased work, push a throwaway branch with the
+cannot be installed as it is. `#releases` moves only at releases ([`releasing.md`](../../development/releasing.md)). To test unreleased work, push a throwaway branch with the
 generated tree added (`make bundles && git add -f bundles`) and install that
 (`/plugin marketplace add meaningfy-ws/skillery#<branch>`); never install from a local path — a
 local-path marketplace does not load the bundles' agents.

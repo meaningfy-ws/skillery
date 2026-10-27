@@ -1,0 +1,119 @@
+; =============================================================================
+; Import Linter — Architecture Guardrails for <<PROJECT_NAME>>
+; =============================================================================
+; Enforces the cosmic-python layer direction (and, for multi-component repos,
+; the tier hierarchy) so the architecture cannot erode silently.
+;
+; Author the dependency spec FIRST in prose (see
+; .claude/memory/code-anatomy.md and references/architecture-guardrails.md),
+; THEN translate it into the contracts below.
+;
+; Run with:  make check-architecture   (wraps `poetry run lint-imports`)
+;
+; Contract-authoring rules used here:
+;   * `layers` lists go top-down (highest layer first); higher may import lower,
+;     never the reverse.
+;   * Parenthesised layer names — e.g. (entrypoints) — are OPTIONAL: the contract
+;     passes even when that submodule does not exist yet. This is what lets the
+;     template be green on an empty skeleton.
+;   * `forbidden` contracts ban specific source -> target imports (used for
+;     same-tier peer isolation and commons isolation).
+
+[importlinter]
+root_package = <<PACKAGE>>
+
+; -----------------------------------------------------------------------------
+; SINGLE-COMPONENT layout (default — works out of the box)
+; -----------------------------------------------------------------------------
+; The whole package is one component with the four cosmic-python layers.
+; Direction:  entrypoints -> services -> adapters -> domain
+; `domain` imports nothing upward; `adapters` imports only `domain`; and so on.
+; All four are parenthesised so the contract holds before the layers are filled.
+[importlinter:contract:layers]
+name = Cosmic-python layers: entrypoints > services > adapters > domain
+type = layers
+layers =
+    (<<PACKAGE>>.entrypoints)
+    (<<PACKAGE>>.services)
+    (<<PACKAGE>>.adapters)
+    (<<PACKAGE>>.domain)
+
+
+; =============================================================================
+; MULTI-COMPONENT layout (uncomment + extend when the repo grows components)
+; =============================================================================
+; When the package splits into several business components, delete the single
+; `layers` contract above and adopt the tier model below. A component may import
+; any LOWER tier, never a same-tier peer or a higher tier. Replace the generic
+; example component names below with your own.
+;
+; Tier model: 0 = commons (shared) < 1 = foundation < 2 = orchestration
+;             < 3 = entrypoint APIs.
+;
+; -----------------------------------------------------------------------------
+; Tier hierarchy — higher tiers may import lower tiers, never the reverse.
+; Pipe (|) marks independent siblings on the same level; parentheses make a
+; component optional (skipped until it exists).
+; -----------------------------------------------------------------------------
+; [importlinter:contract:tier-hierarchy]
+; name = Tier hierarchy: entrypoints > orchestration > foundation > commons
+; type = layers
+; layers =
+;     (<<PACKAGE>>.public_api) | <<PACKAGE>>.admin_api
+;     (<<PACKAGE>>.integrator) | (<<PACKAGE>>.coordinator)
+;     (<<PACKAGE>>.foundation_a) | (<<PACKAGE>>.foundation_b) | (<<PACKAGE>>.foundation_c)
+;     <<PACKAGE>>.commons
+
+; -----------------------------------------------------------------------------
+; Per-component layers — the cosmic-python layers WITHIN each component.
+; `containers` applies the same layer rule to every listed component package.
+; -----------------------------------------------------------------------------
+; [importlinter:contract:component-layers]
+; name = Layers per component: services > adapters > domain
+; type = layers
+; layers =
+;     (services)
+;     (adapters)
+;     (domain)
+; containers =
+;     <<PACKAGE>>.commons
+;     <<PACKAGE>>.foundation_a
+;     <<PACKAGE>>.foundation_b
+;     <<PACKAGE>>.foundation_c
+
+; -----------------------------------------------------------------------------
+; Commons isolation — the shared tier-0 package must import NO business component.
+; -----------------------------------------------------------------------------
+; [importlinter:contract:commons-isolation]
+; name = Commons must not import business components
+; type = forbidden
+; source_modules =
+;     <<PACKAGE>>.commons
+; forbidden_modules =
+;     <<PACKAGE>>.foundation_a
+;     <<PACKAGE>>.foundation_b
+;     <<PACKAGE>>.foundation_c
+;     <<PACKAGE>>.coordinator
+;     <<PACKAGE>>.admin_api
+
+; -----------------------------------------------------------------------------
+; Foundation peer isolation — tier-1 siblings must not import each other.
+; The tier-hierarchy contract only stops TOP-DOWN violations; same-tier imports
+; need one `forbidden` contract per source module (a forbidden contract cannot
+; have overlapping source and forbidden modules).
+; -----------------------------------------------------------------------------
+; [importlinter:contract:foundation-peer-isolation-a]
+; name = Foundation peer isolation: foundation_a must not import peers
+; type = forbidden
+; source_modules = <<PACKAGE>>.foundation_a
+; forbidden_modules =
+;     <<PACKAGE>>.foundation_b
+;     <<PACKAGE>>.foundation_c
+;
+; [importlinter:contract:foundation-peer-isolation-b]
+; name = Foundation peer isolation: foundation_b must not import peers
+; type = forbidden
+; source_modules = <<PACKAGE>>.foundation_b
+; forbidden_modules =
+;     <<PACKAGE>>.foundation_a
+;     <<PACKAGE>>.foundation_c

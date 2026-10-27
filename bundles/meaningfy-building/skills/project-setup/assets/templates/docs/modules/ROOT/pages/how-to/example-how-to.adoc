@@ -1,0 +1,50 @@
+= How to add a new configuration variable
+:navtitle: Example How-to
+
+A how-to guide is _task-oriented_: it assumes the reader already understands the system and just
+wants to get one specific job done. State the goal, list the steps, stop. Use this page as a
+template for your own recipes.
+
+== Goal
+
+Expose a new runtime setting so it can be configured through an environment variable.
+
+== Before you start
+
+* You have a working checkout (see xref:tutorials/getting-started.adoc[Getting Started]).
+* You know which component the setting belongs to.
+
+== Steps
+
+. Add the variable to the settings model in the relevant `adapters/` config module.
++
+[source,python]
+----
+class Settings(BaseSettings):
+    request_timeout_seconds: int = 30  # new setting, override with REQUEST_TIMEOUT_SECONDS
+----
+
+. Document it in the xref:reference/index.adoc[configuration reference] so operators can find it.
+
+. Add a unit test that asserts the default and the environment override.
+
+. Run the gate:
++
+[source,bash]
+----
+make check-all
+----
+
+== Verify
+
+[source,bash]
+----
+REQUEST_TIMEOUT_SECONDS=5 make run
+----
+
+The application should start and honour the overridden value.
+
+== Related
+
+* xref:reference/index.adoc[Configuration reference]
+* xref:architecture/system-context.adoc[System context] — where this component sits.
