@@ -16,7 +16,7 @@ implement, and the reason behind the steps of [`setup-claude.md`](setup-claude.m
 |---|---|---|
 | `skills/<name>/SKILL.md` | via the `bundles/<b>/skills/<name>` symlinks of its bundle's marketplace plugin | copied from `skills/` at install (`skillery-opencode install`) — *also* read natively from `.claude/skills/` |
 | `agents/<name>.md` | via the `bundles/<b>/agents/<name>.md` symlink of its one bundle | rendered at install from `agents/` + `tools/opencode-catalogue.json` (`--global` / `--project` only) |
-| `bundles.yaml` | rendered to `.claude-plugin/marketplace.json` + the `bundles/` symlink tree (`make bundles`) | rendered to `tools/opencode-catalogue.json` (`make bundles`) |
+| `bundles.yaml` | rendered to `.claude-plugin/marketplace.json` + the `bundles/` symlink tree (`make bundles`; real copies on `releases`) | rendered to `tools/opencode-catalogue.json` (`make bundles`) |
 | `tools/opencode-agent-map.json` | — | the agent model/tool/permission tables `renderAgent` reads at install |
 | command content | `/opsx:<id>`, `/<name>` (native registration) | `.opencode/commands/<id>.md` (`template` + `$ARGUMENTS`) |
 | root binding | `CLAUDE.md` (pointer → `AGENTS.md`) | `AGENTS.md` (read natively) |

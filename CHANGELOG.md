@@ -24,6 +24,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **`/plugin` shows the release number** (each bundle carries `VERSION`) instead of a commit id.
 - **Release tags are on the `releases` branch**, so `meaningfy-ws/skillery#vX.Y.Z` installs one exact
   release (from the next release on).
+- **Bundles on `releases` are real files, not symlinks**, so the marketplace syncs on claude.ai and
+  Claude Desktop too (re-add it there after the next release), and Windows no longer needs
+  `core.symlinks`.
 
 ### Action needed (contributors)
 

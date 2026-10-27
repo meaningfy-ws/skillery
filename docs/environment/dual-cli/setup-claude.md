@@ -11,14 +11,6 @@ The source→CLI contract behind these steps is in [`mapping.md`](mapping.md).
   ```bash
   node -v
   ```
-- **Windows only:** each bundle is a folder of symlinks, so git must check symlinks out as links.
-  Enable Developer Mode, then:
-  ```bash
-  git config --global core.symlinks true
-  ```
-  If you added the skillery marketplace before enabling `core.symlinks`, remove and re-add it
-  (`/plugin marketplace remove meaningfy-skillery`, then Step 2) — an update keeps the links as text
-  files.
 
 ## Step 2 — Add the skillery marketplace
 
