@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.5.0] - 2026-10-27
+
 ### Added
 
 - **The sales agent and five sales skills in `meaningfy-sales`.** Install the bundle to get
