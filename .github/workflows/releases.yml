@@ -1,0 +1,61 @@
+# Publishes a release on the `releases` branch, the only branch that holds the generated bundles/ and
+# the only one users install from (repo convention: docs/development/releasing.md). It runs when a
+# release/X.Y.Z merge lands on main: the released tree minus work in progress (skills/agents in no
+# bundle) plus bundles/, appended as one commit, tagged vVERSION on that commit, with a GitHub Release
+# from the CHANGELOG section. Never force-pushed and never edited by hand; its commits never enter
+# develop or main.
+name: releases
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # re-publish main's VERSION if a run failed
+concurrency:
+  group: releases
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the version; stop if it is already released
+        id: v
+        run: |
+          v="v$(cat VERSION)"
+          echo "tag=$v" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/$v" >/dev/null; then
+            echo "$v is already released"; echo "skip=1" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.v.outputs.skip != '1'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - if: steps.v.outputs.skip != '1'
+        run: pip install -r requirements-dev.txt
+      # CI has no .venv, which `make bundles` activates.
+      - if: steps.v.outputs.skip != '1'
+        run: python -m tools.bundle_gen generate
+      - name: Append the release commit to releases, tag it and publish the GitHub Release
+        if: steps.v.outputs.skip != '1'
+        env:
+          TAG: ${{ steps.v.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # ship real files, not the local symlinks: claude.ai's marketplace sync does not follow links
+          cp -rL bundles bundles.real && rm -rf bundles && mv bundles.real bundles
+          git add -A -f bundles
+          # only released items ship: drop skills/agents listed in no bundle (rebundle-by-activity D-14)
+          python -m tools.bundle_gen unreleased | xargs -r git rm -r -q --cached --
+          tree=$(git write-tree)
+          parent=()
+          if git fetch --depth=1 origin releases; then parent=(-p FETCH_HEAD); fi
+          commit=$(git commit-tree "$tree" "${parent[@]}" -m "release: $TAG (main $GITHUB_SHA)")
+          git push origin "$commit:refs/heads/releases"
+          git tag -a "$TAG" -m "Release ${TAG#v}" "$commit"
+          git push origin "$TAG"
+          awk -v h="## [${TAG#v}]" 'index($0,h)==1{f=1;next} /^## \[/{if(f)exit} f' CHANGELOG.md > notes.md
+          gh release create "$TAG" --title "$TAG" --notes-file notes.md --verify-tag

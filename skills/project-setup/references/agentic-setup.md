@@ -126,7 +126,7 @@ hand-off and the Definition of Done:
 npx -y @fission-ai/openspec@<pin> init --tools claude --profile core
 
 # the skillery (the skill routing target set)
-/plugin marketplace add meaningfy-ws/skillery#dist
+/plugin marketplace add meaningfy-ws/skillery#releases
 /plugin install meaningfy-core@meaningfy-skillery
 /plugin install meaningfy-building@meaningfy-skillery
 /plugin install superpowers@claude-plugins-official
