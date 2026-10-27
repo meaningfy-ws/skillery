@@ -49,14 +49,14 @@ disciplined paid next step, not more discussion.
 
 The states describe the *client's head*; the commercial stages (above) describe
 *what is sold*. They are related but not identical — State 1 now spans **both**
-free presale and the paid Light tier of Discovery & Onboarding, because a client
+free presale and the paid discovery workshop of Discovery & Onboarding, because a client
 can be purely orienting while already buying a short paid read.
 
 | State | Client question | Commercial | Design rule |
 |-------|-----------------|------------|-------------|
-| **1. Orientation** | "Is this even relevant to us?" | Spans free presale **and** the paid Light tier | Teach generously; the Light tier gives a fast expert read but stays short of deep customisation. |
-| **2. Decision pressure** | "If we do this, what do we do *first*, and what *not*?" | **Paid** (the Deep tier) | Where the real value starts: scoping, trade-offs, sequencing. Answering for free leaks intellectual capital. |
-| **3. Execution** | "Build this with us." | Paid (a build contract — via the Deep tier's hand-off or direct-to-build) | A separate engagement with its own scope and budget. |
+| **1. Orientation** | "Is this even relevant to us?" | Spans free presale **and** the paid discovery workshop | Teach generously; the discovery workshop gives a fast expert read but stays short of deep customisation. |
+| **2. Decision pressure** | "If we do this, what do we do *first*, and what *not*?" | **Paid** (the Proof of Value) | Where the real value starts: scoping, trade-offs, sequencing. Answering for free leaks intellectual capital. |
+| **3. Execution** | "Build this with us." | Paid (a build contract — via the Proof of Value's hand-off or direct-to-build) | A separate engagement with its own scope and budget. |
 
 **State-2 signals (already paid territory):** "Which domain should we start
 with?" · "Is marketing data the right entry point?" · "Governance or
@@ -73,20 +73,20 @@ its commercial facts.
 | Stage | Purpose / question it answers | Pointer |
 |-------|-------------------------------|---------|
 | **Presale** | Mutual recognition: "Are we even relevant to each other?" | `engagement-lifecycle.md` |
-| **Discovery & Onboarding — Light tier** | A fast, expert, paid read — distinct from and not a substitute for the Deep tier's Decision Package | `engagement-lifecycle.md` |
-| **Discovery & Onboarding — Deep tier** | Make a safe, informed commitment possible: "What is the right next step, and why?" | intent detailed below |
+| **Discovery & Onboarding — discovery workshop** | A fast, expert, paid read — distinct from and not a substitute for the Proof of Value's Decision Package | `engagement-lifecycle.md` |
+| **Discovery & Onboarding — Proof of Value** | Make a safe, informed commitment possible: "What is the right next step, and why?" | intent detailed below |
 | **Direct-to-build** | "We know what we want — build it," with its elicitation done at the start of the contract | `engagement-lifecycle.md` |
 | **Semantic Layer building blocks** | Build what was decided (modelling/ontology, software, data mappings & integration, analytics/BI, agentic frameworks, training) | `engagement-lifecycle.md` |
 | **Repeat client** | Sustain, scale, evolve what was built — a fact, not a phase, led by `executive-communication` | `engagement-lifecycle.md#repeat-clients` |
 
-When coaching the Light tier, direct-to-build, or a Semantic Layer building
-block (or refining the Deep tier), work from intent outward: *what is this
+When coaching the discovery workshop, direct-to-build, or a Semantic Layer building
+block (or refining the Proof of Value), work from intent outward: *what is this
 stage for, where does it stop, who pays and how, and what does "done" look
 like?* Then let the user design the activities. The stages are not a ladder —
-the Light tier, the Deep tier, and direct-to-build are alternative first
+the discovery workshop, the Proof of Value, and direct-to-build are alternative first
 purchases, freely composable afterwards.
 
-## The Deep tier, the Decision Phase (the keystone): its intent
+## The Proof of Value, the Decision Phase (the keystone): its intent
 
 The flagship offering. A short, paid engagement that moves an organisation from
 awareness/interest to a **safe, informed decision about what to build next**:

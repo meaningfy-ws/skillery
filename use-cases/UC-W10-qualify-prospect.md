@@ -7,8 +7,8 @@ success_guarantee: the prospect is assessed against the commercial structure, th
 area: sales
 served_by:
   agents: []
-  skills: []
-status: missing
+  skills: [sales-qualification]
+status: partial
 change: add-commercial-chain
 ---
 
@@ -42,8 +42,8 @@ conversation did not reveal is marked unknown, not guessed.
 2. The agent reads the prospect's history in Odoo and the company memory.
 3. The agent maps what was said to the five P and to the domain: which services or Semantic Layer
    building blocks the need touches.
-4. The agent assesses readiness to buy: still presale, ready for Discovery & Onboarding (Light or
-   Deep), or direct to build.
+4. The agent assesses readiness to buy: still presale, ready for Discovery & Onboarding (discovery workshop or
+   Proof of Value), or direct to build.
 5. The agent names the gaps and the questions or teaching point for the next conversation, in the
    Challenger manner.
 6. The agent proposes the next step and whether the lead becomes an opportunity on the two-way

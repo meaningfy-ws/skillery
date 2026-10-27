@@ -1,4 +1,4 @@
-# Pre-sales Discovery & Qualification Sheet
+# Pre-sales Discovery: posture and decision
 
 Questions the **consultant asks their prospects** (distinct from the coaching
 questions the coach asks the *user*, which live in `question-bank.md`).
@@ -7,42 +7,13 @@ questions the coach asks the *user*, which live in `question-bank.md`).
 > decide whether to **stop**, **schedule a focused follow-up**, or **propose the
 > Decision Phase** (see `engagement-model.md`).
 
-## How to use it
+## The questions
 
-- **Conferences / networking (first encounters)** → use **Section A** only (1–2 questions).
-- **Scheduled discovery calls (30–60 min)** → use **Sections B and C**.
-- Don't force all sections; use what fits the context.
-
-## A. Conceptual calibration *(first encounters only, use 1–2)*
-
-- How do topics like data semantics, knowledge graphs, or shared meaning show up in your organisation today?
-- How important is data meaning for analytics or AI in your environment?
-- Is meaning and context more of a governance concern, an architecture concern, or not really on the radar yet?
-- When different teams talk about the same data, do definitions tend to align or diverge?
-
-**Rule:** if there is no conceptual signal or curiosity → **de-prioritise.**
-
-## B. Technical & organisational discovery *(discovery calls)*
-
-- How would you describe your current data landscape: centralised, federated, mixed?
-- Which initiatives struggle most with data reuse or interpretation?
-- Do you have a data catalogue or metadata tooling today? How is it actually used?
-- Where does data governance sit: centrally, per domain, or informally?
-
-**Semantic & interoperability pressure**
-- Where do you see the biggest friction caused by inconsistent meaning?
-- Which data crosses domains most often?
-- What breaks first when definitions are unclear: reporting, integration, AI?
-
-## C. Business readiness & decision dynamics *(discovery calls)*
-
-- What triggered this conversation now?
-- If nothing changes in the next 12 months, what is the risk?
-- Who would ultimately need to support or approve further work?
-- Is this currently exploratory, or is there pressure to act?
-- What has already been tried in this space?
-- What would make a first initiative clearly *fail* internally?
-- What would success need to look like to be taken seriously?
+The questions themselves, and the qualification they feed (five Ps from MEDDPICC), are owned by
+`sales-qualification` (its prospect question bank: first encounters, landscape and semantic
+pressure, readiness and decision dynamics). This sheet keeps the coaching posture around them:
+use one or two questions at a first encounter, the full bank only on a scheduled discovery call,
+and stop when there is no conceptual signal.
 
 ## Internal decision (after the conversation): choose one
 

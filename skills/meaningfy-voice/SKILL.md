@@ -20,8 +20,8 @@ persuasive or bind wording.
 
 Load the profile when a skill that writes for Meaningfy names this skill, or when a text must be
 checked for voice. The profile is the only place the voice is stated; other skills cite it by name.
-Per-channel profiles (LinkedIn, blog, offer, internal message) will live in `references/channels/`;
-each is a placeholder today that points back to the default profile.
+Per-channel profiles live in `references/channels/`: outreach email is written; LinkedIn, blog,
+offer and internal message are placeholders that point back to the default profile.
 
 ## Boundary & Related Skills
 
@@ -31,4 +31,4 @@ each is a placeholder today that points back to the default profile.
 (`explanatory-writing`), doc placement and form (`technical-writing`), or the genre-conditional
 antipatterns (`writing-antipatterns`).
 
-**Related:** `executive-communication`, `explanatory-writing`, `writing-antipatterns`, `vault-daily`.
+**Related:** `executive-communication`, `explanatory-writing`, `writing-antipatterns`, `vault-daily`, `sales-conversations` (applies the outreach-email channel).

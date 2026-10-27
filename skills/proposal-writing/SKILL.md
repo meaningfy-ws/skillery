@@ -1,6 +1,6 @@
 ---
 name: proposal-writing
-description: "Produce the proposal + Statement of Work (SoW) that frames the paid Decision Phase (P1) offer — with an explicit in/out scope boundary, priced as a fixed frame. This is the ENTRY skill of the consulting front-of-funnel: it qualifies the need, frames the Decision Phase offer, prices it (delegating the numbers to `estimation`), and writes the proposal + SoW. It OWNS proposal/SoW production and the scope-boundary discipline; it DELEGATES pricing/effort to `estimation`, executive framing to `executive-communication`, and the P1 deliverable definition to `decision-package`. Triggers — \"write a proposal\", \"draft the SoW / Statement of Work\", \"scope boundary for this engagement\", \"fixed-cost proposal\", \"frame the Decision Phase offer\". Not for producing the Decision Package itself (that is `decision-package`), not for free P0 orientation (that is `semantic-consulting-coach`)."
+description: "Produce the proposal + Statement of Work (SoW) that frames the paid Decision Phase (P1) offer — with an explicit in/out scope boundary, priced as a fixed frame. It frames the Decision Phase offer for a qualified need (qualification is `sales-qualification`), prices it (delegating the numbers to `estimation`), and writes the proposal + SoW. It OWNS proposal/SoW production and the scope-boundary discipline; it DELEGATES pricing/effort to `estimation`, executive framing to `executive-communication`, and the P1 deliverable definition to `decision-package`. Triggers — \"write a proposal\", \"draft the SoW / Statement of Work\", \"scope boundary for this engagement\", \"fixed-cost proposal\", \"frame the Decision Phase offer\". Not for producing the Decision Package itself (that is `decision-package`), not for free P0 orientation (that is `semantic-consulting-coach`)."
 license: Apache 2.0
 metadata:
   purpose: proposals
@@ -24,7 +24,7 @@ and prices the engagement as a **fixed frame** — a bounded commitment the pros
 open-ended risk on either side.
 
 This is the **entry skill** of the consulting front-of-funnel: the common path runs through here. It
-does the qualify → frame → price → write loop, calling `estimation` by reference for the numbers (so
+does the frame → price → write loop on a need `sales-qualification` has qualified, calling `estimation` by reference for the numbers (so
 the flow is one path, but `estimation` stays independently triggerable for any estimate that does not
 need a full proposal wrapper).
 
@@ -101,7 +101,7 @@ honest.
 - Coaching whether/how to run P1 and holding the free→paid boundary →
   `semantic-consulting-coach`.
 
-**Related:** `estimation`, `decision-package`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` (Contract/specification genre failure modes for the SoW half of this skill's output).
+**Related:** `estimation`, `decision-package`, `sales-qualification` (hands over the qualified deal and its dossier), `sales-conversations`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` (Contract/specification genre failure modes for the SoW half of this skill's output).
 
 ## Tone & style
 

@@ -1,0 +1,299 @@
+# Write policy of the meaningfy-sales agent — the single source of the tiers.
+# Explained in ../references/write-rules.md (which cites these ids). Tested by tests/features/write_policy.feature.
+#
+# Tiers: do (do and log) · ask (only after the owner's yes in a run note) · never.
+# Default: any write-capable action that matches no entry is "ask". Reads need no tier.
+# Matching: an entry matches when its tool pattern matches and, if given, the model, method and fields match;
+# an entry with fields_unless_with does not match when the write also touches one of those fields (a conversion is judged by odoo-convert alone).
+# Tool names are normalised, connector-neutral: odoo.* = the Odoo MCP server; gmail.*, calendar.*, drive.* =
+# the Google Workspace connectors; slack.*, atlassian.*, miro.*, overleaf.* = those connectors; memory.* = the
+# company memory server; browser.* = a browser-control connector; docs.* = a document-editing connector;
+# trigger.* = any scheduler; vault.write = the run-note folder. Entries for a connector that is not installed
+# never match and cost nothing; they stay so that installing one never loosens its tier.
+# Several entries can match one action; the most restrictive result wins (never > ask > do).
+# Result of an entry: "never" if any never_if fact is true; else "ask" if any ask_if fact is true (and the tier is do);
+# else its tier if all when_all facts are true
+# and (if when_any is given) at least one when_any fact is true; else its "otherwise" tier (default ask).
+default_tier: ask
+
+entries:
+# ---------------- Odoo: crm.lead ----------------
+- id: odoo-dossier
+  tool: odoo.write
+  models: [crm.lead]
+  fields: [description]
+  tier: do
+  when_all: [previous_text_kept]
+  otherwise: ask
+- id: odoo-field-update
+  tool: odoo.write
+  models: [crm.lead, res.partner]
+  fields: ["*"]
+  fields_exclude: [description, comment, parent_id, is_company, stage_id, team_id, user_id, active, tag_ids, priority, date_deadline, expected_revenue, probability, campaign_id, source_id, medium_id, type]
+  tier: do
+  when_all: [source_cited]
+  when_any: [field_empty, agent_filled, dormant]
+  otherwise: ask
+- id: odoo-partner-identity
+  tool: odoo.write
+  models: [res.partner]
+  fields: [name, email, vat, child_ids, category_id]
+  tier: do
+  when_all: [source_cited]
+  when_any: [field_empty, agent_filled]
+  otherwise: ask
+- id: odoo-profile
+  tool: odoo.write
+  models: [res.partner]
+  fields: [comment]
+  tier: do
+  when_all: [previous_text_kept, source_cited]
+  never_if: [special_category_data, researched_private_life]
+  otherwise: ask
+- id: odoo-partner-structure
+  tool: odoo.write
+  models: [res.partner]
+  fields: [parent_id, is_company]
+  tier: do
+  when_all: [source_cited]
+  when_any: [field_empty, record_created_this_run]
+  otherwise: ask
+- id: odoo-stage-move
+  tool: odoo.write
+  models: [crm.lead]
+  fields: [stage_id]
+  fields_unless_with: [type]
+  tier: do
+  when_all: [same_pipeline, forward, exit_met_with_evidence, target_not_won_or_lost, team_written_with_stage]
+  otherwise: ask
+- id: odoo-pipeline-change
+  tool: odoo.write
+  models: [crm.lead]
+  fields: [team_id]
+  fields_unless_with: [type]
+  tier: do
+  when_all: [same_pipeline]
+  otherwise: ask
+- id: odoo-forecast
+  tool: odoo.write
+  models: [crm.lead]
+  fields: [date_deadline, expected_revenue, probability]
+  tier: do
+  when_all: [source_cited, stated_by_client_or_partner, last_open_stage]
+  never_if: [own_estimate]
+  otherwise: ask
+- id: odoo-priority
+  tool: odoo.write
+  models: [crm.lead]
+  fields: [priority]
+  tier: do
+  when_all: [attention_score_cited]
+  never_if: [overrides_owner_value]
+  otherwise: ask
+- id: odoo-salesperson
+  tool: odoo.write
+  models: [crm.lead, res.partner]
+  fields: [user_id]
+  tier: ask
+- id: odoo-convert
+  tool: odoo.write
+  models: [crm.lead]
+  fields: [type]
+  tier: do
+  when_all: [two_way_signal_cited, to_opportunity, first_stage, team_written_with_stage]
+  otherwise: ask
+- id: odoo-archive
+  tool: odoo.write
+  models: ["*"]
+  fields: [active]
+  tier: never
+- id: odoo-tags
+  tool: odoo.write
+  models: [crm.lead]
+  fields: [tag_ids]
+  tier: do
+  when_any: [adding_existing_tag, removing_agent_tag]
+  otherwise: ask
+- id: odoo-lead-source
+  tool: odoo.write
+  models: [crm.lead]
+  fields: [source_id, medium_id]
+  tier: do
+  when_all: [existing_value]
+  otherwise: ask
+- id: odoo-create-record
+  tool: odoo.create
+  models: [crm.lead, res.partner]
+  tier: do
+  when_all: [evidence_cited, duplicate_check_passed]
+  when_any: [within_five_creations, in_approved_intake_plan]
+  ask_if: [creates_opportunity_without_two_way_signal]
+  never_if: [special_category_data, researched_private_life]
+  otherwise: ask
+- id: odoo-activity
+  tool: [odoo.create, odoo.write]
+  models: [mail.activity]
+  tier: do
+- id: odoo-activity-redate
+  tool: odoo.write
+  models: [mail.activity]
+  fields: [date_deadline]
+  tier: do
+  when_all: [reason_in_note]
+  otherwise: ask
+- id: odoo-activity-done
+  tool: odoo.execute_kw
+  methods: [action_feedback, action_done]
+  tier: do
+  when_all: [evidence_cited]
+  otherwise: ask
+- id: odoo-note
+  tool: odoo.execute_kw
+  methods: [message_post]
+  tier: do
+  when_all: [subtype_note]
+  never_if: [has_partner_ids, has_mention, subtype_discussion, special_category_data, researched_private_life]
+  otherwise: never
+- id: odoo-won-lost
+  tool: odoo.execute_kw
+  methods: [action_set_won, action_set_won_rainbowman, action_set_lost]
+  tier: ask
+- id: odoo-configuration
+  tool: [odoo.write, odoo.create]
+  models: [crm.stage, crm.team, crm.tag, crm.lost.reason, "utm.*", res.users, "ir.*", mail.activity.type]
+  tier: ask
+- id: odoo-send
+  tool: [odoo.create, odoo.write, odoo.execute_kw]
+  models: [mail.mail, mail.compose.message, "mail.template", "sms.*"]
+  methods: [message_post_with_template, send_mail, action_send_mail, message_notify, "*send*"]
+  match_any_of: [models, methods]
+  tier: never
+- id: odoo-unlink
+  tool: odoo.unlink
+  tier: never
+- id: odoo-merge
+  tool: odoo.execute_kw
+  methods: ["*merge*", "*unlink*", action_archive, toggle_active]
+  tier: never
+- id: odoo-import
+  tool: odoo.import_records
+  tier: never
+- id: odoo-other-method
+  tool: odoo.execute_kw
+  methods_exclude: [action_feedback, action_done, message_post, action_set_won, action_set_won_rainbowman, action_set_lost, write, create, read, search_read, search_count, fields_get]
+  tier: never
+
+# ---------------- Gmail ----------------
+- id: gmail-draft-create
+  tool: gmail.create_draft
+  tier: do
+  ask_if: [commits_meaningfy_unapproved, colleague_not_in_cc]
+  never_if: [to_contracting_authority_open_call]
+- id: gmail-draft-update
+  tool: gmail.update_draft
+  tier: do
+  when_all: [draft_id_in_run_log]
+  ask_if: [commits_meaningfy_unapproved, colleague_not_in_cc]
+  never_if: [to_contracting_authority_open_call]
+  otherwise: ask
+- id: gmail-send
+  tool: [gmail.send_message, gmail.reply, gmail.forward]
+  tier: never
+- id: gmail-remove
+  tool: [gmail.delete_draft, gmail.trash_message, gmail.trash_thread, gmail.delete_label, gmail.mark_message_spam, gmail.mark_thread_spam]
+  tier: never
+- id: gmail-label-apply
+  tool: [gmail.label_message, gmail.label_thread, gmail.update_message_labels]
+  tier: do
+  when_all: [existing_label]
+  otherwise: ask
+- id: gmail-label-remove
+  tool: [gmail.unlabel_message, gmail.unlabel_thread]
+  tier: do
+  when_all: [label_applied_by_agent]
+  otherwise: ask
+- id: gmail-other
+  tool: [gmail.create_label, gmail.update_label, gmail.untrash_message, gmail.untrash_thread, gmail.unmark_message_spam, gmail.unmark_thread_spam, gmail.apply_sensitive_message_label, gmail.apply_sensitive_thread_label]
+  tier: ask
+
+# ---------------- Calendar ----------------
+- id: calendar-create
+  tool: calendar.create_event
+  tier: do
+  never_if: [has_guests]
+- id: calendar-update
+  tool: calendar.update_event
+  tier: do
+  when_all: [event_id_in_run_log]
+  never_if: [has_guests]
+  otherwise: ask
+- id: calendar-never
+  tool: [calendar.delete_event, calendar.respond_to_event]
+  tier: never
+
+# ---------------- Google Drive ----------------
+- id: drive-edit
+  tool: [drive.create_file, drive.update_file, drive.copy_file]
+  tier: ask
+- id: drive-never
+  tool: [drive.share_file, drive.trash_file]
+  tier: never
+
+# ---------------- Slack ----------------
+- id: slack-send
+  tool: [slack.send_message, slack.schedule_message, slack.add_reaction, slack.create_conversation]
+  tier: never
+- id: slack-draft
+  tool: [slack.send_message_draft, slack.create_canvas, slack.update_canvas]
+  tier: ask
+
+# ---------------- Atlassian (Confluence, Jira, Compass) ----------------
+- id: atlassian-write
+  tool: ["atlassian.create*", "atlassian.update*", "atlassian.edit*", "atlassian.add*", "atlassian.transition*"]
+  tier: ask
+
+# ---------------- Miro, Overleaf ----------------
+- id: miro-write
+  tool: ["miro.*_create*", "miro.*_update*", "miro.*_move*", "miro.*_sync*", "miro.*_restore", "miro.*_resolve", "miro.*_reply", "miro.*_role_update", "miro.create_*", "miro.import*", "miro.record_ui_feedback"]
+  tier: ask
+- id: miro-share-delete
+  tool: ["miro.*_share", "miro.*_delete"]
+  tier: never
+- id: overleaf-write
+  tool: [overleaf.write_file, overleaf.write_section]
+  tier: ask
+
+# ---------------- Meaningfy memory ----------------
+- id: memory-write
+  tool: [memory.remember, memory.forget, memory.call_tool]
+  tier: never
+
+# ---------------- Browsers ----------------
+- id: browser-act
+  tool: [browser.computer, browser.browser_batch, browser.shortcuts_execute]
+  tier: ask
+  never_if: [submits_form]
+- id: browser-never
+  tool: [browser.form_input, browser.javascript_tool, browser.file_upload, browser.upload_image]
+  tier: never
+
+# ---------------- Claude Docs ----------------
+- id: docs-write
+  tool: [docs.create, docs.update, docs.batch]
+  tier: ask
+- id: docs-delete
+  tool: [docs.delete]
+  tier: never
+
+# ---------------- Scheduling ----------------
+- id: schedule-never
+  tool: ["trigger.*"]
+  tier: never
+
+# ---------------- Vault (the run notes) ----------------
+- id: vault-run-note
+  tool: vault.write
+  tier: do
+  when_all: [in_grooming_session_folder, agent_created_note, owner_input_unchanged, reread_before_write]
+  never_if: [writes_owner_input, edits_skill, not_agent_created_note]
+  otherwise: ask
