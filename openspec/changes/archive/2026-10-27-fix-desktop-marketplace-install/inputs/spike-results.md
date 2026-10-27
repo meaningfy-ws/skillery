@@ -4,9 +4,12 @@
 
 | Variant | Branch @ SHA | CLI validate | CLI add + install (GitHub `#ref`) | Desktop sync | Desktop install + chat | Desktop error text | When |
 |---|---|---|---|---|---|---|---|
-| C — symlinks + plugin.json | `spike/desktop-c` @ `79508d4` | pass | pass — `meaningfy-core` Skills (6) | _pending (human)_ | _pending_ | | 2026-10-27 |
-| A — copies + plugin.json | | | | | | | |
-| B — 2.10 root layout | | | | | | | |
+| C — symlinks + plugin.json | `spike/desktop-c` @ `79508d4`, then `develop` @ `1e50108` | pass | pass — `meaningfy-core` Skills (6), `meaningfy-building` Skills (9) + Agents (3) | **pass** (human, from `develop`) | **pass** — skills installable | — | 2026-10-27 |
+| A — copies + plugin.json | not run — C passed | | | | | | |
+| B — 2.10 root layout | not run — C passed | | | | | | |
+
+**Winner: C** (design decision table row 1). Symlinks were never the cause; the missing per-bundle
+`plugin.json` was.
 
 Notes:
 - 2026-10-27: Desktop reads only the default branch, so `#ref` testing is impossible (DEC-7). C was

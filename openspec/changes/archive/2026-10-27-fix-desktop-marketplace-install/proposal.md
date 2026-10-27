@@ -78,7 +78,7 @@ Candidates, in test order:
 
 - No change to which skills/agents are in which bundle, or to bundle names.
 - No change to the opencode install path beyond what the winning layout forces.
-- No new release tooling; the fix ships through the existing `meaningfy-release` flow as v3.3.2.
+- No new release tooling; the fix ships through the existing `meaningfy-release` flow (released as v3.4.0, the owner's call).
 - No Desktop-only fork of the marketplace (one `marketplace.json` serves both).
 
 ---
@@ -90,7 +90,7 @@ Candidates, in test order:
 - If C wins: `bundles/` returns to symlinks; the no-symlink gate is narrowed. **BREAKING** for
   nobody (install ids unchanged).
 - `docs/environment/dual-cli/` and `docs/development/releasing.md` record the Desktop constraint.
-- CHANGELOG line for installers; release v3.3.2.
+- CHANGELOG line for installers; release v3.4.0.
 
 ## Capabilities
 

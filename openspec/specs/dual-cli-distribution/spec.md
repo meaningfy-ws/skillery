@@ -147,19 +147,27 @@ The repository SHALL define every bundle once, in the root `bundles.yaml`, as an
 - **THEN** `make validate` fails and names the key or bundle
 
 ### Requirement: Skills and agents are installed from their single source
-Skills SHALL be installed on both CLIs from `skills/` and agents from `agents/`; the repository SHALL NOT contain a hand-maintained per-CLI copy of any skill or agent file. Claude Code bundles SHALL reach their skills and agents through generated copies under `bundles/<bundle>/` (no symlinks: claude.ai's marketplace sync fails on them), which `make bundles` writes, the repository commits on every branch, and nobody edits by hand; `make validate` SHALL fail when a copy differs from its source. The opencode installer SHALL copy skills from `skills/` and render agents at install time from the agent bodies in `agents/` and the parsed frontmatter in the generated `tools/opencode-catalogue.json`.
+Skills SHALL be installed on both CLIs from `skills/` and agents from `agents/`; the repository SHALL NOT contain a hand-maintained per-CLI copy of any skill or agent file. Claude Code bundles SHALL reach their skills and agents through generated relative symlinks under `bundles/<bundle>/` into `skills/` and `agents/`, and each bundle SHALL carry a generated `bundles/<bundle>/.claude-plugin/plugin.json` (name, version, description, author) — claude.ai's marketplace sync, used by Claude Desktop, needs it (fix-desktop-marketplace-install DEC-6, variant C). `make bundles` writes them, the repository commits them on every branch, and nobody edits them by hand; `make validate` SHALL fail when a link is missing, is a copy, or points elsewhere, or when a `plugin.json` differs from its rendering. The opencode installer SHALL copy skills from `skills/` and render agents at install time from the agent bodies in `agents/` and the parsed frontmatter in the generated `tools/opencode-catalogue.json`.
 
 #### Scenario: No hand-maintained copy exists
 - **WHEN** the `develop` branch is inspected
-- **THEN** no `.opencode/` tree is tracked, every entry under `bundles/` is a byte-identical copy of its `skills/` or `agents/` source, and `tools/opencode-catalogue.json` holds no skill or agent body
+- **THEN** no `.opencode/` tree is tracked, every skill or agent entry under `bundles/` is a relative symlink to its `skills/` or `agents/` source, and `tools/opencode-catalogue.json` holds no skill or agent body
 
 #### Scenario: The repository holds no symlinks
 - **WHEN** any branch is inspected
-- **THEN** no tracked path is a symlink
+- **THEN** no tracked path outside `bundles/` is a symlink; under `bundles/`, only the generated links into `skills/` and `agents/` are
 
 #### Scenario: A content edit needs regeneration
-- **WHEN** a contributor edits the body of an existing `skills/<name>/SKILL.md` without running `make bundles`
-- **THEN** `make validate` fails naming the stale `bundles/` copy, and passes after `make bundles`
+- **WHEN** a contributor edits the body of an existing `skills/<name>/SKILL.md`
+- **THEN** no regeneration is needed for the body (the bundle link follows the source), and `make validate` still passes; a change to `bundles.yaml` does need `make bundles` (next scenario)
+
+#### Scenario: Every bundle carries its plugin manifest
+- **WHEN** `make bundles` has run
+- **THEN** each bundle in `bundles.yaml` has `bundles/<bundle>/.claude-plugin/plugin.json` whose `name` and `description` match the bundle and whose `version` equals `VERSION`
+
+#### Scenario: A bundle change needs regeneration
+- **WHEN** a contributor changes a bundle's description or membership in `bundles.yaml` without running `make bundles`
+- **THEN** `make validate` fails naming the stale `plugin.json` or link, and passes after `make bundles`
 
 ### Requirement: Installing a bundle loads exactly that bundle
 Installing one bundle on either CLI SHALL yield exactly the skills and agents `bundles.yaml` lists for it, and no skill or agent of another bundle.
