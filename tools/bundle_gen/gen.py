@@ -23,8 +23,10 @@ PACKAGE_JSON = "package.json"
 VERSION_FILE = "VERSION"
 SKILLS_DIR = "skills"
 AGENTS_DIR = "agents"
-# Copies, not symlinks: claude.ai's marketplace sync fails on a repo with symlinks.
+# bundles/ holds symlinks into skills/ and agents/ plus one plugin.json per bundle: claude.ai's
+# marketplace sync needs the plugin.json (fix-desktop-marketplace-install).
 _CACHE = ("__pycache__", "*.pyc")  # created by running scripts; git-ignored, never copied or compared
+PLUGIN_AUTHOR = {"name": "Meaningfy"}
 SCHEMA_COPY = ("openspec/schemas/meaningfy", "../../skills/project-setup/assets/openspec-schema/meaningfy")
 
 _TOP_KEYS = ("name", "owner", "description", "bundles")
@@ -135,7 +137,7 @@ def render(repo: Path) -> tuple[bytes, dict[str, str], bytes]:
         "name": doc["name"],
         "owner": doc["owner"],
         "metadata": {"description": doc["description"], "version": ver},
-        "plugins": [{"name": b["name"], "description": b["description"], "version": ver,
+        "plugins": [{"name": b["name"], "description": b["description"],
                      "source": f"./{BUNDLES_DIR}/{b['name']}"} for b in doc["bundles"]],
     }
     links: dict[str, str] = {}
@@ -154,6 +156,14 @@ def render(repo: Path) -> tuple[bytes, dict[str, str], bytes]:
     return _json_bytes(market), links, _json_bytes(catalogue)
 
 
+def plugin_manifests(repo: Path) -> dict[str, bytes]:
+    """bundles/<b>/.claude-plugin/plugin.json per bundle; it carries VERSION for /plugin."""
+    doc, ver = load(repo), version(repo)
+    return {f"{BUNDLES_DIR}/{b['name']}/.claude-plugin/plugin.json":
+            _json_bytes({"name": b["name"], "version": ver, "description": b["description"],
+                         "author": PLUGIN_AUTHOR}) for b in doc["bundles"]}
+
+
 def _sync_package_version(repo: Path, ver: str) -> None:
     path = repo / PACKAGE_JSON
     if not path.exists():
@@ -164,14 +174,18 @@ def _sync_package_version(repo: Path, ver: str) -> None:
 
 
 def write(repo: Path) -> list[str]:
-    """Write both JSON renderings, recreate bundles/ (and the schema copy) and sync package.json
-    (idempotent)."""
+    """Write both JSON renderings, recreate bundles/ (links + plugin.json), refresh the schema copy
+    and sync package.json (idempotent)."""
     market, links, catalogue = render(repo)  # raises before anything is written
-    for rel, data in ((MARKETPLACE, market), (CATALOGUE, catalogue)):
+    manifests = plugin_manifests(repo)
+    shutil.rmtree(repo / BUNDLES_DIR, ignore_errors=True)
+    for rel, data in ((MARKETPLACE, market), (CATALOGUE, catalogue), *manifests.items()):
         (repo / rel).parent.mkdir(parents=True, exist_ok=True)
         (repo / rel).write_bytes(data)
-    shutil.rmtree(repo / BUNDLES_DIR, ignore_errors=True)
-    copies = {**links, **_schema_copy(repo)}
+    for rel, target in links.items():
+        (repo / rel).parent.mkdir(parents=True, exist_ok=True)
+        (repo / rel).symlink_to(target)
+    copies = _schema_copy(repo)
     for rel, target in copies.items():
         dst = repo / rel
         if dst.is_symlink() or dst.is_file():
@@ -185,7 +199,7 @@ def write(repo: Path) -> list[str]:
         else:
             shutil.copy2(src, dst)
     _sync_package_version(repo, version(repo))
-    return [MARKETPLACE, CATALOGUE, *copies]
+    return [MARKETPLACE, CATALOGUE, *manifests, *links, *copies]
 
 
 def _schema_copy(repo: Path) -> dict[str, str]:
@@ -201,9 +215,9 @@ def _tree(path: Path) -> dict[str, tuple[bytes, bool]]:
 
 
 # ------------------------------------------------------------------ gate
-def _link_errors(repo: Path, links: dict[str, str]) -> list[str]:
+def _copy_errors(repo: Path, copies: dict[str, str]) -> list[str]:
     out: list[str] = []
-    for rel, target in links.items():
+    for rel, target in copies.items():
         p = repo / rel
         if p.is_symlink():
             out.append(f"symlink, not a copy: {rel} — run make bundles")
@@ -211,13 +225,32 @@ def _link_errors(repo: Path, links: dict[str, str]) -> list[str]:
             out.append(f"missing copy: {rel} — run make bundles")
         elif _tree(p) != _tree(p.parent / target):
             out.append(f"stale copy: {rel} — run make bundles, never edit it by hand")
-    dirs = {Path(rel).parent.as_posix() for rel in links}
+    return out
+
+
+def _link_errors(repo: Path, links: dict[str, str], files: dict[str, bytes]) -> list[str]:
+    """bundles/ holds exactly the expected links and generated files, nothing else."""
+    out: list[str] = []
+    for rel, target in links.items():
+        p = repo / rel
+        if p.is_symlink():
+            if os.readlink(p) != target:
+                out.append(f"wrong link target: {rel} — run make bundles")
+        elif p.exists():
+            out.append(f"copy, not a symlink: {rel} — run make bundles")
+        else:
+            out.append(f"missing link: {rel} — run make bundles")
+    for rel, data in files.items():
+        p = repo / rel
+        if not p.is_file() or p.read_bytes() != data:
+            out.append(f"{rel} {_STALE}")
+    dirs = {Path(rel).parent.as_posix() for rel in [*links, *files]}
     dirs |= {Path(d).parent.as_posix() for d in dirs}
     root = repo / BUNDLES_DIR
     for dirpath, dirnames, filenames in os.walk(root):
         for name in list(dirnames) + filenames:
             rel = (Path(dirpath) / name).relative_to(repo).as_posix()
-            if rel in links:
+            if rel in links or rel in files:
                 if name in dirnames:
                     dirnames.remove(name)  # never descend into an expected link location
             elif rel not in dirs:
@@ -264,8 +297,7 @@ def gate_errors(repo: Path) -> list[str]:
         path = repo / rel
         if not path.exists() or path.read_bytes() != data:
             out.append(f"{rel} {_STALE}")
-    out += _link_errors(repo, links)
-    for rel, target in _schema_copy(repo).items():
-        out += [e for e in _link_errors(repo, {rel: target}) if not e.startswith("orphan")]
+    out += _link_errors(repo, links, plugin_manifests(repo))
+    out += _copy_errors(repo, _schema_copy(repo))
     out += _version_errors(repo, version(repo))
     return out
