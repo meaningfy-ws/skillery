@@ -28,6 +28,7 @@ bundles:
       - proposal-writing
       - estimation
       - sales-pipeline-custody
+      - sales-accounts
     agents: [proposal-writer]
     requires: [meaningfy-consulting]
   - name: meaningfy-architecture

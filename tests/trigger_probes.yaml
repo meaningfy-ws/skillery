@@ -85,6 +85,11 @@ probes:
   - probe: "write the proposal for the workshop deal in our Odoo pipeline"
     expect: proposal-writing
     near_miss_of: sales-pipeline-custody
+  - probe: "is this person already in our Odoo, and update her profile after today's call"
+    expect: sales-accounts
+  - probe: "file my notes from today's call with Anna into the project's session log in my vault"
+    expect: vault-capture
+    near_miss_of: sales-accounts
   - probe: "move this proposed note into the project"
     expect: vault-promote
     near_miss_of: vault-tidy

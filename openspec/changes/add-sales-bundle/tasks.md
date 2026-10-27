@@ -35,7 +35,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
       closing dates, filters, lead sources, Odoo conventions, routes, `write-rules.md`, the three
       YAML assets stripped per D-3/D-7. **Accept:** no Odoo id or person name in the folder;
       `skills-maintenance`/`package.write` absent; ladder cited, not stated.
-- [ ] 2.2 `sales-accounts`: identity, personal details, customer success, two profile templates
+- [x] 2.2 `sales-accounts`: identity, personal details, customer success, two profile templates
       (one-line lead). **Accept:** identity §6 requires context with the id; customer success stated
       once.
 - [ ] 2.3 `sales-qualification`: dossier, five-P, MEDDPICC merged with the question sections of
@@ -128,7 +128,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 ## Roadmap
 
-- [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 ·
+- [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 ·
   [ ] 3.2 · [ ] 4.1 · [ ] 4.2 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
   [ ] 7.1 · [ ] 7.2 · [ ] 7.3 · [ ] 8.1 · [ ] 8.2 · [ ] 8.3 · [ ] 8.4
 
