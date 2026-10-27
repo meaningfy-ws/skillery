@@ -1,5 +1,5 @@
 # Traces to: UC-W7 (Sales assistant): Main Success Scenario, Minimal Guarantees; agents/sales-agent.md (Dispatch contract);
-# openspec/changes/add-sales-bundle specs (sales-pipeline-custodianship, agent-decision-requests, catalogue-governance);
+# openspec/specs (sales-pipeline-custodianship, agent-decision-requests, catalogue-governance);
 # the pilot package's behaviour features (meaningfy-sales 0.6.1), ported with invented names.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: sales-agent keeps the Odoo pipelines true and asks the owner only through decision cards
