@@ -10,10 +10,12 @@ jobs:
           python-version: "3.11"
       - run: pip install -r requirements-dev.txt
       - run: python -m tools.repo_lint
-      # bundles/ is generated, not committed (rebundle-by-activity D-8): generate it, prove generation
-      # changed no committed file, then check the links.
+      # bundles/ is generated and committed: regenerate it and prove nothing changed (never hand-edited).
       - run: python -m tools.bundle_gen generate
-      - run: git diff --exit-code -- .claude-plugin tools/opencode-catalogue.json package.json
+      - run: git diff --exit-code -- .claude-plugin tools/opencode-catalogue.json package.json bundles openspec/schemas
+      - run: test -z "$(git status --porcelain -- bundles)"
+      # tracked symlinks only under bundles/ (generated links into skills/ and agents/)
+      - run: test -z "$(git ls-files -s | awk '$1 == 120000 && $4 !~ /^bundles\//')"
       - run: python -m tools.bundle_gen check
       - run: python -m pytest tests/ -q
 

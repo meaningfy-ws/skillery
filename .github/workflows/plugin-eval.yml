@@ -58,7 +58,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements-dev.txt
-      - name: Generate bundles/ (not committed, rebundle-by-activity D-8)
+      - name: Regenerate bundles/
         run: python -m tools.bundle_gen generate
       - uses: actions/setup-node@v4
         with:

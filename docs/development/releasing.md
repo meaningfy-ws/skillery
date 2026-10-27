@@ -11,20 +11,22 @@ convention on top of it.
 | `develop` | the sources: `skills/`, `agents/`, `bundles.yaml`, docs, tools; work in progress included | feature PRs | **no** |
 | `release/X.Y.Z` | the release being stabilised (version bump, dated CHANGELOG) | the maintainer | no |
 | `main` | the released sources, one merge per release | release PRs | no |
-| **`releases`** | each released tree **plus the generated `bundles/`**, minus work in progress; one commit per release, tagged `vX.Y.Z` | only `.github/workflows/releases.yml` | **yes, the only install source** |
+| **`releases`** | each released tree with its generated `bundles/`, minus work in progress; one commit per release, tagged `vX.Y.Z` | only `.github/workflows/releases.yml` | **yes, the only install source** |
 
 - **Install only from `releases`.** Claude Code, the opencode installer and `npx skills add` all read
   `meaningfy-ws/skillery#releases`. A marketplace added without `#releases` tracks `develop` and
-  picks up unreleased work: re-add it.
-- **`bundles/` lives only on `releases`.** It is generated (`make bundles`) and git-ignored
-  everywhere else.
+  picks up unreleased work: re-add it. claude.ai (Claude Desktop) has no branch field and reads the
+  default branch, `develop`, so `develop` must always carry a valid `bundles/` tree.
+- **`bundles/` is committed everywhere and never hand-edited.** `make bundles` generates it as
+  relative symlinks into `skills/` and `agents/` plus one `.claude-plugin/plugin.json` per bundle
+  (claude.ai's sync, used by Claude Desktop, needs the `plugin.json`); commit the result.
 - **Release tags live on `releases`.** `vX.Y.Z` points at the release commit on `releases`, the tree
   people install, so `meaningfy-ws/skillery#vX.Y.Z` pins one exact release. The workflow creates the
   tag; nobody tags by hand. (Releases up to `v3.3.0` were tagged on `main`.)
 - **Only released items ship.** A skill or agent listed in no bundle is work in progress and is
   left out of the `releases` tree (`python -m tools.bundle_gen unreleased`).
-- **The version is visible.** Each plugin entry carries `VERSION`, so `/plugin` shows the release
-  number, and a release is a new version for every installed bundle.
+- **The version is visible.** Each bundle's `plugin.json` carries `VERSION`, so `/plugin` shows the
+  release number, and a release is a new version for every installed bundle.
 - **`releases` is append-only.** Never edit, rebase or force-push it; installed marketplaces update
   with `/plugin marketplace update`.
 
@@ -49,6 +51,5 @@ a version whose tag already exists.
 
 ## Testing unreleased work
 
-A feature branch has no `bundles/`. Push a throwaway branch with the generated tree added
-(`make bundles && git add -f bundles`), install it with `#<branch>` in a scratch config, then delete
+Run `make bundles`, push a throwaway branch, install it with `#<branch>` in a scratch config, then delete
 the branch. Never install from a local path: a local marketplace does not load the bundles' agents.

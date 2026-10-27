@@ -58,9 +58,9 @@ def test_tc01_marketplace_entries(tmp_path):
     assert list(data) == ["name", "owner", "metadata", "plugins"]
     assert data["metadata"] == {"description": "Catalogue", "version": "1.2.3"}
     assert data["plugins"] == [
-        # each plugin carries VERSION, so /plugin shows the release, not a commit SHA
-        {"name": "b-one", "description": "First — café", "version": "1.2.3", "source": "./bundles/b-one"},
-        {"name": "b-two", "description": "Second", "version": "1.2.3", "source": "./bundles/b-two"},
+        # VERSION lives in each bundle's plugin.json (it wins over the entry; both would warn)
+        {"name": "b-one", "description": "First — café", "source": "./bundles/b-one"},
+        {"name": "b-two", "description": "Second", "source": "./bundles/b-two"},
     ]
     assert "café".encode() in market  # ensure_ascii=False
     assert market.endswith(b"}\n")
@@ -75,13 +75,26 @@ def test_tc02_links(tmp_path):
     }
 
 
+def test_plugin_manifests(tmp_path):
+    # fix-desktop-marketplace-install: claude.ai's sync needs a plugin.json in every bundle.
+    manifests = gen.plugin_manifests(_repo(tmp_path))
+    assert set(manifests) == {"bundles/b-one/.claude-plugin/plugin.json",
+                              "bundles/b-two/.claude-plugin/plugin.json"}
+    assert json.loads(manifests["bundles/b-one/.claude-plugin/plugin.json"]) == {
+        "name": "b-one", "version": "1.2.3", "description": "First — café",
+        "author": {"name": "Meaningfy"}}
+
+
 def _snapshot(repo: Path) -> dict:
     out = {p: (repo / p).read_bytes() for p in (gen.MARKETPLACE, gen.CATALOGUE, gen.PACKAGE_JSON)}
     for dirpath, dirnames, filenames in os.walk(repo / "bundles"):
         for n in dirnames + filenames:
             p = Path(dirpath) / n
+            rel = p.relative_to(repo).as_posix()
             if p.is_symlink():
-                out[p.relative_to(repo).as_posix()] = os.readlink(p)
+                out[rel] = os.readlink(p)
+            elif p.is_file():
+                out[rel] = p.read_bytes()
     return out
 
 
@@ -118,20 +131,23 @@ def test_tc04_stale_catalogue_after_agent_color_edit(tmp_path):
 def test_tc05_link_gate(tmp_path):
     repo = _repo(tmp_path)
     gen.write(repo)
-    (repo / "bundles/b-one/agents/ag.md").unlink()                       # missing
-    copy = repo / "bundles/b-two/skills/s2"
-    copy.unlink()
-    shutil.copytree(repo / "skills/s2", copy)                           # copy instead of link
-    (repo / "bundles/b-one/stray.txt").write_text("x")                  # orphan
-    link = repo / "bundles/b-one/skills/s1"
+    assert os.readlink(repo / "bundles/b-two/skills/s2") == "../../../skills/s2"
+    (repo / "bundles/b-one/agents/ag.md").unlink()                      # missing
+    link = repo / "bundles/b-two/skills/s2"
     link.unlink()
-    link.symlink_to("../../../skills/s2")                               # wrong target
+    shutil.copytree(repo / "skills/s2", link)                           # copy instead of symlink
+    (repo / "bundles/b-one/stray.txt").write_text("x")                  # orphan
+    s1 = repo / "bundles/b-one/skills/s1"
+    s1.unlink()
+    s1.symlink_to("../../../skills/s2")                                 # wrong target
+    (repo / "bundles/b-one/.claude-plugin/plugin.json").write_text("{}")  # hand edit
     errs = gen.gate_errors(repo)
     assert any(e.startswith("missing link") and "b-one/agents/ag.md" in e for e in errs)
-    assert any(e.startswith("not a symlink (copy?)") and "b-two/skills/s2" in e for e in errs)
+    assert any(e.startswith("copy, not a symlink") and "b-two/skills/s2" in e for e in errs)
     assert any(e.startswith("orphan") and "stray.txt" in e for e in errs)
-    assert any(e.startswith("wrong target") and "b-one/skills/s1" in e for e in errs)
-    assert len(errs) == 4  # the copied dir's contents are not reported again as orphans
+    assert any(e.startswith("wrong link target") and "b-one/skills/s1" in e for e in errs)
+    assert any("b-one/.claude-plugin/plugin.json is stale" in e for e in errs)
+    assert len(errs) == 5  # a copied dir's contents are not reported again as orphans
 
 
 def test_tc06_version_sync_package(tmp_path):
@@ -237,12 +253,12 @@ def test_tc22_live_repo_renderings_in_sync():
     assert gen.gate_errors(REPO) == []
 
 
-def test_link_gate_is_skipped_without_a_bundles_tree(tmp_path):
-    # bundles/ is generated, not committed (rebundle-by-activity D-8): a fresh checkout has none.
+def test_link_gate_flags_a_missing_bundles_tree(tmp_path):
+    # bundles/ is committed: a checkout without it is stale.
     repo = _repo(tmp_path)
     gen.write(repo)
     shutil.rmtree(repo / "bundles")
-    assert gen.gate_errors(repo) == []
+    assert any(e.startswith("missing link:") for e in gen.gate_errors(repo))
 
 
 def test_unreleased_lists_the_wip_paths(tmp_path):
@@ -252,3 +268,24 @@ def test_unreleased_lists_the_wip_paths(tmp_path):
     (repo / "skills" / "s3" / "SKILL.md").write_text("---\nname: s3\ndescription: x\n---\n", encoding="utf-8")
     (repo / "agents" / "ag2.md").write_text("---\nname: ag2\ndescription: x\n---\n", encoding="utf-8")
     assert gen.unreleased(repo) == ["agents/ag2.md", "skills/s3"]
+
+
+def test_schema_copy_is_written_and_gated(tmp_path):
+    repo = _repo(tmp_path)
+    src = repo / "skills/project-setup/assets/openspec-schema/meaningfy"
+    src.mkdir(parents=True)
+    (src / "schema.yaml").write_text("name: meaningfy\n", encoding="utf-8")
+    (repo / "openspec/schemas").mkdir(parents=True)
+    gen.write(repo)
+    copy = repo / "openspec/schemas/meaningfy"
+    assert not copy.is_symlink() and (copy / "schema.yaml").read_text() == "name: meaningfy\n"
+    (copy / "schema.yaml").write_text("edited", encoding="utf-8")
+    assert any(e.startswith("stale copy") and "openspec/schemas/meaningfy" in e for e in gen.gate_errors(repo))
+
+
+def test_python_cache_is_neither_copied_nor_compared(tmp_path):
+    repo = _repo(tmp_path)
+    gen.write(repo)
+    (repo / "skills/s1/__pycache__").mkdir()
+    (repo / "skills/s1/__pycache__/x.cpython-311.pyc").write_bytes(b"\0")
+    assert gen.gate_errors(repo) == []
