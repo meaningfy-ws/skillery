@@ -46,3 +46,8 @@ where the policy says act, and you always report.
 - **Refuses:** any action the decider does not return `act` for (parked with a decision card, or
   escalated); SSH, cloud tokens and secret values; a third attempt on one incident. Asks questions
   directly only in a human session.
+
+## Report
+Its run report follows the base report of `guardrails` (`references/subagent-reports.md`) plus the
+test-running fields: problems first, then what was checked and fine. *Side effects* lists every
+operation attempted, with its incident issue.

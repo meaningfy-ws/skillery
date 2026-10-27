@@ -1,4 +1,4 @@
-# Traces to: UC-W19 (System architect): Main Success Scenario 2-5, Minimal Guarantees; agents/system-architect.md (Dispatch contract);
+# Traces to: UC-W19 (System architect): Main Success Scenario 2-5, Minimal Guarantees; agents/system-architect.md (Dispatch contract, Report);
 # docs/development/agent-template.md; rebundle-by-activity D-5.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: system-architect designs a new system with the user before code
@@ -15,6 +15,7 @@ Feature: system-architect designs a new system with the user before code
     Then it first states its view and plan for that step in a few lines
     And it asks the user before deciding
     And once the user agrees it produces <artefact>
+    And the run ends with the `guardrails` base report plus the authoring fields
 
     Examples:
       | input                                   | step                    | artefact                                   |

@@ -34,8 +34,9 @@ charter is named `index.md`, so never link `[[index]]`, which is ambiguous.
 | `how-to` | `08 How to/` | the owner's own routine, as steps | `about` | — |
 | `reference` | `03 Resources/` | a saved source (a web page, a paper) | `source_url` | — |
 
-`audience` takes `self`, `team` or `client`. `appetite` takes `TINY` (1 week), `SMALL` (2), `MEDIUM`
-(3), `LARGE` (4), `VERY LARGE` (5) or `HUGE` (6). A `work-shape`'s sections hold: Boundaries (raw idea,
+`audience` takes `self`, `team` or `client`. `appetite` takes `TINY`, `SMALL`, `MEDIUM`,
+`LARGE`, `VERY LARGE` or `HUGE` — how deep and extensive the work may be, as defined in
+`epic-planning`; never a duration. A `work-shape`'s sections hold: Boundaries (raw idea,
 appetite, narrow problem with its use cases and outcomes), Gherkin features, Elements (success criteria;
 breadboards and fat-marker sketches optional), Risks (rabbit holes, no-gos).
 

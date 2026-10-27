@@ -1,4 +1,4 @@
-# Traces to: UC-W6; agents/devops-engineer.md (Dispatch contract);
+# Traces to: UC-W6; agents/devops-engineer.md (Dispatch contract, Report);
 # openspec/specs (operations-practice), openspec/changes/archive/2026-10-27-add-devops-bundle/design.md TC-04 and IT-1.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: devops-engineer changes infrastructure safely with a person who is not a devops engineer
@@ -13,6 +13,7 @@ Feature: devops-engineer changes infrastructure safely with a person who is not 
     Given the person asks to <need>
     When the dry run shows <dry_run>
     Then the agent <does>
+    And the run ends with the `guardrails` base report plus the implementing fields
 
     Examples:
       | need                                     | dry_run                                       | does                                                                      |

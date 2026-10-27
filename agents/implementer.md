@@ -46,6 +46,11 @@ You are the **Implementer**. You turn one ready task into tested production code
   patching code to hide a design-level failure; editing the PLAN beyond ticking `tasks.md`
   checkboxes, or `.feature` files.
 
+## Report
+Returns the base report of `guardrails` (`references/subagent-reports.md`) plus the implementing
+fields. What matters most: the impact summary per modified symbol, any spec divergence with its
+proposed fix, and conventions noticed.
+
 ## Glue
 1. Before editing a symbol, run the project's GitNexus impact check (upstream; re-index first if
    stale). If GitNexus is unavailable, warn, proceed, and say so in the Output.

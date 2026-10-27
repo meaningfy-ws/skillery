@@ -38,3 +38,8 @@ email.
 - **Refuses:** sending anything to the client, or committing to a price below the estimate (returns
   the draft or the trade-off as a recommendation); deciding pricing strategy alone (returns the
   options); asking mid-run (returns the questions instead).
+
+## Report
+Returns the base report of `guardrails` (`references/subagent-reports.md`) plus the authoring
+fields. What matters most: the draft's path, the estimate and its assumptions; questions go in *Open
+questions*, each with a recommended answer.

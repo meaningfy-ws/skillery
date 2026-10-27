@@ -110,6 +110,8 @@ Agents follow the same eight steps with four additions. The normative shape is
 - **Dispatch contract, always.** Four short lists: what input it needs, what it returns, what side
   effects it may have, what it refuses. If the agent is fanned out (the five-lens `code-reviewer`),
   the contract states the unit of one run.
+- **Report, always.** A `## Report` section says how the agent reports back: the base report of the
+  `guardrails` skill plus the fields of its job, and what matters most.
 - **Skills, not knowledge.** The `skills:` list is the agent's competence; the body may not restate
   a skill. If you find yourself writing method in an agent, stop and move it.
 - **Tests in Gherkin, in this repo.** Scenario Outlines with Examples tables, values in the tables,
