@@ -28,7 +28,10 @@
         "proposal-writing",
         "estimation",
         "sales-pipeline-custody",
-        "sales-accounts"
+        "sales-accounts",
+        "sales-qualification",
+        "sales-conversations",
+        "sales-operations"
       ],
       "agents": [
         "proposal-writer"

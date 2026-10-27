@@ -38,13 +38,13 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 - [x] 2.2 `sales-accounts`: identity, personal details, customer success, two profile templates
       (one-line lead). **Accept:** identity §6 requires context with the id; customer success stated
       once.
-- [ ] 2.3 `sales-qualification`: dossier, five-P, MEDDPICC merged with the question sections of
+- [x] 2.3 `sales-qualification`: dossier, five-P, MEDDPICC merged with the question sections of
       `presales-discovery.md` (D-11), research checklist, value-equation trimmed (D-12).
       **Accept:** add the skill to UC-W9 and UC-W10 `served_by`; dossier summary opens in words.
-- [ ] 2.4 `sales-conversations`: meeting plan, conversation tools, email patterns (tone cited to
+- [x] 2.4 `sales-conversations`: meeting plan, conversation tools, email patterns (tone cited to
       1.3), one objection taxonomy, selling method minus price, insights. **Accept:** no em dash in
       templates; price sentences point to `estimation`/config.
-- [ ] 2.5 `sales-operations`: goal loop, run types, reviewers, `configuration.md`,
+- [x] 2.5 `sales-operations`: goal loop, run types, reviewers, `configuration.md`,
       `sales-config.example.yaml`, the three run-note templates rewritten to D-5 with cards per
       1.1, the weekly-review self-edit card per D-6. **Accept:** every template opens with
       Decisions needed; no table over 5 columns; every config key used by any sales skill is
@@ -128,7 +128,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 ## Roadmap
 
-- [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 ·
+- [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [ ] 3.1 ·
   [ ] 3.2 · [ ] 4.1 · [ ] 4.2 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
   [ ] 7.1 · [ ] 7.2 · [ ] 7.3 · [ ] 8.1 · [ ] 8.2 · [ ] 8.3 · [ ] 8.4
 

@@ -42,7 +42,7 @@ How to read the policy:
 
 ## 2. Log
 
-Every write gets one line in the iteration's *Done* block: system · model or tool · record id · field · old value → new value · source. The guardrail auditor checks against these lines only. Not logged means not allowed.
+Every write gets one line in the iteration's *Log* (the run note's last section): system · model or tool · record id · field · old value → new value · source. The guardrail auditor checks against these lines only. Not logged means not allowed.
 
 ## 3. The owner's input
 

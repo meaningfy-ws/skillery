@@ -90,6 +90,21 @@ probes:
   - probe: "file my notes from today's call with Anna into the project's session log in my vault"
     expect: vault-capture
     near_miss_of: sales-accounts
+  - probe: "close the sales day and apply my answers in today's grooming note"
+    expect: sales-operations
+  - probe: "close the project and move its folder to the archive in my vault"
+    expect: vault-project
+    near_miss_of: sales-operations
+  - probe: "score this deal on the five Ps and tell me who the economic buyer is"
+    expect: sales-qualification
+  - probe: "coach me on whether this prospect is ready for a decision phase or just exploring"
+    expect: semantic-consulting-coach
+    near_miss_of: sales-qualification
+  - probe: "prepare my meeting with Acme tomorrow and draft the follow-up email after it"
+    expect: sales-conversations
+  - probe: "tighten the cover email for this quotation so it reads answer-first"
+    expect: executive-communication
+    near_miss_of: sales-conversations
   - probe: "move this proposed note into the project"
     expect: vault-promote
     near_miss_of: vault-tidy

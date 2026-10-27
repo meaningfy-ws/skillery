@@ -7,8 +7,8 @@ success_guarantee: the prospect is assessed against the commercial structure, th
 area: sales
 served_by:
   agents: []
-  skills: []
-status: missing
+  skills: [sales-qualification]
+status: partial
 change: add-commercial-chain
 ---
 

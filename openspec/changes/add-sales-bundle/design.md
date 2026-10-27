@@ -52,11 +52,7 @@ New PLAN-level choices. Bets settled in the EPIC are cited, not re-argued.
   report A marks *drop* are not imported.
 - **D-3 Instance data lives in one configuration file in the owner's vault.** Skills hold method
   and stage names; Odoo ids are read live from Odoo; everything else that is instance data lives
-  in `sales-config.yaml`, with exactly these keys: `owner` (name, mail), `second_sender` (name,
-  mail; always in cc), `booking_link`, `brochures` (list of name + link), `run_note_folder`,
-  `objection_library`, `odoo_profile` (MCP server name), `partner_notes` (name → rating, note),
-  `price_ranges` (offer → min, max; empty means every price is ask-first), `cold_list` (deal
-  names exempt from next actions), `creation_cap` (default 5). `sales-operations/references/configuration.md` documents every key;
+  in `sales-config.yaml`, with exactly the six keys the skills use: `owner`, `second_sender`, `run_note_folder`, `objection_library`, `partner_notes`, `price_ranges` (empty means every price is ask-first). *Revision 2 (task 2.5): booking link, brochures, cold list, creation cap and Odoo profile were dropped as unused (owner: YAGNI, no configuration a fixed rule can replace); the creation cap is a fixed 5 in the write rules, and the input marker is the fixed `Owner:`.* `sales-operations/references/configuration.md` documents every key;
   `sales-operations/assets/sales-config.example.yaml` holds placeholders only (`<owner>`,
   `<second-sender>`). Each run reads it first; a missing key is reported, never guessed (error
   matrix). Rationale: one place to change per installation; a second salesperson installs the
@@ -130,9 +126,9 @@ New PLAN-level choices. Bets settled in the EPIC are cited, not re-argued.
 | Package source | Destination | Treatment |
 |---|---|---|
 | `sales-agent/SKILL.md` role + call graph | `agents/sales-agent.md` | dispatch contract, ≤40 lines |
-| `sales-agent/SKILL.md` method, `references/agent-loop.md`, `references/run-types.md` | `skills/sales-operations/SKILL.md`, `references/goal-loop.md`, `references/run-types.md` | numbers to one *Terms* table; table rule → cite `vault-conventions` |
+| `sales-agent/SKILL.md` method, `references/agent-loop.md`, `references/run-types.md` | `skills/sales-operations/SKILL.md`, `references/goal-loop.md`, `references/run-types.md` | numbers stay in the one *Terms* section; table rule → cite `vault-conventions` |
 | `sales-agent/assets/templates/*.md` (3) | `sales-operations/assets/templates/` | rewritten to D-5 |
-| `sales-agent/assets/prompts/*.md` (3) | `sales-operations/references/reviewers.md` | one file, three sections; pipe returns become lists |
+| `sales-agent/assets/prompts/*.md` (3) | `sales-operations/assets/prompts/` (same three files) | pipe returns become lists; each prompt is handed whole to a reviewer, so they stay separate files (revision 2) |
 | `sales-pipelines/SKILL.md`, `references/{lead-sources,odoo-crm-conventions,route-*}.md` | `skills/sales-pipeline-custody/` same names | ladder → cite `engagement-lifecycle`; rot days only in `pipelines.yaml` |
 | `sales-pipelines/references/hard-rules.md` | `sales-pipeline-custody/references/write-rules.md` | cites `guardrails`; §3 exemption deleted |
 | `sales-pipelines/assets/{pipelines,odoo-views,write-policy}.yaml` | `sales-pipeline-custody/assets/` | ids, legacy and parked teams, partner ratings out (D-3, D-7) |

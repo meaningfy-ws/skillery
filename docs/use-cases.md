@@ -12,7 +12,7 @@
 |---|---|---|---|
 | `coding` | 3 | 0 | 0 |
 | `consulting` | 0 | 1 | 1 |
-| `sales` | 0 | 2 | 5 |
+| `sales` | 0 | 4 | 3 |
 | `personal` | 1 | 2 | 2 |
 | `operations` | 0 | 1 | 0 |
 | `business` | 0 | 2 | 2 |
@@ -44,10 +44,10 @@ Winning and pricing work.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W7](../use-cases/UC-W7-sales-assistant.md) Sales assistant | a Meaningfy salesperson | `partial` | `sales-pipeline-custody`, `sales-accounts` | `add-sales-bundle` | medium |
+| [UC-W7](../use-cases/UC-W7-sales-assistant.md) Sales assistant | a Meaningfy salesperson | `partial` | `sales-operations`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations` | `add-sales-bundle` | medium |
 | [UC-W8](../use-cases/UC-W8-proposals-and-offers.md) Proposals and formal offers | a Meaningfy salesperson or consultant | `partial` | `proposal-writer` *(agent)*, `proposal-writing`, `estimation`, `decision-package`, `executive-communication` | `add-commercial-chain` | high / medium |
-| [UC-W9](../use-cases/UC-W9-qualify-leads-and-partnerships.md) Qualify leads and partnerships | a Meaningfy salesperson | `missing` | — | `add-commercial-chain` | medium |
-| [UC-W10](../use-cases/UC-W10-qualify-prospect.md) Qualify a prospect in a sales conversation | a Meaningfy salesperson | `missing` | — | `add-commercial-chain` | medium |
+| [UC-W9](../use-cases/UC-W9-qualify-leads-and-partnerships.md) Qualify leads and partnerships | a Meaningfy salesperson | `partial` | `sales-qualification` | `add-commercial-chain` | medium |
+| [UC-W10](../use-cases/UC-W10-qualify-prospect.md) Qualify a prospect in a sales conversation | a Meaningfy salesperson | `partial` | `sales-qualification` | `add-commercial-chain` | medium |
 | [UC-W11](../use-cases/UC-W11-market-research.md) Market research | the owner | `missing` | — | `add-commercial-chain` | low |
 | [UC-W12](../use-cases/UC-W12-commercial-structure-and-offer.md) Commercial structure and offer | the owner | `missing` | — | `add-commercial-chain` | low |
 | [UC-W21](../use-cases/UC-W21-demo-builder.md) Demo builder | a Meaningfy pre-sales consultant | `missing` | — | `add-demo-builder` | low |
