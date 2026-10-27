@@ -26,9 +26,10 @@ This catalogue runs on both Claude Code and opencode from one set of sources, wi
 See the durable capability spec [`openspec/specs/dual-cli-distribution`](openspec/specs/dual-cli-distribution/spec.md)
 and [`docs/environment/dual-cli/`](docs/environment/dual-cli/README.md) (per-CLI setup + the source→CLI mapping + the
 external-dependency compatibility matrix). `AGENTS.md` is canonical; `CLAUDE.md` is a thin pointer
-that adds only Claude-specific guidance. Claude Code installs from the `dist` branch
-(`meaningfy-ws/skillery#dist`), which `.github/workflows/dist.yml` publishes on each release tag with the
-generated `bundles/` tree; `bundles/` is never committed on `develop`.
+that adds only Claude-specific guidance. **Both CLIs install only from the `releases` branch**
+(`meaningfy-ws/skillery#releases`), the one branch that holds the generated `bundles/` tree and the
+release tags; `.github/workflows/releases.yml` publishes it when a release lands on `main`. The
+convention and the release steps are in [`docs/development/releasing.md`](docs/development/releasing.md).
 
 ## Skills and agents development method
 

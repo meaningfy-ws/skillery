@@ -132,7 +132,7 @@ def render(repo: Path) -> tuple[bytes, dict[str, str], bytes]:
         "name": doc["name"],
         "owner": doc["owner"],
         "metadata": {"description": doc["description"], "version": ver},
-        "plugins": [{"name": b["name"], "description": b["description"],
+        "plugins": [{"name": b["name"], "description": b["description"], "version": ver,
                      "source": f"./{BUNDLES_DIR}/{b['name']}"} for b in doc["bundles"]],
     }
     links: dict[str, str] = {}
@@ -218,7 +218,7 @@ def _version_errors(repo: Path, ver: str) -> list[str]:
 
 def unreleased(repo: Path) -> list[str]:
     """Paths of skills and agents listed in no bundle: work in progress, never published
-    (rebundle-by-activity D-14). dist.yml drops them from the release tree."""
+    (rebundle-by-activity D-14). releases.yml drops them from the release tree."""
     doc = load(repo)
     skills = {s for b in doc["bundles"] for s in b["skills"]}
     agents = {a for b in doc["bundles"] for a in b["agents"]}

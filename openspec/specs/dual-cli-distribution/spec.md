@@ -147,14 +147,14 @@ The repository SHALL define every bundle once, in the root `bundles.yaml`, as an
 - **THEN** `make validate` fails and names the key or bundle
 
 ### Requirement: Skills and agents are installed from their single source
-Skills SHALL be installed on both CLIs from `skills/` and agents from `agents/`; the repository SHALL NOT contain a committed per-CLI copy of any skill or agent file. Claude Code bundles SHALL reach their skills and agents through relative symlinks under `bundles/<bundle>/`, which `make bundles` generates and the repository SHALL NOT commit on `develop`; the generated tree SHALL be published for installs on the `dist` branch. The opencode installer SHALL copy skills from `skills/` and render agents at install time from the agent bodies in `agents/` and the parsed frontmatter in the generated `tools/opencode-catalogue.json`.
+Skills SHALL be installed on both CLIs from `skills/` and agents from `agents/`; the repository SHALL NOT contain a committed per-CLI copy of any skill or agent file. Claude Code bundles SHALL reach their skills and agents through relative symlinks under `bundles/<bundle>/`, which `make bundles` generates and the repository SHALL NOT commit on `develop`; the generated tree SHALL be published for installs on the `releases` branch. The opencode installer SHALL copy skills from `skills/` and render agents at install time from the agent bodies in `agents/` and the parsed frontmatter in the generated `tools/opencode-catalogue.json`.
 
 #### Scenario: No committed copy exists
 - **WHEN** the `develop` branch is inspected
 - **THEN** no `.opencode/` tree and no `bundles/` tree is tracked, and `tools/opencode-catalogue.json` holds no skill or agent body
 
 #### Scenario: The published tree holds only links
-- **WHEN** the `dist` branch is inspected
+- **WHEN** the `releases` branch is inspected
 - **THEN** every entry under `bundles/` is a symlink into `skills/` or `agents/`, never a regular file or directory copy
 
 #### Scenario: A content edit needs no regeneration
@@ -194,14 +194,14 @@ Every `skills/*/SKILL.md` and `agents/*.md` frontmatter block SHALL parse as a Y
 ### Requirement: Only released items are installable
 A skill or agent SHALL be released only when `bundles.yaml` lists it in a bundle; one listed in no
 bundle is work in progress, MAY exist on `develop`, and SHALL NOT be published or installable on
-either CLI. The release branch `dist` SHALL omit work-in-progress skills and agents, every
-documented install route SHALL read `dist`, and validation SHALL fail when a released skill delegates
+either CLI. The release branch `releases` SHALL omit work-in-progress skills and agents, every
+documented install route SHALL read `releases`, and validation SHALL fail when a released skill delegates
 to, or a released agent loads, a work-in-progress skill.
 
 #### Scenario: A draft skill on develop
 - **WHEN** `skills/<draft>/` exists on `develop` and no bundle lists it
 - **THEN** `make validate` passes, the catalogue map lists it under "Unreleased (WIP)", and the next
-  release's `dist` tree does not contain it
+  release's `releases` tree does not contain it
 
 #### Scenario: A released agent loads a draft
 - **WHEN** a bundled agent's `skills:` names a skill that no bundle lists
