@@ -40,6 +40,12 @@ probes:
     expect: spec-stewardship
   - probe: "bound this agent's decisions and defend against prompt injection"
     expect: guardrails
+  # subagent-dispatch D-8: the dispatch rules live in guardrails.
+  - probe: "should I spawn subagents for these four tasks, and what should each brief contain"
+    expect: guardrails
+  - probe: "review this diff before I open the PR"
+    expect: meaningfy-code-review
+    near_miss_of: guardrails
   - probe: "score this spec against the clarity gate before implementation"
     expect: clarity-gate
   - probe: "write Gherkin feature files for this acceptance criterion"

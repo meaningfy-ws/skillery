@@ -1,4 +1,4 @@
-# Traces to: UC-W6; agents/ops-watch.md (Dispatch contract);
+# Traces to: UC-W6; agents/ops-watch.md (Dispatch contract, Report);
 # openspec/specs (unattended-operations, operations-practice), openspec/changes/archive/2026-10-27-add-devops-bundle/design.md TC-04, IT-2, IT-3.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: ops-watch checks the fleet and answers alerts with no human present
@@ -16,6 +16,7 @@ Feature: ops-watch checks the fleet and answers alerts with no human present
     When ops-watch proposes <action> and runs `decide_action.py`
     Then the decision is <decision>
     And it <does>
+    And the run ends with the `guardrails` base report plus the test-running fields
 
     Examples:
       | symptom                  | attempts | action            | decision | does                                                                                                     |

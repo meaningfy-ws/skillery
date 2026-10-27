@@ -121,6 +121,9 @@ and agent renderer). See
   [`skills/meaningfy-git-workflow`](skills/meaningfy-git-workflow) skill for the full standard.
 - **Spine / OpenSpec conventions** — the durable spec spine lives in [`openspec/`](openspec/) (the live OpenSpec instance + the forked `meaningfy` schema); how this repo runs it is in [`docs/development/spine.md`](docs/development/spine.md).
 - **External method skills land in the spine (binding).** `superpowers` (brainstorming, writing-plans, executing-plans, TDD, …) provides *disciplines*, not a parallel spec system. In a spine-wired repo, their artifacts MUST land in the spine, never in a `docs/superpowers/` tree: a **brainstorming** design feeds the **EPIC** (`openspec/changes/<id>/proposal.md`); **writing-plans is SUPERSEDED** by the **PLAN** (`design.md` + `tasks.md`, gated by `clarity-gate`); execution uses `superpowers:test-driven-development` / `subagent-driven-development`, tracked via the opsx apply command (`/opsx:apply` on Claude, `opsx-apply` on opencode). The verb↔artifact map is in [`docs/development/workflows.md`](docs/development/workflows.md#superpowers--spine). skillery **dogfoods this**: its own non-trivial changes are `openspec/changes/` EPICs.
+- **Subagents** — before spawning one, follow *Subagent dispatch* in the `guardrails` skill: spawn
+  only when it pays, brief it fresh, take the base report back, and have finished work checked by a
+  second subagent.
 - **Hooks** — hook *intent* is single-sourced in [`hooks.yaml`](hooks.yaml) (see [`docs/development/hooks.md`](docs/development/hooks.md)); git-mechanism hooks are shared across CLIs, agent-mechanism hooks are rendered per CLI.
 
 GitNexus scope in this repo: the code in `tools/`, `tests/` and skills' `scripts/`. This block lives here only (not in

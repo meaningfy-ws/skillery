@@ -1,4 +1,4 @@
-# Traces to: agents/implementer.md (Dispatch contract, Glue); docs/development/agent-template.md; D-7, D-14.
+# Traces to: agents/implementer.md (Dispatch contract, Report, Glue); docs/development/agent-template.md; D-7, D-14.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: implementer turns one ready task into tested code and reports back
   A delegated run cannot obtain consent, so it never commits: it reports,
@@ -12,6 +12,7 @@ Feature: implementer turns one ready task into tested code and reports back
     Given the upstream impact of the symbol the task changes is "<risk>"
     When the caller dispatches the implementer on the task
     Then the implementer <outcome>
+    And the run ends with the `guardrails` base report plus the implementing fields
 
     Examples:
       | risk        | outcome                                            |

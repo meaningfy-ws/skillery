@@ -61,6 +61,23 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    progression to BDD/implementation until it passes. Below 9: list the specific gaps and **revise
    the PLAN** — never patch code to dodge a gap (Rule of Divergence).
 
+## Appetite — how deep and extensive the solution may be
+
+An EPIC's appetite is one of six named sizes, never a number of days or weeks: an agent cannot act
+on a duration, but it can act on how far the solution should go.
+
+| Size | How deep and how extensive the solution may be |
+|---|---|
+| `TINY` | One concern in one place: sharpen a rule, fix a flaw. No new concept. |
+| `SMALL` | One capability touched in a few places; existing structure reused as is. |
+| `MEDIUM` | One new capability (a skill section, an agent, a check) with its tests and docs; neighbours touched lightly. |
+| `LARGE` | Several related capabilities, or a new bundle; boundaries move between owners; existing artifacts migrate. |
+| `VERY LARGE` | Cuts across the system or the method; many artifacts migrate; delivered in stages. |
+| `HUGE` | Reshapes the system or the method itself. Split into several EPICs before planning. |
+
+The size is a judgement; the examples illustrate it, they do not define it. When the work outgrows
+its appetite, cut scope or re-shape the EPIC (below) — never let it grow silently.
+
 ## When the bet itself is wrong (freeze vs re-shape)
 
 The EPIC **freezes once shaped**. But elicitation or implementation can reveal two different kinds
