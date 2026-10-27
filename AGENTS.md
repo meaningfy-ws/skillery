@@ -27,8 +27,8 @@ See the durable capability spec [`openspec/specs/dual-cli-distribution`](openspe
 and [`docs/environment/dual-cli/`](docs/environment/dual-cli/README.md) (per-CLI setup + the source→CLI mapping + the
 external-dependency compatibility matrix). `AGENTS.md` is canonical; `CLAUDE.md` is a thin pointer
 that adds only Claude-specific guidance. **Both CLIs install only from the `releases` branch**
-(`meaningfy-ws/skillery#releases`), the one branch that holds the generated `bundles/` tree and the
-release tags; `.github/workflows/releases.yml` publishes it when a release lands on `main`. The
+(`meaningfy-ws/skillery#releases`), the one branch that holds the release tags and the bundles as
+real files; `.github/workflows/releases.yml` publishes it when a release lands on `main`. The
 convention and the release steps are in [`docs/development/releasing.md`](docs/development/releasing.md).
 
 ## Skills and agents development method
@@ -66,8 +66,11 @@ improvement loop and the Definition of Done. This binding mandates it; it does n
   of [`facets.yaml`](facets.yaml) under `metadata`.
 - **Assigning to a bundle** — every skill and every agent is declared in exactly one bundle of
   [`bundles.yaml`](bundles.yaml), the one bundle definition. Then run `make bundles`, which renders
-  `.claude-plugin/marketplace.json`, the `bundles/` symlink tree (local only, git-ignored) and
-  `tools/opencode-catalogue.json`; never hand-edit those.
+  `.claude-plugin/marketplace.json`, the committed `bundles/` tree (symlinks into skills/agents plus one
+  `.claude-plugin/plugin.json` per bundle), the `openspec/schemas/meaningfy` copy and
+  `tools/opencode-catalogue.json`. **Never write into `bundles/` (or those two files) by hand —
+  always regenerate them with `make bundles` and commit the result;** `make validate` and CI fail on
+  any difference.
 - **Boundary / related-skills** — every skill's body carries a `## Boundary & Related Skills`
   section (a body section, not frontmatter) that states its boundary and names its related skills.
   This keeps triggers crisp and prevents collisions with external neighbours.
@@ -83,7 +86,7 @@ update an artifact, keep both CLIs working — the gates in `make validate` enfo
 
 - **Skills, agents, bundles** — author `skills/`, `agents/` and [`bundles.yaml`](bundles.yaml); they
   are the only sources. Both CLIs install skills straight from `skills/`; opencode agents are
-  rendered at install time. A skill **content** edit needs no regeneration. A membership change or an
+  rendered at install time. Every skill or agent edit, a membership change or an
   agent-frontmatter change needs `make bundles` (the `bundle_gates` check names it when stale). The
   frontmatter map is the contract in [`docs/environment/dual-cli/mapping.md`](docs/environment/dual-cli/mapping.md)
   and its tables live only in `tools/opencode-agent-map.json`; an unmappable field becomes a

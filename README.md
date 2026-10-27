@@ -207,7 +207,7 @@ skillery/
 ├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery runs the spine on itself)
 ├── tools/ + tests/# the validator (make validate), the bundle renderer (make bundles), the opencode installer
 ├── bundles.yaml   # the one bundle definition: each skill and agent in exactly one bundle
-├── bundles/       # GENERATED, git-ignored per-bundle plugin roots (symlinks); make bundles locally, published as real copies only on the `releases` branch
+├── bundles/       # GENERATED per-bundle plugin roots (committed copies; never hand-edit, run make bundles)
 ├── tools/opencode-catalogue.json  # RENDERED opencode catalogue (membership + agent frontmatter); make bundles — never hand-edit
 └── .claude-plugin/# RENDERED marketplace (5 role bundles + 1 workflow bundle); make bundles — never hand-edit
 ```

@@ -1,6 +1,6 @@
 {
   "name": "meaningfy-skillery",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "description": "Meaningfy skill catalogue and OpenCode bundle installer",
   "type": "module",
   "private": true,
