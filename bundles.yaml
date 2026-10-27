@@ -32,7 +32,7 @@ bundles:
       - sales-qualification
       - sales-conversations
       - sales-operations
-    agents: [proposal-writer]
+    agents: [proposal-writer, sales-agent]
     requires: [meaningfy-consulting]
   - name: meaningfy-architecture
     description: "The design / modelling role: system architecture (C4, ArchiMate/UML, ADRs, contracts), the living conceptual model, the shared modelling conventions, and the LinkML craft (LinkML → typed artefacts + OWL/SHACL)"

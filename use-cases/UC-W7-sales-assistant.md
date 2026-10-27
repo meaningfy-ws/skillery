@@ -6,7 +6,7 @@ trigger: an account needs attention, or the CRM needs grooming
 success_guarantee: the CRM is groomed, each account's history is current, and every outgoing email is customised in the predefined style
 area: sales
 served_by:
-  agents: []
+  agents: [sales-agent]
   skills: [sales-operations, sales-pipeline-custody, sales-accounts, sales-qualification, sales-conversations]
 status: partial
 change: add-sales-bundle

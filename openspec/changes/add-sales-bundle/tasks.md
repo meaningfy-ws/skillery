@@ -52,12 +52,12 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 ## 3. The agent (D-8, D-9)
 
-- [ ] 3.1 `agents/sales-agent.md`: `type: scheduled`, sonnet, `skills:` the five (operations
+- [x] 3.1 `agents/sales-agent.md`: `type: scheduled`, sonnet, `skills:` the five (operations
       first), `disallowedTools` per D-8, description ending "Not for delegation". Dispatch contract:
       Input `schedule: open day / close day / weekly review` and `human session`; Output the run
       note; Side effects logged, reversible Odoo writes and drafts only; Refuses send, delete,
       won/lost and bulk import without a card. **Accept:** `agent_conformance` green; body ≤ cap.
-- [ ] 3.2 `tests/features/agents/sales-agent.feature` per D-14 from the ten package behaviour
+- [x] 3.2 `tests/features/agents/sales-agent.feature` per D-14 from the ten package behaviour
       files, amended per report A §6 and with a scenario per spec delta of this change.
       **Accept:** feature shape check green.
 
@@ -128,8 +128,8 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 ## Roadmap
 
-- [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [ ] 3.1 ·
-  [ ] 3.2 · [x] 4.1 · [ ] 4.2 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
+- [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 ·
+  [x] 3.2 · [x] 4.1 · [ ] 4.2 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
   [ ] 7.1 · [ ] 7.2 · [ ] 7.3 · [ ] 8.1 · [ ] 8.2 · [ ] 8.3 · [ ] 8.4
 
 ## Verification

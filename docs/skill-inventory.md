@@ -5,7 +5,7 @@
      agent's frontmatter (agents/*.md), bundles.yaml and facets.yaml.
      tests/test_skill_inventory.py fails the build if this drifts. -->
 
-38 skills and 6 agents across 6 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
+38 skills and 7 agents across 6 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
 
 ## Map
 
@@ -36,6 +36,7 @@ flowchart LR
     s_sales_conversations["sales-conversations"]
     s_sales_operations["sales-operations"]
     a_proposal_writer{{"proposal-writer"}}
+    a_sales_agent{{"sales-agent"}}
   end
   subgraph b_meaningfy_architecture["meaningfy-architecture"]
     s_architecture["architecture"]
@@ -120,6 +121,7 @@ flowchart LR
   s_vault_tidy --> p_knowledge
   s_writing_antipatterns --> p_content
   a_proposal_writer --> p_proposals
+  a_sales_agent --> p_crm
   a_system_architect --> p_modelling
   a_conceptual_modeller --> p_modelling
   a_epic_planner --> p_software_development
@@ -129,6 +131,11 @@ flowchart LR
   a_proposal_writer -.-> s_proposal_writing
   a_proposal_writer -.-> s_estimation
   a_proposal_writer -.-> s_executive_communication
+  a_sales_agent -.-> s_sales_operations
+  a_sales_agent -.-> s_sales_pipeline_custody
+  a_sales_agent -.-> s_sales_accounts
+  a_sales_agent -.-> s_sales_qualification
+  a_sales_agent -.-> s_sales_conversations
   a_system_architect -.-> s_architecture
   a_system_architect -.-> s_modelling_conventions
   a_system_architect -.-> s_conceptual_modelling
@@ -196,6 +203,7 @@ flowchart LR
   style s_vault_tidy fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_writing_antipatterns fill:#1e1e1e,color:#ffffff,stroke:#000
   style a_proposal_writer fill:#5a2d82,color:#ffffff,stroke:#000
+  style a_sales_agent fill:#5a2d82,color:#ffffff,stroke:#000
   style a_system_architect fill:#5a2d82,color:#ffffff,stroke:#000
   style a_conceptual_modeller fill:#5a2d82,color:#ffffff,stroke:#000
   style a_epic_planner fill:#5a2d82,color:#ffffff,stroke:#000
@@ -552,6 +560,7 @@ The commercial role: proposal and offer writing, and estimation.
 | [`sales-conversations`](../skills/sales-conversations/SKILL.md) | Use this skill when a Meaningfy sales or partner meeting needs a plan, when meeting notes need a same-day follow-up draft, when a deal needs a reply or a quiet one a revival email, or when a client's objection needs an answer ("prepare my meeting with X", "draft the follow-up to the call", "how do I answer this objection", "revive this deal"); it writes the one-screen meeting plan and the drafts, applying the selling method, the commercial insights and the objection taxonomy. | `offers` | `sales` | `semantic-data` | `profiled` | `sell` | `experimental` | — | `sales-qualification`, `sales-accounts`, `sales-pipeline-custody`, `sales-operations`, `meaningfy-voice`, `executive-communication`, `proposal-writing`, `estimation`, `semantic-consulting-coach` |
 | [`sales-operations`](../skills/sales-operations/SKILL.md) | Use this skill to run Meaningfy's sales day on its Odoo pipeline: open day, close day, the weekly pipeline review, a working session, or an intake session that brings people from an event or list into Odoo one record at a time ("open the sales day", "close the sales day", "weekly pipeline review", "apply my answers", "bring the people we met into Odoo"); it runs the goal loop with independent reviewers and writes one run note that opens with the owner's decisions. | `crm` | `sales` | `generic` | `precise` | `sell` | `experimental` | — | `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `executive-communication`, `vault-conventions`, `guardrails` |
 | [`proposal-writer`](../agents/proposal-writer.md) *(agent)* | Writes a sendable proposal or offer email from client requirements, asking the questions it needs through its output, with estimate and executive framing. | `proposals` | `sales` | `semantic-data` | `profiled` | `sell` | `experimental` | `proposal-writing`, `estimation`, `executive-communication` | — |
+| [`sales-agent`](../agents/sales-agent.md) *(agent)* | Keeps Meaningfy's Odoo sales pipelines true and moving: grooms deals and contacts with logged, reversible writes, prepares meetings and drafts, and asks the owner only through decision cards. | `crm` | `sales` | `generic` | `precise` | `sell` | `experimental` | `sales-operations`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations` | — |
 
 ## meaningfy-architecture
 
@@ -616,7 +625,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | `content` | write and explain for people: docs, posts, blogs, messages | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `executive-communication` |
 | `offers` | commercial offers, packaging, pitch and pricing | `estimation`, `sales-conversations` |
 | `proposals` | proposal and offer documents | `proposal-writing`, `proposal-writer` *(agent)* |
-| `crm` | create, manage and groom deals and contacts | `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-operations` |
+| `crm` | create, manage and groom deals and contacts | `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-operations`, `sales-agent` *(agent)* |
 | `devops` | environments, CI/CD, releases and operations | `ci-cd-delivery`, `meaningfy-release` |
 | `knowledge` | the owner's personal notes, plans and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
 
@@ -626,7 +635,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 |---|---|---|
 | `coding` | building software with AI agents | `meaningfy-git-workflow`, `guardrails`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `consulting` | advising clients | `semantic-consulting-coach`, `decision-package` |
-| `sales` | winning and pricing work | `proposal-writing`, `estimation`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `proposal-writer` *(agent)* |
+| `sales` | winning and pricing work | `proposal-writing`, `estimation`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `proposal-writer` *(agent)*, `sales-agent` *(agent)* |
 | `personal` | the owner's own vault and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
 | `operations` | running infrastructure, CI/CD and monitoring | — |
 | `business` | running and growing the company, negotiation and internal communication | — |
@@ -638,7 +647,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `generic` | no domain knowledge; transfers anywhere | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`, `executive-communication`, `estimation`, `sales-pipeline-custody`, `sales-accounts`, `sales-operations`, `clarity-gate`, `bdd-gherkin` |
+| `generic` | no domain knowledge; transfers anywhere | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`, `executive-communication`, `estimation`, `sales-pipeline-custody`, `sales-accounts`, `sales-operations`, `clarity-gate`, `bdd-gherkin`, `sales-agent` *(agent)* |
 | `semantic-data` | semantic technologies, ontologies, data governance | `semantic-consulting-coach`, `decision-package`, `proposal-writing`, `sales-qualification`, `sales-conversations`, `linkml-engineering`, `proposal-writer` *(agent)* |
 | `modelling` | conceptual and system modelling | `architecture`, `conceptual-modelling`, `modelling-conventions`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
 | `python` | Python code and repositories | `meaningfy-code-review`, `cosmic-python`, `project-setup`, `implementer` *(agent)*, `code-reviewer` *(agent)* |
@@ -653,13 +662,13 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 |---|---|---|
 | `reusable` | R: a reusable core; a fix adds no domain content | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `guardrails`, `estimation`, `architecture`, `modelling-conventions`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `system-architect` *(agent)* |
 | `profiled` | C: a core with profiles; a fix adds a switch or a profile | `decision-package`, `executive-communication`, `proposal-writing`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `proposal-writer` *(agent)* |
-| `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `semantic-consulting-coach`, `sales-pipeline-custody`, `sales-operations`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
+| `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `semantic-consulting-coach`, `sales-pipeline-custody`, `sales-operations`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `sales-agent` *(agent)*, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 
 ### stage
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `sell` | winning the work | `proposal-writing`, `estimation`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `proposal-writer` *(agent)* |
+| `sell` | winning the work | `proposal-writing`, `estimation`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `proposal-writer` *(agent)*, `sales-agent` *(agent)* |
 | `advise` | the decision phase with a client | `semantic-consulting-coach`, `decision-package` |
 | `shape` | shaping work and its plan | `epic-planning`, `spec-stewardship`, `clarity-gate`, `epic-planner` *(agent)* |
 | `design` | designing the system or model | `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
@@ -672,6 +681,6 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `experimental` | in trial; may change or go | `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `proposal-writer` *(agent)*, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
+| `experimental` | in trial; may change or go | `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `proposal-writer` *(agent)*, `sales-agent` *(agent)*, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
 | `stable` | in use and maintained | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `meaningfy-git-workflow`, `guardrails`, `semantic-consulting-coach`, `decision-package`, `executive-communication`, `proposal-writing`, `estimation`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `deprecated` | kept for now; do not start using it | — |
