@@ -1,9 +1,9 @@
 # The Advisory Runbook
 
-**Audience:** the Technical Consultant, and anyone stepping into that role during a Deep-tier
+**Audience:** the Technical Consultant, and anyone stepping into that role during a Proof of Value
 engagement.
 
-**Purpose:** the day-to-day operational script for a Deep-tier engagement, from intake to hand-off.
+**Purpose:** the day-to-day operational script for a Proof of Value engagement, from intake to hand-off.
 The techniques a step might call on live in [`methods/`](methods/); the commercial facts (tiers,
 durations, safeguards) live in
 [`skills/semantic-consulting-coach/references/engagement-lifecycle.md`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md); the deliverable
@@ -67,6 +67,6 @@ execute elsewhere. Execution is always a separate engagement. See
 
 Steps 1, 2, 5, and 6 are thin pointers on purpose: the source material behind them is already
 settled elsewhere, and restating it here would create a second copy to keep in sync. Step 4 is
-written in full because the sequencing of a Deep-tier engagement is fully known today; only the
+written in full because the sequencing of a Proof of Value engagement is fully known today; only the
 individual techniques in [`methods/`](methods/) are the open gap, not the script that calls on
 them.

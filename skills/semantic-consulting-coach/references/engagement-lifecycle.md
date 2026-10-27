@@ -32,23 +32,25 @@ discussion.
 ## Discovery & Onboarding (paid, two depths)
 
 A client's first paid purchase is a **single package sold at two depths**, not two different
-products: a **Light** tier and a **Deep** tier. Both answer the same underlying question
+products: a **discovery workshop** and a **Proof of Value**. Both answer the same underlying question
 ("what should we do, and why?") at a depth the client chooses.
 
 | Tier | Duration | Best for |
 |---|---|---|
-| **Light** | A 1–2 day workshop | a fast, expert read on the client's situation |
-| **Deep** | 4–6 weeks, calendar-boxed | a safe, informed decision about what to build next |
+| **Discovery workshop** | A 1–2 day workshop | a fast, expert read on the client's situation |
+| **Proof of Value** | 4–6 weeks, calendar-boxed | a safe, informed decision about what to build next |
+
+Formerly called the Light and Deep tiers. The step after a Proof of Value is **Scaling**: the build engagement it hands off to.
 
 Both tiers work from the same method: a gap analysis of where the client is today against where
-it needs to be. The Light tier turns that gap analysis into a fast, expert read and a strategic
-roadmap. The Deep tier turns it into the **Decision Package** (see `decision-package` under
+it needs to be. The discovery workshop turns that gap analysis into a fast, expert read and a strategic
+roadmap. The Proof of Value turns it into the **Decision Package** (see `decision-package` under
 Skills, below): a recommendation, in/out scope, a pilot-to-scale roadmap, and a buy/build/defer
 call, produced by running gap analysis against the client's strategic ambition (distinct from a
 formal semantic and data maturity assessment, a separate, separately-sellable service). Depth
-changes how thoroughly we get there, and, at the Deep tier, what we hand back.
+changes how thoroughly we get there, and, at the Proof of Value, what we hand back.
 
-**Duration note (Deep tier):** the 4–6 weeks is **calendar-based, not effort-based**, stated
+**Duration note (Proof of Value):** the 4–6 weeks is **calendar-based, not effort-based**, stated
 alongside the number because the number alone could be misread as an effort estimate; this model is
 not priced by a man-day count or a rate card.
 
@@ -61,14 +63,14 @@ a formal stop with partial delivery**, never a silent overrun.
 The skills behind Discovery & Onboarding, and what each owns:
 
 - [`semantic-consulting-coach`](../SKILL.md) coaches which
-  depth fits and holds the free→paid line into the Light tier.
-- `proposal-writing` is the **entry skill** for the Deep
-  tier: qualifies the need, frames the offer, prices it as a fixed frame, and writes the
+  depth fits and holds the free→paid line into the discovery workshop.
+- `proposal-writing` is the **entry skill** for the Proof of
+  Value: qualifies the need, frames the offer, prices it as a fixed frame, and writes the
   **proposal + SoW** with an explicit in/out scope boundary.
 - `estimation` is the **pricing/scoping** discipline
   (PERT + work breakdown + ranges + contingency) that `proposal-writing` invokes for the numbers;
   independently triggerable.
-- `decision-package` **produces** the Deep tier's
+- `decision-package` **produces** the Proof of Value's
   deliverable: recommendation, in/out scope, pilot→scale roadmap, buy/build/defer, and the
   ready-to-contract execution brief that hands off to a build contract.
 
@@ -84,7 +86,7 @@ Onboarding. Its precondition is an **input condition**, not a gate to pass: the 
 elicitation Discovery & Onboarding would have supplied must instead be done, at depth, at the start
 of the build contract.
 
-This is a different elicitation from the sales-strategy elicitation presale and the Light tier run
+This is a different elicitation from the sales-strategy elicitation presale and the discovery workshop run
 (pain points, fears, aspirations, the values a client decides by: psychological, goal-oriented,
 input to a proposal). Use-case elicitation produces `architecture`'s UC White (contract-level) and
 UC Blue (realisation-level) behaviour specifications; at the business level expect at most a sketchy

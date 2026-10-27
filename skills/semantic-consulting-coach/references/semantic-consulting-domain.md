@@ -68,7 +68,7 @@ and *Research & Development*. Frameworks/standards in play: **SEMIC Style Guide*
 
 **Two engagement models, not one; reconcile them.** The public site presents a
 four-step funnel (*Discovery → Proposal → Implementation → Delivery*); the
-internal model is presale plus Discovery & Onboarding (Light/Deep tiers) and
+internal model is presale plus Discovery & Onboarding (discovery workshop and Proof of Value) and
 Semantic Layer adoption's building blocks (see
 [`engagement-lifecycle.md`](engagement-lifecycle.md)
 and `engagement-model.md`'s coaching frame). They are different axes (a

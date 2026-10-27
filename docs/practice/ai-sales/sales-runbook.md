@@ -22,7 +22,7 @@ owed. See
 for the boundary itself, and [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for who is
 accountable.
 
-## 2. Discovery & Onboarding (Light or Deep)
+## 2. Discovery & Onboarding (discovery workshop or Proof of Value)
 
 Move the qualified relationship into the paid package, at whichever depth the client chooses. See
 [`engagement-lifecycle.md#discovery--onboarding-paid-two-depths`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#discovery--onboarding-paid-two-depths)
@@ -32,7 +32,7 @@ Technical Consultant.
 
 ## 3. Contracting and hand-off
 
-Once Discovery & Onboarding produces its outcome (the Decision Package, at the Deep tier), the
+Once Discovery & Onboarding produces its outcome (the Decision Package, at the Proof of Value), the
 engagement either hands off into a build contract or closes without one. See
 [`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption)
 for what that hand-off carries, and [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for

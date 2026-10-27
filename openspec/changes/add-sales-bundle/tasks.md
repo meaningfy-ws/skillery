@@ -63,7 +63,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 ## 4. One owner per fact elsewhere (D-10, D-11, D-12)
 
-- [ ] 4.1 Ladder rename in `engagement-lifecycle.md` (with the one-release "formerly" note) and in
+- [x] 4.1 Ladder rename in `engagement-lifecycle.md` (with the one-release "formerly" note) and in
       `semantic-consulting-coach/SKILL.md`, `engagement-model.md`, `semantic-consulting-domain.md`,
       `decision-package/SKILL.md`, `docs/practice/ai-sales/{sales-runbook.md,services/index.md,playbooks/sales-presales.md}`,
       `docs/practice/roles-and-raci.md`, `docs/practice/ai-consulting/playbooks/technical-consultant.md`,
@@ -129,7 +129,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 ## Roadmap
 
 - [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [ ] 3.1 ·
-  [ ] 3.2 · [ ] 4.1 · [ ] 4.2 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
+  [ ] 3.2 · [x] 4.1 · [ ] 4.2 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
   [ ] 7.1 · [ ] 7.2 · [ ] 7.3 · [ ] 8.1 · [ ] 8.2 · [ ] 8.3 · [ ] 8.4
 
 ## Verification

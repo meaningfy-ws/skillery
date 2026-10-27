@@ -20,7 +20,7 @@ Fixed by the repo on `develop` @ 1569728 (v3.4.0):
 - Lint: every skill and agent appears in some use case's `served_by`; Boundary heading required;
   installed skills link nothing outside their folder; bodies contain no `/opsx:` or `.claude/`.
 - Tests: plain pytest with `pyyaml` only (`requirements-dev.txt`); no `pytest-bdd`.
-- Ladder names: `Light`/`Deep` appear in 13 files (list in task 4.1). The open change
+- Ladder names: `Light`/`Deep` appear in about 25 files (13 named in task 4.1, plus the consulting method pages, runbook and DoD found at execution). The open change
   `define-blc-engagement-model` does not rename them, so DEC-9 is executed here.
 
 ## Goals / Non-Goals

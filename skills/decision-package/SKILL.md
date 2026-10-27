@@ -18,7 +18,7 @@ metadata:
 
 ## Overview
 
-The **Decision Package** is the paid keystone deliverable of Discovery & Onboarding's **Deep-tier
+The **Decision Package** is the paid keystone deliverable of Discovery & Onboarding's **Proof of Value
 Decision Phase**. Its unit of value is **decision-readiness**: the state in which the client knows
 *what to do next, why, what success looks like, and what comes later* — the moment uncertainty
 becomes safe to commit. This skill **PRODUCES** that artefact.
@@ -27,10 +27,10 @@ It sits deliberately **above architecture**: it justifies and scopes the build *
 exists*. Architecture, the conceptual model, and the EPICs all descend from it — the Decision
 Package is the consulting-tier **root of the golden thread**.
 
-**Provenance.** The coach (`semantic-consulting-coach`) shapes *whether and how* to run the Deep
-tier and holds the **free → paid boundary**; the design intent of the Decision Phase lives in its
+**Provenance.** The coach (`semantic-consulting-coach`) shapes *whether and how* to run the Proof of
+Value and holds the **free → paid boundary**; the design intent of the Decision Phase lives in its
 `semantic-consulting-coach` (engagement model). This skill picks
-up *after* that line is crossed and the client has bought the Deep tier: it **builds the
+up *after* that line is crossed and the client has bought the Proof of Value: it **builds the
 deliverable**. Keep the boundary crisp — **produce** here, **coach** there.
 
 ## The deliverable: five parts (R1)
@@ -53,7 +53,7 @@ It earns the right to say, calmly: *"From here, we can execute, or you can take 
 someone else."* The full fillable template is in
 [`references/decision-package-template.md`](references/decision-package-template.md).
 
-## The Deep-tier discovery flow (R3, R5)
+## The Proof of Value discovery flow (R3, R5)
 
 The package is the output of a structured flow, not a maturity assessment or open-ended discovery.
 This is **one coherent discovery framework** — the still-relevant items of the internal
@@ -88,8 +88,8 @@ ontology engineering) into the Decision Package; the real model is built later, 
 
 ## The free → paid boundary (R6)
 
-Only **presale** is free — everything else, including the Deep tier, is paid. The
-full commercial model is the engagement lifecycle, carried by `semantic-consulting-coach`; this skill operates **only inside the paid Deep tier**. Do not blur Decision Package production into free coaching: if the
+Only **presale** is free — everything else, including the Proof of Value, is paid. The
+full commercial model is the engagement lifecycle, carried by `semantic-consulting-coach`; this skill operates **only inside the paid Proof of Value**. Do not blur Decision Package production into free coaching: if the
 work being asked for is still presale, it has not crossed the boundary, and this skill should not be
 producing a paid artefact yet — that is the coach's territory (`semantic-consulting-coach`), and the
 coach protects the line.
@@ -131,14 +131,14 @@ flexes to the engagement.
 ## Boundary & Related Skills
 
 **This skill OWNS:** producing the Decision Package (the five R1 parts) and running the
-**Deep-tier discovery flow** that yields it (structured discovery → landscape reading → gap analysis → option
+**Proof of Value discovery flow** that yields it (structured discovery → landscape reading → gap analysis → option
 framing → sequencing → buy/build/defer → execution brief), including the absorbed product-blueprint
 items recast for decision-readiness.
 
 **This skill DELEGATES:**
 - Coaching the engagement design and **holding the free → paid boundary** →
   `semantic-consulting-coach`. The coach decides
-  *whether/how* to run the Deep tier; this skill builds its deliverable.
+  *whether/how* to run the Proof of Value; this skill builds its deliverable.
 - Executive framing and voice (Governing Thought, SCQA, Minto) →
   `executive-communication`.
 

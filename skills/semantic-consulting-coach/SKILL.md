@@ -52,9 +52,9 @@ research, product, and partnering, across **B2B and B2G** markets. See
 > **the moment when uncertainty becomes safe to commit.**
 
 The unit of value is **decision-readiness**, delivered by the paid **Decision
-Phase (Discovery & Onboarding's Deep tier)**. The sharpest coaching lever is
+Phase (Discovery & Onboarding's Proof of Value)**. The sharpest coaching lever is
 the **free → paid boundary**: **presale is the only free stage** — it has no
-deliverable; everything with a deliverable (the Light tier, the Deep tier, a
+deliverable; everything with a deliverable (the discovery workshop, the Proof of Value, a
 build contract) is paid. Answering a paid
 question for free leaks intellectual capital. The commercial model is company
 fact, owned by [`references/engagement-lifecycle.md`](references/engagement-lifecycle.md); the
@@ -76,7 +76,7 @@ runs with prospects are in `references/presales-discovery.md`.
 
 - The user wants a quick factual answer, not coaching → answer directly.
 - The user wants delivery artefacts (an ontology, a mapping, a catalogue config) built → that is engineering work, not this coaching skill.
-- The user wants the **Decision Package itself produced** (the Deep tier's paid deliverable) → that is the `decision-package` skill. This skill *coaches* the design and protects the free→paid boundary; `decision-package` *produces* the artifact.
+- The user wants the **Decision Package itself produced** (the Proof of Value's paid deliverable) → that is the `decision-package` skill. This skill *coaches* the design and protects the free→paid boundary; `decision-package` *produces* the artifact.
 - Technical architecture modelling → use the relevant technical skill.
 
 ## The three layers: always name the one you are in
@@ -99,7 +99,7 @@ the service layer here"). If a question spans layers, say so.
 > [`references/engagement-lifecycle.md`](references/engagement-lifecycle.md) for the model and
 > `references/engagement-model.md` for the coaching frame. They are orthogonal:
 > you can be in Exploration mode while coaching the user about how to price
-> their paid Deep-tier Decision Phase.
+> their paid Proof of Value Decision Phase.
 
 ```mermaid
 flowchart LR
@@ -230,7 +230,7 @@ only synthesises after an explicit trigger and confirmed alignment.
 ## Reference material
 
 - `references/engagement-model.md`: the **coaching frame** for the engagement stages (purpose, boundary, the three client cognitive states) — cites [`references/engagement-lifecycle.md`](references/engagement-lifecycle.md) for Meaningfy's commercial facts rather than restating them. Used to coach the *design* of the process, not to impose it.
-- `references/decision-phase-posture.md`: the internal posture and discipline for holding the boundary under client pressure during the Deep tier — ambiguity-as-signal, helpfulness vs. usefulness, calm under pressure, protective-not-defensive language.
+- `references/decision-phase-posture.md`: the internal posture and discipline for holding the boundary under client pressure during the Proof of Value — ambiguity-as-signal, helpfulness vs. usefulness, calm under pressure, protective-not-defensive language.
 - `references/presales-discovery.md`: the pre-sales discovery & qualification sheet (Sections A/B/C) that the user runs *with their prospects*, plus the stop/deepen/propose decision.
 - `references/semantic-consulting-domain.md`: the domain map (service families, business/revenue models, B2B vs. B2G dynamics, and where IP/scope risk concentrates).
 - `references/question-bank.md`: high-leverage questions the *coach asks the user*, by layer, mode, and semantic-service area, plus meta-cognitive prompts.

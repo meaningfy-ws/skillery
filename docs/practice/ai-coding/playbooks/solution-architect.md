@@ -9,7 +9,7 @@
   White/Blue. Front-loaded and kept stable before Epics are carved. See
   [`build-lifecycle.md`](../build-lifecycle.md#project-tier-upfront-human-led).
 - **Requirements & UC, deep depth (White + Blue)**: you are accountable (`A/R`), whether handed
-  off from a completed Deep-tier engagement or elicited fresh on direct-to-build. See
+  off from a completed Proof of Value engagement or elicited fresh on direct-to-build. See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
 - **MDLC-lite**: you are accountable (`A`) for the domain/technical modelling within a software
   contract; the Solution Builder does the work (`R`). See

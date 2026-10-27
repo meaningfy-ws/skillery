@@ -29,7 +29,7 @@ partnership.
 on data governance and management.
 
 - **Accountable for:** assessment work and Decision-Package content during Discovery & Onboarding
-  (both tiers); shallow Requirements & Use-Case work carried via the Deep tier.
+  (both tiers); shallow Requirements & Use-Case work carried via the Proof of Value.
 - **Skills drawn on:** [`skills/decision-package/SKILL.md`](../../skills/decision-package/SKILL.md),
   [`skills/estimation/SKILL.md`](../../skills/estimation/SKILL.md).
 - **Artifacts produced:** the Decision Package (recommendation, scope, roadmap, buy/build/defer).
@@ -130,9 +130,9 @@ delivering what the client requested (ideally a bit more, to keep the client hap
 | Activity | Sales/Presales | Technical Consultant | Solution Architect | Work Shaper | Solution Builder | Solution Shipper |
 |---|---|---|---|---|---|---|
 | Presale | A/R | C | – | – | – | – |
-| Discovery & Onboarding, Light tier | A | R | C | – | – | – |
-| Discovery & Onboarding, Deep tier | A | R | C | C | – | – |
-| Requirements & UC, shallow (White, via the Deep tier) | C | A/R | I | – | – | – |
+| Discovery & Onboarding, discovery workshop | A | R | C | – | – | – |
+| Discovery & Onboarding, Proof of Value | A | R | C | C | – | – |
+| Requirements & UC, shallow (White, via the Proof of Value) | C | A/R | I | – | – | – |
 | Requirements & UC, deep (White+Blue, via the build contract) | I | C | A/R | – | C | – |
 | ADLC | I | C | A/R | C | C | – |
 | MDLC-lite | – | – | A | – | R | – |

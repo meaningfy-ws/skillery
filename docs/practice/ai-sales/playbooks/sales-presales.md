@@ -8,10 +8,10 @@
 - **Presale (free)**: qualify the relationship and hold the free→paid boundary; no deliverable
   yet. See
   [`../engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#presale-free-no-deliverable).
-- **Discovery & Onboarding, Light tier (paid)**: commercial lead; you are accountable (`A`), the
+- **Discovery & Onboarding, discovery workshop (paid)**: commercial lead; you are accountable (`A`), the
   Technical Consultant does the assessment work (`R`). See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
-- **Discovery & Onboarding, Deep tier (paid)**: commercial lead; you are accountable (`A`) while
+- **Discovery & Onboarding, Proof of Value (paid)**: commercial lead; you are accountable (`A`) while
   the Technical Consultant and Decision-Package skills produce the content. See
   [`../engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#discovery--onboarding-paid-two-depths).
 - **Partnership/account-nurture**: once a client has closed two or more contracts, you lead the
@@ -22,8 +22,8 @@
 
 - [`semantic-consulting-coach`](../../../../skills/semantic-consulting-coach/SKILL.md): holds the
   free→paid line and coaches which tier fits.
-- [`proposal-writing`](../../../../skills/proposal-writing/SKILL.md): frames and prices the Deep
-  tier offer, writes the proposal + SoW.
+- [`proposal-writing`](../../../../skills/proposal-writing/SKILL.md): frames and prices the Proof of
+  Value offer, writes the proposal + SoW.
 - [`executive-communication`](../../../../skills/executive-communication/SKILL.md): client-facing
   messaging and board-level framing.
 
@@ -42,7 +42,7 @@ Full list: [`roles-and-raci.md`](../../roles-and-raci.md#salespresales).
 - At both tiers of Discovery & Onboarding, you stay accountable (`A`) while the **Technical
   Consultant** does the assessment/Decision-Package work (`R`). See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
-- The Deep tier's own hand-off into a build contract is the Decision Package's execution brief;
+- The Proof of Value's own hand-off into a build contract is the Decision Package's execution brief;
   not yours to carry, that belongs to the Technical Consultant / `decision-package` skill. See
   [`../engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption).
 
