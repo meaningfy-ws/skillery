@@ -11,13 +11,15 @@ convention on top of it.
 | `develop` | the sources: `skills/`, `agents/`, `bundles.yaml`, docs, tools; work in progress included | feature PRs | **no** |
 | `release/X.Y.Z` | the release being stabilised (version bump, dated CHANGELOG) | the maintainer | no |
 | `main` | the released sources, one merge per release | release PRs | no |
-| **`releases`** | each released tree **plus the generated `bundles/`**, minus work in progress; one commit per release, tagged `vX.Y.Z` | only `.github/workflows/releases.yml` | **yes, the only install source** |
+| **`releases`** | each released tree **with `bundles/` as real files**, minus work in progress; one commit per release, tagged `vX.Y.Z` | only `.github/workflows/releases.yml` | **yes, the only install source** |
 
 - **Install only from `releases`.** Claude Code, the opencode installer and `npx skills add` all read
   `meaningfy-ws/skillery#releases`. A marketplace added without `#releases` tracks `develop` and
-  picks up unreleased work: re-add it.
-- **`bundles/` lives only on `releases`.** It is generated (`make bundles`) and git-ignored
-  everywhere else.
+  picks up unreleased work: re-add it. claude.ai (Claude Desktop) has no branch field and reads the
+  default branch, `develop`.
+- **`bundles/` is committed everywhere and never hand-edited.** `make bundles` generates it as
+  symlinks into `skills/` and `agents/`; commit the result. `releases.yml` replaces the links with
+  real files on `releases`.
 - **Release tags live on `releases`.** `vX.Y.Z` points at the release commit on `releases`, the tree
   people install, so `meaningfy-ws/skillery#vX.Y.Z` pins one exact release. The workflow creates the
   tag; nobody tags by hand. (Releases up to `v3.3.0` were tagged on `main`.)
@@ -49,6 +51,5 @@ a version whose tag already exists.
 
 ## Testing unreleased work
 
-A feature branch has no `bundles/`. Push a throwaway branch with the generated tree added
-(`make bundles && git add -f bundles`), install it with `#<branch>` in a scratch config, then delete
+Run `make bundles`, push a throwaway branch, install it with `#<branch>` in a scratch config, then delete
 the branch. Never install from a local path: a local marketplace does not load the bundles' agents.
