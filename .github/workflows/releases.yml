@@ -45,6 +45,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # ship real files, not the local symlinks: claude.ai's marketplace sync does not follow links
+          cp -rL bundles bundles.real && rm -rf bundles && mv bundles.real bundles
           git add -A -f bundles
           # only released items ship: drop skills/agents listed in no bundle (rebundle-by-activity D-14)
           python -m tools.bundle_gen unreleased | xargs -r git rm -r -q --cached --
