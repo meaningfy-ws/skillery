@@ -66,7 +66,8 @@ improvement loop and the Definition of Done. This binding mandates it; it does n
   of [`facets.yaml`](facets.yaml) under `metadata`.
 - **Assigning to a bundle** — every skill and every agent is declared in exactly one bundle of
   [`bundles.yaml`](bundles.yaml), the one bundle definition. Then run `make bundles`, which renders
-  `.claude-plugin/marketplace.json`, the committed `bundles/` symlink tree and
+  `.claude-plugin/marketplace.json`, the committed `bundles/` tree (real copies of skills/agents, plus the
+  `openspec/schemas/meaningfy` copy) and
   `tools/opencode-catalogue.json`. **Never write into `bundles/` (or those two files) by hand —
   always regenerate them with `make bundles` and commit the result;** `make validate` and CI fail on
   any difference.
@@ -85,7 +86,7 @@ update an artifact, keep both CLIs working — the gates in `make validate` enfo
 
 - **Skills, agents, bundles** — author `skills/`, `agents/` and [`bundles.yaml`](bundles.yaml); they
   are the only sources. Both CLIs install skills straight from `skills/`; opencode agents are
-  rendered at install time. A skill **content** edit needs no regeneration. A membership change or an
+  rendered at install time. Every skill or agent edit, a membership change or an
   agent-frontmatter change needs `make bundles` (the `bundle_gates` check names it when stale). The
   frontmatter map is the contract in [`docs/environment/dual-cli/mapping.md`](docs/environment/dual-cli/mapping.md)
   and its tables live only in `tools/opencode-agent-map.json`; an unmappable field becomes a

@@ -80,8 +80,8 @@ def _snapshot(repo: Path) -> dict:
     for dirpath, dirnames, filenames in os.walk(repo / "bundles"):
         for n in dirnames + filenames:
             p = Path(dirpath) / n
-            if p.is_symlink():
-                out[p.relative_to(repo).as_posix()] = os.readlink(p)
+            if p.is_file():
+                out[p.relative_to(repo).as_posix()] = p.read_bytes()
     return out
 
 
@@ -119,19 +119,17 @@ def test_tc05_link_gate(tmp_path):
     repo = _repo(tmp_path)
     gen.write(repo)
     (repo / "bundles/b-one/agents/ag.md").unlink()                       # missing
-    copy = repo / "bundles/b-two/skills/s2"
-    copy.unlink()
-    shutil.copytree(repo / "skills/s2", copy)                           # copy instead of link
+    link = repo / "bundles/b-two/skills/s2"
+    shutil.rmtree(link)
+    link.symlink_to("../../../skills/s2")                               # symlink instead of copy
     (repo / "bundles/b-one/stray.txt").write_text("x")                  # orphan
-    link = repo / "bundles/b-one/skills/s1"
-    link.unlink()
-    link.symlink_to("../../../skills/s2")                               # wrong target
+    (repo / "bundles/b-one/skills/s1/SKILL.md").write_text("hand edit")  # stale
     errs = gen.gate_errors(repo)
-    assert any(e.startswith("missing link") and "b-one/agents/ag.md" in e for e in errs)
-    assert any(e.startswith("not a symlink (copy?)") and "b-two/skills/s2" in e for e in errs)
+    assert any(e.startswith("missing copy") and "b-one/agents/ag.md" in e for e in errs)
+    assert any(e.startswith("symlink, not a copy") and "b-two/skills/s2" in e for e in errs)
     assert any(e.startswith("orphan") and "stray.txt" in e for e in errs)
-    assert any(e.startswith("wrong target") and "b-one/skills/s1" in e for e in errs)
-    assert len(errs) == 4  # the copied dir's contents are not reported again as orphans
+    assert any(e.startswith("stale copy") and "b-one/skills/s1" in e for e in errs)
+    assert len(errs) == 4  # a copied dir's contents are not reported again as orphans
 
 
 def test_tc06_version_sync_package(tmp_path):
@@ -242,7 +240,7 @@ def test_link_gate_flags_a_missing_bundles_tree(tmp_path):
     repo = _repo(tmp_path)
     gen.write(repo)
     shutil.rmtree(repo / "bundles")
-    assert any(e.startswith("missing link:") for e in gen.gate_errors(repo))
+    assert any(e.startswith("missing copy:") for e in gen.gate_errors(repo))
 
 
 def test_unreleased_lists_the_wip_paths(tmp_path):
@@ -252,3 +250,26 @@ def test_unreleased_lists_the_wip_paths(tmp_path):
     (repo / "skills" / "s3" / "SKILL.md").write_text("---\nname: s3\ndescription: x\n---\n", encoding="utf-8")
     (repo / "agents" / "ag2.md").write_text("---\nname: ag2\ndescription: x\n---\n", encoding="utf-8")
     assert gen.unreleased(repo) == ["agents/ag2.md", "skills/s3"]
+
+
+def test_schema_copy_is_written_and_gated(tmp_path):
+    repo = _repo(tmp_path)
+    src = repo / "skills/project-setup/assets/openspec-schema/meaningfy"
+    src.mkdir(parents=True)
+    (src / "schema.yaml").write_text("name: meaningfy\n", encoding="utf-8")
+    (repo / "openspec/schemas").mkdir(parents=True)
+    gen.write(repo)
+    copy = repo / "openspec/schemas/meaningfy"
+    assert not copy.is_symlink() and (copy / "schema.yaml").read_text() == "name: meaningfy\n"
+    (copy / "schema.yaml").write_text("edited", encoding="utf-8")
+    assert any(e.startswith("stale copy") and "openspec/schemas/meaningfy" in e for e in gen.gate_errors(repo))
+
+
+def test_python_cache_is_neither_copied_nor_compared(tmp_path):
+    repo = _repo(tmp_path)
+    gen.write(repo)
+    (repo / "skills/s1/__pycache__").mkdir()
+    (repo / "skills/s1/__pycache__/x.cpython-311.pyc").write_bytes(b"\0")
+    assert gen.gate_errors(repo) == []
+    gen.write(repo)
+    assert not (repo / "bundles/b-one/skills/s1/__pycache__").exists()

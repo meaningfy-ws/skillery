@@ -23,6 +23,9 @@ PACKAGE_JSON = "package.json"
 VERSION_FILE = "VERSION"
 SKILLS_DIR = "skills"
 AGENTS_DIR = "agents"
+# Copies, not symlinks: claude.ai's marketplace sync fails on a repo with symlinks.
+_CACHE = ("__pycache__", "*.pyc")  # created by running scripts; git-ignored, never copied or compared
+SCHEMA_COPY = ("openspec/schemas/meaningfy", "../../skills/project-setup/assets/openspec-schema/meaningfy")
 
 _TOP_KEYS = ("name", "owner", "description", "bundles")
 _OWNER_KEYS = ("name", "email")
@@ -161,17 +164,40 @@ def _sync_package_version(repo: Path, ver: str) -> None:
 
 
 def write(repo: Path) -> list[str]:
-    """Write both JSON renderings, recreate bundles/ and sync package.json (idempotent)."""
+    """Write both JSON renderings, recreate bundles/ (and the schema copy) and sync package.json
+    (idempotent)."""
     market, links, catalogue = render(repo)  # raises before anything is written
     for rel, data in ((MARKETPLACE, market), (CATALOGUE, catalogue)):
         (repo / rel).parent.mkdir(parents=True, exist_ok=True)
         (repo / rel).write_bytes(data)
     shutil.rmtree(repo / BUNDLES_DIR, ignore_errors=True)
-    for rel, target in links.items():
-        (repo / rel).parent.mkdir(parents=True, exist_ok=True)
-        os.symlink(target, repo / rel)
+    copies = {**links, **_schema_copy(repo)}
+    for rel, target in copies.items():
+        dst = repo / rel
+        if dst.is_symlink() or dst.is_file():
+            dst.unlink()
+        elif dst.exists():
+            shutil.rmtree(dst)
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        src = dst.parent / target
+        if src.is_dir():
+            shutil.copytree(src, dst, ignore=shutil.ignore_patterns(*_CACHE))
+        else:
+            shutil.copy2(src, dst)
     _sync_package_version(repo, version(repo))
-    return [MARKETPLACE, CATALOGUE, *links]
+    return [MARKETPLACE, CATALOGUE, *copies]
+
+
+def _schema_copy(repo: Path) -> dict[str, str]:
+    rel, target = SCHEMA_COPY
+    return {rel: target} if (repo / rel).parent.joinpath(target).exists() else {}
+
+
+def _tree(path: Path) -> dict[str, tuple[bytes, bool]]:
+    """Every file under path (or path itself) with its bytes and executable bit."""
+    files = [path] if path.is_file() else sorted(
+        p for p in path.rglob("*") if p.is_file() and not any(p.match(c) or c in p.parts for c in _CACHE))
+    return {p.relative_to(path).as_posix(): (p.read_bytes(), os.access(p, os.X_OK)) for p in files}
 
 
 # ------------------------------------------------------------------ gate
@@ -180,12 +206,11 @@ def _link_errors(repo: Path, links: dict[str, str]) -> list[str]:
     for rel, target in links.items():
         p = repo / rel
         if p.is_symlink():
-            if os.readlink(p) != target:
-                out.append(f"wrong target: {rel} -> {os.readlink(p)} (expected {target})")
-        elif p.exists():
-            out.append(f"not a symlink (copy?): {rel}")
-        else:
-            out.append(f"missing link: {rel}")
+            out.append(f"symlink, not a copy: {rel} — run make bundles")
+        elif not p.exists():
+            out.append(f"missing copy: {rel} — run make bundles")
+        elif _tree(p) != _tree(p.parent / target):
+            out.append(f"stale copy: {rel} — run make bundles, never edit it by hand")
     dirs = {Path(rel).parent.as_posix() for rel in links}
     dirs |= {Path(d).parent.as_posix() for d in dirs}
     root = repo / BUNDLES_DIR
@@ -228,7 +253,8 @@ def unreleased(repo: Path) -> list[str]:
 
 
 def gate_errors(repo: Path) -> list[str]:
-    """Renderings match bundles.yaml + agents, bundles/ links are links, versions agree. [] == clean."""
+    """Renderings match bundles.yaml + agents, bundles/ and the schema copy equal their sources,
+    versions agree. [] == clean."""
     try:
         market, links, catalogue = render(repo)
     except ValueError as exc:
@@ -239,5 +265,7 @@ def gate_errors(repo: Path) -> list[str]:
         if not path.exists() or path.read_bytes() != data:
             out.append(f"{rel} {_STALE}")
     out += _link_errors(repo, links)
+    for rel, target in _schema_copy(repo).items():
+        out += [e for e in _link_errors(repo, {rel: target}) if not e.startswith("orphan")]
     out += _version_errors(repo, version(repo))
     return out

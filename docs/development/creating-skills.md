@@ -128,7 +128,7 @@ Put the before/after on the failure case in the PR.
    count above it.
 4. Run `make validate` until it is green.
 
-A later edit to a skill's content needs no regeneration; a membership change does.
+Every later edit to a skill — content or membership — needs `make bundles`, whose copies you commit.
 
 An agent is registered the same way, in its bundle's `agents` list; how to write one is in
 [`agent-template.md`](agent-template.md).

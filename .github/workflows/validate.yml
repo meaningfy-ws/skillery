@@ -12,8 +12,10 @@ jobs:
       - run: python -m tools.repo_lint
       # bundles/ is generated and committed: regenerate it and prove nothing changed (never hand-edited).
       - run: python -m tools.bundle_gen generate
-      - run: git diff --exit-code -- .claude-plugin tools/opencode-catalogue.json package.json bundles
+      - run: git diff --exit-code -- .claude-plugin tools/opencode-catalogue.json package.json bundles openspec/schemas
       - run: test -z "$(git status --porcelain -- bundles)"
+      # no tracked symlinks anywhere: claude.ai's marketplace sync fails on them
+      - run: test -z "$(git ls-files -s | awk '$1 == 120000')"
       - run: python -m tools.bundle_gen check
       - run: python -m pytest tests/ -q
 

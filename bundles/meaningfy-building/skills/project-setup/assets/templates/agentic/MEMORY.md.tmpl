@@ -1,0 +1,36 @@
+<!-- Regenerable orientation INDEX for <<PROJECT_NAME>>. Auto-loaded into every session (first ~200
+     lines) — keep it ≤200 lines and curate ruthlessly. This is an INDEX, NOT authority: the truth
+     is openspec/specs/ (durable capability specs) and openspec/config.yaml's `context:` field. If
+     this note ever disagrees with openspec/specs/, specs/ wins. Stable, CONFIRMED facts only:
+     codebase patterns, key paths. No session notes, no unverified conclusions, no epic detail
+     (in-flight work lives in openspec/changes/). One-line entry per linked note. -->
+
+# Project Memory (index) — <<PROJECT_NAME>>
+
+## Project Overview
+
+- <!-- one-line purpose of the repo -->
+- Top-level package: `<<PACKAGE>>/` (no `/src`). Default branch: `<<DEFAULT_BRANCH>>`.
+- Layers: `entrypoints → services → domain`, `adapters → domain`. Enforced by `.importlinter`.
+- Tooling: Poetry, Ruff, mypy, pytest + pytest-bdd, import-linter, radon/xenon. `make` is the
+  dev/CI interface (`make help`).
+
+## Spine (where work and truth live)
+
+- EPIC ≡ `openspec/changes/<id>/proposal.md`; PLAN ≡ `design.md` + `tasks.md`.
+- Durable truth: `openspec/specs/`. Orientation: `openspec/config.yaml: context:`.
+- Drive with `/opsx:*` (propose, explore, apply, sync, archive). Golden thread: cite your parent.
+
+## Reference
+
+<!-- Pointers to in-repo reference material agents reuse. One line each.
+     [code-anatomy.md](code-anatomy.md) — tier/layer dependency spec feeding .importlinter -->
+
+## Key Decisions
+
+<!-- yyyy-mm-dd: durable decision, in one line. Append; never rewrite history.
+     (Authored decisions belong in the spine: proposal.md "Key decisions" / design.md "Decisions".) -->
+
+## Gotchas
+
+<!-- Confirmed traps that cost time. One line each. -->
