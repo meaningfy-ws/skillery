@@ -65,7 +65,7 @@ not here.
 | Bundle | Areas | Skills | Agents | Requires |
 |---|---|---|---|---|
 | `meaningfy-sales` | sales | proposals and estimates; the five sales skills (operations, pipeline custody, accounts, qualification, conversations); the commercial chain | `proposal-writer`, `sales-agent`; planned: `qualifier`, `offer-designer`, `demo-builder` | `meaningfy-consulting` |
-| `meaningfy-devops` *(planned)* | operations | the devops package's skills | planned: `devops-engineer` | `meaningfy-building` |
+| `meaningfy-devops` | operations | infrastructure operations, stack operations, service reliability, infrastructure security | `devops-engineer`, `ops-watch`, `infra-reviewer` | `meaningfy-consulting` |
 | `meaningfy-business` *(planned)* | business, legal | negotiation, internal communication, contracts | planned: `business-coach`, `negotiation-partner`, `internal-comms`, `contract-drafter` | `meaningfy-consulting` |
 | `meaningfy-design` *(planned)* | design | visual identity, diagram and slide styles | planned: `graphic-designer` | — |
 
@@ -84,6 +84,9 @@ template's (a thinking partner is a `lead` agent). The agents still to build are
 | `conceptual-modeller` | lead | UC-W20 | `meaningfy-architecture` | exists |
 | `proposal-writer` | delegated | UC-W8 | `meaningfy-sales` | exists |
 | `sales-agent` | scheduled | UC-W7 | `meaningfy-sales` | exists |
+| `devops-engineer` | lead | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
+| `ops-watch` | scheduled | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
+| `infra-reviewer` | delegated | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
 
 ## Roadmap
 

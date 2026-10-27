@@ -5,7 +5,7 @@
      agent's frontmatter (agents/*.md), bundles.yaml and facets.yaml.
      tests/test_skill_inventory.py fails the build if this drifts. -->
 
-38 skills and 7 agents across 6 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
+43 skills and 10 agents across 7 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
 
 ## Map
 
@@ -21,6 +21,7 @@ flowchart LR
     s_meaningfy_voice["meaningfy-voice"]
     s_meaningfy_git_workflow["meaningfy-git-workflow"]
     s_guardrails["guardrails"]
+    s_skillery_feedback["skillery-feedback"]
   end
   subgraph b_meaningfy_consulting["meaningfy-consulting"]
     s_semantic_consulting_coach["semantic-consulting-coach"]
@@ -60,6 +61,15 @@ flowchart LR
     a_implementer{{"implementer"}}
     a_code_reviewer{{"code-reviewer"}}
   end
+  subgraph b_meaningfy_devops["meaningfy-devops"]
+    s_infrastructure_operations["infrastructure-operations"]
+    s_stack_operations["stack-operations"]
+    s_service_reliability["service-reliability"]
+    s_infrastructure_security["infrastructure-security"]
+    a_devops_engineer{{"devops-engineer"}}
+    a_ops_watch{{"ops-watch"}}
+    a_infra_reviewer{{"infra-reviewer"}}
+  end
   subgraph b_vault_assistant["vault-assistant"]
     s_vault_setup["vault-setup"]
     s_vault_conventions["vault-conventions"]
@@ -94,6 +104,8 @@ flowchart LR
   s_executive_communication --> p_content
   s_explanatory_writing --> p_content
   s_guardrails --> p_software_development
+  s_infrastructure_operations --> p_devops
+  s_infrastructure_security --> p_devops
   s_linkml_engineering --> p_modelling
   s_meaningfy_code_review --> p_software_development
   s_meaningfy_git_workflow --> p_software_development
@@ -108,7 +120,10 @@ flowchart LR
   s_sales_pipeline_custody --> p_crm
   s_sales_qualification --> p_crm
   s_semantic_consulting_coach --> p_advising
+  s_service_reliability --> p_devops
+  s_skillery_feedback --> p_knowledge
   s_spec_stewardship --> p_software_development
+  s_stack_operations --> p_devops
   s_technical_writing --> p_content
   s_vault_capture --> p_knowledge
   s_vault_conventions --> p_knowledge
@@ -127,6 +142,9 @@ flowchart LR
   a_epic_planner --> p_software_development
   a_implementer --> p_software_development
   a_code_reviewer --> p_software_development
+  a_devops_engineer --> p_devops
+  a_ops_watch --> p_devops
+  a_infra_reviewer --> p_devops
 
   a_proposal_writer -.-> s_proposal_writing
   a_proposal_writer -.-> s_estimation
@@ -148,13 +166,25 @@ flowchart LR
   a_implementer -.-> s_cosmic_python
   a_code_reviewer -.-> s_meaningfy_code_review
   a_code_reviewer -.-> s_cosmic_python
+  a_devops_engineer -.-> s_infrastructure_operations
+  a_devops_engineer -.-> s_stack_operations
+  a_devops_engineer -.-> s_service_reliability
+  a_devops_engineer -.-> s_infrastructure_security
+  a_ops_watch -.-> s_service_reliability
+  a_ops_watch -.-> s_stack_operations
+  a_ops_watch -.-> s_infrastructure_operations
+  a_ops_watch -.-> s_infrastructure_security
+  a_infra_reviewer -.-> s_infrastructure_operations
+  a_infra_reviewer -.-> s_stack_operations
+  a_infra_reviewer -.-> s_infrastructure_security
 
   style b_meaningfy_core fill:#eaf3ff,stroke:#999,stroke-width:1px
   style b_meaningfy_consulting fill:#fff2e0,stroke:#999,stroke-width:1px
   style b_meaningfy_sales fill:#eafaf0,stroke:#999,stroke-width:1px
   style b_meaningfy_architecture fill:#f5eaff,stroke:#999,stroke-width:1px
   style b_meaningfy_building fill:#eaf3ff,stroke:#999,stroke-width:1px
-  style b_vault_assistant fill:#fff2e0,stroke:#999,stroke-width:1px
+  style b_meaningfy_devops fill:#fff2e0,stroke:#999,stroke-width:1px
+  style b_vault_assistant fill:#eafaf0,stroke:#999,stroke-width:1px
   style p_software_development fill:#fdf6e3,color:#000000,stroke:#333,stroke-width:1.5px
   style p_modelling fill:#fdeef7,color:#000000,stroke:#333,stroke-width:1.5px
   style p_advising fill:#eafaf5,color:#000000,stroke:#333,stroke-width:1.5px
@@ -176,6 +206,8 @@ flowchart LR
   style s_executive_communication fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_explanatory_writing fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_guardrails fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_infrastructure_operations fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_infrastructure_security fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_linkml_engineering fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_meaningfy_code_review fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_meaningfy_git_workflow fill:#1e1e1e,color:#ffffff,stroke:#000
@@ -190,7 +222,10 @@ flowchart LR
   style s_sales_pipeline_custody fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_sales_qualification fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_semantic_consulting_coach fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_service_reliability fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_skillery_feedback fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_spec_stewardship fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_stack_operations fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_technical_writing fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_vault_capture fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_vault_conventions fill:#1e1e1e,color:#ffffff,stroke:#000
@@ -209,6 +244,9 @@ flowchart LR
   style a_epic_planner fill:#5a2d82,color:#ffffff,stroke:#000
   style a_implementer fill:#5a2d82,color:#ffffff,stroke:#000
   style a_code_reviewer fill:#5a2d82,color:#ffffff,stroke:#000
+  style a_devops_engineer fill:#5a2d82,color:#ffffff,stroke:#000
+  style a_ops_watch fill:#5a2d82,color:#ffffff,stroke:#000
+  style a_infra_reviewer fill:#5a2d82,color:#ffffff,stroke:#000
 ```
 
 ## Bundle requirements
@@ -222,14 +260,16 @@ flowchart LR
   b_meaningfy_sales["meaningfy-sales"]
   b_meaningfy_architecture["meaningfy-architecture"]
   b_meaningfy_building["meaningfy-building"]
+  b_meaningfy_devops["meaningfy-devops"]
   b_vault_assistant["vault-assistant"]
   b_meaningfy_sales --> b_meaningfy_consulting
   b_meaningfy_building --> b_meaningfy_architecture
+  b_meaningfy_devops --> b_meaningfy_consulting
 ```
 
 ## Relations
 
-Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (63 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (142 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 205 relation edges plus 38 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
+Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (63 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (171 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 234 relation edges plus 43 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
 
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 12, 'rankSpacing': 45, 'curve': 'basis'}}}%%
@@ -241,6 +281,7 @@ flowchart LR
     s_meaningfy_voice["meaningfy-voice"]
     s_meaningfy_git_workflow["meaningfy-git-workflow"]
     s_guardrails["guardrails"]
+    s_skillery_feedback["skillery-feedback"]
   end
   subgraph b_meaningfy_consulting["meaningfy-consulting"]
     s_semantic_consulting_coach["semantic-consulting-coach"]
@@ -272,6 +313,12 @@ flowchart LR
     s_project_setup["project-setup"]
     s_ci_cd_delivery["ci-cd-delivery"]
     s_meaningfy_release["meaningfy-release"]
+  end
+  subgraph b_meaningfy_devops["meaningfy-devops"]
+    s_infrastructure_operations["infrastructure-operations"]
+    s_stack_operations["stack-operations"]
+    s_service_reliability["service-reliability"]
+    s_infrastructure_security["infrastructure-security"]
   end
   subgraph b_vault_assistant["vault-assistant"]
     s_vault_setup["vault-setup"]
@@ -360,6 +407,8 @@ flowchart LR
   s_bdd_gherkin -.-> s_clarity_gate
   s_bdd_gherkin -.-> s_spec_stewardship
   s_bdd_gherkin -.-> s_cosmic_python
+  s_ci_cd_delivery -.-> s_stack_operations
+  s_ci_cd_delivery -.-> s_infrastructure_security
   s_ci_cd_delivery -.-> s_meaningfy_release
   s_clarity_gate -.-> s_epic_planning
   s_clarity_gate -.-> s_bdd_gherkin
@@ -395,6 +444,21 @@ flowchart LR
   s_guardrails -.-> s_meaningfy_code_review
   s_guardrails -.-> s_sales_pipeline_custody
   s_guardrails -.-> s_sales_operations
+  s_infrastructure_operations -.-> s_stack_operations
+  s_infrastructure_operations -.-> s_service_reliability
+  s_infrastructure_operations -.-> s_infrastructure_security
+  s_infrastructure_operations -.-> s_ci_cd_delivery
+  s_infrastructure_operations -.-> s_meaningfy_git_workflow
+  s_infrastructure_operations -.-> s_executive_communication
+  s_infrastructure_operations -.-> s_epic_planning
+  s_infrastructure_operations -.-> s_spec_stewardship
+  s_infrastructure_operations -.-> s_clarity_gate
+  s_infrastructure_security -.-> s_infrastructure_operations
+  s_infrastructure_security -.-> s_stack_operations
+  s_infrastructure_security -.-> s_service_reliability
+  s_infrastructure_security -.-> s_meaningfy_release
+  s_infrastructure_security -.-> s_guardrails
+  s_infrastructure_security -.-> s_ci_cd_delivery
   s_linkml_engineering -.-> s_modelling_conventions
   s_linkml_engineering -.-> s_architecture
   s_linkml_engineering -.-> s_cosmic_python
@@ -458,7 +522,19 @@ flowchart LR
   s_semantic_consulting_coach -.-> s_sales_conversations
   s_semantic_consulting_coach -.-> s_sales_pipeline_custody
   s_semantic_consulting_coach -.-> s_writing_antipatterns
+  s_service_reliability -.-> s_infrastructure_operations
+  s_service_reliability -.-> s_stack_operations
+  s_service_reliability -.-> s_infrastructure_security
+  s_service_reliability -.-> s_executive_communication
+  s_skillery_feedback -.-> s_meaningfy_git_workflow
+  s_skillery_feedback -.-> s_guardrails
   s_spec_stewardship -.-> s_bdd_gherkin
+  s_stack_operations -.-> s_infrastructure_operations
+  s_stack_operations -.-> s_service_reliability
+  s_stack_operations -.-> s_infrastructure_security
+  s_stack_operations -.-> s_ci_cd_delivery
+  s_stack_operations -.-> s_bdd_gherkin
+  s_stack_operations -.-> s_meaningfy_git_workflow
   s_technical_writing -.-> s_clarity_gate
   s_technical_writing -.-> s_epic_planning
   s_technical_writing -.-> s_explanatory_writing
@@ -497,7 +573,8 @@ flowchart LR
   style b_meaningfy_sales fill:#eafaf0,stroke:#999,stroke-width:1px
   style b_meaningfy_architecture fill:#f5eaff,stroke:#999,stroke-width:1px
   style b_meaningfy_building fill:#eaf3ff,stroke:#999,stroke-width:1px
-  style b_vault_assistant fill:#fff2e0,stroke:#999,stroke-width:1px
+  style b_meaningfy_devops fill:#fff2e0,stroke:#999,stroke-width:1px
+  style b_vault_assistant fill:#eafaf0,stroke:#999,stroke-width:1px
   style s_architecture fill:#6b1f4d,color:#ffffff,stroke:#000
   style s_bdd_gherkin fill:#7a5c00,color:#ffffff,stroke:#000
   style s_ci_cd_delivery fill:#1f4f6b,color:#ffffff,stroke:#000
@@ -510,6 +587,8 @@ flowchart LR
   style s_executive_communication fill:#2b3a67,color:#ffffff,stroke:#000
   style s_explanatory_writing fill:#2b3a67,color:#ffffff,stroke:#000
   style s_guardrails fill:#7a5c00,color:#ffffff,stroke:#000
+  style s_infrastructure_operations fill:#1f4f6b,color:#ffffff,stroke:#000
+  style s_infrastructure_security fill:#1f4f6b,color:#ffffff,stroke:#000
   style s_linkml_engineering fill:#6b1f4d,color:#ffffff,stroke:#000
   style s_meaningfy_code_review fill:#7a5c00,color:#ffffff,stroke:#000
   style s_meaningfy_git_workflow fill:#7a5c00,color:#ffffff,stroke:#000
@@ -524,7 +603,10 @@ flowchart LR
   style s_sales_pipeline_custody fill:#4a4a3a,color:#ffffff,stroke:#000
   style s_sales_qualification fill:#4a4a3a,color:#ffffff,stroke:#000
   style s_semantic_consulting_coach fill:#0f5c48,color:#ffffff,stroke:#000
+  style s_service_reliability fill:#1f4f6b,color:#ffffff,stroke:#000
+  style s_skillery_feedback fill:#7a5c00,color:#ffffff,stroke:#000
   style s_spec_stewardship fill:#7a5c00,color:#ffffff,stroke:#000
+  style s_stack_operations fill:#1f4f6b,color:#ffffff,stroke:#000
   style s_technical_writing fill:#2b3a67,color:#ffffff,stroke:#000
   style s_vault_capture fill:#7a5c00,color:#ffffff,stroke:#000
   style s_vault_conventions fill:#7a5c00,color:#ffffff,stroke:#000
@@ -540,7 +622,7 @@ flowchart LR
 
 ## meaningfy-core
 
-Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, and agentic guardrails.
+Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, and how to report a skill or agent problem to skillery.
 
 | Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
 |---|---|---|---|---|---|---|---|---|---|
@@ -550,6 +632,7 @@ Cross-cutting basics everyone installs: clear technical writing, explanatory-wri
 | [`meaningfy-voice`](../skills/meaningfy-voice/SKILL.md) | The Meaningfy company voice profile — British English, no em dash, plain current vocabulary, honest and direct, the SMILE values, and the register rule (teach, persuade, bind). | `content` | `cross-cutting` | `generic` | `precise` | `any` | `stable` | — | `executive-communication`, `explanatory-writing`, `writing-antipatterns`, `vault-daily`, `sales-conversations` |
 | [`meaningfy-git-workflow`](../skills/meaningfy-git-workflow/SKILL.md) | Meaningfy git and GitHub conventions — Conventional Commits (imperative, no trailing punctuation), branch naming, rebase/merge etiquette, the pull-request workflow, free-tier GitHub constraints, and dev-environment hygiene. | `software-development` | `coding` | `git-release` | `precise` | `build` | `stable` | — | `cosmic-python`, `meaningfy-release`, `commit-commands`, `code-review`, `meaningfy-code-review` |
 | [`guardrails`](../skills/guardrails/SKILL.md) | Apply agentic guardrails to every step where an LLM agent acts — decision bounds, output validation, and prompt-injection defence. | `software-development` | `coding` | `generic` | `reusable` | `verify` | `stable` | — | `clarity-gate`, `cosmic-python`, `meaningfy-code-review`, `sales-pipeline-custody`, `sales-operations` |
+| [`skillery-feedback`](../skills/skillery-feedback/SKILL.md) | Use this skill when a Meaningfy skill or agent misbehaved, gave wrong or missing guidance, fired when it should not (or did not fire), failed to install, or when you need a skill or agent that does not exist ("report this to skillery", "open an issue on the skill", "the skill did not work", "we need a skill for X"); it says where to report (the skillery repository), which form to use, what context to collect so the issue can be fixed, and what must never go into it. | `knowledge` | `cross-cutting` | `generic` | `precise` | `any` | `experimental` | — | `meaningfy-git-workflow`, `guardrails` |
 
 ## meaningfy-consulting
 
@@ -603,11 +686,25 @@ The delivery / developer role: the spine build loop (epic-planning, spec-steward
 | [`meaningfy-code-review`](../skills/meaningfy-code-review/SKILL.md) | The Meaningfy pre-PR review — two modes (standalone = five lens subagents fanned out in parallel, one lens each; interactive main-thread), a methodical catalogue-complete review procedure (traverse the whole `cosmic-python` region a lens owns, not a fixed subset), and a fit-and-refactoring investigation, reported by priority. | `software-development` | `coding` | `python` | `precise` | `verify` | `stable` | — | `cosmic-python`, `guardrails`, `meaningfy-git-workflow`, `code-review` |
 | [`cosmic-python`](../skills/cosmic-python/SKILL.md) | Clean Architecture and Cosmic Python guidance for well-tested, layered Python systems. | `software-development` | `coding` | `python` | `precise` | `build` | `stable` | `architecture`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-git-workflow`, `guardrails` | `architecture`, `meaningfy-code-review`, `bdd-gherkin`, `guardrails`, `conceptual-modelling`, `linkml-engineering`, `ci-cd-delivery`, `meaningfy-git-workflow` |
 | [`project-setup`](../skills/project-setup/SKILL.md) | Scaffold or modernise a Meaningfy-standard repo and PROJECT the Meaningfy spine into it — a top-level package (no src/), Poetry + dedicated root tool configs, cosmic-python layering with import-linter guardrails, TDD+BDD tests, an AGENTS.md-canonical agentic setup (AGENTS.md is canonical; CLAUDE.md is a thin pointer that imports it, never a symlink), the openspec/ spine (config + pinned meaningfy schema + /opsx:* commands + golden thread), three archetypes (product/library/doc-only) with fixed gate profiles, conditional model/ and CD seam, Antora docs, infra, and CI. | `software-development` | `coding` | `python` | `precise` | `build` | `stable` | `cosmic-python`, `architecture`, `conceptual-modelling`, `ci-cd-delivery`, `epic-planning`, `technical-writing`, `meaningfy-git-workflow` | `ci-cd-delivery`, `meaningfy-release`, `linkml-engineering`, `superpowers`, `stream-coding` |
-| [`ci-cd-delivery`](../skills/ci-cd-delivery/SKILL.md) | Standardise the application-repo Continuous Delivery side of Meaningfy systems — the deploy trigger, the reusable deploy mechanism, and the release/image standard. | `devops` | `coding` | `delivery-infra` | `precise` | `release` | `stable` | `project-setup`, `cosmic-python` | `project-setup`, `cosmic-python`, `meaningfy-release` |
+| [`ci-cd-delivery`](../skills/ci-cd-delivery/SKILL.md) | Standardise the application-repo Continuous Delivery side of Meaningfy systems — the deploy request and the release/image standard. | `devops` | `coding` | `delivery-infra` | `precise` | `release` | `stable` | `project-setup`, `cosmic-python` | `stack-operations`, `infrastructure-stacks`, `infrastructure-security`, `project-setup`, `cosmic-python`, `meaningfy-release` |
 | [`meaningfy-release`](../skills/meaningfy-release/SKILL.md) | The Meaningfy release lifecycle — semantic versioning policy (MAJOR/MINOR/PATCH + -rc.N pre-releases), GitFlow release/hotfix branches, changelog + GitHub release notes, semi-automated releases via release-please, publishing Python libraries to PyPI with Trusted Publishing (OIDC, no tokens), opt-in supply-chain hardening (signing/provenance/SBOM), and release governance (SECURITY.md, yanking, deprecation). | `devops` | `coding` | `git-release` | `precise` | `release` | `stable` | — | `meaningfy-git-workflow`, `ci-cd-delivery`, `project-setup` |
 | [`epic-planner`](../agents/epic-planner.md) *(agent)* | Shapes an EPIC from human seeds and derives its clarity-gated PLAN (≥9/10) as an OpenSpec change, returning question rounds to the caller until no decision is open. | `software-development` | `coding` | `spec-driven` | `precise` | `shape` | `stable` | `epic-planning`, `clarity-gate`, `bdd-gherkin`, `stream-coding` | — |
 | [`implementer`](../agents/implementer.md) *(agent)* | Implements one ready task of an OpenSpec change as tested production code, test-first. | `software-development` | `coding` | `python` | `precise` | `build` | `stable` | `cosmic-python`, `stream-coding`, `superpowers:test-driven-development`, `superpowers:systematic-debugging`, `superpowers:verification-before-completion` | — |
 | [`code-reviewer`](../agents/code-reviewer.md) *(agent)* | Reviews a change through exactly one review lens (L1–L5) and reports prioritised findings; read-only. | `software-development` | `coding` | `python` | `precise` | `verify` | `stable` | `meaningfy-code-review`, `cosmic-python` | — |
+
+## meaningfy-devops
+
+The operations role: provision and change servers as code (infrastructure-operations), run and deploy stacks (stack-operations), monitor, check daily, answer incidents and back up (service-reliability), and keep access and secrets safe (infrastructure-security); with an interactive devops agent, an unattended watch and an infrastructure reviewer.
+
+| Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
+|---|---|---|---|---|---|---|---|---|---|
+| [`infrastructure-operations`](../skills/infrastructure-operations/SKILL.md) | Use this skill when you change a server or the infrastructure under the stacks: add a VM, resize, rebuild, sleep or wake one, retire a service, read a terraform plan, write an ansible role or playbook, set the checks of an infrastructure repo, or record and document an operation; it gives the safe-change protocol with its consent card, the provisioning and configuration rules, the lifecycle procedures, the records an operation leaves and the standard templates to start from. | `devops` | `operations` | `delivery-infra` | `precise` | `release` | `experimental` | — | `stack-operations`, `service-reliability`, `infrastructure-security`, `ci-cd-delivery`, `meaningfy-git-workflow`, `executive-communication`, `epic-planning`, `spec-stewardship`, `clarity-gate` |
+| [`stack-operations`](../skills/stack-operations/SKILL.md) | Use this skill when deploying or changing a Docker Compose stack in the stacks repository ("deploy a stack", "add a new service", "roll back", "upgrade postgres", "is this compose file ok", "pin the image", promote a version, cut over data); it holds the per-stack minimum S1-S9 and its conformance check, the health-gated deploy workflow, versions pinned in git, promotion, rollback, and the templates for a new stack, a cutover and its acceptance tests. | `devops` | `operations` | `delivery-infra` | `precise` | `release` | `experimental` | — | `infrastructure-operations`, `service-reliability`, `infrastructure-security`, `ci-cd-delivery`, `bdd-gherkin`, `meaningfy-git-workflow` |
+| [`service-reliability`](../skills/service-reliability/SKILL.md) | Use this skill when someone asks "is everything ok" about Meaningfy's servers or services, runs the daily check-up, says an alert fired or the site is down, opens or works an incident, writes a postmortem, decides or checks a backup or a restore test, or asks "may the agent do this at night"; it holds the monitoring and alerting standard, the daily check-up, incident severities, clocks and records, backup and restore practice, and the unattended-action policy with its decider script. | `devops` | `operations` | `delivery-infra` | `precise` | `release` | `experimental` | — | `infrastructure-operations`, `stack-operations`, `infrastructure-security`, `executive-communication` |
+| [`infrastructure-security`](../skills/infrastructure-security/SKILL.md) | Use this skill when someone joins or leaves, you rotate a password, use a secret in a command, ask whether a port is exposed, pin GitHub actions, make an emergency change or run an access review on Meaningfy infrastructure; it holds the access, secrets, supply-chain and exposure rules with their levels, the four-eyes and break-glass rule, and the Vaultwarden rule that a credential is used without being seen, with the secret-flow, offboarding and bastion-users templates. | `devops` | `operations` | `delivery-infra` | `precise` | `release` | `experimental` | — | `infrastructure-operations`, `stack-operations`, `service-reliability`, `meaningfy-release`, `guardrails`, `ci-cd-delivery` |
+| [`devops-engineer`](../agents/devops-engineer.md) *(agent)* | Operates Meaningfy's infrastructure with a person who is not a devops engineer: reads both infra repositories and monitoring, plans each change, gets it reviewed, asks consent with a plain-words card, applies exactly what was shown, verifies and records it. | `devops` | `operations` | `delivery-infra` | `precise` | `release` | `experimental` | `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security` | — |
+| [`ops-watch`](../agents/ops-watch.md) *(agent)* | Watches Meaningfy's infrastructure with no human present: runs the daily check-up, answers alerts with allow-listed operations only when the unattended-action policy says act, parks everything else with a decision card, and reports every run to Slack and GitHub issues. | `devops` | `operations` | `delivery-infra` | `precise` | `release` | `experimental` | `service-reliability`, `stack-operations`, `infrastructure-operations`, `infrastructure-security` | — |
+| [`infra-reviewer`](../agents/infra-reviewer.md) *(agent)* | Reviews one infrastructure change — an OpenSpec change's plan or a PR in either infra repository — against the devops skills and reports findings, blast radius, undo path and stack conformance; read-only. | `devops` | `operations` | `delivery-infra` | `precise` | `release` | `experimental` | `infrastructure-operations`, `stack-operations`, `infrastructure-security` | — |
 
 ## vault-assistant
 
@@ -641,8 +738,8 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | `offers` | commercial offers, packaging, pitch and pricing | `estimation`, `sales-conversations` |
 | `proposals` | proposal and offer documents | `proposal-writing`, `proposal-writer` *(agent)* |
 | `crm` | create, manage and groom deals and contacts | `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-operations`, `sales-agent` *(agent)* |
-| `devops` | environments, CI/CD, releases and operations | `ci-cd-delivery`, `meaningfy-release` |
-| `knowledge` | the owner's personal notes, plans and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
+| `devops` | environments, CI/CD, releases and operations | `ci-cd-delivery`, `meaningfy-release`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
+| `knowledge` | the owner's personal notes, plans and rhythm | `skillery-feedback`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
 
 ### area
 
@@ -652,23 +749,23 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | `consulting` | advising clients | `semantic-consulting-coach`, `decision-package` |
 | `sales` | winning and pricing work | `proposal-writing`, `estimation`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `proposal-writer` *(agent)*, `sales-agent` *(agent)* |
 | `personal` | the owner's own vault and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
-| `operations` | running infrastructure, CI/CD and monitoring | — |
+| `operations` | running infrastructure, CI/CD and monitoring | `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
 | `business` | running and growing the company, negotiation and internal communication | — |
 | `legal` | contracts, NDAs and other legal documents | — |
 | `design` | graphics, visuals and diagrams in company style | — |
-| `cross-cutting` | used in every area | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `executive-communication`, `clarity-gate` |
+| `cross-cutting` | used in every area | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `skillery-feedback`, `executive-communication`, `clarity-gate` |
 
 ### subject
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `generic` | no domain knowledge; transfers anywhere | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`, `executive-communication`, `estimation`, `sales-pipeline-custody`, `sales-accounts`, `sales-operations`, `clarity-gate`, `bdd-gherkin`, `sales-agent` *(agent)* |
+| `generic` | no domain knowledge; transfers anywhere | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`, `skillery-feedback`, `executive-communication`, `estimation`, `sales-pipeline-custody`, `sales-accounts`, `sales-operations`, `clarity-gate`, `bdd-gherkin`, `sales-agent` *(agent)* |
 | `semantic-data` | semantic technologies, ontologies, data governance | `semantic-consulting-coach`, `decision-package`, `proposal-writing`, `sales-qualification`, `sales-conversations`, `linkml-engineering`, `proposal-writer` *(agent)* |
 | `modelling` | conceptual and system modelling | `architecture`, `conceptual-modelling`, `modelling-conventions`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
 | `python` | Python code and repositories | `meaningfy-code-review`, `cosmic-python`, `project-setup`, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `spec-driven` | specification-first work (OpenSpec, EPICs) | `epic-planning`, `spec-stewardship`, `epic-planner` *(agent)* |
 | `git-release` | git, versions and releases | `meaningfy-git-workflow`, `meaningfy-release` |
-| `delivery-infra` | deployment and infrastructure | `ci-cd-delivery` |
+| `delivery-infra` | deployment and infrastructure | `ci-cd-delivery`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
 | `obsidian` | Obsidian vaults | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
 
 ### posture
@@ -677,7 +774,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 |---|---|---|
 | `reusable` | R: a reusable core; a fix adds no domain content | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `guardrails`, `estimation`, `architecture`, `modelling-conventions`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `system-architect` *(agent)* |
 | `profiled` | C: a core with profiles; a fix adds a switch or a profile | `decision-package`, `executive-communication`, `proposal-writing`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `proposal-writer` *(agent)* |
-| `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `semantic-consulting-coach`, `sales-pipeline-custody`, `sales-operations`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `sales-agent` *(agent)*, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
+| `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `skillery-feedback`, `semantic-consulting-coach`, `sales-pipeline-custody`, `sales-operations`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `sales-agent` *(agent)*, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
 
 ### stage
 
@@ -689,13 +786,13 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | `design` | designing the system or model | `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
 | `build` | writing the code | `meaningfy-git-workflow`, `cosmic-python`, `project-setup`, `implementer` *(agent)* |
 | `verify` | testing and reviewing | `guardrails`, `bdd-gherkin`, `meaningfy-code-review`, `code-reviewer` *(agent)* |
-| `release` | shipping and operating | `ci-cd-delivery`, `meaningfy-release` |
-| `any` | no single stage | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `executive-communication`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
+| `release` | shipping and operating | `ci-cd-delivery`, `meaningfy-release`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
+| `any` | no single stage | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `skillery-feedback`, `executive-communication`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
 
 ### maturity
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `experimental` | in trial; may change or go | `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `proposal-writer` *(agent)*, `sales-agent` *(agent)*, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
+| `experimental` | in trial; may change or go | `skillery-feedback`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `proposal-writer` *(agent)*, `sales-agent` *(agent)*, `system-architect` *(agent)*, `conceptual-modeller` *(agent)*, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
 | `stable` | in use and maintained | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `meaningfy-git-workflow`, `guardrails`, `semantic-consulting-coach`, `decision-package`, `executive-communication`, `proposal-writing`, `estimation`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `deprecated` | kept for now; do not start using it | — |

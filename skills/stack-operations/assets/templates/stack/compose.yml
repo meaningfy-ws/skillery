@@ -1,0 +1,109 @@
+# Use this as the compose.yml of a new stack: copy it from the skill, never from another stack.
+# <stack>: <one line on what the stack serves>
+# Spec: <spec or change id>  ·  Operations: <stack>/README.md
+# Entry points (HTTPS through the proxy): <service>.<domain> -> <service>
+# Private only: <service> on 127.0.0.1:<port> (admin through an SSH tunnel). Nothing else is published.
+# Every service below meets S1-S9 (stack-operations, references/stack-standard.md). Check it with
+#   python scripts/check_stack.py <stack>/compose.yml
+
+services:
+  # --- Reverse proxy: TLS for every public hostname of this stack ---
+  proxy:
+    image: traefik:<version>   # pinned; patch monthly and on critical advisories
+    container_name: <stack>-proxy
+    restart: unless-stopped
+    mem_limit: 256m
+    security_opt: ["no-new-privileges:true"]
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+    command:
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--certificatesresolvers.<resolver>.acme.email=<ops-mailbox>"
+      - "--certificatesresolvers.<resolver>.acme.storage=/acme/acme.json"
+      - "--certificatesresolvers.<resolver>.acme.dnschallenge.provider=<dns-provider>"
+      - "--ping=true"
+      - "--accesslog=true"
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DNS_API_TOKEN: ${DNS_API_TOKEN}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/data/<stack>/acme:/acme
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks: [<stack>]
+
+  # --- The application ---
+  <service>:
+    image: <registry>/<image>:<version>@sha256:<digest>   # bumped by a PR only; never edited on the VM
+    container_name: <stack>-<service>
+    restart: unless-stopped
+    mem_limit: 512m   # measured peak <n> MB on <date>; revisit when it changes
+    security_opt: ["no-new-privileges:true"]
+    read_only: true
+    cap_drop: [ALL]
+    user: "<uid>:<gid>"
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+    environment:
+      APP_MODE: production
+      DB_HOST: <service>-db
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - /opt/data/<stack>/<service>:/var/lib/<service>
+    ports:
+      - "127.0.0.1:<port>:<port>"   # admin only, through an SSH tunnel
+    healthcheck:
+      test: ["CMD", "<health-command>"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      <service>-db:
+        condition: service_healthy
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.<service>.rule: "Host(`<service>.<domain>`)"
+      traefik.http.routers.<service>.entrypoints: "websecure"
+      traefik.http.routers.<service>.tls.certresolver: "<resolver>"
+      traefik.http.services.<service>.loadbalancer.server.port: "<port>"
+    networks: [<stack>]
+
+  # --- The database: never published ---
+  <service>-db:
+    image: postgres:<major>.<minor>   # a major upgrade moves data: see references/upgrades-with-data.md
+    container_name: <stack>-<service>-db
+    restart: unless-stopped
+    mem_limit: 1g
+    security_opt: ["no-new-privileges:true"]
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+    environment:
+      POSTGRES_USER: <service>
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - /opt/data/<stack>/<service>-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "<service>"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [<stack>]
+
+networks:
+  <stack>:
+    name: <stack>

@@ -1,0 +1,18 @@
+# Use when giving or removing a person's SSH access: one entry per person in the bastion's group variables, groups always explicit.
+#
+# The role that applies this list asserts that every entry has `groups`; it never defaults to sudo.
+# Keys are exclusive: a key not in this list is removed from the account.
+bastion_users:
+  <login>:
+    ssh_key: "<ssh-ed25519 public key>"
+    comment: "<full name>"
+    groups: []              # no admin rights; write "sudo" only with a reason on this line
+  <admin-login>:
+    ssh_key: "<ssh-ed25519 public key>"
+    comment: "<full name>"
+    groups: ["sudo"]        # <reason: operates the servers>
+  <leaver-login>:
+    ssh_key: "<ssh-ed25519 public key>"
+    comment: "<full name>"
+    groups: []
+    state: absent           # removes the key and the account on the next run; delete this entry after it

@@ -1,0 +1,75 @@
+# Use this as the one backup role for every backed-up service; pass the service's parameters, never copy the role per service.
+- name: Check the required inputs
+  ansible.builtin.assert:
+    that:
+      - backup_service is defined and backup_service | length > 0
+      - backup_dump_command is defined and backup_dump_command | length > 0
+      - backup_remote is defined and backup_remote | length > 0
+      - backup_rclone_config is defined and backup_rclone_config | length > 0
+    fail_msg: "backup role: set backup_service, backup_dump_command, backup_remote and backup_rclone_config"
+
+- name: Check rclone is installed (pinned by the host playbook, never fetched here)
+  ansible.builtin.command: rclone version
+  changed_when: false
+
+- name: Check this service's storage configuration exists (written by the secret flow)
+  ansible.builtin.stat:
+    path: "{{ backup_rclone_config }}"
+  register: backup_rclone_config_stat
+  failed_when: not backup_rclone_config_stat.stat.exists
+
+- name: Ensure the local staging directory
+  ansible.builtin.file:
+    path: "{{ backup_local_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0750"
+
+- name: Deploy the backup script
+  ansible.builtin.template:
+    src: backup.sh.j2
+    dest: "/usr/local/bin/{{ backup_service }}-backup.sh"
+    owner: root
+    group: root
+    mode: "0750"
+
+- name: Deploy the service unit
+  ansible.builtin.copy:
+    dest: "/etc/systemd/system/{{ backup_service }}-backup.service"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      # Managed by Ansible (backup role)
+      [Unit]
+      Description={{ backup_service }} backup
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/{{ backup_service }}-backup.sh
+      PrivateTmp=true
+      NoNewPrivileges=true
+
+- name: Deploy the timer unit
+  ansible.builtin.copy:
+    dest: "/etc/systemd/system/{{ backup_service }}-backup.timer"
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      # Managed by Ansible (backup role)
+      [Unit]
+      Description={{ backup_service }} backup timer
+      [Timer]
+      OnCalendar={{ backup_schedule }}
+      Persistent=true
+      RandomizedDelaySec={{ backup_random_delay_sec }}
+      [Install]
+      WantedBy=timers.target
+
+- name: Enable and start the timer
+  ansible.builtin.systemd:
+    name: "{{ backup_service }}-backup.timer"
+    state: started
+    enabled: true
+    daemon_reload: true

@@ -1,66 +1,40 @@
-# Deploy-workflow template — illustrative caller + pointer to the source of truth
+# Deploy-request template — the app repo asks the stacks repository to deploy
 
-> **This template is illustrative / teaching only.** The **single runnable source of truth is the
-> `devops-toolkit` reusable workflow** (the existing `op-delivery.yml`). App repos `uses:` it.
-> **Skillery never hosts a second runnable copy** — that is the duplication this skill exists to
-> kill. Copy the *shape*, not a parallel implementation. (Q10.1 = A.)
+> **Illustrative / teaching only.** The deploy mechanism (`.env` assembly, copy to the VM,
+> health-gated `docker compose up --wait`) lives **once, in `infrastructure-stacks`**, as that
+> repository's reusable deploy workflow; how it works is owned by the
+> `stack-operations` skill. An app repo never carries
+> deploy glue (SSH, bastion, rsync, `.env`) of its own; it only **requests** a deploy.
 
-## The single source of truth
+## The two request shapes
 
-The deploy mechanism — the SSH/bastion/rsync/`.env` block — lives **once**, in `devops-toolkit` as a
-**reusable workflow**. `ted-rdf-conversion-pipeline` already consumes it. Your app repo should call
-it, not re-implement it.
+The stacks repository defines which it accepts; use the one it documents.
 
-Where it lives and how it is invoked is a **DevOps §6 decision** (see [SKILL.md](../SKILL.md) §6,
-items 1 and 3). Confirm the exact `org/repo/.github/workflows/<file>@<ref>` reference with DevOps
-before wiring it (C1).
+1. **A PR that bumps the pinned image** (preferred): the app's release job opens a PR in
+   `infrastructure-stacks` that changes the stack's image line to the new `tag@sha256:digest`.
+   Merging that PR is the deploy; reverting it is the rollback.
+2. **A dispatch**: the app's workflow calls a `workflow_dispatch` the stacks repository defines,
+   passing the stack and the pinned image.
 
-## Illustrative caller (placeholders only — C2)
-
-A consuming app repo's deploy workflow is *thin*: it declares when to deploy and maps inputs +
-secrets into the reusable workflow. It contains **no** rsync/SSH/`.env` logic of its own.
+## Illustrative request job (placeholders only — C2)
 
 ```yaml
-# .github/workflows/deploy.yaml  (ILLUSTRATIVE — confirm the `uses:` ref with DevOps)
-name: deploy
-on:
-  workflow_dispatch:          # recommended trigger (pending §6 ratification)
-    inputs:
-      environment:
-        description: target environment
-        required: true
-
-jobs:
-  deploy:
-    # Source of truth — the canonical reusable workflow in devops-toolkit.
-    # Replace with the ref DevOps ratifies (§6.1 / §6.3).
-    uses: <<ORG>>/devops-toolkit/.github/workflows/op-delivery.yml@<<REF>>
-    with:
-      stack: <<STACK_NAME>>            # which infrastructure-stacks dir
-      environment: ${{ inputs.environment }}
-      image: <<REGISTRY>>/<<IMAGE>>:<<TAG>>   # pinned image (see release-image-template.md)
-    secrets:
-      # Names only — values come from GitHub Secrets (the deployment copy of Vaultwarden).
-      # See secrets-model.md. NEVER inline a value here.
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
-      SSH_KEY: ${{ secrets.SSH_KEY }}
-      ENV_FILE_CONTENTS: ${{ secrets.ENV_FILE_CONTENTS }}
+# .github/workflows/release.yaml (ILLUSTRATIVE) — runs after the image is pushed
+# (see release-image-template.md, which outputs the pushed digest).
+  request-deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask infrastructure-stacks to deploy the pinned image
+        env:
+          # A token that may open PRs (or dispatch) in the stacks repo only; a name, never a value.
+          GH_TOKEN: ${{ secrets.STACKS_REQUEST_TOKEN }}
+        run: |
+          gh workflow run <<REQUEST_WORKFLOW>> --repo <<ORG>>/infrastructure-stacks \
+            -f stack=<<STACK_NAME>> \
+            -f image=<<REGISTRY>>/<<IMAGE>>:${{ needs.build-and-push.outputs.version }}@${{ needs.build-and-push.outputs.digest }}
 ```
 
-## What the reusable workflow does (so you don't re-implement it)
-
-Documented here for understanding only — it is implemented in `devops-toolkit`, not here:
-
-1. Reads the mapped secrets (the deployment copy of Vaultwarden values).
-2. **Assembles `.env`** — the only place this happens (see
-   [`secrets-model.md`](secrets-model.md)).
-3. **rsync**s the stack + `.env` to the target VM (no git-pull, no interactive SSH).
-4. `docker compose up -d` against the stack.
-
-## Cross-repo trigger variant
-
-If, instead of `uses:`-ing the reusable workflow, the ratified standard is a **cross-repo trigger**
-into `infrastructure-stacks`, the caller is a `repository_dispatch` / `workflow_dispatch` emit rather
-than a `uses:` job. The recommendation and the choice between these are **pending §6 ratification**;
-present both, settle neither without DevOps.
+The PR shape replaces the `gh workflow run` line with a branch, an edit of the stack's image line
+and `gh pr create` in the stacks repository; the stacks repository's review and deploy rules apply
+from there.

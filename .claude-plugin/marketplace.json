@@ -6,12 +6,12 @@
   },
   "metadata": {
     "description": "Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently",
-    "version": "3.5.0"
+    "version": "3.6.0"
   },
   "plugins": [
     {
       "name": "meaningfy-core",
-      "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, and agentic guardrails",
+      "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, and how to report a skill or agent problem to skillery",
       "source": "./bundles/meaningfy-core"
     },
     {
@@ -33,6 +33,11 @@
       "name": "meaningfy-building",
       "description": "The delivery / developer role: the spine build loop (epic-planning, spec-stewardship, clarity-gate, BDD, code review), clean layered Python (cosmic-python), repo scaffolding (project-setup), CD/deploy (ci-cd-delivery), and the release lifecycle (meaningfy-release)",
       "source": "./bundles/meaningfy-building"
+    },
+    {
+      "name": "meaningfy-devops",
+      "description": "The operations role: provision and change servers as code (infrastructure-operations), run and deploy stacks (stack-operations), monitor, check daily, answer incidents and back up (service-reliability), and keep access and secrets safe (infrastructure-security); with an interactive devops agent, an unattended watch and an infrastructure reviewer",
+      "source": "./bundles/meaningfy-devops"
     },
     {
       "name": "vault-assistant",

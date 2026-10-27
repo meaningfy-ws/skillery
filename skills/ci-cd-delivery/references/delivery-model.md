@@ -20,7 +20,8 @@ must not cross.
 - Deployed to VMs by GitHub Actions: **assemble `.env` from GitHub Secrets → rsync to the VM → `docker compose up -d`.**
 - **No git-pull on the VM. No interactive SSH for routine deploys.** The Action is the single
   auditable deploy path.
-- This skill documents the **contract** an application repo calls into; it does not own this repo.
+- This skill documents the **contract** an application repo calls into (the deploy request); the
+  stacks repository and its deploy workflow are owned by the `stack-operations` skill.
 
 ### 3. Application repos — build, test, and trigger deploy (the side this skill OWNS)
 
@@ -38,19 +39,18 @@ The app-repo side is currently **inconsistent**. Three observed facts:
    - **push-on-path against shared stacks** — *legacy, migrate.*
    - **in-repo self-hosted runner** — *legacy, migrate.*
    - **cross-repo `workflow_dispatch`** — closest to the recommended standard.
-2. **The SSH/bastion/rsync/`.env` block is duplicated ~7×.** A `devops-toolkit` reusable
-   `op-delivery.yml` already exists and `ted-rdf-conversion-pipeline` consumes it — proof the
-   reusable pattern works and should be the single source of truth.
+2. **The SSH/bastion/rsync/`.env` block is duplicated across app repos.** The deploy mechanism
+   belongs once, in `infrastructure-stacks`; an app repo only requests a deploy.
 3. **No repo pushes a versioned image to a registry** — all build on the VM from source, so there is
    no pinned, rollback-able artifact and no shared release/versioning convention.
 
 ## The contract direction (must hold)
 
 ```
-application repo  ──trigger──▶  infrastructure-stacks  ──rsync/up──▶  VM
+application repo  ──request──▶  infrastructure-stacks  ──rsync/up──▶  VM
         │                                                              ▲
         └── assumes VMs provisioned/configured by ──────────  cloud-infrastructure
 ```
 
-Application repos depend on the infra repos, never the reverse. The recommended trigger and the
-reusable mechanism are **pending DevOps §6 ratification** (see [SKILL.md](../SKILL.md) §6).
+Application repos depend on the infra repos, never the reverse. The request shape is in
+[`deploy-workflow-template.md`](deploy-workflow-template.md).

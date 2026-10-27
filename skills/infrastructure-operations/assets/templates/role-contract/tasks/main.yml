@@ -1,0 +1,25 @@
+# Use as the opening of an in-house role's tasks: assert inputs, configure, flush handlers, self-check.
+---
+- name: Require the role's inputs
+  ansible.builtin.assert:
+    that:
+      - <role_name>_<input> is defined
+      - <role_name>_<input> | length > 0
+      - <role_name>_<secret_input> | length >= 20
+    fail_msg: "<role_name>: <role_name>_<input> or <role_name>_<secret_input> missing or too short"
+  no_log: true
+
+- name: Configuration
+  ansible.builtin.import_tasks: configure.yml
+
+- name: Apply changed configuration before timers start
+  ansible.builtin.meta: flush_handlers
+
+- name: Timers
+  ansible.builtin.import_tasks: timers.yml
+
+- name: Self-check from outside
+  ansible.builtin.uri:
+    url: "<check-url>"
+    status_code: 200
+  changed_when: false

@@ -33,6 +33,9 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    outputs:                  # what the deploy request pins: tag@digest
+      version: ${{ steps.meta.outputs.version }}
+      digest: ${{ steps.push.outputs.digest }}
     steps:
       - uses: actions/checkout@v4
 
@@ -55,6 +58,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}   # provided by Actions; not a Vaultwarden secret
 
       - name: Build and push
+        id: push
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -64,12 +68,12 @@ jobs:
 
 ## Handing the pinned image to deploy
 
-The release job's output (`…:<semver>`) is the `image:` input the deploy caller passes into the
-reusable deploy workflow — see [`deploy-workflow-template.md`](deploy-workflow-template.md). That is
-how a stack ends up **pulling a pinned versioned image** instead of building on the VM, and how a
-rollback is just re-deploying a previous tag.
+The release job's outputs (`version`, `digest`) are what the deploy request pins as
+`…:<semver>@sha256:…` in `infrastructure-stacks` — see
+[`deploy-workflow-template.md`](deploy-workflow-template.md). That is how a stack ends up **pulling a
+pinned versioned image** instead of building on the VM.
 
 ## Rollback
 
-Because every release is a tagged, pushed image, rollback is: re-trigger the deploy with the previous
-`…:<semver>` tag. No rebuild, no VM surgery.
+Because every release is a tagged, pushed image, rollback is a revert of the pin in
+`infrastructure-stacks` and a redeploy, owned by `stack-operations`. No rebuild, no VM surgery.
