@@ -6,10 +6,18 @@ trigger: infrastructure needs building, a daily review is due, or an interventio
 success_guarantee: the infrastructure, CI/CD and monitoring follow the Meaningfy way, and every intervention is reviewed and recorded
 area: operations
 served_by:
-  agents: []
+  agents:
+  - devops-engineer
+  - ops-watch
+  - infra-reviewer
   skills:
   - ci-cd-delivery
   - meaningfy-release
+  - infrastructure-operations
+  - stack-operations
+  - service-reliability
+  - infrastructure-security
+  - skillery-feedback
 status: partial
 change: add-devops-bundle
 ---
@@ -18,9 +26,12 @@ change: add-devops-bundle
 
 ## Brief Description
 
-DevOps engineer: the Meaningfy way of infrastructure, CI/CD, monitoring, daily reviews, interventions; also developing, testing, operationalising and monitoring new infrastructure stacks. "I need this badly." Materials exist outside the repo; the change is drafted.
-The boundary is operations against delivery: `ci-cd-delivery` owns how a change reaches an
-environment; the planned devops skills own how environments exist and stay healthy.
+DevOps engineer: the Meaningfy way of infrastructure, CI/CD, monitoring, daily reviews, interventions; also developing, testing, operationalising and monitoring new infrastructure stacks. "I need this badly."
+The engineer is often the owner or a colleague who is not a devops specialist, working with the
+`devops-engineer` agent; `ops-watch` runs the daily check-up and answers alerts alone.
+The boundary is operations against delivery: `ci-cd-delivery` owns the application repository up to
+a published image and a deploy request; the devops skills own everything from the request onward and
+how environments exist and stay healthy.
 
 ## Stakeholders and Interests
 
@@ -61,8 +72,8 @@ written into a skill, an agent or a report.
   follows that standard rather than an operations path.
 - 2a. The infrastructure code and the live environment disagree (drift): the agent reports the
   drift first, and the engineer decides whether to reconcile it before the planned change.
-- 5a. The change needs a secret or a credential: the agent names where it is expected and asks the
-  engineer to provide it out of band; it never writes the value.
+- 5a. The change needs a secret or a credential: the agent pipes it from the engineer's `bw`
+  session into the command that uses it; it never sees, prints or writes the value.
 - 6a. The dry run shows destruction the plan did not state: the agent stops and returns the
   difference; the use case restarts at 3.
 - 7a. The environment is unhealthy after the change: the agent proposes a rollback or a fix, and the
@@ -71,31 +82,34 @@ written into a skill, an agent or a report.
 ## Out of Scope
 
 Building, versioning and releasing an application (UC-W18, through `ci-cd-delivery` and
-`meaningfy-release`); choosing new infrastructure tooling or an observability vendor; reading
-Prometheus alerts unattended (a planned `scheduled` agent, a follow-up of `add-devops-bundle`);
-offering devops as a service to clients (UC-W8).
+`meaningfy-release`); choosing new infrastructure tooling or an observability vendor; building the
+unattended runtime and its allow-listed operations (a follow-up in `infrastructure-stacks`, contract
+in `docs/environment/devops-agents.md`); offering devops as a service to clients (UC-W8).
 
 ## Artefacts
 
 - The infrastructure change as Terraform or Ansible code, in the infrastructure repository, read by
   the engineer and the reviewer.
-- The intervention record (what, why, how verified), read by the engineer and the owner; its form
-  and home are not decided.
+- The intervention record (what, why, how verified): a PR, or a GitHub issue in
+  `infrastructure-stacks`; incidents and parked actions are issues there too; read by the engineer
+  and the owner.
+- The daily check-up report, in `#infra-alerts` and on the pinned `Daily check-up log` issue.
 - The runbook a system needs, kept with that system, not in skillery.
-- Planned: the devops skills and agent in a `meaningfy-devops` bundle (`add-devops-bundle`).
+- The devops skills and agents in the `meaningfy-devops` bundle.
 
 ## Evidence
 
-- Planned: a Gherkin feature for the devops agent under `tests/features/agents/`
-  (`add-devops-bundle`).
-- Planned: one real run on a Meaningfy repository as the acceptance test (`add-devops-bundle`).
-- Today only the delivery side is checked: the trigger probes for `ci-cd-delivery` and
-  `meaningfy-release` in `tests/trigger_probes.yaml`, run by `make validate`.
+- Gherkin features for the three agents under `tests/features/agents/`, run by hand.
+- The stack check and the unattended-action decider, tested in `tests/test_devops_check_stack.py`
+  and `tests/test_devops_action_policy.py`, run by `make validate`.
+- The owner's hand-runs IT-1..IT-4 on the real repositories (`add-devops-bundle`, task 7.2).
+- The trigger probes for the devops skills, `ci-cd-delivery` and `meaningfy-release` in
+  `tests/trigger_probes.yaml`.
 
 ## Feedback Loop
 
 An intervention the engineer had to redo, or a step the agent should have checked, becomes a Defect
-issue (`.github/ISSUE_TEMPLATE/defect.yml`); it ends as a fix in the owning devops skill, or in
+issue on skillery (`.github/ISSUE_TEMPLATE/defect.yml`), drafted with `skillery-feedback`; it ends as a fix in the owning devops skill, or in
 `ci-cd-delivery` when the miss was on the delivery side. Incident retrospectives feed the same loop
 (`docs/development/lessons-loop.md`).
 
@@ -103,17 +117,23 @@ issue (`.github/ISSUE_TEMPLATE/defect.yml`); it ends as a fix in the owning devo
 
 1. Deliver a change to an environment: released (`ci-cd-delivery`, `meaningfy-release` in
    `meaningfy-building`).
-2. Build and change environments as code, daily review, interventions: planned
-   (`add-devops-bundle`).
-3. Read alerts in the background: planned, a follow-up named by `add-devops-bundle`.
+2. Build and change environments as code, daily review, interventions: this change
+   (`add-devops-bundle`, `meaningfy-devops`).
+3. Read alerts in the background: this change for the agent and its policy (`ops-watch`); the
+   runtime that triggers it is a follow-up in `infrastructure-stacks`.
 
 ## Open Points
 
-**Confidence:** medium. The steps extrapolate from the brief and the drafted change; the devops
-package that defines the real method is not yet in `add-devops-bundle/inputs/`.
+**Confidence:** high. The owner answered the shaping questions on 2026-10-27
+(`add-devops-bundle/inputs/2026-10-27-D-shaping-qa.md`).
 
-- What does the daily review cover, and what does it produce: a note, a ticket, a Slack message?
-- Where does an intervention record live (the infrastructure repository, Confluence, Jira, the
-  vault)?
-- Which interventions may the engineer apply alone, and which need a second person?
-- Is "developing new infrastructure stacks" the same agent as daily operations, or a second one?
+- The daily review is the `ops-watch` check-up: a fixed list of checks, posted in `#infra-alerts`
+  and on a pinned GitHub issue (`service-reliability`, `references/daily-checkup.md`).
+- Intervention records live in `infrastructure-stacks`: a PR when code changed, otherwise an issue;
+  notable changes add a line to the Confluence change log.
+- Alone or with a second person: an `infra-reviewer` subagent reads every infrastructure change; the
+  person consents with a card; unattended, only the actions the policy marks act are taken.
+- One interactive agent (`devops-engineer`) and one watch (`ops-watch`); new stacks are developed by
+  the interactive agent from the stack template.
+- Open: where the unattended watch runs (a dedicated server, a Claude scheduled task, or another
+  runner).

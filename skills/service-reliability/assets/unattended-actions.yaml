@@ -1,0 +1,56 @@
+# Unattended-action policy (DEC-7) — the single source of what ops-watch may do with no human present.
+# Explained in ../references/unattended-operations.md; decided by ../scripts/decide_action.py;
+# tested by tests/test_devops_action_policy.py (every edit ships with a case in tests/fixtures/devops/action_cases.yaml).
+#
+# Facts describe one proposed action; a fact left out is false / 0. Precedence:
+#   1 any never_if fact true                -> never
+#   2 attempts >= thresholds.attempts       -> escalate (no third attempt on one incident)
+#   3 a threshold exceeded or a park_if fact -> park
+#   4 the action's listed tier              -> act | park | never
+#   5 the action is not listed              -> park
+# An `act` entry names the allow-listed, idempotent workflow in the stacks repository that performs it
+# (`operation`); if that repository defines no such workflow, the agent parks and reports it.
+# The thresholds are the reading of "significantly more cost" and "blocking for a long time"; the owner edits them.
+
+thresholds:
+  cost_increase_eur_month: 10   # park when greater
+  blocking_minutes: 15          # park when greater
+  attempts: 2                   # escalate when greater or equal
+
+park_if: [data_loss_risk, touches_data, applies_infra_code, changes_security, monitoring_unreadable]  # unverifiable state: never act
+never_if: [destroys, deletes_data, exposes_to_internet, handles_secret_value]
+
+actions:
+- id: restart-container
+  description: Restart one container of a stack.
+  tier: act
+  operation: ops-restart-container
+- id: recreate-stack
+  description: Recreate a stack at the version pinned in git.
+  tier: act
+  operation: ops-recreate-stack
+- id: rerun-backup
+  description: Re-run a backup job that failed.
+  tier: act
+  operation: ops-rerun-backup
+- id: prune-logs-images
+  description: Rotate logs and remove images beyond the last 3 per service.
+  tier: act
+  operation: ops-prune-logs-images
+- id: renew-certificate
+  description: Trigger a TLS certificate renewal.
+  tier: act
+  operation: ops-renew-certificate
+- id: rerun-deploy
+  description: Re-run the last deploy of the same commit.
+  tier: act
+  operation: ops-rerun-deploy
+- id: resize-server
+  description: Change a server's size (cost and downtime).
+  tier: park
+- id: restore-backup
+  description: Restore data from a backup.
+  tier: park
+- id: delete-volume
+  description: Delete a volume or its data.
+  tier: never

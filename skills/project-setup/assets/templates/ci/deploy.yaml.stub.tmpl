@@ -1,14 +1,14 @@
 # TODO (CD) — NOT YET A RUNNABLE DEPLOY WORKFLOW.
 #
 # This repo is marked DEPLOYABLE, but the Meaningfy CD standard (deploy-trigger contract, the
-# reusable deploy mechanism, the release/image standard) is owned by the `ci-cd-delivery` skill
+# deploy request, the release/image standard) is owned by the `ci-cd-delivery` skill
 # and its §6 decisions are NOT yet ratified by DevOps. Until they are, project-setup scaffolds a
 # clearly-marked STUB plus the boundary docs — never a half-guessed runnable deploy workflow.
 #
 # What to do when DevOps ratifies §6:
 #   1. Read the `ci-cd-delivery` skill — it OWNS the deploy templates and the three-repo model.
-#   2. Render the chosen template (the `devops-toolkit` reusable workflow caller, or a cross-repo
-#      workflow_dispatch into `infrastructure-stacks`), tag a versioned image (semver + git sha →
+#   2. Render the chosen template (a deploy request into `infrastructure-stacks`: a PR that bumps
+#      the pinned image, or a dispatch that repo defines), tag a versioned image (semver + git sha →
 #      GHCR), and map inputs/secrets per that skill.
 #   3. Delete this stub.
 #

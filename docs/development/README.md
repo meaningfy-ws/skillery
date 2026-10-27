@@ -177,7 +177,7 @@ A stranger must be able to use it from its own files, without asking the author.
 
 Defects and ideas arrive as **GitHub issues**; they leave as probes, fixes, EPICs or a documented
 "won't do". Templates under [`.github/ISSUE_TEMPLATE/`](../../.github/ISSUE_TEMPLATE/) ask for exactly
-what the loop needs. A vault `kind: skill-change` note is a valid intake for a defect: its sections
+what the loop needs; the `skillery-feedback` skill teaches any agent to fill them from a session. A vault `kind: skill-change` note is a valid intake for a defect: its sections
 are the defect form's fields, so copy it into a **Defect** issue field by field, then mark the note
 `Filed #N`.
 
@@ -227,6 +227,7 @@ at any depth below it.
 | `docs/environment/openspec-setup-guide.md` | hand-written | Setting up OpenSpec in a project | — |
 | `docs/environment/vault-assistant.md` | hand-written | Using the vault-assistant bundle | — |
 | `docs/environment/sales-agent.md` | hand-written | Setting up and scheduling the sales agent | — |
+| `docs/environment/devops-agents.md` | hand-written | Running the devops agents; the unattended runtime contract | — |
 | `docs/environment/dual-cli/**` | hand-written | Dual-CLI setup, mapping and gates; the dependency tables in `compatibility.md` and `mcp-setup.md` are generated from [`dependencies.yaml`](../../dependencies.yaml) between `GENERATED:dependencies` markers | `make skill-inventory` (those tables) |
 | `docs/practice/ai-coding/**` | hand-written | The AI-assisted build lifecycle and its role playbooks | — |
 | `docs/practice/ai-consulting/**` | hand-written | The advisory runbook, methods and playbook | — |

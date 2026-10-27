@@ -1,0 +1,34 @@
+# Use when configuring a VM that runs a Compose stack: keep the role order; uncomment an optional slot only when needed.
+---
+# Configure <role> servers. Usage: ansible-playbook <role>.yml --limit <group> --check --diff, then without --check
+- name: Configure <role> servers
+  hosts: <role>
+  become: true
+
+  pre_tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      tags: [always]
+
+  roles:
+    - role: <os-hardening-role>
+      tags: [security]
+    - role: <host-firewall-role>
+      tags: [firewall]
+    - role: data_volume
+      tags: [volume]
+    - role: <docker-role> # sets the Docker daemon's default log rotation
+      tags: [docker]
+    # Optional slots, in this order:
+    # - role: <ci-tools-role>
+    #   tags: [ci-tools]
+    - role: prometheus.prometheus.node_exporter
+      tags: [monitoring]
+    # - role: prometheus.prometheus.cadvisor
+    #   tags: [monitoring, cadvisor]
+    # - role: <edge-agent-role>
+    #   tags: [edge-agent]
+    # - role: <backup-role> # the parameterised backup role of service-reliability
+    #   tags: [backup]

@@ -12,7 +12,8 @@
     "Grep": "grep",
     "Glob": "glob",
     "WebFetch": "webfetch",
-    "Skill": "skill"
+    "Skill": "skill",
+    "Agent": "task"
   },
   "toolPermission": {
     "Edit": "edit",

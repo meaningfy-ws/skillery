@@ -1,0 +1,15 @@
+# Use when adding an inventory group: only what differs for this group; shared settings live in a parent group.
+---
+# <role> group (<env>): <one line on the VM>. openspec change: <change-id>
+# A list set here replaces the parent group's list (no merge): list every entry this group needs.
+
+# Host firewall: every port this host accepts, SSH included
+firewall_allowed_tcp_ports:
+  - <ssh-port>
+  - <port>
+
+# Data volume: the directories this group's services need, and nothing else
+data_volume_directories:
+  - path: /opt/data/<service>
+    owner: <owner>
+    mode: "0750"

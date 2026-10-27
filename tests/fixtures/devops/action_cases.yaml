@@ -1,0 +1,35 @@
+# Cases for the unattended-action policy (TC-01). Facts left out are false / 0.
+# Each case: action id, facts, the expected decision and the rule that decided it.
+cases:
+# every listed entry with clean facts
+- {case: restart a container, action: restart-container, decision: act, rule: "listed: restart-container"}
+- {case: recreate a stack at its pin, action: recreate-stack, decision: act, rule: "listed: recreate-stack"}
+- {case: re-run a failed backup, action: rerun-backup, decision: act, rule: "listed: rerun-backup"}
+- {case: rotate logs and prune old images, action: prune-logs-images, decision: act, rule: "listed: prune-logs-images"}
+- {case: renew a certificate, action: renew-certificate, decision: act, rule: "listed: renew-certificate"}
+- {case: re-run the last deploy, action: rerun-deploy, decision: act, rule: "listed: rerun-deploy"}
+- {case: resize a server, action: resize-server, decision: park, rule: "listed: resize-server"}
+- {case: restore from backup, action: restore-backup, decision: park, rule: "listed: restore-backup"}
+- {case: delete a volume, action: delete-volume, decision: never, rule: "listed: delete-volume"}
+# every global park trigger, on an act action
+- {case: cost above threshold, action: restart-container, facts: {cost_increase_eur_month: 11}, decision: park, rule: cost_increase_eur_month > 10}
+- {case: cost at threshold, action: restart-container, facts: {cost_increase_eur_month: 10}, decision: act, rule: "listed: restart-container"}
+- {case: blocking above threshold, action: recreate-stack, facts: {blocking_minutes: 16}, decision: park, rule: blocking_minutes > 15}
+- {case: blocking at threshold, action: recreate-stack, facts: {blocking_minutes: 15}, decision: act, rule: "listed: recreate-stack"}
+- {case: data loss risk, action: recreate-stack, facts: {data_loss_risk: true}, decision: park, rule: data_loss_risk}
+- {case: touches data, action: rerun-backup, facts: {touches_data: true}, decision: park, rule: touches_data}
+- {case: applies infra code, action: rerun-deploy, facts: {applies_infra_code: true}, decision: park, rule: applies_infra_code}
+- {case: changes security, action: renew-certificate, facts: {changes_security: true}, decision: park, rule: changes_security}
+- {case: monitoring unreadable, action: restart-container, facts: {monitoring_unreadable: true}, decision: park, rule: monitoring_unreadable}
+# every global never trigger beats a listed act
+- {case: destroys, action: recreate-stack, facts: {destroys: true}, decision: never, rule: destroys}
+- {case: deletes data, action: prune-logs-images, facts: {deletes_data: true}, decision: never, rule: deletes_data}
+- {case: exposes to internet, action: rerun-deploy, facts: {exposes_to_internet: true}, decision: never, rule: exposes_to_internet}
+- {case: handles a secret value, action: restart-container, facts: {handles_secret_value: true}, decision: never, rule: handles_secret_value}
+# no loops
+- {case: second attempt failed, action: restart-container, facts: {attempts: 2}, decision: escalate, rule: attempts >= 2}
+- {case: one attempt so far, action: restart-container, facts: {attempts: 1}, decision: act, rule: "listed: restart-container"}
+- {case: escalate beats park, action: restart-container, facts: {attempts: 3, touches_data: true}, decision: escalate, rule: attempts >= 2}
+- {case: never beats escalate, action: restart-container, facts: {attempts: 3, destroys: true}, decision: never, rule: destroys}
+# unlisted
+- {case: unlisted action, action: reboot-server, decision: park, rule: unlisted}

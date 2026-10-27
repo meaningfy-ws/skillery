@@ -1,0 +1,76 @@
+# Each service misses exactly the rule its name starts with. Placeholders only (DEC-4).
+x-good: &good
+  image: example/app:1.4.2
+  healthcheck:
+    test: ["CMD", "true"]
+  mem_limit: 256m
+  logging:
+    options: {max-size: "10m", max-file: "3"}
+  restart: unless-stopped
+  security_opt: [no-new-privileges:true]
+
+services:
+  s1-latest:
+    <<: *good
+    image: example/app:latest
+  s1-untagged:
+    <<: *good
+    image: example/app
+  s1-tag-from-env:
+    <<: *good
+    image: example/app:${APP_VERSION:-1.4.2}
+  s1-built-on-vm:
+    <<: *good
+    image: app:1.4.2
+    build: ./app
+  s1-bare-major:
+    <<: *good
+    image: postgres:16
+  s2-no-healthcheck:
+    image: example/app:1.4.2
+    mem_limit: 256m
+    logging:
+      options: {max-size: "10m", max-file: "3"}
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+  s3-no-memory-limit:
+    image: example/app:1.4.2
+    healthcheck:
+      test: ["CMD", "true"]
+    logging:
+      options: {max-size: "10m", max-file: "3"}
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+  s4-no-rotation:
+    <<: *good
+    logging:
+      driver: json-file
+  s5-restart-always:
+    <<: *good
+    restart: always
+  s6-no-security-opt:
+    <<: *good
+    security_opt: []
+  s7-no-bind-address:
+    <<: *good
+    ports: ["8080:80"]
+  s7-public-bind-address:
+    <<: *good
+    ports: ["0.0.0.0:5432:5432"]
+  s8-named-volume:
+    <<: *good
+    volumes: ["appdata:/var/lib/app"]
+  s8-bind-outside-data:
+    <<: *good
+    volumes: ["/srv/app:/var/lib/app"]
+  s9-literal-secret:
+    <<: *good
+    environment:
+      DB_PASSWORD: hunter2
+  s9-fallback-secret:
+    <<: *good
+    environment:
+      - API_TOKEN=${API_TOKEN:-changeme}
+
+volumes:
+  appdata: {}
