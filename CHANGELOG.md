@@ -11,6 +11,31 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- **Subagent dispatch rules in `guardrails` (`meaningfy-core`).** Your coordinating agent now has
+  rules for subagents: spawn one only when it pays, start it fresh from a short brief (paths, not
+  pasted content), let it use its declared model or yours, take back a ten-line base report, and
+  have finished work checked by a second, fresh subagent. `AGENTS.md`, and the `AGENTS.md` that
+  `project-setup` writes, point to them, so they apply from the first spawn of a session.
+- **Every agent states how it reports back.** Each catalogue agent has a `## Report` section: the
+  base report plus the fields of its job; `make validate` rejects an agent without one.
+
+### Changed
+
+- **An EPIC's appetite is a size, not a duration.** `TINY`, `SMALL`, `MEDIUM`, `LARGE`,
+  `VERY LARGE` or `HUGE`, each saying how deep and how extensive the solution may be (defined in
+  `epic-planning`). The vault's work-shape uses the same names without weeks.
+- **Plain-language EPIC and PLAN templates.** The OpenSpec templates `project-setup` installs drop
+  method jargon ("golden thread", "altitude", "the bet", acronym lists); headings are unchanged. Key
+  decisions now name the alternative rejected; the design's anti-patterns are a don't / do instead /
+  why table, and its error matrix says how each failure is detected.
+
+### Removed
+
+- `epic-planning/references/epic-template.md`, an older second template that contradicted the
+  skill; its useful parts moved into the OpenSpec templates.
+
 ## [3.6.0] - 2026-10-27
 
 ### Added

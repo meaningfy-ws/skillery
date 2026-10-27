@@ -355,7 +355,10 @@ _GOOD_BODY = """You are the **X**. You do one job.
 - **Input:** a task.
 - **Output:** a report.
 - **Side effects:** none on files.
-- **Refuses:** committing."""
+- **Refuses:** committing.
+
+## Report
+The base report plus the implementing fields."""
 
 
 def _good_fm(name: str = "x") -> dict:
@@ -433,6 +436,16 @@ def test_agent_body_over_cap_is_flagged(tmp_path):
 def test_agent_without_dispatch_contract_is_flagged(tmp_path):
     body = _GOOD_BODY.replace("## Dispatch contract", "## Contract")
     assert _conforming(tmp_path, body=body) == ["agents/x.md: no '## Dispatch contract' section"]
+
+
+def test_agent_without_report_section_is_flagged(tmp_path):
+    body = _GOOD_BODY.replace("## Report", "## Reporting")
+    assert _conforming(tmp_path, body=body) == ["agents/x.md: no '## Report' section"]
+
+
+def test_agent_report_only_in_fenced_block_is_flagged(tmp_path):
+    body = _GOOD_BODY.replace("## Report\n", "```\n## Report\n```\n")
+    assert _conforming(tmp_path, body=body) == ["agents/x.md: no '## Report' section"]
 
 
 def test_agent_contract_missing_refuses_is_flagged(tmp_path):

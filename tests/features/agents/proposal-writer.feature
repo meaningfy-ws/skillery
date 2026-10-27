@@ -1,4 +1,4 @@
-# Traces to: UC-W8 (Proposals and formal offers): Main Success Scenario 1-6, Minimal Guarantees; agents/proposal-writer.md (Dispatch contract);
+# Traces to: UC-W8 (Proposals and formal offers): Main Success Scenario 1-6, Minimal Guarantees; agents/proposal-writer.md (Dispatch contract, Report);
 # docs/development/agent-template.md; rebundle-by-activity D-5.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: proposal-writer turns client requirements into a sendable proposal or offer email
@@ -14,6 +14,7 @@ Feature: proposal-writer turns client requirements into a sendable proposal or o
     And the requirements leave <open_questions> questions open
     When the caller dispatches the proposal-writer with the requirements
     Then it returns <output>
+    And the run ends with the `guardrails` base report plus the authoring fields
 
     Examples:
       | form                | open_questions | output                                                          |

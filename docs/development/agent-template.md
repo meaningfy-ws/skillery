@@ -66,7 +66,9 @@ Sections in this order:
 2. `## Skills` — one line per `skills:` entry saying what it is followed for. Never restate a skill:
    on one CLI it is preloaded, on the other loaded on demand; a copy is a second owner.
 3. `## Dispatch contract` — the four labels above.
-4. `## Glue` (optional) — numbered steps that no skill owns.
+4. `## Report` — how the agent reports back: the base report of the `guardrails` skill plus the
+   fields of its purpose, and what matters most in its report. It cites the base, never restates it.
+5. `## Glue` (optional) — numbered steps that no skill owns.
 
 The body is the text after the frontmatter, leading and trailing blank lines stripped. Its length cap
 is `MAX_AGENT_BODY_LINES` in `tools/repo_lint/lint.py`. The body is CLI-agnostic: no slash-command or
@@ -161,6 +163,10 @@ You are the **<Role>**. <the job>.
 - **Output:** <what it returns>.
 - **Side effects:** <what it may change, or "none on files">.
 - **Refuses:** <what it will not do, and what it returns instead>.
+
+## Report
+Returns the base report of `guardrails` (`references/subagent-reports.md`) plus the <purpose>
+fields. What matters most: <what this agent's caller needs first>.
 
 ## Glue
 1. <a step no skill owns>.
