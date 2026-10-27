@@ -8,8 +8,8 @@ description: >
 type: scheduled
 model: sonnet
 color: green
-tools: [Read, Grep, Glob, Write, Edit, Skill, "mcp__odoo__*", "mcp__gmail__*", "mcp__google-calendar__*"]
-disallowedTools: [mcp__odoo__unlink, mcp__gmail__send_message, mcp__gmail__trash_message, mcp__gmail__trash_thread, mcp__google-calendar__delete_event, mcp__google-calendar__respond_to_event]
+tools: [Read, Grep, Glob, Write, Edit, Skill, "mcp__odoo__*", "mcp__google-workspace__*"]
+disallowedTools: [mcp__odoo__unlink, mcp__odoo__import_records]
 skills:
   - sales-operations
   - sales-pipeline-custody

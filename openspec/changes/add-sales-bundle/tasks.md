@@ -91,21 +91,22 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 ## 6. Use cases, docs, probes
 
-- [ ] 6.1 UC-W7: status covered, `served_by` the agent and five skills, open points answered with
+- [x] 6.1 UC-W7: status covered, `served_by` the agent and five skills, open points answered with
       DEC-1/D-12/DEC-4. UC-W9/W10: qualification owner answered (DEC-10), status partial.
       `docs/future-features.md`: sales row done; `add-commercial-chain` re-scoped (qualification
       removed). `catalogue-architecture.md`: drop "(planned)", add the agent row. **Accept:**
       `use_case_catalogue`, `use_case_coverage` green.
-- [ ] 6.2 `docs/environment/sales-agent.md` (D-9): connectors, documented server names, Desktop
+- [x] 6.2 `docs/environment/sales-agent.md` (D-9): connectors, documented server names, Desktop
       task schedules and prompt texts, CLI scheduler pointer, `sales-config.yaml` location, accepted
       risks. `dependencies.yaml` Odoo/Google `used_by` name the sales skills. Runbook, playbook,
       roles-and-raci (agent-wrapper open question closed) point to the skills. **Accept:** links
       green; no absolute owner path.
-- [ ] 6.3 `tests/trigger_probes.yaml`: one positive and one near-miss per new description; near-misses
-      against `proposal-writing`, `semantic-consulting-coach`, `executive-communication` and the
-      `sales:*` plugin skills named in D-1. **Accept:** probe checks green.
-- [ ] 6.4 README bundle row extended and three "I want to…" rows (groom the pipeline, qualify a
-      lead, prepare a meeting); CHANGELOG line for installers; `VERSION` 3.5.0 at release.
+- [x] 6.3 `tests/trigger_probes.yaml`: one positive and one near-miss per new description; near-misses
+      against local neighbours (`vault-project`, `vault-capture`, `semantic-consulting-coach`,
+      `executive-communication`, `proposal-writing`); the probe file names local skills only, so the
+      `sales:*` plugin collision is left to the evals step. **Accept:** probe checks green.
+- [x] 6.4 README bundle row extended and three "I want to…" rows (groom the pipeline, qualify a
+      lead, prepare a meeting); CHANGELOG lines for installers under Unreleased; `VERSION` moves at release (meaningfy-release).
       **Accept:** version-sync gate green after `make bundles`.
 
 ## 7. Cross-CLI check
@@ -129,7 +130,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 ## Roadmap
 
 - [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 ·
-  [x] 3.2 · [x] 4.1 · [x] 4.2 · [x] 5.1 · [x] 5.2 · [x] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
+  [x] 3.2 · [x] 4.1 · [x] 4.2 · [x] 5.1 · [x] 5.2 · [x] 5.3 · [x] 6.1 · [x] 6.2 · [x] 6.3 · [x] 6.4 ·
   [ ] 7.1 · [ ] 7.2 · [ ] 7.3 · [ ] 8.1 · [ ] 8.2 · [ ] 8.3 · [ ] 8.4
 
 ## Verification

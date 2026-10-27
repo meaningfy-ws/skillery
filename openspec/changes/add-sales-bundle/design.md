@@ -80,10 +80,12 @@ New PLAN-level choices. Bets settled in the EPIC are cited, not re-argued.
   (`support/policy.py`) is ported into `tests/test_sales_write_policy.py`; the package's 109 rows become
   `tests/fixtures/sales/write_policy_cases.yaml` (105 kept, the four self-edit rows dropped, seven added so every entry is exercised). *Revision 2 (task 2.1): the earlier "ten
   capability classes" would have lost the field-level matching (`odoo.write` on `crm.lead.stage_id`).*
-- **D-8 Deterministic refusals.** The agent's `disallowedTools` lists the send and delete tools of
-  the documented connector names (Odoo `unlink`, Gmail send, calendar delete). MCP tool names
-  depend on the server name an installer chooses, so the runtime page tells the installer to keep
-  the documented server names, and the never-tier in the write policy stays as the second line.
+- **D-8 Deterministic refusals.** The agent allows the documented servers by wildcard
+  (`mcp__odoo__*`, `mcp__google-workspace__*`, names from `mcp-setup.md`) and denies by exact name
+  the two Odoo tools whose names are known: `unlink` and `import_records` (bulk import). The Google
+  Workspace server's tool names are not documented, so mail send and delete stay enforced by the
+  write policy's never-tier and the auditor's HALT: a recorded residual risk, as are the opencode
+  gaps (MCP allow and deny entries have no opencode analogue). *Revision 2 (task 6.2).*
 - **D-9 Runtime binding.** Desktop scheduled tasks call the `sales-operations` skill with a run
   type (G-4); the CLI path is `claude -p --agent meaningfy-sales:sales-agent "<run type>"` from an
   external scheduler, following the pattern in `vault-setup/references/scheduler.md` (cited, not

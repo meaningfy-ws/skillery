@@ -26,6 +26,8 @@
   Value offer, writes the proposal + SoW.
 - [`executive-communication`](../../../../skills/executive-communication/SKILL.md): client-facing
   messaging and board-level framing.
+- The `sales-agent` and its five skills: daily pipeline grooming, accounts, qualification, meeting
+  plans and drafts; setup in [`sales-agent.md`](../../../environment/sales-agent.md).
 
 Full list: [`roles-and-raci.md`](../../roles-and-raci.md#salespresales).
 

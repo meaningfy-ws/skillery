@@ -19,7 +19,8 @@ partnership.
   repeat client.
 - **Skills drawn on:** [`skills/semantic-consulting-coach/SKILL.md`](../../skills/semantic-consulting-coach/SKILL.md),
   [`skills/proposal-writing/SKILL.md`](../../skills/proposal-writing/SKILL.md),
-  [`skills/executive-communication/SKILL.md`](../../skills/executive-communication/SKILL.md).
+  [`skills/executive-communication/SKILL.md`](../../skills/executive-communication/SKILL.md), and the
+  five sales skills behind the `sales-agent` ([`environment/sales-agent.md`](../environment/sales-agent.md)).
 - **Artifacts produced:** qualified opportunity, commercial proposal/SoW co-ownership, account-nurture
   cadence.
 
@@ -179,8 +180,10 @@ break Invariant 1.
 Whether any role beyond the Builder ever gets a dedicated Claude Code agent is an open fork, stated
 here as a priority, not a commitment:
 
-- **Today's default:** documentation-only. The agent roster stays `epic-planner`, `implementer`,
-  `code-reviewer`; no new agent or agent stub is added for any of the other five roles.
+- **Today's default:** agents exist where a role has been exercised: the Builder's `epic-planner`,
+  `implementer`, `code-reviewer`; the architects' `system-architect` and `conceptual-modeller`;
+  Sales/Presales' `proposal-writer` and `sales-agent` (the latter from the sales pilot). No stub is
+  added for a role that has not.
 - **Reopening condition:** this stays closed until a role has actually been exercised on a real
   engagement; the fork is not resolved speculatively.
 - **Priority order if it ever reopens:** **Work Shaper is the highest-priority candidate**, because

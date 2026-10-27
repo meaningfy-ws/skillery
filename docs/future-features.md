@@ -7,9 +7,8 @@ empty bundle is never created to reserve a place.
 
 | Feature | Use cases | Bundle | Agents to build | Skills to build | Material needed | Material in hand? | Change |
 |---|---|---|---|---|---|---|---|
-| Sales agents and CRM | UC-W7 | `meaningfy-sales` | `sales-assistant` (scheduled) | CRM grooming, deal and contact management | the sales package | yes, outside the repo | `add-sales-bundle` |
 | DevOps agent | UC-W6 | `meaningfy-devops` | `devops-engineer` | Terraform, Ansible, environments | the devops package | yes, outside the repo | `add-devops-bundle` |
-| Commercial chain | UC-W8 (company-style PDF), UC-W9, UC-W10, UC-W11, UC-W12, UC-W13 | `meaningfy-sales`, `meaningfy-business` | `qualifier`, `market-researcher`, `offer-designer`, `negotiation-partner` | lead and partnership qualification, market research, offer design and pricing, the company PDF style | the qualification method, offer examples, the PDF template | no | `add-commercial-chain` |
+| Commercial chain | UC-W8 (company-style PDF), UC-W9, UC-W10, UC-W11, UC-W12, UC-W13 | `meaningfy-sales`, `meaningfy-business` | `qualifier`, `market-researcher`, `offer-designer`, `negotiation-partner` | partnership criteria and live qualification in a call (the method is `sales-qualification`), market research, offer design and pricing, the company PDF style | offer examples, the PDF template, a call transcript source | no | `add-commercial-chain` |
 | Demo builder | UC-W21 | `meaningfy-sales` | `demo-builder` | demo scaffolding | demo examples and the target stack | no | `add-demo-builder` |
 | Personal assistants | UC-W2, UC-W3, UC-W4, UC-W5 | `vault-assistant` | `life-coach`, `secretary`, `planner`, `companion` | to scope per assistant | the owner's routines and a runtime for scheduled and mobile use | no | `add-personal-assistants` |
 | Vault local config | UC-W1 | `vault-assistant` | — | colleagues' local variations over one shared spine | a colleague's vault variation | no | `add-vault-local-config` |

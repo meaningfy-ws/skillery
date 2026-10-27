@@ -20,7 +20,8 @@ Qualify the relationship and hold the free→paid boundary. No deliverable exist
 owed. See
 [`engagement-lifecycle.md#presale-free-no-deliverable`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#presale-free-no-deliverable)
 for the boundary itself, and [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for who is
-accountable.
+accountable. Daily grooming, qualification and meeting preparation run through the `sales-agent`
+([`sales-agent.md`](../../environment/sales-agent.md)).
 
 ## 2. Discovery & Onboarding (discovery workshop or Proof of Value)
 
@@ -44,7 +45,7 @@ Once a contract closes, the relationship does not. See
 [`engagement-lifecycle.md#repeat-clients`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#repeat-clients) for what that
 relationship work is and why it has no closing condition, and
 [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for the Solution Shipper's hand-off into
-this stage.
+this stage. Account health and outcome reviews are `sales-accounts` (customer success).
 
 ---
 

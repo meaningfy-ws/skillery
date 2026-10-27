@@ -64,7 +64,7 @@ not here.
 
 | Bundle | Areas | Skills | Agents | Requires |
 |---|---|---|---|---|
-| `meaningfy-sales` *(planned)* | sales | the sales package's skills; the commercial chain | planned: `sales-assistant`, `qualifier`, `offer-designer`, `proposal-writer`, `demo-builder` | `meaningfy-consulting` |
+| `meaningfy-sales` | sales | proposals and estimates; the five sales skills (operations, pipeline custody, accounts, qualification, conversations); the commercial chain | `proposal-writer`, `sales-agent`; planned: `qualifier`, `offer-designer`, `demo-builder` | `meaningfy-consulting` |
 | `meaningfy-devops` *(planned)* | operations | the devops package's skills | planned: `devops-engineer` | `meaningfy-building` |
 | `meaningfy-business` *(planned)* | business, legal | negotiation, internal communication, contracts | planned: `business-coach`, `negotiation-partner`, `internal-comms`, `contract-drafter` | `meaningfy-consulting` |
 | `meaningfy-design` *(planned)* | design | visual identity, diagram and slide styles | planned: `graphic-designer` | — |
@@ -83,6 +83,7 @@ template's (a thinking partner is a `lead` agent). The agents still to build are
 | `system-architect` | lead | UC-W19 | `meaningfy-architecture` | exists |
 | `conceptual-modeller` | lead | UC-W20 | `meaningfy-architecture` | exists |
 | `proposal-writer` | delegated | UC-W8 | `meaningfy-sales` | exists |
+| `sales-agent` | scheduled | UC-W7 | `meaningfy-sales` | exists |
 
 ## Roadmap
 
