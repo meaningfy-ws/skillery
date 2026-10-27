@@ -37,4 +37,4 @@ body:
     id: role
     attributes:
       label: Which hat (bundle) would install it?
-      options: ["meaningfy-core", "meaningfy-consulting", "meaningfy-architecture", "meaningfy-building", "vault-assistant", "a new bundle (say which role)"]
+      options: ["meaningfy-core", "meaningfy-consulting", "meaningfy-architecture", "meaningfy-building", "meaningfy-sales", "meaningfy-devops", "vault-assistant", "a new bundle (say which role)"]

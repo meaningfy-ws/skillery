@@ -49,3 +49,22 @@ capabilities:
   - tag: personal-details
     owner: sales-accounts
     claim_patterns: ["three rules for personal details"]
+  # add-devops-bundle (task 5.5): the devops skills and the facts they own.
+  - tag: safe-change-protocol
+    owner: infrastructure-operations
+    claim_patterns: ["apply exactly what was shown"]
+  - tag: stack-standard
+    owner: stack-operations
+    claim_patterns: ["S1.{0,3}S9", "conformance-exception: S"]
+  - tag: unattended-action-policy
+    owner: service-reliability
+    claim_patterns: ["park_if", "never_if", "attempts >= 2"]
+  - tag: daily-checkup
+    owner: service-reliability
+    claim_patterns: ["scrape targets down", "disk forecast"]
+  - tag: incident-severity
+    owner: service-reliability
+    claim_patterns: ["\\| \\*\\*critical\\*\\* \\|", "`info` opens no issue"]
+  - tag: secret-handling
+    owner: infrastructure-security
+    claim_patterns: ["bw get", "used without being seen"]

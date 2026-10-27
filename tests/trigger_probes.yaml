@@ -144,3 +144,30 @@ probes:
   - probe: "restructure this board memo answer-first with a governing thought"
     expect: executive-communication
     near_miss_of: meaningfy-voice
+  # add-devops-bundle (task 5.4): one positive and one near-miss per devops skill.
+  - probe: "resize the server and run the terraform plan before we apply it"
+    expect: infrastructure-operations
+  - probe: "scaffold a new Python service repo with CI and the spine"
+    expect: project-setup
+    near_miss_of: infrastructure-operations
+  - probe: "deploy the new version of the stack and roll back if the healthcheck fails"
+    expect: stack-operations
+  - probe: "build and push a versioned GHCR image from the app repo"
+    expect: ci-cd-delivery
+    near_miss_of: stack-operations
+  - probe: "an alert fired overnight, is everything ok with our services"
+    expect: service-reliability
+  - probe: "cut a release and write the release notes"
+    expect: meaningfy-release
+    near_miss_of: service-reliability
+  - probe: "a colleague is leaving, offboard them and rotate the passwords they knew"
+    expect: infrastructure-security
+  - probe: "stop the agent from running destructive commands without asking"
+    expect: guardrails
+    near_miss_of: infrastructure-security
+  # add-devops-bundle DEC-18: reporting a skill or agent problem to skillery.
+  - probe: "the stack-operations skill gave a wrong command, report it to skillery"
+    expect: skillery-feedback
+  - probe: "open a PR with my fix and follow the branch naming convention"
+    expect: meaningfy-git-workflow
+    near_miss_of: skillery-feedback

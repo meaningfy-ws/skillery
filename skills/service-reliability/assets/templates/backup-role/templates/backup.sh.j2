@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Use this script through the backup role only. Managed by Ansible (backup role): {{ backup_service }}.
+set -euo pipefail
+export RCLONE_CONFIG="{{ backup_rclone_config }}"
+
+stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+file="{{ backup_local_dir }}/{{ backup_service }}-${stamp}.gz"
+
+# 1. A consistent, application-native dump (never a raw copy of live files).
+{{ backup_dump_command }} | gzip > "$file"
+
+# 2. An empty dump is a failure, not a backup.
+[ -s "$file" ] || { echo "{{ backup_service }}: empty dump" >&2; exit 1; }
+
+# 3. Calendar tier: monthly on the 1st, weekly on Sundays, daily otherwise.
+if [ "$(date -u +%d)" = "01" ]; then tier=monthly
+elif [ "$(date -u +%u)" = "7" ]; then tier=weekly
+else tier=daily
+fi
+
+# 4. Copy to object storage, then expire each tier.
+rclone copy "$file" "{{ backup_remote }}/${tier}/"
+rclone delete --min-age {{ backup_retention_daily }}d "{{ backup_remote }}/daily/"
+rclone delete --min-age {{ backup_retention_weekly * 7 }}d "{{ backup_remote }}/weekly/"
+rclone delete --min-age {{ backup_retention_monthly * 31 }}d "{{ backup_remote }}/monthly/"
+find "{{ backup_local_dir }}" -name '{{ backup_service }}-*.gz' -mtime +1 -delete
+
+# 5. Freshness metric LAST and atomically: any failure above leaves it stale, so BackupStale fires.
+prom="{{ backup_textfile_dir }}/backup_{{ backup_service }}.prom"
+echo "backup_last_success_timestamp_seconds{job=\"{{ backup_service }}\"} $(date +%s)" > "${prom}.$$"
+mv "${prom}.$$" "$prom"

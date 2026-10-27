@@ -11,6 +11,28 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- **DevOps agents and four skills in `meaningfy-devops`.** Install the bundle to operate Meaningfy's
+  infrastructure with an agent even if you are not a devops engineer. Start `devops-engineer` in a
+  checkout of `infrastructure-stacks` (with `cloud-infrastructure` beside it): it plans each change,
+  has `infra-reviewer` read it, and applies nothing until you answer yes to a plain-words consent
+  card. `ops-watch` runs the daily check-up and answers alerts alone, acting only where the
+  unattended-action policy says so and reporting to `#infra-alerts` and GitHub issues. Skills:
+  `infrastructure-operations`, `stack-operations` (with a compose check, `check_stack.py`),
+  `service-reliability` (with the policy decider, `decide_action.py`) and `infrastructure-security`.
+  Setup: [`docs/environment/devops-agents.md`](docs/environment/devops-agents.md).
+- **`skillery-feedback` in `meaningfy-core`.** Say "report this to skillery" when a skill or agent
+  lets you down, or "we need a skill for X": the agent collects the prompt, the output and the
+  version, removes anything private, shows you the draft and files the issue on
+  `meaningfy-ws/skillery` once you agree.
+
+### Changed
+
+- **`ci-cd-delivery` requests deploys from the stacks repository.** The app repo no longer points at
+  a `devops-toolkit` reusable workflow; it asks `infrastructure-stacks` to deploy a pinned image (a PR
+  that bumps it, or a dispatch), and `stack-operations` owns the deploy from there.
+
 ## [3.5.0] - 2026-10-27
 
 ### Added

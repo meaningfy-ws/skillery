@@ -6,7 +6,7 @@ owner: {name: Meaningfy, email: info@meaningfy.ws}
 description: Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently
 bundles:
   - name: meaningfy-core
-    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, and agentic guardrails"
+    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, and how to report a skill or agent problem to skillery"
     skills:
       - technical-writing
       - explanatory-writing
@@ -14,6 +14,7 @@ bundles:
       - meaningfy-voice
       - meaningfy-git-workflow
       - guardrails
+      - skillery-feedback
     agents: []
   - name: meaningfy-consulting
     description: "The advisory role: semantic-technologies coaching, the Decision Package, and executive communication"
@@ -56,6 +57,15 @@ bundles:
       - meaningfy-release
     agents: [epic-planner, implementer, code-reviewer]
     requires: [meaningfy-architecture]
+  - name: meaningfy-devops
+    description: "The operations role: provision and change servers as code (infrastructure-operations), run and deploy stacks (stack-operations), monitor, check daily, answer incidents and back up (service-reliability), and keep access and secrets safe (infrastructure-security); with an interactive devops agent, an unattended watch and an infrastructure reviewer"
+    skills:
+      - infrastructure-operations
+      - stack-operations
+      - service-reliability
+      - infrastructure-security
+    agents: [devops-engineer, ops-watch, infra-reviewer]
+    requires: [meaningfy-consulting]
   - name: vault-assistant
     description: "The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily). Needs the external obsidian@obsidian-skills plugin and the company memory"
     skills:

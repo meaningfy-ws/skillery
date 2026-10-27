@@ -1,0 +1,64 @@
+# Each service misses the rule its name starts with and carries an exception for it.
+x-good: &good
+  image: example/app:1.4.2
+  healthcheck:
+    test: ["CMD", "true"]
+  mem_limit: 256m
+  logging:
+    options: {max-size: "10m", max-file: "3"}
+  restart: unless-stopped
+  security_opt: [no-new-privileges:true]
+
+services:
+  s1-upstream-only-major:
+    # conformance-exception: S1 upstream publishes major tags only, digest pinned in the next change
+    <<: *good
+    image: example/app:latest
+  s2-one-shot:
+    # conformance-exception: S2 one-shot migration job, exits after running
+    image: example/app:1.4.2
+    mem_limit: 256m
+    logging:
+      options: {max-size: "10m", max-file: "3"}
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+  s3-limit-unknown:
+    # conformance-exception: S3 memory profile measured first, DEC-5
+    image: example/app:1.4.2
+    healthcheck:
+      test: ["CMD", "true"]
+    logging:
+      options: {max-size: "10m", max-file: "3"}
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+  s4-daemon-default:
+    <<: *good
+    logging:
+      driver: json-file  # conformance-exception: S4 daemon default
+  s5-batch:
+    <<: *good
+    restart: "no"  # conformance-exception: S5 batch job run by a timer
+  s6-needs-setuid:
+    <<: *good
+    security_opt: []  # conformance-exception: S6 image drops privileges with su-exec
+  s7-mail-relay:
+    <<: *good
+    ports: ["25:25"]  # conformance-exception: S7 public mail relay by design
+  s8-cache:
+    <<: *good
+    volumes: ["cache:/var/cache/app"]  # conformance-exception: S8 cache, rebuilt on start
+  s9-dev-only:
+    <<: *good
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD:-dev}  # conformance-exception: S9 local development stack only
+  s2-no-reason:
+    # conformance-exception: S2
+    image: example/app:1.4.2
+    mem_limit: 256m
+    logging:
+      options: {max-size: "10m", max-file: "3"}
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+
+volumes:
+  cache: {}
