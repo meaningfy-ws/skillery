@@ -124,16 +124,42 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 - [x] 8.1 `make validate`, `make validate-spine` green; `openspec validate add-sales-bundle --strict`.
 - [x] 8.2 Privacy grep over `skills/sales-*`, `agents/sales-agent.md`, `tests/`, `docs/`: no owner
       or staff names, Odoo ids, partner names or prices. **Accept:** empty.
-- [ ] 8.3 Owner hand-run of IT-01..IT-05 (design.md *Test cases*) on Claude Desktop and the CLI,
-      against the live pipeline, read-only first. **Accept:** the note opens with Decisions needed, fits one
-      screen, every card passes the spec; findings fixed in the owning skill.
+- [ ] 8.3 Owner hand-run of the day cycle IT-1..IT-4 (design.md *Test cases*, revision 3) on one
+      working day: open day on Desktop, close day on the CLI, the next open day. Runs after group 9.
+      **Accept:** every step's column holds; findings fixed in the owning skill.
 - [x] 8.4 PR into `develop`; `detect_changes` reported in the PR. *Draft PR #107, open until 8.3.*
+
+## 9. Day cycle (revision 3: DEC-11, DEC-12, D-5, D-15..D-17)
+
+- [ ] 9.1 `sales-operations/assets/templates/grooming-session.md`: *Watch* → *Attention list* (P1 /
+      P2 / P3, count and change per rank, every item listed) and a *Today's plan* section (per deal:
+      talk to / answer / chase, with the person). **Accept:** TC-04 and TC-05 green; no "one screen"
+      or "only what fired" left in the sales skills.
+- [ ] 9.2 `sales-operations/SKILL.md` *Priorities inside a run*: map the seven priorities onto P1–P3
+      (D-15). **Accept:** each priority names its rank; within a rank, stars then age.
+- [ ] 9.3 `references/run-types.md` open day: read the previous working day's note first and carry
+      forward its open items, then write *Today's plan*; close day: record the day's actions on each
+      deal, apply the owner's statements, infer moves within the tiers, give every deal touched today
+      a dated next activity, refresh the counts (D-16). **Accept:** both run types read as the plan
+      and the record of one note.
+- [ ] 9.4 `sales-pipeline-custody/references/write-rules.md` §3: the owner's statement naming a deal
+      and won/lost is the yes; an unstated lost reason is inferred and logged; won/lost seen only in
+      a third party's mail is a card (D-17). Add the three cases to
+      `tests/fixtures/sales/write_policy_cases.yaml` if the evaluator can express them, else to the
+      feature file. **Accept:** TC-01, TC-02 green.
+- [ ] 9.5 `tests/features/agents/sales-agent.feature`: replace the replay and the planted-instruction
+      scenarios with the day-cycle scenarios of the custodianship spec (open, close, piling up, owner
+      says lost, client mail says won, evidence moves forward). **Accept:** feature lint green.
+- [ ] 9.6 `docs/environment/sales-agent.md` and CHANGELOG line: the daily note in words for the
+      installer (one file a day, ranked, morning plan, evening record). **Accept:** `make validate`,
+      `make validate-spine`, `openspec validate add-sales-bundle --strict` green.
 
 ## Roadmap
 
 - [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 ·
   [x] 3.2 · [x] 4.1 · [x] 4.2 · [x] 5.1 · [x] 5.2 · [x] 5.3 · [x] 6.1 · [x] 6.2 · [x] 6.3 · [x] 6.4 ·
-  [x] 7.1 · [x] 7.2 · [x] 7.3 · [x] 8.1 · [x] 8.2 · [ ] 8.3 · [x] 8.4
+  [x] 7.1 · [x] 7.2 · [x] 7.3 · [x] 8.1 · [x] 8.2 · [ ] 8.3 · [x] 8.4 ·
+  [ ] 9.1 · [ ] 9.2 · [ ] 9.3 · [ ] 9.4 · [ ] 9.5 · [ ] 9.6
 
 ## Verification
 

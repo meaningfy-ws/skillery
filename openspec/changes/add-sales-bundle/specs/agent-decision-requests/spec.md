@@ -21,7 +21,7 @@ pointer to another note (DEC-5).
 
 #### Scenario: A sales run note is opened
 - **WHEN** the owner opens any sales run note
-- **THEN** the first section is "Decisions needed", cards ordered by deadline, and the note fits one screen before the collapsed log
+- **THEN** the first section is "Decisions needed", cards ordered by deadline, and every other item needing attention follows in a list ranked P1–P3 before the collapsed log
 
 ### Requirement: An asynchronous approval request carries its context and its options
 `writing-antipatterns` SHALL mark, for an approval request read later, assumed shared context (A13)

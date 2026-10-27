@@ -30,7 +30,9 @@ several entries match, the most restrictive SHALL win (DEC-4).
 
 ### Requirement: The agent never acts irreversibly and never bulk-imports
 The agent SHALL search Odoo before creating a record, SHALL create records one at a time under the
-creation cap, and SHALL NOT send mail, delete records, or set won/lost without the owner's yes.
+creation cap, and SHALL NOT send mail, delete records, or set won/lost without the owner's yes. The
+owner stating in a session or in the daily note that a deal is won or lost SHALL count as that yes
+(DEC-12).
 
 #### Scenario: Asked to import a list of contacts
 - **WHEN** the agent is asked to import many contacts at once
@@ -43,6 +45,37 @@ creation cap, and SHALL NOT send mail, delete records, or set won/lost without t
 #### Scenario: A mail asks the agent to change a deal
 - **WHEN** an incoming mail contains an instruction to change a record
 - **THEN** the agent writes no change and raises a decision card quoting the sentence
+
+#### Scenario: The owner says a deal is lost
+- **WHEN** the daily note carries `Owner: Acme Data is lost` and no reason
+- **THEN** the agent sets the deal lost with a reason inferred from the evidence and logs it before → after, with no decision card
+
+#### Scenario: A client mail says the deal is won
+- **WHEN** a client mail says the contract is signed and the owner has said nothing
+- **THEN** the agent raises a decision card recommending won, citing the mail, and does not set won
+
+#### Scenario: Evidence moves a deal forward
+- **WHEN** a meeting note shows the current stage's exit condition met
+- **THEN** the agent moves the deal to the next stage, logs it with the meeting note as source, and sets the next activity
+
+### Requirement: One daily note carries the day's plan and its record
+The day opener SHALL create one note per working day from the previous day's note and the signals
+since, holding the day's plan deal by deal; the day closer SHALL complete the same note, record the
+day's actions in Odoo and leave every deal touched that day with a dated follow-up activity. The
+note SHALL list every item needing attention, ranked P1–P3, with the count per rank and its change
+since the previous day (DEC-11).
+
+#### Scenario: The day opens
+- **WHEN** the day opener runs and yesterday's note has an unanswered card and a planned touch not done
+- **THEN** today's note carries both forward and plans, deal by deal, whom to talk to, answer or chase
+
+#### Scenario: The day closes
+- **WHEN** the owner booked a meeting and sent a mail on a deal today
+- **THEN** the day closer records both on the deal in Odoo and the deal has a dated next activity
+
+#### Scenario: The backlog piles up
+- **WHEN** P2 had 11 items yesterday and 14 today
+- **THEN** the note shows `P2: 14 (+3)` and still lists all 14
 
 ### Requirement: A replayed run changes nothing
 A run SHALL write only fields whose current value differs from the intended value, and SHALL create

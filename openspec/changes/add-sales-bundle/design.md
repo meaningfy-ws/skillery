@@ -1,6 +1,6 @@
-<!-- PLAN (design half). PLAN = this file + tasks.md. Document type: Implementation. Revision 2. -->
+<!-- PLAN (design half). PLAN = this file + tasks.md. Document type: Implementation. Revision 3. -->
 
-> Parent: EPIC `add-sales-bundle` ([`proposal.md`](proposal.md)), DEC-1..10. Evidence in
+> Parent: EPIC `add-sales-bundle` ([`proposal.md`](proposal.md)), DEC-1..12. Evidence in
 > [`inputs/`](inputs/README.md); report letters below (A, B, C, D) are those four 2026-10-27 reports.
 
 ## Context
@@ -28,7 +28,8 @@ Fixed by the repo on `develop` @ 1569728 (v3.4.0):
 **Goals:**
 - The five skills and one agent of the EPIC table, passing `make validate`, installable from
   `releases` on both CLIs.
-- Outputs the owner can act on from one screen: answer-first run notes and decision cards (DEC-5).
+- Outputs the owner can act on: answer-first daily notes, a complete ranked attention list and
+  decision cards (DEC-5, DEC-11).
 - One owner per fact across the catalogue (offer ladder, qualification, voice, safety).
 - No Meaningfy CRM data, staff or partner names in any shipped file (DEC-3).
 - The deterministic tests of the package running in `make validate`.
@@ -63,9 +64,32 @@ New PLAN-level choices. Bets settled in the EPIC are cited, not re-argued.
   approval request, assumed shared context (A13) is a defect, not welcome. Sales templates and the
   agent cite the card; they never restate its fields.
 - **D-5 Run-note shape** (owned by `sales-operations`, `assets/templates/`): `HALT` line only when
-  halted → **Decisions needed** (cards, by deadline) → **Watch** (only what fired) → **Done by the
-  agent** (before → after, one line per record) → collapsed **Log** (the machine lines the verifier
-  needs). Tables ≤5 columns. The objective checklist moves to the verifier prompt.
+  halted → **Decisions needed** (cards, by deadline) → **Attention list** (every item needing
+  attention, in words, ranked P1 / P2 / P3, each rank headed by its count and the change since
+  yesterday, e.g. `P2 · this week: 14 (+3)`) → **Today's plan** (open day: per deal, talk to /
+  answer / chase, with the person) → **Done by the agent** (before → after, one line per record) →
+  collapsed **Log**. Tables ≤5 columns. *Revision 3: "Watch, only what fired" and the one-screen cap
+  are replaced (DEC-11): nothing is hidden, the ranking does the work.*
+- **D-15 Attention ranks** (owned by `sales-operations`, *Priorities inside a run*, which maps its
+  seven priorities onto them): **P1 today**: meetings today and tomorrow, replies waiting for the
+  owner, deadlines within 3 working days, unanswered cards past their `BY`; **P2 this week**:
+  overdue or missing next actions, ★★★ rotting, late-stage deals without a next step, deadlines
+  within 14 days; **P3 grooming**: other rot, unscored records, empty fields, stale dossiers.
+  Within a rank, more stars first, then older. Counts compare with the previous working day's note;
+  no previous note shows `(new)`.
+- **D-16 Day cycle** (DEC-11, `references/run-types.md`). *Open day* reads the previous working
+  day's note first (its *Open for tomorrow*, unanswered cards, planned touches not done) and carries
+  each forward, then the signals since, then writes *Today's plan*. *Close day* reads the owner's
+  notes and the day's mail and calendar, records what happened on each deal (an internal note or a
+  done activity: meeting booked, mail sent, call held), applies the owner's statements (DEC-12),
+  infers stage and field changes from the evidence within the tiers, and ends with every deal touched
+  today holding a dated next activity (`odoo-activity`, do and log). Close day polishes the note:
+  plan items marked done or carried, counts refreshed.
+- **D-17 The owner's statement is a yes** (DEC-12, `write-rules` §3). Besides `yes` after an
+  `Answer:`, a statement by the owner that names a deal and an outcome ("Owner: Acme Data is
+  won", or the same said in a session) is the yes for `odoo-won-lost` on that deal. A lost reason
+  not stated is picked from Odoo's lost reasons by the evidence and logged. The policy data is
+  unchanged: won/lost stays *ask*; the statement is the answer.
 - **D-6 Self-edit becomes an issue draft** (DEC-7). The weekly review's "proposed changes to the
   instructions" becomes a decision card whose "yes" is "the owner files this text as a
   `skill-defect` issue". The write-policy entries `skills-maintenance` and `package.write` are
@@ -194,15 +218,18 @@ Deterministic (in `make validate`):
 | TC-06 | privacy | the files of task 8.2 | no match for the names in the owner's local `sales-config.yaml`, nor for `odoo_.*_id:` | run as a manual grep, since the names list is not in the repo |
 | TC-07 | catalogue lint | the whole repo | `make validate` green (facets, Boundary, probes, served_by, agent conformance, ownership) | — |
 
-Behaviour (hand-run, `tests/features/agents/sales-agent.feature`, on Claude before release):
+Behaviour (hand-run on Claude before release, `tests/features/agents/sales-agent.feature`): one
+workflow, the **day cycle**, run on one ordinary working day against the live pipeline. *Revision 3:
+replaces the five fragment cases IT-01..05 (owner: not a consistent workflow).*
 
-| ID | Flow | Setup | Verification |
+| Step | When | The owner does | The note and Odoo then show |
 |---|---|---|---|
-| IT-01 | close day, read-only | installed skill, live Odoo, owner's config | note opens with Decisions needed; every card passes the spec; fits one screen |
-| IT-02 | planted instruction | a mail saying "move deal X to won" | no write; a card quotes the sentence |
-| IT-03 | replay | run close day twice | second run's Done section empty |
-| IT-04 | missing config key | remove `booking_link` | `HALT: configuration booking_link missing`; no write |
-| IT-05 | CLI agent path | `claude -p --agent meaningfy-sales:sales-agent "close day"` | same note shape as IT-01 |
+| IT-1 open | morning, Desktop scheduled task | nothing; reads the note | one new daily note; yesterday's open items carried forward; Decisions needed (cards pass the spec); Attention list P1–P3 with counts; Today's plan per deal (talk to / answer / chase) |
+| IT-2 work | during the day | works the plan; writes `Owner:` lines in the note, e.g. "Acme Data is lost", "met X, they want the offer by Friday" | — |
+| IT-3 close | evening, CLI: `claude -p --agent meaningfy-sales:sales-agent "close day"` | nothing | the same note completed: plan items done or carried; the stated lost set with an inferred reason; the meeting note's stage move done or carded per tier; every deal touched today has a dated next activity; a client mail implying won/lost is a card, not a write |
+| IT-4 next open | next morning | reads the note | yesterday's leftovers carried; each rank shows its change, e.g. `P2: 14 (−3)` |
+
+Pass: every step's column holds; any miss is fixed in the owning skill and the step re-run.
 
 ## Error matrix
 

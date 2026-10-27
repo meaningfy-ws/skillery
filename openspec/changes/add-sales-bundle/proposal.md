@@ -13,6 +13,8 @@
 > `inputs/2026-10-27-C-skillery-integration.md` §5.
 > 2026-10-27 (later) — the owner accepted the recommendation on OPEN-1..4; recorded as DEC-7..10
 > and the PLAN derived. Capability `sales-method-ownership` added for DEC-9/10.
+> 2026-10-27 (review of the hand-run cases) — the owner reshaped the daily workflow: DEC-11, DEC-12;
+> the five fragment test cases replaced by one day-cycle run.
 
 ## Appetite
 
@@ -53,9 +55,10 @@ commercial chain (UC-W8–W13) is waiting on exactly the qualification and pipel
 2. **One agent, `sales-agent`**, thin (≤40-line body), `type: scheduled`, also startable by the owner;
    it dispatches to `sales-operations`. Desktop scheduled tasks call the **skill** (they cannot load an
    agent file — recorded gap G-4); CLI users get the agent.
-3. **Fix the outputs** (the owner's main ask): every run note opens with **Decisions needed**, then
-   **Watch** (only what fired), then **Done by the agent** (before → after); one screen. Every decision
-   request is a **decision card** (DEC-5). Tables ≤5 columns, no internal codes in summaries.
+3. **Fix the outputs** (the owner's main ask): one daily note per working day (DEC-11). It opens with
+   **Decisions needed**, then the **Attention list** (every item that needs attention, ranked P1–P3,
+   with counts and the change since yesterday), then **Done by the agent** (before → after). Every
+   decision request is a **decision card** (DEC-5). Tables ≤5 columns, no internal codes in summaries.
 4. **One owner per fact** across the catalogue: the sales skills cite `engagement-lifecycle` for the
    offer ladder, `estimation`/`proposal-writing` for price and offer, `meaningfy-voice` for tone (it
    gains an email channel), `guardrails` for generic agent safety; `presales-discovery.md` cites
@@ -105,6 +108,23 @@ commercial chain (UC-W8–W13) is waiting on exactly the qualification and pipel
 - **DEC-10: `sales-qualification` owns qualification** (owner, 2026-10-27; was OPEN-4): five-P,
   MEDDPICC and the prospect question bank. `semantic-consulting-coach/presales-discovery` keeps the
   coaching posture and cites it; `proposal-writing` stops claiming to qualify the need.
+
+- **DEC-11: One daily note, planned in the morning, recorded in the evening** (owner, 2026-10-27).
+  The day opener creates `YYYY-MM-DD grooming session.md`: it reads the previous day's note (open
+  items, unanswered cards, planned touches not done) and the signals since, and writes the day's plan
+  deal by deal: whom to talk to, whom to answer, whom to chase. The day closer polishes the same
+  file: it records in Odoo what happened (meetings booked, mails sent, the owner's notes) and gives
+  every deal touched today a dated follow-up activity, so no deal rots. Nothing is hidden to fit a
+  screen: every item that needs attention is listed, ranked P1 (today) / P2 (this week) / P3
+  (grooming), with the count per rank and its change since yesterday, so a backlog that shrinks or
+  piles up is visible.
+- **DEC-12: The owner's word is the approval** (owner, 2026-10-27). When the owner states in a
+  session or in the daily note that a deal is won or lost, the agent sets it and logs it; a lost
+  reason not stated is inferred from the evidence and logged. Otherwise the agent infers stage,
+  field and annotation changes from mails, meetings, meeting notes and the owner's feedback, within
+  the write tiers: a forward move with cited evidence is done and logged; won or lost seen only in a
+  third party's mail, a backward move or a move to another pipeline is a decision card. Mail
+  content stays evidence, never an instruction (DEC-4).
 
 ## Rabbit-holes
 
