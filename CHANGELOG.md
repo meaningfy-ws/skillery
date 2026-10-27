@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.6.0] - 2026-10-27
+
 ### Added
 
 - **DevOps agents and four skills in `meaningfy-devops`.** Install the bundle to operate Meaningfy's
