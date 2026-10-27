@@ -30,3 +30,22 @@ capabilities:
     owner: vault-conventions
     # Kinds and their required properties are defined once; other vault-* skills cite them.
     claim_patterns: ["required properties", "\\| kind \\|"]
+  # add-sales-bundle (task 5.3): the sales skills and the facts they share with their neighbours.
+  - tag: crm-write-policy
+    owner: sales-pipeline-custody
+    claim_patterns: ["tier by effect, not by tool", "default_tier"]
+  - tag: five-p-score
+    owner: sales-qualification
+    claim_patterns: ["Pursue\\*\\* \\| 7–10", "Not now\\*\\* \\| 0–3"]
+  - tag: decision-card
+    owner: executive-communication
+    claim_patterns: ["YES WRITES:", "at most \\*{0,2}150 words"]
+  - tag: offer-ladder
+    owner: semantic-consulting-coach
+    claim_patterns: ["4–6 weeks, calendar-boxed", "1–2 day workshop"]
+  - tag: run-note-shape
+    owner: sales-operations
+    claim_patterns: ["not yet, can continue", "15 deals in depth"]
+  - tag: personal-details
+    owner: sales-accounts
+    claim_patterns: ["three rules for personal details"]

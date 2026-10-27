@@ -78,14 +78,14 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 ## 5. Deterministic tests (D-7, D-14)
 
-- [ ] 5.1 (TC-01, TC-02) `tests/fixtures/sales/write_policy_cases.yaml` (the 120 rows, normalised tool names) and
+- [x] 5.1 (TC-01, TC-02) `tests/fixtures/sales/write_policy_cases.yaml` (the ported rows, normalised tool names) and
       `tests/test_sales_write_policy.py` with the ported evaluator; cases first, red, then green
       against `write-policy.yaml`. Plus completeness: every entry id decides at least one case. **Accept:** green in `make validate`.
-- [ ] 5.2 (TC-03..TC-05) `tests/test_sales_assets.py`: Odoo-view completeness (every filter has question, action,
+- [x] 5.2 (TC-03..TC-05) `tests/test_sales_assets.py`: Odoo-view completeness (every filter has question, action,
       target, cadence; every stage it names exists in `pipelines.yaml`); table render (≤5 columns,
       separator row) over every sales template; each template's Decisions needed section cites the
       card. **Accept:** green; a deliberately broken fixture fails each check once.
-- [ ] 5.3 Merge the package's `ownership.yaml` rows into `tests/ownership.yaml` with the new tags
+- [x] 5.3 Merge the package's `ownership.yaml` rows into `tests/ownership.yaml` with the new tags
       (`crm-write-policy`, `five-p-score`, `decision-card`, `offer-ladder`, `run-note-shape`).
       **Accept:** the ownership tripwire passes and names one owner per tag.
 
@@ -129,7 +129,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 ## Roadmap
 
 - [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 ·
-  [x] 3.2 · [x] 4.1 · [x] 4.2 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
+  [x] 3.2 · [x] 4.1 · [x] 4.2 · [x] 5.1 · [x] 5.2 · [x] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
   [ ] 7.1 · [ ] 7.2 · [ ] 7.3 · [ ] 8.1 · [ ] 8.2 · [ ] 8.3 · [ ] 8.4
 
 ## Verification

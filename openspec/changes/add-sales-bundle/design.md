@@ -77,8 +77,8 @@ New PLAN-level choices. Bets settled in the EPIC are cited, not re-argued.
   would loosen it to the *ask* default. Removed: the `skills-maintenance` entry (DEC-7) and the
   file's own `version` (root `VERSION` is the only version). Fact names say `owner_`, not a
   person's name. A header comment maps each namespace to the documented connector. The evaluator
-  (`support/policy.py`) is ported into `tests/test_sales_write_policy.py`; the 120 cases become
-  `tests/fixtures/sales/write_policy_cases.yaml`. *Revision 2 (task 2.1): the earlier "ten
+  (`support/policy.py`) is ported into `tests/test_sales_write_policy.py`; the package's 109 rows become
+  `tests/fixtures/sales/write_policy_cases.yaml` (105 kept, the four self-edit rows dropped, seven added so every entry is exercised). *Revision 2 (task 2.1): the earlier "ten
   capability classes" would have lost the field-level matching (`odoo.write` on `crm.lead.stage_id`).*
 - **D-8 Deterministic refusals.** The agent's `disallowedTools` lists the send and delete tools of
   the documented connector names (Odoo `unlink`, Gmail send, calendar delete). MCP tool names
@@ -184,7 +184,7 @@ Deterministic (in `make validate`):
 
 | ID | Component | Input | Expected output | Edge cases |
 |---|---|---|---|---|
-| TC-01 | write-policy evaluator | each of the 120 rows of `write_policy_cases.yaml` | the row's tier | an action matching two entries returns the stricter tier; an unlisted write tool returns *ask* |
+| TC-01 | write-policy evaluator | each of the 112 cases of `write_policy_cases.yaml` | the row's tier | an action matching two entries returns the stricter tier; an unlisted write tool returns *ask* |
 | TC-02 | write-policy completeness | every entry id of `write-policy.yaml` | each id is the deciding entry of ≥1 case | an entry added without a case fails |
 | TC-03 | Odoo views | `odoo-views.yaml` + `pipelines.yaml` | every filter has question, action, target, cadence; every stage it names exists | a filter naming a parked team fails |
 | TC-04 | table render | every `skills/sales-*/assets/templates/*.md` | every table has ≤5 columns and a separator row | a table inside a fenced block is ignored |
