@@ -7,8 +7,8 @@ success_guarantee: the lead or partnership is ranked as worth pursuing or not, w
 area: sales
 served_by:
   agents: []
-  skills: []
-status: missing
+  skills: [sales-qualification]
+status: partial
 change: add-commercial-chain
 ---
 

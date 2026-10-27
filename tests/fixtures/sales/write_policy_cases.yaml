@@ -1,0 +1,830 @@
+# Write-policy cases for skills/sales-pipeline-custody/assets/write-policy.yaml (TC-01, TC-02).
+# Ported from the pilot package's write_policy.feature (meaningfy-sales 0.6.1). Each case is an action
+# (normalised tool, optional model, method, fields), the facts true for it, and the tier it must get.
+cases:
+- case: dossier-write
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - description
+  facts:
+  - previous_text_kept
+  tier: do
+- case: dossier-drops-text
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - description
+  tier: ask
+- case: correct-dormant-field
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - partner_name
+  facts:
+  - source_cited
+  - dormant
+  tier: do
+- case: overwrite-owner-field
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - partner_name
+  facts:
+  - source_cited
+  tier: ask
+- case: overwrite-no-source
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - email_from
+  facts:
+  - field_empty
+  tier: ask
+- case: forward-stage-move
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - stage_id
+  - team_id
+  facts:
+  - same_pipeline
+  - forward
+  - exit_met_with_evidence
+  - target_not_won_or_lost
+  - team_written_with_stage
+  tier: do
+- case: stage-move-into-won
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - stage_id
+  - team_id
+  facts:
+  - same_pipeline
+  - forward
+  - exit_met_with_evidence
+  - team_written_with_stage
+  tier: ask
+- case: stage-move-no-evidence
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - stage_id
+  - team_id
+  facts:
+  - same_pipeline
+  - forward
+  - target_not_won_or_lost
+  - team_written_with_stage
+  tier: ask
+- case: backward-move
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - stage_id
+  - team_id
+  facts:
+  - same_pipeline
+  - exit_met_with_evidence
+  - target_not_won_or_lost
+  - team_written_with_stage
+  tier: ask
+- case: stage-without-team
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - stage_id
+  facts:
+  - same_pipeline
+  - forward
+  - exit_met_with_evidence
+  - target_not_won_or_lost
+  tier: ask
+- case: pipeline-change
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - team_id
+  - stage_id
+  facts:
+  - forward
+  - exit_met_with_evidence
+  - target_not_won_or_lost
+  - team_written_with_stage
+  tier: ask
+- case: salesperson-change
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - user_id
+  facts:
+  - source_cited
+  tier: ask
+- case: add-existing-tag
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - tag_ids
+  facts:
+  - adding_existing_tag
+  tier: do
+- case: remove-owner-tag
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - tag_ids
+  tier: ask
+- case: lead-source-existing
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - source_id
+  - medium_id
+  facts:
+  - existing_value
+  tier: do
+- case: campaign-write
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - campaign_id
+  facts:
+  - existing_value
+  tier: ask
+- case: convert-with-signal
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - type
+  - team_id
+  - stage_id
+  facts:
+  - two_way_signal_cited
+  - to_opportunity
+  - first_stage
+  - team_written_with_stage
+  tier: do
+- case: convert-not-first-stage
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - type
+  - team_id
+  - stage_id
+  facts:
+  - two_way_signal_cited
+  - to_opportunity
+  - team_written_with_stage
+  tier: ask
+- case: convert-without-signal
+  group: Deals and leads
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - type
+  facts:
+  - to_opportunity
+  tier: ask
+- case: mark-won
+  group: Deals and leads
+  tool: odoo.execute_kw
+  method: action_set_won
+  facts:
+  - owner_yes
+  tier: ask
+- case: mark-lost
+  group: Deals and leads
+  tool: odoo.execute_kw
+  method: action_set_lost
+  tier: ask
+- case: create-lead-ok
+  group: Creating records
+  tool: odoo.create
+  model: crm.lead
+  facts:
+  - evidence_cited
+  - duplicate_check_passed
+  - within_five_creations
+  tier: do
+- case: create-sixth-lead
+  group: Creating records
+  tool: odoo.create
+  model: crm.lead
+  facts:
+  - evidence_cited
+  - duplicate_check_passed
+  tier: ask
+- case: create-without-dupcheck
+  group: Creating records
+  tool: odoo.create
+  model: res.partner
+  facts:
+  - evidence_cited
+  - within_five_creations
+  tier: ask
+- case: create-in-intake-plan
+  group: Creating records
+  tool: odoo.create
+  model: res.partner
+  facts:
+  - evidence_cited
+  - duplicate_check_passed
+  - in_approved_intake_plan
+  tier: do
+- case: create-sixth-no-plan
+  group: Creating records
+  tool: odoo.create
+  model: res.partner
+  facts:
+  - evidence_cited
+  - duplicate_check_passed
+  tier: ask
+- case: create-opportunity-no-signal
+  group: Creating records
+  tool: odoo.create
+  model: crm.lead
+  facts:
+  - evidence_cited
+  - duplicate_check_passed
+  - within_five_creations
+  - creates_opportunity_without_two_way_signal
+  tier: ask
+- case: create-contact-special-category
+  group: Creating records
+  tool: odoo.create
+  model: res.partner
+  facts:
+  - evidence_cited
+  - duplicate_check_passed
+  - within_five_creations
+  - special_category_data
+  tier: never
+- case: fill-empty-phone
+  group: Companies and people
+  tool: odoo.write
+  model: res.partner
+  fields:
+  - phone
+  facts:
+  - source_cited
+  - field_empty
+  tier: do
+- case: profile-write
+  group: Companies and people
+  tool: odoo.write
+  model: res.partner
+  fields:
+  - comment
+  facts:
+  - previous_text_kept
+  - source_cited
+  tier: do
+- case: profile-drops-text
+  group: Companies and people
+  tool: odoo.write
+  model: res.partner
+  fields:
+  - comment
+  facts:
+  - source_cited
+  tier: ask
+- case: profile-health
+  group: Companies and people
+  tool: odoo.write
+  model: res.partner
+  fields:
+  - comment
+  facts:
+  - previous_text_kept
+  - source_cited
+  - special_category_data
+  tier: never
+- case: profile-researched-family
+  group: Companies and people
+  tool: odoo.write
+  model: res.partner
+  fields:
+  - comment
+  facts:
+  - previous_text_kept
+  - source_cited
+  - researched_private_life
+  tier: never
+- case: set-employer-empty
+  group: Companies and people
+  tool: odoo.write
+  model: res.partner
+  fields:
+  - parent_id
+  facts:
+  - field_empty
+  - source_cited
+  tier: do
+- case: move-employer
+  group: Companies and people
+  tool: odoo.write
+  model: res.partner
+  fields:
+  - parent_id
+  - function
+  facts:
+  - source_cited
+  tier: ask
+- case: overwrite-dormant-contact-email
+  group: Companies and people
+  tool: odoo.write
+  model: res.partner
+  fields:
+  - email
+  facts:
+  - source_cited
+  - dormant
+  tier: ask
+- case: fill-empty-contact-email
+  group: Companies and people
+  tool: odoo.write
+  model: res.partner
+  fields:
+  - email
+  facts:
+  - source_cited
+  - field_empty
+  tier: do
+- case: set-company-flag-new-record
+  group: Companies and people
+  tool: odoo.write
+  model: res.partner
+  fields:
+  - is_company
+  facts:
+  - source_cited
+  - record_created_this_run
+  tier: do
+- case: create-activity
+  group: Notes and activities
+  tool: odoo.create
+  model: mail.activity
+  tier: do
+- case: mark-activity-done
+  group: Notes and activities
+  tool: odoo.execute_kw
+  method: action_feedback
+  facts:
+  - evidence_cited
+  tier: do
+- case: mark-done-no-evidence
+  group: Notes and activities
+  tool: odoo.execute_kw
+  method: action_feedback
+  tier: ask
+- case: internal-note
+  group: Notes and activities
+  tool: odoo.execute_kw
+  method: message_post
+  facts:
+  - subtype_note
+  tier: do
+- case: note-with-partner-ids
+  group: Notes and activities
+  tool: odoo.execute_kw
+  method: message_post
+  facts:
+  - subtype_note
+  - has_partner_ids
+  tier: never
+- case: note-with-mention
+  group: Notes and activities
+  tool: odoo.execute_kw
+  method: message_post
+  facts:
+  - subtype_note
+  - has_mention
+  tier: never
+- case: message-to-followers
+  group: Notes and activities
+  tool: odoo.execute_kw
+  method: message_post
+  facts:
+  - subtype_discussion
+  tier: never
+- case: note-researched-private
+  group: Notes and activities
+  tool: odoo.execute_kw
+  method: message_post
+  facts:
+  - subtype_note
+  - researched_private_life
+  tier: never
+- case: archive-via-write
+  group: Irreversible or silent actions
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - active
+  facts:
+  - source_cited
+  tier: never
+- case: unlink
+  group: Irreversible or silent actions
+  tool: odoo.unlink
+  model: crm.lead
+  tier: never
+- case: merge-leads
+  group: Irreversible or silent actions
+  tool: odoo.execute_kw
+  method: merge_opportunity
+  tier: never
+- case: toggle-active
+  group: Irreversible or silent actions
+  tool: odoo.execute_kw
+  method: toggle_active
+  tier: never
+- case: send-mail-from-odoo
+  group: Irreversible or silent actions
+  tool: odoo.create
+  model: mail.mail
+  tier: never
+- case: unknown-odoo-method
+  group: Irreversible or silent actions
+  tool: odoo.execute_kw
+  method: action_schedule_meeting
+  tier: never
+- case: import-records
+  group: Irreversible or silent actions
+  tool: odoo.import_records
+  tier: never
+- case: partner-merge
+  group: Irreversible or silent actions
+  tool: odoo.execute_kw
+  method: action_merge
+  tier: never
+- case: stage-config
+  group: Configuration and the unknown
+  tool: odoo.write
+  model: crm.stage
+  fields:
+  - rotting_threshold_days
+  tier: ask
+- case: lead-source-new-value
+  group: Configuration and the unknown
+  tool: odoo.create
+  model: utm.campaign
+  tier: ask
+- case: unlisted-odoo-model
+  group: Configuration and the unknown
+  tool: odoo.create
+  model: project.task
+  tier: ask
+- case: unknown-tool
+  group: Configuration and the unknown
+  tool: notion.create_page
+  tier: ask
+- case: stars-with-score
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - priority
+  facts:
+  - attention_score_cited
+  tier: do
+- case: stars-without-score
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - priority
+  facts:
+  - source_cited
+  - field_empty
+  tier: ask
+- case: stars-over-owner
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - priority
+  facts:
+  - attention_score_cited
+  - overrides_owner_value
+  tier: never
+- case: closing-date-stated-last
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - date_deadline
+  facts:
+  - source_cited
+  - stated_by_client_or_partner
+  - last_open_stage
+  tier: do
+- case: closing-date-early-stage
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - date_deadline
+  facts:
+  - source_cited
+  - stated_by_client_or_partner
+  tier: ask
+- case: closing-date-own-estimate
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - date_deadline
+  facts:
+  - source_cited
+  - last_open_stage
+  - own_estimate
+  tier: never
+- case: revenue-stated-last
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - expected_revenue
+  facts:
+  - source_cited
+  - stated_by_client_or_partner
+  - last_open_stage
+  tier: do
+- case: revenue-own-estimate
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: crm.lead
+  fields:
+  - expected_revenue
+  - probability
+  facts:
+  - own_estimate
+  tier: never
+- case: redate-with-reason
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: mail.activity
+  fields:
+  - date_deadline
+  - note
+  facts:
+  - reason_in_note
+  tier: do
+- case: redate-silently
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: mail.activity
+  fields:
+  - date_deadline
+  tier: ask
+- case: activity-summary-edit
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.write
+  model: mail.activity
+  fields:
+  - summary
+  tier: do
+- case: saved-filter-create
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.create
+  model: ir.filters
+  tier: ask
+- case: deadline-activity-type
+  group: Stars, closing dates, next actions and saved filters
+  tool: odoo.create
+  model: mail.activity.type
+  tier: ask
+- case: gmail-draft
+  group: Mail and calendar
+  tool: gmail.create_draft
+  tier: do
+- case: gmail-draft-with-price
+  group: Mail and calendar
+  tool: gmail.create_draft
+  facts:
+  - commits_meaningfy_unapproved
+  tier: ask
+- case: gmail-draft-without-colleague-cc
+  group: Mail and calendar
+  tool: gmail.create_draft
+  facts:
+  - colleague_not_in_cc
+  tier: ask
+- case: gmail-update-own-without-cc
+  group: Mail and calendar
+  tool: gmail.update_draft
+  facts:
+  - draft_id_in_run_log
+  - colleague_not_in_cc
+  tier: ask
+- case: gmail-update-own-draft
+  group: Mail and calendar
+  tool: gmail.update_draft
+  facts:
+  - draft_id_in_run_log
+  tier: do
+- case: gmail-update-owner-draft
+  group: Mail and calendar
+  tool: gmail.update_draft
+  tier: ask
+- case: gmail-update-own-with-commitment
+  group: Mail and calendar
+  tool: gmail.update_draft
+  facts:
+  - draft_id_in_run_log
+  - commits_meaningfy_unapproved
+  tier: ask
+- case: draft-to-authority-open-tender
+  group: Mail and calendar
+  tool: gmail.create_draft
+  facts:
+  - to_contracting_authority_open_call
+  tier: never
+- case: gmail-send
+  group: Mail and calendar
+  tool: gmail.send_message
+  facts:
+  - owner_yes
+  tier: never
+- case: gmail-reply
+  group: Mail and calendar
+  tool: gmail.reply
+  tier: never
+- case: gmail-delete-draft
+  group: Mail and calendar
+  tool: gmail.delete_draft
+  facts:
+  - draft_id_in_run_log
+  tier: never
+- case: gmail-trash
+  group: Mail and calendar
+  tool: gmail.trash_thread
+  tier: never
+- case: gmail-label-existing
+  group: Mail and calendar
+  tool: gmail.label_thread
+  facts:
+  - existing_label
+  tier: do
+- case: gmail-create-label
+  group: Mail and calendar
+  tool: gmail.create_label
+  tier: ask
+- case: calendar-prep-block
+  group: Mail and calendar
+  tool: calendar.create_event
+  tier: do
+- case: calendar-invite
+  group: Mail and calendar
+  tool: calendar.create_event
+  facts:
+  - has_guests
+  tier: never
+- case: calendar-move-own
+  group: Mail and calendar
+  tool: calendar.update_event
+  facts:
+  - event_id_in_run_log
+  tier: do
+- case: calendar-move-owner-event
+  group: Mail and calendar
+  tool: calendar.update_event
+  tier: ask
+- case: calendar-respond
+  group: Mail and calendar
+  tool: calendar.respond_to_event
+  tier: never
+- case: drive-share
+  group: Other systems
+  tool: drive.share_file
+  tier: never
+- case: drive-create
+  group: Other systems
+  tool: drive.create_file
+  tier: ask
+- case: slack-send
+  group: Other systems
+  tool: slack.send_message
+  tier: never
+- case: slack-schedule
+  group: Other systems
+  tool: slack.schedule_message
+  tier: never
+- case: confluence-page
+  group: Other systems
+  tool: atlassian.createConfluencePage
+  tier: ask
+- case: miro-share
+  group: Other systems
+  tool: miro.board_share
+  tier: never
+- case: memory-remember
+  group: Other systems
+  tool: memory.remember
+  tier: never
+- case: browser-form
+  group: Other systems
+  tool: browser.form_input
+  tier: never
+- case: browser-click-submit
+  group: Other systems
+  tool: browser.computer
+  facts:
+  - submits_form
+  tier: never
+- case: schedule-task
+  group: Other systems
+  tool: trigger.create_trigger
+  tier: never
+- case: vault-run-note
+  group: Run notes and the owner's input
+  tool: vault.write
+  facts:
+  - in_grooming_session_folder
+  - agent_created_note
+  - owner_input_unchanged
+  - reread_before_write
+  tier: do
+- case: vault-write-answer
+  group: Run notes and the owner's input
+  tool: vault.write
+  facts:
+  - in_grooming_session_folder
+  - agent_created_note
+  - reread_before_write
+  - writes_owner_input
+  tier: never
+- case: vault-edit-owner-note
+  group: Run notes and the owner's input
+  tool: vault.write
+  facts:
+  - not_agent_created_note
+  tier: never
+- case: vault-no-reread
+  group: Run notes and the owner's input
+  tool: vault.write
+  facts:
+  - in_grooming_session_folder
+  - agent_created_note
+  - owner_input_unchanged
+  tier: ask
+- case: skills-via-run-note
+  group: Skills maintenance
+  tool: vault.write
+  facts:
+  - in_grooming_session_folder
+  - agent_created_note
+  - owner_input_unchanged
+  - reread_before_write
+  - edits_skill
+  tier: never
+# Added in skillery (TC-02): one case for each entry the ported rows did not exercise.
+- case: gmail-unlabel-own-label
+  group: Other connectors
+  tool: gmail.unlabel_message
+  facts: [label_applied_by_agent]
+  tier: do
+- case: gmail-unlabel-owner-label
+  group: Other connectors
+  tool: gmail.unlabel_thread
+  tier: ask
+- case: slack-draft
+  group: Other connectors
+  tool: slack.send_message_draft
+  tier: ask
+- case: miro-create
+  group: Other connectors
+  tool: miro.board_create
+  tier: ask
+- case: overleaf-write
+  group: Other connectors
+  tool: overleaf.write_section
+  tier: ask
+- case: docs-write
+  group: Other connectors
+  tool: docs.update
+  tier: ask
+- case: docs-delete
+  group: Other connectors
+  tool: docs.delete
+  tier: never

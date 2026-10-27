@@ -20,9 +20,10 @@ Qualify the relationship and hold the free→paid boundary. No deliverable exist
 owed. See
 [`engagement-lifecycle.md#presale-free-no-deliverable`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#presale-free-no-deliverable)
 for the boundary itself, and [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for who is
-accountable.
+accountable. Daily grooming, qualification and meeting preparation run through the `sales-agent`
+([`sales-agent.md`](../../environment/sales-agent.md)).
 
-## 2. Discovery & Onboarding (Light or Deep)
+## 2. Discovery & Onboarding (discovery workshop or Proof of Value)
 
 Move the qualified relationship into the paid package, at whichever depth the client chooses. See
 [`engagement-lifecycle.md#discovery--onboarding-paid-two-depths`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#discovery--onboarding-paid-two-depths)
@@ -32,7 +33,7 @@ Technical Consultant.
 
 ## 3. Contracting and hand-off
 
-Once Discovery & Onboarding produces its outcome (the Decision Package, at the Deep tier), the
+Once Discovery & Onboarding produces its outcome (the Decision Package, at the Proof of Value), the
 engagement either hands off into a build contract or closes without one. See
 [`engagement-lifecycle.md#the-outcome-semantic-layer-adoption`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#the-outcome-semantic-layer-adoption)
 for what that hand-off carries, and [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for
@@ -44,7 +45,7 @@ Once a contract closes, the relationship does not. See
 [`engagement-lifecycle.md#repeat-clients`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#repeat-clients) for what that
 relationship work is and why it has no closing condition, and
 [`roles-and-raci.md`](../roles-and-raci.md#raci-matrix) for the Solution Shipper's hand-off into
-this stage.
+this stage. Account health and outcome reviews are `sales-accounts` (customer success).
 
 ---
 

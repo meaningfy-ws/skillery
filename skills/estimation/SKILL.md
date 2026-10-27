@@ -117,7 +117,7 @@ consume.
 See also `epic-planning` for the build breakdown an estimate decomposes against; the link is
 one-way, since shaping an EPIC needs no estimate.
 
-**Related:** `proposal-writing`, `decision-package`.
+**Related:** `proposal-writing`, `decision-package`, `sales-qualification`, `sales-conversations` (cite this skill for any price in a draft).
 
 ## Tone & style
 

@@ -5,13 +5,13 @@
 
 ## Your stages
 
-- **Discovery & Onboarding, Light tier (paid):** you do the assessment work (`R`);
+- **Discovery & Onboarding, discovery workshop (paid):** you do the assessment work (`R`);
   Sales/Presales stays accountable (`A`). See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
-- **Discovery & Onboarding, Deep tier (paid):** you are accountable (`A/R`) for producing the
+- **Discovery & Onboarding, Proof of Value (paid):** you are accountable (`A/R`) for producing the
   Decision Package. See
   [`../../ai-sales/engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#discovery--onboarding-paid-two-depths).
-- **Requirements & UC, shallow depth:** carried via the Deep tier, you are accountable (`A/R`)
+- **Requirements & UC, shallow depth:** carried via the Proof of Value, you are accountable (`A/R`)
   for the White use cases feeding the Decision. See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
 
@@ -41,7 +41,7 @@ Full list: [`roles-and-raci.md`](../../roles-and-raci.md#technical-consultant).
 
 ## Your done
 
-The Deep tier is done when the Decision Package exists (recommendation, in/out scope, pilot→scale
+The Proof of Value is done when the Decision Package exists (recommendation, in/out scope, pilot→scale
 roadmap, buy/build/defer, and the execution brief) and the engagement has explicitly stated that
 execution is always a separate engagement. See
 [`../../ai-sales/engagement-lifecycle.md`](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md#discovery--onboarding-paid-two-depths).

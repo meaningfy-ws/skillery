@@ -2,7 +2,7 @@
 
 Every Meaningfy engagement leads to the same place: **Semantic Layer adoption**, but no two
 clients buy the same slice of it. A client's first paid step is
-[Discovery & Onboarding](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md), whose Deep tier produces the **Decision
+[Discovery & Onboarding](../../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md), whose Proof of Value produces the **Decision
 Package** (a recommendation, in/out scope, a pilot-to-scale roadmap, and a buy/build/defer call);
 from there, a build contract scopes against **one** of the
 building blocks below, **several** of them, or the **whole** Semantic Layer, always as a controlled,
@@ -39,7 +39,7 @@ position: the RACI matrix names the activity (`CBLC-lite`/`CBLC-standalone` in
 [`roles-and-raci.md`](../../roles-and-raci.md)) but no skill owns it.
 
 Prices and durations are **not invented here**. Where the repo already states one, this catalogue
-cites it: the Discovery & Onboarding Light (1–2 day workshop) and Deep (4–6 weeks, calendar-boxed)
+cites it: the Discovery & Onboarding discovery workshop (1–2 days) and Proof of Value (4–6 weeks, calendar-boxed)
 tiers. Everything downstream of Discovery & Onboarding is scoped per engagement, priced through the
 [Decision Package](../../../../skills/decision-package/SKILL.md) and the
 [estimation](../../../../skills/estimation/SKILL.md) discipline, not guessed at here.

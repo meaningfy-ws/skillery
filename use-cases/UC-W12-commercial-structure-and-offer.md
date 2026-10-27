@@ -55,7 +55,7 @@ proposed change to one is flagged for the owner.
 
 - 1a. No market brief exists: the agent drafts against the target as stated, marks it unverified and
   recommends UC-W11.
-- 3a. The draft conflicts with an existing commercial fact (for example, the Deep tier is
+- 3a. The draft conflicts with an existing commercial fact (for example, the Proof of Value is
   calendar-based and not priced by man-day): the agent flags it; the owner decides, and a change goes
   to the reference that owns the fact.
 - 7a. The owner rejects a price: the agent returns the trade-off (scope against price), never a

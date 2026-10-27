@@ -53,6 +53,8 @@ implement, and the reason behind the steps of [`setup-claude.md`](setup-claude.m
   needs an external scheduler.
 - **G-5** — opencode has no scheduler: a `scheduled` agent renders as `mode: subagent` with the gap
   "run `opencode run --agent <name>` from an external scheduler".
+  Verified 2026-10-27 (opencode 2.1.4): `opencode run --agent sales-agent` starts the
+  `subagent`-mode agent directly, so `agentModes.scheduled` stays `subagent`.
 - **G-6** — a Claude `tools` allowlist is not restrictive on opencode (all tools are enabled by
   default; the rendered `tools` map only switches tools on). Only `disallowedTools`, rendered as
   `permission: deny`, restricts on both CLIs. Follow-up: render the allowlist as permissions.

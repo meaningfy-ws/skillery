@@ -34,11 +34,11 @@ up front; they are not sub-steps of the SDLC loop.
 ### PROJECT tier (upfront, human-led)
 
 1. **Requirements & use-case elicitation**: one capability invoked at two depths, not a pipeline
-   stage. The **shallow** depth (White use cases only) feeds Discovery & Onboarding's Deep tier and is
+   stage. The **shallow** depth (White use cases only) feeds Discovery & Onboarding's Proof of Value and is
    documented in
    [`skills/semantic-consulting-coach/references/engagement-lifecycle.md`](../../../skills/semantic-consulting-coach/references/engagement-lifecycle.md)
    (cited here, not restated). The **deep** depth (White + Blue) feeds architecture below, whether
-   handed off from a completed Deep-tier engagement or elicited fresh when a client comes straight to
+   handed off from a completed Proof of Value engagement or elicited fresh when a client comes straight to
    build.
 2. **ADLC: architecture & system design.** Owner: [`architecture`](../../../skills/architecture/SKILL.md)
    (ADRs, C4, UC White/Blue). *Stable, and done FIRST*: the conceptual/system model is front-loaded

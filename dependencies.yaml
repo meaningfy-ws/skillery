@@ -115,7 +115,7 @@
   source: 'hosted: Google''s MCP endpoint'
   pin: 'unpinned: latest at install'
   provenance: not reviewed
-  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  used_by: the skills and agents that query it (see `mcp-setup.md`); `sales-agent` and the five `sales-*` skills (see `sales-agent.md`)
   opencode_status: native
   claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
   opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
@@ -128,7 +128,7 @@
   source: PyPI odoo-mcp-multi
   pin: 'unpinned: latest at install'
   provenance: not reviewed
-  used_by: the skills and agents that query it (see `mcp-setup.md`)
+  used_by: the skills and agents that query it (see `mcp-setup.md`); `sales-agent` and the five `sales-*` skills (see `sales-agent.md`)
   opencode_status: native
   claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
   opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)

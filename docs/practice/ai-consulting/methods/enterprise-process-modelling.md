@@ -6,7 +6,7 @@ A client-facing discovery technique for mapping how work actually flows through 
 today: who does what, in what order, and where a process depends on another team, system, or
 external party.
 
-## Why it matters in a Deep-tier engagement
+## Why it matters in a Proof of Value engagement
 
 A process map would sharpen landscape reading and gap analysis: instead of describing legacy
 constraints in prose, the engagement could point to a specific handoff or bottleneck on the map and

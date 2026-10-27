@@ -11,6 +11,33 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.5.0] - 2026-10-27
+
+### Added
+
+- **The sales agent and five sales skills in `meaningfy-sales`.** Install the bundle to get
+  `sales-agent`, which grooms your Odoo pipelines every working day, prepares meetings and drafts,
+  and asks you only through decision cards at the top of its run note. Its skills: `sales-operations`,
+  `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`. It needs
+  Odoo, Google Workspace and a `sales-config.yaml` in your vault; setup and scheduling are in
+  [`docs/environment/sales-agent.md`](docs/environment/sales-agent.md).
+  Its daily note is one file a day: a morning plan (whom to talk to, answer or chase, re-checked
+  against Odoo so finished work is not carried) and an evening record that gives every deal touched
+  a next step. Every item needing attention is listed, ranked P1–P3 with day-over-day counts; the
+  weekly review and plan caps your daily actions. Say "Owner: <deal> is won" or "lost" and it is
+  done. Your booking link and an offer catalogue note (offerings, commercial structures, approved
+  prices) live in your vault configuration.
+- **Decision cards.** `executive-communication` now owns the shape of a request a reader decides
+  later and alone; `meaningfy-voice` gains the outreach-email channel.
+
+### Changed
+
+- **The offer ladder is renamed:** the Light tier is now the **discovery workshop**, the Deep tier the
+  **Proof of Value**, and the build that follows it **Scaling**. What each includes is unchanged.
+- **Qualification has one owner:** `sales-qualification` holds the prospect questions;
+  `semantic-consulting-coach` keeps the coaching posture, and `proposal-writing` starts from a
+  qualified need.
+
 ## [3.4.0] - 2026-10-27
 
 ### Fixed
