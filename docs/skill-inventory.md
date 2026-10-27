@@ -5,7 +5,7 @@
      agent's frontmatter (agents/*.md), bundles.yaml and facets.yaml.
      tests/test_skill_inventory.py fails the build if this drifts. -->
 
-33 skills and 6 agents across 6 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
+34 skills and 6 agents across 6 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
 
 ## Map
 
@@ -30,6 +30,7 @@ flowchart LR
   subgraph b_meaningfy_sales["meaningfy-sales"]
     s_proposal_writing["proposal-writing"]
     s_estimation["estimation"]
+    s_sales_pipeline_custody["sales-pipeline-custody"]
     a_proposal_writer{{"proposal-writer"}}
   end
   subgraph b_meaningfy_architecture["meaningfy-architecture"]
@@ -72,6 +73,7 @@ flowchart LR
   p_content("content<br/><sub>write and explain for people: docs, posts, blogs, messages</sub>")
   p_offers("offers<br/><sub>commercial offers, packaging, pitch and pricing</sub>")
   p_proposals("proposals<br/><sub>proposal and offer documents</sub>")
+  p_crm("crm<br/><sub>create, manage and groom deals and contacts</sub>")
   p_devops("devops<br/><sub>environments, CI/CD, releases and operations</sub>")
   p_knowledge("knowledge<br/><sub>the owner's personal notes, plans and rhythm</sub>")
 
@@ -95,6 +97,7 @@ flowchart LR
   s_modelling_conventions --> p_modelling
   s_project_setup --> p_software_development
   s_proposal_writing --> p_proposals
+  s_sales_pipeline_custody --> p_crm
   s_semantic_consulting_coach --> p_advising
   s_spec_stewardship --> p_software_development
   s_technical_writing --> p_content
@@ -143,6 +146,7 @@ flowchart LR
   style p_content fill:#eef1fb,color:#000000,stroke:#333,stroke-width:1.5px
   style p_offers fill:#f1f8e9,color:#000000,stroke:#333,stroke-width:1.5px
   style p_proposals fill:#fdeef0,color:#000000,stroke:#333,stroke-width:1.5px
+  style p_crm fill:#f6f5ef,color:#000000,stroke:#333,stroke-width:1.5px
   style p_devops fill:#eef7fb,color:#000000,stroke:#333,stroke-width:1.5px
   style p_knowledge fill:#fdf6e3,color:#000000,stroke:#333,stroke-width:1.5px
   style s_architecture fill:#1e1e1e,color:#ffffff,stroke:#000
@@ -165,6 +169,7 @@ flowchart LR
   style s_modelling_conventions fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_project_setup fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_proposal_writing fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_sales_pipeline_custody fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_semantic_consulting_coach fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_spec_stewardship fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_technical_writing fill:#1e1e1e,color:#ffffff,stroke:#000
@@ -204,7 +209,7 @@ flowchart LR
 
 ## Relations
 
-Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (63 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (92 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 155 relation edges plus 33 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
+Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (63 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (95 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 158 relation edges plus 34 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
 
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 12, 'rankSpacing': 45, 'curve': 'basis'}}}%%
@@ -225,6 +230,7 @@ flowchart LR
   subgraph b_meaningfy_sales["meaningfy-sales"]
     s_proposal_writing["proposal-writing"]
     s_estimation["estimation"]
+    s_sales_pipeline_custody["sales-pipeline-custody"]
   end
   subgraph b_meaningfy_architecture["meaningfy-architecture"]
     s_architecture["architecture"]
@@ -377,6 +383,9 @@ flowchart LR
   s_project_setup -.-> s_meaningfy_release
   s_project_setup -.-> s_linkml_engineering
   s_proposal_writing -.-> s_writing_antipatterns
+  s_sales_pipeline_custody -.-> s_guardrails
+  s_sales_pipeline_custody -.-> s_executive_communication
+  s_sales_pipeline_custody -.-> s_semantic_consulting_coach
   s_semantic_consulting_coach -.-> s_proposal_writing
   s_semantic_consulting_coach -.-> s_writing_antipatterns
   s_spec_stewardship -.-> s_bdd_gherkin
@@ -438,6 +447,7 @@ flowchart LR
   style s_modelling_conventions fill:#6b1f4d,color:#ffffff,stroke:#000
   style s_project_setup fill:#7a5c00,color:#ffffff,stroke:#000
   style s_proposal_writing fill:#7a2030,color:#ffffff,stroke:#000
+  style s_sales_pipeline_custody fill:#4a4a3a,color:#ffffff,stroke:#000
   style s_semantic_consulting_coach fill:#0f5c48,color:#ffffff,stroke:#000
   style s_spec_stewardship fill:#7a5c00,color:#ffffff,stroke:#000
   style s_technical_writing fill:#2b3a67,color:#ffffff,stroke:#000
@@ -484,6 +494,7 @@ The commercial role: proposal and offer writing, and estimation.
 |---|---|---|---|---|---|---|---|---|---|
 | [`proposal-writing`](../skills/proposal-writing/SKILL.md) | Produce the proposal + Statement of Work (SoW) that frames the paid Decision Phase (P1) offer — with an explicit in/out scope boundary, priced as a fixed frame. | `proposals` | `sales` | `semantic-data` | `profiled` | `sell` | `stable` | `estimation`, `executive-communication`, `decision-package`, `semantic-consulting-coach` | `estimation`, `decision-package`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` |
 | [`estimation`](../skills/estimation/SKILL.md) | A lightweight fixed-cost scoping / estimation discipline that de-risks fixed-cost bids — a CHECKLIST + METHOD, not a heavy model. | `offers` | `sales` | `generic` | `reusable` | `sell` | `stable` | `proposal-writing`, `decision-package` | `proposal-writing`, `decision-package` |
+| [`sales-pipeline-custody`](../skills/sales-pipeline-custody/SKILL.md) | Use this skill when a deal or lead in Meaningfy's Odoo CRM must be placed in a pipeline, moved, converted, starred, given a next action, checked for rot or groomed, or before any write a sales agent makes to Odoo, mail, calendar or run notes ("which pipeline does this deal belong to", "is this deal rotting", "may the sales agent do this"); it holds the five pipelines, their stages and exit criteria, the attention filters and the three-tier write policy. | `crm` | `sales` | `generic` | `precise` | `sell` | `experimental` | — | `sales-operations`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `guardrails`, `executive-communication`, `semantic-consulting-coach` |
 | [`proposal-writer`](../agents/proposal-writer.md) *(agent)* | Writes a sendable proposal or offer email from client requirements, asking the questions it needs through its output, with estimate and executive framing. | `proposals` | `sales` | `semantic-data` | `profiled` | `sell` | `experimental` | `proposal-writing`, `estimation`, `executive-communication` | — |
 
 ## meaningfy-architecture
@@ -549,7 +560,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | `content` | write and explain for people: docs, posts, blogs, messages | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `executive-communication` |
 | `offers` | commercial offers, packaging, pitch and pricing | `estimation` |
 | `proposals` | proposal and offer documents | `proposal-writing`, `proposal-writer` *(agent)* |
-| `crm` | create, manage and groom deals and contacts | — |
+| `crm` | create, manage and groom deals and contacts | `sales-pipeline-custody` |
 | `devops` | environments, CI/CD, releases and operations | `ci-cd-delivery`, `meaningfy-release` |
 | `knowledge` | the owner's personal notes, plans and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
 
@@ -559,7 +570,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 |---|---|---|
 | `coding` | building software with AI agents | `meaningfy-git-workflow`, `guardrails`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `consulting` | advising clients | `semantic-consulting-coach`, `decision-package` |
-| `sales` | winning and pricing work | `proposal-writing`, `estimation`, `proposal-writer` *(agent)* |
+| `sales` | winning and pricing work | `proposal-writing`, `estimation`, `sales-pipeline-custody`, `proposal-writer` *(agent)* |
 | `personal` | the owner's own vault and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
 | `operations` | running infrastructure, CI/CD and monitoring | — |
 | `business` | running and growing the company, negotiation and internal communication | — |
@@ -571,7 +582,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `generic` | no domain knowledge; transfers anywhere | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`, `executive-communication`, `estimation`, `clarity-gate`, `bdd-gherkin` |
+| `generic` | no domain knowledge; transfers anywhere | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`, `executive-communication`, `estimation`, `sales-pipeline-custody`, `clarity-gate`, `bdd-gherkin` |
 | `semantic-data` | semantic technologies, ontologies, data governance | `semantic-consulting-coach`, `decision-package`, `proposal-writing`, `linkml-engineering`, `proposal-writer` *(agent)* |
 | `modelling` | conceptual and system modelling | `architecture`, `conceptual-modelling`, `modelling-conventions`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
 | `python` | Python code and repositories | `meaningfy-code-review`, `cosmic-python`, `project-setup`, `implementer` *(agent)*, `code-reviewer` *(agent)* |
@@ -586,13 +597,13 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 |---|---|---|
 | `reusable` | R: a reusable core; a fix adds no domain content | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `guardrails`, `estimation`, `architecture`, `modelling-conventions`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `system-architect` *(agent)* |
 | `profiled` | C: a core with profiles; a fix adds a switch or a profile | `decision-package`, `executive-communication`, `proposal-writing`, `proposal-writer` *(agent)* |
-| `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `semantic-consulting-coach`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
+| `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `semantic-consulting-coach`, `sales-pipeline-custody`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 
 ### stage
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `sell` | winning the work | `proposal-writing`, `estimation`, `proposal-writer` *(agent)* |
+| `sell` | winning the work | `proposal-writing`, `estimation`, `sales-pipeline-custody`, `proposal-writer` *(agent)* |
 | `advise` | the decision phase with a client | `semantic-consulting-coach`, `decision-package` |
 | `shape` | shaping work and its plan | `epic-planning`, `spec-stewardship`, `clarity-gate`, `epic-planner` *(agent)* |
 | `design` | designing the system or model | `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
@@ -605,6 +616,6 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `experimental` | in trial; may change or go | `proposal-writer` *(agent)*, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
+| `experimental` | in trial; may change or go | `sales-pipeline-custody`, `proposal-writer` *(agent)*, `system-architect` *(agent)*, `conceptual-modeller` *(agent)* |
 | `stable` | in use and maintained | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `meaningfy-git-workflow`, `guardrails`, `semantic-consulting-coach`, `decision-package`, `executive-communication`, `proposal-writing`, `estimation`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `deprecated` | kept for now; do not start using it | — |

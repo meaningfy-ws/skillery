@@ -7,7 +7,7 @@ success_guarantee: the CRM is groomed, each account's history is current, and ev
 area: sales
 served_by:
   agents: []
-  skills: []
+  skills: [sales-pipeline-custody]
 status: partial
 change: add-sales-bundle
 ---

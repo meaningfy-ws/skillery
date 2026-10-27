@@ -80,6 +80,11 @@ probes:
   - probe: "write the proposal and SoW for the Decision Phase"
     expect: proposal-writing
     near_miss_of: executive-communication
+  - probe: "is this Odoo deal rotting, and may the sales agent move it to the next stage?"
+    expect: sales-pipeline-custody
+  - probe: "write the proposal for the workshop deal in our Odoo pipeline"
+    expect: proposal-writing
+    near_miss_of: sales-pipeline-custody
   - probe: "move this proposed note into the project"
     expect: vault-promote
     near_miss_of: vault-tidy

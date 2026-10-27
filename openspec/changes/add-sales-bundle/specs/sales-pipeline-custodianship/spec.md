@@ -13,7 +13,7 @@ and prices SHALL live in the installation's `sales-config.yaml` or be read live 
 - **THEN** the run writes no Odoo record and opens its note with `HALT: configuration <key> missing`
 
 ### Requirement: Every CRM action has exactly one write tier
-The write policy SHALL classify every capability class as do-and-log, ask-first or never; when
+The write policy SHALL classify every write-capable tool action as do-and-log, ask-first or never; when
 several entries match, the most restrictive SHALL win (DEC-4).
 
 #### Scenario Outline: An action is classified
@@ -22,11 +22,11 @@ several entries match, the most restrictive SHALL win (DEC-4).
 
   | action | tier |
   |---|---|
-  | crm.write next activity on an open deal | do-and-log |
-  | crm.write stage won or lost | ask-first |
-  | crm.delete any record | never |
-  | mail.send to a client | never |
-  | crm.create a sixth record in one run | ask-first |
+  | `odoo.create` of a `mail.activity` on an open deal | do-and-log |
+  | `odoo.execute_kw` `action_set_won` | ask-first |
+  | `odoo.unlink` on any record | never |
+  | `gmail.send_message` to a client | never |
+  | `odoo.create` of a sixth `crm.lead` in one run | ask-first |
 
 ### Requirement: The agent never acts irreversibly and never bulk-imports
 The agent SHALL search Odoo before creating a record, SHALL create records one at a time under the

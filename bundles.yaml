@@ -27,6 +27,7 @@ bundles:
     skills:
       - proposal-writing
       - estimation
+      - sales-pipeline-custody
     agents: [proposal-writer]
     requires: [meaningfy-consulting]
   - name: meaningfy-architecture
