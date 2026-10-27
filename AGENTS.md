@@ -66,8 +66,8 @@ improvement loop and the Definition of Done. This binding mandates it; it does n
   of [`facets.yaml`](facets.yaml) under `metadata`.
 - **Assigning to a bundle** — every skill and every agent is declared in exactly one bundle of
   [`bundles.yaml`](bundles.yaml), the one bundle definition. Then run `make bundles`, which renders
-  `.claude-plugin/marketplace.json`, the committed `bundles/` tree (real copies of skills/agents, plus the
-  `openspec/schemas/meaningfy` copy) and
+  `.claude-plugin/marketplace.json`, the committed `bundles/` tree (symlinks into skills/agents plus one
+  `.claude-plugin/plugin.json` per bundle), the `openspec/schemas/meaningfy` copy and
   `tools/opencode-catalogue.json`. **Never write into `bundles/` (or those two files) by hand —
   always regenerate them with `make bundles` and commit the result;** `make validate` and CI fail on
   any difference.

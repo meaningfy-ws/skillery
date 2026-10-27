@@ -14,8 +14,8 @@ jobs:
       - run: python -m tools.bundle_gen generate
       - run: git diff --exit-code -- .claude-plugin tools/opencode-catalogue.json package.json bundles openspec/schemas
       - run: test -z "$(git status --porcelain -- bundles)"
-      # no tracked symlinks anywhere: claude.ai's marketplace sync fails on them
-      - run: test -z "$(git ls-files -s | awk '$1 == 120000')"
+      # tracked symlinks only under bundles/ (generated links into skills/ and agents/)
+      - run: test -z "$(git ls-files -s | awk '$1 == 120000 && $4 !~ /^bundles\//')"
       - run: python -m tools.bundle_gen check
       - run: python -m pytest tests/ -q
 

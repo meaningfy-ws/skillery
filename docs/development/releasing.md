@@ -18,7 +18,8 @@ convention on top of it.
   picks up unreleased work: re-add it. claude.ai (Claude Desktop) has no branch field and reads the
   default branch, `develop`.
 - **`bundles/` is committed everywhere and never hand-edited.** `make bundles` generates it as
-  copies of `skills/` and `agents/` (no symlinks: claude.ai's sync fails on them); commit the result.
+  relative symlinks into `skills/` and `agents/` plus one `.claude-plugin/plugin.json` per bundle
+  (claude.ai's sync, used by Claude Desktop, needs the `plugin.json`); commit the result.
 - **Release tags live on `releases`.** `vX.Y.Z` points at the release commit on `releases`, the tree
   people install, so `meaningfy-ws/skillery#vX.Y.Z` pins one exact release. The workflow creates the
   tag; nobody tags by hand. (Releases up to `v3.3.0` were tagged on `main`.)
