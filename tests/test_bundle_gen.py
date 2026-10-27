@@ -58,8 +58,9 @@ def test_tc01_marketplace_entries(tmp_path):
     assert list(data) == ["name", "owner", "metadata", "plugins"]
     assert data["metadata"] == {"description": "Catalogue", "version": "1.2.3"}
     assert data["plugins"] == [
-        {"name": "b-one", "description": "First — café", "source": "./bundles/b-one"},
-        {"name": "b-two", "description": "Second", "source": "./bundles/b-two"},
+        # each plugin carries VERSION, so /plugin shows the release, not a commit SHA
+        {"name": "b-one", "description": "First — café", "version": "1.2.3", "source": "./bundles/b-one"},
+        {"name": "b-two", "description": "Second", "version": "1.2.3", "source": "./bundles/b-two"},
     ]
     assert "café".encode() in market  # ensure_ascii=False
     assert market.endswith(b"}\n")
@@ -245,7 +246,7 @@ def test_link_gate_is_skipped_without_a_bundles_tree(tmp_path):
 
 
 def test_unreleased_lists_the_wip_paths(tmp_path):
-    # rebundle-by-activity D-14: what dist.yml drops from the published tree.
+    # rebundle-by-activity D-14: what releases.yml drops from the published tree.
     repo = _repo(tmp_path)
     (repo / "skills" / "s3").mkdir()
     (repo / "skills" / "s3" / "SKILL.md").write_text("---\nname: s3\ndescription: x\n---\n", encoding="utf-8")

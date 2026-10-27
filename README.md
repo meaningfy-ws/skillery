@@ -68,9 +68,25 @@ copy-paste step-by-step (bundles, mandatory deps, root binding, spine commands, 
 want one, and a verify step) from there. You shouldn't need to go looking for any other doc to get
 installed.
 
-> **Installed Claude Code from `meaningfy-ws/skillery` before the `dist` branch?** Re-add the
-> marketplace once: `/plugin marketplace remove meaningfy-skillery`, then
-> `/plugin marketplace add meaningfy-ws/skillery#dist`, and reinstall your bundles.
+**Always install from the `releases` branch** — it holds only released skills and agents and moves
+only at a release ([the convention](docs/development/releasing.md)). `develop` is for contributors
+and is not installable.
+
+```bash
+# Claude Code
+/plugin marketplace add meaningfy-ws/skillery#releases
+/plugin install meaningfy-core@meaningfy-skillery        # then the bundles for your role
+
+# opencode
+npm exec --yes --package='git+https://github.com/meaningfy-ws/skillery.git#releases' \
+  -- skillery-opencode install meaningfy-core --global
+```
+
+Pin one exact release with `#vX.Y.Z` instead of `#releases` (from the release after 3.3.0).
+
+> **Added the marketplace from `meaningfy-ws/skillery`, `#develop` or `#dist`?** It does not follow
+> releases. Re-add it once: `/plugin marketplace remove meaningfy-skillery`, then
+> `/plugin marketplace add meaningfy-ws/skillery#releases`, and reinstall your bundles.
 
 ## Getting started
 
@@ -191,7 +207,7 @@ skillery/
 ├── openspec/      # live OpenSpec instance + forked `meaningfy` schema (skillery runs the spine on itself)
 ├── tools/ + tests/# the validator (make validate), the bundle renderer (make bundles), the opencode installer
 ├── bundles.yaml   # the one bundle definition: each skill and agent in exactly one bundle
-├── bundles/       # GENERATED, git-ignored per-bundle plugin roots (symlinks); make bundles locally, published on the dist branch
+├── bundles/       # GENERATED, git-ignored per-bundle plugin roots (symlinks); make bundles locally, published only on the `releases` branch
 ├── tools/opencode-catalogue.json  # RENDERED opencode catalogue (membership + agent frontmatter); make bundles — never hand-edit
 └── .claude-plugin/# RENDERED marketplace (5 role bundles + 1 workflow bundle); make bundles — never hand-edit
 ```
