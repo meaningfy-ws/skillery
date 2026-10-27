@@ -121,8 +121,8 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 ## 8. Close
 
-- [ ] 8.1 `make validate`, `make validate-spine` green; `openspec validate add-sales-bundle --strict`.
-- [ ] 8.2 Privacy grep over `skills/sales-*`, `agents/sales-agent.md`, `tests/`, `docs/`: no owner
+- [x] 8.1 `make validate`, `make validate-spine` green; `openspec validate add-sales-bundle --strict`.
+- [x] 8.2 Privacy grep over `skills/sales-*`, `agents/sales-agent.md`, `tests/`, `docs/`: no owner
       or staff names, Odoo ids, partner names or prices. **Accept:** empty.
 - [ ] 8.3 Owner hand-run of IT-01..IT-05 (design.md *Test cases*) on Claude Desktop and the CLI,
       against the live pipeline, read-only first. **Accept:** the note opens with Decisions needed, fits one
@@ -133,7 +133,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 - [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 ·
   [x] 3.2 · [x] 4.1 · [x] 4.2 · [x] 5.1 · [x] 5.2 · [x] 5.3 · [x] 6.1 · [x] 6.2 · [x] 6.3 · [x] 6.4 ·
-  [x] 7.1 · [x] 7.2 · [ ] 7.3 · [ ] 8.1 · [ ] 8.2 · [ ] 8.3 · [ ] 8.4
+  [x] 7.1 · [x] 7.2 · [ ] 7.3 · [x] 8.1 · [x] 8.2 · [ ] 8.3 · [ ] 8.4
 
 ## Verification
 
