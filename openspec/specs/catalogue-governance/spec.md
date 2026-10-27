@@ -72,7 +72,7 @@ External skills SHALL be declared as dependencies and linked, not copied into `s
 Every `agents/<name>.md` SHALL conform to the agent standard in `docs/development/agent-template.md` — its closed
 frontmatter contract (including a declared `type` of `delegated`, `lead` or `scheduled`), its body cap,
 its `## Dispatch contract` section with the labels **Input**, **Output**, **Side effects** and
-**Refuses**, and CLI-agnostic body text — and the validator SHALL reject any agent that does not. The
+**Refuses**, its `## Report` section stating how the agent reports back, and CLI-agnostic body text — and the validator SHALL reject any agent that does not. The
 bundle that lists an agent (per "Skills are organised into role bundles with single ownership") SHALL
 also list the agent's primary skill, the first non-namespaced, non-external entry of its `skills:`
 list. Each agent SHALL have `tests/features/agents/<name>.feature` containing a Scenario Outline with
@@ -105,6 +105,10 @@ Examples and a Background that names every entry of the agent's `skills:` list.
 #### Scenario: A missing dispatch-contract part is rejected
 - **WHEN** an agent has no `## Dispatch contract` section, or the section lacks `**Refuses:**`
 - **THEN** the validator names the missing section or label
+
+#### Scenario: An agent without a report section is rejected
+- **WHEN** an agent body has no `## Report` section
+- **THEN** the validator reports the missing section for that agent
 
 #### Scenario: A CLI-specific path in an agent body is rejected
 - **WHEN** an agent body contains `.claude/memory/`

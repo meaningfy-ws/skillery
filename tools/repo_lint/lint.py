@@ -1055,6 +1055,8 @@ def _agent_body_errors(rel: str, body: str) -> list[str]:
                 for label, at in zip(_CONTRACT_LABELS, found) if at < 0]
         if min(found) >= 0 and found != sorted(found):
             out.append(f"{rel}: dispatch contract labels are not in the order {', '.join(_CONTRACT_LABELS)}")
+    if not re.search(r"^## Report[ \t]*$", unfenced, re.MULTILINE):
+        out.append(f"{rel}: no '## Report' section")
     if _CLI_ISM.search(body):
         out.append(f"{rel}: body has a CLI-specific (/opsx: or .claude/) reference")
     return out

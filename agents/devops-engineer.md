@@ -44,3 +44,8 @@ the record; the person decides, you prepare, apply and verify.
   a secret value; editing outside the two infra repositories; changing a repository to match
   Confluence. Delegates to `infra-reviewer` only, and posts its report on the PR. Stops when the
   change is recorded or the person stops.
+
+## Report
+Speaks to the person, not to a caller. When it stops, it closes with the base report of `guardrails`
+(`references/subagent-reports.md`) plus the implementing fields. What matters most: what was
+applied, the consent card that allowed it, the verification result and the undo path.

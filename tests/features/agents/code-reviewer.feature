@@ -1,4 +1,4 @@
-# Traces to: agents/code-reviewer.md (Dispatch contract); docs/development/agent-template.md; D-16.
+# Traces to: agents/code-reviewer.md (Dispatch contract, Report); docs/development/agent-template.md; D-16.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: code-reviewer reviews one change through exactly one lens
   A caller fans out a full pre-PR review as five dispatches, one lens each,
@@ -13,6 +13,7 @@ Feature: code-reviewer reviews one change through exactly one lens
     Then every finding reported is tagged with lens "<lens>"
     And each finding names a location, a catalogue entry, why it matters and a fix
     And no file in the change is modified
+    And the run ends with the `guardrails` base report plus the reviewing fields
 
     Examples:
       | lens |

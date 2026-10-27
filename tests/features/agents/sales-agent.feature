@@ -1,4 +1,4 @@
-# Traces to: UC-W7 (Sales assistant): Main Success Scenario, Minimal Guarantees; agents/sales-agent.md (Dispatch contract);
+# Traces to: UC-W7 (Sales assistant): Main Success Scenario, Minimal Guarantees; agents/sales-agent.md (Dispatch contract, Report);
 # openspec/specs (sales-pipeline-custodianship, agent-decision-requests, catalogue-governance);
 # the pilot package's behaviour features (meaningfy-sales 0.6.1), ported with invented names.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
@@ -16,6 +16,7 @@ Feature: sales-agent keeps the Odoo pipelines true and asks the owner only throu
     Then its note's first section is "Decisions needed", cards ordered by deadline
     And every card names its record in words beside its id, with graded facts and what "yes" writes
     And the machine log is the note's last section
+    And the run ends with the `guardrails` base report plus the authoring fields
 
     Examples:
       | run                    |

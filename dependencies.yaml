@@ -4,7 +4,7 @@
 - name: superpowers
   kind: plugin
   summary: brainstorming, test-driven-development, systematic-debugging, verification-before-completion,
-    requesting/receiving-code-review
+    requesting/receiving-code-review, dispatching-parallel-agents, subagent-driven-development
   source: obra/superpowers
   pin: 'unpinned: installed from the source head'
   provenance: not reviewed

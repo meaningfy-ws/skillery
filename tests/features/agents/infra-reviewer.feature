@@ -1,4 +1,4 @@
-# Traces to: UC-W6; agents/infra-reviewer.md (Dispatch contract);
+# Traces to: UC-W6; agents/infra-reviewer.md (Dispatch contract, Report);
 # openspec/specs (operations-practice), openspec/changes/archive/2026-10-27-add-devops-bundle/design.md TC-04 and IT-4.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: infra-reviewer gives an infrastructure change its second reading
@@ -15,6 +15,7 @@ Feature: infra-reviewer gives an infrastructure change its second reading
     Then it returns a report headed `## infra-reviewer report`
     And the report gives findings by severity with file and line, the plan summary, the blast radius, the undo path and the stack conformance result
     And no file is changed and no comment is posted by the reviewer
+    And the run ends with the `guardrails` base report plus the reviewing fields
 
     Examples:
       | input                                                         |
