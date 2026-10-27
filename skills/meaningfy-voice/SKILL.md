@@ -31,4 +31,4 @@ offer and internal message are placeholders that point back to the default profi
 (`explanatory-writing`), doc placement and form (`technical-writing`), or the genre-conditional
 antipatterns (`writing-antipatterns`).
 
-**Related:** `executive-communication`, `explanatory-writing`, `writing-antipatterns`, `vault-daily`.
+**Related:** `executive-communication`, `explanatory-writing`, `writing-antipatterns`, `vault-daily`, `sales-conversations` (applies the outreach-email channel).

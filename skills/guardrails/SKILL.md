@@ -89,4 +89,4 @@ already exists; this skill is the map.
 agentic steps at them, listed under Related.
 
 **Related:** `clarity-gate` (content quality), `cosmic-python` (structural validation with
-import-linter, alongside the spine's `openspec validate --strict`), `meaningfy-code-review` (review).
+import-linter, alongside the spine's `openspec validate --strict`), `meaningfy-code-review` (review), `sales-pipeline-custody` and `sales-operations` (a concrete instance: the sales agent's write rules and auditor).

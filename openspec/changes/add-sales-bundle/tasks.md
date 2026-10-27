@@ -70,7 +70,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
       `docs/practice/ai-coding/build-lifecycle.md`, `use-cases/UC-W12-…`, `use-cases/UC-W22-…`.
       **Accept:** `grep -rnE "Light tier|Deep tier|Light workshop|Deep Decision" skills docs use-cases agents`
       returns only the "Formerly called" line; no free/paid change.
-- [ ] 4.2 `presales-discovery.md` cites `sales-qualification` for questions (D-11);
+- [x] 4.2 `presales-discovery.md` cites `sales-qualification` for questions (D-11);
       `proposal-writing` description drops "qualifies the need"; Boundary sections of
       `semantic-consulting-coach`, `proposal-writing`, `guardrails`, `vault-conventions` name the
       sales skill that owns the neighbouring fact. **Accept:** `make validate` green; probes in 6.3
@@ -129,7 +129,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 ## Roadmap
 
 - [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 ·
-  [x] 3.2 · [x] 4.1 · [ ] 4.2 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
+  [x] 3.2 · [x] 4.1 · [x] 4.2 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
   [ ] 7.1 · [ ] 7.2 · [ ] 7.3 · [ ] 8.1 · [ ] 8.2 · [ ] 8.3 · [ ] 8.4
 
 ## Verification

@@ -229,7 +229,7 @@ flowchart LR
 
 ## Relations
 
-Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (63 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (127 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 190 relation edges plus 38 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
+Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (63 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (142 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 205 relation edges plus 38 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
 
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 12, 'rankSpacing': 45, 'curve': 'basis'}}}%%
@@ -375,7 +375,13 @@ flowchart LR
   s_decision_package -.-> s_estimation
   s_decision_package -.-> s_writing_antipatterns
   s_epic_planning -.-> s_architecture
+  s_estimation -.-> s_sales_qualification
+  s_estimation -.-> s_sales_conversations
   s_executive_communication -.-> s_proposal_writing
+  s_executive_communication -.-> s_sales_operations
+  s_executive_communication -.-> s_sales_pipeline_custody
+  s_executive_communication -.-> s_sales_accounts
+  s_executive_communication -.-> s_sales_conversations
   s_executive_communication -.-> s_decision_package
   s_executive_communication -.-> s_semantic_consulting_coach
   s_executive_communication -.-> s_explanatory_writing
@@ -387,6 +393,8 @@ flowchart LR
   s_guardrails -.-> s_clarity_gate
   s_guardrails -.-> s_cosmic_python
   s_guardrails -.-> s_meaningfy_code_review
+  s_guardrails -.-> s_sales_pipeline_custody
+  s_guardrails -.-> s_sales_operations
   s_linkml_engineering -.-> s_modelling_conventions
   s_linkml_engineering -.-> s_architecture
   s_linkml_engineering -.-> s_cosmic_python
@@ -404,8 +412,11 @@ flowchart LR
   s_meaningfy_voice -.-> s_explanatory_writing
   s_meaningfy_voice -.-> s_writing_antipatterns
   s_meaningfy_voice -.-> s_vault_daily
+  s_meaningfy_voice -.-> s_sales_conversations
   s_project_setup -.-> s_meaningfy_release
   s_project_setup -.-> s_linkml_engineering
+  s_proposal_writing -.-> s_sales_qualification
+  s_proposal_writing -.-> s_sales_conversations
   s_proposal_writing -.-> s_writing_antipatterns
   s_sales_accounts -.-> s_sales_pipeline_custody
   s_sales_accounts -.-> s_sales_qualification
@@ -443,6 +454,9 @@ flowchart LR
   s_sales_qualification -.-> s_proposal_writing
   s_sales_qualification -.-> s_estimation
   s_semantic_consulting_coach -.-> s_proposal_writing
+  s_semantic_consulting_coach -.-> s_sales_qualification
+  s_semantic_consulting_coach -.-> s_sales_conversations
+  s_semantic_consulting_coach -.-> s_sales_pipeline_custody
   s_semantic_consulting_coach -.-> s_writing_antipatterns
   s_spec_stewardship -.-> s_bdd_gherkin
   s_technical_writing -.-> s_clarity_gate
@@ -459,6 +473,7 @@ flowchart LR
   s_vault_conventions -.-> s_vault_tidy
   s_vault_conventions -.-> s_vault_planning
   s_vault_conventions -.-> s_vault_daily
+  s_vault_conventions -.-> s_sales_operations
   s_vault_daily -.-> s_vault_capture
   s_vault_daily -.-> s_vault_resume
   s_vault_planning -.-> s_vault_project
@@ -532,9 +547,9 @@ Cross-cutting basics everyone installs: clear technical writing, explanatory-wri
 | [`technical-writing`](../skills/technical-writing/SKILL.md) | Produce clear documentation, explanations, summaries, and docstrings — AsciiDoc/Antora or Markdown — with a lightweight clarity check. | `content` | `cross-cutting` | `generic` | `reusable` | `any` | `stable` | — | `clarity-gate`, `epic-planning`, `explanatory-writing`, `writing-antipatterns`, `executive-communication` |
 | [`explanatory-writing`](../skills/explanatory-writing/SKILL.md) | Apply explanatory craft so that Explanation-quadrant prose reads clearly — one controlling metaphor, a concrete example beside every abstract claim, self-answered question pivots, short declaratives, coin-and-explain, a confident grounded close. | `content` | `cross-cutting` | `generic` | `reusable` | `any` | `stable` | — | `meaningfy-voice`, `technical-writing`, `executive-communication`, `writing-antipatterns` |
 | [`writing-antipatterns`](../skills/writing-antipatterns/SKILL.md) | The register/genre-conditional catalogue of how writing fails — a genre map (Tutorial, How-to, Reference, Explanation, Decision, Decision record, Contract/specification, Coaching dialogue), a short list of defects that apply regardless of genre, and an inversion matrix of antipatterns whose correctness depends on genre (a rhetorical question is craft in an explainer and a defect in an ADR). | `content` | `cross-cutting` | `generic` | `reusable` | `any` | `stable` | — | `meaningfy-voice`, `technical-writing`, `explanatory-writing`, `executive-communication`, `proposal-writing`, `decision-package`, `architecture`, `semantic-consulting-coach` |
-| [`meaningfy-voice`](../skills/meaningfy-voice/SKILL.md) | The Meaningfy company voice profile — British English, no em dash, plain current vocabulary, honest and direct, the SMILE values, and the register rule (teach, persuade, bind). | `content` | `cross-cutting` | `generic` | `precise` | `any` | `stable` | — | `executive-communication`, `explanatory-writing`, `writing-antipatterns`, `vault-daily` |
+| [`meaningfy-voice`](../skills/meaningfy-voice/SKILL.md) | The Meaningfy company voice profile — British English, no em dash, plain current vocabulary, honest and direct, the SMILE values, and the register rule (teach, persuade, bind). | `content` | `cross-cutting` | `generic` | `precise` | `any` | `stable` | — | `executive-communication`, `explanatory-writing`, `writing-antipatterns`, `vault-daily`, `sales-conversations` |
 | [`meaningfy-git-workflow`](../skills/meaningfy-git-workflow/SKILL.md) | Meaningfy git and GitHub conventions — Conventional Commits (imperative, no trailing punctuation), branch naming, rebase/merge etiquette, the pull-request workflow, free-tier GitHub constraints, and dev-environment hygiene. | `software-development` | `coding` | `git-release` | `precise` | `build` | `stable` | — | `cosmic-python`, `meaningfy-release`, `commit-commands`, `code-review`, `meaningfy-code-review` |
-| [`guardrails`](../skills/guardrails/SKILL.md) | Apply agentic guardrails to every step where an LLM agent acts — decision bounds, output validation, and prompt-injection defence. | `software-development` | `coding` | `generic` | `reusable` | `verify` | `stable` | — | `clarity-gate`, `cosmic-python`, `meaningfy-code-review` |
+| [`guardrails`](../skills/guardrails/SKILL.md) | Apply agentic guardrails to every step where an LLM agent acts — decision bounds, output validation, and prompt-injection defence. | `software-development` | `coding` | `generic` | `reusable` | `verify` | `stable` | — | `clarity-gate`, `cosmic-python`, `meaningfy-code-review`, `sales-pipeline-custody`, `sales-operations` |
 
 ## meaningfy-consulting
 
@@ -542,9 +557,9 @@ The advisory role: semantic-technologies coaching, the Decision Package, and exe
 
 | Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
 |---|---|---|---|---|---|---|---|---|---|
-| [`semantic-consulting-coach`](../skills/semantic-consulting-coach/SKILL.md) | Use when someone running or building a semantic-technologies / data consulting business (ontologies, knowledge graphs, data governance, MDM, semantic interoperability) is thinking through a business, service-design, pricing, partnering, engagement-process, client-situation (B2B sale or B2G tender), negotiation, or executive-message decision and wants to think it through before committing, rather than have delivery work done or a quick factual answer given. | `advising` | `consulting` | `semantic-data` | `precise` | `advise` | `stable` | `executive-communication`, `decision-package` | `decision-package`, `proposal-writing`, `executive-communication`, `writing-antipatterns` |
+| [`semantic-consulting-coach`](../skills/semantic-consulting-coach/SKILL.md) | Use when someone running or building a semantic-technologies / data consulting business (ontologies, knowledge graphs, data governance, MDM, semantic interoperability) is thinking through a business, service-design, pricing, partnering, engagement-process, client-situation (B2B sale or B2G tender), negotiation, or executive-message decision and wants to think it through before committing, rather than have delivery work done or a quick factual answer given. | `advising` | `consulting` | `semantic-data` | `precise` | `advise` | `stable` | `executive-communication`, `decision-package` | `decision-package`, `proposal-writing`, `sales-qualification`, `sales-conversations`, `sales-pipeline-custody`, `executive-communication`, `writing-antipatterns` |
 | [`decision-package`](../skills/decision-package/SKILL.md) | Produce the Decision Package — the paid keystone deliverable of a semantic/data consulting engagement's P1 Decision Phase. | `advising` | `consulting` | `semantic-data` | `profiled` | `advise` | `stable` | `semantic-consulting-coach`, `executive-communication` | `semantic-consulting-coach`, `executive-communication`, `proposal-writing`, `estimation`, `writing-antipatterns` |
-| [`executive-communication`](../skills/executive-communication/SKILL.md) | Use when turning rough input into a clear, concise, persuasive executive message or analysis: a board paper, proposal, client recommendation, email or Slack note, spoken narrative, slide outline, or a strategic problem to be solved. | `content` | `cross-cutting` | `generic` | `profiled` | `any` | `stable` | `technical-writing`, `meaningfy-voice` | `meaningfy-voice`, `proposal-writing`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` |
+| [`executive-communication`](../skills/executive-communication/SKILL.md) | Use when turning rough input into a clear, concise, persuasive executive message or analysis: a board paper, proposal, client recommendation, email or Slack note, spoken narrative, slide outline, or a strategic problem to be solved. | `content` | `cross-cutting` | `generic` | `profiled` | `any` | `stable` | `technical-writing`, `meaningfy-voice` | `meaningfy-voice`, `proposal-writing`, `sales-operations`, `sales-pipeline-custody`, `sales-accounts`, `sales-conversations`, `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` |
 
 ## meaningfy-sales
 
@@ -552,8 +567,8 @@ The commercial role: proposal and offer writing, and estimation.
 
 | Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
 |---|---|---|---|---|---|---|---|---|---|
-| [`proposal-writing`](../skills/proposal-writing/SKILL.md) | Produce the proposal + Statement of Work (SoW) that frames the paid Decision Phase (P1) offer — with an explicit in/out scope boundary, priced as a fixed frame. | `proposals` | `sales` | `semantic-data` | `profiled` | `sell` | `stable` | `estimation`, `executive-communication`, `decision-package`, `semantic-consulting-coach` | `estimation`, `decision-package`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` |
-| [`estimation`](../skills/estimation/SKILL.md) | A lightweight fixed-cost scoping / estimation discipline that de-risks fixed-cost bids — a CHECKLIST + METHOD, not a heavy model. | `offers` | `sales` | `generic` | `reusable` | `sell` | `stable` | `proposal-writing`, `decision-package` | `proposal-writing`, `decision-package` |
+| [`proposal-writing`](../skills/proposal-writing/SKILL.md) | Produce the proposal + Statement of Work (SoW) that frames the paid Decision Phase (P1) offer — with an explicit in/out scope boundary, priced as a fixed frame. | `proposals` | `sales` | `semantic-data` | `profiled` | `sell` | `stable` | `estimation`, `executive-communication`, `decision-package`, `semantic-consulting-coach` | `estimation`, `decision-package`, `sales-qualification`, `sales-conversations`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` |
+| [`estimation`](../skills/estimation/SKILL.md) | A lightweight fixed-cost scoping / estimation discipline that de-risks fixed-cost bids — a CHECKLIST + METHOD, not a heavy model. | `offers` | `sales` | `generic` | `reusable` | `sell` | `stable` | `proposal-writing`, `decision-package` | `proposal-writing`, `decision-package`, `sales-qualification`, `sales-conversations` |
 | [`sales-pipeline-custody`](../skills/sales-pipeline-custody/SKILL.md) | Use this skill when a deal or lead in Meaningfy's Odoo CRM must be placed in a pipeline, moved, converted, starred, given a next action, checked for rot or groomed, or before any write a sales agent makes to Odoo, mail, calendar or run notes ("which pipeline does this deal belong to", "is this deal rotting", "may the sales agent do this"); it holds the five pipelines, their stages and exit criteria, the attention filters and the three-tier write policy. | `crm` | `sales` | `generic` | `precise` | `sell` | `experimental` | — | `sales-operations`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `guardrails`, `executive-communication`, `semantic-consulting-coach` |
 | [`sales-accounts`](../skills/sales-accounts/SKILL.md) | Use this skill when a company or person Meaningfy deals with must be found, added, researched or profiled in Odoo, before any contact is created, or when a won client's health and outcome need care ("is this person already in our Odoo", "update the profile of X", "find duplicate contacts", "how healthy is our client X"); it resolves people, companies and deals to one record, keeps company and person profiles and the personal-details rules, and runs customer success after the win. | `crm` | `sales` | `generic` | `profiled` | `sell` | `experimental` | — | `sales-pipeline-custody`, `sales-qualification`, `sales-conversations`, `sales-operations`, `executive-communication` |
 | [`sales-qualification`](../skills/sales-qualification/SKILL.md) | Use this skill when a Meaningfy deal or lead needs its homework, its dossier or its qualification ("research this lead before I contact them", "score this deal on the five Ps", "who decides in this deal", "what should I ask this prospect"); it keeps the deal dossier in Odoo, scores the five Ps from MEDDPICC with graded evidence, holds the prospect question bank and the research checklist. | `crm` | `sales` | `semantic-data` | `profiled` | `sell` | `experimental` | — | `sales-accounts`, `sales-pipeline-custody`, `sales-conversations`, `sales-operations`, `semantic-consulting-coach`, `proposal-writing`, `estimation` |
@@ -601,7 +616,7 @@ The workflow bundle for people who keep a personal Obsidian vault: set it up (va
 | Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
 |---|---|---|---|---|---|---|---|---|---|
 | [`vault-setup`](../skills/vault-setup/SKILL.md) | Bootstrap or complete a Meaningfy personal Obsidian vault and its tooling, the way project-setup does for a repository: create the vault layout and its `vault-files/` sibling, the templates for every kind, the vault's agent instructions (`AGENTS.md` with the owner profile and write rules) and the per-CLI permission settings; then guide, per operating system (Windows or Linux), installing Obsidian with its CLI, the external obsidian-skills plugin, sync through Google Drive (Insync) or OneDrive, the company memory's MCP server, mail and calendar connectors, the optional ingestion opt-in and a scheduled daily run; end with a check of every prerequisite. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions` | `vault-conventions`, `vault-daily` |
-| [`vault-conventions`](../skills/vault-conventions/SKILL.md) | Meaningfy's conventions for notes in a personal Obsidian vault: the folder layout and what each folder holds, the `kind` of every note and its required properties, the project's standing files, link and tag style, where binaries go, machine-neutral paths, the `00 Inbox/proposed/` staging area, and how a vault session may use the company memory (recall only, never remember). | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-setup` | `vault-setup`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
+| [`vault-conventions`](../skills/vault-conventions/SKILL.md) | Meaningfy's conventions for notes in a personal Obsidian vault: the folder layout and what each folder holds, the `kind` of every note and its required properties, the project's standing files, link and tag style, where binaries go, machine-neutral paths, the `00 Inbox/proposed/` staging area, and how a vault session may use the company memory (recall only, never remember). | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-setup` | `vault-setup`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `sales-operations` |
 | [`vault-project`](../skills/vault-project/SKILL.md) | Start or close a project folder in a Meaningfy Obsidian vault. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-resume`, `vault-capture` | `vault-conventions`, `vault-resume`, `vault-capture`, `vault-tidy`, `vault-planning` |
 | [`vault-resume`](../skills/vault-resume/SKILL.md) | Start a work session on one project in a Meaningfy Obsidian vault: read that project's charter (`index.md`), its latest `sessions.md` entries, `decisions.md` and `tasks.md`, make at most one memory recall naming the project, and summarise where things stand and what is next. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-capture`, `vault-project` | `vault-conventions`, `vault-capture`, `vault-project`, `vault-daily` |
 | [`vault-capture`](../skills/vault-capture/SKILL.md) | File what matters into one project's files in a Meaningfy Obsidian vault: at the end of a work session (from the conversation) or at any time from raw call or meeting notes the owner pastes. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-resume`, `vault-project` | `vault-conventions`, `vault-resume`, `vault-project`, `vault-daily`, `vault-promote` |

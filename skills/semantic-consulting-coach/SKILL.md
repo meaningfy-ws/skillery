@@ -231,7 +231,7 @@ only synthesises after an explicit trigger and confirmed alignment.
 
 - `references/engagement-model.md`: the **coaching frame** for the engagement stages (purpose, boundary, the three client cognitive states) — cites [`references/engagement-lifecycle.md`](references/engagement-lifecycle.md) for Meaningfy's commercial facts rather than restating them. Used to coach the *design* of the process, not to impose it.
 - `references/decision-phase-posture.md`: the internal posture and discipline for holding the boundary under client pressure during the Proof of Value — ambiguity-as-signal, helpfulness vs. usefulness, calm under pressure, protective-not-defensive language.
-- `references/presales-discovery.md`: the pre-sales discovery & qualification sheet (Sections A/B/C) that the user runs *with their prospects*, plus the stop/deepen/propose decision.
+- `references/presales-discovery.md`: the posture for pre-sales conversations the user runs *with their prospects*, and the stop/deepen/propose decision; the questions themselves are `sales-qualification`'s bank.
 - `references/semantic-consulting-domain.md`: the domain map (service families, business/revenue models, B2B vs. B2G dynamics, and where IP/scope risk concentrates).
 - `references/question-bank.md`: high-leverage questions the *coach asks the user*, by layer, mode, and semantic-service area, plus meta-cognitive prompts.
 - **`executive-communication` skill** (separate skill): the Synthesis-mode method (Governing Thought, SCQA/SCR, Minto Pyramid, MECE, logic checks, implications/risks/next steps, the McKinsey 6-step problem-solving process, optional output formats, and the humanised artefact voice).
@@ -263,7 +263,7 @@ technique, design questions) and the coaching working modes (Exploration / Align
 [`references/engagement-lifecycle.md`](references/engagement-lifecycle.md).
 **Delegates:** persuasive framing/voice → `executive-communication`; the paid Decision Package deliverable
 → `decision-package`.
-**Related:** `decision-package`, `proposal-writing`, `executive-communication`, `writing-antipatterns` (Coaching-dialogue genre failure modes — where premature structure is a defection, not craft).
+**Related:** `decision-package`, `proposal-writing`, `sales-qualification` (owns the prospect questions and qualification), `sales-conversations`, `sales-pipeline-custody`, `executive-communication`, `writing-antipatterns` (Coaching-dialogue genre failure modes — where premature structure is a defection, not craft).
 
 Proposal or SoW authoring and effort sequencing are sales hand-offs: see also `proposal-writing`
 and `estimation` (in `meaningfy-sales`).
