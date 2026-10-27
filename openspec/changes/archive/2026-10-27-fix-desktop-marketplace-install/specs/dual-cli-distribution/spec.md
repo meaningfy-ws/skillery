@@ -7,9 +7,13 @@ Skills SHALL be installed on both CLIs from `skills/` and agents from `agents/`;
 - **WHEN** the `develop` branch is inspected
 - **THEN** no `.opencode/` tree is tracked, every skill or agent entry under `bundles/` is a relative symlink to its `skills/` or `agents/` source, and `tools/opencode-catalogue.json` holds no skill or agent body
 
-#### Scenario: Symlinks live only under bundles/
+#### Scenario: The repository holds no symlinks
 - **WHEN** any branch is inspected
-- **THEN** every tracked symlink is under `bundles/`
+- **THEN** no tracked path outside `bundles/` is a symlink; under `bundles/`, only the generated links into `skills/` and `agents/` are
+
+#### Scenario: A content edit needs regeneration
+- **WHEN** a contributor edits the body of an existing `skills/<name>/SKILL.md`
+- **THEN** no regeneration is needed for the body (the bundle link follows the source), and `make validate` still passes; a change to `bundles.yaml` does need `make bundles` (next scenario)
 
 #### Scenario: Every bundle carries its plugin manifest
 - **WHEN** `make bundles` has run
