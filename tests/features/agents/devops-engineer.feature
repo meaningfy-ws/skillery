@@ -1,5 +1,5 @@
 # Traces to: UC-W6; agents/devops-engineer.md (Dispatch contract);
-# openspec/changes/add-devops-bundle/specs (operations-practice), design.md TC-04 and IT-1.
+# openspec/specs (operations-practice), openspec/changes/archive/2026-10-27-add-devops-bundle/design.md TC-04 and IT-1.
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: devops-engineer changes infrastructure safely with a person who is not a devops engineer
   The agent reads, plans, has the plan reviewed, asks consent with a plain-words card, applies exactly

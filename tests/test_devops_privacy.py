@@ -16,7 +16,7 @@ SCOPE = [
     *(ROOT / "skills" / s for s in ("infrastructure-operations", "stack-operations", "service-reliability", "infrastructure-security")),
     *(ROOT / "agents" / f"{a}.md" for a in ("devops-engineer", "ops-watch", "infra-reviewer")),
     ROOT / "tests/fixtures/devops",
-    ROOT / "openspec/changes/add-devops-bundle/inputs",
+    ROOT / "openspec/changes/archive/2026-10-27-add-devops-bundle/inputs",
 ]
 NAMES_FILE = ROOT / "tests/fixtures/devops/private-names.local.txt"
 ALLOWED_NETS = [ipaddress.ip_network(n) for n in ("192.0.2.0/24", "198.51.100.0/24", "203.0.113.0/24", "127.0.0.0/8", "0.0.0.0/32")]
