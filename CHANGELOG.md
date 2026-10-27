@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.3.1] - 2026-10-27
+
 ### Action needed (users)
 
 - **Install from the `releases` branch** (it replaces `dist`): on Claude,
