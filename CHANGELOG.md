@@ -11,6 +11,18 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- **A guide to the voice and communication skills** ([`docs/environment/communication.md`](docs/environment/communication.md)):
+  which skill owns what, the registers and channel profiles, what is covered and what is not yet
+  (the quotation skeleton, most channel profiles), the guardrails, and how to add a register, a
+  channel or a genre.
+
+### Fixed
+
+- `meaningfy-voice`: its description named the registers "teach, persuade, bind"; they are teach,
+  decide, bind, as the profile says.
+
 ## [3.7.0] - 2026-10-27
 
 ### Added
