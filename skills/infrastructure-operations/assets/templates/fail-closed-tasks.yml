@@ -1,0 +1,49 @@
+# Use for a service that boots with a default login or is unsafe until configured: it is never served in that state.
+---
+- name: Configure <service> while it is stopped
+  block:
+    - name: Stop <service> before the unsafe window
+      ansible.builtin.systemd:
+        name: <service>
+        state: stopped
+
+    - name: <the step that makes it safe, e.g. set the admin password from the vault>
+      ansible.builtin.command:
+        cmd: <command>
+      changed_when: true
+      no_log: true
+
+    - name: Start <service>
+      ansible.builtin.systemd:
+        name: <service>
+        state: started
+  rescue:
+    - name: Stop <service> so it is never served unsafe
+      ansible.builtin.systemd:
+        name: <service>
+        state: stopped
+
+    - name: Fail with a named error
+      ansible.builtin.fail:
+        msg: "<service> set-up failed; <service> is stopped. Error matrix: '<row name>'."
+
+# Every run, not only the first: verify the security property from outside
+- name: Self-check, the default login is refused
+  block:
+    - name: Try the default login
+      ansible.builtin.uri:
+        url: "<check-url>"
+        method: POST
+        body_format: json
+        body: "<default-login-request>"
+        status_code: [401, 403]
+      no_log: true
+  rescue:
+    - name: Stop <service>, the default login works
+      ansible.builtin.systemd:
+        name: <service>
+        state: stopped
+
+    - name: Fail with a named error
+      ansible.builtin.fail:
+        msg: "<service> accepts the default login; it is stopped. Error matrix: '<row name>'."

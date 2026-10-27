@@ -245,3 +245,6 @@ node_modules/
 .opencode/
 tests/evals/*/results/
 
+
+# devops privacy test: private names, never committed (tests/test_devops_privacy.py)
+tests/fixtures/devops/private-names.local.txt

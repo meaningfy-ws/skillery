@@ -70,7 +70,7 @@ Running infrastructure, CI/CD and monitoring.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W6](../use-cases/UC-W6-devops-engineer.md) DevOps engineer | a Meaningfy engineer responsible for infrastructure | `partial` | `ci-cd-delivery`, `meaningfy-release` | `add-devops-bundle` | medium |
+| [UC-W6](../use-cases/UC-W6-devops-engineer.md) DevOps engineer | a Meaningfy engineer responsible for infrastructure | `partial` | `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)*, `ci-cd-delivery`, `meaningfy-release`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `skillery-feedback` | `add-devops-bundle` | high |
 
 ## business
 
@@ -110,7 +110,7 @@ How sure each use case's text is (its Open Points) and the first question only t
 | [UC-W3](../use-cases/UC-W3-secretary.md) | low | May the secretary write to the calendar after a yes, or only propose? |
 | [UC-W4](../use-cases/UC-W4-planning-horizons.md) | high / low | What shape has the life horizon ("including how I want to die"), and how often is it reviewed? |
 | [UC-W5](../use-cases/UC-W5-companion-on-the-go.md) | low | Which runtime on the move: a phone app, a chat bot, or a hosted agent? |
-| [UC-W6](../use-cases/UC-W6-devops-engineer.md) | medium | What does the daily review cover, and what does it produce: a note, a ticket, a Slack message? |
+| [UC-W6](../use-cases/UC-W6-devops-engineer.md) | high | The daily review is the `ops-watch` check-up: a fixed list of checks, posted in `#infra-alerts` and on a pinned GitHub issue (`service-reliability`, `references/daily-checkup.md`). |
 | [UC-W7](../use-cases/UC-W7-sales-assistant.md) | high | One agent with modes (DEC-1): run types are modes of one job, not separate agents. |
 | [UC-W8](../use-cases/UC-W8-proposals-and-offers.md) | high / medium | Which PDF toolchain and template carry the company style (LaTeX on Overleaf, as UC-W16, or another)? |
 | [UC-W9](../use-cases/UC-W9-qualify-leads-and-partnerships.md) | medium | Does the five-P skill from the sales package own qualification for UC-W7, UC-W9 and UC-W10 (one method, three variants), or does `add-commercial-chain` own it? |

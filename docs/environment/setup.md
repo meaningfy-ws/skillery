@@ -20,7 +20,7 @@ them. This page is the single source for what to install and how to wire a proje
 The catalogue runs on **Claude Code** and **opencode** from the same sources, at the same `VERSION`,
 with gate-verified parity. There are **four role bundles**; install `meaningfy-core` plus the role(s)
 you wear. A fifth, **workflow** bundle, `vault-assistant`, is only for people who keep a personal
-Obsidian vault ([`vault-assistant.md`](vault-assistant.md)); `meaningfy-sales` needs Odoo and its config for the sales agent ([`sales-agent.md`](sales-agent.md)). The step-by-step install sequence (add marketplace/registry → install bundles → mandatory
+Obsidian vault ([`vault-assistant.md`](vault-assistant.md)); `meaningfy-sales` needs Odoo and its config for the sales agent ([`sales-agent.md`](sales-agent.md)); `meaningfy-devops` needs the two infrastructure repositories checked out side by side and a `bw` session ([`devops-agents.md`](devops-agents.md)). The step-by-step install sequence (add marketplace/registry → install bundles → mandatory
 deps → root binding → spine commands → docs/development/MCP → verify) is owned by the per-CLI runbooks — this
 page does not restate it:
 

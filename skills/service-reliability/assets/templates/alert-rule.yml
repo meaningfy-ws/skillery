@@ -1,0 +1,52 @@
+# Use this when adding a Prometheus alert: every rule carries tier, severity, owner and runbook_url (see references/alerting.md).
+groups:
+  - name: <stack>
+    rules:
+      # Page tier: users cannot reach the service (black-box HTTP probe).
+      - alert: <Service>Down
+        expr: probe_success{service="<service>"} == 0
+        for: 5m
+        labels:
+          tier: page
+          severity: critical
+        annotations:
+          owner: "<owner>"
+          summary: "<service> is not reachable from the probe ({{ $labels.instance }})"
+          description: "The HTTP probe of {{ $labels.instance }} has failed for 5 minutes."
+          runbook_url: "<link to the runbook of <service> in the stacks repository>"
+
+      # Ticket tier: the certificate expires within 14 days (page within 7 days, below).
+      - alert: <Service>CertificateExpiresSoon
+        expr: probe_ssl_earliest_cert_expiry{service="<service>"} - time() < 14 * 86400
+        for: 1h
+        labels:
+          tier: ticket
+          severity: warning
+        annotations:
+          owner: "<owner>"
+          summary: "The certificate of {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "<link to the certificate runbook in the stacks repository>"
+
+      - alert: <Service>CertificateExpiresVerySoon
+        expr: probe_ssl_earliest_cert_expiry{service="<service>"} - time() < 7 * 86400
+        for: 1h
+        labels:
+          tier: page
+          severity: serious
+        annotations:
+          owner: "<owner>"
+          summary: "The certificate of {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "<link to the certificate runbook in the stacks repository>"
+
+      # Page tier: a nightly backup has not succeeded for 26 hours. The metric is written by the backup role.
+      - alert: BackupStale
+        expr: time() - backup_last_success_timestamp_seconds{exported_job="<service>"} > 26 * 3600
+        for: 15m
+        labels:
+          tier: page
+          severity: serious
+        annotations:
+          owner: "<owner>"
+          summary: "The {{ $labels.exported_job }} backup on {{ $labels.instance }} is stale"
+          description: "Last success {{ $value | humanizeDuration }} ago. A backup that never succeeded raises no alert: check a new backup's first run by hand."
+          runbook_url: "<link to the restore runbook of <service> in the stacks repository>"

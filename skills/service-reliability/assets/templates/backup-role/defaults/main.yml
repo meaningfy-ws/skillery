@@ -1,0 +1,10 @@
+# Use this as the generic backup role's defaults; set the four required inputs per service in its group variables.
+# Required, no default (the role fails closed without them): backup_service, backup_dump_command,
+# backup_remote, backup_rclone_config. No default here belongs to any one service.
+backup_schedule: "*-*-* 02:00:00"   # stagger per host so backups do not compete for storage
+backup_random_delay_sec: 300
+backup_local_dir: "/opt/data/{{ backup_service }}/backups"
+backup_textfile_dir: "/var/lib/node_exporter"   # the node exporter's textfile collector directory
+backup_retention_daily: 7      # days
+backup_retention_weekly: 4     # weeks
+backup_retention_monthly: 3    # months

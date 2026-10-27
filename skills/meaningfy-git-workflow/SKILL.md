@@ -30,6 +30,8 @@ committing/pushing/opening PRs to the external `commit-commands` skill.
   locally and **squash** into one before sharing; if already pushed, squash + rebase + force-push
   at the end.
 - Use the developer's **company email** for company projects (set globally or per-repo).
+- In **infrastructure repos** the scope is the service or VM changed (`fix(<stack>): …`), and a
+  docs-only commit carries `[skip ci]` so it triggers no deploy.
 
 ## Branch naming
 

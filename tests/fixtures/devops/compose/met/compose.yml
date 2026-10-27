@@ -1,0 +1,61 @@
+# Every rule S1-S9 met. Placeholders only (DEC-4).
+services:
+  proxy:
+    image: traefik:v3.2.1
+    ports:
+      - "80:80"
+      - "443:443"
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck"]
+    mem_limit: 256m
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+  app:
+    image: ghcr.io/example/app:1.4.2@sha256:0000000000000000000000000000000000000000000000000000000000000000
+    ports:
+      - "127.0.0.1:8080:8080"
+      - target: 9100
+        published: 9100
+        host_ip: 192.0.2.10
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+    deploy:
+      resources:
+        limits: {memory: 512m}
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    volumes:
+      - /opt/data/app:/var/lib/app
+    environment:
+      APP_MODE: production
+      SHOW_PASSWORD_HINT: "false"
+      TOKENIZER_MODEL: example/model
+      KEYCLOAK_REALM: example
+      MAX_COMPLETION_TOKENS: "512"
+      DB_PASSWORD: ${DB_PASSWORD}
+      API_TOKEN: ${API_TOKEN:?set in .env}
+  db:
+    image: postgres:17-0.107.0-ferretdb-2.7.0
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+    mem_limit: 1g
+    logging:
+      options: {max-size: "10m", max-file: "3"}
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+    volumes:
+      - type: bind
+        source: /opt/data/db
+        target: /var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER
