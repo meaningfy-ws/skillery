@@ -1,6 +1,6 @@
 {
   "name": "meaningfy-devops",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "The operations role: provision and change servers as code (infrastructure-operations), run and deploy stacks (stack-operations), monitor, check daily, answer incidents and back up (service-reliability), and keep access and secrets safe (infrastructure-security); with an interactive devops agent, an unattended watch and an infrastructure reviewer",
   "author": {
     "name": "Meaningfy"
