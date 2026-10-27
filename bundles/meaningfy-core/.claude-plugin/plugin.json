@@ -1,6 +1,6 @@
 {
   "name": "meaningfy-core",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, and agentic guardrails",
   "author": {
     "name": "Meaningfy"
