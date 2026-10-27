@@ -124,9 +124,11 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 - [x] 8.1 `make validate`, `make validate-spine` green; `openspec validate add-sales-bundle --strict`.
 - [x] 8.2 Privacy grep over `skills/sales-*`, `agents/sales-agent.md`, `tests/`, `docs/`: no owner
       or staff names, Odoo ids, partner names or prices. **Accept:** empty.
-- [ ] 8.3 Owner hand-run of the day cycle IT-1..IT-4 (design.md *Test cases*, revision 3) on one
+- [x] 8.3 Owner hand-run of the day cycle IT-1..IT-4 (design.md *Test cases*, revision 3) on one
       working day: open day on Desktop, close day on the CLI, the next open day. Runs after group 9.
       **Accept:** every step's column holds; findings fixed in the owning skill.
+      *Outcome 2026-10-27: closed by the owner without a dedicated run; the day cycle is verified in
+      practice after release, and findings come in as `skill-defect` issues to the owning skill.*
 - [x] 8.4 PR into `develop`; `detect_changes` reported in the PR. *Draft PR #107, open until 8.3.*
 
 ## 9. Day cycle (revision 3: DEC-11, DEC-12, D-5, D-15..D-17)
@@ -169,7 +171,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 - [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 ·
   [x] 3.2 · [x] 4.1 · [x] 4.2 · [x] 5.1 · [x] 5.2 · [x] 5.3 · [x] 6.1 · [x] 6.2 · [x] 6.3 · [x] 6.4 ·
-  [x] 7.1 · [x] 7.2 · [x] 7.3 · [x] 8.1 · [x] 8.2 · [ ] 8.3 · [x] 8.4 ·
+  [x] 7.1 · [x] 7.2 · [x] 7.3 · [x] 8.1 · [x] 8.2 · [x] 8.3 · [x] 8.4 ·
   [x] 9.1 · [x] 9.2 · [x] 9.3 · [x] 9.4 · [x] 9.5 · [x] 9.7 · [x] 9.8 · [x] 9.6
 
 ## Verification

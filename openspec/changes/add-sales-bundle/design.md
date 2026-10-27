@@ -289,5 +289,5 @@ The owner reads every message in the run note; there is no other channel.
 ## Open Questions
 
 None blocking. Two owner items from the pilot remain owner tasks outside this EPIC and do not
-block it: reviewing the six commercial insights, and filling approved price ranges (until then every
+block it: reviewing the six commercial insights, and filling the offer catalogue note (until then every
 price in a draft is ask-first — already the policy).
