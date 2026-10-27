@@ -5,7 +5,7 @@
 A structured scoring of how well an organisation manages its data today: governance, quality,
 stewardship, and cataloguing, each rated against a defined scale rather than judged by impression.
 
-## Why it matters in a Deep-tier engagement
+## Why it matters in a Proof of Value engagement
 
 A scored baseline would sharpen the landscape-reading step of discovery (see
 [`skills/decision-package/references/discovery-flow.md` §2](../../../../skills/decision-package/references/discovery-flow.md#2-landscape--data-reading)):

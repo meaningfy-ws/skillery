@@ -12,7 +12,7 @@
 |---|---|---|---|
 | `coding` | 3 | 0 | 0 |
 | `consulting` | 0 | 1 | 1 |
-| `sales` | 0 | 2 | 5 |
+| `sales` | 1 | 3 | 3 |
 | `personal` | 1 | 2 | 2 |
 | `operations` | 0 | 1 | 0 |
 | `business` | 0 | 2 | 2 |
@@ -44,10 +44,10 @@ Winning and pricing work.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W7](../use-cases/UC-W7-sales-assistant.md) Sales assistant | a Meaningfy salesperson | `partial` | — | `add-sales-bundle` | medium |
+| [UC-W7](../use-cases/UC-W7-sales-assistant.md) Sales assistant | a Meaningfy salesperson | `covered` | `sales-agent` *(agent)*, `sales-operations`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations` | `add-sales-bundle` | high |
 | [UC-W8](../use-cases/UC-W8-proposals-and-offers.md) Proposals and formal offers | a Meaningfy salesperson or consultant | `partial` | `proposal-writer` *(agent)*, `proposal-writing`, `estimation`, `decision-package`, `executive-communication` | `add-commercial-chain` | high / medium |
-| [UC-W9](../use-cases/UC-W9-qualify-leads-and-partnerships.md) Qualify leads and partnerships | a Meaningfy salesperson | `missing` | — | `add-commercial-chain` | medium |
-| [UC-W10](../use-cases/UC-W10-qualify-prospect.md) Qualify a prospect in a sales conversation | a Meaningfy salesperson | `missing` | — | `add-commercial-chain` | medium |
+| [UC-W9](../use-cases/UC-W9-qualify-leads-and-partnerships.md) Qualify leads and partnerships | a Meaningfy salesperson | `partial` | `sales-qualification` | `add-commercial-chain` | medium |
+| [UC-W10](../use-cases/UC-W10-qualify-prospect.md) Qualify a prospect in a sales conversation | a Meaningfy salesperson | `partial` | `sales-qualification` | `add-commercial-chain` | medium |
 | [UC-W11](../use-cases/UC-W11-market-research.md) Market research | the owner | `missing` | — | `add-commercial-chain` | low |
 | [UC-W12](../use-cases/UC-W12-commercial-structure-and-offer.md) Commercial structure and offer | the owner | `missing` | — | `add-commercial-chain` | low |
 | [UC-W21](../use-cases/UC-W21-demo-builder.md) Demo builder | a Meaningfy pre-sales consultant | `missing` | — | `add-demo-builder` | low |
@@ -111,7 +111,7 @@ How sure each use case's text is (its Open Points) and the first question only t
 | [UC-W4](../use-cases/UC-W4-planning-horizons.md) | high / low | What shape has the life horizon ("including how I want to die"), and how often is it reviewed? |
 | [UC-W5](../use-cases/UC-W5-companion-on-the-go.md) | low | Which runtime on the move: a phone app, a chat bot, or a hosted agent? |
 | [UC-W6](../use-cases/UC-W6-devops-engineer.md) | medium | What does the daily review cover, and what does it produce: a note, a ticket, a Slack message? |
-| [UC-W7](../use-cases/UC-W7-sales-assistant.md) | medium | One agent with modes, or custodian, researcher, groomer and drafter as separate agents under a lead? |
+| [UC-W7](../use-cases/UC-W7-sales-assistant.md) | high | One agent with modes (DEC-1): run types are modes of one job, not separate agents. |
 | [UC-W8](../use-cases/UC-W8-proposals-and-offers.md) | high / medium | Which PDF toolchain and template carry the company style (LaTeX on Overleaf, as UC-W16, or another)? |
 | [UC-W9](../use-cases/UC-W9-qualify-leads-and-partnerships.md) | medium | Does the five-P skill from the sales package own qualification for UC-W7, UC-W9 and UC-W10 (one method, three variants), or does `add-commercial-chain` own it? |
 | [UC-W10](../use-cases/UC-W10-qualify-prospect.md) | medium | Is this the same agent as UC-W9 (one qualification method, three variants) or a mode of the sales assistant (UC-W7)? |

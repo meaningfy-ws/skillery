@@ -1,5 +1,5 @@
 {
-  "version": "3.4.0",
+  "version": "3.5.0",
   "bundles": [
     {
       "name": "meaningfy-core",
@@ -26,10 +26,16 @@
       "name": "meaningfy-sales",
       "skills": [
         "proposal-writing",
-        "estimation"
+        "estimation",
+        "sales-pipeline-custody",
+        "sales-accounts",
+        "sales-qualification",
+        "sales-conversations",
+        "sales-operations"
       ],
       "agents": [
-        "proposal-writer"
+        "proposal-writer",
+        "sales-agent"
       ]
     },
     {
@@ -223,6 +229,42 @@
         "area": "sales",
         "subject": "semantic-data",
         "posture": "profiled",
+        "stage": "sell",
+        "maturity": "experimental"
+      }
+    },
+    "sales-agent": {
+      "name": "sales-agent",
+      "description": "Keeps Meaningfy's Odoo sales pipelines true and moving: grooms deals and contacts with logged, reversible writes, prepares meetings and drafts, and asks the owner only through decision cards. Use when the scheduled open-day, close-day and weekly runs fire, or when the owner opens a sales working or intake session. Not for delegation.\n",
+      "type": "scheduled",
+      "model": "sonnet",
+      "color": "green",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Write",
+        "Edit",
+        "Skill",
+        "mcp__odoo__*",
+        "mcp__google-workspace__*"
+      ],
+      "disallowedTools": [
+        "mcp__odoo__unlink",
+        "mcp__odoo__import_records"
+      ],
+      "skills": [
+        "sales-operations",
+        "sales-pipeline-custody",
+        "sales-accounts",
+        "sales-qualification",
+        "sales-conversations"
+      ],
+      "metadata": {
+        "purpose": "crm",
+        "area": "sales",
+        "subject": "generic",
+        "posture": "precise",
         "stage": "sell",
         "maturity": "experimental"
       }

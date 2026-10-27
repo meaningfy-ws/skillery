@@ -6,7 +6,7 @@ A technique for mapping the components of a value chain against how commoditised
 custom-built and novel through to a standard utility, so that investment decisions can be matched
 to where a component actually sits on that curve.
 
-## Why it matters in a Deep-tier engagement
+## Why it matters in a Proof of Value engagement
 
 A Wardley map would sharpen option framing and the buy/build/defer decisions that follow: a
 component mapped as a commodity utility points toward buy, and a component mapped as genuinely

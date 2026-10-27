@@ -36,7 +36,7 @@ each one serves, and which skills depend on which — see
 |--------|--------|-----------------|
 | **meaningfy-core** | **technical-writing** · **explanatory-writing** · **writing-antipatterns** · **meaningfy-voice** · **meaningfy-git-workflow** · **guardrails** | …do anything (cross-cutting basics) |
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **executive-communication** | …do advisory work |
-| **meaningfy-sales** | **proposal-writing** · **estimation** | …write proposals and offers, or estimate work; requires `meaningfy-consulting` |
+| **meaningfy-sales** | **proposal-writing** · **estimation** · **sales-operations** · **sales-pipeline-custody** · **sales-accounts** · **sales-qualification** · **sales-conversations** | …write proposals and offers, estimate work, run the daily sales grooming of the Odoo pipelines, qualify a deal, or prepare a meeting and its follow-up (agent setup: [`docs/environment/sales-agent.md`](docs/environment/sales-agent.md)); requires `meaningfy-consulting` |
 | **meaningfy-architecture** | **architecture** · **conceptual-modelling** · **modelling-conventions** · **linkml-engineering** | …design systems or model a domain |
 | **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
 | **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/environment/vault-assistant.md`](docs/environment/vault-assistant.md)) |
@@ -111,6 +111,9 @@ Pin one exact release with `#vX.Y.Z` instead of `#releases` (from the release af
 | Know the code rules (principles, anti-patterns, naming, exceptions, config, layering) | the **[code-principles catalogue](skills/cosmic-python/references/principles-and-anti-patterns.md)** — owned by `cosmic-python`, the single source; every skill/doc cites its `PR-`/`BP-`/`AP-` ids |
 | Stand up a new repo | `project-setup` skill → scaffolds layout, tooling, tests, docs, CI, and the spine |
 | Build one epic | the loop below (epic-planner → bdd-gherkin → implementer → code-reviewer) |
+| Groom the Odoo sales pipeline every day | `sales-agent` (scheduled; setup in [`docs/environment/sales-agent.md`](docs/environment/sales-agent.md)) → `sales-operations` |
+| Qualify a lead or score a deal | `sales-qualification` (dossier, five Ps, MEDDPICC) → `sales-accounts` (who they are) |
+| Prepare a sales meeting and its follow-up | `sales-conversations` (meeting plan, drafts) |
 | Win / scope a client engagement | `semantic-consulting-coach` (think it through) → `decision-package` (produce it) → `proposal-writing` + `estimation` |
 | Model a domain | `conceptual-modelling` (the living model + source decision) · `modelling-conventions` (shared craft) |
 | Author LinkML / generate typed artefacts | `linkml-engineering` (LinkML → Pydantic/OWL/SHACL, custom templates, gates) |

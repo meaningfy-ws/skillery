@@ -6,9 +6,9 @@ trigger: an account needs attention, or the CRM needs grooming
 success_guarantee: the CRM is groomed, each account's history is current, and every outgoing email is customised in the predefined style
 area: sales
 served_by:
-  agents: []
-  skills: []
-status: partial
+  agents: [sales-agent]
+  skills: [sales-operations, sales-pipeline-custody, sales-accounts, sales-qualification, sales-conversations]
+status: covered
 change: add-sales-bundle
 ---
 
@@ -16,12 +16,12 @@ change: add-sales-bundle
 
 ## Brief Description
 
-Sales assistant: groom the CRM, keep accounts, write customised emails in a predefined style; "keeping track of what to tell whom". Skills are defined outside the repo; the change is drafted.
+Sales assistant: groom the CRM, keep accounts, write customised emails in a predefined style; "keeping track of what to tell whom". Served by the `sales-agent` and the five sales skills of `meaningfy-sales`.
 
 ## Stakeholders and Interests
 
 - **The salesperson:** a clean pipeline each morning and drafts ready to send.
-- **The second sender (Eugen or Thomas):** sight of every outgoing email, by being in cc.
+- **The second sender:** sight of every outgoing email, by being in cc.
 - **The prospect or client:** emails that fit their history, and no duplicate or stale chasing.
 - **The owner:** an Odoo CRM that can be trusted as the company's memory of deals, and no
   irreversible action taken by an agent.
@@ -29,8 +29,8 @@ Sales assistant: groom the CRM, keep accounts, write customised emails in a pred
 ## Preconditions
 
 The agent can read and write the Odoo CRM, read the vault and the company memory, and draft in the
-salesperson's mail. The day's grooming-session note exists in the vault at
-`04 Daily/crm-grooming-session/`, or the agent works from the standing rules.
+salesperson's mail. The owner's `sales-config.yaml` names the run-note folder and the people in
+cc; the day's run note exists there, or the agent creates it.
 
 ## Minimal Guarantees
 
@@ -48,8 +48,8 @@ report.
    audits the write.
 5. The agent drafts the follow-up emails in the predefined style: the booking link, a proposed slot
    or a re-contact date, and the other sender in cc.
-6. The agent writes the session report into the note: what changed, what it proposes, what needs a
-   decision.
+6. The agent writes the run note: the decisions it needs first, as decision cards, then what to
+   watch, then what it changed.
 7. **[human]** The salesperson reviews the drafts and the proposed conversions, and sends or rejects
    each email.
 8. The agent records each outcome as an activity in Odoo, so every open deal has a next activity.
@@ -80,17 +80,17 @@ case studies (a separate project), and server deployment of the agent (a named f
 
 - Odoo records: leads, opportunities, contacts, activities, and the stars that mirror the five-P
   band; read by the sales team and by the agent on its next run.
-- The daily grooming-session note in the vault at `04 Daily/crm-grooming-session/`; written by the
-  salesperson and the agent, re-read by the agent.
+- The daily run note in the owner's run-note folder; written by the salesperson and the agent,
+  re-read by the agent.
 - Email drafts in the salesperson's mail, in the predefined style.
-- Planned: the sales skills and the `sales-assistant` agent in `meaningfy-sales` (`add-sales-bundle`).
+- The `sales-agent` agent and the skills `sales-operations`, `sales-pipeline-custody`,
+  `sales-accounts`, `sales-qualification`, `sales-conversations` in `meaningfy-sales`.
 
 ## Evidence
 
-- `openspec/changes/add-sales-bundle/specs/sales-pipeline-custodianship/spec.md`: the bulk-import
-  refusal and search-before-create scenarios (a drafted spec, not yet a test).
-- Planned: the package's Gherkin moved to `tests/features/sales/`, Scenario Outlines with Examples
-  tables (`add-sales-bundle`, DEC-4).
+- `tests/features/agents/sales-agent.feature`: the agent's behaviour scenarios, run by hand per CLI.
+- `tests/test_sales_write_policy.py` and `tests/test_sales_assets.py`: the write policy and the
+  run-note shape, checked in `make validate`.
 - After a session, the Odoo filter for open deals without a next activity returns nothing (checked
   on the artefact).
 
@@ -102,20 +102,19 @@ in the Gherkin Examples table.
 
 ## Slices
 
-1. Daily grooming from Claude Desktop with the scheduler: planned (`add-sales-bundle`); it runs today
-   outside the catalogue.
-2. The interactive mode (account review and email drafting on request): planned
-   (`add-sales-bundle`).
+1. Daily grooming from Claude Desktop with the scheduler: covered (`sales-operations` called by the
+   scheduled tasks; see `docs/environment/sales-agent.md`).
+2. The interactive mode (account review and email drafting on request): covered (`sales-agent` in a
+   human session).
 3. Server deployment (OpenClaw): planned as a named follow-up of `add-sales-bundle`, no change yet.
 
 ## Open Points
 
-**Confidence:** medium. The method and the safety rules restate the owner's decisions
-(`add-sales-bundle` DEC-1 to DEC-6); the steps are extrapolated from the pilot, and the package is
-not yet in the change's `inputs/`.
+**Confidence:** high for slices 1 and 2: the skills are the pilot's, groomed in `add-sales-bundle`.
 
-- One agent with modes, or custodian, researcher, groomer and drafter as separate agents under a
-  lead?
-- Which safety rules are enforced by `guardrails`, and which stay dispatch-contract lines?
-- Where does the predefined email style live: in the sales package, or as a channel profile in
-  `meaningfy-voice` (UC-W24)?
+Answered by `add-sales-bundle`:
+- One agent with modes (DEC-1): run types are modes of one job, not separate agents.
+- Safety (DEC-4): the write rules and policy of `sales-pipeline-custody` are the concrete instance of
+  `guardrails`; the agent's contract names its refusals and denies the send and delete tools.
+- The email style (D-12): tone is the `outreach-email` channel of `meaningfy-voice`; the patterns and
+  cadence are `sales-conversations`.

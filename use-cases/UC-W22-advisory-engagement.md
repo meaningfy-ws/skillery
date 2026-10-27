@@ -32,7 +32,7 @@ An advisory engagement: coaching a client through a decision, from discovery to 
 
 ## Preconditions
 
-A paid Discovery & Onboarding engagement is agreed at the Light or Deep tier; presale is over. The
+A paid Discovery & Onboarding engagement is agreed as a discovery workshop or a Proof of Value; presale is over. The
 deciding persona is known, and the consultant has access to the client's people and documents.
 
 ## Minimal Guarantees
@@ -60,7 +60,7 @@ proposed: a scope reduction, a short extension, or a formal stop with partial de
 
 - 1a. The client is still asking "is this relevant to us?": this is presale; the agent holds the free
   and paid line and hands back to sales (UC-W10).
-- 1b. The tier is Light: the engagement is a one or two day workshop, and the output at 7 is an
+- 1b. It is a discovery workshop: the engagement is a one or two day workshop, and the output at 7 is an
   expert read and a strategic roadmap, not a full Decision Package.
 - 4a. Intake needs a technique with no owning skill: the agent says so plainly, and the consultant
   tells the client.
@@ -110,4 +110,4 @@ released skills; the agent's shape and its test material are not decided.
 
 - Which past or current engagement can be recorded as the agent's test?
 - Is the agent a lead that runs the whole runbook, or a partner the consultant calls step by step?
-- Does the same agent serve the Light tier, or only the Deep tier?
+- Does the same agent serve the discovery workshop, or only the Proof of Value?

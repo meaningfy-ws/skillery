@@ -1,0 +1,14 @@
+# sales-config.yaml: one per installation, kept in the owner's vault, never in skillery.
+# Every key is required; see references/configuration.md.
+owner:
+  name: <owner name>
+  mail: <owner@example.com>
+second_sender:
+  name: <second sender name>
+  mail: <second.sender@example.com>
+run_note_folder: <vault folder for run notes>
+objection_library: <vault note name>
+partner_notes:
+  <Partner name>: {rating: 3, note: <why>}
+booking_link: <https://booking.example.com/owner>
+offer_catalogue: <vault note name>

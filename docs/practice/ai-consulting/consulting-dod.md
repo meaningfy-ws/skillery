@@ -1,6 +1,6 @@
 # Consulting DoD: Definition of Done for advisory work
 
-**Audience:** the Technical Consultant, and anyone reviewing whether a Deep-tier engagement is
+**Audience:** the Technical Consultant, and anyone reviewing whether a Proof of Value engagement is
 ready to close.
 
 ## What "done" would need to answer
@@ -21,8 +21,8 @@ No advisory engagement has closed yet against a maturity-assessment or gap-analy
 specifically, so there is no lived experience in this repository to generalise a real DoD from.
 This is the same discipline
 [`docs/practice/ai-coding/dod-quality-gates.md`](../ai-coding/dod-quality-gates.md) itself follows for the
-build tier: it states gates it has verified, and it does not invent gates it has not. The Deep
-tier's deliverable is the Decision Package: a recommendation, in/out scope, a pilot-to-scale
+build tier: it states gates it has verified, and it does not invent gates it has not. The Proof of
+Value's deliverable is the Decision Package: a recommendation, in/out scope, a pilot-to-scale
 roadmap, and a buy/build/defer call, produced by running gap analysis against the client's
 strategic ambition (a distinct, separately-sellable offering from a formal maturity assessment).
 No DoD for that deliverable has been written until now, as detailed in

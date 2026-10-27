@@ -5,7 +5,7 @@
 A structured scoring of how well an organisation's terms, models, and definitions are shared and
 reused across its systems, rated against a defined scale rather than judged by impression.
 
-## Why it matters in a Deep-tier engagement
+## Why it matters in a Proof of Value engagement
 
 A scored baseline would sharpen the option-framing step of discovery: an engagement could point to
 a specific score for how fragmented or reconciled a client's shared vocabulary already is, and use

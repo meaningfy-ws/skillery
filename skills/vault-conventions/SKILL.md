@@ -195,4 +195,4 @@ of a vault session, and the table check before saving.
 profile and write rules → the vault's `AGENTS.md`; creating a vault → `vault-setup`.
 
 **Related:** `vault-setup`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`,
-`vault-tidy`, `vault-planning`, `vault-daily`.
+`vault-tidy`, `vault-planning`, `vault-daily`; `sales-operations` (its run notes follow the table check and memory etiquette).
