@@ -15,12 +15,12 @@
 
 ## 1. Owners the sales skills will cite (D-4, D-12)
 
-- [ ] 1.1 `executive-communication`: add `references/decision-request.md` (fields, ≤150-word cap,
+- [x] 1.1 `executive-communication`: add `references/decision-request.md` (fields, ≤150-word cap,
       evidence grades, the worked example of design.md) and one Workflow line pointing to it.
       **Accept:** spec `agent-decision-requests` scenarios hold on reading; `make validate` green.
-- [ ] 1.2 `writing-antipatterns` Decision genre: the A13 exception for asynchronous approval
+- [x] 1.2 `writing-antipatterns` Decision genre: the A13 exception for asynchronous approval
       requests, citing 1.1. **Accept:** one paragraph; no card field restated.
-- [ ] 1.3 `meaningfy-voice`: add `references/channels/outreach-email.md` from the package's
+- [x] 1.3 `meaningfy-voice`: add `references/channels/outreach-email.md` from the package's
       `email-patterns.md` tone lines and `selling-method.md` §4, names replaced by roles.
       **Accept:** the channel index lists it; no named person.
 
@@ -129,7 +129,7 @@ example, Workflow, Gotchas, `## Boundary & Related Skills`, six facets per D-13)
 
 ## Roadmap
 
-- [x] 0.1 · [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 ·
+- [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 ·
   [ ] 3.2 · [ ] 4.1 · [ ] 4.2 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 6.1 · [ ] 6.2 · [ ] 6.3 · [ ] 6.4 ·
   [ ] 7.1 · [ ] 7.2 · [ ] 7.3 · [ ] 8.1 · [ ] 8.2 · [ ] 8.3 · [ ] 8.4
 

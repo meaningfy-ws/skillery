@@ -71,6 +71,7 @@ time and buries the point you were hired to make.
 | One-page canvas | Governing Thought as the title; the MECE subpoints become the sections. |
 | Spoken narrative | 30 to 60 seconds: Situation, Complication, then the Governing Thought as the punchline. |
 | Slide outline | Roughly one slide per subpoint; the slide title states the subpoint as a full assertion, not a label. |
+| Decision the reader takes later and alone (an approval in a run note, a choose-one email) | **The decision card** in [`references/decision-request.md`](references/decision-request.md): question, deadline, recommendation, options with consequences, graded facts, what "yes" writes. At most 150 words. |
 
 ## Default structure (full apparatus)
 
@@ -244,7 +245,7 @@ the language is plain, with no em dash and no throat-clearing.
 ## Boundary & Related Skills
 
 **Owns:** the persuasive-communication method — Governing Thought, SCQA, the Minto pyramid, answer-first
-structure, and applying the company voice.
+structure, the decision card for asynchronous decision requests, and applying the company voice.
 **Delegates:** doc prose mechanics → `technical-writing`; the voice profile → `meaningfy-voice`.
 
 See also `clarity-gate` for checking that a spec or EPIC is ready; it judges readiness, not persuasion.

@@ -20,6 +20,10 @@ Pointer table only — full entries live in [`inversion-matrix.md`](inversion-ma
 | Answer/goal first | **required** — the reader has ten seconds | [A9](inversion-matrix.md#a9-answergoal-first) |
 | Controlling metaphor | welcome | [A10](inversion-matrix.md#a10-controlling-metaphor--figurative-material) |
 | Premature structure | welcome once alignment is confirmed | [A11](inversion-matrix.md#a11-premature-structure) |
-| Options shown, not just the choice | avoid — showing your working wastes the reader's ten seconds | [A12](inversion-matrix.md#a12-options-shown-not-just-the-choice) |
-| Curse of knowledge | welcome — the reader is assumed to share context | [A13](inversion-matrix.md#a13-curse-of-knowledge) |
+| Options shown, not just the choice | avoid — showing your working wastes the reader's ten seconds; **required** in an asynchronous approval request | [A12](inversion-matrix.md#a12-options-shown-not-just-the-choice) |
+| Curse of knowledge | welcome — the reader is assumed to share context; **harmful** in an asynchronous approval request | [A13](inversion-matrix.md#a13-curse-of-knowledge) |
+
+**Asynchronous approval request.** A request the reader decides later and alone (an approval in an
+agent's run note, a choose-one email) reverses A12 and A13: the reader has neither the context nor
+the options in mind. Its shape is the decision card owned by `executive-communication`.
 | Negative framing | **harmful** — the reader must negate the headline to find the claim | [A14](inversion-matrix.md#a14-negative-framing) |

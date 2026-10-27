@@ -237,7 +237,9 @@ not tested) and in Decision when the governing thought cannot yet be written
 
 **Smell:** only the chosen option appears; rejected alternatives, and why they lost, are invisible.
 
-**Fails in** Decision persuasive — showing your working wastes the reader's ten seconds.
+**Fails in** Decision persuasive — showing your working wastes the reader's ten seconds. The
+exception is the asynchronous approval request (see [`decision.md`](decision.md)): its reader
+chooses later and alone, so the options must be on the page.
 
 **Required in** Decision record — an ADR's whole reason to exist, years later, is letting a future
 engineer see what was rejected and why. Required, more lightly, in Coaching dialogue, where the
@@ -261,7 +263,10 @@ from an accessible starting point — ties to
 `explanatory-writing`'s coin-and-explain craft move).
 
 **Required/acceptable in** Reference and Contract, where assuming domain fluency *is* the explicit
-contract with that reader — that assumption is what makes Reference fast to use.
+contract with that reader — that assumption is what makes Reference fast to use. Welcome in a live
+Decision, but **harmful** in an asynchronous approval request (see [`decision.md`](decision.md)): a
+reader who decides days later does not share the writer's context, so a bare record id or link
+leaves them unable to decide.
 
 **Guard:** does this genre's reader arrive already fluent, or is fluency what they are building
 right now?

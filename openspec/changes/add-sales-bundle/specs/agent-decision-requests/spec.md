@@ -23,10 +23,14 @@ pointer to another note (DEC-5).
 - **WHEN** the owner opens any sales run note
 - **THEN** the first section is "Decisions needed", cards ordered by deadline, and the note fits one screen before the collapsed log
 
-### Requirement: Shared context is not assumed in an asynchronous approval request
-`writing-antipatterns` SHALL mark assumed shared context (A13) as a defect for an approval request
-read later, while keeping it welcome for a live decision document.
+### Requirement: An asynchronous approval request carries its context and its options
+`writing-antipatterns` SHALL mark, for an approval request read later, assumed shared context (A13)
+as harmful and shown options (A12) as required, while keeping the live Decision genre unchanged.
 
 #### Scenario: A reviewer applies the Decision genre to a run-note card
 - **WHEN** a card relies on context the reader must look up
 - **THEN** the review flags A13 as a defect
+
+#### Scenario: A reviewer sees options on a run-note card
+- **WHEN** a card shows three options with their consequences
+- **THEN** the review does not flag A12
