@@ -16,7 +16,7 @@ Days to rot per stage: [`../assets/pipelines.yaml`](../assets/pipelines.yaml).
 - **The partner reviews client text first.** Any client-facing text goes to the partner contact for review unless the partner has agreed to direct contact. Never contact the partner's client behind the partner.
 - **The partner's frame and branding lead.** We are the specialist inside their story.
 - **Never quote below the partner.** Never quote the client below the partner's price, and never discuss our rates with the partner's client.
-- **Give partners what they ask for.** Partners often need sizes and price ranges to sell us. Give the approved ranges (`price_ranges` in `sales-config.yaml`); anything else is *ask first*.
+- **Give partners what they ask for.** Partners often need sizes and price ranges to sell us. Give the approved ranges (the offer catalogue, `offer_catalogue` in `sales-config.yaml`); anything else is *ask first*.
 - **Register the deal** if the partner has a deal-registration process.
 - **Every draft answers one question:** how does this make the partner's account manager look good?
 - **Whose turn.** When the partner asked us for something (an offer, CVs, a credentials table), the next move is ours: deliver it before anything else.

@@ -15,9 +15,14 @@ The `meaningfy-sales` bundle ships the `sales-agent` agent and five skills (`sal
    (Step 3c), or the CLI's built-in connectors.
 3. **A vault folder for the run notes** and the company memory, as for
    [`vault-assistant`](vault-assistant.md).
-4. **Your `sales-config.yaml`**, kept in your vault, never in skillery. Its six keys and a filled
+4. **Your `sales-config.yaml`**, kept in your vault, never in skillery. Its seven keys (among them your
+   meeting-booking link and the name of your offer catalogue note) and a filled
    example with placeholders are in the `sales-operations` skill (`references/configuration.md`,
    `assets/sales-config.example.yaml`). Without it, every run stops before writing.
+5. **Your offer catalogue**, a vault note you keep: your offerings, commercial structures (direct,
+   via partner, framework, consortium) and approved price ranges. Start from
+   `sales-operations/assets/offer-catalogue.example.md`. A price it does not list always comes to
+   you for approval.
 
 Keep the server names `odoo` and `google-workspace`: the agent's tool rules name them.
 
@@ -25,7 +30,7 @@ Keep the server names `odoo` and `google-workspace`: the agent's tool rules name
 
 1. Install the bundle: [`dual-cli/setup-claude.md`](dual-cli/setup-claude.md) or
    [`dual-cli/setup-opencode.md`](dual-cli/setup-opencode.md), Step 3.
-2. Write `sales-config.yaml` from the example.
+2. Write `sales-config.yaml` and your offer catalogue from the examples.
 3. Run one close day by hand, read-only first: in Claude Code, `claude --agent meaningfy-sales:sales-agent`
    and say "close day"; check that the run note opens with the decisions it needs from you.
 4. Schedule the runs (below).
@@ -36,7 +41,7 @@ Keep the server names `odoo` and `google-workspace`: the agent's tool rules name
 |---|---|---|
 | Open day | Mon–Fri, morning | `Run sales-operations, run type open day.` |
 | Close day | Mon–Fri, late afternoon | `Run sales-operations, run type close day.` |
-| Weekly review | Saturday and Sunday, morning (the first that runs writes it) | `Run sales-operations, run type weekly review.` |
+| Weekly review and plan | Saturday and Sunday, morning (the first that runs writes it) | `Run sales-operations, run type weekly review.` |
 
 - **Claude Desktop or Cowork scheduled tasks** load skills, not agent files (gap G-4 in
   [`dual-cli/mapping.md`](dual-cli/mapping.md)): paste the prompt above into the task; the skill
@@ -47,16 +52,32 @@ Keep the server names `odoo` and `google-workspace`: the agent's tool rules name
 - **opencode** has no scheduler (gap G-5): run `opencode run --agent sales-agent "close day"` from an
   external scheduler.
 
+## Your day and your week
+
+There is **one note per working day**. The morning run writes it as your plan: it first re-checks
+yesterday's open items in Odoo and mail and drops what is already done, then lists, deal by deal,
+whom to talk to, whom to answer and whom to chase. The evening run completes the same note as the
+day's record: what happened is written to Odoo, and every deal touched today gets a dated next
+step, so none goes stale.
+
+Below the plan, the **attention list** names every item that needs attention, ranked P1 (today),
+P2 (this week) and P3 (grooming), each with its count and the change since yesterday: you see the
+backlog shrink or pile up. The **weekly review and plan** sets next week's 3–5 sales outcomes, the
+focus deals and your capacity (actions per day); each day plans only that many actions from the
+focus deals and urgent items, and keeps the rest collapsed under *Later*. Change the plan with
+`Owner:` lines in the weekly note.
+
 ## Answering the agent
 
 Each run note opens with **Decisions needed**: one decision card per question, soonest deadline
 first. Write your answer after the card's `Answer:` (the option letter, `yes`, or `edit: …`). Lines
 starting `Owner:` are read too; `Owner: resume` clears a HALT. The next run applies your answers and
-marks them applied.
+marks them applied. To close a deal, just say so: `Owner: Acme Data is lost` (or won) is your
+approval; a lost reason you do not give is taken from the evidence and logged.
 
 ## What it will not do, and the risks that remain
 
-The agent never sends mail, deletes or merges records, marks a deal won or lost, or imports in bulk:
+The agent never sends mail, deletes or merges records, marks a deal won or lost without your word, or imports in bulk:
 each comes to you as a card. It never edits a skill; a rule that went wrong comes to you as issue
 text to file in skillery.
 

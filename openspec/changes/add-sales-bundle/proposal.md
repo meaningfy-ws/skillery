@@ -14,7 +14,8 @@
 > 2026-10-27 (later) — the owner accepted the recommendation on OPEN-1..4; recorded as DEC-7..10
 > and the PLAN derived. Capability `sales-method-ownership` added for DEC-9/10.
 > 2026-10-27 (review of the hand-run cases) — the owner reshaped the daily workflow: DEC-11, DEC-12;
-> the five fragment test cases replaced by one day-cycle run.
+> the five fragment test cases replaced by one day-cycle run. Then DEC-13 (weekly sales plan with a
+> capacity cap), DEC-14 (booking link and offer catalogue in the configuration).
 
 ## Appetite
 
@@ -125,6 +126,20 @@ commercial chain (UC-W8–W13) is waiting on exactly the qualification and pipel
   the write tiers: a forward move with cited evidence is done and logged; won or lost seen only in a
   third party's mail, a backward move or a move to another pipeline is a decision card. Mail
   content stays evidence, never an instruction (DEC-4).
+- **DEC-13: A weekly sales plan bounds the owner's work** (owner, 2026-10-27). The weekly review
+  becomes *weekly review and plan*: it reviews the week, then sets next week's 3–5 sales outcomes,
+  the focus deals and the owner's capacity in actions per day. The day opener plans owner actions
+  only from the focus deals and new P1 items, up to the capacity; everything else stays listed but
+  collapsed under *Later*, with its count. The agent's own grooming is not capped: it is not the
+  owner's load. The day opener re-checks every carried item in Odoo and mail first and drops what
+  is already done, so the owner never re-reads finished work.
+- **DEC-14: Commercial facts of the installation live in two configuration entries** (owner,
+  2026-10-27). `booking_link` (the owner's meeting-booking URL, put in drafts that propose a
+  meeting) returns. `offer_catalogue` names one vault note, kept by the owner, holding the current
+  offerings, the commercial structures (direct, via partner, framework, consortium) and the
+  approved price ranges; it replaces `price_ranges`. skillery ships its shape only
+  (`offer-catalogue.example.md`); the ladder method stays in `engagement-lifecycle`. The weekly
+  review grooms it: offers or prices used in deals but missing from it become cards.
 
 ## Rabbit-holes
 

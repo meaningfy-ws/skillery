@@ -69,6 +69,19 @@ since the previous day (DEC-11).
 - **WHEN** the day opener runs and yesterday's note has an unanswered card and a planned touch not done
 - **THEN** today's note carries both forward and plans, deal by deal, whom to talk to, answer or chase
 
+#### Scenario: A carried item was done meanwhile
+- **WHEN** yesterday's plan says "chase Acme Data" and Odoo shows the activity done this morning
+- **THEN** the item is not carried; the log records it as resolved since
+
+### Requirement: A weekly plan bounds the owner's daily work
+The weekly review SHALL set next week's sales outcomes, focus deals and capacity in owner actions
+per day; each day opener SHALL plan owner actions only from the focus deals and new P1 items, up to
+that capacity, and SHALL list the rest collapsed under *Later* with counts (DEC-13).
+
+#### Scenario: More work than capacity
+- **WHEN** the capacity is 5 and 9 owner actions are due today
+- **THEN** today's plan holds the 5 highest-ranked and the other 4 appear under *Later* with their count
+
 #### Scenario: The day closes
 - **WHEN** the owner booked a meeting and sent a mail on a deal today
 - **THEN** the day closer records both on the deal in Odoo and the deal has a dated next activity
@@ -76,6 +89,15 @@ since the previous day (DEC-11).
 #### Scenario: The backlog piles up
 - **WHEN** P2 had 11 items yesterday and 14 today
 - **THEN** the note shows `P2: 14 (+3)` and still lists all 14
+
+### Requirement: The installation's commercial facts live in its offer catalogue
+Offerings, commercial structures and approved price ranges SHALL be read from the vault note named by
+`offer_catalogue` in `sales-config.yaml`; a price absent from it SHALL be ask-first, and no skill
+SHALL hold them (DEC-3, DEC-14).
+
+#### Scenario: A draft quotes a price
+- **WHEN** a draft states a price for an offer whose range the catalogue does not list
+- **THEN** the draft is ask-first and carries a decision card
 
 ### Requirement: A replayed run changes nothing
 A run SHALL write only fields whose current value differs from the intended value, and SHALL create

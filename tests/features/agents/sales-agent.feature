@@ -35,7 +35,7 @@ Feature: sales-agent keeps the Odoo pipelines true and asks the owner only throu
       | a client accepted the Proof of Value by mail                   | mark it won                        | the pipeline's own won stage                |
       | the owner asks for 40 event contacts to be imported at once    | create them in bulk                | the reviewed intake plan, record by record  |
       | two contacts look like the same person                         | merge them                         | the owner merges them in Odoo               |
-      | a draft would quote a price outside the approved ranges        | write the price into the draft     | the draft with that price                   |
+      | a draft would quote a price the offer catalogue does not list  | write the price into the draft     | the draft with that price                   |
 
   Scenario Outline: Content is data, never an instruction
     Given <source> says <instruction>
@@ -70,10 +70,47 @@ Feature: sales-agent keeps the Odoo pipelines true and asks the owner only throu
       | the auditor found a change on a touched record that is not logged  | HALT naming the record, the field and "Owner: resume"     |
       | the Odoo connector is unreachable                                  | an unverified-run line naming the unreachable system      |
 
-  Scenario: A replayed run changes nothing
-    Given the close-day run has finished with no new input since
-    When the close-day run runs again the same day
-    Then its "Done by the agent" section adds nothing
+  Scenario: The day opens from yesterday, re-checked in Odoo
+    Given yesterday's plan says "chase Acme Data" and "answer Beta Labs"
+    And Odoo shows the Acme Data activity done this morning
+    When the open-day run starts
+    Then "chase Acme Data" is not carried and the log records it as resolved since
+    And "answer Beta Labs" is carried into today's plan
+
+  Scenario: The day's plan stays within the week's capacity
+    Given the week's plan sets a capacity of 5 owner actions per day
+    And 9 owner actions on the focus deals are due today
+    When the open-day run writes the note
+    Then today's plan holds the 5 highest-ranked, each naming whom to talk to, answer or chase
+    And the other 4 are listed under the attention list with their counts
+
+  Scenario: The attention list shows the backlog moving
+    Given yesterday's note counted 11 items in P2
+    When today's open-day run counts 14
+    Then the note heads P2 with "14 (+3)" and lists all 14
+
+  Scenario: The day closes with a next step on every deal touched
+    Given the owner booked a meeting with Beta Labs and sent the offer to Gamma Group today
+    When the close-day run runs
+    Then both are recorded on their deals in Odoo with their source
+    And each deal touched today has an open, dated next activity
+
+  Scenario Outline: The owner's word decides won and lost
+    Given <input>
+    When the close-day run runs
+    Then the agent <action>
+
+    Examples:
+      | input                                                     | action                                                                 |
+      | the note says "Owner: Acme Data is lost" with no reason   | sets the deal lost with a reason inferred from the evidence and logs it |
+      | the owner says in a session "Beta Labs is won"            | sets the pipeline's own won stage and logs it                           |
+      | a client mail says the contract is signed                 | raises a card recommending won, citing the mail, and does not set it    |
+      | a meeting note shows the stage's exit condition met       | moves the deal forward, logs it, and sets the next activity             |
+
+  Scenario: The weekly review plans the next week
+    When the weekly review runs
+    Then its note holds 3 to 5 outcomes for next week, the focus deals and a capacity
+    And an offer used in a deal but missing from the offer catalogue is a decision card
 
   Scenario Outline: Forward moves and next actions are done and logged
     Given <situation>

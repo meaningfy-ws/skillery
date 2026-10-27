@@ -16,16 +16,18 @@ All runs record themselves as *run notes* in the **run folder**, the `run_note_f
 *Mon–Fri ~09:00. Creates `YYYY-MM-DD grooming session.md` from the template.*
 
 0. **Monday catch-up.** On Monday, if the last ISO week has no weekly review, do the weekly review first.
-1. **Objective.** Set the day's objective from the pipeline state: the template's default criteria, plus anything the owner asked for.
-2. **Apply the owner's input.** Apply each input: execute what they approved, answer what they asked, and record it under *Applied* with record ids.
-3. **Signals since the last run.** Resolve each signal to its records before acting on it (write rules, rule zero; `sales-accounts` identity, section 4).
+1. **Carry forward.** Read the previous working day's note: its *Open for tomorrow*, unanswered cards, and *Today's plan* lines not marked `done`. Re-check each in Odoo and mail before carrying it (the activity is done, the stage moved, the mail was sent or answered, the owner answered the card elsewhere): carry only what is still open; log the rest under *Carried forward* as resolved since, with its source. The owner never re-reads finished work.
+2. **Objective.** Set the day's objective from the pipeline state: the template's default criteria, plus anything the owner asked for.
+3. **Apply the owner's input.** Apply each input: execute what they approved, answer what they asked, and record it under *Applied* with record ids.
+4. **Signals since the last run.** Resolve each signal to its records before acting on it (write rules, rule zero; `sales-accounts` identity, section 4).
    - Gmail: threads with contacts of open deals and partners, replies waiting, inbound interest.
    - Calendar: external meetings today and tomorrow, and those since the last run.
    - The vault: meeting notes and event projects that mention clients or partners.
    - Odoo: deals changed by people.
-4. **Pipeline scan** through `sales-pipeline-custody`: work the open-day attention filters of `sales-pipeline-custody` in their order (core, then each pipeline) and write the count of each under *Filter counts* in the *Log*. Every hit gets its filter's action. Then exit criteria and dormant partnerships. Groom as you go (do-tier writes): fill fields, set next activities, score and star what is unscored, move stages whose exit is met, keep dossiers current.
-5. **Run the loop** (plan, act, verify, decide), by the priorities in `SKILL.md`.
-6. **Write the note**: *Decisions needed* (decision cards, soonest deadline first), *Watch*, *Done by the agent*, and the collapsed *Log*.
+5. **Pipeline scan** through `sales-pipeline-custody`: work the open-day attention filters of `sales-pipeline-custody` in their order (core, then each pipeline) and write the count of each under *Filter counts* in the *Log*. Every hit gets its filter's action. Then exit criteria and dormant partnerships. Groom as you go (do-tier writes): fill fields, set next activities, score and star what is unscored, move stages whose exit is met, keep dossiers current.
+6. **Run the loop** (plan, act, verify, decide), by the priorities in `SKILL.md`.
+7. **Plan the day.** Rank every item needing attention (P1–P3, `SKILL.md`). Items on the week's focus deals (the latest weekly review's *Next week*) and new P1 items go under *This week*; the rest under *Later*, collapsed, with counts. *Today's plan* takes the owner's actions from *This week*, highest rank first, up to the week's capacity (goal-loop, *Terms*): per deal, whom to talk to, answer or chase, and why now. A new P1 beyond the capacity is planned, and the lowest planned item moves to tomorrow, said so on its line.
+8. **Write the note**: *Decisions needed* (decision cards, soonest deadline first), *Today's plan*, *Attention list*, *Done by the agent*, and the collapsed *Log*.
 
 ## Close day
 
@@ -33,12 +35,14 @@ All runs record themselves as *run notes* in the **run folder**, the `run_note_f
 
 If today's open-day note is missing, create it from the template and say so.
 
-1. Read the owner's input from the day, and from chat if any. Apply it as at open day, under *Applied*.
-2. Do the after-meeting work for today's meetings whose notes arrived, through `sales-conversations`. Handle replies that arrived during the day.
-3. Work the close-day attention filters (records touched today without a next action; ★★★ due tomorrow and not prepared) and add their counts to *Filter counts*.
-4. Verify the day's objective again and decide. Write *Open for tomorrow* in the *Log*.
+1. Read the owner's input from the day, and from chat if any. Apply it as at open day, under *Applied*. A statement that a deal is won or lost is the owner's yes (write rules, section 3).
+2. **Record the day.** For each deal in *Today's plan* and each deal with mail, meetings or meeting notes today, record what happened on the deal in Odoo: a done activity or an internal note (meeting booked or held, mail sent or received, call made), each with its source. Mark each plan line `done`, `carried` (with the reason) or `dropped`.
+3. **Infer the changes.** From the day's mail, meetings, meeting notes and the owner's notes, decide what changes on each deal: stage, fields, dossier, stars. Write within the tiers: a forward move with its exit met is *do and log*; won or lost seen only in a third party's mail, a backward move or another pipeline is a decision card.
+4. Do the after-meeting work for today's meetings whose notes arrived, through `sales-conversations`. Handle replies that arrived during the day.
+5. **No deal left without a next step.** Every deal touched today ends with an open, dated next activity (`sales-pipeline-custody`, *Next actions*). Then work the close-day attention filters (records touched today without a next action; ★★★ due tomorrow and not prepared) and add their counts to *Filter counts*.
+6. Refresh the *Attention list* counts. Verify the day's objective again and decide. Write *Open for tomorrow* in the *Log*.
 
-## Weekly review
+## Weekly review and plan
 
 *Saturday ~10:00 and Sunday ~10:00. The first run that finds no review for the week writes it; the other stops at once. If both are missed, Monday's open day catches up.*
 
@@ -59,7 +63,9 @@ If today's open-day note is missing, create it from the template and say so.
    - someone talked to a partner's client behind the partner;
    - a record kept open only by habit.
    Findings become decision cards. **Record the sweep on the record itself, as an internal note** (`message_post`, subtype `mail.mt_note`, plain text, no `partner_ids`): `Swept YYYY-MM-DD (weekly review YYYY-Www): <finding, or "nothing odd">`. The dossier is not rewritten for the sweep. The date of the last such note is the record's swept date; the weekly review's *Sweep* (in the *Log*) lists the records read. **The filters learn**: a kind of finding seen in two sweeps becomes a proposed new filter or agent check as a proposed change (a decision card).
-5. Verify and decide as usual.
+5. **The offer catalogue** (the `offer_catalogue` note of `sales-config.yaml`): an offer, a commercial structure or a price used in a deal or draft this week but missing from it, or the catalogue unchanged for the dormancy period, becomes a decision card. The agent never edits the catalogue.
+6. **Plan next week** under *Next week*: 3–5 sales outcomes, each naming its deals; the focus deals, each with the outcome it serves and the next owner action, ranked as in `SKILL.md`; the capacity, proposed from the owner actions marked `done` per day this week (the default of goal-loop when there is no history). The owner changes any of it with `Owner:` lines; daily runs plan from it. This is the sales part of the week only; the owner's own week plan is `vault-planning`'s.
+7. Verify and decide as usual.
 
 ## Working session
 

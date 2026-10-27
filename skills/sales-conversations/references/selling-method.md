@@ -76,7 +76,7 @@ People are people. A detail someone shared with us, remembered and used well, sh
 
 - **Who owns price.** Effort and price come from `estimation` and `proposal-writing`; this skill only uses them.
 - **Direct clients.** Anchor on the cost of doing nothing, then give one recommended option at a precise price, once the goal is known and only with a price the owner approved for the deal.
-- **Partners and frameworks.** When they ask for sizes and prices, give the approved ranges (`price_ranges` in `sales-config.yaml`, see `sales-operations`); with none set, every price is *ask first*. Withholding price from a reseller blocks the deal.
+- **Partners and frameworks.** When they ask for sizes and prices, give the approved ranges (the offer catalogue named by `offer_catalogue` in `sales-config.yaml`, see `sales-operations`); a price it does not list is *ask first*. Withholding price from a reseller blocks the deal.
 - **Concessions** are non-monetary: scope, timing, a reference role. Never split the difference; never discount.
 
 ## Cadence

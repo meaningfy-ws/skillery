@@ -19,6 +19,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`. It needs
   Odoo, Google Workspace and a `sales-config.yaml` in your vault; setup and scheduling are in
   [`docs/environment/sales-agent.md`](docs/environment/sales-agent.md).
+  Its daily note is one file a day: a morning plan (whom to talk to, answer or chase, re-checked
+  against Odoo so finished work is not carried) and an evening record that gives every deal touched
+  a next step. Every item needing attention is listed, ranked P1–P3 with day-over-day counts; the
+  weekly review and plan caps your daily actions. Say "Owner: <deal> is won" or "lost" and it is
+  done. Your booking link and an offer catalogue note (offerings, commercial structures, approved
+  prices) live in your vault configuration.
 - **Decision cards.** `executive-communication` now owns the shape of a request a reader decides
   later and alone; `meaningfy-voice` gains the outreach-email channel.
 

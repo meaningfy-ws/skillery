@@ -10,4 +10,5 @@ run_note_folder: <vault folder for run notes>
 objection_library: <vault note name>
 partner_notes:
   <Partner name>: {rating: 3, note: <why>}
-price_ranges: {}   # e.g. 'Discovery workshop': {min: <amount>, max: <amount>}
+booking_link: <https://booking.example.com/owner>
+offer_catalogue: <vault note name>

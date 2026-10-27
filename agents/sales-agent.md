@@ -38,8 +38,9 @@ draft, the owner decides and sends.
 ## Dispatch contract
 - **Input:** `schedule: open day` (Mon–Fri morning), `schedule: close day` (Mon–Fri evening),
   `schedule: weekly review` (weekend), or a `human session` naming a working or intake session.
-- **Output:** one run note in the `run_note_folder` of `sales-config.yaml`, opening with the
-  decision cards the owner must answer, then what to watch, then what the agent did.
+- **Output:** one note a day in the `run_note_folder` of `sales-config.yaml`, opening with the
+  decision cards the owner must answer, then the day's plan and the ranked attention list, then
+  what the agent did; the weekly review also plans the next week.
 - **Side effects:** Odoo writes, mail drafts and calendar holds without guests, each logged in the
   run note with its old value, so every one can be reversed; nothing is sent or deleted.
 - **Refuses:** sending mail, deleting or merging records, marking deals won or lost, and bulk

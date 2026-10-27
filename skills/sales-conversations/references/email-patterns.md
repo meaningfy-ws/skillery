@@ -11,6 +11,10 @@ Every draft to anyone outside Meaningfy has the other of the two in **cc**, whoe
 
 Take the second sender's address from their Odoo user or their recent mail on the thread, never from guesswork; if it cannot be resolved, raise a decision card, not the draft. Internal mails between the owner and the second sender need no cc.
 
+## Proposing a meeting
+
+A draft that proposes a meeting offers two or three concrete slots and the owner's booking link (`booking_link` in `sales-config.yaml`, see `sales-operations`), so the other side can pick a time without another round.
+
 ## First: whose turn is it?
 
 Before any reply, follow-up or revival, read the thread and the chatter, and decide whose move it is.

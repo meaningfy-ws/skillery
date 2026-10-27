@@ -14,6 +14,7 @@ The loop for agentic work (intent → plan → tools → reflect), made explicit
 This section is the only place the numbers are stated; other files point here.
 
 - **Budget**: 15 deals in depth per run, and at most 3 loop iterations per run.
+- **Capacity**: the owner actions per day planned in *Today's plan*; set in the week's plan (run-types, *Weekly review and plan*), 5 when no plan sets it. The agent's own work is not counted.
 - **Deal in depth**: a deal the run works on beyond the scan, through research, a dossier, a meeting plan, a draft, or a proposal that needs evidence. The scan itself covers every open deal and does not count: rot, next activity, exit criteria, deadlines.
 - **Fallback**: at most one fallback offer next to the lead offer.
 - **Dormancy period**: 90 days.

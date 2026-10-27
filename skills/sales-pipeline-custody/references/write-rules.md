@@ -35,7 +35,7 @@ How to read the policy:
 - **Activities** (`odoo-activity`, `odoo-activity-redate`): setting and completing activities is *do*; moving an activity's date is *do* only with the reason written in its note. Every open lead and opportunity keeps at least one open, dated activity (`SKILL.md`, *Next actions*).
 - **Conversion** (`odoo-convert`): lead → opportunity is *do* only with a cited two-way signal and with team and stage written together.
 - **Notes** (`odoo-note`): internal note subtype only (`mail.mt_note`; the discussion subtype `mail.mt_comment` notifies followers and is *never*). No `partner_ids`, no @mentions. Anything that notifies a person is a send.
-- **Commitments** (`gmail-draft-create`, `gmail-draft-update`): a draft may not commit Meaningfy to a price, guarantee, free work, named staff or certification, a delivery or start date for work, or exclusivity unless the owner approved it for that deal. Prices inside the approved ranges (`price_ranges` in `sales-config.yaml`, see `sales-operations`) need no approval; with no ranges set, every price is *ask*. Otherwise, ask.
+- **Commitments** (`gmail-draft-create`, `gmail-draft-update`): a draft may not commit Meaningfy to a price, guarantee, free work, named staff or certification, a delivery or start date for work, or exclusivity unless the owner approved it for that deal. Prices inside the approved ranges of the offer catalogue (`offer_catalogue` in `sales-config.yaml`, see `sales-operations`) need no approval; a price it does not list is *ask*. Otherwise, ask.
 - **The owner and the second sender copy each other** (`gmail-draft-create`, `gmail-draft-update`): every draft to anyone outside Meaningfy has the other of the two in cc, whoever sends it: the owner's drafts copy the second sender, a draft the second sender will send copies the owner. A draft without that cc is not written; it is *ask* until fixed (`sales-conversations`, email patterns).
 - **Open tenders** (`gmail-draft-create`): no draft to the contracting authority's staff about an open call; contact goes through the official clarification channel (route Calls & Tenders).
 - **Own records**: only drafts and calendar events whose id is in a run-note log count as the agent's own.
@@ -52,7 +52,7 @@ The owner writes in the run notes (the dated files in the `run_note_folder` of `
 - in the *Owner's notes* section;
 - on any line starting `Owner:`.
 
-**The owner's yes** is `yes`, `ok` or `approved` after a proposal's `Answer:`, or `Owner: yes P<n>`.
+**The owner's yes** is `yes`, `ok` or `approved` after a proposal's `Answer:`, or `Owner: yes P<n>`. A statement by the owner, in a note or a session, that names a deal and says it is won or lost (`Owner: Acme Data is lost`) is the yes for that deal's won or lost; a lost reason not stated is picked from Odoo's lost reasons by the evidence and logged. Won or lost seen only in someone else's mail is never a yes: it is evidence for a decision card.
 
 Every run reads all run notes of the last 14 days, plus any older note that still has an empty `Answer:` not marked `(applied …)` or an unticked proposal box. It marks what it applied next to the owner's input: `(applied YYYY-MM-DD HH:MM, record id)`.
 

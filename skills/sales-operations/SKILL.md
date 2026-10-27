@@ -70,13 +70,13 @@ Every run, and every work item inside it, follows [goal-loop](references/goal-lo
 
 | Run | When | Objective (shape) | Details |
 |---|---|---|---|
-| **Open day** | Mon–Fri ~09:00 | the day's objective from the pipeline state | [run-types](references/run-types.md#open-day) |
-| **Close day** | Mon–Fri ~17:30 | the same day's objective, continued with the owner's input | [run-types](references/run-types.md#close-day) |
-| **Weekly review** | Sat or Sun ~10:00 (the first one that runs) | the week reviewed, measures, advance-or-close cards, the constraint | [run-types](references/run-types.md#weekly-review) |
+| **Open day** | Mon–Fri ~09:00 | the day's plan: yesterday's open items re-checked, whom to talk to, answer or chase, within the week's capacity | [run-types](references/run-types.md#open-day) |
+| **Close day** | Mon–Fri ~17:30 | the day's record: what happened written to Odoo, the owner's input applied, a dated next step on every deal touched | [run-types](references/run-types.md#close-day) |
+| **Weekly review and plan** | Sat or Sun ~10:00 (the first one that runs) | the week reviewed, measures, advance-or-close cards, the constraint; next week's outcomes, focus deals and capacity | [run-types](references/run-types.md#weekly-review-and-plan) |
 | **Working session** | when the owner asks | the objective the owner states | [run-types](references/run-types.md#working-session) |
 | **Intake session** | when the owner asks to bring people and deals in from a source (an event, a list, a set of mails) | every planned record exists once, linked, profiled, placed; audited | [run-types](references/run-types.md#intake-session) |
 
-Every run writes or continues one run note in the run folder (`run_note_folder`, [configuration](references/configuration.md)) and writes nowhere else in the vault. Every note opens with *Decisions needed* (decision cards), then *Watch*, then *Done by the agent*, and keeps the machine log last. Daily runs use [`assets/templates/grooming-session.md`](assets/templates/grooming-session.md); the weekly review uses [`weekly-review.md`](assets/templates/weekly-review.md); intake sessions use [`intake-session.md`](assets/templates/intake-session.md).
+Every run writes or continues one run note in the run folder (`run_note_folder`, [configuration](references/configuration.md)) and writes nowhere else in the vault. Every note opens with *Decisions needed* (decision cards) and keeps the machine log last. The daily note is one file a day: open day writes it as the day's plan (*Today's plan*, then the ranked *Attention list*), close day completes it as the day's record (*Done by the agent*). Nothing that needs attention is left out; the ranks and the week's capacity keep it manageable. Daily runs use [`assets/templates/grooming-session.md`](assets/templates/grooming-session.md); the weekly review uses [`weekly-review.md`](assets/templates/weekly-review.md); intake sessions use [`intake-session.md`](assets/templates/intake-session.md).
 
 ## Independent reviewers
 
@@ -89,16 +89,19 @@ Their findings go into *Verification* and drive the decision. If no reviewer can
 
 ## Priorities inside a run
 
-The budget is set in [goal-loop](references/goal-loop.md).
-1. Meetings today and tomorrow: meeting plans.
-2. Replies and inbound interest waiting for the owner: drafts.
-3. Tender and call deadlines within 14 days.
-4. The attention filters of the run's cadence, in the order of the attention filters of `sales-pipeline-custody`: overdue and missing next actions first, then ★★★ rotting, then the rest.
-5. Late-stage deals (proposal, offer, agreement) rotting or without a next step.
-6. Other rotting deals: a next step, or advance-or-close past twice the threshold.
-7. Grooming: unscored records (score and stars), empty fields, stale dossiers, oldest first.
+The budget is set in [goal-loop](references/goal-loop.md). Each priority has a rank, which places
+its items in the note's *Attention list*:
+1. **P1** Meetings today and tomorrow: meeting plans.
+2. **P1** Replies and inbound interest waiting for the owner: drafts. (Also P1: deadlines within 3 working days, cards past their `BY`.)
+3. **P2** Tender and call deadlines within 14 days.
+4. **P2** The attention filters of the run's cadence, in the order of the attention filters of `sales-pipeline-custody`: overdue and missing next actions first, then ★★★ rotting, then the rest.
+5. **P2** Late-stage deals (proposal, offer, agreement) rotting or without a next step.
+6. **P3** Other rotting deals: a next step, or advance-or-close past twice the threshold.
+7. **P3** Grooming: unscored records (score and stars), empty fields, stale dossiers, oldest first.
 
-Within the same priority, more stars go first.
+Within the same rank, more stars go first, then the older item. Each rank's count is compared with
+the previous working day's note (`(new)` when there is none), so a backlog that shrinks or piles up
+shows.
 
 ## Gotchas
 

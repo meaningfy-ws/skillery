@@ -4,7 +4,7 @@ date: YYYY-MM-DD
 audience: self
 last_run: YYYY-MM-DD HH:MM
 ---
-# YYYY-Www weekly pipeline review
+# YYYY-Www weekly pipeline review and plan
 
 <!-- Only when halted, as the first line: HALT: <rule broken> on <record in words (#id)>; check <what>; write "Owner: resume" to clear. -->
 
@@ -18,6 +18,14 @@ by `Answer:`:
 - one per proposed change to a skill: the run, the record, what went wrong, the file, before → after;
   "yes" means the owner files it as a skillery issue;
 - one per stars difference the owner has not answered before.
+
+## Next week
+
+The owner edits this section with `Owner:` lines; daily runs plan from it.
+
+- **Outcomes** (3–5): what will be true for sales by Friday, each naming its deals.
+- **Focus deals**: deal in words (#id) · the outcome it serves · the next owner action.
+- **Capacity**: <n> owner actions per day (last week the owner did <n> a day).
 
 ## Watch
 
@@ -65,6 +73,8 @@ Week: <Mon date> to <Sun date>
 - [ ] The constraint is named, with one change to try.
 - [ ] The week's objections are added to the objection library.
 - [ ] Proposed changes to the skills are cards.
+- [ ] *Next week* holds 3–5 outcomes, the focus deals and the capacity.
+- [ ] The offer catalogue is checked: offers or prices used this week but missing from it are cards.
 
 ### Weekly filters
 

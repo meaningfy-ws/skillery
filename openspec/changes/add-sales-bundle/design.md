@@ -1,6 +1,6 @@
 <!-- PLAN (design half). PLAN = this file + tasks.md. Document type: Implementation. Revision 3. -->
 
-> Parent: EPIC `add-sales-bundle` ([`proposal.md`](proposal.md)), DEC-1..12. Evidence in
+> Parent: EPIC `add-sales-bundle` ([`proposal.md`](proposal.md)), DEC-1..14. Evidence in
 > [`inputs/`](inputs/README.md); report letters below (A, B, C, D) are those four 2026-10-27 reports.
 
 ## Context
@@ -53,7 +53,7 @@ New PLAN-level choices. Bets settled in the EPIC are cited, not re-argued.
   report A marks *drop* are not imported.
 - **D-3 Instance data lives in one configuration file in the owner's vault.** Skills hold method
   and stage names; Odoo ids are read live from Odoo; everything else that is instance data lives
-  in `sales-config.yaml`, with exactly the six keys the skills use: `owner`, `second_sender`, `run_note_folder`, `objection_library`, `partner_notes`, `price_ranges` (empty means every price is ask-first). *Revision 2 (task 2.5): booking link, brochures, cold list, creation cap and Odoo profile were dropped as unused (owner: YAGNI, no configuration a fixed rule can replace); the creation cap is a fixed 5 in the write rules, and the input marker is the fixed `Owner:`.* `sales-operations/references/configuration.md` documents every key;
+  in `sales-config.yaml`, with exactly the seven keys the skills use: `owner`, `second_sender`, `run_note_folder`, `objection_library`, `partner_notes`, `booking_link`, `offer_catalogue` (a vault note; a price it does not list is ask-first). *Revision 3 (DEC-14): `booking_link` restored, `price_ranges` folded into the offer catalogue note.* *Revision 2 (task 2.5): booking link, brochures, cold list, creation cap and Odoo profile were dropped as unused (owner: YAGNI, no configuration a fixed rule can replace); the creation cap is a fixed 5 in the write rules, and the input marker is the fixed `Owner:`.* `sales-operations/references/configuration.md` documents every key;
   `sales-operations/assets/sales-config.example.yaml` holds placeholders only (`<owner>`,
   `<second-sender>`). Each run reads it first; a missing key is reported, never guessed (error
   matrix). Rationale: one place to change per installation; a second salesperson installs the
@@ -77,14 +77,28 @@ New PLAN-level choices. Bets settled in the EPIC are cited, not re-argued.
   within 14 days; **P3 grooming**: other rot, unscored records, empty fields, stale dossiers.
   Within a rank, more stars first, then older. Counts compare with the previous working day's note;
   no previous note shows `(new)`.
-- **D-16 Day cycle** (DEC-11, `references/run-types.md`). *Open day* reads the previous working
-  day's note first (its *Open for tomorrow*, unanswered cards, planned touches not done) and carries
-  each forward, then the signals since, then writes *Today's plan*. *Close day* reads the owner's
+- **D-16 Day cycle** (DEC-11, DEC-13, `references/run-types.md`). *Open day* reads the previous
+  working day's note first (its *Open for tomorrow*, unanswered cards, planned touches not done),
+  re-checks each item in Odoo and mail (activity done, stage moved, mail sent or answered) and
+  carries forward only what is still open, logging the rest as `resolved since`; then the signals
+  since; then writes *Today's plan* from the week's focus deals and new P1 items, up to the week's
+  capacity. *Close day* reads the owner's
   notes and the day's mail and calendar, records what happened on each deal (an internal note or a
   done activity: meeting booked, mail sent, call held), applies the owner's statements (DEC-12),
   infers stage and field changes from the evidence within the tiers, and ends with every deal touched
   today holding a dated next activity (`odoo-activity`, do and log). Close day polishes the note:
   plan items marked done or carried, counts refreshed.
+- **D-18 Weekly review and plan** (DEC-13, `references/run-types.md`, `weekly-review.md`). After
+  the review: *Next week*: 3–5 sales outcomes, the focus deals (each with its outcome), the
+  capacity (owner actions per day; proposed from last week's done count, 5 when there is no
+  history; the owner edits it with an `Owner:` line). The attention list of each daily note splits
+  P1–P3 into *This week* (focus deals and new P1, shown in full) and *Later* (collapsed, counts per
+  rank). A new P1 that pushes the day past capacity is listed, and the lowest planned item moves to
+  tomorrow. The owner's personal week plan is `vault-planning`'s; this is the sales part only.
+- **D-19 Offer catalogue** (DEC-14). `sales-operations/assets/offer-catalogue.example.md`: sections
+  Offerings (per offer: name, what it includes, ladder step), Commercial structures, Approved price
+  ranges, Materials (links). The agent reads it, never edits it; the weekly review raises a card
+  for an offer or price used in a deal but absent from it, or when it is unchanged for 90 days.
 - **D-17 The owner's statement is a yes** (DEC-12, `write-rules` §3). Besides `yes` after an
   `Answer:`, a statement by the owner that names a deal and an outcome ("Owner: Acme Data is
   won", or the same said in a session) is the yes for `odoo-won-lost` on that deal. A lost reason
@@ -224,10 +238,10 @@ replaces the five fragment cases IT-01..05 (owner: not a consistent workflow).*
 
 | Step | When | The owner does | The note and Odoo then show |
 |---|---|---|---|
-| IT-1 open | morning, Desktop scheduled task | nothing; reads the note | one new daily note; yesterday's open items carried forward; Decisions needed (cards pass the spec); Attention list P1–P3 with counts; Today's plan per deal (talk to / answer / chase) |
+| IT-1 open | morning, Desktop scheduled task | nothing; reads the note | one new daily note; yesterday's open items re-checked in Odoo, only the still-open ones carried; Decisions needed (cards pass the spec); Attention list P1–P3 with counts; Today's plan per deal (talk to / answer / chase) |
 | IT-2 work | during the day | works the plan; writes `Owner:` lines in the note, e.g. "Acme Data is lost", "met X, they want the offer by Friday" | — |
 | IT-3 close | evening, CLI: `claude -p --agent meaningfy-sales:sales-agent "close day"` | nothing | the same note completed: plan items done or carried; the stated lost set with an inferred reason; the meeting note's stage move done or carded per tier; every deal touched today has a dated next activity; a client mail implying won/lost is a card, not a write |
-| IT-4 next open | next morning | reads the note | yesterday's leftovers carried; each rank shows its change, e.g. `P2: 14 (−3)` |
+| IT-4 next open | next morning | reads the note | yesterday's leftovers re-checked and carried; owner actions ≤ the week's capacity, the rest under *Later*; each rank shows its change, e.g. `P2: 14 (−3)` |
 
 Pass: every step's column holds; any miss is fixed in the owning skill and the step re-run.
 
