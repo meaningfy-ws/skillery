@@ -176,7 +176,7 @@
   created by hand gets the pointer on its first write through the script:
 
   ```
-  - **Rules:** this repository's rules for agents are in [`docs/rules/`](docs/rules/). At the start of an activity, load them with the rulebook skill; change them only through it, by pull request.
+  - **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, load them with the rulebook skill; change them only through it, by pull request.
   ```
 
   - **Message:** `wrote AGENTS.md (pointer to docs/rules/)`.
