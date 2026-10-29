@@ -52,7 +52,9 @@ what the owner opted in (see `vault-conventions`).
 4. **Keep the owner's words.** A hedge stays a hedge. A rationale the notes do not give is written
    "not stated", never supplied; "Made by" holds the names the source gives, else "not stated".
    Relative dates become concrete (`next week` → `week of YYYY-MM-DD`).
-5. **Report** every file changed and what went where, and list the questions the notes left open.
+5. **Rules.** If the owner stated how work should be done or corrected the agent in this session,
+   run `rule-learner` for its rule approval card. Capture files facts; rules go through the learner.
+6. **Report** every file changed and what went where, and list the questions the notes left open.
 
 ## Guards
 
@@ -72,4 +74,5 @@ its `kind: meeting` note), and the hedge-keeping rules of that filing.
 project resolution → `vault-conventions` (Project homes); session start → `vault-resume`; new projects →
 `vault-project`.
 
-**Related:** `vault-conventions`, `vault-resume`, `vault-project`, `vault-daily`, `vault-promote`.
+**Related:** `vault-conventions`, `vault-resume`, `vault-project`, `vault-daily`, `vault-promote`,
+`rule-learner`.

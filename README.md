@@ -40,7 +40,7 @@ each one serves, and which skills depend on which — see
 | **meaningfy-architecture** | **architecture** · **conceptual-modelling** · **modelling-conventions** · **linkml-engineering** · **formal-reasoning** | …design systems or model a domain |
 | **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
 | **meaningfy-devops** | **infrastructure-operations** · **stack-operations** · **service-reliability** · **infrastructure-security** | …operate servers and stacks, run the daily check-up, answer alerts or review an infrastructure change (agent setup: [`docs/environment/devops-agents.md`](docs/environment/devops-agents.md)); requires `meaningfy-consulting` |
-| **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/environment/vault-assistant.md`](docs/environment/vault-assistant.md)) |
+| **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** · **rulebook** · **rule-learner** · **rule-steward** | …keep a personal Obsidian vault and the owner's rules; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/environment/vault-assistant.md`](docs/environment/vault-assistant.md)) |
 
 Thin **agent** wrappers live in [`agents/`](agents/) — they pin a model + tools and load the skills
 above, and ship with the bundle of their primary skill: `epic-planner`, `implementer` and
@@ -124,6 +124,7 @@ Pin one exact release with `#vX.Y.Z` instead of `#releases` (from the release af
 | Write docs / a README | `technical-writing` |
 | Write a clear explainer / blog-style explanation | `explanatory-writing` |
 | Understand what the voice and writing skills cover, or add a register, channel or genre | [`docs/environment/communication.md`](docs/environment/communication.md) |
+| Keep your rules for agents: load them, learn new ones, review them weekly | `rulebook` · `rule-learner` · `rule-steward` (settings in [`docs/environment/setup.md`](docs/environment/setup.md); the Langfuse deployment they need: [`docs/environment/langfuse-deployment-spec.md`](docs/environment/langfuse-deployment-spec.md)) |
 | Ship a service | `ci-cd-delivery` (deploy contract) |
 | Change, deploy, resize or retire a server or stack | `devops-engineer` (consent card before anything is applied) → `infrastructure-operations`, `stack-operations` |
 | Check the fleet every day, answer alerts at night | `ops-watch` (scheduled; setup in [`docs/environment/devops-agents.md`](docs/environment/devops-agents.md)) → `service-reliability` |

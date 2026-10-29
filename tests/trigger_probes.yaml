@@ -183,3 +183,12 @@ probes:
   - probe: "open a PR with my fix and follow the branch naming convention"
     expect: meaningfy-git-workflow
     near_miss_of: skillery-feedback
+  - probe: "from now on, never send anything to a client without my approval; remember that as a rule"
+    expect: rule-learner
+    near_miss_of: vault-capture
+  - probe: "load my writing rules for this client memo and check the draft against them"
+    expect: rulebook
+    near_miss_of: executive-communication
+  - probe: "which of my rules were overridden or never used this week? groom the rulebook"
+    expect: rule-steward
+    near_miss_of: formal-reasoning

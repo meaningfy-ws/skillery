@@ -73,3 +73,6 @@ capabilities:
   - tag: competency-question-tests
     owner: formal-reasoning
     claim_patterns: ["agreed_by"]
+  - tag: rule-model
+    owner: rulebook
+    claim_patterns: ["hard beats default beats soft"]

@@ -1,5 +1,5 @@
-<!-- STATUS: pitch, 2026-10-29. Shaped from the owner's decisions of 2026-10-29 (see the umbrella's
-     inputs/qa.md). Next: owner fine-tunes this pitch, then the PLAN (design.md + tasks.md) is derived and gated. -->
+<!-- STATUS: EPIC shaped; PLAN derived (design.md + tasks.md), 2026-10-29. Shaped from the owner's decisions of 2026-10-29 (see the umbrella's
+     inputs/qa.md). PLAN gated 9.2/10 (round 3); next: implementation. -->
 
 # EPIC: Rule learner — learn, use, groom and forget the owner's rules
 
@@ -58,7 +58,7 @@ finishing …"), so the learner classifies symbolically and does not guess.
 - a rules area holding one note per rule (kind `rule`);
 - playbooks, one note per recurring activity (kind `playbook`), that hold the procedure and link the rules they use.
 
-The new kinds and folders are proposed through a `skill-change` note, per the vault conventions.
+The new kinds and folders arrive through this EPIC, which is the skillery side of the vault rule that kinds grow through proposals (PLAN D-13).
 
 **Three skills** (bundle: vault-assistant, `maturity: experimental`):
 - **`rulebook`** owns the rule model, the classification patterns, precedence, the repository layout and the scripts:
@@ -69,10 +69,10 @@ The new kinds and folders are proposed through a `skill-change` note, per the va
 
   Each script is a small plain-Python tool.
 - **`rule-learner`**, during and at the end of a session:
-  - It detects rule-like statements and corrections in the owner's turns, classifies them against the patterns, and drafts candidate rules using a closed set of mutations: new, update, supersede, split, needs-owner, reject.
+  - It detects rule-like statements and corrections in the owner's turns, classifies them against the patterns, and drafts candidate rules using a closed set of mutations: new, confirm, update, supersede, split, needs-owner, reject.
   - **The owner approves candidates per session.** Only the owner's own words can authorise a rule; mail, web or file content never can.
 - **`rule-steward`**, weekly:
-  - **Monitors**: reads usage from Langfuse traces and statistics. A rule is *loaded* when the `load` call appears as a tool span. It is *applied* when the agent's rule-citation line appears in the trace. It is *overridden* when the learner logged a correction against it.
+  - **Monitors**: reads usage from Langfuse traces and statistics. A rule is *loaded* when the `load` call appears as a tool span. It is *applied* when the agent's `cite` call appears as a tool span (PLAN D-7 replaced the citation line). It is *overridden* when the learner logged a correction against it.
   - **Grooms**: merges, splits, resolves conflicts and re-runs lint.
   - **Forgets**: proposes retiring rules that are stale, never loaded or often overridden.
   - **Revises the repository with the owner.** Nothing is deleted without the owner's say.
@@ -81,11 +81,11 @@ The new kinds and folders are proposed through a `skill-change` note, per the va
 captures every tool call and every turn, so the catalogue ships no hook of its own. The steward reads
 Langfuse through its API with read-only keys. If Langfuse is not configured or not reachable, the
 steward stops and says so. The deployment is specified separately for the infrastructure stacks repo:
-[`inputs/langfuse-infrastructure-spec.md`](inputs/langfuse-infrastructure-spec.md).
+[`docs/environment/langfuse-deployment-spec.md`](../../../docs/environment/langfuse-deployment-spec.md).
 
 **How rules reach a session:**
 - the vault's `AGENTS.md` names the repository and tells the agent to call `load` for the activity at hand;
-- the agent ends its answer with one line citing the rule IDs it applied;
+- the agent records the rule IDs it applied with `cite`;
 - the `check` rules run on the output before it is handed over.
 
 ## Key decisions
@@ -102,7 +102,7 @@ steward stops and says so. The deployment is specified separately for the infras
   groomed). Rejected: a new top-level folder.
 - **DEC-6** (owner): A set of skills that learn, groom, forget and monitor. Rejected: one monolithic
   skill.
-- **DEC-7** *(proposed)*: Three skills (`rulebook`, `rule-learner`, `rule-steward`), with monitoring and
+- **DEC-7** *(proposed; reasoned in PLAN D-1)*: Three skills (`rulebook`, `rule-learner`, `rule-steward`), with monitoring and
   forgetting inside the steward, since both feed the weekly revision. Rejected: a fourth `rule-monitor`
   skill, kept as an option if the steward grows too big.
 - **DEC-8** *(proposed)*: One note per rule (the properties drive Bases views and usage counts), with
@@ -133,8 +133,8 @@ steward stops and says so. The deployment is specified separately for the infras
 ## What Changes
 
 - New skills `rulebook`, `rule-learner` and `rule-steward` in vault-assistant.
-- vault-conventions gains the `rule` and `playbook` kinds and their place under `08 How to/` (through a
-  skill-change note to the owner's vault, plus the convention text here).
+- vault-conventions gains the `rule` and `playbook` kinds and their place under `08 How to/` (this EPIC is the
+  proposal the vault conventions require; PLAN D-13).
 - vault-planning's weekly review calls the steward. vault-capture hands rule-like statements to the learner.
 - `dependencies.yaml` gains Langfuse (kind `service`) and the Langfuse Claude Code plugin (kind `plugin`).
 
@@ -146,7 +146,8 @@ steward stops and says so. The deployment is specified separately for the infras
 
 ### Modified Capabilities
 
-_None; vault-conventions has no capability spec yet (to be checked in the PLAN)._
+- `vault-conventions`: the `rule` and `playbook` kinds and their home under `08 How to/` (ADDED requirement).
+- `vault-planning`: the weekly rules step (ADDED requirement).
 
 ## Impact
 

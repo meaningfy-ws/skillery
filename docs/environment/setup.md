@@ -99,6 +99,18 @@ instead of restating them. Contributors read them; catalogue users need none of 
 > stops resolving, check this table against the current upstream names. Treat the *Mandatory*
 > set as a release gate when adopting the bundles.
 
+### The owner's rules (`vault-assistant`: rulebook, rule-learner, rule-steward)
+
+| Variable | Set where | Holds |
+|---|---|---|
+| `MEANINGFY_VAULT` | the shell profile of each machine, never in git | the vault root; lets a session in a code repository load the owner's rules. Not needed in a session started at the vault root |
+| `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | the same, never in git | the Langfuse server and the project keys `rule-steward` reads usage with |
+
+Rule monitoring also needs the Langfuse Claude Code plugin pointed at the same server. Without these
+settings the steward stops and says so; loading and checking rules still work. The Langfuse
+deployment is specified for the infrastructure stacks repository in
+[`langfuse-deployment-spec.md`](langfuse-deployment-spec.md).
+
 ### MCP servers (optional)
 
 Neither table above is the full MCP list — GitNexus and context7 are also MCP servers, but so are

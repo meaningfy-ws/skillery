@@ -221,3 +221,25 @@
   opencode_status: native
   claude_install: a system package per OS, as [`setup.md`](../setup.md#reasoning-engines-for-formal-reasoning-optional) says
   opencode_install: same system package; the engine is CLI-independent.
+- name: Langfuse
+  kind: service
+  summary: session traces, read by `rule-steward` for rule usage
+  source: a self-hosted Langfuse server, deployed from the infrastructure stacks repository
+  pin: 'unpinned: the deployed server version'
+  provenance: MIT (Langfuse core), not reviewed
+  used_by: rule-steward (`rules.py stats`)
+  opencode_status: native (an HTTP API; the CLI does not matter)
+  claude_install: set `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` on the machine (see `docs/environment/setup.md`)
+  opencode_install: the same environment variables
+  why: rule usage (loaded, cited, overridden, violated) for the weekly rule review
+  hosting: self-hosted
+- name: Langfuse Claude Code plugin
+  kind: plugin
+  summary: records every tool call and turn of a Claude Code session in Langfuse
+  source: Langfuse's Claude Code integration
+  pin: 'unpinned: installed from the source head'
+  provenance: not reviewed
+  used_by: rule-steward (the only capture of rule usage; the catalogue ships no hook)
+  opencode_status: unsupported (no opencode plugin known; opencode sessions are not traced)
+  claude_install: install the plugin and point it at the Langfuse server with the same keys
+  opencode_install: '**gap**: none; rule usage from opencode sessions is not monitored'

@@ -60,15 +60,19 @@ A plan the owner did not state is not written. If the owner wants no plan for a 
 1. **Read the period's records:** for a week, its daily notes and the `sessions.md` entries of projects
    touched; for a month, quarter or year, the reviews of the shorter periods inside it; and the plan
    that was set for the period.
-2. **Weekly only, the GTD sweep:** list the items waiting in `00 Inbox/` and `00 Inbox/proposed/`, every
+2. **Weekly only, the GTD sweep:** list the items waiting in `00 Inbox/` and `00 Inbox/proposed/`
+   (leaving `kind: rule` notes to the rules step), every
    active project without a session this week (in both project homes, as
    `vault-conventions` defines them), and `To-Do.md` items older than two weeks. Ask what to
    do with each (the owner acts, or names a skill such as `vault-promote`); change nothing yourself.
-3. **Ask** for wins, misses (with one line of why), what carries over, and what the next period should
+3. **Weekly only, the rules step:** run `rule-steward`. It reports the rule candidates waiting in
+   `00 Inbox/proposed/`, the usage flags, the lint findings and the failing golden examples; the owner
+   approves, edits, rejects or leaves each one, and the decisions are applied in this session.
+4. **Ask** for wins, misses (with one line of why), what carries over, and what the next period should
    focus on. Offer what the records show; the owner confirms.
-4. **Write** `04 Daily/reviews/<period>.md` (`kind: review`, `period`, `horizon`) with the four
+5. **Write** `04 Daily/reviews/<period>.md` (`kind: review`, `period`, `horizon`) with the four
    sections.
-5. **Friction** with the vault's method that the owner raises becomes a `kind: skill-change` note in
+6. **Friction** with the vault's method that the owner raises becomes a `kind: skill-change` note in
    `00 Inbox/proposed/`; never edit a skill.
 
 ## Guards
@@ -87,4 +91,4 @@ between horizons.
 the day → `vault-daily`; promoting and tidying what the weekly sweep finds →
 `vault-promote`, `vault-tidy`.
 
-**Related:** `vault-daily`, `vault-project`, `vault-conventions`, `vault-promote`.
+**Related:** `vault-daily`, `vault-project`, `vault-conventions`, `vault-promote`, `rule-steward`.

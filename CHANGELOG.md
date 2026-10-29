@@ -19,6 +19,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   script runs a project's tests and prints each rule's paraphrase beside it. Install the engine you
   need first ([`docs/environment/setup.md`](docs/environment/setup.md#reasoning-engines-for-formal-reasoning-optional));
   the skill never installs it.
+- **The owner's rules, learned and kept in the vault** (`vault-assistant`: `rulebook`, `rule-learner`,
+  `rule-steward`, experimental). State a rule or correct the agent and it is offered back in one
+  approval card at the end of the session; approved rules live in `08 How to/Rules/`, are loaded
+  for the activity at hand, checked on outputs, and reviewed weekly from Langfuse usage. Set
+  `MEANINGFY_VAULT` to use them from a code repository, and the `LANGFUSE_*` settings for the weekly
+  review (see [`docs/environment/setup.md`](docs/environment/setup.md)).
 
 - **A guide to the voice and communication skills** ([`docs/environment/communication.md`](docs/environment/communication.md)):
   which skill owns what, the registers and channel profiles, what is covered and what is not yet
