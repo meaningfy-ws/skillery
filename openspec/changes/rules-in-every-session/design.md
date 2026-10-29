@@ -435,8 +435,8 @@ and create `.git` there. Git cannot commit a nested `.git`, so the fixture holds
 
 - **O-1** Can Cowork run a plugin skill's script against local folders and see `MEANINGFY_VAULT`?
   Task 4.2 answers it live. Either answer changes only the Cowork row in `docs/environment/rules.md`.
-- **O-2** Owner-only choices this PLAN makes provisionally, each with the answer it builds on.
-  Confirm them before task 1.3 (the step-2 tests). D-6 is confirmed before task 2.3.
+- **O-2** Owner-only choices, confirmed by the owner on 2026-10-29 ("yes they look fine"), so they
+  are decisions now. D-6 was confirmed before task 2.3.
   1. Two branches both creating `P-0003`: the lint flags the duplicate id, and the fix is to retire
      one and add it again. Ids that cannot collide would change the rule model (a no-go).
   2. Repository rules carry `private: false`, because the repository is shared with the team.

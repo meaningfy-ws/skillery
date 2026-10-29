@@ -89,3 +89,11 @@ words it came from. The EPIC states each decision once, as a DEC with the owner 
 ## 2026-10-29: DEC-5 to DEC-8
 
 > yes, confirm DEC-5 to DEC-8, continue
+
+## 2026-10-29: the six step-2 choices (design O-2)
+
+Shown one by one: the `P-` collision remedy, `private: false`, the repository default for a
+personal-sounding preference with a reminder, the allow rule in `rulebook`, deferral to the vault
+only, and `rules.py` writing the `AGENTS.md` pointer.
+
+> yes they look fine
