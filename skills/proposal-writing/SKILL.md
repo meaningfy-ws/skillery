@@ -1,6 +1,6 @@
 ---
 name: proposal-writing
-description: "Produce the proposal + Statement of Work (SoW) that frames the paid Decision Phase (P1) offer — with an explicit in/out scope boundary, priced as a fixed frame. It frames the Decision Phase offer for a qualified need (qualification is `sales-qualification`), prices it (delegating the numbers to `estimation`), and writes the proposal + SoW. It OWNS proposal/SoW production and the scope-boundary discipline; it DELEGATES pricing/effort to `estimation`, executive framing to `executive-communication`, and the P1 deliverable definition to `decision-package`. Triggers — \"write a proposal\", \"draft the SoW / Statement of Work\", \"scope boundary for this engagement\", \"fixed-cost proposal\", \"frame the Decision Phase offer\". Not for producing the Decision Package itself (that is `decision-package`), not for free P0 orientation (that is `semantic-consulting-coach`)."
+description: "Produce the proposal + Statement of Work (SoW) that frames the paid Proof of Value offer — with an explicit in/out scope boundary, priced as a fixed frame. It frames the Proof of Value offer for a qualified need (qualification is `sales-qualification`), prices it (delegating the numbers to `estimation`), and writes the proposal + SoW. It OWNS proposal/SoW production and the scope-boundary discipline; it DELEGATES pricing/effort to `estimation`, executive framing to `executive-communication`, and the Proof of Value deliverable definition to `decision-package`. Triggers — \"write a proposal\", \"draft the SoW / Statement of Work\", \"scope boundary for this engagement\", \"fixed-cost proposal\", \"frame the Proof of Value offer\". Not for producing the Decision Package itself (that is `decision-package`), not for free presale (that is `semantic-consulting-coach`)."
 license: Apache 2.0
 metadata:
   purpose: proposals
@@ -19,7 +19,7 @@ metadata:
 ## Overview
 
 The **proposal + SoW** is the commercial artefact that converts a qualified prospect into a signed
-**P1 Decision Phase** engagement. It frames the offer, draws an explicit **scope boundary (in/out)**,
+**Proof of Value** engagement. It frames the offer, draws an explicit **scope boundary (in/out)**,
 and prices the engagement as a **fixed frame** — a bounded commitment the prospect can sign without
 open-ended risk on either side.
 
@@ -29,8 +29,8 @@ the flow is one path, but `estimation` stays independently triggerable for any e
 need a full proposal wrapper).
 
 It composes by reference and restates nothing:
-- the offer being framed — the P1 Decision Phase — is defined by
-  `decision-package` (what P1 *delivers*) and the engagement model in
+- the offer being framed — the Proof of Value — is defined by
+  `decision-package` (what it *delivers*) and the engagement model in
   `semantic-consulting-coach` (the
   free→paid boundary and the fixed-frame intent);
 - the pricing and effort numbers come from `estimation`;
@@ -40,15 +40,15 @@ It composes by reference and restates nothing:
 
 ## Flow (R2)
 
-**Inputs:** presale / P0-advisory notes / prospect context (the qualification signals the coach surfaced).
+**Inputs:** presale notes / prospect context (the qualification signals the coach surfaced).
 **Output:** a proposal + SoW with an explicit in/out scope boundary, priced as a fixed frame.
 
 1. **Qualify the need.** Confirm the prospect has crossed the free→paid boundary — they are asking
    *"what do we do first, and why?"*, not *"is this relevant?"*. If they have not, this is still
-   presale (or, at most, P0-advisory); do **not** write a paid P1 proposal yet (see the boundary discipline in
+   presale; do **not** write a paid Proof of Value proposal yet (see the boundary discipline in
    `semantic-consulting-coach`: engagement model). Capture the
    problem, the deciding persona, the measurable outcome, and the constraints.
-2. **Frame the Decision Phase offer.** State what P1 delivers — the Decision Package (recommendation,
+2. **Frame the Proof of Value offer.** State what the Proof of Value delivers — the Decision Package (recommendation,
    in/out scope, pilot→scale roadmap, buy/build/defer, ready-to-contract execution brief; see
    `decision-package`). Frame it answer-first as the offer that makes
    committing safe, not as open-ended discovery.
@@ -65,12 +65,12 @@ It composes by reference and restates nothing:
 ## The scope boundary (in/out) — load-bearing
 
 The **explicit in/out scope boundary** is the discipline this skill owns. The "out" list is not
-filler: it protects the boundary with the build tier (P2 Execution is *always a separate engagement*)
+filler: it protects the boundary with the build tier (Scaling is *always a separate engagement*)
 and pre-empts scope creep on a fixed-frame price. Two rules:
 
 - **The SoW "out of scope" list = the estimate's exclusions.** They are one list in two documents.
   If `estimation` excluded it from the number, the SoW must exclude it from the commitment.
-- **Name the clean handover.** State that P2 Execution is separately scoped and priced — the proposal
+- **Name the clean handover.** State that Scaling is separately scoped and priced — the proposal
   earns the right to say *"from here, we can execute, or you can take this and execute with someone
   else."*
 
@@ -96,9 +96,9 @@ honest.
   invokes it; it also stands alone).
 - Executive framing and voice (SCQA, Minto pyramid, answer-first) →
   `executive-communication`.
-- The P1 deliverable definition (what the Decision Phase actually produces) →
+- The Proof of Value deliverable definition (what it actually produces) →
   `decision-package`.
-- Coaching whether/how to run P1 and holding the free→paid boundary →
+- Coaching whether/how to run the Proof of Value and holding the free→paid boundary →
   `semantic-consulting-coach`.
 
 **Related:** `estimation`, `decision-package`, `sales-qualification` (hands over the qualified deal and its dossier), `sales-conversations`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` (Contract/specification genre failure modes for the SoW half of this skill's output).

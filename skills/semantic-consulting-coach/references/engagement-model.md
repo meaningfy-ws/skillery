@@ -86,7 +86,7 @@ like?* Then let the user design the activities. The stages are not a ladder —
 the discovery workshop, the Proof of Value, and direct-to-build are alternative first
 purchases, freely composable afterwards.
 
-## The Proof of Value, the Decision Phase (the keystone): its intent
+## The Proof of Value (the keystone): its intent
 
 The flagship offering. A short, paid engagement that moves an organisation from
 awareness/interest to a **safe, informed decision about what to build next**:
