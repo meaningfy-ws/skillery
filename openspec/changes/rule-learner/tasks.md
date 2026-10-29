@@ -44,11 +44,11 @@
 
 ## 2. The rulebook script (green)
 
-- [ ] 2.1 `skills/rulebook/scripts/rules.py`: the reader and writer (D-3) and the vault location (D-11). **Accept:** writer output is byte-stable on a round-trip; the Obsidian-rewritten fixture parses to equal values; an unparseable note is a lint error, not a crash.
-- [ ] 2.2 `load`, `search` and `check` (with `--golden`), with the precedence of D-4 and the output of D-6. **Accept:** the spec scenarios "Default with exception", "A global rule and an activity rule", "Unresolvable conflict" and "A check pattern fails"; the exception-chain fixture.
-- [ ] 2.3 `lint`, with the classes of D-5. **Accept:** "A dead rule", and one assertion per fixture finding of 1.2.
-- [ ] 2.4 The writers `add` (with `--candidate`), `update`, `confirm`, `retire` and `approve`, with the refusal rule of D-5 and the id allocation of the error matrix. `approve` follows the vault move procedure. **Accept:** "Adding an approved rule", "Restating an existing rule", the duplicate-add refusal (exit 4), and "a write with only warnings is written".
-- [ ] 2.5 `cite`, `override` and `stats` (the Langfuse API, `--from-file`, `--since`, `--today`, D-7, the D-10 flags). **Accept:** "A rule overridden twice", "Langfuse unreachable" (exit 3), the truncated-output count, and the format-changed warning.
+- [x] 2.1 `skills/rulebook/scripts/rules.py`: the reader and writer (D-3) and the vault location (D-11). **Accept:** writer output is byte-stable on a round-trip; the Obsidian-rewritten fixture parses to equal values; an unparseable note is a lint error, not a crash.
+- [x] 2.2 `load`, `search` and `check` (with `--golden`), with the precedence of D-4 and the output of D-6. **Accept:** the spec scenarios "Default with exception", "A global rule and an activity rule", "Unresolvable conflict" and "A check pattern fails"; the exception-chain fixture.
+- [x] 2.3 `lint`, with the classes of D-5. **Accept:** "A dead rule", and one assertion per fixture finding of 1.2.
+- [x] 2.4 The writers `add` (with `--candidate`), `update`, `confirm`, `retire` and `approve`, with the refusal rule of D-5 and the id allocation of the error matrix. `approve` follows the vault move procedure. **Accept:** "Adding an approved rule", "Restating an existing rule", the duplicate-add refusal (exit 4), and "a write with only warnings is written".
+- [x] 2.5 `cite`, `override` and `stats` (the Langfuse API, `--from-file`, `--since`, `--today`, D-7, the D-10 flags). **Accept:** "A rule overridden twice", "Langfuse unreachable" (exit 3), the truncated-output count, and the format-changed warning.
 
 ## 3. Skills
 
@@ -112,7 +112,7 @@ Each skill has a "Use this skill when …" description under 700 characters, a Q
 
 ## Roadmap
 
-- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 5.1 · (later) 6.1
+- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 5.1 · (later) 6.1
 
 ## Verification
 
