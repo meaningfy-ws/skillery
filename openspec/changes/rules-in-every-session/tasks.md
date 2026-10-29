@@ -201,14 +201,14 @@
 
 ## 8. Step 2: review
 
-- [ ] 8.1 Have an independent subagent review step 2 against the spec's second requirement, D-8 to
+- [x] 8.1 Have an independent subagent review step 2 against the spec's second requirement, D-8 to
   D-19, the error matrix and the backwards-compatibility tests. Fix the findings and open the step-2 PR.
 
 ## Roadmap
 
 - [x] 0.1 · [ ] 0.2
 - [ ] **Step 1:** [x] 1.1 · 1.2 · 2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 3.1 · 5.1 · (after release, non-blocking) 4.1 · 4.2
-- [ ] **Step 2:** [x] 1.3 · [x] 1.4 · [x] 6.1 · [x] 6.2 · [x] 6.3 · [x] 6.4 · [x] 6.5 · [x] 7.1 · [x] 7.2 · [x] 7.3 · [x] 7.4 · 8.1
+- [x] **Step 2:** 1.3 · 1.4 · 6.1 · 6.2 · 6.3 · 6.4 · 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1 · 8.1
 
 ## Verification
 
