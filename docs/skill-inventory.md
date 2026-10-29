@@ -281,7 +281,7 @@ flowchart LR
 
 ## Relations
 
-Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (77 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (182 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 259 relation edges plus 47 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
+Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (72 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (187 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 259 relation edges plus 47 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
 
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 12, 'rankSpacing': 45, 'curve': 'basis'}}}%%
@@ -387,13 +387,8 @@ flowchart LR
   s_proposal_writing ==> s_semantic_consulting_coach
   s_rule_learner ==> s_rulebook
   s_rule_learner ==> s_rule_steward
-  s_rule_learner ==> s_vault_capture
-  s_rule_learner ==> s_vault_conventions
   s_rule_steward ==> s_rulebook
   s_rule_steward ==> s_rule_learner
-  s_rule_steward ==> s_vault_planning
-  s_rule_steward ==> s_vault_conventions
-  s_rulebook ==> s_vault_conventions
   s_rulebook ==> s_rule_learner
   s_rulebook ==> s_rule_steward
   s_semantic_consulting_coach ==> s_executive_communication
@@ -516,6 +511,11 @@ flowchart LR
   s_proposal_writing -.-> s_sales_qualification
   s_proposal_writing -.-> s_sales_conversations
   s_proposal_writing -.-> s_writing_antipatterns
+  s_rule_learner -.-> s_vault_capture
+  s_rule_learner -.-> s_vault_conventions
+  s_rule_steward -.-> s_vault_planning
+  s_rule_steward -.-> s_vault_conventions
+  s_rulebook -.-> s_vault_conventions
   s_rulebook -.-> s_vault_setup
   s_sales_accounts -.-> s_sales_pipeline_custody
   s_sales_accounts -.-> s_sales_qualification
@@ -678,9 +678,9 @@ Cross-cutting basics everyone installs: clear technical writing, explanatory-wri
 | [`meaningfy-git-workflow`](../skills/meaningfy-git-workflow/SKILL.md) | Meaningfy git and GitHub conventions — Conventional Commits (imperative, no trailing punctuation), branch naming, rebase/merge etiquette, the pull-request workflow, free-tier GitHub constraints, and dev-environment hygiene. | `software-development` | `coding` | `git-release` | `precise` | `build` | `stable` | — | `cosmic-python`, `meaningfy-release`, `commit-commands`, `code-review`, `meaningfy-code-review` |
 | [`guardrails`](../skills/guardrails/SKILL.md) | Apply agentic guardrails wherever an LLM agent acts — decision bounds, output validation, prompt-injection defence, and subagent dispatch (when to spawn, the brief, the model, the report back, the second check). | `software-development` | `coding` | `generic` | `reusable` | `verify` | `stable` | — | `clarity-gate`, `cosmic-python`, `meaningfy-code-review`, `sales-pipeline-custody`, `sales-operations` |
 | [`skillery-feedback`](../skills/skillery-feedback/SKILL.md) | Use this skill when a Meaningfy skill or agent misbehaved, gave wrong or missing guidance, fired when it should not (or did not fire), failed to install, or when you need a skill or agent that does not exist ("report this to skillery", "open an issue on the skill", "the skill did not work", "we need a skill for X"); it says where to report (the skillery repository), which form to use, what context to collect so the issue can be fixed, and what must never go into it. | `knowledge` | `cross-cutting` | `generic` | `precise` | `any` | `experimental` | — | `meaningfy-git-workflow`, `guardrails` |
-| [`rulebook`](../skills/rulebook/SKILL.md) | Use this skill in any session, when an activity starts (writing, offers, reviews, coding, code-review, planning) and whenever a rule is read, checked or written: load the rules for the activity and context, cite the ones applied, and check an output before handing it over. | `knowledge` | `cross-cutting` | `generic` | `precise` | `any` | `experimental` | `vault-conventions`, `rule-learner`, `rule-steward` | `rule-learner`, `rule-steward`, `vault-conventions`, `vault-setup` |
-| [`rule-learner`](../skills/rule-learner/SKILL.md) | Use this skill in any session when the owner states how work should be done or corrects the agent ("always", "never", "prefer", "from now on", "no, do it this way"): draft candidate rules from the owner's own words, classify them, pick a mutation (new, confirm, update, supersede, split), show them in one rule approval card when the owner wraps up, and write what the owner approves; record a correction against a rule in force with override. | `knowledge` | `cross-cutting` | `generic` | `precise` | `any` | `experimental` | `rulebook`, `rule-steward`, `vault-capture`, `vault-conventions` | `rulebook`, `rule-steward`, `vault-capture`, `vault-conventions` |
-| [`rule-steward`](../skills/rule-steward/SKILL.md) | Use this skill when the weekly review of a Meaningfy vault reaches its rules step, or when the owner asks how their rules are doing: read the window's rule usage from Langfuse, run the lint and the golden examples, review the staged rule candidates, flag rules never loaded, never cited, overridden, violated or stale, propose retire, revise, merge, split, confirm or promote for each, and apply only what the owner approves. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `experimental` | `rulebook`, `rule-learner`, `vault-planning`, `vault-conventions` | `rulebook`, `rule-learner`, `vault-planning`, `vault-conventions` |
+| [`rulebook`](../skills/rulebook/SKILL.md) | Use this skill in any session, when an activity starts (writing, offers, reviews, coding, code-review, planning) and whenever a rule is read, checked or written: load the rules for the activity and context, cite the ones applied, and check an output before handing it over. | `knowledge` | `cross-cutting` | `generic` | `precise` | `any` | `experimental` | `rule-learner`, `rule-steward` | `rule-learner`, `rule-steward`, `vault-assistant`, `vault-conventions`, `vault-setup` |
+| [`rule-learner`](../skills/rule-learner/SKILL.md) | Use this skill in any session when the owner states how work should be done or corrects the agent ("always", "never", "prefer", "from now on", "no, do it this way"): draft candidate rules from the owner's own words, classify them, pick a mutation (new, confirm, update, supersede, split), show them in one rule approval card when the owner wraps up, and write what the owner approves; record a correction against a rule in force with override. | `knowledge` | `cross-cutting` | `generic` | `precise` | `any` | `experimental` | `rulebook`, `rule-steward` | `rulebook`, `rule-steward`, `vault-assistant`, `vault-capture`, `vault-conventions` |
+| [`rule-steward`](../skills/rule-steward/SKILL.md) | Use this skill when the weekly review of a Meaningfy vault reaches its rules step, or when the owner asks how their rules are doing: read the window's rule usage from Langfuse, run the lint and the golden examples, review the staged rule candidates, flag rules never loaded, never cited, overridden, violated or stale, propose retire, revise, merge, split, confirm or promote for each, and apply only what the owner approves. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `experimental` | `rulebook`, `rule-learner` | `rulebook`, `rule-learner`, `vault-assistant`, `vault-planning`, `vault-conventions` |
 
 ## meaningfy-consulting
 

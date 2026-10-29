@@ -147,8 +147,9 @@ to validate it.
 mapping), the meaning of the `rule` and `playbook` properties, the note format, the `rules.py`
 script and its exit codes, and the use protocol (load, check, cite).
 
-**Delegates:** where a note goes, the required properties of every kind and the move procedure →
-`vault-conventions`; drafting candidates from the owner's words and the approval card →
-`rule-learner`; usage monitoring, grooming and forgetting → `rule-steward`.
+**Delegates:** drafting candidates from the owner's words and the approval card → `rule-learner`;
+usage monitoring, grooming and forgetting → `rule-steward`.
 
-**Related:** `rule-learner`, `rule-steward`, `vault-conventions`, `vault-setup`.
+**Related:** `rule-learner`, `rule-steward`, and, when the `vault-assistant` bundle is installed,
+`vault-conventions` (where a note goes, the required properties of every kind, the move procedure)
+and `vault-setup`.

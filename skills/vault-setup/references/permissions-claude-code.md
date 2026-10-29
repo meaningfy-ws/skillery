@@ -103,7 +103,7 @@ Adapt before writing:
 ## Per machine: the rulebook script
 
 The per-machine allow rule for the rulebook script is owned by `rulebook`:
-[Permissions (per machine)](../../rulebook/references/commands.md#permissions-per-machine).
+the "Permissions (per machine)" section of the `rulebook` skill's `references/commands.md`.
 
 ## Verify
 

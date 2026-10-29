@@ -141,7 +141,8 @@ errors; fix the row with the owner, never write the note by hand.
 the mutations, the rule approval card, and recording corrections with `override`.
 
 **Delegates:** the rule model, the note format, precedence and every write → `rulebook`; the weekly
-review of candidates and usage → `rule-steward`; filing the session's facts into a project →
-`vault-capture`; staging and the inbox → `vault-conventions`.
+review of candidates and usage → `rule-steward`.
 
-**Related:** `rulebook`, `rule-steward`, `vault-capture`, `vault-conventions`.
+**Related:** `rulebook`, `rule-steward`, and, when the `vault-assistant` bundle is installed,
+`vault-capture` (filing the session's facts into a project) and `vault-conventions` (staging and the
+inbox).

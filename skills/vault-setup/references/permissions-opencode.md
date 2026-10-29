@@ -59,7 +59,7 @@ Loaded only by the scheduled run ([`scheduler.md`](scheduler.md)) through `OPENC
 ## Per machine: the rulebook script
 
 The per-machine allow rule for the rulebook script is owned by `rulebook`:
-[Permissions (per machine)](../../rulebook/references/commands.md#permissions-per-machine).
+the "Permissions (per machine)" section of the `rulebook` skill's `references/commands.md`.
 
 ## Gaps against Claude Code
 

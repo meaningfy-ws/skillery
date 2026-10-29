@@ -127,7 +127,8 @@ revise, never as the only reason to retire.
 grooming and forgetting procedure, and the promotion proposal.
 
 **Delegates:** the rule model and every read and write → `rulebook`; drafting new rules →
-`rule-learner`; the weekly review that calls this step → `vault-planning`; the skill-change note and
-staging → `vault-conventions`.
+`rule-learner`.
 
-**Related:** `rulebook`, `rule-learner`, `vault-planning`, `vault-conventions`.
+**Related:** `rulebook`, `rule-learner`, and, when the `vault-assistant` bundle is installed,
+`vault-planning` (the weekly review that calls this step) and `vault-conventions` (the skill-change
+note and staging).
