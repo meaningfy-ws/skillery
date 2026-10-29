@@ -914,3 +914,36 @@ def test_a_repository_id_is_a_valid_command_argument(repo, vault):
 def test_a_cross_store_link_in_a_write_is_refused(repo, vault):
     r = run(*ADD_REPO, "--exception-of", "R-0001", vault=vault, cwd=repo)
     assert r.returncode == 4 and "dangling" in r.stderr
+
+
+# ---------------------------------------------------------------- repository store: skills and docs (7.x)
+
+def test_rule_model_describes_the_repository_store():
+    section = _text("skills/rulebook/references/rule-model.md").split("## Repository store")[1].split("\n## ")[0]
+    assert POINTER in section and "P-NNNN" in section and "private: false" in section
+
+
+def test_commands_reference_lists_where_and_the_read_table():
+    commands = _text("skills/rulebook/references/commands.md")
+    assert "| `where` |" in commands and "| Vault | Repository store |" in commands and "--store" in commands
+
+
+def test_approval_card_has_a_store_column():
+    card = _text("skills/rule-learner/references/approval-card.md")
+    assert "| Store |" in card and "| # | Mutation | Type | Strength | Scope | Store |" in card
+    assert all(s in card for s in ("to vault", "Rows default to this repository", "next commit and pull request"))
+    assert "rules.py where" in _text("skills/rule-learner/SKILL.md")
+
+
+def test_steward_lints_the_vault_only_and_project_setup_only_cites():
+    steward = _text("skills/rule-steward/SKILL.md")
+    assert "lint --store vault" in steward and "Repository rules belong to that repository's team" in steward
+    setup = _text("skills/project-setup/references/agentic-setup.md")
+    assert "rulebook/references/rule-model.md" in setup and POINTER not in setup
+
+
+def test_user_docs_cover_the_repository_store():
+    rules = _text("docs/environment/rules.md").split("## Rules in a repository")[1].split("\n## ")[0]
+    assert all(s in rules for s in ("P-0001", "to vault", "CONFLICT R-0001 vs P-0002"))
+    unreleased = _text("CHANGELOG.md").split("## [Unreleased]")[1].split("\n## [")[0]
+    assert "docs/rules/" in unreleased

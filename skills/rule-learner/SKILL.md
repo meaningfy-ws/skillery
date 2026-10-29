@@ -80,6 +80,8 @@ Nothing is lost silently.
   first of: the owner wraps up ("that's all", "done for today"), the owner asks for it, or you are
   about to give your final summary of a task in which the owner stated or corrected something. Nothing
   waits for a session end. Write only what the owner approves.
+- **L-9 Where a rule goes.** Run `rules.py where` before the card: its `default store` fills the card's
+  Store column. In a git repository rows default to the repository; the owner may switch a row to the vault.
 
 ## Mutations
 
@@ -118,7 +120,7 @@ For each row of the card the owner answers approve, edit, reject or defer.
 - **edit:** apply the owner's changes to the row, show it again, then write it on approval.
 - **reject:** nothing is written.
 - **defer:** `add --candidate`, which stages it in `00 Inbox/proposed/` with `status: idea` for the
-  weekly review.
+  weekly review. Vault rows only: the repository store takes no candidates.
 
 A write that only raises warnings (a CONFLICT, for instance) is written; the warning is shown to the
 owner, and `load` will ask again when the rules meet. A refused write (exit 4) is shown with its
