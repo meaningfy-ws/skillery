@@ -54,20 +54,20 @@
 
 Each skill has a "Use this skill when …" description under 700 characters, a Quick Start with a worked example, Gotchas, `## Boundary & Related Skills`, and the facets purpose `knowledge`, area `personal`, subject `obsidian`, posture `precise`, stage `any`, maturity `experimental`.
 
-- [ ] 3.1 `skills/rulebook/`:
+- [x] 3.1 `skills/rulebook/`:
   - `SKILL.md`: the use protocol (load, cite, check), precedence, the pointer to the model reference, a body under 200 lines;
   - `references/rule-model.md`: the twelve types with meaning, required fields and an example each; strength; scope and globals; the lifecycle-to-status mapping; the note format and quoting;
   - `references/commands.md`: every subcommand with its exit codes (D-14);
   - `assets/templates/rule.md` and `assets/templates/playbook.md`.
 
   **Accept:** the spec requirement "One rule model" answered here and nowhere else.
-- [ ] 3.2 `skills/rule-learner/`:
+- [x] 3.2 `skills/rule-learner/`:
   - `SKILL.md`: when to listen, owner-turns-only, mutations, the rule approval card, `override`, the D-2 path, and the stop when rulebook is missing;
   - `references/recognition-cues.md`: for each type, its cues, a worked statement and the candidate drafted from it;
   - `references/approval-card.md`: the format, with an example.
 
   **Accept:** the judgement scenarios "A rule-like statement" and "Text from a document" are each answered by a named rule in the skill. Task 5.1's review against those named rules is the accepted test (no model eval in this change).
-- [ ] 3.3 `skills/rule-steward/`:
+- [x] 3.3 `skills/rule-steward/`:
   - `SKILL.md`: the weekly procedure, the D-10 flags, proposals and their application, the stop when Langfuse is unavailable, promotion via `skill-change`;
   - `references/langfuse.md`: the settings, how events and counts are derived (D-7), the opencode gap.
 
@@ -75,20 +75,20 @@ Each skill has a "Use this skill when …" description under 700 characters, a Q
 
 ## 4. Integration (D-13)
 
-- [ ] 4.1 **vault-conventions:**
+- [x] 4.1 **vault-conventions:**
   - the `rule` and `playbook` rows in `references/kinds.md`, with their required properties and the D-3 status mapping;
   - the Staging paragraph for rule candidates and `approve`.
 
   **vault-promote:** the boundary line.
 
   **Accept:** the scenarios in `specs/vault-conventions/spec.md`, with vault-promote's kind check passing on the two templates.
-- [ ] 4.2 **vault-planning:** the weekly rules step, and the sweep skipping `kind: rule`. **vault-capture:** the end-of-session line. **vault-setup:**
+- [x] 4.2 **vault-planning:** the weekly rules step, and the sweep skipping `kind: rule`. **vault-capture:** the end-of-session line. **vault-setup:**
   - the `AGENTS.md` load line;
   - the two templates;
   - the permission entries in `references/permissions-claude-code.md` and `references/permissions-opencode.md`, plus the exception to the "refuse it" gap text. Find and record the narrowest pattern each CLI accepts for the rulebook script.
 
   **Accept:** the scenario in `specs/vault-planning/spec.md`; the permission entry is recorded with the pattern tested on Claude Code.
-- [ ] 4.3 Catalogue wiring:
+- [x] 4.3 Catalogue wiring:
   - `bundles.yaml` (vault-assistant);
   - `served_by.skills` of `use-cases/UC-W1-vault-work.md` for all three skills;
   - `dependencies.yaml`: Langfuse (kind `service`) and the Langfuse Claude Code plugin (kind `plugin`, `opencode_status: unsupported`), with every required field;
@@ -97,7 +97,7 @@ Each skill has a "Use this skill when …" description under 700 characters, a Q
   - then `make bundles` and `make skill-inventory`.
 
   **Accept:** `make validate` is green.
-- [ ] 4.4 Docs:
+- [x] 4.4 Docs:
   - a CHANGELOG line;
   - the parity gap (D-12) in `docs/environment/dual-cli/compatibility.md`;
   - `MEANINGFY_VAULT` and `LANGFUSE_*` in `docs/environment/setup.md`, citing `rule-learner/inputs/langfuse-infrastructure-spec.md` for the deployment.
@@ -112,7 +112,7 @@ Each skill has a "Use this skill when …" description under 700 characters, a Q
 
 ## Roadmap
 
-- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 5.1 · (later) 6.1
+- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [ ] 5.1 · (later) 6.1
 
 ## Verification
 

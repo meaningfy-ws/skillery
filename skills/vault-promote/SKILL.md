@@ -56,6 +56,7 @@ owner makes it *shared*, by setting `memory: common` later.
 
 **Delegates:** kinds, required properties and sections, and the move procedure →
 `vault-conventions`; reorganising many notes →
-`vault-tidy`.
+`vault-tidy`; rule candidates (`kind: rule`), which are approved and moved by the rulebook script →
+`rulebook`.
 
 **Related:** `vault-conventions`, `vault-tidy`, `vault-capture`, `vault-planning`.

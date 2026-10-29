@@ -19,14 +19,17 @@ Commands that fetch (`curl`, `wget`) are denied outright. Commands that move or 
 always ask, so the owner approves each move or delete they requested (`vault-conventions`, Moving and
 deleting); the scheduled run denies them on its command line ([`scheduler.md`](scheduler.md)). The read-only
 mail and calendar tools and the memory `recall` are allowed, so neither an interactive session nor a
-scheduled one stops to ask for them. Any other shell
-command is a **stated gap**: tell the owner to refuse it when asked.
+scheduled one stops to ask for them. The rulebook script is allowed too (below), so loading,
+checking and citing rules never stops to ask. Any other shell
+command is a **stated gap**: tell the owner to refuse it when asked. The one exception is the
+rulebook script: approve it, because it reads and writes only rule notes.
 
 ```json
 {
   "permissions": {
     "allow": [
       "Bash(obsidian:*)",
+      "Bash(python3 <home>/.claude/plugins/cache/meaningfy-skillery/vault-assistant/*/skills/rulebook/scripts/rules.py *)",
       "mcp__claude_ai_Gmail__create_draft",
       "mcp__claude_ai_Gmail__update_draft",
       "mcp__claude_ai_Gmail__search_threads",
@@ -94,6 +97,15 @@ Adapt before writing:
   that send, reply, forward, delete, move, flag or change categories, and create, update, delete or
   respond to events. List the connector's tools with `/mcp` and deny every write except creating and
   updating drafts.
+- **`<home>`** is the owner's home folder written out (`/home/<user>`, `/Users/<user>`); Claude Code
+  matches the command text as written, so the rule only matches when the agent runs the script by
+  its full path, unquoted. The `*` in the middle stands for the installed version only. On Windows
+  write `python` and the Windows path. This is the narrowest pattern Claude Code's syntax accepts for
+  the script (a `*` matches any text, so `Bash(python3:*)` or `Bash(python3 *rules.py *)` would also
+  allow any other Python program). Recorded 2026-10-29 from the Claude Code permission documentation;
+  **not yet tested live**: the first time the owner runs `load` in the vault, confirm it runs without
+  a prompt, and if Claude Code warns at startup about the wildcard, approve the script when asked
+  instead.
 - A server-level entry (`mcp__claude_ai_Google_Drive`) denies every tool of that server.
 - Connector tool names change when a connector updates: re-run the check in
   [`final-check.md`](final-check.md) after an update.

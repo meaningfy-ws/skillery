@@ -255,3 +255,19 @@
 ## Open Questions
 
 - **O-1** The exact observation shape the Langfuse plugin writes for a Bash tool call. D-7's recursive walk is chosen so the answer does not change the code. Confirm in task 6.1.
+
+## Implementation notes
+
+- **2026-10-29, D-6 load line.** `load` prints `R-0042 [default] spelling=british: use British English
+  spelling (because: …)`, with a colon where D-6 shows an em dash. The skills quote this output in
+  their worked examples, and an em dash there would model the punctuation the owner's own rule
+  forbids (handover §0). The line still starts with `R-NNNN `, so D-7 counting is unchanged.
+- **2026-10-29, task 4.2 permission patterns.** Both CLIs match `*` against any text, so a pattern
+  such as `python3 *rules.py *` would allow any Python program whose arguments mention `rules.py`.
+  The narrowest accepted rule pins the installed path and leaves only the version as a wildcard:
+  Claude Code `Bash(python3 <home>/.claude/plugins/cache/meaningfy-skillery/vault-assistant/*/skills/rulebook/scripts/rules.py *)`,
+  opencode `"python3 <home>/.config/opencode/skills/rulebook/scripts/rules.py *": "allow"`. Both are
+  taken from the CLIs' permission documentation and were not tested live; vault-setup's references
+  say so and tell the owner how to confirm on first use.
+- **2026-10-29, the type name for "definition or convention"** is `convention`, and "escalation or
+  autonomy" is `escalation`; `rulebook`'s rule model lists all twelve names.

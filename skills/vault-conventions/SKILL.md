@@ -41,7 +41,7 @@ describes its owner. Report the clash as a `skill-change` note (see Staging belo
 | `05 To Do/` | the master list `To-Do.md` and the plans `Objectives YYYY.md` |
 | `06 Archive/` | closed projects and retired notes, moved there only by a person or after a person's yes |
 | `07 Perso/` | personal notes, and personal projects (Project homes); never shared |
-| `08 How to/` | how-to notes for the owner's own routines |
+| `08 How to/` | how-to notes for the owner's own routines; `Rules/` and `Playbooks/` hold the owner's rules (kinds `rule` and `playbook`) |
 | `X/Templates/` | one template per kind |
 
 The date prefix of a project folder is the day it was created; the name keeps the owner's casing and
@@ -149,6 +149,12 @@ writes it as a note in `00 Inbox/proposed/` with its intended `kind` and that ki
 properties. A person, or
 `vault-promote`, moves it on.
 
+A rule candidate is a claim too. One the owner deferred, or one an agent drafted without being
+asked, waits in `00 Inbox/proposed/` as a `kind: rule` note with `status: idea`, for the weekly review.
+An approved candidate moves into `08 How to/Rules/` through the rulebook script's `approve`, which
+follows the procedure in Moving and deleting (the unique-name check included); `vault-promote` does
+not move rule notes.
+
 A better method is also a claim: an agent never edits a skill. It writes a `kind: skill-change` note in
 `00 Inbox/proposed/` naming the skill and the change; a person opens the skillery pull request. New
 kinds arrive the same way.
@@ -195,4 +201,4 @@ of a vault session, and the table check before saving.
 profile and write rules → the vault's `AGENTS.md`; creating a vault → `vault-setup`.
 
 **Related:** `vault-setup`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`,
-`vault-tidy`, `vault-planning`, `vault-daily`; `sales-operations` (its run notes follow the table check and memory etiquette).
+`vault-tidy`, `vault-planning`, `vault-daily`, `rulebook`, `rule-learner`, `rule-steward`; `sales-operations` (its run notes follow the table check and memory etiquette).

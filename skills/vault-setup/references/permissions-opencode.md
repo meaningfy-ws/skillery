@@ -12,7 +12,7 @@ opencode reads `AGENTS.md` at the vault root natively; no pointer file is needed
 {
   "$schema": "https://opencode.ai/config.json",
   "permission": {
-    "bash": { "*": "ask", "obsidian *": "allow", "mv *": "ask", "rm *": "ask", "curl *": "deny", "wget *": "deny" },
+    "bash": { "*": "ask", "obsidian *": "allow", "mv *": "ask", "rm *": "ask", "curl *": "deny", "wget *": "deny", "python3 <home>/.config/opencode/skills/rulebook/scripts/rules.py *": "allow" },
     "webfetch": "deny",
     "websearch": "deny",
     "edit": "ask",
@@ -40,6 +40,13 @@ first and the specific rules after it. The older top-level `tools` block is depr
 `permission` only. `mv` and `rm` ask, so the owner approves each move or delete they requested
 (`vault-conventions`, Moving and deleting).
 
+The rulebook script is allowed by its full path in the global opencode skills folder (`<home>` is
+the owner's home folder written out; on Windows, `python` and the Windows path). opencode's `*`
+matches any text, so this pinned path is the narrowest rule: `python3 *rules.py *` would allow any
+Python program whose arguments mention `rules.py`. The rule comes after the catch-all, because the
+last matching rule wins. Recorded 2026-10-29 from the opencode permission documentation, not tested
+live.
+
 ## `opencode.scheduled.json` at the vault root
 
 Loaded only by the scheduled run ([`scheduler.md`](scheduler.md)) through `OPENCODE_CONFIG`, on top of
@@ -57,6 +64,8 @@ Loaded only by the scheduled run ([`scheduler.md`](scheduler.md)) through `OPENC
 - `edit` is set to `ask` for the whole vault instead of denying edits to `AGENTS.md` and
   `opencode.json` only; ask the owner to refuse any edit to those two files.
 - Skills cannot be invoked with a slash; the owner asks for them by name.
+- Rule usage is not traced on opencode (no Langfuse plugin), so the weekly rules review sees no
+  usage from opencode sessions.
 
 ## Verify
 
