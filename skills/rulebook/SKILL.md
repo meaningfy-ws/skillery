@@ -83,6 +83,8 @@ in [`references/commands.md`](references/commands.md).
 - **Playbooks:** `08 How to/Playbooks/<Activity>.md`, kind `playbook`, at most one per activity. A
   playbook holds the activity's procedure (its body), its scope vocabulary and its golden examples.
 - **Candidates:** `00 Inbox/proposed/`, `status: idea`, until the owner approves them.
+- **Repository rules:** in a git repository, `docs/rules/P-NNNN <title>.md`, shared with the team
+  (rule model, Repository store). `where` says which stores the session sees.
 
 For the required properties of both kinds, see `vault-conventions` (when the vault-assistant bundle is installed); their meaning is in the rule
 model reference.

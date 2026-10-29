@@ -42,7 +42,7 @@
 
 ### 1B. Step 2 (at the start of step 2's branch)
 
-- [ ] 1.3 Build the fixture `tests/fixtures/rulebook/repo/`, with no `.git` (tests create it in
+- [x] 1.3 Build the fixture `tests/fixtures/rulebook/repo/`, with no `.git` (tests create it in
   `tmp_path`):
   - `AGENTS.md`, without the pointer;
   - `docs/rules/P-0001 never commit straight to main.md`: constraint, hard, `activity:coding`;
@@ -58,7 +58,7 @@
 
   Every note is otherwise valid (all required fields, `status: active`). The vault fixture is
   unchanged.
-- [ ] 1.4 Before any step-2 code, save the T-22 snapshots in `tests/fixtures/rulebook/vault-only/`
+- [x] 1.4 Before any step-2 code, save the T-22 snapshots in `tests/fixtures/rulebook/vault-only/`
   by running the current script. Then add T-4 to T-24 (`stats` T-18 uses the file from 1.3).
   **Accept:**
   - T-4 and T-22 pass, since they describe today's behaviour;
@@ -154,20 +154,20 @@
 
 ## 6. Step 2: the script (green)
 
-- [ ] 6.1 `find_stores()` with the D-8 exclusions, and `where` (D-17). **Accept:** T-14, T-20.
-- [ ] 6.2 The repository reader and the id rules (D-9, D-10, D-11), plus `load`, `check FILE` and
+- [x] 6.1 `find_stores()` with the D-8 exclusions, and `where` (D-17). **Accept:** T-14, T-20.
+- [x] 6.2 The repository reader and the id rules (D-9, D-10, D-11), plus `load`, `check FILE` and
   `search` over the union (D-15, D-16). **Accept:** T-4, T-5, T-11, T-12, T-13, T-19, T-21, T-22.
-- [ ] 6.3 `lint --store` with per-store errors and union warnings (D-14), and the write refusal over
+- [x] 6.3 `lint --store` with per-store errors and union warnings (D-14), and the write refusal over
   the combined lint. **Accept:** T-15, T-16, and the `lint` rows of T-23.
-- [ ] 6.4 The writers: `add --store` (default `vault`), `update`/`confirm`/`retire` by prefix, and the
+- [x] 6.4 The writers: `add --store` (default `vault`), `update`/`confirm`/`retire` by prefix, and the
   `approve` and `--candidate` refusals (D-13). Create `docs/rules/` only on a real write, and add the
   pointer (D-12). **Accept:** T-6 to T-10, T-17, the `retire` row of T-23, T-24.
-- [ ] 6.5 `stats` stays `R-`-only. Update the module docstring's subcommand list, and keep the file
+- [x] 6.5 `stats` stays `R-`-only. Update the module docstring's subcommand list, and keep the file
   stdlib-only. **Accept:** T-18; `grep -E "^(import|from) "` shows stdlib modules only.
 
 ## 7. Step 2: skills and docs
 
-- [ ] 7.1 **`rulebook`:**
+- [x] 7.1 **`rulebook`:**
   - `references/rule-model.md` gains a "Repository store" section: the folder, the `P-` prefix,
     `private: false`, no candidates, the pointer line verbatim, and references within one store;
   - `references/commands.md` gains `where`, `--store`, and the D-16 table;
@@ -176,7 +176,7 @@
   **Accept:** `rule-model.md` has a "## Repository store" heading containing the D-12 pointer line
   verbatim (a test compares it with the line `rules.py` writes) and the strings `P-NNNN` and
   `private: false`; `commands.md` has a `where` row and the D-16 table; T-1 to T-24 green.
-- [ ] 7.2 **`rule-learner`:** the Store column, the heading reminder, `to vault` / `to repo`, deferral
+- [x] 7.2 **`rule-learner`:** the Store column, the heading reminder, `to vault` / `to repo`, deferral
   limited to the vault, and the DEC-8 closing line (D-18), in `SKILL.md` and
   `references/approval-card.md`, with the example card updated.
   **Accept** (grep test): `references/approval-card.md` has a `Store` column in its format table and
@@ -184,13 +184,13 @@
   request"; `rule-learner/SKILL.md` contains `rules.py where`. A probe is added:
   "in this repo we never merge without a green CI, make that a rule" → `rule-learner`, near miss of
   `ci-cd-delivery`.
-- [ ] 7.3 **`rule-steward`:** `lint --store vault` in its procedure and the boundary line (D-14).
+- [x] 7.3 **`rule-steward`:** `lint --store vault` in its procedure and the boundary line (D-14).
   **`project-setup`:** the one citing line in `references/agentic-setup.md` (D-19).
 
   **Accept** (grep test): `rule-steward/SKILL.md` contains `lint --store vault` and "Repository rules
   belong to that repository's team"; `agentic-setup.md` links `rulebook/references/rule-model.md` and
   does not contain the pointer line itself.
-- [ ] 7.4 Docs:
+- [x] 7.4 Docs:
   - `docs/environment/rules.md`: a "Rules in a repository" section with worked examples 2 to 4;
   - a CHANGELOG line;
   - `make bundles` and `make skill-inventory`.
@@ -201,14 +201,14 @@
 
 ## 8. Step 2: review
 
-- [ ] 8.1 Have an independent subagent review step 2 against the spec's second requirement, D-8 to
+- [x] 8.1 Have an independent subagent review step 2 against the spec's second requirement, D-8 to
   D-19, the error matrix and the backwards-compatibility tests. Fix the findings and open the step-2 PR.
 
 ## Roadmap
 
 - [x] 0.1 · [ ] 0.2
 - [ ] **Step 1:** [x] 1.1 · 1.2 · 2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 3.1 · 5.1 · (after release, non-blocking) 4.1 · 4.2
-- [ ] **Step 2:** 1.3 · 1.4 · 6.1 · 6.2 · 6.3 · 6.4 · 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1
+- [x] **Step 2:** 1.3 · 1.4 · 6.1 · 6.2 · 6.3 · 6.4 · 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1
 
 ## Verification
 

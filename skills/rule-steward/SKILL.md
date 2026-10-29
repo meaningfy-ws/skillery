@@ -73,7 +73,7 @@ is there, stop and say in one line: "The rulebook skill is not installed; the ru
    changed; if it warns of no usage data, no session was traced in the window. Report either, and
    raise no usage flag this week. If it reports truncated outputs, say how
    many: those loads counted without ids.
-3. **Lint.** Run `lint`. Every error and warning is a flag.
+3. **Lint.** Run `lint --store vault`. Every error and warning is a flag.
 4. **Golden examples.** Run `check --golden`. A failing example is a flag.
 5. **Candidates.** List the `kind: rule` notes in `00 Inbox/proposed/` (`status: idea`).
 6. **Report.** One table: rule, flag, proposal (below). Candidates last. Keep it to what needs a
@@ -125,6 +125,8 @@ revise, never as the only reason to retire.
 
 **Owns:** rule usage monitoring from Langfuse, the steward's flags and thresholds, the weekly
 grooming and forgetting procedure, and the promotion proposal.
+
+**Repository rules belong to that repository's team: never groomed, retired or reported here.**
 
 **Delegates:** the rule model and every read and write → `rulebook`; drafting new rules →
 `rule-learner`.

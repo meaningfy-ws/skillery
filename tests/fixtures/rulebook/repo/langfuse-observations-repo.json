@@ -1,0 +1,7 @@
+{"data": [
+  {"id": "o1", "type": "SPAN", "name": "Bash", "startTime": "2026-10-28T09:00:00Z",
+   "input": {"command": "python3 rules.py load --activity coding"},
+   "output": "P-0001 [hard] never commit straight to main (because: main is protected)\n-- end --"},
+  {"id": "o2", "type": "SPAN", "name": "Bash", "startTime": "2026-10-28T09:05:00Z",
+   "input": {"command": "python3 rules.py cite P-0001"}, "output": "cited P-0001"}
+], "meta": {"page": 1, "totalPages": 1}}

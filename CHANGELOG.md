@@ -23,6 +23,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
+- **Rules in a repository.** In a git repository the rule skills can keep a rule in the repository's
+  `docs/rules/` folder (ids `P-NNNN`, shared through git) instead of your vault. The approval card has a
+  Store column that defaults to the repository there; answer `N to vault` for a personal preference.
+  `rules.py where` shows the stores a session sees, and `load` reports a `CONFLICT R-… vs P-…` when a
+  team rule and a personal rule disagree. See [`docs/environment/rules.md`](docs/environment/rules.md).
 - **`formal-reasoning` (`meaningfy-architecture`, experimental).** When an answer about rules or facts
   must be exact, your agent now runs it on an engine instead of reasoning in prose: clingo for rule
   sets (conflicts, dead rules, minimal fixes), SWI-Prolog for closure and competency questions. One

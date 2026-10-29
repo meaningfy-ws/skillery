@@ -147,6 +147,32 @@ If Langfuse cannot be reached, the steward stops rather than guess which rules a
 | rules in a code repository's session | `MEANINGFY_VAULT` set to your vault, on your machine only | [`setup.md`](setup.md) |
 | the weekly review | Langfuse, its Claude Code plugin, and `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | [`setup.md`](setup.md); the deployment: [`langfuse-deployment-spec.md`](langfuse-deployment-spec.md) |
 
+## Rules in a repository
+
+In a git repository, a rule can live in the repository's `docs/rules/` folder instead of your vault, so
+the whole team shares it. Inside a repository the card's rows default to the repository; answer
+`N to vault` for a personal preference.
+
+**Example 1, a project convention.** In `~/work/app` you say "never commit straight to main in this
+repo". The card shows the row with Store `repo`; you approve it. `rules.py` writes
+`docs/rules/P-0001 never commit straight to main.md`, adds a pointer line to the repository's
+`AGENTS.md`, and commits nothing: both are file changes that reach the team with your next commit and
+pull request.
+
+**Example 2, a personal preference.** In the same session you say "I prefer British English". Answer
+"approve 1, 2 to vault": row 2 is written to your vault as the next `R-` rule.
+
+**Example 3, the stores disagree.** The repository holds `P-0002` (American spelling for writing) and
+your vault holds `R-0001` (British). `load --activity writing` prints both rules and
+`CONFLICT R-0001 vs P-0002 on spelling: ask the owner`; the agent asks you.
+
+**Example 4, a teammate without your vault.** Without `MEANINGFY_VAULT`, `load` prints the repository
+rules, a `NOTE` that personal rules are not loaded, and exits 0.
+
+Repository rules are the team's: the weekly review (`rule-steward`) never grooms them, and the
+repository has no candidates, so a row for it cannot be deferred. Two branches can each add the same
+`P-` id; the lint reports the duplicate and the fix is to retire one copy and add it again.
+
 ## Where to read more
 
 - [`rule-model.md`](../../skills/rulebook/references/rule-model.md): the twelve types, strength,
@@ -169,9 +195,8 @@ If Langfuse cannot be reached, the steward stops rather than guess which rules a
   no usage flag instead of calling every rule unused.
 - **"Redundant" can over-report.** A rule that matters only in a wider combination of tags may be
   flagged. It is a warning, and you decide.
-- **Rules reach any interactive session, but only your vault stores them.** A session finds them
-  when `MEANINGFY_VAULT` is set (or it runs in the vault). A rule stated in a code repository goes to
-  your vault, so a teammate never sees it.
+- **Rules reach any interactive session.** A session finds your vault's rules when `MEANINGFY_VAULT` is
+  set (or it runs in the vault); a repository's rules need no setting.
 
 ## Changing the method
 

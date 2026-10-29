@@ -1,0 +1,43 @@
+window 2026-09-29..2026-10-29: 8 observations, 6 rules.py events
+id      loaded cited overridden violated
+R-0001  1 1 0 0
+R-0010  1 1 0 1
+R-0012  1 0 2 0
+TRUNCATED 1 output(s) counted without ids
+FLAG R-0002 never-loaded: propose retire
+FLAG R-0003 never-loaded: propose retire
+FLAG R-0004 never-loaded: propose retire
+FLAG R-0005 never-loaded: propose retire
+FLAG R-0011 never-loaded: propose retire
+FLAG R-0012 overridden 2: propose revise, supersede or retire; reasons: "US client prefers a surname"; "internal memo"
+FLAG R-0012 stale (last confirmed 2026-06-01): propose confirm or retire
+FLAG R-0013 never-loaded: propose retire
+FLAG R-0020 never-loaded: propose retire
+FLAG R-0021 never-loaded: propose retire
+FLAG R-0022 never-loaded: propose retire
+FLAG R-0023 never-loaded: propose retire
+FLAG R-0024 never-loaded: propose retire
+FLAG R-0025 never-loaded: propose retire
+FLAG R-0026 never-loaded: propose retire
+FLAG R-0027 never-loaded: propose retire
+FLAG R-0028 never-loaded: propose retire
+FLAG R-0029 never-loaded: propose retire
+FLAG R-0030 never-loaded: propose retire
+FLAG R-0031 never-loaded: propose retire
+FLAG R-0032 never-loaded: propose retire
+FLAG R-0033 never-loaded: propose retire
+FLAG R-0034 never-loaded: propose retire
+FLAG R-0035 never-loaded: propose retire
+FLAG R-0036 never-loaded: propose retire
+FLAG R-0037 never-loaded: propose retire
+FLAG R-0038 never-loaded: propose retire
+FLAG R-0039 never-loaded: propose retire
+FLAG R-0040 never-loaded: propose retire
+FLAG R-0041 never-loaded: propose retire
+FLAG R-0042 never-loaded: propose retire
+FLAG R-0043 never-loaded: propose retire
+FLAG R-0045 never-loaded: propose retire
+FLAG R-0047 never-loaded: propose retire
+FLAG R-0048 never-loaded: propose retire
+FLAG R-0049 never-loaded: propose retire
+-- end --

@@ -1,0 +1,12 @@
+PLAYBOOK Writing
+# Writing
+
+1. Load the rules for the audience and the channel.
+2. Draft.
+3. Run `check` on the draft before handing it over.
+SKIPPED R-0046 broken.md: line 4: cannot read '{{this line is not a property'
+R-0005 [default] length=long: write the full argument (because: the owner said so in a session)
+R-0001 [default] spelling=british: use British English spelling (because: the owner said so in a session)
+R-0010 [hard] use no em dash (because: the owner said so in a session)
+CHECK R-0010: run check on the output before handing it over
+-- end --

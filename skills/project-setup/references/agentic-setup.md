@@ -60,6 +60,10 @@ restates** the standard. It records only what is specific to this repo (the pack
 datastores, the archetype, the spine pointers). This keeps the repo file short and prevents the
 single-source-of-authority drift that a restated standard would cause.
 
+A repository can also keep rules for agents of its own, in `docs/rules/`; the folder and the pointer
+line it adds to `AGENTS.md` are owned by `rulebook` (`skills/rulebook/references/rule-model.md`, Repository
+store). The repository opts in by approving its first rule; do not write the pointer by hand.
+
 ## The spine is the work memory (not `.claude/`)
 
 In-flight work and durable truth now live in `openspec/`, not in `.claude/memory/epics/`:

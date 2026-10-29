@@ -4,6 +4,14 @@ Run `python3 <rulebook skill folder>/scripts/rules.py <command> ...` (`python` o
 command that touches the vault finds it through `MEANINGFY_VAULT`, or the current directory when it
 holds `08 How to/`. Commands that use dates take `--today YYYY-MM-DD` to fix the clock.
 
+## Stores
+
+In a git repository (not `$HOME`, not the vault), `rules.py` also sees that repository's `docs/rules/`
+(`P-` ids; see the rule model, Repository store). Add `--store vault|repo` to `add` (default `vault`)
+and `--store all|vault|repo` to `lint` (default `all`). `update`, `confirm` and `retire` take the store
+from the id prefix. `approve P-…` and `add --candidate --store repo` are refused: the repository has no
+candidates.
+
 ## Exit codes
 
 | Code | Meaning |
@@ -21,8 +29,18 @@ holds `08 How to/`. Commands that use dates take `--today YYYY-MM-DD` to fix the
 | `load --activity A [--context k=v ...]` | the rules in force for the activity and context | the playbook procedure (`PLAYBOOK <name>` then its body), one line per winning rule (`R-0042 [default] spelling=british: <do> (because: ...)`), the rules without a slot, a `CHECK` line naming the rules with a check pattern, `CONFLICT ...: ask the owner` lines, `SKIPPED` for unreadable notes, then `-- end --` |
 | `check --activity A [--context k=v ...] FILE` | runs the check patterns of the rules in force on FILE | `VIOLATION R-NNNN line N: <line>` per hit (exit 1), or `OK`, then `-- end --` |
 | `check --golden [--activity A]` | runs each playbook's golden examples through `check`, in the playbook's activity plus the tags written after `\|` in the `golden:` item | `GOLDEN <path>: ok`, `FAIL` (with its violations) or `missing`; exit 1 on any failure |
-| `lint` | the whole rule set | `ERROR <code>: ...` and `WARNING <code>: ...` lines and a count; exit 1 on any error |
+| `where` | the stores this session sees, and the default store for a new rule | `vault: <path>` or `none (<why>)`, `repository: <root> (docs/rules/ present \| not yet created)` or `none (<why>)`, `default store: repository \| vault`, `-- end --`; always exit 0 |
+| `lint [--store all\|vault\|repo]` | the whole rule set: errors per store, warnings over both | `ERROR <code>: ...` and `WARNING <code>: ...` lines and a count; exit 1 on any error |
 | `search WORD ...` | rules and candidates whose id, `when`, `do`, slot, value, reason or source hold every word | `R-NNNN [status] [strength] <do> (when: ...)` |
+
+What `load`, `check FILE` and `search` read, by the stores present:
+
+| Vault | Repository store | Prints | Exit |
+|---|---|---|---|
+| found | none, or no `docs/rules/` yet | the vault's output as before | 0 |
+| found | present | both stores, with a `P-` line wherever a repository rule wins | 0 |
+| not found | present | the repository rules, then `NOTE personal rules not loaded: vault not found (set MEANINGFY_VAULT)` | 0 |
+| not found | none | the vault-not-found message | 3 |
 
 Lint codes: errors `parse`, `missing`, `invalid`, `regex`, `duplicate-id`, `dangling`,
 `narrow-exception`, `cycle`; warnings `conflict`, `dead`, `redundant`, `duplicate`,
@@ -46,6 +64,7 @@ the file is left unchanged; new warnings are written and printed.
 | Command | Does |
 |---|---|
 | `add --type T --strength S --scope tag [--scope tag ...] --when ... --do ... --because ... --source ... [--slot --value --instead-of --exception-of --supersedes --check-absent --check-present]` | writes `08 How to/Rules/R-NNNN <title>.md` with the next free id, `status: active`, `private: true` and today's `added`, `approved` and `last_confirmed`. With `--supersedes R-old`, also retires R-old. Refused when `when` and `do` match an active rule: run `confirm` instead |
+| `add --store repo ...` | the same in `docs/rules/P-NNNN <title>.md` with `private: false`; creates the folder on the first write and adds the pointer to `AGENTS.md` (exit 3 outside a repository) |
 | `add --candidate ...` | the same, written to `00 Inbox/proposed/` with `status: idea` and no approval dates |
 | `update R-NNNN --field value ...` | changes the given fields and keeps the id; `--scope` replaces the whole list. A new `do` renames the file to match, after checking that no other note in the vault has the new name |
 | `confirm R-NNNN` | sets `last_confirmed` to today; nothing else changes |

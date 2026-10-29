@@ -126,6 +126,28 @@ The stages reuse the vault's status vocabulary, so `paused` and `done` are not u
 retired rule is never deleted: its history and the owner's reason stay readable. A superseded rule is
 retired with the reason `superseded by R-NNNN`.
 
+## Repository store
+
+A rule can live in a git repository instead of the owner's vault, so the whole team shares it.
+
+- **Folder and name:** `docs/rules/P-NNNN <title>.md` at the repository root, one flat folder. The
+  `P-` prefix ("project") keeps ids apart from the vault's `R-`; the next id is the highest `P-` id
+  plus one. Other files in the folder (a `README.md`) are ignored.
+- **Note:** the same format as a vault rule, with `private: false`, because git shares it. There are no
+  candidates (`status: idea`) in the repository.
+- **Pointer:** on every real write to the store, `rules.py` appends this line to the repository's
+  `AGENTS.md` when it does not mention `docs/rules/` yet:
+
+  ```
+  - **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, load them with the rulebook skill; change them only through it, by pull request.
+  ```
+
+- **References stay inside one store:** `exception_of` and `supersedes` name a rule of the same store,
+  because a teammate has no access to the owner's vault.
+- **Reading:** `load`, `check FILE` and `search` read both stores. Precedence is unchanged; a rule of
+  one store never overrides one of the other except by strength or specificity, and two that disagree
+  print `CONFLICT R-… vs P-…`.
+
 ## Note format
 
 Only two shapes are written: `key: value` lines, and `key:` followed by `  - item` lines. `rules.py`

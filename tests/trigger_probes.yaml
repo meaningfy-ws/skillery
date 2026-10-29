@@ -203,3 +203,6 @@ probes:
   - probe: "set up commitlint so this repo enforces conventional commits"
     expect: meaningfy-git-workflow
     near_miss_of: rule-learner
+  - probe: "in this repo we never merge without a green CI, make that a rule"
+    expect: rule-learner
+    near_miss_of: ci-cd-delivery
