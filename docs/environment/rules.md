@@ -1,87 +1,16 @@
-# Reasoning and rules skills
+# Your rules for agents
 
-**Audience:** a Meaningfy colleague who wants an agent to give exact answers about rules and facts,
-or to remember how they like their work done, and wants to know how the skills do it before
-trusting them.
+**Audience:** a Meaningfy colleague who wants agents to remember how they like their work done, and
+wants to know how the rule skills do it before trusting them.
 
 This page explains and points. The rules themselves live in the skills it links to; when the two
-disagree, the skill wins. All four skills are `experimental`.
+disagree, the skill wins. All three skills are `experimental` and ship in the `vault-assistant` bundle.
 
-Two families share one idea: **the agent proposes, something exact decides.** An agent reasoning in
-prose about rules makes mistakes nobody sees. So in both families the agent writes things down and a
-program, not the agent, says which rule wins, what follows, and what an output breaks.
-
-| Skill | What it does for you | Bundle |
-|---|---|---|
-| [`formal-reasoning`](../../skills/formal-reasoning/SKILL.md) | runs a rule set or a fact base on an engine, with tests agreed beforehand, and shows each rule's meaning beside it | `meaningfy-architecture` |
-| [`rulebook`](../../skills/rulebook/SKILL.md) | keeps your rules in your vault and brings the right ones into each activity | `vault-assistant` |
-| [`rule-learner`](../../skills/rule-learner/SKILL.md) | turns what you say ("from now on…", "no, do it this way") into rules you approve | `vault-assistant` |
-| [`rule-steward`](../../skills/rule-steward/SKILL.md) | once a week, shows which rules are used, ignored or overridden, and proposes what to change | `vault-assistant` |
-
-## Formal reasoning: exact answers about rules and facts
-
-### When to use it
-
-Use it when the answer must be right and explained, not argued: "do these pricing rules conflict
-for a public tender?", "which rule can never apply?", "what is the smallest change that removes the
-conflict?", "which items belong to this tender, through any number of levels?", or a competency
-question your model must answer. Do not use it to check data against a model; that is SHACL and
-OWL, in [`linkml-engineering`](../../skills/linkml-engineering/SKILL.md).
-
-### How it works
-
-```mermaid
-flowchart LR
-    Q([A question about rules or facts]) --> T["1 · Tests first<br/><b>tests.toml</b><br/>query + agreed answer"]
-    T --> R["2 · Rules and facts<br/><b>rules.lp</b> or <b>rules.pl</b><br/>each rule with a %% paraphrase"]
-    R --> L{{"3 · Lint<br/>paraphrase on every rule?<br/>Prolog kept pure?"}}
-    L -->|refused, exit 2| R
-    L --> E["4 · Engine<br/><b>clingo</b> for .lp<br/><b>SWI-Prolog</b> for .pl"]
-    E --> C["5 · Compare with the agreed answers"]
-    C --> P([Report: engine stats,<br/>paraphrase table,<br/>PASS / FAIL per test])
-    P -->|a paraphrase is wrong<br/>or a test fails| R
-
-    classDef step fill:#eef4ff,stroke:#3b6fd8,color:#111
-    classDef check fill:#fff6e5,stroke:#d89a3b,color:#111
-    class T,R,E,C step
-    class L check
-```
-
-A reasoning project is one folder holding three files: the rules, the facts and the tests.
-One script, `run_rules.py`, runs it. Five things make the result trustworthy:
-
-- **The file picks the engine.** `rules.lp` runs on clingo, which is good at finite rule sets with
-  defaults, exceptions and priorities, because it considers every situation at once. `rules.pl` runs on
-  SWI-Prolog with tabling, which is good at closure over a large fact base, because it touches only
-  the facts a query needs. Which to use when is in
-  [`engines.md`](../../skills/formal-reasoning/references/engines.md).
-- **The answers are agreed before the run.** A test written after the run only certifies what the
-  code says. A competency question also records who agreed its answer, and when.
-- **Every rule says what it means.** Each rule carries a one-line paraphrase, and the report prints
-  it beside the rule. You read the two side by side; a paraphrase that does not match is a bug.
-- **Silence is never an answer.** An unknown predicate, a missing facts file or any engine warning
-  stops the run (exit 2). None of them can pass as "no solutions".
-- **Installing is separate from using.** `check_env.py` says which engines are present and how to
-  install the missing one; nothing installs itself. The install lines are in
-  [`setup.md`](setup.md#reasoning-engines-for-formal-reasoning-optional).
-
-The exit code says how it went: 0 every test passed, 1 a test failed, 2 the input was refused, 3 the
-engine is missing.
-
-### Where to read more
-
-- The skill's [Quick Start](../../skills/formal-reasoning/SKILL.md#quick-start): a pricing conflict
-  found in four steps.
-- [`patterns.md`](../../skills/formal-reasoning/references/patterns.md): conflict, dead rule,
-  exception with priority, minimal fix, closure and competency-question tests, each as a template.
-- [`rules-from-text.md`](../../skills/formal-reasoning/references/rules-from-text.md): turning a
-  regulation or a contract into rules without losing track of the clause each one came from.
-- [`templates/reasoning-project/`](../../skills/formal-reasoning/templates/reasoning-project/README.md):
-  two runnable starter projects.
-
-## Your rules: learned, applied and reviewed
-
-### The idea
+| Skill | What it does for you |
+|---|---|
+| [`rulebook`](../../skills/rulebook/SKILL.md) | keeps your rules in your vault and brings the right ones into each activity |
+| [`rule-learner`](../../skills/rule-learner/SKILL.md) | turns what you say ("from now on…", "no, do it this way") into rules you approve |
+| [`rule-steward`](../../skills/rule-steward/SKILL.md) | once a week, shows which rules are used, ignored or overridden, and proposes what to change |
 
 You keep telling agents how you work: "British English", "never send without my approval", "fixed
 price when the scope is clear". Today most of it is lost when the session ends, or stays in one
@@ -91,7 +20,7 @@ your vault**, and bring the right ones into the session that needs them.
 Nothing is learned statistically, and nothing is stored without your approval. Every rule can be
 read, edited in Obsidian and retired.
 
-### Three skills, three moments
+## Three skills, three moments
 
 They are split by when they work, so the frequent moment (starting an activity) loads only what it
 needs:
@@ -134,7 +63,7 @@ flowchart TB
 All three use one script, `rulebook/scripts/rules.py`, and it is the only thing that ever writes a
 rule note. It needs Python and nothing else.
 
-### Using rules: `rulebook`
+## Using rules: `rulebook`
 
 When an activity starts, the agent runs `load` for it with the context, for example
 `--activity writing --context audience=client`. It gets back the activity's playbook and the rules in
@@ -150,7 +79,7 @@ picks one. The formal definition is in
 on the draft, and the agent fixes every `VIOLATION` before handing the draft over. Afterwards the agent
 `cite`s the rules that shaped the output.
 
-### Learning rules: `rule-learner`
+## Learning rules: `rule-learner`
 
 The learner listens only to **your own turns**. A style guide in the repository or a client's mail
 saying "always reply within one hour" is data, not your instruction, and yields nothing, unless you
@@ -169,7 +98,7 @@ When you correct the agent against a rule in force ("for this US client use Amer
 the learner records an `override` at once and proposes an exception. The override counts even if
 you reject the exception, because it is the weekly review's best signal.
 
-### Reviewing rules: `rule-steward`
+## Reviewing rules: `rule-steward`
 
 Rules rot: one stops matching how you work, another is never loaded, two start to disagree. In the
 weekly review (`vault-planning review week`), the steward reads the past 30 days of rule usage from
@@ -183,7 +112,7 @@ the whole company becomes a `skill-change` note, and a person brings it into ski
 
 If Langfuse cannot be reached, the steward stops rather than guess which rules are unused.
 
-### What you need
+## What you need
 
 | For | You need | Where |
 |---|---|---|
@@ -191,7 +120,7 @@ If Langfuse cannot be reached, the steward stops rather than guess which rules a
 | rules in a code repository's session | `MEANINGFY_VAULT` set to your vault, on your machine only | [`setup.md`](setup.md) |
 | the weekly review | Langfuse, its Claude Code plugin, and `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | [`setup.md`](setup.md); the deployment: [`langfuse-deployment-spec.md`](langfuse-deployment-spec.md) |
 
-### Where to read more
+## Where to read more
 
 - [`rule-model.md`](../../skills/rulebook/references/rule-model.md): the twelve types, strength,
   scope, precedence, lifecycle and the note format.
@@ -213,12 +142,14 @@ If Langfuse cannot be reached, the steward stops rather than guess which rules a
   no usage flag instead of calling every rule unused.
 - **"Redundant" can over-report.** A rule that matters only in a wider combination of tags may be
   flagged. It is a warning, and you decide.
-- **clingo grounds every fact first.** A fact base of many thousands of rows belongs on SWI-Prolog,
-  or should be queried where it lives.
+- **Rules reach vault sessions first.** The vault's `AGENTS.md` tells every session there to load
+  the rules. A session in a code repository finds them only when `MEANINGFY_VAULT` is set and the
+  `vault-assistant` bundle is installed, and nothing in a repository's own instructions asks for them
+  yet.
 
 ## Changing the method
 
-The reasoning skills change through a pull request here, like any skill. Your rules change through
-the rule skills, never by editing a skill: agents never edit skills, and a rule that should become
+The rule skills change through a pull request here, like any skill. Your rules change through the
+rule skills, never by editing a skill: agents never edit skills, and a rule that should become
 company practice goes through a `skill-change` note
 ([`vault-conventions` → Staging](../../skills/vault-conventions/SKILL.md#staging)).
