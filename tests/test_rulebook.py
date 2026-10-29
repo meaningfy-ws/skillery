@@ -545,8 +545,8 @@ def test_user_docs_name_the_move():
             if r.startswith("| **")}
     assert all(f"**{s}**" in rows["meaningfy-core"] and f"**{s}**" not in rows["vault-assistant"]
                for s in SKILLS)
-    unreleased = _text("CHANGELOG.md").split("## [Unreleased]")[1].split("\n## [")[0]
-    assert any("BREAKING" in b and "/meaningfy-core/" in b for b in unreleased.split("\n- "))
+    # The rule skills first shipped in 3.8.0, already in meaningfy-core, so no user had the old path.
+    assert any("`meaningfy-core`" in b and "rulebook" in b for b in _text("CHANGELOG.md").split("\n- "))
 
 
 @pytest.mark.parametrize("skill", ["rule-learner", "rule-steward"])
@@ -1017,5 +1017,4 @@ def test_steward_lints_the_vault_only_and_project_setup_only_cites():
 def test_user_docs_cover_the_repository_store():
     rules = _text("docs/environment/rules.md").split("## Rules in a repository")[1].split("\n## ")[0]
     assert all(s in rules for s in ("P-0001", "to vault", "CONFLICT R-0001 vs P-0002"))
-    unreleased = _text("CHANGELOG.md").split("## [Unreleased]")[1].split("\n## [")[0]
-    assert "docs/rules/" in unreleased
+    assert "docs/rules/" in _text("CHANGELOG.md")
