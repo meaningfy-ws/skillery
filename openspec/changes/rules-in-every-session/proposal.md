@@ -96,6 +96,17 @@ project, where the team sees and reviews it.
   rules belongs to that repository's team; this change does not schedule it.
 - **Noise.** Loading rules in every short session costs context. `load` already prints only what
   applies; keep it that way.
+- **Which surfaces can run `rules.py`.** Checked against the official docs on 2026-10-29 (sources
+  in `inputs/qa.md`):
+  - the Claude Code CLI and the Code tab of Claude Desktop run it on the user's machine, so both work;
+  - Desktop chat and claude.ai run a skill's code in an Anthropic container with no path to the
+    laptop, so they cannot reach the vault;
+  - Cowork's access to local folders and environment variables is unverified, and needs a live test
+    in the PLAN;
+  - Claude Code on the web runs in a cloud VM without the vault.
+
+  Desktop's Code tab may not read the shell profile, so `MEANINGFY_VAULT` must also be set in the
+  CLI's user settings (`env`).
 - **Sessions that cannot see either store** (cloud sessions, CI, another machine) must stay silent
   after the one line, never stop.
 
@@ -107,6 +118,8 @@ project, where the team sees and reviews it.
 - No repository store outside a git repository, and none created before the user approves a row
   that writes there.
 - No hook that injects rules automatically.
+- No rules in Claude Desktop chat or claude.ai. Their code cannot reach the vault; a local MCP server
+  that serves the rules would be a separate change.
 - No change to the rule model, precedence or the lint.
 - Scheduled and unattended agents neither load nor learn rules (DEC-3).
 - No Langfuse tracing for opencode; the known parity gap stays.

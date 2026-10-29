@@ -66,3 +66,22 @@ reasoning skill is only the one that enables reasoners within architecture and m
   > no, keep fromar resoning in the archiecture or modelling bundle, better
 
   → recorded in the `formal-reasoning-everywhere` change.
+
+## 2026-10-29: where can the script run?
+
+The owner asked: "what if the session runs in claude desktop? can you still run this script? (what if
+claude.ai?)". A documentation check the same day found:
+
+| Surface | Runs `rules.py` with the vault? | Source |
+|---|---|---|
+| Claude Code CLI | yes, on the user's machine | https://code.claude.com/docs/en/skills.md |
+| Claude Desktop, Code tab (local) | yes: "runs on your machine with direct access to your files"; environment variables through a saved local environment or the `env` key of the user settings | https://code.claude.com/docs/en/desktop.md |
+| Claude Desktop, Cowork | unverified: plugins install from a marketplace, but local folder and environment access is not documented | https://claude.com/docs/cowork/guide/plugins.md |
+| Claude Desktop chat, claude.ai | no: skill code runs in an Anthropic container with no path to the laptop; a local MCP server is a Desktop-only alternative | https://platform.claude.com/docs/en/build-with-claude/skills-guide, https://modelcontextprotocol.io/docs/develop/connect-local-servers |
+| Claude Code on the web | no: a cloud VM with the cloned repository only | https://code.claude.com/docs/en/claude-code-on-the-web.md |
+
+→ a rabbit-hole on surfaces, and a no-go for Desktop chat and claude.ai in this change.
+
+Why the answers are kept here: the epic-planning method keeps the seeds and the Q&A of a change in
+its `inputs/`, verbatim and never groomed, so that every decision in the EPIC can be traced to the
+words it came from. The EPIC states each decision once, as a DEC with the owner and the date.
