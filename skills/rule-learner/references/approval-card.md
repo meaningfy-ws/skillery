@@ -42,6 +42,7 @@ before saying yes.
 > | 3 | CONFIRM R-0017 | parameter | default | writing | vault | writing an offer / give at most three options | | "three options, as always" | none |
 > | 4 | NEEDS_OWNER | selection-heuristic | default | offers | vault | pricing a tender / ? | | "tenders are different" | |
 > | 5 | REJECT | | | | | send the Acme memo today | a one-off request | "send this one today" | |
+> | 6 | NEW | constraint | hard | coding | repo | committing in this repository / never commit straight to main | main is reviewed | "never commit straight to main in this repo" | none |
 >
 > Row 4: what should change for tenders, the pricing model or the margin?
 

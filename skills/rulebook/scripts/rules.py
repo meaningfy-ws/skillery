@@ -42,6 +42,7 @@ ANY_ID = re.compile(r"[RP]-\d{4}")
 REPO_DIR = "docs/rules"
 REPO_GLOB = "P-[0-9][0-9][0-9][0-9] *.md"
 LINKS = ("exception_of", "supersedes")
+NOTE_NO_VAULT = "NOTE personal rules not loaded: vault not found (set MEANINGFY_VAULT)"
 POINTER = ("- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, "
            "load them with the rulebook skill; change them only through it, by pull request.")
 END = "-- end --"
@@ -199,7 +200,8 @@ def _find_repo(vault: Path | None) -> tuple[Path | None, str]:
         return None, "no .git found"
     if root == Path.home().resolve():
         return None, "repository root is the home folder"
-    if vault is not None and cwd.is_relative_to(vault.resolve()):
+    inside_vault = vault is not None and cwd.is_relative_to(vault.resolve())
+    if inside_vault or any((p / "08 How to").is_dir() for p in (cwd, *cwd.parents) if p.is_relative_to(root)):
         return None, "this is the vault"
     return root, ""
 
@@ -483,7 +485,7 @@ def cmd_load(args) -> int:
     checks = [i for i in shown if any(rules[i].get(k) for k in PATTERN_KEYS)]
     if checks:
         out.append(f"CHECK {' '.join(checks)}: run check on the output before handing it over")
-    note = [] if vault else ["NOTE personal rules not loaded: vault not found (set MEANINGFY_VAULT)"]
+    note = [] if vault else [NOTE_NO_VAULT]
     print("\n".join(out + conflicts + note + [END]))
     return 0
 
@@ -537,7 +539,7 @@ def cmd_check(args) -> int:
         found = _violations(Path(args.file).read_text(encoding="utf-8"), ids, rules)
         failed = any(v.startswith("VIOLATION") for v in found)
         out += found or [f"OK: {len(ids)} check rule(s) passed"]
-    print("\n".join(out + [END]))
+    print("\n".join(out + ([] if args.golden or find_stores()[0] else [NOTE_NO_VAULT]) + [END]))
     return 1 if failed else 0
 
 
@@ -564,13 +566,16 @@ def cmd_search(args) -> int:
     if not stores:
         find_vault()
     words = [w.lower() for w in args.words]
-    notes = [n for label, ns in stores for n in ns + (read_dir(vault, PROPOSED_DIR) if label == "vault" else [])]
+    notes = [n for label, ns in stores for n in ([n for n in ns if _belongs(label, n)]
+                                                 + (read_dir(vault, PROPOSED_DIR) if label == "vault" else []))]
     for n in notes:
         m = n.meta
         hay = " ".join(str(m.get(k, "")) for k in ("id", "when", "do", "instead_of", "slot", "value", "because",
                                                    "source")).lower()
         if not n.error and all(w in hay for w in words):
             print(f"{m.get('id')} [{m.get('status')}] [{m.get('strength')}] {m.get('do')} (when: {m.get('when')})")
+    if not vault:
+        print(NOTE_NO_VAULT)
     return 0
 
 
@@ -609,21 +614,26 @@ def _commit(root: Path, changes: list[tuple[Path, dict, str, Path | None]], dry_
     errors = [f"ERROR {c}: {m}" for lvl, c, m in new if lvl == "ERROR"]
     if errors:
         raise Refused("the write would add lint errors; nothing written\n" + "\n".join(errors))
+    written = False
     for path, meta, body, old in [] if dry_run else changes:
         text = dump_note(meta, body)
+        if label == "repository" and old == path and path.read_text(encoding="utf-8") == text:
+            continue  # nothing changes: no write, no pointer
+        written = True
         if old and old != path:
             old.write_text(text, encoding="utf-8")
             old.rename(path)
         elif old:
             path.write_text(text, encoding="utf-8")
         else:
+            path.parent.mkdir(parents=True, exist_ok=True)
             with open(path, "x", encoding="utf-8") as f:
                 f.write(text)
             if [p for p in path.parent.glob(f"{meta['id']} *.md") if p != path]:
                 path.unlink()  # another writer took this id under another title
                 raise FileExistsError(meta["id"])
         print(f"wrote {path.relative_to(root).as_posix()}")
-    if label == "repository" and changes and not dry_run:
+    if label == "repository" and written:
         _write_pointer(root)
     for lvl, c, m in new:
         if lvl == "WARNING":
@@ -633,18 +643,20 @@ def _commit(root: Path, changes: list[tuple[Path, dict, str, Path | None]], dry_
 
 
 def _write_pointer(root: Path) -> None:
-    """Append the pointer line to AGENTS.md when it does not mention docs/rules/ yet (D-12)."""
+    """Append the pointer line to AGENTS.md when it does not mention docs/rules/ yet (D-12). Works on
+    bytes, so any encoding survives; any failure is a warning, never an error."""
     path = root / "AGENTS.md"
     try:
         if not path.exists():
             path.write_text(f"# AGENTS.md\n\n{POINTER}\n", encoding="utf-8")
             print("wrote AGENTS.md (new: if CLAUDE.md is this repository's binding, import AGENTS.md from it)")
             return
-        text = path.read_text(encoding="utf-8")
-        if "docs/rules/" in text:
+        data = path.read_bytes()
+        if b"docs/rules/" in data:
             return
-        with open(path, "a", encoding="utf-8") as f:
-            f.write(("" if text.endswith("\n") else "\n") + f"\n{POINTER}\n")
+        nl = b"\r\n" if b"\r\n" in data else b"\n"
+        with open(path, "ab") as f:
+            f.write((b"" if data.endswith(b"\n") else nl) + nl + POINTER.encode("utf-8") + nl)
         print("wrote AGENTS.md (pointer to docs/rules/)")
     except OSError as e:
         print(f"WARNING pointer: could not write AGENTS.md ({e.strerror or e}): add the line by hand")
@@ -690,8 +702,6 @@ def cmd_add(args) -> int:
             meta.update(approved=today, last_confirmed=today)
         meta["private"] = "false" if repo else "true"
         path = root / (PROPOSED_DIR if args.candidate else sub) / f"{rid} {_title(f.get('do', ''))}.md"
-        if not args.dry_run:
-            path.parent.mkdir(parents=True, exist_ok=True)
         changes = [(path, meta, "", None)] + ([] if args.candidate else _superseded(root, meta, today, sub))
         try:
             _commit(root, changes, args.dry_run)

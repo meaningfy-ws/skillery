@@ -17,6 +17,7 @@ import importlib.util
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -696,8 +697,9 @@ def repo(tmp_path):
 
 
 def test_t5_load_is_the_same_inside_and_outside_a_repository(tmp_path):
-    inside = run("load", "--activity", "writing", cwd=ROOT).stdout
-    assert inside == run("load", "--activity", "writing", cwd=tmp_path).stdout
+    inside = run("load", "--activity", "writing", cwd=ROOT)
+    outside = run("load", "--activity", "writing", cwd=tmp_path)
+    assert inside.stdout == outside.stdout and inside.returncode == outside.returncode == 0
 
 
 def test_t6_a_project_convention_goes_to_the_repository(tmp_path, vault):
@@ -838,11 +840,11 @@ def test_t21_a_cross_store_link_is_cut_in_memory_only(repo):
 
 
 SNAPSHOTS = FIX / "vault-only"
-SNAP_ARGS = [a.replace("{fixtures}", str(FIX)).split() for a in (SNAPSHOTS / "cmds.txt").read_text().splitlines()]
+SNAP_ARGS = [shlex.split(a.replace("{fixtures}", str(FIX))) for a in (SNAPSHOTS / "cmds.txt").read_text().splitlines()]
 
 
 @pytest.mark.parametrize("cwd_is_root", [True, False], ids=["cwd-root", "cwd-tmp"])
-@pytest.mark.parametrize("n", range(1, 6))
+@pytest.mark.parametrize("n", range(1, 8))
 def test_t22_vault_only_output_is_byte_identical(n, cwd_is_root, tmp_path):
     r = run(*SNAP_ARGS[n - 1], cwd=ROOT if cwd_is_root else tmp_path)
     assert r.stdout == (SNAPSHOTS / f"{n}.out").read_text(encoding="utf-8")
@@ -890,10 +892,80 @@ def test_a_pointer_that_cannot_be_written_is_a_warning(repo, vault):
 
 
 def test_read_commands_use_the_union(repo, vault):
-    assert "P-0003" in run("search", "conventional", vault=vault, cwd=repo).stdout
+    out = run("search", "conventional", vault=vault, cwd=repo).stdout
+    assert out == "P-0003 [active] [default] follow conventional commits (when: writing a commit message)\n"
     draft = repo / "draft.md"
     draft.write_text("hello\n", encoding="utf-8")
-    assert run("check", "--activity", "coding", str(draft), vault=vault, cwd=repo).returncode == 0
+    r = run("check", "--activity", "coding", str(draft), vault=vault, cwd=repo)
+    assert r.returncode == 0 and r.stdout == "OK: 0 check rule(s) passed\n-- end --\n"
+
+
+NOTE = "NOTE personal rules not loaded: vault not found (set MEANINGFY_VAULT)"
+
+
+def test_search_and_check_without_the_vault_print_the_note(repo):
+    env = _home(repo.parent)
+    out = run("search", "conventional", vault=None, cwd=repo, env=env).stdout
+    assert out.splitlines()[-1] == NOTE and "P-0003" in out
+    draft = repo / "draft.md"
+    draft.write_text("hello\n", encoding="utf-8")
+    out = run("check", "--activity", "coding", str(draft), vault=None, cwd=repo, env=env).stdout
+    assert out.splitlines()[-2:] == [NOTE, "-- end --"]
+
+
+def test_search_leaves_out_a_note_with_a_vault_id(repo, vault):
+    out = run("search", "carry", "vault", vault=vault, cwd=repo).stdout
+    assert "R-0099" not in out
+
+
+def test_a_session_in_a_vault_subfolder_is_not_a_repository(tmp_path, vault):
+    (vault / ".git").mkdir()
+    before = _tree(vault)
+    sub = vault / "03 Resources"
+    r = run("where", vault=None, cwd=sub, env=_home(tmp_path))
+    assert "repository: none (this is the vault)" in r.stdout
+    r = run(*ADD_REPO, vault=None, cwd=sub, env=_home(tmp_path))
+    assert r.returncode == 3 and _tree(vault) == before
+
+
+def test_a_worktree_git_file_marks_the_repository(tmp_path):
+    repo = _repo(tmp_path)
+    (repo / ".git").rmdir()
+    (repo / ".git").write_text("gitdir: /elsewhere\n", encoding="utf-8")
+    r = run("where", vault=None, cwd=repo, env=_home(tmp_path))
+    assert f"repository: {repo} (docs/rules/ present)" in r.stdout
+
+
+def test_a_refused_repository_write_leaves_no_folder(tmp_path, vault):
+    repo = _repo(tmp_path, rules=False)
+    before = _tree(repo)
+    r = run(*ADD_REPO, "--exception-of", "P-0009", vault=vault, cwd=repo)
+    assert r.returncode == 4
+    assert not (repo / "docs").exists() and _tree(repo) == before
+
+
+def test_a_non_utf8_agents_md_gets_the_pointer_as_bytes(tmp_path, vault):
+    repo = _repo(tmp_path, rules=False)
+    (repo / "AGENTS.md").write_bytes(b"# T\r\n\xe9t\xe9\r\n")
+    r = run(*ADD_REPO, vault=vault, cwd=repo)
+    assert r.returncode == 0, r.stderr
+    assert (repo / "AGENTS.md").read_bytes() == b"# T\r\n\xe9t\xe9\r\n\r\n" + POINTER.encode() + b"\r\n"
+
+
+def test_an_unreadable_agents_md_is_a_warning(tmp_path, vault):
+    repo = _repo(tmp_path, rules=False)
+    (repo / "AGENTS.md").unlink()
+    (repo / "AGENTS.md").mkdir()
+    r = run(*ADD_REPO, vault=vault, cwd=repo)
+    assert r.returncode == 0 and "WARNING pointer: could not write AGENTS.md" in r.stdout
+    assert (repo / "docs/rules/P-0001 never force push.md").exists()
+
+
+def test_a_no_op_update_writes_nothing(repo, vault):
+    (repo / "AGENTS.md").write_text("# AGENTS.md\n", encoding="utf-8")
+    before = _tree(repo)
+    r = run("update", "P-0001", "--because", "main is protected and reviewed", vault=vault, cwd=repo)
+    assert r.returncode == 0 and "wrote" not in r.stdout and _tree(repo) == before
 
 
 def test_a_vault_note_with_a_repository_id_is_skipped(vault):

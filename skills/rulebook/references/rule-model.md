@@ -139,7 +139,7 @@ A rule can live in a git repository instead of the owner's vault, so the whole t
   `AGENTS.md` when it does not mention `docs/rules/` yet:
 
   ```
-- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, load them with the rulebook skill; change them only through it, by pull request.
+  - **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, load them with the rulebook skill; change them only through it, by pull request.
   ```
 
 - **References stay inside one store:** `exception_of` and `supersedes` name a rule of the same store,
