@@ -163,5 +163,6 @@ private: true
 
 A playbook, `08 How to/Playbooks/<Activity>.md`, carries `kind: playbook`, `activity: <name>`,
 `vocabulary:` (items such as `audience:client|internal|us-client`), `golden:` (vault-relative paths
-to examples that must pass `check`) and `private: true`. Its body is the activity's procedure, which
+to examples that must pass `check`, each optionally followed by `|` and context tags, as in
+`03 Resources/Client memo.md | audience=client`) and `private: true`. Its body is the activity's procedure, which
 `load` prints first.

@@ -20,9 +20,10 @@ answers.
 | Source | the owner's words, quoted |
 | Warnings | what the lint would report on writing it (CONFLICT, dead, redundant), or nothing |
 
-Before showing the card, find the warnings: write nothing, but compare each row with the rules that
-`search` and `load` return for its scope. A row with a warning is still written on approval; the
-owner should know before saying yes.
+Before showing the card, find the warnings: run each row's write with `--dry-run` (`add --dry-run`,
+`update --dry-run`). It writes nothing and prints the warnings the write would add, or the errors
+that would refuse it. A row with a warning is still written on approval; the owner should know
+before saying yes.
 
 ## Example
 

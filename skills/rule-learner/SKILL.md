@@ -42,11 +42,11 @@ approval card.
 
 ## The script
 
-Every read and write goes through the rulebook script, at
-`<this skill's base directory>/../rulebook/scripts/rules.py`: the path is relative to this skill's
-folder, never to the working directory. The rulebook skill ships in the same bundle, so the path
-holds on both CLIs. If no file is there, stop and say in one line: "The rulebook skill is not
-installed; rules cannot be learned in this session."
+Every read and write goes through the rulebook script. The rulebook skill ships in the same bundle,
+so its folder is a sibling of this one on both CLIs: take the parent of this skill's base directory
+and add `rulebook/scripts/rules.py`. Run it by that full path, written out with no `..` and
+unquoted, the way the rulebook skill says, so the vault's permission settings match it. If no file
+is there, stop and say in one line: "The rulebook skill is not installed; rules cannot be learned in this session."
 
 ## Rules of learning
 

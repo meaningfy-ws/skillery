@@ -20,7 +20,7 @@
   - Langfuse for usage, required (DEC-4);
   - storage in `08 How to/` (DEC-5);
   - a set of skills (DEC-6).
-- Langfuse is not yet deployed. Its specification is with the infrastructure stacks repo (`inputs/langfuse-infrastructure-spec.md`), so its span shape is read from saved API responses (O-1).
+- Langfuse is not yet deployed. Its specification is with the infrastructure stacks repo (`docs/environment/langfuse-deployment-spec.md`), so its span shape is read from saved API responses (O-1).
 
 ## Goals / Non-Goals
 
@@ -271,3 +271,25 @@
   say so and tell the owner how to confirm on first use.
 - **2026-10-29, the type name for "definition or convention"** is `convention`, and "escalation or
   autonomy" is `escalation`; `rulebook`'s rule model lists all twelve names.
+- **2026-10-29, review (task 5.1).**
+  - **D-2 path.** rule-learner and rule-steward reach the script as the sibling path, written out:
+    the parent of the skill's base directory plus `rulebook/scripts/rules.py`, with no `..`, so the
+    command text matches the permission rule and the rulebook skill's "full path, unquoted".
+  - **D-13 permissions.** The path-pinned allow rule holds the owner's home folder, so it moved out
+    of the vault's shared settings into each machine's user settings (`~/.claude/settings.json`;
+    `~/.config/opencode/opencode.json`, or the repository's settings for a project install). The
+    shared vault files keep only the "approve the rulebook script, never refuse it" exception.
+    Still not tested live.
+  - **Golden examples with a context.** A `golden:` item may carry tags after `|`
+    (`03 Resources/Client memo.md | audience=client`), so context-scoped check rules run on it.
+  - **`check` needs `--activity`** unless `--golden` (exit 2), so a file is never "checked" against
+    no rules.
+  - **`stats` with no rule events** in the window warns and raises no usage flag (stale still
+    applies); an unreadable `--from-file` exits 3.
+  - **Writes.** `approve` of a candidate with `supersedes` retires the old rule, as `add` does;
+    `update` of `do` renames the file to its new title after the name-collision check; an id taken
+    under another title is detected after the exclusive create and the write retried once; `add` and
+    `update` take `--dry-run`, which the approval card uses for its Warnings column.
+  - **The Langfuse deployment specification** moved from `inputs/` to
+    `docs/environment/langfuse-deployment-spec.md`: it is a deliverable for people, and its old link
+    would break on archive.

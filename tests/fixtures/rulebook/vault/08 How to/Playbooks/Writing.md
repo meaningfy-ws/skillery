@@ -7,6 +7,8 @@ vocabulary:
 golden:
   - 03 Resources/Good memo.md
   - 03 Resources/Bad memo.md
+  - 03 Resources/Client memo.md | audience=client
+  - 03 Resources/Client memo.md | audience=client
 private: true
 ---
 # Writing

@@ -55,20 +55,23 @@ the grooming procedure.
 
 ## The script
 
-Every read and write goes through the rulebook script, at
-`<this skill's base directory>/../rulebook/scripts/rules.py`: the path is relative to this skill's
-folder, never to the working directory. The rulebook skill ships in the same bundle, so the path
-holds on both CLIs. If no file is there, stop and say in one line: "The rulebook skill is not
-installed; the rules cannot be reviewed."
+Every read and write goes through the rulebook script. The rulebook skill ships in the same bundle,
+so its folder is a sibling of this one on both CLIs: take the parent of this skill's base directory
+and add `rulebook/scripts/rules.py`. Run it by that full path, written out with no `..` and
+unquoted, the way the rulebook skill says, so the vault's permission settings match it. If no file
+is there, stop and say in one line: "The rulebook skill is not installed; the rules cannot be reviewed."
 
 ## Weekly procedure
 
-1. **Usage.** Run `stats` (default window 30 days). If it exits 3, Langfuse is not configured or not
-   reachable: **stop**, tell the owner "rule monitoring is unavailable:" followed by the message it
-   printed, and never guess usage from memory or from the vault. The owner may ask to go on with
+1. **Usage.** Run `stats` (default window 30 days). Exit 3 has two causes, and its message names
+   which. **Langfuse** not configured or not reachable: **stop**, tell the owner "rule monitoring is
+   unavailable:" followed by the message, and never guess usage from memory or from the vault.
+   **The vault** not found (`MEANINGFY_VAULT` unset outside the vault root): say so and ask the owner
+   to start the review at the vault root or set the variable. The owner may ask to go on with
    the lint, the golden examples and the candidates without usage.
 2. **Format check.** If `stats` warns that it found no `rules.py` events, the trace format may have
-   changed: report that, and raise no usage flag this week. If it reports truncated outputs, say how
+   changed; if it warns of no usage data, no session was traced in the window. Report either, and
+   raise no usage flag this week. If it reports truncated outputs, say how
    many: those loads counted without ids.
 3. **Lint.** Run `lint`. Every error and warning is a flag.
 4. **Golden examples.** Run `check --golden`. A failing example is a flag.

@@ -57,7 +57,9 @@ settings exist, a session at the vault root may not edit them. If the working fo
    [`references/permissions-claude-code.md`](references/permissions-claude-code.md) or
    [`references/permissions-opencode.md`](references/permissions-opencode.md) (opencode also gets
    `opencode.scheduled.json` when the daily run is scheduled). Tell the person any deny or ask the CLI
-   cannot express.
+   cannot express. Then, per machine, add the rulebook script's allow rule to the person's user
+   settings, as the same reference says (its path holds the home folder, so it never goes in the
+   vault).
 5. **Guide the machine and accounts**, each from its reference, skipping what is already in place:
    - Obsidian, its CLI and the obsidian-skills plugin →
      [`references/obsidian.md`](references/obsidian.md);

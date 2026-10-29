@@ -12,7 +12,7 @@ opencode reads `AGENTS.md` at the vault root natively; no pointer file is needed
 {
   "$schema": "https://opencode.ai/config.json",
   "permission": {
-    "bash": { "*": "ask", "obsidian *": "allow", "mv *": "ask", "rm *": "ask", "curl *": "deny", "wget *": "deny", "python3 <home>/.config/opencode/skills/rulebook/scripts/rules.py *": "allow" },
+    "bash": { "*": "ask", "obsidian *": "allow", "mv *": "ask", "rm *": "ask", "curl *": "deny", "wget *": "deny" },
     "webfetch": "deny",
     "websearch": "deny",
     "edit": "ask",
@@ -40,12 +40,9 @@ first and the specific rules after it. The older top-level `tools` block is depr
 `permission` only. `mv` and `rm` ask, so the owner approves each move or delete they requested
 (`vault-conventions`, Moving and deleting).
 
-The rulebook script is allowed by its full path in the global opencode skills folder (`<home>` is
-the owner's home folder written out; on Windows, `python` and the Windows path). opencode's `*`
-matches any text, so this pinned path is the narrowest rule: `python3 *rules.py *` would allow any
-Python program whose arguments mention `rules.py`. The rule comes after the catch-all, because the
-last matching rule wins. Recorded 2026-10-29 from the opencode permission documentation, not tested
-live.
+The rulebook script (`.../rulebook/scripts/rules.py`) asks like any other command; the owner
+approves it, never refuses it, because it reads and writes only rule notes. Its allow rule is per
+machine (below).
 
 ## `opencode.scheduled.json` at the vault root
 
@@ -58,6 +55,24 @@ Loaded only by the scheduled run ([`scheduler.md`](scheduler.md)) through `OPENC
   "permission": { "bash": { "*": "deny", "obsidian *": "allow", "mv *": "deny", "rm *": "deny" } }
 }
 ```
+
+## Per machine: the rulebook script
+
+The script's path holds the owner's home folder, so its rule goes in the user-level
+`~/.config/opencode/opencode.json`, never in the vault, which is shared across machines:
+
+```json
+{ "permission": { "bash": { "python3 <home>/.config/opencode/skills/rulebook/scripts/rules.py *": "allow" } } }
+```
+
+- `<home>` is the home folder written out; on Windows, `python` and the Windows path.
+- For a project install (`skillery-opencode install --project`), the path is
+  `<repo>/.opencode/skills/rulebook/scripts/rules.py`; add that rule to the repository's own settings.
+- opencode's `*` matches any text, so a pinned path is the narrowest rule: `python3 *rules.py *` would
+  allow any Python program whose arguments mention `rules.py`. Within one map the last matching rule
+  wins; how opencode merges the user file with the vault's `"*": "ask"` is not verified, so if the
+  script still prompts in the vault, approve it.
+- Recorded 2026-10-29 from the opencode permission documentation, **not tested live**.
 
 ## Gaps against Claude Code
 

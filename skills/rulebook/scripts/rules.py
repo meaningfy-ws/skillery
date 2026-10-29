@@ -422,18 +422,20 @@ def cmd_check(args) -> int:
         for act, pb in sorted(read_playbooks(root).items()):
             if args.activity and act != args.activity:
                 continue
-            for rel in _list(pb.meta.get("golden")):
+            for item in _list(pb.meta.get("golden")):
+                rel, _, tags = (x.strip() for x in item.partition("|"))
+                ctx = {f"activity:{act}"} | {t.replace("=", ":", 1) for t in tags.split() if "=" in t}
                 path = root / rel
                 if not path.is_file():
                     out.append(f"GOLDEN {rel}: missing")
                     failed = True
                     continue
-                found = _violations(path.read_text(encoding="utf-8"), with_checks(frozenset({f"activity:{act}"})), rules)
+                found = _violations(path.read_text(encoding="utf-8"), with_checks(frozenset(ctx)), rules)
                 failed |= any(v.startswith("VIOLATION") for v in found)
                 out += [f"GOLDEN {rel}: {'FAIL' if found else 'ok'}"] + found
     else:
-        if not args.file:
-            raise Usage("check needs a file, or --golden")
+        if not args.file or not args.activity:
+            raise Usage("check needs --activity and a file, or --golden")
         ids = with_checks(_context(args))
         found = _violations(Path(args.file).read_text(encoding="utf-8"), ids, rules)
         failed = any(v.startswith("VIOLATION") for v in found)
@@ -480,8 +482,9 @@ def _title(do: str) -> str:
     return " ".join(re.sub(r"[^A-Za-z0-9 -]", "", do).split()[:6])
 
 
-def _commit(root: Path, changes: list[tuple[Path, dict, str, Path | None]]) -> None:
-    """Write (path, meta, body, old_path) changes unless they add a new lint error; print new warnings."""
+def _commit(root: Path, changes: list[tuple[Path, dict, str, Path | None]], dry_run: bool = False) -> None:
+    """Write (path, meta, body, old_path) changes unless they add a new lint error; print new warnings.
+    A new file whose id another file already holds raises FileExistsError, so the caller can retry."""
     notes = read_dir(root, RULES_DIR)
     playbooks = read_playbooks(root)
     after = list(notes)
@@ -492,7 +495,7 @@ def _commit(root: Path, changes: list[tuple[Path, dict, str, Path | None]]) -> N
     errors = [f"ERROR {c}: {m}" for lvl, c, m in new if lvl == "ERROR"]
     if errors:
         raise Refused("the write would add lint errors; nothing written\n" + "\n".join(errors))
-    for path, meta, body, old in changes:
+    for path, meta, body, old in [] if dry_run else changes:
         text = dump_note(meta, body)
         if old and old != path:
             old.write_text(text, encoding="utf-8")
@@ -502,10 +505,15 @@ def _commit(root: Path, changes: list[tuple[Path, dict, str, Path | None]]) -> N
         else:
             with open(path, "x", encoding="utf-8") as f:
                 f.write(text)
+            if [p for p in path.parent.glob(f"{meta['id']} *.md") if p != path]:
+                path.unlink()  # another writer took this id under another title
+                raise FileExistsError(meta["id"])
         print(f"wrote {path.relative_to(root).as_posix()}")
     for lvl, c, m in new:
         if lvl == "WARNING":
             print(f"WARNING {c}: {m}")
+    if dry_run:
+        print("dry run: nothing written")
 
 
 def _all_ids(root: Path) -> list[str]:
@@ -519,6 +527,14 @@ def _find(root: Path, rid: str, sub: str = RULES_DIR) -> Note | None:
 
 def _fields(args) -> dict:
     return {k: getattr(args, k) for k in FIELDS if getattr(args, k, None) is not None}
+
+
+def _superseded(root: Path, meta: dict, today: str) -> list:
+    old = _find(root, meta["supersedes"]) if meta.get("supersedes") else None
+    if not old or old.meta.get("status") == "dropped":
+        return []
+    return [(old.path, {**old.meta, "status": "dropped", "retired": today,
+                        "retired_reason": f"superseded by {meta['id']}"}, old.body, old.path)]
 
 
 def cmd_add(args) -> int:
@@ -537,13 +553,9 @@ def cmd_add(args) -> int:
         meta["private"] = "true"
         path = root / (PROPOSED_DIR if args.candidate else RULES_DIR) / f"{rid} {_title(f.get('do', ''))}.md"
         path.parent.mkdir(parents=True, exist_ok=True)
-        changes = [(path, meta, "", None)]
-        old = _find(root, f["supersedes"]) if f.get("supersedes") and not args.candidate else None
-        if old:
-            changes.append((old.path, {**old.meta, "status": "dropped", "retired": today,
-                                       "retired_reason": f"superseded by {rid}"}, old.body, old.path))
+        changes = [(path, meta, "", None)] + ([] if args.candidate else _superseded(root, meta, today))
         try:
-            _commit(root, changes)
+            _commit(root, changes, args.dry_run)
             return 0
         except FileExistsError:
             if attempt == 2:
@@ -563,7 +575,16 @@ def cmd_update(args) -> int:
     change = _fields(args)
     if not change:
         raise Usage("update needs at least one field to change")
-    _rewrite(root, args.id, change, _find(root, args.id) or _find(root, args.id, PROPOSED_DIR))
+    note = _find(root, args.id) or _find(root, args.id, PROPOSED_DIR)
+    if not note:
+        raise Refused(f"no rule {args.id} in {RULES_DIR}/ or {PROPOSED_DIR}/")
+    path = note.path
+    if "do" in change:  # the title follows `do` (D-3); a rename follows the move procedure
+        path = note.path.with_name(f"{args.id} {_title(change['do'])}.md")
+        clash = [p for p in root.rglob(path.name) if p != note.path]
+        if clash:
+            raise Refused(f"another note has the name {path.name}: {clash[0].relative_to(root).as_posix()}")
+    _commit(root, [(path, {**note.meta, **change}, note.body, note.path)], args.dry_run)
     return 0
 
 
@@ -603,7 +624,7 @@ def cmd_approve(args) -> int:
     if clash:
         raise Refused(f"another note has the name {note.path.name}: {clash[0].relative_to(root).as_posix()}")
     meta = {**note.meta, "status": "active", "approved": today, "last_confirmed": today}
-    _commit(root, [(dest, meta, note.body, note.path)])
+    _commit(root, [(dest, meta, note.body, note.path)] + _superseded(root, meta, today))
     return 0
 
 
@@ -659,7 +680,10 @@ def cmd_stats(args) -> int:
         raise Usage("--since takes a number of days, such as 30d")
     since = today - timedelta(days=days)
     if args.from_file:
-        observations = json.loads(Path(args.from_file).read_text(encoding="utf-8")).get("data", [])
+        try:
+            observations = json.loads(Path(args.from_file).read_text(encoding="utf-8")).get("data", [])
+        except (OSError, ValueError) as e:
+            raise EnvError(f"cannot read {args.from_file}: {e}")
     else:
         observations = _fetch(since)
     root = find_vault()
@@ -702,10 +726,12 @@ def cmd_stats(args) -> int:
     if scanned and not events:
         out.append(f"WARNING no rules.py events in {scanned} observations: the span format may have changed; "
                    "usage flags are not computed")
-    else:
-        zero = {"loaded": 0, "cited": 0, "overridden": 0, "violated": 0}
-        for rid in sorted(active):
-            m, c = rules[rid], count.get(rid, zero)
+    elif not events:
+        out.append("WARNING no usage data in the window: no session was traced; usage flags are not computed")
+    zero = {"loaded": 0, "cited": 0, "overridden": 0, "violated": 0}
+    for rid in sorted(active):
+        m, c = rules[rid], count.get(rid, zero)
+        if events:
             if m.get("added", "9999") <= (today - timedelta(days=30)).isoformat() and not c["loaded"]:
                 out.append(f"FLAG {rid} never-loaded: propose retire")
             if c["loaded"] >= 5 and not c["cited"]:
@@ -715,9 +741,9 @@ def cmd_stats(args) -> int:
                 out.append(f"FLAG {rid} overridden {c['overridden']}: propose revise, supersede or retire; reasons: {quoted}")
             if c["violated"] >= 3:
                 out.append(f"FLAG {rid} violated {c['violated']}: propose strengthening the procedure, or ask if it still holds")
-            confirmed = m.get("last_confirmed") or m.get("approved") or m.get("added") or ""
-            if confirmed and confirmed < (today - timedelta(days=90)).isoformat():
-                out.append(f"FLAG {rid} stale (last confirmed {confirmed}): propose confirm or retire")
+        confirmed = m.get("last_confirmed") or m.get("approved") or m.get("added") or ""
+        if confirmed and confirmed < (today - timedelta(days=90)).isoformat():
+            out.append(f"FLAG {rid} stale (last confirmed {confirmed}): propose confirm or retire")
     print("\n".join(out + [END]))
     return 0
 
@@ -763,9 +789,11 @@ def build_parser() -> argparse.ArgumentParser:
     s.set_defaults(func=cmd_override)
     s = sub.add_parser("add", parents=[clock, fields], help="write a new rule, or a candidate with --candidate")
     s.add_argument("--candidate", action="store_true")
+    s.add_argument("--dry-run", action="store_true", help="print the warnings the write would add; write nothing")
     s.set_defaults(func=cmd_add)
     s = sub.add_parser("update", parents=[clock, fields], help="change fields of a rule, keeping its id")
     s.add_argument("id", type=_id)
+    s.add_argument("--dry-run", action="store_true", help="print the warnings the write would add; write nothing")
     s.set_defaults(func=cmd_update)
     for name, func, text in (("confirm", cmd_confirm, "set last_confirmed to today"),
                              ("approve", cmd_approve, "move a candidate into the rules, active")):

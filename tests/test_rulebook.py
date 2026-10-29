@@ -189,6 +189,7 @@ def test_check_golden():
     assert r.returncode == 1
     assert "GOLDEN 03 Resources/Bad memo.md: FAIL" in r.stdout
     assert "GOLDEN 03 Resources/Good memo.md: ok" in r.stdout
+    assert "GOLDEN 03 Resources/Client memo.md: ok" in r.stdout
     assert "VIOLATION R-0010 line 6:" in r.stdout  # line numbers count the frontmatter
 
 
@@ -490,7 +491,7 @@ def test_the_three_skills_share_one_bundle():
 
 @pytest.mark.parametrize("skill", ["rule-learner", "rule-steward"])
 def test_learner_and_steward_reach_the_script_by_the_bundle_path(skill):
-    assert "../rulebook/scripts/rules.py" in (ROOT / f"skills/{skill}/SKILL.md").read_text(encoding="utf-8")
+    assert "rulebook/scripts/rules.py" in (ROOT / f"skills/{skill}/SKILL.md").read_text(encoding="utf-8")
 
 
 @pytest.mark.parametrize("kind", ["rule", "playbook"])
@@ -504,3 +505,96 @@ def test_templates_carry_the_required_properties(kind):
     assert setup.read_text(encoding="utf-8") == own.read_text(encoding="utf-8")
     keys = set(re.findall(r"^([a-z_]+):", setup.read_text(encoding="utf-8"), re.MULTILINE))
     assert required <= keys, required - keys
+
+
+# ---------------------------------------------------------------- review fixes (task 5.1)
+
+def test_approving_a_deferred_supersede_retires_the_old_rule(vault):
+    r = run("add", "--candidate", "--supersedes", "R-0026", "--today", TODAY, "--type", "parameter",
+            "--strength", "default", "--scope", "activity:testing", "--scope", "lang:de", "--when", "drawing a chart",
+            "--do", "use green charts", "--slot", "colour", "--value", "green", "--because", "x", "--source", "y",
+            vault=vault)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert _meta(_note(vault, "R-0026"))["status"] == "active", "a candidate retires nothing"
+    r = run("approve", "R-0051", "--today", TODAY, vault=vault)
+    assert r.returncode == 0, r.stdout + r.stderr
+    old = _meta(_note(vault, "R-0026"))
+    assert old["status"] == "dropped" and "R-0051" in old["retired_reason"]
+
+
+def test_no_usage_data_raises_no_usage_flags(tmp_path):
+    empty = tmp_path / "empty.json"
+    empty.write_text('{"data": [], "meta": {"page": 1, "totalPages": 0}}', encoding="utf-8")
+    out = _stats(path=empty).stdout
+    assert "WARNING" in out and "no usage data" in out
+    assert "never-loaded" not in out
+    assert _lines(out, "FLAG R-0012 stale"), "age flags do not depend on usage"
+
+
+def test_check_needs_an_activity(tmp_path):
+    draft = tmp_path / "draft.md"
+    draft.write_text("x — y\n", encoding="utf-8")
+    assert run("check", str(draft)).returncode == 2
+
+
+def test_golden_example_with_context_tags(vault):
+    rules = _module()
+    pb = vault / "08 How to/Playbooks/Writing.md"
+    meta, body = rules.parse_note(pb.read_text(encoding="utf-8"))
+    meta["golden"] = meta["golden"] + ["03 Resources/Client note.md | audience=client"]
+    pb.write_text(rules.dump_note(meta, body), encoding="utf-8")
+    (vault / "03 Resources/Client note.md").write_text("Dear client, see the plan; it is ready.\n", encoding="utf-8")
+    note = {"kind": "rule", "id": "R-0060", "type": "constraint", "strength": "hard", "status": "active",
+            "scope": ["activity:writing", "audience:client"], "when": "writing for a client", "do": "use no semicolon",
+            "check_absent": ";", "because": "x", "source": "y", "added": TODAY, "private": "true"}
+    (vault / RULES / "R-0060 use no semicolon.md").write_text(rules.dump_note(note), encoding="utf-8")
+    out = run("check", "--golden", vault=vault).stdout
+    assert "GOLDEN 03 Resources/Client note.md: FAIL" in out
+    assert "VIOLATION R-0060 line 1:" in out
+    assert "GOLDEN 03 Resources/Good memo.md: ok" in out, "the tag applies only to its own example"
+
+
+def test_add_retries_when_the_id_is_taken_under_another_title(vault, monkeypatch):
+    rules = _module()
+    monkeypatch.setenv("MEANINGFY_VAULT", str(vault))
+    real = rules._commit
+    calls = []
+
+    def racing(root, changes, dry_run=False):
+        if not calls:  # another writer takes the id first, with a different title
+            calls.append(1)
+            rid = changes[0][1]["id"]
+            (vault / RULES / f"{rid} someone else.md").write_text("x", encoding="utf-8")
+        return real(root, changes, dry_run)
+
+    monkeypatch.setattr(rules, "_commit", racing)
+    assert rules.main(ADD) == 0
+    assert _note(vault, "R-0052").exists()
+
+
+def test_stats_missing_file_is_an_environment_error(tmp_path):
+    r = _stats(path=tmp_path / "nope.json")
+    assert r.returncode == 3 and "nope.json" in r.stderr
+
+
+def test_update_of_do_renames_the_file(vault):
+    r = run("update", "R-0012", "--do", "greet by surname", "--today", TODAY, vault=vault)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert (vault / RULES / "R-0012 greet by surname.md").exists()
+    assert not (vault / RULES / "R-0012 greet by first name.md").exists()
+
+
+def test_dry_run_writes_nothing_and_prints_warnings(vault):
+    before = sorted((vault / RULES).iterdir())
+    r = run("add", "--dry-run", "--today", TODAY, "--type", "selection-heuristic", "--strength", "default",
+            "--scope", "activity:testing", "--scope", "client:public", "--when", "pricing a public bid",
+            "--do", "price with a cap", "--slot", "pricing", "--value", "capped",
+            "--because", "x", "--source", "y", vault=vault)
+    assert r.returncode == 0, r.stderr
+    assert "WARNING conflict" in r.stdout and "dry run" in r.stdout
+    assert sorted((vault / RULES).iterdir()) == before
+
+
+@pytest.mark.parametrize("skill", ["rule-learner", "rule-steward"])
+def test_skills_never_tell_the_agent_to_run_a_dotdot_path(skill):
+    assert "/../" not in (ROOT / f"skills/{skill}/SKILL.md").read_text(encoding="utf-8")
