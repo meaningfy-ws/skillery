@@ -25,7 +25,7 @@ Building software with AI agents.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W18](../use-cases/UC-W18-programming-team-lead.md) Programming partner and team lead | a Meaningfy developer | `covered` | `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `meaningfy-git-workflow`, `guardrails`, `technical-writing` | — | high |
+| [UC-W18](../use-cases/UC-W18-programming-team-lead.md) Programming partner and team lead | a Meaningfy developer | `covered` | `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `meaningfy-git-workflow`, `guardrails`, `technical-writing`, `rulebook`, `rule-learner` | — | high |
 | [UC-W19](../use-cases/UC-W19-system-architect.md) System architect | a Meaningfy architect | `covered` | `system-architect` *(agent)*, `architecture` | — | high |
 | [UC-W20](../use-cases/UC-W20-conceptual-modeller.md) Conceptual modeller and ontology engineer | a Meaningfy modeller | `covered` | `conceptual-modeller` *(agent)*, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `formal-reasoning` | — | high |
 

@@ -197,3 +197,9 @@ probes:
   - probe: "which of my rules were overridden or never used this week? groom the rulebook"
     expect: rule-steward
     near_miss_of: formal-reasoning
+  - probe: "from now on, keep PR descriptions under ten lines in every repo"
+    expect: rule-learner
+    near_miss_of: meaningfy-git-workflow
+  - probe: "set up commitlint so this repo enforces conventional commits"
+    expect: meaningfy-git-workflow
+    near_miss_of: rule-learner
