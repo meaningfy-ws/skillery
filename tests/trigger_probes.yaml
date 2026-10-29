@@ -10,6 +10,8 @@ probes:
     expect: semantic-consulting-coach
   - probe: "produce the decision package: recommendation, scope, buy/build/defer, execution brief"
     expect: decision-package
+  - probe: "write the Decision Package that closes this client's Proof of Value"
+    expect: decision-package
   - probe: "write a fixed-cost proposal and SoW with an explicit scope boundary"
     expect: proposal-writing
   - probe: "PERT estimate this engagement with a work breakdown and contingency"
@@ -83,7 +85,7 @@ probes:
   - probe: "tighten the cover email for this quotation"
     expect: executive-communication
     near_miss_of: proposal-writing
-  - probe: "write the proposal and SoW for the Decision Phase"
+  - probe: "write the proposal and SoW for the Proof of Value"
     expect: proposal-writing
     near_miss_of: executive-communication
   - probe: "is this Odoo deal rotting, and may the sales agent move it to the next stage?"
@@ -103,7 +105,7 @@ probes:
     near_miss_of: sales-operations
   - probe: "score this deal on the five Ps and tell me who the economic buyer is"
     expect: sales-qualification
-  - probe: "coach me on whether this prospect is ready for a decision phase or just exploring"
+  - probe: "coach me on whether this prospect is ready for a Proof of Value or just exploring"
     expect: semantic-consulting-coach
     near_miss_of: sales-qualification
   - probe: "prepare my meeting with Acme tomorrow and draft the follow-up email after it"

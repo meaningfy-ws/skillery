@@ -9,7 +9,7 @@
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
 - **Epic build (BDD/TDD)**: you are accountable (`A/R`) for the build loop: BDD features, TDD
   implementation, review. See
-  [`build-lifecycle.md`](../build-lifecycle.md#epic-tier-one-epic-at-a-time--the-sdlc-loop).
+  [`build-lifecycle.md`](../build-lifecycle.md#epic-tier-one-epic-at-a-time-the-sdlc-loop).
 - **Review**: you do the work (`R`); the Solution Shipper signs off (`A`). See
   [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
 - **Release & deploy**: you do the work (`R`); the Solution Shipper is accountable (`A`). See
@@ -30,7 +30,7 @@ Full list: [`roles-and-raci.md`](../../roles-and-raci.md#solution-builder).
 ## Handed to you by
 
 - The **Work Shaper** hands you the shaped, clarity-gated Epic (PLAN) to build. See
-  [`build-lifecycle.md`](../build-lifecycle.md#epic-tier-one-epic-at-a-time--the-sdlc-loop).
+  [`build-lifecycle.md`](../build-lifecycle.md#epic-tier-one-epic-at-a-time-the-sdlc-loop).
 - The **Solution Architect** hands you MDLC-lite modelling work under their accountability (`A`).
   See [`roles-and-raci.md`](../../roles-and-raci.md#raci-matrix).
 

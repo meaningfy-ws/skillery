@@ -9,7 +9,7 @@
   {"query": "turn this analysis into a one-page board paper using the pyramid principle", "should_trigger": true},
   {"query": "draft the covering letter for the statement of work we are sending tomorrow", "should_trigger": true},
   {"query": "outline the slides for presenting our recommendation to the client's board", "should_trigger": true},
-  {"query": "write the statement of work and scope boundary for the decision phase", "should_trigger": false},
+  {"query": "write the statement of work and scope boundary for the Proof of Value", "should_trigger": false},
   {"query": "why does this architecture decision record read so badly", "should_trigger": false},
   {"query": "estimate this engagement with PERT and add contingency", "should_trigger": false},
   {"query": "write the README and docstrings for this module", "should_trigger": false},

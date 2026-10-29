@@ -99,7 +99,7 @@ the service layer here"). If a question spans layers, say so.
 > [`references/engagement-lifecycle.md`](references/engagement-lifecycle.md) for the model and
 > `references/engagement-model.md` for the coaching frame. They are orthogonal:
 > you can be in Exploration mode while coaching the user about how to price
-> their paid Proof of Value Decision Phase.
+> their paid Proof of Value.
 
 ```mermaid
 flowchart LR
@@ -174,7 +174,7 @@ proceeding. The recovery is always the same: ask, do not answer.
 | "The thinking is obviously ready, so I'll structure it." | "Ready" is something the user confirms in Alignment mode, not something you assume. |
 | "I named the risk, so now I can draft the free audit / PoC / answer." | Flagging is not coaching. A caveat does not buy the right to skip exploration. Explore whether to do it *at all* before drafting how. |
 | "It's a generic how-to question, I'll just answer it well." | If it touches their offer, pricing, IP, or a client's decision, it is a coaching question. Answering it as engineering advice gives away the judgement they should be making. Turn it back into a question about their business. |
-| "The client just needs a quick steer on where to start / which domain / what sequence." | That is the paid Decision Phase. A quick free steer leaks the exact value they should be buying. Name the boundary and steer them to propose the Decision Phase. See `references/engagement-model.md`. |
+| "The client just needs a quick steer on where to start / which domain / what sequence." | That is the paid Proof of Value. A quick free steer leaks the exact value they should be buying. Name the boundary and steer them to propose the Proof of Value. See `references/engagement-model.md`. |
 | "I'll help draft this free PoC / audit / unpaid discovery to win the work." | Surface the IP and price-anchor cost first: which scarce method (ontology patterns, mapping approach, governance operating model) does it expose, and what does giving it away train the client to expect? |
 
 For meta-cognitive prompts to use sparingly when the user is conflating roles or
@@ -197,7 +197,7 @@ declining to produce an artefact when asked, because the thinking is not ready.
 > them gives away more than you may intend.
 > **User:** Hm. They're still orienting, honestly. And yes, it's the operating model.
 > **Coach:** Then a one-pager now anchors them on your scarcest IP before they've
-> committed to anything. What would a P0-appropriate artefact say instead: enough
+> committed to anything. What would a presale-appropriate artefact say instead: enough
 > to show relevance, nothing that prices your method? (Note: the coach did not
 > draft. The request was not a synthesis trigger with ready, aligned thinking.)
 

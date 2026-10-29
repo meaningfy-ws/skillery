@@ -1,6 +1,6 @@
 ---
 name: vault-project
-description: Start or close a project folder in a Meaningfy Obsidian vault. `new <name>` runs the charter gate (five questions, a done a third person could check) and creates `01 Projects/YYYY-MM-DD Name/` (or, for a personal project, `07 Perso/YYYY-MM-DD Name/`) with its five standing files; `close <project>` writes the final session entry, sets status done or dropped, and moves the folder to `06 Archive/` only after the owner's yes. Use when the owner, working in their vault, says "create a project in my vault", "new vault project", "start a project folder in the vault", "close/finish/archive vault project X", "this vault project is done". Not for software EPICs or repository scaffolding (epic-planning, project-setup).
+description: Start or close a project folder in a Meaningfy Obsidian vault. `new NAME` runs the charter gate (five questions, a done a third person could check) and creates `01 Projects/YYYY-MM-DD Name/` (or, for a personal project, `07 Perso/YYYY-MM-DD Name/`) with its five standing files; `close PROJECT` writes the final session entry, sets status done or dropped, and moves the folder to `06 Archive/` only after the owner's yes. Use when the owner, working in their vault, says "create a project in my vault", "new vault project", "start a project folder in the vault", "close/finish/archive vault project X", "this vault project is done". Not for software EPICs or repository scaffolding (epic-planning, project-setup).
 license: Apache 2.0
 argument-hint: "new <name> | close <project>"
 metadata:

@@ -145,7 +145,7 @@ If Langfuse cannot be reached, the steward stops rather than guess which rules a
 |---|---|---|
 | using and learning rules | `meaningfy-core` installed, and a vault of the Meaningfy shape (see `vault-setup`) | [`vault-assistant.md`](vault-assistant.md), `vault-setup` |
 | rules in a code repository's session | `MEANINGFY_VAULT` set to your vault, on your machine only | [`setup.md`](setup.md) |
-| the weekly review | Langfuse, its Claude Code plugin, and `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | [`setup.md`](setup.md); the deployment: [`langfuse-deployment-spec.md`](langfuse-deployment-spec.md) |
+| the weekly review | Langfuse, its Claude Code plugin, and `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | [`langfuse-setup.md`](langfuse-setup.md); the deployment: [`langfuse-deployment-spec.md`](langfuse-deployment-spec.md) |
 
 ## Rules in a repository
 
@@ -190,9 +190,9 @@ repository has no candidates, so a row for it cannot be deferred. Two branches c
 - **opencode sessions are not traced.** Rules load and check there, but Langfuse does not see them,
   so a rule used only on opencode looks unused. See
   [`dual-cli/compatibility.md`](dual-cli/compatibility.md).
-- **Not yet confirmed on a live Langfuse.** The steward has run only on saved sample data, and the
-  trace format is taken from Langfuse's documentation. If the format differs, `stats` warns and raises
-  no usage flag instead of calling every rule unused.
+- **Partly confirmed on a live Langfuse.** `stats` reads the company server and its response shape
+  matches; a traced `rules.py` call has not been counted yet. If the format differs, `stats` warns and
+  raises no usage flag instead of calling every rule unused.
 - **"Redundant" can over-report.** A rule that matters only in a wider combination of tags may be
   flagged. It is a warning, and you decide.
 - **Rules reach any interactive session.** A session finds your vault's rules when `MEANINGFY_VAULT` is

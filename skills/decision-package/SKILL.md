@@ -1,6 +1,6 @@
 ---
 name: decision-package
-description: Produce the Decision Package — the paid keystone deliverable of a semantic/data consulting engagement's P1 Decision Phase. Use to write the recommendation, the in/out scope, the sequenced (pilot → scale) roadmap, the buy/build/defer decisions, and the ready-to-contract execution brief that hands off to the build/architecture tier. The unit of value is decision-readiness; the artefact sits ABOVE architecture (it justifies and scopes the build before a repo exists). Triggers — "produce a decision package", "write the recommendation / scope / roadmap / buy-build-defer", "decision-readiness deliverable", "execution brief for the build", "scope this engagement", "Semantic Readiness & Direction / Decision Foundation deliverable". This skill PRODUCES the artefact; it does NOT coach the engagement design or hold the free→paid line (that is semantic-consulting-coach — "produce" vs "coach"). Not for free P0 orientation, not for delivery artefacts (an ontology, a mapping), not for code architecture.
+description: Produce the Decision Package — the paid keystone deliverable of a semantic/data consulting engagement's Proof of Value. Use to write the recommendation, the in/out scope, the sequenced (pilot → scale) roadmap, the buy/build/defer decisions, and the ready-to-contract execution brief that hands off to the build/architecture tier. The unit of value is decision-readiness; the artefact sits ABOVE architecture (it justifies and scopes the build before a repo exists). Triggers — "produce a decision package", "write the recommendation / scope / roadmap / buy-build-defer", "decision-readiness deliverable", "execution brief for the build", "scope this engagement", "Semantic Readiness & Direction / Decision Foundation deliverable". This skill PRODUCES the artefact; it does NOT coach the engagement design or hold the free→paid line (that is semantic-consulting-coach — "produce" vs "coach"). Not for free presale, not for delivery artefacts (an ontology, a mapping), not for code architecture.
 license: Apache 2.0
 metadata:
   purpose: advising
@@ -14,12 +14,12 @@ metadata:
 # Decision Package
 
 > **Provisional pending the first-engagement gate.** The consulting depth here refines after the first real
-> paid P1 engagement; treat this wiring as the floor, not the finished standard.
+> paid Proof of Value engagement; treat this wiring as the floor, not the finished standard.
 
 ## Overview
 
-The **Decision Package** is the paid keystone deliverable of Discovery & Onboarding's **Proof of Value
-Decision Phase**. Its unit of value is **decision-readiness**: the state in which the client knows
+The **Decision Package** is the paid keystone deliverable of Discovery & Onboarding's **Proof of
+Value**. Its unit of value is **decision-readiness**: the state in which the client knows
 *what to do next, why, what success looks like, and what comes later* — the moment uncertainty
 becomes safe to commit. This skill **PRODUCES** that artefact.
 
@@ -28,7 +28,7 @@ exists*. Architecture, the conceptual model, and the EPICs all descend from it �
 Package is the consulting-tier **root of the golden thread**.
 
 **Provenance.** The coach (`semantic-consulting-coach`) shapes *whether and how* to run the Proof of
-Value and holds the **free → paid boundary**; the design intent of the Decision Phase lives in its
+Value and holds the **free → paid boundary**; the design intent of the Proof of Value lives in its
 `semantic-consulting-coach` (engagement model). This skill picks
 up *after* that line is crossed and the client has bought the Proof of Value: it **builds the
 deliverable**. Keep the boundary crisp — **produce** here, **coach** there.
@@ -43,11 +43,11 @@ supplies the *how it reads*. Its five required parts:
 1. **Recommendation** — the first initiative to commit to, stated answer-first as a Governing
    Thought, with the reasoning that makes it safe to commit.
 2. **Scope** — explicitly **in** and explicitly **out**. The "out" list is load-bearing: it protects
-   the boundary with the build tier (P2) and prevents scope creep.
+   the boundary with the build tier (Scaling) and prevents scope creep.
 3. **Sequenced roadmap** — **pilot → scale**: what to do first, then next, in deliberate order.
 4. **Buy / build / defer decisions** — for each capability, a named decision with rationale.
 5. **Ready-to-contract execution brief** — the hand-off to the build tier / architecture: enough for
-   P2 (or another implementer) to scope and contract cleanly.
+   Scaling (or another implementer) to scope and contract cleanly.
 
 It earns the right to say, calmly: *"From here, we can execute, or you can take this and execute with
 someone else."* The full fillable template is in
@@ -150,7 +150,7 @@ architecture that descends from the package are hand-offs, not peers: see also `
 for the model sketch and `architecture` for the system design that follows.
 
 **Related:** `semantic-consulting-coach`, `executive-communication`, `proposal-writing` (the SoW that
-sells the Decision Phase), `estimation` (effort ranges for the sequenced options),
+sells the Proof of Value), `estimation` (effort ranges for the sequenced options),
 `writing-antipatterns` (Decision genre failure modes).
 
 ## Tone & style

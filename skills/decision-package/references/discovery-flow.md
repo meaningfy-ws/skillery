@@ -1,6 +1,6 @@
-# The P1 discovery flow (in detail)
+# The Proof of Value discovery flow (in detail)
 
-The structured flow that produces the Decision Package. It runs **inside paid P1** only (the coach
+The structured flow that produces the Decision Package. It runs **inside the paid Proof of Value** only (the coach
 holds the free → paid line — see
 `semantic-consulting-coach`: engagement model).
 This is **one coherent framework**: the still-relevant product-blueprint items are absorbed into the
@@ -87,9 +87,9 @@ for commodity capability so *build* effort stays on the differentiating work.
 
 ## 7. Execution brief
 
-Assemble the **ready-to-contract** hand-off to the build tier (P2 / architecture): the chosen first
+Assemble the **ready-to-contract** hand-off to the build tier (Scaling / architecture): the chosen first
 initiative, its in/out scope, the inputs and access required, the buy/build/defer decisions, and the
-boundary with execution. It must be enough for P2 — or another implementer — to scope and contract
+boundary with execution. It must be enough for Scaling — or another implementer — to scope and contract
 cleanly. Execution is always a **separate engagement** with its own scope and budget; the brief makes
 that hand-off clean, not a continuation.
 

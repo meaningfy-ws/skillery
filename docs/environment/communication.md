@@ -121,7 +121,7 @@ still bring the **quotation's own structure** from an accepted example.
 | Brand assets (logo, "Made in Luxembourg") on client documents | covered | a fixed rule in `company-voice.md`, pointing to `meaningfy_brand_assets.md` in the company Brand folder |
 | Examples beyond semantic consulting (SME digitalisation, AI assistants) | covered | the before/after pairs in `company-voice.md` |
 | The structure of a board paper or recommendation | covered | `executive-communication` |
-| The proposal and SoW of the Decision Phase | covered | `proposal-writing` |
+| The proposal and SoW of the Proof of Value | covered | `proposal-writing` |
 | Outreach, follow-up and revival emails | covered | the outreach-email channel profile; what to send and when is `sales-conversations` |
 | **The quotation skeleton** (section order, exclusions wording, hours table with rate, VAT and total, validity, payment, change control) | **not covered** | a planned offer skill; it needs an accepted quotation as its source (`add-commercial-chain` in [`future-features.md`](../future-features.md)) |
 | **LinkedIn, blog, offer and internal-message voice** | **not covered** | placeholder profiles that fall back to the default voice (`add-content-creation`) |
