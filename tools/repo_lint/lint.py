@@ -917,7 +917,7 @@ HOOKS_INVENTORY = "hooks.yaml"
 _VALID_MECHANISM = {"git", "ci", "agent"}
 _VALID_PHASE = {"quality", "phase-gate"}
 # The ONLY skill bodies allowed to carry a CLI-specific (/opsx: or .claude/) reference.
-# Seeded from docs/dual-cli/body-agnosticism-audit.md — any other body fails the guard.
+# Seeded from docs/environment/dual-cli/body-agnosticism-audit.md — any other body fails the guard.
 _BODY_AGNOSTIC_ALLOWLIST = {"epic-planning", "spec-stewardship", "guardrails", "project-setup"}
 _CLI_ISM = re.compile(r"/opsx:|\.claude/")
 

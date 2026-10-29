@@ -158,7 +158,7 @@ Invariant 1; no row carries zero or two.
 ## Adaptation notes
 
 Two handbook roles are not carried forward as named roles. Each note below cites the handbook page
-it replaces (see [`openspec/changes/define-roles-and-raci/inputs/2026-07-26-handbook-findings.md`](../../openspec/changes/define-roles-and-raci/inputs/2026-07-26-handbook-findings.md)).
+it replaces (see [`openspec/changes/archive/2026-10-29-define-roles-and-raci/inputs/2026-07-26-handbook-findings.md`](../../openspec/changes/archive/2026-10-29-define-roles-and-raci/inputs/2026-07-26-handbook-findings.md)).
 
 **Quality Overseer (handbook p. 67).** The handbook's Reviewer mandate (the four-eyes principle,
 every piece of work reviewed by another qualified team member against the Epic Pitch specification,
@@ -206,8 +206,8 @@ here as a priority, not a commitment:
 
 | Doc | What it defines |
 |---|---|
-| [`../openspec/changes/define-blc-engagement-model/proposal.md`](../../openspec/changes/define-blc-engagement-model/proposal.md) | the corrected commercial model whose activities (presale, Discovery & Onboarding, partnership/account nurture) this matrix assigns owners to |
-| [`../openspec/changes/define-meaningfy-lifecycle/proposal.md`](../../openspec/changes/define-meaningfy-lifecycle/proposal.md) | the ADLC/MDLC-lite build loop and Requirements & UC rows |
-| [`../openspec/changes/define-delivery-release-lifecycle/proposal.md`](../../openspec/changes/define-delivery-release-lifecycle/proposal.md) | the dual-DoD lane the Review and Release & deploy rows point at |
-| [`../openspec/changes/define-lifecycle-playbooks/proposal.md`](../../openspec/changes/define-lifecycle-playbooks/proposal.md) | the six per-role playbooks derived as filtered views over this matrix |
-| [`../openspec/changes/define-roles-and-raci/inputs/2026-07-26-handbook-findings.md`](../../openspec/changes/define-roles-and-raci/inputs/2026-07-26-handbook-findings.md) | the Employee Handbook excerpt (pp. 65–68) this doc's six roles and adaptation notes are drawn from |
+| [`../openspec/changes/archive/2026-10-29-define-blc-engagement-model/proposal.md`](../../openspec/changes/archive/2026-10-29-define-blc-engagement-model/proposal.md) | the corrected commercial model whose activities (presale, Discovery & Onboarding, partnership/account nurture) this matrix assigns owners to |
+| [`../openspec/changes/archive/2026-10-29-define-meaningfy-lifecycle/proposal.md`](../../openspec/changes/archive/2026-10-29-define-meaningfy-lifecycle/proposal.md) | the ADLC/MDLC-lite build loop and Requirements & UC rows |
+| [`../openspec/changes/archive/2026-10-29-define-delivery-release-lifecycle/proposal.md`](../../openspec/changes/archive/2026-10-29-define-delivery-release-lifecycle/proposal.md) | the dual-DoD lane the Review and Release & deploy rows point at |
+| [`../openspec/changes/archive/2026-10-29-define-lifecycle-playbooks/proposal.md`](../../openspec/changes/archive/2026-10-29-define-lifecycle-playbooks/proposal.md) | the six per-role playbooks derived as filtered views over this matrix |
+| [`../openspec/changes/archive/2026-10-29-define-roles-and-raci/inputs/2026-07-26-handbook-findings.md`](../../openspec/changes/archive/2026-10-29-define-roles-and-raci/inputs/2026-07-26-handbook-findings.md) | the Employee Handbook excerpt (pp. 65–68) this doc's six roles and adaptation notes are drawn from |
