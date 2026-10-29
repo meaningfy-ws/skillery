@@ -48,3 +48,21 @@ reasoning skill is only the one that enables reasoners within architecture and m
   > swi prolog exists
 
   → a separate change, `formal-reasoning-everywhere`, kept apart from this one as the owner asked.
+
+## 2026-10-29: answers on the proposed decisions
+
+- On DEC-7, the owner asked what the script is for. Answered: `rules.py` is the rulebook's existing
+  command-line tool, the only reader and writer of rule notes (`load`, `check`, `cite`, `lint`, the
+  writers). Step 1 does not change it; step 2 adds the second store. DEC-7 now says so.
+- On the pointer:
+  > yes that pointr shall be placed in the agents.md, correct
+- On how to tell development work:
+  > I agree, if there is a git repo, then it is a signal, to use that as a dev and put rules int its
+  > docs/ fodler, otherwise indeeed use vault by default
+
+  → DEC-2 confirmed and sharpened: in a git repository the repository is the default store, not just
+  offered; the card lets the user switch a row to the vault.
+- On formal-reasoning's bundle:
+  > no, keep fromar resoning in the archiecture or modelling bundle, better
+
+  → recorded in the `formal-reasoning-everywhere` change.

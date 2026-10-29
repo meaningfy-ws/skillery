@@ -20,19 +20,24 @@ cannot find the vault SHALL say once that the rules are not loaded and SHALL car
 - **THEN** the agent says once that the rules are not loaded and how to set them, and does the work without them
 
 ### Requirement: A development rule can live in the repository
-In development work in a repository, the rule approval card SHALL offer to store an approved rule in
-the repository, under `docs/`, with a pointer line in the repository's `AGENTS.md`. Work outside
-development, including all work in Claude Desktop, SHALL store rules in the user's vault. `load`
+In a session that runs in a git repository, the rule approval card SHALL store an approved rule in that
+repository's `docs/` folder by default, with a pointer line in the repository's `AGENTS.md`. In every
+other session the default SHALL be the user's vault. Each row of the card SHALL show its store and let
+the user switch it. `load`
 SHALL read the rules of both stores with one precedence, and a disagreement between the stores SHALL
 be reported as a conflict for the user.
 
 #### Scenario: A project convention stated while coding
-- **WHEN** the user, coding in a repository, says "never commit straight to main in this repo" and chooses the repository store in the card
+- **WHEN** the user, coding in a git repository, says "never commit straight to main in this repo" and approves the row in the card
 - **THEN** the rule is written under the repository's `docs/` as a file change for the next commit, and the vault is unchanged
 
-#### Scenario: A preference stated in Claude Desktop
-- **WHEN** the user states a preference in a Claude Desktop session
-- **THEN** the card offers only the vault, and the rule is written there on approval
+#### Scenario: A preference stated outside a repository
+- **WHEN** the user states a preference in a session that does not run in a git repository, for example in Claude Desktop
+- **THEN** the card's row shows the vault, and the rule is written there on approval
+
+#### Scenario: A personal preference stated while coding
+- **WHEN** the user, coding in a git repository, says "I prefer British English" and switches the row to the vault
+- **THEN** the rule is written to the vault, and the repository is unchanged
 
 #### Scenario: The stores disagree
 - **WHEN** a vault rule and a repository rule set the same slot to different values at equal strength and neither beats the other

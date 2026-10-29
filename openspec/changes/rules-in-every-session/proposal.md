@@ -41,10 +41,11 @@ project, where the team sees and reviews it.
   `docs/environment/global-prompt.md` that each user pastes into their CLI's global instructions)
   gain one line: at the start of an activity load the rules for it, and at the end of a session where
   the user stated or corrected something, offer the rule approval card.
-- **Where a rule is stored follows where the work happens.** Outside development work, including all
-  work in Claude Desktop, rules go to the user's vault, found through `MEANINGFY_VAULT` outside it. In
-  development work in a repository, the approval card also offers to store the rule in the repository,
-  under `docs/`, with a pointer from the repository's `AGENTS.md`. `load` reads both stores.
+- **Where a rule is stored follows where the work happens.** A session in a git repository is
+  development work: the approval card stores a rule in that repository's `docs/` folder by default,
+  and the repository's `AGENTS.md` carries a pointer to it. Every other session, including Claude
+  Desktop work outside a repository, stores in the user's vault, found through `MEANINGFY_VAULT`.
+  In each row of the card the user can switch to the other store. `load` reads both.
 - **No store, no failure.** A session that finds neither says once that the rules are not loaded and
   carries on.
 - **Outcome:** a rule stated in any session can be approved, and is then applied in every later
@@ -56,10 +57,10 @@ project, where the team sees and reviews it.
   express one in virtually any session. Their reach must match: every interactive session, not only
   the vault. This re-shapes umbrella DEC-4 for the rule skills only; `formal-reasoning` is a separate
   change.
-- **DEC-2** (owner, 2026-10-29): The store follows the work. Work in Claude Desktop always stores in
-  the Meaningfy vault. Only development work in a CLI may store a rule in the repository, "somewhere,
-  maybe in docs/ with a pointer". The vault stays the default; the repository is offered, never
-  assumed.
+- **DEC-2** (owner, 2026-10-29, confirmed the same day): The store follows the work. A git
+  repository is the signal of development work: there, rules go to the repository's `docs/` folder,
+  with a pointer in its `AGENTS.md`. Otherwise the vault is the default. The repository is the one
+  where the work takes place, never a dedicated rules repository.
 - **DEC-3** (owner, 2026-10-29): Scheduled and unattended agents neither load nor learn rules, for
   now.
 - **DEC-4** (owner, 2026-10-29): Activity names are an open list. The PLAN seeds it with `coding`,
@@ -73,18 +74,21 @@ project, where the team sees and reviews it.
   repository's `AGENTS.md` carries only the pointer to its own rule store (DEC-2), never the user's
   personal rules. Rejected: a session-start hook (per CLI, and it would load rules before the activity
   is known).
-- **DEC-7** (proposed): One rule model, one script. The repository store uses the same note format,
-  precedence and lint; `rules.py` gains a second root and reads both. Ids stay unique across the two
-  stores, and a rule from one store that disagrees with a rule from the other is a `CONFLICT` for the
-  user, like any other.
+- **DEC-7** (proposed): One rule model, one script. `rules.py`, the rulebook's command-line tool and
+  the only reader and writer of rule notes, keeps every command and behaviour. It gains one thing:
+  when run inside a git repository it also reads that repository's rule folder, and its writers take
+  the store the card chose. The repository store uses the same note format, precedence and lint.
+  Repository rules take their own id prefix, because a shared repository and a personal vault cannot
+  allocate numbers together. A rule from one store that disagrees with a rule from the other is a
+  `CONFLICT` for the user, like any other.
 - **DEC-8** (proposed): A rule written to the repository lands as a file change in the working tree.
   It reaches the team through the normal commit and pull request, which is where the team approves it.
 
 ## Rabbit-holes
 
-- **Development work, or not?** The learner cannot see which app it runs in. The practical test is
-  whether the session runs in a git repository with an `AGENTS.md`; the PLAN fixes the test. When in
-  doubt, the vault.
+- **Personal preferences stated in a repository.** With the repository as the default store there,
+  "British English" said while coding would land in the team's repository. The card must show the
+  store on every row, so the user can move a personal preference to the vault in one word.
 - **The permission path names the bundle.** The per-machine allow rule for `rules.py` contains
   `vault-assistant` in its plugin-cache path. It changes with the move, on both CLIs, and must be
   tested live, which the rule-learner change never did.
@@ -100,8 +104,8 @@ project, where the team sees and reviews it.
 - No dedicated repository that holds all the rules. The repository store is the repository where
   the work takes place, for that work's rules only.
 - No copy of the vault's rules into a repository, and no repository rule copied into the vault.
-- No repository store outside development work, and none created without the user choosing it in the
-  approval card.
+- No repository store outside a git repository, and none created before the user approves a row
+  that writes there.
 - No hook that injects rules automatically.
 - No change to the rule model, precedence or the lint.
 - Scheduled and unattended agents neither load nor learn rules (DEC-3).
@@ -122,7 +126,7 @@ project, where the team sees and reviews it.
 - **Step 2:**
   - `rules.py`: a second root for the repository store; `load`, `check`, `lint` and the writers work
     across both.
-  - `rule-learner`: the approval card offers the repository store in development work.
+  - `rule-learner`: the approval card shows each row's store, defaulting to the repository in a git repository.
   - The rule model reference: the repository store and the pointer line.
   - `project-setup`: how a repository opts in (the folder and the pointer line), cited, not restated.
 
@@ -142,6 +146,6 @@ _None._
 - `meaningfy-core` grows by three skills and its description changes; `vault-assistant` shrinks.
 - Every user who installs `meaningfy-core` gets the rule skills; they stay inert until a store is found.
 - `vault-planning` keeps calling `rule-steward` by name, across bundles.
-- A repository that opts in holds rule notes under `docs/` and one pointer line in its `AGENTS.md`.
+- A repository where a rule was approved holds rule notes under `docs/` and one pointer line in its `AGENTS.md`.
 - Probes: a rule stated in a code session (positive), and a project convention that is not a
   personal rule (near-miss).
