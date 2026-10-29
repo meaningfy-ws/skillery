@@ -44,7 +44,7 @@ the infrastructure owner.
 | you state a rule or correct the agent | `rule-learner` (one approval card at the end of the session) |
 | the weekly review | `rule-steward`, run by `vault-planning review week` |
 
-How the three rule skills work together: [`reasoning-and-rules.md`](reasoning-and-rules.md).
+How the three rule skills work together: [`rules.md`](rules.md).
 
 `vault-conventions` is used by all of them whenever a note is written. Moving, renaming and deleting
 notes follow its one procedure: [Moving and deleting](../../skills/vault-conventions/SKILL.md#moving-and-deleting).
