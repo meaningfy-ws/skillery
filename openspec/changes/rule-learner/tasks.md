@@ -100,7 +100,7 @@ Each skill has a "Use this skill when …" description under 700 characters, a Q
 - [x] 4.4 Docs:
   - a CHANGELOG line;
   - the parity gap (D-12) in `docs/environment/dual-cli/compatibility.md`;
-  - `MEANINGFY_VAULT` and `LANGFUSE_*` in `docs/environment/setup.md`, citing `rule-learner/inputs/langfuse-infrastructure-spec.md` for the deployment.
+  - `MEANINGFY_VAULT` and `LANGFUSE_*` in `docs/environment/setup.md`, citing `docs/environment/langfuse-deployment-spec.md` (moved from `rule-learner/inputs/`) for the deployment.
 
 ## 5. Review
 

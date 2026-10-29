@@ -98,7 +98,7 @@ instead of restating them. Contributors read them; catalogue users need none of 
 Rule monitoring also needs the Langfuse Claude Code plugin pointed at the same server. Without these
 settings the steward stops and says so; loading and checking rules still work. The Langfuse
 deployment is specified for the infrastructure stacks repository in
-[`langfuse-infrastructure-spec.md`](../../openspec/changes/rule-learner/inputs/langfuse-infrastructure-spec.md).
+[`langfuse-deployment-spec.md`](langfuse-deployment-spec.md).
 
 ### MCP servers (optional)
 

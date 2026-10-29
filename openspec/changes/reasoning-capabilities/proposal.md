@@ -34,7 +34,7 @@ Three child EPICs, each with its own change:
 | [`dialectical-elicitation`](../dialectical-elicitation/proposal.md) | meaningfy-architecture | MEDIUM | **Postponed (2026-10-29).** An Elenchus-style opponent skill. To be re-shaped once we decide how to set up `elenchus-server` |
 
 The Langfuse deployment is specified for the infrastructure stacks repo:
-[`rule-learner/inputs/langfuse-infrastructure-spec.md`](../rule-learner/inputs/langfuse-infrastructure-spec.md).
+[`docs/environment/langfuse-deployment-spec.md`](../../../docs/environment/langfuse-deployment-spec.md).
 
 ## Key decisions
 

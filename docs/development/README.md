@@ -231,6 +231,7 @@ at any depth below it.
 | `docs/environment/sales-agent.md` | hand-written | Setting up and scheduling the sales agent | — |
 | `docs/environment/devops-agents.md` | hand-written | Running the devops agents; the unattended runtime contract | — |
 | `docs/environment/communication.md` | hand-written | How the voice and communication skills fit together, what they cover, how to extend them | — |
+| `docs/environment/langfuse-deployment-spec.md` | hand-written | The Langfuse deployment rule-steward needs, specified for the infrastructure stacks repository | — |
 | `docs/environment/dual-cli/**` | hand-written | Dual-CLI setup, mapping and gates; the dependency tables in `compatibility.md` and `mcp-setup.md` are generated from [`dependencies.yaml`](../../dependencies.yaml) between `GENERATED:dependencies` markers | `make skill-inventory` (those tables) |
 | `docs/practice/ai-coding/**` | hand-written | The AI-assisted build lifecycle and its role playbooks | — |
 | `docs/practice/ai-consulting/**` | hand-written | The advisory runbook, methods and playbook | — |

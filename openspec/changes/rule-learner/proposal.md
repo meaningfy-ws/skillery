@@ -81,7 +81,7 @@ The new kinds and folders arrive through this EPIC, which is the skillery side o
 captures every tool call and every turn, so the catalogue ships no hook of its own. The steward reads
 Langfuse through its API with read-only keys. If Langfuse is not configured or not reachable, the
 steward stops and says so. The deployment is specified separately for the infrastructure stacks repo:
-[`inputs/langfuse-infrastructure-spec.md`](inputs/langfuse-infrastructure-spec.md).
+[`docs/environment/langfuse-deployment-spec.md`](../../../docs/environment/langfuse-deployment-spec.md).
 
 **How rules reach a session:**
 - the vault's `AGENTS.md` names the repository and tells the agent to call `load` for the activity at hand;
