@@ -67,3 +67,44 @@ was loaded, cited, overridden and violated, then the usage flags. `--from-file` 
 response of the observations API instead; an unreadable file exits 3. With no `rules.py` event in
 the window it warns and raises no usage flag; the stale flag still applies. A missing setting or an unreachable server exits 3 and
 names the problem. How the counts are derived is in the `rule-steward` skill.
+
+## Permissions (per machine)
+
+The script's path holds the owner's home folder, so its allow rule never goes into the vault, which
+is shared across machines. Add it to the user settings of each machine. Approve the script when asked;
+never refuse it, because it reads and writes only rule notes.
+
+### Claude Code
+
+In `~/.claude/settings.json`, under `permissions.allow`; it covers the vault and every code repository:
+
+```json
+"Bash(python3 <home>/.claude/plugins/cache/meaningfy-skillery/meaningfy-core/*/skills/rulebook/scripts/rules.py *)"
+```
+
+- `<home>` is the home folder written out (`/home/<user>`, `/Users/<user>`). Claude Code matches the
+  command text as written, so the rule matches only when the agent runs the script by its full path,
+  unquoted, as the rulebook skill says. The `*` in the middle stands for the installed version.
+- On Windows, write `python` and the Windows path.
+- It is the narrowest pattern the syntax accepts: a `*` matches any text, so `Bash(python3:*)` or
+  `Bash(python3 *rules.py *)` would allow any other Python program.
+- Recorded 2026-10-29 from the Claude Code permission documentation; **not yet tested live**. The
+  first time the owner runs `load`, confirm it runs without a prompt. If Claude Code warns at startup
+  about the wildcard, drop the rule and approve the script when asked.
+
+### opencode
+
+In the user-level `~/.config/opencode/opencode.json`:
+
+```json
+{ "permission": { "bash": { "python3 <home>/.config/opencode/skills/rulebook/scripts/rules.py *": "allow" } } }
+```
+
+- `<home>` is the home folder written out; on Windows, `python` and the Windows path.
+- For a project install (`skillery-opencode install --project`), the path is
+  `<repo>/.opencode/skills/rulebook/scripts/rules.py`; add that rule to the repository's own settings.
+- opencode's `*` matches any text, so a pinned path is the narrowest rule: `python3 *rules.py *` would
+  allow any Python program whose arguments mention `rules.py`. Within one map the last matching rule
+  wins; how opencode merges the user file with the vault's `"*": "ask"` is not verified, so if the
+  script still prompts in the vault, approve it.
+- Recorded 2026-10-29 from the opencode permission documentation, **not tested live**.

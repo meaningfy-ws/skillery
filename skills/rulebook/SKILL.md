@@ -1,11 +1,11 @@
 ---
 name: rulebook
-description: "Use this skill when an activity starts in a session that has the owner's rules (writing, offers, reviews), and whenever a rule is read, checked or written: load the rules for the activity and context, cite the ones applied, and check an output before handing it over. Owns the rule model (twelve types, strength, scope, precedence, lifecycle), the rule and playbook note format, and rules.py, the only writer of rule notes in the vault. Learning a new rule from the owner is rule-learner; the weekly grooming and usage report is rule-steward."
+description: "Use this skill in any session, when an activity starts (writing, offers, reviews, coding, code-review, planning) and whenever a rule is read, checked or written: load the rules for the activity and context, cite the ones applied, and check an output before handing it over. Owns the rule model (twelve types, strength, scope, precedence, lifecycle), the rule and playbook note format, and rules.py, the only writer of rule notes. Learning a new rule from the owner is rule-learner; the weekly grooming and usage report is rule-steward."
 license: Apache 2.0
 metadata:
   purpose: knowledge
-  area: personal
-  subject: obsidian
+  area: cross-cutting
+  subject: generic
   posture: precise
   stage: any
   maturity: experimental
@@ -66,9 +66,14 @@ in [`references/commands.md`](references/commands.md).
 - The script is `scripts/rules.py` in this skill's folder. Run it with `python3` (`python` on
   Windows); it needs Python 3.11 or later and nothing else.
 - It finds the vault through `MEANINGFY_VAULT` (the vault root), or the current directory when that
-  holds `08 How to/`. A session in a code repository needs `MEANINGFY_VAULT`. Without either it exits 3
-  and names the setting.
-- Run it by its full path, unquoted, as the skill's folder gives it: the vault's permission settings
+  holds `08 How to/`. A session in a code repository, or on any other surface than the vault, needs
+  `MEANINGFY_VAULT`. Without either it exits 3 and names the setting.
+- Run it from the session's working directory. If you have run `cd` elsewhere in this session, run
+  `cd <session directory>` as its own command first, never as `cd` chained to the script call with
+  `&&`: a compound command may stop matching the permission rule.
+- Its per-machine permission rule, for both CLIs, is in
+  [`references/commands.md`](references/commands.md#permissions-per-machine).
+- Run it by its full path, unquoted, as the skill's folder gives it: your permission settings
   allow the script by that path, so another spelling stops to ask.
 - It prints plain text, so its output is safe to show the owner.
 
@@ -79,7 +84,7 @@ in [`references/commands.md`](references/commands.md).
   playbook holds the activity's procedure (its body), its scope vocabulary and its golden examples.
 - **Candidates:** `00 Inbox/proposed/`, `status: idea`, until the owner approves them.
 
-For the required properties of both kinds, see `vault-conventions`; their meaning is in the rule
+For the required properties of both kinds, see `vault-conventions` (when the vault-assistant bundle is installed); their meaning is in the rule
 model reference.
 
 ## Use protocol
@@ -87,6 +92,9 @@ model reference.
 1. **Load at the start of an activity**, with the activity name and the context tags the playbook's
    vocabulary offers (`--context audience=client --context channel=email`). Load again when the
    activity or the context changes. Never read the rules folder whole: `load` returns only what applies.
+   **The "say once" rule:** when `load` exits 3, tell the owner once per session, "Your rules are not loaded: set
+   `MEANINGFY_VAULT` (see https://github.com/meaningfy-ws/skillery/blob/develop/docs/environment/setup.md)", do not run `load` again in that session, and carry
+   on. Scheduled and unattended runs skip `load` altogether.
 2. **Follow the winners.** Each `R-` line is a rule in force for this context. A rule without a slot
    applies alongside the others.
 3. **Ask on CONFLICT.** A `CONFLICT` line means two rules disagree and neither wins. Ask the owner
@@ -139,8 +147,9 @@ to validate it.
 mapping), the meaning of the `rule` and `playbook` properties, the note format, the `rules.py`
 script and its exit codes, and the use protocol (load, check, cite).
 
-**Delegates:** where a note goes, the required properties of every kind and the move procedure →
-`vault-conventions`; drafting candidates from the owner's words and the approval card →
-`rule-learner`; usage monitoring, grooming and forgetting → `rule-steward`.
+**Delegates:** drafting candidates from the owner's words and the approval card → `rule-learner`;
+usage monitoring, grooming and forgetting → `rule-steward`.
 
-**Related:** `rule-learner`, `rule-steward`, `vault-conventions`, `vault-setup`.
+**Related:** `rule-learner`, `rule-steward`, and, when the vault-assistant bundle is installed,
+`vault-conventions` (where a note goes, the required properties of every kind, the move procedure)
+and `vault-setup`.

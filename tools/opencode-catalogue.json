@@ -10,7 +10,10 @@
         "meaningfy-voice",
         "meaningfy-git-workflow",
         "guardrails",
-        "skillery-feedback"
+        "skillery-feedback",
+        "rulebook",
+        "rule-learner",
+        "rule-steward"
       ],
       "agents": []
     },
@@ -97,10 +100,7 @@
         "vault-promote",
         "vault-tidy",
         "vault-planning",
-        "vault-daily",
-        "rulebook",
-        "rule-learner",
-        "rule-steward"
+        "vault-daily"
       ],
       "agents": []
     }

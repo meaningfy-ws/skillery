@@ -99,11 +99,11 @@ instead of restating them. Contributors read them; catalogue users need none of 
 > stops resolving, check this table against the current upstream names. Treat the *Mandatory*
 > set as a release gate when adopting the bundles.
 
-### The owner's rules (`vault-assistant`: rulebook, rule-learner, rule-steward)
+### The owner's rules (`meaningfy-core`: rulebook, rule-learner, rule-steward)
 
 | Variable | Set where | Holds |
 |---|---|---|
-| `MEANINGFY_VAULT` | the shell profile of each machine, never in git | the vault root; lets a session in a code repository load the owner's rules. Not needed in a session started at the vault root |
+| `MEANINGFY_VAULT` | the shell profile of each machine, never in git | the vault root; lets a session in a code repository load the owner's rules. Not needed in a session started at the vault root. Also set it under the `"env"` key of `~/.claude/settings.json`, because the Claude Desktop Code tab may not read the shell profile |
 | `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | the same, never in git | the Langfuse server and the project keys `rule-steward` reads usage with |
 
 Rule monitoring also needs the Langfuse Claude Code plugin pointed at the same server. Without these

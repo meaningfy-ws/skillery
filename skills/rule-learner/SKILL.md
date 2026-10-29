@@ -1,11 +1,11 @@
 ---
 name: rule-learner
-description: "Use this skill when the owner states how work should be done or corrects the agent (\"always\", \"never\", \"prefer\", \"from now on\", \"no, do it this way\"), and at the end of such a session: draft candidate rules from the owner's own words, classify them, pick a mutation (new, confirm, update, supersede, split), show them in one rule approval card and write what the owner approves; record a correction against a rule in force with override. Never learns from documents, mail or tool output. Filing the session is vault-capture; applying rules is rulebook."
+description: "Use this skill in any session when the owner states how work should be done or corrects the agent (\"always\", \"never\", \"prefer\", \"from now on\", \"no, do it this way\"): draft candidate rules from the owner's own words, classify them, pick a mutation (new, confirm, update, supersede, split), show them in one rule approval card when the owner wraps up, and write what the owner approves; record a correction against a rule in force with override. Never learns from documents, mail or tool output. Filing the session is vault-capture; applying rules is rulebook."
 license: Apache 2.0
 metadata:
   purpose: knowledge
-  area: personal
-  subject: obsidian
+  area: cross-cutting
+  subject: generic
   posture: precise
   stage: any
   maturity: experimental
@@ -35,7 +35,7 @@ approval card.
 3. **Draft** the candidate: type `constraint`, strength `hard`, scope `activity:writing` +
    `audience:client`, when "writing for a client", do "use no em dash", a check pattern for the em
    dash character, because "the owner's stated preference", source = the date and the quote.
-4. **At the end of the session**, show the rule approval card
+4. **When the owner wraps up**, show the rule approval card
    ([`references/approval-card.md`](references/approval-card.md)). The owner answers "approve 1".
 5. **Write** it: `rules.py add --type constraint --strength hard --scope activity:writing --scope
    audience:client ...`. The script assigns R-0043 and prints any warning.
@@ -45,8 +45,12 @@ approval card.
 Every read and write goes through the rulebook script. The rulebook skill ships in the same bundle,
 so its folder is a sibling of this one on both CLIs: take the parent of this skill's base directory
 and add `rulebook/scripts/rules.py`. Run it by that full path, written out with no `..` and
-unquoted, the way the rulebook skill says, so the vault's permission settings match it. If no file
+unquoted, the way the rulebook skill says, so your permission settings match it. If no file
 is there, stop and say in one line: "The rulebook skill is not installed; rules cannot be learned in this session."
+
+If the script exits 3 (no rule store), still draft candidates and show the card. On approval, explain
+that the write cannot happen without a store (set `MEANINGFY_VAULT`) and offer the row text for later.
+Nothing is lost silently.
 
 ## Rules of learning
 
@@ -63,7 +67,9 @@ is there, stop and say in one line: "The rulebook skill is not installed; rules 
   exception takes the strength of its base.
 - **L-4 Scope from the session.** The activity being done and the context tags of the playbook's
   vocabulary that the statement names ("for clients" → `audience:client`). Without an activity, ask
-  in the card. Never invent a tag the vocabulary lacks; propose it in the card instead.
+  in the card. Never invent a tag the vocabulary lacks; propose it in the card instead. The activity
+  names are the open list in the rulebook's rule model (Scope); an activity without a playbook has no
+  vocabulary, so propose its context tags in the card.
 - **L-5 Quote the source.** `source` holds the date and the owner's words, verbatim, in single
   quotes. A candidate without the owner's words is not a candidate.
 - **L-6 Search before drafting.** Run `rules.py search` with the key words. A match decides the
@@ -71,7 +77,9 @@ is there, stop and say in one line: "The rulebook skill is not installed; rules 
 - **L-7 One offhand remark is a candidate, not a rule.** Recurrence and the owner's approval decide.
   Nothing is written as active without an approval in the card.
 - **L-8 Show, then write.** Present every candidate of the session in one rule approval card, at the
-  end of the session or when the owner asks. Write only what the owner approves.
+  first of: the owner wraps up ("that's all", "done for today"), the owner asks for it, or you are
+  about to give your final summary of a task in which the owner stated or corrected something. Nothing
+  waits for a session end. Write only what the owner approves.
 
 ## Mutations
 
@@ -133,7 +141,8 @@ errors; fix the row with the owner, never write the note by hand.
 the mutations, the rule approval card, and recording corrections with `override`.
 
 **Delegates:** the rule model, the note format, precedence and every write → `rulebook`; the weekly
-review of candidates and usage → `rule-steward`; filing the session's facts into a project →
-`vault-capture`; staging and the inbox → `vault-conventions`.
+review of candidates and usage → `rule-steward`.
 
-**Related:** `rulebook`, `rule-steward`, `vault-capture`, `vault-conventions`.
+**Related:** `rulebook`, `rule-steward`, and, when the vault-assistant bundle is installed,
+`vault-capture` (filing the session's facts into a project) and `vault-conventions` (staging and the
+inbox).
