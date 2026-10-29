@@ -1,6 +1,6 @@
 ---
 name: vault-promote
-description: "Promote a staged note out of `00 Inbox/proposed/` in a Meaningfy Obsidian vault into a project's `artefacts/` or `03 Resources/`: after checking it carries `kind` and every property and section its kind requires, and moving it so every wikilink follows. Refuses and names the missing field when a check fails; never sets the share switch. Invoke explicitly: \"promote <note>\", \"accept this proposed note\", \"move this from proposed into <project>\". Reorganising many notes is vault-tidy."
+description: "Promote a staged note out of `00 Inbox/proposed/` in a Meaningfy Obsidian vault into a project's `artefacts/` or `03 Resources/`: after checking it carries `kind` and every property and section its kind requires, and moving it so every wikilink follows. Refuses and names the missing field when a check fails; never sets the share switch. Invoke explicitly: \"promote NOTE\", \"accept this proposed note\", \"move this from proposed into PROJECT\". Reorganising many notes is vault-tidy."
 license: Apache 2.0
 argument-hint: "<note> [destination]"
 disable-model-invocation: true

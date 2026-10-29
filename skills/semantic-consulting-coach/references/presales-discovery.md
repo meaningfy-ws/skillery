@@ -5,7 +5,7 @@ questions the coach asks the *user*, which live in `question-bank.md`).
 
 > This sheet supports **pre-sales conversations, not selling.** The goal is to
 > decide whether to **stop**, **schedule a focused follow-up**, or **propose the
-> Decision Phase** (see `engagement-model.md`).
+> Proof of Value** (see `engagement-model.md`).
 
 ## The questions
 
@@ -21,7 +21,7 @@ and stop when there is no conceptual signal.
 |----------|------|---------|
 | **De-prioritise** | No pressure, no authority, no intent | Walk away politely |
 | **Deepen discovery** | Relevance, but unclear readiness | Schedule a focused follow-up |
-| **Introduce the Decision Phase** | Clear pain, urgency, or sequencing questions | Propose the paid Decision Phase |
+| **Introduce the Proof of Value** | Clear pain, urgency, or sequencing questions | Propose the paid Proof of Value |
 
 ## Boundary reminder
 

@@ -35,7 +35,7 @@ which framing wins which deal, and what stays uniquely Meaningfy's.
 
 ## 1. Service families (offering layer)
 
-> **Keystone offering:** the **Decision Phase** (see `engagement-model.md`) sits
+> **Keystone offering:** the **Proof of Value** (see `engagement-model.md`) sits
 > at the head of "Strategic data & semantics advisory" below and gates everything
 > downstream.
 

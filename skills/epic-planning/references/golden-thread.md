@@ -16,7 +16,7 @@ justifies it. This matters for explainability positioning (DORA, the EU AI Act).
 ## The chain (coarse form)
 
 ```
-Decision Package      (consulting-tier root — openspec/decisions/<id>.md; the paid P1 deliverable)
+Decision Package      (consulting-tier root — openspec/decisions/<id>.md; the paid Proof of Value deliverable)
   → product / requirement specification
     → architecture     (scenarios, ADRs, use cases, C4 + ArchiMate views, contracts, …)
       → EPIC / change   (the work shape; see the note on conflation below)

@@ -819,16 +819,19 @@ def _strings(obj):
             yield from _strings(v)
 
 
-def _fetch(since: date) -> list[dict]:
+def _fetch(since: date, until: date) -> list[dict]:
     env = {k: os.environ.get(k) for k in ("LANGFUSE_BASE_URL", "LANGFUSE_PUBLIC_KEY", "LANGFUSE_SECRET_KEY")}
     missing = [k for k, v in env.items() if not v]
     if missing:
         raise EnvError(f"Langfuse not configured: set {', '.join(missing)}")
     auth = base64.b64encode(f"{env['LANGFUSE_PUBLIC_KEY']}:{env['LANGFUSE_SECRET_KEY']}".encode()).decode()
-    base, data, page = env["LANGFUSE_BASE_URL"].rstrip("/"), [], 1
+    base, data, cursor = env["LANGFUSE_BASE_URL"].rstrip("/"), [], None
+    # v2 is the read API that also works on Langfuse v4 events_only deployments; io must be asked for
+    window = {"fields": "core,basic,io", "limit": 1000, "fromStartTime": f"{since.isoformat()}T00:00:00Z",
+              "toStartTime": f"{(until + timedelta(days=1)).isoformat()}T00:00:00Z"}
     while True:
-        query = urllib.parse.urlencode({"page": page, "limit": 100, "fromStartTime": f"{since.isoformat()}T00:00:00Z"})
-        req = urllib.request.Request(f"{base}/api/public/observations?{query}",
+        query = urllib.parse.urlencode({**window, **({"cursor": cursor} if cursor else {})})
+        req = urllib.request.Request(f"{base}/api/public/v2/observations?{query}",
                                      headers={"Authorization": f"Basic {auth}"})
         try:
             with urllib.request.urlopen(req, timeout=20) as resp:
@@ -836,9 +839,9 @@ def _fetch(since: date) -> list[dict]:
         except (urllib.error.URLError, OSError, ValueError) as e:
             raise EnvError(f"Langfuse unreachable at {base}: {e}")
         data += body.get("data", [])
-        if page >= int((body.get("meta") or {}).get("totalPages") or 1):
+        cursor = (body.get("meta") or {}).get("cursor")
+        if not cursor:
             return data
-        page += 1
 
 
 def cmd_stats(args) -> int:
@@ -853,7 +856,7 @@ def cmd_stats(args) -> int:
         except (OSError, ValueError) as e:
             raise EnvError(f"cannot read {args.from_file}: {e}")
     else:
-        observations = _fetch(since)
+        observations = _fetch(since, today)
     root = find_vault()
     rules, active = _index(read_dir(root, RULES_DIR))
     count = {}

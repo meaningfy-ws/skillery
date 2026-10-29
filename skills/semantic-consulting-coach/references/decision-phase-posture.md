@@ -1,8 +1,8 @@
-# Decision-Phase posture: how a consultant behaves inside the boundary
+# Proof of Value posture: how a consultant behaves inside the boundary
 
-Condensed from Meaningfy's Decision-Phase advisory practice (internal posture register), written for
+Condensed from Meaningfy's Proof of Value advisory practice (internal posture register), written for
 senior consultants and leadership — **not a sales script and not a junior playbook**. Where
-[`engagement-model.md`](engagement-model.md) states *what P1 is for*, this file states *how a
+[`engagement-model.md`](engagement-model.md) states *what the Proof of Value is for*, this file states *how a
 consultant behaves inside it*, especially under client pressure to give more than the boundary
 allows.
 
@@ -16,7 +16,7 @@ calm, respectful, and firm in its professional boundaries.
   is not to resolve ambiguity immediately, but to hold it safely until it can be resolved
   deliberately.
 - **Helpfulness vs. usefulness.** Helpfulness answers questions, explains concepts, reacts quickly.
-  Usefulness enables the client to make a decision that holds over time. Inside the Decision Phase,
+  Usefulness enables the client to make a decision that holds over time. Inside the Proof of Value,
   usefulness always outranks helpfulness.
 - **We do not guess.** No architectural sketches, sequencing recommendations, pilot definitions, or
   governance designs based on partial or informal understanding. When information is insufficient,
@@ -31,7 +31,7 @@ calm, respectful, and firm in its professional boundaries.
   may cost you more later."*
 - **Redirect, don't block.** Point to the path that creates real value instead of refusing flatly:
   *"The right way to create value here is to clarify a few decisions first."* · *"This is exactly
-  what our Decision Phase is designed to address."*
+  what our Proof of Value is designed to address."*
 - **Yes / not yet.** Say yes to orientation, explanation, and clarification. Say not yet to
   recommendations, sequencing, and commitments. "Not yet" is sequencing, not refusal.
 - **End cleanly.** Summarise what is known, what is undecided, and what step would be required — then

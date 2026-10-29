@@ -21,7 +21,7 @@ build-plane work, which is why this playbook lives here rather than in a separat
   [`roles-and-raci.md`](../../roles-and-raci.md#work-shaper).
 - **Shape the Epic / Derive the PLAN**: the steps inside the build loop where your
   artifacts (`proposal.md`, `design.md` + `tasks.md`) are authored. See
-  [`build-lifecycle.md`](../build-lifecycle.md#epic-tier-one-epic-at-a-time--the-sdlc-loop).
+  [`build-lifecycle.md`](../build-lifecycle.md#epic-tier-one-epic-at-a-time-the-sdlc-loop).
 
 The artifact you produce differs by plane (an Epic pitch for a software build, an ontology/model
 project, or a training engagement), same role, different plane. See
@@ -47,7 +47,7 @@ Full list: [`roles-and-raci.md`](../../roles-and-raci.md#work-shaper).
 
 - The shaped Epic (PLAN) hands off to the **Solution Builder** for the build loop, once the clarity
   gate is passed. See
-  [`build-lifecycle.md`](../build-lifecycle.md#epic-tier-one-epic-at-a-time--the-sdlc-loop).
+  [`build-lifecycle.md`](../build-lifecycle.md#epic-tier-one-epic-at-a-time-the-sdlc-loop).
 - You remain present through delivery to oversee the shape (is this still the bet made, is the
   appetite intact), but the delivery-close accountability itself belongs to the **Solution Shipper**.
   See [`roles-and-raci.md`](../../roles-and-raci.md#work-shaper).

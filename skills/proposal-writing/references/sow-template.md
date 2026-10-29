@@ -12,7 +12,7 @@ the [scope-boundary checklist](scope-boundary-checklist.md)).
 
 - **Parties:** <provider> and <client>
 - **Reference / version / date:**
-- **Engagement phase:** P1 Decision Phase (paid, fixed frame)
+- **Engagement phase:** Proof of Value (paid, fixed frame)
 
 ## 1. Objective
 
@@ -32,7 +32,7 @@ the [scope-boundary checklist](scope-boundary-checklist.md)).
 
 ## 4. Scope — out (load-bearing — = the estimate's exclusions)
 
-- **Implementation / build (P2 Execution)** — separately scoped and priced.
+- **Implementation / build (Scaling)** — separately scoped and priced.
 - <exclusion> — <when it might return, as a future engagement>
 - <exclusion> — <…>
 
@@ -62,6 +62,6 @@ partial delivery. No silent overwork.
 
 ## 9. Handover
 
-P2 Execution (build/implementation) is a separate engagement with its own scope and budget. This SoW
+Scaling (build/implementation) is a separate engagement with its own scope and budget. This SoW
 commits only to delivering the Decision Package.
 ```

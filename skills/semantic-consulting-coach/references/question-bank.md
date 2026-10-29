@@ -77,9 +77,9 @@ See `semantic-consulting-domain.md` for the full map. High-leverage probes:
 
 ### Free → paid boundary (decision-readiness), see `engagement-model.md`
 - "Is this client in orientation ('is this relevant?') or decision ('what do we do first?'), and are you charging accordingly?"
-- "Which of these questions are you about to answer for free that belong in a paid Decision Phase?"
+- "Which of these questions are you about to answer for free that belong in a paid Proof of Value?"
 - "What would the Decision Package for this client need to contain for them to commit safely?"
-- "Where are you explaining to persuade, when you could be proposing the Decision Phase?"
+- "Where are you explaining to persuade, when you could be proposing the Proof of Value?"
 
 ## Negotiation meta-questions
 

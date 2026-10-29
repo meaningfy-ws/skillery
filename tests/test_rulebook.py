@@ -5,9 +5,9 @@ note per case of PLAN task 1.2 (the writing rules R-0001..R-0014, the structural
 in the activities `testing`, `cycles` and `loops`), a Writing playbook with two golden examples and
 one candidate in `00 Inbox/proposed/`.
 
-`langfuse-observations.json` follows the Langfuse public API response of `GET
-/api/public/observations` (`{"data": [{"id", "type", "name", "startTime", "input", "output", ...}],
-"meta": {"page", "totalPages", ...}}`, `type` one of SPAN, GENERATION, EVENT). That shape is
+`langfuse-observations.json` follows the Langfuse public API response rows (`{"data": [{"id", "type",
+"name", "startTime", "input", "output", ...}]}`, `type` one of SPAN, GENERATION, EVENT); `stats` reads
+them from `GET /api/public/v2/observations`, paged by `meta.cursor`. That shape is
 assumption O-1 of the design: Langfuse is not deployed yet, so it is modelled on the documented API,
 not on a saved response. Task 6.1 replaces it with a sanitised real one.
 
@@ -459,6 +459,40 @@ def test_langfuse_unreachable():
                                             "LANGFUSE_PUBLIC_KEY": "pk", "LANGFUSE_SECRET_KEY": "sk"})
     assert r.returncode == 3
     assert "unreachable" in r.stderr
+
+
+def test_stats_reads_the_v2_api_page_by_cursor():
+    # Langfuse v4 events_only deployments answer 404 on /api/public/observations; v2 pages by meta.cursor
+    import http.server, threading, urllib.parse as up
+    pages = json.loads((FIX / "langfuse-observations.json").read_text(encoding="utf-8"))["data"]
+    seen = []
+
+    class Api(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            url = up.urlparse(self.path)
+            q = dict(up.parse_qsl(url.query))
+            seen.append((url.path, q))
+            half = len(pages) // 2
+            body = {"data": pages[half:], "meta": {}} if q.get("cursor") == "c2" else \
+                {"data": pages[:half], "meta": {"cursor": "c2"}}
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(json.dumps(body).encode())
+
+        def log_message(self, *a):
+            pass
+
+    srv = http.server.HTTPServer(("127.0.0.1", 0), Api)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        r = run("stats", "--today", TODAY, env={"LANGFUSE_BASE_URL": f"http://127.0.0.1:{srv.server_port}",
+                                                "LANGFUSE_PUBLIC_KEY": "pk", "LANGFUSE_SECRET_KEY": "sk"})
+    finally:
+        srv.shutdown()
+    assert r.returncode == 0, r.stderr
+    assert [p for p, _ in seen] == ["/api/public/v2/observations"] * 2
+    assert "io" in seen[0][1]["fields"].split(",") and seen[1][1]["cursor"] == "c2"
+    assert r.stdout == _stats().stdout
 
 
 # ---------------------------------------------------------------- exit codes (D-14) and the vault (D-11)

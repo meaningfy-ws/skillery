@@ -41,7 +41,7 @@ The model has no machine-readable source. The files below are the truth; the pic
 ## Areas and the `ai-*` domains
 
 The `area` facet says which part of Meaningfy's work a skill, agent or use case serves.
-[`define-ai-domains`](../../openspec/changes/define-ai-domains/proposal.md) organises the human docs into
+[`define-ai-domains`](../../openspec/changes/archive/2026-10-29-define-ai-domains/proposal.md) organises the human docs into
 three domains. The two lists meet like this:
 
 | `area` | `ai-*` domain |
