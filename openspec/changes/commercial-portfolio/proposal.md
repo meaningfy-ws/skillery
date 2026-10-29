@@ -1,6 +1,6 @@
-<!-- STATUS: EPIC shaped 2026-10-29 from the owner's request of the same day (inputs/qa.md).
-     Six questions are open for the owner (Q-1 to Q-6); answer them before the PLAN. The first
-     package (Luxembourg SMEs) is the owner's next input. -->
+<!-- STATUS: EPIC shaped 2026-10-29 from the owner's request and answers of the same day
+     (inputs/qa.md). Where the packages live is decided later, outside git. Next: the PLAN; the
+     owner's Luxembourg SME package is the first real input. -->
 
 # EPIC: A commercial portfolio of packages
 
@@ -10,11 +10,12 @@ whose engagement model this change generalises from one package to many, and the
 
 ## Appetite
 
-**LARGE.** Several related capabilities move: a new portfolio of commercial packages with one shared
-structure, and three skills (`semantic-consulting-coach`, `proposal-writing`, `decision-package`)
-revised so that they read a package instead of carrying one. Facts migrate out of
-`engagement-lifecycle.md` into the first package. If the work starts to price deals automatically,
-change the CRM, or need a package before the owner supplies it, it has overrun this appetite.
+**LARGE.** Several related capabilities move: a package structure and the company's general
+commercial rules, kept in skillery; packages kept as documents outside git; and three skills
+(`semantic-consulting-coach`, `proposal-writing`, `decision-package`) revised so that they read a
+package instead of carrying one. If the work starts to price deals automatically, change the CRM,
+build a store for the packages, or need a package the owner has not supplied, it has overrun this
+appetite.
 
 ## Why
 
@@ -25,110 +26,126 @@ the company's only offer: the stages, the Proof of Value's 4–6 weeks and safeg
 Package as its deliverable, the fixed-frame SoW. An agent writing a proposal for a life-sciences
 client would describe the wrong offer, with no way to know.
 
-The packages also need to evolve together. A change in one structure (a new stage, a revised
-safeguard) should be visible against the others, reviewed and versioned, not scattered across
-skill references.
+Packages also change often (prices, perks, nuances), and the people who maintain them work in
+documents, not in a git repository.
 
 ## Solution outline
 
-- **One portfolio, many packages.** A portfolio holds every current commercial package, each in one
-  file with the same structure: who it is for (market, segment, sector), its stages and what each
-  costs or delivers, durations, deliverables, safeguards, pricing basis, and terms. A package is
-  added, revised or retired through review, and the portfolio keeps a change history.
-- **One structure, checked.** The shared package structure is defined once, and a check confirms
-  every package follows it, the way the catalogue already checks skills and use cases.
+- **Two layers.**
+  - **General commercial rules**, true for every package: how presale, the sale and the offering
+    work at Meaningfy. They stay in skillery, in the skills that own them.
+  - **Packages**, each with its own nuances, prices and perks. They live as documents outside git,
+    where the owner keeps them (Google Drive, Confluence or elsewhere, decided later).
+- **One package structure, light and growing.** skillery holds a package template: a short list of
+  fields every package document fills in (proposed below). It holds the shape, never a package's
+  prices or terms. The fields are expected to change as real packages arrive.
+- **The user gives the context; the skill fetches the package.** The user says whom the work is for
+  and what is being sold or proposed. The skill asks where the packages live if it does not know,
+  reads the matching package document through the connector available in the session, and checks it
+  against the template, naming any missing field rather than inventing it.
 - **Skills read a package; they do not carry one.**
-  - `semantic-consulting-coach` coaches the boundary and the choice of package from the portfolio.
-  - `proposal-writing` frames the offer of the package chosen for the client.
-  - `decision-package` produces the decision deliverable of any package that has one.
-  - Their method stays theirs; the package's commercial facts come from the portfolio.
-- **Today's package becomes the first entry.** The current model (Presale, Discovery & Onboarding,
-  Scaling) moves from `engagement-lifecycle.md` into the portfolio unchanged, as one package. The
-  Luxembourg SME package the owner supplies next is the second, and the test that the structure
-  holds more than one.
-- **Outcome:** for any client, the agent names the package that applies and frames, coaches and
-  produces against that package's facts, and the owner maintains all packages in one place.
+  - `semantic-consulting-coach` keeps the general rules and coaches the conversation.
+  - `proposal-writing` frames the offer of the package in hand.
+  - `decision-package` produces a decision deliverable when the package calls for one.
+  - Their method stays theirs; a package's commercial facts come from its document.
+- **Today's package becomes a document.** The current specifics (Presale, Discovery & Onboarding at
+  two depths, Scaling, the Proof of Value's duration and safeguards) leave
+  `engagement-lifecycle.md`. What is general stays as a rule; what belongs to this package is handed
+  to the owner as its first package document. The owner's Luxembourg SME package is the second, and
+  the test that the template holds more than one.
+- **Outcome:** for any client, the agent works from the package the user names and the general
+  rules, and states the source of every commercial fact it uses.
+
+## The package template (proposed fields)
+
+Enough to write a proposal from, no more. Each is one short entry in the package document.
+
+| Field | Holds |
+|---|---|
+| Offer name | the named, irresistible offer; one offer may hold several packages |
+| Package name | this package within the offer |
+| Market and segment | for example Luxembourg SMEs, EU corporations, life sciences |
+| Who it addresses | the buyer and the people it serves, by role |
+| Problem it solves | the pains, in the client's words |
+| Promise | the outcome the client gets |
+| What is included | the stages or steps, each with its deliverable and duration |
+| Price and pricing basis | the price, currency, and what it is based on (fixed, per stage, per person) |
+| Perks and guarantees | bonuses, safeguards, what happens if the outcome is not reached |
+| Terms | payment, validity, conditions |
+| Proof | references, cases, figures the package may cite |
+| Status and review date | draft, active or retired, and when it was last checked |
 
 ## Key decisions
 
-- **DEC-1** (owner, 2026-10-29): Meaningfy has several commercial packages and structures, kept in
-  one repository, maintained as a whole and evolving. `proposal-writing`, `semantic-consulting-coach`
-  and `decision-package` are revised so that they do not capture only one package.
+- **DEC-1** (owner, 2026-10-29): Meaningfy has several commercial packages and structures,
+  maintained as a whole and evolving. `proposal-writing`, `semantic-consulting-coach` and
+  `decision-package` are revised so that they do not capture only one package.
 - **DEC-2** (owner, 2026-10-29): Today's position does not change while this is built: presale is
   the only free stage, and the latest vocabulary stands.
-- **DEC-3** (proposed): Packages are data, not skills. One file per package in a fixed structure,
-  read by the skills; no skill per package and no package text inside a skill. Rejected: one
-  reference file per package inside `semantic-consulting-coach` (it ties the portfolio to one
-  skill and one bundle).
-- **DEC-4** (proposed): Building blocks stay one shared catalogue. Packages reference the services
-  catalogue's building blocks by name rather than copying them, so a block is described once.
-
-## Open questions (answer before the PLAN)
-
-- **Q-1 Where the portfolio lives.** skillery is a **public** repository. Packages carry prices,
-  terms and market positioning. Options:
-  1. a private repository (for example `meaningfy-ws/commercial-portfolio`) that the skills find
-     through a setting, the way the rule skills find the vault (recommended);
-  2. skillery itself, with prices and terms left out;
-  3. the owner's vault.
-- **Q-2 The package structure.** Which fields does every package have? Proposed: name, status
-  (draft, active, retired), market, segment, sector, language, stages (each with name, free or paid,
-  duration, deliverable, exit), pricing basis, safeguards, terms, the building blocks it sells, and
-  owner. Your Luxembourg SME package will test it.
-- **Q-3 What is shared across packages.** Is "presale is the only free stage" a company rule for
-  every package, or a property of each? The same question for the safeguards and the calendar-boxed
-  frame.
-- **Q-4 Choosing the package.** How does a session know which package applies to a client: the
-  client's market and segment in Odoo (`sales-accounts`), the user naming it, or the coach asking?
-- **Q-5 Who maintains it.** Who may add or change a package, and is every change approved by you
-  through a pull request?
-- **Q-6 The Decision Package.** Is the Decision Package a deliverable of some packages only, or the
-  company's standard decision deliverable that every package ends its first paid stage with?
+- **DEC-3** (owner, 2026-10-29): Packages do not live in git. Where they live (Google Drive,
+  Confluence or elsewhere) is decided later; the skill asks where they are.
+- **DEC-4** (owner, 2026-10-29): There are general rules for presale, the sale and the offering,
+  and each package has its own nuances, prices and perks. The general rules are written once; the
+  nuances live in the package.
+- **DEC-5** (owner, 2026-10-29): The user provides the context: whom the work addresses and what is
+  being sold or proposed. The skill does not choose the package.
+- **DEC-6** (owner, 2026-10-29): Who maintains the packages is outside this change; they are simply
+  available somewhere. Whether a package has a decision deliverable is decided per package.
+- **DEC-7** (proposed): skillery holds the package template and the general rules, never a
+  package's prices or terms. Rejected: no template at all (every package would differ, and the skill
+  could not tell a missing price from a free stage).
+- **DEC-8** (proposed): Building blocks stay one shared services catalogue in skillery; a package
+  names the blocks it sells instead of describing them.
 
 ## Rabbit-holes
 
-- **Leaking prices into a public repository** (Q-1). Nothing commercial is committed to skillery
-  until Q-1 is answered.
-- **Over-modelling.** The structure must fit the packages the owner actually supplies, starting with
-  two. A rich schema built before the second package exists will be wrong.
+- **Over-modelling.** The template must fit the packages the owner supplies, starting with two.
+  Twelve fields is the starting point, not a schema to enforce.
+- **Splitting general from specific.** Today's `engagement-lifecycle.md` mixes the two. Every
+  sentence moved out must be either a general rule or a package fact; the owner confirms the split.
 - **Specs that name one package.** `engagement-model` and `sales-method-ownership` state the current
-  package's facts as requirements. They must be rewritten as requirements on any package, or moved
-  into the package, without losing the decisions they record.
-- **Estimation.** `estimation` prices effort; a package states a pricing basis. Keep the two apart.
+  package's facts as requirements. They are rewritten as general rules or retired into the package,
+  without losing the decisions they record.
+- **Connectors.** Reading a Drive or Confluence document depends on the connector in the session,
+  and both CLIs differ. The skill must work from a pasted or exported document too.
+- **Estimation.** `estimation` prices effort; a package states a price. Keep the two apart.
 
 ## No-gos
 
-- No automatic pricing or quoting engine.
-- No change to Odoo or the sales pipelines.
+- No package, price or term committed to skillery (it is a public repository).
+- No store, sync or database for packages.
+- No automatic pricing or quoting engine, and no change to Odoo or the sales pipelines.
 - No package invented by the agent: every package comes from the owner.
-- No change to today's position while the portfolio is built (DEC-2).
+- No change to today's position while this is built (DEC-2).
 - No skill per package.
 
 ---
 
 ## What Changes
 
-- A portfolio of packages with one structure and a check, in the location Q-1 decides.
-- `semantic-consulting-coach`: `engagement-lifecycle.md` becomes package-agnostic; today's package
-  moves into the portfolio.
-- `proposal-writing` and `decision-package`: descriptions, bodies and templates read the chosen
-  package instead of naming one offer. Trigger probes follow the description changes.
-- `docs/practice/ai-sales/`: the services catalogue and runbook point to the portfolio.
+- A package template and the general commercial rules, in the skills that own them.
+- `semantic-consulting-coach`: `engagement-lifecycle.md` keeps the general rules only; today's
+  package specifics are handed to the owner as a package document.
+- `proposal-writing` and `decision-package`: descriptions, bodies and templates work from the
+  package in hand and the user's context, and ask where packages live. Trigger probes follow the
+  description changes.
+- `docs/practice/ai-sales/`: the services catalogue and runbook point to the general rules and the
+  template.
 - The specs `engagement-model` and `sales-method-ownership` are revised to hold for any package.
 
 ## Capabilities
 
 ### New Capabilities
 
-- `commercial-portfolio`: the packages, their shared structure, and how skills read them.
+- `commercial-portfolio`: the package template, the general rules, and how skills read a package.
 
 ### Modified Capabilities
 
-- `engagement-model` and `sales-method-ownership`: decided in the PLAN, once Q-1 to Q-6 are answered.
+- `engagement-model` and `sales-method-ownership`: decided in the PLAN.
 
 ## Impact
 
-- Three skills in `meaningfy-consulting` and `meaningfy-sales` change; the coach loses commercial
-  facts to the portfolio.
-- If Q-1 chooses a private repository, the skills gain one setting to find it, and sessions without
-  it say so once and carry on, as the rule skills do without a vault.
+- Three skills in `meaningfy-consulting` and `meaningfy-sales` change; the coach keeps the general
+  rules and hands package facts to documents.
+- Sessions need access to wherever the packages live, or a pasted package; without one, the skill
+  says so and asks.
