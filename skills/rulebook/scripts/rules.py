@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """rules.py: the one reader and writer of the owner's rule notes (rulebook skill). Stdlib only.
 
-Subcommands: load, cite, check, lint, search, add, update, confirm, retire, approve, override, stats.
+Subcommands: load, cite, check, lint, search, add, update, confirm, retire, approve, override, stats, where.
+Two stores: the owner's vault (R- ids) and, in a git repository, its docs/rules/ folder (P- ids).
 Exit codes: 0 ok; 1 check found a violation or lint found an error; 2 usage error;
 3 environment (vault or Langfuse not found or unreachable); 4 write refused.
 The model, the precedence and the note format are explained in ../references/rule-model.md.
@@ -36,6 +37,13 @@ PATTERN_KEYS = ("check_absent", "check_present")
 FIELDS = ("type", "strength", "scope", "when", "do", "instead_of", "slot", "value", "exception_of", "supersedes",
           "check_absent", "check_present", "because", "source")
 ID = re.compile(r"R-\d{4}")
+REPO_ID = re.compile(r"P-\d{4}")
+ANY_ID = re.compile(r"[RP]-\d{4}")
+REPO_DIR = "docs/rules"
+REPO_GLOB = "P-[0-9][0-9][0-9][0-9] *.md"
+LINKS = ("exception_of", "supersedes")
+POINTER = ("- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, "
+           "load them with the rulebook skill; change them only through it, by pull request.")
 END = "-- end --"
 MAX_ACTIVE = 30
 
@@ -161,7 +169,7 @@ def find_vault() -> Path:
 
 def read_dir(root: Path, sub: str, kind: str = "rule") -> list[Note]:
     notes = []
-    for p in sorted((root / sub).glob("*.md")):
+    for p in sorted((root / sub).glob(REPO_GLOB if sub == REPO_DIR else "*.md")):
         try:
             meta, body = parse_note(p.read_text(encoding="utf-8"))
         except (ValueError, UnicodeDecodeError) as e:
@@ -174,6 +182,79 @@ def read_dir(root: Path, sub: str, kind: str = "rule") -> list[Note]:
 
 def read_playbooks(root: Path) -> dict[str, Note]:
     return {n.meta.get("activity", ""): n for n in read_dir(root, PLAYBOOKS_DIR, "playbook") if not n.error}
+
+
+def _vault_or_none() -> Path | None:
+    try:
+        return find_vault()
+    except EnvError:
+        return None
+
+
+def _find_repo(vault: Path | None) -> tuple[Path | None, str]:
+    """The repository root (the folder holding .git) and '', or None and why there is no repository store (D-8)."""
+    cwd = Path.cwd().resolve()
+    root = next((p for p in (cwd, *cwd.parents) if (p / ".git").exists()), None)
+    if root is None:
+        return None, "no .git found"
+    if root == Path.home().resolve():
+        return None, "repository root is the home folder"
+    if vault is not None and cwd.is_relative_to(vault.resolve()):
+        return None, "this is the vault"
+    return root, ""
+
+
+def find_stores() -> tuple[Path | None, Path | None]:
+    """(vault, repository root), each None when absent; never raises. Reads use the repository only when
+    its docs/rules/ exists (_read_stores); writes need only the root."""
+    vault = _vault_or_none()
+    return vault, _find_repo(vault)[0]
+
+
+def _repo_root() -> Path:
+    root, why = _find_repo(_vault_or_none())
+    if root is None:
+        raise EnvError(f"no repository store: {why}")
+    return root
+
+
+def _read_stores(vault: Path | None, repo: Path | None) -> list[tuple[str, list[Note]]]:
+    """(label, notes) of each present store, vault first."""
+    out = [("vault", read_dir(vault, RULES_DIR))] if vault else []
+    if repo and (repo / REPO_DIR).is_dir():
+        out.append(("repository", read_dir(repo, REPO_DIR)))
+    return out
+
+
+def _belongs(label: str, n: Note) -> bool:
+    """False for a note whose id has the other store's prefix (D-15 step 1)."""
+    rid = "" if n.error else n.meta.get("id", "")
+    return not rid.startswith("P-") if label == "vault" else not rid or bool(REPO_ID.fullmatch(rid))
+
+
+def _cut(meta: dict, ids: set) -> dict:
+    """A copy without the links to ids outside the store (D-15 step 2)."""
+    return {k: v for k, v in meta.items() if not (k in LINKS and v not in ids)}
+
+
+def _merged_index(vault: Path | None, repo: Path | None) -> tuple[dict, list[str], list[str]]:
+    """Rules by id and active ids over the present stores (vault first), and the SKIPPED lines (D-15).
+    With no store present it raises the vault error."""
+    stores = _read_stores(vault, repo)
+    if not stores:
+        find_vault()
+    rules: dict = {}
+    active: list[str] = []
+    skipped: list[str] = []
+    for label, notes in stores:
+        ok = [n for n in notes if _belongs(label, n)]
+        skipped += [f"SKIPPED {n.path.name}: {n.error}" for n in notes if n.error]
+        skipped += [f"SKIPPED {n.path.name}: id {n.meta['id']} does not belong in the {label} store"
+                    for n in notes if n not in ok]
+        own, act = _index(ok)
+        rules.update({i: _cut(m, set(own)) for i, m in own.items()})
+        active += act
+    return rules, active, skipped
 
 
 def _list(v) -> list[str]:
@@ -253,8 +334,9 @@ def _applicable(ctx: frozenset, rules: dict, active: list[str]) -> tuple[list[st
 
 # ---------------------------------------------------------------- lint (D-4, D-5)
 
-def lint(notes: list[Note], playbooks: dict[str, Note]) -> list[tuple[str, str, str]]:
-    """Findings as (level, code, message); level is ERROR (refuses a write) or WARNING."""
+def lint(notes: list[Note], playbooks: dict[str, Note], pattern=ID) -> list[tuple[str, str, str]]:
+    """Findings as (level, code, message); level is ERROR (refuses a write) or WARNING.
+    `pattern` is the id pattern of the store the notes live in."""
     out: list[tuple[str, str, str]] = []
     err = lambda code, msg: out.append(("ERROR", code, msg))
     warn = lambda code, msg: out.append(("WARNING", code, msg))
@@ -267,8 +349,8 @@ def lint(notes: list[Note], playbooks: dict[str, Note]) -> list[tuple[str, str, 
         for k in REQUIRED:
             if not m.get(k):
                 err("missing", f"{who}: no '{k}'")
-        if m.get("id") and not ID.fullmatch(m["id"]):
-            err("invalid", f"{who}: id '{m['id']}' is not R-NNNN")
+        if m.get("id") and not pattern.fullmatch(m["id"]):
+            err("invalid", f"{who}: id '{m['id']}' is not {pattern.pattern[0]}-NNNN")
         for k, allowed in (("type", TYPES), ("strength", tuple(STRENGTHS)), ("status", STATUSES)):
             if m.get(k) and m[k] not in allowed:
                 err("invalid", f"{who}: {k} '{m[k]}' (allowed: {', '.join(allowed)})")
@@ -325,6 +407,18 @@ def lint(notes: list[Note], playbooks: dict[str, Note]) -> list[tuple[str, str, 
     return out
 
 
+def _lint_all(stores: list[tuple[str, list[Note]]], playbooks: dict[str, Note]) -> list[tuple[str, str, str]]:
+    """Errors per store, with the store's id pattern; warnings once over the union of the stores (D-14)."""
+    out = [f for label, notes in stores
+           for f in lint(notes, playbooks, REPO_ID if label == "repository" else ID) if f[0] == "ERROR"]
+    union: list[Note] = []
+    for label, notes in stores:
+        ok = [n for n in notes if _belongs(label, n)]
+        ids = {n.meta.get("id") for n in ok if not n.error}
+        union += [Note(n.path, _cut(n.meta, ids), n.body, n.error) for n in ok]
+    return out + [f for f in lint(union, playbooks, ANY_ID) if f[0] == "WARNING"]
+
+
 def _precedence_lint(rules: dict, active: list[str], warn) -> None:
     slotted = [i for i in active if rules[i].get("slot")]
     groups: dict[tuple, list[str]] = {}
@@ -379,18 +473,18 @@ def _line(rid: str, m: dict) -> str:
 
 
 def cmd_load(args) -> int:
-    root = find_vault()
-    notes = read_dir(root, RULES_DIR)
-    pb = read_playbooks(root).get(args.activity)
+    vault, repo = find_stores()
+    rules, active, skipped = _merged_index(vault, repo)
+    pb = read_playbooks(vault).get(args.activity) if vault else None
     out = [f"PLAYBOOK {pb.path.stem}", pb.body.strip()] if pb else []
-    out += [f"SKIPPED {n.path.name}: {n.error}" for n in notes if n.error]
-    rules, active = _index(notes)
+    out += skipped
     shown, conflicts = _applicable(_context(args), rules, active)
     out += [_line(i, rules[i]) for i in shown]
     checks = [i for i in shown if any(rules[i].get(k) for k in PATTERN_KEYS)]
     if checks:
         out.append(f"CHECK {' '.join(checks)}: run check on the output before handing it over")
-    print("\n".join(out + conflicts + [END]))
+    note = [] if vault else ["NOTE personal rules not loaded: vault not found (set MEANINGFY_VAULT)"]
+    print("\n".join(out + conflicts + note + [END]))
     return 0
 
 
@@ -413,8 +507,11 @@ def _violations(text: str, ids: list[str], rules: dict) -> list[str]:
 
 
 def cmd_check(args) -> int:
-    root = find_vault()
-    rules, active = _index(read_dir(root, RULES_DIR))
+    if args.golden:  # golden examples are the vault's
+        root = find_vault()
+        rules, active = _index(read_dir(root, RULES_DIR))
+    else:
+        rules, active, _ = _merged_index(*find_stores())
     with_checks = lambda ctx: [i for i in _applicable(ctx, rules, active)[0]
                                if any(rules[i].get(k) for k in PATTERN_KEYS)]
     out, failed = [], False
@@ -445,8 +542,15 @@ def cmd_check(args) -> int:
 
 
 def cmd_lint(args) -> int:
-    root = find_vault()
-    findings = lint(read_dir(root, RULES_DIR), read_playbooks(root))
+    vault, repo = find_stores()
+    if args.store == "repo":
+        repo = _repo_root()
+    stores = _read_stores(vault if args.store != "repo" else None, repo if args.store != "vault" else None)
+    if not stores and args.store == "repo":  # possible, but docs/rules/ is not there: an empty store
+        stores = [("repository", [])]
+    if not stores:
+        find_vault()
+    findings = _lint_all(stores, read_playbooks(vault) if vault else {})
     for level, code, msg in findings:
         print(f"{level} {code}: {msg}")
     errors = sum(1 for f in findings if f[0] == "ERROR")
@@ -455,9 +559,13 @@ def cmd_lint(args) -> int:
 
 
 def cmd_search(args) -> int:
-    root = find_vault()
+    vault, repo = find_stores()
+    stores = _read_stores(vault, repo)
+    if not stores:
+        find_vault()
     words = [w.lower() for w in args.words]
-    for n in read_dir(root, RULES_DIR) + read_dir(root, PROPOSED_DIR):
+    notes = [n for label, ns in stores for n in ns + (read_dir(vault, PROPOSED_DIR) if label == "vault" else [])]
+    for n in notes:
         m = n.meta
         hay = " ".join(str(m.get(k, "")) for k in ("id", "when", "do", "instead_of", "slot", "value", "because",
                                                    "source")).lower()
@@ -483,15 +591,21 @@ def _title(do: str) -> str:
 
 
 def _commit(root: Path, changes: list[tuple[Path, dict, str, Path | None]], dry_run: bool = False) -> None:
-    """Write (path, meta, body, old_path) changes unless they add a new lint error; print new warnings.
-    A new file whose id another file already holds raises FileExistsError, so the caller can retry."""
-    notes = read_dir(root, RULES_DIR)
-    playbooks = read_playbooks(root)
+    """Write (path, meta, body, old_path) changes unless they add a new lint
+    error; print new warnings. A new file whose id another file already holds raises FileExistsError, so
+    the caller can retry. Errors and warnings come from the combined lint of both stores (D-14)."""
+    sub = REPO_DIR if changes[0][0].is_relative_to(root / REPO_DIR) else RULES_DIR  # the store written to
+    label = "repository" if sub == REPO_DIR else "vault"
+    vault, repo = find_stores()
+    others = [s for s in _read_stores(vault, repo) if s[0] != label]
+    notes = read_dir(root, sub)
+    playbooks = read_playbooks(root if label == "vault" else vault) if (label == "vault" or vault) else {}
     after = list(notes)
     for path, meta, body, old in changes:
         after = [n for n in after if n.path not in (path, old)] + [Note(path, meta, body)]
-    before = set(lint(notes, playbooks))
-    new = [f for f in lint(after, playbooks) if f not in before]
+    both = lambda ns: sorted([(label, ns)] + others, key=lambda s: s[0] != "vault")
+    before = set(_lint_all(both(notes), playbooks))
+    new = [f for f in _lint_all(both(after), playbooks) if f not in before]
     errors = [f"ERROR {c}: {m}" for lvl, c, m in new if lvl == "ERROR"]
     if errors:
         raise Refused("the write would add lint errors; nothing written\n" + "\n".join(errors))
@@ -509,6 +623,8 @@ def _commit(root: Path, changes: list[tuple[Path, dict, str, Path | None]], dry_
                 path.unlink()  # another writer took this id under another title
                 raise FileExistsError(meta["id"])
         print(f"wrote {path.relative_to(root).as_posix()}")
+    if label == "repository" and changes and not dry_run:
+        _write_pointer(root)
     for lvl, c, m in new:
         if lvl == "WARNING":
             print(f"WARNING {c}: {m}")
@@ -516,9 +632,26 @@ def _commit(root: Path, changes: list[tuple[Path, dict, str, Path | None]], dry_
         print("dry run: nothing written")
 
 
-def _all_ids(root: Path) -> list[str]:
-    return [m.group(0) for sub in (RULES_DIR, PROPOSED_DIR) for p in (root / sub).glob("R-*.md")
-            if (m := ID.match(p.name))]
+def _write_pointer(root: Path) -> None:
+    """Append the pointer line to AGENTS.md when it does not mention docs/rules/ yet (D-12)."""
+    path = root / "AGENTS.md"
+    try:
+        if not path.exists():
+            path.write_text(f"# AGENTS.md\n\n{POINTER}\n", encoding="utf-8")
+            print("wrote AGENTS.md (new: if CLAUDE.md is this repository's binding, import AGENTS.md from it)")
+            return
+        text = path.read_text(encoding="utf-8")
+        if "docs/rules/" in text:
+            return
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(("" if text.endswith("\n") else "\n") + f"\n{POINTER}\n")
+        print("wrote AGENTS.md (pointer to docs/rules/)")
+    except OSError as e:
+        print(f"WARNING pointer: could not write AGENTS.md ({e.strerror or e}): add the line by hand")
+
+
+def _all_ids(root: Path, subs=(RULES_DIR, PROPOSED_DIR), pattern=ID) -> list[str]:
+    return [m.group(0) for sub in subs for p in (root / sub).glob("*.md") if (m := pattern.match(p.name))]
 
 
 def _find(root: Path, rid: str, sub: str = RULES_DIR) -> Note | None:
@@ -529,8 +662,8 @@ def _fields(args) -> dict:
     return {k: getattr(args, k) for k in FIELDS if getattr(args, k, None) is not None}
 
 
-def _superseded(root: Path, meta: dict, today: str) -> list:
-    old = _find(root, meta["supersedes"]) if meta.get("supersedes") else None
+def _superseded(root: Path, meta: dict, today: str, sub: str = RULES_DIR) -> list:
+    old = _find(root, meta["supersedes"], sub) if meta.get("supersedes") else None
     if not old or old.meta.get("status") == "dropped":
         return []
     return [(old.path, {**old.meta, "status": "dropped", "retired": today,
@@ -538,22 +671,28 @@ def _superseded(root: Path, meta: dict, today: str) -> list:
 
 
 def cmd_add(args) -> int:
-    root, today = find_vault(), args.today.isoformat()
+    repo = args.store == "repo"
+    if repo and args.candidate:
+        raise Usage("the repository store takes no candidates: approve the row, or move it to the vault and defer it")
+    root, today = _repo_root() if repo else find_vault(), args.today.isoformat()
+    sub, pattern, prefix = (REPO_DIR, REPO_ID, "P") if repo else (RULES_DIR, ID, "R")
     f = _fields(args)
     same = lambda a, b: " ".join(str(a or "").lower().split()) == " ".join(str(b or "").lower().split())
-    for n in read_dir(root, RULES_DIR):
+    for n in read_dir(root, sub):
         m = n.meta
         if m.get("status") == "active" and same(m.get("when"), f.get("when")) and same(m.get("do"), f.get("do")):
             raise Refused(f"duplicate of {m['id']}: run `confirm {m['id']}` instead")
     for attempt in (1, 2):
-        rid = f"R-{max([int(i[2:]) for i in _all_ids(root)] or [0]) + 1:04d}"
+        ids = _all_ids(root, (sub,), pattern) if repo else _all_ids(root)
+        rid = f"{prefix}-{max([int(i[2:]) for i in ids] or [0]) + 1:04d}"
         meta = {"kind": "rule", "id": rid, **f, "status": "idea" if args.candidate else "active", "added": today}
         if not args.candidate:
             meta.update(approved=today, last_confirmed=today)
-        meta["private"] = "true"
-        path = root / (PROPOSED_DIR if args.candidate else RULES_DIR) / f"{rid} {_title(f.get('do', ''))}.md"
-        path.parent.mkdir(parents=True, exist_ok=True)
-        changes = [(path, meta, "", None)] + ([] if args.candidate else _superseded(root, meta, today))
+        meta["private"] = "false" if repo else "true"
+        path = root / (PROPOSED_DIR if args.candidate else sub) / f"{rid} {_title(f.get('do', ''))}.md"
+        if not args.dry_run:
+            path.parent.mkdir(parents=True, exist_ok=True)
+        changes = [(path, meta, "", None)] + ([] if args.candidate else _superseded(root, meta, today, sub))
         try:
             _commit(root, changes, args.dry_run)
             return 0
@@ -563,25 +702,30 @@ def cmd_add(args) -> int:
     return 0
 
 
-def _rewrite(root: Path, rid: str, change: dict, note: Note | None = None) -> None:
-    note = note or _find(root, rid)
+def _target(rid: str) -> tuple[Path, str]:
+    """The store root and folder a rule id belongs to: P- the repository, else the vault."""
+    return (_repo_root(), REPO_DIR) if rid.startswith("P-") else (find_vault(), RULES_DIR)
+
+
+def _rewrite(root: Path, rid: str, change: dict, note: Note | None = None, sub: str = RULES_DIR) -> None:
+    note = note or _find(root, rid, sub)
     if not note:
-        raise Refused(f"no rule {rid} in {RULES_DIR}/")
+        raise Refused(f"no rule {rid} in {sub}/")
     _commit(root, [(note.path, {**note.meta, **change}, note.body, note.path)])
 
 
 def cmd_update(args) -> int:
-    root = find_vault()
+    root, sub = _target(args.id)
     change = _fields(args)
     if not change:
         raise Usage("update needs at least one field to change")
-    note = _find(root, args.id) or _find(root, args.id, PROPOSED_DIR)
+    note = _find(root, args.id, sub) or (None if sub == REPO_DIR else _find(root, args.id, PROPOSED_DIR))
     if not note:
-        raise Refused(f"no rule {args.id} in {RULES_DIR}/ or {PROPOSED_DIR}/")
+        raise Refused(f"no rule {args.id} in {sub}/" + ("" if sub == REPO_DIR else f" or {PROPOSED_DIR}/"))
     path = note.path
     if "do" in change:  # the title follows `do` (D-3); a rename follows the move procedure
         path = note.path.with_name(f"{args.id} {_title(change['do'])}.md")
-        clash = [p for p in root.rglob(path.name) if p != note.path]
+        clash = [p for p in (root / sub if sub == REPO_DIR else root).rglob(path.name) if p != note.path]
         if clash:
             raise Refused(f"another note has the name {path.name}: {clash[0].relative_to(root).as_posix()}")
     _commit(root, [(path, {**note.meta, **change}, note.body, note.path)], args.dry_run)
@@ -589,29 +733,31 @@ def cmd_update(args) -> int:
 
 
 def cmd_confirm(args) -> int:
-    root = find_vault()
-    note = _find(root, args.id)
+    root, sub = _target(args.id)
+    note = _find(root, args.id, sub)
     if not note or note.meta.get("status") != "active":
         raise Refused(f"{args.id} is not an active rule")
     if note.meta.get("last_confirmed") == args.today.isoformat():
         print(f"{args.id} already confirmed today")
         return 0
-    _rewrite(root, args.id, {"last_confirmed": args.today.isoformat()}, note)
+    _rewrite(root, args.id, {"last_confirmed": args.today.isoformat()}, note, sub)
     return 0
 
 
 def cmd_retire(args) -> int:
-    root = find_vault()
-    note = _find(root, args.id)
+    root, sub = _target(args.id)
+    note = _find(root, args.id, sub)
     if note and note.meta.get("status") == "dropped":
         print(f"{args.id} already retired")
         return 0
     _rewrite(root, args.id, {"status": "dropped", "retired": args.today.isoformat(), "retired_reason": args.reason},
-             note)
+             note, sub)
     return 0
 
 
 def cmd_approve(args) -> int:
+    if args.id.startswith("P-"):
+        raise Refused("repository rules have no candidates")
     root, today = find_vault(), args.today.isoformat()
     note = _find(root, args.id, PROPOSED_DIR)
     if not note:
@@ -625,6 +771,18 @@ def cmd_approve(args) -> int:
         raise Refused(f"another note has the name {note.path.name}: {clash[0].relative_to(root).as_posix()}")
     meta = {**note.meta, "status": "active", "approved": today, "last_confirmed": today}
     _commit(root, [(dest, meta, note.body, note.path)] + _superseded(root, meta, today))
+    return 0
+
+
+def cmd_where(args) -> int:
+    vault = _vault_or_none()
+    env = os.environ.get("MEANINGFY_VAULT")
+    repo, why = _find_repo(vault)
+    print(f"vault: {vault}" if vault else "vault: none (MEANINGFY_VAULT not set and no '08 How to/' here)"
+          if not env else f"vault: none (MEANINGFY_VAULT={env} has no '08 How to/' folder)")
+    state = "present" if repo and (repo / REPO_DIR).is_dir() else "not yet created"
+    print(f"repository: {repo} (docs/rules/ {state})" if repo else f"repository: none ({why})")
+    print(f"default store: {'repository' if repo else 'vault'}\n{END}")
     return 0
 
 
@@ -751,8 +909,8 @@ def cmd_stats(args) -> int:
 # ---------------------------------------------------------------- CLI
 
 def _id(value: str) -> str:
-    if not ID.fullmatch(value):
-        raise argparse.ArgumentTypeError(f"{value!r} is not a rule id R-NNNN")
+    if not ANY_ID.fullmatch(value):
+        raise argparse.ArgumentTypeError(f"{value!r} is not a rule id R-NNNN or P-NNNN")
     return value
 
 
@@ -776,7 +934,10 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--golden", action="store_true")
     s.add_argument("file", nargs="?")
     s.set_defaults(func=cmd_check)
-    sub.add_parser("lint", help="report errors and warnings in the rule set").set_defaults(func=cmd_lint)
+    s = sub.add_parser("lint", help="report errors and warnings in the rule set")
+    s.add_argument("--store", choices=("all", "vault", "repo"), default="all")
+    s.set_defaults(func=cmd_lint)
+    sub.add_parser("where", help="print the stores this session sees and the default one").set_defaults(func=cmd_where)
     s = sub.add_parser("search", help="find rules by words")
     s.add_argument("words", nargs="+")
     s.set_defaults(func=cmd_search)
@@ -789,6 +950,7 @@ def build_parser() -> argparse.ArgumentParser:
     s.set_defaults(func=cmd_override)
     s = sub.add_parser("add", parents=[clock, fields], help="write a new rule, or a candidate with --candidate")
     s.add_argument("--candidate", action="store_true")
+    s.add_argument("--store", choices=("vault", "repo"), default="vault", help="where the rule is written")
     s.add_argument("--dry-run", action="store_true", help="print the warnings the write would add; write nothing")
     s.set_defaults(func=cmd_add)
     s = sub.add_parser("update", parents=[clock, fields], help="change fields of a rule, keeping its id")

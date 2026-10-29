@@ -804,7 +804,7 @@ def test_t17_writer_refusals(repo, vault, tmp_path):
 
 
 def test_t18_stats_counts_vault_rules_only(repo, vault):
-    r = run("stats", "--from-file", str(FIX / "langfuse-observations-repo.json"), "--today", TODAY,
+    r = run("stats", "--from-file", str(repo / "langfuse-observations-repo.json"), "--today", TODAY,
             vault=vault, cwd=repo)
     assert r.returncode == 0, r.stderr
     assert not re.search(r"^P-\d{4}", r.stdout, re.M) and "FLAG P-" not in r.stdout

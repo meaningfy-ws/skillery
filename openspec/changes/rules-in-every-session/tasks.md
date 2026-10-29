@@ -154,15 +154,15 @@
 
 ## 6. Step 2: the script (green)
 
-- [ ] 6.1 `find_stores()` with the D-8 exclusions, and `where` (D-17). **Accept:** T-14, T-20.
-- [ ] 6.2 The repository reader and the id rules (D-9, D-10, D-11), plus `load`, `check FILE` and
+- [x] 6.1 `find_stores()` with the D-8 exclusions, and `where` (D-17). **Accept:** T-14, T-20.
+- [x] 6.2 The repository reader and the id rules (D-9, D-10, D-11), plus `load`, `check FILE` and
   `search` over the union (D-15, D-16). **Accept:** T-4, T-5, T-11, T-12, T-13, T-19, T-21, T-22.
-- [ ] 6.3 `lint --store` with per-store errors and union warnings (D-14), and the write refusal over
+- [x] 6.3 `lint --store` with per-store errors and union warnings (D-14), and the write refusal over
   the combined lint. **Accept:** T-15, T-16, and the `lint` rows of T-23.
-- [ ] 6.4 The writers: `add --store` (default `vault`), `update`/`confirm`/`retire` by prefix, and the
+- [x] 6.4 The writers: `add --store` (default `vault`), `update`/`confirm`/`retire` by prefix, and the
   `approve` and `--candidate` refusals (D-13). Create `docs/rules/` only on a real write, and add the
   pointer (D-12). **Accept:** T-6 to T-10, T-17, the `retire` row of T-23, T-24.
-- [ ] 6.5 `stats` stays `R-`-only. Update the module docstring's subcommand list, and keep the file
+- [x] 6.5 `stats` stays `R-`-only. Update the module docstring's subcommand list, and keep the file
   stdlib-only. **Accept:** T-18; `grep -E "^(import|from) "` shows stdlib modules only.
 
 ## 7. Step 2: skills and docs
@@ -208,7 +208,7 @@
 
 - [x] 0.1 · [ ] 0.2
 - [ ] **Step 1:** [x] 1.1 · 1.2 · 2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 3.1 · 5.1 · (after release, non-blocking) 4.1 · 4.2
-- [ ] **Step 2:** [x] 1.3 · [x] 1.4 · 6.1 · 6.2 · 6.3 · 6.4 · 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1
+- [ ] **Step 2:** [x] 1.3 · [x] 1.4 · [x] 6.1 · [x] 6.2 · [x] 6.3 · [x] 6.4 · [x] 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1
 
 ## Verification
 
