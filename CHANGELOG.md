@@ -26,6 +26,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   `MEANINGFY_VAULT` to use them from a code repository, and the `LANGFUSE_*` settings for the weekly
   review (see [`docs/environment/setup.md`](docs/environment/setup.md)).
 
+- **A guide to the reasoning and rules skills** ([`docs/environment/reasoning-and-rules.md`](docs/environment/reasoning-and-rules.md)):
+  how `formal-reasoning` gets exact answers from an engine, how your rules are learned, applied and
+  reviewed, what each needs, and the known limits.
 - **A guide to the voice and communication skills** ([`docs/environment/communication.md`](docs/environment/communication.md)):
   which skill owns what, the registers and channel profiles, what is covered and what is not yet
   (the quotation skeleton, most channel profiles), the guardrails, and how to add a register, a
