@@ -657,3 +657,260 @@ def test_dry_run_writes_nothing_and_prints_warnings(vault):
 @pytest.mark.parametrize("skill", ["rule-learner", "rule-steward"])
 def test_skills_never_tell_the_agent_to_run_a_dotdot_path(skill):
     assert "/../" not in (ROOT / f"skills/{skill}/SKILL.md").read_text(encoding="utf-8")
+
+
+# ---------------------------------------------------------------- the repository store (step 2)
+
+REPO_FIX = FIX / "repo"
+POINTER = ("- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, "
+           "load them with the rulebook skill; change them only through it, by pull request.")
+ADD_REPO = ("add", "--store", "repo", "--type", "constraint", "--strength", "hard", "--scope", "activity:coding",
+            "--when", "committing", "--do", "never force push", "--because", "history is shared",
+            "--source", "2026-10-29 owner: 'never force push'", "--today", TODAY)
+
+
+def _tree(root):
+    return {p.relative_to(root).as_posix(): p.read_bytes() for p in sorted(Path(root).rglob("*")) if p.is_file()}
+
+
+def _repo(tmp_path, rules=True, agents=True, name="repo"):
+    dest = tmp_path / name
+    shutil.copytree(REPO_FIX, dest)
+    (dest / ".git").mkdir()
+    if not rules:
+        shutil.rmtree(dest / "docs")
+    if not agents:
+        (dest / "AGENTS.md").unlink()
+    return dest
+
+
+def _home(tmp_path):  # a HOME that is neither the repository nor the vault
+    h = tmp_path / "home"
+    h.mkdir(exist_ok=True)
+    return {"HOME": str(h)}
+
+
+@pytest.fixture
+def repo(tmp_path):
+    return _repo(tmp_path)
+
+
+def test_t5_load_is_the_same_inside_and_outside_a_repository(tmp_path):
+    inside = run("load", "--activity", "writing", cwd=ROOT).stdout
+    assert inside == run("load", "--activity", "writing", cwd=tmp_path).stdout
+
+
+def test_t6_a_project_convention_goes_to_the_repository(tmp_path, vault):
+    repo = _repo(tmp_path, rules=False)
+    before = _tree(vault)
+    r = run(*ADD_REPO, vault=vault, cwd=repo)
+    assert r.returncode == 0, r.stderr
+    note = repo / "docs/rules/P-0001 never force push.md"
+    assert _meta(note)["private"] == "false" and _meta(note)["id"] == "P-0001"
+    assert "wrote docs/rules/P-0001 never force push.md" in r.stdout
+    assert "wrote AGENTS.md (pointer to docs/rules/)" in r.stdout
+    assert POINTER in (repo / "AGENTS.md").read_text(encoding="utf-8")
+    assert _tree(vault) == before
+
+
+def test_t7_the_pointer_is_written_once(tmp_path, vault):
+    repo = _repo(tmp_path, rules=False)
+    run(*ADD_REPO, vault=vault, cwd=repo)
+    second = [a if a != "never force push" else "never skip the review" for a in ADD_REPO]
+    assert run(*second, vault=vault, cwd=repo).returncode == 0
+    assert (repo / "AGENTS.md").read_text(encoding="utf-8").count("docs/rules/") == 1
+
+
+def test_t8_a_missing_agents_md_is_created_with_a_hint(tmp_path, vault):
+    repo = _repo(tmp_path, rules=False, agents=False)
+    r = run(*ADD_REPO, vault=vault, cwd=repo)
+    assert ("wrote AGENTS.md (new: if CLAUDE.md is this repository's binding, import AGENTS.md from it)"
+            in r.stdout)
+    assert (repo / "AGENTS.md").read_text(encoding="utf-8") == f"# AGENTS.md\n\n{POINTER}\n"
+
+
+def test_t9_a_dry_run_creates_no_store(tmp_path, vault):
+    repo = _repo(tmp_path, rules=False)
+    before = _tree(repo)
+    r = run(*ADD_REPO, "--dry-run", vault=vault, cwd=repo)
+    assert r.returncode == 0, r.stderr
+    assert _tree(repo) == before and not (repo / "docs").exists()
+
+
+def test_t10_a_personal_preference_goes_to_the_vault(repo, vault):
+    before = _tree(repo)
+    args = [a for a in ADD_REPO if a not in ("--store", "repo")]
+    r = run(*args, vault=vault, cwd=repo)
+    assert r.returncode == 0, r.stderr
+    assert re.search(r"wrote 08 How to/Rules/R-\d{4} never force push\.md", r.stdout)
+    assert _tree(repo) == before
+    r = run(*args[:1], "--store", "vault", *args[1:], "--do", "never force push twice", vault=vault, cwd=repo)
+    assert r.returncode == 0 and _tree(repo) == before
+
+
+def test_t11_the_stores_disagree(repo, vault):
+    out = run("load", "--activity", "writing", vault=vault, cwd=repo).stdout
+    assert "CONFLICT R-0001 vs P-0002 on spelling: ask the owner" in out
+    assert _lines(out, "R-0001 ") and _lines(out, "P-0002 ")
+
+
+def test_t12_repository_rules_load_without_the_vault(repo):
+    r = run("load", "--activity", "coding", vault=None, cwd=repo, env=_home(repo.parent))
+    assert r.returncode == 0, r.stderr
+    assert r.stdout == (
+        "SKIPPED P-0004 carries a vault id.md: id R-0099 does not belong in the repository store\n"
+        "P-0003 [default] commit-style=conventional: follow conventional commits (because: the changelog is generated)\n"
+        "P-0001 [hard] never commit straight to main (because: main is protected and reviewed)\n"
+        "NOTE personal rules not loaded: vault not found (set MEANINGFY_VAULT)\n"
+        "-- end --\n")
+
+
+def test_t13_no_store_at_all_is_an_environment_error(tmp_path):
+    r = run("load", "--activity", "coding", vault=None, cwd=tmp_path, env=_home(tmp_path))
+    assert r.returncode == 3 and "vault not found" in r.stderr
+
+
+def test_t14_the_home_folder_and_the_vault_are_not_repositories(tmp_path, repo, vault):
+    r = run("where", vault=None, cwd=repo, env={"HOME": str(repo)})
+    assert "repository: none (repository root is the home folder)" in r.stdout
+    (vault / ".git").mkdir()
+    r = run("where", vault=vault, cwd=vault, env=_home(tmp_path))
+    assert "repository: none (this is the vault)" in r.stdout
+    assert "default store: vault" in r.stdout
+
+
+def test_t15_lint_reports_each_store_by_its_own_rules(repo, vault):
+    r = run("lint", vault=vault, cwd=repo)
+    assert r.returncode == 1
+    assert "ERROR dangling: P-0003: exception_of R-0001 does not exist" in r.stdout
+    assert "ERROR invalid: R-0099: id 'R-0099' is not P-NNNN" in r.stdout
+    alone = run("lint", "--store", "vault", vault=vault, cwd=repo).stdout
+    assert all(line in r.stdout for line in alone.splitlines() if line.startswith("ERROR"))
+
+
+def test_t16_the_steward_lint_sees_no_repository_rule(repo, vault):
+    r = run("lint", "--store", "vault", vault=vault, cwd=repo)
+    assert "P-" not in r.stdout and "R-0099" not in r.stdout
+    assert r.stdout == run("lint", vault=vault, cwd=ROOT).stdout
+
+
+def test_t17_writer_refusals(repo, vault, tmp_path):
+    r = run("add", "--candidate", "--store", "repo", "--do", "x", vault=vault, cwd=repo)
+    assert r.returncode == 2 and "the repository store takes no candidates" in r.stderr
+    r = run("approve", "P-0001", vault=vault, cwd=repo)
+    assert r.returncode == 4 and "repository rules have no candidates" in r.stderr
+    r = run("retire", "P-0001", "--reason", "x", vault=vault, cwd=tmp_path)
+    assert r.returncode == 3
+
+
+def test_t18_stats_counts_vault_rules_only(repo, vault):
+    r = run("stats", "--from-file", str(FIX / "langfuse-observations-repo.json"), "--today", TODAY,
+            vault=vault, cwd=repo)
+    assert r.returncode == 0, r.stderr
+    assert not re.search(r"^P-\d{4}", r.stdout, re.M) and "FLAG P-" not in r.stdout
+
+
+def test_t19_a_readme_in_the_rules_folder_is_ignored(repo):
+    r = run("lint", "--store", "repo", vault=None, cwd=repo, env=_home(repo.parent))
+    assert r.returncode in (0, 1) and "README" not in r.stdout and "parse" not in r.stdout
+
+
+def test_t20_where_describes_each_case(tmp_path, vault):
+    full = _repo(tmp_path)
+    r = run("where", vault=vault, cwd=full)
+    assert r.returncode == 0
+    assert r.stdout == (f"vault: {vault}\nrepository: {full} (docs/rules/ present)\n"
+                        "default store: repository\n-- end --\n")
+    bare = _repo(tmp_path, rules=False, name="bare")
+    assert "(docs/rules/ not yet created)" in run("where", vault=vault, cwd=bare).stdout
+    r = run("where", vault=None, cwd=tmp_path, env=_home(tmp_path))
+    assert r.returncode == 0
+    assert r.stdout == ("vault: none (MEANINGFY_VAULT not set and no '08 How to/' here)\n"
+                        "repository: none (no .git found)\ndefault store: vault\n-- end --\n")
+
+
+def test_t21_a_cross_store_link_is_cut_in_memory_only(repo):
+    rules, active, skipped = _module()._merged_index(VAULT, repo)
+    assert "exception_of" not in rules["P-0003"] and "P-0003" in active
+    assert "R-0099" not in rules and skipped
+    assert "exception_of: R-0001" in (repo / "docs/rules/P-0003 follow conventional commits.md").read_text(
+        encoding="utf-8")
+
+
+SNAPSHOTS = FIX / "vault-only"
+SNAP_ARGS = [a.replace("{fixtures}", str(FIX)).split() for a in (SNAPSHOTS / "cmds.txt").read_text().splitlines()]
+
+
+@pytest.mark.parametrize("cwd_is_root", [True, False], ids=["cwd-root", "cwd-tmp"])
+@pytest.mark.parametrize("n", range(1, 6))
+def test_t22_vault_only_output_is_byte_identical(n, cwd_is_root, tmp_path):
+    r = run(*SNAP_ARGS[n - 1], cwd=ROOT if cwd_is_root else tmp_path)
+    assert r.stdout == (SNAPSHOTS / f"{n}.out").read_text(encoding="utf-8")
+    assert r.returncode == int((SNAPSHOTS / f"{n}.code").read_text())
+
+
+def test_t23_exit_codes_of_an_absent_store(tmp_path, vault):
+    repo = _repo(tmp_path, rules=False)
+    assert run("retire", "P-0001", "--reason", "x", vault=vault, cwd=repo).returncode == 4
+    r = run("lint", "--store", "repo", vault=vault, cwd=repo)
+    assert r.returncode == 0 and r.stdout.strip() == "0 error(s), 0 warning(s)"
+    assert run("lint", "--store", "repo", vault=vault, cwd=tmp_path, env=_home(tmp_path)).returncode == 3
+
+
+def test_t24_the_pointer_follows_every_real_write_to_a_hand_made_store(repo, vault):
+    (repo / "AGENTS.md").write_text("# AGENTS.md\n", encoding="utf-8")
+    agents = lambda: (repo / "AGENTS.md").read_text(encoding="utf-8")
+    assert run(*ADD_REPO, vault=vault, cwd=repo).returncode == 0
+    assert agents().count("docs/rules/") == 1
+    after_add = agents()
+    for cmd in (("update", "P-0001", "--because", "reviewed by two"), ("confirm", "P-0001", "--today", "2026-11-01"),
+                ("retire", "P-0002", "--reason", "x", "--today", TODAY)):
+        r = run(*cmd, vault=vault, cwd=repo)
+        assert r.returncode == 0, r.stderr
+        assert "AGENTS.md" not in r.stdout and agents() == after_add
+    r = run("confirm", "P-0001", "--today", "2026-11-01", vault=vault, cwd=repo)
+    assert "already confirmed today" in r.stdout and agents() == after_add
+
+
+def test_t24b_a_write_to_a_store_without_the_pointer_adds_it(repo, vault):
+    (repo / "AGENTS.md").write_text("# AGENTS.md\n", encoding="utf-8")
+    r = run("confirm", "P-0001", "--today", "2026-11-01", vault=vault, cwd=repo)
+    assert r.returncode == 0 and "wrote AGENTS.md (pointer to docs/rules/)" in r.stdout
+    assert (repo / "AGENTS.md").read_text(encoding="utf-8") == f"# AGENTS.md\n\n{POINTER}\n"
+
+
+def test_a_pointer_that_cannot_be_written_is_a_warning(repo, vault):
+    (repo / "AGENTS.md").write_text("# AGENTS.md\n", encoding="utf-8")
+    (repo / "AGENTS.md").chmod(0o444)
+    r = run("confirm", "P-0001", "--today", "2026-11-01", vault=vault, cwd=repo)
+    (repo / "AGENTS.md").chmod(0o644)
+    if os.access(repo / "AGENTS.md", os.W_OK) and os.geteuid() == 0:
+        pytest.skip("root can write read-only files")
+    assert r.returncode == 0 and "WARNING pointer: could not write AGENTS.md" in r.stdout
+
+
+def test_read_commands_use_the_union(repo, vault):
+    assert "P-0003" in run("search", "conventional", vault=vault, cwd=repo).stdout
+    draft = repo / "draft.md"
+    draft.write_text("hello\n", encoding="utf-8")
+    assert run("check", "--activity", "coding", str(draft), vault=vault, cwd=repo).returncode == 0
+
+
+def test_a_vault_note_with_a_repository_id_is_skipped(vault):
+    stray = vault / RULES / "P-0007 stray.md"
+    stray.write_text((REPO_FIX / "docs/rules/P-0001 never commit straight to main.md").read_text(
+        encoding="utf-8").replace("P-0001", "P-0007"), encoding="utf-8")
+    out = run("load", "--activity", "coding", vault=vault).stdout
+    assert "SKIPPED P-0007 stray.md: id P-0007 does not belong in the vault store" in out
+    assert "ERROR invalid: P-0007: id 'P-0007' is not R-NNNN" in run("lint", vault=vault).stdout
+
+
+def test_a_repository_id_is_a_valid_command_argument(repo, vault):
+    assert run("cite", "P-0001", vault=vault, cwd=repo).returncode == 0
+    r = run("cite", "X-1", vault=vault, cwd=repo)
+    assert r.returncode == 2 and "'X-1' is not a rule id R-NNNN or P-NNNN" in r.stderr
+
+
+def test_a_cross_store_link_in_a_write_is_refused(repo, vault):
+    r = run(*ADD_REPO, "--exception-of", "R-0001", vault=vault, cwd=repo)
+    assert r.returncode == 4 and "dangling" in r.stderr

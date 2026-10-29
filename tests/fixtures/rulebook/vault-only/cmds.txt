@@ -1,0 +1,5 @@
+load --activity writing --context audience=client
+lint
+search spelling
+check --golden
+stats --from-file {fixtures}/langfuse-observations.json --today 2026-10-29

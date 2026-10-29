@@ -42,7 +42,7 @@
 
 ### 1B. Step 2 (at the start of step 2's branch)
 
-- [ ] 1.3 Build the fixture `tests/fixtures/rulebook/repo/`, with no `.git` (tests create it in
+- [x] 1.3 Build the fixture `tests/fixtures/rulebook/repo/`, with no `.git` (tests create it in
   `tmp_path`):
   - `AGENTS.md`, without the pointer;
   - `docs/rules/P-0001 never commit straight to main.md`: constraint, hard, `activity:coding`;
@@ -58,7 +58,7 @@
 
   Every note is otherwise valid (all required fields, `status: active`). The vault fixture is
   unchanged.
-- [ ] 1.4 Before any step-2 code, save the T-22 snapshots in `tests/fixtures/rulebook/vault-only/`
+- [x] 1.4 Before any step-2 code, save the T-22 snapshots in `tests/fixtures/rulebook/vault-only/`
   by running the current script. Then add T-4 to T-24 (`stats` T-18 uses the file from 1.3).
   **Accept:**
   - T-4 and T-22 pass, since they describe today's behaviour;
@@ -208,7 +208,7 @@
 
 - [x] 0.1 · [ ] 0.2
 - [ ] **Step 1:** [x] 1.1 · 1.2 · 2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 3.1 · 5.1 · (after release, non-blocking) 4.1 · 4.2
-- [ ] **Step 2:** 1.3 · 1.4 · 6.1 · 6.2 · 6.3 · 6.4 · 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1
+- [ ] **Step 2:** [x] 1.3 · [x] 1.4 · 6.1 · 6.2 · 6.3 · 6.4 · 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1
 
 ## Verification
 
