@@ -7,7 +7,7 @@
 
 ## 0. Precondition
 
-- [ ] 0.1 Branch `feat/formal-reasoning` off `feat/reasoning-capabilities`. PLAN gated ≥ 9/10 by an independent subagent.
+- [x] 0.1 Branch `feat/formal-reasoning` off `feat/reasoning-capabilities`. PLAN gated ≥ 9/10 by an independent subagent.
 
 ## 1. Failure cases and fixtures (red)
 
@@ -70,11 +70,11 @@
 
 ## 5. Review
 
-- [ ] 5.1 Independent review of the implementation against the spec scenarios, the design decisions and the catalogue rules. The scenarios on engine routing ("A rule set with exceptions", "Closure over a large fact base", "Data conformance") and "An ambiguous clause" are judgement scenarios. They are checked by this review against the named sections of `engines.md` and `rules-from-text.md`, and by the trigger probes; that is the accepted test. Fix the findings, and keep `make validate` green.
+- [x] 5.1 Independent review of the implementation against the spec scenarios, the design decisions and the catalogue rules. The scenarios on engine routing ("A rule set with exceptions", "Closure over a large fact base", "Data conformance") and "An ambiguous clause" are judgement scenarios. They are checked by this review against the named sections of `engines.md` and `rules-from-text.md`, and by the trigger probes; that is the accepted test. Fix the findings, and keep `make validate` green.
 
 ## Roadmap
 
-- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 4.1 · [ ] 5.1
+- [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 4.1 · [x] 5.1
 
 ## Verification
 
