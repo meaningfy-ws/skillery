@@ -3,8 +3,8 @@
 
 # EPIC: Formal reasoning — exact, auditable reasoning engines for modelling and architecture work
 
-**Golden-thread parent:** the umbrella EPIC [`reasoning-capabilities`](../archive/2026-10-29-reasoning-capabilities/proposal.md).
-Research: handover §4.1–4.2, 4.1a, 4.7 and 5.1–5.2, and the [`research-synthesis`](../archive/2026-10-29-reasoning-capabilities/inputs/2026-10-28-research-synthesis.md).
+**Golden-thread parent:** the umbrella EPIC [`reasoning-capabilities`](../2026-10-29-reasoning-capabilities/proposal.md).
+Research: handover §4.1–4.2, 4.1a, 4.7 and 5.1–5.2, and the [`research-synthesis`](../2026-10-29-reasoning-capabilities/inputs/2026-10-28-research-synthesis.md).
 
 ## Appetite
 

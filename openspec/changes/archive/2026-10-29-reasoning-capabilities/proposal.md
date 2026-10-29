@@ -29,8 +29,8 @@ Three child EPICs, each with its own change:
 
 | Child | Bundle | Appetite | What |
 |---|---|---|---|
-| [`rule-learner`](../../rule-learner/proposal.md) | vault-assistant | LARGE | A small symbolic rule and preference learner: rule model and repository in `08 How to/`, learning with per-session approval, weekly grooming and forgetting, and usage monitored from Langfuse |
-| [`formal-reasoning`](../../formal-reasoning/proposal.md) | meaningfy-architecture | MEDIUM | One reasoning skill: clingo and SWI-Prolog by problem shape, the test-first paraphrase-back loop, CQ testing, rules from text |
+| [`rule-learner`](../2026-10-29-rule-learner/proposal.md) | vault-assistant | LARGE | A small symbolic rule and preference learner: rule model and repository in `08 How to/`, learning with per-session approval, weekly grooming and forgetting, and usage monitored from Langfuse |
+| [`formal-reasoning`](../2026-10-29-formal-reasoning/proposal.md) | meaningfy-architecture | MEDIUM | One reasoning skill: clingo and SWI-Prolog by problem shape, the test-first paraphrase-back loop, CQ testing, rules from text |
 | [`dialectical-elicitation`](inputs/dialectical-elicitation/proposal.md) | meaningfy-architecture | MEDIUM | **Postponed (2026-10-29).** An Elenchus-style opponent skill. To be re-shaped once we decide how to set up `elenchus-server` |
 
 The Langfuse deployment is specified for the infrastructure stacks repo:

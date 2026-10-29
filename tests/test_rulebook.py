@@ -1,4 +1,4 @@
-"""The rulebook script decides the rule-learning scenarios (openspec/changes/rule-learner).
+"""The rulebook script decides the rule-learning scenarios (openspec/changes/archive/2026-10-29-rule-learner).
 
 Fixtures under tests/fixtures/rulebook/: `vault/` is a small vault whose `08 How to/Rules/` holds one
 note per case of PLAN task 1.2 (the writing rules R-0001..R-0014, the structural cases R-0020..R-0049

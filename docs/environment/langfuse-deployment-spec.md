@@ -1,7 +1,7 @@
 # Langfuse for agent-session observability: short specification
 
 **For:** the infrastructure stacks repository.
-**Requested by:** the `rule-learner` EPIC in skillery (`openspec/changes/rule-learner/`).
+**Requested by:** the `rule-learner` EPIC in skillery (`openspec/changes/archive/2026-10-29-rule-learner/`).
 **Date:** 2026-10-29.
 **Status:** draft for the infrastructure owner to confirm or change.
 

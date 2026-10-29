@@ -3,9 +3,9 @@
 
 # EPIC: Rule learner — learn, use, groom and forget the owner's rules
 
-**Golden-thread parent:** the umbrella EPIC [`reasoning-capabilities`](../archive/2026-10-29-reasoning-capabilities/proposal.md).
-Research: [`research-synthesis`](../archive/2026-10-29-reasoning-capabilities/inputs/2026-10-28-research-synthesis.md) and the
-handover §4.6–4.7 and §5.4–5.6 ([`Reasoning and learning skills.md`](../archive/2026-10-29-reasoning-capabilities/inputs/Reasoning%20and%20learning%20skills.md)).
+**Golden-thread parent:** the umbrella EPIC [`reasoning-capabilities`](../2026-10-29-reasoning-capabilities/proposal.md).
+Research: [`research-synthesis`](../2026-10-29-reasoning-capabilities/inputs/2026-10-28-research-synthesis.md) and the
+handover §4.6–4.7 and §5.4–5.6 ([`Reasoning and learning skills.md`](../2026-10-29-reasoning-capabilities/inputs/Reasoning%20and%20learning%20skills.md)).
 
 ## Appetite
 
@@ -81,7 +81,7 @@ The new kinds and folders arrive through this EPIC, which is the skillery side o
 captures every tool call and every turn, so the catalogue ships no hook of its own. The steward reads
 Langfuse through its API with read-only keys. If Langfuse is not configured or not reachable, the
 steward stops and says so. The deployment is specified separately for the infrastructure stacks repo:
-[`docs/environment/langfuse-deployment-spec.md`](../../../docs/environment/langfuse-deployment-spec.md).
+[`docs/environment/langfuse-deployment-spec.md`](../../../../docs/environment/langfuse-deployment-spec.md).
 
 **How rules reach a session:**
 - the vault's `AGENTS.md` names the repository and tells the agent to call `load` for the activity at hand;

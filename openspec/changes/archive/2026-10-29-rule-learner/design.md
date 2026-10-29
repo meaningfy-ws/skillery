@@ -4,7 +4,7 @@
      the status vocabulary reused. -->
 
 > Derives from: EPIC `rule-learner` ([`proposal.md`](proposal.md)), golden-thread parent
-> [`reasoning-capabilities`](../archive/2026-10-29-reasoning-capabilities/proposal.md). Acceptance criteria are the scenarios in
+> [`reasoning-capabilities`](../2026-10-29-reasoning-capabilities/proposal.md). Acceptance criteria are the scenarios in
 > [`specs/rule-learning/spec.md`](specs/rule-learning/spec.md), [`specs/vault-conventions/spec.md`](specs/vault-conventions/spec.md)
 > and [`specs/vault-planning/spec.md`](specs/vault-planning/spec.md).
 
