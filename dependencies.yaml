@@ -201,3 +201,23 @@
   transport: remote
   notes: interactively-authenticated; may be absent in headless/cron runs on either CLI (documented caveat,
     not a per-CLI gap).
+- name: clingo
+  kind: framework
+  summary: 'the answer-set (ASP) solver run by formal-reasoning for finite rule sets; MIT, [potassco/clingo](https://github.com/potassco/clingo); its scripts need Python >= 3.11'
+  source: PyPI clingo
+  pin: '>=5.8 (tested 5.8.2)'
+  provenance: not reviewed
+  used_by: formal-reasoning (`scripts/run_rules.py`, `scripts/check_env.py`)
+  opencode_status: native
+  claude_install: '`pip install "clingo>=5.8"` into the Python 3.11+ that runs the skill scripts (any OS)'
+  opencode_install: same pip package; the engine is CLI-independent.
+- name: SWI-Prolog
+  kind: cli-tool
+  summary: 'the Prolog engine (`swipl`, with tabling) run by formal-reasoning for closure and competency questions; BSD-2-Clause, [swi-prolog.org](https://www.swi-prolog.org); its scripts need Python >= 3.11'
+  source: system package (swi-prolog.org)
+  pin: 'unpinned: the OS package (tested 10.0.2)'
+  provenance: not reviewed
+  used_by: formal-reasoning (`scripts/run_rules.py`, `scripts/check_env.py`)
+  opencode_status: native
+  claude_install: 'a system install that puts `swipl` on PATH: `sudo apt-get install swi-prolog-nox` (Debian/Ubuntu), `brew install swi-prolog` (macOS), `conda install -c conda-forge swi-prolog` (linux-64), or the installer from swi-prolog.org (Windows)'
+  opencode_install: same system package; the engine is CLI-independent.

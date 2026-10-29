@@ -45,7 +45,8 @@
         "architecture",
         "conceptual-modelling",
         "modelling-conventions",
-        "linkml-engineering"
+        "linkml-engineering",
+        "formal-reasoning"
       ],
       "agents": [
         "system-architect",

@@ -42,6 +42,7 @@ bundles:
       - conceptual-modelling
       - modelling-conventions
       - linkml-engineering
+      - formal-reasoning
     agents: [system-architect, conceptual-modeller]
   - name: meaningfy-building
     description: "The delivery / developer role: the spine build loop (epic-planning, spec-stewardship, clarity-gate, BDD, code review), clean layered Python (cosmic-python), repo scaffolding (project-setup), CD/deploy (ci-cd-delivery), and the release lifecycle (meaningfy-release)"

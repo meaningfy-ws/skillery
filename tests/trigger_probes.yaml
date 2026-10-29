@@ -143,6 +143,12 @@ probes:
   - probe: "draw the C4 container view and record the decision in an ADR"
     expect: architecture
     near_miss_of: modelling-conventions
+  # formal-reasoning: exact reasoning over rules and facts, not building the model.
+  - probe: "check whether our pricing rules with their exceptions and priorities conflict, and find any rule that never applies"
+    expect: formal-reasoning
+  - probe: "turn our competency questions into tests with agreed answers and run them whenever the model changes"
+    expect: formal-reasoning
+    near_miss_of: conceptual-modelling
   # meaningfy-voice: the foundation skill holding the company voice (restructure-and-evaluate D-15).
   - probe: "is this paragraph on-voice for Meaningfy, British English and no em dash"
     expect: meaningfy-voice

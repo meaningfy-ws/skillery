@@ -32,7 +32,7 @@
 
 ## 3. The skill
 
-- [ ] 3.1 Write `skills/formal-reasoning/SKILL.md`:
+- [x] 3.1 Write `skills/formal-reasoning/SKILL.md`:
   - the frontmatter, with the facets purpose `modelling`, area `cross-cutting`, subject `modelling`, posture `precise`, stage `design`, maturity `experimental`, and a "Use this skill when …" description under 700 characters;
   - a Quick Start with the clingo worked example;
   - the loop: rules, tests, run, paraphrase, fix;
@@ -41,19 +41,19 @@
   - `## Boundary & Related Skills`, which names conceptual-modelling, linkml-engineering, modelling-conventions, bdd-gherkin, clarity-gate and epic-planning.
   
   **Accept:** under 300 body lines; the body_agnosticism gate is green.
-- [ ] 3.2 Write the references:
+- [x] 3.2 Write the references:
   - `engines.md`: the engine table, the grounding guard, "when not to use an engine", and pointers to the install entries;
   - `patterns.md`: consistency and conflict (`conflict(R1,R2,Slot)` with `sit/2`, which names the rules and the situation), dead rule (missing from the brave consequences of `wins/1`), exceptions with priority, minimal fix (`#minimize`), closure, and CQ tests with the `agreed_by` and `agreed_on` fields, each as a minimal template;
   - `pure-subset.md`;
   - `rules-from-text.md`: clause ids, deontic classification, paraphrase-or-flag, cite the source clause, a source hash. It cites bdd-gherkin and clarity-gate for test and assumption work and does not restate them.
   
   **Accept:** every spec requirement is answered by a named section.
-- [ ] 3.3 Write the templates `skills/formal-reasoning/templates/reasoning-project/`:
+- [x] 3.3 Write the templates `skills/formal-reasoning/templates/reasoning-project/`:
   - `README.md`: the layout `rules.*`, `facts.*`, `tests.toml`, `runs/`, citing the spine for the charter and decisions;
   - two runnable projects, `clingo/` (`rules.lp`, `facts.lp`, `tests.toml`) and `prolog/` (`rules.pl`, `facts.pl`, `tests.toml`).
   
   **Accept:** `run_rules.py` on each project exits 0.
-- [ ] 3.4 Catalogue wiring (D-12):
+- [x] 3.4 Catalogue wiring (D-12):
   - `bundles.yaml` (meaningfy-architecture);
   - `served_by.skills` in `use-cases/UC-W20-conceptual-modeller.md`;
   - `dependencies.yaml` entries `clingo` (kind `framework`) and `SWI-Prolog` (kind `cli-tool`), each with every required field, the licence in `summary`, and `opencode_status: native`;
@@ -74,7 +74,7 @@
 
 ## Roadmap
 
-- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 4.1 · [ ] 5.1
+- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [ ] 4.1 · [ ] 5.1
 
 ## Verification
 

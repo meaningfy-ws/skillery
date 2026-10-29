@@ -1,0 +1,10 @@
+# One [[test]] per question. Agree each expected answer before the first run.
+# query: a predicate signature name/arity. mode: cautious (in every answer set, the default) or brave
+# (in some answer set). expect: a list of atoms, or "UNSAT" when the rules must have no answer set.
+[[test]]
+id = "T1"
+question = "Do the pricing rules conflict for a public tender?"
+query = "conflict/0"
+expect = ["conflict"]
+agreed_by = "<who agreed the answer>"
+agreed_on = "<YYYY-MM-DD>"

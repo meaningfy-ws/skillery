@@ -170,7 +170,9 @@ def run_clingo(rules, facts, tests):
     shows = "".join(sorted({f"#show {norm(t.query)}." for t in tests}))
     for mode in sorted({t.mode for t in tests}):
         messages = []
-        ctl = clingo.Control(["0", f"--enum-mode={mode}"], logger=lambda _code, msg: messages.append(msg))
+        # optN: with #minimize, consequences range over the optimal answer sets only
+        ctl = clingo.Control(["0", f"--enum-mode={mode}", "--opt-mode=optN"],
+                             logger=lambda _code, msg: messages.append(msg))
         last = []
         try:
             for path in [rules] + ([facts] if facts else []):

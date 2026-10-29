@@ -178,3 +178,9 @@ The facts in `facts.pl` are `direct_part_of(lot1, t1). direct_part_of(item3, lot
   consequences of `wins/1` came back as four rules, not eight (clingo 5.8.2). The smallest fix:
   `run_rules.py` appends `#show name/arity.` for every queried signature before grounding. Reading
   `atoms=True` is kept.
+- **2026-10-29, Algorithm step 3 (`#minimize` and consequences).** With an optimisation statement,
+  `Control(["0", "--enum-mode=<mode>"])` computes consequences over every model met on the way to the
+  optimum, and clingo warns that they "may depend on enumeration order". The minimal-fix pattern then
+  reported a cost-2 fix as part of the smallest one. The control now also gets `--opt-mode=optN`, so
+  consequences range over the optimal answer sets only; without optimisation the flag changes nothing.
+  Guarded by the fixture `clingo-minimal-fix/`.

@@ -87,6 +87,13 @@ def test_dead_rule_is_missing_from_brave_consequences():
 
 
 @needs_clingo
+def test_minimal_fix_consequences_are_over_optimal_models_only():
+    r = rules(FIX / "clingo-minimal-fix")
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "PASS FIX-1: [drop(r5)]" in r.stdout
+
+
+@needs_clingo
 def test_unsat_expectation():
     r = rules(FIX / "clingo-unsat")
     assert r.returncode == 0, r.stdout + r.stderr
