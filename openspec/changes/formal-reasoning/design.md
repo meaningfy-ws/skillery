@@ -169,3 +169,12 @@ The facts in `facts.pl` are `direct_part_of(lot1, t1). direct_part_of(item3, lot
 ## Open Questions
 
 - **O-1** Is a Prolog `--explain` (meta-interpreter proof tree, untabled predicates only) worth adding after the first real use? It is parked, not guessed.
+
+## Implementation notes
+
+- **2026-10-29, D-4 (`#show` and consequences).** Reading `m.symbols(atoms=True)` does not stop a
+  user's `#show` from hiding answers. In `brave` and `cautious` mode clasp computes consequences only
+  over the shown atoms, so on the spike playbook (`#show conflict/3. #show sit/2.`) the brave
+  consequences of `wins/1` came back as four rules, not eight (clingo 5.8.2). The smallest fix:
+  `run_rules.py` appends `#show name/arity.` for every queried signature before grounding. Reading
+  `atoms=True` is kept.

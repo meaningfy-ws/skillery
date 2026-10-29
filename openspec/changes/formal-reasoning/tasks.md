@@ -26,9 +26,9 @@
 
 ## 2. Scripts (green)
 
-- [ ] 2.1 `skills/formal-reasoning/scripts/check_env.py`: `--need clingo|prolog|any` (D-8, D-9). **Accept:** the spec scenario "SWI-Prolog is missing" (simulated by an empty `PATH`).
-- [ ] 2.2 `skills/formal-reasoning/scripts/run_rules.py`: the steps of design §Algorithm and D-1…D-8, stdlib plus the engines only. **Accept:** all of group 1 green, with clingo and swipl present locally.
-- [ ] 2.3 Add `clingo>=5.8` to `requirements-dev.txt`. In `.github/workflows/validate.yml`, add a `sudo apt-get update && sudo apt-get install -y swi-prolog-nox` step and the job env `REQUIRE_ENGINES: "1"` (D-10). **Accept:** the workflow YAML parses, and `make validate` is green locally.
+- [x] 2.1 `skills/formal-reasoning/scripts/check_env.py`: `--need clingo|prolog|any` (D-8, D-9). **Accept:** the spec scenario "SWI-Prolog is missing" (simulated by an empty `PATH`).
+- [x] 2.2 `skills/formal-reasoning/scripts/run_rules.py`: the steps of design §Algorithm and D-1…D-8, stdlib plus the engines only. **Accept:** all of group 1 green, with clingo and swipl present locally.
+- [x] 2.3 Add `clingo>=5.8` to `requirements-dev.txt`. In `.github/workflows/validate.yml`, add a `sudo apt-get update && sudo apt-get install -y swi-prolog-nox` step and the job env `REQUIRE_ENGINES: "1"` (D-10). **Accept:** the workflow YAML parses, and `make validate` is green locally.
 
 ## 3. The skill
 
@@ -74,7 +74,7 @@
 
 ## Roadmap
 
-- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 4.1 · [ ] 5.1
+- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 4.1 · [ ] 5.1
 
 ## Verification
 
