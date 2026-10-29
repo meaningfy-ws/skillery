@@ -11,39 +11,31 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
-### Changed
-
-- **BREAKING (Claude Code only): the rule skills moved to `meaningfy-core`.** `rulebook`, `rule-learner`
-  and `rule-steward` now work in any interactive session, not only in the vault, and your global
-  instructions route sessions to them ([`docs/environment/global-prompt.md`](docs/environment/global-prompt.md)).
-  If your `~/.claude/settings.json` allows the script, change `vault-assistant` to `meaningfy-core` in
-  its path: `Bash(python3 <home>/.claude/plugins/cache/meaningfy-skillery/meaningfy-core/*/skills/rulebook/scripts/rules.py *)`
-  (until you do, Claude Code asks before running it). Also set `MEANINGFY_VAULT` in the `env` key of
-  that file if you use the Desktop Code tab.
+## [3.8.0] - 2026-10-29
 
 ### Added
 
-- **Rules in a repository.** In a git repository the rule skills can keep a rule in the repository's
-  `docs/rules/` folder (ids `P-NNNN`, shared through git) instead of your vault. The approval card has a
-  Store column that defaults to the repository there; answer `N to vault` for a personal preference.
-  `rules.py where` shows the stores a session sees, and `load` reports a `CONFLICT R-… vs P-…` when a
-  team rule and a personal rule disagree. See [`docs/environment/rules.md`](docs/environment/rules.md).
-- **`formal-reasoning` (`meaningfy-architecture`, experimental).** When an answer about rules or facts
-  must be exact, your agent now runs it on an engine instead of reasoning in prose: clingo for rule
-  sets (conflicts, dead rules, minimal fixes), SWI-Prolog for closure and competency questions. One
-  script runs a project's tests and prints each rule's paraphrase beside it. Install the engine you
-  need first ([`docs/environment/setup.md`](docs/environment/setup.md#reasoning-engines-for-formal-reasoning-optional));
-  the skill never installs it.
-- **The owner's rules, learned and kept in the vault** (`vault-assistant`: `rulebook`, `rule-learner`,
-  `rule-steward`, experimental). State a rule or correct the agent and it is offered back in one
-  approval card at the end of the session; approved rules live in `08 How to/Rules/`, are loaded
-  for the activity at hand, checked on outputs, and reviewed weekly from Langfuse usage. Set
-  `MEANINGFY_VAULT` to use them from a code repository, and the `LANGFUSE_*` settings for the weekly
-  review (see [`docs/environment/setup.md`](docs/environment/setup.md)).
-
-- **A guide to your rules for agents** ([`docs/environment/rules.md`](docs/environment/rules.md)):
-  how `rulebook`, `rule-learner` and `rule-steward` learn, apply and review your rules, what they
-  need, and the known limits.
+- **Your rules for agents, in every session** (`meaningfy-core`: `rulebook`, `rule-learner`,
+  `rule-steward`, experimental). State a rule or correct the agent in any session, and it is offered
+  back in one approval card when you wrap up; approved rules are loaded for the activity at hand,
+  checked on outputs, and the vault's rules are reviewed weekly from Langfuse usage. Rules live in
+  your vault (`08 How to/Rules/`) by default. In a git repository they can live in the repository's
+  `docs/rules/` instead (ids `P-NNNN`, shared through git); the card's Store column defaults to the
+  repository there, so answer `N to vault` for a personal preference. `load` reports a
+  `CONFLICT R-… vs P-…` when a team rule and a personal rule disagree, and `rules.py where` shows the
+  stores a session sees. To use them: add the rules line of
+  [`docs/environment/global-prompt.md`](docs/environment/global-prompt.md) to your global
+  instructions, set `MEANINGFY_VAULT` (also in the `env` key of `~/.claude/settings.json` if you use
+  the Desktop Code tab), and the `LANGFUSE_*` settings for the weekly review
+  ([`docs/environment/setup.md`](docs/environment/setup.md)). Claude Desktop chat and claude.ai cannot
+  reach your vault. Guide: [`docs/environment/rules.md`](docs/environment/rules.md).
+- **`formal-reasoning` (`meaningfy-architecture`, experimental).** When a question has an exact answer,
+  your agent runs a quick test on an engine instead of reasoning in prose: clingo for rule sets
+  (conflicts, dead rules, minimal fixes), SWI-Prolog for closure and competency questions over a
+  knowledge base. One script runs the tests, agreed before the run, and prints each rule's
+  paraphrase beside it. Install the engine you need first
+  ([`docs/environment/setup.md`](docs/environment/setup.md#reasoning-engines-for-formal-reasoning-optional));
+  the skill never installs it, and says so in one line when none is present.
 - **A guide to the voice and communication skills** ([`docs/environment/communication.md`](docs/environment/communication.md)):
   which skill owns what, the registers and channel profiles, what is covered and what is not yet
   (the quotation skeleton, most channel profiles), the guardrails, and how to add a register, a
