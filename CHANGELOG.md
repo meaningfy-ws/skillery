@@ -15,6 +15,10 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 - Claude Desktop now syncs `vault-project`, `vault-promote` and `vault-resume` without warnings: their
   descriptions no longer contain `<` or `>`, and `make validate` rejects a skill description that does.
+- `rule-steward`'s usage count works on Langfuse v4 servers in `events_only` mode: `stats` now reads
+  `GET /api/public/v2/observations`, page by cursor, instead of the endpoint those servers no longer serve.
+- New guide [`docs/environment/langfuse-setup.md`](docs/environment/langfuse-setup.md): install the Langfuse
+  plugin for the CLI and Claude Desktop, tag traces with your user id, and check that traces arrive.
 
 ## [3.8.0] - 2026-10-29
 

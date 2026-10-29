@@ -15,8 +15,10 @@ Set on the owner's machine, never in git (a shell profile or the CLI's environme
 | `LANGFUSE_PUBLIC_KEY` | the project's public key |
 | `LANGFUSE_SECRET_KEY` | the project's secret key |
 
-`stats` calls `GET /api/public/observations` with these keys (HTTP basic authentication), page by
-page, from the start of the window. A missing variable, an HTTP error or no answer exits 3 and
+`stats` calls `GET /api/public/v2/observations` with these keys (HTTP basic authentication), asking
+for the `io` field group and following `meta.cursor` page by page across the window. It is the read
+endpoint that also works on Langfuse v4 servers in `events_only` mode, where `/api/public/observations`
+answers 404. A missing variable, an HTTP error or no answer exits 3 and
 names the problem.
 
 ## How events are found
@@ -50,9 +52,10 @@ There is no Langfuse plugin for opencode that we know of. Sessions on opencode c
 and `check`, but nothing records them, so rules used only there look unused. This is a recorded
 parity gap of rule monitoring; say so in the report when the owner also works in opencode.
 
-## Assumption
+## Confirmed shape
 
-The response shape (`data` holding observations with `type`, `startTime`, `input` and `output`;
-`meta` holding `page` and `totalPages`) follows Langfuse's public API documentation. It has not yet
-been confirmed against a live trace of a real session; until it is, treat a format warning as the
-likely cause of empty usage.
+Checked on 2026-10-29 against the company server (Langfuse 4.72, `events_only` mode): the response
+holds `data` with `type`, `startTime`, `input` and `output`, and `meta` with `cursor` while more pages
+remain. Tool calls arrive as `TOOL` observations named `Tool: Bash`, beside `SPAN` and `GENERATION`
+ones. A `rules.py` event in a live trace has not been seen yet; until it has, treat a format warning
+as the likely cause of empty usage.
