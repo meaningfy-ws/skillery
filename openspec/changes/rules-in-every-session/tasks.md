@@ -1,4 +1,4 @@
-<!-- PLAN (tasks half). PLAN = design.md + this file. Revision 1, 2026-10-29. -->
+<!-- PLAN (tasks half). PLAN = design.md + this file. Revision 2, 2026-10-29 (independent clarity gate 8.9; gaps closed). -->
 
 > Derives from: EPIC `rules-in-every-session` ([`proposal.md`](proposal.md)); design in [`design.md`](design.md).
 > Gate for every task: `make validate` is green at its end. Run `make bundles` and
@@ -15,8 +15,8 @@
 
 ## 0. Precondition
 
-- [ ] 0.1 Merge `develop` into `feat/rules-in-every-session`. This brings in PR #123's
-  `docs/environment/rules.md`, which tasks 3.1 and 8.1 edit.
+- [x] 0.1 Merge `develop` into `feat/rules-in-every-session` (done: `de16bb7`). This brought in
+  PR #123's `docs/environment/rules.md`, which tasks 3.1 and 7.4 edit.
 - [ ] 0.2 Have an independent subagent gate this PLAN at ≥ 9/10. The owner answers the hand-off's
   question round, and the answers are folded into `design.md` Decisions.
 
@@ -46,15 +46,20 @@
   - `docs/rules/P-0001 never commit straight to main.md`: constraint, hard, `activity:coding`;
   - `docs/rules/P-0002 use American spelling.md`: `activity:writing`, `spelling=american`, default,
     against vault `R-0001`;
-  - `docs/rules/P-0003 ….md`: `exception_of: R-0001`, the cross-store dangling case;
-  - a note in `docs/rules/` whose frontmatter holds an `R-` id;
+  - `docs/rules/P-0003 follow conventional commits.md`: `id: P-0003`, type `convention`, default,
+    scope `activity:coding`, slot `commit-style`, value `conventional`, `exception_of: R-0001` (the
+    cross-store link: a different slot, so it touches no `spelling` result);
+  - `docs/rules/P-0004 carries a vault id.md`: matched by the D-9 glob, so it is read; its frontmatter
+    holds `id: R-0099`, scope `activity:coding`, so D-15 skips it and lint reports `invalid`;
   - `docs/rules/README.md`, with no frontmatter;
   - `langfuse-observations-repo.json`: one `load` event that prints a `P-` line, and one `cite P-0001`.
 
-  The vault fixture is unchanged.
-- [ ] 1.4 Add T-4 to T-20 (`stats` T-18 uses the file from 1.3).
+  Every note is otherwise valid (all required fields, `status: active`). The vault fixture is
+  unchanged.
+- [ ] 1.4 Before any step-2 code, save the T-22 snapshots in `tests/fixtures/rulebook/vault-only/`
+  by running the current script. Then add T-4 to T-24 (`stats` T-18 uses the file from 1.3).
   **Accept:**
-  - T-4 passes, since it is the existing suite;
+  - T-4 and T-22 pass, since they describe today's behaviour;
   - every other test fails for the missing behaviour, not for a setup error.
 
 ## 2. Step 1: reach (green)
@@ -77,8 +82,15 @@
     - L-4 cites the activity list;
     - the no-store behaviour (D-5).
 
-  **Accept:** spec scenarios "A rule stated in a code repository", "A rule applied outside the vault"
-  and "No vault available" are each answered by a named sentence in a skill.
+  - **`rule-learner` L-8:** reworded to the D-3a trigger list.
+
+  **Accept** (a test in `tests/test_rulebook.py` greps for each):
+  - `skills/rulebook/SKILL.md` contains "say once" and "MEANINGFY_VAULT" in the use protocol, and
+    "never as `cd`" in "Running the script" (D-8a);
+  - `skills/rulebook/references/rule-model.md` contains each of `coding`, `code-review`, `planning`
+    in its Scope section;
+  - `skills/rule-learner/SKILL.md` contains "wraps up" and "final summary";
+  - both descriptions contain "any session" and stay under 700 characters.
 - [ ] 2.3 Permissions (D-6):
   - add the "Permissions (per machine)" section to `skills/rulebook/references/commands.md`;
   - in both `vault-setup` permission references, replace the per-machine sections with the pointer;
@@ -112,6 +124,14 @@
   - **`CHANGELOG.md`:** one line for the installer, marked **BREAKING** for the Claude Code allow rule,
     giving the new pattern.
 
+  **Accept:**
+  - `docs/environment/rules.md` has the headings "Where your rules work" and "Quick Start", and no
+    `vault-assistant` in its bundle column;
+  - `docs/environment/setup.md` contains `"env"` next to `MEANINGFY_VAULT`;
+  - the README `meaningfy-core` row names the three skills, and the `vault-assistant` row does not;
+  - the CHANGELOG's Unreleased section has a line with "BREAKING" and `/meaningfy-core/`;
+  - `make validate` is green (links and the inventory).
+
 ## 4. Live checks (run after the step-1 release; never block a merge)
 
 - [ ] 4.1 **Claude Code permission pattern.** On a machine with the released `meaningfy-core`:
@@ -134,12 +154,12 @@
 
 - [ ] 6.1 `find_stores()` with the D-8 exclusions, and `where` (D-17). **Accept:** T-14, T-20.
 - [ ] 6.2 The repository reader and the id rules (D-9, D-10, D-11), plus `load`, `check FILE` and
-  `search` over the union (D-15, D-16). **Accept:** T-4, T-5, T-11, T-12, T-13, T-19.
+  `search` over the union (D-15, D-16). **Accept:** T-4, T-5, T-11, T-12, T-13, T-19, T-21, T-22.
 - [ ] 6.3 `lint --store` with per-store errors and union warnings (D-14), and the write refusal over
-  the combined lint. **Accept:** T-15, T-16.
+  the combined lint. **Accept:** T-15, T-16, and the `lint` rows of T-23.
 - [ ] 6.4 The writers: `add --store` (default `vault`), `update`/`confirm`/`retire` by prefix, and the
   `approve` and `--candidate` refusals (D-13). Create `docs/rules/` only on a real write, and add the
-  pointer (D-12). **Accept:** T-6 to T-10, T-17.
+  pointer (D-12). **Accept:** T-6 to T-10, T-17, the `retire` row of T-23, T-24.
 - [ ] 6.5 `stats` stays `R-`-only. Update the module docstring's subcommand list, and keep the file
   stdlib-only. **Accept:** T-18; `grep -E "^(import|from) "` shows stdlib modules only.
 
@@ -149,18 +169,33 @@
   - `references/rule-model.md` gains a "Repository store" section: the folder, the `P-` prefix,
     `private: false`, no candidates, the pointer line verbatim, and references within one store;
   - `references/commands.md` gains `where`, `--store`, and the D-16 table;
-  - `SKILL.md`: "Where rules live" names both stores.
+  - `SKILL.md`: "Where rules live" names both stores; "Running the script" keeps D-8a.
+
+  **Accept:** `rule-model.md` has a "## Repository store" heading containing the D-12 pointer line
+  verbatim (a test compares it with the line `rules.py` writes) and the strings `P-NNNN` and
+  `private: false`; `commands.md` has a `where` row and the D-16 table; T-1 to T-24 green.
 - [ ] 7.2 **`rule-learner`:** the Store column, the heading reminder, `to vault` / `to repo`, deferral
   limited to the vault, and the DEC-8 closing line (D-18), in `SKILL.md` and
   `references/approval-card.md`, with the example card updated.
-  **Accept:** spec scenarios "A project convention stated while coding" and "A personal preference
-  stated while coding" are each answered by a named sentence.
+  **Accept** (grep test): `references/approval-card.md` has a `Store` column in its format table and
+  example, and contains "to vault", "Rows default to this repository" and "next commit and pull
+  request"; `rule-learner/SKILL.md` contains `rules.py where`. A probe is added:
+  "in this repo we never merge without a green CI, make that a rule" → `rule-learner`, near miss of
+  `ci-cd-delivery`.
 - [ ] 7.3 **`rule-steward`:** `lint --store vault` in its procedure and the boundary line (D-14).
   **`project-setup`:** the one citing line in `references/agentic-setup.md` (D-19).
+
+  **Accept** (grep test): `rule-steward/SKILL.md` contains `lint --store vault` and "Repository rules
+  belong to that repository's team"; `agentic-setup.md` links `rulebook/references/rule-model.md` and
+  does not contain the pointer line itself.
 - [ ] 7.4 Docs:
   - `docs/environment/rules.md`: a "Rules in a repository" section with worked examples 2 to 4;
   - a CHANGELOG line;
   - `make bundles` and `make skill-inventory`.
+
+  **Accept:** `docs/environment/rules.md` has a "Rules in a repository" heading with the strings
+  `P-0001`, `to vault` and `CONFLICT R-0001 vs P-0002`; the CHANGELOG's Unreleased section names
+  `docs/rules/`; `make validate` green.
 
 ## 8. Step 2: review
 
@@ -169,7 +204,7 @@
 
 ## Roadmap
 
-- [ ] 0.1 · [ ] 0.2
+- [x] 0.1 · [ ] 0.2
 - [ ] **Step 1:** 1.1 · 1.2 · 2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 3.1 · 5.1 · (after release, non-blocking) 4.1 · 4.2
 - [ ] **Step 2:** 1.3 · 1.4 · 6.1 · 6.2 · 6.3 · 6.4 · 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1
 

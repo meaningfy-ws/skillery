@@ -2,14 +2,16 @@
 
 ### Requirement: Rules reach every interactive session
 The rule skills SHALL ship in the bundle every Meaningfy user installs, and the user's personal global
-instructions SHALL route the start of an activity to `rulebook` and the end of a session in which the
-user stated or corrected something to `rule-learner`, in any interactive session on either CLI. The
-rules SHALL stay in the user's vault, found through `MEANINGFY_VAULT` outside it. A session that
+instructions SHALL route the start of an activity to `rulebook`, and, in a session in which the user
+stated or corrected something, route to `rule-learner` when the user wraps up or asks for the card,
+or before the agent's final summary of the task, in any interactive session on either CLI. Outside a
+git repository, rules SHALL be stored in the user's vault, found through `MEANINGFY_VAULT` when the
+session does not run in the vault. A session that
 cannot find the vault SHALL say once that the rules are not loaded and SHALL carry on with the work.
 
 #### Scenario: A rule stated in a code repository
 - **WHEN** the user, working in a code repository with `MEANINGFY_VAULT` set, says "from now on, keep PR descriptions under ten lines"
-- **THEN** rule-learner shows the candidate in the rule approval card at the end of the session, and on approval `rules.py` writes it to the vault
+- **THEN** rule-learner shows the candidate in the rule approval card before its final summary of the task, and on approval, with the row's store set to the vault, `rules.py` writes it to the vault
 
 #### Scenario: A rule applied outside the vault
 - **WHEN** a session in a code repository starts an activity for which an active rule fires

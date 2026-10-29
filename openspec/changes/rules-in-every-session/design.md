@@ -1,6 +1,6 @@
-<!-- PLAN (design half). PLAN = this file + tasks.md. Revision 1, 2026-10-29, derived from the EPIC as
-     shaped the same day with DEC-1..DEC-8 all owner-confirmed. Clarity gate: self-scored 9.1 by the
-     planner (see the hand-off report); an independent score is task 0.2. -->
+<!-- PLAN (design half). PLAN = this file + tasks.md. Revision 2, 2026-10-29: the independent clarity
+     gate scored revision 1 at 8.9 (FAIL); its nine gaps are closed here (cross-store read rule, store
+     possible vs present, exact messages, acceptance per task, the card trigger, the working directory). -->
 
 > Derives from: EPIC `rules-in-every-session` ([`proposal.md`](proposal.md)), golden-thread parent
 > [`rule-learner`](../archive/2026-10-29-rule-learner/proposal.md) and its PLAN
@@ -23,8 +23,12 @@
 - `tests/test_rulebook.py` runs the script with `cwd=ROOT`, the skillery checkout. That checkout is a
   git repository without `docs/rules/`, so the existing suite already exercises "in a git repository,
   no repository store". It is the backwards-compatibility suite for step 2.
-- The branch `feat/rules-in-every-session` was cut at `1469b94`, before PR #123 split
-  `docs/environment/rules.md` out of `reasoning-and-rules.md`. Task 0.1 merges `develop` first.
+- `develop` is merged into the branch (`de16bb7`), so `docs/environment/rules.md` (PR #123) is
+  present for tasks 3.1 and 7.4.
+- Neither CLI signals the end of a session, and hooks are a no-go, so "end of session" in the EPIC
+  is a trigger the agent recognises (D-3a), not an event.
+- `rules.py` runs in the process's working directory. On both CLIs that is the session's working
+  directory unless the agent has run `cd` (D-8a).
 - Owner decisions, cited and not re-argued:
   - reach is every interactive session (DEC-1);
   - in a git repository the store follows the work (DEC-2);
@@ -70,8 +74,9 @@
   the "Commits/PRs" bullet:
 
   > - Your own rules → at the start of an activity (writing, offers, reviews, coding, code-review,
-  >   planning, …) **meaningfy-core:rulebook** `load` for it; when I state or correct how work should
-  >   be done, **meaningfy-core:rule-learner** shows its approval card at the end of the session.
+  >   planning, …) **meaningfy-core:rulebook** `load` for it; when I have stated or corrected how
+  >   work should be done, **meaningfy-core:rule-learner** shows its approval card when I wrap up or
+  >   ask for it, or before your final summary of the task.
   >   Interactive sessions only: a scheduled or unattended run skips both. If `load` finds no rule
   >   store, say so once and carry on.
 
@@ -79,6 +84,10 @@
   `~/.config/opencode/AGENTS.md` (opencode, where the skill is asked for as `rulebook`, without the
   bundle prefix). The vault template's line 31 stays, because a vault session that has not pasted the
   global prompt still needs it.
+- **D-3a The card's trigger.** The approval card is shown at the first of: the user wraps up ("that's
+  all", "done for today", "thanks, stop here"), the user asks for it, or the agent is about to give
+  its final summary of a task in which the user stated or corrected something. `rule-learner`'s L-8
+  is reworded to this list; nothing else waits for a session end.
 - **D-4 Activity names (DEC-4)** are listed in one place, the Scope section of
   `skills/rulebook/references/rule-model.md`: "Activity names are an open list. In use: `writing`,
   `offers`, `reviews`, `coding`, `code-review`, `planning`. A new name needs no change anywhere."
@@ -110,14 +119,17 @@
 ### Step 2: the repository store
 
 - **D-8 Store discovery.** `find_stores()` returns `(vault, repo)`, each a `Path` or `None`, and never
-  raises.
+  raises. Two states of the repository store are kept apart everywhere below:
+  - **possible:** `repo` is not `None`, that is, the session runs in a git repository that is not
+    excluded (below). Writes to the repository store need it to be possible.
+  - **present:** possible **and** `<repo>/docs/rules/` is a directory. Reads use it only when present.
+
   - **vault:** exactly today's `find_vault()` rule, with `None` in place of `EnvError`.
   - **repo:**
     - Walk up from `Path.cwd().resolve()` to the filesystem root, looking for an entry named `.git`
       (a directory, or a file for worktrees and submodules). Stdlib `pathlib` only; `git` is never run.
-    - The directory holding `.git` is the repository root.
-    - The repository store is `<root>/docs/rules/`. It *exists* when that directory exists.
-  - **No repository store** (repo = `None`) when any of these holds:
+    - The directory holding `.git` is the repository root, and `repo` is that root.
+  - **Not possible** (repo = `None`) when any of these holds:
     - no `.git` is found;
     - the repository root is `Path.home()`, as in a dotfiles repository;
     - the current directory is the vault root or inside it. This holds when the vault is itself a git
@@ -125,25 +137,40 @@
 
   `find_vault()` stays, and the vault-only commands (`stats`, `check --golden`, `approve`) keep
   calling it.
+- **D-8a The working directory.** `rules.py` takes the repository from its process's working
+  directory and has no option to name one. `rulebook`'s "Running the script" states: run `rules.py`
+  from the session's working directory; if you have run `cd` elsewhere in this session, run
+  `cd <session directory>` as its own command first, never as `cd … && python3 …` (a compound command
+  no longer matches the D-6 allow rule).
 - **D-9 Folder name:** `docs/rules/`, one flat folder.
   - Files are `P-NNNN <title>.md`, with the same title rule as RL-D-3.
   - The reader globs only `P-[0-9][0-9][0-9][0-9] *.md`, so a `README.md` or other files a team keeps
-    there are ignored, never parse errors.
+    there are ignored, never parse errors. A file that matches the glob is read whatever id its
+    frontmatter holds; D-15 decides what happens to a wrong id.
 - **D-10 Id prefix: `P-NNNN`** ("project"), allocated as the highest `P-` id in `docs/rules/` + 1, with
   RL-D-3's exclusive create and one retry.
   - New constants: `REPO_ID = P-\d{4}` and `ANY_ID = [RP]-\d{4}`.
   - The lint checks `R-` in the vault and `P-` in the repository, so a note with the wrong prefix is
-    the existing `invalid` error.
+    the existing `invalid` error. Its message (`rules.py:270`) takes the store's pattern: in the vault
+    it stays `<who>: id '<id>' is not R-NNNN`, byte for byte; in the repository it is
+    `<who>: id '<id>' is not P-NNNN`.
   - `_id`, the argparse type for `cite`, `override`, `update`, `confirm`, `retire`, `approve`,
-    `--exception-of` and `--supersedes`, accepts `ANY_ID`.
+    `--exception-of` and `--supersedes`, accepts `ANY_ID`. Its message (`rules.py:754`) becomes
+    `'<value>' is not a rule id R-NNNN or P-NNNN`. This stderr usage text is the one output that
+    changes for a vault-only user.
+  - **Byte-identical vault-only output.** With no repository store present, the stdout and exit code
+    of `load`, `check`, `check --golden`, `lint`, `search`, `stats` and the writers are byte-identical
+    to the pre-step-2 script. T-22 asserts it against snapshots taken before step 2's code.
   - `stats` keeps `ID = R-\d{4}` everywhere, so repository rules are never counted or flagged (D-14).
 - **D-11 Repository rule notes** use RL-D-3's format, with two differences:
   - **`private: false`**, because the note is shared with the team through git;
   - **no `idea` status written by the script** (D-13).
 
   Every other field, the quoting rules and round-trip stability are unchanged.
-- **D-12 The pointer line.** On the first write that creates `docs/rules/` (not on `--dry-run`),
-  `rules.py` appends this line to `<root>/AGENTS.md`, preceded by a blank line:
+- **D-12 The pointer line.** On **every** real write to the repository store (`add --store repo`,
+  and `update`, `confirm` or `retire` of a `P-` rule; never on `--dry-run`), `rules.py` appends this
+  line to `<root>/AGENTS.md`, preceded by a blank line, when it is missing. So a `docs/rules/` a team
+  created by hand gets the pointer on its first write through the script:
 
   ```
   - **Rules:** this repository's rules for agents are in [`docs/rules/`](docs/rules/). At the start of an activity, load them with the rulebook skill; change them only through it, by pull request.
@@ -162,7 +189,7 @@
   |---|---|
   | `add` | `--store vault\|repo`, **default `vault`**, so today's calls are unchanged. `repo` needs a repository store (D-8) and creates `docs/rules/` on the first real write |
   | `add --candidate` | vault only; `--candidate --store repo` is a usage error (exit 2): "the repository store takes no candidates: approve the row, or move it to the vault and defer it" |
-  | `update`, `confirm`, `retire` | taken from the id prefix: `R-` the vault, `P-` the repository |
+  | `update`, `confirm`, `retire` | taken from the id prefix: `R-` the vault, `P-` the repository. A `P-` id when the store is not possible: exit 3; possible but the rule (or `docs/rules/`) is absent: exit 4, `no rule P-NNNN in docs/rules/` |
   | `approve` | vault only. `approve P-…` is refused (exit 4): "repository rules have no candidates" |
   | `cite`, `override` | write nothing; accept both prefixes |
 
@@ -170,13 +197,18 @@
     may restate a personal one; the union lint then warns `duplicate`.
   - `update`'s name-clash check (RL-D-3, `rglob`) searches only `docs/rules/` for a `P-` rule, never
     the whole repository tree.
-- **D-14 Lint across stores.** `lint` gains `--store all|vault|repo`, default `all`.
+- **D-14 Lint across stores.** `lint` gains `--store all|vault|repo`, default `all`. `all` lints the
+  present stores and exits 3 when none is present. `--store vault` without a vault exits 3.
+  `--store repo` exits 3 when the store is not possible, and when it is possible but not present
+  prints `0 error(s), 0 warning(s)` and exits 0 (an empty store).
   - **Errors** are computed per store: the existing `lint()` runs on each present store alone, with
     that store's id pattern (D-10).
   - **Warnings** are computed once, over the union of the present stores' notes (vault first, then
     repository): conflict, dead, redundant, duplicate, weak exception, vocabulary and oversized.
-    Union errors are discarded, so a cross-store `exception_of` or `supersedes` stays the existing
-    `dangling` error of the store that holds it.
+    Union errors are discarded. The union is built by D-15's read rule, so a cross-store reference
+    and a wrong-prefix note never reach the warnings.
+  - Per store, a cross-store `exception_of` or `supersedes` is the existing `dangling` error (the id
+    is not in that store), and a wrong-prefix note is the `invalid` error of D-10.
   - The vocabulary check uses the vault's playbooks when the vault is present. Without a vault there
     is no vocabulary check.
   - The output format, the count line and the exit codes are unchanged.
@@ -185,23 +217,31 @@
   - **`rule-steward`** runs `lint --store vault`. `stats` and `check --golden` are vault-only already.
     Its Boundary gains: "Repository rules belong to that repository's team: never groomed, retired or
     reported here."
-- **D-15 Reading across stores.**
-  - `load`, `check FILE` and `search` read the union, vault notes first, so a cross-store `CONFLICT`
-    line reads `R-… vs P-…`.
-  - Precedence is RL-D-4 unchanged: a `P-` rule beats an `R-` rule only by strength, `exception_of`
-    (impossible across stores, D-14) or specificity.
-  - Lines print exactly as today. The id prefix is the store marker.
+- **D-15 Reading across stores: the read rule.** `load`, `check FILE` and `search` read the present
+  stores in three steps:
+  1. **Per-store index.** `_index()` runs on each store's notes alone. A note whose id does not match
+     its store's prefix (`P-` in the vault, `R-` or anything else in `docs/rules/`) is left out of the
+     index; `load` prints `SKIPPED <file name>: id <id> does not belong in the <vault|repository>
+     store` where it prints today's parse `SKIPPED` lines, and lint reports it as `invalid` (D-10). Ids therefore never collide across stores.
+  2. **Cut cross-store links.** In each store's index, an `exception_of` or `supersedes` naming an id
+     outside that store is removed from the in-memory copy, so `_excepts`/`_beats` never follow it.
+     The note on disk is unchanged, and lint reports it as `dangling` in its store.
+  3. **Merge.** The two indexes are merged, vault first, so a cross-store `CONFLICT` line reads
+     `R-… vs P-…`.
+
+  Precedence is then RL-D-4 unchanged: a `P-` rule beats an `R-` rule only by strength or
+  specificity. Lines print exactly as today; the id prefix is the store marker. A vault note with a
+  `P-` id was already a lint error, so skipping it changes no valid vault's output.
 - **D-16 `load` by store presence** (`check FILE` and `search` follow the same rows):
 
   | Vault | Repository store | `load` prints | Exit |
   |---|---|---|---|
-  | found | none, or `docs/rules/` missing | today's output, byte for byte | 0 |
-  | found | present | today's format over the union; a `P-` line wherever a repository rule wins | 0 |
+  | found | not possible, or possible but not present | today's output, byte for byte | 0 |
+  | found | present | today's format over the union (D-15); a `P-` line wherever a repository rule wins | 0 |
   | not found | present | the repository rules, then `NOTE personal rules not loaded: vault not found (set MEANINGFY_VAULT)`, then `-- end --` | 0 |
-  | not found | none, or `docs/rules/` missing | today's stderr message, unchanged | 3 |
+  | not found | not possible, or possible but not present | today's stderr message, unchanged | 3 |
 
-  `lint --store vault` without a vault, and `lint --store repo` without a repository store, exit 3
-  with the matching message.
+  `lint` follows D-14.
 - **D-17 `where`, a new read-only command** for the card's default store. It always exits 0 and
   prints three lines and the end marker:
 
@@ -215,6 +255,7 @@
   The default is `repository` whenever a repository store is possible (D-8), even before `docs/rules/`
   exists; otherwise `vault`. The default does not depend on whether the vault is found.
 - **D-18 The approval card (DEC-2, DEC-8).**
+  - The card is shown at the D-3a trigger.
   - `references/approval-card.md` gains a **Store** column (`repo` or `vault`), filled from `where`'s
     `default store`.
   - The heading line says: "Rows default to this repository; answer `N to vault` for a personal
@@ -236,12 +277,16 @@
 |---|---|
 | everything in RL-D-14 | as before |
 | `where`, in any environment | 0 |
-| `load`/`check`/`search` with only the repository store | 0 (with the D-16 `NOTE`) |
-| no store at all, for a read | 3 |
-| `add --store repo`, or a `P-` id for `update`/`confirm`/`retire`, with no repository store | 3: `no repository store: <reason from D-8>` |
-| `lint --store` naming an absent store | 3 |
+| `load`/`check`/`search` with only the repository store present | 0 (with the D-16 `NOTE`) |
+| `load` in a repository with no `docs/rules/`: vault found / vault not found | 0 (today's output) / 3 |
+| no store present, for any read | 3 |
+| `add --store repo` when the store is not possible | 3: `no repository store: <reason from D-8>` |
+| `add --store repo` when possible but not present | 0: creates `docs/rules/` (D-12) |
+| `retire P-0001` (also `update`, `confirm`): not possible / possible, no `docs/rules/` or no such rule | 3 / 4 (`no rule P-0001 in docs/rules/`) |
+| `lint --store repo`: not possible / possible but not present | 3 / 0 (`0 error(s), 0 warning(s)`) |
+| `lint --store vault` without a vault; `lint` (`all`) with no store present | 3 |
 | `add --candidate --store repo`; `--store` with another value (argparse) | 2 |
-| `approve P-…`; `P-` id not found in `docs/rules/`; a repository write that adds a lint error | 4 |
+| `approve P-…`; a repository write that adds a lint error | 4 |
 
 ## Algorithm / approach
 
@@ -250,7 +295,7 @@
 2. The global line routes the session to `rulebook`, which runs `rules.py load --activity code-review`.
    The output is the vault's rules for `code-review` (`activity:*` rules included), then `-- end --`.
 3. The user says "from now on, keep PR descriptions under ten lines".
-4. At the end of the session, `rule-learner` shows the card. The row has no Store column in step 1.
+4. Before its final summary of the task (D-3a), `rule-learner` shows the card. The row has no Store column in step 1.
 5. On approval, `add` writes `R-0044` to the vault.
 
 **Worked example 2, step 2 (a project convention):**
@@ -296,7 +341,9 @@ are not loaded.
 | Run `git rev-parse` to find the repository | Walk up for `.git` with `pathlib` | Stdlib only; `git` may be absent, and it would need another permission |
 | Make `--store repo` the script's default inside a git repository | Default `vault` in the script; the card passes `--store` | Backwards compatibility: every existing `add` call keeps its meaning |
 | Copy a vault rule into the repository, or the reverse, to resolve a conflict | Ask the user; change one store's rules | No-go: no copying between stores |
-| Let a `P-` rule `exception_of` or `supersedes` an `R-` rule | Exceptions and supersessions stay within one store (`dangling` error) | A teammate does not have the owner's vault, so the reference would dangle for them |
+| Let a `P-` rule `exception_of` or `supersedes` an `R-` rule | Exceptions and supersessions stay within one store: the write is refused (`dangling`), and a hand-made link is cut at read time (D-15) | A teammate does not have the owner's vault, so the reference would dangle for them |
+| Build one `_index()` over both stores' notes | One index per store, then merge (D-15) | A shared index resolves cross-store links and lets "first wins" hide a colliding id |
+| Run `cd <repo> && python3 …/rules.py …` | A separate `cd`, then the script by its full path (D-8a) | The compound command no longer matches the allow rule |
 | Create `docs/rules/` or edit `AGENTS.md` on `--dry-run` or in `where` | Only on an approved, real write | No-go: no store before approval |
 | Add `docs/rules/` to the skillery repository to test against | Copy the repository fixture into `tmp_path` and create `.git` there | Tests run with `cwd=ROOT`; a real `docs/rules/` there would change every existing test |
 | `rglob` the repository root for name clashes | Search `docs/rules/` only | Repositories hold `node_modules/` and `.venv/` |
@@ -315,8 +362,10 @@ are not loaded.
 | `add --store repo` outside a repository | repo is `None` | exit 3, `no repository store: …`; nothing written |
 | `--candidate --store repo` | argument check | exit 2 with D-13's message |
 | `approve P-0001` | prefix check | exit 4, "repository rules have no candidates" |
-| A cross-store `exception_of`/`supersedes` | per-store lint `dangling` | the write is refused, exit 4; the card shows it from `--dry-run` |
-| A wrong prefix in a store (`R-` in `docs/rules/`, or `P-` in the vault) | per-store id check | `invalid` lint error; a write over it is not blocked (already there) |
+| A cross-store `exception_of`/`supersedes` | per-store lint `dangling` | a write that adds it is refused, exit 4 (the card shows it from `--dry-run`); one made by hand is cut at read time and ignored by precedence (D-15) |
+| A wrong prefix in a store (`R-` in `docs/rules/`, or `P-` in the vault) | per-store id check | left out of the index; `load` prints `SKIPPED …`; `invalid` lint error; a later write is not blocked by it (already there) |
+| The agent ran `cd` elsewhere | the repository found is the wrong one, or none | prevented by D-8a; `where` shows which repository the script sees |
+| The user never wraps up | no D-3a trigger | the card comes before the agent's final summary; if the session simply stops, the candidates are lost, as today in the vault |
 | Two branches allocate the same `P-` id | `duplicate-id` lint error after merge | `retire` one copy and `add` it again; `load` keeps the first file, as today |
 | A non-rule `.md` in `docs/rules/` | not matched by the `P-NNNN *.md` glob | ignored |
 | `AGENTS.md` missing | `not path.exists()` | created with the pointer and a hint (D-12) |
@@ -342,16 +391,20 @@ and create `.git` there. Git cannot commit a nested `.git`, so the fixture holds
 | T-8 | D-12, no `AGENTS.md` | a repository without it | created; hint printed |
 | T-9 | no store before approval | `add --store repo --dry-run` | no `docs/rules/`, `AGENTS.md` unchanged |
 | T-10 | A personal preference stated while coding | `add --store vault` in the repository | a vault `R-` note; the repository unchanged |
-| T-11 | The stores disagree | fixture `P-0002` against `R-0001` | `CONFLICT R-0001 vs P-0002 on spelling` |
-| T-12 | D-16 row 3 | no `MEANINGFY_VAULT`, repository store present | the `P-` lines, the `NOTE`, exit 0 |
+| T-11 | The stores disagree | fixture repository + vault; `load --activity writing` | `CONFLICT R-0001 vs P-0002 on spelling: ask the owner` (the only `spelling` firing rules are `R-0001` and `P-0002`) |
+| T-12 | Repository rules without the vault | no `MEANINGFY_VAULT`; `load --activity coding` | exactly: `SKIPPED P-0004 carries a vault id.md: id R-0099 does not belong in the repository store`, the `P-0003` line (slot rules print first), the `P-0001` line, the `NOTE`, `-- end --`; exit 0 |
 | T-13 | D-16 row 4 | neither store | exit 3, today's message |
 | T-14 | D-8 home and vault exclusions | `HOME` set to the repository; cwd inside a vault with `.git` | `where` says `none (…)` in each case |
-| T-15 | D-14 | fixture `P-0003` with `exception_of: R-0001`; `P-0004` carrying an `R-` id | `dangling` and `invalid` errors, both in the repository store |
+| T-15 | D-14 | `lint` with the fixture repository and vault | `ERROR dangling: P-0003: exception_of R-0001 does not exist` and `ERROR invalid: R-0099: id 'R-0099' is not P-NNNN`; no vault finding changes |
 | T-16 | D-14, steward | `lint --store vault` in the repository | no `P-` finding |
 | T-17 | D-13 errors | `--candidate --store repo`; `approve P-0001`; `retire P-0001` outside a repository | exit 2, 4, 3 |
 | T-18 | D-10 | `stats --from-file` with `P-` events | no `P-` row and no `P-` flag |
 | T-19 | D-9 | `docs/rules/README.md` with no frontmatter | no `parse` error |
 | T-20 | D-17 | `where` in each D-8 case | the three lines; exit 0 |
+| T-21 | D-15 step 2 | module import; read the fixture stores | `P-0003` has no `exception_of` in the merged index; the file on disk still has it |
+| T-22 | D-10 byte-identical | snapshots in `tests/fixtures/rulebook/vault-only/` of `load --activity writing --context audience=client`, `lint`, `search spelling`, `check --golden`, `stats --from-file`, taken with the pre-step-2 script (task 1.4) | stdout and exit code equal, with `cwd=ROOT` and with `cwd=tmp_path` |
+| T-23 | D-14 and D-13 exit codes | in a repository with no `docs/rules/`: `retire P-0001`, `lint --store repo`; outside one: `lint --store repo` | 4, 0 (`0 error(s), 0 warning(s)`), 3 |
+| T-24 | D-12, hand-made store | `docs/rules/` exists, `AGENTS.md` lacks the pointer; `add --store repo` | the pointer is added once |
 
 ## Risks / Trade-offs
 
@@ -378,7 +431,14 @@ and create `.git` there. Git cannot commit a nested `.git`, so the fixture holds
 
 - **O-1** Can Cowork run a plugin skill's script against local folders and see `MEANINGFY_VAULT`?
   Task 4.2 answers it live. Either answer changes only the Cowork row in `docs/environment/rules.md`.
-- **O-2** Owner-only choices made in this PLAN, each with a recommended answer in the planner's
-  hand-off: the `P-` collision remedy, `private: false`, the default store for a personal-sounding
-  preference, the allow-rule move to `rulebook`, no deferral to the repository, and the script
-  writing `AGENTS.md`. Confirm before task 1.3 (step-2 tests). D-6 is confirmed before task 2.3.
+- **O-2** Owner-only choices this PLAN makes provisionally, each with the answer it builds on.
+  Confirm them before task 1.3 (the step-2 tests). D-6 is confirmed before task 2.3.
+  1. Two branches both creating `P-0003`: the lint flags the duplicate id, and the fix is to retire
+     one and add it again. Ids that cannot collide would change the rule model (a no-go).
+  2. Repository rules carry `private: false`, because the repository is shared with the team.
+  3. A personal-sounding preference stated in a repository still defaults to the repository store,
+     and the card reminds the user to switch it to the vault.
+  4. The per-machine allow rule moves from `vault-setup` into `rulebook`; this rewords one line of
+     the EPIC's What Changes.
+  5. Repository rows cannot be deferred; a deferred candidate always goes to the vault's inbox.
+  6. `rules.py` writes the `AGENTS.md` pointer itself, not the agent.
