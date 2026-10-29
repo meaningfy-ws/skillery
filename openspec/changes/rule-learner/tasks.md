@@ -7,7 +7,7 @@
 
 ## 0. Precondition
 
-- [ ] 0.1 Branch `feat/rule-learner` off `feat/reasoning-capabilities`. PLAN gated ≥ 9/10 by an independent subagent.
+- [x] 0.1 Branch `feat/rule-learner` off `feat/reasoning-capabilities`. PLAN gated ≥ 9/10 by an independent subagent.
 
 ## 1. Failure cases and fixtures (red)
 
@@ -104,7 +104,7 @@ Each skill has a "Use this skill when …" description under 700 characters, a Q
 
 ## 5. Review
 
-- [ ] 5.1 Independent review of the implementation against the specs (judgement scenarios included, per 3.2), the design and the catalogue rules. Fix the findings, and keep `make validate` green.
+- [x] 5.1 Independent review of the implementation against the specs (judgement scenarios included, per 3.2), the design and the catalogue rules. Fix the findings, and keep `make validate` green.
 
 ## 6. After Langfuse is deployed (outside this change's merge)
 
@@ -112,7 +112,7 @@ Each skill has a "Use this skill when …" description under 700 characters, a Q
 
 ## Roadmap
 
-- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [ ] 5.1 · (later) 6.1
+- [x] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [x] 5.1 · (later) 6.1
 
 ## Verification
 
