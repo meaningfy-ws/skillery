@@ -3,9 +3,9 @@
 
 # EPIC: Rule learner — learn, use, groom and forget the owner's rules
 
-**Golden-thread parent:** the umbrella EPIC [`reasoning-capabilities`](../reasoning-capabilities/proposal.md).
-Research: [`research-synthesis`](../reasoning-capabilities/inputs/2026-10-28-research-synthesis.md) and the
-handover §4.6–4.7 and §5.4–5.6 ([`Reasoning and learning skills.md`](../reasoning-capabilities/inputs/Reasoning%20and%20learning%20skills.md)).
+**Golden-thread parent:** the umbrella EPIC [`reasoning-capabilities`](../archive/2026-10-29-reasoning-capabilities/proposal.md).
+Research: [`research-synthesis`](../archive/2026-10-29-reasoning-capabilities/inputs/2026-10-28-research-synthesis.md) and the
+handover §4.6–4.7 and §5.4–5.6 ([`Reasoning and learning skills.md`](../archive/2026-10-29-reasoning-capabilities/inputs/Reasoning%20and%20learning%20skills.md)).
 
 ## Appetite
 

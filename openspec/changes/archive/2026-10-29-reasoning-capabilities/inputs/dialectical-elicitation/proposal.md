@@ -20,7 +20,7 @@
 
 # EPIC: Dialectical elicitation — an Elenchus-style opponent for traceable modelling
 
-**Golden-thread parent:** the umbrella EPIC [`reasoning-capabilities`](../reasoning-capabilities/proposal.md).
+**Golden-thread parent:** the umbrella EPIC [`reasoning-capabilities`](../../proposal.md).
 
 **Sources for the requirements:**
 - Allen, "Elenchus: Generating Knowledge Bases from Prover-Skeptic Dialogues", arXiv:2603.06974, and the AIAA4KE ISWC 2026 talk (handover §4.3).

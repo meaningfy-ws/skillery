@@ -1,4 +1,4 @@
-% The spike playbook (reasoning-capabilities/inputs/spike/playbook.lp): situations, strengths, rules.
+% The spike playbook (openspec/changes/archive/2026-10-29-reasoning-capabilities/inputs/spike/playbook.lp): situations, strengths, rules.
 val(client,public;client,private;client,us; channel,email;channel,tender;channel,call; lang,en;lang,fr).
 str(hard,3;default,2;soft,1).
 

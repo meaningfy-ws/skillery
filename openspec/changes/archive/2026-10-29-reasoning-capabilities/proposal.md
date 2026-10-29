@@ -29,12 +29,12 @@ Three child EPICs, each with its own change:
 
 | Child | Bundle | Appetite | What |
 |---|---|---|---|
-| [`rule-learner`](../rule-learner/proposal.md) | vault-assistant | LARGE | A small symbolic rule and preference learner: rule model and repository in `08 How to/`, learning with per-session approval, weekly grooming and forgetting, and usage monitored from Langfuse |
-| [`formal-reasoning`](../formal-reasoning/proposal.md) | meaningfy-architecture | MEDIUM | One reasoning skill: clingo and SWI-Prolog by problem shape, the test-first paraphrase-back loop, CQ testing, rules from text |
-| [`dialectical-elicitation`](../dialectical-elicitation/proposal.md) | meaningfy-architecture | MEDIUM | **Postponed (2026-10-29).** An Elenchus-style opponent skill. To be re-shaped once we decide how to set up `elenchus-server` |
+| [`rule-learner`](../../rule-learner/proposal.md) | vault-assistant | LARGE | A small symbolic rule and preference learner: rule model and repository in `08 How to/`, learning with per-session approval, weekly grooming and forgetting, and usage monitored from Langfuse |
+| [`formal-reasoning`](../../formal-reasoning/proposal.md) | meaningfy-architecture | MEDIUM | One reasoning skill: clingo and SWI-Prolog by problem shape, the test-first paraphrase-back loop, CQ testing, rules from text |
+| [`dialectical-elicitation`](inputs/dialectical-elicitation/proposal.md) | meaningfy-architecture | MEDIUM | **Postponed (2026-10-29).** An Elenchus-style opponent skill. To be re-shaped once we decide how to set up `elenchus-server` |
 
 The Langfuse deployment is specified for the infrastructure stacks repo:
-[`docs/environment/langfuse-deployment-spec.md`](../../../docs/environment/langfuse-deployment-spec.md).
+[`docs/environment/langfuse-deployment-spec.md`](../../../../docs/environment/langfuse-deployment-spec.md).
 
 ## Key decisions
 
@@ -48,6 +48,11 @@ The Langfuse deployment is specified for the infrastructure stacks repo:
 - **DEC-5** (owner, 2026-10-29): Postpone `dialectical-elicitation`. An Elenchus server implementation
   exists, so first decide how to set it up; then re-shape the pitch. Delivery order: `rule-learner` and
   `formal-reasoning` first.
+- **DEC-6** (owner, 2026-10-29): Archive this umbrella without specs once its split is done, as
+  `skillery-v2-planning` was, and park the postponed pitch in
+  [`inputs/dialectical-elicitation/`](inputs/dialectical-elicitation/proposal.md) until the server trial.
+  A change without a delta spec fails `validate-spine`; neither this umbrella nor a postponed pitch has
+  requirements to state yet. Resuming the pitch means opening it again as a change.
 
 ## Rabbit-holes
 

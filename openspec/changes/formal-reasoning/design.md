@@ -2,7 +2,7 @@
      scored 8.4, round 2 9.2 (PASS). All 15 gaps were applied; the experiments that found them are noted inline. -->
 
 > Derives from: EPIC `formal-reasoning` ([`proposal.md`](proposal.md)), golden-thread parent
-> [`reasoning-capabilities`](../reasoning-capabilities/proposal.md). Acceptance criteria are the scenarios in
+> [`reasoning-capabilities`](../archive/2026-10-29-reasoning-capabilities/proposal.md). Acceptance criteria are the scenarios in
 > [`specs/formal-reasoning/spec.md`](specs/formal-reasoning/spec.md).
 
 ## Context

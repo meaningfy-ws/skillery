@@ -6,7 +6,7 @@ it. The fixtures are the acceptance tests in `tests/test_formal_reasoning.py`.
 
 ## F-1: the dead rule in the playbook
 
-- **Source:** the spike playbook, `../../reasoning-capabilities/inputs/spike/playbook.lp` (nine
+- **Source:** the spike playbook, `../../archive/2026-10-29-reasoning-capabilities/inputs/spike/playbook.lp` (nine
   writing and pricing rules with strengths, scopes and specificity).
 - **Question:** "Which rules of this playbook can ever take effect? Is any rule dead?"
 - **Wrong prose answer:** "Every rule applies in some situation: each has a scope that some request
