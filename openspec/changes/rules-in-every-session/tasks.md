@@ -18,8 +18,9 @@
 
 - [x] 0.1 Merge `develop` into `feat/rules-in-every-session` (done: `de16bb7`). This brought in
   PR #123's `docs/environment/rules.md`, which tasks 3.1 and 7.4 edit.
-- [ ] 0.2 Have an independent subagent gate this PLAN at ≥ 9/10. The owner answers the hand-off's
-  question round, and the answers are folded into `design.md` Decisions.
+- [x] 0.2 Have an independent subagent gate this PLAN at ≥ 9/10 (round 1: 8.9; round 2: 9.35, PASS).
+  The owner answers the six provisional choices of `design.md` O-2 before task 1.3; step 1 does not
+  depend on them.
 
 ## 1. Failure cases and fixtures (red)
 
