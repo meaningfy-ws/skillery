@@ -1,0 +1,7 @@
+# Consequences must range over optimal answer sets only: the smallest fix drops r5 alone.
+[[test]]
+id = "FIX-1"
+question = "Which rules does the smallest fix drop?"
+query = "drop/1"
+mode = "brave"
+expect = ["drop(r5)"]

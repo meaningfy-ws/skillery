@@ -1,0 +1,22 @@
+ERROR missing: R-0042: no 'source'
+ERROR regex: R-0043: check_present does not compile (unterminated character set at position 1)
+ERROR invalid: R-0044: status 'retired' (allowed: idea, active, dropped)
+ERROR parse: R-0046 broken.md: line 4: cannot read '{{this line is not a property'
+ERROR duplicate-id: R-0045: R-0045 name files in kebab case.md, R-0045 name folders in kebab case.md
+ERROR narrow-exception: R-0034: its scope does not contain the scope of its base R-0033
+ERROR dangling: R-0041: exception_of R-9999 does not exist
+ERROR narrow-exception: R-0047: its scope does not contain the scope of its base R-0049
+ERROR cycle: exception_of: R-0037 R-0038
+ERROR cycle: supersedes: R-0039 R-0040
+WARNING duplicate: R-0026 and R-0027 duplicate each other: keep one
+WARNING dead: R-0021: always beaten by R-0020 on send
+WARNING dead: R-0022: always beaten by R-0023 on format
+WARNING redundant: R-0025: without it, R-0024 still sets tone=plain
+WARNING dead: R-0036: always beaten by R-0035 on voice
+WARNING dead: R-0037: no rule wins steps in its own scope (a beats-cycle)
+WARNING dead: R-0038: no rule wins steps in its own scope (a beats-cycle)
+WARNING dead: R-0049: no rule wins order in its own scope (a beats-cycle)
+WARNING conflict: R-0031 and R-0032 set pricing differently and neither beats the other
+WARNING weak-exception: R-0036 is weaker than its base R-0035: draft it at the base's strength
+WARNING vocabulary: R-0011: 'audience:martian' is not in the Writing playbook vocabulary
+10 error(s), 11 warning(s)

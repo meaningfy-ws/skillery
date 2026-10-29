@@ -6,7 +6,7 @@ owner: {name: Meaningfy, email: info@meaningfy.ws}
 description: Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently
 bundles:
   - name: meaningfy-core
-    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, and how to report a skill or agent problem to skillery"
+    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, how to report a skill or agent problem to skillery, and your own rules for agents: load, learn and groom them (rulebook, rule-learner, rule-steward)"
     skills:
       - technical-writing
       - explanatory-writing
@@ -15,6 +15,9 @@ bundles:
       - meaningfy-git-workflow
       - guardrails
       - skillery-feedback
+      - rulebook
+      - rule-learner
+      - rule-steward
     agents: []
   - name: meaningfy-consulting
     description: "The advisory role: semantic-technologies coaching, the Decision Package, and executive communication"
@@ -42,6 +45,7 @@ bundles:
       - conceptual-modelling
       - modelling-conventions
       - linkml-engineering
+      - formal-reasoning
     agents: [system-architect, conceptual-modeller]
   - name: meaningfy-building
     description: "The delivery / developer role: the spine build loop (epic-planning, spec-stewardship, clarity-gate, BDD, code review), clean layered Python (cosmic-python), repo scaffolding (project-setup), CD/deploy (ci-cd-delivery), and the release lifecycle (meaningfy-release)"

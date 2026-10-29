@@ -40,6 +40,19 @@ charter is named `index.md`, so never link `[[index]]`, which is ambiguous.
 appetite, narrow problem with its use cases and outcomes), Gherkin features, Elements (success criteria;
 breadboards and fat-marker sketches optional), Risks (rabbit holes, no-gos).
 
+## Rules
+
+| kind | Note | Required properties |
+|---|---|---|
+| `rule` | `08 How to/Rules/R-NNNN <title>.md`, one rule of the owner's | `id`, `type`, `strength`, `status`, `scope`, `when`, `do`, `because`, `source`, `added`, `private: true` |
+| `playbook` | `08 How to/Playbooks/<Activity>.md`, at most one per activity | `activity`, `private: true` |
+
+What these properties mean, and the optional ones (a playbook's `vocabulary` and `golden`, a rule's
+`slot`, `exception_of` or check patterns), is defined by the `rulebook` skill. A rule's lifecycle uses
+the usual `status` values: a candidate is `idea`, a rule in force `active`, a retired rule `dropped`;
+`paused` and `done` are not used. Rule notes are written only through the rulebook script, never by
+hand from an agent.
+
 ## Rhythm notes
 
 | kind | Note | Required properties |

@@ -1,0 +1,7 @@
+load --activity writing --context audience=client
+lint
+search spelling
+check --golden
+stats --from-file {fixtures}/langfuse-observations.json --today 2026-10-29
+check --activity writing {fixtures}/vault-only/draft.md
+add --dry-run --type constraint --strength hard --scope activity:writing --when "sending a memo" --do "use no semicolon" --because "plain words" --source "2026-10-29 owner: 'x'" --today 2026-10-29

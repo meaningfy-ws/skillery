@@ -12,6 +12,7 @@ served_by:
   - conceptual-modelling
   - modelling-conventions
   - linkml-engineering
+  - formal-reasoning
 status: covered
 ---
 

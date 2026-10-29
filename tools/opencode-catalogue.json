@@ -1,5 +1,5 @@
 {
-  "version": "3.7.0",
+  "version": "3.8.0",
   "bundles": [
     {
       "name": "meaningfy-core",
@@ -10,7 +10,10 @@
         "meaningfy-voice",
         "meaningfy-git-workflow",
         "guardrails",
-        "skillery-feedback"
+        "skillery-feedback",
+        "rulebook",
+        "rule-learner",
+        "rule-steward"
       ],
       "agents": []
     },
@@ -45,7 +48,8 @@
         "architecture",
         "conceptual-modelling",
         "modelling-conventions",
-        "linkml-engineering"
+        "linkml-engineering",
+        "formal-reasoning"
       ],
       "agents": [
         "system-architect",

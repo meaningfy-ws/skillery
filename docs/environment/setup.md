@@ -61,6 +61,17 @@ not restated here, so the version number has exactly one home.
 `meaningfy-building` requires `meaningfy-architecture`: install both. Other bundles need only
 `meaningfy-core`. The [catalogue map](../skill-inventory.md) lists every bundle's requirements.
 
+### Reasoning engines (for `formal-reasoning`, optional)
+
+The `formal-reasoning` skill in `meaningfy-architecture` runs rules on two engines. It never installs
+them; install the one you need, on any CLI. Its scripts need Python 3.11 or later, and
+`python scripts/check_env.py` in the skill folder reports what is present.
+
+| Engine | Used for | Install |
+|---|---|---|
+| clingo (MIT) | rule sets: conflicts, dead rules, minimal fixes | `pip install "clingo>=5.8"` into the Python that runs the scripts (any OS) |
+| SWI-Prolog (BSD-2-Clause) | closure, lineage, competency questions | a system package that puts `swipl` on PATH: `sudo apt-get install swi-prolog-nox` (Debian/Ubuntu), `brew install swi-prolog` (macOS), `conda install -c conda-forge swi-prolog` (linux-64), or the installer from [swi-prolog.org](https://www.swi-prolog.org/download/stable) (Windows) |
+
 ### Adopted skill-authoring methods (for contributors)
 
 The skill-development method ([`docs/development/README.md`](../development/README.md)) cites these
@@ -87,6 +98,18 @@ instead of restating them. Contributors read them; catalogue users need none of 
 > or removed upstream — Meaningfy skills reference them by name only. If a referenced skill
 > stops resolving, check this table against the current upstream names. Treat the *Mandatory*
 > set as a release gate when adopting the bundles.
+
+### The owner's rules (`meaningfy-core`: rulebook, rule-learner, rule-steward)
+
+| Variable | Set where | Holds |
+|---|---|---|
+| `MEANINGFY_VAULT` | the shell profile of each machine, never in git | the vault root; lets a session in a code repository load the owner's rules. Not needed in a session started at the vault root. Also set it under the `"env"` key of `~/.claude/settings.json`, because the Claude Desktop Code tab may not read the shell profile |
+| `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | the same, never in git | the Langfuse server and the project keys `rule-steward` reads usage with |
+
+Rule monitoring also needs the Langfuse Claude Code plugin pointed at the same server. Without these
+settings the steward stops and says so; loading and checking rules still work. The Langfuse
+deployment is specified for the infrastructure stacks repository in
+[`langfuse-deployment-spec.md`](langfuse-deployment-spec.md).
 
 ### MCP servers (optional)
 

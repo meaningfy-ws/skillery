@@ -1,0 +1,6 @@
+GOLDEN 03 Resources/Good memo.md: ok
+GOLDEN 03 Resources/Bad memo.md: FAIL
+VIOLATION R-0010 line 6: The pilot is ready — we start on Monday.
+GOLDEN 03 Resources/Client memo.md: ok
+GOLDEN 03 Resources/Client memo.md: ok
+-- end --

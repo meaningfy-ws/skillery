@@ -1,0 +1,4 @@
+[[test]]
+id = "T1"
+query = "part_of(X, t1)"
+expect = []

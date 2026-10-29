@@ -1,0 +1,5 @@
+[[test]]
+id = "U1"
+question = "Can a blocked request be decided?"
+query = "approved/0"
+expect = "UNSAT"

@@ -20,7 +20,9 @@ always ask, so the owner approves each move or delete they requested (`vault-con
 deleting); the scheduled run denies them on its command line ([`scheduler.md`](scheduler.md)). The read-only
 mail and calendar tools and the memory `recall` are allowed, so neither an interactive session nor a
 scheduled one stops to ask for them. Any other shell
-command is a **stated gap**: tell the owner to refuse it when asked.
+command is a **stated gap**: tell the owner to refuse it when asked. The one exception is the
+rulebook script (`.../rulebook/scripts/rules.py`): approve it, never refuse it, because it reads and
+writes only rule notes. The allow rule that saves the prompt is per machine (below).
 
 ```json
 {
@@ -97,6 +99,11 @@ Adapt before writing:
 - A server-level entry (`mcp__claude_ai_Google_Drive`) denies every tool of that server.
 - Connector tool names change when a connector updates: re-run the check in
   [`final-check.md`](final-check.md) after an update.
+
+## Per machine: the rulebook script
+
+The per-machine allow rule for the rulebook script is owned by `rulebook`:
+the "Permissions (per machine)" section of the `rulebook` skill's `references/commands.md`.
 
 ## Verify
 
