@@ -539,11 +539,12 @@ def test_user_docs_name_the_move():
     assert "## Where your rules work" in rules and "## Quick Start" in rules
     assert "vault-assistant" not in rules.split("All three skills are")[1].split("\n")[0]
     assert '"env"' in _text("docs/environment/setup.md")
-    rows = {r.split("|")[1].strip(" *"): r for r in _text("README.md").splitlines() if r.startswith("| **")}
-    assert all(f"**{s}**" in rows["meaningfy-core"] and f"**{s}**" not in rows["vault-assistant *(workflow)*"]
+    rows = {r.split("|")[1].strip().split("**")[1]: r for r in _text("README.md").splitlines()
+            if r.startswith("| **")}
+    assert all(f"**{s}**" in rows["meaningfy-core"] and f"**{s}**" not in rows["vault-assistant"]
                for s in SKILLS)
     unreleased = _text("CHANGELOG.md").split("## [Unreleased]")[1].split("\n## [")[0]
-    assert any("BREAKING" in l and "/meaningfy-core/" in l for l in unreleased.splitlines())
+    assert any("BREAKING" in b and "/meaningfy-core/" in b for b in unreleased.split("\n- "))
 
 
 @pytest.mark.parametrize("skill", ["rule-learner", "rule-steward"])

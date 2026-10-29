@@ -26,7 +26,7 @@
 
 ### 1A. Step 1
 
-- [ ] 1.1 Write `openspec/changes/rules-in-every-session/inputs/failure-cases.md`. For each case,
+- [x] 1.1 Write `openspec/changes/rules-in-every-session/inputs/failure-cases.md`. For each case,
   record the evidence, the expected behaviour and the spec scenario:
   - **F-1 (step 1):** a rule stated in a code repository is lost, and a vault rule is not applied
     there. Evidence: `bundles.yaml` puts the skills in `vault-assistant`, `global-prompt.md` has no
@@ -37,7 +37,7 @@
     one person's vault, where the team never sees it.
   - **F-4 (step 2):** a team rule and a personal rule that disagree would not be reported, because no
     tool reads both.
-- [ ] 1.2 Add tests T-1, T-2 and T-3 (design, Test case specifications) to `tests/test_rulebook.py`.
+- [x] 1.2 Add tests T-1, T-2 and T-3 (design, Test case specifications) to `tests/test_rulebook.py`.
   **Accept:** they fail on the branch as it is.
 
 ### 1B. Step 2 (at the start of step 2's branch)
@@ -66,13 +66,13 @@
 
 ## 2. Step 1: reach (green)
 
-- [ ] 2.1 `bundles.yaml`:
+- [x] 2.1 `bundles.yaml`:
   - move the three skills to `meaningfy-core`;
   - change both bundle descriptions (D-1).
 
   Change the facets of `rulebook` and `rule-learner` (D-2). Then run `make bundles` and
   `make skill-inventory`. **Accept:** T-1; `test_the_three_skills_share_one_bundle` stays green.
-- [ ] 2.2 Rulebook and learner text:
+- [x] 2.2 Rulebook and learner text:
   - **`rulebook`:**
     - a description that covers any session, under 700 characters, with "(writing, offers, reviews,
       coding, code-review, planning)";
@@ -93,14 +93,14 @@
     in its Scope section;
   - `skills/rule-learner/SKILL.md` contains "wraps up" and "final summary";
   - both descriptions contain "any session" and stay under 700 characters.
-- [ ] 2.3 Permissions (D-6):
+- [x] 2.3 Permissions (D-6):
   - add the "Permissions (per machine)" section to `skills/rulebook/references/commands.md`;
   - in both `vault-setup` permission references, replace the per-machine sections with the pointer;
   - keep the "approve, never refuse" exception.
 
   **Accept:** T-3.
-- [ ] 2.4 `docs/environment/global-prompt.md`: the D-3 line and the two-CLI header. **Accept:** T-2.
-- [ ] 2.5 Catalogue wiring:
+- [x] 2.4 `docs/environment/global-prompt.md`: the D-3 line and the two-CLI header. **Accept:** T-2.
+- [x] 2.5 Catalogue wiring:
   - **Probes** in `tests/trigger_probes.yaml`:
     - positive: "from now on, keep PR descriptions under ten lines in every repo", expecting
       `rule-learner`, near miss of `meaningfy-git-workflow`;
@@ -113,7 +113,7 @@
 
 ## 3. Step 1: user-facing docs
 
-- [ ] 3.1 Docs:
+- [x] 3.1 Docs:
   - **`docs/environment/rules.md`:**
     - the bundle column becomes `meaningfy-core`;
     - a "Where your rules work" table from `inputs/qa.md` (D-7), with Cowork "not yet verified";
@@ -207,7 +207,7 @@
 ## Roadmap
 
 - [x] 0.1 · [ ] 0.2
-- [ ] **Step 1:** 1.1 · 1.2 · 2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 3.1 · 5.1 · (after release, non-blocking) 4.1 · 4.2
+- [ ] **Step 1:** [x] 1.1 · 1.2 · 2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 3.1 · [ ] 5.1 · (after release, non-blocking) 4.1 · 4.2
 - [ ] **Step 2:** 1.3 · 1.4 · 6.1 · 6.2 · 6.3 · 6.4 · 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1
 
 ## Verification

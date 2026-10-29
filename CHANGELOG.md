@@ -11,6 +11,16 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING (Claude Code only): the rule skills moved to `meaningfy-core`.** `rulebook`, `rule-learner`
+  and `rule-steward` now work in any interactive session, not only in the vault, and your global
+  instructions route sessions to them ([`docs/environment/global-prompt.md`](docs/environment/global-prompt.md)).
+  If your `~/.claude/settings.json` allows the script, change `vault-assistant` to `meaningfy-core` in
+  its path: `Bash(python3 <home>/.claude/plugins/cache/meaningfy-skillery/meaningfy-core/*/skills/rulebook/scripts/rules.py *)`
+  (until you do, Claude Code asks before running it). Also set `MEANINGFY_VAULT` in the `env` key of
+  that file if you use the Desktop Code tab.
+
 ### Added
 
 - **`formal-reasoning` (`meaningfy-architecture`, experimental).** When an answer about rules or facts

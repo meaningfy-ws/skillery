@@ -5,8 +5,8 @@ assistant in it.
 
 ## Useful only with its prerequisites
 
-`vault-assistant` is a **workflow bundle**, not a role bundle: its twelve skills maintain one personal
-vault, run a small daily routine and keep the owner's rules. Without these, the skills have nothing to work on:
+`vault-assistant` is a **workflow bundle**, not a role bundle: its nine skills maintain one personal
+vault and run a small daily routine. Without these, the skills have nothing to work on:
 
 1. **A vault of the Meaningfy shape**, created by the `vault-setup` skill (the layout, templates, an
    `AGENTS.md` with the owner profile and write rules, and permission settings).
@@ -44,7 +44,8 @@ the infrastructure owner.
 | you state a rule or correct the agent | `rule-learner` (one approval card at the end of the session) |
 | the weekly review | `rule-steward`, run by `vault-planning review week` |
 
-How the three rule skills work together: [`rules.md`](rules.md).
+The three rule skills ship in `meaningfy-core` and work in any session; in the vault they run as
+here. How they work together: [`rules.md`](rules.md).
 
 `vault-conventions` is used by all of them whenever a note is written. Moving, renaming and deleting
 notes follow its one procedure: [Moving and deleting](../../skills/vault-conventions/SKILL.md#moving-and-deleting).

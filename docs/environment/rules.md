@@ -4,7 +4,8 @@
 wants to know how the rule skills do it before trusting them.
 
 This page explains and points. The rules themselves live in the skills it links to; when the two
-disagree, the skill wins. All three skills are `experimental` and ship in the `vault-assistant` bundle.
+disagree, the skill wins. All three skills are `experimental` and ship in the `meaningfy-core` bundle, so they work in any
+session, not only in the vault.
 
 | Skill | What it does for you |
 |---|---|
@@ -19,6 +20,32 @@ your vault**, and bring the right ones into the session that needs them.
 
 Nothing is learned statistically, and nothing is stored without your approval. Every rule can be
 read, edited in Obsidian and retired.
+
+## Quick Start
+
+You are in `~/work/app`, a code repository, with `MEANINGFY_VAULT` set to your vault.
+
+1. You ask for a pull request description. Your global instructions
+   ([`global-prompt.md`](global-prompt.md)) send the agent to `rulebook`, which runs
+   `rules.py load --activity code-review` and gets back your rules for that activity, then `-- end --`.
+2. You say "from now on, keep PR descriptions under ten lines".
+3. Before its final summary of the task, `rule-learner` shows one approval card with that statement as
+   a candidate rule. You answer "approve 1".
+4. `rules.py add` writes it to your vault as the next `R-` note, and every later session loads it.
+
+If no vault is reachable, `load` says so once and the session carries on without your rules.
+
+## Where your rules work
+
+| Surface | Runs `rules.py` with your vault? |
+|---|---|
+| Claude Code CLI | yes, on your machine |
+| Claude Desktop, Code tab (local) | yes; set `MEANINGFY_VAULT` in the `env` key of `~/.claude/settings.json` ([`setup.md`](setup.md)) |
+| Claude Desktop, Cowork | not yet verified |
+| Claude Desktop chat, claude.ai | no: skill code runs in an Anthropic container with no path to your machine |
+| opencode | yes; sessions are not traced ([Known limits](#known-limits)) |
+
+Scheduled and unattended agents do not load your rules.
 
 ## Three skills, three moments
 
@@ -116,7 +143,7 @@ If Langfuse cannot be reached, the steward stops rather than guess which rules a
 
 | For | You need | Where |
 |---|---|---|
-| using and learning rules | a vault of the Meaningfy shape, with the rulebook line in its `AGENTS.md` | [`vault-assistant.md`](vault-assistant.md), `vault-setup` |
+| using and learning rules | `meaningfy-core` installed, and a vault of the Meaningfy shape (see `vault-setup`) | [`vault-assistant.md`](vault-assistant.md), `vault-setup` |
 | rules in a code repository's session | `MEANINGFY_VAULT` set to your vault, on your machine only | [`setup.md`](setup.md) |
 | the weekly review | Langfuse, its Claude Code plugin, and `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | [`setup.md`](setup.md); the deployment: [`langfuse-deployment-spec.md`](langfuse-deployment-spec.md) |
 
@@ -142,10 +169,9 @@ If Langfuse cannot be reached, the steward stops rather than guess which rules a
   no usage flag instead of calling every rule unused.
 - **"Redundant" can over-report.** A rule that matters only in a wider combination of tags may be
   flagged. It is a warning, and you decide.
-- **Rules reach vault sessions first.** The vault's `AGENTS.md` tells every session there to load
-  the rules. A session in a code repository finds them only when `MEANINGFY_VAULT` is set and the
-  `vault-assistant` bundle is installed, and nothing in a repository's own instructions asks for them
-  yet.
+- **Rules reach any interactive session, but only your vault stores them.** A session finds them
+  when `MEANINGFY_VAULT` is set (or it runs in the vault). A rule stated in a code repository goes to
+  your vault, so a teammate never sees it.
 
 ## Changing the method
 
