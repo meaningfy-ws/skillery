@@ -60,6 +60,8 @@ so it would be dead on arrival.
 
 - A tag is `dimension:value`: `activity:writing`, `audience:client`, `channel:email`,
   `project:<name>`, `language:fr`. The values of an activity come from its playbook's vocabulary.
+- **Activity names are an open list.** In use: `writing`, `offers`, `reviews`, `coding`, `code-review`,
+  `planning`. A new name needs no change anywhere.
 - **Globals.** `activity:*` means no activity restriction. It is removed before any comparison, so a
   rule scoped only `activity:*` fires everywhere.
 - A **context** is the set of tags `load` and `check` are given, always including
