@@ -1,6 +1,6 @@
 ---
 name: vault-resume
-description: "Start a work session on one project in a Meaningfy Obsidian vault: read that project's charter (`index.md`), its latest `sessions.md` entries, `decisions.md` and `tasks.md`, make at most one memory recall naming the project, and summarise where things stand and what is next. It writes nothing except a `resources.md` row the owner approves. Use when the owner, working in their vault, says \"resume <project>\", \"resume the vault project X\", \"let's work on vault project X\", \"where were we on project X in my vault\", \"status of my vault project X\". The session's end is vault-capture; creating or closing a project is vault-project."
+description: "Start a work session on one project in a Meaningfy Obsidian vault: read that project's charter (`index.md`), its latest `sessions.md` entries, `decisions.md` and `tasks.md`, make at most one memory recall naming the project, and summarise where things stand and what is next. It writes nothing except a `resources.md` row the owner approves. Use when the owner, working in their vault, says \"resume PROJECT\", \"resume the vault project X\", \"let's work on vault project X\", \"where were we on project X in my vault\", \"status of my vault project X\". The session's end is vault-capture; creating or closing a project is vault-project."
 license: Apache 2.0
 argument-hint: "<project>"
 metadata:

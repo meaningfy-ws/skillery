@@ -11,6 +11,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Fixed
+
+- Claude Desktop now syncs `vault-project`, `vault-promote` and `vault-resume` without warnings: their
+  descriptions no longer contain `<` or `>`, and `make validate` rejects a skill description that does.
+
 ## [3.8.0] - 2026-10-29
 
 ### Added
