@@ -11,8 +11,8 @@
 
 ## 1. Failure cases and fixtures (red)
 
-- [ ] 1.1 Record the failure cases in `openspec/changes/formal-reasoning/inputs/failure-cases.md`. **F-1:** a prose answer about the spike playbook (`reasoning-capabilities/inputs/spike/`) that misses the dead rule. **F-2:** a prose answer about a recursive part-of closure that misses a transitive member. Each records the question, the wrong prose answer, the expected answer and the fixture that encodes it.
-- [ ] 1.2 Write the fixtures `tests/fixtures/formal-reasoning/`:
+- [x] 1.1 Record the failure cases in `openspec/changes/formal-reasoning/inputs/failure-cases.md`. **F-1:** a prose answer about the spike playbook (`reasoning-capabilities/inputs/spike/`) that misses the dead rule. **F-2:** a prose answer about a recursive part-of closure that misses a transitive member. Each records the question, the wrong prose answer, the expected answer and the fixture that encodes it.
+- [x] 1.2 Write the fixtures `tests/fixtures/formal-reasoning/`:
   - `clingo-conflict/` (the worked example, all passing);
   - `clingo-dead-rule/` (F-1): a paraphrased adaptation of `reasoning-capabilities/inputs/spike/playbook.lp`. Its test is `query="wins/1", mode="brave"`, expecting r1–r8. R9 is absent from the brave consequences, which means it is dead;
   - `clingo-fail/` (one wrong expectation);
@@ -22,7 +22,7 @@
   - `no-paraphrase/`;
   - `impure/` (a cut and an `assert`);
   - `bad-tests/` (malformed TOML).
-- [ ] 1.3 Write `tests/test_formal_reasoning.py` (red): one test per spec scenario of the requirements "Installation is separate from use", "Every run is test-first and paraphrased back" and "Competency questions…", using the D-8 exit codes. The Prolog tests skip without `swipl` unless `REQUIRE_ENGINES=1` (D-10).
+- [x] 1.3 Write `tests/test_formal_reasoning.py` (red): one test per spec scenario of the requirements "Installation is separate from use", "Every run is test-first and paraphrased back" and "Competency questions…", using the D-8 exit codes. The Prolog tests skip without `swipl` unless `REQUIRE_ENGINES=1` (D-10).
 
 ## 2. Scripts (green)
 
@@ -74,7 +74,7 @@
 
 ## Roadmap
 
-- [ ] 0.1 · [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 4.1 · [ ] 5.1
+- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 4.1 · [ ] 5.1
 
 ## Verification
 

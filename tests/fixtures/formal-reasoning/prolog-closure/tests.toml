@@ -1,0 +1,15 @@
+[[test]]
+id = "CQ-1"
+question = "Which items belong to tender t1?"
+query = "part_of(X, t1)"
+expect = ["part_of(lot1,t1)", "part_of(item3,t1)"]
+agreed_by = "domain expert"
+agreed_on = "2026-10-29"
+
+[[test]]
+id = "CQ-2"
+question = "Does tender t1 belong to anything?"
+query = "part_of(t1, _)"
+expect = []
+agreed_by = "domain expert"
+agreed_on = "2026-10-29"

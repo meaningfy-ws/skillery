@@ -1,0 +1,10 @@
+[[test]]
+id = "T1"
+question = "Do the pricing rules conflict for a public tender?"
+query = "conflict/0"
+expect = ["conflict"]
+
+[[test]]
+id = "T2"
+query = "pricing/1"
+expect = ["pricing(fixed)", "pricing( tm )"]
