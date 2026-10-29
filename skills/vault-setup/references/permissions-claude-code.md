@@ -102,23 +102,8 @@ Adapt before writing:
 
 ## Per machine: the rulebook script
 
-The script's path holds the owner's home folder, so its allow rule never goes into the vault, which
-is shared across machines. Add it to the user settings of each machine (`~/.claude/settings.json`,
-under `permissions.allow`), where it also covers sessions in code repositories:
-
-```json
-"Bash(python3 <home>/.claude/plugins/cache/meaningfy-skillery/vault-assistant/*/skills/rulebook/scripts/rules.py *)"
-```
-
-- `<home>` is the home folder written out (`/home/<user>`, `/Users/<user>`). Claude Code matches the
-  command text as written, so the rule matches only when the agent runs the script by its full path,
-  unquoted, as the rulebook skill says. The `*` in the middle stands for the installed version.
-- On Windows, write `python` and the Windows path.
-- It is the narrowest pattern the syntax accepts: a `*` matches any text, so `Bash(python3:*)` or
-  `Bash(python3 *rules.py *)` would allow any other Python program.
-- Recorded 2026-10-29 from the Claude Code permission documentation; **not yet tested live**. The
-  first time the owner runs `load`, confirm it runs without a prompt. If Claude Code warns at startup
-  about the wildcard, drop the rule and approve the script when asked.
+The per-machine allow rule for the rulebook script is owned by `rulebook`:
+[Permissions (per machine)](../../rulebook/references/commands.md#permissions-per-machine).
 
 ## Verify
 
