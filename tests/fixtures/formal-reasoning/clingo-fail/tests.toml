@@ -1,0 +1,5 @@
+[[test]]
+id = "T1"
+question = "Is the pricing free of conflicts?"
+query = "conflict/0"
+expect = []

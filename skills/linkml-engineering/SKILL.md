@@ -85,6 +85,8 @@ the guided quality-gate process.
 **This skill DELEGATES:**
 - The representation-agnostic model, UML conceptual modelling, terminology, and the LinkML-vs-model2owl
   **source decision** → `conceptual-modelling`.
+- Competency-question tests over fixture facts → `formal-reasoning`; they are reasoning over facts,
+  not a LinkML quality gate.
 
 Where the generated Pydantic/JSON Schema contract is *consumed* (a service's `entrypoints/api`) is
 the related skill `cosmic-python`.
@@ -96,4 +98,4 @@ skill `project-setup`, when the project uses LinkML.
 without a LinkML pivot does not need this skill.
 
 **Related:** `modelling-conventions`, `conceptual-modelling`, `architecture`, `cosmic-python`,
-`project-setup`.
+`project-setup`, `formal-reasoning`.

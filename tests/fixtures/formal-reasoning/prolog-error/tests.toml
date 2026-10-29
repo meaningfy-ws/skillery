@@ -1,0 +1,5 @@
+# direct_part_of/1 is undefined (no facts file): an error, never "no solutions".
+[[test]]
+id = "E1"
+query = "part_of(X, t1)"
+expect = []

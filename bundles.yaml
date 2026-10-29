@@ -42,6 +42,7 @@ bundles:
       - conceptual-modelling
       - modelling-conventions
       - linkml-engineering
+      - formal-reasoning
     agents: [system-architect, conceptual-modeller]
   - name: meaningfy-building
     description: "The delivery / developer role: the spine build loop (epic-planning, spec-stewardship, clarity-gate, BDD, code review), clean layered Python (cosmic-python), repo scaffolding (project-setup), CD/deploy (ci-cd-delivery), and the release lifecycle (meaningfy-release)"
@@ -67,7 +68,7 @@ bundles:
     agents: [devops-engineer, ops-watch, infra-reviewer]
     requires: [meaningfy-consulting]
   - name: vault-assistant
-    description: "The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily). Needs the external obsidian@obsidian-skills plugin and the company memory"
+    description: "The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily), and learn and keep the owner's rules (rulebook, rule-learner, rule-steward). Needs the external obsidian@obsidian-skills plugin and the company memory"
     skills:
       - vault-setup
       - vault-conventions
@@ -78,4 +79,7 @@ bundles:
       - vault-tidy
       - vault-planning
       - vault-daily
+      - rulebook
+      - rule-learner
+      - rule-steward
     agents: []

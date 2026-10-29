@@ -39,6 +39,10 @@ to add or change a row, edit its entry there and run `make skill-inventory`.
 | **OpenSpec** (`@fission-ai/openspec`, the spine engine + `/opsx:*`) | the spine (project-setup, epic-planning, spec-stewardship) | native | `npm i -g @fission-ai/openspec`; `openspec update --tools claude` | same npm package; `openspec update --tools opencode` registers `opsx-<id>`. Registration form is tool-native (differs by design), not a gap. |
 | **obsidian-skills** (`obsidian@obsidian-skills`: obsidian-markdown, obsidian-bases, obsidian-cli; MIT, [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills)) | every `vault-*` skill (mandatory for `vault-assistant`) | **UNVERIFIED** (plain `SKILL.md` files) | `/plugin marketplace add kepano/obsidian-skills` + `/plugin install obsidian@obsidian-skills` | clone into the user's global opencode skills folder, never into a vault. Gaps for `vault-assistant` on opencode: explicit-only skills are invoked by name (no slash form); vault permission settings **UNVERIFIED** (see `skills/vault-setup/references/permissions-opencode.md`; a 2026-09-15 test run was inconclusive because the opencode provider did not answer). |
 | **code-review** (read-only PR-review *runner*) | optional pair for `meaningfy-code-review` | unsupported (Claude plugin) | `/plugin install code-review@claude-plugins-official` | **gap (optional)** — no opencode plugin equivalent; on opencode run the `meaningfy-code-review` skill directly or opencode's native review. The review *checklist* (the skill) works on both CLIs, so no workflow is blocked. |
+| **clingo** (the answer-set (ASP) solver run by formal-reasoning for finite rule sets; MIT, [potassco/clingo](https://github.com/potassco/clingo); its scripts need Python >= 3.11) | formal-reasoning (`scripts/run_rules.py`, `scripts/check_env.py`) | native | pip, as [`setup.md`](../setup.md#reasoning-engines-for-formal-reasoning-optional) says | same pip package; the engine is CLI-independent. |
+| **SWI-Prolog** (the Prolog engine (`swipl`, with tabling) run by formal-reasoning for closure and competency questions; BSD-2-Clause, [swi-prolog.org](https://www.swi-prolog.org); its scripts need Python >= 3.11) | formal-reasoning (`scripts/run_rules.py`, `scripts/check_env.py`) | native | a system package per OS, as [`setup.md`](../setup.md#reasoning-engines-for-formal-reasoning-optional) says | same system package; the engine is CLI-independent. |
+| **Langfuse** (session traces, read by `rule-steward` for rule usage) | rule-steward (`rules.py stats`) | native (an HTTP API; the CLI does not matter) | set `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` on the machine (see `docs/environment/setup.md`) | the same environment variables |
+| **Langfuse Claude Code plugin** (records every tool call and turn of a Claude Code session in Langfuse) | rule-steward (the only capture of rule usage; the catalogue ships no hook) | unsupported (no opencode plugin known; opencode sessions are not traced) | install the plugin and point it at the Langfuse server with the same keys | **gap**: none; rule usage from opencode sessions is not monitored |
 <!-- /GENERATED -->
 
 > **gitnexus** and **context7** are MCP servers, not skill-packs — both **native** on opencode; see the
@@ -74,6 +78,12 @@ The only recorded *capability* gap is on the agent-hook surface, owned by
 | Intent | Claude binding | opencode | Gap / degradation |
 |---|---|---|---|
 | `persist-before-compaction` | `PreCompact` hook | no `PreCompact` equivalent | degrades to `Stop`/`session.idle` binding on opencode. |
+
+One skill also has a recorded monitoring gap, which comes from a missing plugin rather than a hook:
+
+| Skill | Claude Code | opencode | Gap / degradation |
+|---|---|---|---|
+| `rule-steward` | rule usage is traced by the Langfuse Claude Code plugin | no Langfuse plugin known | opencode sessions can `load`, `cite` and `check` rules, but nothing records them, so rules used only there look unused in the weekly review. |
 
 ## Baseline packs per CLI
 

@@ -5,8 +5,8 @@ assistant in it.
 
 ## Useful only with its prerequisites
 
-`vault-assistant` is a **workflow bundle**, not a role bundle: its nine skills maintain one personal
-vault and run a small daily routine. Without these, the skills have nothing to work on:
+`vault-assistant` is a **workflow bundle**, not a role bundle: its twelve skills maintain one personal
+vault, run a small daily routine and keep the owner's rules. Without these, the skills have nothing to work on:
 
 1. **A vault of the Meaningfy shape**, created by the `vault-setup` skill (the layout, templates, an
    `AGENTS.md` with the owner profile and write rules, and permission settings).
@@ -40,6 +40,11 @@ the infrastructure owner.
 | the vault needs order | `vault-tidy` (a plan first, nothing moves without your yes) |
 | the week, month, quarter, year | `vault-planning plan <horizon>`, or `review <horizon>` |
 | every morning | `vault-daily` |
+| starting an activity (writing, offers, reviews) | `rulebook` (`load` the rules for it, `check` the output, `cite` what applied) |
+| you state a rule or correct the agent | `rule-learner` (one approval card at the end of the session) |
+| the weekly review | `rule-steward`, run by `vault-planning review week` |
+
+How the three rule skills work together: [`reasoning-and-rules.md`](reasoning-and-rules.md).
 
 `vault-conventions` is used by all of them whenever a note is written. Moving, renaming and deleting
 notes follow its one procedure: [Moving and deleting](../../skills/vault-conventions/SKILL.md#moving-and-deleting).
@@ -48,7 +53,8 @@ notes follow its one procedure: [Moving and deleting](../../skills/vault-convent
 
 The skills work, with two recorded gaps: skills have no slash form, so ask for `vault-setup`,
 `vault-promote`, `vault-tidy` or `vault-daily` by name; and the vault's permission settings on opencode
-are unverified. See [`dual-cli/compatibility.md`](dual-cli/compatibility.md).
+are unverified. Rules load and check on opencode, but opencode sessions are not traced, so rule
+monitoring does not see them. See [`dual-cli/compatibility.md`](dual-cli/compatibility.md).
 
 ## Changing the method
 

@@ -201,3 +201,45 @@
   transport: remote
   notes: interactively-authenticated; may be absent in headless/cron runs on either CLI (documented caveat,
     not a per-CLI gap).
+- name: clingo
+  kind: framework
+  summary: 'the answer-set (ASP) solver run by formal-reasoning for finite rule sets; MIT, [potassco/clingo](https://github.com/potassco/clingo); its scripts need Python >= 3.11'
+  source: PyPI clingo
+  pin: '>=5.8 (tested 5.8.2)'
+  provenance: not reviewed
+  used_by: formal-reasoning (`scripts/run_rules.py`, `scripts/check_env.py`)
+  opencode_status: native
+  claude_install: pip, as [`setup.md`](../setup.md#reasoning-engines-for-formal-reasoning-optional) says
+  opencode_install: same pip package; the engine is CLI-independent.
+- name: SWI-Prolog
+  kind: cli-tool
+  summary: 'the Prolog engine (`swipl`, with tabling) run by formal-reasoning for closure and competency questions; BSD-2-Clause, [swi-prolog.org](https://www.swi-prolog.org); its scripts need Python >= 3.11'
+  source: system package (swi-prolog.org)
+  pin: 'unpinned: the OS package (tested 10.0.2)'
+  provenance: not reviewed
+  used_by: formal-reasoning (`scripts/run_rules.py`, `scripts/check_env.py`)
+  opencode_status: native
+  claude_install: a system package per OS, as [`setup.md`](../setup.md#reasoning-engines-for-formal-reasoning-optional) says
+  opencode_install: same system package; the engine is CLI-independent.
+- name: Langfuse
+  kind: service
+  summary: session traces, read by `rule-steward` for rule usage
+  source: a self-hosted Langfuse server, deployed from the infrastructure stacks repository
+  pin: 'unpinned: the deployed server version'
+  provenance: MIT (Langfuse core), not reviewed
+  used_by: rule-steward (`rules.py stats`)
+  opencode_status: native (an HTTP API; the CLI does not matter)
+  claude_install: set `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` on the machine (see `docs/environment/setup.md`)
+  opencode_install: the same environment variables
+  why: rule usage (loaded, cited, overridden, violated) for the weekly rule review
+  hosting: self-hosted
+- name: Langfuse Claude Code plugin
+  kind: plugin
+  summary: records every tool call and turn of a Claude Code session in Langfuse
+  source: Langfuse's Claude Code integration
+  pin: 'unpinned: installed from the source head'
+  provenance: not reviewed
+  used_by: rule-steward (the only capture of rule usage; the catalogue ships no hook)
+  opencode_status: unsupported (no opencode plugin known; opencode sessions are not traced)
+  claude_install: install the plugin and point it at the Langfuse server with the same keys
+  opencode_install: '**gap**: none; rule usage from opencode sessions is not monitored'

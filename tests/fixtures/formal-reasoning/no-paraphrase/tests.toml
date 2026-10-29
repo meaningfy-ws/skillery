@@ -1,0 +1,4 @@
+[[test]]
+id = "T1"
+query = "pricing/1"
+expect = ["pricing(fixed)"]

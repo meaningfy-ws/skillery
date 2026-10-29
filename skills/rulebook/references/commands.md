@@ -1,0 +1,69 @@
+# rules.py commands
+
+Run `python3 <rulebook skill folder>/scripts/rules.py <command> ...` (`python` on Windows). Every
+command that touches the vault finds it through `MEANINGFY_VAULT`, or the current directory when it
+holds `08 How to/`. Commands that use dates take `--today YYYY-MM-DD` to fix the clock.
+
+## Exit codes
+
+| Code | Meaning |
+|---|---|
+| 0 | ok, including a write that raised only warnings |
+| 1 | `check` found a violation, or `lint` found an error |
+| 2 | usage error (a missing or malformed argument) |
+| 3 | environment: the vault, or Langfuse for `stats`, is not found or not reachable |
+| 4 | a write was refused: it would add a new lint error, it duplicates an active rule, or its target is missing |
+
+## Reading
+
+| Command | Does | Prints |
+|---|---|---|
+| `load --activity A [--context k=v ...]` | the rules in force for the activity and context | the playbook procedure (`PLAYBOOK <name>` then its body), one line per winning rule (`R-0042 [default] spelling=british: <do> (because: ...)`), the rules without a slot, a `CHECK` line naming the rules with a check pattern, `CONFLICT ...: ask the owner` lines, `SKIPPED` for unreadable notes, then `-- end --` |
+| `check --activity A [--context k=v ...] FILE` | runs the check patterns of the rules in force on FILE | `VIOLATION R-NNNN line N: <line>` per hit (exit 1), or `OK`, then `-- end --` |
+| `check --golden [--activity A]` | runs each playbook's golden examples through `check`, in the playbook's activity plus the tags written after `\|` in the `golden:` item | `GOLDEN <path>: ok`, `FAIL` (with its violations) or `missing`; exit 1 on any failure |
+| `lint` | the whole rule set | `ERROR <code>: ...` and `WARNING <code>: ...` lines and a count; exit 1 on any error |
+| `search WORD ...` | rules and candidates whose id, `when`, `do`, slot, value, reason or source hold every word | `R-NNNN [status] [strength] <do> (when: ...)` |
+
+Lint codes: errors `parse`, `missing`, `invalid`, `regex`, `duplicate-id`, `dangling`,
+`narrow-exception`, `cycle`; warnings `conflict`, `dead`, `redundant`, `duplicate`,
+`weak-exception`, `vocabulary`, `oversized`.
+
+## Recording use (write nothing)
+
+| Command | Records |
+|---|---|
+| `cite R-NNNN ...` | the rules that shaped an output |
+| `override R-NNNN --reason "..."` | a correction by the owner against a rule in force |
+
+Both only print a line. They exist so that the call shows up in the session trace, where `stats`
+counts it. A repeated call is a second real event.
+
+## Writing
+
+Every write is checked against the lint first: a write that adds a new error is refused (exit 4) and
+the file is left unchanged; new warnings are written and printed.
+
+| Command | Does |
+|---|---|
+| `add --type T --strength S --scope tag [--scope tag ...] --when ... --do ... --because ... --source ... [--slot --value --instead-of --exception-of --supersedes --check-absent --check-present]` | writes `08 How to/Rules/R-NNNN <title>.md` with the next free id, `status: active`, `private: true` and today's `added`, `approved` and `last_confirmed`. With `--supersedes R-old`, also retires R-old. Refused when `when` and `do` match an active rule: run `confirm` instead |
+| `add --candidate ...` | the same, written to `00 Inbox/proposed/` with `status: idea` and no approval dates |
+| `update R-NNNN --field value ...` | changes the given fields and keeps the id; `--scope` replaces the whole list. A new `do` renames the file to match, after checking that no other note in the vault has the new name |
+| `confirm R-NNNN` | sets `last_confirmed` to today; nothing else changes |
+| `retire R-NNNN --reason "..."` | sets `status: dropped`, `retired` and `retired_reason`; never deletes. A second call changes nothing |
+| `approve R-NNNN` | moves a candidate from `00 Inbox/proposed/` into `08 How to/Rules/`, `status: active`, after checking that no other note in the vault has its name. On a candidate already approved it prints `already approved` and exits 0 |
+
+`add` and `update` take `--dry-run`: nothing is written, and the warnings the write would add (or
+the errors that would refuse it) are printed. The rule approval card uses it.
+
+Ids are allocated with an exclusive file create, followed by a check that no other file holds the
+same id under another title; on a collision the highest id is read again once and
+the write retried.
+
+## Monitoring
+
+`stats [--since 30d] [--from-file FILE]` reads the session traces of the window from Langfuse
+(`LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`) and prints, per rule, the times it
+was loaded, cited, overridden and violated, then the usage flags. `--from-file` reads a saved
+response of the observations API instead; an unreadable file exits 3. With no `rules.py` event in
+the window it warns and raises no usage flag; the stale flag still applies. A missing setting or an unreachable server exits 3 and
+names the problem. How the counts are derived is in the `rule-steward` skill.

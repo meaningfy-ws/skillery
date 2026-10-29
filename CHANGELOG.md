@@ -13,6 +13,22 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
+- **`formal-reasoning` (`meaningfy-architecture`, experimental).** When an answer about rules or facts
+  must be exact, your agent now runs it on an engine instead of reasoning in prose: clingo for rule
+  sets (conflicts, dead rules, minimal fixes), SWI-Prolog for closure and competency questions. One
+  script runs a project's tests and prints each rule's paraphrase beside it. Install the engine you
+  need first ([`docs/environment/setup.md`](docs/environment/setup.md#reasoning-engines-for-formal-reasoning-optional));
+  the skill never installs it.
+- **The owner's rules, learned and kept in the vault** (`vault-assistant`: `rulebook`, `rule-learner`,
+  `rule-steward`, experimental). State a rule or correct the agent and it is offered back in one
+  approval card at the end of the session; approved rules live in `08 How to/Rules/`, are loaded
+  for the activity at hand, checked on outputs, and reviewed weekly from Langfuse usage. Set
+  `MEANINGFY_VAULT` to use them from a code repository, and the `LANGFUSE_*` settings for the weekly
+  review (see [`docs/environment/setup.md`](docs/environment/setup.md)).
+
+- **A guide to the reasoning and rules skills** ([`docs/environment/reasoning-and-rules.md`](docs/environment/reasoning-and-rules.md)):
+  how `formal-reasoning` gets exact answers from an engine, how your rules are learned, applied and
+  reviewed, what each needs, and the known limits.
 - **A guide to the voice and communication skills** ([`docs/environment/communication.md`](docs/environment/communication.md)):
   which skill owns what, the registers and channel profiles, what is covered and what is not yet
   (the quotation skeleton, most channel profiles), the guardrails, and how to add a register, a

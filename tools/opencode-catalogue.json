@@ -45,7 +45,8 @@
         "architecture",
         "conceptual-modelling",
         "modelling-conventions",
-        "linkml-engineering"
+        "linkml-engineering",
+        "formal-reasoning"
       ],
       "agents": [
         "system-architect",
@@ -96,7 +97,10 @@
         "vault-promote",
         "vault-tidy",
         "vault-planning",
-        "vault-daily"
+        "vault-daily",
+        "rulebook",
+        "rule-learner",
+        "rule-steward"
       ],
       "agents": []
     }

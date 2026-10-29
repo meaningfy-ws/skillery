@@ -17,6 +17,9 @@ served_by:
   - vault-tidy
   - vault-planning
   - vault-daily
+  - rulebook
+  - rule-learner
+  - rule-steward
 status: covered
 change: add-vault-local-config
 ---

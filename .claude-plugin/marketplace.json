@@ -41,7 +41,7 @@
     },
     {
       "name": "vault-assistant",
-      "description": "The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily). Needs the external obsidian@obsidian-skills plugin and the company memory",
+      "description": "The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily), and learn and keep the owner's rules (rulebook, rule-learner, rule-steward). Needs the external obsidian@obsidian-skills plugin and the company memory",
       "source": "./bundles/vault-assistant"
     }
   ]

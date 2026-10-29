@@ -20,7 +20,9 @@ always ask, so the owner approves each move or delete they requested (`vault-con
 deleting); the scheduled run denies them on its command line ([`scheduler.md`](scheduler.md)). The read-only
 mail and calendar tools and the memory `recall` are allowed, so neither an interactive session nor a
 scheduled one stops to ask for them. Any other shell
-command is a **stated gap**: tell the owner to refuse it when asked.
+command is a **stated gap**: tell the owner to refuse it when asked. The one exception is the
+rulebook script (`.../rulebook/scripts/rules.py`): approve it, never refuse it, because it reads and
+writes only rule notes. The allow rule that saves the prompt is per machine (below).
 
 ```json
 {
@@ -97,6 +99,26 @@ Adapt before writing:
 - A server-level entry (`mcp__claude_ai_Google_Drive`) denies every tool of that server.
 - Connector tool names change when a connector updates: re-run the check in
   [`final-check.md`](final-check.md) after an update.
+
+## Per machine: the rulebook script
+
+The script's path holds the owner's home folder, so its allow rule never goes into the vault, which
+is shared across machines. Add it to the user settings of each machine (`~/.claude/settings.json`,
+under `permissions.allow`), where it also covers sessions in code repositories:
+
+```json
+"Bash(python3 <home>/.claude/plugins/cache/meaningfy-skillery/vault-assistant/*/skills/rulebook/scripts/rules.py *)"
+```
+
+- `<home>` is the home folder written out (`/home/<user>`, `/Users/<user>`). Claude Code matches the
+  command text as written, so the rule matches only when the agent runs the script by its full path,
+  unquoted, as the rulebook skill says. The `*` in the middle stands for the installed version.
+- On Windows, write `python` and the Windows path.
+- It is the narrowest pattern the syntax accepts: a `*` matches any text, so `Bash(python3:*)` or
+  `Bash(python3 *rules.py *)` would allow any other Python program.
+- Recorded 2026-10-29 from the Claude Code permission documentation; **not yet tested live**. The
+  first time the owner runs `load`, confirm it runs without a prompt. If Claude Code warns at startup
+  about the wildcard, drop the rule and approve the script when asked.
 
 ## Verify
 

@@ -3,12 +3,16 @@ on: [push, pull_request]
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      # the formal-reasoning engine tests fail instead of skipping when an engine is absent
+      REQUIRE_ENGINES: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - run: pip install -r requirements-dev.txt
+      - run: sudo apt-get update && sudo apt-get install -y swi-prolog-nox
       - run: python -m tools.repo_lint
       # bundles/ is generated and committed: regenerate it and prove nothing changed (never hand-edited).
       - run: python -m tools.bundle_gen generate

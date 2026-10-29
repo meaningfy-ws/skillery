@@ -46,7 +46,8 @@ settings exist, a session at the vault root may not edit them. If the working fo
    - the layout from `vault-conventions`, including
      `00 Inbox/proposed/`, `04 Daily/reviews/`, `X/Templates/` and the trash folder `.trash/`, and
      `vault-files/_shared/`;
-   - one template per kind, copied from [`assets/templates/`](assets/templates/) into `X/Templates/`;
+   - one template per kind, copied from [`assets/templates/`](assets/templates/) into `X/Templates/`,
+     and the folders `08 How to/Rules/` and `08 How to/Playbooks/` for the owner's rules;
    - `05 To Do/To-Do.md` from its template;
    - `AGENTS.md` from [`assets/AGENTS.md`](assets/AGENTS.md), with the profile filled in;
    - `README.md` from [`assets/README.md`](assets/README.md), the page a person reads first, with its
@@ -56,7 +57,9 @@ settings exist, a session at the vault root may not edit them. If the working fo
    [`references/permissions-claude-code.md`](references/permissions-claude-code.md) or
    [`references/permissions-opencode.md`](references/permissions-opencode.md) (opencode also gets
    `opencode.scheduled.json` when the daily run is scheduled). Tell the person any deny or ask the CLI
-   cannot express.
+   cannot express. Then, per machine, add the rulebook script's allow rule to the person's user
+   settings, as the same reference says (its path holds the home folder, so it never goes in the
+   vault).
 5. **Guide the machine and accounts**, each from its reference, skipping what is already in place:
    - Obsidian, its CLI and the obsidian-skills plugin →
      [`references/obsidian.md`](references/obsidian.md);
@@ -79,4 +82,4 @@ repository and its private runbook.
 
 A vault is not a code repository: see also `project-setup` for scaffolding a software project.
 
-**Related:** `vault-conventions`, `vault-daily`.
+**Related:** `vault-conventions`, `vault-daily`, `rulebook`.
