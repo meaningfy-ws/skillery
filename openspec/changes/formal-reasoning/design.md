@@ -184,3 +184,12 @@ The facts in `facts.pl` are `direct_part_of(lot1, t1). direct_part_of(item3, lot
   reported a cost-2 fix as part of the smallest one. The control now also gets `--opt-mode=optN`, so
   consequences range over the optimal answer sets only; without optimisation the flag changes nothing.
   Guarded by the fixture `clingo-minimal-fix/`.
+- **2026-10-29, D-5 amended after review (task 5.1).** The run prints each paraphrase beside the
+  rule's *whole statement*, not its first line, so the body of a multi-line rule is shown too. The
+  lint now ends a statement at a `.` followed by whitespace, a comment or the end of the line (a
+  second rule on a line needs its own paraphrase, which only a line above the first can give, so it
+  is refused), treats only `"` as a quote in `.lp` (`a'` is a name), skips Prolog character codes
+  (`0'a`), and refuses block comments. A clingo query on a signature the program never uses is
+  refused (exit 2) through clingo's "no atoms over signature" message, as Prolog refuses an unknown
+  procedure. Explicit `--facts` and `--tests` paths must exist and are made absolute. A Prolog query
+  is wrapped as `writeq((Query))`, so a conjunction prints whole.

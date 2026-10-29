@@ -17,3 +17,7 @@ wins(R) :- fires(R), not beats(_,R).
 conflict(R1,R2,S) :- wins(R1), wins(R2), rule(R1,S,V1,_), rule(R2,S,V2,_), V1 != V2, R1 < R2.
 #show conflict/3.
 #show sit/2.
+%% Two clashing rules clash in every situation that matches both their scopes.
+clash_on(R1,R2,D,V) :- conflict(R1,R2,_), scope(R1,D,V).
+%% The second rule's scope is part of that situation too.
+clash_on(R1,R2,D,V) :- conflict(R1,R2,_), scope(R2,D,V).

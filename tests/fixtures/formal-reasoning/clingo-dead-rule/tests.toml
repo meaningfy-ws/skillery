@@ -12,3 +12,10 @@ question = "Which rules clash, on which slot?"
 query = "conflict/3"
 mode = "brave"
 expect = ["conflict(r5,r6,pricing)"]
+
+[[test]]
+id = "CLASH-1"
+question = "In which situation do the clashing rules clash?"
+query = "clash_on/4"
+mode = "brave"
+expect = ["clash_on(r5,r6,client,public)", "clash_on(r5,r6,channel,tender)"]

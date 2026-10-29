@@ -26,6 +26,7 @@ FAILED, REFUSED = 1, 2
 ROW_SCALE = 10_000
 ENGINES = {".lp": "clingo", ".pl": "prolog"}
 IMPURE = re.compile(r"!|\b(?:assert|asserta|assertz|retract|retractall|nb_setval|b_setval)\b(?=\s*\()")
+ABSENT = re.compile(r"no atoms over signature occur in program:\s*(\S+)")
 SIGNATURE = re.compile(r"^[a-z_][A-Za-z0-9_]*/\d+$")
 
 
@@ -50,37 +51,50 @@ def norm(text):
     return "".join(text.split())
 
 
-def code_of(line):
-    """The line with quoted text blanked and the comment cut, so lints see only code."""
-    out, quote = [], None
-    for ch in line:
+def code_of(line, ext):
+    """The line's code, as long as the original up to the comment: quoted text becomes `_`, so lints
+    see only code and positions still match the original line."""
+    quotes = "'\"" if ext == ".pl" else '"'  # in clingo `'` is part of a name (`a'`), not a quote
+    out, quote, i = [], None, 0
+    while i < len(line):
+        ch = line[i]
         if quote:
-            if ch == quote:
-                quote = None
-                out.append(ch)
-            continue
-        if ch == "%":
+            out.append(ch if ch == quote else "_")
+            quote = None if ch == quote else quote
+        elif ch == "%":
             break
-        if ch in "'\"":
-            quote = ch
-        out.append(ch)
-    return "".join(out)
-
-
-def statements(lines):
-    """(first line number, code) per statement. Shortcut: line-based, so a statement ends at a line
-    ending in `.`; block comments are not recognised. Upgrade to a tokenizer if that bites."""
-    out, buf, start = [], [], 0
-    for no, line in enumerate(lines, 1):
-        code = code_of(line).strip()
-        if not code:
+        elif ext == ".pl" and line.startswith("0'", i) and i + 2 < len(line):
+            width = 4 if line[i + 2] == "\\" else 3  # a character code such as 0'a or 0'\n
+            out.append("0" + "_" * (width - 1))
+            i += width
             continue
-        if not buf:
-            start = no
-        buf.append(code)
-        if code.endswith(".") and not code.endswith(".."):
-            out.append((start, " ".join(buf)))
-            buf = []
+        else:
+            quote = ch if ch in quotes else None
+            out.append(ch)
+        i += 1
+    return "".join(out)[:len(line)]
+
+
+END = re.compile(r"(?<!\.)\.(?=\s|$)")  # a full stop followed by whitespace or the end of the code
+
+
+def statements(lines, ext):
+    """(first line number, code, original text, first on its line) per statement. Shortcut: block
+    comments are refused by lint(), not parsed."""
+    out, code_buf, text_buf, start, first = [], [], [], 0, True
+    for no, line in enumerate(lines, 1):
+        code, begin = code_of(line, ext), 0
+        for m in [*END.finditer(code), None]:
+            end = m.end() if m else len(code)
+            if code[begin:end].strip():
+                if not code_buf:
+                    start, first = no, not code[:begin].strip()
+                code_buf.append(code[begin:end].strip())
+                text_buf.append(line[begin:end].strip())
+                if m:
+                    out.append((start, " ".join(code_buf), " ".join(text_buf), first))
+                    code_buf, text_buf = [], []
+            begin = end
     return out
 
 
@@ -94,21 +108,24 @@ def lint(path):
     """Paraphrase table rows; raises Refused listing every finding (D-5, D-6)."""
     lines = path.read_text(encoding="utf-8").splitlines()
     ext, rows, findings = path.suffix, [], []
-    for start, code in statements(lines):
+    for no, line in enumerate(lines, 1):
+        rest = line[len(code_of(line, ext)):]
+        if rest.startswith("%*") or (ext == ".pl" and "/*" in code_of(line, ext)):
+            findings.append(f"{path.name}:{no}: block comments are not supported; use `%` line comments")
+    for start, code, text, first in statements(lines, ext):
         if not is_rule(code, ext):
             continue
         above, no = [], start - 1
-        while no >= 1 and lines[no - 1].lstrip().startswith("%%"):
+        while first and no >= 1 and lines[no - 1].lstrip().startswith("%%"):
             above.insert(0, lines[no - 1].lstrip()[2:].strip())
             no -= 1
         if above:
-            rows.append({"line": start, "rule": lines[start - 1].strip(), "paraphrase": " ".join(above)})
+            rows.append({"line": start, "rule": text, "paraphrase": " ".join(above)})
         else:
-            findings.append(f"{path.name}:{start}: rule has no `%%` paraphrase comment above it: "
-                            f"{lines[start - 1].strip()}")
+            findings.append(f"{path.name}:{start}: rule has no `%%` paraphrase comment above it: {text}")
     if ext == ".pl":
         for no, line in enumerate(lines, 1):
-            for m in IMPURE.finditer(code_of(line)):
+            for m in IMPURE.finditer(code_of(line, ext)):
                 findings.append(f"{path.name}:{no}: `{m.group(0)}` is outside the pure subset")
     if findings:
         raise Refused("\n".join(findings))
@@ -182,6 +199,11 @@ def run_clingo(rules, facts, tests):
             result = ctl.solve(on_model=lambda m: last.__setitem__(slice(None), m.symbols(atoms=True)))
         except RuntimeError as e:
             raise Refused("clingo: " + ("".join(messages).strip() or str(e))) from e
+        queried = {norm(t.query) for t in tests}
+        absent = sorted(m.group(1) for m in map(ABSENT.search, messages) if m and m.group(1) in queried)
+        if absent:
+            raise Refused(f"clingo: no atoms over {', '.join(absent)} occur in the program; "
+                          "a query must name a predicate the rules or facts use")
         report["warnings"] += [m.strip() for m in messages if m.strip() not in report["warnings"]]
         stats = ctl.statistics  # only meaningful after solve() (D-7)
         lp = stats["problem"]["lp"]
@@ -212,7 +234,7 @@ def run_prolog(rules, facts, tests, timeout):
               "time_s": 0.0, "grounding": None, "warnings": [], "answers": {}}
     load = f"consult({quoted(rules)}), " + (f"consult({quoted(facts)}), " if facts else "")
     for t in tests:
-        goal = f"{load}forall(({t.query}), (writeq({t.query}), nl)), halt"
+        goal = f"{load}forall(({t.query}), (writeq(({t.query})), nl)), halt"
         began = time.perf_counter()
         try:
             out = subprocess.run([exe, "-q", "-g", goal, "-t", "halt(1)"], cwd=rules.parent,
@@ -274,8 +296,11 @@ def locate(project, facts, tests):
         raise Refused(f"{project}: need exactly one rules.lp or rules.pl, found "
                       f"{', '.join(p.name for p in found) or 'none'}")
     rules = found[0]
-    facts = Path(facts) if facts else project / f"facts{rules.suffix}"
-    return rules, facts if facts.is_file() else None, Path(tests) if tests else project / "tests.toml"
+    for given in (facts, tests):
+        if given and not Path(given).is_file():
+            raise Refused(f"{given}: no such file")
+    facts = Path(facts).resolve() if facts else project / f"facts{rules.suffix}"
+    return rules, facts if facts.is_file() else None, Path(tests).resolve() if tests else project / "tests.toml"
 
 
 def main(argv=None):
@@ -293,7 +318,7 @@ def main(argv=None):
         tests = load_tests(tests_path, engine)
         warnings = []
         if facts and engine == "clingo":
-            n = len(statements(facts.read_text(encoding="utf-8").splitlines()))
+            n = len(statements(facts.read_text(encoding="utf-8").splitlines(), ".lp"))
             if n > ROW_SCALE:
                 warnings.append(f"{facts.name} has {n} statements: row-scale input grounds slowly in clingo; "
                                 "consider SWI-Prolog")

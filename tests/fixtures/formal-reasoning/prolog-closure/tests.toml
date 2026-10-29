@@ -13,3 +13,11 @@ query = "part_of(t1, _)"
 expect = []
 agreed_by = "domain expert"
 agreed_on = "2026-10-29"
+
+[[test]]
+id = "CQ-3"
+question = "Which part of t1 has parts of its own?"
+query = "part_of(X, t1), part_of(Y, X)"
+expect = ["part_of(lot1,t1), part_of(item3,lot1)"]
+agreed_by = "domain expert"
+agreed_on = "2026-10-29"

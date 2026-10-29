@@ -154,6 +154,77 @@ def test_json_output_and_repeatability():
     assert [t["actual"] for t in second["tests"]] == [t["actual"] for t in data["tests"]]
 
 
+@pytest.mark.parametrize("fixture,where,needle", [
+    ("lint-lp-prime", "rules.lp:2", "a' :- b."),            # in clingo `'` is part of a name, not a quote
+    ("lint-pl-char-code", "rules.pl:3", "p(X) :- q(X)."),   # `0'a` is a character code, not a quote
+    ("lint-same-line", "rules.lp:2", "c :- d."),            # the second statement on a line has no paraphrase
+    ("lint-block-comment", "rules.lp:1", "block comment"),
+])
+def test_lint_cannot_be_bypassed(fixture, where, needle):
+    r = rules(FIX / fixture)
+    assert r.returncode == 2, r.stdout + r.stderr
+    assert where in r.stderr and needle in r.stderr
+
+
+def test_missing_explicit_facts_or_tests_file_is_refused():
+    for flag in ("--facts", "--tests"):
+        r = rules(FIX / "clingo-fail", flag, "typo.lp")
+        assert r.returncode == 2, (flag, r.stdout + r.stderr)
+        assert "typo.lp" in r.stderr
+
+
+@needs_swipl
+def test_relative_facts_path_works_for_prolog():
+    r = subprocess.run([sys.executable, str(SCRIPTS / "run_rules.py"), "prolog-closure",
+                        "--facts", "prolog-closure/facts.pl"], cwd=FIX, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+@needs_clingo
+def test_clingo_query_on_an_absent_signature_is_refused(tmp_path):
+    shutil.copy(FIX / "clingo-conflict/rules.lp", tmp_path)
+    (tmp_path / "tests.toml").write_text('[[test]]\nid="Z"\nquery="zz/1"\nexpect=[]\n')
+    r = rules(tmp_path)
+    assert r.returncode == 2, r.stdout + r.stderr
+    assert "zz/1" in r.stderr
+
+
+@needs_clingo
+def test_clash_names_the_situation():
+    r = rules(FIX / "clingo-dead-rule")
+    assert "PASS CLASH-1: [clash_on(r5,r6,channel,tender), clash_on(r5,r6,client,public)]" in r.stdout
+
+
+@needs_clingo
+def test_multiline_rule_is_printed_whole():
+    r = rules(FIX / "clingo-dead-rule")
+    assert "scope(O,D,V) : scope(R,D,V); nsc(O,NO)" in r.stdout
+
+
+def test_missing_clingo_exits_3(tmp_path):
+    (tmp_path / "clingo.py").write_text("raise ImportError('simulated: clingo is not installed')\n")
+    r = run("run_rules.py", FIX / "clingo-conflict", env={**os.environ, "PYTHONPATH": str(tmp_path)})
+    assert r.returncode == 3, r.stdout + r.stderr
+    assert "dependencies.yaml" in r.stderr
+
+
+@needs_swipl
+def test_prolog_timeout_fails_that_test_and_continues(tmp_path):
+    (tmp_path / "rules.pl").write_text("%% Looping never ends.\nloop :- loop.\n")
+    (tmp_path / "tests.toml").write_text(
+        '[[test]]\nid="T1"\nquery="loop"\nexpect=[]\n[[test]]\nid="T2"\nquery="true"\nexpect=["true"]\n')
+    r = rules(tmp_path, "--timeout", "1")
+    assert r.returncode == 1, r.stdout + r.stderr
+    assert "FAIL T1: expected [] got timeout after 1.0 s" in r.stdout
+    assert "PASS T2: [true]" in r.stdout
+
+
+@needs_swipl
+def test_conjunction_query_prints_the_conjunction():
+    r = rules(FIX / "prolog-closure")
+    assert "PASS CQ-3: [part_of(lot1,t1),part_of(item3,lot1)]" in r.stdout, r.stdout + r.stderr
+
+
 # --- Competency questions are tests with answers agreed beforehand ----------------------------
 
 @needs_swipl

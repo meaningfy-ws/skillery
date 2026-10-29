@@ -100,12 +100,13 @@ grounding guard and when not to use an engine at all: [engines](references/engin
 | Key | clingo | SWI-Prolog |
 |---|---|---|
 | `query` | a predicate signature, `wins/1` | a goal, `part_of(X, t1)` |
-| `expect` | the matching atoms, or `"UNSAT"` when the rules must have no answer set | the solutions as `writeq` prints the goal; `[]` for none |
+| `expect` | the matching atoms, or `"UNSAT"` when the rules must have no answer set | the solutions as `writeq` prints the goal; `[]` for none. A conjunction prints whole: `part_of(lot1,t1),part_of(item3,lot1)`. Name every variable you want to see: each `_` prints as a fresh `_123` |
 | `mode` | `cautious` (in every answer set, the default) or `brave` (in some) | not used |
 
 `id`, `query` and `expect` are required; `question`, `agreed_by` and `agreed_on` are optional, and
 required in practice for a competency question. Answers compare as sets, ignoring order and
-whitespace. A `#show` in the rules never hides an answer from a test.
+whitespace. A `#show` in the rules never hides an answer from a test, and a clingo query on a
+predicate the program never uses is refused, like an unknown procedure in Prolog.
 
 ## References
 

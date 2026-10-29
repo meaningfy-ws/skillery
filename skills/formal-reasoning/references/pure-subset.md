@@ -20,8 +20,10 @@ order and search order, so a passing test means the logic is right, not that the
   `direct_part_of/2`, and a paraphrased rule lifts them into `part_of/2`. In SWI-Prolog, consulting
   a facts file that defines a ruled predicate silently replaces the rules; the engine prints a
   `Redefined static procedure` warning, and the run refuses it.
-- **One statement ends at the end of a line.** The lints read statements line by line; keep the
-  closing `.` at the end of a line, and do not use `%* … *%` block comments.
+- **Line comments only.** A statement ends at a `.` followed by a space, a comment or the end of
+  the line, so one line may hold several statements, and each rule among them needs its own
+  paraphrase line, which in practice means one rule per line. Block comments (`%* … *%` in clingo,
+  `/* … */` in Prolog) are refused (checked).
 
 ## SWI-Prolog
 
