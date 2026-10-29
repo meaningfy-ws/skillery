@@ -1,0 +1,183 @@
+{
+  "data": [
+    {
+      "id": "obs-01",
+      "traceId": "trace-01",
+      "type": "SPAN",
+      "name": "Bash",
+      "startTime": "2026-10-20T09:00:00.000Z",
+      "endTime": "2026-10-20T09:00:00.000Z",
+      "parentObservationId": null,
+      "level": "DEFAULT",
+      "metadata": {},
+      "input": {
+        "command": "python3 \"<skills>/rulebook/scripts/rules.py\" load --activity writing --context channel=email"
+      },
+      "output": {
+        "stdout": "PLAYBOOK Writing\n# Writing\n\n1. Load the rules.\nR-0001 [default] spelling=british — use British English spelling (because: the owner said so in a session)\nR-0012 [default] greeting=first-name — greet by first name (because: the owner said so in a session)\nR-0010 [hard] use no em dash (because: the owner said so in a session)\nCHECK R-0010: run check on the output before handing it over\n-- end --\n",
+        "stderr": "",
+        "interrupted": false
+      }
+    },
+    {
+      "id": "obs-02",
+      "traceId": "trace-01",
+      "type": "SPAN",
+      "name": "Bash",
+      "startTime": "2026-10-21T09:00:00.000Z",
+      "endTime": "2026-10-21T09:00:00.000Z",
+      "parentObservationId": null,
+      "level": "DEFAULT",
+      "metadata": {},
+      "input": {
+        "command": "python3 \"<skills>/rulebook/scripts/rules.py\" load --activity writing"
+      },
+      "output": {
+        "stdout": "PLAYBOOK Writing\nR-0001 [default] spelling=british — use Brit"
+      }
+    },
+    {
+      "id": "obs-03",
+      "traceId": "trace-01",
+      "type": "SPAN",
+      "name": "Bash",
+      "startTime": "2026-10-20T09:05:00.000Z",
+      "endTime": "2026-10-20T09:05:00.000Z",
+      "parentObservationId": null,
+      "level": "DEFAULT",
+      "metadata": {},
+      "input": {
+        "command": "python3 \"<skills>/rulebook/scripts/rules.py\" cite R-0001 R-0010"
+      },
+      "output": {
+        "stdout": "cited R-0001 R-0010\n"
+      }
+    },
+    {
+      "id": "obs-04",
+      "traceId": "trace-01",
+      "type": "SPAN",
+      "name": "Bash",
+      "startTime": "2026-10-22T10:00:00.000Z",
+      "endTime": "2026-10-22T10:00:00.000Z",
+      "parentObservationId": null,
+      "level": "DEFAULT",
+      "metadata": {},
+      "input": {
+        "command": "python3 \"<skills>/rulebook/scripts/rules.py\" override R-0012 --reason \"US client prefers a surname\""
+      },
+      "output": {
+        "stdout": "override R-0012: US client prefers a surname\n"
+      }
+    },
+    {
+      "id": "obs-05",
+      "traceId": "trace-01",
+      "type": "SPAN",
+      "name": "Bash",
+      "startTime": "2026-10-23T10:00:00.000Z",
+      "endTime": "2026-10-23T10:00:00.000Z",
+      "parentObservationId": null,
+      "level": "DEFAULT",
+      "metadata": {},
+      "input": "{\"command\": \"python3 \\\"<skills>/rulebook/scripts/rules.py\\\" override R-0012 --reason \\\"internal memo\\\"\"}",
+      "output": "{\"stdout\": \"override R-0012: internal memo\\n\"}"
+    },
+    {
+      "id": "obs-06",
+      "traceId": "trace-01",
+      "type": "SPAN",
+      "name": "Bash",
+      "startTime": "2026-10-20T09:03:00.000Z",
+      "endTime": "2026-10-20T09:03:00.000Z",
+      "parentObservationId": null,
+      "level": "DEFAULT",
+      "metadata": {},
+      "input": {
+        "command": "python3 \"<skills>/rulebook/scripts/rules.py\" check --activity writing draft.md"
+      },
+      "output": {
+        "stdout": "VIOLATION R-0010 line 3: The pilot is ready — we start on Monday.\n-- end --\n"
+      }
+    },
+    {
+      "id": "obs-07",
+      "traceId": "trace-01",
+      "type": "GENERATION",
+      "name": "claude-turn",
+      "startTime": "2026-10-24T11:00:00.000Z",
+      "endTime": "2026-10-24T11:00:00.000Z",
+      "parentObservationId": null,
+      "level": "DEFAULT",
+      "metadata": {},
+      "input": {
+        "messages": [
+          {
+            "role": "assistant",
+            "content": "I ran python3 \"<skills>/rulebook/scripts/rules.py\" cite R-0001 R-0010 earlier."
+          },
+          {
+            "role": "user",
+            "content": "carry on"
+          }
+        ]
+      },
+      "output": {
+        "content": "Done."
+      }
+    },
+    {
+      "id": "obs-08",
+      "traceId": "trace-01",
+      "type": "SPAN",
+      "name": "Bash",
+      "startTime": "2026-10-24T11:01:00.000Z",
+      "endTime": "2026-10-24T11:01:00.000Z",
+      "parentObservationId": null,
+      "level": "DEFAULT",
+      "metadata": {},
+      "input": {
+        "command": "ls -la"
+      },
+      "output": {
+        "stdout": "total 0\n"
+      }
+    },
+    {
+      "id": "obs-09",
+      "traceId": "trace-01",
+      "type": "EVENT",
+      "name": "session-start",
+      "startTime": "2026-10-24T08:00:00.000Z",
+      "endTime": "2026-10-24T08:00:00.000Z",
+      "parentObservationId": null,
+      "level": "DEFAULT",
+      "metadata": {},
+      "input": null,
+      "output": null
+    },
+    {
+      "id": "obs-10",
+      "traceId": "trace-01",
+      "type": "SPAN",
+      "name": "Bash",
+      "startTime": "2026-08-01T09:00:00.000Z",
+      "endTime": "2026-08-01T09:00:00.000Z",
+      "parentObservationId": null,
+      "level": "DEFAULT",
+      "metadata": {},
+      "input": {
+        "command": "python3 \"<skills>/rulebook/scripts/rules.py\" cite R-0001"
+      },
+      "output": {
+        "stdout": "cited R-0001\n"
+      }
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 50,
+    "totalItems": 10,
+    "totalPages": 1
+  }
+}

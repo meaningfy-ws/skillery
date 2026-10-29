@@ -11,11 +11,11 @@
 
 ## 1. Failure cases and fixtures (red)
 
-- [ ] 1.1 Write `openspec/changes/rule-learner/inputs/failure-cases.md`, recording for each case the evidence, the expected behaviour and the spec scenario that covers it.
+- [x] 1.1 Write `openspec/changes/rule-learner/inputs/failure-cases.md`, recording for each case the evidence, the expected behaviour and the spec scenario that covers it.
   - **F-1:** a rule the owner stated in one context does not reach another. The 2026-10-27 "no config, YAGNI" rule lives only in one repo's Claude Code auto memory and is absent from vault and opencode sessions.
   - **F-2:** a checkable preference ("British English, no em dash", handover §0) is never enforced on outputs.
   - **F-3:** conflicting rules accumulate unnoticed (the spike's R5/R6).
-- [ ] 1.2 Build a fixture vault `tests/fixtures/rulebook/vault/`. Its `08 How to/Rules/` holds one note for each of:
+- [x] 1.2 Build a fixture vault `tests/fixtures/rulebook/vault/`. Its `08 How to/Rules/` holds one note for each of:
   - default-with-exception, and an exception chain of three;
   - a global `activity:*` rule beaten by an activity rule;
   - a conflict;
@@ -40,7 +40,7 @@
   - a second playbook with 31 active rules, generated in the test;
   - `00 Inbox/proposed/`, with one candidate;
   - `tests/fixtures/rulebook/langfuse-observations.json`, with load, cite, override and check events, one truncated load, a GENERATION observation that repeats an earlier cite (it must not count), and noise.
-- [ ] 1.3 Write `tests/test_rulebook.py` (red). It has one test per scenario of `specs/rule-learning/spec.md` that the script decides, plus one per fixture finding, the exit codes of D-14, and an assertion that rulebook, rule-learner and rule-steward share one bundle (D-2). The clock is fixed with `--today`.
+- [x] 1.3 Write `tests/test_rulebook.py` (red). It has one test per scenario of `specs/rule-learning/spec.md` that the script decides, plus one per fixture finding, the exit codes of D-14, and an assertion that rulebook, rule-learner and rule-steward share one bundle (D-2). The clock is fixed with `--today`.
 
 ## 2. The rulebook script (green)
 
@@ -112,7 +112,7 @@ Each skill has a "Use this skill when …" description under 700 characters, a Q
 
 ## Roadmap
 
-- [ ] 0.1 · [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 5.1 · (later) 6.1
+- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 5.1 · (later) 6.1
 
 ## Verification
 
