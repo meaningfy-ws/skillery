@@ -233,6 +233,16 @@ def description_too_long(repo: Path, limit: int = MAX_DESCRIPTION_CHARS) -> list
     return out
 
 
+def description_angle_brackets(repo: Path) -> list[str]:
+    """Claude Desktop rejects a skill description that contains `<` or `>` (it reads them as XML tags)."""
+    out: list[str] = []
+    for name in _skill_dirs(repo):
+        desc = str((_frontmatter(_skill_md(repo, name)) or {}).get("description", ""))
+        if "<" in desc or ">" in desc:
+            out.append(f"{name}: description contains '<' or '>'; Claude Desktop drops it as an XML tag")
+    return out
+
+
 def description_length_report(repo: Path) -> list[str]:
     """Advisory: descriptions above the method's target length."""
     out: list[str] = []
@@ -1108,7 +1118,7 @@ def bundle_gates(repo: Path) -> list[str]:
 
 ALL_CHECKS = (
     missing_skill_dirs, wip_isolation, frontmatter_present_errors,
-    frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long,
+    frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long, description_angle_brackets,
     name_mismatch, expected_bundle_membership,
     agent_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
@@ -1123,7 +1133,7 @@ ALL_CHECKS = (
 # `skills/` directory. The rest of ALL_CHECKS guards skillery's own tree and distribution.
 METHOD_CHECKS = (
     frontmatter_present_errors, frontmatter_errors, frontmatter_strict_yaml, name_mismatch,
-    skill_too_long, boundary_section_present, frontmatter_keys, description_too_long,
+    skill_too_long, boundary_section_present, frontmatter_keys, description_too_long, description_angle_brackets,
     body_agnosticism,
 )
 

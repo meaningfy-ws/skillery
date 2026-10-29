@@ -585,6 +585,11 @@ def test_description_over_1024_is_rejected(tmp_path):
     assert lint.description_too_long(tmp_path) and lint.description_too_long(tmp_path, 1025) == []
 
 
+def test_description_with_angle_brackets_is_rejected(tmp_path):
+    _skill_fm(tmp_path, "s", {"name": "s", "description": "resume <project>"})
+    assert lint.description_angle_brackets(tmp_path)
+
+
 def test_method_checks_run_on_a_minimal_tree(tmp_path):
     # skill-crafting-method H-6: the method checks hold in any repo with only skills/.
     assert all(c in lint.ALL_CHECKS for c in lint.METHOD_CHECKS)
