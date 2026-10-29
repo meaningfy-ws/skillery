@@ -167,7 +167,7 @@
 
 ## 7. Step 2: skills and docs
 
-- [ ] 7.1 **`rulebook`:**
+- [x] 7.1 **`rulebook`:**
   - `references/rule-model.md` gains a "Repository store" section: the folder, the `P-` prefix,
     `private: false`, no candidates, the pointer line verbatim, and references within one store;
   - `references/commands.md` gains `where`, `--store`, and the D-16 table;
@@ -176,7 +176,7 @@
   **Accept:** `rule-model.md` has a "## Repository store" heading containing the D-12 pointer line
   verbatim (a test compares it with the line `rules.py` writes) and the strings `P-NNNN` and
   `private: false`; `commands.md` has a `where` row and the D-16 table; T-1 to T-24 green.
-- [ ] 7.2 **`rule-learner`:** the Store column, the heading reminder, `to vault` / `to repo`, deferral
+- [x] 7.2 **`rule-learner`:** the Store column, the heading reminder, `to vault` / `to repo`, deferral
   limited to the vault, and the DEC-8 closing line (D-18), in `SKILL.md` and
   `references/approval-card.md`, with the example card updated.
   **Accept** (grep test): `references/approval-card.md` has a `Store` column in its format table and
@@ -184,13 +184,13 @@
   request"; `rule-learner/SKILL.md` contains `rules.py where`. A probe is added:
   "in this repo we never merge without a green CI, make that a rule" → `rule-learner`, near miss of
   `ci-cd-delivery`.
-- [ ] 7.3 **`rule-steward`:** `lint --store vault` in its procedure and the boundary line (D-14).
+- [x] 7.3 **`rule-steward`:** `lint --store vault` in its procedure and the boundary line (D-14).
   **`project-setup`:** the one citing line in `references/agentic-setup.md` (D-19).
 
   **Accept** (grep test): `rule-steward/SKILL.md` contains `lint --store vault` and "Repository rules
   belong to that repository's team"; `agentic-setup.md` links `rulebook/references/rule-model.md` and
   does not contain the pointer line itself.
-- [ ] 7.4 Docs:
+- [x] 7.4 Docs:
   - `docs/environment/rules.md`: a "Rules in a repository" section with worked examples 2 to 4;
   - a CHANGELOG line;
   - `make bundles` and `make skill-inventory`.
@@ -208,7 +208,7 @@
 
 - [x] 0.1 · [ ] 0.2
 - [ ] **Step 1:** [x] 1.1 · 1.2 · 2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 3.1 · 5.1 · (after release, non-blocking) 4.1 · 4.2
-- [ ] **Step 2:** [x] 1.3 · [x] 1.4 · [x] 6.1 · [x] 6.2 · [x] 6.3 · [x] 6.4 · [x] 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1
+- [ ] **Step 2:** [x] 1.3 · [x] 1.4 · [x] 6.1 · [x] 6.2 · [x] 6.3 · [x] 6.4 · [x] 6.5 · [x] 7.1 · [x] 7.2 · [x] 7.3 · [x] 7.4 · 8.1
 
 ## Verification
 
