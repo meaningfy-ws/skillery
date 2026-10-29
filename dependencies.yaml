@@ -209,7 +209,7 @@
   provenance: not reviewed
   used_by: formal-reasoning (`scripts/run_rules.py`, `scripts/check_env.py`)
   opencode_status: native
-  claude_install: '`pip install "clingo>=5.8"` into the Python 3.11+ that runs the skill scripts (any OS)'
+  claude_install: pip, as [`setup.md`](../setup.md#reasoning-engines-for-formal-reasoning-optional) says
   opencode_install: same pip package; the engine is CLI-independent.
 - name: SWI-Prolog
   kind: cli-tool
@@ -219,5 +219,5 @@
   provenance: not reviewed
   used_by: formal-reasoning (`scripts/run_rules.py`, `scripts/check_env.py`)
   opencode_status: native
-  claude_install: 'a system install that puts `swipl` on PATH: `sudo apt-get install swi-prolog-nox` (Debian/Ubuntu), `brew install swi-prolog` (macOS), `conda install -c conda-forge swi-prolog` (linux-64), or the installer from swi-prolog.org (Windows)'
+  claude_install: a system package per OS, as [`setup.md`](../setup.md#reasoning-engines-for-formal-reasoning-optional) says
   opencode_install: same system package; the engine is CLI-independent.

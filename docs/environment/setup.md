@@ -61,6 +61,17 @@ not restated here, so the version number has exactly one home.
 `meaningfy-building` requires `meaningfy-architecture`: install both. Other bundles need only
 `meaningfy-core`. The [catalogue map](../skill-inventory.md) lists every bundle's requirements.
 
+### Reasoning engines (for `formal-reasoning`, optional)
+
+The `formal-reasoning` skill in `meaningfy-architecture` runs rules on two engines. It never installs
+them; install the one you need, on any CLI. Its scripts need Python 3.11 or later, and
+`python scripts/check_env.py` in the skill folder reports what is present.
+
+| Engine | Used for | Install |
+|---|---|---|
+| clingo (MIT) | rule sets: conflicts, dead rules, minimal fixes | `pip install "clingo>=5.8"` into the Python that runs the scripts (any OS) |
+| SWI-Prolog (BSD-2-Clause) | closure, lineage, competency questions | a system package that puts `swipl` on PATH: `sudo apt-get install swi-prolog-nox` (Debian/Ubuntu), `brew install swi-prolog` (macOS), `conda install -c conda-forge swi-prolog` (linux-64), or the installer from [swi-prolog.org](https://www.swi-prolog.org/download/stable) (Windows) |
+
 ### Adopted skill-authoring methods (for contributors)
 
 The skill-development method ([`docs/development/README.md`](../development/README.md)) cites these

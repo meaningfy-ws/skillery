@@ -13,6 +13,13 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
+- **`formal-reasoning` (`meaningfy-architecture`, experimental).** When an answer about rules or facts
+  must be exact, your agent now runs it on an engine instead of reasoning in prose: clingo for rule
+  sets (conflicts, dead rules, minimal fixes), SWI-Prolog for closure and competency questions. One
+  script runs a project's tests and prints each rule's paraphrase beside it. Install the engine you
+  need first ([`docs/environment/setup.md`](docs/environment/setup.md#reasoning-engines-for-formal-reasoning-optional));
+  the skill never installs it.
+
 - **A guide to the voice and communication skills** ([`docs/environment/communication.md`](docs/environment/communication.md)):
   which skill owns what, the registers and channel profiles, what is covered and what is not yet
   (the quotation skeleton, most channel profiles), the guardrails, and how to add a register, a

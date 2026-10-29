@@ -66,7 +66,7 @@
 
 ## 4. Docs
 
-- [ ] 4.1 Add a CHANGELOG line for the installer and the engine install lines in `docs/environment/setup.md`. Add no README row: the skill is not an entry point, since the modelling skills cite it.
+- [x] 4.1 Add a CHANGELOG line for the installer and the engine install lines in `docs/environment/setup.md`. Add no README row: the skill is not an entry point, since the modelling skills cite it.
 
 ## 5. Review
 
@@ -74,7 +74,7 @@
 
 ## Roadmap
 
-- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [ ] 4.1 · [ ] 5.1
+- [ ] 0.1 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 4.1 · [ ] 5.1
 
 ## Verification
 
