@@ -489,6 +489,63 @@ def test_the_three_skills_share_one_bundle():
     assert len(homes) == 1 and all(any(s in b.get("skills", []) for b in bundles) for s in SKILLS)
 
 
+# ---------------------------------------------------------------- rules in every session (step 1)
+
+def _text(rel):
+    return (ROOT / rel).read_text(encoding="utf-8")
+
+
+def _description(skill):
+    return yaml.safe_load(_text(f"skills/{skill}/SKILL.md").split("---")[1])["description"]
+
+
+def test_t1_the_three_skills_ship_in_meaningfy_core():
+    bundles = {b["name"]: b.get("skills", []) for b in
+               yaml.safe_load(_text("bundles.yaml"))["bundles"]}
+    assert all(s in bundles["meaningfy-core"] and s not in bundles["vault-assistant"] for s in SKILLS)
+
+
+def test_t2_the_global_prompt_routes_sessions_to_the_rule_skills():
+    prompt = _text("docs/environment/global-prompt.md")
+    assert all(w in prompt for w in ("rulebook", "rule-learner", "unattended"))
+
+
+def test_t3_the_allow_rule_names_meaningfy_core_and_the_old_one_is_gone():
+    assert "/meaningfy-core/" in _text("skills/rulebook/references/commands.md")
+    old = "meaningfy-skillery/vault-assistant/*/skills/rulebook"
+    assert not [p for p in (ROOT / "skills").rglob("*.md") if old in p.read_text(encoding="utf-8")]
+
+
+def test_rulebook_text_covers_any_session():
+    skill = _text("skills/rulebook/SKILL.md")
+    assert "say once" in skill and "MEANINGFY_VAULT" in skill and "never as `cd`" in skill
+    scope = _text("skills/rulebook/references/rule-model.md").split("## Scope")[1].split("\n## ")[0]
+    assert all(a in scope for a in ("coding", "code-review", "planning"))
+
+
+def test_learner_text_covers_any_session():
+    skill = _text("skills/rule-learner/SKILL.md")
+    assert "wraps up" in skill and "final summary" in skill
+
+
+@pytest.mark.parametrize("skill", ["rulebook", "rule-learner"])
+def test_descriptions_cover_any_session_and_stay_short(skill):
+    d = _description(skill)
+    assert "any session" in d and len(d) < 700
+
+
+def test_user_docs_name_the_move():
+    rules = _text("docs/environment/rules.md")
+    assert "## Where your rules work" in rules and "## Quick Start" in rules
+    assert "vault-assistant" not in rules.split("All three skills are")[1].split("\n")[0]
+    assert '"env"' in _text("docs/environment/setup.md")
+    rows = {r.split("|")[1].strip(" *"): r for r in _text("README.md").splitlines() if r.startswith("| **")}
+    assert all(f"**{s}**" in rows["meaningfy-core"] and f"**{s}**" not in rows["vault-assistant *(workflow)*"]
+               for s in SKILLS)
+    unreleased = _text("CHANGELOG.md").split("## [Unreleased]")[1].split("\n## [")[0]
+    assert any("BREAKING" in l and "/meaningfy-core/" in l for l in unreleased.splitlines())
+
+
 @pytest.mark.parametrize("skill", ["rule-learner", "rule-steward"])
 def test_learner_and_steward_reach_the_script_by_the_bundle_path(skill):
     assert "rulebook/scripts/rules.py" in (ROOT / f"skills/{skill}/SKILL.md").read_text(encoding="utf-8")
