@@ -4,8 +4,8 @@
      Round 2: 9.35/10 PASS; its four minor gaps are closed in revision 3. -->
 
 > Derives from: EPIC `rules-in-every-session` ([`proposal.md`](proposal.md)), golden-thread parent
-> [`rule-learner`](../archive/2026-10-29-rule-learner/proposal.md) and its PLAN
-> ([`design.md`](../archive/2026-10-29-rule-learner/design.md), cited below as RL-D-n). Acceptance
+> [`rule-learner`](../2026-10-29-rule-learner/proposal.md) and its PLAN
+> ([`design.md`](../2026-10-29-rule-learner/design.md), cited below as RL-D-n). Acceptance
 > criteria are the scenarios in [`specs/rule-learning/spec.md`](specs/rule-learning/spec.md).
 
 ## Context
