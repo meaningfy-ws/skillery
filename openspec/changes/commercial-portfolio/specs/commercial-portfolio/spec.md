@@ -1,8 +1,9 @@
 ## ADDED Requirements
 
 ### Requirement: Skills work from a package document and the general rules
-The skills that coach, frame or produce a sale (`semantic-consulting-coach`, `proposal-writing`,
-`decision-package`) SHALL work from the context the user gives (whom the work addresses and what is
+Each skill that coaches, frames or produces a sale SHALL work from the user's context, the general
+rules and the matching package document. These skills (`semantic-consulting-coach`,
+`proposal-writing`, `decision-package`) work from the context the user gives (whom the work addresses and what is
 being sold or proposed), the company's general commercial rules, and the package document that
 matches. They SHALL NOT carry any one package's prices, terms or nuances in their own text. When the
 skill does not know where the packages live, it SHALL ask.
