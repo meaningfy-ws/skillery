@@ -1,6 +1,6 @@
 ---
 name: formal-reasoning
-description: "Use this skill when an answer must be exact and explained, not argued in prose: checking rules with defaults, exceptions and priorities for conflicts or dead rules, finding a minimal fix, computing closure or lineage over facts, turning competency questions into tests with agreed answers, or deriving rules from a text. It picks the engine (clingo for finite rule sets, SWI-Prolog with tabling for closure over large fact bases) and runs a test-first, paraphrase-back loop. Not for checking data against a model (SHACL/OWL, linkml-engineering) or building the model (conceptual-modelling)."
+description: "Use this skill whenever a question has an exact answer an engine can check and clingo or SWI-Prolog is installed: a quick test of a few facts and rules, conflicts or dead rules in a rule set with defaults and exceptions, a minimal fix, closure or lineage over a knowledge base, competency questions run as tests with agreed answers, or rules derived from a text. It picks the engine (clingo for finite rule sets, SWI-Prolog with tabling for large fact bases) and runs a test-first, paraphrase-back loop. Not for checking data against a model (linkml-engineering), building the model (conceptual-modelling) or keeping the user's own work rules (rulebook)."
 license: Apache 2.0
 metadata:
   purpose: modelling
@@ -18,8 +18,12 @@ hard cases LLM-written proofs are right about a third of the time, while an agen
 and reads its feedback gets them right. This skill gives the agent two engines and a loop: write the
 rules, write the tests with their expected answers, run, read the paraphrases back, fix.
 
+Use it for a quick test in any work, not only modelling: whenever a question has an exact answer and
+an engine is installed, a few facts, rules and one test answer it in a minute.
+
 The scripts need Python 3.11 or later and the engine. They never install anything:
-`python scripts/check_env.py` says which engines are present.
+`python scripts/check_env.py` says which engines are present. With no engine, say in one line which
+engine would answer and where its install line is, and stop: never present prose reasoning as checked.
 
 ## Quick Start
 
@@ -153,7 +157,9 @@ scripts; the pure subsets; the reasoning patterns; rules from text; and competen
 - generic modelling craft (naming, reusable properties) → `modelling-conventions`;
 - business-language scenarios and test data from use cases → `bdd-gherkin`;
 - scoring a specification for hidden assumptions → `clarity-gate`;
-- the change that records why a rule set exists, and its decisions → `epic-planning`.
+- the change that records why a rule set exists, and its decisions → `epic-planning`;
+- the user's own rules and preferences for agents → `rulebook` (unrelated: it shares no code or
+  engine with this skill).
 
 **Related:** `conceptual-modelling` and `linkml-engineering` cite this skill for competency
 questions; `bdd-gherkin` and `clarity-gate` when the rules come from a text.
