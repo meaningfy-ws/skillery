@@ -4,8 +4,8 @@ description: "Use this skill when an activity starts in a session that has the o
 license: Apache 2.0
 metadata:
   purpose: knowledge
-  area: personal
-  subject: obsidian
+  area: cross-cutting
+  subject: generic
   posture: precise
   stage: any
   maturity: experimental

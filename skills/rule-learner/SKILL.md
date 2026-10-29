@@ -4,8 +4,8 @@ description: "Use this skill when the owner states how work should be done or co
 license: Apache 2.0
 metadata:
   purpose: knowledge
-  area: personal
-  subject: obsidian
+  area: cross-cutting
+  subject: generic
   posture: precise
   stage: any
   maturity: experimental
