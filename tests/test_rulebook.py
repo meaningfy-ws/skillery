@@ -507,7 +507,8 @@ def test_t1_the_three_skills_ship_in_meaningfy_core():
 
 def test_t2_the_global_prompt_routes_sessions_to_the_rule_skills():
     prompt = _text("docs/environment/global-prompt.md")
-    assert all(w in prompt for w in ("rulebook", "rule-learner", "unattended"))
+    assert all(w in prompt for w in ("meaningfy-core:rulebook", "meaningfy-core:rule-learner", "unattended",
+                                     "final summary", "say so once", "~/.config/opencode/AGENTS.md"))
 
 
 def test_t3_the_allow_rule_names_meaningfy_core_and_the_old_one_is_gone():

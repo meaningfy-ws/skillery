@@ -73,7 +73,7 @@ in [`references/commands.md`](references/commands.md).
   `&&`: a compound command may stop matching the permission rule.
 - Its per-machine permission rule, for both CLIs, is in
   [`references/commands.md`](references/commands.md#permissions-per-machine).
-- Run it by its full path, unquoted, as the skill's folder gives it: the vault's permission settings
+- Run it by its full path, unquoted, as the skill's folder gives it: your permission settings
   allow the script by that path, so another spelling stops to ask.
 - It prints plain text, so its output is safe to show the owner.
 
@@ -84,7 +84,7 @@ in [`references/commands.md`](references/commands.md).
   playbook holds the activity's procedure (its body), its scope vocabulary and its golden examples.
 - **Candidates:** `00 Inbox/proposed/`, `status: idea`, until the owner approves them.
 
-For the required properties of both kinds, see `vault-conventions`; their meaning is in the rule
+For the required properties of both kinds, see `vault-conventions` (when the vault-assistant bundle is installed); their meaning is in the rule
 model reference.
 
 ## Use protocol
@@ -93,7 +93,7 @@ model reference.
    vocabulary offers (`--context audience=client --context channel=email`). Load again when the
    activity or the context changes. Never read the rules folder whole: `load` returns only what applies.
    **The "say once" rule:** when `load` exits 3, tell the owner once per session, "Your rules are not loaded: set
-   `MEANINGFY_VAULT` (see docs/environment/setup.md)", do not run `load` again in that session, and carry
+   `MEANINGFY_VAULT` (see https://github.com/meaningfy-ws/skillery/blob/develop/docs/environment/setup.md)", do not run `load` again in that session, and carry
    on. Scheduled and unattended runs skip `load` altogether.
 2. **Follow the winners.** Each `R-` line is a rule in force for this context. A rule without a slot
    applies alongside the others.
@@ -150,6 +150,6 @@ script and its exit codes, and the use protocol (load, check, cite).
 **Delegates:** drafting candidates from the owner's words and the approval card → `rule-learner`;
 usage monitoring, grooming and forgetting → `rule-steward`.
 
-**Related:** `rule-learner`, `rule-steward`, and, when the `vault-assistant` bundle is installed,
+**Related:** `rule-learner`, `rule-steward`, and, when the vault-assistant bundle is installed,
 `vault-conventions` (where a note goes, the required properties of every kind, the move procedure)
 and `vault-setup`.

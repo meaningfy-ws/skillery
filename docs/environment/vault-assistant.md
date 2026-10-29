@@ -41,7 +41,7 @@ the infrastructure owner.
 | the week, month, quarter, year | `vault-planning plan <horizon>`, or `review <horizon>` |
 | every morning | `vault-daily` |
 | starting an activity (writing, offers, reviews) | `rulebook` (`load` the rules for it, `check` the output, `cite` what applied) |
-| you state a rule or correct the agent | `rule-learner` (one approval card at the end of the session) |
+| you state a rule or correct the agent | `rule-learner` (one approval card when you wrap up or ask) |
 | the weekly review | `rule-steward`, run by `vault-planning review week` |
 
 The three rule skills ship in `meaningfy-core` and work in any session; in the vault they run as

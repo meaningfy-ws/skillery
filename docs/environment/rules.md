@@ -57,7 +57,7 @@ flowchart TB
     subgraph SESSION["During a session"]
         direction LR
         YOU([You state a rule<br/>or correct the agent]) --> RL["<b>rule-learner</b><br/>drafts candidates from<br/>your words only"]
-        RL --> CARD{{"One approval card<br/>at the end of the session"}}
+        RL --> CARD{{"One approval card<br/>when you wrap up or ask"}}
         ACT([An activity starts:<br/>writing, an offer, a review]) --> RB["<b>rulebook</b><br/>load · check · cite"]
     end
 
@@ -117,7 +117,7 @@ default with an exception, a procedure, an escalation, and so on), and your word
 strength: "never" and "always" make it hard, "prefer" makes it soft. The learner searches for an
 existing rule first, so a restatement confirms it instead of duplicating it.
 
-At the end of the session you get **one approval card**, a table of every candidate. For each one
+When you wrap up, ask for it, or before the agent's final summary of a task, you get **one approval card**, a table of every candidate. For each one
 you answer approve, edit, reject or defer. A deferred candidate waits in `00 Inbox/proposed/` for
 the weekly review.
 

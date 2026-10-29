@@ -58,7 +58,7 @@ the grooming procedure.
 Every read and write goes through the rulebook script. The rulebook skill ships in the same bundle,
 so its folder is a sibling of this one on both CLIs: take the parent of this skill's base directory
 and add `rulebook/scripts/rules.py`. Run it by that full path, written out with no `..` and
-unquoted, the way the rulebook skill says, so the vault's permission settings match it. If no file
+unquoted, the way the rulebook skill says, so your permission settings match it. If no file
 is there, stop and say in one line: "The rulebook skill is not installed; the rules cannot be reviewed."
 
 ## Weekly procedure
@@ -96,7 +96,7 @@ Fixed conventions over the window; `stats` computes the first five.
 | Stale | not confirmed for more than 90 days | confirm or retire |
 | Lint | any error or warning | the fix the finding names: merge duplicates, resolve a conflict with the owner, split an oversized activity |
 | Golden | a golden example fails `check` | fix the rule, or update the example |
-| Promote | the owner marks a rule as relevant to the company | draft a `kind: skill-change` note in `00 Inbox/proposed/` naming the skill it belongs in |
+| Promote | the owner marks a rule as relevant to the company | draft a `kind: skill-change` note in `00 Inbox/proposed/` naming the skill it belongs in (needs the vault-assistant bundle: without it, give the owner the note's text to file by hand) |
 
 "Cited" is self-reported by the agent, so it is weaker than "loaded" and "overridden". Use it to
 revise, never as the only reason to retire.
@@ -129,6 +129,6 @@ grooming and forgetting procedure, and the promotion proposal.
 **Delegates:** the rule model and every read and write → `rulebook`; drafting new rules →
 `rule-learner`.
 
-**Related:** `rulebook`, `rule-learner`, and, when the `vault-assistant` bundle is installed,
+**Related:** `rulebook`, `rule-learner`, and, when the vault-assistant bundle is installed,
 `vault-planning` (the weekly review that calls this step) and `vault-conventions` (the skill-change
 note and staging).

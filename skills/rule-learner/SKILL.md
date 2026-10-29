@@ -45,7 +45,7 @@ approval card.
 Every read and write goes through the rulebook script. The rulebook skill ships in the same bundle,
 so its folder is a sibling of this one on both CLIs: take the parent of this skill's base directory
 and add `rulebook/scripts/rules.py`. Run it by that full path, written out with no `..` and
-unquoted, the way the rulebook skill says, so the vault's permission settings match it. If no file
+unquoted, the way the rulebook skill says, so your permission settings match it. If no file
 is there, stop and say in one line: "The rulebook skill is not installed; rules cannot be learned in this session."
 
 If the script exits 3 (no rule store), still draft candidates and show the card. On approval, explain
@@ -143,6 +143,6 @@ the mutations, the rule approval card, and recording corrections with `override`
 **Delegates:** the rule model, the note format, precedence and every write → `rulebook`; the weekly
 review of candidates and usage → `rule-steward`.
 
-**Related:** `rulebook`, `rule-steward`, and, when the `vault-assistant` bundle is installed,
+**Related:** `rulebook`, `rule-steward`, and, when the vault-assistant bundle is installed,
 `vault-capture` (filing the session's facts into a project) and `vault-conventions` (staging and the
 inbox).

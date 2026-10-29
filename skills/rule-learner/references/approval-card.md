@@ -1,7 +1,7 @@
 # The rule approval card
 
-One message, at the end of the session or when the owner asks, holding every candidate of the
-session. The owner answers each row; nothing is written before the answer.
+One message, shown when the owner wraps up, when the owner asks, or before your final summary of a
+task in which the owner stated or corrected something, holding every candidate of the session. The owner answers each row; nothing is written before the answer.
 
 ## Format
 
