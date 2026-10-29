@@ -149,7 +149,7 @@
 
 ## 5. Step 1: review
 
-- [ ] 5.1 Have an independent subagent review step 1 against the spec's first requirement, D-1 to D-7
+- [x] 5.1 Have an independent subagent review step 1 against the spec's first requirement, D-1 to D-7
   and the catalogue rules. Fix the findings, keep `make validate` green, and open the step-1 PR.
 
 ## 6. Step 2: the script (green)
@@ -207,7 +207,7 @@
 ## Roadmap
 
 - [x] 0.1 · [ ] 0.2
-- [ ] **Step 1:** [x] 1.1 · 1.2 · 2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 3.1 · [ ] 5.1 · (after release, non-blocking) 4.1 · 4.2
+- [ ] **Step 1:** [x] 1.1 · 1.2 · 2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 3.1 · 5.1 · (after release, non-blocking) 4.1 · 4.2
 - [ ] **Step 2:** 1.3 · 1.4 · 6.1 · 6.2 · 6.3 · 6.4 · 6.5 · 7.1 · 7.2 · 7.3 · 7.4 · 8.1
 
 ## Verification
