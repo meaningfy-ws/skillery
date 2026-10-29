@@ -143,6 +143,17 @@ probes:
   - probe: "draw the C4 container view and record the decision in an ADR"
     expect: architecture
     near_miss_of: modelling-conventions
+  # formal-reasoning: exact reasoning over rules and facts, not building the model.
+  - probe: "check whether our pricing rules with their exceptions and priorities conflict, and find any rule that never applies"
+    expect: formal-reasoning
+  - probe: "turn our competency questions into tests with agreed answers and run them whenever the model changes"
+    expect: formal-reasoning
+    near_miss_of: conceptual-modelling
+  - probe: "quickly check with clingo whether these two leave policies can both apply to the same employee"
+    expect: formal-reasoning
+  - probe: "remember as a rule that I prefer short sentences in every memo"
+    expect: rule-learner
+    near_miss_of: formal-reasoning
   # meaningfy-voice: the foundation skill holding the company voice (restructure-and-evaluate D-15).
   - probe: "is this paragraph on-voice for Meaningfy, British English and no em dash"
     expect: meaningfy-voice
@@ -177,3 +188,21 @@ probes:
   - probe: "open a PR with my fix and follow the branch naming convention"
     expect: meaningfy-git-workflow
     near_miss_of: skillery-feedback
+  - probe: "from now on, never send anything to a client without my approval; remember that as a rule"
+    expect: rule-learner
+    near_miss_of: vault-capture
+  - probe: "load my writing rules for this client memo and check the draft against them"
+    expect: rulebook
+    near_miss_of: executive-communication
+  - probe: "which of my rules were overridden or never used this week? groom the rulebook"
+    expect: rule-steward
+    near_miss_of: formal-reasoning
+  - probe: "from now on, keep PR descriptions under ten lines in every repo"
+    expect: rule-learner
+    near_miss_of: meaningfy-git-workflow
+  - probe: "set up commitlint so this repo enforces conventional commits"
+    expect: meaningfy-git-workflow
+    near_miss_of: rule-learner
+  - probe: "in this repo we never merge without a green CI, make that a rule"
+    expect: rule-learner
+    near_miss_of: ci-cd-delivery

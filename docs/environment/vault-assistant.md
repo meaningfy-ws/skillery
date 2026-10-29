@@ -40,6 +40,12 @@ the infrastructure owner.
 | the vault needs order | `vault-tidy` (a plan first, nothing moves without your yes) |
 | the week, month, quarter, year | `vault-planning plan <horizon>`, or `review <horizon>` |
 | every morning | `vault-daily` |
+| starting an activity (writing, offers, reviews) | `rulebook` (`load` the rules for it, `check` the output, `cite` what applied) |
+| you state a rule or correct the agent | `rule-learner` (one approval card when you wrap up or ask) |
+| the weekly review | `rule-steward`, run by `vault-planning review week` |
+
+The three rule skills ship in `meaningfy-core` and work in any session; in the vault they run as
+here. How they work together: [`rules.md`](rules.md).
 
 `vault-conventions` is used by all of them whenever a note is written. Moving, renaming and deleting
 notes follow its one procedure: [Moving and deleting](../../skills/vault-conventions/SKILL.md#moving-and-deleting).
@@ -48,7 +54,8 @@ notes follow its one procedure: [Moving and deleting](../../skills/vault-convent
 
 The skills work, with two recorded gaps: skills have no slash form, so ask for `vault-setup`,
 `vault-promote`, `vault-tidy` or `vault-daily` by name; and the vault's permission settings on opencode
-are unverified. See [`dual-cli/compatibility.md`](dual-cli/compatibility.md).
+are unverified. Rules load and check on opencode, but opencode sessions are not traced, so rule
+monitoring does not see them. See [`dual-cli/compatibility.md`](dual-cli/compatibility.md).
 
 ## Changing the method
 

@@ -1,0 +1,4 @@
+R-0001 [active] [default] use British English spelling (when: writing any text)
+R-0002 [active] [default] use American spelling (when: writing for a US client)
+R-0003 [active] [default] use British spelling in EU tenders (when: writing an EU tender for a US client)
+R-0014 [dropped] [default] use Canadian spelling (when: writing any text)

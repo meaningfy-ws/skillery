@@ -1,7 +1,7 @@
 {
   "name": "meaningfy-core",
-  "version": "3.7.0",
-  "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, and how to report a skill or agent problem to skillery",
+  "version": "3.8.0",
+  "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, how to report a skill or agent problem to skillery, and your own rules for agents: load, learn and groom them (rulebook, rule-learner, rule-steward)",
   "author": {
     "name": "Meaningfy"
   }

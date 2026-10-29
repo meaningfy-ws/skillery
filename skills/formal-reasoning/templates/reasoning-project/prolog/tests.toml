@@ -1,0 +1,9 @@
+# One [[test]] per competency question. Agree each expected answer before the first run.
+# query: a Prolog goal. expect: the solutions as writeq prints the goal, or [] for no solution.
+[[test]]
+id = "CQ-1"
+question = "Which items belong to tender t1?"
+query = "part_of(X, t1)"
+expect = ["part_of(lot1,t1)", "part_of(item3,t1)"]
+agreed_by = "<who agreed the answer>"
+agreed_on = "<YYYY-MM-DD>"

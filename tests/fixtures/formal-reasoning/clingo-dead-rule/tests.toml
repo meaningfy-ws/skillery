@@ -1,0 +1,21 @@
+# F-1: a rule missing from the brave consequences of wins/1 never wins in any situation: it is dead.
+[[test]]
+id = "DEAD-1"
+question = "Which rules win in at least one situation?"
+query = "wins/1"
+mode = "brave"
+expect = ["wins(r1)", "wins(r2)", "wins(r3)", "wins(r4)", "wins(r5)", "wins(r6)", "wins(r7)", "wins(r8)"]
+
+[[test]]
+id = "CONFLICT-1"
+question = "Which rules clash, on which slot?"
+query = "conflict/3"
+mode = "brave"
+expect = ["conflict(r5,r6,pricing)"]
+
+[[test]]
+id = "CLASH-1"
+question = "In which situation do the clashing rules clash?"
+query = "clash_on/4"
+mode = "brave"
+expect = ["clash_on(r5,r6,client,public)", "clash_on(r5,r6,channel,tender)"]

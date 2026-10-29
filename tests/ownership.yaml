@@ -68,3 +68,11 @@ capabilities:
   - tag: secret-handling
     owner: infrastructure-security
     claim_patterns: ["bw get", "used without being seen"]
+  # formal-reasoning (D-11): competency-question tests are a pattern of formal-reasoning; the
+  # modelling skills cite it in one line and never restate the test format.
+  - tag: competency-question-tests
+    owner: formal-reasoning
+    claim_patterns: ["agreed_by"]
+  - tag: rule-model
+    owner: rulebook
+    claim_patterns: ["hard beats default beats soft"]
