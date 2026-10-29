@@ -3,9 +3,9 @@
 
 # EPIC: Rules in every session
 
-**Golden-thread parent:** the archived EPIC [`rule-learner`](../archive/2026-10-29-rule-learner/proposal.md),
+**Golden-thread parent:** the archived EPIC [`rule-learner`](../2026-10-29-rule-learner/proposal.md),
 whose reach this change widens. It re-shapes part of the umbrella's DEC-4
-([`reasoning-capabilities`](../archive/2026-10-29-reasoning-capabilities/proposal.md)): rule learning
+([`reasoning-capabilities`](../2026-10-29-reasoning-capabilities/proposal.md)): rule learning
 was placed "with the vault, where the rules are stored". The skills that learn and apply rules now go
 wherever the user works, and development work gains a second store in the repository.
 
