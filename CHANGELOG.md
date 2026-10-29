@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.8.1] - 2026-10-30
+
 ### Fixed
 
 - Claude Desktop now syncs `vault-project`, `vault-promote` and `vault-resume` without warnings: their
