@@ -42,3 +42,11 @@ be reported as a conflict for the user.
 #### Scenario: The stores disagree
 - **WHEN** a vault rule and a repository rule set the same slot to different values at equal strength and neither beats the other
 - **THEN** `load` prints a `CONFLICT` naming both, and the agent asks the user
+
+#### Scenario: Repository rules without the vault
+- **WHEN** a teammate without `MEANINGFY_VAULT` starts an activity in a git repository whose `docs/` holds rules for it
+- **THEN** `load` prints the repository's rules and a note that personal rules are not loaded, and the session carries on
+
+#### Scenario: The weekly review leaves repository rules alone
+- **WHEN** the weekly rules review runs
+- **THEN** it reports on and grooms the vault's rules only, and no repository rule is flagged, retired or changed

@@ -1,5 +1,5 @@
 <!-- STATUS: EPIC shaped 2026-10-29 from the owner's statements and answers of the same day (inputs/qa.md).
-     Decisions marked (proposed) await the owner's confirmation; next: derive the PLAN. -->
+     All decisions confirmed by the owner (DEC-5 to DEC-8 on 2026-10-29); next: the PLAN. -->
 
 # EPIC: Rules in every session
 
@@ -66,22 +66,22 @@ project, where the team sees and reviews it.
 - **DEC-4** (owner, 2026-10-29): Activity names are an open list. The PLAN seeds it with `coding`,
   `code-review` and `planning` beside the vault's writing, offers and reviews, and fixes no closed
   vocabulary.
-- **DEC-5** (proposed): Move all three rule skills to `meaningfy-core`, together. They call one script
+- **DEC-5** (proposed, confirmed by the owner 2026-10-29): Move all three rule skills to `meaningfy-core`, together. They call one script
   by a sibling path, which holds only inside one bundle (rule-learner D-2, and the test that asserts
   it). Rejected: moving only `rulebook` and `rule-learner` (it breaks `rule-steward`'s path to the
   script); a new `rules` bundle (one more install for a capability every user needs).
-- **DEC-6** (proposed): Rules reach sessions through the **personal** global instructions. A
+- **DEC-6** (proposed, confirmed by the owner 2026-10-29): Rules reach sessions through the **personal** global instructions. A
   repository's `AGENTS.md` carries only the pointer to its own rule store (DEC-2), never the user's
   personal rules. Rejected: a session-start hook (per CLI, and it would load rules before the activity
   is known).
-- **DEC-7** (proposed): One rule model, one script. `rules.py`, the rulebook's command-line tool and
+- **DEC-7** (proposed, confirmed by the owner 2026-10-29): One rule model, one script. `rules.py`, the rulebook's command-line tool and
   the only reader and writer of rule notes, keeps every command and behaviour. It gains one thing:
   when run inside a git repository it also reads that repository's rule folder, and its writers take
   the store the card chose. The repository store uses the same note format, precedence and lint.
   Repository rules take their own id prefix, because a shared repository and a personal vault cannot
   allocate numbers together. A rule from one store that disagrees with a rule from the other is a
   `CONFLICT` for the user, like any other.
-- **DEC-8** (proposed): A rule written to the repository lands as a file change in the working tree.
+- **DEC-8** (proposed, confirmed by the owner 2026-10-29): A rule written to the repository lands as a file change in the working tree.
   It reaches the team through the normal commit and pull request, which is where the team approves it.
 
 ## Rabbit-holes

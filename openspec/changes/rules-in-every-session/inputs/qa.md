@@ -85,3 +85,7 @@ claude.ai?)". A documentation check the same day found:
 Why the answers are kept here: the epic-planning method keeps the seeds and the Q&A of a change in
 its `inputs/`, verbatim and never groomed, so that every decision in the EPIC can be traced to the
 words it came from. The EPIC states each decision once, as a DEC with the owner and the date.
+
+## 2026-10-29: DEC-5 to DEC-8
+
+> yes, confirm DEC-5 to DEC-8, continue
