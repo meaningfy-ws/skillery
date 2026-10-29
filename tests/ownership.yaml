@@ -68,3 +68,6 @@ capabilities:
   - tag: secret-handling
     owner: infrastructure-security
     claim_patterns: ["bw get", "used without being seen"]
+  - tag: rule-model
+    owner: rulebook
+    claim_patterns: ["hard beats default beats soft"]

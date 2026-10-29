@@ -5,7 +5,7 @@
      agent's frontmatter (agents/*.md), bundles.yaml and facets.yaml.
      tests/test_skill_inventory.py fails the build if this drifts. -->
 
-43 skills and 10 agents across 7 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
+46 skills and 10 agents across 7 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
 
 ## Map
 
@@ -80,6 +80,9 @@ flowchart LR
     s_vault_tidy["vault-tidy"]
     s_vault_planning["vault-planning"]
     s_vault_daily["vault-daily"]
+    s_rulebook["rulebook"]
+    s_rule_learner["rule-learner"]
+    s_rule_steward["rule-steward"]
   end
 
   p_software_development("software-development<br/><sub>build software with agents: plan, build, test, review, version</sub>")
@@ -114,6 +117,9 @@ flowchart LR
   s_modelling_conventions --> p_modelling
   s_project_setup --> p_software_development
   s_proposal_writing --> p_proposals
+  s_rule_learner --> p_knowledge
+  s_rule_steward --> p_knowledge
+  s_rulebook --> p_knowledge
   s_sales_accounts --> p_crm
   s_sales_conversations --> p_offers
   s_sales_operations --> p_crm
@@ -216,6 +222,9 @@ flowchart LR
   style s_modelling_conventions fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_project_setup fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_proposal_writing fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_rule_learner fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_rule_steward fill:#1e1e1e,color:#ffffff,stroke:#000
+  style s_rulebook fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_sales_accounts fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_sales_conversations fill:#1e1e1e,color:#ffffff,stroke:#000
   style s_sales_operations fill:#1e1e1e,color:#ffffff,stroke:#000
@@ -269,7 +278,7 @@ flowchart LR
 
 ## Relations
 
-Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (63 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (171 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 234 relation edges plus 43 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
+Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (75 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (178 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 253 relation edges plus 46 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
 
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 12, 'rankSpacing': 45, 'curve': 'basis'}}}%%
@@ -330,6 +339,9 @@ flowchart LR
     s_vault_tidy["vault-tidy"]
     s_vault_planning["vault-planning"]
     s_vault_daily["vault-daily"]
+    s_rulebook["rulebook"]
+    s_rule_learner["rule-learner"]
+    s_rule_steward["rule-steward"]
   end
 
   s_ci_cd_delivery ==> s_project_setup
@@ -367,6 +379,17 @@ flowchart LR
   s_proposal_writing ==> s_executive_communication
   s_proposal_writing ==> s_decision_package
   s_proposal_writing ==> s_semantic_consulting_coach
+  s_rule_learner ==> s_rulebook
+  s_rule_learner ==> s_rule_steward
+  s_rule_learner ==> s_vault_capture
+  s_rule_learner ==> s_vault_conventions
+  s_rule_steward ==> s_rulebook
+  s_rule_steward ==> s_rule_learner
+  s_rule_steward ==> s_vault_planning
+  s_rule_steward ==> s_vault_conventions
+  s_rulebook ==> s_vault_conventions
+  s_rulebook ==> s_rule_learner
+  s_rulebook ==> s_rule_steward
   s_semantic_consulting_coach ==> s_executive_communication
   s_semantic_consulting_coach ==> s_decision_package
   s_spec_stewardship ==> s_epic_planning
@@ -388,6 +411,7 @@ flowchart LR
   s_vault_project ==> s_vault_capture
   s_vault_promote ==> s_vault_conventions
   s_vault_promote ==> s_vault_tidy
+  s_vault_promote ==> s_rulebook
   s_vault_resume ==> s_vault_conventions
   s_vault_resume ==> s_vault_capture
   s_vault_resume ==> s_vault_project
@@ -482,6 +506,7 @@ flowchart LR
   s_proposal_writing -.-> s_sales_qualification
   s_proposal_writing -.-> s_sales_conversations
   s_proposal_writing -.-> s_writing_antipatterns
+  s_rulebook -.-> s_vault_setup
   s_sales_accounts -.-> s_sales_pipeline_custody
   s_sales_accounts -.-> s_sales_qualification
   s_sales_accounts -.-> s_sales_conversations
@@ -542,6 +567,7 @@ flowchart LR
   s_technical_writing -.-> s_executive_communication
   s_vault_capture -.-> s_vault_daily
   s_vault_capture -.-> s_vault_promote
+  s_vault_capture -.-> s_rule_learner
   s_vault_conventions -.-> s_vault_project
   s_vault_conventions -.-> s_vault_resume
   s_vault_conventions -.-> s_vault_capture
@@ -549,16 +575,21 @@ flowchart LR
   s_vault_conventions -.-> s_vault_tidy
   s_vault_conventions -.-> s_vault_planning
   s_vault_conventions -.-> s_vault_daily
+  s_vault_conventions -.-> s_rulebook
+  s_vault_conventions -.-> s_rule_learner
+  s_vault_conventions -.-> s_rule_steward
   s_vault_conventions -.-> s_sales_operations
   s_vault_daily -.-> s_vault_capture
   s_vault_daily -.-> s_vault_resume
   s_vault_planning -.-> s_vault_project
+  s_vault_planning -.-> s_rule_steward
   s_vault_project -.-> s_vault_tidy
   s_vault_project -.-> s_vault_planning
   s_vault_promote -.-> s_vault_capture
   s_vault_promote -.-> s_vault_planning
   s_vault_resume -.-> s_vault_daily
   s_vault_setup -.-> s_vault_daily
+  s_vault_setup -.-> s_rulebook
   s_writing_antipatterns -.-> s_meaningfy_voice
   s_writing_antipatterns -.-> s_technical_writing
   s_writing_antipatterns -.-> s_explanatory_writing
@@ -597,6 +628,9 @@ flowchart LR
   style s_modelling_conventions fill:#6b1f4d,color:#ffffff,stroke:#000
   style s_project_setup fill:#7a5c00,color:#ffffff,stroke:#000
   style s_proposal_writing fill:#7a2030,color:#ffffff,stroke:#000
+  style s_rule_learner fill:#7a5c00,color:#ffffff,stroke:#000
+  style s_rule_steward fill:#7a5c00,color:#ffffff,stroke:#000
+  style s_rulebook fill:#7a5c00,color:#ffffff,stroke:#000
   style s_sales_accounts fill:#4a4a3a,color:#ffffff,stroke:#000
   style s_sales_conversations fill:#3d5c1f,color:#ffffff,stroke:#000
   style s_sales_operations fill:#4a4a3a,color:#ffffff,stroke:#000
@@ -708,19 +742,22 @@ The operations role: provision and change servers as code (infrastructure-operat
 
 ## vault-assistant
 
-The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily). Needs the external obsidian@obsidian-skills plugin and the company memory.
+The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily), and learn and keep the owner's rules (rulebook, rule-learner, rule-steward). Needs the external obsidian@obsidian-skills plugin and the company memory.
 
 | Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
 |---|---|---|---|---|---|---|---|---|---|
-| [`vault-setup`](../skills/vault-setup/SKILL.md) | Bootstrap or complete a Meaningfy personal Obsidian vault and its tooling, the way project-setup does for a repository: create the vault layout and its `vault-files/` sibling, the templates for every kind, the vault's agent instructions (`AGENTS.md` with the owner profile and write rules) and the per-CLI permission settings; then guide, per operating system (Windows or Linux), installing Obsidian with its CLI, the external obsidian-skills plugin, sync through Google Drive (Insync) or OneDrive, the company memory's MCP server, mail and calendar connectors, the optional ingestion opt-in and a scheduled daily run; end with a check of every prerequisite. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions` | `vault-conventions`, `vault-daily` |
-| [`vault-conventions`](../skills/vault-conventions/SKILL.md) | Meaningfy's conventions for notes in a personal Obsidian vault: the folder layout and what each folder holds, the `kind` of every note and its required properties, the project's standing files, link and tag style, where binaries go, machine-neutral paths, the `00 Inbox/proposed/` staging area, and how a vault session may use the company memory (recall only, never remember). | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-setup` | `vault-setup`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `sales-operations` |
+| [`vault-setup`](../skills/vault-setup/SKILL.md) | Bootstrap or complete a Meaningfy personal Obsidian vault and its tooling, the way project-setup does for a repository: create the vault layout and its `vault-files/` sibling, the templates for every kind, the vault's agent instructions (`AGENTS.md` with the owner profile and write rules) and the per-CLI permission settings; then guide, per operating system (Windows or Linux), installing Obsidian with its CLI, the external obsidian-skills plugin, sync through Google Drive (Insync) or OneDrive, the company memory's MCP server, mail and calendar connectors, the optional ingestion opt-in and a scheduled daily run; end with a check of every prerequisite. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions` | `vault-conventions`, `vault-daily`, `rulebook` |
+| [`vault-conventions`](../skills/vault-conventions/SKILL.md) | Meaningfy's conventions for notes in a personal Obsidian vault: the folder layout and what each folder holds, the `kind` of every note and its required properties, the project's standing files, link and tag style, where binaries go, machine-neutral paths, the `00 Inbox/proposed/` staging area, and how a vault session may use the company memory (recall only, never remember). | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-setup` | `vault-setup`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `rulebook`, `rule-learner`, `rule-steward`, `sales-operations` |
 | [`vault-project`](../skills/vault-project/SKILL.md) | Start or close a project folder in a Meaningfy Obsidian vault. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-resume`, `vault-capture` | `vault-conventions`, `vault-resume`, `vault-capture`, `vault-tidy`, `vault-planning` |
 | [`vault-resume`](../skills/vault-resume/SKILL.md) | Start a work session on one project in a Meaningfy Obsidian vault: read that project's charter (`index.md`), its latest `sessions.md` entries, `decisions.md` and `tasks.md`, make at most one memory recall naming the project, and summarise where things stand and what is next. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-capture`, `vault-project` | `vault-conventions`, `vault-capture`, `vault-project`, `vault-daily` |
-| [`vault-capture`](../skills/vault-capture/SKILL.md) | File what matters into one project's files in a Meaningfy Obsidian vault: at the end of a work session (from the conversation) or at any time from raw call or meeting notes the owner pastes. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-resume`, `vault-project` | `vault-conventions`, `vault-resume`, `vault-project`, `vault-daily`, `vault-promote` |
-| [`vault-promote`](../skills/vault-promote/SKILL.md) | Promote a staged note out of `00 Inbox/proposed/` in a Meaningfy Obsidian vault into a project's `artefacts/` or `03 Resources/`: after checking it carries `kind` and every property and section its kind requires, and moving it so every wikilink follows. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-tidy` | `vault-conventions`, `vault-tidy`, `vault-capture`, `vault-planning` |
+| [`vault-capture`](../skills/vault-capture/SKILL.md) | File what matters into one project's files in a Meaningfy Obsidian vault: at the end of a work session (from the conversation) or at any time from raw call or meeting notes the owner pastes. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-resume`, `vault-project` | `vault-conventions`, `vault-resume`, `vault-project`, `vault-daily`, `vault-promote`, `rule-learner` |
+| [`vault-promote`](../skills/vault-promote/SKILL.md) | Promote a staged note out of `00 Inbox/proposed/` in a Meaningfy Obsidian vault into a project's `artefacts/` or `03 Resources/`: after checking it carries `kind` and every property and section its kind requires, and moving it so every wikilink follows. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-tidy`, `rulebook` | `vault-conventions`, `vault-tidy`, `vault-capture`, `vault-planning` |
 | [`vault-tidy`](../skills/vault-tidy/SKILL.md) | Tidy a Meaningfy Obsidian vault on the owner's request: survey it, present a written plan of every move, merge, rename and delete (and every wikilink each affects), and apply the plan only after an explicit yes, moving so links follow. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-promote`, `vault-project` | `vault-conventions`, `vault-promote`, `vault-project` |
-| [`vault-planning`](../skills/vault-planning/SKILL.md) | Plan and review the owner's objectives in a Meaningfy Obsidian vault across four horizons: year, quarter (OKRs: objectives with measurable key results), month and week: kept in `05 To Do/Objectives YYYY.md` with its own change log, and reviewed into `04 Daily/reviews/`. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-daily`, `vault-promote`, `vault-tidy` | `vault-daily`, `vault-project`, `vault-conventions`, `vault-promote` |
+| [`vault-planning`](../skills/vault-planning/SKILL.md) | Plan and review the owner's objectives in a Meaningfy Obsidian vault across four horizons: year, quarter (OKRs: objectives with measurable key results), month and week: kept in `05 To Do/Objectives YYYY.md` with its own change log, and reviewed into `04 Daily/reviews/`. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-daily`, `vault-promote`, `vault-tidy` | `vault-daily`, `vault-project`, `vault-conventions`, `vault-promote`, `rule-steward` |
 | [`vault-daily`](../skills/vault-daily/SKILL.md) | Write today's morning note in a Meaningfy Obsidian vault (`04 Daily/YYYY-MM-DD.md`, private) from live sources: the calendar, the inbox and sent mail since the previous note, the master to-do list `05 To Do/To-Do.md`, this week's plans: keep the master list current (ticks flow back, waiting-on-replies tracked), and create reply drafts, never sending anything. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-planning`, `meaningfy-voice`, `vault-setup` | `meaningfy-voice`, `vault-planning`, `vault-conventions`, `vault-setup`, `vault-capture`, `vault-resume` |
+| [`rulebook`](../skills/rulebook/SKILL.md) | Use this skill when an activity starts in a session that has the owner's rules (writing, offers, reviews), and whenever a rule is read, checked or written: load the rules for the activity and context, cite the ones applied, and check an output before handing it over. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `experimental` | `vault-conventions`, `rule-learner`, `rule-steward` | `rule-learner`, `rule-steward`, `vault-conventions`, `vault-setup` |
+| [`rule-learner`](../skills/rule-learner/SKILL.md) | Use this skill when the owner states how work should be done or corrects the agent ("always", "never", "prefer", "from now on", "no, do it this way"), and at the end of such a session: draft candidate rules from the owner's own words, classify them, pick a mutation (new, confirm, update, supersede, split), show them in one rule approval card and write what the owner approves; record a correction against a rule in force with override. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `experimental` | `rulebook`, `rule-steward`, `vault-capture`, `vault-conventions` | `rulebook`, `rule-steward`, `vault-capture`, `vault-conventions` |
+| [`rule-steward`](../skills/rule-steward/SKILL.md) | Use this skill when the weekly review of a Meaningfy vault reaches its rules step, or when the owner asks how their rules are doing: read the window's rule usage from Langfuse, run the lint and the golden examples, review the staged rule candidates, flag rules never loaded, never cited, overridden, violated or stale, propose retire, revise, merge, split, confirm or promote for each, and apply only what the owner approves. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `experimental` | `rulebook`, `rule-learner`, `vault-planning`, `vault-conventions` | `rulebook`, `rule-learner`, `vault-planning`, `vault-conventions` |
 
 ## By facet
 
@@ -739,7 +776,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | `proposals` | proposal and offer documents | `proposal-writing`, `proposal-writer` *(agent)* |
 | `crm` | create, manage and groom deals and contacts | `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-operations`, `sales-agent` *(agent)* |
 | `devops` | environments, CI/CD, releases and operations | `ci-cd-delivery`, `meaningfy-release`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
-| `knowledge` | the owner's personal notes, plans and rhythm | `skillery-feedback`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
+| `knowledge` | the owner's personal notes, plans and rhythm | `skillery-feedback`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `rulebook`, `rule-learner`, `rule-steward` |
 
 ### area
 
@@ -748,7 +785,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | `coding` | building software with AI agents | `meaningfy-git-workflow`, `guardrails`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `system-architect` *(agent)*, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `consulting` | advising clients | `semantic-consulting-coach`, `decision-package` |
 | `sales` | winning and pricing work | `proposal-writing`, `estimation`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `proposal-writer` *(agent)*, `sales-agent` *(agent)* |
-| `personal` | the owner's own vault and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
+| `personal` | the owner's own vault and rhythm | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `rulebook`, `rule-learner`, `rule-steward` |
 | `operations` | running infrastructure, CI/CD and monitoring | `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
 | `business` | running and growing the company, negotiation and internal communication | — |
 | `legal` | contracts, NDAs and other legal documents | — |
@@ -766,7 +803,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | `spec-driven` | specification-first work (OpenSpec, EPICs) | `epic-planning`, `spec-stewardship`, `epic-planner` *(agent)* |
 | `git-release` | git, versions and releases | `meaningfy-git-workflow`, `meaningfy-release` |
 | `delivery-infra` | deployment and infrastructure | `ci-cd-delivery`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
-| `obsidian` | Obsidian vaults | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
+| `obsidian` | Obsidian vaults | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `rulebook`, `rule-learner`, `rule-steward` |
 
 ### posture
 
@@ -774,7 +811,7 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 |---|---|---|
 | `reusable` | R: a reusable core; a fix adds no domain content | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `guardrails`, `estimation`, `architecture`, `modelling-conventions`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `system-architect` *(agent)* |
 | `profiled` | C: a core with profiles; a fix adds a switch or a profile | `decision-package`, `executive-communication`, `proposal-writing`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `proposal-writer` *(agent)* |
-| `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `skillery-feedback`, `semantic-consulting-coach`, `sales-pipeline-custody`, `sales-operations`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `sales-agent` *(agent)*, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
+| `precise` | P: a precise house standard; a fix adds a guardrail | `meaningfy-voice`, `meaningfy-git-workflow`, `skillery-feedback`, `semantic-consulting-coach`, `sales-pipeline-custody`, `sales-operations`, `conceptual-modelling`, `linkml-engineering`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `rulebook`, `rule-learner`, `rule-steward`, `sales-agent` *(agent)*, `conceptual-modeller` *(agent)*, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
 
 ### stage
 
@@ -787,12 +824,12 @@ One table per facet in [`facets.yaml`](../facets.yaml): each value, its one-line
 | `build` | writing the code | `meaningfy-git-workflow`, `cosmic-python`, `project-setup`, `implementer` *(agent)* |
 | `verify` | testing and reviewing | `guardrails`, `bdd-gherkin`, `meaningfy-code-review`, `code-reviewer` *(agent)* |
 | `release` | shipping and operating | `ci-cd-delivery`, `meaningfy-release`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
-| `any` | no single stage | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `skillery-feedback`, `executive-communication`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` |
+| `any` | no single stage | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `skillery-feedback`, `executive-communication`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `rulebook`, `rule-learner`, `rule-steward` |
 
 ### maturity
 
 | Value | Meaning | Skills and agents |
 |---|---|---|
-| `experimental` | in trial; may change or go | `skillery-feedback`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `proposal-writer` *(agent)*, `sales-agent` *(agent)*, `system-architect` *(agent)*, `conceptual-modeller` *(agent)*, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
+| `experimental` | in trial; may change or go | `skillery-feedback`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations`, `sales-operations`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `rulebook`, `rule-learner`, `rule-steward`, `proposal-writer` *(agent)*, `sales-agent` *(agent)*, `system-architect` *(agent)*, `conceptual-modeller` *(agent)*, `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)* |
 | `stable` | in use and maintained | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `meaningfy-git-workflow`, `guardrails`, `semantic-consulting-coach`, `decision-package`, `executive-communication`, `proposal-writing`, `estimation`, `architecture`, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `epic-planning`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)* |
 | `deprecated` | kept for now; do not start using it | — |

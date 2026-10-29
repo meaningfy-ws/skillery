@@ -58,7 +58,7 @@ The owner's own vault and rhythm.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W1](../use-cases/UC-W1-vault-work.md) Vault work | a Meaningfy colleague working in a personal vault | `covered` | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily` | `add-vault-local-config` | medium |
+| [UC-W1](../use-cases/UC-W1-vault-work.md) Vault work | a Meaningfy colleague working in a personal vault | `covered` | `vault-setup`, `vault-conventions`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`, `vault-tidy`, `vault-planning`, `vault-daily`, `rulebook`, `rule-learner`, `rule-steward` | `add-vault-local-config` | medium |
 | [UC-W2](../use-cases/UC-W2-life-coach.md) Life coach and personal growth | the owner | `missing` | — | `add-personal-assistants` | low |
 | [UC-W3](../use-cases/UC-W3-secretary.md) Secretary | the owner | `missing` | — | `add-personal-assistants` | low |
 | [UC-W4](../use-cases/UC-W4-planning-horizons.md) Planning across horizons | the owner | `partial` | `vault-planning`, `vault-daily` | `add-personal-assistants` | high / low |

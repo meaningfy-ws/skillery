@@ -14,7 +14,7 @@
         "command": "python3 \"<skills>/rulebook/scripts/rules.py\" load --activity writing --context channel=email"
       },
       "output": {
-        "stdout": "PLAYBOOK Writing\n# Writing\n\n1. Load the rules.\nR-0001 [default] spelling=british — use British English spelling (because: the owner said so in a session)\nR-0012 [default] greeting=first-name — greet by first name (because: the owner said so in a session)\nR-0010 [hard] use no em dash (because: the owner said so in a session)\nCHECK R-0010: run check on the output before handing it over\n-- end --\n",
+        "stdout": "PLAYBOOK Writing\n# Writing\n\n1. Load the rules.\nR-0001 [default] spelling=british: use British English spelling (because: the owner said so in a session)\nR-0012 [default] greeting=first-name: greet by first name (because: the owner said so in a session)\nR-0010 [hard] use no em dash (because: the owner said so in a session)\nCHECK R-0010: run check on the output before handing it over\n-- end --\n",
         "stderr": "",
         "interrupted": false
       }
@@ -33,7 +33,7 @@
         "command": "python3 \"<skills>/rulebook/scripts/rules.py\" load --activity writing"
       },
       "output": {
-        "stdout": "PLAYBOOK Writing\nR-0001 [default] spelling=british — use Brit"
+        "stdout": "PLAYBOOK Writing\nR-0001 [default] spelling=british: use Brit"
       }
     },
     {

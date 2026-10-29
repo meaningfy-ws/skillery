@@ -374,7 +374,7 @@ def _context(args) -> frozenset[str]:
 
 
 def _line(rid: str, m: dict) -> str:
-    slot = f" {m['slot']}={m.get('value', '')} —" if m.get("slot") else ""
+    slot = f" {m['slot']}={m.get('value', '')}:" if m.get("slot") else ""
     return f"{rid} [{m['strength']}]{slot} {m.get('do', '')} (because: {m.get('because', '')})"
 
 
