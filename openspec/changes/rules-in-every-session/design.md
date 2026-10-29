@@ -1,6 +1,7 @@
 <!-- PLAN (design half). PLAN = this file + tasks.md. Revision 2, 2026-10-29: the independent clarity
      gate scored revision 1 at 8.9 (FAIL); its nine gaps are closed here (cross-store read rule, store
-     possible vs present, exact messages, acceptance per task, the card trigger, the working directory). -->
+     possible vs present, exact messages, acceptance per task, the card trigger, the working directory).
+     Round 2: 9.35/10 PASS; its four minor gaps are closed in revision 3. -->
 
 > Derives from: EPIC `rules-in-every-session` ([`proposal.md`](proposal.md)), golden-thread parent
 > [`rule-learner`](../archive/2026-10-29-rule-learner/proposal.md) and its PLAN
@@ -140,8 +141,9 @@
 - **D-8a The working directory.** `rules.py` takes the repository from its process's working
   directory and has no option to name one. `rulebook`'s "Running the script" states: run `rules.py`
   from the session's working directory; if you have run `cd` elsewhere in this session, run
-  `cd <session directory>` as its own command first, never as `cd … && python3 …` (a compound command
-  no longer matches the D-6 allow rule).
+  `cd <session directory>` as its own command first, never as `cd … && python3 …`. The reason is
+  unverified (whether a compound command still matches the D-6 allow rule differs by CLI); live
+  check 4.1 confirms or drops it, and the instruction is harmless either way.
 - **D-9 Folder name:** `docs/rules/`, one flat folder.
   - Files are `P-NNNN <title>.md`, with the same title rule as RL-D-3.
   - The reader globs only `P-[0-9][0-9][0-9][0-9] *.md`, so a `README.md` or other files a team keeps
@@ -168,7 +170,8 @@
 
   Every other field, the quoting rules and round-trip stability are unchanged.
 - **D-12 The pointer line.** On **every** real write to the repository store (`add --store repo`,
-  and `update`, `confirm` or `retire` of a `P-` rule; never on `--dry-run`), `rules.py` appends this
+  and `update`, `confirm` or `retire` of a `P-` rule; never on `--dry-run`, and never on a write that changes nothing, such as
+  a second `confirm` on the same day or a `retire` of a rule already dropped), `rules.py` appends this
   line to `<root>/AGENTS.md`, preceded by a blank line, when it is missing. So a `docs/rules/` a team
   created by hand gets the pointer on its first write through the script:
 
@@ -219,9 +222,10 @@
     reported here."
 - **D-15 Reading across stores: the read rule.** `load`, `check FILE` and `search` read the present
   stores in three steps:
-  1. **Per-store index.** `_index()` runs on each store's notes alone. A note whose id does not match
-     its store's prefix (`P-` in the vault, `R-` or anything else in `docs/rules/`) is left out of the
-     index; `load` prints `SKIPPED <file name>: id <id> does not belong in the <vault|repository>
+  1. **Per-store index.** `_index()` runs on each store's notes alone. In the vault, only a note whose id
+     starts with `P-` is left out (any other id, malformed ones included, is handled as today, which
+     keeps D-10's byte-identical promise); in `docs/rules/`, a note whose id is not `P-NNNN` is left out
+     of the index; `load` prints `SKIPPED <file name>: id <id> does not belong in the <vault|repository>
      store` where it prints today's parse `SKIPPED` lines, and lint reports it as `invalid` (D-10). Ids therefore never collide across stores.
   2. **Cut cross-store links.** In each store's index, an `exception_of` or `supersedes` naming an id
      outside that store is removed from the in-memory copy, so `_excepts`/`_beats` never follow it.
@@ -404,7 +408,7 @@ and create `.git` there. Git cannot commit a nested `.git`, so the fixture holds
 | T-21 | D-15 step 2 | module import; read the fixture stores | `P-0003` has no `exception_of` in the merged index; the file on disk still has it |
 | T-22 | D-10 byte-identical | snapshots in `tests/fixtures/rulebook/vault-only/` of `load --activity writing --context audience=client`, `lint`, `search spelling`, `check --golden`, `stats --from-file`, taken with the pre-step-2 script (task 1.4) | stdout and exit code equal, with `cwd=ROOT` and with `cwd=tmp_path` |
 | T-23 | D-14 and D-13 exit codes | in a repository with no `docs/rules/`: `retire P-0001`, `lint --store repo`; outside one: `lint --store repo` | 4, 0 (`0 error(s), 0 warning(s)`), 3 |
-| T-24 | D-12, hand-made store | `docs/rules/` exists, `AGENTS.md` lacks the pointer; `add --store repo` | the pointer is added once |
+| T-24 | D-12, hand-made store | `docs/rules/` exists, `AGENTS.md` lacks the pointer; `add --store repo`, then `update`, `confirm` and `retire` of a `P-` rule, then a second `confirm` the same day | the pointer is added once by the first write; the later writes add nothing, and the no-op `confirm` leaves `AGENTS.md` byte-identical |
 
 ## Risks / Trade-offs
 

@@ -10,7 +10,8 @@
 > - **Step 2** (groups 1B, 6, 7 and 8.1) branches from `develop` after step 1 merges, as
 >   `feat/rules-repository-store`.
 > - If step 2 is cut, mark its tasks `cut`, delete the requirement "A development rule can live in the
->   repository" from the spec delta, and archive.
+>   repository" from the spec delta, drop "with the row's store set to the vault" from the scenario
+>   "A rule stated in a code repository", and archive.
 > - Group 4 holds live checks that do not block either merge.
 
 ## 0. Precondition
