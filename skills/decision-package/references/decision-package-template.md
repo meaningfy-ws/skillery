@@ -15,7 +15,7 @@ deck about any client.
 # Decision Package: <client / initiative>   <!-- or the engagement label, e.g. "Semantic Readiness & Direction" -->
 
 - **ID:** DEC-<n>            <!-- human-readable, minted at authoring (golden-thread root) -->
-- **Engagement:** <P1 Decision Phase, ref>
+- **Engagement:** <Proof of Value, ref>
 - **Date / version:**
 - **Deciding persona:** <who commits, and to what>
 
@@ -56,7 +56,7 @@ a decision) · Question (what to do first?) · Answer (restate the Governing Tho
 - **In / out scope for execution:** <pointer to Scope above>
 - **Inputs & access required from the client:** <data, people, systems>
 - **Buy/build/defer decisions to action:** <pointer above>
-- **Boundary with execution:** execution is a **separate** P2 engagement with its own scope and
+- **Boundary with execution:** execution is a **separate** Scaling engagement with its own scope and
   budget. *"From here, we can execute, or you can take this and execute with someone else."*
 
 ## Appendix — first-cut conceptual model (optional)  <!-- R4 -->

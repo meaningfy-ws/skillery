@@ -1,7 +1,7 @@
 # Scope-boundary checklist (in/out)
 
 The discipline `proposal-writing` owns. The **out-of-scope list is load-bearing**: it protects the
-boundary with the build tier (P2 Execution is always a separate engagement) and pre-empts scope creep
+boundary with the build tier (Scaling is always a separate engagement) and pre-empts scope creep
 on a fixed-frame price. Run this before the proposal + SoW ship.
 
 ## The one invariant
@@ -20,7 +20,7 @@ on a fixed-frame price. Run this before the proposal + SoW ship.
 
 ## Out-of-scope checks
 
-- [ ] **Implementation / build (P2)** is explicitly out, named as a separate engagement.
+- [ ] **Implementation / build (Scaling)** is explicitly out, named as a separate engagement.
 - [ ] Every assumption in the estimate that could fail has a matching exclusion or a stop/extend trigger.
 - [ ] Each exclusion says *when it might return* (as a future engagement), not just that it is out.
 - [ ] No exclusion in the estimate worksheet is missing from the SoW (the invariant above).
@@ -35,6 +35,6 @@ on a fixed-frame price. Run this before the proposal + SoW ship.
 
 ## Handover check
 
-- [ ] The clean-handover clause is present: P2 Execution is separately scoped and priced, so the
+- [ ] The clean-handover clause is present: Scaling is separately scoped and priced, so the
       proposal can say *"from here, we can execute, or you can take this and execute with someone
       else."*

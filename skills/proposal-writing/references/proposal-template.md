@@ -3,7 +3,7 @@
 The fillable template for the **proposal**: the persuasive, executive-facing half of the offer. Write
 it answer-first with the `executive-communication`
 skill (SCQA + a 3-point pyramid; trade-offs and scope boundaries explicit; short close). The offer it
-frames is the **P1 Decision Phase**, whose deliverable is defined by
+frames is the **Proof of Value**, whose deliverable is defined by
 `decision-package`. The numbers come from
 `estimation`. The contractual companion is the
 [SoW](sow-template.md).
@@ -13,7 +13,7 @@ Keep it tight. Cut anything that could appear in any consultancy's deck about an
 ---
 
 ```markdown
-# Proposal: <client / engagement>   <!-- e.g. "Semantic Readiness & Direction — Decision Phase" -->
+# Proposal: <client / engagement>   <!-- e.g. "Semantic Readiness & Direction — Proof of Value" -->
 
 - **For:** <deciding persona — who commits, and to what>
 - **Date / version:**
@@ -27,7 +27,7 @@ Keep it tight. Cut anything that could appear in any consultancy's deck about an
 
 ## Our recommendation   <!-- Answer / Governing Thought, answer-first -->
 
-**<One actionable sentence: run the Decision Phase to make the first commitment safe.>**
+**<One actionable sentence: run the Proof of Value to make the first commitment safe.>**
 
 Three reasons this is the right next step:
 
@@ -35,7 +35,7 @@ Three reasons this is the right next step:
 2. **<It produces a ready-to-contract direction, not open-ended discovery.>** <evidence>
 3. **<It is bounded — a fixed frame, with a clean handover to execution.>** <evidence>
 
-## What the Decision Phase delivers
+## What the Proof of Value delivers
 
 The engagement produces a **Decision Package** (see `decision-package` for the full structure):
 a clear recommendation for the first initiative, a defined **in/out scope**, a sequenced
@@ -44,10 +44,10 @@ a clear recommendation for the first initiative, a defined **in/out scope**, a s
 
 ## Scope boundary   <!-- the load-bearing in/out — mirrors the SoW exactly -->
 
-**In scope:** <the Decision Phase activities and the Decision Package deliverable.>
-**Out of scope:** <implementation/build (P2, separately scoped), and the named exclusions.>
+**In scope:** <the Proof of Value activities and the Decision Package deliverable.>
+**Out of scope:** <implementation/build (Scaling, separately scoped), and the named exclusions.>
 
-> P2 Execution is a separate engagement with its own scope and budget. This proposal commits only to
+> Scaling is a separate engagement with its own scope and budget. This proposal commits only to
 > making the decision safe.
 
 ## Price and shape   <!-- the fixed frame -->
@@ -63,5 +63,5 @@ worksheet here; the SoW carries the assumptions/exclusions that justify it.>
 ## Next steps
 
 Immediate: <countersign the SoW.> · Short-term: <kick-off, inputs/access secured.> ·
-Medium-term: <Decision Package delivered; decide on P2.>
+Medium-term: <Decision Package delivered; decide on Scaling.>
 ```
