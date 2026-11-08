@@ -62,3 +62,21 @@ completed, scenarios 11–13, CI-needs-Claude-CLI and early-access API as rabbit
 - **R3-2** "okay-ish, for now" (DEC-13; revisit in stage 2 if a host is wrong).
 - Added: "let's not be too pedantic with the CI/CD, especially e2e and integration tests shall be
   optional, so skip also claude cli tests" → DEC-14.
+
+## PLAN round — answered 2026-11-08
+
+The lead's recommendations on the four PLAN questions, owner: "fine, go ahead".
+
+- Hygiene thresholds as proposed (compact 50%, warn 75%, fresh-session offer only above 15% at a
+  task boundary, idle 60 min, report ≤40 lines, lookup ≤3 tool calls), as starting values.
+- Bundle name `meaningfy-navigator`.
+- Review set per appetite: single source is the build-tier workflow file; `epic-delivery` points
+  to it.
+- Workflow files in JSON.
+
+## PLAN clarity gate — record (2026-11-08)
+
+Four fresh reviewers: 8/10, 8.6, 8.5, 8.5. Each round's gaps were fixed in the PLAN; the one
+decision a reviewer marked "owner" (method held in the mod) was taken by the lead under DEC-2/DEC-6
+(DD-30). The last round had one blocking gap (strict commit checked after the commit); its reviewer
+judged that fix enough to pass. The fix was verified by the lead; the PLAN was not re-scored after it.
