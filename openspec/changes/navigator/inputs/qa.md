@@ -42,3 +42,23 @@
 - **R2-3** Status line: the mod pins its own line under the prompt (`$.ui.status`), with an optional
   snippet for a person's own `statusLine` script — rather than the plugin editing user settings.
 - **R2-4** Test scenarios (draft in proposal, *What the EPIC must prove*): confirm, add, cut.
+
+## Readiness check (fresh reader, 2026-11-08) — READY WITH FIXES
+
+Eleven findings. Fixed in the EPIC: workflow count (four), stages and cut line, hygiene thresholds
+owned by `guardrails`, strict mode stops/corrects spawns (answer 15), `mod` mechanism in
+`hooks.yaml` with an opencode gap, reminder text from the workflow file, Modified Capabilities
+completed, scenarios 11–13, CI-needs-Claude-CLI and early-access API as rabbit-holes.
+
+## Open for the owner (round 3)
+
+- **R3-1** Where is the per-repo strict opt-in declared? (DEC-5 vs DEC-10 contradiction found by
+  the check.)
+- **R3-2** Host skills for the four default workflows (DEC-13): lead's call, confirm or change.
+
+## Round 3 — answered 2026-11-08
+
+- **R3-1** "I agree": the repo declares `mode: strict` in its own workflow file (DEC-5).
+- **R3-2** "okay-ish, for now" (DEC-13; revisit in stage 2 if a host is wrong).
+- Added: "let's not be too pedantic with the CI/CD, especially e2e and integration tests shall be
+  optional, so skip also claude cli tests" → DEC-14.

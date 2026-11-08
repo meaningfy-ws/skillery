@@ -1,5 +1,6 @@
 <!-- STATUS: EPIC shaped 2026-11-08 from the owner's brainstorming session (inputs/seed.md,
-     inputs/qa.md), round 2 answered the same day. PLAN not derived. -->
+     inputs/qa.md), round 2 answered the same day; readiness check applied, round 3 answered. Frozen.
+     PLAN not derived. -->
 
 # EPIC: navigator — see who runs what, where we are, and whether we drift
 
@@ -18,6 +19,18 @@ and a new bundle; `governance`, `bundle_gen`, `make validate` and five owning sk
 the work starts restating skill rules inside the mod, adds an opencode renderer, builds a web
 dashboard beyond the Board file, or grows the sales workflow past the simple one (DEC-9), it has
 overrun this appetite.
+
+**Stages.**
+1. **See it.** The Mod artifact type, bundling, the plugin's settings, status line and band
+   (folded/unfolded, show/hide), who runs what (agents, subagents, skill trail), and the proof of
+   what draws on the desktop.
+2. **Follow the workflow.** The workflow-file schema, the four defaults and repo overrides, phase
+   and progress in the line, process drift, the core actions Next step and Back on track.
+3. **Stay on plan and lean.** Plan drift, Reconcile EPIC, Archive check, Accept deviation, strict
+   mode, hygiene and cost signals, the remaining actions, user and developer guides complete.
+
+**Cut line** if the work runs over: Board, Copy status and Report to skillery go first, then the
+desktop-specific polish; the core four actions, the two drift kinds and the docs stay.
 
 ## Why
 
@@ -52,7 +65,7 @@ documented.
 it; an optional snippet puts the same line in a person's own `statusLine` script. In the **desktop
 app** the band draws natively (the mod API draws per surface: terminal, desktop, VS Code); the
 desktop has no `statusLine` script, so what the pinned line shows there is proven in stage 1, and if
-it does not show, the folded band carries it. Both are tested on both surfaces.
+it does not show, the folded band carries it. Both are checked by hand on both surfaces (DEC-14).
 
 **Workflows as data that point to their owners.** Each default workflow is a small file kept *next
 to the skill that owns the method*: its phases, the owning skill of each phase, the skills expected
@@ -78,12 +91,15 @@ follow-up (`sales-conversations`) → estimate and offer (`estimation`, `proposa
   EPIC/PLAN before archiving.*
 - **Hygiene and cost** — context and token use against `guardrails` §6: prompts *compact now* or
   *fresh session* only at a safe point (phase boundary right after a commit), never mid-step; flags
-  oversized subagent reports and loaded-but-unused skills.
+  oversized subagent reports and loaded-but-unused skills. The thresholds ("high context use", "an
+  oversized report") are rules, so `guardrails` gains them (§5, §6); the mod reads them, never
+  holds them.
 
 **Two modes.** **Loose** (default): observe, show, warn; never blocks. **Strict** (opted into per
-repo): adds phase reminders to the agent's instructions and blocks a commit or archive while drift
-is open, always naming the reason and the way out; a person can drop to loose for the session in
-one action.
+repo, DEC-5): adds phase reminders to the agent's instructions — their text taken from, or citing,
+the workflow file and its owning skill — blocks a commit or archive while drift is open, and stops
+or corrects a subagent spawn that breaks the appetite's budget or the model rule; every block names
+the reason and the way out. A person can drop to loose for the session in one action.
 
 **Actions** run the same commands a person types. Core: **Next step**, **Reconcile EPIC**
 (`openspec-update-change` then `clarity-gate`), **Back on track** (run the skipped skill/gate),
@@ -113,11 +129,18 @@ trigger-probe candidate).
 9. Hiding the status line removes it; the setting chosen in the config menu is the default the
    next session starts with.
 10. Scenarios 1–3 and 8 hold on the desktop surface as on the terminal.
+11. In a DevOps session, the line shows the intervention kind and its phase; an apply with no
+    consent card answered raises process drift. A sales session shows the sales phase likewise.
+12. In strict mode, a blocked commit is unblocked by *drop to loose* for the session, and the next
+    session starts strict again.
+13. *Accept deviation* records the reason in the change; *Archive check* then passes with the
+    deviation listed. *Reconcile EPIC* and *Report to skillery* each run their command, visible in
+    the transcript as if typed.
 
 **Documented for two audiences.** *Users* (CLI and desktop): install, what the band and line show,
 the two modes, every action, show/hide, configuration, disable/uninstall, a worked example of a
 drift caught and fixed. *Developers*: the Mod type, the mod's structure and state contract, the
-workflow-file schema and how a repo adds its own, adding a check or an action, testing on both
+workflow-file schema and how a repo adds its own, adding a check or an action, checking by hand on both
 surfaces, how bundling renders it.
 
 ## Key decisions
@@ -136,8 +159,11 @@ surfaces, how bundling renders it.
   the compatibility matrix; reusing the status line there is allowed, not required. Reason: the
   owner's call; mods exist only on Claude Code, and draw on each of its surfaces.
 - **DEC-5**: **loose by default, strict opt-in per repo**, mode always visible, drop-to-loose always
-  available. Each strict rule is registered in `hooks.yaml` with its provenance skill. Reason:
-  steering surprises people unless it is chosen and visible.
+  available. A repo opts in by declaring `mode: strict` in its own workflow file in its docs, so
+  everyone in that repo gets the same mode with no new config file (R3-1). Each strict rule is registered in
+  `hooks.yaml` with its provenance skill under a new Claude-only binding mechanism, `mod`; opencode
+  gets a recorded gap, not a rendered hook. Reason: steering surprises people unless it is chosen
+  and visible.
 - **DEC-6**: **actions are commands** a person could type; the mod holds no decision logic beyond
   matching events to workflow phases. Reason: ponytail's proven pattern; keeps the method in skills.
 - **DEC-7**: band and status line **carry different information**; no hotkeys. The owner's answers 3, 4.
@@ -147,12 +173,22 @@ surfaces, how bundling renders it.
   skills and agents; it is revised when the sales method settles. The owner's round-2 answer
   (reverses answer 7's "to be decided").
 - **DEC-10**: **toggles by command, defaults by settings.** Band and status line each have a
-  show/hide command for the session; the plugin's `userConfig` holds their defaults and the mode,
-  editable in the config menu. Reason: the owner's round-2 answer 3; rejected: a repo config file
-  (per-person display choices do not belong in a repo).
+  show/hide command for the session; the plugin's `userConfig` holds their display defaults,
+  editable in the config menu. Reason: the owner's round-2 answer 3; rejected: a repo file for
+  display choices (they are per person). The mode is a repo matter (DEC-5), not a display default.
 - **DEC-11**: **documentation is part of done**, for users (CLI and desktop) and developers, as
   listed in the outline. Reason: the owner's round-2 answer 3.
 - **DEC-12**: name **`navigator`**. The owner's round-2 answer 1.
+- **DEC-13**: the four default workflow files sit in one host skill each: build-tier in
+  `epic-delivery`, architecting and modelling in `architecture` (citing `conceptual-modelling`),
+  DevOps in `infrastructure-operations` (citing `service-reliability` for incidents and unattended
+  operations), sales in `sales-operations`. Reason: the skill that already narrates the whole
+  activity hosts it; the lead's call, accepted by the owner "for now" (R3-2) — revisit if a
+  host turns out wrong in stage 2.
+- **DEC-14**: **tests stay light.** `make validate` gets the type-check, unit tests of the mod's
+  pure logic, and the workflow-file schema check. End-to-end and integration tests, and anything
+  needing the Claude Code CLI (`claude plugin validate`, `claude plugin test`), are optional and
+  run by hand; no CI job depends on them. Reason: the owner's round-3 answer.
 
 ## Rabbit-holes
 
@@ -162,6 +198,8 @@ surfaces, how bundling renders it.
 - Ponytail parity. Copy the pattern, not the features (reuse %, test counts are ponytail's job).
 - Board as a product. A generated local file is enough; no server, no webhook.
 - Global keyboard shortcuts — dropped.
+- The mod API is marked early access and may change between Claude Code releases; pin the version
+  the mod is tested on and re-test on upgrade.
 
 ## No-gos
 
@@ -173,6 +211,7 @@ surfaces, how bundling renders it.
 - No blocking in loose mode; no strict mode switched on by default.
 - No editing of a person's own `settings.json` / `statusLine` by the plugin.
 - No data leaves the machine (no webhook, no telemetry).
+- No CI job for end-to-end, integration or Claude-CLI tests (DEC-14).
 
 ---
 
@@ -181,22 +220,23 @@ surfaces, how bundling renders it.
 **New artifact type and bundling**
 - `docs/development/governance.md`: the Mod type and its rule; `AGENTS.md` type table row.
 - `mods/navigator/`: hooks module, state contract, band, status line, drift and hygiene checks,
-  tests (`claude plugin test`).
+  unit tests of its pure logic.
 - `bundles.yaml` + `tools/bundle_gen`: mod membership; symlinked `hooks/`; `hooks`/`types` in the
   bundle `plugin.json`.
-- `make validate`: `claude plugin validate`, type-check, mod tests, workflow-file schema check.
+- `make validate`: type-check, the mod's unit tests, workflow-file schema check (DEC-14).
 
 **Workflows**
-- A workflow file schema and three defaults beside their owners: `epic-delivery` (build-tier with
-  exploratory and brownfield variants), `conceptual-modelling` / `architecture` (architecting and
-  modelling), the DevOps owner skill (interactive intervention, incident, check-up, unattended
-  operation), a sales owner skill (simple, provisional; DEC-9).
+- A workflow file schema and four defaults in their host skills (DEC-13): `epic-delivery`
+  (build-tier with exploratory and brownfield variants), `architecture` (architecting and
+  modelling), `infrastructure-operations` (interactive intervention, incident, check-up, unattended
+  operation), `sales-operations` (simple, provisional; DEC-9).
 - `docs/development/workflows.md`: points to the workflow files; explains repo overrides.
 
 **Rules wired**
-- `hooks.yaml`: strict-mode rules as agent-mechanism intents with provenance (`epic-delivery`,
-  `guardrails`, `spec-stewardship`).
+- `hooks.yaml`: strict-mode rules as intents with provenance (`epic-delivery`, `guardrails`,
+  `spec-stewardship`) under the new `mod` mechanism (DEC-5).
 - `spec-stewardship`: archive requires no open plan drift, or recorded deviations.
+- `guardrails` §5, §6: the hygiene and cost thresholds the mod reads.
 
 **Docs**
 - `docs/environment/dual-cli/compatibility.md`: navigator as a Claude-only gap.
@@ -217,12 +257,18 @@ surfaces, how bundling renders it.
 ### Modified Capabilities
 - `catalogue-governance`: the Mod artifact type.
 - `dual-cli-distribution`: a recorded Claude-only artifact type.
-- `catalogue-architecture`: mods in bundles.
-- `subagent-dispatch`, `epic-delivery`: their rules gain observable checks (no rule change).
+- `catalogue-architecture`, `catalogue-model`: mods in bundles; the workflow file as a skill asset.
+- `subagent-dispatch`, `code-principles-governance`: `guardrails` gains the dispatch and hygiene
+  thresholds (a rule change).
+- `epic-delivery`, `build-lifecycle`: the build-tier workflow file; archive needs no open plan
+  drift.
+- `operations-practice`: the DevOps workflow file.
+- `sales-method-ownership`: the provisional sales workflow file.
 
 ## Impact
 
-- New `mods/` tree and a TypeScript toolchain in `make validate` (Claude Code CLI needed in CI for
-  `claude plugin validate/test`).
-- One new bundle; three skills gain a workflow file; `spec-stewardship` gains an archive condition.
+- New `mods/` tree and a TypeScript type-check and unit tests in `make validate`; no Claude Code
+  CLI in CI (DEC-14).
+- One new bundle; four skills gain a workflow file; `spec-stewardship` gains an archive condition;
+  `guardrails` gains thresholds.
 - MINOR release.
