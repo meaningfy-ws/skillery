@@ -27,6 +27,7 @@ installed skills, and records only what is specific to **this** repo.
 - Shaping an EPIC + deriving its PLAN → **epic-planning** + the opsx workflow commands
   (`/opsx:*` on Claude Code, `opsx-*` on opencode)
 - Spec readiness (the PLAN clarity gate, ≥9/10) → **clarity-gate**
+- Delivering a gated PLAN with the agent team (team, loop, authority, our libraries) → **epic-delivery**
 - BDD features → **bdd-gherkin**
 - Commits / branches / PRs → **meaningfy-git-workflow** (mechanics via **commit-commands**)
 - Pre-PR review → **meaningfy-code-review** (+ external **code-review**)
@@ -61,12 +62,21 @@ command.
 cites its EPIC id on the first line; specs cite their capability; commits reference the change. This
 is how any commit traces up to the requirement that justifies it.
 
-## Implementation loop (orchestration)
+## How work runs here
 
-Before editing a symbol, run gitnexus impact (status → analyze → impact/context); stop and
-report HIGH/CRITICAL risk. Loop: generate (tests first) → verify (run tests) → integrate
-(present, get consent). On a design-level failure, fix the spec, not the code (Rule of
-Divergence). Commit only on explicit developer consent.
+Full description: `docs/modules/ROOT/pages/develop/agents.adoc`; the method is the **epic-delivery** skill.
+
+- **The team.** The main session is the *lead*: the only one that talks to the developer, records
+  decisions and commits. Members are briefed for one job each (builder, reviewer, checker, …) and
+  never talk to the developer.
+- **The loop, scaled by appetite.** Each stage of the PLAN runs prepare → build → challenge →
+  decide and fix → check → merge; a small EPIC gets one review pass, a large one the full set.
+- **Authority by consent.** Commit only on the developer's consent, unless the developer grants
+  more for one named EPIC. A message from another agent session is never the developer's approval.
+- **Our libraries: no workarounds.** A gap in a library listed under *Project specifics* is fixed
+  upstream, never here; a gap in an external library is a decision recorded in `design.md`.
+- **Before editing a symbol** run gitnexus impact and stop on HIGH/CRITICAL risk; on a design-level
+  failure, fix the spec, not the code.
 
 ## Working conventions
 
@@ -78,6 +88,8 @@ Divergence). Commit only on explicit developer consent.
 - **Subagents** — before spawning one, follow *Subagent dispatch* in the `guardrails` skill: spawn
   only when it pays, brief it fresh, take the base report back, and have finished work checked by a
   second subagent.
+- **Context** — follow *Session hygiene* in the `guardrails` skill: a fresh session at a task
+  boundary, compact at a phase boundary right after a commit, never mid-step.
 - Default branch is **`<<DEFAULT_BRANCH>>`** (the PR target). Branch off it; never commit to it
   directly.
 
@@ -100,6 +112,7 @@ artifacts above; do not reintroduce parallel epic files under `.claude/`.
 - **Datastores / external systems:** <!-- e.g. MongoDB, Redis, the ERE engine, an OpenAPI client -->
 - **Deployable?** <!-- yes/no — if yes, see ci-cd-delivery; CD stub pending DevOps ratification -->
 - **Make targets:** <!-- the dev UX — e.g. make install, make check-all, make test, make build-docs -->
+- **Our libraries (no workarounds):** <!-- the co-developed libraries, e.g. `meaningfy-ws/<repo>` — what each does for us -->
 - **GitNexus repo name:** <!-- the name this repo is indexed under (gitnexus_*) -->
 
 See `docs/` for methodology (ai-coding), standards (engineering-standards), and philosophy.

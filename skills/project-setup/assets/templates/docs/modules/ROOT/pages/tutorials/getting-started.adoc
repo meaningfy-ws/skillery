@@ -50,5 +50,5 @@ make preview-docs   # builds and serves at http://localhost:8080
 == Where to go next
 
 * Solve a concrete task with a xref:how-to/example-how-to.adoc[how-to guide].
-* Understand the design in xref:architecture/system-context.adoc[System Context].
+* Understand the design in xref:architecture/index.adoc[Architecture].
 * Look up exact details in the xref:reference/index.adoc[Reference].

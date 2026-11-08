@@ -10,13 +10,18 @@
 ** xref:reference/index.adoc[Reference Overview]
 
 * Architecture
-** xref:architecture/system-context.adoc[System Context]
+** xref:architecture/index.adoc[Architecture Overview]
 
 * Requirements
 ** xref:requirements/index.adoc[Requirements Overview]
 
 * Architecture Decision Records
 ** xref:adr/adr-0001-record-architecture-decisions.adoc[ADR-0001: Record architecture decisions]
+
+* Development
+** xref:develop/index.adoc[Developer Runbook]
+** xref:develop/agents.adoc[Working with Agents]
+** xref:develop/testing.adoc[Testing Checklist]
 
 * User Guide
 ** xref:user-guide/index.adoc[User Guide Overview]

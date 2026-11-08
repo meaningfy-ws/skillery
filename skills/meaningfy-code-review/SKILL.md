@@ -51,6 +51,11 @@ context budget and the passes overlap in wall-clock.
   the implementation session history.
 - A single-lens review (e.g. "L3 only") dispatches **one** subagent; the five-way fan-out is the
   default for a full review.
+- **Size hook.** Inside an EPIC's delivery the fan-out scales with the appetite (the table is
+  `epic-delivery`'s). TINY and SMALL run one combined L2+L3 pass; this is the only allowed combined
+  pass. LARGE and up add an optional UX lens when screens changed: usability and accessibility of
+  the changed screens. The UX lens is review only; designing screens is the UX designer's job at any
+  size, per `epic-delivery`.
 
 ### Lenses
 
@@ -63,7 +68,7 @@ subagent must traverse in full**. Together the five regions cover the whole stan
 |------|----------------------------------------------------------------------------------------------------|
 | **L1 · Security & safety** | the security/safety surface: secrets & credentials, injection (command/SQL/XSS), the OWASP top-10, `BP-VALIDATE-AT-BOUNDARY`, `AP-DUP-VALIDATION`, and sensitive-data handling per `guardrails`. |
 | **L2 · Spec correctness & tests** | conformance to the EPIC **requirements/specs** (not the plan) — acceptance criteria, edge/error scenarios, no undocumented divergence — **and** the whole `cosmic-python` testing contract (§"No Clean Code Without Tests", `BP-COVERAGE-PER-LAYER`, FIRST, test-per-layer Workflow 3, Gherkin step defs). |
-| **L3 · Architecture conformance** | the `cosmic-python` structural contract in full: the four layers, the dependency law (§1–2), component organisation (`PR-COMPONENT-FIRST`), observability placement, **and every structural anti-pattern** (`AP-IO-IN-MODELS`, `AP-LOGIC-IN-EDGES`, `AP-CROSS-VARIANT-IMPORT`, `AP-PARALLEL-LAYOUTS`, cycles). |
+| **L3 · Architecture conformance** | the `cosmic-python` structural contract in full: the four layers, the dependency law (§1–2), component organisation (`PR-COMPONENT-FIRST`), observability placement, **and every structural anti-pattern** (`AP-IO-IN-MODELS`, `AP-LOGIC-IN-EDGES`, `AP-CROSS-VARIANT-IMPORT`, `AP-PARALLEL-LAYOUTS`, cycles); **plus** each touched ADR's Confirmation — by its tool where one exists, by reading where not; an automatable Confirmation that is not automated is a finding — and any workaround of one of our own libraries (a finding: `epic-delivery`'s dependency rule forbids them). |
 | **L4 · Principles & clean code** | the Clean Code + SOLID standard in full (§"Core Principles") **and every within-unit best-practice/anti-pattern** (`BP-DOMAIN-REVEALING-NAMES`, `BP-CONSTANTS-ENUMS`/`-HOME`, `BP-EXCEPTIONS-MODULE`, `BP-IDIOMATIC-SMALL`; `AP-FREESTR-ANYLAYER`, `AP-DICT-AS-MODEL`, `AP-GENERIC-MODULE-NAMES`, `AP-EXCEPTIONS-EMBEDDED`). |
 | **L5 · Fit, elegance & refactoring** | the reuse/compactness principles in full (`PR-SURVEY-FIRST`, `PR-REUSE-COMPACT`, `PR-SSOT-DRY`, `PR-CONFIG-DECOUPLED`) and the duplication/fragmentation anti-patterns (`AP-DUP-CONST`, `AP-MISPLACED-SHARED-INFRA`, `AP-OVER-FRAGMENTATION`, `AP-VERBATIM-EXTERNAL`), **plus** the forward-looking fit & refactoring investigation (new + touched code) with gitnexus blast radius. |
 
@@ -117,4 +122,4 @@ boundaries, the **methodical per-lens procedure** (traverse the whole region), a
 **Does NOT** own the rules themselves (the `cosmic-python` catalogue is the checklist — cite, never
 restate), perform the run (external `code-review` / `code-reviewer` wrapper), or fix code (the
 `implementer` applies accepted fixes). The fit & refactoring investigation is **recommendations-only**.
-**Related:** `cosmic-python`, `guardrails`, `meaningfy-git-workflow`, external `code-review`, `superpowers:requesting-code-review`, `superpowers:receiving-code-review`.
+**Related:** `cosmic-python`, `guardrails`, `meaningfy-git-workflow`, `epic-delivery` (scales the review to the EPIC's size), external `code-review`, `superpowers:requesting-code-review`, `superpowers:receiving-code-review`.

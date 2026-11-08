@@ -40,8 +40,10 @@ author in openspec/changes/<id>/     (epic-planning: proposal.md + design.md + t
 - **After archive, run `make fix-spec-links`.** The archive copies a delta's relative links into
   `specs/` verbatim, so a delta nested deeper than its merged home leaves over-deep `../` links.
   The auto-fixer recomputes the depth; the validator's `broken_links` check is the safety net.
-- **Seed inputs survive.** `changes/<id>/inputs/` is preserved with the archived change — never
-  deleted or groomed (traceability).
+- **Seed inputs survive.** `changes/<id>/inputs/` (and `evidence/`, when present) is preserved
+  with the archived change — never deleted or groomed (traceability).
+- **Who archives.** In an EPIC's delivery, the lead runs the archive at the end of the epic session
+  (`epic-delivery`).
 
 ## Grooming the durable `specs/`
 
@@ -78,4 +80,4 @@ merge, grooming the durable store, brownfield delta conventions, and the orienta
 **Delegates:** authoring the EPIC/PLAN → `epic-planning`; the schema +
 conventions → OpenSpec and the `meaningfy` schema; implementation → external `implementer`/TDD;
 scoring the PLAN → `clarity-gate`.
-**Related:** `epic-planning`, `clarity-gate`, `bdd-gherkin`.
+**Related:** `epic-planning`, `epic-delivery`, `clarity-gate`, `bdd-gherkin`.

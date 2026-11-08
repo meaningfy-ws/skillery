@@ -23,7 +23,7 @@ New here? Start with the xref:tutorials/getting-started.adoc[Getting Started] tu
 | xref:reference/index.adoc[Reference]
 | Information-oriented, exhaustive descriptions: REST API, configuration variables, CLI flags.
 
-| xref:architecture/system-context.adoc[Architecture]
+| xref:architecture/index.adoc[Architecture]
 | Understanding-oriented explanation: C4 views, the conceptual model, and why the system is shaped this way.
 
 | xref:requirements/index.adoc[Requirements]
@@ -31,6 +31,9 @@ New here? Start with the xref:tutorials/getting-started.adoc[Getting Started] tu
 
 | xref:adr/adr-0001-record-architecture-decisions.adoc[Decision Records]
 | The log of significant architectural decisions and their rationale.
+
+| xref:develop/index.adoc[Development]
+| How this project is developed: the runbook, working with agents, the testing checklist.
 
 | xref:user-guide/index.adoc[User Guide]
 | End-user task guides for people operating the running system.

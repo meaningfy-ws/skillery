@@ -12,6 +12,7 @@ served_by:
   - code-reviewer
   skills:
   - epic-planning
+  - epic-delivery
   - spec-stewardship
   - clarity-gate
   - bdd-gherkin

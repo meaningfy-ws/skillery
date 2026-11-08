@@ -24,6 +24,16 @@ stage gates (the Discovery & Onboarding safeguards, for example), see
 | **Architecture check** | structural | [`cosmic-python`](../../../skills/cosmic-python/SKILL.md) + import-linter | Layer direction respected (`entrypoints → services → models`, `adapters → models`); no forbidden imports |
 | **Code review** | content | [`meaningfy-code-review`](../../../skills/meaningfy-code-review/SKILL.md) | No unaddressed Critical findings (architecture, security, spec conformance) |
 
+**The gates scale with the EPIC's appetite.** Every task runs the project's gates. How much review
+and checking a stage gets depends on the EPIC's size. The scaling table is in
+[`stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md).
+
+**Validation points, per EPIC.** The gates above verify. People validate at a few fixed points: the
+scenario sign-off once at the PLAN gate, the model review when the model changes, the acceptance
+demo after the last stage when the EPIC delivers or changes a use case, and the validation review at the end of an iteration. Who owns each, and
+where its evidence goes, is in
+[`verification-validation.md`](../../../skills/epic-delivery/references/verification-validation.md).
+
 ## The automation boundary (single source: other docs reference this)
 
 - **`openspec validate --strict` is CI-automated:** it runs structurally in the pipeline (and in
