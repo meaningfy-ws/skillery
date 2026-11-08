@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.9.0] - 2026-11-08
+
 ### Added
 
 - `epic-delivery` (meaningfy-building): how the main session leads a lean agent team through a gated
