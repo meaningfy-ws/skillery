@@ -16,4 +16,5 @@ check of the 13-step loop (design §2).
 own short form of the method (they route to `epic-delivery` but keep a summary), so the repos are not
 yet reduced to specifics-only.
 
-**Verdict:** _pending — the owner decides._  Date: —
+**Verdict:** accepted by the owner, 2026-11-08 — "Accept, shrink later": after the 3.9.0 release a
+follow-up cuts the sibling summaries down to specifics plus pointers to `epic-delivery`.  Date: 2026-11-08
