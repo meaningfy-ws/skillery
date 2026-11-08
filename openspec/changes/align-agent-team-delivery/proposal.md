@@ -123,7 +123,7 @@ covers every check the 13-step loop made (a mapping table in the design).
 - **Q-2** project docs: product archetype gets `architecture/` + `develop/`; the Diátaxis
   tutorials/how-to/reference pages stay for the user-facing docs. *Default: both, split by audience.*
 - **Q-3** UX lens: optional, only when screens changed, LARGE and up. *Default: as in DEC-7.*
-- **Q-4** skillery dogfoods the loop for its own EPICs, without the acceptance demo. *Default: yes.*
+- **Q-4** skillery dogfoods the loop for its own EPICs. *Revised by the owner 2026-11-08 (design DD-9): in full, with a trial-run acceptance instead of a demo.*
 
 ## Rabbit-holes
 

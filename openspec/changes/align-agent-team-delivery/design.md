@@ -80,7 +80,7 @@ re-run of the gates after each task, kept on purpose (DEC-10).
 As listed in the EPIC's What Changes. `working-with-agents.md` is the people's narrative (≈ MWB2
 agents.adoc, generic, lean), pointing to the skill for every rule. The developer playbook is
 `docs/practice/ai-coding/playbooks/developer.md`. skillery's own `docs/development/README.md`
-method gets one paragraph: skillery EPICs run the loop without the acceptance demo (Q-4).
+method gets one paragraph: skillery EPICs run the loop, with a trial-run acceptance (Q-4 as revised by DD-9).
 
 ## 5. Examples
 
@@ -151,3 +151,7 @@ From the checker's pass over the first full diff (2026-11-08):
 - **DD-7** The `cosmic-python` testing checklist keeps only generic rules; RDF and UI rules are
   stated as conditional ("when the project stores RDF", "when it has a UI").
 - **DD-8** The our-library rule has seven steps (design §1 said six).
+- **DD-9** (owner, 2026-11-08, revises Q-4): skillery owns the method and applies it to itself in
+  full, including validation. Its acceptance is a *trial run* of the changed skill or agent on real
+  work, recorded in `evidence/acceptance.md`; for this EPIC, the trial run is the two sibling repos
+  routing to `epic-delivery`. Untested parts are adjusted as they are used.
