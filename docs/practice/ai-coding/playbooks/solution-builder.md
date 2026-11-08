@@ -3,6 +3,11 @@
 > Role definition, mandate, and RACI cells:
 > [`roles-and-raci.md`](../../roles-and-raci.md#solution-builder).
 
+> Your place in the agent team: you are the developer in an epic session; you work through the lead,
+> who briefs the builder, reviewer and checker. See
+> [`roles-and-raci.md`](../../roles-and-raci.md#agent-wrappers-answered-for-the-build-plane) and
+> [`working-with-agents.md`](../working-with-agents.md).
+
 ## Your stages
 
 - **Project/repo setup**: you are accountable (`A/R`). See

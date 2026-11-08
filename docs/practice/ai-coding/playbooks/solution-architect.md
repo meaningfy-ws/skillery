@@ -3,6 +3,11 @@
 > Role definition, mandate, and RACI cells:
 > [`roles-and-raci.md`](../../roles-and-raci.md#solution-architect).
 
+> Your place in the agent team: you are the developer for architecture and model decisions; you work
+> through the architect and bring in the domain expert. See
+> [`roles-and-raci.md`](../../roles-and-raci.md#agent-wrappers-answered-for-the-build-plane) and
+> [`working-with-agents.md`](../working-with-agents.md).
+
 ## Your stages
 
 - **ADLC (architecture & system design)**: you are accountable (`A/R`) for ADRs, C4 views, Use-Case

@@ -77,7 +77,7 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 │   ├── antora.yml                # component descriptor
 │   └── modules/ROOT/
 │       ├── nav.adoc
-│       └── pages/                # tutorials/ how-to/ reference/ architecture/ adr/ …
+│       └── pages/                # tutorials/ how-to/ reference/ architecture/ adr/ develop/ …
 │
 ├── infra/                        # Docker & deploy (D11) — if infra pillar selected
 │   ├── compose.yaml

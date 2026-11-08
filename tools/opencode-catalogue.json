@@ -1,5 +1,5 @@
 {
-  "version": "3.8.1",
+  "version": "3.9.0",
   "bundles": [
     {
       "name": "meaningfy-core",
@@ -60,6 +60,7 @@
       "name": "meaningfy-building",
       "skills": [
         "epic-planning",
+        "epic-delivery",
         "spec-stewardship",
         "clarity-gate",
         "bdd-gherkin",

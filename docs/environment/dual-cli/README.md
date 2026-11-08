@@ -18,6 +18,7 @@ The contributor-facing contract docs this page indexes:
 | Understand source → CLI translation (what generates what) | [`mapping.md`](mapping.md) |
 | Change bundle membership (or agent frontmatter) | edit `bundles.yaml` / the agent, then `make bundles` (gated by `make validate`) |
 | Check an external plugin/skill/MCP server's opencode support | [`compatibility.md`](compatibility.md) |
+| Reset, compact or rewind a session on either CLI (the commands behind *Session hygiene*) | [`context-commands.md`](context-commands.md) |
 | See the skill-body CLI-agnosticism audit | [`body-agnosticism-audit.md`](body-agnosticism-audit.md) |
 | Understand hook intent → per-CLI binding | [`../../../hooks/README.md`](../../development/hooks.md) |
 

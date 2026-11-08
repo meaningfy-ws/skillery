@@ -43,6 +43,12 @@ for the canonical pattern):
 Each verb has exactly one driving discipline; see the command→skill map in
 [`docs/development/workflows.md`](../../development/workflows.md#command--driving-meaningfy-discipline).
 
+**Where the delivery loop sits.** `/opsx:apply` is where the team works. Between the gated PLAN and
+`/opsx:archive`, the lead runs the PLAN stage by stage: prepare, build, challenge, decide and fix,
+check, merge, each stage one PR. After the last stage come the acceptance demo (only when the EPIC delivers or changes a use case) and the archive. The
+loop is owned by [`epic-delivery`](../../../skills/epic-delivery/SKILL.md); the people's view is
+[working-with-agents.md](working-with-agents.md).
+
 ---
 
 ## 3. The seed → EPIC → PLAN authoring flow

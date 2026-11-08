@@ -2,6 +2,11 @@
 
 > Role definition, mandate, and RACI cells: [`roles-and-raci.md`](../../roles-and-raci.md#work-shaper).
 
+> Your place in the agent team: you are the developer in a shaping session; you work through the
+> lead and the planner. See
+> [`roles-and-raci.md`](../../roles-and-raci.md#agent-wrappers-answered-for-the-build-plane) and
+> [`working-with-agents.md`](../working-with-agents.md).
+
 Seeded from the Employee Handbook's *Project Owner: the Work Shaper* mandate, adapted to today's
 way of working. You own and steer the `epic-planning` skill (and its `epic-planner` agent
 counterpart), governing and checking rather than hand-writing every artifact. See

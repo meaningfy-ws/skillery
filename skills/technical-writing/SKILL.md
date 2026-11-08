@@ -34,6 +34,13 @@ Apply the **lightweight clarity check owned by `clarity-gate`**
 *applies* it to prose and does not restate the criteria. The full 13-item gate (for specs) also
 lives in `clarity-gate`.
 
+## The cold reader (how-to and tutorial pages)
+
+Running a page's snippets verifies that they work. The cold reader validates that a reader can use
+the page. Give a fresh agent only the published page, with no other context, and have it carry out
+what the page says. Where it gets stuck, fix the page. When it runs in a delivery is
+`epic-delivery`'s.
+
 ## Writing style
 
 - Direct language, no fluff. Prefer tables and lists over long prose.
@@ -53,4 +60,4 @@ governs Reference and How-to output.
 
 **Owns:** documentation, explanations, summaries, docstrings. **Does NOT** plan (`epic-planning`),
 run the full clarity gate (`clarity-gate`), or write/modify production code or tests.
-**Related:** `clarity-gate` (full gate), `epic-planning`, `explanatory-writing` (Explanation-quadrant texture), `writing-antipatterns` (genre-conditional failure modes for Tutorial/How-to/Reference), `executive-communication` (answer-first structure when a document carries a recommendation).
+**Related:** `clarity-gate` (full gate), `epic-planning`, `epic-delivery` (when the cold reader runs), `explanatory-writing` (Explanation-quadrant texture), `writing-antipatterns` (genre-conditional failure modes for Tutorial/How-to/Reference), `executive-communication` (answer-first structure when a document carries a recommendation).

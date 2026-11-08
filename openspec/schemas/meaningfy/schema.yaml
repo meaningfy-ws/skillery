@@ -7,6 +7,9 @@ description: >
   EPIC = proposal.md; PLAN = design.md + tasks.md (the pair the clarity gate
   scores, ≥9/10); requirements live in the specs/ deltas as SHALL/MUST
   statements with WHEN/THEN scenarios.
+  A change may also hold inputs/ (seeds, never groomed) and an optional
+  evidence/ folder (walkthrough, spikes, acceptance verdict); both are
+  archived with the change.
 artifacts:
   - id: proposal
     generates: proposal.md
