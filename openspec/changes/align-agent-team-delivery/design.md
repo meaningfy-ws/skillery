@@ -155,3 +155,7 @@ From the checker's pass over the first full diff (2026-11-08):
   full, including validation. Its acceptance is a *trial run* of the changed skill or agent on real
   work, recorded in `evidence/acceptance.md`; for this EPIC, the trial run is the two sibling repos
   routing to `epic-delivery`. Untested parts are adjusted as they are used.
+- **DD-10** (owner, 2026-11-08): the shaping session as a whole (architect → model → validate →
+  sort by owner → slice into EPICs → order) is owned by `epic-planning`, which already owns shaping;
+  `epic-delivery`'s session table points to it. Closes the gap of a HUGE EPIC being "split" with no
+  method.

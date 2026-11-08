@@ -43,6 +43,9 @@ probes:
     expect: epic-delivery
   - probe: "the library we depend on lacks a feature, can we work around it or must we fix it upstream"
     expect: epic-delivery
+  - probe: "we start a new initiative, architect it and break it into ordered EPICs"
+    expect: epic-planning
+    near_miss_of: architecture
   - probe: "turn these seed notes into an epic and derive its plan"
     expect: epic-planning
     near_miss_of: epic-delivery
