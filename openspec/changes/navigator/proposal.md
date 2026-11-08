@@ -243,7 +243,7 @@ surfaces, how bundling renders it.
 - User guide (CLI and desktop): install, band and line, modes, actions, show/hide, configuration,
   disable/uninstall, worked example (DEC-11).
 - Developer guide: the Mod type, `mods/navigator` structure and state contract, workflow-file
-  schema and repo overrides, adding a check or action, testing on both surfaces, bundling.
+  schema and repo overrides, adding a check or action, checking by hand on both surfaces, bundling.
 - README entry-point row; CHANGELOG line; `make bundles`, `make skill-inventory`.
 
 ## Capabilities
