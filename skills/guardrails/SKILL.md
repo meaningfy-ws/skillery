@@ -1,6 +1,6 @@
 ---
 name: guardrails
-description: Apply agentic guardrails wherever an LLM agent acts — decision bounds, output validation, prompt-injection defence, and subagent dispatch (when to spawn, the brief, the model, the report back, the second check). Guardrails judge agent BEHAVIOUR; clarity-gate, tests and review judge CONTENT. Trigger on "add guardrails", "is this agent step safe", "bound this agent's decisions", "validate this agent output", "defend against prompt injection", "should I spawn a subagent", "brief this subagent". Each guardrail points to a concrete enforcement home.
+description: Apply agentic guardrails wherever an LLM agent acts — decision bounds, output validation, prompt-injection defence, subagent dispatch (when to spawn, the brief, the model, the report back, the second check), and session hygiene (when to start a fresh session or compact the context). Guardrails judge agent BEHAVIOUR; clarity-gate, tests and review judge CONTENT. Trigger on "add guardrails", "is this agent step safe", "bound this agent's decisions", "validate this agent output", "defend against prompt injection", "should I spawn a subagent", "brief this subagent", "should I compact or clear now", "keep the context small". Each guardrail points to a concrete enforcement home.
 license: Apache 2.0
 metadata:
   purpose: software-development
@@ -79,8 +79,10 @@ already exists; this skill is the map.
     conversation that would cost more to write down.
   - **The brief is its whole world.** Goal and why; inputs as paths, not pasted content; what is
     already decided or ruled out — above all decisions made only in conversation; scope and no-gos;
-    the report expected. Point to a task, design or scenario file when one holds the context. The
-    task definition bounds the run; no budget or stop rule is added.
+    the standing rules (the project's own list, by path); the report expected. Point to a task,
+    design or scenario file when one holds the context. The task definition bounds the run; no
+    budget or stop rule is added. If the brief cannot be written, the task is not ready: fix the
+    PLAN.
   - **A fitting catalogue agent first.** Its tools, model and report are already set.
   - **Model.** The agent's declared model, else the caller's; a cheaper one when the caller judges
     the task clearly easy (mechanical, search).
@@ -89,9 +91,34 @@ already exists; this skill is the map.
   - **Four eyes on the work.** The report steers the coordinator's next step; it is not proof. When
     a coherent unit of work is complete — not after every step — a fresh subagent that did not do it
     checks it against the task's spec and intention, good practice, known anti-patterns and the
-    quality concerns that apply.
+    quality concerns that apply. In an EPIC's delivery, that subagent is the checker of each stage,
+    or for TINY/SMALL the single review pass, per `epic-delivery`.
 - **Enforced by:** the binding's one-line mandate (read every session), each agent's `## Report`
   section (checked by `make validate`), and the coordinator's own judgement. No hook blocks a spawn.
+
+### 6. Session hygiene — keeping the context small and the cache warm
+- **Rule:** the lead of a session keeps its context as small as the work allows and resets it only
+  at a boundary, because every turn re-sends the whole context and a reset costs one full re-read.
+  - **Fresh session at a task boundary.** After a commit, a merged PR or an archived change, start
+    a fresh session for the next, unrelated task. Before resetting, make sure what matters is
+    written down: decisions in the change, work in commits, durable facts in memory.
+  - **Compact at a phase boundary inside one task**, with a focus line naming what must survive
+    (decisions, open questions, file paths). Typical points: the end of a shaping session before
+    delivery starts, and between stages of a long epic session. Right after a commit, never in the
+    middle of a step.
+  - **Never leave it to the automatic compaction** near the context limit: it lands mid-step and
+    drops detail. Watch the context size and compact earlier.
+  - **Not before a quick follow-up.** A reset is paid back only over many turns; one more question
+    on the same thread is cheaper in the current context.
+  - **A long idle gap is a free reset point**: the prompt cache has expired anyway.
+  - **Keep the session's setup stable.** Changing the tools or connected servers, the model or the
+    reasoning effort mid-session invalidates the cache; change them between sessions. A binding
+    file edited mid-session takes effect only after the next reset.
+  - **Read wide in a subagent** (rule 5), not in the main context, so there is less to compact.
+  - **Resume an old session only when its history is still needed**; otherwise start fresh from
+    the spine and memory.
+- **Enforced by:** the lead's own judgement. The per-CLI commands (fresh session, compact, context
+  size, rewind) are in `docs/environment/dual-cli/context-commands.md`.
 
 ## Quick Start
 
@@ -139,7 +166,7 @@ standard, and returns the same base report with the verifying fields.
 ## Boundary & Related Skills
 
 **Owns:** the guardrails *concern* and the map from each guardrail type to its enforcement home,
-including subagent dispatch and the base report.
+including subagent dispatch, the base report and session hygiene.
 **Delegates:** nothing. It does not re-implement the content, structure and review gates; it points
 agentic steps at them, listed under Related.
 
@@ -148,4 +175,4 @@ agentic steps at them, listed under Related.
 rules here are the rules they should follow.
 
 **Related:** `clarity-gate` (content quality), `cosmic-python` (structural validation with
-import-linter, alongside the spine's `openspec validate --strict`), `meaningfy-code-review` (review), `sales-pipeline-custody` and `sales-operations` (a concrete instance: the sales agent's write rules and auditor).
+import-linter, alongside the spine's `openspec validate --strict`), `meaningfy-code-review` (review), `epic-delivery` (the delivery loop whose briefs, checker and upstream rule build on these dispatch rules), `sales-pipeline-custody` and `sales-operations` (a concrete instance: the sales agent's write rules and auditor).

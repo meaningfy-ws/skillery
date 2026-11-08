@@ -38,12 +38,25 @@ probes:
     expect: meaningfy-git-workflow
   - probe: "shape this EPIC and derive its PLAN"
     expect: epic-planning
+  # align-agent-team-delivery: delivery of a gated PLAN lives in epic-delivery.
+  - probe: "the PLAN passed the gate, run this epic with the agent team stage by stage"
+    expect: epic-delivery
+  - probe: "the library we depend on lacks a feature, can we work around it or must we fix it upstream"
+    expect: epic-delivery
+  - probe: "we start a new initiative, architect it and break it into ordered EPICs"
+    expect: epic-planning
+    near_miss_of: architecture
+  - probe: "turn these seed notes into an epic and derive its plan"
+    expect: epic-planning
+    near_miss_of: epic-delivery
   - probe: "archive this change and merge the spec deltas into specs/"
     expect: spec-stewardship
   - probe: "bound this agent's decisions and defend against prompt injection"
     expect: guardrails
   # subagent-dispatch D-8: the dispatch rules live in guardrails.
   - probe: "should I spawn subagents for these four tasks, and what should each brief contain"
+    expect: guardrails
+  - probe: "the session is getting long, should I compact or clear before the next stage"
     expect: guardrails
   - probe: "review this diff before I open the PR"
     expect: meaningfy-code-review

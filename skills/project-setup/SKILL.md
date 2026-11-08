@@ -37,6 +37,7 @@ rather than restating them:
 | Deploy / versioned image (CD seam) | `ci-cd-delivery` |
 | Release lifecycle — versioning, release notes, PyPI publish, `SECURITY.md` | `meaningfy-release` |
 | EPIC (work shape) + PLAN, the spine workflow | `epic-planning` + the `/opsx:*` commands |
+| Delivering an EPIC with the agent team (the `develop/` runbook routes here) | `epic-delivery` |
 | Docs writing, AsciiDoc/Antora prose | `technical-writing` |
 | Commits, branches, PRs | `meaningfy-git-workflow` |
 | TDD discipline while implementing | `superpowers:test-driven-development` |

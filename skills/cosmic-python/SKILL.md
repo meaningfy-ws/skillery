@@ -357,6 +357,7 @@ This approach requires **team discipline**. One developer ignoring layers breaks
 ### Testing & Quality
 
 - **[example-testing-patterns.md](references/example-testing-patterns.md)** – Unit tests per layer, mocking strategy, fixtures, BDD patterns
+- **[testing-checklist.md](references/testing-checklist.md)** – The rules every test follows; a builder's brief cites it as a standing rule
 - **[example-project-quality-ci.md](references/example-project-quality-ci.md)** – Makefile, tox, importlinter, GitHub Actions, SonarCloud setup
 
 ### Advanced Production Patterns
@@ -391,7 +392,7 @@ service: the four layers, SOLID, what to test per layer, and CI guardrails.
 `linkml-engineering`; commit/PR mechanics → `meaningfy-git-workflow`; sensitive-data interaction safety
 → `guardrails`.
 **Related:** `architecture`, `meaningfy-code-review`, `bdd-gherkin`, `guardrails`,
-`conceptual-modelling`, `linkml-engineering`, `ci-cd-delivery`, `meaningfy-git-workflow`.
+`conceptual-modelling`, `linkml-engineering`, `ci-cd-delivery`, `meaningfy-git-workflow`, `epic-delivery`.
 
 ### Canonical vocabulary
 

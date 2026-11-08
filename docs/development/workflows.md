@@ -48,6 +48,9 @@ propose            → author the EPIC (proposal.md, Shape-Up shape)
   → verify         → change satisfies its specs
   → sync / archive → merge deltas into openspec/specs/ (the durable truth)
 ```
+During `apply`, the lead runs the PLAN stage by stage with a small agent team (prepare, build,
+challenge, decide and fix, check, merge), scaled by the EPIC's appetite; when the EPIC delivers or
+changes a use case, the acceptance demo comes before `archive`. The loop is owned by [`epic-delivery`](../../skills/epic-delivery/SKILL.md).
 
 ### Exploratory (seed → shaped change)
 ```

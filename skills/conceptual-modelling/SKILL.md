@@ -96,6 +96,23 @@ A model is more than a schema. Two adjacent practices are part of the discipline
   layer: every model class is a term with a definition, and OpenSpec specs reference those classes
   as **ubiquitous language**. See [`references/terminology-management.md`](references/terminology-management.md).
 
+## Model validation
+
+Validation checks that the model means what the domain means. The modeller prepares it; the domain
+expert and the developer decide. It runs when the model changes, while shaping; when it runs in a
+delivery is `epic-delivery`'s.
+
+1. **Example instances.** For each aggregate, instances taken from real cases (anonymised where
+   needed), written as data of the model's classes.
+2. **Competency questions.** The domain questions the model must answer, each written as a query
+   over the example instances with its expected answer. How to run them as exact tests is
+   `formal-reasoning`'s.
+3. **Domain-expert review.** A person who knows the domain reads the diagrams and the examples, and
+   confirms that each class and property means what the domain means.
+
+Once validated, the instances and the questions are kept as tests, so they go on verifying the
+model. The review's record goes to `evidence/` in the change.
+
 ## Boundary & Related Skills
 
 **This skill OWNS:** the living conceptual model (representation-agnostic source of domain truth);
@@ -125,4 +142,4 @@ Code layering and what consumes the generated contract belong to the related ski
 
 **Conditional:** product-development (programming) projects only — see the Overview.
 
-**Related:** `modelling-conventions`, `linkml-engineering`, `architecture`, `cosmic-python`, `formal-reasoning`.
+**Related:** `modelling-conventions`, `linkml-engineering`, `architecture`, `cosmic-python`, `formal-reasoning`, `epic-delivery` (when model validation runs in a delivery).

@@ -143,7 +143,7 @@ the installed skills + the spine, and records only repo-specific facts — it ne
 standard.
 
 **Why.** The explicit requirement ("only one canonical file") on both CLIs. Content of `AGENTS.md`:
-skill-routing table, the spine pointers, implementation loop, project specifics. Both templates
+skill-routing table, the spine pointers, how work runs here, project specifics. Both templates
 carry the `meaningfy-template-version` stamp.
 
 **Override.** None — this is a non-negotiable. An existing repo with a symlink or two divergent

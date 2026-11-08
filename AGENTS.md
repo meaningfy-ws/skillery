@@ -124,6 +124,8 @@ and agent renderer). See
 - **Subagents** — before spawning one, follow *Subagent dispatch* in the `guardrails` skill: spawn
   only when it pays, brief it fresh, take the base report back, and have finished work checked by a
   second subagent.
+- **Context** — follow *Session hygiene* in the `guardrails` skill: a fresh session at a task
+  boundary, compact at a phase boundary right after a commit, never mid-step.
 - **Hooks** — hook *intent* is single-sourced in [`hooks.yaml`](hooks.yaml) (see [`docs/development/hooks.md`](docs/development/hooks.md)); git-mechanism hooks are shared across CLIs, agent-mechanism hooks are rendered per CLI.
 
 GitNexus scope in this repo: the code in `tools/`, `tests/` and skills' `scripts/`. This block lives here only (not in

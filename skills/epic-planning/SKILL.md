@@ -61,6 +61,31 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    progression to BDD/implementation until it passes. Below 9: list the specific gaps and **revise
    the PLAN** — never patch code to dodge a gap (Rule of Divergence).
 
+The PLAN cuts its tasks into stages; delivery after the gate is `epic-delivery`'s.
+
+## The shaping session — from an initiative to a backlog of EPICs
+
+One shaping session per initiative, with the developer. The procedure above shapes **one** EPIC;
+this is how an initiative becomes several, in order:
+
+1. **Architect** the initiative: use cases, drivers, decisions, C4 views (`architecture`).
+2. **Model** the new concepts (`conceptual-modelling`), at concept level; exact slots come later.
+3. **Validate** before slicing: the architecture walkthrough and spikes for risky assumptions
+   (`architecture`), the model validation when the model changed (`conceptual-modelling`). A use case
+   step with no home, or a driver with no decision, goes back to step 1.
+4. **Sort each need by owner.** What any consumer of one of our libraries would need goes to that
+   library, as an issue or its own EPIC there; what only this product needs stays here. In doubt,
+   ask the developer with a recommendation (default: the library).
+5. **Slice** the architecture into EPICs, each one vertical slice that delivers or enables a use
+   case and fits one appetite. Shape each with the procedure above; record the evidence of step 3
+   in the change that needs it.
+6. **Order** the EPICs: dependencies first (library work before the EPIC that needs it), then
+   value. The order goes into each EPIC's Rabbit-holes or Why, not into a separate plan file.
+
+The session ends with the EPICs shaped, not planned: each PLAN is derived at the start of its
+epic session (`epic-delivery`). That boundary is a reset point: compact, or start the epic session
+fresh from the written EPICs (`guardrails`, *Session hygiene*).
+
 ## Appetite — how deep and extensive the solution may be
 
 An EPIC's appetite is one of six named sizes, never a number of days or weeks: an agent cannot act
@@ -99,7 +124,7 @@ of wrongness — handle them differently:
 
 **Owns:** the **authoring** practice — seed intake, elicitation, EPIC shaping (= `proposal.md`), the
 lightweight EPIC readiness check, and PLAN derivation (= `design.md` + `tasks.md`).
-**Delegates:** PLAN scoring → `clarity-gate`; the living-spec lifecycle
+**Delegates:** PLAN scoring → `clarity-gate`; delivery of the gated PLAN → `epic-delivery`; the living-spec lifecycle
 (archive, grooming, memory-index regen) → `spec-stewardship`;
 Gherkin → `bdd-gherkin`; code → `cosmic-python`;
 the doc-first build loop → external `stream-coding`. For the **texture** of the EPIC/PLAN narrative
@@ -108,4 +133,4 @@ prose (the proposal "why" and "solution outline" are Explanation-quadrant), the 
 `explanatory-writing` — referenced, not restated.
 **Not an EPIC:** a team's Shape Up work shape kept in a personal vault is a `work-shape` note
 (`vault-conventions`); it may feed an EPIC but is not one.
-**Related:** `clarity-gate`, `spec-stewardship`, `bdd-gherkin`, `architecture`, `technical-writing`, `stream-coding` (external).
+**Related:** `clarity-gate`, `epic-delivery`, `spec-stewardship`, `bdd-gherkin`, `architecture`, `technical-writing`, `stream-coding` (external).
