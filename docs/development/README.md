@@ -82,6 +82,11 @@ If a change helps the agent but confuses the user, it is not done.
 Wording, link, probe, or description tweak that moves no boundary → a direct PR from a feature branch.
 When unsure, EPIC.
 
+**How an EPIC is delivered.** skillery's own EPICs run the delivery loop of
+[`epic-delivery`](../../skills/epic-delivery/SKILL.md): the main session leads, briefs the team,
+re-runs `make validate` after each task and runs the loop scaled by the EPIC's appetite. The
+acceptance demo is skipped: a skillery EPIC delivers no running use case to show.
+
 **Read the posture before you edit** an existing skill: it is recorded as `metadata.posture`
 (`reusable` R, `profiled` C, `precise` P; [`catalogue-governance`](../../openspec/specs/catalogue-governance/spec.md)).
 An R fix adds no domain content to `SKILL.md`; a C fix adds a switch or a profile, never a silent

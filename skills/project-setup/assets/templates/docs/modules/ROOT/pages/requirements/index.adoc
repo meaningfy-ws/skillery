@@ -47,5 +47,5 @@ Postcondition:: The result is returned and an audit record exists.
 
 == Related
 
-* xref:architecture/system-context.adoc[System Context] — how these requirements shape the design.
+* xref:architecture/index.adoc[Architecture] — how these requirements shape the design.
 * xref:adr/adr-0001-record-architecture-decisions.adoc[ADRs] — decisions made while meeting them.

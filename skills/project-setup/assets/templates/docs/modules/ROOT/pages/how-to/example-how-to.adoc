@@ -47,4 +47,4 @@ The application should start and honour the overridden value.
 == Related
 
 * xref:reference/index.adoc[Configuration reference]
-* xref:architecture/system-context.adoc[System context] — where this component sits.
+* xref:architecture/index.adoc[Architecture] — where this component sits.

@@ -11,6 +11,20 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- `epic-delivery` (meaningfy-building): how the main session leads a lean agent team through a gated
+  PLAN to a merged, accepted, archived change. The review and check steps scale with the EPIC's
+  size, people validate once per EPIC, and a gap in one of our libraries is never worked around
+  while a gap in an external library is a recorded decision.
+- `cosmic-python` testing checklist; architecture index-page shape; `develop/` runbook pages and a
+  "How work runs here" block in the `project-setup` templates; `docs/practice/ai-coding/working-with-agents.md`.
+
+### Changed
+
+- Commit bodies now give the why, the what and a trace line (`meaningfy-git-workflow`).
+- Code review: L3 checks each touched ADR's Confirmation; small changes get one combined pass.
+
 ## [3.8.1] - 2026-10-30
 
 ### Fixed

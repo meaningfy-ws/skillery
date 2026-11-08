@@ -67,10 +67,21 @@ Scenario Outline: <description>
 - [ ] No implementation details leak in (no SQL / API paths / class names).
 - [ ] Files are syntactically valid Gherkin.
 
+## Scenario sign-off and the traceability check
+
+These are validation activities this skill owns; when they run in a delivery is `epic-delivery`'s.
+
+- **Sign-off.** The developer reads the scenarios and signs them off before build; when, is
+  `epic-delivery`'s. The sign-off is recorded in the change.
+- **Traceability.** Every spec scenario has a test. Every feature test names its scenario. Every
+  scenario names its requirement (a use case id or an acceptance criterion). A gap in any of the
+  three links is a finding.
+
 ## Boundary & Related Skills
 
 **Owns:** feature files + test data. **Does NOT** write step definitions or production code
 (that is the implementer's job, following `cosmic-python` + `superpowers:test-driven-development`),
 and does NOT plan (`epic-planning`) or score specs (`clarity-gate`).
 **Related:** `architecture` (the White/Blue use case catalogue Gherkin projects from), `epic-planning`,
+`epic-delivery` (when sign-off and the traceability check run),
 `clarity-gate`, `spec-stewardship`, `cosmic-python`.

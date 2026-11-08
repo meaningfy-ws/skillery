@@ -24,7 +24,13 @@ committing/pushing/opening PRs to the external `commit-commands` skill.
 - Follow **Conventional Commits** (`type(scope): summary`).
 - **Summary line:** imperative mood, **no trailing period or punctuation**; keep it short and
   meaningful (e.g. `feat: add credit-note support`, not `Added credit notes.`).
-- **Body:** separated from the summary by one blank line; explain *why*, not *what*.
+- **Body:** separated from the summary by one blank line, in three parts:
+  - **Why** — the reason for the change, in a sentence or two.
+  - **What** — one bullet per concern changed.
+  - **Trace** — `Refs: <change-id> <task>` when the commit belongs to an OpenSpec change (for
+    example `Refs: add-export 2.3`).
+
+  A trivial change (a typo, a link) takes a one-line body instead.
 - Commit often, in **granular, conceptually atomic** chunks so peers can follow the change.
 - Avoid successive commits with the same message (`trying to fix X`, `fix X again`). Make them
   locally and **squash** into one before sharing; if already pushed, squash + rebase + force-push

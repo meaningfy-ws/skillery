@@ -38,7 +38,7 @@ each one serves, and which skills depend on which — see
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **executive-communication** | …do advisory work |
 | **meaningfy-sales** | **proposal-writing** · **estimation** · **sales-operations** · **sales-pipeline-custody** · **sales-accounts** · **sales-qualification** · **sales-conversations** | …write proposals and offers, estimate work, run the daily sales grooming of the Odoo pipelines, qualify a deal, or prepare a meeting and its follow-up (agent setup: [`docs/environment/sales-agent.md`](docs/environment/sales-agent.md)); requires `meaningfy-consulting` |
 | **meaningfy-architecture** | **architecture** · **conceptual-modelling** · **modelling-conventions** · **linkml-engineering** · **formal-reasoning** | …design systems or model a domain |
-| **meaningfy-building** | **epic-planning** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
+| **meaningfy-building** | **epic-planning** · **epic-delivery** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
 | **meaningfy-devops** | **infrastructure-operations** · **stack-operations** · **service-reliability** · **infrastructure-security** | …operate servers and stacks, run the daily check-up, answer alerts or review an infrastructure change (agent setup: [`docs/environment/devops-agents.md`](docs/environment/devops-agents.md)); requires `meaningfy-consulting` |
 | **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/environment/vault-assistant.md`](docs/environment/vault-assistant.md)) |
 
@@ -141,9 +141,9 @@ Pin one exact release with `#vX.Y.Z` instead of `#releases` (from the release af
 | 2 | Shape the EPIC (= `proposal.md`) | `propose` | **epic-planner** agent (returns question rounds) ◦ `epic-planning` |
 | 3 | Derive the PLAN (`design.md` + `tasks.md`) **+ author `.feature` scenarios** (design-phase artifact) | — | **epic-planner** agent (returns question rounds) ◦ `epic-planning` **+ `bdd-gherkin`** |
 | 4 | Gate the PLAN (≥9/10, **incl. scenario coverage**) | — | `clarity-gate` skill |
-| 5 | Implement: **step definitions + code** (TDD, layered) | `apply` | **implementer** agent ◦ `cosmic-python` + `superpowers:test-driven-development` |
-| 6 | Verify / review | `verify` | **code-reviewer** agent ◦ `meaningfy-code-review` |
-| 7 | Merge deltas into the living specs | `sync` / `archive` | `spec-stewardship` skill |
+| 5 | Deliver stage by stage: **step definitions + code** (TDD, layered), review and check scaled to the appetite, the lead commits | `apply` | `epic-delivery` (the lead) → **implementer** agent ◦ `cosmic-python` + `superpowers:test-driven-development` |
+| 6 | Review lenses, dispatched within each stage of step 5 (not a separate later step) | `verify` | **code-reviewer** agent ◦ `meaningfy-code-review` |
+| 7 | Acceptance demo (per EPIC, when it delivers or changes a use case), then merge deltas into the living specs | `sync` / `archive` | `epic-delivery` + `spec-stewardship` skill |
 
 > BDD scenario authoring is a **design-phase** activity (the `.feature` files are a PLAN artifact the
 > clarity gate scores for coverage); only **step definitions** are written at implement time.

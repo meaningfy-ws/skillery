@@ -175,28 +175,36 @@ aftercare, satisfaction reviews, ceremonial handover) folds into **Sales/Presale
 row rather than becoming a seventh column; both roles owning one activity's accountability would
 break Invariant 1.
 
-## Open question: agent wrappers
+## Agent wrappers: answered for the build plane
 
-Whether any role beyond the Builder ever gets a dedicated Claude Code agent is an open fork, stated
-here as a priority, not a commitment:
+The open question was whether any role beyond the Builder gets a dedicated agent. For the build
+plane it needs none today: the roles keep their names and map onto one lean agent team, owned by
+[`skills/epic-delivery/SKILL.md`](../../skills/epic-delivery/SKILL.md). The lead is the main session
+and the checker and tester are briefs, so no new catalogue agent is needed. In the team, *the
+developer* is whichever role holds the decision at that point.
 
-- **Today's default:** agents exist where a role has been exercised: the Builder's `epic-planner`,
-  `implementer`, `code-reviewer`; the architects' `system-architect` and `conceptual-modeller`;
-  Sales/Presales' `proposal-writer` and `sales-agent` (the latter from the sales pilot). No stub is
-  added for a role that has not.
-- **Reopening condition:** this stays closed until a role has actually been exercised on a real
+| Role | Seat in the team | Agents it works through |
+|---|---|---|
+| Work Shaper | The developer in a shaping session: decides the why, the appetite and the shape | The lead; the planner (`epic-planner`) |
+| Solution Architect | The developer for architecture and model decisions; brings in the domain expert when the model changes | The architect (`system-architect`); `conceptual-modeller` |
+| Solution Builder | The developer in an epic session: signs off the scenarios, decides findings, accepts the EPIC | The lead; the builder (`implementer`), the reviewer (`code-reviewer`), the checker |
+| Solution Shipper | Outside the loop: signs off the review gate from the merged stages and the acceptance evidence, then releases | None in the team; the release skills |
+| Sales/Presales, Technical Consultant | Not in the build-plane team | Their own planes' agents |
+
+A dedicated wrapper for a role stays an open fork, on the same terms as before:
+
+- **Reopening condition:** a role gets a wrapper only once it has been exercised on a real
   engagement; the fork is not resolved speculatively.
 - **Priority order if it ever reopens:** **Work Shaper is the highest-priority candidate**, because
   `epic-planner` already performs most of the Work Shaper mandate: a dedicated wrapper there would
-  be a thin steering layer over an existing agent, not new capability. The other four roles have no
-  existing agent covering their mandates and rank lower. This is a priority statement only: no agent,
-  no stub, and no recommendation to build one is made here.
+  be a thin steering layer over an existing agent, not new capability. This is a priority statement
+  only: no agent, no stub, and no recommendation to build one is made here.
 
 ## Known gaps
 
 | Gap | Nature | Owner / next step |
 |---|---|---|
-| **A `work-shaper` agent wrapper** | Highest-priority candidate of all deferred agent questions: `epic-planner` already performs most of the Work Shaper mandate, so this would be a thin steering layer, not new capability. | Deferred (see Open question above). Reopens once the role has been exercised on a real engagement. Not built here. |
+| **A `work-shaper` agent wrapper** | Highest-priority candidate of all deferred agent questions: `epic-planner` already performs most of the Work Shaper mandate, so this would be a thin steering layer, not new capability. | Deferred (see Agent wrappers above). Reopens once the role has been exercised on a real engagement. Not built here. |
 | **Agent wrappers for the other four non-Builder roles** | Lower priority; no existing agent covers their mandates. | Deferred, same condition. |
 | **MDLC-standalone has no owning skill** | Genuine capability gap: the ontology/application-profile development methodology (METHONTOLOGY/NeOn/LOT-style) has no skill; `conceptual-modelling` explicitly scopes itself to product-development projects. | Parked for its own shaping cycle. Visible on the matrix as the MDLC-standalone row. |
 | **Agent-assisted review has no non-software equivalent** | `meaningfy-code-review` is code-scoped. The Quality Overseer headcount is retired across *all* planes, but the automated multi-lens review that replaces it exists only for the software plane; ontology and training-material review currently fall back to unaided human sign-off. | Named only. Candidate future skill; not designed here. |

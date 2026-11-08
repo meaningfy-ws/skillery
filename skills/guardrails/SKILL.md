@@ -79,8 +79,10 @@ already exists; this skill is the map.
     conversation that would cost more to write down.
   - **The brief is its whole world.** Goal and why; inputs as paths, not pasted content; what is
     already decided or ruled out — above all decisions made only in conversation; scope and no-gos;
-    the report expected. Point to a task, design or scenario file when one holds the context. The
-    task definition bounds the run; no budget or stop rule is added.
+    the standing rules (the project's own list, by path); the report expected. Point to a task,
+    design or scenario file when one holds the context. The task definition bounds the run; no
+    budget or stop rule is added. If the brief cannot be written, the task is not ready: fix the
+    PLAN.
   - **A fitting catalogue agent first.** Its tools, model and report are already set.
   - **Model.** The agent's declared model, else the caller's; a cheaper one when the caller judges
     the task clearly easy (mechanical, search).
@@ -89,7 +91,8 @@ already exists; this skill is the map.
   - **Four eyes on the work.** The report steers the coordinator's next step; it is not proof. When
     a coherent unit of work is complete — not after every step — a fresh subagent that did not do it
     checks it against the task's spec and intention, good practice, known anti-patterns and the
-    quality concerns that apply.
+    quality concerns that apply. In an EPIC's delivery, that subagent is the checker of each stage,
+    or for TINY/SMALL the single review pass, per `epic-delivery`.
 - **Enforced by:** the binding's one-line mandate (read every session), each agent's `## Report`
   section (checked by `make validate`), and the coordinator's own judgement. No hook blocks a spawn.
 
@@ -148,4 +151,4 @@ agentic steps at them, listed under Related.
 rules here are the rules they should follow.
 
 **Related:** `clarity-gate` (content quality), `cosmic-python` (structural validation with
-import-linter, alongside the spine's `openspec validate --strict`), `meaningfy-code-review` (review), `sales-pipeline-custody` and `sales-operations` (a concrete instance: the sales agent's write rules and auditor).
+import-linter, alongside the spine's `openspec validate --strict`), `meaningfy-code-review` (review), `epic-delivery` (the delivery loop whose briefs, checker and upstream rule build on these dispatch rules), `sales-pipeline-custody` and `sales-operations` (a concrete instance: the sales agent's write rules and auditor).

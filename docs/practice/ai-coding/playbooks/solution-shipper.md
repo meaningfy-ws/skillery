@@ -3,6 +3,11 @@
 > Role definition, mandate, and RACI cells:
 > [`roles-and-raci.md`](../../roles-and-raci.md#solution-shipper).
 
+> Your place in the agent team: you sit outside the loop; you sign off from the merged stages and
+> the acceptance evidence. See
+> [`roles-and-raci.md`](../../roles-and-raci.md#agent-wrappers-answered-for-the-build-plane) and
+> [`working-with-agents.md`](../working-with-agents.md).
+
 ## Your stages
 
 - **Review**: you sign off, accountable (`A`), before anything reaches a client; the Solution

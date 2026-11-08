@@ -1,0 +1,28 @@
+= Testing checklist
+:description: The rules every test in <<PROJECT_NAME>> follows, given to every builder and tester.
+
+// The generic rules live in the `cosmic-python` skill (its testing checklist); scenarios and their
+// traceability in the `bdd-gherkin` skill. This page adds only this project's rules. Fill the
+// slots; delete these comment lines once resolved.
+
+These rules apply to every test written in *<<PROJECT_NAME>>*, by a person or an agent. Every
+builder and tester brief points to this page (see xref:develop/agents.adoc[Working with agents]).
+
+_What makes a test acceptable here?_
+
+== The generic rules
+
+The testing checklist of the `cosmic-python` skill: where tests live, test doubles, test data,
+assertions, time and containers. Scenario sign-off and the traceability check: the `bdd-gherkin`
+skill.
+
+== This project's rules
+
+// Rules that only make sense here: the fakes our libraries provide, the model guards, the
+// accessibility check on screens, rule tables that must be complete.
+
+. _Add a rule here._
+
+== The report
+
+What a test run reports is set by the brief template of the `epic-delivery` skill. The lead keeps the xref:develop/index.adoc#durations[durations table] current.

@@ -21,7 +21,7 @@ Assist users in developing rigorous system architecture models through **contrac
 
 **This skill does NOT own** code structure inside a service (layers, SOLID, layer-tests, CI) — that is the **`cosmic-python`** skill — and it does NOT own the **living conceptual model** (that is **`conceptual-modelling`**) or the **LinkML craft** that generates the typed artefacts — authoring, `make generate-models`, OWL/SHACL/Pydantic (that is **`linkml-engineering`**). The seams: architecture authors the *contract* (OpenAPI/AsyncAPI/LinkML as a notation); `conceptual-modelling` owns the *living model* and picks its source; `linkml-engineering` executes the LinkML and generates the artefacts; `cosmic-python`'s `entrypoints/api` *consumes* the generated contract. When a request is about how to organise Python code, defer to `cosmic-python`; about modelling the domain, defer to `conceptual-modelling`; about authoring LinkML or generating model artefacts, defer to `linkml-engineering`; when it is about system topology, services, or contracts, stay here.
 
-**Related:** `cosmic-python` (code structure), `stream-coding` (doc-first delivery method), `epic-planning` (turning a Work Shape into an implementation spec), `writing-antipatterns` (Decision-record/Contract genre failure modes for ADRs and contracts; this skill's own `Smell:`/`Fix:` diagram antipatterns are a separate, model-structure axis, cited not restated), `bdd-gherkin` (projects the use case catalogue into `.feature` scenarios), `conceptual-modelling` (the living domain model behind the contracts), `linkml-engineering` (generates the typed artefacts from a LinkML contract).
+**Related:** `cosmic-python` (code structure), `stream-coding` (doc-first delivery method), `epic-planning` (turning a Work Shape into an implementation spec), `writing-antipatterns` (Decision-record/Contract genre failure modes for ADRs and contracts; this skill's own `Smell:`/`Fix:` diagram antipatterns are a separate, model-structure axis, cited not restated), `bdd-gherkin` (projects the use case catalogue into `.feature` scenarios), `conceptual-modelling` (the living domain model behind the contracts), `linkml-engineering` (generates the typed artefacts from a LinkML contract), `epic-delivery` (when the walkthrough and the spike run in a delivery).
 
 ## Final Deliverables
 
@@ -37,6 +37,8 @@ The architecture work produces three artifacts that evolve together:
    - Architectural decisions (ADRs) organized by C4 level
    - Diagrams referenced from documentation, not embedded
    - Trade-off rationale and constraints
+   - Its page shape, a library's consumer needs, and the walkthrough and spike that validate it:
+     `references/architecture-index-page.md`
 
 3. **Data Structures**
    - Primary: LinkML schemas (canonical definition of domain entities, relationships, attributes)
@@ -621,6 +623,7 @@ This skill includes comprehensive reference guides in the `/references/` folder:
 ### Templates & Guides
 - **ADR_TEMPLATE.md** – Standard format for creating Architectural Decision Records
 - **business-requirements-to-architecture.md** – How to extract architectural drivers from business requirements
+- **architecture-index-page.md** – The architecture index page's shape, a library's consumer needs, the walkthrough and the spike
 - **architecture-project-structure.md** – Project-oriented folder organization for architecture working sessions (decisions, diagrams by level, specifications, data models, deployment, implementation)
 - **use-cases-cockburn.md** – White/Blue use case conventions (Cockburn), numbering, canonical skeleton, C4 mapping, and catalogue build workflow
 - **use-case-template-white.adoc** – Copy-paste skeleton for a White (Summary-level) use case
@@ -642,7 +645,7 @@ This skill includes comprehensive reference guides in the `/references/` folder:
 ### Pattern & Decision Examples
 - **decision-pattern-examples.md** – 5 real decision examples + template (async vs sync, canonical data, contract ownership, versioning, detecting premature decisions)
 
-**Total**: 16 supporting materials covering requirements, use cases (Cockburn White/Blue), diagrams (text + Mermaid), checklists, decisions, sequences, and project organization.
+**Total**: 17 supporting materials covering requirements, use cases (Cockburn White/Blue), diagrams (text + Mermaid), checklists, decisions, sequences, and project organization.
 
 ---
 

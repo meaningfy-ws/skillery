@@ -31,6 +31,10 @@ needs. A subagent never reports `done` on work it did not verify.
 | verifying | the criteria checked; pass or fail per criterion; the gaps |
 | test-running | per scenario or assertion: pass or fail; where the run's output is |
 
+Any purpose adds **Upstream findings** when the brief asks for them: defects or gaps found in any
+library the project depends on, each marked *ours* or *external*, with a minimal reproduction, or
+"none". The lead routes them per the dependency rule of `epic-delivery`.
+
 A catalogue agent's `## Report` section names its purpose and what matters most in its report; it
 cites this file and does not repeat the base.
 

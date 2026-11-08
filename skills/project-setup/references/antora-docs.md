@@ -27,7 +27,7 @@ A docs site is a small number of well-defined files. Know what each one does bef
 ## 2. Diátaxis information architecture
 
 Pages live under `modules/ROOT/pages/` in folders that map to the
-[Diátaxis](https://diataxis.fr) quadrants plus three Meaningfy-specific buckets. Each page has
+[Diátaxis](https://diataxis.fr) quadrants plus four Meaningfy-specific buckets. Each page has
 exactly one job — keep tutorials free of reference detail, keep reference free of narrative.
 
 | Quadrant / bucket | Folder | What goes there |
@@ -35,12 +35,16 @@ exactly one job — keep tutorials free of reference detail, keep reference free
 | Tutorials (learning) | `pages/tutorials/` | Step-by-step first-run lessons (`getting-started.adoc`). |
 | How-to (tasks) | `pages/how-to/` | Goal-oriented recipes: "how do I X". |
 | Reference (information) | `pages/reference/` | API docs (autogen from OpenAPI), config/CLI reference. |
-| Explanation (understanding) | `pages/architecture/` | C4 views, conceptual model, spines, the *why*. |
+| Explanation (understanding) | `pages/architecture/` | `index.adoc`: the architecture index page in the shape the `architecture` skill owns (summary, scope, drivers, C4 L1–L3, key flows, decisions, open questions, references). |
 | Requirements | `pages/requirements/` | Requirement specs and use cases. |
 | ADRs | `pages/adr/` | Architecture Decision Records (Nygard format; see ADR-0001). |
 | User guide | `pages/user-guide/` | End-user/operator task guides for the running system. |
+| Development | `pages/develop/` | The project runbook, for developers and agents: `index.adoc` (structure, our libraries, gates, durations), `agents.adoc` (how work runs, routing to `epic-delivery`), `testing.adoc` (project test rules on top of `cosmic-python`'s checklist); add one page per library we co-develop. |
 
-The landing page (`pages/index.adoc`) links out to each bucket. Mirror these folders in
+The Diátaxis pages serve the system's users; `architecture/` and `develop/` serve the people and
+agents who build it. The develop pages point to the skills for every rule and leave slots for the
+project's own choices (durations table, pages that open with questions, gates, our libraries); keep
+or delete each slot. The landing page (`pages/index.adoc`) links out to each bucket. Mirror these folders in
 `nav.adoc`. When a bucket is irrelevant to an archetype (e.g. a library has no user guide), drop
 the folder *and* its nav entry.
 
@@ -50,7 +54,7 @@ Both are wired in the playbook's `antora.extensions` block and pinned in `packag
 
 - **Mermaid** (`@sntke/antora-mermaid-extension`) renders `[mermaid]` blocks client-side. The
   `script_stem: header-scripts` + `start_on_load: true` config injects the loader. Use it for C4
-  context diagrams, sequence diagrams, flowcharts (see `architecture/system-context.adoc`).
+  context diagrams, sequence diagrams, flowcharts (see `architecture/index.adoc`).
 - **Lunr** (`@antora/lunr-extension`) builds a static full-text search index. The supplemental-ui
   `header-content.hbs` renders the search box when `SITE_SEARCH_PROVIDER` is set; set it at build
   time (e.g. `SITE_SEARCH_PROVIDER=lunr npx antora …`) for the box to appear.

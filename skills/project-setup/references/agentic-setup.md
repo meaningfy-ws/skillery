@@ -14,7 +14,7 @@ criteria — comes from the installed skillery skills and the spine, not from he
 
 | Template (`assets/templates/agentic/`) | Renders to | Notes |
 |----------------------------------------|------------|-------|
-| `AGENTS.md.tmpl` | `AGENTS.md` (repo root) | **Canonical** agent instructions: skill routing, the spine, conventions, project specifics. |
+| `AGENTS.md.tmpl` | `AGENTS.md` (repo root) | **Canonical** agent instructions: skill routing, the spine, how work runs here (routes to `epic-delivery`), conventions, project specifics (incl. our libraries). |
 | `CLAUDE.md.tmpl` | `CLAUDE.md` (repo root) | Thin pointer: "read `AGENTS.md`", the `@AGENTS.md` import, and Claude-specific guidance only. |
 | `MEMORY.md.tmpl` | `.claude/memory/MEMORY.md` | Regenerable orientation **index** (≤200 lines). The truth is `openspec/specs/`. |
 
@@ -114,6 +114,9 @@ deliberately does **not** restate planning or review knowledge:
 
 - EPIC content, the planning procedure, and the clarity gate → **epic-planning** + **clarity-gate**
   skills, driving the `/opsx:*` workflow.
+- Delivering a gated PLAN (the agent team, the loop scaled by appetite, authority, the
+  no-workaround rule for our libraries) → **epic-delivery**; the project's own side of it lives in
+  the `develop/` runbook pages (`antora-docs.md`).
 - BDD features → **bdd-gherkin**; pre-PR review criteria → **meaningfy-code-review**;
   layering rationale → **cosmic-python**; domain model → **conceptual-modelling** (product repos).
 
