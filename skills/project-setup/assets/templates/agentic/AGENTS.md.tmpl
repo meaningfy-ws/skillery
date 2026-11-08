@@ -88,6 +88,8 @@ Full description: `docs/modules/ROOT/pages/develop/agents.adoc`; the method is t
 - **Subagents** — before spawning one, follow *Subagent dispatch* in the `guardrails` skill: spawn
   only when it pays, brief it fresh, take the base report back, and have finished work checked by a
   second subagent.
+- **Context** — follow *Session hygiene* in the `guardrails` skill: a fresh session at a task
+  boundary, compact at a phase boundary right after a commit, never mid-step.
 - Default branch is **`<<DEFAULT_BRANCH>>`** (the PR target). Branch off it; never commit to it
   directly.
 

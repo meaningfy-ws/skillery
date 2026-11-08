@@ -83,7 +83,8 @@ this is how an initiative becomes several, in order:
    value. The order goes into each EPIC's Rabbit-holes or Why, not into a separate plan file.
 
 The session ends with the EPICs shaped, not planned: each PLAN is derived at the start of its
-epic session (`epic-delivery`).
+epic session (`epic-delivery`). That boundary is a reset point: compact, or start the epic session
+fresh from the written EPICs (`guardrails`, *Session hygiene*).
 
 ## Appetite — how deep and extensive the solution may be
 

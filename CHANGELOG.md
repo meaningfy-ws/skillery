@@ -17,6 +17,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   PLAN to a merged, accepted, archived change. The review and check steps scale with the EPIC's
   size, people validate once per EPIC, and a gap in one of our libraries is never worked around
   while a gap in an external library is a recorded decision.
+- `guardrails` *Session hygiene*: when to start a fresh session and when to compact (after a commit,
+  at a task or phase boundary, never mid-step), with the commands per CLI in
+  `docs/environment/dual-cli/context-commands.md`; mandated in the project `AGENTS.md` template.
 - `cosmic-python` testing checklist; architecture index-page shape; `develop/` runbook pages and a
   "How work runs here" block in the `project-setup` templates; `docs/practice/ai-coding/working-with-agents.md`.
 

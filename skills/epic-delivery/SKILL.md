@@ -96,6 +96,9 @@ use case; then the lead archives the change. Each step in detail, and how this l
 check of the longer loop it replaces:
 [`references/stage-loop.md`](references/stage-loop.md).
 
+Between stages, right after the merge, the lead compacts with a focus on the open decisions; after
+the archive it starts the next task in a fresh session (`guardrails`, *Session hygiene*).
+
 ## Questions to the developer
 
 Only the lead asks. Every question:

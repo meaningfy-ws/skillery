@@ -56,6 +56,8 @@ probes:
   # subagent-dispatch D-8: the dispatch rules live in guardrails.
   - probe: "should I spawn subagents for these four tasks, and what should each brief contain"
     expect: guardrails
+  - probe: "the session is getting long, should I compact or clear before the next stage"
+    expect: guardrails
   - probe: "review this diff before I open the PR"
     expect: meaningfy-code-review
     near_miss_of: guardrails
