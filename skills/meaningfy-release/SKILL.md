@@ -48,6 +48,8 @@ force-push etiquette) are owned there; the *release-specific lifecycle* is owned
 - `release/X.Y.Z` — cut from the integration branch; **stabilisation-only** commits; tag on merge.
 - `hotfix/X.Y.Z` — cut **from the released tag**, patch, tag, then back-merge to all long-lived lines.
 
+The navigator mod tracks these steps from [`assets/workflows/release.workflow.json`](assets/workflows/release.workflow.json).
+
 ## 3. Changelog & release notes
 
 - Maintain `CHANGELOG.md` in **[Keep a Changelog](https://keepachangelog.com/)** format with an

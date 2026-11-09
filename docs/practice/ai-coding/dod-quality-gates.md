@@ -26,7 +26,7 @@ stage gates (the Discovery & Onboarding safeguards, for example), see
 
 **The gates scale with the EPIC's appetite.** Every task runs the project's gates. How much review
 and checking a stage gets depends on the EPIC's size. The review set of each appetite is in
-[`build-tier.workflow.json`](../../../skills/epic-delivery/assets/workflows/build-tier.workflow.json).
+[`epic-delivery.workflow.json`](../../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json).
 
 **Validation points, per EPIC.** The gates above verify. People validate at a few fixed points: the
 scenario sign-off once at the PLAN gate, the model review when the model changes, the acceptance

@@ -61,7 +61,7 @@ export async function readChangeSignal($: EngineInterface, id: string): Promise<
   }
   const git = await $.process.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], { cwd: root })
   const branch = git.exitCode === 0 ? git.stdout.trim() : ''
-  // The build-tier workflow names the appetites (design §6.1); the mod holds no list.
+  // The epic-delivery workflow names the appetites (design §6.1); the mod holds no list.
   const s = revive(await read($, nav))
   const appetites = appetitesOf(s.workflows.find(w => w.activate.openChange) ?? null)
   return { kind: 'ChangeRead', id, ...readChange(open, branch, appetites), at: await $.clock.now() }

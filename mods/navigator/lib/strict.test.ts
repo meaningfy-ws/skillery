@@ -8,7 +8,7 @@ import { modeText } from './view.ts'
 import { resolveWorkflows } from './workflow.ts'
 
 const REPO = join(import.meta.dirname, '..', '..', '..')
-const path = 'skills/epic-delivery/assets/workflows/build-tier.workflow.json'
+const path = 'skills/epic-delivery/assets/workflows/epic-delivery.workflow.json'
 const { workflows } = resolveWorkflows([{ path, text: readFileSync(join(REPO, path), 'utf8') }], [])
 let n = 0
 const id = () => `s${++n}`
@@ -76,8 +76,8 @@ test('spawn: an over-spawn is denied, a model above the parent is rewritten, loo
 
 test('the reminder is built from file data only', () => {
   assert.equal(reminder(run(started(), ...read('strict'))),
-    'Phase apply of Build-tier EPIC delivery (owner skill: epic-delivery). Expected: test-driven-development, cosmic-python. ' +
-    'Gates: clarity, validate. Workflow file: skills/epic-delivery/assets/workflows/build-tier.workflow.json.')
+    'Phase apply of EPIC delivery (owner skill: epic-delivery). Expected: test-driven-development, cosmic-python. ' +
+    'Gates: clarity, validate. Workflow file: skills/epic-delivery/assets/workflows/epic-delivery.workflow.json.')
   assert.equal(reminder(run(started(), ...read('loose'))), null)
 })
 

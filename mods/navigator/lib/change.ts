@@ -11,7 +11,7 @@ export type ChangeFiles = {
   planMtime: number // newest mtime of design.md and tasks.md, 0 if neither
 }
 
-/** The appetite names are the build-tier workflow's `reviews` keys; the mod holds no list. */
+/** The appetite names are the epic-delivery workflow's `reviews` keys; the mod holds no list. */
 export function appetitesOf(workflow: unknown): string[] {
   const reviews = (workflow as { reviews?: unknown } | null)?.reviews
   return reviews && typeof reviews === 'object' ? Object.keys(reviews) : []

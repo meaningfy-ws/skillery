@@ -1,12 +1,18 @@
 {
-  "name": "architecting", "title": "Architecting and modelling", "owner": "architecture",
-  "activate": { "skills": ["architecture", "conceptual-modelling"], "agents": ["system-architect", "conceptual-modeller"] },
+  "name": "architecting", "title": "Architecture", "owner": "architecture",
+  "activate": { "skills": ["architecture"], "agents": ["system-architect"] },
   "phases": [
-    { "id": "explore", "owner": "architecture", "expect": [], "allow": ["brainstorming"], "enter": { "skills": ["architecture"] } },
-    { "id": "elicit", "owner": "conceptual-modelling", "expect": [{ "skill": "conceptual-modelling", "by": "exit" }],
-      "allow": ["modelling-conventions"], "enter": { "skills": ["conceptual-modelling"], "agents": ["conceptual-modeller"] } },
-    { "id": "decide", "owner": "architecture", "expect": [{ "skill": "architecture", "by": "exit" }], "gates": ["adr"],
-      "enter": { "agents": ["system-architect"] } }
+    { "id": "drivers", "owner": "architecture", "expect": [], "allow": ["brainstorming"], "gates": ["usecases"], "enter": {} },
+    { "id": "use-cases", "owner": "architecture", "expect": [], "allow": ["bdd-gherkin"], "gates": ["c4"], "enter": {} },
+    { "id": "c4", "owner": "architecture", "expect": [], "gates": ["adr"], "enter": {} },
+    { "id": "decide", "owner": "architecture", "expect": [], "gates": ["model"], "enter": {} },
+    { "id": "domain", "owner": "conceptual-modelling", "expect": [{ "skill": "conceptual-modelling", "by": "exit" }],
+      "allow": ["modelling-conventions"], "enter": {} }
   ],
-  "gates": { "adr": { "kind": "file", "glob": "**/[Aa][Dd][Rr]-[0-9]*" } }
+  "gates": {
+    "usecases": { "kind": "file", "glob": "**/*use-case*" },
+    "c4": { "kind": "file", "glob": "**/*[Cc]4*" },
+    "adr": { "kind": "file", "glob": "**/[Aa][Dd][Rr]-[0-9]*" },
+    "model": { "kind": "file", "glob": "model/**" }
+  }
 }

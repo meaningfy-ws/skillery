@@ -29,7 +29,7 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
   if (prev.change?.id !== n.change?.id) n = { ...n, shipLog: [] }
   const add = (ws: Warning[]) => { n = { ...n, warnings: addWarnings(n, ws) } }
   const t = thresholdsFrom(n.thresholds)
-  // The review set lives in the workflow that has one (build-tier), whichever is active (DD-21).
+  // The review set lives in the workflow that has one (epic-delivery), whichever is active (DD-21).
   const reviews = n.workflows.find(w => w.reviews)
   const appetite = n.change?.appetite ?? null
   switch (s.kind) {

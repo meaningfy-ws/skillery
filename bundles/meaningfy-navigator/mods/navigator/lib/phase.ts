@@ -4,12 +4,13 @@
 import { holds, holdsAny } from './change.ts'
 import { addWarnings, onEnter, onLeave } from './process-drift.ts'
 import type { Activate, NavState, Phase, Workflow } from './state.ts'
-import { bare, phasesOf } from './workflow.ts'
+import { bare, globRegex, phasesOf } from './workflow.ts'
 
 /** The skill or agent a signal names, if any. */
 export type Trigger = { skill?: string; agent?: string }
-/** What can advance a phase with no `enter` of its own: a command that ran, or an answered consent. */
-export type Advance = { command?: string; consent?: true }
+/** What can advance a phase with no `enter` of its own: a command that ran, an answered consent, or
+ *  a written file that passes a file gate. */
+export type Advance = { command?: string; consent?: true; file?: string }
 
 /** `openChange` gates only the default chosen with no trigger (DD-38). */
 const conditions = (a: Activate, s: NavState, asDefault = false) =>
@@ -24,10 +25,10 @@ const triggered = (a: { skills?: string[]; agents?: string[] }, t: Trigger | nul
 const conditionOnly = (a: Activate) => !a.skills && !a.agents
 
 /** The active workflow and variant: the one the trigger activates, else the current one while it
- *  still holds, else the workflow that activates on an open change (build-tier). */
+ *  still holds, else the workflow that activates on an open change (epic-delivery). */
 export function select(s: NavState, t: Trigger | null): { workflow: string | null; variant: string | null } {
   const ws = s.workflows
-  // Once active, a workflow stays while its conditions hold (after an archive, build-tier is in explore).
+  // Once active, a workflow stays while its conditions hold (after an archive, epic-delivery stays in archive).
   const current = ws.find(w => w.name === s.workflow && conditions(w.activate, s))
   const w = ws.find(w => conditions(w.activate, s) && triggered(w.activate, t)) ??
     current ?? ws.find(w => w.activate.openChange && conditions(w.activate, s, true))
@@ -63,7 +64,8 @@ const noEnter = (p: Phase | undefined) => !!p && Object.keys(p.enter).length ===
 
 /** DevOps phases have no `enter`: the command that passes a gate of this or a later phase moves to
  *  the phase after it (`terraform plan` → card); an answered consent enters the next phase that holds
- *  a consent gate. Only into a phase with no `enter`. Driven by the gate regexes, never by phase
+ *  a consent gate; a written file that passes a file gate moves to the phase after the gate's.
+ *  Only into a phase with no `enter`. Driven by the gate regexes, never by phase
  *  names (design §4.2). */
 export function advanceOn(w: Workflow, phases: Phase[], current: string, ev: Advance): string | null {
   const i = phases.findIndex(p => p.id === current)
@@ -72,9 +74,10 @@ export function advanceOn(w: Workflow, phases: Phase[], current: string, ev: Adv
     const p = phases[k]
     for (const id of p?.gates ?? []) {
       const g = w.gates?.[id]
-      const passed = ev.command !== undefined && g &&
+      const passed = (ev.command !== undefined && g &&
         ((g.kind === 'command' && new RegExp(g.match).test(ev.command)) ||
-         (g.kind === 'consent' && new RegExp(g.before).test(ev.command)))
+         (g.kind === 'consent' && new RegExp(g.before).test(ev.command)))) ||
+        (g !== undefined && g.kind === 'file' && ev.file !== undefined && globRegex(g.glob).test(ev.file))
       if (passed && noEnter(phases[k + 1])) return phases[k + 1]!.id
       if (ev.consent && g?.kind === 'consent' && k > i && noEnter(p)) return p!.id
     }
@@ -83,7 +86,7 @@ export function advanceOn(w: Workflow, phases: Phase[], current: string, ev: Adv
 }
 
 /** Re-derive workflow, variant and phase; a phase change runs the leave and enter checks (§6.3),
- *  and a forward move by a command or consent leaves each phase it skips (DD-38). */
+ *  and a forward move by a command, consent or file leaves each phase it skips (DD-38). */
 export function navigate(s: NavState, at: number, t: Trigger | null = null, ev: Advance | null = null): NavState {
   const { workflow, variant } = select(s, t)
   const w = s.workflows.find(x => x.name === workflow)
