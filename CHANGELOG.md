@@ -11,6 +11,20 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.10.1] - 2026-11-09
+
+### Fixed
+
+- `meaningfy-navigator`: **Next step** and the band's other action buttons run their command again;
+  they failed with "a text beginning with / would run a command".
+
+### Changed
+
+- `meaningfy-navigator`: the band shows state in colour: done in green, the current stage or phase
+  in bold accent, to do dim, failed in red, warnings in amber. Each row fits on one line, warnings
+  are listed one per line (at most four), and files changed outside the PLAN are grouped into a
+  single warning. **Next step** is drawn as the primary button.
+
 ## [3.10.0] - 2026-11-09
 
 ### Added
