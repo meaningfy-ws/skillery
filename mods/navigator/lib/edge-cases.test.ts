@@ -110,7 +110,7 @@ test('schema: deeply nested / huge JSON returns an error or a workflow, never th
 test('extends: a partial file whose phases name the default gates is valid (phases wholesale, gates from the default)', () => {
   // variants: [] — the default's variants name phases this file drops.
   const own = { name: 'epic-delivery', extends: 'epic-delivery', variants: [],
-    phases: [{ id: 'apply', owner: 'epic-delivery', expect: [], gates: ['validate'], enter: { change: 'tasks-partial' } }] }
+    phases: [{ id: 'apply', owner: 'epic-delivery', expect: [], gates: ['full-gates'], enter: { change: 'tasks-partial' } }] }
   const r = resolveWorkflows(DEFAULT_SOURCES, [src('docs/navigator/b.workflow.json', JSON.stringify(own))])
   assert.deepEqual(r.errors, [])
   assert.deepEqual(r.workflows.find(w => w.name === 'epic-delivery')!.phases.map(p => p.id), ['apply'])
@@ -193,9 +193,9 @@ test('warnings: two commits without TDD give one warning; the prefixed remedy cl
 test('warnings: one gate used by two phases warns per phase; passing it clears both (DD-36.5)', () => {
   const s = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5), read(change(9, 9), 6),
     skill('openspec-archive-change', 7))
-  assert.ok(keys(s).includes('process:gate:apply:validate') && keys(s).includes('process:gate:verify:validate'), keys(s).join())
-  const passed = reduce(s, cmd('make validate', 8))
-  assert.ok(!keys(passed).some(k => k.endsWith(':validate')), keys(passed).join())
+  assert.ok(keys(s).includes('process:gate:apply:full-gates') && keys(s).includes('process:gate:accept:acceptance'), keys(s).join())
+  const passed = reduce(s, cmd('make check-all', 8))
+  assert.ok(!keys(passed).some(k => k.endsWith(':full-gates')), keys(passed).join())
 })
 
 test('warnings: passing gate "b" does not clear the warning of gate "a:b" (DD-36.5 its own warnings)', () => {
@@ -601,12 +601,11 @@ test('s3 reconcile/review: a change id that starts with "-" is not put on a comm
   assert.equal(review(dash), null)
 })
 
-test('s3 review: shown in apply and verify only, with id and appetite', () => {
+test('s3 review: shown in apply only (D-9: the review is an apply exit), with id and appetite', () => {
   const s = applyState()
   assert.equal(s.phase, 'apply')
   assert.equal(review(s), 'meaningfy-code-review navigator VERY LARGE')
-  assert.ok(review({ ...s, phase: 'verify' })?.startsWith('meaningfy-code-review navigator'))
-  for (const p of ['explore', 'propose', 'design', 'archive']) assert.equal(review({ ...s, phase: p }), null, p)
+  for (const p of ['explore', 'propose', 'design', 'accept', 'archive']) assert.equal(review({ ...s, phase: p }), null, p)
   assert.equal(review({ ...s, change: { ...s.change!, id: 'a b' } }), null)
 })
 
