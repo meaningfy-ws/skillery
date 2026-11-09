@@ -265,8 +265,10 @@ export function namesIn(w: Workflow): string[] {
 export const bare = (name: string) => name.slice(name.lastIndexOf(':') + 1)
 
 // Commands are matched where a shell segment starts, never inside a quoted string or a grep (DD-41).
-const SEG = String.raw`(?:^|[;&|(]\s*|\n\s*)`
-const at = (re: string) => new RegExp(`${SEG}${re}`)
+// A segment may start with environment assignments (`FOO=1 git commit`); quoted text is blanked first.
+const SEG = String.raw`(?:^|[;&|(]\s*|\n\s*)(?:\w+=\S*\s+)*`
+const at = (re: string) => { const r = new RegExp(`${SEG}${re}`); return { test: (c: string) => r.test(unquote(c)) } }
+const unquote = (c: string) => c.replace(/"(?:[^"\\]|\\.)*"|'[^']*'/g, '""')
 const COMMIT = at(String.raw`git(?:\s+-[Cc]\s+\S+)*\s+commit\b`)
 const ARCHIVE = at(String.raw`openspec\s+archive\b`)
 const SHIP = at(String.raw`(?:git(?:\s+-[Cc]\s+\S+)*\s+push|gh\s+pr\s+create)\b`)

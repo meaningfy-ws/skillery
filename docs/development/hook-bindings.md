@@ -89,8 +89,8 @@ intent degrades to a `Stop`/`session.idle` binding on opencode.
 ## `mod` mechanism — a rule inside a Claude Code mod
 
 `mod`-mechanism intents are enforced by a mod's own hooks, not by settings or a git hook. Today they
-are the four `navigator-strict-*` intents: navigator's strict mode, active only in a repository whose
-workflow file declares `"mode": "strict"`. Each intent's id equals the `id` of one rule in
+are the four `navigator-strict-*` intents: navigator's strict mode, active in a repository whose
+workflow file declares `"mode": "strict"`, or in any session switched with `/navigator mode strict`. Each intent's id equals the `id` of one rule in
 `mods/navigator/lib/strict.ts`; the lint check `mod_bindings_match` keeps the two sets equal. Nothing
 is projected at setup: installing the `meaningfy-navigator` bundle is the binding. opencode has no
 mods, a recorded gap in [`compatibility.md`](../environment/dual-cli/compatibility.md). How to add a

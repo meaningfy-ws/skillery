@@ -110,14 +110,15 @@ them, then `lib/lean.ts` feeds the subagent and hygiene checks.
 
 | Event | Signal(s) |
 |---|---|
-| `session.start`, a `clear`/`resume`/`branch` to a new session | `Started`, `ThresholdsRead`, `WorkflowsRead`, `ChangeRead`, `Accepted` |
+| `session.start`, a `clear`/`resume`/`branch` to a new session | `Started`, `ThresholdsRead`, `WorkflowsRead`, `ChangeRead`, `AcceptedRead` |
 | `skill.prompt` | `SkillLoaded` |
 | `tool.call` Bash (after it ran; strict decides before) | `ToolRan` |
+| `tool.call` by a subagent, any tool | `AgentCalled` |
 | `tool.call` Edit, Write, NotebookEdit | `FileTouched` |
 | `prompt.submit` (typed or Remote Control) | `UserPrompted` |
-| `agent.spawn` (strict decides before) | `SubagentSpawned` |
+| `agent.spawn` (not a resume) | `SpawnAsked` before it runs (strict decides then), `SubagentSpawned` after |
 | `turn.complete` of a subagent | `SubagentFinished` |
-| `turn.complete` of the main loop | `AnswerShown`, `ChangeRead`, `PlanRead`, `TurnEnded` |
+| `turn.complete` of the main loop | `AnswerShown`, `ChangeRead`, `AcceptedRead`, `PlanRead`, `TurnEnded`, `SetPending` (Reconcile's second step) |
 | `session.compact` | `Compacted` |
 | `/navigator …` and the band's buttons | `SetBand`, `SetLine`, `SetMode`, `Accepted`, `SetPending`, `ToolRan` (Validate) |
 | `prompt.compose` (strict) | none: adds the phase reminder |

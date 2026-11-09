@@ -1,5 +1,6 @@
 // deviations.md of a change: one keyed line per accepted deviation (design §8, DD-12). Pure.
 
+import { isDrift } from './process-drift.ts'
 import type { Warning } from './state.ts'
 
 const HEADER = '# Deviations accepted with /navigator accept'
@@ -33,6 +34,6 @@ export type ArchiveResult = { ok: boolean; open: Warning[]; accepted: string[] }
 
 /** Archive check (design §8): fails while a plan- or process-drift warning is open and not accepted. */
 export function archiveCheck(warnings: Warning[], accepted: Set<string>): ArchiveResult {
-  const open = warnings.filter(w => /^(plan|process):/.test(w.key) && !accepted.has(w.key))
+  const open = warnings.filter(w => isDrift(w.key) && !accepted.has(w.key))
   return { ok: open.length === 0, open, accepted: [...accepted] }
 }

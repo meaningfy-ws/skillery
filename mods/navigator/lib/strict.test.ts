@@ -80,3 +80,10 @@ test('the reminder is built from file data only', () => {
     'Gates: clarity, validate. Workflow file: skills/epic-delivery/assets/workflows/build-tier.workflow.json.')
   assert.equal(reminder(run(started(), ...read('loose'))), null)
 })
+
+test('commands are matched where they start: quotes and greps are not commits; env prefixes are (DD-41)', async () => {
+  const { isArchive, isCommit } = await import('./workflow.ts')
+  assert.ok(isCommit('git commit -m x') && isCommit('cd a && git -C b commit') && isCommit('FOO=1 git commit -m x'))
+  assert.ok(!isCommit('echo "a; git commit -m x"') && !isCommit("grep -rn 'git commit' docs") && !isCommit('echo git commit'))
+  assert.ok(isArchive('openspec archive x') && !isArchive('gh pr create --body "then openspec archive"'))
+})

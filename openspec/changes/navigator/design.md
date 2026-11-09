@@ -691,7 +691,7 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
 | H-3 | CLI | spawn a subagent during apply | band row, then tokens (2) |
 | H-4 | CLI | a scratch repo with `docs/navigator/build.workflow.json` `mode: strict`, a change in apply | the first commit without `test-driven-development` is blocked before it runs; `/navigator mode loose`; the commit passes with a warning; a new session blocks again (3, 12) |
 | H-5 | both | `claude plugin validate bundles/meaningfy-navigator` | no errors; register.tsx types ok |
-| H-6 | CLI | Reconcile EPIC, Report to skillery buttons | the commands in the transcript as typed (13) |
+| H-6 | CLI | Reconcile EPIC, Next step, Accept, Compact now buttons (Report to skillery cut, DD-39) | the commands in the transcript as typed; `clear` and `compact` resolve (13) |
 
 ## 12. Anti-patterns
 

@@ -84,8 +84,10 @@ export const deviationsPath = (root: string, change: string) => `${root}/openspe
 
 export async function readAcceptedSignal($: EngineInterface, id: string): Promise<Signal | null> {
   const s = await state($)
-  const path = s.change && deviationsPath(await repoRoot($), s.change.id)
-  if (!path || !(await $.fs.exists(path))) return null
+  if (!s.change) return null // outside a change, accepted keys live in the session only
+  const path = deviationsPath(await repoRoot($), s.change.id)
+  // A change with no deviations.md has none: a switch drops the old change's keys (DD-41).
+  if (!(await $.fs.exists(path))) return { kind: 'AcceptedRead', id, keys: [] }
   return { kind: 'AcceptedRead', id, keys: [...parseDeviations(await $.fs.read(path))] }
 }
 
@@ -148,7 +150,9 @@ export async function accept($: EngineInterface, key: string, reason: string): P
       const text = appendDeviation(old, key, reason, date)
       if (text !== null) await $.fs.write(path, text)
     } catch (err) {
-      return `Navigator: ${key} not accepted: ${(err as Error).message}`
+      const text = `Navigator: ${key} not accepted: ${(err as Error).message}`
+      $.ui.toast(text)
+      return text
     }
   }
   await send($, { kind: 'Accepted', id, keys: [key] })

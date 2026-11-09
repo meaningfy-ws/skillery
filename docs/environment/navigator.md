@@ -130,7 +130,8 @@ Navigator reads the thresholds in `guardrails` and, at the end of each turn:
   context is large enough;
 - offers **Fresh session** at a task boundary (a commit with every task ticked, a merged PR, an
   archived change);
-- mid-step, with a large context, warns "commit, then compact" without a button.
+- mid-step, with a large context, warns `context N% mid-step` without a button: finish the step,
+  commit, then compact (`guardrails`).
 
 It also flags a subagent that only did a lookup, a subagent report longer than the limit, more
 reviewers in one turn than the appetite's review set, a missing second check before a push, PR or
@@ -160,7 +161,7 @@ to loose, or try strict in a loose one. The next session follows the repository 
 | Button | Runs | Shown |
 |---|---|---|
 | **Next step** | the first skill the phase still expects, else the owner of the next phase | a workflow is active |
-| **Back on track** | the command that puts right the oldest warning that has one | such a warning |
+| **Back on track** | the command that puts right the oldest open process warning (a skipped step) | such a warning |
 | **Compact now** / **Fresh session** | `/compact` with what to keep / `/clear` | when offered |
 | **Accept** | `/navigator accept <key> "<reason>"`, asking the reason | beside each open drift warning |
 | **Reconcile EPIC** | `/openspec-update-change <id>`, then `/clarity-gate <id>` | plan drift is open |

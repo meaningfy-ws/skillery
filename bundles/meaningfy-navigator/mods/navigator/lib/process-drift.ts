@@ -8,7 +8,8 @@ const warning = (key: string, message: string, remedy: string | null, owner: str
   ({ key, message, remedy, owner })
 
 /** A drift warning (plan or process) not recorded as a deviation (DD-41). */
-export const isOpen = (s: NavState, w: Warning) => /^(plan|process):/.test(w.key) && !s.accepted.includes(w.key)
+export const isDrift = (key: string) => /^(plan|process):/.test(key)
+export const isOpen = (s: NavState, w: Warning) => isDrift(w.key) && !s.accepted.includes(w.key)
 export const openDrift = (s: NavState) => s.warnings.filter(w => isOpen(s, w))
 
 /** Warnings added to the list, one per key. */

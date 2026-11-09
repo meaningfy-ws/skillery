@@ -7,6 +7,7 @@ import { overspawnNow, rewriteModel } from './lib/lean.ts'
 import { settingsFrom, type BandDisplay } from './lib/state.ts'
 import { decideArchive, decideCommit, decideSpawn, reminder } from './lib/strict.ts'
 import { parseAccept } from './lib/deviations.ts'
+import { openDrift } from './lib/process-drift.ts'
 import { bandModel } from './lib/view.ts'
 import { isArchive, isCommit } from './lib/workflow.ts'
 import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, readAcceptedSignal, readChangeSignal, readPlanSignal,
@@ -181,7 +182,7 @@ export const register: Register = (on, options) => {
     const steps = reconcile(s)
     const reviewLine = review(s)
     const press = (line: string) => () => act($, line)
-    const openWarnings = s.warnings.filter(w => /^(plan|process):/.test(w.key) && !s.accepted.includes(w.key))
+    const openWarnings = openDrift(s)
     return (
       <Box flexDirection="column">
         <Box>
