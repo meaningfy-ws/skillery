@@ -70,7 +70,7 @@ large loop on a small change.
 When you say "choose what is best", the lead decides and records the choice as its own. You can
 overrule it later.
 
-The scenario sign-off (per EPIC) and the validation review are still **provisional**: their first real runs will
+The scenario sign-off (per EPIC), the acceptance demo and the validation review are still **provisional**: their first real runs will
 confirm or reshape them
 ([`verification-validation.md`](../../../skills/epic-delivery/references/verification-validation.md)).
 

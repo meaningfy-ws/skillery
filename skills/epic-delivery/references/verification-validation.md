@@ -13,13 +13,13 @@ recommend, but never validates on the developer's behalf.
 | Architecture (C4, ADRs) | The use cases and drivers: the walkthrough; spikes for risky assumptions | Each ADR's Confirmation as a check; the architecture-conformance review lens | Walkthrough before an ADR is accepted; conformance every stage | `architecture` |
 | Model | The domain: example instances, competency questions, the domain-expert review | The model's own checks and generated-code freshness | When the model changes, in shaping; every commit | `conceptual-modelling` |
 | Scenarios | What the developer wants: scenario sign-off *(provisional)* | The traceability check | Sign-off once per EPIC at the PLAN gate; traceability before each PR | `bdd-gherkin` |
-| Code | The EPIC's success measure: the acceptance demo | Tests, gates, the review lenses, the checker | Every task (verification); after the last stage (validation) | `epic-delivery` |
+| Code | The EPIC's success measure: the acceptance demo *(provisional)* | Tests, gates, the review lenses, the checker | Every task (verification); after the last stage (validation) | `epic-delivery` |
 | Docs | A reader can act on them: the cold reader, on a page whose type is how-to or tutorial | Snippets run; the docs gate; the L2 lens checks changed docs agree with the code | Every stage that changes a how-to or tutorial page; every task-oriented page of the docs stage | `technical-writing` |
 | The iteration | The validation review *(provisional)*: did each EPIC deliver its value, did each ADR hold | Every change archived, its specs merged | End of an iteration | `epic-delivery` |
 
 The activities owned elsewhere are described in their skill. This skill owns two.
 
-## Acceptance demo
+## Acceptance demo *(provisional)*
 
 Offered once per EPIC that delivers or changes a use case, after its last build stage and before
 the docs stage and the archive. The lead shows the use case running against the EPIC's success
@@ -31,8 +31,8 @@ accept.
 | Below LARGE | Offered; the developer may skip it. The skip (who, why, date) goes to `evidence/acceptance.md` |
 | LARGE and above | Mandatory; the verdict, what was shown and the date go to `evidence/acceptance.md` |
 
-The procedure is in [`stage-loop.md`](stage-loop.md). The demo's first run is recorded in the
-`lean-delivery` change's `evidence/acceptance.md`; the validation review stays provisional.
+The procedure is in [`stage-loop.md`](stage-loop.md). The demo loses "(provisional)" once its first
+real run is recorded; the validation review stays provisional.
 
 ## Validation review *(provisional)*
 
@@ -57,7 +57,7 @@ Each record names the person who decided and the date.
 
 ## Provisional steps
 
-Scenario sign-off per EPIC and the validation review are provisional: the
+Scenario sign-off per EPIC, the acceptance demo and the validation review are provisional: the
 practice they come from defined them but had not yet run them. Their first real run is recorded
 (what worked, what did not), and either confirms them or reshapes them through a change to this
 skill.

@@ -20,22 +20,32 @@ established terminology (read `MEMORY.md` and existing docs first).
 
 ## Quick Start
 
-Worked example: an EPIC changed an installation step (the plugin is now added from a new source).
+The docs stage of an EPIC that changed an installation step (the plugin is now added from a new
+source).
 
-1. Load `technical-writing`. Its documentation workflow (phases below, *The documentation
-   workflow*) starts, and the evidence goes to `openspec/changes/<id>/evidence/`.
-2. Inventory: write `evidence/docs-owed.md`, one row per page owed: path, what is owed, page type,
-   check. Here: `docs/install.md`, the new add command, how-to, cold reader; `README.md`, the
-   entry-point link, reference, clarity check.
-3. Write: fix the how-to's step with the new command and the tool version you ran it with; fix the
-   README link.
-4. Verify: run the page's commands in a clean shell, then the project's docs gate (named in its
-   `AGENTS.md` *Checks* block); both must pass.
-5. Cold-read: give a fresh agent only the draft how-to and have it install from scratch. You write
-   `evidence/cold-read.md`: what it did, where it got stuck. Fix the page and re-read until nothing
-   is stuck.
-6. Publish: open one PR with the pages and both evidence files. Done when every row is written,
-   the gate is green and the cold read has no stuck point.
+1. **Load** `technical-writing` and follow *The documentation workflow* below. In a change, the
+   evidence goes to `openspec/changes/<id>/evidence/`.
+2. **Inventory.** The EPIC's proposal names what changed (here, the old add command and the new
+   one). Search the docs for the old one; every page that names it is owed. Write `evidence/docs-owed.md`:
+
+   | Page | Owed | Type | Check |
+   |---|---|---|---|
+   | `docs/install.md` | The new add command | How-to | Cold reader |
+   | `README.md` | The entry-point link | Reference | Clarity check |
+
+3. **Write.** Run the new command once in a scratch environment (step 4), then fix the how-to's step with it and the version of the
+   tool it runs on (its `--version`). Fix the README link.
+4. **Verify.** Run the page's commands in a scratch environment (a fresh container or config, so
+   nothing already installed helps), then the project's docs gate (named in its `AGENTS.md`
+   *Checks* block). Both must pass; fix and re-run a failure.
+5. **Cold-read** the how-to (*The cold reader* below): brief a fresh agent with only the draft page
+   and "carry it out". In `evidence/cold-read.md`, one row per step: what it did, where it got
+   stuck, the fix. Read again until nothing is stuck.
+6. **Publish.** Open one PR with the pages and both evidence files; the gate's output goes in the
+   PR description.
+
+Output: one PR; every row of `docs-owed.md` written, the docs gate green, a cold read with no
+stuck point.
 
 ## What you produce
 
@@ -56,8 +66,8 @@ lives in `clarity-gate`.
 ## The cold reader (task-oriented pages: how-to, tutorial, installation manual)
 
 Running a page's snippets verifies that they work. The cold reader validates that a reader can use
-the page. Give a fresh agent only the published page, with no other context, and have it carry out
-what the page says. Where it gets stuck, fix the page. When it runs in a delivery is
+the page. Give a fresh agent only the page (the draft, before it is published), with no other
+context, and have it carry out what the page says. Where it gets stuck, fix the page. When it runs in a delivery is
 `epic-delivery`'s.
 
 ## The documentation workflow
@@ -68,9 +78,9 @@ loading this skill starts it. When it runs in a delivery, and the load order, ar
 
 | Phase | What happens | Evidence |
 |---|---|---|
-| inventory | List the pages owed: missing, false, stale | `evidence/docs-owed.md` |
+| inventory | List the pages owed (missing, false, stale): page, owed, type, check | `evidence/docs-owed.md` |
 | write | Write them; architecture pages go through `architecture`'s method | the pages |
-| verify | Run the snippets and the project's docs gate | the gate's output |
+| verify | Run the snippets and the project's docs gate | the gate's output, in the PR description |
 | cold-read | Run the cold reader on the task-oriented pages | `evidence/cold-read.md` |
 | publish | Open the PR | the PR |
 

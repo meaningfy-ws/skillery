@@ -22,5 +22,24 @@ them, `epic-delivery`); a clean environment for the install (the project's own c
 
 ## Second read
 
-Not run: every stuck point of the first read is answered by a direct sentence in the fixed page,
-and the rest are owned elsewhere (above). The lead's call, recorded here.
+Run after review (DL-13), with the Quick Start and the two sections it points to. Stuck points left:
+
+| Stuck point | Fix |
+|---|---|
+| How to find every owed page, not only the two examples | Step 2: search the docs for what the EPIC changed |
+| Which tool version; run before writing? | Step 3: run the new command once; the tool's `--version` |
+| "Clean shell" undefined; installs touch the machine | Step 4: a scratch environment (fresh container or config) |
+| Format of `cold-read.md`; the reader's brief | Step 5: brief "carry it out"; one row per step: did, stuck, fix |
+| Where the gate's output is recorded | Step 6 and the verify row: in the PR description |
+
+## Third read
+
+| Stuck point | Fix |
+|---|---|
+| Where the old and new command come from | Step 2: the EPIC's proposal names them |
+| Whether step 3's run uses the scratch environment | Step 3: yes, as in step 4 |
+| What "Clarity check" is | Answered by the skill's *Clarity check* section (not given to this reader) |
+
+Left as is (minor, owned by the project): no container available; how many clean reads end the
+loop (one with no stuck point). Verdict: no stuck point left that the page owns. Lead's close,
+2026-11-10.

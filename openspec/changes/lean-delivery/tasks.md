@@ -47,7 +47,7 @@
 ## Acceptance, between stages 4 and 5 (mandatory, LARGE; not counted)
 
 - A.1 Demo to the developer against the success measure: counts from the transcripts of stages 2–4 (task-gate runs per task, local full-gates runs per stage, lead re-runs with triggers, polling calls); the hook denying a sleep loop live; the band through apply → accept → documentation → archive. Verdict in `evidence/acceptance.md`; a rejection is a decision here and a fix stage
-- A.2 The demo's first run is recorded: remove "(provisional)" from the acceptance demo in `epic-delivery` (SKILL, `verification-validation.md`, `stage-loop.md`) and its runbooks; it stays on the validation review (D-16). Lands in PR 5
+- A.2 The demo's first run is recorded: remove "(provisional)" from the acceptance demo in `epic-delivery` (SKILL, `verification-validation.md`, `stage-loop.md`) and its runbooks; it stays on the validation review (D-16). Deferred (DL-13): lands as a direct PR after the developer confirms A.1
 
 ## Stage 5 — Docs stage of this EPIC (PR 5; the documentation workflow's first run; not counted)
 

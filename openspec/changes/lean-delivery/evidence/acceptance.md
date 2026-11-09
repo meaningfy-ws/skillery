@@ -33,9 +33,16 @@ the fix round), plus CI; no sleep-polling call; every lead re-run names its trig
 
 ## Verdict
 
-**Accepted, with one finding for the next shaping session.**
+**Recommended: accept (the lead), with one finding for the next shaping session — pending the
+developer's confirmation.** An agent never marks validation done; this record is the demo, not
+the verdict.
 
-- Met: no polling; every lead re-run named its trigger; stage 4 held the ≤ 2 bound; reviewers read
+- Confirmed by: ______  Date: ______  Verdict: accept / reject (reason)
+
+Re-run triggers (design D-3): T1 the report is incomplete or contradicts the diff; T2 parallel
+builders or a rebase touched shared files; T3 a fix round ended.
+
+- Met: no polling; every lead re-run named its trigger; stages 1 and 4 held the ≤ 2 bound; reviewers read
   the gate report and never re-ran a suite; every check of the old loop still ran (five lenses,
   tester, checker per stage).
 - Not met: stages 2 and 3 ran the full gates 3 and 4 times. Every extra run was a red first run

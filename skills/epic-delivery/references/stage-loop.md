@@ -65,7 +65,7 @@ and one owner. The summary is in the skill, and the review set of each appetite 
 
 In this order: accept, docs stage, archive.
 
-- **Acceptance demo**, offered whenever the EPIC delivers or changes a use case:
+- **Acceptance demo** *(provisional)*, offered whenever the EPIC delivers or changes a use case:
   the lead runs the use case in the running system (or through the API) against the EPIC's success
   measure. The developer accepts it or names what is wrong. Whether it may be skipped is set by the
   appetite table in [`verification-validation.md`](verification-validation.md). The verdict, what
