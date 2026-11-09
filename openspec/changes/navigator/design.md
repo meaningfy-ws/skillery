@@ -880,6 +880,33 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
   loose ⇄ strict, superseding DD-26: switching a loose repo's session to strict only adds checks, so
   a person can try strict before committing the repo file. Repo strictness stays the repo file
   (DEC-5). Cost and tokens go in the unfolded band in stage 3, never in the line.
+- **DD-36** *(lead, stage 2 build, Rule of Divergence on §6.2–§6.3 and §8)* Where the PLAN left
+  the mechanics open:
+  1. **Gate check points.** A `skill` gate is checked on *entering* its phase (a precondition:
+     clarity before apply); a `command` or `file` gate on *leaving* it (it is about the phase's own
+     work, so nothing could have passed on entry); a `consent` gate when its `before` command runs.
+     §6.3 PD-3 said "on entering P" for all three.
+  2. **No check on a session's first placement.** The phase a session starts in is placed, not
+     entered: no enter or leave check runs for it, so a session opened mid-apply does not warn for a
+     clarity run an earlier session made (the `$.store` memory of §5 is stage 3's).
+  3. **`advanceOn` looks ahead.** A command that passes a gate of the current *or any later* phase
+     moves to the phase after that gate's phase, only into a phase with no `enter`, so
+     `terraform plan` in `read` reaches `card`; an answered consent enters the next phase holding a
+     consent gate. Build-tier phases all have an `enter`, so its commands never move it.
+  4. **`activate` semantics.** `openChange`, `change` and `interactive` are conditions that must
+     hold; `skills`/`agents` are triggers, any of which activates. A variant with conditions only
+     (brownfield) applies with no trigger. With no trigger yet, the workflow whose `activate` has
+     `openChange` is the default (build-tier, named by data, not by the mod).
+  5. **Warnings close themselves.** Running a warning's remedy skill removes it; a gate that passes
+     removes its gate warnings. `Accept deviation` (stage 3) covers the rest.
+  6. **Actions are submitted as typed.** A button runs `$.prompt.submit({text: '/<command> <args>',
+     asUser: true})`, so the transcript shows the command as if typed (spec *Actions are
+     commands*). Fold, Unfold and Hide stay direct state changes, the same as `/navigator band
+     fold|unfold|hide|show`, so pressing them leaves no transcript noise.
+  7. **`archived` predicate.** Not derived from the files in stage 2 (`shortcut:` in `holds`): the
+     archive phase is entered by `openspec-archive-change`.
+  8. **Old stored state.** `SkillUse.phase` and `Warning.remedy`/`owner` are new; a state stored by
+     the stage-1 mod lacks them and every reader treats a missing one as `null`, so `version` stays 1.
 
 ## Risks / Trade-offs
 

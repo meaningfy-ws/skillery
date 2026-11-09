@@ -5,7 +5,7 @@ import { appetiteOf, appetitesOf, progress, readChange, type ChangeFiles } from 
 const APPETITES = ['TINY', 'SMALL', 'MEDIUM', 'LARGE', 'VERY LARGE', 'HUGE']
 
 const file = (id: string, mtime: number, tasks: string | null = null): ChangeFiles =>
-  ({ id, proposal: '## Appetite\n\nVERY LARGE — three stages.\n\n## Problem\nSMALL bits\n', tasks, mtime, planMtime: 0 })
+  ({ id, proposal: '## Appetite\n\nVERY LARGE — three stages.\n\n## Problem\nSMALL bits\n', tasks, design: false, mtime, planMtime: 0 })
 
 test('appetite: the longest name in the first paragraph under ## Appetite', () => {
   assert.equal(appetiteOf(file('x', 0).proposal, APPETITES), 'VERY LARGE')
@@ -136,8 +136,8 @@ test('readChange: carries planMtime; ids are matched case-sensitively', () => {
 })
 
 test('readChange: empty proposal and null tasks give a change with null appetite and zero progress', () => {
-  const r = readChange([{ id: 'x', proposal: '', tasks: null, mtime: 0, planMtime: 0 }], 'x', APPETITES)
-  assert.deepEqual(r.change, { id: 'x', appetite: null, done: 0, total: 0, groups: [], planMtime: 0 })
+  const r = readChange([{ id: 'x', proposal: '', tasks: null, design: false, mtime: 0, planMtime: 0 }], 'x', APPETITES)
+  assert.deepEqual(r.change, { id: 'x', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: false, hasTasks: false })
 })
 
 test('appetitesOf: the build-tier reviews keys; nothing for a missing or odd workflow', () => {
@@ -148,4 +148,16 @@ test('appetitesOf: the build-tier reviews keys; nothing for a missing or odd wor
 test('readChange: equal-length ids in the branch, the most recent wins', () => {
   assert.equal(readChange([file('aaa', 1), file('bbb', 5)], 'aaa-bbb', APPETITES).change?.id, 'bbb')
   assert.equal(readChange([file('aaa', 5), file('bbb', 1)], 'aaa-bbb', APPETITES).change?.id, 'aaa')
+})
+
+test('the change predicates of design §6.1', async () => {
+  const { holds } = await import('./change.ts')
+  const c = (done: number, total: number, hasDesign = true, hasTasks = true) =>
+    ({ id: 'x', appetite: null, done, total, groups: [], planMtime: 0, hasDesign, hasTasks })
+  assert.ok(holds('none', null) && !holds('proposal', null))
+  assert.ok(holds('proposal', c(0, 0, false, false)) && !holds('proposal', c(0, 3)))
+  assert.ok(holds('plan', c(0, 3)) && holds('tasks-open', c(0, 3)) && !holds('plan', c(1, 3)))
+  assert.ok(holds('tasks-no-design', c(0, 3, false)) && !holds('tasks-no-design', c(0, 3)))
+  assert.ok(holds('tasks-partial', c(1, 3)) && !holds('tasks-partial', c(3, 3)))
+  assert.ok(holds('tasks-done', c(3, 3)) && !holds('tasks-done', c(0, 0)))
 })

@@ -1,0 +1,58 @@
+{
+  "name": "build-tier", "title": "Build-tier EPIC delivery", "owner": "epic-delivery",
+  "activate": { "openChange": true, "skills": ["epic-planning", "epic-delivery", "spec-stewardship"] },
+  "variants": [
+    { "name": "exploratory", "phases": ["explore", "shape", "plan"], "activate": { "skills": ["openspec-explore"] } },
+    { "name": "brownfield", "phases": ["shape", "apply", "archive"], "activate": { "change": "tasks-no-design" } }
+  ],
+  "phases": [
+    { "id": "explore", "owner": "epic-planning", "expect": [], "allow": ["brainstorming"],
+      "enter": { "skills": ["openspec-explore", "brainstorming"], "change": "none" } },
+    { "id": "shape", "owner": "epic-planning", "expect": [{ "skill": "epic-planning", "by": "exit" }],
+      "enter": { "skills": ["openspec-propose"], "change": "proposal" } },
+    { "id": "plan", "owner": "epic-planning", "expect": [{ "skill": "epic-planning", "by": "exit" }],
+      "allow": ["bdd-gherkin"], "gates": ["clarity"], "enter": { "change": "plan" } },
+    { "id": "apply", "owner": "epic-delivery",
+      "expect": [{ "skill": "test-driven-development", "by": "commit" }, { "skill": "cosmic-python", "by": "exit" }],
+      "allow": ["meaningfy-code-review", "systematic-debugging", "subagent-driven-development"],
+      "gates": ["clarity", "validate"],
+      "enter": { "skills": ["openspec-apply-change", "epic-delivery"], "change": "tasks-partial" } },
+    { "id": "verify", "owner": "meaningfy-code-review",
+      "expect": [{ "skill": "meaningfy-code-review", "by": "exit" }, { "skill": "verification-before-completion", "by": "exit" }],
+      "gates": ["validate"], "enter": { "change": "tasks-done" } },
+    { "id": "archive", "owner": "spec-stewardship", "expect": [{ "skill": "spec-stewardship", "by": "exit" }],
+      "gates": ["validate", "openspec"], "enter": { "skills": ["openspec-archive-change"], "change": "archived" } }
+  ],
+  "gates": {
+    "clarity":  { "kind": "skill", "skill": "clarity-gate" },
+    "validate": { "kind": "command", "match": "\\bmake validate\\b", "run": "make validate" },
+    "openspec": { "kind": "command", "match": "\\bopenspec validate\\b", "run": "openspec validate {change} --strict" }
+  },
+  "reviews": {
+    "TINY":   { "challenge": "One review pass: L2 spec and tests, L3 structure with ADR conformance",
+                "reviewers": 1, "lenses": ["L2", "L3"], "ux": null,
+                "check": "Folded into the lead's re-run", "checker": false, "tester": null },
+    "SMALL":  { "challenge": "One review pass: L2 spec and tests, L3 structure with ADR conformance",
+                "reviewers": 1, "lenses": ["L2", "L3"], "ux": null,
+                "check": "Folded into the lead's re-run", "checker": false, "tester": null },
+    "MEDIUM": { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5, "ux": null,
+                "check": "Checker", "checker": true, "tester": null },
+    "LARGE":  { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5,
+                "ux": { "wording": "plus the UX lens when screens changed", "extra_reviewers": 1 },
+                "check": "Checker", "checker": true, "tester": "Adversarial tester" },
+    "VERY LARGE": { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5,
+                "ux": { "wording": "plus the UX lens when screens changed", "extra_reviewers": 1 },
+                "check": "Checker", "checker": true, "tester": "Adversarial tester" },
+    "HUGE":   { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5,
+                "ux": { "wording": "plus the UX lens when screens changed", "extra_reviewers": 1 },
+                "check": "Checker", "checker": true, "tester": "Adversarial tester" }
+  },
+  "roles": {
+    "reviewer": { "agents": ["code-reviewer"] },
+    "checker":  { "describe": "\\bcheck(er)?\\b" },
+    "tester":   { "describe": "\\b(adversarial|tester)\\b" }
+  },
+  "replaces": { "writing-plans": "epic-planning", "executing-plans": "epic-delivery" },
+  "planDrift": { "ignore": ["openspec/changes/**", "bundles/**", ".claude-plugin/**", "tools/opencode-catalogue.json",
+                            "package.json", "docs/skill-inventory.md", "CHANGELOG.md"] }
+}

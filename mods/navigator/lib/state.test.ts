@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { EMPTY, reduce, revive, settingsFrom } from './state.ts'
 
 const started = (id = 's1', statusLine = true) =>
-  reduce(EMPTY, { kind: 'Started', id, sessionId: id, band: 'folded', statusLine })
+  reduce(EMPTY, { kind: 'Started', id, sessionId: id, band: 'folded', statusLine, interactive: true })
 
 test('TC-03 a subagent is listed while it runs, then done with its tokens', () => {
   let s = reduce(started(), { kind: 'SubagentSpawned', id: 'tu1', agentId: 'a1', type: 'implementer', model: 'opus', description: 'task 1.6', at: 1 })
@@ -18,7 +18,7 @@ test('TC-11 the line setting holds for a new session; the toggle only for this o
   assert.equal(s.display.line, false)
   s = reduce(s, { kind: 'ToggleLine', id: 't1' })
   assert.equal(s.display.line, true)
-  s = reduce(s, { kind: 'Started', id: 's2', sessionId: 's2', band: 'folded', statusLine: false })
+  s = reduce(s, { kind: 'Started', id: 's2', sessionId: 's2', band: 'folded', statusLine: false, interactive: true })
   assert.equal(s.display.line, false)
 })
 
@@ -94,15 +94,15 @@ test('SubagentFinished arriving before its Spawned still marks the agent done', 
 test('Started clears everything and keeps only its own id as seen, even when replayed', () => {
   let s = started('s1')
   s = reduce(s, skill(1))
-  s = reduce(s, { kind: 'ChangeRead', id: 'c1', change: { id: 'x', appetite: null, done: 1, total: 2, groups: [], planMtime: 0 }, openChanges: 2 })
+  s = reduce(s, { kind: 'ChangeRead', id: 'c1', change: { id: 'x', appetite: null, done: 1, total: 2, groups: [], planMtime: 0, hasDesign: true, hasTasks: true }, openChanges: 2, at: 0 })
   s = reduce(s, { kind: 'SubagentSpawned', id: 'tu', agentId: 'a', type: 't', model: 'm', description: '', at: 1 })
-  const again = reduce(s, { kind: 'Started', id: 's1', sessionId: 's1', band: 'unfolded', statusLine: false })
+  const again = reduce(s, { kind: 'Started', id: 's1', sessionId: 's1', band: 'unfolded', statusLine: false, interactive: true })
   assert.deepEqual(again, { ...EMPTY, sessionId: 's1', display: { band: 'unfolded', line: false }, seen: ['s1'] })
 })
 
 test('after Started a signal id seen in the previous session applies again', () => {
   let s = reduce(started('s1'), skill(1))
-  s = reduce(s, { kind: 'Started', id: 's2', sessionId: 's2', band: 'folded', statusLine: true })
+  s = reduce(s, { kind: 'Started', id: 's2', sessionId: 's2', band: 'folded', statusLine: true, interactive: true })
   assert.equal(reduce(s, skill(1)).skills.length, 1)
 })
 

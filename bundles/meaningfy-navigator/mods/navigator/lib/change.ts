@@ -1,11 +1,12 @@
 // Which change, its appetite and its progress (design §6.1). Pure: register.tsx reads the files.
 
-import type { Change, Group } from './state.ts'
+import type { Change, ChangePredicate, Group } from './state.ts'
 
 export type ChangeFiles = {
   id: string
   proposal: string
   tasks: string | null
+  design: boolean
   mtime: number // newest mtime of the change's files
   planMtime: number // newest mtime of design.md and tasks.md, 0 if neither
 }
@@ -66,7 +67,25 @@ export function readChange(open: ChangeFiles[], branch: string, appetites: strin
   const byBranch = recent.filter(c => branch.includes(c.id)).sort((a, b) => b.id.length - a.id.length)[0]
   const pick = byBranch ?? recent[0]!
   return {
-    change: { id: pick.id, appetite: appetiteOf(pick.proposal, appetites), ...progress(pick.tasks), planMtime: pick.planMtime },
+    change: { id: pick.id, appetite: appetiteOf(pick.proposal, appetites), ...progress(pick.tasks), planMtime: pick.planMtime,
+      hasDesign: pick.design, hasTasks: pick.tasks !== null },
     openChanges: open.length,
+  }
+}
+
+/** The fixed predicates a workflow's `change` field names (design §6.1). */
+export function holds(p: ChangePredicate, c: Change | null): boolean {
+  if (p === 'none') return c === null
+  if (!c) return false
+  switch (p) {
+    case 'proposal': return !c.hasDesign && !c.hasTasks
+    case 'plan': return c.hasDesign && c.hasTasks && c.done === 0
+    case 'tasks-no-design': return c.hasTasks && !c.hasDesign
+    case 'tasks-open': return c.total > 0 && c.done === 0
+    case 'tasks-partial': return c.done > 0 && c.done < c.total
+    case 'tasks-done': return c.total > 0 && c.done === c.total
+    // shortcut: the mod does not watch archive/; the archive phase is entered by its skill or
+    // `openspec archive`. Upgrade if the phase is missed.
+    case 'archived': return false
   }
 }

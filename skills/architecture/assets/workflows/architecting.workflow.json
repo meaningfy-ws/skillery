@@ -1,0 +1,12 @@
+{
+  "name": "architecting", "title": "Architecting and modelling", "owner": "architecture",
+  "activate": { "skills": ["architecture", "conceptual-modelling"], "agents": ["system-architect", "conceptual-modeller"] },
+  "phases": [
+    { "id": "explore", "owner": "architecture", "expect": [], "allow": ["brainstorming"], "enter": { "skills": ["architecture"] } },
+    { "id": "elicit", "owner": "conceptual-modelling", "expect": [{ "skill": "conceptual-modelling", "by": "exit" }],
+      "allow": ["modelling-conventions"], "enter": { "skills": ["conceptual-modelling"], "agents": ["conceptual-modeller"] } },
+    { "id": "decide", "owner": "architecture", "expect": [{ "skill": "architecture", "by": "exit" }], "gates": ["adr"],
+      "enter": { "agents": ["system-architect"] } }
+  ],
+  "gates": { "adr": { "kind": "file", "glob": "**/[Aa][Dd][Rr]-[0-9]*" } }
+}
