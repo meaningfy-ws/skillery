@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.10.1] - 2026-11-09
+
 ### Fixed
 
 - `meaningfy-navigator`: **Next step** and the band's other action buttons run their command again;
