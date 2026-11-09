@@ -126,7 +126,7 @@ test('D-19 both directions repeated: docs, delivery, docs, delivery', () => {
   }
 })
 
-test('returning to documentation after epic-delivery restarts at inventory', () => {
+test('returning to documentation after epic-delivery selects documentation again', () => {
   let s = run(workflows(), read(change(9, 9)), skill('technical-writing', 3), write(owed(), 4))
   assert.equal(s.phase, 'write')
   s = reduce(reduce(s, skill('epic-delivery', 5)), skill('technical-writing', 6))

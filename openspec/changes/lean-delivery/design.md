@@ -89,6 +89,8 @@
   methods in one file, no on-demand run). Phases have no `enter`; each moves by a gate of its own
   (engine rule: a passed gate moves to the next phase with no `enter`):
 
+  Patterns as amended by DL-7.1 (lookalikes excluded).
+
   | Phase | Gate (kind: match) | Written or run by |
   |---|---|---|
   | inventory | `owed` (file: `openspec/changes/*/evidence/docs-owed.md`) | Lead: the pages owed |
