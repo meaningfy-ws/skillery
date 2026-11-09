@@ -1,6 +1,7 @@
 <!-- STATUS: EPIC shaped 2026-11-09 from the owner's conversation (inputs/seed.md, inputs/qa.md);
      round 2 (Q-1..Q-3 in inputs/qa.md) answered the same day: recommendations taken. Frozen.
-     PLAN not derived. -->
+     PLAN derived the same day (design.md, tasks.md); DEC-5 amended by design D-4 (round 3).
+     PLAN NOT GATED: clarity gate 8.2/10 (2nd run); Q-6 open (inputs/qa.md). -->
 
 # EPIC: navigator workflows — work shaping, architecture, modelling and release
 
@@ -38,8 +39,8 @@ workflow file in that skill:
   `conceptual-modelling`, so **Next step** hands the session over to modelling.
 - **Modelling** (`conceptual-modelling`, its own workflow): elicit → model → generate → validate,
   starting from the initial domain model when architecture handed it over.
-- **Release** (`meaningfy-release`): branch → bump → validate → merge → publish → back-merge, with a
-  `hotfix` variant.
+- **Release** (`meaningfy-release`): branch → bump → validate → merge → publish → back-merge, for a
+  release or a hotfix branch alike.
 
 Outcome: in each of these sessions the band shows where the work stands in that skill's own steps,
 and **Next step** points to the skill that should run next.
@@ -61,7 +62,8 @@ and **Next step** points to the skill that should run next.
   command gate on `make generate-models` (generate) and a file gate on the review record in the
   change's `evidence/` (validate). — Its phases are not architecture's; rejected: a variant of
   `architecting`.
-- **DEC-5**: Release is its own workflow, owned by `meaningfy-release`, starting only on that
+- **DEC-5** *(amended 2026-11-09 by design D-4: no `hotfix` variant, the `cut` gate takes both
+  branch kinds; the lead's decision, the owner may overrule)*: Release is its own workflow, owned by `meaningfy-release`, starting only on that
   skill, with command gates for its phases and a `hotfix` variant. — Rejected: activating on
   `git tag` or a `release/` branch alone, which would catch ordinary work.
 - **DEC-6**: One engine rule: a **file gate** that passes advances the phase the way a command gate
@@ -119,7 +121,7 @@ None.
 ### Modified Capabilities
 
 - `workflow-definitions` (from the `navigator` change): the default workflows and their phases;
-  a file gate advances a phase.
+  a passed file gate advances a phase.
 
 ## Impact
 

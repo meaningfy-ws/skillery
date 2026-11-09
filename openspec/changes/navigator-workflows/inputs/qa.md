@@ -27,3 +27,27 @@
 
 **Owner's answers (2026-11-09):** Q-1 "okay" (second tier in a later EPIC); Q-2 "yes" (SMALL with
 the one engine rule); Q-3 "okay" (rename now). No question is open.
+
+## Round 3 — 2026-11-09, raised while deriving the PLAN
+
+- **Q-4 (withdrawn).** The lead first proposed replacing DEC-6 with a phase `enter.files` key, on
+  the claim that a file gate would block strict commits. The clarity-gate review showed the claim
+  false: strict refuses a commit only on a gate warning of the *current* phase, and command and
+  file gate warnings are raised when a phase is left. DEC-6 stands as the owner approved it; each
+  file gate sits on the phase before the one its artifact starts (design D-1).
+- **Q-5.** DEC-5's `hotfix` variant has the same six phases and no signal to select it. Decided by
+  the lead: drop it; the `cut` gate matches `hotfix/` branches too (design D-4). The owner may
+  overrule.
+
+## Round 4 — 2026-11-09, from the second clarity-gate run (8.2/10)
+
+- **Q-6.** Navigator treats a variant change as a *placement*: no leave or enter checks. So going
+  from the `work-shaping` variant to the full build-tier (loading `epic-delivery`) skips apply's
+  clarity precondition, and strict cannot block an ungated PLAN. Options:
+  1. **Drop the variant** (recommended): build-tier simply starts with the six shaping phases; a
+     shaping session sees all nine, the current one bold and the rest dim (PR #156). Data only, stays
+     SMALL, and it also removes four of the gate's other gaps (expect noise, PD-4 on epic-delivery,
+     side paths of the variant).
+  2. **Keep the variant, change the engine**: a variant change inside one workflow runs the leave and
+     enter checks, and `activate.change` takes a list. Two small rules beyond DEC-6: re-shape as
+     MEDIUM.
