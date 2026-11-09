@@ -11,6 +11,13 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- `meaningfy-core` and the opencode plugin: a hook that denies a Bash sleep loop (`while`, `until` or
+  `for` with `sleep`, or `watch -n`) with a message to run the command in the foreground, or once in
+  the background and wait for it. A single `sleep`, `gh pr checks --watch` and `wait` still run.
+  If the check fails, the command runs.
+
 ### Changed
 
 - `epic-delivery`: each builder now runs its task gate once and reports the command, exit code,

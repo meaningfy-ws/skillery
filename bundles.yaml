@@ -19,6 +19,7 @@ bundles:
       - rule-learner
       - rule-steward
     agents: []
+    mods: [no-poll-loops]
   - name: meaningfy-consulting
     description: "The advisory role: semantic-technologies coaching, the Decision Package, and executive communication"
     skills:

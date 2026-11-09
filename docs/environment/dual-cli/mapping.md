@@ -21,8 +21,8 @@ implement, and the reason behind the steps of [`setup-claude.md`](setup-claude.m
 | command content | `/opsx:<id>`, `/<name>` (native registration) | `.opencode/commands/<id>.md` (`template` + `$ARGUMENTS`) |
 | root binding | `CLAUDE.md` (pointer → `AGENTS.md`) | `AGENTS.md` (read natively) |
 | `VERSION` | `marketplace.json` `metadata.version` (`make bundles`) | `tools/opencode-catalogue.json` `version` and `package.json` `version` (`make bundles`) |
-| `mods/<name>/` | copied into `bundles/<b>/mods/<name>`; its bundle's `plugin.json` names its hooks, types and settings | not mapped: mods are Claude Code only (see [`compatibility.md`](compatibility.md)) |
-| hook *intent* (`hooks.yaml`) | `settings.json` hooks (agent) + pre-commit/CI (git/ci) | `.opencode/plugin/*` (agent) + the same pre-commit/CI |
+| `mods/<name>/` | copied into `bundles/<b>/mods/<name>`; its bundle's `plugin.json` names its hooks, types and settings | modules mods (`navigator`) are not mapped (see [`compatibility.md`](compatibility.md)); a plain command-hook mod's check is reused by `tools/opencode-plugin.mjs` |
+| hook *intent* (`hooks.yaml`) | the mod's hooks (agent) + pre-commit/CI (git/ci); no `settings.json` projection | the plugin's handler (agent) + the same pre-commit/CI; no `.opencode/plugin/*` projection per intent |
 | MCP (documented, not generated) | `.mcp.json` `mcpServers` | `opencode.json` `mcp` |
 
 ## Frontmatter field mapping (agents)

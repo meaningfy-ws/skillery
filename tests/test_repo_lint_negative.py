@@ -298,6 +298,37 @@ def test_mod_bindings_mismatch_is_flagged_both_ways(tmp_path):
         "mods/*/lib/strict.ts: rule 'navigator-strict-archive' has no mod hook in hooks.yaml"]
 
 
+def _plain_mod(tmp_path, name, hooks_json='{"hooks": {}}'):
+    (tmp_path / "mods" / name).mkdir(parents=True, exist_ok=True)
+    (tmp_path / "mods" / name / "hooks.json").write_text(hooks_json, encoding="utf-8")
+
+
+def test_mod_hook_named_like_a_plain_mod_needs_no_strict_rule(tmp_path):
+    _mod_hooks(tmp_path, ["no-poll-loops"], [])
+    _plain_mod(tmp_path, "no-poll-loops")
+    assert lint.mod_bindings_match(tmp_path) == []
+
+
+def test_plain_mod_without_a_mod_hook_is_flagged(tmp_path):
+    _mod_hooks(tmp_path, ["navigator-strict-commit"], ["navigator-strict-commit"])
+    _plain_mod(tmp_path, "no-poll-loops")
+    assert lint.mod_bindings_match(tmp_path) == [
+        "mods/no-poll-loops: plain mod has no mod hook 'no-poll-loops' in hooks.yaml"]
+
+
+def test_mod_hook_named_like_a_modules_mod_is_not_a_plain_mod(tmp_path):
+    _mod_hooks(tmp_path, ["navigator"], [])
+    _plain_mod(tmp_path, "navigator", '{"hooks": {}, "modules": ["./register.tsx"]}')
+    assert lint.mod_bindings_match(tmp_path) == [
+        "hooks.yaml: mod hook 'navigator' has no rule in mods/*/lib/strict.ts"]
+
+
+def test_mod_hook_with_neither_rule_nor_mod_folder_is_flagged(tmp_path):
+    _mod_hooks(tmp_path, ["no-poll-loops"], [])
+    assert lint.mod_bindings_match(tmp_path) == [
+        "hooks.yaml: mod hook 'no-poll-loops' has no rule in mods/*/lib/strict.ts"]
+
+
 def test_body_agnosticism_new_claude_ism_is_flagged(tmp_path):
     _skill(tmp_path, "cosmic-python", body="Run /opsx:apply then edit .claude/settings.json")
     assert lint.body_agnosticism(tmp_path)  # not in the allowlist → flagged

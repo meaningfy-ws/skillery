@@ -264,6 +264,10 @@ hooks:
     intent: Block dangerous Bash (rm -rf, force-push to main, secret exfil)
     provenance: { skill: guardrails }
     bindings: [{ mechanism: agent, phase: quality, trigger: PreToolUse(Bash) }]
+  - id: no-poll-loops
+    intent: Deny a Bash sleep loop (while/until/for with sleep, watch -n); wait in the foreground or once in the background
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: mod, phase: quality, trigger: PreToolUse(Bash) }]
   - id: feature-branch-before-commit
     intent: Ensure on a feature branch before git commit
     provenance: { skill: meaningfy-git-workflow }
