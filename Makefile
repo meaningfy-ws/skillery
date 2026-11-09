@@ -1,10 +1,11 @@
-.PHONY: install validate lint test validate-spine fix-spec-links bundles opencode-report skill-inventory
+.PHONY: install validate lint test mods validate-spine fix-spec-links bundles opencode-report skill-inventory
 
 install:
 	python3 -m venv .venv && . .venv/bin/activate && pip install -q -r requirements-dev.txt
+	npm ci --no-audit --no-fund
 
 # validate = the guardrail (CLI report) + the test suite (incl. negative tests)
-validate: lint test
+validate: lint test mods
 
 lint:
 	. .venv/bin/activate && python -m tools.repo_lint
@@ -28,6 +29,11 @@ opencode-report:
 
 test:
 	. .venv/bin/activate && python -m pytest tests/ -q
+
+# mods = the mods' pure lib/ tests under Node and their type check (navigator DD-24)
+mods:
+	node --test --experimental-strip-types 'mods/*/lib/*.test.ts'
+	for m in mods/*/; do npx tsc -p $$m/tsconfig.json || exit 1; done
 
 # skill-inventory = regenerate the catalogue map docs/skill-inventory.md (skills and agents by
 # bundle and by facet, bundle requirements, relations), derived from each SKILL.md, each agent,
