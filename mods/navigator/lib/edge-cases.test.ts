@@ -1,4 +1,4 @@
-// Adversarial tests for navigator stage 2 (design §4.1–§4.3, §6.1–§6.3, §8, DD-36).
+// Edge cases of navigator (design §4.1–§4.3, §6.1–§6.3, §8, DD-36, DD-38); later testers add here.
 // Each test asserts what the design says SHOULD happen; a failing one is a finding.
 
 import { test } from 'node:test'

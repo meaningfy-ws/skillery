@@ -110,7 +110,7 @@ export function bandModel(s: NavState): BandModel {
   rows.push(
     { label: 'skills', items: s.skills.slice(-TRAIL).map(k => k.phase ? `${k.name} (${k.phase})` : k.name) },
     { label: 'subagents', items: s.subagents.map(subagentText) },
-    { label: 'warnings', items: s.warnings.map(w => `⚠ ${w.message} (${w.owner})`) },
+    { label: 'warnings', items: s.warnings.map(w => `⚠ ${w.message}${w.owner ? ` (${w.owner})` : ''}`) },
     { label: 'mode', items: [modeText(s)] },
   )
   return { folded: clean(folded), rows: rows.map(r => ({ ...r, items: r.items.map(clean) })) }

@@ -57,7 +57,8 @@ A workflow file is JSON: the phases of one activity, the skill that owns each ph
 expected to run (`by: "commit"` or `by: "exit"`), the gates, and, for build-tier, the review set
 per appetite. The schema is the `Workflow` type in
 [`mods/navigator/types.d.ts`](../../mods/navigator/types.d.ts); its one validator is
-[`lib/workflow.ts`](../../mods/navigator/lib/workflow.ts) (`parseWorkflow`, `resolveWorkflows`), which the TC-16 test runs on every
+[`lib/workflow.ts`](../../mods/navigator/lib/workflow.ts) (`parseWorkflow`,
+`resolveWorkflows`), which the TC-16 test runs on every
 `skills/*/assets/workflows/*.workflow.json`, so a misspelt skill name fails `make validate`. A name
 may be a `skills/` folder, an `agents/` file, or an external skill listed in the `skills: [a, b]`
 list of its entry in [`dependencies.yaml`](../../dependencies.yaml).

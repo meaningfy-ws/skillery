@@ -31,10 +31,12 @@ meaningfy-navigator: navigator · VERY LARGE · Stage 1 — See it apply 9/12 ·
 That is the open change, its appetite (its size, once the PLAN names it), the current stage of its
 `tasks.md` with the workflow phase (`apply`) and that stage's progress, the progress of the whole
 change, and how many other changes are open. It shows the one your branch names. With no open
-change it reads `navigator · no open change`. In a repository whose workflow file declares strict
+change it reads `navigator · no open change`, followed by the phase once you load a skill of
+the build-tier workflow (`· explore`). In a repository whose workflow file declares strict
 mode, it ends with `● strict` (blocking in strict mode is not built yet).
 
-Outside a change, the line names the workflow you are in, its variant and its phase:
+In another workflow (DevOps, sales, architecting), the line names that workflow, its variant and its
+phase instead, even while a change is open:
 
 ```
 meaningfy-navigator: devops · incident · triage
