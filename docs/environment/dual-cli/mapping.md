@@ -62,6 +62,10 @@ implement, and the reason behind the steps of [`setup-claude.md`](setup-claude.m
 - **G-6** — a Claude `tools` allowlist is not restrictive on opencode (all tools are enabled by
   default; the rendered `tools` map only switches tools on). Only `disallowedTools`, rendered as
   `permission: deny`, restricts on both CLIs. Follow-up: render the allowlist as permissions.
+  Verified 2026-11-09 (opencode 2.1.4, `lean-delivery` task 3.4): `implementer` and `code-reviewer`
+  declare no `tools`, so they render with `tools: {"skill": true}` and, through `disallowedTools: [Agent]`,
+  `permission: {"task": "deny"}`; a probe agent called an MCP tool and had no subagent tool
+  ([`evidence/opencode-mcp-probe.md`](../../../openspec/changes/lean-delivery/evidence/opencode-mcp-probe.md)).
 
 These tables are the **contract**; their values live only in `tools/opencode-agent-map.json`, and the
 opencode installer renders the right-hand column at install time (`make opencode-report` prints the

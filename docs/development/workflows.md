@@ -51,6 +51,9 @@ propose            → author the EPIC (proposal.md, Shape-Up shape)
 During `apply`, the lead runs the PLAN stage by stage with a small agent team (prepare, build,
 challenge, decide and fix, check, merge), scaled by the EPIC's appetite; when the EPIC delivers or
 changes a use case, the acceptance demo comes before `archive`. The loop is owned by [`epic-delivery`](../../skills/epic-delivery/SKILL.md).
+Navigator names these phases `ready`, `apply`, `accept` and `archive` (the spine's `verify` verb is
+the review inside `apply`); a `brownfield` change, with tasks and no design, runs `apply`, `accept`
+and `archive`. Between `accept` and `archive` comes the docs stage, the *Documentation* workflow below.
 
 ### Work shaping (seed → gated PLAN)
 ```
@@ -90,6 +93,24 @@ gives; a file with a new name adds a workflow. The smallest one declares the rep
 
 ```json
 { "name": "epic-delivery", "extends": "epic-delivery", "mode": "strict" }
+```
+
+`extends` merges one level: a field you give replaces the default's whole field. The default gates
+are the targets `project-setup` scaffolds, `full-gates` = `make check-all` (epic-delivery) and
+`docs-gate` = `make build-docs` (documentation). A repository whose checks have other names gives the
+whole `gates` object, with its own command in the gate it changes and the others copied. This
+repository does so with `make validate`: see
+[`docs/navigator/epic-delivery.workflow.json`](../navigator/epic-delivery.workflow.json) and
+[`documentation.workflow.json`](../navigator/documentation.workflow.json).
+
+```json
+{ "name": "epic-delivery", "extends": "epic-delivery",
+  "gates": {
+    "clarity":    { "kind": "skill", "skill": "clarity-gate" },
+    "full-gates": { "kind": "command", "match": "\\bmake validate(?![\\w-])", "run": "make validate" },
+    "acceptance": { "kind": "file", "glob": "openspec/changes/*/evidence/acceptance.md" },
+    "openspec":   { "kind": "command", "match": "\\bopenspec validate\\b", "run": "openspec validate {change} --strict" }
+  } }
 ```
 
 The schema is described in [`mods.md`](mods.md#workflow-files).
