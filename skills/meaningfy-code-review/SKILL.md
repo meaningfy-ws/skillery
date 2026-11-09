@@ -92,7 +92,9 @@ scoped to its region:
    filtered to the lens, plus the matching `cosmic-python` SKILL sections (see the Lenses table). The
    *region*, not a sample, is your checklist.
 2. **Gather.** Read the diff (new + touched code), the EPIC requirements/specs, and the covering
-   Gherkin. L2 also runs the project's test suite (`make test` / `pytest`) and reports failures.
+   Gherkin. L2 also reads the stage's gate report instead of running the suite; a missing or red
+   run is a finding. L2 checks doc agreement: every page the diff changed, and every page naming a
+   symbol, command, phase or file the diff changed, agrees with the code.
 3. **Traverse exhaustively.** Walk **every** principle (`PR-*`), best-practice (`BP-*`), and
    anti-pattern (`AP-*`) in the region against the changed code; also apply the cosmic-python SKILL
    review questions (Workflow 2) and the ONE-MINUTE CODE STRUCTURE CHECK where the lens owns them. Do

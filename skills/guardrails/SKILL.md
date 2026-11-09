@@ -94,13 +94,17 @@ already exists; this skill is the map.
   - **The base report back**, plus the fields of its purpose, as defined in
     `references/subagent-reports.md`. Long material goes to a file; the report carries the path.
     A report longer than `subagent_report_max_lines` is oversized.
+  - **Waiting.** A command that fits the tool's timeout runs in the foreground; a longer one runs
+    in the background and is awaited by one completion notice or one blocking wait. Never a sleep
+    loop.
   - **Four eyes on the work.** The report steers the coordinator's next step; it is not proof. When
     a coherent unit of work is complete — not after every step — a fresh subagent that did not do it
     checks it against the task's spec and intention, good practice, known anti-patterns and the
     quality concerns that apply. In an EPIC's delivery, that subagent is the checker of each stage,
     or the single review pass where the appetite's review set has no checker, per `epic-delivery`.
 - **Enforced by:** the binding's one-line mandate (read every session), each agent's `## Report`
-  section (checked by `make validate`), and the coordinator's own judgement. No hook blocks a spawn,
+  section (checked by the catalogue's own lint), and the coordinator's own judgement. The
+  `no-poll-loops` intent (`hooks.yaml`) denies a sleep loop. No hook blocks a spawn,
   except navigator's strict mode (`hooks.yaml` `navigator-strict-spawn`). The keys named here live
   in `assets/session-thresholds.json`, the one home of the numbers.
 
@@ -154,7 +158,7 @@ Not checked: files over 2 GB (no fixture)
 Open questions: none
 Side effects: 2 files changed; no commits
 Recommendations: none
-Tests: make test — 214 passed
+Tests: the project's task gate — 214 passed
 Departures from the plan: none
 ```
 
