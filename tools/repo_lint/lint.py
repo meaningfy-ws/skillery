@@ -955,7 +955,7 @@ def reciprocal_related_report(repo: Path) -> list[str]:
 # ------------------------------------------- dual-CLI foundation invariants (DEC-12/13)
 VERSION_FILE = "VERSION"
 HOOKS_INVENTORY = "hooks.yaml"
-_VALID_MECHANISM = {"git", "ci", "agent"}
+_VALID_MECHANISM = {"git", "ci", "agent", "mod"}
 _VALID_PHASE = {"quality", "phase-gate"}
 # The ONLY skill bodies allowed to carry a CLI-specific (/opsx: or .claude/) reference.
 # Seeded from docs/environment/dual-cli/body-agnosticism-audit.md — any other body fails the guard.
@@ -1020,6 +1020,25 @@ def hooks_inventory_shape(repo: Path) -> list[str]:
             if (b or {}).get("phase") not in _VALID_PHASE:
                 out.append(f"hook '{hid}': bad phase '{(b or {}).get('phase')}'")
     return out
+
+
+def mod_bindings_match(repo: Path) -> list[str]:
+    """navigator DD-10: the hook ids with a `mod` binding in hooks.yaml are exactly the rule ids
+    (`id: '<hook id>'`) declared in mods/*/lib/strict.ts — no intent without its rule, no rule
+    without its intent. Silent without hooks.yaml."""
+    path = repo / HOOKS_INVENTORY
+    if not path.exists():
+        return []
+    try:
+        hooks = (yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("hooks") or []
+    except yaml.YAMLError:
+        return []  # hooks_inventory_shape reports it
+    declared = {h.get("id") for h in hooks if isinstance(h, dict)
+                and any((b or {}).get("mechanism") == "mod" for b in h.get("bindings") or [])}
+    coded = {m for f in sorted(repo.glob("mods/*/lib/strict.ts"))
+             for m in re.findall(r"\bid:\s*'([^']+)'", re.sub(r"//[^\n]*", "", f.read_text(encoding="utf-8")))}
+    return ([f"{HOOKS_INVENTORY}: mod hook '{h}' has no rule in mods/*/lib/strict.ts" for h in sorted(declared - coded)]
+            + [f"mods/*/lib/strict.ts: rule '{h}' has no mod hook in {HOOKS_INVENTORY}" for h in sorted(coded - declared)])
 
 
 def body_agnosticism(repo: Path) -> list[str]:
@@ -1154,7 +1173,7 @@ ALL_CHECKS = (
     agent_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
     boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
-    agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
+    agents_canonical_invariant, hooks_inventory_shape, mod_bindings_match, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
     top_level_folders,

@@ -97,11 +97,78 @@ information only and stays for the session.
 When you open a session in the middle of a phase, navigator places you there without checking what
 earlier sessions did: it warns only about what happens in this session.
 
-| Button | Runs |
-|---|---|
-| **Next step** | the first skill the phase still expects, else the owner of the next phase |
-| **Back on track** | the command that puts right the oldest warning that has one |
-| **Validate** | `/navigator validate`: the phase's gate commands, such as `make validate` |
+## When the work drifts from the plan
+
+While a change is open, navigator compares the branch's changes with the change's EPIC and PLAN at
+the end of each turn. It warns when:
+
+- a changed file is named nowhere in `tasks.md`, `design.md` or `proposal.md` (not the file, its
+  folder, or its name);
+- a ticked task names files and none of them changed;
+- a new `shortcut:` comment, or a new `DD-` or `DEC-` decision id, is not in `design.md`.
+
+A worked example. Your branch changes `mods/navigator/lib/view.ts`, which `tasks.md` names through
+`mods/navigator/lib/`, and `tools/repo_lint/lint.py`, which no task names. The band shows
+`⚠ tools/repo_lint/lint.py changed; no task, design or proposal names it (epic-planning)`. You have two ways out:
+
+- **Reconcile EPIC** runs `/openspec-update-change <id>` to put the file into the PLAN, then
+  `/clarity-gate <id>` once that turn ends. The next read finds the file covered and the warning goes.
+- **Accept** the deviation, with a reason: `/navigator accept plan:outside:tools/repo_lint/lint.py
+  "lint check added for DD-10"`, or the **Accept** button beside the warning. Navigator adds one
+  line to the change's `deviations.md`; the warning stays in the band as `✓ accepted:` and no
+  longer counts.
+
+Before you archive, **Archive check** (`/navigator check`) lists what is still open, what was
+accepted, the gate states and the `openspec validate --strict` result. `spec-stewardship` archives
+a change only when nothing is open.
+
+## Keeping the session lean
+
+Navigator reads the thresholds in `guardrails` and, at the end of each turn:
+
+- offers **Compact now** at a safe point (a commit, after a phase or a task group is done) once the
+  context is large enough;
+- offers **Fresh session** at a task boundary (a commit with every task ticked, a merged PR, an
+  archived change);
+- mid-step, with a large context, warns `context N% mid-step` without a button: finish the step,
+  commit, then compact (`guardrails`).
+
+It also flags a subagent that only did a lookup, a subagent report longer than the limit, more
+reviewers in one turn than the appetite's review set, a missing second check before a push, PR or
+archive, and a skill loaded and left unused (if it should not have fired, run `skillery-feedback`).
+It shows these; it never decides for you.
+
+## Loose and strict
+
+Loose is the default: navigator warns and never blocks. A repository becomes strict with a workflow
+file of its own, `docs/navigator/build-tier.workflow.json`:
+
+```json
+{ "name": "build-tier", "extends": "build-tier", "mode": "strict" }
+```
+
+Strict adds four checks: a commit is refused while the phase's expected skill or a gate is missing;
+an archive is refused while plan or process drift is open; a subagent spawn over the appetite's
+review set is refused, and one asking a model above yours is moved to yours; and the model is
+reminded of the current phase at each prompt. A refusal names its reason and every way out: run the
+missing skill, accept the deviation, or `/navigator mode loose`.
+
+**Mode** (or `/navigator mode loose|strict`) switches this session either way: drop a strict repo
+to loose, or try strict in a loose one. The next session follows the repository again.
+
+## Actions
+
+| Button | Runs | Shown |
+|---|---|---|
+| **Next step** | the first skill the phase still expects, else the owner of the next phase | a workflow is active |
+| **Back on track** | the command that puts right the oldest open process warning (a skipped step) | such a warning |
+| **Compact now** / **Fresh session** | `/compact` with what to keep / `/clear` | when offered |
+| **Accept** | `/navigator accept <key> "<reason>"`, asking the reason | beside each open drift warning |
+| **Reconcile EPIC** | `/openspec-update-change <id>`, then `/clarity-gate <id>` | plan drift is open |
+| **Archive check** | `/navigator check` | a change is open |
+| **Validate** | `/navigator validate`: the phase's gate commands, such as `make validate` | the phase has one |
+| **Review** | `/meaningfy-code-review <id> <APPETITE>` | the phase expects or allows a review |
+| **Mode** | `/navigator mode loose` or `strict` | always (unfolded) |
 
 A button types its command into the session as you would, so you see it in the transcript. If the
 command is not installed, navigator says so and runs nothing.
@@ -116,6 +183,9 @@ If another add-on also draws a band (for example ponytail), its band stays below
 | `/navigator band fold`, `unfold`, `hide`, `show` | sets the band |
 | `/navigator line`, `line show`, `line hide` | toggles, shows or hides the status line |
 | `/navigator validate` | runs the gate commands of the current phase |
+| `/navigator check` | the Archive check |
+| `/navigator accept <key> "<reason>"` | records a deviation |
+| `/navigator mode loose`, `mode strict` | switches the mode for this session |
 
 The band's own buttons do the same: **Unfold** / **Fold**, and **Hide**. A hidden band leaves a
 small `⎈` button above the prompt; press it to bring the band back.

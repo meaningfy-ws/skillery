@@ -8,8 +8,9 @@ This README is the human-readable index; it summarises and points, it does not r
 Each hook intent has one or more **bindings**, classified on two axes:
 
 - **mechanism** — `git` (CLI-agnostic, one shared implementation via a git-hook manager),
-  `ci` (shared PR/Actions check), or `agent` (same intent, rendered into each CLI's native binding:
-  Claude settings hooks vs opencode plugin hooks).
+  `ci` (shared PR/Actions check), `agent` (same intent, rendered into each CLI's native binding:
+  Claude settings hooks vs opencode plugin hooks), or `mod` (a rule inside a Claude Code mod, such as
+  navigator's strict mode; Claude Code only).
 - **phase** — `quality` (fires on commit/push) or `phase-gate` (fires on workflow transitions:
   pre-apply, pre-PR, archive).
 
@@ -24,7 +25,7 @@ agent-hook bindings for each targeted CLI. How each `mechanism` becomes a concre
 artifact — the shared pre-commit/CI config and the per-CLI Claude/opencode agent bindings — is the
 [binding reference](hook-bindings.md).
 
-## Catalogue (56 intents, 66 bindings — full detail in [`inventory.yaml`](../../hooks.yaml))
+## Catalogue (60 intents, 70 bindings — full detail in [`inventory.yaml`](../../hooks.yaml))
 
 | Group | Intents | Mechanism (mostly) | Source skills |
 |-------|--------:|--------------------|---------------|
@@ -38,6 +39,7 @@ artifact — the shared pre-commit/CI config and the per-CLI Claude/opencode age
 | spine phase-gates | 6 | agent · ci | clarity-gate, bdd-gherkin, epic-planning, spec-stewardship, superpowers:brainstorming |
 | code-review phase-gates | 5 | agent · ci | meaningfy-code-review, guardrails, superpowers:receiving-code-review |
 | meta / agent discipline | 8 | agent | superpowers (using/verification), memory-systems, guardrails, meaningfy-git-workflow |
+| navigator strict mode | 4 | mod | epic-delivery, spec-stewardship, guardrails |
 
 Highest-leverage: `skill-first-discipline` (load the process skill before build/write/review),
 `clarity-gate-before-apply`, `regenerate-no-drift`, `impact-before-edit`, `import-linter-contracts`.

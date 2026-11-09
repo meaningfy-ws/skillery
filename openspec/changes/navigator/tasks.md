@@ -38,19 +38,19 @@
 
 ## 3. Stage 3 — Stay on plan and lean
 
-- [ ] 3.1 [skill] `skills/guardrails/assets/session-thresholds.json` (fills the 1.9 placeholder; DD-9 incl. `model_rank`; DD-30 `safe_point`, `task_boundary`, `idle_reset`; owner-decided starting values). In `guardrails`: §5 and §6 name each key and point to the file; §5 "No hook blocks a spawn" becomes "no hook blocks a spawn, except navigator's strict mode (`hooks.yaml` `navigator-strict-spawn`)"; §6 *Enforced by* adds navigator as a signal beside the lead's own judgement; §6 states the safe-point, task-boundary and idle rules in prose that points to the data keys; `references/subagent-reports.md` "about ten to twenty lines" points to `subagent_report_max_lines` instead of a number. Deps: none. Acceptance: spec `subagent-dispatch` *Dispatch and hygiene thresholds are data*; the number 40 appears only in the data file.
-- [ ] 3.2 [mod] `lib/dispatch.ts` PD-6..PD-10 and unused-skill, the UX allowance read from the review entry; `lib/hygiene.ts` (design §6.5) reading `safe_point`, `task_boundary`, `idle_reset` with provenance (DD-30); TC-06, TC-07, TC-08, TC-19. Deps: 3.1, 2.6. Acceptance: spec `drift-detection` *Subagent rules*, *Hygiene*.
-- [ ] 3.3 [mod] `lib/plan-drift.ts` PL-1..PL-3, `lib/deviations.ts`; TC-05, TC-20. Deps: 2.6. Acceptance: spec `drift-detection` *Plan drift*.
-- [ ] 3.4 [skill] `skills/spec-stewardship/SKILL.md`: archive requires no open plan drift, or each deviation recorded in `deviations.md`. Deps: 3.3. Acceptance: spec `build-lifecycle` *EPIC-tier steps each name exactly one owner* (archive step).
-- [ ] 3.5 [spec] `hooks.yaml`: four `navigator-strict-*` intents, mechanism `mod`; `_VALID_MECHANISM` gains `mod`; lint `mod_bindings_match`; `docs/development/hooks.md` table and count; `docs/development/hook-bindings.md` `mod` section. Deps: 3.6. Acceptance: spec `dual-cli-distribution` *Hook intent inventory…*.
-- [ ] 3.6 [mod] `lib/strict.ts` (design §7), strict hooks in `register.tsx`, drop to loose; TC-04 (b, c), TC-14. Deps: 2.6, 3.3. Acceptance: spec `drift-detection` *Strict mode*; H-4.
-- [ ] 3.7 [mod] Actions Reconcile EPIC (DD-16), Archive check, Accept deviation, Compact now / Fresh session, Review, Mode as a session switch loose ⇄ strict (DD-35); TC-15 (rest). Deps: 3.3, 3.6. Acceptance: spec `session-navigation` scenario 13; H-6.
-- [ ] 3.8 ✂ [mod] Board (design §10). Deps: 3.7.
-- [ ] 3.9 ✂ [mod] Copy status. Deps: 3.7.
-- [ ] 3.10 ✂ [mod] Report to skillery. Deps: 3.7. Acceptance: H-6; spec `session-navigation` *Report to skillery* (cut line).
-- [ ] 3.11 ✂ [mod] Desktop polish: SVG rows on desktop as ponytail does; widths. Deps: 1.9.
-- [ ] 3.12 [doc] User guide complete: modes, every action, a worked example of a plan drift caught and fixed (design §6.4); developer guide complete: adding a strict rule (hooks.yaml + `strict.ts`), the event→signal map; `statusline.sh` snippet documented (DD-20). Deps: 3.7. Acceptance: spec `session-navigation` *Documented for two audiences*; cold reader.
-- [ ] 3.13 [doc] CHANGELOG line; `make bundles`; `make skill-inventory`. Deps: 3.12.
+- [x] 3.1 [skill] `skills/guardrails/assets/session-thresholds.json` (fills the 1.9 placeholder; DD-9 incl. `model_rank`; DD-30 `safe_point`, `task_boundary`, `idle_reset`; owner-decided starting values). In `guardrails`: §5 and §6 name each key and point to the file; §5 "No hook blocks a spawn" becomes "no hook blocks a spawn, except navigator's strict mode (`hooks.yaml` `navigator-strict-spawn`)"; §6 *Enforced by* adds navigator as a signal beside the lead's own judgement; §6 states the safe-point, task-boundary and idle rules in prose that points to the data keys; `references/subagent-reports.md` "about ten to twenty lines" points to `subagent_report_max_lines` instead of a number. Deps: none. Acceptance: spec `subagent-dispatch` *Dispatch and hygiene thresholds are data*; the number 40 appears only in the data file.
+- [x] 3.2 [mod] `lib/dispatch.ts` PD-6..PD-10 and unused-skill, the UX allowance read from the review entry; `lib/hygiene.ts` (design §6.5) reading `safe_point`, `task_boundary`, `idle_reset` with provenance (DD-30); TC-06, TC-07, TC-08, TC-19. Deps: 3.1, 2.6. Acceptance: spec `drift-detection` *Subagent rules*, *Hygiene*.
+- [x] 3.3 [mod] `lib/plan-drift.ts` PL-1..PL-3, `lib/deviations.ts`; TC-05, TC-20. Deps: 2.6. Acceptance: spec `drift-detection` *Plan drift*.
+- [x] 3.4 [skill] `skills/spec-stewardship/SKILL.md`: archive requires no open plan drift, or each deviation recorded in `deviations.md`. Deps: 3.3. Acceptance: spec `build-lifecycle` *EPIC-tier steps each name exactly one owner* (archive step).
+- [x] 3.5 [spec] `hooks.yaml`: four `navigator-strict-*` intents, mechanism `mod`; `_VALID_MECHANISM` gains `mod`; lint `mod_bindings_match`; `docs/development/hooks.md` table and count; `docs/development/hook-bindings.md` `mod` section. Deps: 3.6. Acceptance: spec `dual-cli-distribution` *Hook intent inventory…*.
+- [x] 3.6 [mod] `lib/strict.ts` (design §7), strict hooks in `register.tsx`, drop to loose; TC-04 (b, c), TC-14. Deps: 2.6, 3.3. Acceptance: spec `drift-detection` *Strict mode*; H-4.
+- [x] 3.7 [mod] Actions Reconcile EPIC (DD-16), Archive check, Accept deviation, Compact now / Fresh session, Review, Mode as a session switch loose ⇄ strict (DD-35); TC-15 (rest). Deps: 3.3, 3.6. Acceptance: spec `session-navigation` scenario 13; H-6.
+- [x] 3.8 ✂ [mod] Board (design §10). Deps: 3.7. **Cut (DD-39).**
+- [x] 3.9 ✂ [mod] Copy status. Deps: 3.7. **Cut (DD-39).**
+- [x] 3.10 ✂ [mod] Report to skillery. Deps: 3.7. Acceptance: H-6; spec `session-navigation` *Report to skillery* (cut line). **Cut (DD-39).**
+- [x] 3.11 ✂ [mod] Desktop polish: SVG rows on desktop as ponytail does; widths. Deps: 1.9. **Cut (DD-39).**
+- [x] 3.12 [doc] User guide complete: modes, every action, a worked example of a plan drift caught and fixed (design §6.4); developer guide complete: adding a strict rule (hooks.yaml + `strict.ts`), the event→signal map; `statusline.sh` snippet documented (DD-20). Deps: 3.7. Acceptance: spec `session-navigation` *Documented for two audiences*; cold reader.
+- [x] 3.13 [doc] CHANGELOG line; `make bundles`; `make skill-inventory`. Deps: 3.12.
 
 ## 4. Close
 
@@ -63,7 +63,7 @@
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.8 · [ ] 1.7 · [ ] 1.9 · [x] 1.10 · [ ] 1.11 · [x] 1.12
 - [x] 2.0 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6 · [x] 2.7 · [x] 2.8 · [ ] 2.11 · [x] 2.9 · [x] 2.10
-- [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.6 · [ ] 3.5 · [ ] 3.7 · [ ] 3.12 · [ ] 3.13 · [ ] 3.8 · [ ] 3.9 · [ ] 3.10 · [ ] 3.11
+- [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.6 · [x] 3.5 · [x] 3.7 · [x] 3.12 · [x] 3.13 · [x] 3.8 · [x] 3.9 · [x] 3.10 · [x] 3.11
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4
 
 ## Verification

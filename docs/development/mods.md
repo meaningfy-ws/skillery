@@ -17,13 +17,14 @@ mods/navigator/
   hooks.json      {"hooks": {}, "modules": ["./register.tsx"]}
   config.json     the settings, rendered into the bundle's plugin.json as userConfig
   types.d.ts      the $.state contract (interface PluginState); self-contained, no imports
-  register.tsx    the only file that touches `$`: events → signals → reduce → state; draws
+  register.tsx    the hooks: events → signals → reduce → state; draws
+  io.ts           register.tsx's I/O half (files, git, the engine), no decisions
   tsconfig.json   strict type check of lib/
   lib/*.ts        pure functions, no I/O, each with a *.test.ts beside it
 ```
 
-The split is the whole testing strategy. `register.tsx` passes `$` only to functions declared at
-the top of the file (an engine rule). It reads files, runs git and hooks events; it
+The split is the whole testing strategy. `register.tsx` and `io.ts` pass `$` only to functions
+declared at the top of a file (an engine rule). It reads files, runs git and hooks events; it
 turns what it sees into *signals* and hands them to `reduce` in `lib/state.ts`, the only writer of
 the state. Everything in `lib/` is plain TypeScript that runs under Node, so `make mods` tests it
 without Claude Code.
@@ -69,7 +70,8 @@ shown as a warning naming the file, and the default stays in force. Only a repos
 `"mode"` or `"extends"`.
 
 `lib/phase.ts` places the active workflow, variant and phase; `lib/process-drift.ts` raises the
-process-drift warnings PD-1 to PD-5, keeps the gate states and owns every warning key; design
+process-drift warnings PD-1 to PD-5 and keeps the gate states; each check module mints the keys of
+its own prefix (`process:`, `plan:`, `hygiene:`), and `process-drift.ts` says which are open; design
 decisions DD-36 and DD-38 record how they read the file.
 
 ### Adding a check
@@ -78,8 +80,10 @@ decisions DD-36 and DD-38 record how they read the file.
 2. If it needs data, add a field to the workflow schema in `lib/workflow.ts` (and design §4.1) and
    fill it in the owning skill's file.
 3. Write the check as a pure function in `lib/` with its test, give its warning a key
-   `process:<what>:...`, a `remedy` (the command that puts it right, or `null`) and the owning skill.
-4. Call it from `reduce` in `lib/state.ts` for the signal that triggers it, or from `navigate` in
+   `<prefix>:<what>:...` in its module's prefix, a `remedy` (the command that puts it right, or
+   `null`) and the owning skill.
+4. Call it from `reduce` in `lib/state.ts` for the signal that triggers it (or from `lib/lean.ts`
+   for a subagent or hygiene check), or from `navigate` in
    `lib/phase.ts` when it runs at a phase boundary (leaving or entering).
 
 ### Adding an action
@@ -88,6 +92,36 @@ An action is a command a person could type (DEC-6). Add a pure function in `lib/
 returns the command line; `register.tsx` resolves it against the installed commands
 (`commandFor`) and submits it as typed, or toasts that it is not installed. Draw its button in the
 `ui.render` hook only when the function returns something.
+
+### Adding a strict rule
+
+1. Add the intent to [`hooks.yaml`](../../hooks.yaml) with a `mod` binding (`phase-gate` or
+   `quality`) and the owning skill as provenance.
+2. Add an entry with the same `id` to `STRICT_RULES` in `lib/strict.ts` and a pure decision
+   function beside it that returns `allow`, `deny` (through `denyText`, which names every way out)
+   or a rewrite; test it. The lint check `mod_bindings_match` fails until both sides agree.
+3. Ask it from the hook in `register.tsx` *before* `next(e)`; a throw there falls through to
+   `next(e)`, so a broken rule allows (DD-11).
+
+## Events and signals
+
+`register.tsx` turns engine events into signals (design §5); `reduce` in `lib/state.ts` applies
+them, then `lib/lean.ts` feeds the subagent and hygiene checks.
+
+| Event | Signal(s) |
+|---|---|
+| `session.start`, a `clear`/`resume`/`branch` to a new session | `Started`, `ThresholdsRead`, `WorkflowsRead`, `ChangeRead`, `AcceptedRead` |
+| `skill.prompt` | `SkillLoaded` |
+| `tool.call` Bash (after it ran; strict decides before) | `ToolRan` |
+| `tool.call` by a subagent, any tool | `AgentCalled` |
+| `tool.call` Edit, Write, NotebookEdit | `FileTouched` |
+| `prompt.submit` (typed or Remote Control) | `UserPrompted` |
+| `agent.spawn` (not a resume) | `SpawnAsked` before it runs (strict decides then), `SubagentSpawned` after |
+| `turn.complete` of a subagent | `SubagentFinished` |
+| `turn.complete` of the main loop | `AnswerShown`, `ChangeRead`, `AcceptedRead`, `PlanRead`, `TurnEnded`, `SetPending` (Reconcile's second step) |
+| `session.compact` | `Compacted` |
+| `/navigator …` and the band's buttons | `SetBand`, `SetLine`, `SetMode`, `Accepted`, `SetPending`, `ToolRan` (Validate) |
+| `prompt.compose` (strict) | none: adds the phase reminder |
 
 ## Checks
 

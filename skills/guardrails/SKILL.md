@@ -71,7 +71,7 @@ already exists; this skill is the map.
   a short report.
   - **Spawn when it pays.** Spawn for independent work that can run in parallel, for reading that
     would flood the coordinator's context, or for an unanchored second read. Do the work inline
-    when it is a lookup of a few calls, a step that depends on another in sequence, or a parallel
+    when it is a lookup of a few calls (at most `lookup_max_tool_calls`), a step that depends on another in sequence, or a parallel
     task that would touch the same files as another. Every spawn pays a setup cost; a fan-out of N
     pays it N times.
   - **Fresh, not a copy.** A subagent starts from a brief, never from a copy of the conversation. A
@@ -85,39 +85,49 @@ already exists; this skill is the map.
     PLAN.
   - **A fitting catalogue agent first.** Its tools, model and report are already set.
   - **Model.** The agent's declared model, else the caller's; a cheaper one when the caller judges
-    the task clearly easy (mechanical, search).
+    the task clearly easy (mechanical, search). `model_rank` orders the models from cheapest.
   - **The base report back**, plus the fields of its purpose, as defined in
     `references/subagent-reports.md`. Long material goes to a file; the report carries the path.
+    A report longer than `subagent_report_max_lines` is oversized.
   - **Four eyes on the work.** The report steers the coordinator's next step; it is not proof. When
     a coherent unit of work is complete — not after every step — a fresh subagent that did not do it
     checks it against the task's spec and intention, good practice, known anti-patterns and the
     quality concerns that apply. In an EPIC's delivery, that subagent is the checker of each stage,
     or the single review pass where the appetite's review set has no checker, per `epic-delivery`.
 - **Enforced by:** the binding's one-line mandate (read every session), each agent's `## Report`
-  section (checked by `make validate`), and the coordinator's own judgement. No hook blocks a spawn.
+  section (checked by `make validate`), and the coordinator's own judgement. No hook blocks a spawn,
+  except navigator's strict mode (`hooks.yaml` `navigator-strict-spawn`). The keys named here live
+  in `assets/session-thresholds.json`, the one home of the numbers.
 
 ### 6. Session hygiene — keeping the context small and the cache warm
 - **Rule:** the lead of a session keeps its context as small as the work allows and resets it only
   at a boundary, because every turn re-sends the whole context and a reset costs one full re-read.
   - **Fresh session at a task boundary.** After a commit, a merged PR or an archived change, start
     a fresh session for the next, unrelated task. Before resetting, make sure what matters is
-    written down: decisions in the change, work in commits, durable facts in memory.
+    written down: decisions in the change, work in commits, durable facts in memory. The events
+    that make a task boundary are `task_boundary`. Below `fresh_offer_min_context_percent` the
+    context is still small; carry on, a re-read costs more.
   - **Compact at a phase boundary inside one task**, with a focus line naming what must survive
     (decisions, open questions, file paths). Typical points: the end of a shaping session before
     delivery starts, and between stages of a long epic session. Right after a commit, never in the
-    middle of a step.
+    middle of a step. That moment is a safe point: a commit, and a phase left or a task group done
+    since the last one, as `safe_point` states. Compact there once context use reaches
+    `compact_offer_context_percent`.
   - **Never leave it to the automatic compaction** near the context limit: it lands mid-step and
-    drops detail. Watch the context size and compact earlier.
+    drops detail. Watch the context size and compact earlier. Mid-step, past
+    `context_warn_percent`, finish the step, commit, then compact.
   - **Not before a quick follow-up.** A reset is paid back only over many turns; one more question
     on the same thread is cheaper in the current context.
-  - **A long idle gap is a free reset point**: the prompt cache has expired anyway.
+  - **A long idle gap is a free reset point**: the prompt cache has expired anyway. The gap is
+    `idle_reset_minutes`; `idle_reset` asks for a clean working tree first.
   - **Keep the session's setup stable.** Changing the tools or connected servers, the model or the
     reasoning effort mid-session invalidates the cache; change them between sessions. A binding
     file edited mid-session takes effect only after the next reset.
   - **Read wide in a subagent** (rule 5), not in the main context, so there is less to compact.
   - **Resume an old session only when its history is still needed**; otherwise start fresh from
     the spine and memory.
-- **Enforced by:** the lead's own judgement. The per-CLI commands (fresh session, compact, context
+- **Enforced by:** the lead's own judgement, with navigator as a signal beside it: it reads the keys
+  above from `assets/session-thresholds.json` and offers or warns, never decides. The per-CLI commands (fresh session, compact, context
   size, rewind) are in `docs/environment/dual-cli/context-commands.md`.
 
 ## Quick Start

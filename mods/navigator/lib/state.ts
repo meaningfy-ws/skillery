@@ -1,10 +1,11 @@
 // The state contract (design §3). reduce() is the only writer; every function here is pure.
 
-import type { BandDisplay, Change, NavState, Workflow } from '../types'
+import type { BandDisplay, Change, NavState, Warning, Workflow } from '../types'
+import { lean } from './lean.ts'
 import { navigate } from './phase.ts'
 import { addWarnings, clearGateWarnings, gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, onCommand,
   onCommit, onSkill, showsConsent, workflowErrors } from './process-drift.ts'
-import { bare, currentPhase, workflowOf } from './workflow.ts'
+import { bare, currentPhase, isCommit, workflowOf } from './workflow.ts'
 
 export type { Activate, BandDisplay, Change, ChangePredicate, Gate, GateState, Group, NavState, Phase, Review, SkillUse,
   Subagent, Warning, Workflow } from '../types'
@@ -23,11 +24,23 @@ export const EMPTY: NavState = {
   signalPhase: null,
   consent: {},
   consentShown: false,
-  mode: { repo: 'loose', sessionLoose: false },
+  mode: { repo: 'loose', session: null },
   skills: [],
   subagents: [],
   gates: {},
   warnings: [],
+  accepted: [],
+  planTruncated: false,
+  thresholds: null,
+  parentModel: '',
+  turnId: '',
+  turnRoles: [],
+  turnEvents: [],
+  agentCalls: {},
+  shipLog: [],
+  hygieneEvents: [],
+  offer: null,
+  pending: null,
   display: { band: 'folded', line: true },
   seen: [],
 }
@@ -48,16 +61,27 @@ export type Signal =
   | { kind: 'WorkflowsRead'; id: string; workflows: Workflow[]; errors: string[]; mode: 'loose' | 'strict'; at: number }
   | { kind: 'ChangeRead'; id: string; change: Change | null; openChanges: number; at: number }
   | { kind: 'SkillLoaded'; id: string; name: string; at: number }
-  | { kind: 'ToolRan'; id: string; command: string; ok: boolean; at: number }
+  | { kind: 'ToolRan'; id: string; command: string; ok: boolean; at: number; agentId?: string }
   | { kind: 'FileTouched'; id: string; path: string; at: number }
   | { kind: 'AnswerShown'; id: string; text: string; at: number }
   | { kind: 'UserPrompted'; id: string; at: number }
-  | { kind: 'SubagentSpawned'; id: string; agentId: string; type: string; model: string; description: string; at: number }
-  | { kind: 'SubagentFinished'; id: string; agentId: string; tokens: number }
+  | { kind: 'SubagentSpawned'; id: string; agentId: string; type: string; model: string; description: string; at: number;
+      asked?: string; parentModel?: string }
+  | { kind: 'SubagentFinished'; id: string; agentId: string; tokens: number; answer?: string }
+  | { kind: 'ThresholdsRead'; id: string; raw: unknown }
+  | { kind: 'AgentCalled'; id: string; agentId: string }
+  | { kind: 'SpawnAsked'; id: string; type: string; description: string }
+  | { kind: 'AcceptedRead'; id: string; keys: string[] }
+  | { kind: 'TurnEnded'; id: string; turnId: string; contextPercent: number; cleanTree: boolean; at: number }
+  | { kind: 'Compacted'; id: string; trigger: string }
   | { kind: 'ToggleBand'; id: string }
   | { kind: 'SetBand'; id: string; band: BandDisplay }
   | { kind: 'ToggleLine'; id: string }
   | { kind: 'SetLine'; id: string; line: boolean }
+  | { kind: 'SetMode'; id: string; mode: 'loose' | 'strict' }
+  | { kind: 'Accepted'; id: string; keys: string[] }
+  | { kind: 'PlanRead'; id: string; warnings: Warning[]; truncated: boolean }
+  | { kind: 'SetPending'; id: string; line: string | null }
 
 const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v)
 
@@ -77,7 +101,7 @@ export function reduce(state: NavState, s: Signal): NavState {
   // A new session starts clean whatever was seen before; every other signal is applied once.
   if (s.kind !== 'Started' && state.seen.includes(s.id)) return state
   const seen = [...state.seen, s.id].slice(-SEEN_MAX)
-  const next = apply(state, s)
+  const next = lean(state, apply(state, s), s)
   return { ...next, seen: s.kind === 'Started' ? [s.id] : seen }
 }
 
@@ -114,7 +138,7 @@ function apply(state: NavState, s: Signal): NavState {
       const consent = onCommand(next, w, s.command)
       next = { ...next, consent: consent.consent, warnings: addWarnings(next, consent.warnings) }
       const p = currentPhase(next)?.p
-      if (s.ok && p && /\bgit\s+commit\b/.test(s.command)) next = { ...next, warnings: addWarnings(next, onCommit(next, p)) }
+      if (s.ok && p && isCommit(s.command)) next = { ...next, warnings: addWarnings(next, onCommit(next, p)) }
       return s.ok ? navigate(next, s.at, null, { command: s.command }) : next
     }
     case 'FileTouched': {
@@ -159,6 +183,23 @@ function apply(state: NavState, s: Signal): NavState {
       return { ...state, display: { ...state.display, line: !state.display.line } }
     case 'SetLine':
       return { ...state, display: { ...state.display, line: s.line } }
+    case 'SetMode': // the session switch (DD-35); a new session follows the repo again
+      return { ...state, mode: { ...state.mode, session: s.mode === state.mode.repo ? null : s.mode } }
+    case 'ThresholdsRead':
+    case 'AgentCalled':
+    case 'SpawnAsked':
+    case 'TurnEnded':
+    case 'Compacted':
+      return state // lean() keeps these (lib/lean.ts)
+    case 'PlanRead': // each read replaces the last, so fixed drift disappears
+      return { ...state, planTruncated: s.truncated,
+        warnings: [...state.warnings.filter(w => !w.key.startsWith('plan:')), ...s.warnings] }
+    case 'SetPending':
+      return { ...state, pending: s.line }
+    case 'AcceptedRead': // the change's deviations.md, read each main turn: a change switch takes its own
+      return { ...state, accepted: s.keys }
+    case 'Accepted':
+      return { ...state, accepted: [...new Set([...state.accepted, ...s.keys])] }
   }
 }
 

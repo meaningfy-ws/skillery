@@ -51,13 +51,15 @@ mods/navigator/
   hooks.json            {"hooks": {}, "modules": ["./register.tsx"]}
   config.json           userConfig fields (rendered into plugin.json, DD-5, DD-25)
   types.d.ts            declare module 'claude-code' { interface PluginState { navigator: {...} } }
-  register.tsx          the only file that touches `$`: events → signals → reduce → $.state; draws
-  statusline.sh         optional snippet for a person's own statusLine script (DD-20)
+  register.tsx          the only file that hooks events: events → signals → reduce → $.state; draws
+  io.ts                 register.tsx's I/O half: files, git, the engine; no decisions (DD-41)
+  statusline.sh         (dropped, DD-40: the plugin status line shows beside a person's own)
   tsconfig.json         strict, noEmit, allowImportingTsExtensions; include lib/**
   lib/
     state.ts            NavState, Signal, reduce(state, signal) — the state contract (§3)
     workflow.ts         parseWorkflow, resolveWorkflows (defaults + repo, DD-3) — the schema (§4)
     change.ts           readChange(files) → id, appetite, tasks, groups (§6.1)
+    lean.ts             feeds dispatch.ts and hygiene.ts from signals; reduce calls it (DD-40, DD-41)
     phase.ts            inferPhase(workflow, change, trail) (§6.2)
     process-drift.ts    processDrift(state, workflow) → Warning[] (§6.3)
     dispatch.ts         dispatchWarnings(state, workflow, thresholds) (§6.3 PD-5..PD-8)
@@ -119,7 +121,7 @@ type NavState = {
   workflow: { name: string; variant: string | null; source: 'default' | 'repo'; path: string } | null
   workflowErrors: string[]                 // malformed files, shown as warnings (scenario 7)
   phase: string | null
-  mode: { repo: 'loose' | 'strict'; sessionLoose: boolean }
+  mode: { repo: 'loose' | 'strict'; sessionLoose: boolean } // superseded: { repo, session }, DD-40.1
   skills: { name: string; at: number; phase: string | null; turnId: string; toolCallsAfter: number }[]
   subagents: Subagent[]
   gates: Record<string, { state: 'ok' | 'fail' | 'stale' | 'none'; at: number; detail: string }>
@@ -528,7 +530,7 @@ Cost: `usage.tokens`/`usd` from `$.session.usage()`; per subagent, the sum of it
 
 ## 7. Strict mode (DEC-5)
 
-Effective mode = `strict` iff `mode.repo === 'strict' && !mode.sessionLoose`. Strict adds, never
+Effective mode = `strict` iff `mode.repo === 'strict' && !mode.sessionLoose` (superseded by DD-40.1: the session's switch if set, else the repo's). Strict adds, never
 replaces, the loose behaviour. Each rule is one entry in `lib/strict.ts` `STRICT_RULES` whose `id`
 equals a `hooks.yaml` hook id with a `mod` binding (DD-10):
 
@@ -578,7 +580,7 @@ is not installed` and nothing runs.
 | Archive check | `/navigator check` → report: open plan drift, open process drift, accepted deviations, gate states, `openspec validate <id> --strict` result | change open |
 | Validate | `/navigator validate` → runs each `run` of the phase's command gates through `$.process.run`, logs output | a gate has `run` |
 | Accept deviation | `/navigator accept <key> "<reason>"`; from the band, `$.ui.ask` asks the reason | per warning |
-| Mode | `/navigator mode loose|strict` | repo is strict |
+| Mode | `/navigator mode loose|strict` | repo is strict (superseded by DD-40.6: always) |
 | Fold / Unfold / Hide | `/navigator band fold|unfold|hide|show` | always |
 | Line | `/navigator line show|hide` | always (command only) |
 | Compact now | `compact` (`keep: change <id>, phase <p>, open warnings, decisions are in design.md`) | `offer === 'compact'` |
@@ -689,7 +691,7 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
 | H-3 | CLI | spawn a subagent during apply | band row, then tokens (2) |
 | H-4 | CLI | a scratch repo with `docs/navigator/build.workflow.json` `mode: strict`, a change in apply | the first commit without `test-driven-development` is blocked before it runs; `/navigator mode loose`; the commit passes with a warning; a new session blocks again (3, 12) |
 | H-5 | both | `claude plugin validate bundles/meaningfy-navigator` | no errors; register.tsx types ok |
-| H-6 | CLI | Reconcile EPIC, Report to skillery buttons | the commands in the transcript as typed (13) |
+| H-6 | CLI | Reconcile EPIC, Next step, Accept, Compact now buttons (Report to skillery cut, DD-39) | the commands in the transcript as typed; `clear` and `compact` resolve (13) |
 
 ## 12. Anti-patterns
 
@@ -913,6 +915,83 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
      negations); `.gitattributes` marks `bundles/*/mods/**` generated, so a PR shows the copy folded.
      Kept: a flat `lib/`, one `register.tsx` (split at about 400 lines into another root `.tsx`),
      the root `package.json`. `MOD_DATA` is keyed by mod when a second mod lands.
+- **DD-39** *(lead, owner delegated "decide" 2026-11-09)* Stage 3 stays on plan for its core
+  (3.1–3.7, 3.12, 3.13) and takes the EPIC's cut line: Board (3.8), Copy status (3.9), Report to
+  skillery (3.10) and the desktop polish (3.11) are not built. Nobody has asked for them, each adds
+  a surface to keep working across Claude Code upgrades, and the spec already lets them go (*Report
+  to skillery (cut line)*). The `hygiene:unused:<skill>` warning therefore has no button; its text
+  names `skillery-feedback` for the person to run (§6.3). They can come back as one small EPIC when
+  someone asks.
+- **DD-40** *(lead, stage 3 build: three builders on disjoint new files, the lead integrating)*
+  Where the PLAN left the mechanics open:
+  1. **Mode is `{repo, session}`**, `session` ∈ `null | loose | strict`, the switch of DD-35; the
+     effective mode is the session's if set. `/navigator mode <m>` equal to the repo's clears it.
+     In a loose repo `/navigator mode strict` tries strict for the session (supersedes DD-26's
+     refusal).
+  2. **Plan drift** warnings are owned by `epic-planning` (it owns the EPIC and the PLAN) with the
+     remedy `openspec-update-change <id>`; paths under the change's own folder are covered; each
+     read replaces the last, so a fixed drift disappears. PL-3 honours `planDrift.ignore` too.
+  3. **Deviations** are read from `deviations.md` at session start; a key accepted outside a change
+     lives in the session only. An accepted warning stays in the band as `✓ accepted:` and is not
+     counted. `Archive check` lists every recorded key.
+  4. **Subagent rules.** PD-8 and PD-9 read the review set of the workflow that has one (build-tier),
+     whichever is active. PD-9's remedy is the Review action (`meaningfy-code-review`). *shortcut:
+     the spawn event does not say whether the agent declares a model, so PD-7 treats an explicit
+     `model` above the parent's as undeclared and strict rewrites it to the parent's; upgrade by
+     reading the agent's frontmatter.* The unused-skill warning is owned by `skillery-feedback` and
+     names it (DD-39).
+  5. **Hygiene.** A safe point needs its events since the last point, in any order; at a point that
+     is both a boundary and a safe point, *fresh* wins. *shortcut: idle resets are not offered; the
+     gap is known only once the person has typed, too late to offer; upgrade with a timer.* A
+     `hygiene:context` or `hygiene:thresholds-missing` warning is replaced at each turn end, never
+     repeated.
+  6. **Actions.** Reconcile EPIC submits the change update and stores the clarity gate as `pending`,
+     submitted when that turn ends (DD-16). Review shows where the phase expects or allows
+     `meaningfy-code-review`. Mode is always in the unfolded band. Accept is a button on each open
+     plan or process warning, asking the reason with `$.ui.ask`.
+  7. **No `statusline.sh`** (supersedes DD-20). H-1 showed navigator's status line drawn beside the
+     owner's own `statusLine` script, so a snippet that copies the line into that script solves
+     nothing; the mod writes no file outside its state.
+- **DD-41** *(lead, stage-3 challenge: reviewers A (L1+L2) and B (L3–L5), adversarial tester)*
+  Accepted:
+  1. **Counting subagent work.** Every tool call a subagent makes counts for PD-6 (`AgentCalled`),
+     not only Bash. A spawn whose model strict already moved to the parent's raises no PD-7.
+  2. **Spawns are counted before they run.** `SpawnAsked` records the role in the turn before
+     `next(e)` (atomic state update), and strict reads the count after it, so parallel spawns in
+     one message cannot all see zero; a resume (`e.resume`) is not a spawn; workflow agents that
+     share a `tool_use_id` get their own signal ids.
+  3. **Commands are matched where they start** (`isCommit`, `isArchive`, `isShip`, `isPrMerge` in
+     `workflow.ts`, used everywhere): at the start of a shell segment, `git -C dir commit` included,
+     never inside a quoted string or a grep.
+  4. **One notion of "open".** `isOpen(s, w)` and `openDrift(s)` in `process-drift.ts` (a `plan:` or
+     `process:` warning not accepted) serve strict, the Archive check, Reconcile, the band and
+     **Back on track**, which takes the oldest open `process:` warning (§8). `decideCommit` asks
+     `onCommit` for its warnings rather than minting keys. Each check module mints the keys of its
+     own prefix (`process:` drift, `plan:`, `hygiene:`); `mods.md` says so (amends DD-38.7).
+  5. **Accept.** The band's Accept submits `/navigator accept <key> "<reason>"` as typed; the
+     arguments are parsed in `lib/deviations.ts` (a key may hold spaces); a failed write is a toast
+     naming the reason and the warning stays open (§13); accepted keys are re-read from the
+     change's `deviations.md` at each main turn, so a change switch takes its own; a hand-written
+     line without a reason still counts.
+  6. **Reconcile** stores its second step only after the first was submitted, and runs it only
+     after a turn that ended with an answer.
+  7. **Plan-drift parsing.** `git diff -U0`'s `+++` header is read only between a `diff --git` line
+     and the first `@@` (an added line `++ i;` is an added line) and loses git's trailing tab; a
+     path token is one with a `/` or a single letter extension (`v3.9.0`, `s.mode.session` are
+     not); a folder token covers the files under it. The base also tries local `develop` and
+     `main`.
+  8. **Safe ids** never start with `-`. The lint ignores `//` comments in `strict.ts`.
+     `STRICT_RULES` drops its unused `owner`. Warning texts state the fact only ("made 2 tool
+     calls"), no advice. The reminder names the workflow file's real path. `turnRoles`,
+     `shipLog` and `hygieneEvents` are typed. Design §1 lists `lean.ts`; §3, §7 and §8 point to DD-40
+     where it superseded them.
+  Rejected: classing a role by its description before its agent name (a reviewer described as "a
+  quick check" would become a checker, a likelier slip than a checker spawned as `code-reviewer`);
+  the canned reasons in the band's Accept question (they are answer suggestions, "Other"
+  takes any text; no rule); one constant per skill name (two places each, both mechanism); removing
+  the idle keys (they are guardrails' rule for the lead; navigator not acting on them is DD-40.5);
+  un-exporting types used only locally (cosmetic); tests for `register.tsx` (by design it has none;
+  the parsing moved to `lib/` is tested).
 - **DD-37** *(lead, task 2.9)* DEC-13's four host skills were right; keep them. Each file sits
   with the skill that owns the activity's method, and each phase names its own owner, so a file
   that spans skills (build-tier's explore/shape/plan belong to `epic-planning`, archive to

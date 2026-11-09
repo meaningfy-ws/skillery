@@ -1,8 +1,9 @@
 # Subagent reports — the base and the fields per purpose
 
 Every subagent returns the base report; it adds the fields of its purpose below it. The whole report
-fits in about ten to twenty lines. Anything longer — a crawl's findings, a full test log — goes to a
-file, and the report carries the path and a summary.
+fits in `subagent_report_max_lines` lines, a key of the skill's `assets/session-thresholds.json`.
+Anything longer — a crawl's findings, a full test log — goes to a file, and the report carries the
+path and a summary.
 
 ## The base report
 

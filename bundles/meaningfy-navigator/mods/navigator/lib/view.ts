@@ -1,6 +1,6 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
-import { phasesOf, workflowOf } from './workflow.ts'
+import { isStrict, phasesOf, workflowOf } from './workflow.ts'
 import type { Group, NavState, Subagent } from './state.ts'
 
 const LINE_MAX = 120
@@ -11,8 +11,9 @@ const GLYPH = { ok: '✓', fail: '✗', stale: '·', none: '' } as const
 const clean = (text: string) => text.replace(/[\u0000-\u001f\u007f-\u009f]/g, '')
 
 export function modeText(s: NavState): string {
-  if (s.mode.repo === 'strict' && s.mode.sessionLoose) return '○ loose (strict dropped)'
-  return s.mode.repo === 'strict' ? '● strict' : '○ loose'
+  const { repo, session } = s.mode
+  if (session && session !== repo) return session === 'strict' ? '● strict (this session)' : '○ loose (strict dropped)'
+  return repo === 'strict' ? '● strict' : '○ loose'
 }
 
 export function lineText(s: NavState): string {
@@ -43,7 +44,6 @@ function cut(text: string): string {
   return chars.length > LINE_MAX ? `${chars.slice(0, LINE_MAX - 1).join('')}…` : text
 }
 
-const isStrict = (s: NavState) => s.mode.repo === 'strict' && !s.mode.sessionLoose
 
 /** The stage being worked: the first `##` group not finished, else the last one. */
 export function currentGroup(groups: Group[]): Group | undefined {
@@ -75,6 +75,9 @@ export type BandModel = {
   rows: { label: string; items: string[] }[]
 }
 
+/** Warnings not recorded as deviations; accepted ones show but do not count. */
+const openCount = (s: NavState) => s.warnings.filter(w => !s.accepted.includes(w.key)).length // every kind, accepted aside
+
 export function bandModel(s: NavState): BandModel {
   const running = s.subagents.filter(a => !a.done)
   const last = s.skills.at(-1)
@@ -86,7 +89,7 @@ export function bandModel(s: NavState): BandModel {
     ...(running.length ? [`${running.length} running: ${running.map(a => a.type).join(', ')}`] : []),
     ...(last ? [`last ${last.name}`] : []),
     ...gates,
-    ...(s.warnings.length ? [`⚠ ${s.warnings.length}`] : []),
+    ...(openCount(s) ? [`⚠ ${openCount(s)}`] : []),
   ].join(' · ')
   const rows: BandModel['rows'] = []
   if (s.change && s.change.groups.length) {
@@ -110,7 +113,10 @@ export function bandModel(s: NavState): BandModel {
   rows.push(
     { label: 'skills', items: s.skills.slice(-TRAIL).map(k => k.phase ? `${k.name} (${k.phase})` : k.name) },
     { label: 'subagents', items: s.subagents.map(subagentText) },
-    { label: 'warnings', items: s.warnings.map(w => `⚠ ${w.message}${w.owner ? ` (${w.owner})` : ''}`) },
+    { label: 'warnings', items: [
+      ...s.warnings.map(w => `${s.accepted.includes(w.key) ? '✓ accepted:' : '⚠'} ${w.message}${w.owner ? ` (${w.owner})` : ''}`),
+      ...(s.planTruncated ? ['diff truncated'] : []),
+    ] },
     { label: 'mode', items: [modeText(s)] },
   )
   return { folded: clean(folded), rows: rows.map(r => ({ ...r, items: r.items.map(clean) })) }
