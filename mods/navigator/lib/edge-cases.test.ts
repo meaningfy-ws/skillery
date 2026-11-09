@@ -158,8 +158,8 @@ test('a skill before the workflows are read selects nothing and does not throw (
 })
 
 // ================================================================ §6.1/§6.2 odd change states
-test('phase: total 0 with design and tasks is plan', () => {
-  assert.equal(run(workflows(), read(change(0, 0))).phase, 'plan')
+test('phase: total 0 with design and tasks is design', () => {
+  assert.equal(run(workflows(), read(change(0, 0))).phase, 'design')
 })
 
 test('phase: an open change is never placed in explore, whose predicate is "none"', () => {
@@ -169,10 +169,10 @@ test('phase: an open change is never placed in explore, whose predicate is "none
   }
 })
 
-test('§6.2.2 files move forward: brownfield placed in apply by files does not fall back to shape when all tasks tick', () => {
+test('§6.2.2 files move forward: brownfield placed in apply by files does not fall back to propose when all tasks tick', () => {
   const s = run(workflows(), read(change(1, 3, { hasDesign: false })), read(change(3, 3, { hasDesign: false }), 3))
   assert.equal(s.variant, 'brownfield')
-  assert.notEqual(s.phase, 'shape')
+  assert.notEqual(s.phase, 'propose')
 })
 
 test('phaseFor with no phases or an unknown signal is safe', () => {
@@ -218,7 +218,7 @@ test('switching workflow is not a PhaseLeft (DD-36, DD-38 rejected): no PD-2 for
   assert.ok(!keys(s).includes('process:missing:apply:cosmic-python'), keys(s).join())
 })
 
-test('PD-3 skill gate: plan → apply by files warns clarity; running clarity-gate clears it', () => {
+test('PD-3 skill gate: design → apply by files warns clarity; running clarity-gate clears it', () => {
   const s = run(workflows(), read(change(0, 9)), read(change(3, 9), 3))
   assert.equal(s.phase, 'apply')
   assert.ok(keys(s).includes('process:gate:apply:clarity'), keys(s).join())
@@ -604,7 +604,7 @@ test('s3 review: shown in apply and verify only, with id and appetite', () => {
   assert.equal(s.phase, 'apply')
   assert.equal(review(s), 'meaningfy-code-review navigator VERY LARGE')
   assert.ok(review({ ...s, phase: 'verify' })?.startsWith('meaningfy-code-review navigator'))
-  for (const p of ['explore', 'shape', 'plan', 'archive']) assert.equal(review({ ...s, phase: p }), null, p)
+  for (const p of ['explore', 'propose', 'design', 'archive']) assert.equal(review({ ...s, phase: p }), null, p)
   assert.equal(review({ ...s, change: { ...s.change!, id: 'a b' } }), null)
 })
 

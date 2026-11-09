@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { backOnTrack, commandFor, nextStep, validateRuns } from './actions.ts'
 import { EMPTY, reduce, type Change, type NavState, type Signal } from './state.ts'
+import { decideCommit } from './strict.ts'
 import { bandModel, lineText } from './view.ts'
 import { resolveWorkflows } from './workflow.ts'
 
@@ -73,12 +74,17 @@ test('PD-2 leaving a phase without its exit skill; PD-3 command gate not passed 
   assert.deepEqual(keys(passed).filter(k => k.startsWith('process:') && k.includes(':apply:')), [])
 })
 
-test('PD-3 skill gate: entering apply with no clarity-gate run; the first placement of a session is not checked', () => {
+test('PD-3 skill gate: a delivery session entering apply with no clarity-gate run warns; the first placement is not checked', () => {
   assert.ok(!keys(run(workflows(), read(change(3, 9)))).length)
-  const s = run(workflows(), read(change(0, 9)), skill('epic-planning', 3), skill('epic-delivery', 5))
+  const placed = run(workflows(), read(change(0, 9)))
+  assert.equal(placed.phase, 'design')
+  assert.ok(!keys(placed).length)
+  const s = reduce(placed, skill('epic-delivery', 5))
   assert.equal(s.phase, 'apply')
   assert.ok(keys(s).includes('process:gate:apply:clarity'), keys(s).join())
-  const gated = run(workflows(), read(change(0, 9)), skill('epic-planning', 3), skill('clarity-gate', 4), skill('epic-delivery', 5))
+  // The gate runs in revise, a variant of the workflow; epic-delivery then places apply without a check.
+  const gated = [skill('clarity-gate', 4), skill('epic-delivery', 5)].reduce(reduce, placed)
+  assert.equal(gated.phase, 'apply')
   assert.ok(!keys(gated).includes('process:gate:apply:clarity'))
 })
 
@@ -146,7 +152,7 @@ test('the band shows phases and the skill trail with phases', () => {
   const s = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5))
   const rows = bandModel(s).rows
   assert.deepEqual(rows.find(r => r.label === 'phases')!.items,
-    ['Build-tier EPIC delivery', '✓ explore', '✓ shape', '✓ plan', '● apply', '○ verify', '○ archive'])
+    ['Build-tier EPIC delivery', '✓ explore', '✓ variants', '✓ decide', '✓ propose', '✓ design', '✓ revise', '● apply', '○ verify', '○ archive'])
   assert.deepEqual(rows.find(r => r.label === 'skills')!.items, ['epic-delivery (apply)'])
 })
 
@@ -207,4 +213,92 @@ test('D-1 a write matching an earlier phase gate does not move back', () => {
 test('D-1 a file write never selects a workflow', () => {
   const s = run({ ...workflows(), workflows: [filed] } as Signal, write('docs/a.md', 4))
   assert.deepEqual([s.workflow, s.phase], [null, null])
+})
+
+// ---------------------------------------------------------------- build-tier shaping and delivery (navigator-workflows D-2, D-3)
+const fresh = (over: Partial<Change> = {}) => change(0, 9, { id: 'x', ...over })
+const proposalOnly = fresh({ total: 0, hasDesign: false, hasTasks: false })
+const shaped = (...signals: Signal[]) => run(workflows(), read(null), skill('epic-planning', 3), ...signals)
+const where = (s: NavState) => [s.workflow, s.variant, s.phase]
+
+test('Shaping: seed, Q&A, proposal, design and tasks, then the clarity gate, walk the variant with no warnings', () => {
+  const start = shaped()
+  assert.deepEqual(where(start), ['build-tier', 'work-shaping', 'explore'])
+  const seeded = reduce(start, write('openspec/changes/x/inputs/seed.md', 4))
+  assert.equal(seeded.phase, 'variants')
+  const asked = reduce(seeded, write('openspec/changes/x/inputs/qa.md', 5))
+  assert.equal(asked.phase, 'decide')
+  const proposed = reduce(asked, read(proposalOnly, 6))
+  assert.equal(proposed.phase, 'propose')
+  const planned = reduce(reduce(proposed, write('openspec/changes/x/design.md', 7)), read(fresh(), 8))
+  assert.equal(planned.phase, 'design')
+  const gated = [skill('clarity-gate', 9), { kind: 'AnswerShown', id: id(), text: 'Clarity score: 9.2/10', at: 10 } as Signal]
+    .reduce(reduce, planned)
+  assert.deepEqual(where(gated), ['build-tier', 'work-shaping', 'revise'])
+  assert.match(bandModel(gated).folded, /clarity ✓ 9\.2/)
+  assert.equal(nextStep(gated), null)
+  assert.deepEqual(keys(gated), [])
+})
+
+test('Shaping: reloading epic-planning keeps the phase (D-3)', () => {
+  assert.equal(reduce(shaped(write('openspec/changes/x/inputs/seed.md', 4)), skill('epic-planning', 5)).phase, 'variants')
+})
+
+const delivery = (...signals: Signal[]) => run(workflows(), read(fresh()), ...signals)
+
+test('Delivery, next session: epic-delivery warns clarity; clarity-gate revises; epic-delivery returns to apply clean', () => {
+  const placed = delivery()
+  assert.deepEqual(where(placed), ['build-tier', null, 'design'])
+  const entered = reduce(placed, skill('epic-delivery', 3))
+  assert.deepEqual(where(entered), ['build-tier', null, 'apply'])
+  assert.deepEqual(keys(entered), ['process:gate:apply:clarity'])
+  assert.equal(backOnTrack(entered), 'clarity-gate')
+  const revised = reduce(entered, skill('clarity-gate', 4))
+  assert.deepEqual(where(revised), ['build-tier', 'work-shaping', 'revise'])
+  assert.deepEqual(keys(revised), [])
+  const back = reduce(revised, skill('epic-delivery', 5))
+  assert.deepEqual(where(back), ['build-tier', null, 'apply'])
+  assert.deepEqual(keys(back), [])
+})
+
+test('Delivery, next session: strict still refuses a commit in apply until test-driven-development runs', () => {
+  const strict = run({ ...workflows('strict') }, read(fresh()), skill('epic-delivery', 3), skill('clarity-gate', 4), skill('epic-delivery', 5))
+  const d = decideCommit(strict)
+  assert.ok('deny' in d && /without test-driven-development/.test(d.deny))
+  assert.deepEqual(decideCommit(reduce(strict, skill('test-driven-development', 6))), { allow: true })
+})
+
+test('Reconcile mid-delivery: update-change revises, epic-delivery returns to apply; all tasks done returns to verify', () => {
+  const mid = change(3, 10, { id: 'x' })
+  const revised = run(workflows(), read(mid), skill('epic-delivery', 3), skill('openspec-update-change', 4))
+  assert.deepEqual(where(revised), ['build-tier', 'work-shaping', 'revise'])
+  assert.deepEqual(where(reduce(revised, skill('epic-delivery', 5))), ['build-tier', null, 'apply'])
+  const done = change(10, 10, { id: 'x' })
+  const revisedDone = run(workflows(), read(done), skill('openspec-update-change', 4))
+  assert.deepEqual(where(revisedDone), ['build-tier', 'work-shaping', 'revise'])
+  assert.deepEqual(where(reduce(revisedDone, skill('epic-delivery', 5))), ['build-tier', null, 'verify'])
+})
+
+test('Error matrix: with another change open, inputs for a new change do not move the band off revise', () => {
+  const other = change(3, 10, { id: 'other' })
+  const s = run(workflows(), read(other), skill('epic-planning', 3), write('openspec/changes/new/inputs/seed.md', 4),
+    write('openspec/changes/new/inputs/qa.md', 5))
+  assert.deepEqual(where(s), ['build-tier', 'work-shaping', 'revise'])
+  assert.equal(s.change!.id, 'other')
+})
+
+test('Error matrix: tasks.md before design.md stays in the variant on revise with the clarity warning; design.md moves back', () => {
+  const inputs = [write('openspec/changes/x/inputs/seed.md', 4), write('openspec/changes/x/inputs/qa.md', 5)]
+  const proposed = shaped(...inputs, read(proposalOnly, 6))
+  assert.equal(proposed.phase, 'propose')
+  const early = reduce(proposed, read(fresh({ hasDesign: false }), 7))
+  assert.deepEqual(where(early), ['build-tier', 'work-shaping', 'revise'])
+  assert.deepEqual(keys(early), ['process:gate:revise:clarity'])
+  const designed = reduce(early, read(fresh(), 8))
+  assert.equal(designed.phase, 'design')
+  assert.deepEqual(keys(designed), ['process:gate:revise:clarity'])
+  const strict = run(workflows('strict'), read(null), skill('epic-planning', 3), ...inputs, read(proposalOnly, 6),
+    read(fresh({ hasDesign: false }), 7), read(fresh(), 8))
+  assert.deepEqual(decideCommit(strict), { allow: true })
+  assert.deepEqual(keys(reduce(designed, skill('clarity-gate', 9))), [])
 })
