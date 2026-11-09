@@ -18,6 +18,25 @@ metadata:
 Clear, concise documentation, explanations, and summaries. Aligns with the project's
 established terminology (read `MEMORY.md` and existing docs first).
 
+## Quick Start
+
+Worked example: an EPIC changed an installation step (the plugin is now added from a new source).
+
+1. Load `technical-writing`. Its documentation workflow (phases below, *The documentation
+   workflow*) starts, and the evidence goes to `openspec/changes/<id>/evidence/`.
+2. Inventory: write `evidence/docs-owed.md`, one row per page owed: path, what is owed, page type,
+   check. Here: `docs/install.md`, the new add command, how-to, cold reader; `README.md`, the
+   entry-point link, reference, clarity check.
+3. Write: fix the how-to's step with the new command and the tool version you ran it with; fix the
+   README link.
+4. Verify: run the page's commands in a clean shell, then the project's docs gate (named in its
+   `AGENTS.md` *Checks* block); both must pass.
+5. Cold-read: give a fresh agent only the draft how-to and have it install from scratch. You write
+   `evidence/cold-read.md`: what it did, where it got stuck. Fix the page and re-read until nothing
+   is stuck.
+6. Publish: open one PR with the pages and both evidence files. Done when every row is written,
+   the gate is green and the cold read has no stuck point.
+
 ## What you produce
 
 - **Code explanations** for onboarding/knowledge transfer (suggest a stronger model for deep

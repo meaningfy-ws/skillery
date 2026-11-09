@@ -98,6 +98,7 @@ agents verify and the owner validates. For skillery the two look like this:
 | What | `make validate`, the probes, the review, one fresh checker per stage | Scenario sign-off: the owner approves the EPIC's probes and `.feature` scenarios at the PLAN gate. Acceptance: a **trial run** of the changed skill or agent on a real task or repo, shown against the EPIC's success measure. Validation review: at each release, did each EPIC since the last one deliver? |
 | Who | agents | the owner decides; an agent prepares the evidence |
 | Evidence | CI and the review findings | `evidence/acceptance.md` in the change (what was tried, where, the verdict, the date); review findings go into the next EPIC's `inputs/` |
+| Docs | Docs a change makes false are fixed in the build; the L2 lens checks they agree with the change | Manuals and architecture pages are written in the docs stage after accept; the cold reader validates the task-oriented ones (`evidence/cold-read.md`). Rules: `epic-delivery` (`references/stage-loop.md`) and `technical-writing` |
 
 A trial run replaces the acceptance demo: a skillery EPIC has no running application, but its skills
 and agents can be used on real work.
