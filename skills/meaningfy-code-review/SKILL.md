@@ -52,7 +52,7 @@ context budget and the passes overlap in wall-clock.
 - A single-lens review (e.g. "L3 only") dispatches **one** subagent; the five-way fan-out is the
   default for a full review.
 - **Size hook.** Inside an EPIC's delivery the fan-out scales with the appetite: the review set of
-  each appetite is the `reviews` of `epic-delivery`'s build-tier workflow file. Its one-pass entries
+  each appetite is the `reviews` of `epic-delivery`'s workflow file. Its one-pass entries
   (`lenses`) are the only allowed combined pass. Where an entry has `ux`, an optional UX lens runs
   when screens changed: usability and accessibility of the changed screens. The UX lens is review
   only; designing screens is the UX designer's job at any size, per `epic-delivery`.

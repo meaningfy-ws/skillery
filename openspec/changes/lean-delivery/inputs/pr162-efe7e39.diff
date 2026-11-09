@@ -1,0 +1,152 @@
+commit efe7e39d28e4d9fd0595560c142a47196f797c0d
+Author: Eugeniu Costetchi <costezki.eugen@gmail.com>
+Date:   Mon Nov 9 21:02:14 2026 +0100
+
+    docs(skills): cap gate runs and narrow checks for small EPICs
+    
+    Measured over the last 15 sessions: a SMALL EPIC took four clarity-gate
+    runs, questions went one dialog at a time, and the full make validate
+    ran 223 times while iterating. TINY and SMALL EPICs now run the gate at
+    most twice, after which the developer decides the remaining gaps, and an
+    accepted gap is recorded as a DEC. Questions are asked in rounds. Narrow
+    checks run while iterating and the full gates once per task.
+    
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+diff --git a/AGENTS.md b/AGENTS.md
+index 97c8e4c..dc3d8fc 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -116,6 +116,11 @@ Full per-CLI setup and the compatibility matrix: [`docs/environment/dual-cli/`](
+ `validate-spine` job (`make validate-spine`) and the `opencode-installer` job (`npm run test:opencode-installer`, the node tests of the opencode installer
+ and agent renderer). See
+ [`docs/development/governance.md`](docs/development/governance.md) for what the validator enforces.
++Narrow checks while iterating (the rule is `epic-delivery`'s): `make mods` for a mod,
++`.venv/bin/python -m pytest tests/<file>` for one test, `make lint` for a skill or agent,
++`make validate-spine` for `openspec/`. Before each commit: `make bundles` after a skill, agent or
++bundle edit, then `make validate`, plus `make validate-spine` if `openspec/` changed and
++`npm run test:opencode-installer` if `tools/` changed.
+ 
+ ## Common Meaningfy practices
+ 
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0094b72..d46c39c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -11,6 +11,15 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
+ 
+ ## [Unreleased]
+ 
++### Changed
++
++- `epic-planning`: a TINY or SMALL EPIC runs the clarity gate at most twice; gaps left after the
++  second run go to the developer as one question round, and only a gap the developer accepts as
++  a decision lets the PLAN proceed below 9 (`clarity-gate` names this one exception). A PLAN's
++  depth follows its appetite; elicitation asks its questions in rounds.
++- `epic-delivery`: open questions to the developer are asked in one round; while a task is in
++  progress only the checks its edits touch run, and the full gates run once before the commit.
++
+ ## [3.10.1] - 2026-11-09
+ 
+ ### Fixed
+diff --git a/skills/clarity-gate/SKILL.md b/skills/clarity-gate/SKILL.md
+index 40545a4..f24bc6b 100644
+--- a/skills/clarity-gate/SKILL.md
++++ b/skills/clarity-gate/SKILL.md
+@@ -32,7 +32,8 @@ enough — the gate is designed to surface what the prose quietly assumes.
+ 3. Score against the 6 criteria: actionability, specificity, consistency, structure,
+    disambiguation, reference clarity.
+ 4. The spec must score **≥ 9/10** to proceed. Below 9: list the specific gaps, revise,
+-   re-score.
++   re-score. The one exception: a gap the developer explicitly accepts, recorded as a decision
++   (`epic-planning` says when that is offered).
+ 
+ ## Full vs. lightweight
+ 
+diff --git a/skills/epic-delivery/SKILL.md b/skills/epic-delivery/SKILL.md
+index b603fbb..df0907d 100644
+--- a/skills/epic-delivery/SKILL.md
++++ b/skills/epic-delivery/SKILL.md
+@@ -75,9 +75,9 @@ A stage is a group of tasks that ends in one PR. The PLAN cuts the tasks into st
+ 1. **Prepare.** Library changes the stage needs are merged and the lock refreshed; the blast radius
+    of the symbols it touches is checked (a high risk goes to the developer). Scenarios were signed
+    off once for the whole EPIC at the PLAN gate; a changed scenario is re-signed alone.
+-2. **Build.** Task by task, test-first. Parallel builders only on disjoint files. After each task
+-   the lead re-runs the project's gates, reads the diff and the report's upstream findings, and
+-   commits.
++2. **Build.** Task by task, test-first. Parallel builders only on disjoint files. While working,
++   run only the checks the edit touches; after each task the lead re-runs the project's full
++   gates once, reads the diff and the report's upstream findings, and commits.
+ 3. **Challenge.** Reviewers, and the adversarial tester when in scope, in parallel.
+ 4. **Decide and fix.** The lead records each accepted finding as a decision in `design.md` first
+    (the Rule of Divergence) and rejects the rest with a reason. Builders fix. The lead re-runs the
+@@ -104,6 +104,9 @@ Only the lead asks. Every question:
+ - lists the options;
+ - marks one as recommended, with the reason.
+ 
++Open questions are asked together in one round, not one dialog each, unless an answer changes
++what the next question is.
++
+ When the developer says "choose what is best", the lead decides, records the choice in
+ `design.md` as its own, and the developer may overrule it.
+ 
+diff --git a/skills/epic-delivery/references/stage-loop.md b/skills/epic-delivery/references/stage-loop.md
+index 6faf741..b6ae7db 100644
+--- a/skills/epic-delivery/references/stage-loop.md
++++ b/skills/epic-delivery/references/stage-loop.md
+@@ -18,8 +18,10 @@ loop it replaces. The summary is in the skill, and the review set of each appeti
+    - Builders take the tasks one at a time, test-first. Parallel builders only on disjoint files;
+      otherwise one after another, or in separate worktrees.
+    - The builder also updates the docs its task changed. There is no separate writer.
+-   - After each task the lead re-runs the project's gates, reads the diff, reads the upstream
+-     findings and files the issues they call for, and commits the task.
++   - While a task is in progress, the builder runs only the checks its edits touch (one test
++     file, one target). After each task the lead re-runs the project's full gates once, reads
++     the diff, reads the upstream findings and files the issues they call for, and commits the
++     task.
+ 3. **Challenge.** In parallel, scaled by appetite: the reviewers, and the adversarial tester where
+    the appetite's review set names it ([`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json)). Reviewers are read-only.
+ 4. **Decide and fix.**
+@@ -89,5 +91,5 @@ one place.
+ | 13 Merge | Merge | — |
+ 
+ Three checks became conditional; three moved from per stage or per member to per EPIC or per
+-stage. No agent check runs twice, except the lead's cheap re-run of the gates after each task, kept
++stage. No agent check runs twice, except the lead's single full re-run of the gates after each task, kept
+ on purpose: it catches what reports claim.
+diff --git a/skills/epic-planning/SKILL.md b/skills/epic-planning/SKILL.md
+index b0bb0f6..a1c6202 100644
+--- a/skills/epic-planning/SKILL.md
++++ b/skills/epic-planning/SKILL.md
+@@ -31,7 +31,7 @@ regenerating the orientation index — belongs to `spec-stewardship`.
+    architecture/ADRs, sample/test data, free notes, and for brownfield an existing-codebase analysis
+    (optionally via GitNexus). Enumerate what you read. Details: [`references/seed-intake.md`](references/seed-intake.md).
+ 2. **Elicit** (`/opsx:explore` + `superpowers:brainstorming`). Drive a *myriad of clarifying
+-   questions*, **one concern at a time**, to surface and decide every ambiguity, conflict, and
++   questions*, **one concern per question, asked together in rounds**, to surface and decide every ambiguity, conflict, and
+    assumption **before** writing the EPIC. After each round, summarise what you understood and
+    confirm. Make no silent assumptions. **Include a test-scenario interview**: help the human enumerate
+    what the EPIC must *prove* — key assertions, scenarios, edge cases — so the design phase can author
+@@ -60,14 +60,20 @@ regenerating the orientation index — belongs to `spec-stewardship`.
+    (algorithm, concrete examples, anti-patterns, error matrix, decisions, and the elicited risks in
+    Risks / Trade-offs as `RISK-<n>`: likelihood, impact, mitigation or acceptance) and the tasks half (ordered
+    breakdown with layers/dependencies/acceptance, roadmap). Each PLAN cites its parent EPIC id
+-   (golden thread).
++   (golden thread). The PLAN's depth follows the appetite: a TINY or SMALL PLAN keeps the sections
++   the gate scores and stays short in each.
+ 7. **Attack the PLAN.** Before the gate, try to break it, in a fresh subagent when one pays
+    (`guardrails`, *Subagent dispatch*): the input, state or order of events under which it fails,
+    and the assumption which, if false, sinks it. Each counterexample becomes an error-matrix row,
+    a `RISK-` entry or a PLAN fix. The gate checks the PLAN is clear; this checks it holds.
+ 8. **Gate the PLAN** (full `clarity-gate`, ≥9/10). Score the `design.md`+`tasks.md` pair. Block
+    progression to BDD/implementation until it passes. Below 9: list the specific gaps and **revise
+-   the PLAN** — never patch code to dodge a gap (Rule of Divergence).
++   the PLAN** — never patch code to dodge a gap (Rule of Divergence). For a TINY or SMALL EPIC,
++   run the gate at most twice: if the second run is still below 9, bring the remaining gaps to
++   the developer as one question round, each with a recommendation (fix it, accept it, or
++   re-shape), instead of a third revision. The developer decides each gap. An accepted gap is
++   recorded in `design.md` as a `DEC-` naming the gap and the developer's answer; only then may
++   the PLAN proceed below 9.
+ 
+ The PLAN cuts its tasks into stages; delivery after the gate is `epic-delivery`'s.
+ 

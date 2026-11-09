@@ -146,7 +146,7 @@ function apply(state: NavState, s: Signal): NavState {
     }
     case 'FileTouched': {
       const w = workflowOf(state)
-      return w ? passGates(state, gatesAfterFile(state.gates, w, s.path, s.at)) : state
+      return w ? navigate(passGates(state, gatesAfterFile(state.gates, w, s.path, s.at)), s.at, null, { file: s.path }) : state
     }
     case 'AnswerShown': {
       const w = workflowOf(state)

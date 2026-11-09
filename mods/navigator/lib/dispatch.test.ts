@@ -16,7 +16,7 @@ const t = (thresholdsFrom({
 const review = (reviewers: number, checker: boolean, extra?: number) =>
   ({ challenge: '', reviewers, ux: extra === undefined ? null : { wording: '', extra_reviewers: extra }, check: '', checker, tester: null })
 const W: Workflow = {
-  name: 'build-tier', title: '', owner: 'meaningfy-building:epic-delivery', activate: {}, phases: [],
+  name: 'epic-delivery', title: '', owner: 'meaningfy-building:epic-delivery', activate: {}, phases: [],
   reviews: { SMALL: review(1, false), MEDIUM: review(5, true), LARGE: review(5, true, 1) },
   roles: { reviewer: { agents: ['code-reviewer'] }, checker: { describe: '\\bcheck(er)?\\b' }, tester: { describe: '\\b(adversarial|tester)\\b' } },
 }

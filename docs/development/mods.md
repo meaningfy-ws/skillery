@@ -56,7 +56,7 @@ Claude Code only, a recorded gap in
 ## Workflow files
 
 A workflow file is JSON: the phases of one activity, the skill that owns each phase, the skills
-expected to run (`by: "commit"` or `by: "exit"`), the gates, and, for build-tier, the review set
+expected to run (`by: "commit"` or `by: "exit"`), the gates, and, for epic-delivery, the review set
 per appetite. The schema is the `Workflow` type in
 [`mods/navigator/types.d.ts`](../../mods/navigator/types.d.ts); its one validator is
 [`lib/workflow.ts`](../../mods/navigator/lib/workflow.ts) (`parseWorkflow`,

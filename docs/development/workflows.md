@@ -52,13 +52,14 @@ During `apply`, the lead runs the PLAN stage by stage with a small agent team (p
 challenge, decide and fix, check, merge), scaled by the EPIC's appetite; when the EPIC delivers or
 changes a use case, the acceptance demo comes before `archive`. The loop is owned by [`epic-delivery`](../../skills/epic-delivery/SKILL.md).
 
-### Exploratory (seed → shaped change)
+### Work shaping (seed → gated PLAN)
 ```
 explore  → elicit from seed inputs (changes/<id>/inputs/)
-  → new  → scaffold the change
-  → continue → flesh out EPIC + PLAN
-  → apply
+  → propose → shape the EPIC, derive the PLAN
+  → clarity-gate
 ```
+The flow ends at the clarity gate; delivery is the next session. The steps are owned by
+[`epic-planning`](../../skills/epic-planning/SKILL.md).
 
 ### Brownfield change (delta-only)
 ```
@@ -73,8 +74,11 @@ reads them to show the phase and to warn when a step is skipped.
 
 | Workflow | File | Variants |
 |---|---|---|
-| Build-tier EPIC delivery | [`epic-delivery`](../../skills/epic-delivery/assets/workflows/build-tier.workflow.json) | exploratory, brownfield |
-| Architecting and modelling | [`architecture`](../../skills/architecture/assets/workflows/architecting.workflow.json) | — |
+| EPIC shaping | [`epic-planning`](../../skills/epic-planning/assets/workflows/epic-shaping.workflow.json) | — |
+| EPIC delivery | [`epic-delivery`](../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json) | brownfield |
+| Architecture | [`architecture`](../../skills/architecture/assets/workflows/architecting.workflow.json) | — |
+| Conceptual modelling | [`conceptual-modelling`](../../skills/conceptual-modelling/assets/workflows/modelling.workflow.json) | — |
+| Release | [`meaningfy-release`](../../skills/meaningfy-release/assets/workflows/release.workflow.json) | — |
 | DevOps | [`infrastructure-operations`](../../skills/infrastructure-operations/assets/workflows/devops.workflow.json) | intervention, incident, check-up, unattended |
 | Sales (provisional) | [`sales-operations`](../../skills/sales-operations/assets/workflows/sales.workflow.json) | — |
 
@@ -84,7 +88,7 @@ gives; a file with a new name adds a workflow. The smallest one declares the rep
 (today navigator marks the line `● strict`; blocking in strict mode comes with its stage 3):
 
 ```json
-{ "name": "build-tier", "extends": "build-tier", "mode": "strict" }
+{ "name": "epic-delivery", "extends": "epic-delivery", "mode": "strict" }
 ```
 
 The schema is described in [`mods.md`](mods.md#workflow-files).

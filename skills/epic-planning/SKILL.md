@@ -71,6 +71,8 @@ regenerating the orientation index — belongs to `spec-stewardship`.
 
 The PLAN cuts its tasks into stages; delivery after the gate is `epic-delivery`'s.
 
+The navigator mod tracks these phases from [`assets/workflows/epic-shaping.workflow.json`](assets/workflows/epic-shaping.workflow.json).
+
 ## The shaping session — from an initiative to a backlog of EPICs
 
 One shaping session per initiative, with the developer. The procedure above shapes **one** EPIC;

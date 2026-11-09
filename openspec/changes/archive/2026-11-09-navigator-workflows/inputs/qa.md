@@ -56,3 +56,31 @@ the one engine rule); Q-3 "okay" (rename now). No question is open.
 implementation". Neither option: the variant stays, the shaping session ends at `revise`, and a
 delivery session starts fresh (design D-2). Loading `epic-delivery` inside a shaping session is
 off-method and recorded in the error matrix. Stays SMALL.
+
+## Round 5 — 2026-11-09, during delivery: re-shape (logged)
+
+**Trigger.** The owner asked, in a parallel session: "why does the delivery skill have
+explore/shape/plan?" The decision was relayed by that session and confirmed by the owner in the
+epic session.
+
+- **Q-7. Split build-tier in two workflows?** Shaping and delivery are separate sessions (Q-6); the
+  `work-shaping` variant was a workaround for one file covering both. **Answer: yes.** A new
+  `epic-shaping` workflow in `epic-planning` holds the six shaping phases; the delivery workflow in
+  `epic-delivery` keeps only delivery. This removes D-2's variant activation list, the detour through
+  `revise` mapped from a delivery state, and the variant itself.
+- **Q-8. Where does a fresh delivery session on a gated-but-unstarted change (state `plan`) land?**
+  A workflow switch is a placement and runs no checks, so landing in `apply` would skip the clarity
+  check. **Answer: a first delivery phase `ready`** (entered by change state `plan`, no gates);
+  loading `epic-delivery` then *enters* `apply` and runs the check (PD-3), as before.
+- **Q-9. Reconcile EPIC during delivery loads shaping skills and switches to `epic-shaping` at
+  `revise`. Wanted?** **Answer: accept the switch.** Reconciling is revising the PLAN; loading
+  `epic-delivery` returns. No engine change.
+- **Q-10. Names.** The owner asked "why not epic shaping and epic building/delivery?". **Answer:**
+  ids `epic-shaping` (title "EPIC shaping") and `epic-delivery` (title "EPIC delivery"), matching
+  the owning skills. `build-tier` is renamed now, while this release is already BREAKING for repo
+  files that extend it; "build-tier" stays the method's name for the tier in docs.
+- **Q-11 (review finding W3).** `published` matched `gh release view`, so viewing an older release
+  during `branch` jumped to `back-merge`. **Answer: drop `view`.** A CI-published repo leaves
+  `publish` by the back-merge and shows one `publish:published` warning it can accept.
+
+Appetite stays SMALL: data, tests and docs only; DEC-6 is still the one engine rule.

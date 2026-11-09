@@ -86,7 +86,7 @@ A stage is a group of tasks that ends in one PR. The PLAN cuts the tasks into st
 6. **Merge** on green CI.
 
 The review set of each appetite (the challenge, the check, the tester, the UX lens) is data: the
-`reviews` of the build-tier workflow, [`assets/workflows/build-tier.workflow.json`](assets/workflows/build-tier.workflow.json). The navigator mod reads the same file.
+`reviews` of the epic-delivery workflow, [`assets/workflows/epic-delivery.workflow.json`](assets/workflows/epic-delivery.workflow.json). The navigator mod reads the same file.
 
 After the last stage: the **acceptance demo** *(provisional)*, when the EPIC delivers or changes a
 use case; then the lead archives the change. Each step in detail, and how this loop covers every
