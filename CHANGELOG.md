@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.10.0] - 2026-11-09
+
 ### Added
 
 - `meaningfy-navigator` (Claude Code only, CLI and desktop): a new bundle holding the `navigator`
