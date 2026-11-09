@@ -14,6 +14,7 @@ const file = (skill: string, name: string) => {
   return { path, text: readFileSync(join(REPO, path), 'utf8') }
 }
 const defaults = resolveWorkflows([file('epic-delivery', 'build-tier'), file('architecture', 'architecting'),
+  file('conceptual-modelling', 'modelling'), file('meaningfy-release', 'release'),
   file('infrastructure-operations', 'devops'), file('sales-operations', 'sales')], [])
 
 let n = 0
@@ -301,4 +302,80 @@ test('Error matrix: tasks.md before design.md stays in the variant on revise wit
     read(fresh({ hasDesign: false }), 7), read(fresh(), 8))
   assert.deepEqual(decideCommit(strict), { allow: true })
   assert.deepEqual(keys(reduce(designed, skill('clarity-gate', 9))), [])
+})
+
+// ---------------------------------------------------------------- architecture, modelling, release (navigator-workflows D-1, D-3, D-4, D-5, D-6)
+const archIn = (...signals: Signal[]) => run(workflows(), read(null), skill('architecture', 3), ...signals)
+const toDomain = [write('docs/use-cases/use-case-catalogue.adoc', 4), write('docs/architecture/c4-context.adoc', 5),
+  write('docs/adr/ADR-0001-store.md', 6), write('model/core.yaml', 7)]
+
+test('Architecture to modelling: architecture walks drivers to domain; Next step names conceptual-modelling', () => {
+  assert.deepEqual(where(archIn()), ['architecting', null, 'drivers'])
+  const phases = ['use-cases', 'c4', 'decide', 'domain']
+  let s = archIn()
+  toDomain.forEach((w, i) => { s = reduce(s, w); assert.equal(s.phase, phases[i], w.kind === 'FileTouched' ? w.path : '') })
+  assert.equal(nextStep(s), 'conceptual-modelling')
+  assert.deepEqual(keys(s), [])
+})
+
+test('Architecture: reloading architecture or spawning system-architect keeps the phase', () => {
+  const s = archIn(toDomain[0]!, toDomain[1]!)
+  assert.equal(s.phase, 'c4')
+  assert.equal(reduce(s, skill('architecture', 8)).phase, 'c4')
+  const spawned = reduce(s, { kind: 'SubagentSpawned', id: id(), agentId: 'sa', type: 'system-architect', model: 'm', description: '', at: 8 } as Signal)
+  assert.equal(spawned.phase, 'c4')
+})
+
+test('Architecture to modelling: conceptual-modelling hands over to modelling and the model gates walk it', () => {
+  let s = reduce(archIn(...toDomain), skill('conceptual-modelling', 8))
+  assert.deepEqual(where(s), ['modelling', null, 'elicit'])
+  s = reduce(s, write('model/core.yaml', 9))
+  assert.equal(s.phase, 'model')
+  s = reduce(s, cmd('make generate-models', 10))
+  assert.equal(s.phase, 'generate')
+  s = reduce(s, write('tests/examples/order.yaml', 11))
+  assert.equal(s.phase, 'validate')
+  s = reduce(s, write('openspec/changes/x/evidence/model-review.md', 12))
+  assert.equal(s.phase, 'validate')
+  assert.equal(s.gates.review?.state, 'ok')
+  assert.deepEqual(keys(s), [])
+  assert.equal(reduce(s, skill('conceptual-modelling', 13)).phase, 'validate')
+})
+
+test('Release: the seven steps walk branch to back-merge and mark the release done', () => {
+  let s = run(workflows(), read(null), skill('meaningfy-release', 3))
+  assert.deepEqual(where(s), ['release', null, 'branch'])
+  const steps: [Signal, string][] = [
+    [cmd('git switch -c release/3.11.0', 4), 'bump'],
+    [write('CHANGELOG.md', 5), 'validate'],
+    [cmd('make validate', 6), 'merge'],
+    [cmd('gh pr merge 160', 7), 'publish'],
+    [cmd('gh release view v3.11.0', 8), 'back-merge'],
+  ]
+  for (const [sig, phase] of steps) { s = reduce(s, sig); assert.equal(s.phase, phase, JSON.stringify(sig)) }
+  s = reduce(s, cmd('gh pr create --base develop', 9))
+  assert.equal(s.phase, 'back-merge')
+  assert.equal(s.gates.back?.state, 'ok')
+  assert.deepEqual(keys(s), [])
+  assert.equal(reduce(s, skill('meaningfy-release', 10)).phase, 'back-merge')
+})
+
+test('Release: tagging and pushing a release branch without the skill activate nothing', () => {
+  const s = run(workflows(), read(null), cmd('git tag v1.0.0', 3), cmd('git push -u origin release/1.0.0', 4))
+  assert.deepEqual(where(s), [null, null, null])
+})
+
+test('Release: make validate in branch skips to merge with the cut and bumped gate warnings', () => {
+  const s = run(workflows(), read(null), skill('meaningfy-release', 3), cmd('make validate', 4))
+  assert.equal(s.phase, 'merge')
+  assert.deepEqual(keys(s).sort(), ['process:gate:branch:cut', 'process:gate:bump:bumped'])
+})
+
+test('Release: git tag -l v3* and git tag -d v1.0 do not pass published; git tag v1.0.0 and git push --tags do', () => {
+  const at = (command: string) => run(workflows(), read(null), skill('meaningfy-release', 3), cmd('git switch -c hotfix/1.0.1', 4),
+    write('CHANGELOG.md', 5), cmd('make validate', 6), cmd('gh pr merge 1', 7), cmd(command, 8)).phase
+  assert.equal(at('git tag -l v3*'), 'publish')
+  assert.equal(at('git tag -d v1.0'), 'publish')
+  assert.equal(at('git tag -a v1.0.0 -m x'), 'back-merge')
+  assert.equal(at('git push origin main --tags'), 'back-merge')
 })

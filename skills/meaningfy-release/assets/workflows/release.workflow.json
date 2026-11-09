@@ -1,0 +1,20 @@
+{
+  "name": "release", "title": "Release", "owner": "meaningfy-release",
+  "activate": { "skills": ["meaningfy-release"] },
+  "phases": [
+    { "id": "branch", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["cut"], "enter": {} },
+    { "id": "bump", "owner": "meaningfy-release", "expect": [], "gates": ["bumped"], "enter": {} },
+    { "id": "validate", "owner": "meaningfy-release", "expect": [], "gates": ["validated"], "enter": {} },
+    { "id": "merge", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["merged"], "enter": {} },
+    { "id": "publish", "owner": "meaningfy-release", "expect": [], "allow": ["ci-cd-delivery"], "gates": ["published"], "enter": {} },
+    { "id": "back-merge", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["back"], "enter": {} }
+  ],
+  "gates": {
+    "cut": { "kind": "command", "match": "git (switch -c|checkout -b) (release|hotfix)/" },
+    "bumped": { "kind": "file", "glob": "CHANGELOG.md" },
+    "validated": { "kind": "command", "match": "\\bmake validate\\b", "run": "make validate" },
+    "merged": { "kind": "command", "match": "gh pr merge" },
+    "published": { "kind": "command", "match": "gh release (create|view)|git tag( -[as])? v\\d|git push\\b.*--tags" },
+    "back": { "kind": "command", "match": "gh pr create\\b.*--base[ =]develop|git merge\\b.*\\bmain\\b" }
+  }
+}

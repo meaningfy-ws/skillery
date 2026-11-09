@@ -84,7 +84,8 @@ const known = new Set([
 
 test('TC-16 every default workflow file parses and names only skills and agents that exist', () => {
   assert.deepEqual(defaults.map(d => d.path.split('/').at(-1)).sort(),
-    ['architecting.workflow.json', 'build-tier.workflow.json', 'devops.workflow.json', 'sales.workflow.json'])
+    ['architecting.workflow.json', 'build-tier.workflow.json', 'devops.workflow.json', 'modelling.workflow.json',
+      'release.workflow.json', 'sales.workflow.json'])
   assert.ok(external.includes('test-driven-development') && external.includes('openspec-explore'))
   for (const d of defaults) {
     const r = parseWorkflow(d, 'default')

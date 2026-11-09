@@ -17,6 +17,7 @@ const file = (skill: string, name: string): Source => {
   return { path, text: readFileSync(join(REPO, path), 'utf8') }
 }
 const DEFAULT_SOURCES = [file('epic-delivery', 'build-tier'), file('architecture', 'architecting'),
+  file('conceptual-modelling', 'modelling'), file('meaningfy-release', 'release'),
   file('infrastructure-operations', 'devops'), file('sales-operations', 'sales')]
 const defaults = resolveWorkflows(DEFAULT_SOURCES, [])
 const buildTier = defaults.workflows.find(w => w.name === 'build-tier')!
