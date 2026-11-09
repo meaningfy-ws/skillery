@@ -210,6 +210,34 @@ appropriate". Decisions taken while delivering:
      `epic-planning` `seed-intake.md`), the two stage runs in `docs/development/README.md`, and the
      L4 nits (navigator band, split sentences, "last build stage", ledger "—", docs-gate wording).
 - **DL-4 Rejected:** `agents/code-reviewer.md` still says L2 runs the suite; task 3.3 owns it.
+- **DL-5 Stage 4 review fixes (accepted findings; L1, L2, L3, L4, L5, the adversarial tester).**
+  1. `check` becomes a linear scan, not a backtracking regex (L1 ReDoS, measured 8.5 s at 9 KB):
+     after stripping quoted text and heredoc bodies, it splits the command into words at shell
+     separators, tracks loop depth (`while`/`until`/`for` … `do` … `done`), and denies when a
+     `sleep` *command word* (first word of a simple command, also after `timeout N`, `/bin/`, `$(`)
+     runs at depth ≥ 1. This also closes the nested-loop shortcut. A `sleep` inside a word
+     (`--sleep-time`, `my-sleep-config`) is not a command word, so it is allowed.
+  2. `watch` is denied only as a command word whose own options (tokens before the first non-option)
+     include `-n`/`--interval`; `grep watch -n`, `git log --grep watch -n 5`, `gh run watch
+     --interval 10` and `watch kubectl get pods -n x` run.
+  3. Heredoc bodies are not code: they are stripped like quoted text.
+  4. Input is capped (`shortcut:` comment) and every case in the tester's table finishes in < 200 ms.
+  5. The CLI runs when invoked through a symlink (compare real paths).
+  6. The opencode plugin loads the check with a guarded dynamic import; a missing module disables
+     only the check, never the plugin.
+  7. Generator: a malformed `hooks.json` is an error naming the file; the mod file names are named
+     constants; `MOD_DATA` is linked by mod kind (modules mod), not by name, so the test fixture
+     rename is reverted; the three helpers shrink to the one with logic.
+  8. Lint `mod_bindings_match`: only plain mods count, both directions (a plain mod with no intent
+     is an error).
+  9. Docs: `mods.md` owns the no-poll-loops facts; `hook-bindings.md` points, says five `mod`
+     intents and scopes "opencode has no mods" to navigator; `docs/environment/dual-cli/`
+     `mapping.md`, `compatibility.md` and `setup-opencode.md` agree with the corrected hook
+     bindings; the governance Mod row notes the opencode reuse; `AGENTS.md` drops the parenthetical.
+  10. The Makefile `mods` loop uses `if … then … fi`.
+- **DL-6 Rejected (stage 4):** renaming `check` (D-5 names it); the message restated in the mod
+  and pinned in its test (D-5 fixes that text); a constant for the `bash` tool id and splitting one
+  test name (nits, no defect).
 
 ## Algorithm — the check ledger (D-1)
 
