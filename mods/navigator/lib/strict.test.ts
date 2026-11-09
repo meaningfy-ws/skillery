@@ -76,8 +76,8 @@ test('spawn: an over-spawn is denied, a model above the parent is rewritten, loo
 
 test('the reminder is built from file data only', () => {
   assert.equal(reminder(run(started(), ...read('strict'))),
-    'Phase apply of EPIC delivery (owner skill: epic-delivery). Expected: test-driven-development, cosmic-python. ' +
-    'Gates: clarity, validate. Workflow file: skills/epic-delivery/assets/workflows/epic-delivery.workflow.json.')
+    'Phase apply of EPIC delivery (owner skill: epic-delivery). Expected: test-driven-development, cosmic-python, meaningfy-code-review, verification-before-completion. ' +
+    'Gates: clarity, full-gates. Workflow file: skills/epic-delivery/assets/workflows/epic-delivery.workflow.json.')
   assert.equal(reminder(run(started(), ...read('loose'))), null)
 })
 

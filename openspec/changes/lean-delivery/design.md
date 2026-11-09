@@ -261,6 +261,42 @@ appropriate". Decisions taken while delivering:
      file is linked from the skill; `docs/environment/navigator.md` rewrapped; "as-built" hyphenated.
 - **DL-8 Rejected (stage 2):** one discovery helper for the default workflow lists in the
   navigator tests (task 2.2 names the lists; no further workflow is planned in this EPIC).
+- **DL-9 Stage 3 build decisions.**
+  1. D-10 needed one more tooling change: the agent-conformance lint and
+     `docs/development/agent-template.md` required `tools`; `tools` is now optional (an agent
+     without it inherits the session's tools), a string value is still flagged.
+  2. Command gates guard against lookalikes (as DL-7.1): the default `full-gates` is
+     `\bmake check-all(?![\w-])`; skillery's overrides use `\bmake validate(?![\w-])`, so
+     `make validate-spine` does not pass them.
+  3. Task 3.4 ran non-interactively (opencode 2.1.4, `opencode run`, a local stdio MCP server): the
+     rendered `implementer` called the MCP tool and had no subagent tool. That is the by-hand probe's
+     result; the reviewer's `edit` deny is proven by the installer test, not the probe.
+- **DL-10 Stage 3 review fixes (accepted findings; L1–L5, the adversarial tester).**
+  1. The reviewer stays read-only through code intelligence too: its body says it uses only
+     read-only queries of those tools (symbol reads, impact) and never one that edits files (a
+     symbol rename or replace). RISK-6 rises to Medium; the lead's `git status` check before the fix
+     round (DL-3.2) stays the backstop on both CLIs. No product's tool is named (no-go).
+  2. The agent lint allows a missing `tools` only when `disallowedTools` names `Agent`, so inheriting
+     the session's tools is always a written choice; a negative test.
+  3. Command gates: `openspec` is `\bopenspec validate(?![\w-])`; `full-gates` (default and
+     skillery's override) also excludes `-n`/`--dry-run`.
+  4. Tests: the accept test uses an inline `tasks.md` fixture (the change's own file moves at
+     archive); DD-36.5 (one gate in two phases) is tested again on an inline workflow; test names
+     say what they assert; the override tests say `extends` replaces `gates` whole.
+  5. Gherkin: each agent feature gains "asked to fan out, it has no tool to start another agent".
+  6. Agents: the code-intelligence line moves under *Dispatch contract* → *Side effects* and names
+     `epic-delivery` as its owner; the reviewer's L2 line points to `meaningfy-code-review`.
+  7. Docs: `docs/development/workflows.md` shows only the changed gate in its `extends` example and
+     points to `docs/navigator/`; its phase sentence points to `navigator.md` and `epic-delivery`.
+- **DL-11 Rejected (stage 3):** one shared signal-builder module for all navigator tests (a
+  refactor of seven files beyond this stage, as DL-8); renaming `full-gates`; a deeper `extends`
+  merge (a navigator engine change, a no-go here; a follow-up); a structural deny list of products'
+  MCP tools (names products, a no-go); RISK-11 stays accepted as DEC-11 decided (Q-12), named in the
+  PR; a guard on stale or foreign `acceptance.md` (change-agnostic globs, as DL-7.2).
+- **DL-12 Checker finding (stage 3).** The durable rule "an agent gets the fewest tools its job
+  needs" (`skill-crafting-method`) gains the DEC-11 exception through a MODIFIED delta: an agent
+  that needs the project's code-intelligence tools may inherit the session's tools, only when it
+  denies `Agent`; `docs/development/README.md` narrates it.
 
 ## Algorithm — the check ledger (D-1)
 
@@ -364,7 +400,7 @@ No phase of the workflow file repeats a row (FC-3, FC-6).
 | RISK-3 | `verify` → `accept` breaks repo overrides | Low | A workflow-file error | CHANGELOG BREAKING with the fix |
 | RISK-4 | A repo's `AGENTS.md` names no checks | Medium | Briefs cannot be written | D-12 slot; error-matrix row |
 | RISK-5 | The deny hook false-positives | Low | A blocked command | Loops only; quoted text ignored; fail open; test table |
-| RISK-6 | A reviewer reaches an MCP edit tool | Low | An edit in a review | Read-only brief and body line; the lead reads `git status` before the fix round |
+| RISK-6 | A reviewer reaches an MCP edit tool | Medium (DL-10.1) | An edit in a review | Read-only brief and body line; the lead reads `git status` before the fix round |
 | RISK-7 | A docs stage in every EPIC | Medium | Lost leanness | Runs only on its condition; else "no docs owed" (D-8) |
 | RISK-8 | The lead's band shows *documentation* during the build | Medium | A confusing band | Switch back by loading a delivery skill (D-19); noted in the navigator guide |
 | RISK-9 | A project names a task gate too narrow to catch its own regressions | Low | A red stage PR | Full gates once at the stage PR plus CI (R3-2) |

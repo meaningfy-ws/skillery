@@ -196,6 +196,18 @@ test("TC-19 every live repo agent renders", () => {
   );
 });
 
+// lean-delivery D-10: no tool list (the session's tools, MCP included, stay at opencode's default), no fan-out.
+test("implementer and code-reviewer render with only the skill tool and no task permission", () => {
+  const catalogue = loadCatalogue(path.join(REPO, "tools", "opencode-catalogue.json"));
+  for (const stem of ["implementer", "code-reviewer"]) {
+    const { content, gaps } = renderAgent(catalogue.agents[stem], agentBody(stem, path.join(REPO, "agents")), MAP);
+    assert.match(content, /^tools: \{"skill":true\}$/m, stem);
+    assert.match(content, /^permission: .*"task":"deny"/m, stem);
+    assert.ok(!gaps.some((g) => g.includes("'Agent'")), stem);
+    assert.equal(/^permission: .*"edit":"deny"/m.test(content), stem === "code-reviewer", stem);
+  }
+});
+
 test("agentBody splits at the second --- line", () => {
   const root = fixture();
   assert.equal(agentBody("ag", path.join(root, "agents")), "\nBody line\n");

@@ -33,6 +33,18 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   `project-setup`: the verifiable subagent report, a rule against sleep loops when waiting, a limit
   of two clarity-gate runs on a TINY or SMALL PLAN, a flaky-test item in the testing checklist, and a
   Checks block in the generated `AGENTS.md`.
+- **BREAKING** `meaningfy-navigator`: the EPIC delivery workflow's `verify` phase is now `accept`
+  (the acceptance demo's evidence file ends it), and its `validate` gate is `full-gates`, which by
+  default is `make check-all`. A repository file in `docs/navigator/` that `extends` `epic-delivery`
+  and names `verify` or `validate` must rename them to `accept` and `full-gates`; because `extends`
+  replaces `gates` whole, a file that sets the command also lists `acceptance` (glob
+  `openspec/changes/*/evidence/acceptance.md`) beside the other gates. A repository whose full checks
+  are another target, such as `make validate`, sets it in `full-gates`; the documentation workflow's
+  `docs-gate` is `make build-docs` by default and is overridden the same way. See
+  [Workflow files](docs/development/workflows.md#workflow-files).
+- `implementer` and `code-reviewer`: no tool list, so they use the session's tools (MCP included),
+  and neither can start another agent. On opencode both get the skill tool and a denied `task`
+  permission. The reviewer's L2 text reads the stage's gate report.
 
 ## [3.11.0] - 2026-11-09
 

@@ -1,34 +1,35 @@
 {
   "name": "epic-delivery", "title": "EPIC delivery", "owner": "epic-delivery",
-  "activate": { "openChange": true, "skills": ["epic-delivery", "openspec-apply-change", "spec-stewardship"] },
+  "activate": { "openChange": true, "skills": ["epic-delivery", "openspec-apply-change", "openspec-archive-change", "spec-stewardship"] },
   "variants": [
-    { "name": "brownfield", "phases": ["apply", "archive"], "activate": { "change": "tasks-no-design" } }
+    { "name": "brownfield", "phases": ["apply", "accept", "archive"], "activate": { "change": "tasks-no-design" } }
   ],
   "phases": [
     { "id": "ready", "owner": "epic-delivery", "expect": [], "enter": { "change": "plan" } },
     { "id": "apply", "owner": "epic-delivery",
-      "expect": [{ "skill": "test-driven-development", "by": "commit" }, { "skill": "cosmic-python", "by": "exit" }],
+      "expect": [{ "skill": "test-driven-development", "by": "commit" }, { "skill": "cosmic-python", "by": "exit" },
+                 { "skill": "meaningfy-code-review", "by": "exit" }, { "skill": "verification-before-completion", "by": "exit" }],
       "allow": ["meaningfy-code-review", "systematic-debugging", "subagent-driven-development"],
-      "gates": ["clarity", "validate"],
+      "gates": ["clarity", "full-gates"],
       "enter": { "skills": ["openspec-apply-change", "epic-delivery"], "change": ["tasks-partial", "tasks-no-design"] } },
-    { "id": "verify", "owner": "meaningfy-code-review",
-      "expect": [{ "skill": "meaningfy-code-review", "by": "exit" }, { "skill": "verification-before-completion", "by": "exit" }],
-      "gates": ["validate"], "enter": { "change": "tasks-done" } },
+    { "id": "accept", "owner": "epic-delivery", "expect": [],
+      "gates": ["acceptance"], "enter": { "change": "tasks-done" } },
     { "id": "archive", "owner": "spec-stewardship", "expect": [{ "skill": "spec-stewardship", "by": "exit" }],
-      "gates": ["validate", "openspec"], "enter": { "skills": ["openspec-archive-change"], "change": "archived" } }
+      "gates": ["openspec"], "enter": { "skills": ["openspec-archive-change"], "change": "archived" } }
   ],
   "gates": {
-    "clarity":  { "kind": "skill", "skill": "clarity-gate" },
-    "validate": { "kind": "command", "match": "\\bmake validate\\b", "run": "make validate" },
-    "openspec": { "kind": "command", "match": "\\bopenspec validate\\b", "run": "openspec validate {change} --strict" }
+    "clarity":    { "kind": "skill", "skill": "clarity-gate" },
+    "full-gates": { "kind": "command", "match": "\\bmake check-all(?![\\w-])(?![^&;|]*\\s(-n|--dry-run|--just-print)(?![\\w-]))","run": "make check-all" },
+    "acceptance": { "kind": "file", "glob": "openspec/changes/*/evidence/acceptance.md" },
+    "openspec":   { "kind": "command", "match": "\\bopenspec validate(?![\\w-])", "run": "openspec validate {change} --strict" }
   },
   "reviews": {
     "TINY":   { "challenge": "One review pass: L2 spec and tests, L3 structure with ADR conformance",
                 "reviewers": 1, "lenses": ["L2", "L3"], "ux": null,
-                "check": "Folded into the lead's re-run", "checker": false, "tester": null },
+                "check": "The stage's full gates and CI; the single review pass is the four-eyes pass", "checker": false, "tester": null },
     "SMALL":  { "challenge": "One review pass: L2 spec and tests, L3 structure with ADR conformance",
                 "reviewers": 1, "lenses": ["L2", "L3"], "ux": null,
-                "check": "Folded into the lead's re-run", "checker": false, "tester": null },
+                "check": "The stage's full gates and CI; the single review pass is the four-eyes pass", "checker": false, "tester": null },
     "MEDIUM": { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5, "ux": null,
                 "check": "Checker", "checker": true, "tester": null },
     "LARGE":  { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5,

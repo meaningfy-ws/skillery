@@ -47,3 +47,8 @@ Feature: implementer turns one ready task into tested code and reports back
     Given the project has symbol-level editing tools
     When the task changes one function body
     Then the implementer replaces that symbol rather than rewriting the whole file
+
+  Scenario: Asked to fan out, the implementer has no tool to start another agent
+    When the caller asks the implementer to dispatch another agent for part of the task
+    Then it has no tool to start one
+    And it says so in its report

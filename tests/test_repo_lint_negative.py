@@ -437,6 +437,15 @@ def test_agent_missing_field_is_flagged(tmp_path):
     assert _conforming(tmp_path, drop=("type",)) == ["agents/x.md: missing required frontmatter field 'type'"]
 
 
+def test_agent_without_tools_needs_agent_denied_and_a_tools_string_is_still_flagged(tmp_path):
+    # lean-delivery D-10, DL-10.2: no `tools` means the agent inherits the session's tools; a written choice
+    assert _conforming(tmp_path, drop=("tools",)) == [
+        "agents/x.md: no 'tools' list and 'disallowedTools' does not deny 'Agent' "
+        "(docs/development/agent-template.md)"]
+    assert _conforming(tmp_path, {"disallowedTools": ["Write", "Agent"]}, drop=("tools",)) == []
+    assert _conforming(tmp_path, {"tools": "Read, Grep"}) == ["agents/x.md: 'tools' must be a YAML list"]
+
+
 def test_agent_bundle_field_is_flagged(tmp_path):
     assert _conforming(tmp_path, {"bundle": "meaningfy-building"}) == [
         "agents/x.md: frontmatter field 'bundle' is not in the agent contract (docs/development/agent-template.md)"]
