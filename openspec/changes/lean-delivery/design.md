@@ -89,6 +89,8 @@
   methods in one file, no on-demand run). Phases have no `enter`; each moves by a gate of its own
   (engine rule: a passed gate moves to the next phase with no `enter`):
 
+  Patterns as amended by DL-7.1 (lookalikes excluded).
+
   | Phase | Gate (kind: match) | Written or run by |
   |---|---|---|
   | inventory | `owed` (file: `openspec/changes/*/evidence/docs-owed.md`) | Lead: the pages owed |
@@ -100,7 +102,8 @@
   Engine-checked: inventory → write (docs-owed written) → cold-read (`make build-docs`; verify's
   gate passed, so no warning) → publish (cold-read written); `gh pr create` passes `published`.
   A later file write marks `docs-gate` stale, as for every command gate. On demand without a
-  change, only the two command gates move the band (accepted). Where a repo's docs-gate is a command
+  change, the file gates' globs are change-agnostic, so a docs-owed write still moves inventory to
+  write (accepted, DL-7.2). Where a repo's docs-gate is a command
   builders run all the time (skillery: `make validate`), one run during *inventory* jumps the band
   to cold-read past write (accepted, same reason).
 - **D-7 C4 and ADRs at docs time (DEC-9, R3-1).** The docs stage, through `architecture`'s method,
@@ -238,6 +241,26 @@ appropriate". Decisions taken while delivering:
 - **DL-6 Rejected (stage 4):** renaming `check` (D-5 names it); the message restated in the mod
   and pinned in its test (D-5 fixes that text); a constant for the `bash` tool id and splitting one
   test name (nits, no defect).
+- **DL-7 Stage 2 review fixes (accepted findings; L1–L5, the adversarial tester).**
+  1. Gate patterns stop matching lookalikes: `docs-gate` `\bmake build-docs(?![\w-])`;
+     `published` `\bgh pr create(?![\w-])` plus the release workflow's help/dry-run exclusion.
+  2. Engine behaviour the tester found is pinned by passing tests and accepted, not changed (the
+     EPIC's no-go on new navigator features): a later phase's file gate written out of order moves
+     the band to that phase; a command inside quotes matches a command gate (every workflow);
+     `docs-owed.md` written with no change loaded still moves inventory to write (D-6's "only the
+     two command gates" wording was wrong: the file gates' globs are change-agnostic); loading
+     `architecture` during inventory warns (it is allowed in write only).
+  3. The D-8 test asserts the epic-delivery phase after `docs-owed.md` is written; tests are split
+     one behaviour each, named by behaviour, with a shared walk helper.
+  4. One owner per rule: `epic-delivery` (`stage-loop.md`) owns when the docs stage runs and the
+     load order, `technical-writing` points to it; `architecture` owns the ADR-status rule,
+     `technical-writing` points to it; the cold-reader scope is stated once in `technical-writing`'s
+     cold-reader section as task-oriented pages (how-to, tutorial, installation manual).
+  5. Boundaries: `technical-writing` owns the documentation workflow and the cold reader, relates
+     to `architecture`; `architecture` relates to `technical-writing` (the docs stage). The workflow
+     file is linked from the skill; `docs/environment/navigator.md` rewrapped; "as-built" hyphenated.
+- **DL-8 Rejected (stage 2):** one discovery helper for the default workflow lists in the
+  navigator tests (task 2.2 names the lists; no further workflow is planned in this EPIC).
 
 ## Algorithm — the check ledger (D-1)
 

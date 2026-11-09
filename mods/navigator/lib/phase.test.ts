@@ -16,7 +16,7 @@ const file = (skill: string, name: string) => {
 const defaults = resolveWorkflows([file('epic-delivery', 'epic-delivery'), file('epic-planning', 'epic-shaping'),
   file('architecture', 'architecting'),
   file('conceptual-modelling', 'modelling'), file('meaningfy-release', 'release'),
-  file('infrastructure-operations', 'devops'), file('sales-operations', 'sales')], [])
+  file('infrastructure-operations', 'devops'), file('sales-operations', 'sales'), file('technical-writing', 'documentation')], [])
 
 let n = 0
 const id = () => `x${++n}`
@@ -389,17 +389,22 @@ test('Architecture to modelling: conceptual-modelling hands over to modelling an
   assert.equal(reduce(s, skill('conceptual-modelling', 13)).phase, 'validate')
 })
 
+// Reduce each signal in turn and assert the phase it lands in.
+const walk = (s: NavState, steps: [Signal, string][]): NavState => {
+  for (const [sig, phase] of steps) { s = reduce(s, sig); assert.equal(s.phase, phase, JSON.stringify(sig)) }
+  return s
+}
+
 test('Release: the seven steps walk branch to back-merge and mark the release done', () => {
   let s = run(workflows(), read(null), skill('meaningfy-release', 3))
   assert.deepEqual(where(s), ['release', null, 'branch'])
-  const steps: [Signal, string][] = [
+  s = walk(s, [
     [cmd('git switch -c release/3.11.0', 4), 'bump'],
     [write('CHANGELOG.md', 5), 'validate'],
     [cmd('make validate', 6), 'merge'],
     [cmd('gh pr merge 160', 7), 'publish'],
     [cmd('git push origin v3.11.0', 8), 'back-merge'],
-  ]
-  for (const [sig, phase] of steps) { s = reduce(s, sig); assert.equal(s.phase, phase, JSON.stringify(sig)) }
+  ])
   s = reduce(s, cmd('gh pr create --base develop', 9))
   assert.equal(s.phase, 'back-merge')
   assert.equal(s.gates.back?.state, 'ok')
@@ -457,3 +462,48 @@ for (const [command, passes] of BACK) {
     assert.equal(s.gates.back?.state ?? 'none', passes ? 'ok' : 'none')
   })
 }
+
+// ---------------------------------------------------------------- documentation (lean-delivery D-6, D-8, D-19)
+// Test names carry the behaviour; the ids D-6 (walk, published), D-8 (docs-owed, archive) and D-19 (switching) are here.
+const OWED = 'openspec/changes/lean-delivery/evidence/docs-owed.md'
+const COLD = 'openspec/changes/lean-delivery/evidence/cold-read.md'
+const docs = () => run(workflows(), read(null), skill('technical-writing', 3))
+
+test('Documentation: the phases walk from inventory to publish as the gates pass (D-6)', () => {
+  let s = docs()
+  assert.deepEqual(where(s), ['documentation', null, 'inventory'])
+  s = walk(s, [
+    [write(OWED, 4), 'write'],
+    [cmd('make build-docs', 5), 'cold-read'],
+    [write(COLD, 6), 'publish'],
+  ])
+  assert.deepEqual(keys(s), [])
+})
+
+test('Documentation: gh pr create passes published from the publish state (D-6)', () => {
+  const s = reduce(walk(docs(), [[write(OWED, 4), 'write'], [cmd('make build-docs', 5), 'cold-read'], [write(COLD, 6), 'publish']]),
+    cmd('gh pr create --base develop', 7))
+  assert.equal(s.phase, 'publish')
+  assert.equal(s.gates.published?.state, 'ok')
+})
+
+// stage 3 renames the epic-delivery verify phase to accept
+test('Documentation: docs-owed written while epic-delivery is active does not move the documentation workflow (D-8)', () => {
+  const s = reduce(run(workflows(), read(change(9, 9)), skill('epic-delivery', 3)), write(OWED, 4))
+  assert.equal(s.workflow, 'epic-delivery')
+  assert.equal(s.phase, 'verify')
+  assert.equal(s.gates.owed, undefined)
+})
+
+test('Documentation: archive lands in epic-delivery archive after docs-owed is written (D-8)', () => {
+  const s = reduce(run(workflows(), read(change(9, 9)), skill('epic-delivery', 3), write(OWED, 4)), skill('openspec-archive-change', 5))
+  assert.deepEqual(where(s), ['epic-delivery', null, 'archive'])
+})
+
+test('Documentation: technical-writing mid-apply shows documentation; epic-delivery or openspec-apply-change switches back (D-19)', () => {
+  const apply = run(workflows(), read(change(3, 9)), skill('epic-delivery', 3))
+  const mid = reduce(apply, skill('technical-writing', 4))
+  assert.deepEqual(where(mid), ['documentation', null, 'inventory'])
+  assert.equal(reduce(mid, skill('epic-delivery', 5)).workflow, 'epic-delivery')
+  assert.equal(reduce(mid, skill('openspec-apply-change', 5)).workflow, 'epic-delivery')
+})

@@ -28,7 +28,7 @@ decision; an as-built fact that contradicts an ADR SHALL go to the lead as a fin
 - **THEN** it reports a finding to the lead and leaves the ADR unchanged
 
 ### Requirement: The cold reader runs where a page changed
-The cold reader SHALL run on every task-oriented page (how-to, tutorial, manual page) the docs
+The cold reader SHALL run on every task-oriented page (how-to, tutorial, installation manual) the docs
 stage writes, and on any how-to or tutorial page a build stage changed; explanation and reference
 pages SHALL get the lightweight clarity check.
 

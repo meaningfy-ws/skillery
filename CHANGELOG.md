@@ -17,6 +17,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   `for` with `sleep`, or `watch -n`) with a message to run the command in the foreground, or once in
   the background and wait for it. A single `sleep`, `gh pr checks --watch` and `wait` still run.
   If the check fails, the command runs.
+- `technical-writing`: a documentation workflow (inventory, write, verify, cold-read, publish) that
+  navigator follows when the skill is loaded, for the docs stage of an epic session or on demand.
+  Architecture pages are brought to as-built and no ADR status changes.
 
 ### Changed
 
