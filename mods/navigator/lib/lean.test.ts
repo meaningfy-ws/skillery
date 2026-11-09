@@ -7,7 +7,7 @@ import { bandModel } from './view.ts'
 import { resolveWorkflows } from './workflow.ts'
 
 const REPO = join(import.meta.dirname, '..', '..', '..')
-const path = 'skills/epic-delivery/assets/workflows/build-tier.workflow.json'
+const path = 'skills/epic-delivery/assets/workflows/epic-delivery.workflow.json'
 const { workflows } = resolveWorkflows([{ path, text: readFileSync(join(REPO, path), 'utf8') }], [])
 const thresholds = JSON.parse(readFileSync(join(REPO, 'skills/guardrails/assets/session-thresholds.json'), 'utf8'))
 let n = 0

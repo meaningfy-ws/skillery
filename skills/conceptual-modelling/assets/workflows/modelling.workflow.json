@@ -1,0 +1,18 @@
+{
+  "name": "modelling", "title": "Conceptual modelling", "owner": "conceptual-modelling",
+  "activate": { "skills": ["conceptual-modelling", "linkml-engineering"], "agents": ["conceptual-modeller"] },
+  "phases": [
+    { "id": "elicit", "owner": "conceptual-modelling", "expect": [], "allow": ["modelling-conventions"], "gates": ["schema"], "enter": {} },
+    { "id": "model", "owner": "conceptual-modelling", "expect": [], "allow": ["linkml-engineering", "modelling-conventions"],
+      "gates": ["generate"], "enter": {} },
+    { "id": "generate", "owner": "linkml-engineering", "expect": [], "gates": ["examples"], "enter": {} },
+    { "id": "validate", "owner": "conceptual-modelling", "expect": [{ "skill": "conceptual-modelling", "by": "exit" }],
+      "allow": ["formal-reasoning"], "gates": ["review"], "enter": {} }
+  ],
+  "gates": {
+    "schema": { "kind": "file", "glob": "model/**" },
+    "generate": { "kind": "command", "match": "\\bmake generate-models\\b", "run": "make generate-models" },
+    "examples": { "kind": "file", "glob": "**/examples/**" },
+    "review": { "kind": "file", "glob": "openspec/changes/*/evidence/**" }
+  }
+}

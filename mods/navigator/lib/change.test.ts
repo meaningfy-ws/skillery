@@ -140,7 +140,7 @@ test('readChange: empty proposal and null tasks give a change with null appetite
   assert.deepEqual(r.change, { id: 'x', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: false, hasTasks: false })
 })
 
-test('appetitesOf: the build-tier reviews keys; nothing for a missing or odd workflow', () => {
+test('appetitesOf: the epic-delivery reviews keys; nothing for a missing or odd workflow', () => {
   assert.deepEqual(appetitesOf({ reviews: { SMALL: {}, 'VERY LARGE': {} } }), ['SMALL', 'VERY LARGE'])
   for (const odd of [null, undefined, 'x', {}, { reviews: null }, { reviews: 'x' }]) assert.deepEqual(appetitesOf(odd), [])
 })

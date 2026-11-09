@@ -1,4 +1,4 @@
-# Traces to: agents/code-reviewer.md (Dispatch contract, Report); docs/development/agent-template.md; D-16.
+# Traces to: agents/code-reviewer.md (Dispatch contract, Report); docs/development/agent-template.md; D-16; openspec/changes/lean-delivery (DEC-5, DEC-9, DEC-11).
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: code-reviewer reviews one change through exactly one lens
   A caller fans out a full pre-PR review as five dispatches, one lens each,
@@ -33,7 +33,19 @@ Feature: code-reviewer reviews one change through exactly one lens
     Then it returns "one lens required (L1–L5)"
     And it reviews nothing
 
-  Scenario: L2 runs the test suite
-    Given the change has one failing test
+  Scenario: L2 reads the gate report instead of running the suite
+    Given the stage's gate report shows one failing test
     When the caller dispatches the code-reviewer with lens "L2"
-    Then the findings report the failing test
+    Then the findings report the failing test from the gate report
+    And the reviewer does not re-run the test suite
+
+  Scenario: L2 checks that changed docs agree with the code
+    Given the diff renames a phase that a how-to page still names
+    When the caller dispatches the code-reviewer with lens "L2"
+    Then the findings name the page and the stale name
+
+  Scenario: The reviewer uses the project's code-intelligence tools when present
+    Given the project has an impact-analysis tool
+    When the caller dispatches the code-reviewer with lens "L5"
+    Then the findings cite the tool's blast radius for each refactor candidate
+    And the reviewer edits no file

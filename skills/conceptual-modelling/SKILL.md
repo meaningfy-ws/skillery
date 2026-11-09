@@ -113,6 +113,8 @@ delivery is `epic-delivery`'s.
 Once validated, the instances and the questions are kept as tests, so they go on verifying the
 model. The review's record goes to `evidence/` in the change.
 
+The navigator mod tracks these phases from [`assets/workflows/modelling.workflow.json`](assets/workflows/modelling.workflow.json).
+
 ## Boundary & Related Skills
 
 **This skill OWNS:** the living conceptual model (representation-agnostic source of domain truth);

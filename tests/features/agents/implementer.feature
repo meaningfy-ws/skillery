@@ -1,4 +1,4 @@
-# Traces to: agents/implementer.md (Dispatch contract, Report, Glue); docs/development/agent-template.md; D-7, D-14.
+# Traces to: agents/implementer.md (Dispatch contract, Report, Glue); docs/development/agent-template.md; D-7, D-14; openspec/changes/lean-delivery (DEC-4, DEC-11).
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: implementer turns one ready task into tested code and reports back
   A delegated run cannot obtain consent, so it never commits: it reports,
@@ -37,3 +37,13 @@ Feature: implementer turns one ready task into tested code and reports back
     When the implementer reports
     Then the report carries a proposed spec fix for the caller or the epic-planner to apply
     And the code is not patched to hide the failure
+
+  Scenario: The report carries each gate run
+    Given the implementer ran the project's task gate before reporting
+    When the implementer reports
+    Then the report names the command, exit code, test counts and duration of that run
+
+  Scenario: The implementer edits symbols with the project's code-intelligence tools
+    Given the project has symbol-level editing tools
+    When the task changes one function body
+    Then the implementer replaces that symbol rather than rewriting the whole file

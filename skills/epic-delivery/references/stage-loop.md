@@ -2,7 +2,7 @@
 
 The six steps of a stage, what each scales with, and how the loop covers every check of the longer
 loop it replaces. The summary is in the skill, and the review set of each appetite is in
-[`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json); this page adds the detail.
+[`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json); this page adds the detail.
 
 ## The steps
 
@@ -21,7 +21,7 @@ loop it replaces. The summary is in the skill, and the review set of each appeti
    - After each task the lead re-runs the project's gates, reads the diff, reads the upstream
      findings and files the issues they call for, and commits the task.
 3. **Challenge.** In parallel, scaled by appetite: the reviewers, and the adversarial tester where
-   the appetite's review set names it ([`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json)). Reviewers are read-only.
+   the appetite's review set names it ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)). Reviewers are read-only.
 4. **Decide and fix.**
    - The lead sorts the findings. Each accepted one becomes a decision in `design.md` before any
      code changes (the Rule of Divergence: the spec first, then the code). The rest are rejected
@@ -29,7 +29,7 @@ loop it replaces. The summary is in the skill, and the review set of each appeti
    - A finding that belongs to one of our libraries becomes an upstream issue, not a fix here.
    - Fixers apply the decisions in batches: security first, then structure. The lead re-runs the
      gates.
-5. **Check.** Where the appetite's review set has a checker ([`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json)), one fresh checker over the
+5. **Check.** Where the appetite's review set has a checker ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)), one fresh checker over the
    whole stage. Where it has none, the lead's re-run of the gates is the check, and the single
    review pass is the four-eyes pass. A
    cold reader runs on any how-to or tutorial page the stage changed, at any appetite. An unmet item

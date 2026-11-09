@@ -16,10 +16,12 @@ const file = (skill: string, name: string): Source => {
   const path = `skills/${skill}/assets/workflows/${name}.workflow.json`
   return { path, text: readFileSync(join(REPO, path), 'utf8') }
 }
-const DEFAULT_SOURCES = [file('epic-delivery', 'build-tier'), file('architecture', 'architecting'),
+const DEFAULT_SOURCES = [file('epic-delivery', 'epic-delivery'), file('epic-planning', 'epic-shaping'),
+  file('architecture', 'architecting'),
+  file('conceptual-modelling', 'modelling'), file('meaningfy-release', 'release'),
   file('infrastructure-operations', 'devops'), file('sales-operations', 'sales')]
 const defaults = resolveWorkflows(DEFAULT_SOURCES, [])
-const buildTier = defaults.workflows.find(w => w.name === 'build-tier')!
+const epicDelivery = defaults.workflows.find(w => w.name === 'epic-delivery')!
 
 let n = 0
 const id = () => `adv${++n}`
@@ -107,25 +109,25 @@ test('schema: deeply nested / huge JSON returns an error or a workflow, never th
 // ================================================================ §4.3 extends
 test('extends: a partial file whose phases name the default gates is valid (phases wholesale, gates from the default)', () => {
   // variants: [] — the default's variants name phases this file drops.
-  const own = { name: 'build-tier', extends: 'build-tier', variants: [],
+  const own = { name: 'epic-delivery', extends: 'epic-delivery', variants: [],
     phases: [{ id: 'apply', owner: 'epic-delivery', expect: [], gates: ['validate'], enter: { change: 'tasks-partial' } }] }
   const r = resolveWorkflows(DEFAULT_SOURCES, [src('docs/navigator/b.workflow.json', JSON.stringify(own))])
   assert.deepEqual(r.errors, [])
-  assert.deepEqual(r.workflows.find(w => w.name === 'build-tier')!.phases.map(p => p.id), ['apply'])
+  assert.deepEqual(r.workflows.find(w => w.name === 'epic-delivery')!.phases.map(p => p.id), ['apply'])
 })
 
 test('extends: a file that breaks required fields after the merge is reported; the default stays', () => {
-  for (const own of [{ name: 'build-tier', extends: 'build-tier', title: '' },
-    { name: 'build-tier', extends: 'build-tier', phases: [] },
-    { name: 'build-tier', extends: 'build-tier', variants: [{ name: 'x', phases: ['nope'], activate: {} }] }]) {
+  for (const own of [{ name: 'epic-delivery', extends: 'epic-delivery', title: '' },
+    { name: 'epic-delivery', extends: 'epic-delivery', phases: [] },
+    { name: 'epic-delivery', extends: 'epic-delivery', variants: [{ name: 'x', phases: ['nope'], activate: {} }] }]) {
     const r = resolveWorkflows(DEFAULT_SOURCES, [src('b', JSON.stringify(own))])
     assert.equal(r.errors.length, 1, JSON.stringify(own))
-    assert.equal(r.workflows.find(w => w.name === 'build-tier')!.title, buildTier.title)
+    assert.equal(r.workflows.find(w => w.name === 'epic-delivery')!.title, epicDelivery.title)
   }
 })
 
 test('extends: a malformed repo strict file does not make the repo strict; the default stays', () => {
-  const r = resolveWorkflows(DEFAULT_SOURCES, [src('b', '{"name": "build-tier", "extends": "build-tier", "mode": "STRICT"}')])
+  const r = resolveWorkflows(DEFAULT_SOURCES, [src('b', '{"name": "epic-delivery", "extends": "epic-delivery", "mode": "STRICT"}')])
   assert.equal(r.mode, 'loose')
   assert.equal(r.errors.length, 1)
 })
@@ -158,8 +160,8 @@ test('a skill before the workflows are read selects nothing and does not throw (
 })
 
 // ================================================================ §6.1/§6.2 odd change states
-test('phase: total 0 with design and tasks is plan', () => {
-  assert.equal(run(workflows(), read(change(0, 0))).phase, 'plan')
+test('phase: total 0 with design and tasks is ready', () => {
+  assert.equal(run(workflows(), read(change(0, 0))).phase, 'ready')
 })
 
 test('phase: an open change is never placed in explore, whose predicate is "none"', () => {
@@ -169,15 +171,15 @@ test('phase: an open change is never placed in explore, whose predicate is "none
   }
 })
 
-test('§6.2.2 files move forward: brownfield placed in apply by files does not fall back to shape when all tasks tick', () => {
+test('§6.2.2 files move forward: brownfield placed in apply by files does not fall back to propose when all tasks tick', () => {
   const s = run(workflows(), read(change(1, 3, { hasDesign: false })), read(change(3, 3, { hasDesign: false }), 3))
   assert.equal(s.variant, 'brownfield')
-  assert.notEqual(s.phase, 'shape')
+  assert.notEqual(s.phase, 'propose')
 })
 
 test('phaseFor with no phases or an unknown signal is safe', () => {
-  assert.equal(phaseFor({ ...buildTier, phases: [] }, [], null, null, null), null)
-  assert.equal(phaseFor(buildTier, buildTier.phases, 'nope', null, null), 'explore')
+  assert.equal(phaseFor({ ...epicDelivery, phases: [] }, [], null, null, null), null)
+  assert.equal(phaseFor(epicDelivery, epicDelivery.phases, 'nope', null, null), 'ready')
 })
 
 // ================================================================ §6.3 warnings: dedupe and clearing
@@ -218,7 +220,7 @@ test('switching workflow is not a PhaseLeft (DD-36, DD-38 rejected): no PD-2 for
   assert.ok(!keys(s).includes('process:missing:apply:cosmic-python'), keys(s).join())
 })
 
-test('PD-3 skill gate: plan → apply by files warns clarity; running clarity-gate clears it', () => {
+test('PD-3 skill gate: design → apply by files warns clarity; running clarity-gate clears it', () => {
   const s = run(workflows(), read(change(0, 9)), read(change(3, 9), 3))
   assert.equal(s.phase, 'apply')
   assert.ok(keys(s).includes('process:gate:apply:clarity'), keys(s).join())
@@ -493,14 +495,14 @@ test('s3 hygiene via reduce: commit in one turn, phase left in the next → comp
 
 // ---------------------------------------------------------------- dispatch
 test('s3 roleOf: agent name (plugin-prefixed) first, then description regex, case-insensitive', () => {
-  assert.equal(roleOf(buildTier, 'meaningfy-building:code-reviewer', 'stage checker'), 'reviewer')
-  assert.equal(roleOf(buildTier, 'general-purpose', 'Stage CHECKER'), 'checker')
-  assert.equal(roleOf(buildTier, 'general-purpose', 'adversarial run'), 'tester')
-  assert.equal(roleOf(buildTier, 'general-purpose', 'checklist builder'), 'other')
+  assert.equal(roleOf(epicDelivery, 'meaningfy-building:code-reviewer', 'stage checker'), 'reviewer')
+  assert.equal(roleOf(epicDelivery, 'general-purpose', 'Stage CHECKER'), 'checker')
+  assert.equal(roleOf(epicDelivery, 'general-purpose', 'adversarial run'), 'tester')
+  assert.equal(roleOf(epicDelivery, 'general-purpose', 'checklist builder'), 'other')
 })
 
 test('s3 roleOf: a role regex that does not compile classes as other and never throws', () => {
-  const w = { ...buildTier, roles: { checker: { describe: '(' } } } as Workflow
+  const w = { ...epicDelivery, roles: { checker: { describe: '(' } } } as Workflow
   assert.equal(roleOf(w, 'general-purpose', '('), 'other')
   assert.doesNotThrow(() => run(workflows([w]), read(change(3, 9)), spawnS('general-purpose', '(')))
 })
@@ -509,16 +511,16 @@ test('s3 PD-8: one reviewer per turn over three turns is fine on SMALL; two in a
   const s = run({ kind: 'ThresholdsRead', id: id(), raw: THRESHOLDS }, workflows(), read(change(3, 9, { appetite: 'SMALL' })),
     spawnS('code-reviewer'), turnEnd(10), spawnS('code-reviewer'), turnEnd(10), spawnS('code-reviewer'))
   assert.ok(!keys(s).some(k => k.startsWith('process:overspawn:')), keys(s).join())
-  assert.equal(overspawn(buildTier, 'SMALL', 't', ['reviewer', 'reviewer']).length, 1)
-  assert.equal(overspawn(buildTier, 'LARGE', 't', Array(6).fill('reviewer')).length, 0)
-  assert.equal(overspawn(buildTier, 'LARGE', 't', Array(7).fill('reviewer')).length, 1)
-  assert.equal(overspawn(buildTier, 'LARGE', 't', ['reviewer', 'checker', 'tester', 'other']).length, 0)
+  assert.equal(overspawn(epicDelivery, 'SMALL', 't', ['reviewer', 'reviewer']).length, 1)
+  assert.equal(overspawn(epicDelivery, 'LARGE', 't', Array(6).fill('reviewer')).length, 0)
+  assert.equal(overspawn(epicDelivery, 'LARGE', 't', Array(7).fill('reviewer')).length, 1)
+  assert.equal(overspawn(epicDelivery, 'LARGE', 't', ['reviewer', 'checker', 'tester', 'other']).length, 0)
 })
 
 test('s3 PD-9: a checker spawned before the reviewers does not count as the second check', () => {
-  assert.equal(secondCheck(buildTier, 'MEDIUM', 'x', [{ kind: 'spawn', role: 'checker' }, { kind: 'spawn', role: 'reviewer' }, { kind: 'ship' }]).length, 1)
-  assert.equal(secondCheck(buildTier, 'MEDIUM', 'x', [{ kind: 'spawn', role: 'reviewer' }, { kind: 'spawn', role: 'checker' }, { kind: 'ship' }]).length, 0)
-  assert.equal(secondCheck(buildTier, 'SMALL', 'x', [{ kind: 'spawn', role: 'reviewer' }, { kind: 'ship' }]).length, 0)
+  assert.equal(secondCheck(epicDelivery, 'MEDIUM', 'x', [{ kind: 'spawn', role: 'checker' }, { kind: 'spawn', role: 'reviewer' }, { kind: 'ship' }]).length, 1)
+  assert.equal(secondCheck(epicDelivery, 'MEDIUM', 'x', [{ kind: 'spawn', role: 'reviewer' }, { kind: 'spawn', role: 'checker' }, { kind: 'ship' }]).length, 0)
+  assert.equal(secondCheck(epicDelivery, 'SMALL', 'x', [{ kind: 'spawn', role: 'reviewer' }, { kind: 'ship' }]).length, 0)
   const s = run({ kind: 'ThresholdsRead', id: id(), raw: THRESHOLDS }, workflows(), read(change(3, 9, { appetite: 'MEDIUM' })),
     spawnS('general-purpose', 'stage checker'), ...Array.from({ length: 5 }, () => spawnS('code-reviewer')), cmd('git push origin x', 5))
   assert.ok(keys(s).includes('process:second-check:navigator'), keys(s).join())
@@ -604,7 +606,7 @@ test('s3 review: shown in apply and verify only, with id and appetite', () => {
   assert.equal(s.phase, 'apply')
   assert.equal(review(s), 'meaningfy-code-review navigator VERY LARGE')
   assert.ok(review({ ...s, phase: 'verify' })?.startsWith('meaningfy-code-review navigator'))
-  for (const p of ['explore', 'shape', 'plan', 'archive']) assert.equal(review({ ...s, phase: p }), null, p)
+  for (const p of ['explore', 'propose', 'design', 'archive']) assert.equal(review({ ...s, phase: p }), null, p)
   assert.equal(review({ ...s, change: { ...s.change!, id: 'a b' } }), null)
 })
 

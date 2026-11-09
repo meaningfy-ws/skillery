@@ -1,0 +1,21 @@
+{
+  "name": "epic-shaping", "title": "EPIC shaping", "owner": "epic-planning",
+  "activate": { "skills": ["epic-planning", "openspec-explore", "openspec-propose", "clarity-gate", "openspec-update-change"] },
+  "phases": [
+    { "id": "explore", "owner": "epic-planning", "expect": [], "allow": ["brainstorming"], "gates": ["inputs"],
+      "enter": { "skills": ["openspec-explore"], "change": "none" } },
+    { "id": "variants", "owner": "epic-planning", "expect": [], "allow": ["brainstorming"], "gates": ["qa"], "enter": {} },
+    { "id": "decide", "owner": "epic-planning", "expect": [], "allow": ["brainstorming"], "enter": {} },
+    { "id": "propose", "owner": "epic-planning", "expect": [],
+      "enter": { "skills": ["openspec-propose"], "change": "proposal" } },
+    { "id": "design", "owner": "epic-planning", "expect": [], "allow": ["bdd-gherkin"],
+      "enter": { "change": ["plan", "tasks-no-design"] } },
+    { "id": "revise", "owner": "epic-planning", "expect": [], "gates": ["clarity"],
+      "enter": { "skills": ["clarity-gate", "openspec-update-change"] } }
+  ],
+  "gates": {
+    "inputs":  { "kind": "file", "glob": "openspec/changes/*/inputs/**" },
+    "qa":      { "kind": "file", "glob": "openspec/changes/*/inputs/qa.md" },
+    "clarity": { "kind": "skill", "skill": "clarity-gate" }
+  }
+}
