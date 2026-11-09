@@ -24,7 +24,7 @@ Feature: The docs stage brings manuals and architecture pages up to date
       | explanation    | the lightweight clarity check  |
       | reference      | the lightweight clarity check  |
 
-  Scenario: Architecture pages are recorded as built
+  Scenario: Architecture pages are recorded as-built
     Given the code departs from an accepted architecture decision
     When the docs stage updates the architecture pages
     Then the decision's status is left unchanged

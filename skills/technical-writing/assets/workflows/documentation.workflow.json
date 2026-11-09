@@ -10,8 +10,8 @@
   ],
   "gates": {
     "owed":      { "kind": "file", "glob": "openspec/changes/*/evidence/docs-owed.md" },
-    "docs-gate": { "kind": "command", "match": "\\bmake build-docs\\b", "run": "make build-docs" },
+    "docs-gate": { "kind": "command", "match": "\\bmake build-docs(?![\\w-])", "run": "make build-docs" },
     "cold-read": { "kind": "file", "glob": "openspec/changes/*/evidence/cold-read.md" },
-    "published": { "kind": "command", "match": "\\bgh pr create\\b" }
+    "published": { "kind": "command", "match": "\\bgh pr create(?![\\w-])(?![^&;|]*\\s(-h|--help|--dry-run)(?![\\w-]))" }
   }
 }

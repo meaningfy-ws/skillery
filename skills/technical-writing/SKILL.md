@@ -34,7 +34,7 @@ Apply the **lightweight clarity check owned by `clarity-gate`**
 *applies* it to prose and does not restate the criteria. The full 13-item gate (for specs) also
 lives in `clarity-gate`.
 
-## The cold reader (how-to and tutorial pages)
+## The cold reader (task-oriented pages: how-to, tutorial, installation manual)
 
 Running a page's snippets verifies that they work. The cold reader validates that a reader can use
 the page. Give a fresh agent only the published page, with no other context, and have it carry out
@@ -43,12 +43,9 @@ what the page says. Where it gets stuck, fix the page. When it runs in a deliver
 
 ## The documentation workflow
 
-The workflow is the file `assets/workflows/documentation.workflow.json`; loading this skill starts
-it. In an epic session it is the docs stage, after acceptance and before archive (`epic-delivery`
-owns the order). It runs when the EPIC changed a use case, the architecture, installation or
-user-facing behaviour; otherwise the lead writes "no docs owed" in `evidence/docs-owed.md` and
-archives without loading this skill. It also runs on demand, without a change. It ends in one PR,
-reviewed with the appetite's review set.
+The workflow is the file [`assets/workflows/documentation.workflow.json`](assets/workflows/documentation.workflow.json);
+loading this skill starts it. When it runs in a delivery, and the load order, are `epic-delivery`'s
+(`references/stage-loop.md`). It also runs on demand, without a change. It ends in one PR.
 
 | Phase | What happens | Evidence |
 |---|---|---|
@@ -59,12 +56,10 @@ reviewed with the appetite's review set.
 | publish | Open the PR | the PR |
 
 - **Documents covered:** the manuals (user, installation, developer) and the architecture pages.
-- **Architecture pages:** bring the C4 views and the architecture index page to as built, and link
-  each ADR to the change that implemented it. Never change an ADR's status or take a new decision.
-  A fact that contradicts an ADR goes to the lead as a finding; the page is not edited to match.
-- **Which check a page gets:** how-to, tutorial and manual pages get the cold reader; explanation
-  and reference pages get the lightweight clarity check.
-- **Load order:** load this skill before writing `docs-owed.md`, so the workflow sees the file.
+- **Architecture pages:** the ADR-status rule is `architecture`'s; link each ADR to the change that
+  implemented it.
+- **Which check a page gets:** see the cold reader section; other pages get the lightweight clarity
+  check.
 
 ## Writing style
 
@@ -83,6 +78,6 @@ governs Reference and How-to output.
 
 ## Boundary & Related Skills
 
-**Owns:** documentation, explanations, summaries, docstrings. **Does NOT** plan (`epic-planning`),
+**Owns:** documentation, explanations, summaries, docstrings, the documentation workflow (docs stage) and the cold reader. **Does NOT** plan (`epic-planning`),
 run the full clarity gate (`clarity-gate`), or write/modify production code or tests.
-**Related:** `clarity-gate` (full gate), `epic-planning`, `epic-delivery` (when the cold reader runs), `explanatory-writing` (Explanation-quadrant texture), `writing-antipatterns` (genre-conditional failure modes for Tutorial/How-to/Reference), `executive-communication` (answer-first structure when a document carries a recommendation).
+**Related:** `clarity-gate` (full gate), `epic-planning`, `epic-delivery` (order of the docs stage, when the cold reader runs), `architecture` (method for C4 and ADR pages), `explanatory-writing` (Explanation-quadrant texture), `writing-antipatterns` (genre-conditional failure modes for Tutorial/How-to/Reference), `executive-communication` (answer-first structure when a document carries a recommendation).

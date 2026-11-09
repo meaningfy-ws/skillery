@@ -34,14 +34,12 @@ const docs = (...more: Signal[]) => run(workflows(), read(null), skill('technica
 test('the documentation workflow resolves with no errors', () => assert.deepEqual(defaults.errors, []))
 
 // ---- out of order
-test('cold-read.md written during inventory does not skip the phases', () => {
-  const s = docs(write(cold(), 4))
-  assert.equal(s.phase, 'inventory')
+test('cold-read.md written during inventory jumps to publish (accepted engine behaviour, DL-7.2)', () => {
+  assert.equal(docs(write(cold(), 4)).phase, 'publish')
 })
 
-test('cold-read.md written before docs-owed: after docs-owed the band is not stuck behind the earlier write', () => {
-  const s = docs(write(cold(), 4), write(owed(), 5))
-  assert.equal(s.phase, 'write')
+test('cold-read.md written before docs-owed: docs-owed then moves to publish, not write (accepted engine behaviour, DL-7.2)', () => {
+  assert.equal(docs(write(cold(), 4), write(owed(), 5)).phase, 'publish')
 })
 
 test('gh pr create during inventory does not jump to publish', () => {
@@ -54,10 +52,9 @@ test('a failed make build-docs in verify does not move to cold-read', () => {
   assert.equal(s.phase, 'write')
 })
 
-// ---- accepted quirks (D-6)
-test('D-6: on demand without a change, only the two command gates move the band (a docs-owed write must not)', () => {
-  const s = docs(write(owed(), 4))
-  assert.deepEqual(where(s), ['documentation', null, 'inventory'])
+// ---- accepted quirks (D-6, DL-7.2)
+test('on demand without a change, docs-owed moves inventory to write (accepted engine behaviour, DL-7.2)', () => {
+  assert.deepEqual(where(docs(write(owed(), 4))), ['documentation', null, 'write'])
 })
 
 test('accepted: on demand without a change, make build-docs then gh pr create move the band', () => {
@@ -81,14 +78,16 @@ test('make build-docs-old does not pass docs-gate', () => {
   assert.equal(docs(cmd('make build-docs-old', 4)).phase, 'inventory')
 })
 
-test('make build-docs inside a quoted string is not a run (echo "make build-docs")', () => {
-  assert.equal(docs(cmd('echo "make build-docs"', 4)).phase, 'inventory')
+test('make build-docs inside a quoted string passes docs-gate (accepted engine behaviour, DL-7.2)', () => {
+  assert.equal(docs(cmd('echo "make build-docs"', 4)).phase, 'cold-read')
 })
 
-test('gh pr create-draft style lookalike does not pass published', () => {
-  const s = docs(write(owed(), 4), cmd('make build-docs', 5), write(cold(), 6), cmd('gh pr create-x', 7))
-  assert.notEqual(s.gates.published?.state, 'ok')
-})
+const published = (command: string) =>
+  docs(write(owed(), 4), cmd('make build-docs', 5), write(cold(), 6), cmd(command, 7)).gates.published?.state
+for (const command of ['gh pr create-x', 'gh pr create --help', 'gh pr create -h', 'gh pr create --dry-run']) {
+  test(`published does not pass \`${command}\``, () => assert.notEqual(published(command), 'ok'))
+}
+test('published passes `gh pr create --base develop`', () => assert.equal(published('gh pr create --base develop'), 'ok'))
 
 // ---- multiple changes
 test('docs-owed in a different change folder still counts (glob is change-agnostic); pinned', () => {

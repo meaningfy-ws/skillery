@@ -100,7 +100,8 @@
   Engine-checked: inventory → write (docs-owed written) → cold-read (`make build-docs`; verify's
   gate passed, so no warning) → publish (cold-read written); `gh pr create` passes `published`.
   A later file write marks `docs-gate` stale, as for every command gate. On demand without a
-  change, only the two command gates move the band (accepted). Where a repo's docs-gate is a command
+  change, the file gates' globs are change-agnostic, so a docs-owed write still moves inventory to
+  write (accepted, DL-7.2). Where a repo's docs-gate is a command
   builders run all the time (skillery: `make validate`), one run during *inventory* jumps the band
   to cold-read past write (accepted, same reason).
 - **D-7 C4 and ADRs at docs time (DEC-9, R3-1).** The docs stage, through `architecture`'s method,

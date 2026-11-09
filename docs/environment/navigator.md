@@ -69,10 +69,10 @@ Navigator follows eight workflows, each kept as a file in the skill that owns it
 (`conceptual-modelling`), release (`meaningfy-release`), DevOps (`infrastructure-operations`),
 sales (`sales-operations`, provisional) and documentation (`technical-writing`: inventory, write,
 verify, cold-read, publish). Loading `technical-writing` in the middle of a build shows
-*documentation*; loading `epic-delivery` or `openspec-apply-change` shows the build again. EPIC shaping has the phases explore, variants,
-decide, propose, design and revise; EPIC delivery has ready, apply, verify and archive, and its
-variant is `brownfield`. Each file lists its own phases. It picks the workflow from
-the skills you load and the subagents you start; with an open change and nothing else loaded, it
+*documentation*; loading `epic-delivery` or `openspec-apply-change` shows the build again. EPIC
+shaping has the phases explore, variants, decide, propose, design and revise; EPIC delivery has
+ready, apply, verify and archive, and its variant is `brownfield`. Each file lists its own phases.
+It picks the workflow from the skills you load and the subagents you start; with an open change and nothing else loaded, it
 is EPIC delivery, starting at `ready`. The phase follows the skills you load and the state of the change's files: ticking
 the last task of `tasks.md` moves `apply` to `verify`. In DevOps, the commands move it:
 `terraform plan` reaches the consent card, your answer to the card reaches `apply`.
