@@ -2,7 +2,9 @@
      round 2 (Q-1..Q-3 in inputs/qa.md) answered the same day: recommendations taken. Frozen.
      PLAN derived the same day (design.md, tasks.md); DEC-5 amended by design D-4 (round 3).
      Q-6 answered: shaping and delivery stay separate sessions; the variant stays.
-     PLAN gated 2026-11-09: clarity gate 9.1/10 (fourth run; 7.5, 8.2, 8.7 before). -->
+     PLAN gated 2026-11-09: clarity gate 9.1/10 (fourth run; 7.5, 8.2, 8.7 before).
+     RE-SHAPED 2026-11-09 during delivery (inputs/qa.md round 5, Q-7..Q-11): build-tier split into
+     epic-shaping and epic-delivery; DEC-1, DEC-2 and DEC-8 rewritten; PLAN re-derived and re-gated. -->
 
 # EPIC: navigator workflows — work shaping, architecture, modelling and release
 
@@ -13,7 +15,7 @@ skill); the processes owned by `epic-planning`, `architecture`, `conceptual-mode
 
 ## Appetite
 
-**SMALL.** Four workflow files in four owning skills, data only, plus one engine rule (DEC-6) and
+**SMALL.** Five workflow files in five owning skills, data only, plus one engine rule (DEC-6) and
 the tests and docs that go with them. If a workflow needs a new `enter` key, a new gate kind, or
 navigator code beyond DEC-6, the work has outgrown SMALL: stop and re-shape as MEDIUM.
 
@@ -31,10 +33,10 @@ happens. The method for each already lives in its skill; the band does not yet s
 Each process gets the phases its own skill already describes, in the owner's words, shipped as a
 workflow file in that skill:
 
-- **Work shaping** (`epic-planning`'s part of build-tier): explore → variants → decide → propose →
-  design → revise. It is build-tier's front half and becomes the `work-shaping` variant, so a
-  shaping session sees only these six phases and ends at the clarity gate. Delivery (apply, verify,
-  archive) follows in the full workflow.
+- **EPIC shaping** (`epic-planning`, its own workflow): explore → variants → decide → propose →
+  design → revise. A shaping session sees only these six phases and ends at the clarity gate.
+- **EPIC delivery** (`epic-delivery`, today's build-tier, renamed): ready → apply → verify →
+  archive, in its own session.
 - **Architecture** (`architecture`): drivers → use cases → C4 → decide → domain. The session leaves
   ADRs, use cases and C4 views behind; its last phase is the initial domain model, owned by
   `conceptual-modelling`, so **Next step** hands the session over to modelling.
@@ -49,11 +51,16 @@ and **Next step** points to the skill that should run next.
 ## Key decisions
 
 - **DEC-1**: A workflow exists only for a skill that describes an ordered process inside one
-  session. This EPIC adds four. — Knowledge skills (writing, git, cosmic-python, code review alone)
+  session. This EPIC adds or reshapes five. — Knowledge skills (writing, git, cosmic-python, code review alone)
   would show a band that never moves; rejected: one workflow per skill.
-- **DEC-2**: Work shaping uses the owner's six phases, named as the owner named them, replacing
-  build-tier's `shape` and `plan`; the `work-shaping` variant replaces `exploratory`. — One name
-  per step across the method; rejected: keeping `shape`/`plan` beside the new names.
+- **DEC-2** *(re-shaped 2026-11-09, `inputs/qa.md` round 5)*: Shaping and delivery are two
+  workflows, one per session and per owning skill. `epic-shaping` (in `epic-planning`) runs the
+  owner's six phases, named as the owner named them, and activates on `epic-planning`,
+  `openspec-explore`, `openspec-propose`, `clarity-gate` and `openspec-update-change`.
+  `epic-delivery` (in `epic-delivery`, renamed from `build-tier`) keeps the open-change default and
+  runs ready, apply, verify, archive. `shape`, `plan` and `exploratory` are gone. — Rejected: one
+  build-tier file with a `work-shaping` variant (the first PLAN), which needed a variant activation
+  list and a detour through `revise` in delivery sessions.
 - **DEC-3**: Architecture keeps the workflow name `architecting` (so a repo file that extends it
   still resolves), stops activating on modelling, and runs the owner's five phases. Its last phase,
   `domain`, is owned by `conceptual-modelling`: the handover is that phase's owner, not a new
@@ -74,8 +81,8 @@ and **Next step** points to the skill that should run next.
   in its owning skill, and a repo can override any of them with `extends`.
 - **DEC-8**: The PLAN may start now; this change archives only after `navigator` has archived, so
   its `workflow-definitions` delta lands on the archived spec; at that point the requirement
-  *Default workflow files live in their host skills* is rewritten as a MODIFIED delta (six files,
-  modelling moved). — Rejected: stacking a delta on an unarchived change's delta.
+  *Default workflow files live in their host skills* is rewritten as a MODIFIED delta (seven files,
+  shaping and modelling moved). — Rejected: stacking a delta on an unarchived change's delta.
 
 ## Rabbit-holes
 
@@ -104,9 +111,10 @@ and **Next step** points to the skill that should run next.
 
 ## What Changes
 
-- `epic-delivery`'s build-tier file: phases explore, variants, decide, propose, design, revise,
-  apply, verify, archive; variant `work-shaping` replaces `exploratory`; `brownfield` renamed onto
-  the new ids. **BREAKING** for a repo file that names `shape` or `plan`.
+- New `epic-planning` epic-shaping file: explore, variants, decide, propose, design, revise.
+- `epic-delivery`'s build-tier file becomes `epic-delivery.workflow.json`, id `epic-delivery`:
+  ready, apply, verify, archive; `brownfield` is apply, archive. **BREAKING** for a repo file that
+  extends `build-tier` or names `shape`, `plan` or `exploratory`.
 - `architecture`'s architecting file: five phases, modelling removed from `activate`.
 - New `conceptual-modelling` modelling file; new `meaningfy-release` release file.
 - Navigator: a passed file gate advances the phase (DEC-6), with tests.
@@ -126,6 +134,6 @@ None.
 
 ## Impact
 
-Four skills' `assets/workflows/` (`make bundles` links them into the navigator bundle), navigator's
+Five skills' `assets/workflows/` (`make bundles` links them into the navigator bundle), navigator's
 `lib/phase.ts` and tests, two docs. No agent changes; no skill body changes beyond a line where a
 skill names its workflow.

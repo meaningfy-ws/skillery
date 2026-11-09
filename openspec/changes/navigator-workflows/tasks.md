@@ -21,11 +21,19 @@
   - the band sample in `docs/environment/navigator.md` (around line 56) uses the new phase names;
   - CHANGELOG, with a BREAKING line for `shape`, `plan` and `exploratory`
 - [x] 3.2 Check the spec delta against what was built, and add the MODIFIED delta of *Default workflow files live in their host skills* (six files, modelling moved; DEC-8 — `navigator` is now archived); `openspec validate navigator-workflows --strict` and `make validate-spine` green
-- [ ] 3.3 One review pass (L2 spec and tests, L3 structure); record the accepted findings in `design.md`; open a PR into `develop`; merge on green CI. Archiving waits for `navigator` (DEC-8)
+- [ ] 3.3 One review pass (L2 spec and tests, L3 structure); record the accepted findings in `design.md` (done: *Review findings*, fixed by 4.2–4.4); after section 4, open a PR into `develop`; merge on green CI. Archiving waits for `navigator` (DEC-8; `navigator` is archived, so it may follow)
+
+## 4. Re-shape (`inputs/qa.md` round 5) and review fixes
+
+- [ ] 4.1 Split (D-2, D-7, D-8): `git mv skills/epic-delivery/assets/workflows/build-tier.workflow.json skills/epic-delivery/assets/workflows/epic-delivery.workflow.json`, then id `epic-delivery`, title "EPIC delivery", phases ready, apply, verify, archive, `brownfield` = apply, archive, no `work-shaping`, `activate.skills` epic-delivery and spec-stewardship. New `skills/epic-planning/assets/workflows/epic-shaping.workflow.json` per the EPIC shaping table. Add it to the default lists (`phase.test.ts`, `edge-cases.test.ts`, TC-16 in `workflow.test.ts`: seven files) and rename every `build-tier` path or id in `mods/navigator/lib/*.test.ts`. Update for meaning the tests 2.1a/2.1b added or changed: *Shaping* (band shows exactly the six, S1), *Delivery, next session* (`ready`, D-7), *Reconcile mid-delivery*, *another change is open*, *tasks.md before design.md*, and the strict and lean tests that name build-tier. Add a test that a proposal-only change in a fresh session lands in `ready`. `make mods` green
+- [ ] 4.2 Release regexes (D-5, W3–W5): `published` and `back` in `skills/meaningfy-release/assets/workflows/release.workflow.json` exactly as the design's Gates list; one test per listed passing and non-passing case; the *Release* example step 6 uses `git push origin v3.11.0`
+- [ ] 4.3 Test gaps (W1, S2, S3): an old use case edited in architecting's `decide` stays in `decide`; the ADR write asserts `gates.adr` ok; with an open change, `git tag v1.0.0` and `git push -u origin release/1.0.0` do not select release
+- [ ] 4.4 Docs and comments (W2, W6, S6, S7, D-8): `docs/environment/navigator.md` (seven workflows, `ready`, the `epic-delivery` name in the strict and `extends` examples, the copy-`gates` line); `docs/development/workflows.md` (*Work shaping* ends at the clarity gate and points to `epic-planning`; table rows EPIC shaping and EPIC delivery); every other doc or skill that names the build-tier *workflow file or id* (not the tier): `skills/epic-delivery/SKILL.md`, `references/stage-loop.md`, `references/team-and-briefs.md`, `skills/meaningfy-code-review/SKILL.md`, `docs/development/mods.md`; one line in `skills/epic-planning/SKILL.md` naming its workflow file; doc comments of `Advance`, `advanceOn`, `navigate` (`mods/navigator/lib/phase.ts`) and the build-tier comments in `phase.ts`, `change.ts`, `lean.ts`, `io.ts`; CHANGELOG per W6
+- [ ] 4.5 `make bundles`, `make validate`, `openspec validate navigator-workflows --strict`, `make validate-spine` green; `git grep -n "build-tier.workflow"` outside `openspec/changes/archive/` and this change returns nothing
 
 ## Roadmap
 
-- [x] 1.1 · [x] 2.1a · [x] 2.1b · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 · [x] 3.2 · [ ] 3.3
+- [x] 1.1 · [x] 2.1a · [x] 2.1b · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 · [x] 3.2 · [ ] 3.3 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5
 
 ## Verification
 
