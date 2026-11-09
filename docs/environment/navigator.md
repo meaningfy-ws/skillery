@@ -14,7 +14,7 @@ In Claude Code, CLI or desktop:
 /plugin install meaningfy-navigator@meaningfy-skillery
 ```
 
-Restart the session. Navigator needs no other bundle, but it says more in a repository that has an
+Tested with Claude Code 2.1.319. Restart the session. Navigator needs no other bundle, but it says more in a repository that has an
 `openspec/changes/` folder.
 
 ## What you see

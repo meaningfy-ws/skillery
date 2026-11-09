@@ -1,12 +1,12 @@
 ## ADDED Requirements
 
 ### Requirement: Dispatch and hygiene thresholds are data
-The thresholds that make the subagent and session-hygiene rules checkable — the context use at
-which a compaction is offered at a safe point, the context use that warns mid-step, the least
-context worth a fresh session, the idle time that makes a free reset, the longest base report, and
-the most tool calls a spawn may make and still count as a lookup, the order of models from
-cheapest, and which events make a safe point, a task boundary and a free idle reset — SHALL be stated once, as data, in
-`skills/guardrails/assets/session-thresholds.json`. Sections 5 and 6 of `guardrails` SHALL name each
+The thresholds that make the subagent and session-hygiene rules checkable SHALL be stated once, as
+data, in `skills/guardrails/assets/session-thresholds.json`: the context use at which a compaction
+is offered at a safe point, the context use that warns mid-step, the least context worth a fresh
+session, the idle time that makes a free reset, the longest base report, the most tool calls a
+spawn may make and still count as a lookup, the order of models from cheapest, and which events
+make a safe point, a task boundary and a free idle reset. Sections 5 and 6 of `guardrails` SHALL name each
 key and point to the file; no other file SHALL hold the numbers.
 
 #### Scenario: A tool reads a threshold

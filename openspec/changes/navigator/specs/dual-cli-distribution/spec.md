@@ -12,7 +12,7 @@ allowed, not required.
 
 #### Scenario: The Claude bundle
 - **WHEN** `make bundles` renders `bundles/meaningfy-navigator/`
-- **THEN** it holds a symlink to `mods/navigator`, the data links the mod reads, and a `plugin.json` naming the mod's hooks file, types file and settings
+- **THEN** it holds a byte-checked copy of `mods/navigator` (DD-31), the data links the mod reads, and a `plugin.json` naming the mod's hooks file, types file and settings
 
 ## MODIFIED Requirements
 

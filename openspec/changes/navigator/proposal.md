@@ -221,7 +221,7 @@ surfaces, how bundling renders it.
 - `docs/development/governance.md`: the Mod type and its rule; `AGENTS.md` type table row.
 - `mods/navigator/`: hooks module, state contract, band, status line, drift and hygiene checks,
   unit tests of its pure logic.
-- `bundles.yaml` + `tools/bundle_gen`: mod membership; symlinked `hooks/`; `hooks`/`types` in the
+- `bundles.yaml` + `tools/bundle_gen`: mod membership; the mod copied into its bundle (DD-31, was: symlinked `hooks/`); `hooks`/`types` in the
   bundle `plugin.json`.
 - `make validate`: type-check, the mod's unit tests, workflow-file schema check (DEC-14).
 

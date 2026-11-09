@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { EMPTY, reduce, revive } from './state.ts'
+import { EMPTY, reduce, revive, settingsFrom } from './state.ts'
 
 const started = (id = 's1', statusLine = true) =>
   reduce(EMPTY, { kind: 'Started', id, sessionId: id, band: 'folded', statusLine })
@@ -144,4 +144,15 @@ test('revive of a stored state with wrongly typed fields still reduces', () => {
 
 test('revive keeps stored extra fields of a later version', () => {
   assert.equal((revive({ version: 2, future: 1 }) as Record<string, unknown>)['future'], 1)
+})
+
+test('settingsFrom: known values pass, anything else takes the default', () => {
+  assert.deepEqual(settingsFrom({ band: 'hidden', statusLine: false }), { band: 'hidden', statusLine: false })
+  assert.deepEqual(settingsFrom({ band: 'sideways', statusLine: 'no' }), { band: 'folded', statusLine: true })
+  assert.deepEqual(settingsFrom({}), { band: 'folded', statusLine: true })
+})
+
+test('Started carries the session model into the line', () => {
+  const s = reduce(EMPTY, { kind: 'Started', id: 's', sessionId: 's', band: 'folded', statusLine: true, model: 'opus' })
+  assert.equal(s.mainModel, 'opus')
 })

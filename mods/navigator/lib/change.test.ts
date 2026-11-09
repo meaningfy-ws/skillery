@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { appetiteOf, progress, readChange, type ChangeFiles } from './change.ts'
+import { appetiteOf, appetitesOf, progress, readChange, type ChangeFiles } from './change.ts'
 
 const APPETITES = ['TINY', 'SMALL', 'MEDIUM', 'LARGE', 'VERY LARGE', 'HUGE']
 
@@ -138,4 +138,14 @@ test('readChange: carries planMtime; ids are matched case-sensitively', () => {
 test('readChange: empty proposal and null tasks give a change with null appetite and zero progress', () => {
   const r = readChange([{ id: 'x', proposal: '', tasks: null, mtime: 0, planMtime: 0 }], 'x', APPETITES)
   assert.deepEqual(r.change, { id: 'x', appetite: null, done: 0, total: 0, groups: [], planMtime: 0 })
+})
+
+test('appetitesOf: the build-tier reviews keys; nothing for a missing or odd workflow', () => {
+  assert.deepEqual(appetitesOf({ reviews: { SMALL: {}, 'VERY LARGE': {} } }), ['SMALL', 'VERY LARGE'])
+  for (const odd of [null, undefined, 'x', {}, { reviews: null }, { reviews: 'x' }]) assert.deepEqual(appetitesOf(odd), [])
+})
+
+test('readChange: equal-length ids in the branch, the most recent wins', () => {
+  assert.equal(readChange([file('aaa', 1), file('bbb', 5)], 'aaa-bbb', APPETITES).change?.id, 'bbb')
+  assert.equal(readChange([file('aaa', 5), file('bbb', 1)], 'aaa-bbb', APPETITES).change?.id, 'aaa')
 })

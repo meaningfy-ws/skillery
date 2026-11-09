@@ -89,7 +89,7 @@ One bundle is Claude Code only by design, a deliberate gap rather than a missing
 
 | Bundle | Claude Code | opencode | Gap / degradation |
 |---|---|---|---|
-| `meaningfy-navigator` (the `navigator` mod) | CLI and desktop app: status line, band, actions, strict mode | not offered: `make bundles` leaves a bundle that holds only mods out of `tools/opencode-catalogue.json` | opencode has no hooks module that draws above the prompt; opencode sessions run without navigator's view and drift warnings. |
+| `meaningfy-navigator` (the `navigator` mod) | CLI and desktop app: status line and band (actions and strict mode arrive in later stages) | not offered: `make bundles` leaves a bundle that holds only mods out of `tools/opencode-catalogue.json` | opencode has no hooks module that draws above the prompt; opencode sessions run without navigator's view and drift warnings. |
 
 ## Baseline packs per CLI
 

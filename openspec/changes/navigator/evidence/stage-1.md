@@ -26,5 +26,14 @@
   drew, and `/navigator band` brought a hidden band back (owner). Pressing *Hide* left no way back
   on screen → DD-32 (a `⎈` button restores the band).
   To re-check after DD-32: Unfold, Fold, Hide, `⎈`; and H-3, a subagent in the band.
+## Open in stage 1
+
+- **1.7** — H-3 (a subagent row in the band, then done with tokens) and the H-1 re-run after DD-32
+  (Unfold, Fold, Hide, `⎈`; with ponytail installed, its band still draws below — the second half
+  of *Hiding the band*).
+- **1.9** — H-2, the desktop proof, by the owner (2026-11-09: "will be done later"); then
+  `evidence/desktop-proof.md`.
+- **1.11** — the desktop part of the user guide waits on H-2; the cold reader runs after it.
+
 - The session wrote `.claude-plugin/types/` and `tsconfig.json` into the bundle; the gate and git
   now ignore both.
