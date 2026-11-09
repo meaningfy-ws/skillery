@@ -26,7 +26,7 @@ VERY LARGE and HUGE it SHALL run. Agents SHALL NOT mark a validation step as don
 developer's behalf. The demo is provisional until its first run is recorded; the validation review
 stays provisional until an iteration ends (lean-delivery DEC-8).
 
-#### Scenario: Acceptance after the last build stage
+#### Scenario: Acceptance after the last stage
 - **WHEN** the last build stage of a LARGE EPIC that delivers a use case is merged
 - **THEN** the lead demonstrates it against the success measure and records the developer's verdict in `evidence/acceptance.md` before the docs stage and the archive
 

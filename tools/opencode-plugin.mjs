@@ -24,8 +24,24 @@ export default async function SkilleryOpenCodePlugin(_input, options = {}) {
   const catalogue = loadCatalogue();
   const bundles = selectedBundles(catalogue, options);
   const skills = skillDirectories(catalogue, bundles);
+  let check = null;
+  try {
+    ({ check } = await import("../mods/no-poll-loops/no-poll-loops.mjs"));
+  } catch {
+    // fail open: a missing module disables only the check, never the plugin
+  }
 
   return {
+    // Behaviour, not content: active whatever the bundle selection (lean-delivery D-5).
+    "tool.execute.before": async (input, output) => {
+      let message = null;
+      try {
+        if (check && input?.tool === "bash") message = check(output?.args?.command);
+      } catch {
+        // fail open: an error in the check lets the command run
+      }
+      if (message) throw new Error(message);
+    },
     config: async (config) => {
       config.skills ??= {};
       config.skills.paths ??= [];

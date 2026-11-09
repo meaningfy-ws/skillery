@@ -1,5 +1,5 @@
 {
-  "version": "3.11.0",
+  "version": "3.12.0",
   "bundles": [
     {
       "name": "meaningfy-core",
@@ -113,16 +113,11 @@
       "type": "delegated",
       "model": "opus",
       "color": "yellow",
-      "tools": [
-        "Read",
-        "Grep",
-        "Glob",
-        "Bash"
-      ],
       "disallowedTools": [
         "Write",
         "Edit",
-        "NotebookEdit"
+        "NotebookEdit",
+        "Agent"
       ],
       "skills": [
         "meaningfy-code-review",
@@ -232,14 +227,8 @@
       "type": "delegated",
       "model": "sonnet",
       "color": "blue",
-      "tools": [
-        "Read",
-        "Edit",
-        "Write",
-        "Glob",
-        "Grep",
-        "Bash",
-        "Skill"
+      "disallowedTools": [
+        "Agent"
       ],
       "skills": [
         "cosmic-python",

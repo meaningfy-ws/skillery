@@ -196,6 +196,18 @@ test("TC-19 every live repo agent renders", () => {
   );
 });
 
+// lean-delivery D-10: no tool list (the session's tools, MCP included, stay at opencode's default), no fan-out.
+test("implementer and code-reviewer render with only the skill tool and no task permission", () => {
+  const catalogue = loadCatalogue(path.join(REPO, "tools", "opencode-catalogue.json"));
+  for (const stem of ["implementer", "code-reviewer"]) {
+    const { content, gaps } = renderAgent(catalogue.agents[stem], agentBody(stem, path.join(REPO, "agents")), MAP);
+    assert.match(content, /^tools: \{"skill":true\}$/m, stem);
+    assert.match(content, /^permission: .*"task":"deny"/m, stem);
+    assert.ok(!gaps.some((g) => g.includes("'Agent'")), stem);
+    assert.equal(/^permission: .*"edit":"deny"/m.test(content), stem === "code-reviewer", stem);
+  }
+});
+
 test("agentBody splits at the second --- line", () => {
   const root = fixture();
   assert.equal(agentBody("ag", path.join(root, "agents")), "\nBody line\n");
@@ -325,6 +337,68 @@ test("TC-20 plugin infers a bundle from the git dependency alias", () => {
   });
   assert.equal(result.status, 0, result.stderr);
   assert.deepEqual(JSON.parse(result.stdout).skills.paths, [path.join(root, "skills", "alpha")]);
+});
+
+// lean-delivery D-5: the plugin denies a sleep loop in bash whatever the bundle selection.
+function beforeBash(command, tool = "bash") {
+  const plugin = path.join(REPO, "tools", "opencode-plugin.mjs");
+  const script = `
+    const { default: load } = await import(${JSON.stringify(`file://${plugin}`)});
+    const hooks = await load({}, {});
+    const command = ${command};
+    try {
+      await hooks["tool.execute.before"]({ tool: ${JSON.stringify(tool)} }, { args: { command } });
+      process.stdout.write("passed");
+    } catch (error) {
+      process.stdout.write("threw:" + error.message);
+    }
+  `;
+  const result = spawnSync(process.execPath, ["--input-type=module", "-e", script], { encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  return result.stdout;
+}
+
+test("no-poll-loops: bash sleep loop throws with the message", () => {
+  assert.match(beforeBash(JSON.stringify("while true; do sleep 1; done")), /^threw:Sleep loops are denied\./);
+});
+
+test("no-poll-loops: a single sleep passes", () => {
+  assert.equal(beforeBash(JSON.stringify("sleep 5")), "passed");
+});
+
+test("no-poll-loops: a loop in another tool is not checked", () => {
+  assert.equal(beforeBash(JSON.stringify("while true; do sleep 1; done"), "read"), "passed");
+});
+
+test("no-poll-loops: fails open when check throws", () => {
+  assert.equal(beforeBash("{ toString() { throw new Error('boom'); } }"), "passed");
+});
+
+test("no-poll-loops: the plugin still loads when the check module is missing", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "skillery-plugin-nomod-"));
+  fs.mkdirSync(path.join(root, "tools"));
+  for (const f of ["opencode-plugin.mjs", "opencode-bundle-lib.mjs"]) {
+    fs.copyFileSync(path.join(REPO, "tools", f), path.join(root, "tools", f));
+  }
+  fs.writeFileSync(
+    path.join(root, "tools", "opencode-catalogue.json"),
+    JSON.stringify({ version: "9.9.9", bundles: [{ name: "meaningfy-core", skills: [], agents: [] }], agents: {} }),
+  );
+  const plugin = path.join(root, "tools", "opencode-plugin.mjs");
+  const script = `
+    const { default: load } = await import(${JSON.stringify(`file://${plugin}`)});
+    const hooks = await load({}, {});
+    await hooks["tool.execute.before"]?.({ tool: "bash" }, { args: { command: "while true; do sleep 1; done" } });
+    process.stdout.write(typeof hooks.config);
+  `;
+  const result = spawnSync(process.execPath, ["--input-type=module", "-e", script], { encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stdout, "function");
+});
+
+test("no-poll-loops: the module ships in package.json files", () => {
+  const pkg = JSON.parse(fs.readFileSync(path.join(REPO, "package.json"), "utf8"));
+  assert.ok(pkg.files.includes("mods/no-poll-loops/no-poll-loops.mjs"));
 });
 
 test("TC-21 report prints parity and gap rows and writes nothing", () => {

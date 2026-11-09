@@ -1,0 +1,9 @@
+{
+  "name": "documentation", "extends": "documentation",
+  "gates": {
+    "owed":      { "kind": "file", "glob": "openspec/changes/*/evidence/docs-owed.md" },
+    "docs-gate": { "kind": "command", "match": "\\bmake validate(?![\\w-])(?![^&;|]*\\s(-n|--dry-run|--just-print)(?![\\w-]))", "run": "make validate" },
+    "cold-read": { "kind": "file", "glob": "openspec/changes/*/evidence/cold-read.md" },
+    "published": { "kind": "command", "match": "\\bgh pr create(?![\\w-])(?![^&;|]*\\s(-h|--help|--dry-run)(?![\\w-]))" }
+  }
+}

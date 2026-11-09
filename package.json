@@ -1,6 +1,6 @@
 {
   "name": "meaningfy-skillery",
-  "version": "3.11.0",
+  "version": "3.12.0",
   "description": "Meaningfy skill catalogue and OpenCode bundle installer",
   "type": "module",
   "private": true,
@@ -16,6 +16,7 @@
     "tools/opencode-plugin.mjs",
     "tools/opencode-bundle-lib.mjs",
     "tools/skillery-opencode.mjs",
+    "mods/no-poll-loops/no-poll-loops.mjs",
     "README.md",
     "LICENSE"
   ],

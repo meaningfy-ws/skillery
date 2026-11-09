@@ -1,5 +1,11 @@
-## ADDED Requirements
+# documentation-workflow Specification
 
+## Purpose
+When manuals and architecture pages are written, by whom and through which phases: the docs stage
+of an epic session, owned by `technical-writing`, run after acceptance and before archive (or on
+demand), and validated by the cold reader.
+
+## Requirements
 ### Requirement: The docs stage runs on its condition
 The documentation workflow, owned by `technical-writing`, SHALL run as the last stage of an epic
 session, after acceptance and before archive, when the EPIC changed a use case, the architecture,
@@ -28,10 +34,11 @@ decision; an as-built fact that contradicts an ADR SHALL go to the lead as a fin
 - **THEN** it reports a finding to the lead and leaves the ADR unchanged
 
 ### Requirement: The cold reader runs where a page changed
-The cold reader SHALL run on every task-oriented page (how-to, tutorial, manual page) the docs
+The cold reader SHALL run on every task-oriented page (how-to, tutorial, installation manual) the docs
 stage writes, and on any how-to or tutorial page a build stage changed; explanation and reference
 pages SHALL get the lightweight clarity check.
 
 #### Scenario: A reference page
 - **WHEN** the docs stage updates a reference page
 - **THEN** it applies the lightweight clarity check and no cold reader
+

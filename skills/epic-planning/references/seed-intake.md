@@ -15,7 +15,7 @@ Enumerate what you read, out loud, so the human can correct the input set before
 
 ## Elicitation discipline
 
-- One concern at a time. Group related questions, but do not dump a wall of them.
+- One concern per question; ask open questions together in one round, unless an answer changes the next question.
 - Surface **every** ambiguity, conflict, and unstated assumption — and get a decision on each.
 - After each round: summarise what you understood, and confirm before moving on.
 - Make **no silent assumptions** (Human Sovereignty). If something cannot be decided now, park it as

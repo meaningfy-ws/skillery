@@ -38,7 +38,7 @@ the briefs are in [`team-and-briefs.md`](../../../skills/epic-delivery/reference
 
 - **You, the developer**, decide.
 - **A domain expert** joins when the model changes, to say whether it means what the domain means.
-- **The lead** is your main session. It walks you through each decision with options and a
+- **The lead** is your main session. It asks its open questions together in one round, each with options and a
   recommendation, records your answers, plans the stages and keeps the spine and the docs current.
 - **The members** each do one job: an architect and a planner while shaping; a builder, a reviewer
   and a checker while delivering. Larger EPICs add an adversarial tester, and a UX designer when

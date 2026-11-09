@@ -51,6 +51,7 @@ propose            → author the EPIC (proposal.md, Shape-Up shape)
 During `apply`, the lead runs the PLAN stage by stage with a small agent team (prepare, build,
 challenge, decide and fix, check, merge), scaled by the EPIC's appetite; when the EPIC delivers or
 changes a use case, the acceptance demo comes before `archive`. The loop is owned by [`epic-delivery`](../../skills/epic-delivery/SKILL.md).
+The phases navigator shows are in [`navigator.md`](../environment/navigator.md); their order is owned by `epic-delivery`.
 
 ### Work shaping (seed → gated PLAN)
 ```
@@ -81,6 +82,7 @@ reads them to show the phase and to warn when a step is skipped.
 | Release | [`meaningfy-release`](../../skills/meaningfy-release/assets/workflows/release.workflow.json) | — |
 | DevOps | [`infrastructure-operations`](../../skills/infrastructure-operations/assets/workflows/devops.workflow.json) | intervention, incident, check-up, unattended |
 | Sales (provisional) | [`sales-operations`](../../skills/sales-operations/assets/workflows/sales.workflow.json) | — |
+| Documentation | [`technical-writing`](../../skills/technical-writing/assets/workflows/documentation.workflow.json) | — |
 
 A repository can change them with its own files in `docs/navigator/*.workflow.json`. A file with
 the name of a default replaces it; a file with `"extends": "<name>"` replaces only the fields it
@@ -90,6 +92,25 @@ gives; a file with a new name adds a workflow. The smallest one declares the rep
 ```json
 { "name": "epic-delivery", "extends": "epic-delivery", "mode": "strict" }
 ```
+
+`extends` merges one level: a field you give replaces the default's whole field. The default gates
+are the targets `project-setup` scaffolds, `full-gates` = `make check-all` (epic-delivery) and
+`docs-gate` = `make build-docs` (documentation). A repository whose checks have other names gives the
+whole `gates` object, with its own command in the gate it changes and the others copied. This
+repository does so with `make validate`: see
+[`docs/navigator/epic-delivery.workflow.json`](../navigator/epic-delivery.workflow.json) and
+[`documentation.workflow.json`](../navigator/documentation.workflow.json).
+
+```json
+{ "name": "epic-delivery", "extends": "epic-delivery",
+  "gates": {
+    "full-gates": { "kind": "command", "match": "\\bmake validate(?![\\w-])", "run": "make validate" }
+  } }
+```
+
+This shows the changed gate only. Because `gates` is replaced whole, the real file
+[`docs/navigator/epic-delivery.workflow.json`](../navigator/epic-delivery.workflow.json) restates the
+other gates too.
 
 The schema is described in [`mods.md`](mods.md#workflow-files).
 

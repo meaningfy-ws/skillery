@@ -1,0 +1,17 @@
+{
+  "name": "documentation", "title": "Documentation", "owner": "technical-writing",
+  "activate": { "skills": ["technical-writing"] },
+  "phases": [
+    { "id": "inventory", "owner": "technical-writing", "expect": [], "gates": ["owed"], "enter": {} },
+    { "id": "write", "owner": "technical-writing", "expect": [], "allow": ["architecture"], "enter": {} },
+    { "id": "verify", "owner": "technical-writing", "expect": [], "gates": ["docs-gate"], "enter": {} },
+    { "id": "cold-read", "owner": "technical-writing", "expect": [], "gates": ["cold-read"], "enter": {} },
+    { "id": "publish", "owner": "technical-writing", "expect": [], "gates": ["published"], "enter": {} }
+  ],
+  "gates": {
+    "owed":      { "kind": "file", "glob": "openspec/changes/*/evidence/docs-owed.md" },
+    "docs-gate": { "kind": "command", "match": "\\bmake build-docs(?![\\w-])", "run": "make build-docs" },
+    "cold-read": { "kind": "file", "glob": "openspec/changes/*/evidence/cold-read.md" },
+    "published": { "kind": "command", "match": "\\bgh pr create(?![\\w-])(?![^&;|]*\\s(-h|--help|--dry-run)(?![\\w-]))" }
+  }
+}

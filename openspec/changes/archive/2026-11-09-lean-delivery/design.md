@@ -89,6 +89,8 @@
   methods in one file, no on-demand run). Phases have no `enter`; each moves by a gate of its own
   (engine rule: a passed gate moves to the next phase with no `enter`):
 
+  Patterns as amended by DL-7.1 (lookalikes excluded).
+
   | Phase | Gate (kind: match) | Written or run by |
   |---|---|---|
   | inventory | `owed` (file: `openspec/changes/*/evidence/docs-owed.md`) | Lead: the pages owed |
@@ -100,7 +102,8 @@
   Engine-checked: inventory → write (docs-owed written) → cold-read (`make build-docs`; verify's
   gate passed, so no warning) → publish (cold-read written); `gh pr create` passes `published`.
   A later file write marks `docs-gate` stale, as for every command gate. On demand without a
-  change, only the two command gates move the band (accepted). Where a repo's docs-gate is a command
+  change, the file gates' globs are change-agnostic, so a docs-owed write still moves inventory to
+  write (accepted, DL-7.2). Where a repo's docs-gate is a command
   builders run all the time (skillery: `make validate`), one run during *inventory* jumps the band
   to cold-read past write (accepted, same reason).
 - **D-7 C4 and ADRs at docs time (DEC-9, R3-1).** The docs stage, through `architecture`'s method,
@@ -179,6 +182,128 @@
   event of the session it runs in (`mods/navigator/register.tsx:69-71`); a member's skill load does
   not switch the lead's band. The lead loading `technical-writing` during a build does; loading
   `epic-delivery` or `openspec-apply-change` switches back.
+
+## Delivery decisions (lead, under the developer's grant of 2026-11-09)
+
+The developer granted the lead commit, push, PR and merge for this EPIC, and "take decisions as
+appropriate". Decisions taken while delivering:
+
+- **DL-1 Stage 1 has no adversarial tester.** Its diff is method prose with no executable code; a
+  tester writes only tests. The five lenses and the checker run.
+- **DL-2 No release between stages.** Stage 1 names the `no-poll-loops` intent (stage 4) and the
+  documentation workflow (stage 2) ahead of them. The release is cut only after the close, so the
+  forward references never ship alone. Rejects L1/L2/L3 findings that ask to move those lines.
+- **DL-3 Stage 1 review fixes (accepted findings).**
+  1. The *implementing* fields add the commit the gate ran on; the lead skips the pre-PR full
+     gates only when that commit is the PR's head (L1).
+  2. Reviewers use the code-intelligence tools for reading only; the lead checks `git status` is
+     clean before the fix round and discards a reviewer's edit (L1, RISK-6).
+  3. L2 applies the T1 consistency checks to the gate report. Outside an EPIC the caller supplies
+     the gate report, or L2 runs the project's full gates (L1, L3, L5).
+  4. T3 is the lead's full-gates run, not a task-gate re-run; the trigger list says "re-runs a gate"
+     (L4).
+  5. Order in step 3: the lead runs the full gates, records the D-2 fields in the PR body, opens
+     the PR; then the reviewers read that report. Step 6 merges on green CI (L4, L2).
+  6. `epic-delivery` SKILL keeps a short loop and points to `stage-loop.md` for the triggers, the
+     report fields, the fix round and the docs-stage decision; `verification-validation.md` owns the
+     demo-by-appetite rule; runbooks drop the restated qualifiers and point (L5, L3).
+  7. Quick Start consistency, the complete example report in `guardrails`, the pointer to
+     `subagent-reports.md`, the L2 row and Boundary of `meaningfy-code-review`, the Boundary of
+     `epic-delivery`, the stale "one concern at a time" lines (`opsx-runbook.md`,
+     `epic-planning` `seed-intake.md`), the two stage runs in `docs/development/README.md`, and the
+     L4 nits (navigator band, split sentences, "last build stage", ledger "—", docs-gate wording).
+- **DL-4 Rejected:** `agents/code-reviewer.md` still says L2 runs the suite; task 3.3 owns it.
+- **DL-5 Stage 4 review fixes (accepted findings; L1, L2, L3, L4, L5, the adversarial tester).**
+  1. `check` becomes a linear scan, not a backtracking regex (L1 ReDoS, measured 8.5 s at 9 KB):
+     after stripping quoted text and heredoc bodies, it splits the command into words at shell
+     separators, tracks loop depth (`while`/`until`/`for` … `do` … `done`), and denies when a
+     `sleep` *command word* (first word of a simple command, also after `timeout N`, `/bin/`, `$(`)
+     runs at depth ≥ 1. This also closes the nested-loop shortcut. A `sleep` inside a word
+     (`--sleep-time`, `my-sleep-config`) is not a command word, so it is allowed.
+  2. `watch` is denied only as a command word whose own options (tokens before the first non-option)
+     include `-n`/`--interval`; `grep watch -n`, `git log --grep watch -n 5`, `gh run watch
+     --interval 10` and `watch kubectl get pods -n x` run.
+  3. Heredoc bodies are not code: they are stripped like quoted text.
+  4. Input is capped (`shortcut:` comment) and every case in the tester's table finishes in < 200 ms.
+  5. The CLI runs when invoked through a symlink (compare real paths).
+  6. The opencode plugin loads the check with a guarded dynamic import; a missing module disables
+     only the check, never the plugin.
+  7. Generator: a malformed `hooks.json` is an error naming the file; the mod file names are named
+     constants; `MOD_DATA` is linked by mod kind (modules mod), not by name, so the test fixture
+     rename is reverted; the three helpers shrink to the one with logic.
+  8. Lint `mod_bindings_match`: only plain mods count, both directions (a plain mod with no intent
+     is an error).
+  9. Docs: `mods.md` owns the no-poll-loops facts; `hook-bindings.md` points, says five `mod`
+     intents and scopes "opencode has no mods" to navigator; `docs/environment/dual-cli/`
+     `mapping.md`, `compatibility.md` and `setup-opencode.md` agree with the corrected hook
+     bindings; the governance Mod row notes the opencode reuse; `AGENTS.md` drops the parenthetical.
+  10. The Makefile `mods` loop uses `if … then … fi`.
+- **DL-6 Rejected (stage 4):** renaming `check` (D-5 names it); the message restated in the mod
+  and pinned in its test (D-5 fixes that text); a constant for the `bash` tool id and splitting one
+  test name (nits, no defect).
+- **DL-7 Stage 2 review fixes (accepted findings; L1–L5, the adversarial tester).**
+  1. Gate patterns stop matching lookalikes: `docs-gate` `\bmake build-docs(?![\w-])`;
+     `published` `\bgh pr create(?![\w-])` plus the release workflow's help/dry-run exclusion.
+  2. Engine behaviour the tester found is pinned by passing tests and accepted, not changed (the
+     EPIC's no-go on new navigator features): a later phase's file gate written out of order moves
+     the band to that phase; a command inside quotes matches a command gate (every workflow);
+     `docs-owed.md` written with no change loaded still moves inventory to write (D-6's "only the
+     two command gates" wording was wrong: the file gates' globs are change-agnostic); loading
+     `architecture` during inventory warns (it is allowed in write only).
+  3. The D-8 test asserts the epic-delivery phase after `docs-owed.md` is written; tests are split
+     one behaviour each, named by behaviour, with a shared walk helper.
+  4. One owner per rule: `epic-delivery` (`stage-loop.md`) owns when the docs stage runs and the
+     load order, `technical-writing` points to it; `architecture` owns the ADR-status rule,
+     `technical-writing` points to it; the cold-reader scope is stated once in `technical-writing`'s
+     cold-reader section as task-oriented pages (how-to, tutorial, installation manual).
+  5. Boundaries: `technical-writing` owns the documentation workflow and the cold reader, relates
+     to `architecture`; `architecture` relates to `technical-writing` (the docs stage). The workflow
+     file is linked from the skill; `docs/environment/navigator.md` rewrapped; "as-built" hyphenated.
+- **DL-8 Rejected (stage 2):** one discovery helper for the default workflow lists in the
+  navigator tests (task 2.2 names the lists; no further workflow is planned in this EPIC).
+- **DL-9 Stage 3 build decisions.**
+  1. D-10 needed one more tooling change: the agent-conformance lint and
+     `docs/development/agent-template.md` required `tools`; `tools` is now optional (an agent
+     without it inherits the session's tools), a string value is still flagged.
+  2. Command gates guard against lookalikes (as DL-7.1): the default `full-gates` is
+     `\bmake check-all(?![\w-])`; skillery's overrides use `\bmake validate(?![\w-])`, so
+     `make validate-spine` does not pass them.
+  3. Task 3.4 ran non-interactively (opencode 2.1.4, `opencode run`, a local stdio MCP server): the
+     rendered `implementer` called the MCP tool and had no subagent tool. That is the by-hand probe's
+     result; the reviewer's `edit` deny is proven by the installer test, not the probe.
+- **DL-10 Stage 3 review fixes (accepted findings; L1–L5, the adversarial tester).**
+  1. The reviewer stays read-only through code intelligence too: its body says it uses only
+     read-only queries of those tools (symbol reads, impact) and never one that edits files (a
+     symbol rename or replace). RISK-6 rises to Medium; the lead's `git status` check before the fix
+     round (DL-3.2) stays the backstop on both CLIs. No product's tool is named (no-go).
+  2. The agent lint allows a missing `tools` only when `disallowedTools` names `Agent`, so inheriting
+     the session's tools is always a written choice; a negative test.
+  3. Command gates: `openspec` is `\bopenspec validate(?![\w-])`; `full-gates` (default and
+     skillery's override) also excludes `-n`/`--dry-run`.
+  4. Tests: the accept test uses an inline `tasks.md` fixture (the change's own file moves at
+     archive); DD-36.5 (one gate in two phases) is tested again on an inline workflow; test names
+     say what they assert; the override tests say `extends` replaces `gates` whole.
+  5. Gherkin: each agent feature gains "asked to fan out, it has no tool to start another agent".
+  6. Agents: the code-intelligence line moves under *Dispatch contract* → *Side effects* and names
+     `epic-delivery` as its owner; the reviewer's L2 line points to `meaningfy-code-review`.
+  7. Docs: `docs/development/workflows.md` shows only the changed gate in its `extends` example and
+     points to `docs/navigator/`; its phase sentence points to `navigator.md` and `epic-delivery`.
+- **DL-11 Rejected (stage 3):** one shared signal-builder module for all navigator tests (a
+  refactor of seven files beyond this stage, as DL-8); renaming `full-gates`; a deeper `extends`
+  merge (a navigator engine change, a no-go here; a follow-up); a structural deny list of products'
+  MCP tools (names products, a no-go); RISK-11 stays accepted as DEC-11 decided (Q-12), named in the
+  PR; a guard on stale or foreign `acceptance.md` (change-agnostic globs, as DL-7.2).
+- **DL-12 Checker finding (stage 3).** The durable rule "an agent gets the fewest tools its job
+  needs" (`skill-crafting-method`) gains the DEC-11 exception through a MODIFIED delta: an agent
+  that needs the project's code-intelligence tools may inherit the session's tools, only when it
+  denies `Agent`; `docs/development/README.md` narrates it.
+- **DL-13 Acceptance and the docs PR (review findings).** The grant covers decisions and merges,
+  not validation: `evidence/acceptance.md` records the demo and the lead's recommendation, with the
+  developer's confirmation line left open. Task A.2 ("(provisional)" leaves the demo) waits for
+  that confirmation and ships after it, not in this release. The cold reader reads the fixed
+  Quick Start a second time. The Quick Start follows the house shape (bold steps, an *Output*
+  line); the inventory columns live in the workflow table; the cold-reader rule is pointed to, not
+  restated; the README keeps one `technical-writing` row.
 
 ## Algorithm — the check ledger (D-1)
 
@@ -282,7 +407,7 @@ No phase of the workflow file repeats a row (FC-3, FC-6).
 | RISK-3 | `verify` → `accept` breaks repo overrides | Low | A workflow-file error | CHANGELOG BREAKING with the fix |
 | RISK-4 | A repo's `AGENTS.md` names no checks | Medium | Briefs cannot be written | D-12 slot; error-matrix row |
 | RISK-5 | The deny hook false-positives | Low | A blocked command | Loops only; quoted text ignored; fail open; test table |
-| RISK-6 | A reviewer reaches an MCP edit tool | Low | An edit in a review | Read-only brief and body line; the lead reads `git status` before the fix round |
+| RISK-6 | A reviewer reaches an MCP edit tool | Medium (DL-10.1) | An edit in a review | Read-only brief and body line; the lead reads `git status` before the fix round |
 | RISK-7 | A docs stage in every EPIC | Medium | Lost leanness | Runs only on its condition; else "no docs owed" (D-8) |
 | RISK-8 | The lead's band shows *documentation* during the build | Medium | A confusing band | Switch back by loading a delivery skill (D-19); noted in the navigator guide |
 | RISK-9 | A project names a task gate too narrow to catch its own regressions | Low | A red stage PR | Full gates once at the stage PR plus CI (R3-2) |
