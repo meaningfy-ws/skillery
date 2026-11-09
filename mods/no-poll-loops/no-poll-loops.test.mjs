@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
@@ -88,6 +91,10 @@ const MORE_ALLOWED = [
   "echo \"a \\\" while true; do sleep 1; done\"",
   "watch -d date",
   "git log --watch -n 5",
+  "grep watch -n src/",
+  "git log --grep watch -n 5",
+  "gh run watch 123 --interval 10",
+  "watch kubectl get pods -n kube-system",
   "",
   "   \n  ",
 ];
@@ -108,12 +115,8 @@ test("grep for the word watch with -n is not watch -n", () =>
 test("a loop inside a heredoc is data, not a polling command", () =>
   assert.equal(check("cat <<EOF\nwhile true; do sleep 1; done\nEOF"), null));
 
-// Documented shortcut limit in the module: a sleep after an inner `done` of a nested loop is missed.
-test(
-  "nested loop: sleep in the outer body after the inner done is denied",
-  { todo: "shortcut: nested loops and a sleep after an inner done are not told apart" },
-  () => assert.equal(check("for i in 1 2; do for j in 1 2; do echo; done; sleep 1; done"), MESSAGE),
-);
+test("nested loop: sleep in the outer body after the inner done is denied", () =>
+  assert.equal(check("for i in 1 2; do for j in 1 2; do echo; done; sleep 1; done"), MESSAGE));
 // Documented: quote stripping hides a sleep in a quoted interpreter one-liner (spec allows it).
 test("quoted python sleep loop in a bash loop is allowed (quote stripping)", () =>
   assert.equal(check("while true; do python -c 'import time; time.sleep(1)'; done"), null));
@@ -131,6 +134,12 @@ for (const [name, source] of [
   ["100k of unterminated while loops with no sleep", `"while x; do echo; ".repeat(5600)`],
   ["100k of `while do` pairs with no sleep", `"while do ".repeat(11200)`],
   ["100k of watch words", `"watch ".repeat(16700)`],
+  // under the 64 KB cap, so the scan itself is timed
+  ["60k of ordinary words", `"ls -la /tmp ".repeat(5000)`],
+  ["60k of unterminated while loops with no sleep", `"while x; do echo; ".repeat(3300)`],
+  ["60k of `while do` pairs with no sleep", `"while do ".repeat(6600)`],
+  ["60k of watch words", `"watch ".repeat(10000)`],
+  ["60k of quote openers", `"'".repeat(60000)`],
 ]) {
   test(`limit: ${name} checks in under 200 ms`, () => {
     const ms = timeInChild(source);
@@ -158,3 +167,18 @@ for (const [name, input] of [
 }
 test("CLI: multi-line deny via JSON newline escape exits 2", () =>
   assert.equal(run(hookJson("until x\ndo\n sleep 2\ndone &")).status, 2));
+
+test("CLI: runs and denies when started through a symlinked path", () => {
+  const dir = mkdtempSync(join(tmpdir(), "no-poll-"));
+  try {
+    const link = join(dir, "link.mjs");
+    symlinkSync(SCRIPT, link);
+    const r = spawnSync(process.execPath, [link], { input: hookJson("while true; do sleep 1; done"), encoding: "utf8" });
+    assert.equal(r.status, 2);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("a command beyond the 64 KB cap is allowed unchecked", () =>
+  assert.equal(check("while true; do sleep 1; done; " + "x".repeat(70000)), null));
