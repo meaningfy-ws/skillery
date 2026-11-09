@@ -1067,8 +1067,8 @@ def body_agnosticism(repo: Path) -> list[str]:
 
 # ------------------------------------------- agent authoring standard (docs/development/agent-template.md)
 MAX_AGENT_BODY_LINES = 40
-AGENT_REQUIRED_FIELDS = ("name", "description", "type", "model", "tools", "skills")
-AGENT_OPTIONAL_FIELDS = ("disallowedTools", "color", "metadata")
+AGENT_REQUIRED_FIELDS = ("name", "description", "type", "model", "skills")
+AGENT_OPTIONAL_FIELDS = ("tools", "disallowedTools", "color", "metadata")
 CLAUDE_AGENT_COLORS = {"red", "blue", "green", "yellow", "purple", "orange", "pink", "cyan"}
 _AGENT_LIST_FIELDS = ("tools", "skills", "disallowedTools")
 _CONTRACT_LABELS = ("Input", "Output", "Side effects", "Refuses")
