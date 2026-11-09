@@ -16,7 +16,7 @@ const file = (skill: string, name: string) => {
 const defaults = resolveWorkflows([file('epic-delivery', 'epic-delivery'), file('epic-planning', 'epic-shaping'),
   file('architecture', 'architecting'),
   file('conceptual-modelling', 'modelling'), file('meaningfy-release', 'release'),
-  file('infrastructure-operations', 'devops'), file('sales-operations', 'sales')], [])
+  file('infrastructure-operations', 'devops'), file('sales-operations', 'sales'), file('technical-writing', 'documentation')], [])
 
 let n = 0
 const id = () => `x${++n}`
@@ -457,3 +457,40 @@ for (const [command, passes] of BACK) {
     assert.equal(s.gates.back?.state ?? 'none', passes ? 'ok' : 'none')
   })
 }
+
+// ---------------------------------------------------------------- documentation (lean-delivery D-6, D-8, D-19)
+const OWED = 'openspec/changes/lean-delivery/evidence/docs-owed.md'
+const COLD = 'openspec/changes/lean-delivery/evidence/cold-read.md'
+const docs = () => run(workflows(), read(null), skill('technical-writing', 3))
+
+test('Documentation: the D-6 sequence walks inventory to publish, and gh pr create passes published', () => {
+  let s = docs()
+  assert.deepEqual(where(s), ['documentation', null, 'inventory'])
+  const steps: [Signal, string][] = [
+    [write(OWED, 4), 'write'],
+    [cmd('make build-docs', 5), 'cold-read'],
+    [write(COLD, 6), 'publish'],
+  ]
+  for (const [sig, phase] of steps) { s = reduce(s, sig); assert.equal(s.phase, phase, JSON.stringify(sig)) }
+  assert.deepEqual(keys(s), [])
+  s = reduce(s, cmd('gh pr create --base develop', 7))
+  assert.equal(s.phase, 'publish')
+  assert.equal(s.gates.published?.state, 'ok')
+})
+
+test('Documentation: docs-owed written while epic-delivery is active does not move the documentation workflow', () => {
+  const s = reduce(run(workflows(), read(change(9, 9)), skill('epic-delivery', 3)), write(OWED, 4))
+  assert.equal(s.workflow, 'epic-delivery')
+  assert.equal(s.gates.owed, undefined)
+  // Stage 3 renames this phase: with docs not owed, epic-delivery stays in accept, then archive (D-8).
+  const archived = reduce(s, skill('openspec-archive-change', 5))
+  assert.deepEqual(where(archived), ['epic-delivery', null, 'archive'])
+})
+
+test('Documentation: technical-writing mid-apply shows documentation; epic-delivery or openspec-apply-change switches back (D-19)', () => {
+  const apply = run(workflows(), read(change(3, 9)), skill('epic-delivery', 3))
+  const mid = reduce(apply, skill('technical-writing', 4))
+  assert.deepEqual(where(mid), ['documentation', null, 'inventory'])
+  assert.equal(reduce(mid, skill('epic-delivery', 5)).workflow, 'epic-delivery')
+  assert.equal(reduce(mid, skill('openspec-apply-change', 5)).workflow, 'epic-delivery')
+})

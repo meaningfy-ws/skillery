@@ -19,7 +19,7 @@ const file = (skill: string, name: string): Source => {
 const DEFAULT_SOURCES = [file('epic-delivery', 'epic-delivery'), file('epic-planning', 'epic-shaping'),
   file('architecture', 'architecting'),
   file('conceptual-modelling', 'modelling'), file('meaningfy-release', 'release'),
-  file('infrastructure-operations', 'devops'), file('sales-operations', 'sales')]
+  file('infrastructure-operations', 'devops'), file('sales-operations', 'sales'), file('technical-writing', 'documentation')]
 const defaults = resolveWorkflows(DEFAULT_SOURCES, [])
 const epicDelivery = defaults.workflows.find(w => w.name === 'epic-delivery')!
 

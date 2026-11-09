@@ -41,6 +41,31 @@ the page. Give a fresh agent only the published page, with no other context, and
 what the page says. Where it gets stuck, fix the page. When it runs in a delivery is
 `epic-delivery`'s.
 
+## The documentation workflow
+
+The workflow is the file `assets/workflows/documentation.workflow.json`; loading this skill starts
+it. In an epic session it is the docs stage, after acceptance and before archive (`epic-delivery`
+owns the order). It runs when the EPIC changed a use case, the architecture, installation or
+user-facing behaviour; otherwise the lead writes "no docs owed" in `evidence/docs-owed.md` and
+archives without loading this skill. It also runs on demand, without a change. It ends in one PR,
+reviewed with the appetite's review set.
+
+| Phase | What happens | Evidence |
+|---|---|---|
+| inventory | List the pages owed: missing, false, stale | `evidence/docs-owed.md` |
+| write | Write them; architecture pages go through `architecture`'s method | the pages |
+| verify | Run the snippets and the project's docs gate | the gate's output |
+| cold-read | Run the cold reader on the task-oriented pages | `evidence/cold-read.md` |
+| publish | Open the PR | the PR |
+
+- **Documents covered:** the manuals (user, installation, developer) and the architecture pages.
+- **Architecture pages:** bring the C4 views and the architecture index page to as built, and link
+  each ADR to the change that implemented it. Never change an ADR's status or take a new decision.
+  A fact that contradicts an ADR goes to the lead as a finding; the page is not edited to match.
+- **Which check a page gets:** how-to, tutorial and manual pages get the cold reader; explanation
+  and reference pages get the lightweight clarity check.
+- **Load order:** load this skill before writing `docs-owed.md`, so the workflow sees the file.
+
 ## Writing style
 
 - Direct language, no fluff. Prefer tables and lists over long prose.

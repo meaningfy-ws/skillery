@@ -46,7 +46,7 @@ merge.
 | Session | When | What it leaves behind |
 |---|---|---|
 | **Shaping** (run by `epic-planning`'s shaping session) | One per initiative | Architecture pages, ADRs, use cases, model changes; one change per EPIC with its `inputs/` and `evidence/` (walkthrough, spikes, model validation); upstream issues for library needs |
-| **Epic** | One per EPIC | The PLAN finished and gated; merged PRs; the acceptance verdict; the change archived; docs current; upstream issues linked from `design.md` |
+| **Epic** | One per EPIC | The PLAN finished and gated; merged PRs; the acceptance verdict; the change archived; docs current (the docs stage, `technical-writing`); upstream issues linked from `design.md` |
 | **Validation review** *(provisional)* | One per iteration (a group of EPICs) | ADR status changes where a decision did not hold; findings in the next shaping session's `inputs/` |
 
 An epic session starts by reading the EPIC, its inputs, and the architecture pages and use cases

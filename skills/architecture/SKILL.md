@@ -212,7 +212,7 @@ The navigator mod tracks these phases from [`assets/workflows/architecting.workf
 
 ## Architectural Decision Records (ADRs)
 
-Capture significant architectural decisions using a structured format. Organize ADRs by C4 level (Context, Containers, Components, Code) to make the decision hierarchy explicit. Each ADR documents an **irreversible architectural commitment** that shapes multiple lower-level concerns—not micro-decisions.
+Capture significant architectural decisions using a structured format. Organize ADRs by C4 level (Context, Containers, Components, Code) to make the decision hierarchy explicit. Each ADR documents an **irreversible architectural commitment** that shapes multiple lower-level concerns—not micro-decisions. The docs stage of a delivery (`technical-writing`) brings C4 views and the architecture index page to as-built and never changes an ADR's status.
 
 ### Granularity: One ADR Per Significant Decision
 

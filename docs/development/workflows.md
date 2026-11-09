@@ -81,6 +81,7 @@ reads them to show the phase and to warn when a step is skipped.
 | Release | [`meaningfy-release`](../../skills/meaningfy-release/assets/workflows/release.workflow.json) | — |
 | DevOps | [`infrastructure-operations`](../../skills/infrastructure-operations/assets/workflows/devops.workflow.json) | intervention, incident, check-up, unattended |
 | Sales (provisional) | [`sales-operations`](../../skills/sales-operations/assets/workflows/sales.workflow.json) | — |
+| Documentation | [`technical-writing`](../../skills/technical-writing/assets/workflows/documentation.workflow.json) | — |
 
 A repository can change them with its own files in `docs/navigator/*.workflow.json`. A file with
 the name of a default replaces it; a file with `"extends": "<name>"` replaces only the fields it
