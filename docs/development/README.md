@@ -257,6 +257,8 @@ at any depth below it.
 | `docs/practice/engineering-standards/**` | hand-written | Engineering standards for Meaningfy code projects | — |
 | `docs/practice/philosophy/**` | hand-written | Essays on working with an LLM | — |
 | `docs/development/governance.md` | hand-written | Artifact types and placement rules | — |
+| `docs/development/mods.md` | hand-written | The Mod type for developers: structure, state contract, bundling, checks | — |
+| `docs/environment/navigator.md` | hand-written | Using the navigator mod (CLI and desktop): install, line, band, settings | — |
 | `docs/development/agent-skills-spec.md` | hand-written | The skill file format and metadata | — |
 | `docs/development/skill-template.md` | hand-written | The skill file template | — |
 | `docs/development/creating-skills.md` | hand-written | Step-by-step authoring, structure, scripts, assets | — |

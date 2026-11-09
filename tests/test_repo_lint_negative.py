@@ -849,8 +849,14 @@ def test_unknown_top_level_folder_is_flagged(tmp_path):
     for d in ("skills", "docs", "spine", ".venv", "bundles"):
         (tmp_path / d).mkdir()
     assert lint.top_level_folders(tmp_path) == [
-        "spine/: not an allowed top-level folder (allowed: skills, agents, use-cases, openspec, docs, "
-        "tools, tests, .github, .claude-plugin)"]
+        "spine/: not an allowed top-level folder (allowed: skills, agents, mods, use-cases, openspec, "
+        "docs, tools, tests, .github, .claude-plugin)"]
+
+
+def test_mods_top_level_folder_is_allowed(tmp_path):
+    (tmp_path / "mods" / "navigator").mkdir(parents=True)
+    (tmp_path / "node_modules").mkdir()
+    assert lint.top_level_folders(tmp_path) == []
 
 
 # ------------------------------------------ external dependency register (rebundle-by-activity D-7)
@@ -892,3 +898,28 @@ def test_dependency_unknown_key_is_flagged(tmp_path):
 
 def test_register_check_is_silent_without_the_file(tmp_path):
     assert lint.dependencies_register(tmp_path) == []
+
+
+@pytest.mark.parametrize("name", ["mods2", "Mods", "mod", "node_modules2", "module"])
+def test_near_miss_of_mods_or_node_modules_is_flagged(tmp_path, name):
+    (tmp_path / name).mkdir()
+    assert [m.split("/:")[0] for m in lint.top_level_folders(tmp_path)] == [name]
+
+
+def test_mods_and_node_modules_as_plain_files_are_not_folders(tmp_path):
+    (tmp_path / "mods").write_text("x", encoding="utf-8")
+    (tmp_path / "node_modules").write_text("x", encoding="utf-8")
+    assert lint.top_level_folders(tmp_path) == []
+
+
+def test_mods_as_a_symlink_to_a_folder_is_allowed_and_nested_node_modules_is_not_checked(tmp_path):
+    (tmp_path / "real").mkdir()
+    (tmp_path / "mods").symlink_to("real")
+    assert [m.split("/:")[0] for m in lint.top_level_folders(tmp_path)] == ["real"]  # only the target, by name
+    (tmp_path / "skills" / "node_modules").mkdir(parents=True)
+    assert all(not m.startswith("skills") for m in lint.top_level_folders(tmp_path))
+
+
+def test_hidden_mods_folder_is_skipped_like_any_hidden_folder(tmp_path):
+    (tmp_path / ".mods").mkdir()
+    assert lint.top_level_folders(tmp_path) == []

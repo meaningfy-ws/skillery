@@ -1,0 +1,148 @@
+// The only file that touches `$` (design §1): events → signals → reduce → state; draws the line
+// and the band. Everything it decides is in lib/, pure and unit-tested.
+import { atom, read, update } from 'claude-code'
+import type { EngineInterface, Register } from 'claude-code'
+
+import { appetitesOf, readChange, type ChangeFiles } from './lib/change.ts'
+import { EMPTY, reduce, revive, settingsFrom, type BandDisplay, type Settings, type Signal } from './lib/state.ts'
+import { bandModel, lineText } from './lib/view.ts'
+
+const nav = atom({ plugin: 'meaningfy-navigator', key: 'state' } as const, EMPTY)
+const SESSION_MOVES = ['clear', 'resume', 'branch']
+
+async function send($: EngineInterface, signal: Signal) {
+  await update($, nav, s => reduce(revive(s), signal))
+  const s = revive(await read($, nav))
+  $.ui.status(s.display.line ? lineText(s) : undefined)
+}
+
+// The build-tier workflow names the appetites (design §6.1); none yet → `?`. Only the read is here.
+async function buildTier($: EngineInterface): Promise<unknown> {
+  try {
+    return JSON.parse(await $.fs.read(`${$.plugin.root}/data/workflows/build-tier.workflow.json`))
+  } catch {
+    return null
+  }
+}
+
+async function readChangeSignal($: EngineInterface, id: string): Promise<Signal> {
+  const root = (await $.session.repo())?.root ?? (await $.session.cwd())
+  const dir = `${root}/openspec/changes`
+  const open: ChangeFiles[] = []
+  if (await $.fs.exists(dir)) {
+    for (const d of await $.fs.list(dir)) {
+      if (d.kind !== 'dir' || d.name === 'archive') continue
+      const files = await $.fs.list(`${dir}/${d.name}`)
+      const has = (n: string) => files.find(f => f.name === n)
+      if (!has('proposal.md')) continue
+      open.push({
+        id: d.name,
+        proposal: await $.fs.read(`${dir}/${d.name}/proposal.md`),
+        tasks: has('tasks.md') ? await $.fs.read(`${dir}/${d.name}/tasks.md`) : null,
+        mtime: Math.max(...files.map(f => f.mtimeMs)),
+        planMtime: Math.max(0, ...files.filter(f => f.name === 'design.md' || f.name === 'tasks.md').map(f => f.mtimeMs)),
+      })
+    }
+  }
+  const git = await $.process.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], { cwd: root })
+  const branch = git.exitCode === 0 ? git.stdout.trim() : ''
+  return { kind: 'ChangeRead', id, ...readChange(open, branch, appetitesOf(await buildTier($))) }
+}
+
+async function start($: EngineInterface, settings: Settings) {
+  const sessionId = await $.session.id()
+  await send($, { kind: 'Started', id: sessionId, sessionId, ...settings })
+  await send($, await readChangeSignal($, `change:${sessionId}`))
+}
+
+export const register: Register = (on, options) => {
+  const settings = settingsFrom(options)
+
+  on('session.start', async ($, e, next) => {
+    await $.command.register({
+      name: 'navigator',
+      description: 'Navigator: `band` cycles the band (folded, unfolded, hidden); `line` shows or hides the status line',
+      argumentHint: 'band | line',
+    })
+    await start($, settings)
+    return next(e)
+  }).catch(($, e, next) => next(e))
+
+  on('command.run', { command: SESSION_MOVES }, async ($, e, next) => {
+    const result = await next(e)
+    if (revive(await read($, nav)).sessionId !== (await $.session.id())) await start($, settings)
+    return result
+  }).catch(($, e, next) => next(e))
+
+  on('command.run', { command: 'navigator' }, async ($, e) => {
+    const arg = e.args.trim()
+    const id = `cmd:${await $.clock.now()}`
+    if (arg === 'band') await send($, { kind: 'ToggleBand', id })
+    else if (arg === 'line') await send($, { kind: 'ToggleLine', id })
+    else return { text: 'Usage: /navigator band | line', isTextDisplayOnly: true }
+    const s = revive(await read($, nav))
+    return { text: `Navigator: band ${s.display.band}, line ${s.display.line ? 'shown' : 'hidden'}.`, isTextDisplayOnly: true }
+  }).catch(() => ({ text: 'Navigator could not change the display; see the debug log.', isTextDisplayOnly: true as const }))
+
+  on('skill.prompt', async ($, e, next) => {
+    const at = await $.clock.now()
+    await send($, { kind: 'SkillLoaded', id: `skill:${e.skill}:${at}`, name: e.skill, at })
+    return next(e)
+  }).catch(($, e, next) => next(e))
+
+  on('agent.spawn', async ($, e, next) => {
+    const result = await next(e)
+    if (!result.deny && result.agentId) {
+      await send($, {
+        kind: 'SubagentSpawned', id: e.tool_use_id, agentId: result.agentId, type: e.subagentType,
+        model: result.model, description: e.description, at: await $.clock.now(),
+      })
+    }
+    return result
+  }).catch(($, e, next) => next(e))
+
+  on('turn.complete', async ($, e, next) => {
+    const result = await next(e)
+    const u = result.usage
+    if (e.agentId) {
+      const tokens = u ? u.input_tokens + u.output_tokens + u.cache_read_input_tokens + u.cache_creation_input_tokens : 0
+      await send($, { kind: 'SubagentFinished', id: e.turnId, agentId: e.agentId, tokens })
+    } else {
+      // Git and file reads run once per main turn, never per subagent turn (design §5).
+      await send($, await readChangeSignal($, `change:${e.turnId}`))
+    }
+    return result
+  }).catch(($, e, next) => next(e))
+
+  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+    const s = revive(await read($, nav))
+    const below = await next(e)
+    if (e.props.hasSurvey) return below
+    const { Box, Text, Button } = $.ui.resolve(e)
+    const set = (band: BandDisplay) => async () => send($, { kind: 'SetBand', id: `press:${await $.clock.now()}`, band })
+    // Hidden leaves one button, so a person who pressed Hide can bring the band back (DD-32).
+    if (s.display.band === 'hidden') {
+      return (
+        <Box flexDirection="column">
+          <Button key="show" label="⎈ navigator" onPress={set('folded')} />
+          {below}
+        </Box>
+      )
+    }
+    const model = bandModel(s)
+    const isFolded = s.display.band === 'folded'
+    return (
+      <Box flexDirection="column">
+        <Box>
+          {model.folded !== '' && <Text dimColor>{model.folded} </Text>}
+          <Button key="fold" label={isFolded ? 'Unfold' : 'Fold'} onPress={set(isFolded ? 'unfolded' : 'folded')} />
+          <Button key="hide" label="Hide" onPress={set('hidden')} />
+        </Box>
+        {s.display.band === 'unfolded' && model.rows.filter(r => r.items.length > 0).map(r => (
+          <Text key={r.label} dimColor>{r.label.padEnd(10)}{r.items.join(' · ')}</Text>
+        ))}
+        {below}
+      </Box>
+    )
+  }).catch(($, e, next) => next(e))
+}
