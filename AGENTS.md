@@ -116,6 +116,11 @@ Full per-CLI setup and the compatibility matrix: [`docs/environment/dual-cli/`](
 `validate-spine` job (`make validate-spine`) and the `opencode-installer` job (`npm run test:opencode-installer`, the node tests of the opencode installer
 and agent renderer). See
 [`docs/development/governance.md`](docs/development/governance.md) for what the validator enforces.
+Narrow checks while iterating (the rule is `epic-delivery`'s): `make mods` for a mod,
+`.venv/bin/python -m pytest tests/<file>` for one test, `make lint` for a skill or agent,
+`make validate-spine` for `openspec/`. Before each commit: `make bundles` after a skill, agent or
+bundle edit, then `make validate`, plus `make validate-spine` if `openspec/` changed and
+`npm run test:opencode-installer` if `tools/` changed.
 
 ## Common Meaningfy practices
 

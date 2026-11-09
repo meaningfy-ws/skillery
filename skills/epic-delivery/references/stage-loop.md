@@ -18,8 +18,10 @@ loop it replaces. The summary is in the skill, and the review set of each appeti
    - Builders take the tasks one at a time, test-first. Parallel builders only on disjoint files;
      otherwise one after another, or in separate worktrees.
    - The builder also updates the docs its task changed. There is no separate writer.
-   - After each task the lead re-runs the project's gates, reads the diff, reads the upstream
-     findings and files the issues they call for, and commits the task.
+   - While a task is in progress, the builder runs only the checks its edits touch (one test
+     file, one target). After each task the lead re-runs the project's full gates once, reads
+     the diff, reads the upstream findings and files the issues they call for, and commits the
+     task.
 3. **Challenge.** In parallel, scaled by appetite: the reviewers, and the adversarial tester where
    the appetite's review set names it ([`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json)). Reviewers are read-only.
 4. **Decide and fix.**
@@ -89,5 +91,5 @@ one place.
 | 13 Merge | Merge | — |
 
 Three checks became conditional; three moved from per stage or per member to per EPIC or per
-stage. No agent check runs twice, except the lead's cheap re-run of the gates after each task, kept
+stage. No agent check runs twice, except the lead's single full re-run of the gates after each task, kept
 on purpose: it catches what reports claim.

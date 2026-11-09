@@ -11,6 +11,15 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Changed
+
+- `epic-planning`: a TINY or SMALL EPIC runs the clarity gate at most twice; gaps left after the
+  second run go to the developer as one question round, and only a gap the developer accepts as
+  a decision lets the PLAN proceed below 9 (`clarity-gate` names this one exception). A PLAN's
+  depth follows its appetite; elicitation asks its questions in rounds.
+- `epic-delivery`: open questions to the developer are asked in one round; while a task is in
+  progress only the checks its edits touch run, and the full gates run once before the commit.
+
 ## [3.10.1] - 2026-11-09
 
 ### Fixed

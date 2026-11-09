@@ -75,9 +75,9 @@ A stage is a group of tasks that ends in one PR. The PLAN cuts the tasks into st
 1. **Prepare.** Library changes the stage needs are merged and the lock refreshed; the blast radius
    of the symbols it touches is checked (a high risk goes to the developer). Scenarios were signed
    off once for the whole EPIC at the PLAN gate; a changed scenario is re-signed alone.
-2. **Build.** Task by task, test-first. Parallel builders only on disjoint files. After each task
-   the lead re-runs the project's gates, reads the diff and the report's upstream findings, and
-   commits.
+2. **Build.** Task by task, test-first. Parallel builders only on disjoint files. While working,
+   run only the checks the edit touches; after each task the lead re-runs the project's full
+   gates once, reads the diff and the report's upstream findings, and commits.
 3. **Challenge.** Reviewers, and the adversarial tester when in scope, in parallel.
 4. **Decide and fix.** The lead records each accepted finding as a decision in `design.md` first
    (the Rule of Divergence) and rejects the rest with a reason. Builders fix. The lead re-runs the
@@ -103,6 +103,9 @@ Only the lead asks. Every question:
 - explains each term it uses in one plain sentence;
 - lists the options;
 - marks one as recommended, with the reason.
+
+Open questions are asked together in one round, not one dialog each, unless an answer changes
+what the next question is.
 
 When the developer says "choose what is best", the lead decides, records the choice in
 `design.md` as its own, and the developer may overrule it.
