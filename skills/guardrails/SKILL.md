@@ -84,8 +84,13 @@ already exists; this skill is the map.
     budget or stop rule is added. If the brief cannot be written, the task is not ready: fix the
     PLAN.
   - **A fitting catalogue agent first.** Its tools, model and report are already set.
-  - **Model.** The agent's declared model, else the caller's; a cheaper one when the caller judges
-    the task clearly easy (mechanical, search). `model_rank` orders the models from cheapest.
+  - **Model — decided for every spawn.** The agent's declared model comes first. Otherwise the
+    coordinator chooses by the shape of the task, not by habit: **haiku** for a lookup, a search or
+    a mechanical edit whose right output is plain; **sonnet** for building a well-specified task or a
+    single-lens review; **opus** for design, judgement, unclear scope, or a second read where a miss
+    is costly. When unsure, take the next model up. When a cheaper model's report fails the check,
+    re-run the task one model up rather than patch its output. `model_rank` orders the models
+    from cheapest.
   - **The base report back**, plus the fields of its purpose, as defined in
     `references/subagent-reports.md`. Long material goes to a file; the report carries the path.
     A report longer than `subagent_report_max_lines` is oversized.

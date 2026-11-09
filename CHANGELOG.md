@@ -40,6 +40,10 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - `epic-planning`: shaping now asks one risk question (what could go wrong, how likely, how bad,
   what we do), recorded as `RISK-` entries in the PLAN's Risks / Trade-offs, and the PLAN gets an
   adversarial pass (find the input or false assumption that breaks it) before the clarity gate.
+- `guardrails`: the coordinator now chooses a subagent's model on every spawn: haiku for lookups and
+  mechanical edits, sonnet for well-specified building or a single-lens review, opus for design and
+  judgement; one model up when unsure or when a cheaper run fails its check. `epic-delivery`'s team
+  table names the model of each role.
 
 ## [3.9.0] - 2026-11-08
 
