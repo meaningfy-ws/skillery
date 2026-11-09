@@ -373,7 +373,8 @@ def use_case_coverage(repo: Path) -> list[str]:
 
 _DEP_REQUIRED = ("name", "kind", "source", "pin", "provenance", "used_by", "opencode_status",
                  "claude_install", "opencode_install")
-_DEP_OPTIONAL = ("summary", "transport", "notes", "why", "hosting")
+_DEP_OPTIONAL = ("summary", "transport", "notes", "why", "hosting", "skills")
+_KEBAB = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 
 def dependencies_register(repo: Path) -> list[str]:
@@ -387,6 +388,7 @@ def dependencies_register(repo: Path) -> list[str]:
         return [f"{path.name}: must be a list of entries"]
     keywords = list(skill_inventory.DEPENDENCY_STATUSES)
     out: list[str] = []
+    owners: dict[str, str] = {}
     for d in entries:
         if not isinstance(d, dict):
             out.append(f"{path.name}: entry {d!r} is not a mapping")
@@ -401,6 +403,32 @@ def dependencies_register(repo: Path) -> list[str]:
         status = str(d.get("opencode_status") or "")
         if status and status.split(" ")[0] not in keywords:
             out.append(f"{who} opencode_status must start with {', '.join(keywords[:-1])} or {keywords[-1]}")
+        out += _dep_skills(repo, d, who, owners)
+    # The navigator's TC-16 reads `skills:` with a line reader: only the inline `[a, b]` form (DD-28).
+    out += [f"{path.name}: line {i}: 'skills:' must be an inline list, `skills: [a, b]`"
+            for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+            if re.match(r"^\s+skills:", line) and not re.match(r"^\s+skills:\s*\[[^\]]*\]\s*$", line)]
+    return out
+
+
+def _dep_skills(repo: Path, d: dict, who: str, owners: dict[str, str]) -> list[str]:
+    """The optional `skills:` list (navigator DD-28): kebab names, each in one entry, none shadowing
+    a `skills/` directory."""
+    if "skills" not in d:
+        return []
+    names = d["skills"]
+    if not isinstance(names, list):
+        return [f"{who} 'skills' must be a list"]
+    out: list[str] = []
+    for n in names:
+        if not isinstance(n, str) or not _KEBAB.match(n):
+            out.append(f"{who} skill name {n!r} is not kebab-case")
+        elif n in owners:
+            out.append(f"{who} skill '{n}' is already listed by '{owners[n]}'")
+        elif (repo / "skills" / n).is_dir():
+            out.append(f"{who} skill '{n}' is a skills/ directory of this catalogue")
+        else:
+            owners[n] = str(d.get("name", "?"))
     return out
 
 

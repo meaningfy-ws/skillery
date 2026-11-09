@@ -23,7 +23,7 @@
 
 ## 2. Stage 2 — Follow the workflow
 
-- [ ] 2.0 [lint] `dependencies.yaml` optional `skills:` key (DD-28, design §4.1): add it to `_DEP_OPTIONAL`, the checks in `dependencies_register` (kebab names, one entry per name, no `skills/` clash, and the inline `skills: [a, b]` form only, which TC-16's line reader needs), the lists for `superpowers` and `OpenSpec`; negative tests in `tests/test_repo_lint_negative.py`. Deps: none. Acceptance: spec `code-principles-governance` *A malformed dependency skills list fails CI*.
+- [x] 2.0 [lint] `dependencies.yaml` optional `skills:` key (DD-28, design §4.1): add it to `_DEP_OPTIONAL`, the checks in `dependencies_register` (kebab names, one entry per name, no `skills/` clash, and the inline `skills: [a, b]` form only, which TC-16's line reader needs), the lists for `superpowers` and `OpenSpec`; negative tests in `tests/test_repo_lint_negative.py`. Deps: none. Acceptance: spec `code-principles-governance` *A malformed dependency skills list fails CI*.
 - [ ] 2.1 [mod] `lib/workflow.ts`: schema of design §4.1, `resolveWorkflows` §4.3; TC-09, TC-16 (reads `skills:` from `dependencies.yaml`). Deps: 1.6, 2.0. Acceptance: spec `workflow-definitions` all scenarios.
 - [ ] 2.2 [skill] `skills/epic-delivery/assets/workflows/build-tier.workflow.json` (design §4.2), its `reviews` carrying the scaling table's wording for every appetite (`tester` as its wording, UX once per entry). Then apply every disposition of the DD-21 table: reduce the mapping to a pointer where it says *pointer*, repoint the two doc links, leave worked examples, the description and the Gherkin examples as they are. Deps: 2.1. Acceptance: TC-16; every DD-21 row done as stated; in `skills/` and `docs/`, no table row or rule sentence pairs an appetite name with a review set except the workflow file and the rows marked *keep*; spec `epic-delivery` *The loop scales with the appetite*, *The build-tier workflow is data*.
 - [ ] 2.3 [skill] `skills/architecture/assets/workflows/architecting.workflow.json`; one pointer line in `SKILL.md`. Deps: 2.1. Acceptance: TC-16.
@@ -62,7 +62,7 @@
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.8 · [ ] 1.7 · [ ] 1.9 · [x] 1.10 · [ ] 1.11 · [x] 1.12
-- [ ] 2.0 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 2.8 · [ ] 2.11 · [ ] 2.9 · [ ] 2.10
+- [x] 2.0 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 2.8 · [ ] 2.11 · [ ] 2.9 · [ ] 2.10
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.6 · [ ] 3.5 · [ ] 3.7 · [ ] 3.12 · [ ] 3.13 · [ ] 3.8 · [ ] 3.9 · [ ] 3.10 · [ ] 3.11
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4
 

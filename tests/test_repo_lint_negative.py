@@ -900,6 +900,50 @@ def test_register_check_is_silent_without_the_file(tmp_path):
     assert lint.dependencies_register(tmp_path) == []
 
 
+# --- the optional `skills:` list (navigator DD-28)
+def _deps_text(tmp_path, text):
+    (tmp_path / "dependencies.yaml").write_text(text, encoding="utf-8")
+    return lint.dependencies_register(tmp_path)
+
+
+def _dep_yaml(name, skills_line):
+    fields = "".join(f"  {k}: {v!r}\n" for k, v in _DEP.items() if k != "name")
+    return f"- name: {name}\n{fields}  {skills_line}\n"
+
+
+def test_dependency_inline_skills_list_passes(tmp_path):
+    assert _deps_text(tmp_path, _dep_yaml("a", "skills: [brainstorming, writing-plans]")) == []
+
+
+def test_dependency_skill_name_not_kebab_is_flagged(tmp_path):
+    assert _deps_text(tmp_path, _dep_yaml("a", "skills: [Writing_Plans]")) == [
+        "dependencies.yaml: 'a' skill name 'Writing_Plans' is not kebab-case"]
+
+
+def test_dependency_skill_name_in_two_entries_is_flagged(tmp_path):
+    text = _dep_yaml("a", "skills: [brainstorming]") + _dep_yaml("b", "skills: [brainstorming]")
+    assert _deps_text(tmp_path, text) == [
+        "dependencies.yaml: 'b' skill 'brainstorming' is already listed by 'a'"]
+
+
+def test_dependency_skill_shadowing_a_skills_dir_is_flagged(tmp_path):
+    (tmp_path / "skills" / "guardrails").mkdir(parents=True)
+    assert _deps_text(tmp_path, _dep_yaml("a", "skills: [guardrails]")) == [
+        "dependencies.yaml: 'a' skill 'guardrails' is a skills/ directory of this catalogue"]
+
+
+def test_dependency_block_skills_list_is_flagged(tmp_path):
+    text = _dep_yaml("a", "skills:\n    - brainstorming")
+    assert _deps_text(tmp_path, text) == [
+        "dependencies.yaml: line 10: 'skills:' must be an inline list, `skills: [a, b]`"]
+
+
+def test_dependency_skills_not_a_list_is_flagged(tmp_path):
+    assert _deps_text(tmp_path, _dep_yaml("a", "skills: brainstorming")) == [
+        "dependencies.yaml: 'a' 'skills' must be a list",
+        "dependencies.yaml: line 10: 'skills:' must be an inline list, `skills: [a, b]`"]
+
+
 @pytest.mark.parametrize("name", ["mods2", "Mods", "mod", "node_modules2", "module"])
 def test_near_miss_of_mods_or_node_modules_is_flagged(tmp_path, name):
     (tmp_path / name).mkdir()
