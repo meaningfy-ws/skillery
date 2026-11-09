@@ -38,14 +38,15 @@ tested the stage it checks.
    gate and code-intelligence tools, all from the *Checks* block in its `AGENTS.md`; the testing
    checklist (`cosmic-python` `references/testing-checklist.md`); and the dependency rule
    ([`dependencies.md`](dependencies.md)): never work around our library.
-6. **The report expected**: the base report and the *implementing* fields of `guardrails` §5 (each
-   gate run with its command, exit code, counts and duration, and the narrow checks run), plus
+6. **The report expected**: the base report and the *implementing* fields of `guardrails`
+   `references/subagent-reports.md` (each gate run with its command, exit code, counts, duration
+   and commit, and the narrow checks run), plus
    **Upstream findings**: every bug, gap or awkwardness met in any library, each marked *ours* or
    *external*, with a reproduction, or "none". The lead routes them per the dependency rule.
 
 Builders and reviewers use the project's code-intelligence tools when it has them (symbol-level
-reading and editing, impact analysis), and no other MCP tool. Those tools are for code only; the
-truth stays in the spine.
+reading and editing, impact analysis), and no other MCP tool. Builders use them for reading and
+editing, reviewers for reading only. Those tools are for code only; the truth stays in the spine.
 
 ## Builder
 
@@ -53,7 +54,7 @@ truth stays in the spine.
 > this task changes. **Read:** `tasks.md` §`<n>`, `design.md` `<DEC-n>`,
 > `tests/features/<f>.feature`. **Decided:** `<…>`. **Out of scope:** `<…>`. **Standing rules:**
 > `<project list>`; the testing checklist; no workaround of our library: stop and report it.
-> **Report:** base report + the *implementing* fields (`guardrails` §5) + Upstream findings.
+> **Report:** base report + the *implementing* fields (`guardrails` `references/subagent-reports.md`) + Upstream findings.
 
 A **fixer** is a builder whose task is a set of accepted findings, named by their `design.md`
 decision. A **spike** is a builder whose task is one question; it ends with yes or no and the

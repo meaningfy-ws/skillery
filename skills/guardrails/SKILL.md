@@ -158,7 +158,7 @@ Not checked: files over 2 GB (no fixture)
 Open questions: none
 Side effects: 2 files changed; no commits
 Recommendations: none
-Tests: the project's task gate — 214 passed
+Gate: the project's task gate — exit 0, 214 passed / 0 failed / 0 skipped, 38 s, on a1b2c3d; narrow: one test file
 Departures from the plan: none
 ```
 

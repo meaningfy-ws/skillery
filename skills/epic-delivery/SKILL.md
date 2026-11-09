@@ -22,20 +22,20 @@ validate. Shaping the EPIC and deriving the PLAN stay in `epic-planning`.
 A SMALL EPIC, "add a trigger probe and sharpen one rule", gated and ready.
 
 1. **Prepare.** The lead checks no library change is pending and the blast radius is low. The
-   EPIC adds no scenario, so there is nothing to sign off.
+   sharpened rule changes a use case but adds no new scenario, so there is nothing to sign off.
 2. **Build.** Three tasks. The lead briefs one builder per task (template in
    [`references/team-and-briefs.md`](references/team-and-briefs.md)). Each builder runs its task
    gate once and reports the command, exit code, counts and time. The lead reads the diff and the
    report and commits. All three reports are complete and agree with their diffs, so the lead
    re-runs nothing.
-3. **Challenge.** The lead runs the full gates once, then one `code-reviewer` pass covering spec
-   and tests (L2) and structure (L3). The reviewer reads that gate report and does not re-run the
-   suite.
+3. **Challenge.** The lead runs the full gates once, records the report in the PR body and opens
+   the PR. Then one `code-reviewer` pass covers spec and tests (L2) and structure (L3). The
+   reviewer reads that gate report and does not re-run the suite.
 4. **Decide and fix.** The lead accepts one finding, records it in `design.md`, and a builder fixes
    it. Only the failing test is re-run until green; then the lead runs the full gates once more.
 5. **Check.** No checker at SMALL: the stage's full gates and CI are the check.
-6. **Merge** on green CI. The EPIC changed a use case, so the demo is offered; the developer skips
-   it and the skip goes to `evidence/acceptance.md`. No docs owed: the lead records it in
+6. **Merge** on green CI. The sharpened rule changed a use case, so the demo is offered; the
+   developer skips it and the skip goes to `evidence/acceptance.md`. No docs owed: the lead records it in
    `evidence/docs-owed.md` and archives.
 
 Output: one PR, two full-gates runs, one review pass, the developer touched at the gate and at the
@@ -83,49 +83,34 @@ A stage is a group of tasks that ends in one PR. The PLAN cuts the tasks into st
 1. **Prepare.** Library changes the stage needs are merged and the lock refreshed; the blast radius
    of the symbols it touches is checked (a high risk goes to the developer). Scenarios were signed
    off once for the whole EPIC at the PLAN gate; a changed scenario is re-signed alone.
-2. **Build.** Task by task, test-first. Parallel builders only on disjoint files. While working, a
-   builder runs only the narrow checks its edit touches; it runs the project's task gate once,
-   before it reports, and reports each gate run (command, exit code, counts, duration:
-   `guardrails` §5, *implementing*). The lead reads the diff, the report and its upstream findings,
-   and commits. It re-runs a gate only on a trigger, and names the trigger in the commit body
-   (`Re-run: T1, <reason>`):
-   **T1** the report lacks a field or contradicts the diff (tests added but the count unchanged;
-   exit 0 with failures listed; no gate for a file type the diff touches); **T2** parallel builders
-   touched a shared file; **T3** a fix round ended (step 4).
-3. **Challenge.** Reviewers, and the adversarial tester when in scope, in parallel. Before the
-   stage's PR the lead runs the full gates once, unless the last task's report already ran them on
-   the PR's head commit. A reviewer reads that gate report and never re-runs the suite; a missing
-   or red run is a finding.
+2. **Build.** Task by task, test-first. Parallel builders only on disjoint files. A builder runs
+   its task gate once and reports every gate run (`guardrails` `references/subagent-reports.md`,
+   *implementing*). The lead reads the diff and the report, commits, and re-runs a gate only on a
+   trigger (T1–T3, defined in [`references/stage-loop.md`](references/stage-loop.md)).
+3. **Challenge.** The lead runs the full gates once (skipped only when the last report ran them
+   on the PR's head commit) and opens the PR with the report in its body.
+   Then the reviewers, and the adversarial tester when in scope, read that report in parallel.
 4. **Decide and fix.** The lead records each accepted finding as a decision in `design.md` first
-   (the Rule of Divergence) and rejects the rest with a reason. Builders fix. After a red run they
-   re-run only the failing tests until green. Then the lead runs the full gates once (T3), then CI.
-5. **Check.** The checker's single pass. An unmet brief item goes back to step 4. Where the
-   appetite has no checker, the stage's full gates and CI are the check, and the single review pass
-   is the four-eyes pass.
+   (the Rule of Divergence) and rejects the rest with a reason. Builders fix. Then the lead runs
+   the full gates once more, then CI.
+5. **Check.** The checker's single pass, or the stage's full gates and CI where the appetite has
+   no checker. An unmet brief item goes back to step 4.
 6. **Merge** on green CI.
+
+The fix round, the checker-less check and the report fields are in
+[`references/stage-loop.md`](references/stage-loop.md).
 
 The review set of each appetite (the challenge, the check, the tester, the UX lens) is data: the
 `reviews` of the epic-delivery workflow, [`assets/workflows/epic-delivery.workflow.json`](assets/workflows/epic-delivery.workflow.json). The navigator mod reads the same file.
 
-## After the last stage
+## After the last build stage
 
-The order is accept, then the docs stage, then archive.
-
-1. **Accept.** The **acceptance demo** *(provisional)* is offered when the EPIC delivers or changes
-   a use case. The developer may skip it below LARGE, with who, why and when recorded in
-   `evidence/acceptance.md`; at LARGE and above it runs. A rejection is a decision and a fix stage.
-2. **Docs stage.** The lead decides at accept. If the EPIC changed a use case, the architecture,
-   installation or user-facing behaviour, it loads `technical-writing` and writes
-   `evidence/docs-owed.md` (the pages owed); the documentation workflow runs. Otherwise it writes
-   "no docs owed" in that file.
-3. **Archive.** The lead archives the change per `spec-stewardship`.
-
-In `tasks.md` only the build stages carry checkboxes. The docs stage and the close are plain lines
-under their own headings, so the counted tasks are the build tasks and `accept` shows when they
-are all ticked.
-
-Every check has one moment and one owner, listed in one table, and each step in detail:
+The order is accept, then the docs stage, then archive. The acceptance demo, the docs-stage
+decision and the `tasks.md` checkboxes are in
 [`references/stage-loop.md`](references/stage-loop.md).
+
+Every check has one moment and one owner, listed in one table, and each step in detail in the
+same page.
 
 Between stages, right after the merge, the lead compacts with a focus on the open decisions; after
 the archive it starts the next task in a fresh session (`guardrails`, *Session hygiene*).
@@ -171,8 +156,7 @@ The full rule, the issue shape and the worktree rules:
 Verification asks "did we build it right?": each artefact against its own specification. Agents
 do most of it. Validation asks "did we build the right thing?": each artefact against the need one
 level up; it always ends with a person, and an agent never marks it done. Green gates prove
-verification only. The demo is offered whenever a use case is delivered or changed, skippable below
-LARGE with the skip recorded, mandatory from LARGE. The V-model table, the evidence folder and the
+verification only. The demo, by appetite, the V-model table, the evidence folder and the
 provisional steps:
 [`references/verification-validation.md`](references/verification-validation.md).
 
@@ -184,23 +168,22 @@ provisional steps:
 - Working around one of our libraries "just this once". Stop and file the issue.
 - An agent marking a validation step done. Only a person validates.
 - Re-running a gate without a trigger. The lead reads the diff and the report; T1–T3 are the only
-  reasons to re-run.
+  reasons to re-run (`references/stage-loop.md`).
 - Committing on an incomplete report. A missing field is T1: re-run, and fix the brief if its
   report line was unclear.
 - Chasing a flaky test with re-runs inside a stage. Quarantine it per the testing checklist.
-- A sleep loop to wait for CI or a long command. Run it in the foreground, or in the background
-  once and wait for its notice (`guardrails` §5).
+- A sleep loop to wait for CI or a long command (`guardrails` §5).
 
 ## Boundary & Related Skills
 
 **Owns:** delivery of a gated PLAN: the sessions, the team and its brief templates, the stage loop
-and its scaling by appetite, the lead's authority, the question format, the verification and
-validation principle, the acceptance demo and the validation review, and the rule for our own and
-external libraries.
+and its scaling by appetite, the check ledger, the order after the last build stage, the lead's
+authority, the question format, the verification and validation principle, the acceptance demo
+and the validation review, and the rule for our own and external libraries.
 
 **Delegates:** the brief and report mechanics and the four-eyes rule → `guardrails` (§5);
 scenario sign-off and the traceability check → `bdd-gherkin`; the walkthrough and the spike →
-`architecture`; model validation → `conceptual-modelling`; the cold reader → `technical-writing`;
+`architecture`; model validation → `conceptual-modelling`; the cold reader and the docs stage → `technical-writing`;
 the review lenses → `meaningfy-code-review`; archiving the change → `spec-stewardship`; the testing
 checklist → `cosmic-python` (`references/testing-checklist.md`).
 

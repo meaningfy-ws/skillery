@@ -69,10 +69,10 @@ regenerating the orientation index — belongs to `spec-stewardship`.
 8. **Gate the PLAN** (full `clarity-gate`, ≥9/10). Score the `design.md`+`tasks.md` pair. Block
    progression to BDD/implementation until it passes. Below 9: list the specific gaps and **revise
    the PLAN** — never patch code to dodge a gap (Rule of Divergence). For a TINY or SMALL EPIC,
-   run the gate at most twice: if the second run is still below 9, bring the remaining gaps to
+   run the gate at most twice. If the second run is still below 9, bring the remaining gaps to
    the developer as one question round, each with a recommendation (fix it, accept it, or
    re-shape), instead of a third revision. The developer decides each gap. An accepted gap is
-   recorded in `design.md` as a `DEC-` naming the gap and the developer's answer; only then may
+   recorded in `design.md` as a `DEC-` naming the gap and the developer's answer. Only then may
    the PLAN proceed below 9.
 
 The PLAN cuts its tasks into stages; delivery after the gate is `epic-delivery`'s.

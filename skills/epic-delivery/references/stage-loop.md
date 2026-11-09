@@ -20,25 +20,32 @@ and one owner. The summary is in the skill, and the review set of each appetite 
    - Builders take the tasks one at a time, test-first. Parallel builders only on disjoint files;
      otherwise one after another, or in separate worktrees.
    - The builder also updates the docs its task changed. There is no separate writer.
-   - While a task is in progress the builder runs only the narrow checks its edit touches. Before
-     it reports it runs the project's task gate once (named in the project's `AGENTS.md`: the full
-     gates by default, a narrower gate where the project says so) and reports every gate run:
-     command, exit code, counts, duration, plus the narrow checks run (`guardrails` §5,
+   - While a task is in progress the builder runs only the narrow checks its edit touches.
+   - Before it reports, the builder runs the project's task gate once. The project's `AGENTS.md`
+     names it: the full gates by default, a narrower gate where the project says so.
+   - The builder reports every gate run: command, exit code, counts, duration, the commit the gate
+     ran on, plus the narrow checks run (`guardrails` `references/subagent-reports.md`,
      *implementing*).
    - The lead reads the diff and the report, reads the upstream findings and files the issues they
-     call for, and commits the task. It re-runs the task gate only on a trigger, and names it in
-     the commit body (`Re-run: T1, <reason>`):
+     call for, and commits the task. It re-runs a gate only on a trigger, and names it in the
+     commit body (`Re-run: T1, <reason>`):
      - **T1** the report lacks a field, or contradicts the diff: tests added but the count
-       unchanged; exit 0 with failures listed; no gate for a file type the diff touches.
-     - **T2** parallel builders touched a shared file.
-     - **T3** a fix round ended (step 4).
-3. **Challenge.** The lead refreshes the code index again if the project has one (background; a
-   failure warns). In parallel, scaled by appetite: the reviewers, and the adversarial tester where
-   the appetite's review set names it ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)). Reviewers are read-only. Before the PR the lead
-   runs the full gates once, unless the last task's report already ran them on the PR's head commit
-   (same check, same code). Reviewers read that gate report and never re-run the suite; a missing or
-   red run is a finding.
+       unchanged; exit 0 with failures listed; no gate for a file type the diff touches. The lead
+       re-runs the task gate.
+     - **T2** parallel builders touched a shared file. The lead re-runs the task gate.
+     - **T3** the lead's full-gates run after a fix round (step 4).
+3. **Challenge.**
+   - The lead refreshes the code index if the project has one (background; a failure warns).
+   - The lead runs the full gates once, unless the last task's report ran them on the commit that
+     is the PR's head (same check, same code). It records the report, the *implementing* fields,
+     in the PR body and opens the PR.
+   - Then, in parallel and scaled by appetite: the reviewers, and the adversarial tester where
+     the appetite's review set names it ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)).
+   - Reviewers are read-only. They read the gate report in the PR body and never re-run the suite;
+     a missing or red run is a finding.
 4. **Decide and fix.**
+   - Before the fix round the lead checks that `git status` is clean; an edit made by a reviewer
+     is discarded and reported.
    - The lead sorts the findings. Each accepted one becomes a decision in `design.md` before any
      code changes (the Rule of Divergence: the spec first, then the code). The rest are rejected
      with a reason.
@@ -46,23 +53,25 @@ and one owner. The summary is in the skill, and the review set of each appetite 
    - Fixers apply the decisions in batches: security first, then structure. After a red run they
      re-run only the failing tests until green. Then the lead runs the full gates once (T3), then
      CI.
-   - A test that both passes and fails on unchanged code is quarantined per the testing checklist
-     (`cosmic-python`), never chased by re-runs inside the stage; the stage PR names it.
+   - A flaky test is handled per the testing checklist (`cosmic-python`
+     `references/testing-checklist.md`).
 5. **Check.** Where the appetite's review set has a checker ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)), one fresh checker over the
    whole stage. Where it has none, the stage's full gates and CI are the check, and the single
    review pass is the four-eyes pass. A
    cold reader runs on any how-to or tutorial page the stage changed, at any appetite. An unmet item
    goes back to step 4.
-6. **Merge.** The lead opens the PR and merges it only on green CI, within its authority.
+6. **Merge.** The lead merges the PR on green CI, within its authority.
 
-After the last stage, in this order: accept, docs stage, archive.
+## After the last build stage
+
+In this order: accept, docs stage, archive.
 
 - **Acceptance demo** *(provisional)*, offered whenever the EPIC delivers or changes a use case:
   the lead runs the use case in the running system (or through the API) against the EPIC's success
-  measure. The developer accepts it or names what is wrong. Below LARGE the developer may skip it;
-  at LARGE and above it runs. The verdict, what was shown and the date, or the skip (who, why,
-  date), go to `evidence/acceptance.md`. A rejection is a decision in `design.md` and a fix stage
-  (steps 4–6) before any docs are written.
+  measure. The developer accepts it or names what is wrong. Whether it may be skipped is set by the
+  appetite table in [`verification-validation.md`](verification-validation.md). The verdict, what
+  was shown and the date, or the skip (who, why, date), go to `evidence/acceptance.md`. A rejection
+  is a decision in `design.md` and a fix stage (steps 4–6) before any docs are written.
 - **Docs stage.** The lead decides at accept. If the EPIC changed a use case, the architecture,
   installation or user-facing behaviour, it loads `technical-writing` first, then writes
   `evidence/docs-owed.md` (the pages owed) during the workflow's *inventory* phase, so the
@@ -72,7 +81,7 @@ After the last stage, in this order: accept, docs stage, archive.
 
 In `tasks.md` only the build stages carry checkboxes. The docs stage and the close are plain lines
 under their own headings, with no checkbox; the documentation workflow tracks the docs stage. The
-band shows `accept` once every build box is ticked.
+navigator band shows `accept` once every build box is ticked.
 
 ## When a situation goes wrong
 
@@ -88,7 +97,7 @@ band shows `accept` once every build box is ticked.
 | The project has no marker for quarantining a test | The framework's skip-with-reason plus the issue link |
 | The code-index refresh fails | Warn; read the code instead |
 | As-built contradicts an ADR (docs stage) | A finding to the lead; the developer decides; the page is not edited to match |
-| The lead loads `technical-writing` mid-build | The band shows *documentation*; loading `epic-delivery` or `openspec-apply-change` switches back |
+| The lead loads `technical-writing` mid-build | The navigator band shows *documentation*; loading `epic-delivery` or `openspec-apply-change` switches back |
 | A scenario changes after sign-off | Re-sign that scenario only |
 | A member needs a decision | It reports to the lead; the lead asks the developer |
 
@@ -122,10 +131,10 @@ a row.
 | Narrow checks | While a task is in progress | Builder | Each edit |
 | Task gate | Once per task, before the report | Builder | T1, T2 (lead) |
 | Diff reading | Each task | Lead | — |
-| Full gates | Once per stage before the PR (skipped if the last report ran them on the head commit); once after the fix round | Lead | T3 is the second |
+| Full gates | Once per stage before the PR (skipped only if the last report ran them on the PR's head commit); once after the fix round | Lead | T3 is the second |
 | Review set of the appetite (incl. L2 doc agreement, `meaningfy-code-review`) | Once per stage, on the PR | Reviewers | — |
 | Adversarial tester | Once per stage, where the set names it | Tester | — |
-| Failing tests | After a red run, until green | Fixer | Until green |
+| Failing tests | After a red run, until green | Fixer | — |
 | Checker | Once per stage, after the fixes | Checker | Unmet item → step 4 |
 | Evidence before a claim (`verification-before-completion`) | Before the lead reports a stage done | Lead | — |
 | Cold reader | A how-to or tutorial changed in a stage; every task-oriented page of the docs stage | Cold reader | The page changed again |

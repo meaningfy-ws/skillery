@@ -83,7 +83,7 @@ in an *epic session*: the main session acts as the lead, finishes and gates the 
 developer sign off the scenarios once, then briefs a small team of agents and runs the PLAN stage
 by stage, each stage one PR. Each stage runs the same loop (prepare, build, challenge, decide
 and fix, check, merge), scaled by the EPIC's appetite. After the last stage, the developer accepts
-the EPIC at the acceptance demo when it delivers or changes a use case (skippable below LARGE, with the skip recorded), the lead writes any docs the EPIC owes, and archives it. Each builder runs and reports its own task gate; the lead re-runs a gate only on a named trigger. The team, the loop and its scaling are owned by
+the EPIC at the acceptance demo when it delivers or changes a use case, the lead writes any docs the EPIC owes, and archives it. The team, the loop and its scaling are owned by
 [`epic-delivery`](../../../skills/epic-delivery/SKILL.md); the people's view is
 [working-with-agents.md](working-with-agents.md).
 
@@ -156,7 +156,7 @@ durable record.
 | BDD features | Reviews features for business accuracy | Writes `.feature` files, fabricates test data |
 | Implement (TDD) | Approves each commit, intervenes on spec issues | Implements code, runs and reports its task gate once, proposes the spec fix on design-level failures; the developer or epic-planner applies it |
 | Review | Decides which review issues to fix, triggers the PR | Reviews code against the lead's gate report (does not re-run the suite), reports issues by priority |
-| Acceptance demo (when the EPIC delivers or changes a use case; skippable below LARGE) | Accepts the EPIC, names what is wrong, or skips it with the reason recorded | Runs the use case against the EPIC's success measure |
+| Acceptance demo (when the EPIC delivers or changes a use case) | Accepts the EPIC or names what is wrong | Runs the use case against the EPIC's success measure |
 | Archive | None | Merges deltas into the durable specs |
 
 ---
