@@ -831,6 +831,14 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
   person may not know. The folded and
   unfolded band carry *Unfold*/*Fold* and *Hide*; `/navigator band` still cycles. Scenario 8 holds:
   the line is unchanged and other mods' bands draw below.
+- **DD-33** *(owner-decided 2026-11-09, stage 1 only)* Stage 1's challenge runs four subagents
+  instead of seven: reviewer A covers L1 + L2, reviewer B covers L3 + L4 + L5, plus the adversarial
+  tester and the checker. The stage diff is about 600 lines, half docs and tests, so five separate
+  reads of it cost more than the extra depth is worth. `epic-delivery` allows combined lenses only
+  for TINY and SMALL; this departs from it for this stage only. Stages 2 and 3 (drift, strict mode)
+  decide their review set again. Raised for the skill as issue #148; the `code-reviewer` agent
+  refuses a multi-lens brief, so the merged reviews run on general-purpose agents that load
+  `meaningfy-code-review`.
 
 ## Risks / Trade-offs
 
