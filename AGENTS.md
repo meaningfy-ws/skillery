@@ -8,7 +8,7 @@ CLI-specific guidance lives in that CLI's binding, never here.
 ## What this repo is
 
 A company-wide skills/agents/docs catalogue for **Claude Code and opencode**. Every artifact is
-exactly one of four types (defined in [`docs/development/governance.md`](docs/development/governance.md)):
+exactly one of five types (defined in [`docs/development/governance.md`](docs/development/governance.md)):
 
 | Type | Home | Rule |
 |------|------|------|
@@ -16,6 +16,7 @@ exactly one of four types (defined in [`docs/development/governance.md`](docs/de
 | **Agent** | `agents/` | Thin wrapper — see [`docs/development/agent-template.md`](docs/development/agent-template.md) |
 | **Doc** | `docs/` | Written for people; narrates and points, never restates skill rules |
 | **Binding** | root agentic files (`AGENTS.md`, `CLAUDE.md`) + `project-setup`'s agentic templates | Mandates and routes; never carries the standard |
+| **Mod** | `mods/` | Claude Code hooks module; observes, displays, runs commands; carries no method |
 
 **Single-source-of-authority rule:** if a fact belongs to a skill, it lives there and nowhere else.
 See [`docs/development/governance.md`](docs/development/governance.md) for placement rules.
@@ -64,6 +65,9 @@ improvement loop and the Definition of Done. This binding mandates it; it does n
   catalogue map [`docs/skill-inventory.md`](docs/skill-inventory.md) (drift is caught by
   `tests/test_skill_inventory.py` in `make validate`); every skill and agent declares the six facets
   of [`facets.yaml`](facets.yaml) under `metadata`.
+- **Adding or changing a mod** — the Mod type and its structure are in
+  [`docs/development/mods.md`](docs/development/mods.md); a mod is declared in one bundle under `mods:`
+  and checked by `make mods` (inside `make validate`).
 - **Assigning to a bundle** — every skill and every agent is declared in exactly one bundle of
   [`bundles.yaml`](bundles.yaml), the one bundle definition. Then run `make bundles`, which renders
   `.claude-plugin/marketplace.json`, the committed `bundles/` tree (symlinks into skills/agents plus one

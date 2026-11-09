@@ -1,8 +1,8 @@
 # Schema: each hook has id, intent, provenance, and one or more bindings.
-#   binding axes: mechanism = git | ci | agent ; phase = quality | phase-gate
+#   binding axes: mechanism = git | ci | agent | mod ; phase = quality | phase-gate
 #   provenance: { skill: <name> } OR { rule: "<MUST/NEVER rule in a binding>" }
 # A single intent MAY carry several bindings (e.g. a ci PR-check AND an agent pre-apply gate).
-version: 3.9.0
+version: 3.10.0
 
 hooks:
   # ---- git / quality ----
@@ -268,3 +268,20 @@ hooks:
     intent: Ensure on a feature branch before git commit
     provenance: { skill: meaningfy-git-workflow }
     bindings: [{ mechanism: agent, phase: quality, trigger: PreToolUse(Bash) }]
+  # ---- navigator strict mode (Claude Code only, a mod; opencode: recorded gap) ----
+  - id: navigator-strict-commit
+    intent: In strict repos, block a commit while the phase's expected skill or gate is missing
+    provenance: { skill: epic-delivery }
+    bindings: [{ mechanism: mod, phase: phase-gate, trigger: tool.call(git commit) }]
+  - id: navigator-strict-archive
+    intent: In strict repos, block an archive while plan or process drift is open and not accepted
+    provenance: { skill: spec-stewardship }
+    bindings: [{ mechanism: mod, phase: phase-gate, trigger: tool.call(openspec archive) }]
+  - id: navigator-strict-spawn
+    intent: In strict repos, keep a subagent spawn within the model rule and the appetite's review set
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: mod, phase: phase-gate, trigger: agent.spawn }]
+  - id: navigator-strict-reminder
+    intent: In strict repos, remind the model of the current phase, its expected skills and gates
+    provenance: { skill: epic-delivery }
+    bindings: [{ mechanism: mod, phase: quality, trigger: prompt.compose }]

@@ -35,6 +35,9 @@ your answer A"), and the log at the bottom.
 
 ## Workflow
 
+The sales phases, as the navigator mod tracks them, are data in
+[`assets/workflows/sales.workflow.json`](assets/workflows/sales.workflow.json) (provisional).
+
 1. Start of every run ([run-types](references/run-types.md)): write rules, configuration, HALT
    check, the owner's input, "since when".
 2. The run type's steps ([run-types](references/run-types.md)).

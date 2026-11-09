@@ -1,0 +1,26 @@
+{
+  "name": "meaningfy-navigator",
+  "version": "3.10.0",
+  "description": "See who runs what and where the work stands in Claude Code: a status line and band over the session, workflow and plan drift warnings, hygiene prompts, and actions that run your own commands (Claude Code only, CLI and desktop)",
+  "author": {
+    "name": "Meaningfy"
+  },
+  "hooks": [
+    "./mods/navigator/hooks.json"
+  ],
+  "types": "./mods/navigator/types.d.ts",
+  "userConfig": {
+    "band": {
+      "type": "string",
+      "title": "Band",
+      "description": "How the band above the prompt starts each session: unfolded, folded or hidden. /navigator band changes it for the session.",
+      "default": "folded"
+    },
+    "statusLine": {
+      "type": "boolean",
+      "title": "Status line",
+      "description": "Show navigator's line in the status bar at session start. /navigator line changes it for the session.",
+      "default": true
+    }
+  }
+}

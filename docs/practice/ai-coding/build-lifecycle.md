@@ -74,7 +74,8 @@ EPIC-tier loop below.
    external).
 6. **Review**: agent self-review + peer + human. Owner:
    [`meaningfy-code-review`](../../../skills/meaningfy-code-review/SKILL.md).
-7. **Archive**: deltas merged into the durable truth. Owner:
+7. **Archive**: deltas merged into the durable truth, only with no open plan drift or with each
+   deviation recorded in the change. Owner:
    [`spec-stewardship`](../../../skills/spec-stewardship/SKILL.md).
 
 **Sessions and stages.** Shaping the EPIC (step 1) happens in a *shaping session*. The rest happens

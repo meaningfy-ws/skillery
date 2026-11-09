@@ -6,21 +6,22 @@ mechanics (fresh not a copy, inputs as paths, the base report, the four-eyes rul
 
 ## Who plays each role, and when
 
-| Role | Played by | Used when |
-|---|---|---|
-| Developer | A person | Always: decides, signs off scenarios, accepts the EPIC |
-| Domain expert | A person | The model changes |
-| Lead | The main session | Always. Never a subagent: it is the only one that talks to the developer |
-| Architect | `system-architect` agent | Shaping session |
-| Planner | `epic-planner` agent | Shaping, or finishing the PLAN at the start of an epic session |
-| Builder | `implementer` agent | Every task, every accepted fix, every spike |
-| Reviewer | `code-reviewer` agent, one per lens | Every stage, scaled by appetite |
-| Checker | A fresh general-purpose subagent | MEDIUM and up, once per stage |
-| Adversarial tester | `implementer` with the tester brief | LARGE and up |
-| UX designer | A general-purpose subagent with the design skills | Screens in scope, any size (the UX review lens runs only LARGE and up when screens changed) |
+| Role | Played by | Model | Used when |
+|---|---|---|---|
+| Developer | A person | — | Always: decides, signs off scenarios, accepts the EPIC |
+| Domain expert | A person | — | The model changes |
+| Lead | The main session | The session's | Always. Never a subagent: it is the only one that talks to the developer |
+| Architect | `system-architect` agent | Declared (opus) | Shaping session |
+| Planner | `epic-planner` agent | Declared (opus) | Shaping, or finishing the PLAN at the start of an epic session |
+| Builder | `implementer` agent | Declared (sonnet) | Every task, every accepted fix, every spike |
+| Reviewer | `code-reviewer` agent, one per lens | Declared (opus) | Every stage, scaled by appetite |
+| Checker | A fresh general-purpose subagent | opus | Once per stage, where the appetite's review set has one ([`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json)) |
+| Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | Where the appetite's review set names one |
+| UX designer | A general-purpose subagent with the design skills | opus | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
 
 No role has its own catalogue agent beyond these. The checker and the tester differ from the others
-by their brief, not by their tools or model.
+by their brief, not by their tools. The lead sets the model only for the general-purpose roles; both
+are judgement work, so opus, per the model rule in `guardrails` §5.
 
 The tester and the checker both look for problems, differently. The tester tries to break the
 behaviour and leaves tests in the suite. The checker reads the stage against the briefs and the
@@ -69,7 +70,7 @@ upstream issue, not a fix here.
 > `design.md`, the ADRs the stage touches. **Report:** findings by priority per
 > `meaningfy-code-review`, and any workaround of our library as a finding.
 
-For TINY and SMALL, one reviewer covers L2 and L3 together. The lenses themselves are owned by
+Where the appetite's review set is one pass ([`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json)), one reviewer covers its lenses together. The lenses themselves are owned by
 `meaningfy-code-review`.
 
 ## Checker

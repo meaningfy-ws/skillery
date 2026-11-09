@@ -1,0 +1,12 @@
+{
+  "compact_offer_context_percent": 50,
+  "context_warn_percent": 75,
+  "fresh_offer_min_context_percent": 15,
+  "idle_reset_minutes": 60,
+  "subagent_report_max_lines": 40,
+  "lookup_max_tool_calls": 3,
+  "model_rank": ["haiku", "sonnet", "opus"],
+  "safe_point": { "after": "commit", "and_any": ["phase-left", "task-group-done"] },
+  "task_boundary": { "any": ["commit", "pr-merged", "archived"] },
+  "idle_reset": { "requires_clean_tree": true }
+}

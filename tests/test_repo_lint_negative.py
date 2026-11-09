@@ -275,6 +275,29 @@ def test_hooks_inventory_version_mismatch_is_flagged(tmp_path):
     assert any("!= VERSION" in e for e in lint.hooks_inventory_shape(tmp_path))
 
 
+def _mod_hooks(tmp_path, ids, rules):
+    (tmp_path / "VERSION").write_text("9.9.9\n", encoding="utf-8")
+    hooks = "".join(f"  - id: {i}\n    intent: x\n    provenance: {{skill: s}}\n"
+                    f"    bindings: [{{mechanism: mod, phase: phase-gate}}]\n" for i in ids)
+    (tmp_path / "hooks.yaml").write_text(f'version: "9.9.9"\nhooks:\n{hooks}', encoding="utf-8")
+    lib = tmp_path / "mods" / "navigator" / "lib"
+    lib.mkdir(parents=True)
+    (lib / "strict.ts").write_text("".join(f"  {{ id: '{r}', check }},\n" for r in rules), encoding="utf-8")
+
+
+def test_mod_mechanism_is_accepted_and_bindings_match(tmp_path):
+    _mod_hooks(tmp_path, ["navigator-strict-commit"], ["navigator-strict-commit"])
+    assert lint.hooks_inventory_shape(tmp_path) == []
+    assert lint.mod_bindings_match(tmp_path) == []
+
+
+def test_mod_bindings_mismatch_is_flagged_both_ways(tmp_path):
+    _mod_hooks(tmp_path, ["navigator-strict-commit"], ["navigator-strict-archive"])
+    assert lint.mod_bindings_match(tmp_path) == [
+        "hooks.yaml: mod hook 'navigator-strict-commit' has no rule in mods/*/lib/strict.ts",
+        "mods/*/lib/strict.ts: rule 'navigator-strict-archive' has no mod hook in hooks.yaml"]
+
+
 def test_body_agnosticism_new_claude_ism_is_flagged(tmp_path):
     _skill(tmp_path, "cosmic-python", body="Run /opsx:apply then edit .claude/settings.json")
     assert lint.body_agnosticism(tmp_path)  # not in the allowlist → flagged
@@ -849,8 +872,14 @@ def test_unknown_top_level_folder_is_flagged(tmp_path):
     for d in ("skills", "docs", "spine", ".venv", "bundles"):
         (tmp_path / d).mkdir()
     assert lint.top_level_folders(tmp_path) == [
-        "spine/: not an allowed top-level folder (allowed: skills, agents, use-cases, openspec, docs, "
-        "tools, tests, .github, .claude-plugin)"]
+        "spine/: not an allowed top-level folder (allowed: skills, agents, mods, use-cases, openspec, "
+        "docs, tools, tests, .github, .claude-plugin)"]
+
+
+def test_mods_top_level_folder_is_allowed(tmp_path):
+    (tmp_path / "mods" / "navigator").mkdir(parents=True)
+    (tmp_path / "node_modules").mkdir()
+    assert lint.top_level_folders(tmp_path) == []
 
 
 # ------------------------------------------ external dependency register (rebundle-by-activity D-7)
@@ -892,3 +921,72 @@ def test_dependency_unknown_key_is_flagged(tmp_path):
 
 def test_register_check_is_silent_without_the_file(tmp_path):
     assert lint.dependencies_register(tmp_path) == []
+
+
+# --- the optional `skills:` list (navigator DD-28)
+def _deps_text(tmp_path, text):
+    (tmp_path / "dependencies.yaml").write_text(text, encoding="utf-8")
+    return lint.dependencies_register(tmp_path)
+
+
+def _dep_yaml(name, skills_line):
+    fields = "".join(f"  {k}: {v!r}\n" for k, v in _DEP.items() if k != "name")
+    return f"- name: {name}\n{fields}  {skills_line}\n"
+
+
+def test_dependency_inline_skills_list_passes(tmp_path):
+    assert _deps_text(tmp_path, _dep_yaml("a", "skills: [brainstorming, writing-plans]")) == []
+
+
+def test_dependency_skill_name_not_kebab_is_flagged(tmp_path):
+    assert _deps_text(tmp_path, _dep_yaml("a", "skills: [Writing_Plans]")) == [
+        "dependencies.yaml: 'a' skill name 'Writing_Plans' is not kebab-case"]
+
+
+def test_dependency_skill_name_in_two_entries_is_flagged(tmp_path):
+    text = _dep_yaml("a", "skills: [brainstorming]") + _dep_yaml("b", "skills: [brainstorming]")
+    assert _deps_text(tmp_path, text) == [
+        "dependencies.yaml: 'b' skill 'brainstorming' is already listed by 'a'"]
+
+
+def test_dependency_skill_shadowing_a_skills_dir_is_flagged(tmp_path):
+    (tmp_path / "skills" / "guardrails").mkdir(parents=True)
+    assert _deps_text(tmp_path, _dep_yaml("a", "skills: [guardrails]")) == [
+        "dependencies.yaml: 'a' skill 'guardrails' is a skills/ directory of this catalogue"]
+
+
+def test_dependency_block_skills_list_is_flagged(tmp_path):
+    text = _dep_yaml("a", "skills:\n    - brainstorming")
+    assert _deps_text(tmp_path, text) == [
+        "dependencies.yaml: line 10: 'skills:' must be an inline list of bare names, `skills: [a, b]`"]
+
+
+def test_dependency_skills_not_a_list_is_flagged(tmp_path):
+    assert _deps_text(tmp_path, _dep_yaml("a", "skills: brainstorming")) == [
+        "dependencies.yaml: 'a' 'skills' must be a list",
+        "dependencies.yaml: line 10: 'skills:' must be an inline list of bare names, `skills: [a, b]`"]
+
+
+@pytest.mark.parametrize("name", ["mods2", "Mods", "mod", "node_modules2", "module"])
+def test_near_miss_of_mods_or_node_modules_is_flagged(tmp_path, name):
+    (tmp_path / name).mkdir()
+    assert [m.split("/:")[0] for m in lint.top_level_folders(tmp_path)] == [name]
+
+
+def test_mods_and_node_modules_as_plain_files_are_not_folders(tmp_path):
+    (tmp_path / "mods").write_text("x", encoding="utf-8")
+    (tmp_path / "node_modules").write_text("x", encoding="utf-8")
+    assert lint.top_level_folders(tmp_path) == []
+
+
+def test_mods_as_a_symlink_to_a_folder_is_allowed_and_nested_node_modules_is_not_checked(tmp_path):
+    (tmp_path / "real").mkdir()
+    (tmp_path / "mods").symlink_to("real")
+    assert [m.split("/:")[0] for m in lint.top_level_folders(tmp_path)] == ["real"]  # only the target, by name
+    (tmp_path / "skills" / "node_modules").mkdir(parents=True)
+    assert all(not m.startswith("skills") for m in lint.top_level_folders(tmp_path))
+
+
+def test_hidden_mods_folder_is_skipped_like_any_hidden_folder(tmp_path):
+    (tmp_path / ".mods").mkdir()
+    assert lint.top_level_folders(tmp_path) == []

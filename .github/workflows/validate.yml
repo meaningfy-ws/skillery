@@ -22,6 +22,11 @@ jobs:
       - run: test -z "$(git ls-files -s | awk '$1 == 120000 && $4 !~ /^bundles\//')"
       - run: python -m tools.bundle_gen check
       - run: python -m pytest tests/ -q
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci --no-audit --no-fund
+      - run: make mods
 
   validate-spine:
     runs-on: ubuntu-latest

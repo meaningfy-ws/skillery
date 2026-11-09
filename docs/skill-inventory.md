@@ -5,7 +5,7 @@
      agent's frontmatter (agents/*.md), bundles.yaml and facets.yaml.
      tests/test_skill_inventory.py fails the build if this drifts. -->
 
-48 skills and 10 agents across 7 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
+48 skills and 10 agents across 8 bundles (role bundles plus the `vault-assistant` workflow bundle). Install `meaningfy-core` plus the bundle(s) matching your role, and the bundles they require — see [Bundle requirements](#bundle-requirements) and the root [`README.md`](../README.md).
 
 ## Map
 
@@ -85,6 +85,8 @@ flowchart LR
     s_vault_tidy["vault-tidy"]
     s_vault_planning["vault-planning"]
     s_vault_daily["vault-daily"]
+  end
+  subgraph b_meaningfy_navigator["meaningfy-navigator"]
   end
 
   p_software_development("software-development<br/><sub>build software with agents: plan, build, test, review, version</sub>")
@@ -195,6 +197,7 @@ flowchart LR
   style b_meaningfy_building fill:#eaf3ff,stroke:#999,stroke-width:1px
   style b_meaningfy_devops fill:#fff2e0,stroke:#999,stroke-width:1px
   style b_vault_assistant fill:#eafaf0,stroke:#999,stroke-width:1px
+  style b_meaningfy_navigator fill:#f5eaff,stroke:#999,stroke-width:1px
   style p_software_development fill:#fdf6e3,color:#000000,stroke:#333,stroke-width:1.5px
   style p_modelling fill:#fdeef7,color:#000000,stroke:#333,stroke-width:1.5px
   style p_advising fill:#eafaf5,color:#000000,stroke:#333,stroke-width:1.5px
@@ -277,6 +280,7 @@ flowchart LR
   b_meaningfy_building["meaningfy-building"]
   b_meaningfy_devops["meaningfy-devops"]
   b_vault_assistant["vault-assistant"]
+  b_meaningfy_navigator["meaningfy-navigator"]
   b_meaningfy_sales --> b_meaningfy_consulting
   b_meaningfy_building --> b_meaningfy_architecture
   b_meaningfy_devops --> b_meaningfy_consulting
@@ -350,6 +354,8 @@ flowchart LR
     s_vault_tidy["vault-tidy"]
     s_vault_planning["vault-planning"]
     s_vault_daily["vault-daily"]
+  end
+  subgraph b_meaningfy_navigator["meaningfy-navigator"]
   end
 
   s_ci_cd_delivery ==> s_project_setup
@@ -640,6 +646,7 @@ flowchart LR
   style b_meaningfy_building fill:#eaf3ff,stroke:#999,stroke-width:1px
   style b_meaningfy_devops fill:#fff2e0,stroke:#999,stroke-width:1px
   style b_vault_assistant fill:#eafaf0,stroke:#999,stroke-width:1px
+  style b_meaningfy_navigator fill:#f5eaff,stroke:#999,stroke-width:1px
   style s_architecture fill:#6b1f4d,color:#ffffff,stroke:#000
   style s_bdd_gherkin fill:#7a5c00,color:#ffffff,stroke:#000
   style s_ci_cd_delivery fill:#1f4f6b,color:#ffffff,stroke:#000
@@ -796,6 +803,14 @@ The workflow bundle for people who keep a personal Obsidian vault: set it up (va
 | [`vault-tidy`](../skills/vault-tidy/SKILL.md) | Tidy a Meaningfy Obsidian vault on the owner's request: survey it, present a written plan of every move, merge, rename and delete (and every wikilink each affects), and apply the plan only after an explicit yes, moving so links follow. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-promote`, `vault-project` | `vault-conventions`, `vault-promote`, `vault-project` |
 | [`vault-planning`](../skills/vault-planning/SKILL.md) | Plan and review the owner's objectives in a Meaningfy Obsidian vault across four horizons: year, quarter (OKRs: objectives with measurable key results), month and week: kept in `05 To Do/Objectives YYYY.md` with its own change log, and reviewed into `04 Daily/reviews/`. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-daily`, `vault-promote`, `vault-tidy` | `vault-daily`, `vault-project`, `vault-conventions`, `vault-promote`, `rule-steward` |
 | [`vault-daily`](../skills/vault-daily/SKILL.md) | Write today's morning note in a Meaningfy Obsidian vault (`04 Daily/YYYY-MM-DD.md`, private) from live sources: the calendar, the inbox and sent mail since the previous note, the master to-do list `05 To Do/To-Do.md`, this week's plans: keep the master list current (ticks flow back, waiting-on-replies tracked), and create reply drafts, never sending anything. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `stable` | `vault-conventions`, `vault-planning`, `meaningfy-voice`, `vault-setup` | `meaningfy-voice`, `vault-planning`, `vault-conventions`, `vault-setup`, `vault-capture`, `vault-resume` |
+
+## meaningfy-navigator
+
+See who runs what and where the work stands in Claude Code: a status line and band over the session, workflow and plan drift warnings, hygiene prompts, and actions that run your own commands (Claude Code only, CLI and desktop).
+
+| Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
+|---|---|---|---|---|---|---|---|---|---|
+| [`navigator`](../mods/navigator/) *(mod)* | Claude Code mod | — | — | — | — | — | — | — | — |
 
 ## By facet
 

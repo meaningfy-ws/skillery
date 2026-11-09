@@ -65,6 +65,30 @@ explore  → elicit from seed inputs (changes/<id>/inputs/)
 propose (delta-only)  → apply  → archive (merge into specs/)
 ```
 
+### Workflow files
+
+The phases of these patterns, and of the other Meaningfy activities, are also data: one workflow
+file per activity, kept in the skill that owns it. The [navigator](../environment/navigator.md) mod
+reads them to show the phase and to warn when a step is skipped.
+
+| Workflow | File | Variants |
+|---|---|---|
+| Build-tier EPIC delivery | [`epic-delivery`](../../skills/epic-delivery/assets/workflows/build-tier.workflow.json) | exploratory, brownfield |
+| Architecting and modelling | [`architecture`](../../skills/architecture/assets/workflows/architecting.workflow.json) | — |
+| DevOps | [`infrastructure-operations`](../../skills/infrastructure-operations/assets/workflows/devops.workflow.json) | intervention, incident, check-up, unattended |
+| Sales (provisional) | [`sales-operations`](../../skills/sales-operations/assets/workflows/sales.workflow.json) | — |
+
+A repository can change them with its own files in `docs/navigator/*.workflow.json`. A file with
+the name of a default replaces it; a file with `"extends": "<name>"` replaces only the fields it
+gives; a file with a new name adds a workflow. The smallest one declares the repository strict
+(today navigator marks the line `● strict`; blocking in strict mode comes with its stage 3):
+
+```json
+{ "name": "build-tier", "extends": "build-tier", "mode": "strict" }
+```
+
+The schema is described in [`mods.md`](mods.md#workflow-files).
+
 ## Command → driving Meaningfy discipline
 
 Which skill / superpowers discipline owns each verb. This is the concrete
