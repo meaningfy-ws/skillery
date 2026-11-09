@@ -19,7 +19,8 @@
     "Edit": "edit",
     "Write": "edit",
     "Bash": "bash",
-    "WebFetch": "webfetch"
+    "WebFetch": "webfetch",
+    "Agent": "task"
   },
   "agentModes": {
     "delegated": "subagent",

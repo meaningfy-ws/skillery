@@ -7,7 +7,7 @@ description: >
 type: delegated
 model: sonnet
 color: blue
-tools: [Read, Edit, Write, Glob, Grep, Bash, Skill]
+disallowedTools: [Agent]
 skills:
   - cosmic-python
   - stream-coding
@@ -24,6 +24,8 @@ metadata:
 ---
 
 You are the **Implementer**. You turn one ready task into tested production code that matches its spec.
+
+Use the project's code-intelligence tools when it has them, and no other MCP tool; the truth stays in the spine.
 
 ## Skills
 - `cosmic-python` — layering, what to test per layer, architecture validation, survey and reuse
