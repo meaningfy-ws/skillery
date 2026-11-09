@@ -690,7 +690,7 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
 | H-2 | desktop | marketplace from the working copy, install the bundle | stage 1: scenarios 1 (line), 2 (subagent row) and 8 (hidden band, ponytail below) hold as on the terminal, and the placeholder `data/` link resolves; stage 2 re-run: scenario 3 (process drift at commit);  record in `openspec/changes/navigator/evidence/desktop-proof.md` (10, DD-19) |
 | H-3 | CLI | spawn a subagent during apply | band row, then tokens (2) |
 | H-4 | CLI | a scratch repo with `docs/navigator/build.workflow.json` `mode: strict`, a change in apply | the first commit without `test-driven-development` is blocked before it runs; `/navigator mode loose`; the commit passes with a warning; a new session blocks again (3, 12) |
-| H-5 | both | `claude plugin validate bundles/meaningfy-navigator` | no errors; register.tsx types ok |
+| H-5 | both | `claude plugin validate bundles/meaningfy-navigator`; `tsc` with the engine's `claude-code.d.ts` over `register.tsx` (which imports `io.ts`) | no errors; register.tsx and io.ts types ok |
 | H-6 | CLI | Reconcile EPIC, Next step, Accept, Compact now buttons (Report to skillery cut, DD-39) | the commands in the transcript as typed; `clear` and `compact` resolve (13) |
 
 ## 12. Anti-patterns
@@ -992,6 +992,19 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
   the idle keys (they are guardrails' rule for the lead; navigator not acting on them is DD-40.5);
   un-exporting types used only locally (cosmetic); tests for `register.tsx` (by design it has none;
   the parsing moved to `lib/` is tested).
+- **DD-42** *(lead, task 4.2 closing check)* Gaps between the PLAN and what was built:
+  1. **Built:** the unfolded band's *appetite* row (§9 row 4): appetite, tasks, task groups done,
+     reviewers this turn against `reviews[appetite]`, session tokens and cost, shown never judged;
+     a skill gate shows the score its skill printed (`clarity ✓ 9.1`), read from the answer after
+     that skill ran, never computed (DD-14).
+  2. **Spec aligned to design §7:** strict blocks a commit while the *phase's process* drift is open
+     and an archive while *any* drift is open; a plan drift is settled before archive, not before
+     each commit (a file outside the PLAN mid-stage is normal work). The declared-model rule states
+     the DD-40.4 shortcut.
+  3. **Docs:** the user guide no longer says blocking is unbuilt, and says navigator writes only the
+     change's `deviations.md`; `compatibility.md` drops "later stages"; `mods.md` says
+     `process-drift.ts` is tested through `phase.test.ts` (DD-38) and that `register.tsx` and `io.ts`
+     are type-checked by H-5; the proposal's mode line points to DEC-5.
 - **DD-37** *(lead, task 2.9)* DEC-13's four host skills were right; keep them. Each file sits
   with the skill that owns the activity's method, and each phase names its own owner, so a file
   that spans skills (build-tier's explore/shape/plan belong to `epic-planning`, archive to

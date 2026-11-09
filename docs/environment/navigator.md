@@ -33,7 +33,7 @@ That is the open change, its appetite (its size, once the PLAN names it), the cu
 change, and how many other changes are open. It shows the one your branch names. With no open
 change it reads `navigator · no open change`, followed by the phase once you load a skill of
 the build-tier workflow (`· explore`). In a repository whose workflow file declares strict
-mode, it ends with `● strict` (blocking in strict mode is not built yet).
+mode, it ends with `● strict` (see *Loose and strict* below).
 
 In another workflow (DevOps, sales, architecting), the line names that workflow, its variant and its
 phase instead, even while a change is open:
@@ -54,6 +54,7 @@ With nothing to report it shows just its buttons. Unfolded, it adds:
 ```
 stages    ✓ 1 See it 12/12 · ● 2 Follow the workflow 3/12 · ○ 3 Stay on plan 0/13 · ○ Close 0/4
 phases    Build-tier EPIC delivery · ✓ explore · ✓ shape · ✓ plan · ● apply · ○ verify · ○ archive
+appetite  VERY LARGE · tasks 9/41 · groups 1/4 · reviewers 0/6 this turn · 1.2M tokens · $3.40
 skills    clarity-gate (plan) · epic-delivery (apply)
 subagents code-reviewer · sonnet · done · 41.0k tokens · implementer · opus · running
 warnings  ⚠ commit in apply without test-driven-development (epic-delivery)
@@ -204,6 +205,7 @@ In `/plugin`, open `meaningfy-navigator` and its settings:
 ## Turn it off
 
 `/plugin disable meaningfy-navigator` turns it off; `/plugin uninstall meaningfy-navigator`
-removes it. Navigator writes nothing into your repository.
+removes it. The only file navigator writes in your repository is a change's `deviations.md`, when you
+accept a deviation.
 
 Developers changing navigator: see [`docs/development/mods.md`](../development/mods.md).

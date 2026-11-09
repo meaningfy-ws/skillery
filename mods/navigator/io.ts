@@ -118,11 +118,11 @@ export async function readPlanSignal($: EngineInterface, id: string): Promise<Si
   return { kind: 'PlanRead', id, warnings, truncated }
 }
 
-export async function turnEndedSignal($: EngineInterface, turnId: string): Promise<Signal> {
+export async function turnEndedSignal($: EngineInterface, turnId: string, tokens: number): Promise<Signal> {
   const usage = await $.session.usage()
   const status = await git($, await repoRoot($), ['status', '--porcelain'])
   return { kind: 'TurnEnded', id: `turn:${turnId}`, turnId, contextPercent: usage.context.percent ?? 0,
-    cleanTree: status !== null && status.trim() === '', at: await $.clock.now() }
+    cleanTree: status !== null && status.trim() === '', at: await $.clock.now(), tokens, usd: usage.cost?.usd ?? null }
 }
 
 export async function start($: EngineInterface, settings: Settings, interactive: boolean) {

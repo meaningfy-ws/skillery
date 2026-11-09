@@ -57,8 +57,8 @@ steers.** Logic stays in the skills; the plugin reads, records and calls the per
 | **Band, unfolded** | Stage-loop progress, skill trail, subagent list (type, model, tokens), appetite vs actual, open warnings, actions. |
 
 The band and the status line are each shown and hidden by a command, for the session; their
-defaults, the mode and the whole plugin are set once in the plugin's settings (the Claude Code
-config menu); no hotkeys. Turning navigator off entirely is uninstalling or disabling the plugin,
+defaults and the whole plugin are set once in the plugin's settings (the Claude Code config menu;
+the mode is the repository's workflow file, DEC-5, DD-25); no hotkeys. Turning navigator off entirely is uninstalling or disabling the plugin,
 documented.
 
 **Both Claude Code surfaces.** In the **CLI** the band draws above the prompt and the line pins under

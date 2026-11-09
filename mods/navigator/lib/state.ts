@@ -40,6 +40,8 @@ export const EMPTY: NavState = {
   shipLog: [],
   hygieneEvents: [],
   offer: null,
+  sessionTokens: 0,
+  usd: null,
   pending: null,
   display: { band: 'folded', line: true },
   seen: [],
@@ -72,7 +74,8 @@ export type Signal =
   | { kind: 'AgentCalled'; id: string; agentId: string }
   | { kind: 'SpawnAsked'; id: string; type: string; description: string }
   | { kind: 'AcceptedRead'; id: string; keys: string[] }
-  | { kind: 'TurnEnded'; id: string; turnId: string; contextPercent: number; cleanTree: boolean; at: number }
+  | { kind: 'TurnEnded'; id: string; turnId: string; contextPercent: number; cleanTree: boolean; at: number;
+      tokens?: number; usd?: number | null }
   | { kind: 'Compacted'; id: string; trigger: string }
   | { kind: 'ToggleBand'; id: string }
   | { kind: 'SetBand'; id: string; band: BandDisplay }
@@ -147,7 +150,8 @@ function apply(state: NavState, s: Signal): NavState {
     }
     case 'AnswerShown': {
       const w = workflowOf(state)
-      return w && showsConsent(w, s.text) ? { ...state, consentShown: true } : state
+      const scored = w ? withScore(state, w, s.text) : state
+      return w && showsConsent(w, s.text) ? { ...scored, consentShown: true } : scored
     }
     case 'UserPrompted': {
       const w = workflowOf(state)
@@ -201,6 +205,15 @@ function apply(state: NavState, s: Signal): NavState {
     case 'Accepted':
       return { ...state, accepted: [...new Set([...state.accepted, ...s.keys])] }
   }
+}
+
+/** A skill gate shows the score its skill printed (`9.1/10`), never one the mod judges (DD-14). */
+function withScore(state: NavState, w: Workflow, text: string): NavState {
+  const last = state.skills.at(-1)
+  const score = text.match(/(\d+(?:\.\d+)?)\s*\/\s*10\b/)?.[1]
+  const id = last && score && Object.entries(w.gates ?? {})
+    .find(([gid, g]) => g.kind === 'skill' && bare(g.skill) === bare(last.name) && state.gates[gid]?.state === 'ok')?.[0]
+  return id ? { ...state, gates: { ...state.gates, [id]: { ...state.gates[id]!, detail: score } } } : state
 }
 
 /** New gate states; a gate that passes clears its open gate warnings. */

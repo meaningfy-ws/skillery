@@ -123,6 +123,8 @@ export type NavState = {
   shipLog: ({ kind: 'spawn'; role: Role } | { kind: 'ship' })[] // per change (PD-9)
   hygieneEvents: HygieneEvent[] // since the last safe point or task boundary
   offer: 'compact' | 'fresh' | null
+  sessionTokens: number // main turns' usage summed; subagents carry their own
+  usd: number | null // the session's cost as Claude Code reports it
   pending: string | null // a command to submit when the main turn ends (Reconcile EPIC's second step, DD-16)
   display: { band: BandDisplay; line: boolean }
   seen: string[]
