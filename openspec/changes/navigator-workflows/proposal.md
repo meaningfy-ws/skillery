@@ -4,7 +4,8 @@
      Q-6 answered: shaping and delivery stay separate sessions; the variant stays.
      PLAN gated 2026-11-09: clarity gate 9.1/10 (fourth run; 7.5, 8.2, 8.7 before).
      RE-SHAPED 2026-11-09 during delivery (inputs/qa.md round 5, Q-7..Q-11): build-tier split into
-     epic-shaping and epic-delivery; DEC-1, DEC-2 and DEC-8 rewritten; PLAN re-derived and re-gated. -->
+     epic-shaping and epic-delivery; DEC-1, DEC-2 and DEC-8 rewritten; PLAN re-derived and re-gated:
+     clarity gate 9.1/10 (independent scorer; 8.3 before G1-G9 were fixed). -->
 
 # EPIC: navigator workflows — work shaping, architecture, modelling and release
 
@@ -72,7 +73,7 @@ and **Next step** points to the skill that should run next.
   `architecting`.
 - **DEC-5** *(amended 2026-11-09 by design D-4: no `hotfix` variant, the `cut` gate takes both
   branch kinds; the lead's decision, the owner may overrule)*: Release is its own workflow, owned by `meaningfy-release`, starting only on that
-  skill, with command gates for its phases and a `hotfix` variant. — Rejected: activating on
+  skill, with command gates for its phases. — Rejected: activating on
   `git tag` or a `release/` branch alone, which would catch ordinary work.
 - **DEC-6**: One engine rule: a **file gate** that passes advances the phase the way a command gate
   already does (`advanceOn`), into a phase with no `enter`. — Architecture's phases are told apart
@@ -135,5 +136,6 @@ None.
 ## Impact
 
 Five skills' `assets/workflows/` (`make bundles` links them into the navigator bundle), navigator's
-`lib/phase.ts` and tests, two docs. No agent changes; no skill body changes beyond a line where a
+`lib/phase.ts` and tests, the navigator and workflow docs and the docs and skills that name the
+build-tier workflow file (task 4.4). No agent changes; no skill body changes beyond a line where a
 skill names its workflow.

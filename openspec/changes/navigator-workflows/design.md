@@ -16,8 +16,9 @@ Gates and strict mode:
 - A command or file gate that is not ok when its phase is **left** raises a process warning keyed to
   that phase (`onLeave`).
 - A skill gate is checked on **entry** (`onEnter`).
-- Strict mode refuses a commit only on a gate warning keyed to the **current** phase
-  (`decideCommit`).
+- Strict mode refuses a commit on a gate warning keyed to the **current** phase, or on a missing
+  expected skill of that phase (PD-1) (`decideCommit`, `strict.ts`). A gate of a phase already left
+  never blocks.
 
 So a gate placed on a phase reads as "this phase is done when …". A passed gate moves the session on,
 and blocks nothing while the session is still in that phase.
@@ -40,6 +41,14 @@ check (`phase.test.ts`, PD-3).
 The engine finds the appetites in the workflow with `activate.openChange` (`io.ts`), and `reviews`,
 `replaces` and `planDrift` in whichever workflow has them (`lean.ts`, `process-drift.ts`, `io.ts`).
 Nothing reads a workflow by the name `build-tier`, so renaming it is data only.
+
+Two side effects of the split, accepted:
+- **Status line.** `epic-shaping` has no `openChange`, so the status line (`lineText`, `view.ts`)
+  shows `epic-shaping · <phase>` without the change id, appetite or progress, also during a
+  Reconcile in a delivery session. Pinned by a test (4.1).
+- **Reviewer counting.** Spawn roles come from the active workflow first (`lean.ts`), and
+  `epic-shaping` has no `roles`, so in a shaping session a `code-reviewer` spawn counts as *other*
+  and the over-spawn check (PD-8) does not fire. Shaping spawns no review set.
 
 Default artifact locations (a repo overrides any of them with `extends`, DEC-7):
 
@@ -81,11 +90,13 @@ Default artifact locations (a repo overrides any of them with `extends`, DEC-7):
 - **D-2. Shaping and delivery are two workflows (DEC-2, re-shaped).** `epic-shaping` activates on
   `epic-planning`, `openspec-explore`, `openspec-propose`, `clarity-gate` and
   `openspec-update-change`, with no `openChange`. `epic-delivery` keeps `openChange` and activates on
-  `epic-delivery` and `spec-stewardship`. `revise` is shaping's last phase, so **Next step** offers
+  `epic-delivery`, `openspec-apply-change` and `spec-stewardship`. `revise` is shaping's last phase, so **Next step** offers
   nothing after it: delivery is the next session.
   - **In a delivery session**, Reconcile EPIC (`openspec-update-change`, then `clarity-gate`)
     switches to `epic-shaping`; the skill enters `revise`. Loading `epic-delivery` or
-    `openspec-apply-change` switches back, placed, not entered (Q-9).
+    `openspec-apply-change` switches back, placed, not entered (Q-9). **Next step** offers nothing
+    in `revise` and **Back on track** has no warning to act on, so the person runs `/epic-delivery`
+    themselves; the method's Reconcile step ends that way (accepted).
   - **Loading `epic-delivery` inside a shaping session** is off-method (separate sessions): the band
     switches workflow, placed without checks; strict cannot block it. Error matrix.
   - Both files declare the `clarity` skill gate under the same id, so its state is shared across the
@@ -144,7 +155,7 @@ EPIC shaping (`epic-planning`, new), title **EPIC shaping**, activates on the fi
 | variants | epic-planning | (empty) | qa | — | brainstorming |
 | decide | epic-planning | (empty) | — | — | brainstorming |
 | propose | epic-planning | skills openspec-propose; change proposal | — | — | — |
-| design | epic-planning | change plan | — | — | bdd-gherkin |
+| design | epic-planning | change plan, tasks-no-design | — | — | bdd-gherkin |
 | revise | epic-planning | skills clarity-gate, openspec-update-change | clarity | — | — |
 
 No variants. `propose` and `design` carry no expectation of `epic-planning` by exit: it is loaded at
@@ -157,7 +168,7 @@ Gates:
 - `clarity`: skill `clarity-gate` (same id as delivery's, D-2).
 
 EPIC delivery (`epic-delivery`, renamed from build-tier), title **EPIC delivery**, activates on
-`openChange`, `epic-delivery` and `spec-stewardship`:
+`openChange`, `epic-delivery`, `openspec-apply-change` and `spec-stewardship`:
 
 | Phase | Owner | Enter | Gates | Expect | Allow |
 |---|---|---|---|---|---|
@@ -218,11 +229,17 @@ Gates:
 - `validated`: command `\bmake validate\b`, run `make validate` (its own id: gate states are keyed
   by id for the whole session, so sharing epic-delivery's `validate` would share its state);
 - `merged`: command `gh pr merge`;
-- `published`: command `gh release create\b|git tag\b(?![^&;|]*\s(-[dl]|--delete|--list)\b)[^&;|]*\sv\d|git push\b[^&;|]*\s(v\d|--(follow-)?tags\b)`
-  (D-5). Passes: `gh release create v3.11.0`, `git tag v1.0.0`, `git tag -a v1.0.0 -m "x"`,
-  `git tag -am "x" v1.0.0`, `git push --tags`, `git push origin --follow-tags`,
-  `git push origin v3.11.0`. Does not pass: `gh release view v3.11.0`, `git tag -l v3*`,
-  `git tag -d v1.0`, `git tag --list v3*`, `git push -u origin release/1.0.0`, `git push origin main`;
+- `published`: command `gh release create\b|git tag\b(?![^&;|]*\s(-[dlnv]\w*|--(delete|list|contains|verify|points-at)\b))[^&;|]*\sv\d|git push\b(?![^&;|]*\s(-d|--delete|-n|--dry-run)\b)[^&;|]*\s(v\d|--(follow-)?tags\b)`
+  (D-5; read-only and delete forms are excluded, review G6). Known limit, accepted: the exclusion
+  reads the whole command, so a tag message containing such a flag (`-m "drop -d flag"`) does not
+  pass; the person accepts the warning. Passes: `gh release create v3.11.0`,
+  `git tag v1.0.0`, `git tag -a v1.0.0 -m "x"`, `git tag -am "x" v1.0.0`, `git tag -s v1.0.0`,
+  `git push --tags`, `git push origin --follow-tags`, `git push origin v3.11.0`,
+  `git push origin main --tags`. Does not pass: `gh release view v3.11.0`, `git tag -l v3*`,
+  `git tag -d v1.0`, `git tag --list v3*`, `git tag -v v1.0.0`, `git tag -n v1`,
+  `git tag --contains v1.0`, `git tag --verify v1.0.0`, `git push --delete origin v1.0.0`,
+  `git push -d origin v1.0.0`, `git push origin --tags --dry-run`, `git push -n origin v1.0.0`,
+  `git push -u origin release/1.0.0`, `git push origin main`;
 - `back`: command `gh pr create\b.*(--base[ =]|-B )develop\b(?!-)|git merge(?=\s)[^&;|"']*\s(origin/)?(main|release/\S+|hotfix/\S+)(\s|$)`
   (review W4). Passes: `gh pr create --base develop`, `gh pr create -B develop --title x`,
   `gh pr create --base=develop`, `git merge release/3.11.0`, `git merge --no-ff main`,
@@ -306,8 +323,8 @@ Separately, in a build session without the skill, `git tag v1.0.0` and
 | A repo has no file matching a default glob | the gate never passes | the phase is left by a skill or a later gate; a gate warning names the glob; the guide says how to override it |
 | A later gate passes first, e.g. `make validate` in `branch`, or an ADR in `drivers` | `advanceOn` reaches the later gate | it moves past the skipped phases; the left phase and each skipped phase raise their open gate warnings (`onLeave`), e.g. `branch:cut` and `bump:bumped`; tested |
 | A CI-published repo never runs a local publish command | `published` stays open | leaving `publish` by the back-merge raises `publish:published`; the person accepts it (D-5) |
-| Another change is open, or the branch names one | `readChange` follows it; the new change is not open until its `proposal.md` exists | the band shows epic-shaping at the phase the other change's state maps to, and inputs do not move it, until the new `proposal.md` exists and is the most recent or the branch names it. Expected in a repo with open changes (Risks); tested |
-| `tasks.md` written before `design.md` | change state `tasks-no-design` | in a shaping session the workflow stays epic-shaping: `phaseFor` maps it to the last shaping phase whose state holds; writing `design.md` moves to `design` (change state `plan`); the `clarity` gate stays open until `clarity-gate` runs; tested |
+| Another change is open, or the branch names one | `readChange` follows it; the new change is not open until its `proposal.md` exists | depends on the other change's state. In `proposal` or `plan`: the band sits at `propose` or `design` (change states win forward) and inputs do not move it. In a delivery state (`tasks-partial`, `tasks-done`): no shaping phase holds it, the session is placed at `explore`, and the new change's inputs move it (`explore` → `variants` → `decide`) while the band shows the other change's tasks and appetite. In brownfield delivery (`tasks-no-design`): it sits at `design`. Either way it follows the new change once its `proposal.md` is the most recent or the branch names it (Risks); both cases tested |
+| `tasks.md` written before `design.md` | change state `tasks-no-design` | in a shaping session `design` holds it (its `enter.change` lists `tasks-no-design`), so the session moves forward to `design`, never back; writing `design.md` keeps `design` (change state `plan`); no clarity warning unless `revise` is entered (by `openspec-update-change`) before `clarity-gate` has passed; tested |
 | A fresh session on a change with only a proposal | `select` defaults to epic-delivery (`openChange`) | placed in `ready` (D-7); loading `epic-planning` switches to shaping |
 | `architecture` loaded during shaping | architecting is selected | the session switches workflow; loading `epic-planning` again places it at `explore` (no open change) or at the change's phase |
 | `epic-delivery` loaded inside a shaping session | epic-delivery selected | off-method (D-2): placed without checks; strict cannot block it |
@@ -319,19 +336,19 @@ Separately, in a build session without the skill, `git tag v1.0.0` and
 
 ## Risks / Trade-offs
 
-- [In a repo with other open changes, a shaping session does not see explore, variants or decide]
-  → common in skillery (three other changes open on 2026-11-09). Navigator follows an open change,
-  and the new one is not open until its `proposal.md` exists, so the band follows the other change
-  until then. Accepted: write `proposal.md` early (`openspec-propose` creates it) and name the branch
-  after the change (`docs/shape-<id>`); from then on the band follows the new change from `propose`.
-  Branch matching is by substring, so a branch name that contains another open change's id follows
-  that change until the new `proposal.md` exists. The first three phases show in full only where no
-  other change is open.
+- [In a repo with other open changes, the band follows another change until the new
+  `proposal.md` exists] → common in skillery (three other changes open on 2026-11-09). If that
+  change is in `proposal` or `plan`, a shaping session sits at `propose` or `design` and does not
+  show explore, variants or decide; if it is in delivery, the shaping phases move normally but the
+  band shows the other change's tasks and appetite (error matrix). Accepted: write `proposal.md` early
+  (`openspec-propose` creates it) and name the branch after the change (`docs/shape-<id>`); from then
+  on the band follows the new change. Branch matching is by substring, so a branch name that
+  contains another open change's id follows that change until the new `proposal.md` exists.
 
 - [`**/*[Cc]4*` matches unrelated files] → active only inside architecting and forward only; a repo
   narrows it.
 - [A `clarity-gate` run mid-delivery shows epic-shaping `revise` until `epic-delivery` loads] →
-  intended (D-2, Q-9); the band names the way back.
+  intended (D-2, Q-9); the person runs `/epic-delivery` (D-2).
 - [A file write marks every passed command gate `stale`] → `gatesAfterFile` (unchanged code) treats
   any edit as invalidating a command gate. Right for `validate`; wrong for release's `cut`, `merged`,
   `published` and `back`, which an edit cannot undo: after `back` passes, the next write shows it not
