@@ -34,7 +34,7 @@ test:
 mods:
 	node --test --experimental-strip-types 'mods/*/lib/*.test.ts'
 	node --test 'mods/*/*.test.mjs'
-	for m in mods/*/; do [ -f $$m/tsconfig.json ] && { npx tsc -p $$m/tsconfig.json || exit 1; }; done; true
+	for m in mods/*/; do if [ -f $$m/tsconfig.json ]; then npx tsc -p $$m/tsconfig.json || exit 1; fi; done
 
 # skill-inventory = regenerate the catalogue map docs/skill-inventory.md (skills and agents by
 # bundle and by facet, bundle requirements, relations), derived from each SKILL.md, each agent,

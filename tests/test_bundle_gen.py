@@ -292,7 +292,7 @@ def test_python_cache_is_neither_copied_nor_compared(tmp_path):
 
 
 # ------------------------------------------------------------------ mods (navigator DD-4..DD-6)
-def _mod_repo(tmp_path: Path, mods=("navigator",)) -> Path:
+def _mod_repo(tmp_path: Path, mods=("nav",)) -> Path:
     doc = _doc()
     doc["bundles"].append({"name": "b-mod", "description": "Mod", "skills": [], "agents": [],
                            "mods": list(mods)})
@@ -315,20 +315,20 @@ def test_mod_links_data_links_and_manifest(tmp_path):
     repo = _mod_repo(tmp_path)
     gen.write(repo)
     b = repo / "bundles/b-mod"
-    assert not (b / "mods/navigator").is_symlink() and (b / "mods/navigator/types.d.ts").read_text() == "{}\n"
+    assert not (b / "mods/nav").is_symlink() and (b / "mods/nav/types.d.ts").read_text() == "{}\n"
     assert os.readlink(b / "data/workflows/build.workflow.json") == \
         "../../../../skills/s1/assets/workflows/build.workflow.json"
     assert os.readlink(b / "data/session-thresholds.json") == \
         "../../../skills/guardrails/assets/session-thresholds.json"
     assert (b / "data/workflows/build.workflow.json").read_text() == "{}\n"  # resolves
     manifest = json.loads((b / ".claude-plugin/plugin.json").read_text())
-    assert manifest["hooks"] == ["./mods/navigator/hooks.json"]
-    assert manifest["types"] == "./mods/navigator/types.d.ts"
+    assert manifest["hooks"] == ["./mods/nav/hooks.json"]
+    assert manifest["types"] == "./mods/nav/types.d.ts"
     assert manifest["userConfig"] == {"band": {"type": "boolean", "default": True}}
     assert "hooks" not in json.loads((repo / "bundles/b-one/.claude-plugin/plugin.json").read_text())
     assert gen.gate_errors(repo) == []
-    (repo / "mods/navigator/register.tsx").write_text("edited", encoding="utf-8")
-    assert any(e.startswith("stale copy") and "bundles/b-mod/mods/navigator" in e for e in gen.gate_errors(repo))
+    (repo / "mods/nav/register.tsx").write_text("edited", encoding="utf-8")
+    assert any(e.startswith("stale copy") and "bundles/b-mod/mods/nav" in e for e in gen.gate_errors(repo))
 
 
 def test_mod_only_bundle_is_in_marketplace_not_in_opencode_catalogue(tmp_path):
@@ -339,22 +339,22 @@ def test_mod_only_bundle_is_in_marketplace_not_in_opencode_catalogue(tmp_path):
 
 def test_mod_missing_files_is_rejected(tmp_path):
     repo = _mod_repo(tmp_path)
-    (repo / "mods/navigator/types.d.ts").unlink()
-    with pytest.raises(ValueError, match=r"mod 'navigator' of bundle 'b-mod' is missing mods/navigator/types.d.ts"):
+    (repo / "mods/nav/types.d.ts").unlink()
+    with pytest.raises(ValueError, match=r"mod 'nav' of bundle 'b-mod' is missing mods/nav/types.d.ts"):
         gen.load(repo)
 
 
 def test_two_mods_in_one_bundle_are_rejected(tmp_path):
     with pytest.raises(ValueError, match="at most one"):
-        gen.load(_mod_repo(tmp_path, mods=("navigator", "other")))
+        gen.load(_mod_repo(tmp_path, mods=("nav", "other")))
 
 
 def test_mod_in_two_bundles_is_rejected(tmp_path):
     repo = _mod_repo(tmp_path)
     doc = yaml.safe_load((repo / "bundles.yaml").read_text())
-    doc["bundles"][0]["mods"] = ["navigator"]
+    doc["bundles"][0]["mods"] = ["nav"]
     (repo / "bundles.yaml").write_text(yaml.safe_dump(doc), encoding="utf-8")
-    with pytest.raises(ValueError, match="mod 'navigator' is in bundles 'b-one' and 'b-mod'"):
+    with pytest.raises(ValueError, match="mod 'nav' is in bundles 'b-one' and 'b-mod'"):
         gen.load(repo)
 
 
@@ -379,7 +379,7 @@ def _set_mods(repo: Path, value) -> None:
     (repo / "bundles.yaml").write_text(yaml.safe_dump(doc), encoding="utf-8")
 
 
-@pytest.mark.parametrize("value", ["navigator", {"a": 1}, None, 7, [1], [None], ["Nav"], ["a/b"], ["../x"], [""], ["a_b"]])
+@pytest.mark.parametrize("value", ["nav", {"a": 1}, None, 7, [1], [None], ["Nav"], ["a/b"], ["../x"], [""], ["a_b"]])
 def test_malformed_mods_value_is_rejected(tmp_path, value):
     repo = _mod_repo(tmp_path)
     _set_mods(repo, value)
@@ -395,22 +395,22 @@ def test_empty_mods_list_is_accepted_and_adds_no_hooks(tmp_path):
 
 def test_same_mod_twice_in_one_bundle_is_rejected(tmp_path):
     repo = _mod_repo(tmp_path)
-    _set_mods(repo, ["navigator", "navigator"])
+    _set_mods(repo, ["nav", "nav"])
     with pytest.raises(ValueError):
         gen.load(repo)
 
 
 def test_mod_missing_config_json_is_rejected_naming_it(tmp_path):
     repo = _mod_repo(tmp_path)
-    (repo / "mods/navigator/config.json").unlink()
+    (repo / "mods/nav/config.json").unlink()
     with pytest.raises(ValueError, match="config.json"):
         gen.load(repo)
 
 
 def test_mod_folder_absent_is_rejected_naming_hooks_json(tmp_path):
     repo = _mod_repo(tmp_path)
-    shutil.rmtree(repo / "mods/navigator")
-    with pytest.raises(ValueError, match="navigator") as e:
+    shutil.rmtree(repo / "mods/nav")
+    with pytest.raises(ValueError, match="nav") as e:
         gen.load(repo)
     assert "hooks.json" in str(e.value)
 
@@ -436,7 +436,7 @@ def test_hooks_only_mod_needs_only_hooks_json(tmp_path):
     manifest = json.loads((b / ".claude-plugin/plugin.json").read_text())
     assert manifest["hooks"] == ["./mods/plain/hooks.json"]
     assert "types" not in manifest and "userConfig" not in manifest
-    assert not (b / "data").exists()  # navigator's data is not a hooks-only mod's
+    assert not (b / "data").exists()  # data is a modules mod's, not a hooks-only mod's
     assert (b / "mods/plain/plain.mjs").is_file()
     assert not (b / "mods/plain/plain.test.mjs").exists()  # a test does not ship
     assert gen.gate_errors(repo) == []
@@ -466,10 +466,18 @@ def test_hooks_only_mod_with_a_config_json_still_checks_it(tmp_path):
         gen.load(repo)
 
 
+@pytest.mark.parametrize("text", ["{not json", "[1]"])
+def test_malformed_hooks_json_is_an_error_naming_the_file(tmp_path, text):
+    repo = _plain_repo(tmp_path)
+    (repo / "mods/plain/hooks.json").write_text(text, encoding="utf-8")
+    with pytest.raises(ValueError, match="mods/plain/hooks.json"):
+        gen.load(repo)
+
+
 def test_mod_with_a_directory_in_place_of_a_required_file_is_rejected(tmp_path):
     repo = _mod_repo(tmp_path)
-    (repo / "mods/navigator/hooks.json").unlink()
-    (repo / "mods/navigator/hooks.json").mkdir()
+    (repo / "mods/nav/hooks.json").unlink()
+    (repo / "mods/nav/hooks.json").mkdir()
     with pytest.raises(ValueError, match="hooks.json"):
         gen.load(repo)
 
@@ -477,15 +485,15 @@ def test_mod_with_a_directory_in_place_of_a_required_file_is_rejected(tmp_path):
 def test_mod_with_invalid_json_config_names_the_file(tmp_path):
     # The gate reports, never raises (test_gate_reports_load_error_instead_of_raising).
     repo = _mod_repo(tmp_path)
-    (repo / "mods/navigator/config.json").write_text("{not json", encoding="utf-8")
-    assert any("mods/navigator/config.json: cannot be read as JSON" in e for e in gen.gate_errors(repo))
-    with pytest.raises(ValueError, match="mods/navigator/config.json"):
+    (repo / "mods/nav/config.json").write_text("{not json", encoding="utf-8")
+    assert any("mods/nav/config.json: cannot be read as JSON" in e for e in gen.gate_errors(repo))
+    with pytest.raises(ValueError, match="mods/nav/config.json"):
         gen.load(repo)
 
 
 def test_mod_config_that_is_not_an_object_is_rejected(tmp_path):
     repo = _mod_repo(tmp_path)
-    (repo / "mods/navigator/config.json").write_text("[1, 2]", encoding="utf-8")
+    (repo / "mods/nav/config.json").write_text("[1, 2]", encoding="utf-8")
     with pytest.raises(ValueError, match="config"):
         gen.plugin_manifests(repo)
 
@@ -500,7 +508,7 @@ def test_mod_named_like_a_skill_does_not_collide(tmp_path):
 def test_edited_copy_deleted_file_extra_file_and_symlinked_copy_are_all_stale(tmp_path):
     repo = _mod_repo(tmp_path)
     gen.write(repo)
-    copy = repo / "bundles/b-mod/mods/navigator"
+    copy = repo / "bundles/b-mod/mods/nav"
     (copy / "hooks.json").write_text("x", encoding="utf-8")
     assert gen.gate_errors(repo)
     gen.write(repo)
@@ -512,17 +520,17 @@ def test_edited_copy_deleted_file_extra_file_and_symlinked_copy_are_all_stale(tm
     gen.write(repo)
     assert gen.gate_errors(repo) == []
     shutil.rmtree(copy)
-    copy.symlink_to("../../../../mods/navigator")  # DD-31: the engine refuses a linked mod
-    assert any("bundles/b-mod/mods/navigator" in e for e in gen.gate_errors(repo))
+    copy.symlink_to("../../../../mods/nav")  # DD-31: the engine refuses a linked mod
+    assert any("bundles/b-mod/mods/nav" in e for e in gen.gate_errors(repo))
 
 
 def test_write_drops_a_file_removed_from_the_source_mod(tmp_path):
     repo = _mod_repo(tmp_path)
-    (repo / "mods/navigator/old.ts").write_text("x", encoding="utf-8")
+    (repo / "mods/nav/old.ts").write_text("x", encoding="utf-8")
     gen.write(repo)
-    (repo / "mods/navigator/old.ts").unlink()
+    (repo / "mods/nav/old.ts").unlink()
     gen.write(repo)
-    assert not (repo / "bundles/b-mod/mods/navigator/old.ts").exists()
+    assert not (repo / "bundles/b-mod/mods/nav/old.ts").exists()
     assert gen.gate_errors(repo) == []
 
 
@@ -565,7 +573,7 @@ def test_bundle_with_skills_and_a_mod_stays_in_the_opencode_catalogue(tmp_path):
     doc = yaml.safe_load((repo / "bundles.yaml").read_text())
     doc["bundles"][-1]["skills"] = []
     doc["bundles"][0]["mods"] = []
-    doc["bundles"][1]["mods"] = ["navigator"]
+    doc["bundles"][1]["mods"] = ["nav"]
     doc["bundles"][-1]["mods"] = []
     (repo / "bundles.yaml").write_text(yaml.safe_dump(doc), encoding="utf-8")
     _, _, cat = gen.render(repo)
@@ -590,18 +598,18 @@ def test_unreleased_lists_a_mod_folder_even_when_empty_and_skips_node_modules_in
 
 def test_unit_tests_inside_a_mod_folder_do_not_make_the_shipped_copy_stale_or_ship(tmp_path):
     repo = _mod_repo(tmp_path)
-    (repo / "mods/navigator/lib").mkdir()
-    (repo / "mods/navigator/lib/x.test.ts").write_text("t", encoding="utf-8")
+    (repo / "mods/nav/lib").mkdir()
+    (repo / "mods/nav/lib/x.test.ts").write_text("t", encoding="utf-8")
     gen.write(repo)
-    assert not (repo / "bundles/b-mod/mods/navigator/lib/x.test.ts").exists()
+    assert not (repo / "bundles/b-mod/mods/nav/lib/x.test.ts").exists()
 
 
 def test_a_mod_copy_never_takes_dotfiles_and_a_symlink_fails(tmp_path):
     repo = _mod_repo(tmp_path)
-    (repo / "mods/navigator/.env").write_text("TOKEN=secret", encoding="utf-8")
+    (repo / "mods/nav/.env").write_text("TOKEN=secret", encoding="utf-8")
     gen.write(repo)
-    assert not (repo / "bundles/b-mod/mods/navigator/.env").exists()
+    assert not (repo / "bundles/b-mod/mods/nav/.env").exists()
     assert gen.gate_errors(repo) == []
-    (repo / "mods/navigator/secret.json").symlink_to(repo / "VERSION")
-    with pytest.raises(ValueError, match="mods/navigator/secret.json is a symlink"):
+    (repo / "mods/nav/secret.json").symlink_to(repo / "VERSION")
+    with pytest.raises(ValueError, match="mods/nav/secret.json is a symlink"):
         gen.load(repo)
