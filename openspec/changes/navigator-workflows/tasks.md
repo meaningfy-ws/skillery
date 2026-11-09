@@ -11,7 +11,7 @@
 - [x] 2.2 Architecting data (DEC-3, D-3, D-6), plus a test of the *Architecture to modelling* example up to **Next step** returning `conceptual-modelling`, and a test that reloading `architecture` keeps the phase
 - [x] 2.3 Modelling: new `skills/conceptual-modelling/assets/workflows/modelling.workflow.json` (DEC-4), added to the default lists in `phase.test.ts` (around line 15), `edge-cases.test.ts` (around line 19) and TC-16 in `workflow.test.ts` (around lines 85–87); test the rest of the *Architecture to modelling* example
 - [x] 2.4 Release: new `skills/meaningfy-release/assets/workflows/release.workflow.json` (DEC-5, D-4, D-5), added to the same three default lists. Test the *Release* example; test that `git tag v1.0.0` and `git push -u origin release/1.0.0` without the skill activate nothing; test that `make validate` in `branch` skips to `merge` with the `branch:cut` and `bump:bumped` gate warnings
-- [ ] 2.5 Run `make bundles`. Add one line naming the workflow file to `architecture`, `conceptual-modelling` and `meaningfy-release`. `make validate` green
+- [x] 2.5 Run `make bundles`. Add one line naming the workflow file to `architecture`, `conceptual-modelling` and `meaningfy-release`. `make validate` green
 
 ## 3. Docs and close
 
@@ -25,7 +25,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [x] 2.1a · [x] 2.1b · [x] 2.2 · [x] 2.3 · [x] 2.4 · [ ] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3
+- [x] 1.1 · [x] 2.1a · [x] 2.1b · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3
 
 ## Verification
 
