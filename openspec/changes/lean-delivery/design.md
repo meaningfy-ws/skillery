@@ -297,6 +297,13 @@ appropriate". Decisions taken while delivering:
   needs" (`skill-crafting-method`) gains the DEC-11 exception through a MODIFIED delta: an agent
   that needs the project's code-intelligence tools may inherit the session's tools, only when it
   denies `Agent`; `docs/development/README.md` narrates it.
+- **DL-13 Acceptance and the docs PR (review findings).** The grant covers decisions and merges,
+  not validation: `evidence/acceptance.md` records the demo and the lead's recommendation, with the
+  developer's confirmation line left open. Task A.2 ("(provisional)" leaves the demo) waits for
+  that confirmation and ships after it, not in this release. The cold reader reads the fixed
+  Quick Start a second time. The Quick Start follows the house shape (bold steps, an *Output*
+  line); the inventory columns live in the workflow table; the cold-reader rule is pointed to, not
+  restated; the README keeps one `technical-writing` row.
 
 ## Algorithm — the check ledger (D-1)
 
