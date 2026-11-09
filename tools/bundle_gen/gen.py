@@ -26,14 +26,15 @@ AGENTS_DIR = "agents"
 MODS_DIR = "mods"
 MOD_FILES = ("hooks.json", "types.d.ts", "config.json", "register.tsx")
 # Data a mod reads under ${plugin root}/data/ (navigator design §2): skill assets, never copied.
-# shortcut: every mod gets navigator's data; key it by mod when a second mod lands.
-MOD_DATA = (("workflows", "*/assets/workflows/*.workflow.json"),
+# shortcut: only navigator reads data; make MOD_DATA a per-mod map when a second mod needs some.
+MOD_DATA_OWNER = "navigator"
+MOD_DATA =(("workflows", "*/assets/workflows/*.workflow.json"),
             ("", "guardrails/assets/session-thresholds.json"))
 # bundles/ holds symlinks into skills/ and agents/ plus one plugin.json per bundle: claude.ai's
 # marketplace sync needs the plugin.json (fix-desktop-marketplace-install).
 # Never copied or compared: caches made by running scripts, a mod's unit tests (they do not ship), and
 # dotfiles, so a local .env or .npmrc never reaches the committed bundles/ tree.
-_NOT_COPIED = ("__pycache__", "*.pyc", "*.test.ts", ".*")
+_NOT_COPIED = ("__pycache__", "*.pyc", "*.test.ts", "*.test.mjs", ".*")
 # Written by Claude Code into a plugin loaded with --plugin-dir (editor types); git-ignored, not ours.
 _ENGINE_DEV = (".claude-plugin/types", "tsconfig.json")
 PLUGIN_AUTHOR = {"name": "Meaningfy"}
@@ -107,14 +108,31 @@ def _check_mods(repo: Path, bundles: list[dict]) -> None:
             if m in owner:
                 raise ValueError(f"{BUNDLES_FILE}: mod '{m}' is in bundles '{owner[m]}' and '{b['name']}'")
             owner[m] = b["name"]
-            missing = [f for f in MOD_FILES if not (repo / MODS_DIR / m / f).is_file()]
+            missing = [f for f in _required_mod_files(repo, m) if not (repo / MODS_DIR / m / f).is_file()]
             if missing:
                 raise ValueError(f"{BUNDLES_FILE}: mod '{m}' of bundle '{b['name']}' is missing "
                                  f"{MODS_DIR}/{m}/{', '.join(missing)}")
             links = [p for p in (repo / MODS_DIR / m).rglob("*") if p.is_symlink()]
             if links:  # a copy would follow it and commit what it points to
                 raise ValueError(f"mod '{m}': {links[0].relative_to(repo)} is a symlink; a mod holds only real files")
-            _mod_config(repo, m)
+            if _mod_has_file(repo, m, "config.json"):
+                _mod_config(repo, m)
+
+
+def _mod_has_file(repo: Path, mod: str, name: str) -> bool:
+    return (repo / MODS_DIR / mod / name).is_file()
+
+
+def _is_modules_mod(repo: Path, mod: str) -> bool:
+    """An engine-modules mod: its hooks.json names `modules`. Otherwise it is plain command hooks."""
+    try:
+        return "modules" in json.loads((repo / MODS_DIR / mod / "hooks.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, TypeError):
+        return False  # a missing or unreadable hooks.json is reported as missing/by the manifest
+
+
+def _required_mod_files(repo: Path, mod: str) -> tuple[str, ...]:
+    return MOD_FILES if _is_modules_mod(repo, mod) else MOD_FILES[:1]
 
 
 def _mod_config(repo: Path, mod: str) -> dict:
@@ -193,7 +211,7 @@ def render(repo: Path) -> tuple[bytes, dict[str, str], bytes]:
         for a in b["agents"]:
             links[f"{BUNDLES_DIR}/{b['name']}/agents/{a}.md"] = f"../../../{AGENTS_DIR}/{a}.md"
         for m in b.get("mods", []):
-            for sub, pattern in MOD_DATA:
+            for sub, pattern in MOD_DATA if m == MOD_DATA_OWNER else ():
                 for src in sorted((repo / SKILLS_DIR).glob(pattern)):
                     rel = Path(BUNDLES_DIR, b["name"], "data", sub, src.name)
                     if rel.as_posix() in links:
@@ -219,8 +237,10 @@ def plugin_manifests(repo: Path) -> dict[str, bytes]:
                     "author": PLUGIN_AUTHOR}
         for m in b.get("mods", []):
             manifest["hooks"] = [f"./mods/{m}/hooks.json"]
-            manifest["types"] = f"./mods/{m}/types.d.ts"
-            manifest["userConfig"] = _mod_config(repo, m)
+            if _mod_has_file(repo, m, "types.d.ts"):
+                manifest["types"] = f"./mods/{m}/types.d.ts"
+            if _mod_has_file(repo, m, "config.json"):
+                manifest["userConfig"] = _mod_config(repo, m)
         out[f"{BUNDLES_DIR}/{b['name']}/.claude-plugin/plugin.json"] = _json_bytes(manifest)
     return out
 

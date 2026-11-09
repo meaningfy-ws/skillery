@@ -1025,7 +1025,8 @@ def hooks_inventory_shape(repo: Path) -> list[str]:
 def mod_bindings_match(repo: Path) -> list[str]:
     """navigator DD-10: the hook ids with a `mod` binding in hooks.yaml are exactly the rule ids
     (`id: '<hook id>'`) declared in mods/*/lib/strict.ts — no intent without its rule, no rule
-    without its intent. Silent without hooks.yaml."""
+    without its intent. A hook id that is a mods/ folder name (a plain command-hooks mod) needs no
+    rule. Silent without hooks.yaml."""
     path = repo / HOOKS_INVENTORY
     if not path.exists():
         return []
@@ -1037,7 +1038,9 @@ def mod_bindings_match(repo: Path) -> list[str]:
                 and any((b or {}).get("mechanism") == "mod" for b in h.get("bindings") or [])}
     coded = {m for f in sorted(repo.glob("mods/*/lib/strict.ts"))
              for m in re.findall(r"\bid:\s*'([^']+)'", re.sub(r"//[^\n]*", "", f.read_text(encoding="utf-8")))}
-    return ([f"{HOOKS_INVENTORY}: mod hook '{h}' has no rule in mods/*/lib/strict.ts" for h in sorted(declared - coded)]
+    folders = {p.name for p in repo.glob("mods/*") if p.is_dir()}  # a plain-hooks mod is named by its folder
+    return ([f"{HOOKS_INVENTORY}: mod hook '{h}' has no rule in mods/*/lib/strict.ts"
+             for h in sorted(declared - coded - folders)]
             + [f"mods/*/lib/strict.ts: rule '{h}' has no mod hook in {HOOKS_INVENTORY}" for h in sorted(coded - declared)])
 
 

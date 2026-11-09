@@ -33,7 +33,8 @@ test:
 # mods = the mods' pure lib/ tests under Node and their type check (navigator DD-24)
 mods:
 	node --test --experimental-strip-types 'mods/*/lib/*.test.ts'
-	for m in mods/*/; do npx tsc -p $$m/tsconfig.json || exit 1; done
+	node --test 'mods/*/*.test.mjs'
+	for m in mods/*/; do [ -f $$m/tsconfig.json ] && { npx tsc -p $$m/tsconfig.json || exit 1; }; done; true
 
 # skill-inventory = regenerate the catalogue map docs/skill-inventory.md (skills and agents by
 # bundle and by facet, bundle requirements, relations), derived from each SKILL.md, each agent,

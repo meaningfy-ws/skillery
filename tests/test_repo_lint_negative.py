@@ -298,6 +298,18 @@ def test_mod_bindings_mismatch_is_flagged_both_ways(tmp_path):
         "mods/*/lib/strict.ts: rule 'navigator-strict-archive' has no mod hook in hooks.yaml"]
 
 
+def test_mod_hook_named_like_a_mod_folder_needs_no_strict_rule(tmp_path):
+    _mod_hooks(tmp_path, ["no-poll-loops"], [])
+    (tmp_path / "mods" / "no-poll-loops").mkdir()
+    assert lint.mod_bindings_match(tmp_path) == []
+
+
+def test_mod_hook_with_neither_rule_nor_mod_folder_is_flagged(tmp_path):
+    _mod_hooks(tmp_path, ["no-poll-loops"], [])
+    assert lint.mod_bindings_match(tmp_path) == [
+        "hooks.yaml: mod hook 'no-poll-loops' has no rule in mods/*/lib/strict.ts"]
+
+
 def test_body_agnosticism_new_claude_ism_is_flagged(tmp_path):
     _skill(tmp_path, "cosmic-python", body="Run /opsx:apply then edit .claude/settings.json")
     assert lint.body_agnosticism(tmp_path)  # not in the allowlist → flagged
