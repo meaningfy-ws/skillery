@@ -36,7 +36,6 @@ export type NavState = {
   openChanges: number
   phase: string | null
   mode: { repo: 'loose' | 'strict'; sessionLoose: boolean }
-  mainModel: string | null
   skills: SkillUse[]
   subagents: Subagent[]
   gates: Record<string, GateState>

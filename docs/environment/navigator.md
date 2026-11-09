@@ -19,24 +19,34 @@ Tested with Claude Code 2.1.319. Restart the session. Navigator needs no other b
 
 ## What you see
 
-**The status line** names the open change, its appetite (its size), the task count and the mode:
+**The status line** says where the work stands, and nothing Claude Code already shows (the model,
+the plugin name):
 
 ```
-⎈ navigator · VERY LARGE · 12/40 · ○ loose
+meaningfy-navigator: navigator · VERY LARGE · Stage 1 — See it 9/12 · 9/41 · 3 more open
 ```
 
-With no open change it reads `⎈ no open change`. With several open changes it shows the one your
-branch names, then `+2` for the others.
+That is the open change, its appetite (its size, once the PLAN names it), the current stage of its
+`tasks.md` with that stage's progress, the progress of the whole change, and how many other changes
+are open. It shows the one your branch names. With no open change it reads
+`navigator · no open change`. In a repository that runs strict mode, it ends with `● strict`.
 
-**The band** sits above the prompt, folded to one row by default:
+**The band** sits above the prompt, folded to one row by default. It shows only what is happening:
 
 ```
-▸ 2 running · last clarity-gate · validate ✓ · ⚠ 3          [Unfold] [Hide]
+2 running: code-reviewer, implementer · last clarity-gate · validate ✓        [Unfold] [Hide]
 ```
 
-Unfolded, it lists the skills loaded so far, each subagent with its type, model, tokens and whether
-it is still running, and the task progress of the change. If another add-on also draws a band (for
-example ponytail), its band stays below navigator's.
+With nothing to report it shows just its buttons. Unfolded, it adds:
+
+```
+stages    ✓ 1 See it 12/12 · ● 2 Follow the workflow 3/12 · ○ 3 Stay on plan 0/13 · ○ Close 0/4
+skills    epic-delivery · plugin-authoring · clarity-gate
+subagents code-reviewer · sonnet · done · 41.0k tokens · implementer · opus · running
+mode      ○ loose
+```
+
+If another add-on also draws a band (for example ponytail), its band stays below navigator's.
 
 ## Show and hide
 

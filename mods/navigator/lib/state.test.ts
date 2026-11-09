@@ -96,7 +96,6 @@ test('Started clears everything and keeps only its own id as seen, even when rep
   s = reduce(s, skill(1))
   s = reduce(s, { kind: 'ChangeRead', id: 'c1', change: { id: 'x', appetite: null, done: 1, total: 2, groups: [], planMtime: 0 }, openChanges: 2 })
   s = reduce(s, { kind: 'SubagentSpawned', id: 'tu', agentId: 'a', type: 't', model: 'm', description: '', at: 1 })
-  s = reduce(s, { kind: 'TurnEnded', id: 'u1', model: 'opus' })
   const again = reduce(s, { kind: 'Started', id: 's1', sessionId: 's1', band: 'unfolded', statusLine: false })
   assert.deepEqual(again, { ...EMPTY, sessionId: 's1', display: { band: 'unfolded', line: false }, seen: ['s1'] })
 })
@@ -116,12 +115,6 @@ test('reduce does not mutate its input, even a frozen one, and never EMPTY', () 
   assert.deepEqual(EMPTY.seen, [])
 })
 
-test('TurnEnded with a null or empty model keeps the last known model', () => {
-  let s = reduce(started(), { kind: 'TurnEnded', id: 't1', model: 'opus' })
-  s = reduce(s, { kind: 'TurnEnded', id: 't2', model: null })
-  s = reduce(s, { kind: 'TurnEnded', id: 't3', model: '' })
-  assert.equal(s.mainModel, 'opus')
-})
 
 test('a band value outside the cycle goes back to folded on toggle', () => {
   const s = { ...started(), display: { band: 'weird' as never, line: true } }
@@ -152,7 +145,3 @@ test('settingsFrom: known values pass, anything else takes the default', () => {
   assert.deepEqual(settingsFrom({}), { band: 'folded', statusLine: true })
 })
 
-test('Started carries the session model into the line', () => {
-  const s = reduce(EMPTY, { kind: 'Started', id: 's', sessionId: 's', band: 'folded', statusLine: true, model: 'opus' })
-  assert.equal(s.mainModel, 'opus')
-})

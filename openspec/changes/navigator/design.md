@@ -601,22 +601,22 @@ Outside a change (DevOps, sales) a deviation is kept in session state only and s
 
 **Status line** (`$.ui.status`, ≤ 120 chars, `lib/view.ts lineText`):
 
-| Situation | Text |
+| Situation | Text (after Claude Code's own `<plugin>:` prefix) |
 |---|---|
-| build-tier | `⎈ navigator · VERY LARGE · apply 12/40 · main opus · ○ loose` |
-| several changes | `⎈ navigator +2 · …` |
-| no change, no workflow | `⎈ no open change` |
-| DevOps | `⎈ devops · incident · triage · main opus · ● strict` |
-| sales | `⎈ sales (provisional) · offer · main sonnet · ○ loose` |
-| strict dropped | `… · ○ loose (strict dropped)` |
+| build-tier | `navigator · VERY LARGE · Stage 1 — See it apply 9/12 · 9/41` |
+| several changes | `… · 3 more open` |
+| no change, no workflow | `navigator · no open change` |
+| DevOps | `devops · incident · triage · ● strict` |
+| sales | `sales (provisional) · offer` |
+| strict | `… · ● strict`; loose, or strict dropped for the session, shows nothing (DD-35) |
 
-"main <model>" is the driving agent (DD-23). Hidden line → `$.ui.status(undefined)`.
+No model and no `⎈`: Claude Code shows both already (DD-35). Hidden line → `$.ui.status(undefined)`.
 
-**Band, folded** (one row): `▸ 2 running · last clarity-gate · validate ✓ · clarity 9.1 · ⚠ 3` then,
+**Band, folded** (one row; only its buttons when nothing to report, DD-35): `2 running: code-reviewer, implementer · last clarity-gate · validate ✓ · clarity 9.1 · ⚠ 3` then,
 right-aligned, `[Next step] [Back on track]` (when relevant), `[Compact now]`/`[Fresh session]`
 (when offered), `[Unfold]`. Gate glyphs: `✓` ok, `✗` fail, `·` stale (edited since), absent if none.
 
-**Band, unfolded**: rows top to bottom — (1) phases of the active workflow, `✓` done `●` current `○`
+**Band, unfolded**: rows top to bottom — (0) stages: each `##` group of `tasks.md`, `✓`/`●`/`○` with its progress (DD-35); the mode, always; (1) phases of the active workflow, `✓` done `●` current `○`
 next, with the variant; (2) skill trail, last 8, `name (phase)`; (3) subagents: type, model,
 tokens, `running`/`done`, role; (4) appetite vs actual: appetite, tasks `done/total`, groups done,
 reviewers this round vs `reviews[appetite]`, session tokens and cost; (5) warnings, each with
@@ -868,6 +868,18 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
   `register.tsx` in `make mods` (the engine types are not in the repo; it stays hand check H-5,
   run against the engine's `claude-code.d.ts`); narrowing the gate's skip of engine-written files
   to mod bundles (they are git-ignored; a force-add is not a path we guard).
+- **DD-35** *(owner-decided 2026-11-09, after seeing H-1)* No repeats on screen. The status line
+  carries only what nothing else shows: `navigator · <APPETITE> · <stage title> [<phase>] d/t · D/T ·
+  N more open`, `· ● strict` only when strict is on; the appetite and the phase appear once known.
+  It drops the `⎈` (Claude Code already prefixes the plugin name), the model (Claude Code shows it;
+  supersedes DD-23) and `○ loose`. The folded band shows only running subagents by type, the last
+  skill, gates and the warning count, and just its buttons when there is nothing to show; the
+  unfolded band adds a stages row (`✓`/`●`/`○` per `##` group with its progress), the skill trail and
+  the subagents, and later the rows of stages 2–3 and the mode, which is always visible there
+  (amends DEC-5's "mode always visible"). The Mode action (task 3.7) is a session switch both ways,
+  loose ⇄ strict, superseding DD-26: switching a loose repo's session to strict only adds checks, so
+  a person can try strict before committing the repo file. Repo strictness stays the repo file
+  (DEC-5). Cost and tokens go in the unfolded band in stage 3, never in the line.
 
 ## Risks / Trade-offs
 

@@ -2,14 +2,16 @@
 
 ### Requirement: The status line shows where the work stands
 The `navigator` mod SHALL pin one status line that names the open change, its appetite, the phase
-and task progress, the driving agent and the mode (`● strict` or `○ loose`). With no open change and
+and task progress of the current stage and of the whole change, and `● strict` when strict mode is on; it SHALL NOT
+repeat what Claude Code already shows (the model) (DD-35). The mode SHALL always be visible in the
+unfolded band. With no open change and
 no active workflow it SHALL say so and raise no workflow warning. In a DevOps session it SHALL show
 the intervention kind and its phase; in a sales session the sales phase, marked provisional
 (DEC-7, DEC-9).
 
 #### Scenario: A repo with an open change
 - **WHEN** a session starts in a repo with one open change of appetite VERY LARGE in its apply phase with 12 of 40 tasks ticked
-- **THEN** the status line shows the change id, `VERY LARGE`, `apply 12/40`, the driving agent and the mode
+- **THEN** the status line shows the change id, `VERY LARGE`, the current stage with its phase and progress, and the change's progress
 
 #### Scenario: A repo with no open change
 - **WHEN** a session starts in a repo with no open change and no workflow is active
@@ -36,7 +38,7 @@ SHALL be no hotkeys (DEC-7, DEC-10). The band SHALL draw other mods' trees below
 
 #### Scenario: Hiding the band
 - **WHEN** a person hides the band
-- **THEN** the status line still carries change, appetite, phase, progress, driving agent and mode
+- **THEN** the status line still carries change, appetite, stage, phase and progress, and `● strict` when strict mode is on
 - **AND** ponytail's band, when installed, still draws
 
 #### Scenario: Hiding the line and the next session

@@ -11,7 +11,6 @@ export const EMPTY: NavState = {
   openChanges: 0,
   phase: null,
   mode: { repo: 'loose', sessionLoose: false },
-  mainModel: null,
   skills: [],
   subagents: [],
   gates: {},
@@ -32,12 +31,11 @@ export function settingsFrom(options: Readonly<Record<string, unknown>>): Settin
 }
 
 export type Signal =
-  | { kind: 'Started'; id: string; sessionId: string; band: BandDisplay; statusLine: boolean; model?: string | null }
+  | { kind: 'Started'; id: string; sessionId: string; band: BandDisplay; statusLine: boolean }
   | { kind: 'ChangeRead'; id: string; change: Change | null; openChanges: number }
   | { kind: 'SkillLoaded'; id: string; name: string; at: number }
   | { kind: 'SubagentSpawned'; id: string; agentId: string; type: string; model: string; description: string; at: number }
   | { kind: 'SubagentFinished'; id: string; agentId: string; tokens: number }
-  | { kind: 'TurnEnded'; id: string; model: string | null }
   | { kind: 'ToggleBand'; id: string }
   | { kind: 'SetBand'; id: string; band: BandDisplay }
   | { kind: 'ToggleLine'; id: string }
@@ -67,7 +65,7 @@ export function reduce(state: NavState, s: Signal): NavState {
 function apply(state: NavState, s: Signal): NavState {
   switch (s.kind) {
     case 'Started':
-      return { ...EMPTY, sessionId: s.sessionId, mainModel: s.model ?? null, display: { band: s.band, line: s.statusLine } }
+      return { ...EMPTY, sessionId: s.sessionId, display: { band: s.band, line: s.statusLine } }
     case 'ChangeRead':
       return { ...state, change: s.change, openChanges: s.openChanges }
     case 'SkillLoaded':
@@ -89,8 +87,6 @@ function apply(state: NavState, s: Signal): NavState {
           a.agentId === s.agentId ? { ...a, tokens: a.tokens + s.tokens, done: true } : a),
       }
     }
-    case 'TurnEnded':
-      return s.model ? { ...state, mainModel: s.model } : state
     case 'ToggleBand': {
       const i = BAND_DISPLAYS.indexOf(state.display.band)
       return { ...state, display: { ...state.display, band: BAND_DISPLAYS[(i + 1) % BAND_DISPLAYS.length]! } }

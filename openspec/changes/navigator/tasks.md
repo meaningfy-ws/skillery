@@ -44,7 +44,7 @@
 - [ ] 3.4 [skill] `skills/spec-stewardship/SKILL.md`: archive requires no open plan drift, or each deviation recorded in `deviations.md`. Deps: 3.3. Acceptance: spec `build-lifecycle` *EPIC-tier steps each name exactly one owner* (archive step).
 - [ ] 3.5 [spec] `hooks.yaml`: four `navigator-strict-*` intents, mechanism `mod`; `_VALID_MECHANISM` gains `mod`; lint `mod_bindings_match`; `docs/development/hooks.md` table and count; `docs/development/hook-bindings.md` `mod` section. Deps: 3.6. Acceptance: spec `dual-cli-distribution` *Hook intent inventory…*.
 - [ ] 3.6 [mod] `lib/strict.ts` (design §7), strict hooks in `register.tsx`, drop to loose; TC-04 (b, c), TC-14. Deps: 2.6, 3.3. Acceptance: spec `drift-detection` *Strict mode*; H-4.
-- [ ] 3.7 [mod] Actions Reconcile EPIC (DD-16), Archive check, Accept deviation, Compact now / Fresh session, Review, Mode; TC-15 (rest). Deps: 3.3, 3.6. Acceptance: spec `session-navigation` scenario 13; H-6.
+- [ ] 3.7 [mod] Actions Reconcile EPIC (DD-16), Archive check, Accept deviation, Compact now / Fresh session, Review, Mode as a session switch loose ⇄ strict (DD-35); TC-15 (rest). Deps: 3.3, 3.6. Acceptance: spec `session-navigation` scenario 13; H-6.
 - [ ] 3.8 ✂ [mod] Board (design §10). Deps: 3.7.
 - [ ] 3.9 ✂ [mod] Copy status. Deps: 3.7.
 - [ ] 3.10 ✂ [mod] Report to skillery. Deps: 3.7. Acceptance: H-6; spec `session-navigation` *Report to skillery* (cut line).

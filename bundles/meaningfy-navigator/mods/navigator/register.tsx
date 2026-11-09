@@ -51,7 +51,7 @@ async function readChangeSignal($: EngineInterface, id: string): Promise<Signal>
 
 async function start($: EngineInterface, settings: Settings) {
   const sessionId = await $.session.id()
-  await send($, { kind: 'Started', id: sessionId, sessionId, ...settings, model: await $.session.model() })
+  await send($, { kind: 'Started', id: sessionId, sessionId, ...settings })
   await send($, await readChangeSignal($, `change:${sessionId}`))
 }
 
@@ -110,7 +110,6 @@ export const register: Register = (on, options) => {
     } else {
       // Git and file reads run once per main turn, never per subagent turn (design §5).
       await send($, await readChangeSignal($, `change:${e.turnId}`))
-      await send($, { kind: 'TurnEnded', id: e.turnId, model: u?.model ?? null })
     }
     return result
   }).catch(($, e, next) => next(e))
@@ -125,7 +124,7 @@ export const register: Register = (on, options) => {
     if (s.display.band === 'hidden') {
       return (
         <Box flexDirection="column">
-          <Button key="show" label="⎈" onPress={set('folded')} />
+          <Button key="show" label="⎈ navigator" onPress={set('folded')} />
           {below}
         </Box>
       )
@@ -135,12 +134,12 @@ export const register: Register = (on, options) => {
     return (
       <Box flexDirection="column">
         <Box>
-          <Text dimColor>{model.folded} </Text>
+          {model.folded !== '' && <Text dimColor>{model.folded} </Text>}
           <Button key="fold" label={isFolded ? 'Unfold' : 'Fold'} onPress={set(isFolded ? 'unfolded' : 'folded')} />
           <Button key="hide" label="Hide" onPress={set('hidden')} />
         </Box>
         {s.display.band === 'unfolded' && model.rows.filter(r => r.items.length > 0).map(r => (
-          <Text key={r.label} dimColor>  {r.label}: {r.items.join(' · ')}</Text>
+          <Text key={r.label} dimColor>{r.label.padEnd(10)}{r.items.join(' · ')}</Text>
         ))}
         {below}
       </Box>
