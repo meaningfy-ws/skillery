@@ -52,7 +52,7 @@
 ## Stage 5 — Docs stage of this EPIC (PR 5; the documentation workflow's first run; not counted)
 
 - D.1 Load `technical-writing`, then inventory (condition met: the method's user-facing behaviour changed): `technical-writing` Quick Start example for the docs stage; README entry-point row for the documentation workflow; `docs/development/README.md` V&V table (docs row); `docs/skill-inventory.md` via `make skill-inventory`. Written to `evidence/docs-owed.md`
-- D.2 Write; verify (`make validate`, which holds skillery's doc checks; its docs-gate override); cold-read the how-to pages written, verdicts in `evidence/cold-read.md`; publish (PR 5 with A.2)
+- D.2 Write; verify (`make validate`, which holds skillery's doc checks; its docs-gate override); cold-read the how-to pages written, verdicts in `evidence/cold-read.md`; publish (PR 5; A.2 deferred, DL-13)
 
 ## Close (not counted)
 
