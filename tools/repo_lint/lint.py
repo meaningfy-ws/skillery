@@ -428,7 +428,7 @@ def use_case_changes_registered(repo: Path) -> list[str]:
     return out
 
 
-TOP_LEVEL_FOLDERS = ("skills", "agents", "use-cases", "openspec", "docs", "tools", "tests", ".github",
+TOP_LEVEL_FOLDERS = ("skills", "agents", "mods", "use-cases", "openspec", "docs", "tools", "tests", ".github",
                      ".claude-plugin")
 _GENERATED_FOLDERS = ("bundles",)  # make bundles, committed symlinks; never hand-edit
 

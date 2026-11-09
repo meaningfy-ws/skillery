@@ -3,7 +3,7 @@
 How to organise **any** Meaningfy prompt/skill/agent repository as a governed catalog. This is
 the reusable method behind this repository — apply it when reorganising other repos.
 
-## The four artifact types
+## The five artifact types
 
 Every artifact is exactly one of these, and that decides its home:
 
@@ -13,6 +13,7 @@ Every artifact is exactly one of these, and that decides its home:
 | **Agent** | Harness | Isolated context | `agents/` | Thin wrapper — see [`agent-template.md`](agent-template.md) |
 | **Doc** | Humans | Never auto-loaded | `docs/` | Written for people; narrates & points, never restates skill rules |
 | **Binding** | Harness (every session) | Always | root agentic files (`AGENTS.md`, `CLAUDE.md`) + `project-setup`'s agentic templates | Mandates & routes to skills; never carries the standard |
+| **Mod** | People, in the session (Claude Code only) | Every session it is installed in | `mods/` | Observes session events, displays state and runs commands a person could type; carries no method — reads rules, thresholds and phases from skill assets |
 
 Authoring governance (`docs/development/`, incl. `docs/development/skill-template.md`) and distribution
 (`bundles.yaml`, rendered to `.claude-plugin/`, `bundles/` and
@@ -35,6 +36,8 @@ spec **spine** (`docs/development/` + `openspec/`) is projected into project rep
 3. **A doc narrates and points.** Single source of *authority* + marked derivations (e.g. a human
    "coding prompt" document whose operational twin is a skill — say which is operational).
 4. **A binding routes and mandates.** It is thin and always-on; it never restates the standard.
+5. **A mod observes and points.** No rule text, threshold or phase list is written into a mod; a
+   number or a list it needs is a data file in the owning skill's `assets/`, which the mod reads.
 
 ## Agents
 

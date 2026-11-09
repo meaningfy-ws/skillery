@@ -849,8 +849,13 @@ def test_unknown_top_level_folder_is_flagged(tmp_path):
     for d in ("skills", "docs", "spine", ".venv", "bundles"):
         (tmp_path / d).mkdir()
     assert lint.top_level_folders(tmp_path) == [
-        "spine/: not an allowed top-level folder (allowed: skills, agents, use-cases, openspec, docs, "
-        "tools, tests, .github, .claude-plugin)"]
+        "spine/: not an allowed top-level folder (allowed: skills, agents, mods, use-cases, openspec, "
+        "docs, tools, tests, .github, .claude-plugin)"]
+
+
+def test_mods_top_level_folder_is_allowed(tmp_path):
+    (tmp_path / "mods" / "navigator").mkdir(parents=True)
+    assert lint.top_level_folders(tmp_path) == []
 
 
 # ------------------------------------------ external dependency register (rebundle-by-activity D-7)
