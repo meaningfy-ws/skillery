@@ -261,6 +261,16 @@ appropriate". Decisions taken while delivering:
      file is linked from the skill; `docs/environment/navigator.md` rewrapped; "as-built" hyphenated.
 - **DL-8 Rejected (stage 2):** one discovery helper for the default workflow lists in the
   navigator tests (task 2.2 names the lists; no further workflow is planned in this EPIC).
+- **DL-9 Stage 3 build decisions.**
+  1. D-10 needed one more tooling change: the agent-conformance lint and
+     `docs/development/agent-template.md` required `tools`; `tools` is now optional (an agent
+     without it inherits the session's tools), a string value is still flagged.
+  2. Command gates guard against lookalikes (as DL-7.1): the default `full-gates` is
+     `\bmake check-all(?![\w-])`; skillery's overrides use `\bmake validate(?![\w-])`, so
+     `make validate-spine` does not pass them.
+  3. Task 3.4 ran non-interactively (opencode 2.1.4, `opencode run`, a local stdio MCP server): the
+     rendered `implementer` called the MCP tool and had no subagent tool. That is the by-hand probe's
+     result; the reviewer's `edit` deny is proven by the installer test, not the probe.
 
 ## Algorithm — the check ledger (D-1)
 

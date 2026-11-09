@@ -19,7 +19,7 @@
   ],
   "gates": {
     "clarity":    { "kind": "skill", "skill": "clarity-gate" },
-    "full-gates": { "kind": "command", "match": "\\bmake check-all\\b", "run": "make check-all" },
+    "full-gates": { "kind": "command", "match": "\\bmake check-all(?![\\w-])", "run": "make check-all" },
     "acceptance": { "kind": "file", "glob": "openspec/changes/*/evidence/acceptance.md" },
     "openspec":   { "kind": "command", "match": "\\bopenspec validate\\b", "run": "openspec validate {change} --strict" }
   },

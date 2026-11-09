@@ -65,4 +65,5 @@ test('full-gates: ok on make check-all; make validate and make check-architectur
   assert.equal(at('make check-all'), 'ok')
   assert.equal(at('make validate'), 'none')
   assert.equal(at('make check-architecture'), 'none')
+  assert.equal(at('make check-all-fast'), 'none')
 })
