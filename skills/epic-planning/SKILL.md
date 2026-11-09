@@ -37,6 +37,9 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    what the EPIC must *prove* — key assertions, scenarios, edge cases — so the design phase can author
    `.feature` coverage (handed to `bdd-gherkin`; the PLAN's design half
    references that coverage and `clarity-gate` scores it). Step definitions stay in implement.
+   **Include a risk question**: what could go wrong for this EPIC — in the world around it, not in
+   its text — how likely, how bad, and what we do about it (mitigate, accept, or cut scope). Each
+   risk gets a `RISK-` id; scope traps go to Rabbit-holes, the rest to the PLAN's Risks.
    When run as a delegated agent, return the open concerns as one question round to the caller
    instead of asking.
 3. **Archive the seeds.** Write the captured seeds and the Q&A record to `changes/<id>/inputs/`,
@@ -54,10 +57,15 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    full ≥9/10 gate (the Shape-Up bet stays deliberately looser); it just stops a vague EPIC producing
    a vague PLAN.
 6. **Derive the PLAN** (`design.md` + `tasks.md`). From the shaped EPIC, produce the design half
-   (algorithm, concrete examples, anti-patterns, error matrix, decisions) and the tasks half (ordered
+   (algorithm, concrete examples, anti-patterns, error matrix, decisions, and the elicited risks in
+   Risks / Trade-offs as `RISK-<n>`: likelihood, impact, mitigation or acceptance) and the tasks half (ordered
    breakdown with layers/dependencies/acceptance, roadmap). Each PLAN cites its parent EPIC id
    (golden thread).
-7. **Gate the PLAN** (full `clarity-gate`, ≥9/10). Score the `design.md`+`tasks.md` pair. Block
+7. **Attack the PLAN.** Before the gate, try to break it, in a fresh subagent when one pays
+   (`guardrails`, *Subagent dispatch*): the input, state or order of events under which it fails,
+   and the assumption which, if false, sinks it. Each counterexample becomes an error-matrix row,
+   a `RISK-` entry or a PLAN fix. The gate checks the PLAN is clear; this checks it holds.
+8. **Gate the PLAN** (full `clarity-gate`, ≥9/10). Score the `design.md`+`tasks.md` pair. Block
    progression to BDD/implementation until it passes. Below 9: list the specific gaps and **revise
    the PLAN** — never patch code to dodge a gap (Rule of Divergence).
 

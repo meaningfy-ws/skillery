@@ -35,6 +35,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   archives a change only with no open plan drift or each deviation recorded. `hooks.yaml` gains a
   `mod` mechanism and the four `navigator-strict-*` intents.
 
+### Changed
+
+- `epic-planning`: shaping now asks one risk question (what could go wrong, how likely, how bad,
+  what we do), recorded as `RISK-` entries in the PLAN's Risks / Trade-offs, and the PLAN gets an
+  adversarial pass (find the input or false assumption that breaks it) before the clarity gate.
+
 ## [3.9.0] - 2026-11-08
 
 ### Added
