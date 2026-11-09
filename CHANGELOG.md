@@ -14,12 +14,18 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 ### Added
 
 - `meaningfy-navigator` (Claude Code only, CLI and desktop): a new bundle holding the `navigator`
-  mod. It pins a status line with the open change, its appetite and task progress, the driving
-  model and the mode, and draws a band above the prompt with the running subagents, the skills
-  loaded and the progress per task group. `/navigator band` and `/navigator line` show and hide
-  them for the session; the plugin settings hold the defaults. Install with
-  `/plugin install meaningfy-navigator@meaningfy-skillery`; guide in
+  mod. It pins a status line with the open change, its appetite, the workflow phase and the task
+  progress, and draws a band above the prompt with the running subagents, the skills loaded, the
+  stages and phases, and warnings when a workflow step is skipped (a commit in `apply` without
+  `test-driven-development`, a DevOps apply with no answered consent card). **Next step**, **Back
+  on track** and **Validate** type the command that moves the work on. `/navigator band`,
+  `/navigator line` and `/navigator validate` do the same by hand; the plugin settings hold the
+  defaults. Install with `/plugin install meaningfy-navigator@meaningfy-skillery`; guide in
   `docs/environment/navigator.md`.
+- Workflow files: the phases of build-tier delivery, architecting, DevOps and sales are JSON files in
+  `epic-delivery`, `architecture`, `infrastructure-operations` and `sales-operations`; a repository
+  overrides them in `docs/navigator/`. The review set per appetite now lives only in the build-tier
+  file, and `dependencies.yaml` lists the external skills a catalogue file may name (`skills:`).
 
 ## [3.9.0] - 2026-11-08
 

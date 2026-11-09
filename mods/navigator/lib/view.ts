@@ -1,5 +1,6 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
+import { phasesOf, workflowOf } from './workflow.ts'
 import type { Group, NavState, Subagent } from './state.ts'
 
 const LINE_MAX = 120
@@ -15,7 +16,13 @@ export function modeText(s: NavState): string {
 }
 
 export function lineText(s: NavState): string {
-  if (!s.change) return 'navigator · no open change'
+  const w = workflowOf(s)
+  // A workflow that is not about a change (DevOps, sales, architecting): its name, variant and phase.
+  if (w && !w.activate.openChange) {
+    return cut(clean([`${w.name}${w.provisional ? ' (provisional)' : ''}`, s.variant, s.phase,
+      isStrict(s) ? '● strict' : null].filter(Boolean).join(' · ')))
+  }
+  if (!s.change) return cut(clean(['navigator · no open change', s.phase].filter(Boolean).join(' · ')))
   const c = s.change
   const stage = currentGroup(c.groups)
   const step = `${s.phase ? `${s.phase} ` : ''}${stage ? `${stage.done}/${stage.total}` : `${c.done}/${c.total}`}`
@@ -28,7 +35,10 @@ export function lineText(s: NavState): string {
     ...(s.openChanges > 1 ? [`${s.openChanges - 1} more open`] : []),
     ...(isStrict(s) ? ['● strict'] : []),
   ]
-  const text = clean(parts.join(' · '))
+  return cut(clean(parts.join(' · ')))
+}
+
+function cut(text: string): string {
   const chars = [...text] // whole characters, never half an emoji
   return chars.length > LINE_MAX ? `${chars.slice(0, LINE_MAX - 1).join('')}…` : text
 }
@@ -87,9 +97,20 @@ export function bandModel(s: NavState): BandModel {
         `${g.total > 0 && g.done === g.total ? '✓' : g === now ? '●' : '○'} ${shortTitle(g.title)} ${g.done}/${g.total}`),
     })
   }
+  const w = workflowOf(s)
+  if (w) {
+    const phases = phasesOf(w, s.variant)
+    const now = phases.findIndex(p => p.id === s.phase)
+    rows.push({
+      label: 'phases',
+      items: [`${w.title}${s.variant ? ` (${s.variant})` : ''}${w.provisional ? ' (provisional)' : ''}`,
+        ...phases.map((p, i) => `${i < now ? '✓' : i === now ? '●' : '○'} ${p.id}`)],
+    })
+  }
   rows.push(
-    { label: 'skills', items: s.skills.slice(-TRAIL).map(k => k.name) },
+    { label: 'skills', items: s.skills.slice(-TRAIL).map(k => k.phase ? `${k.name} (${k.phase})` : k.name) },
     { label: 'subagents', items: s.subagents.map(subagentText) },
+    { label: 'warnings', items: s.warnings.map(w => `⚠ ${w.message}${w.owner ? ` (${w.owner})` : ''}`) },
     { label: 'mode', items: [modeText(s)] },
   )
   return { folded: clean(folded), rows: rows.map(r => ({ ...r, items: r.items.map(clean) })) }

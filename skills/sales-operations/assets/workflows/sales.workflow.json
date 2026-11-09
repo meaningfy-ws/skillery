@@ -1,0 +1,15 @@
+{
+  "name": "sales", "title": "Sales (simple)", "owner": "sales-operations", "provisional": true,
+  "activate": { "skills": ["sales-accounts", "sales-qualification", "sales-conversations", "estimation",
+                           "proposal-writing", "sales-pipeline-custody", "sales-operations"],
+                "agents": ["proposal-writer", "sales-agent"] },
+  "phases": [
+    { "id": "research", "owner": "sales-qualification", "expect": [{ "skill": "sales-qualification", "by": "exit" }],
+      "allow": ["sales-accounts"], "enter": { "skills": ["sales-accounts", "sales-qualification"] } },
+    { "id": "meet", "owner": "sales-conversations", "expect": [], "enter": { "skills": ["sales-conversations"] } },
+    { "id": "offer", "owner": "proposal-writing", "expect": [{ "skill": "estimation", "by": "exit" }],
+      "enter": { "skills": ["estimation", "proposal-writing"], "agents": ["proposal-writer"] } },
+    { "id": "pipeline", "owner": "sales-pipeline-custody", "expect": [],
+      "allow": ["sales-operations"], "enter": { "skills": ["sales-pipeline-custody", "sales-operations"], "agents": ["sales-agent"] } }
+  ]
+}

@@ -15,9 +15,9 @@ mechanics (fresh not a copy, inputs as paths, the base report, the four-eyes rul
 | Planner | `epic-planner` agent | Shaping, or finishing the PLAN at the start of an epic session |
 | Builder | `implementer` agent | Every task, every accepted fix, every spike |
 | Reviewer | `code-reviewer` agent, one per lens | Every stage, scaled by appetite |
-| Checker | A fresh general-purpose subagent | MEDIUM and up, once per stage |
-| Adversarial tester | `implementer` with the tester brief | LARGE and up |
-| UX designer | A general-purpose subagent with the design skills | Screens in scope, any size (the UX review lens runs only LARGE and up when screens changed) |
+| Checker | A fresh general-purpose subagent | Once per stage, where the appetite's review set has one ([`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json)) |
+| Adversarial tester | `implementer` with the tester brief | Where the appetite's review set names one |
+| UX designer | A general-purpose subagent with the design skills | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
 
 No role has its own catalogue agent beyond these. The checker and the tester differ from the others
 by their brief, not by their tools or model.
@@ -69,7 +69,7 @@ upstream issue, not a fix here.
 > `design.md`, the ADRs the stage touches. **Report:** findings by priority per
 > `meaningfy-code-review`, and any workaround of our library as a finding.
 
-For TINY and SMALL, one reviewer covers L2 and L3 together. The lenses themselves are owned by
+Where the appetite's review set is one pass ([`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json)), one reviewer covers its lenses together. The lenses themselves are owned by
 `meaningfy-code-review`.
 
 ## Checker

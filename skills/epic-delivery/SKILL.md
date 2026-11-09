@@ -62,7 +62,7 @@ Two people, one lead, five working roles. Who plays each role, and the brief eac
 | **Checker** | One fresh second pass per stage against the briefs and the decisions |
 
 Conditional briefs, not standing roles: an **adversarial tester** (a builder brief that writes only
-tests; LARGE and up) and a **UX designer** (when screens change).
+tests; the appetites whose review set names it) and a **UX designer** (when screens change).
 
 Members never talk to the developer, never commit and never file issues. A member that needs a
 decision, or meets a library problem, stops that part of its task and reports it to the lead. If
@@ -85,11 +85,8 @@ A stage is a group of tasks that ends in one PR. The PLAN cuts the tasks into st
 5. **Check.** The checker's single pass. An unmet brief item goes back to step 4.
 6. **Merge** on green CI.
 
-| Appetite | Challenge | Check | Tester |
-|---|---|---|---|
-| TINY / SMALL | One review pass: L2 spec and tests, L3 structure with ADR conformance | Folded into the lead's re-run | — |
-| MEDIUM | Five lenses, read-only, in parallel | Checker | — |
-| LARGE and up | Five lenses, plus UX when screens changed | Checker | Adversarial tester |
+The review set of each appetite (the challenge, the check, the tester, the UX lens) is data: the
+`reviews` of the build-tier workflow, [`assets/workflows/build-tier.workflow.json`](assets/workflows/build-tier.workflow.json). The navigator mod reads the same file.
 
 After the last stage: the **acceptance demo** *(provisional)*, when the EPIC delivers or changes a
 use case; then the lead archives the change. Each step in detail, and how this loop covers every
@@ -144,7 +141,7 @@ verification only. The V-model table, the evidence folder and the provisional st
 
 - A member asking the developer a question. It goes through the lead.
 - A checker that also built or tested the stage. It must be fresh.
-- Five lenses on a SMALL change. Scale by appetite.
+- A review set larger than the appetite's. Scale by appetite (the workflow file).
 - Working around one of our libraries "just this once". Stop and file the issue.
 - An agent marking a validation step done. Only a person validates.
 - Trusting a member's report. The lead re-runs the gates and reads the diff.

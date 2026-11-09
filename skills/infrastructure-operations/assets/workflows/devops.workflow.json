@@ -1,0 +1,27 @@
+{
+  "name": "devops", "title": "DevOps", "owner": "infrastructure-operations",
+  "activate": { "skills": ["infrastructure-operations", "stack-operations", "service-reliability"],
+                "agents": ["devops-engineer", "ops-watch", "infra-reviewer"] },
+  "variants": [
+    { "name": "intervention", "phases": ["read", "plan", "dry-run", "card", "apply", "verify", "record"],
+      "activate": { "skills": ["infrastructure-operations", "stack-operations"], "agents": ["devops-engineer"] } },
+    { "name": "incident", "phases": ["triage", "apply", "verify", "record"], "activate": { "skills": ["service-reliability"] } },
+    { "name": "check-up", "phases": ["check", "record"], "activate": { "agents": ["ops-watch"], "interactive": true } },
+    { "name": "unattended", "phases": ["check", "apply", "record"], "activate": { "agents": ["ops-watch"], "interactive": false } }
+  ],
+  "phases": [
+    { "id": "read", "owner": "infrastructure-operations", "expect": [], "enter": { "skills": ["infrastructure-operations"] } },
+    { "id": "triage", "owner": "service-reliability", "expect": [{ "skill": "service-reliability", "by": "exit" }], "enter": { "skills": ["service-reliability"] } },
+    { "id": "check", "owner": "service-reliability", "expect": [], "enter": { "agents": ["ops-watch"] } },
+    { "id": "plan", "owner": "infrastructure-operations", "expect": [], "enter": {} },
+    { "id": "dry-run", "owner": "infrastructure-operations", "expect": [], "gates": ["dry-run"], "enter": {} },
+    { "id": "card", "owner": "infrastructure-operations", "expect": [], "enter": {} },
+    { "id": "apply", "owner": "infrastructure-operations", "expect": [], "gates": ["consent"], "enter": {} },
+    { "id": "verify", "owner": "service-reliability", "expect": [], "enter": {} },
+    { "id": "record", "owner": "infrastructure-operations", "expect": [], "enter": {} }
+  ],
+  "gates": {
+    "dry-run": { "kind": "command", "match": "terraform plan|ansible-playbook\\b.*--check" },
+    "consent": { "kind": "consent", "shown": "^DECIDE:", "before": "terraform apply|ansible-playbook(?!.*--check)|docker stack deploy" }
+  }
+}

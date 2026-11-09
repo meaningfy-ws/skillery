@@ -53,8 +53,8 @@ Each stage runs the same six steps: prepare, build, challenge, decide and fix, c
 detail is in [`stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md)).
 
 The loop scales with the EPIC's appetite: a small EPIC gets one review pass, a larger one more
-review, a checker and a tester. The table is in
-[`stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md). You do not pay for a
+review, a checker and a tester. The review set of each appetite is in
+[`build-tier.workflow.json`](../../../skills/epic-delivery/assets/workflows/build-tier.workflow.json). You do not pay for a
 large loop on a small change.
 
 ## What you decide, and when

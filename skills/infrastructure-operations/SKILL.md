@@ -58,6 +58,10 @@ and the record of [interventions](references/interventions.md).
 
 ## Workflow
 
+The phases of each kind of operation (intervention, incident, check-up, unattended), as the
+navigator mod tracks them, are data in [`assets/workflows/devops.workflow.json`](assets/workflows/devops.workflow.json);
+incidents and unattended runs follow `service-reliability`.
+
 1. **Every operation** follows the [safe-change protocol](references/safe-change-protocol.md): read,
    plan, dry run, card, apply exactly what was shown, verify, record. Load it first.
 2. **Is it a non-trivial change?** Read [change-shapes](references/change-shapes.md) to pick the

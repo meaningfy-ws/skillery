@@ -169,7 +169,7 @@ JSON (DD-1). Fields; unknown keys are errors.
 Phase: `{id, owner: skill, expect: {skill, by: 'commit'|'exit'}[], allow?: string[],
 gates?: string[], enter: {skills?: string[], agents?: string[], change?: ChangePredicate}}`.
 `ChangePredicate` ∈ `none | proposal | plan | tasks-no-design | tasks-open | tasks-partial | tasks-done | archived`
-(fixed vocabulary in `lib/change.ts`).
+(fixed vocabulary in `lib/change.ts`); `enter.change` takes one or a list, any of which holds (DD-38).
 
 Gate kinds (fixed in code; the file only fills them):
 
@@ -220,7 +220,7 @@ which the lint enforces.*
       "expect": [{ "skill": "test-driven-development", "by": "commit" }, { "skill": "cosmic-python", "by": "exit" }],
       "allow": ["meaningfy-code-review", "systematic-debugging", "subagent-driven-development"],
       "gates": ["clarity", "validate"],
-      "enter": { "skills": ["openspec-apply-change", "epic-delivery"], "change": "tasks-partial" } },
+      "enter": { "skills": ["openspec-apply-change", "epic-delivery"], "change": ["tasks-partial", "tasks-no-design"] } },
     { "id": "verify", "owner": "meaningfy-code-review",
       "expect": [{ "skill": "meaningfy-code-review", "by": "exit" }, { "skill": "verification-before-completion", "by": "exit" }],
       "gates": ["validate"], "enter": { "change": "tasks-done" } },
@@ -309,7 +309,7 @@ template (`adr/adr-0001-….adoc`).
     { "id": "record", "owner": "infrastructure-operations", "expect": [], "enter": {} }
   ],
   "gates": {
-    "dry-run": { "kind": "command", "match": "terraform plan|--check\\b|--diff\\b" },
+    "dry-run": { "kind": "command", "match": "terraform plan|ansible-playbook\\b.*--check" },
     "consent": { "kind": "consent", "shown": "^DECIDE:", "before": "terraform apply|ansible-playbook(?!.*--check)|docker stack deploy" }
   }
 }
@@ -880,6 +880,95 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
   loose ⇄ strict, superseding DD-26: switching a loose repo's session to strict only adds checks, so
   a person can try strict before committing the repo file. Repo strictness stays the repo file
   (DEC-5). Cost and tokens go in the unfolded band in stage 3, never in the line.
+- **DD-36** *(lead, stage 2 build, Rule of Divergence on §6.2–§6.3 and §8)* Where the PLAN left
+  the mechanics open:
+  1. **Gate check points.** A `skill` gate is checked on *entering* its phase (a precondition:
+     clarity before apply); a `command` or `file` gate on *leaving* it (it is about the phase's own
+     work, so nothing could have passed on entry); a `consent` gate when its `before` command runs.
+     §6.3 PD-3 said "on entering P" for all three.
+  2. **No check on a session's first placement.** The phase a session starts in is placed, not
+     entered: no enter or leave check runs for it, so a session opened mid-apply does not warn for a
+     clarity run an earlier session made (the `$.store` memory of §5 is stage 3's).
+  3. **`advanceOn` looks ahead.** A command that passes a gate of the current *or any later* phase
+     moves to the phase after that gate's phase, only into a phase with no `enter`, so
+     `terraform plan` in `read` reaches `card`; an answered consent enters the next phase holding a
+     consent gate. Build-tier phases all have an `enter`, so its commands never move it.
+  4. **`activate` semantics.** `openChange`, `change` and `interactive` are conditions that must
+     hold; `skills`/`agents` are triggers, any of which activates. A variant with conditions only
+     (brownfield) applies with no trigger. With no trigger yet, the workflow whose `activate` has
+     `openChange` is the default (build-tier, named by data, not by the mod).
+  5. **Warnings close themselves.** Running a warning's remedy skill removes it; a gate that passes
+     removes its gate warnings. `Accept deviation` (stage 3) covers the rest.
+  6. **Actions are submitted as typed.** A button runs `$.prompt.submit({text: '/<command> <args>',
+     asUser: true})`, so the transcript shows the command as if typed (spec *Actions are
+     commands*). Fold, Unfold and Hide stay direct state changes, the same as `/navigator band
+     fold|unfold|hide|show`, so pressing them leaves no transcript noise.
+  7. **`archived` predicate.** Not derived from the files in stage 2 (`shortcut:` in `holds`): the
+     archive phase is entered by `openspec-archive-change`.
+  8. **Old stored state.** `SkillUse.phase` and `Warning.remedy`/`owner` are new; a state stored by
+     the stage-1 mod lacks them and every reader treats a missing one as `null`, so `version` stays 1.
+  9. **Layout tidy-ups** (folder walkthrough after the checker): the edge-case tests are
+     `lib/edge-cases.test.ts`, named for what they cover, and later testers add to it; `.gitignore`
+     ignores only a root `/lib/` (the Python template's rule hid every mod's `lib/`, amends DD-31's
+     negations); `.gitattributes` marks `bundles/*/mods/**` generated, so a PR shows the copy folded.
+     Kept: a flat `lib/`, one `register.tsx` (split at about 400 lines into another root `.tsx`),
+     the root `package.json`. `MOD_DATA` is keyed by mod when a second mod lands.
+- **DD-37** *(lead, task 2.9)* DEC-13's four host skills were right; keep them. Each file sits
+  with the skill that owns the activity's method, and each phase names its own owner, so a file
+  that spans skills (build-tier's explore/shape/plan belong to `epic-planning`, archive to
+  `spec-stewardship`; architecting's elicit to `conceptual-modelling`; DevOps's triage to
+  `service-reliability`) still cites rather than restates them. Moving the planning phases into an
+  `epic-planning` file would split one workflow across two files and break the brownfield variant,
+  which spans both. What writing them showed: the review set is the only rule text a file *owns*
+  (DD-21), and the skills each gained one pointer line, no restated phases. Sales stays provisional
+  (DEC-9) until a sales session tries it.
+- **DD-38** *(lead, stage-2 challenge: reviewers A (L1+L2) and B (L3–L5), adversarial tester; the
+  review set of DD-33 again)* Accepted:
+  1. **Validation is total.** A `file` glob and every `planDrift.ignore` glob must compile in
+     `globRegex`, so `reduce` never throws on a `FileTouched`; an `extends` file's gate references
+     are checked after the merge, not before.
+  2. **Placement.** `enter.change` may be one predicate or a list (any holds). Build-tier's apply
+     takes `["tasks-partial", "tasks-no-design"]`, so a brownfield change is in apply at 0/3 and 3/3.
+     Placement by files scans the whole workflow and maps a phase outside the active variant to the
+     nearest earlier phase inside it. `proposal` holds while there is no `tasks.md` (a design
+     without tasks is still shaping); `tasks-done` holds for `done >= total > 0`. With no predicate
+     holding, the current phase stays.
+  3. **Activation.** `openChange` only gates the default with no trigger: a build-tier skill with no
+     open change places explore. A variant picked by a skill is dropped when a skill of the
+     workflow fires that no variant matches; a variant change runs no leave checks (as a workflow
+     change, DD-36).
+  4. **Skipped phases are left.** When a command or a consent moves the phase forward over phases,
+     each skipped phase runs its leave checks, so a consent answered before any dry run warns for
+     the `dry-run` gate. The DevOps dry-run `match` becomes `terraform plan|ansible-playbook\b.*--check`.
+  5. **Only the person consents.** `UserPrompted` comes only from `composer` and `bridge` origins
+     (amends §5's "origin not plugin"); a background Bash call is not a `ToolRan`.
+  6. **Staleness.** A skill gate goes stale when `design.md` changes, not `tasks.md` (ticking a box
+     is not a PLAN change; amends DD-14's "PLAN files"). `planMtime` is `design.md`'s mtime.
+  7. **Warnings.** A gate warning is cleared by its exact key; workflow errors are keyed by their
+     text and replaced on each read; the band shows each warning's owning skill (spec *Process
+     drift*); one module (`process-drift.ts`) mints and clears warning keys. A skill gate warning
+     reads "has not run since its inputs changed" (no build-tier words in the mod).
+  8. **Small.** `commandFor('')` resolves nothing; `validateRuns` skips a `{change}` line with no
+     change and puts only a safe id (`[\w.-]+`) in it. `workflowOf`, `phasesOf` and a new
+     `currentPhase` move to `workflow.ts`, so `view.ts` and `actions.ts` need no drift code. The
+     lint's inline `skills:` rule allows a trailing comment, forbids quotes and checks only the key
+     at entry level (`- skills:` or two spaces), never text inside a block string.
+  9. **Docs.** stage-loop.md's stale "scaling table" pointer; the user guide on what each warning
+     names and what clears it; strict mode marks the line only until stage 3; the schema pointer goes
+     to `types.d.ts` and `lib/workflow.ts`; `mods.md`'s "Adding a check" names `navigate` for
+     phase-boundary checks; long lines rewrapped.
+  Rejected: a skill loaded before the workflows are read (start reads them first; no real order
+  produces it); a workflow switch as a PhaseLeft (DD-36: changing activity is not leaving the
+  phase; the phase resumes when the work comes back); the archive phase's own leave checks (the
+  Archive check action of stage 3 runs them before archiving; the `archived` predicate stays a
+  shortcut); compiling regexes once (a handful per event; a repo's patterns are its own trust
+  domain, like its Makefile); `run` lines only in default files (the Validate button submits
+  `/navigator validate`, whose answer lists every command it ran; the same trust as `make`);
+  `$.command.run` instead of `$.prompt.submit` (the submission's `command` field shows the engine
+  parses slash text; hand check H-6 confirms); splitting `workflowError` and the `owners` argument
+  of `_dep_skills` (readable as is, one caller); one test file per module (`phase.test.ts` drives
+  `process-drift.ts` and `actions.ts` through `reduce`, the way they run); a test that the
+  duplicated `reviews` entries match (each entry is its appetite's wording, by DD-21).
 
 ## Risks / Trade-offs
 
