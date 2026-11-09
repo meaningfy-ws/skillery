@@ -176,7 +176,7 @@ test('an override whose gates drop `openspec` is reported (shallow merge drops i
     gates: { 'full-gates': { kind: 'command', match: '\\bmake validate(?![\\w-])', run: 'make validate' } } })
   assert.equal(r.errors.length, 1)
   assert.match(r.errors[0]!, /no gate '(clarity|acceptance|openspec)'/)
-  assert.equal(r.workflows.find(w => w.name === 'epic-delivery')!.gates?.['full-gates']?.match, defaults.workflows.find(w => w.name === 'epic-delivery')!.gates?.['full-gates']?.match)
+  assert.deepEqual(r.workflows.find(w => w.name === 'epic-delivery')!.gates?.['full-gates'], defaults.workflows.find(w => w.name === 'epic-delivery')!.gates?.['full-gates'])
 })
 
 test('an override extending an unknown workflow is reported and adds nothing', () => {
