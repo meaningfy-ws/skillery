@@ -40,3 +40,10 @@ test('a stored state of an older shape gets the new fields', () => {
   assert.deepEqual(s.subagents, [])
   assert.equal(revive(undefined), EMPTY)
 })
+
+test('a band button sets the band directly; a hidden band can be shown again', () => {
+  let s = reduce(started(), { kind: 'SetBand', id: 'p1', band: 'hidden' })
+  assert.equal(s.display.band, 'hidden')
+  s = reduce(s, { kind: 'SetBand', id: 'p2', band: 'folded' })
+  assert.equal(s.display.band, 'folded')
+})

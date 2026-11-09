@@ -31,6 +31,7 @@ export type Signal =
   | { kind: 'SubagentFinished'; id: string; agentId: string; tokens: number }
   | { kind: 'TurnEnded'; id: string; model: string | null }
   | { kind: 'ToggleBand'; id: string }
+  | { kind: 'SetBand'; id: string; band: BandDisplay }
   | { kind: 'ToggleLine'; id: string }
 
 /** Load a stored state of any earlier shape: new fields take their defaults. */
@@ -74,6 +75,8 @@ function apply(state: NavState, s: Signal): NavState {
       const i = BAND_CYCLE.indexOf(state.display.band)
       return { ...state, display: { ...state.display, band: BAND_CYCLE[(i + 1) % BAND_CYCLE.length]! } }
     }
+    case 'SetBand':
+      return { ...state, display: { ...state.display, band: s.band } }
     case 'ToggleLine':
       return { ...state, display: { ...state.display, line: !state.display.line } }
   }

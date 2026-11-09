@@ -31,7 +31,7 @@ branch names, then `+2` for the others.
 **The band** sits above the prompt, folded to one row by default:
 
 ```
-▸ 2 running · last clarity-gate · validate ✓ · ⚠ 3                 [Unfold]
+▸ 2 running · last clarity-gate · validate ✓ · ⚠ 3          [Unfold] [Hide]
 ```
 
 Unfolded, it lists the skills loaded so far, each subagent with its type, model, tokens and whether
@@ -44,6 +44,9 @@ example ponytail), its band stays below navigator's.
 |---|---|
 | `/navigator band` | cycles the band: folded → unfolded → hidden |
 | `/navigator line` | shows or hides the status line |
+
+The band's own buttons do the same: **Unfold** / **Fold**, and **Hide**. A hidden band leaves a
+small `⎈` button above the prompt; press it to bring the band back.
 
 These change the current session only. The next session starts from your settings.
 

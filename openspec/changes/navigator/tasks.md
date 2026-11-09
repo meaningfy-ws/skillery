@@ -8,7 +8,7 @@
 
 ## 1. Stage 1 — See it
 
-- [ ] 1.1 [mod] Spike (DD-29): in a throwaway plugin folder in the session scratch directory, outside git, with its own `.claude-plugin/plugin.json` (`name`, `version`, `hooks: ["./hooks.json"]`) — since `bundles/meaningfy-navigator` exists only after 1.4/1.5 — a minimal mod (`hooks.json`, `register.tsx` drawing one band row and one `$.ui.status` line, `lib/view.ts` imported with a `.ts` specifier) loads with `claude --plugin-dir <scratch folder>`; nothing of the folder is committed; record the result and the Claude Code version in `openspec/changes/navigator/evidence/stage-1.md`. Deps: none. Acceptance: design §11 H-0 passes, or the DD-7 fallback is chosen and recorded.
+- [x] 1.1 [mod] Spike (DD-29): in a throwaway plugin folder in the session scratch directory, outside git, with its own `.claude-plugin/plugin.json` (`name`, `version`, `hooks: ["./hooks.json"]`) — since `bundles/meaningfy-navigator` exists only after 1.4/1.5 — a minimal mod (`hooks.json`, `register.tsx` drawing one band row and one `$.ui.status` line, `lib/view.ts` imported with a `.ts` specifier) loads with `claude --plugin-dir <scratch folder>`; nothing of the folder is committed; record the result and the Claude Code version in `openspec/changes/navigator/evidence/stage-1.md`. Deps: none. Acceptance: design §11 H-0 passes, or the DD-7 fallback is chosen and recorded.
 - [x] 1.2 [doc] `docs/development/governance.md`: the Mod type row and its rule; `AGENTS.md` type table row and one line in *How to maintain*. Deps: none. Acceptance: spec `catalogue-governance` *A mod observes, displays and calls commands*.
 - [x] 1.3 [lint] `TOP_LEVEL_FOLDERS` gains `mods`; negative test. Deps: none. Acceptance: spec `catalogue-governance` *Only the agreed top-level folders exist*.
 - [x] 1.4 [dist] `tools/bundle_gen`: optional `mods` key, mod folder checks, mod link, `data/` links (design §2), `plugin.json` `hooks`/`types`/`userConfig`, `unreleased()` covers mods, opencode catalogue omits mod-only bundles (DD-6); `tests/test_bundle_gen.py` cases. Deps: 1.3. Acceptance: specs `catalogue-governance` *Skills are organised…*, `dual-cli-distribution` *A Claude-only artifact type is a recorded gap*.
@@ -61,7 +61,7 @@
 
 ## Roadmap
 
-- [ ] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.8 · [ ] 1.7 · [ ] 1.9 · [x] 1.10 · [ ] 1.11 · [x] 1.12
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.8 · [ ] 1.7 · [ ] 1.9 · [x] 1.10 · [ ] 1.11 · [x] 1.12
 - [ ] 2.0 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 2.8 · [ ] 2.11 · [ ] 2.9 · [ ] 2.10
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.6 · [ ] 3.5 · [ ] 3.7 · [ ] 3.12 · [ ] 3.13 · [ ] 3.8 · [ ] 3.9 · [ ] 3.10 · [ ] 3.11
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4

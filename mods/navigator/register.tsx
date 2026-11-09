@@ -125,15 +125,26 @@ export const register: Register = (on, options) => {
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const s = revive(await read($, nav))
     const below = await next(e)
-    if (s.display.band === 'hidden' || e.props.hasSurvey) return below
+    if (e.props.hasSurvey) return below
     const { Box, Text, Button } = $.ui.resolve(e)
+    const set = (band: BandDisplay) => async () => send($, { kind: 'SetBand', id: `press:${await $.clock.now()}`, band })
+    // Hidden leaves one button, so a person who pressed Hide can bring the band back (DD-32).
+    if (s.display.band === 'hidden') {
+      return (
+        <Box flexDirection="column">
+          <Button key="show" label="⎈" onPress={set('folded')} />
+          {below}
+        </Box>
+      )
+    }
     const model = bandModel(s)
-    const toggle = (kind: 'ToggleBand') => async () => send($, { kind, id: `press:${await $.clock.now()}` })
+    const isFolded = s.display.band === 'folded'
     return (
       <Box flexDirection="column">
         <Box>
           <Text dimColor>{model.folded} </Text>
-          <Button key="fold" label={s.display.band === 'folded' ? 'Unfold' : 'Hide'} onPress={toggle('ToggleBand')} />
+          <Button key="fold" label={isFolded ? 'Unfold' : 'Fold'} onPress={set(isFolded ? 'unfolded' : 'folded')} />
+          <Button key="hide" label="Hide" onPress={set('hidden')} />
         </Box>
         {s.display.band === 'unfolded' && model.rows.filter(r => r.items.length > 0).map(r => (
           <Text key={r.label} dimColor>  {r.label}: {r.items.join(' · ')}</Text>

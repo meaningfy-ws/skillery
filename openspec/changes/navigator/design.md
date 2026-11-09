@@ -625,7 +625,7 @@ Validate, Review, Mode, Board, Copy, Fold, Hide.
 
 Surfaces: on `terminal` widths follow `e.props.bodyColumns`; on `desktop` rows flex (ponytail's
 rule) and, if the stage-1 proof finds `$.ui.status` not drawn there, the folded row starts with the
-line's text (DD-19). Hidden band → return `next(e)` untouched. The band always draws `next(e)`'s
+line's text (DD-19). Hidden band → one `⎈` button above `next(e)`, which folds the band back in (DD-32). The band always draws `next(e)`'s
 tree below its own, so ponytail's band still draws (scenario 8).
 
 **Settings** (`mods/navigator/config.json` → `userConfig`, DD-25): `band` (`unfolded` | `folded`
@@ -826,6 +826,11 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
   owning plugin writes its state. (4) `register.tsx` passes `$` only to top-level functions.
   `.gitignore` un-ignores `mods/*/lib/` and `bundles/*/mods/*/lib/` (a global `lib/` rule hid
   them). `@types/node` is pinned beside `typescript` so the `lib/` tests type-check.
+- **DD-32** (owner's hand check H-1, 2026-11-09) A hidden band leaves a single `⎈` button that
+  brings it back folded: after pressing *Hide*, only `/navigator band` brought it back, which a
+  person may not know. The folded and
+  unfolded band carry *Unfold*/*Fold* and *Hide*; `/navigator band` still cycles. Scenario 8 holds:
+  the line is unchanged and other mods' bands draw below.
 
 ## Risks / Trade-offs
 
