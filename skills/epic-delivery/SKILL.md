@@ -25,7 +25,7 @@ A SMALL EPIC, "add a trigger probe and sharpen one rule", gated and ready.
    sharpened rule changes a use case but adds no new scenario, so there is nothing to sign off.
 2. **Build.** Three tasks. The lead briefs one builder per task (template in
    [`references/team-and-briefs.md`](references/team-and-briefs.md)). Each builder runs its task
-   gate once and reports the command, exit code, counts and time. The lead reads the diff and the
+   gate once and reports it with the *implementing* fields of `guardrails`. The lead reads the diff and the
    report and commits. All three reports are complete and agree with their diffs, so the lead
    re-runs nothing.
 3. **Challenge.** The lead runs the full gates once, records the report in the PR body and opens
@@ -108,9 +108,6 @@ The review set of each appetite (the challenge, the check, the tester, the UX le
 The order is accept, then the docs stage, then archive. The acceptance demo, the docs-stage
 decision and the `tasks.md` checkboxes are in
 [`references/stage-loop.md`](references/stage-loop.md).
-
-Every check has one moment and one owner, listed in one table, and each step in detail in the
-same page.
 
 Between stages, right after the merge, the lead compacts with a focus on the open decisions; after
 the archive it starts the next task in a fresh session (`guardrails`, *Session hygiene*).

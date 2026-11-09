@@ -39,8 +39,7 @@ tested the stage it checks.
    checklist (`cosmic-python` `references/testing-checklist.md`); and the dependency rule
    ([`dependencies.md`](dependencies.md)): never work around our library.
 6. **The report expected**: the base report and the *implementing* fields of `guardrails`
-   `references/subagent-reports.md` (each gate run with its command, exit code, counts, duration
-   and commit, and the narrow checks run), plus
+   `references/subagent-reports.md`, plus
    **Upstream findings**: every bug, gap or awkwardness met in any library, each marked *ours* or
    *external*, with a reproduction, or "none". The lead routes them per the dependency rule.
 

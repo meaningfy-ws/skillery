@@ -23,9 +23,8 @@ and one owner. The summary is in the skill, and the review set of each appetite 
    - While a task is in progress the builder runs only the narrow checks its edit touches.
    - Before it reports, the builder runs the project's task gate once. The project's `AGENTS.md`
      names it: the full gates by default, a narrower gate where the project says so.
-   - The builder reports every gate run: command, exit code, counts, duration, the commit the gate
-     ran on, plus the narrow checks run (`guardrails` `references/subagent-reports.md`,
-     *implementing*).
+   - The builder reports every gate run with the *implementing* fields (`guardrails`
+     `references/subagent-reports.md`).
    - The lead reads the diff and the report, reads the upstream findings and files the issues they
      call for, and commits the task. It re-runs a gate only on a trigger, and names it in the
      commit body (`Re-run: T1, <reason>`):
