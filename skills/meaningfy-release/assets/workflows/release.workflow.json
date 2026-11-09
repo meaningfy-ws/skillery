@@ -14,7 +14,7 @@
     "bumped": { "kind": "file", "glob": "CHANGELOG.md" },
     "validated": { "kind": "command", "match": "\\bmake validate\\b", "run": "make validate" },
     "merged": { "kind": "command", "match": "gh pr merge" },
-    "published": { "kind": "command", "match": "gh release (create|view)|git tag( -[as])? v\\d|git push\\b.*--tags" },
-    "back": { "kind": "command", "match": "gh pr create\\b.*--base[ =]develop|git merge\\b.*\\bmain\\b" }
+    "published": { "kind": "command", "match": "gh release create\\b|git tag\\b(?![^&;|]*\\s(-[dlnv]\\w*|--(delete|list|contains|verify|points-at)\\b))[^&;|]*\\sv\\d|git push\\b(?![^&;|]*\\s(-d|--delete|-n|--dry-run)\\b)[^&;|]*\\s(v\\d|--(follow-)?tags\\b)" },
+    "back": { "kind": "command", "match": "gh pr create\\b.*(--base[ =]|-B )develop\\b(?!-)|git merge(?=\\s)[^&;|\"']*\\s(origin/)?(main|release/\\S+|hotfix/\\S+)(\\s|$)" }
   }
 }

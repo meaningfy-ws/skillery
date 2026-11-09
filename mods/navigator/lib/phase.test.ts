@@ -13,7 +13,8 @@ const file = (skill: string, name: string) => {
   const path = `skills/${skill}/assets/workflows/${name}.workflow.json`
   return { path, text: readFileSync(join(REPO, path), 'utf8') }
 }
-const defaults = resolveWorkflows([file('epic-delivery', 'build-tier'), file('architecture', 'architecting'),
+const defaults = resolveWorkflows([file('epic-delivery', 'epic-delivery'), file('epic-planning', 'epic-shaping'),
+  file('architecture', 'architecting'),
   file('conceptual-modelling', 'modelling'), file('meaningfy-release', 'release'),
   file('infrastructure-operations', 'devops'), file('sales-operations', 'sales')], [])
 
@@ -34,9 +35,9 @@ const keys = (s: NavState) => s.warnings.map(w => w.key)
 
 test('the defaults resolve with no errors', () => assert.deepEqual(defaults.errors, []))
 
-test('an open change with partial tasks places build-tier in apply; ticking all moves it to verify', () => {
+test('an open change with partial tasks places epic-delivery in apply; ticking all moves it to verify', () => {
   const s = run(workflows(), read(change(3, 9)))
-  assert.deepEqual([s.workflow, s.variant, s.phase], ['build-tier', null, 'apply'])
+  assert.deepEqual([s.workflow, s.variant, s.phase], ['epic-delivery', null, 'apply'])
   assert.equal(run(workflows(), read(change(3, 9)), read(change(9, 9), 3)).phase, 'verify')
   assert.equal(run(workflows(), read(null)).workflow, null)
 })
@@ -78,12 +79,12 @@ test('PD-2 leaving a phase without its exit skill; PD-3 command gate not passed 
 test('PD-3 skill gate: a delivery session entering apply with no clarity-gate run warns; the first placement is not checked', () => {
   assert.ok(!keys(run(workflows(), read(change(3, 9)))).length)
   const placed = run(workflows(), read(change(0, 9)))
-  assert.equal(placed.phase, 'design')
+  assert.equal(placed.phase, 'ready')
   assert.ok(!keys(placed).length)
   const s = reduce(placed, skill('epic-delivery', 5))
   assert.equal(s.phase, 'apply')
   assert.ok(keys(s).includes('process:gate:apply:clarity'), keys(s).join())
-  // The gate runs in revise, a variant of the workflow; epic-delivery then places apply without a check.
+  // The gate runs in epic-shaping's revise; epic-delivery then places apply without a check.
   const gated = [skill('clarity-gate', 4), skill('epic-delivery', 5)].reduce(reduce, placed)
   assert.equal(gated.phase, 'apply')
   assert.ok(!keys(gated).includes('process:gate:apply:clarity'))
@@ -101,9 +102,9 @@ test('PD-4 a skill of another phase; PD-5 an external skill a Meaningfy skill re
   const s = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5), skill('superpowers:writing-plans', 6))
   assert.ok(keys(s).includes('process:external:writing-plans'))
   assert.equal(s.warnings.find(w => w.key === 'process:external:writing-plans')!.remedy, 'epic-planning')
-  const e = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5), skill('bdd-gherkin', 6))
-  assert.ok(keys(e).includes('process:elsewhere:apply:bdd-gherkin'), keys(e).join())
-  assert.equal(e.warnings.find(w => w.key === 'process:elsewhere:apply:bdd-gherkin')!.remedy, null)
+  const e = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5), skill('verification-before-completion', 6))
+  assert.ok(keys(e).includes('process:elsewhere:apply:verification-before-completion'), keys(e).join())
+  assert.equal(e.warnings.find(w => w.key === 'process:elsewhere:apply:verification-before-completion')!.remedy, null)
 })
 
 // ---------------------------------------------------------------- DevOps and sales
@@ -153,7 +154,7 @@ test('the band shows phases and the skill trail with phases', () => {
   const s = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5))
   const rows = bandModel(s).rows
   assert.deepEqual(rows.find(r => r.label === 'phases')!.items,
-    ['Build-tier EPIC delivery', '✓ explore', '✓ variants', '✓ decide', '✓ propose', '✓ design', '✓ revise', '● apply', '○ verify', '○ archive'])
+    ['EPIC delivery', '✓ ready', '● apply', '○ verify', '○ archive'])
   assert.deepEqual(rows.find(r => r.label === 'skills')!.items, ['epic-delivery (apply)'])
 })
 
@@ -216,26 +217,32 @@ test('D-1 a file write never selects a workflow', () => {
   assert.deepEqual([s.workflow, s.phase], [null, null])
 })
 
-// ---------------------------------------------------------------- build-tier shaping and delivery (navigator-workflows D-2, D-3)
+// ---------------------------------------------------------------- epic-shaping and epic-delivery (navigator-workflows D-2, D-3)
 const fresh = (over: Partial<Change> = {}) => change(0, 9, { id: 'x', ...over })
 const proposalOnly = fresh({ total: 0, hasDesign: false, hasTasks: false })
 const shaped = (...signals: Signal[]) => run(workflows(), read(null), skill('epic-planning', 3), ...signals)
 const where = (s: NavState) => [s.workflow, s.variant, s.phase]
 
-test('Shaping: seed, Q&A, proposal, design and tasks, then the clarity gate, walk the variant with no warnings', () => {
+const bandPhases = (st: NavState) =>
+  bandModel(st).rows.find(r => r.label === 'phases')!.items.slice(1).map(i => i.slice(2))
+const SIX = ['explore', 'variants', 'decide', 'propose', 'design', 'revise']
+
+test('Shaping: seed, Q&A, proposal, design and tasks, then the clarity gate, walk the six phases with no warnings', () => {
   const start = shaped()
-  assert.deepEqual(where(start), ['build-tier', 'work-shaping', 'explore'])
+  assert.deepEqual(where(start), ['epic-shaping', null, 'explore'])
+  assert.deepEqual(bandPhases(start), SIX)
   const seeded = reduce(start, write('openspec/changes/x/inputs/seed.md', 4))
   assert.equal(seeded.phase, 'variants')
   const asked = reduce(seeded, write('openspec/changes/x/inputs/qa.md', 5))
   assert.equal(asked.phase, 'decide')
   const proposed = reduce(asked, read(proposalOnly, 6))
   assert.equal(proposed.phase, 'propose')
+  assert.deepEqual(bandPhases(proposed), SIX)
   const planned = reduce(reduce(proposed, write('openspec/changes/x/design.md', 7)), read(fresh(), 8))
   assert.equal(planned.phase, 'design')
   const gated = [skill('clarity-gate', 9), { kind: 'AnswerShown', id: id(), text: 'Clarity score: 9.2/10', at: 10 } as Signal]
     .reduce(reduce, planned)
-  assert.deepEqual(where(gated), ['build-tier', 'work-shaping', 'revise'])
+  assert.deepEqual(where(gated), ['epic-shaping', null, 'revise'])
   assert.match(bandModel(gated).folded, /clarity ✓ 9\.2/)
   assert.equal(nextStep(gated), null)
   assert.deepEqual(keys(gated), [])
@@ -249,16 +256,16 @@ const delivery = (...signals: Signal[]) => run(workflows(), read(fresh()), ...si
 
 test('Delivery, next session: epic-delivery warns clarity; clarity-gate revises; epic-delivery returns to apply clean', () => {
   const placed = delivery()
-  assert.deepEqual(where(placed), ['build-tier', null, 'design'])
+  assert.deepEqual(where(placed), ['epic-delivery', null, 'ready'])
   const entered = reduce(placed, skill('epic-delivery', 3))
-  assert.deepEqual(where(entered), ['build-tier', null, 'apply'])
+  assert.deepEqual(where(entered), ['epic-delivery', null, 'apply'])
   assert.deepEqual(keys(entered), ['process:gate:apply:clarity'])
   assert.equal(backOnTrack(entered), 'clarity-gate')
   const revised = reduce(entered, skill('clarity-gate', 4))
-  assert.deepEqual(where(revised), ['build-tier', 'work-shaping', 'revise'])
+  assert.deepEqual(where(revised), ['epic-shaping', null, 'revise'])
   assert.deepEqual(keys(revised), [])
   const back = reduce(revised, skill('epic-delivery', 5))
-  assert.deepEqual(where(back), ['build-tier', null, 'apply'])
+  assert.deepEqual(where(back), ['epic-delivery', null, 'apply'])
   assert.deepEqual(keys(back), [])
 })
 
@@ -272,36 +279,70 @@ test('Delivery, next session: strict still refuses a commit in apply until test-
 test('Reconcile mid-delivery: update-change revises, epic-delivery returns to apply; all tasks done returns to verify', () => {
   const mid = change(3, 10, { id: 'x' })
   const revised = run(workflows(), read(mid), skill('epic-delivery', 3), skill('openspec-update-change', 4))
-  assert.deepEqual(where(revised), ['build-tier', 'work-shaping', 'revise'])
-  assert.deepEqual(where(reduce(revised, skill('epic-delivery', 5))), ['build-tier', null, 'apply'])
+  assert.deepEqual(where(revised), ['epic-shaping', null, 'revise'])
+  assert.deepEqual(where(reduce(revised, skill('epic-delivery', 5))), ['epic-delivery', null, 'apply'])
   const done = change(10, 10, { id: 'x' })
   const revisedDone = run(workflows(), read(done), skill('openspec-update-change', 4))
-  assert.deepEqual(where(revisedDone), ['build-tier', 'work-shaping', 'revise'])
-  assert.deepEqual(where(reduce(revisedDone, skill('epic-delivery', 5))), ['build-tier', null, 'verify'])
+  assert.deepEqual(where(revisedDone), ['epic-shaping', null, 'revise'])
+  assert.deepEqual(where(reduce(revisedDone, skill('epic-delivery', 5))), ['epic-delivery', null, 'verify'])
 })
 
-test('Error matrix: with another change open, inputs for a new change do not move the band off revise', () => {
+test('Error matrix: another change open in a delivery state; the new change inputs move shaping from explore', () => {
   const other = change(3, 10, { id: 'other' })
-  const s = run(workflows(), read(other), skill('epic-planning', 3), write('openspec/changes/new/inputs/seed.md', 4),
-    write('openspec/changes/new/inputs/qa.md', 5))
-  assert.deepEqual(where(s), ['build-tier', 'work-shaping', 'revise'])
-  assert.equal(s.change!.id, 'other')
+  const start = run(workflows(), read(other), skill('epic-planning', 3))
+  assert.deepEqual(where(start), ['epic-shaping', null, 'explore'])
+  const seeded = reduce(start, write('openspec/changes/new/inputs/seed.md', 4))
+  assert.equal(seeded.phase, 'variants')
+  const asked = reduce(seeded, write('openspec/changes/new/inputs/qa.md', 5))
+  assert.equal(asked.phase, 'decide')
+  assert.equal(asked.change!.id, 'other')
 })
 
-test('Error matrix: tasks.md before design.md stays in the variant on revise with the clarity warning; design.md moves back', () => {
+test('Error matrix: another change open in proposal or plan; the band sits at propose or design and inputs do not move it', () => {
+  const at = (other: Change) => {
+    const s = run(workflows(), read(other), skill('epic-planning', 3))
+    return reduce(reduce(s, write('openspec/changes/new/inputs/seed.md', 4)), write('openspec/changes/new/inputs/qa.md', 5))
+  }
+  const proposal = at(change(0, 0, { id: 'other', hasDesign: false, hasTasks: false }))
+  assert.deepEqual([proposal.workflow, proposal.phase, proposal.change!.id], ['epic-shaping', 'propose', 'other'])
+  const plan = at(change(0, 10, { id: 'other' }))
+  assert.deepEqual([plan.workflow, plan.phase, plan.change!.id], ['epic-shaping', 'design', 'other'])
+})
+
+test('Error matrix: tasks.md before design.md holds design with no warning; design.md keeps design; revise warns until clarity-gate passes', () => {
   const inputs = [write('openspec/changes/x/inputs/seed.md', 4), write('openspec/changes/x/inputs/qa.md', 5)]
   const proposed = shaped(...inputs, read(proposalOnly, 6))
   assert.equal(proposed.phase, 'propose')
   const early = reduce(proposed, read(fresh({ hasDesign: false }), 7))
-  assert.deepEqual(where(early), ['build-tier', 'work-shaping', 'revise'])
-  assert.deepEqual(keys(early), ['process:gate:revise:clarity'])
+  assert.deepEqual(where(early), ['epic-shaping', null, 'design'])
+  assert.deepEqual(keys(early), [])
   const designed = reduce(early, read(fresh(), 8))
   assert.equal(designed.phase, 'design')
-  assert.deepEqual(keys(designed), ['process:gate:revise:clarity'])
+  assert.deepEqual(keys(designed), [])
   const strict = run(workflows('strict'), read(null), skill('epic-planning', 3), ...inputs, read(proposalOnly, 6),
     read(fresh({ hasDesign: false }), 7), read(fresh(), 8))
   assert.deepEqual(decideCommit(strict), { allow: true })
+  const revised = reduce(designed, skill('openspec-update-change', 9))
+  assert.deepEqual([revised.phase, keys(revised)], ['revise', ['process:gate:revise:clarity']])
   assert.deepEqual(keys(reduce(designed, skill('clarity-gate', 9))), [])
+})
+
+test('Error matrix: a fresh session on a change with only a proposal lands in ready; epic-planning switches to shaping', () => {
+  const s = run(workflows(), read(proposalOnly))
+  assert.deepEqual(where(s), ['epic-delivery', null, 'ready'])
+  assert.deepEqual(where(reduce(s, skill('epic-planning', 3))), ['epic-shaping', null, 'propose'])
+})
+
+test('Reconcile: openspec-apply-change in epic-shaping revise switches back to epic-delivery', () => {
+  const revised = run(workflows(), read(change(3, 10, { id: 'x' })), skill('openspec-update-change', 3))
+  assert.deepEqual(where(revised), ['epic-shaping', null, 'revise'])
+  assert.deepEqual(where(reduce(revised, skill('openspec-apply-change', 4))), ['epic-delivery', null, 'apply'])
+})
+
+test('Status line: epic-shaping shows its name and phase with no change id, also in a Reconcile', () => {
+  assert.equal(lineText(shaped()), 'epic-shaping · explore')
+  const revised = run(workflows(), read(change(3, 10, { id: 'x' })), skill('openspec-update-change', 3))
+  assert.equal(lineText(revised), 'epic-shaping · revise')
 })
 
 // ---------------------------------------------------------------- architecture, modelling, release (navigator-workflows D-1, D-3, D-4, D-5, D-6)
@@ -316,6 +357,12 @@ test('Architecture to modelling: architecture walks drivers to domain; Next step
   toDomain.forEach((w, i) => { s = reduce(s, w); assert.equal(s.phase, phases[i], w.kind === 'FileTouched' ? w.path : '') })
   assert.equal(nextStep(s), 'conceptual-modelling')
   assert.deepEqual(keys(s), [])
+})
+
+test('Architecture: writing the ADR passes the adr gate; editing an old use case in decide stays in decide', () => {
+  const s = archIn(toDomain[0]!, toDomain[1]!, toDomain[2]!)
+  assert.deepEqual([s.phase, s.gates.adr?.state], ['decide', 'ok'])
+  assert.equal(reduce(s, write('docs/use-cases/use-case-catalogue.adoc', 8)).phase, 'decide')
 })
 
 test('Architecture: reloading architecture or spawning system-architect keeps the phase', () => {
@@ -350,7 +397,7 @@ test('Release: the seven steps walk branch to back-merge and mark the release do
     [write('CHANGELOG.md', 5), 'validate'],
     [cmd('make validate', 6), 'merge'],
     [cmd('gh pr merge 160', 7), 'publish'],
-    [cmd('gh release view v3.11.0', 8), 'back-merge'],
+    [cmd('git push origin v3.11.0', 8), 'back-merge'],
   ]
   for (const [sig, phase] of steps) { s = reduce(s, sig); assert.equal(s.phase, phase, JSON.stringify(sig)) }
   s = reduce(s, cmd('gh pr create --base develop', 9))
@@ -365,17 +412,48 @@ test('Release: tagging and pushing a release branch without the skill activate n
   assert.deepEqual(where(s), [null, null, null])
 })
 
+test('Release: with an open change, tagging and pushing a release branch do not select release', () => {
+  const s = run(workflows(), read(change(3, 9)), cmd('git tag v1.0.0', 3), cmd('git push -u origin release/1.0.0', 4))
+  assert.deepEqual(where(s), ['epic-delivery', null, 'apply'])
+})
+
 test('Release: make validate in branch skips to merge with the cut and bumped gate warnings', () => {
   const s = run(workflows(), read(null), skill('meaningfy-release', 3), cmd('make validate', 4))
   assert.equal(s.phase, 'merge')
   assert.deepEqual(keys(s).sort(), ['process:gate:branch:cut', 'process:gate:bump:bumped'])
 })
 
-test('Release: git tag -l v3* and git tag -d v1.0 do not pass published; git tag v1.0.0 and git push --tags do', () => {
-  const at = (command: string) => run(workflows(), read(null), skill('meaningfy-release', 3), cmd('git switch -c hotfix/1.0.1', 4),
-    write('CHANGELOG.md', 5), cmd('make validate', 6), cmd('gh pr merge 1', 7), cmd(command, 8)).phase
-  assert.equal(at('git tag -l v3*'), 'publish')
-  assert.equal(at('git tag -d v1.0'), 'publish')
-  assert.equal(at('git tag -a v1.0.0 -m x'), 'back-merge')
-  assert.equal(at('git push origin main --tags'), 'back-merge')
-})
+// D-5 and W4/W5: every listed case of the `published` and `back` gates, one test each.
+const releaseTo = (stop: 'publish' | 'back-merge') => {
+  const upTo = [skill('meaningfy-release', 3), cmd('git switch -c hotfix/1.0.1', 4), write('CHANGELOG.md', 5), cmd('make validate', 6),
+    cmd('gh pr merge 1', 7)]
+  return run(workflows(), read(null), ...upTo, ...(stop === 'back-merge' ? [cmd('git push origin v1.0.1', 8)] : []))
+}
+const PUBLISHED: [string, boolean][] = [
+  ['gh release create v3.11.0', true], ['git tag v1.0.0', true], ['git tag -a v1.0.0 -m "x"', true],
+  ['git tag -am "x" v1.0.0', true], ['git tag -s v1.0.0', true], ['git push --tags', true],
+  ['git push origin --follow-tags', true], ['git push origin v3.11.0', true], ['git push origin main --tags', true],
+  ['gh release view v3.11.0', false], ['git tag -l v3*', false], ['git tag -d v1.0', false], ['git tag --list v3*', false],
+  ['git tag -v v1.0.0', false], ['git tag -n v1', false], ['git tag --contains v1.0', false], ['git tag --verify v1.0.0', false],
+  ['git push --delete origin v1.0.0', false], ['git push -d origin v1.0.0', false], ['git push origin --tags --dry-run', false],
+  ['git push -n origin v1.0.0', false], ['git push -u origin release/1.0.0', false], ['git push origin main', false],
+]
+for (const [command, passes] of PUBLISHED) {
+  test(`Release published: \`${command}\` ${passes ? 'passes' : 'does not pass'}`, () => {
+    const s = reduce(releaseTo('publish'), cmd(command, 9))
+    assert.equal(s.phase, passes ? 'back-merge' : 'publish')
+  })
+}
+const BACK: [string, boolean][] = [
+  ['gh pr create --base develop', true], ['gh pr create -B develop --title x', true], ['gh pr create --base=develop', true],
+  ['git merge release/3.11.0', true], ['git merge --no-ff main', true], ['git merge origin/main', true],
+  ['git merge hotfix/main-fix', true],
+  ['gh pr create --base develop-old', false], ['gh pr create --base main', false],
+  ['git merge feature/x -m "Merge into main"', false], ['git merge-base main HEAD', false],
+]
+for (const [command, passes] of BACK) {
+  test(`Release back: \`${command}\` ${passes ? 'passes' : 'does not pass'}`, () => {
+    const s = reduce(releaseTo('back-merge'), cmd(command, 9))
+    assert.equal(s.gates.back?.state ?? 'none', passes ? 'ok' : 'none')
+  })
+}
