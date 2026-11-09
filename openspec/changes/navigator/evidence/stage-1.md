@@ -28,6 +28,9 @@
   To re-check after DD-32: Unfold, Fold, Hide, `⎈`; and H-3, a subagent in the band.
 ## Open in stage 1
 
+2026-11-09: the owner chose to merge stage 1 with these checks still open ("proceed next");
+tasks 1.7, 1.9 and 1.11 stay unticked until they are done, and stage 2's PR carries them.
+
 - **1.7** — H-3 (a subagent row in the band, then done with tokens) and the H-1 re-run after DD-32
   (Unfold, Fold, Hide, `⎈`; with ponytail installed, its band still draws below — the second half
   of *Hiding the band*).
