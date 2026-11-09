@@ -21,7 +21,7 @@
   - the band sample in `docs/environment/navigator.md` (around line 56) uses the new phase names;
   - CHANGELOG, with a BREAKING line for `shape`, `plan` and `exploratory`
 - [x] 3.2 Check the spec delta against what was built, and add the MODIFIED delta of *Default workflow files live in their host skills* (six files, modelling moved; DEC-8 — `navigator` is now archived); `openspec validate navigator-workflows --strict` and `make validate-spine` green
-- [ ] 3.3 One review pass (L2 spec and tests, L3 structure); record the accepted findings in `design.md` (done: *Review findings*, fixed by 4.2–4.4); after section 4, open a PR into `develop`; merge on green CI. Archiving waits for `navigator` (DEC-8; `navigator` is archived, so it may follow)
+- [x] 3.3 One review pass (L2 spec and tests, L3 structure); record the accepted findings in `design.md` (done: *Review findings*, fixed by 4.2–4.4); after section 4, open a PR into `develop`; merge on green CI. Archiving waits for `navigator` (DEC-8; `navigator` is archived, so it may follow)
 
 ## 4. Re-shape (`inputs/qa.md` round 5) and review fixes
 
@@ -33,7 +33,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [x] 2.1a · [x] 2.1b · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 · [x] 3.2 · [ ] 3.3 · [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5
+- [x] 1.1 · [x] 2.1a · [x] 2.1b · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5
 
 ## Verification
 

@@ -62,7 +62,7 @@ through the links `make bundles` renders into its bundle, never through a path i
 
 #### Scenario: The mod reads a workflow file
 
-- **WHEN** navigator loads the build-tier workflow
+- **WHEN** navigator loads the epic-delivery workflow
 - **THEN** it reads it under its own bundle's `data/workflows/`, a link `make bundles` rendered to `skills/epic-delivery/assets/workflows/`
 
 ### Requirement: Documentation has three doors
