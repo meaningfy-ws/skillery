@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.11.0] - 2026-11-09
+
 ### Added
 
 - `meaningfy-navigator`: an EPIC shaping workflow (explore, variants, decide, propose, design,
