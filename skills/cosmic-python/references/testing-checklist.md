@@ -41,11 +41,15 @@ copy these. Worked code is in [`example-testing-patterns.md`](example-testing-pa
 13. Container tests start their containers once per session, and each test namespaces its own
     data. In CI a missing Docker is a failure, not a skip.
 
+14. A test that both passes and fails on unchanged code is quarantined with the project's marker
+    and an issue link, gets its own task or issue, and is never retried with new seeds inside a
+    stage; the stage PR names it.
+
 ## Traceability and validated examples
 
-14. Every feature test names the spec scenario it covers. The full check is `bdd-gherkin`'s
+15. Every feature test names the spec scenario it covers. The full check is `bdd-gherkin`'s
     traceability check.
-15. The model's validated example instances and competency questions are kept as tests (see
+16. The model's validated example instances and competency questions are kept as tests (see
     `conceptual-modelling`). Compare answers as sets or graphs, never as text. Change one only with
     the model change that needs it, and say why in the commit.
 

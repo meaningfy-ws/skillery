@@ -14,17 +14,25 @@ recommend, but never validates on the developer's behalf.
 | Model | The domain: example instances, competency questions, the domain-expert review | The model's own checks and generated-code freshness | When the model changes, in shaping; every commit | `conceptual-modelling` |
 | Scenarios | What the developer wants: scenario sign-off *(provisional)* | The traceability check | Sign-off once per EPIC at the PLAN gate; traceability before each PR | `bdd-gherkin` |
 | Code | The EPIC's success measure: the acceptance demo *(provisional)* | Tests, gates, the review lenses, the checker | Every task (verification); after the last stage (validation) | `epic-delivery` |
-| Docs | A reader can act on them: the cold reader | Snippets run; the docs gate | Every stage that changes a how-to or tutorial page | `technical-writing` |
+| Docs | A reader can act on them: the cold reader, on a page whose type is how-to or tutorial | Snippets run; the docs gate; the L2 lens checks changed docs agree with the code | Every stage that changes a how-to or tutorial page; every task-oriented page of the docs stage | `technical-writing` |
 | The iteration | The validation review *(provisional)*: did each EPIC deliver its value, did each ADR hold | Every change archived, its specs merged | End of an iteration | `epic-delivery` |
 
 The activities owned elsewhere are described in their skill. This skill owns two.
 
 ## Acceptance demo *(provisional)*
 
-Once per EPIC that delivers or changes a use case, after its last stage and before archive. The
-lead shows the use case running against the EPIC's success measure; the developer accepts it or
-names what is wrong. A purely technical EPIC has nothing to accept. The procedure is in
-[`stage-loop.md`](stage-loop.md).
+Offered once per EPIC that delivers or changes a use case, after its last build stage and before
+the docs stage and the archive. The lead shows the use case running against the EPIC's success
+measure; the developer accepts it or names what is wrong. A purely technical EPIC has nothing to
+accept.
+
+| Appetite | The demo |
+|---|---|
+| Below LARGE | Offered; the developer may skip it. The skip (who, why, date) goes to `evidence/acceptance.md` |
+| LARGE and above | Mandatory; the verdict, what was shown and the date go to `evidence/acceptance.md` |
+
+The procedure is in [`stage-loop.md`](stage-loop.md). The demo loses "(provisional)" once its first
+real run is recorded; the validation review stays provisional.
 
 ## Validation review *(provisional)*
 
@@ -42,7 +50,8 @@ Validation leaves evidence in the change's optional `evidence/` folder, archived
 | `evidence/walkthrough.md` | Architect | The walkthrough's trace and verdict |
 | `evidence/spike-<topic>.md` | Builder | The question, the yes or no, the evidence |
 | `evidence/model-validation.md` | Lead, from the domain expert's verdict | What was reviewed and the verdict |
-| `evidence/acceptance.md` | Lead | What was shown, the verdict, the date |
+| `evidence/acceptance.md` | Lead | What was shown, the verdict, the date; or the skip: who, why, date |
+| `evidence/docs-owed.md` | Lead | The pages owed by the docs stage, or "no docs owed" |
 
 Each record names the person who decided and the date.
 

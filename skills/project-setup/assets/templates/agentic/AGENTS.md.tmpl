@@ -111,7 +111,12 @@ artifacts above; do not reintroduce parallel epic files under `.claude/`.
 - **Domain model:** <!-- product only — model/ (LinkML); `make generate-models` regenerates targets -->
 - **Datastores / external systems:** <!-- e.g. MongoDB, Redis, the ERE engine, an OpenAPI client -->
 - **Deployable?** <!-- yes/no — if yes, see ci-cd-delivery; CD stub pending DevOps ratification -->
-- **Make targets:** <!-- the dev UX — e.g. make install, make check-all, make test, make build-docs -->
+- **Checks:**
+  - **Narrow checks:** <!-- while iterating, the checks an edit touches — e.g. one test file, one target -->
+  - **Task gate:** <!-- once per task; default: the full gates -->
+  - **Full gates:** <!-- once per stage before the PR — e.g. make check-all -->
+  - **Docs gate:** <!-- the docs build or link check — e.g. make build-docs -->
+  - **Code-intelligence tools:** <!-- the index and impact tools, if any — e.g. the GitNexus MCP tools -->
 - **Our libraries (no workarounds):** <!-- the co-developed libraries, e.g. `meaningfy-ws/<repo>` — what each does for us -->
 - **GitNexus repo name:** <!-- the name this repo is indexed under (gitnexus_*) -->
 

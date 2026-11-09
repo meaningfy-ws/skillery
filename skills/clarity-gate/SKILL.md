@@ -32,7 +32,8 @@ enough — the gate is designed to surface what the prose quietly assumes.
 3. Score against the 6 criteria: actionability, specificity, consistency, structure,
    disambiguation, reference clarity.
 4. The spec must score **≥ 9/10** to proceed. Below 9: list the specific gaps, revise,
-   re-score.
+   re-score. The one exception: a gap the developer explicitly accepts, recorded as a decision
+   (`epic-planning` says when that is offered).
 
 ## Full vs. lightweight
 

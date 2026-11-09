@@ -12,15 +12,15 @@
 
 ## Stage 1 — Delivery method (PR 1)
 
-- [ ] 1.1 `epic-delivery` `SKILL.md`: loop step 2 (builder's task gate, D-2 report, lead reads diff + report, D-3 triggers), step 4 (failing tests, then full gates once, D-4), step 5 (no checker: the stage's full gates + CI and the single review pass), *Questions* (one round, D-15), Quick Start per E1, gotchas (D-3), *After the last stage* (accept → docs stage → archive; docs and close as plain lines in `tasks.md`, D-8), *Verification and validation* pointer
-- [ ] 1.2 `references/stage-loop.md`: the check ledger (D-1) replacing the coverage table; Prepare and Challenge index refresh (D-13); flaky pointer (D-14); docs stage after accept and `evidence/docs-owed.md` (D-8); SMALL and LARGE examples; the delivery rows of the design's error matrix
-- [ ] 1.3 `references/team-and-briefs.md`: brief rule 5 points to the project's *Checks* block (D-12); report line points to D-2; reviewer brief reads the gate report; code-intelligence line (DEC-11). `references/verification-validation.md`: demo by appetite and skip record (D-16); docs row: cold reader where the page changed, docs stage (DEC-9)
-- [ ] 1.4 `guardrails` §5 and `references/subagent-reports.md`: D-2 fields under *implementing*; the waiting rule (D-5, text); enforcement line names the `no-poll-loops` intent; the two `make validate` lines of D-18
-- [ ] 1.5 `epic-planning` and `clarity-gate`: #162's text (D-15)
-- [ ] 1.6 `meaningfy-code-review`: L2 reads the gate report instead of running the suite; L2 doc agreement (D-11)
-- [ ] 1.7 `cosmic-python` `references/testing-checklist.md`: the flaky-test item (D-14)
-- [ ] 1.8 `project-setup` `assets/templates/agentic/AGENTS.md.tmpl`: the *Checks* block (D-12)
-- [ ] 1.9 Runbooks made false by 1.1–1.7: `docs/practice/ai-coding/{build-lifecycle,opsx-runbook,dod-quality-gates,working-with-agents}.md`, `playbooks/{developer,solution-builder}.md`, `docs/development/README.md` §*How an EPIC is delivered*; CHANGELOG lines. Acceptance: `tests/features/epic-delivery.feature` agrees with 1.1–1.3; the D-18 grep returns nothing for the stage-1 files; `make bundles`, `make validate`
+- [x] 1.1 `epic-delivery` `SKILL.md`: loop step 2 (builder's task gate, D-2 report, lead reads diff + report, D-3 triggers), step 4 (failing tests, then full gates once, D-4), step 5 (no checker: the stage's full gates + CI and the single review pass), *Questions* (one round, D-15), Quick Start per E1, gotchas (D-3), *After the last stage* (accept → docs stage → archive; docs and close as plain lines in `tasks.md`, D-8), *Verification and validation* pointer
+- [x] 1.2 `references/stage-loop.md`: the check ledger (D-1) replacing the coverage table; Prepare and Challenge index refresh (D-13); flaky pointer (D-14); docs stage after accept and `evidence/docs-owed.md` (D-8); SMALL and LARGE examples; the delivery rows of the design's error matrix
+- [x] 1.3 `references/team-and-briefs.md`: brief rule 5 points to the project's *Checks* block (D-12); report line points to D-2; reviewer brief reads the gate report; code-intelligence line (DEC-11). `references/verification-validation.md`: demo by appetite and skip record (D-16); docs row: cold reader where the page changed, docs stage (DEC-9)
+- [x] 1.4 `guardrails` §5 and `references/subagent-reports.md`: D-2 fields under *implementing*; the waiting rule (D-5, text); enforcement line names the `no-poll-loops` intent; the two `make validate` lines of D-18
+- [x] 1.5 `epic-planning` and `clarity-gate`: #162's text (D-15)
+- [x] 1.6 `meaningfy-code-review`: L2 reads the gate report instead of running the suite; L2 doc agreement (D-11)
+- [x] 1.7 `cosmic-python` `references/testing-checklist.md`: the flaky-test item (D-14)
+- [x] 1.8 `project-setup` `assets/templates/agentic/AGENTS.md.tmpl`: the *Checks* block (D-12)
+- [x] 1.9 Runbooks made false by 1.1–1.7: `docs/practice/ai-coding/{build-lifecycle,opsx-runbook,dod-quality-gates,working-with-agents}.md`, `playbooks/{developer,solution-builder}.md`, `docs/development/README.md` §*How an EPIC is delivered*; CHANGELOG lines. Acceptance: `tests/features/epic-delivery.feature` agrees with 1.1–1.3; the D-18 grep returns nothing for the stage-1 files; `make bundles`, `make validate`
 
 ## Stage 2 — Documentation workflow (PR 2)
 

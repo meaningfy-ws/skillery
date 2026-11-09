@@ -180,6 +180,37 @@
   not switch the lead's band. The lead loading `technical-writing` during a build does; loading
   `epic-delivery` or `openspec-apply-change` switches back.
 
+## Delivery decisions (lead, under the developer's grant of 2026-11-09)
+
+The developer granted the lead commit, push, PR and merge for this EPIC, and "take decisions as
+appropriate". Decisions taken while delivering:
+
+- **DL-1 Stage 1 has no adversarial tester.** Its diff is method prose with no executable code; a
+  tester writes only tests. The five lenses and the checker run.
+- **DL-2 No release between stages.** Stage 1 names the `no-poll-loops` intent (stage 4) and the
+  documentation workflow (stage 2) ahead of them. The release is cut only after the close, so the
+  forward references never ship alone. Rejects L1/L2/L3 findings that ask to move those lines.
+- **DL-3 Stage 1 review fixes (accepted findings).**
+  1. The *implementing* fields add the commit the gate ran on; the lead skips the pre-PR full
+     gates only when that commit is the PR's head (L1).
+  2. Reviewers use the code-intelligence tools for reading only; the lead checks `git status` is
+     clean before the fix round and discards a reviewer's edit (L1, RISK-6).
+  3. L2 applies the T1 consistency checks to the gate report. Outside an EPIC the caller supplies
+     the gate report, or L2 runs the project's full gates (L1, L3, L5).
+  4. T3 is the lead's full-gates run, not a task-gate re-run; the trigger list says "re-runs a gate"
+     (L4).
+  5. Order in step 3: the lead runs the full gates, records the D-2 fields in the PR body, opens
+     the PR; then the reviewers read that report. Step 6 merges on green CI (L4, L2).
+  6. `epic-delivery` SKILL keeps a short loop and points to `stage-loop.md` for the triggers, the
+     report fields, the fix round and the docs-stage decision; `verification-validation.md` owns the
+     demo-by-appetite rule; runbooks drop the restated qualifiers and point (L5, L3).
+  7. Quick Start consistency, the complete example report in `guardrails`, the pointer to
+     `subagent-reports.md`, the L2 row and Boundary of `meaningfy-code-review`, the Boundary of
+     `epic-delivery`, the stale "one concern at a time" lines (`opsx-runbook.md`,
+     `epic-planning` `seed-intake.md`), the two stage runs in `docs/development/README.md`, and the
+     L4 nits (navigator band, split sentences, "last build stage", ledger "—", docs-gate wording).
+- **DL-4 Rejected:** `agents/code-reviewer.md` still says L2 runs the suite; task 3.3 owns it.
+
 ## Algorithm — the check ledger (D-1)
 
 | Check | Moment | Owner | Re-run only when |

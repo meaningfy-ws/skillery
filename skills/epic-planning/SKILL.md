@@ -31,7 +31,7 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    architecture/ADRs, sample/test data, free notes, and for brownfield an existing-codebase analysis
    (optionally via GitNexus). Enumerate what you read. Details: [`references/seed-intake.md`](references/seed-intake.md).
 2. **Elicit** (`/opsx:explore` + `superpowers:brainstorming`). Drive a *myriad of clarifying
-   questions*, **one concern at a time**, to surface and decide every ambiguity, conflict, and
+   questions*, **one concern per question, asked together in rounds**, to surface and decide every ambiguity, conflict, and
    assumption **before** writing the EPIC. After each round, summarise what you understood and
    confirm. Make no silent assumptions. **Include a test-scenario interview**: help the human enumerate
    what the EPIC must *prove* — key assertions, scenarios, edge cases — so the design phase can author
@@ -60,14 +60,20 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    (algorithm, concrete examples, anti-patterns, error matrix, decisions, and the elicited risks in
    Risks / Trade-offs as `RISK-<n>`: likelihood, impact, mitigation or acceptance) and the tasks half (ordered
    breakdown with layers/dependencies/acceptance, roadmap). Each PLAN cites its parent EPIC id
-   (golden thread).
+   (golden thread). The PLAN's depth follows the appetite: a TINY or SMALL PLAN keeps the sections
+   the gate scores and stays short in each.
 7. **Attack the PLAN.** Before the gate, try to break it, in a fresh subagent when one pays
    (`guardrails`, *Subagent dispatch*): the input, state or order of events under which it fails,
    and the assumption which, if false, sinks it. Each counterexample becomes an error-matrix row,
    a `RISK-` entry or a PLAN fix. The gate checks the PLAN is clear; this checks it holds.
 8. **Gate the PLAN** (full `clarity-gate`, ≥9/10). Score the `design.md`+`tasks.md` pair. Block
    progression to BDD/implementation until it passes. Below 9: list the specific gaps and **revise
-   the PLAN** — never patch code to dodge a gap (Rule of Divergence).
+   the PLAN** — never patch code to dodge a gap (Rule of Divergence). For a TINY or SMALL EPIC,
+   run the gate at most twice. If the second run is still below 9, bring the remaining gaps to
+   the developer as one question round, each with a recommendation (fix it, accept it, or
+   re-shape), instead of a third revision. The developer decides each gap. An accepted gap is
+   recorded in `design.md` as a `DEC-` naming the gap and the developer's answer. Only then may
+   the PLAN proceed below 9.
 
 The PLAN cuts its tasks into stages; delivery after the gate is `epic-delivery`'s.
 

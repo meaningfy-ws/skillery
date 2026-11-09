@@ -34,13 +34,18 @@ tested the stage it checks.
 2. The files in scope, as paths.
 3. The decisions already made: `DEC-n`, the ADR, the spec scenario, the use case.
 4. What is out of scope.
-5. **Standing rules**: the project's own list (from its `AGENTS.md`), the testing checklist
-   (`cosmic-python` `references/testing-checklist.md`), and the dependency rule
+5. **Standing rules**: the project's own list and its narrow checks, task gate, full gates, docs
+   gate and code-intelligence tools, all from the *Checks* block in its `AGENTS.md`; the testing
+   checklist (`cosmic-python` `references/testing-checklist.md`); and the dependency rule
    ([`dependencies.md`](dependencies.md)): never work around our library.
-6. **The report expected**: the base report per `guardrails`, plus each gate run with its time and
-   test count, plus **Upstream findings**: every bug, gap or awkwardness met in any library, each
-   marked *ours* or *external*, with a reproduction, or "none". The lead routes them per the
-   dependency rule.
+6. **The report expected**: the base report and the *implementing* fields of `guardrails`
+   `references/subagent-reports.md`, plus
+   **Upstream findings**: every bug, gap or awkwardness met in any library, each marked *ours* or
+   *external*, with a reproduction, or "none". The lead routes them per the dependency rule.
+
+Builders and reviewers use the project's code-intelligence tools when it has them (symbol-level
+reading and editing, impact analysis), and no other MCP tool. Builders use them for reading and
+editing, reviewers for reading only. Those tools are for code only; the truth stays in the spine.
 
 ## Builder
 
@@ -48,7 +53,7 @@ tested the stage it checks.
 > this task changes. **Read:** `tasks.md` §`<n>`, `design.md` `<DEC-n>`,
 > `tests/features/<f>.feature`. **Decided:** `<…>`. **Out of scope:** `<…>`. **Standing rules:**
 > `<project list>`; the testing checklist; no workaround of our library: stop and report it.
-> **Report:** base report + gates with time and count + Upstream findings.
+> **Report:** base report + the *implementing* fields (`guardrails` `references/subagent-reports.md`) + Upstream findings.
 
 A **fixer** is a builder whose task is a set of accepted findings, named by their `design.md`
 decision. A **spike** is a builder whose task is one question; it ends with yes or no and the
@@ -67,7 +72,8 @@ upstream issue, not a fix here.
 ## Reviewer
 
 > **Goal:** review stage `<s>` of `<id>` through lens `<Ln>`. Read-only. **Read:** the diff range,
-> `design.md`, the ADRs the stage touches. **Report:** findings by priority per
+> `design.md`, the ADRs the stage touches, the stage's gate report. Do not re-run the suite: a
+> missing or red gate run is a finding. **Report:** findings by priority per
 > `meaningfy-code-review`, and any workaround of our library as a finding.
 
 Where the appetite's review set is one pass ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)), one reviewer covers its lenses together. The lenses themselves are owned by

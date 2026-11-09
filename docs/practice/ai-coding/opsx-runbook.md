@@ -45,7 +45,7 @@ Each verb has exactly one driving discipline; see the command→skill map in
 
 **Where the delivery loop sits.** `/opsx:apply` is where the team works. Between the gated PLAN and
 `/opsx:archive`, the lead runs the PLAN stage by stage: prepare, build, challenge, decide and fix,
-check, merge, each stage one PR. After the last stage come the acceptance demo (only when the EPIC delivers or changes a use case) and the archive. The
+check, merge, each stage one PR. After the last stage come the acceptance demo (only when the EPIC delivers or changes a use case), the docs the EPIC owes, and the archive. The
 loop is owned by [`epic-delivery`](../../../skills/epic-delivery/SKILL.md); the people's view is
 [working-with-agents.md](working-with-agents.md).
 
@@ -57,7 +57,7 @@ Authoring is owned by [`epic-planning`](../../../skills/epic-planning/SKILL.md):
 
 1. **Seed intake** (`/opsx:explore`): read every human seed (briefs, notes, ADRs, sample data,
    brownfield codebase analysis) and enumerate what was read.
-2. **Elicit**: a myriad of clarifying questions, one concern at a time; no silent assumptions.
+2. **Elicit**: a myriad of clarifying questions, one concern per question, asked together in rounds; no silent assumptions.
 3. **Archive the seeds** to `changes/<id>/inputs/`: preserved, never groomed (traceability).
 4. **Shape the EPIC** (`/opsx:propose` → `proposal.md`): appetite, why, solution, key decisions
    (`DEC-` ids), rabbit-holes, no-gos; cite the golden-thread parent.
