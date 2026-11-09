@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { EMPTY, type NavState } from './state.ts'
-import { bandModel, lineText, shortTitle } from './view.ts'
+import { bandModel, capped, lineText, shortTitle, toneOf } from './view.ts'
 
 const apply: NavState = {
   ...EMPTY,
@@ -163,4 +163,30 @@ test('control characters in names never reach the line or the band', () => {
   assert.equal(lineText(s), 'evil]0;x · VERY LARGE · apply 12/40')
   const b = bandModel(s)
   assert.ok(!/[\u0000-\u001f]/.test(b.folded + b.rows.flatMap(r => r.items).join('')))
+})
+
+test('band tones: each glyph says done, now, to do, failed or warning; plain text has none', () => {
+  const tones = ['✓ a 2/2', '● b', '○ c', '✗ x', '⚠ 3', 'validate ✗', 'tests ✓', 'clarity ✓ 9.1', 'MEDIUM', '✓ accepted: y']
+    .map(toneOf)
+  assert.deepEqual(tones, ['done', 'now', 'todo', 'fail', 'warn', 'fail', 'done', 'done', null, 'done'])
+})
+
+test('a stage heading drops its explanation after a dash; Stage n headings keep their name', () => {
+  assert.equal(shortTitle('2. Service-written roots (#55) — BREAKING for generic writes'), 'Service-written roots (#55)')
+  assert.equal(shortTitle('1. Stage 1 — See it'), '1 See it')
+})
+
+test('files outside the PLAN show as one warning line; other warnings stay one per line', () => {
+  const w = (key: string, message = key) => ({ key, message, remedy: null, owner: 'epic-planning' })
+  const s: NavState = { ...EMPTY, warnings: [w('plan:outside:a.py'), w('plan:outside:b.py'), w('plan:outside:c.py'), w('gate', 'gate open')] }
+  assert.deepEqual(bandModel(s).rows.find(r => r.label === 'warnings')!.items,
+    ['⚠ gate open (epic-planning)', '⚠ 3 files outside the PLAN: a.py, b.py +1 (epic-planning)'])
+  assert.equal(bandModel(s).folded, '⚠ 4') // the count still counts every warning
+  const two: NavState = { ...EMPTY, warnings: [w('plan:outside:a.py'), w('plan:outside:b.py')], accepted: ['plan:outside:a.py', 'plan:outside:b.py'] }
+  assert.deepEqual(bandModel(two).rows.find(r => r.label === 'warnings')!.items, ['✓ accepted: 2 files outside the PLAN: a.py, b.py (epic-planning)'])
+})
+
+test('capped: up to max lines, the rest as one "+n more" line', () => {
+  assert.deepEqual(capped(['a', 'b'], 3), ['a', 'b'])
+  assert.deepEqual(capped(['a', 'b', 'c', 'd'], 3), ['a', 'b', '+2 more'])
 })
