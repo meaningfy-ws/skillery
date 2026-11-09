@@ -116,6 +116,7 @@ but invent no behaviour absent from a use case. Derivation mapping: `use-cases-c
 **References**: `use-cases-cockburn.md` (conventions, C4 mapping, BDD derivation, build workflow) + `use-case-template-white.adoc` / `use-case-template-blue.adoc` (skeletons).
 
 ## Architecture Modelling Workflow
+The navigator mod tracks these phases from [`assets/workflows/architecting.workflow.json`](assets/workflows/architecting.workflow.json).
 
 ### Step 0: Extract Business Requirements & Architectural Drivers
 

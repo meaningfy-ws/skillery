@@ -92,7 +92,7 @@ already exists; this skill is the map.
     a coherent unit of work is complete — not after every step — a fresh subagent that did not do it
     checks it against the task's spec and intention, good practice, known anti-patterns and the
     quality concerns that apply. In an EPIC's delivery, that subagent is the checker of each stage,
-    or for TINY/SMALL the single review pass, per `epic-delivery`.
+    or the single review pass where the appetite's review set has no checker, per `epic-delivery`.
 - **Enforced by:** the binding's one-line mandate (read every session), each agent's `## Report`
   section (checked by `make validate`), and the coordinator's own judgement. No hook blocks a spawn.
 
