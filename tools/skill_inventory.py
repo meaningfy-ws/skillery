@@ -157,7 +157,7 @@ def _bundles(repo: Path) -> list[dict]:
     """Bundles in bundles.yaml's own order, each with its blurb, skill and agent
     lists and its explicit requirements (core is implicit, never listed)."""
     return [{"name": b["name"], "description": b["description"], "skills": b["skills"],
-             "agents": b["agents"], "requires": b.get("requires", [])}
+             "agents": b["agents"], "requires": b.get("requires", []), "mods": b.get("mods", [])}
             for b in bundle_gen.load(repo)["bundles"]]
 
 
@@ -429,6 +429,9 @@ def render(bundles: list[dict], skills: dict[str, dict], agents: dict[str, dict]
                 f"| [`{name}`](../agents/{name}.md) *(agent)* | {data['summary']} | {cells} | "
                 f"{_codes(data['skills'])} | — |"
             )
+        for name in b["mods"]:  # a mod declares no facets (navigator, catalogue-model delta)
+            body.append(f"| [`{name}`](../mods/{name}/) *(mod)* | Claude Code mod | "
+                        + " | ".join("—" for _ in facet_names) + " | — | — |")
         body.append("")
     return "\n".join(header + body + render_by_facet(bundles, skills, agents, facets))
 

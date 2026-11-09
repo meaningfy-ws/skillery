@@ -314,7 +314,7 @@ def test_mod_links_data_links_and_manifest(tmp_path):
     repo = _mod_repo(tmp_path)
     gen.write(repo)
     b = repo / "bundles/b-mod"
-    assert os.readlink(b / "mods/nav") == "../../../mods/nav"
+    assert not (b / "mods/nav").is_symlink() and (b / "mods/nav/hooks.json").read_text() == "{}\n"
     assert os.readlink(b / "data/workflows/build.workflow.json") == \
         "../../../../skills/s1/assets/workflows/build.workflow.json"
     assert os.readlink(b / "data/session-thresholds.json") == \
@@ -326,6 +326,8 @@ def test_mod_links_data_links_and_manifest(tmp_path):
     assert manifest["userConfig"] == {"band": {"type": "boolean", "default": True}}
     assert "hooks" not in json.loads((repo / "bundles/b-one/.claude-plugin/plugin.json").read_text())
     assert gen.gate_errors(repo) == []
+    (repo / "mods/nav/register.tsx").write_text("edited", encoding="utf-8")
+    assert any(e.startswith("stale copy") and "bundles/b-mod/mods/nav" in e for e in gen.gate_errors(repo))
 
 
 def test_mod_only_bundle_is_in_marketplace_not_in_opencode_catalogue(tmp_path):

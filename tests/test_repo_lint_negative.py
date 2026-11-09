@@ -855,6 +855,7 @@ def test_unknown_top_level_folder_is_flagged(tmp_path):
 
 def test_mods_top_level_folder_is_allowed(tmp_path):
     (tmp_path / "mods" / "navigator").mkdir(parents=True)
+    (tmp_path / "node_modules").mkdir()
     assert lint.top_level_folders(tmp_path) == []
 
 

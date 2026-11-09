@@ -172,7 +172,6 @@ def render(repo: Path) -> tuple[bytes, dict[str, str], bytes]:
         for a in b["agents"]:
             links[f"{BUNDLES_DIR}/{b['name']}/agents/{a}.md"] = f"../../../{AGENTS_DIR}/{a}.md"
         for m in b.get("mods", []):
-            links[f"{BUNDLES_DIR}/{b['name']}/mods/{m}"] = f"../../../{MODS_DIR}/{m}"
             for sub, pattern in MOD_DATA:
                 for src in sorted((repo / SKILLS_DIR).glob(pattern)):
                     rel = Path(BUNDLES_DIR, b["name"], "data", sub, src.name)
@@ -223,7 +222,7 @@ def write(repo: Path) -> list[str]:
     for rel, target in links.items():
         (repo / rel).parent.mkdir(parents=True, exist_ok=True)
         (repo / rel).symlink_to(target)
-    copies = _schema_copy(repo)
+    copies = _copies(repo)
     for rel, target in copies.items():
         dst = repo / rel
         if dst.is_symlink() or dst.is_file():
@@ -243,6 +242,17 @@ def write(repo: Path) -> list[str]:
 def _schema_copy(repo: Path) -> dict[str, str]:
     rel, target = SCHEMA_COPY
     return {rel: target} if (repo / rel).parent.joinpath(target).exists() else {}
+
+
+def _mod_copies(repo: Path) -> dict[str, str]:
+    """A mod is copied, not linked: the engine refuses a hooks module or types file behind a
+    symlink (navigator DD-31)."""
+    return {f"{BUNDLES_DIR}/{b['name']}/mods/{m}": f"../../../{MODS_DIR}/{m}"
+            for b in load(repo)["bundles"] for m in b.get("mods", [])}
+
+
+def _copies(repo: Path) -> dict[str, str]:
+    return {**_schema_copy(repo), **_mod_copies(repo)}
 
 
 def _tree(path: Path) -> dict[str, tuple[bytes, bool]]:
@@ -266,8 +276,9 @@ def _copy_errors(repo: Path, copies: dict[str, str]) -> list[str]:
     return out
 
 
-def _link_errors(repo: Path, links: dict[str, str], files: dict[str, bytes]) -> list[str]:
-    """bundles/ holds exactly the expected links and generated files, nothing else."""
+def _link_errors(repo: Path, links: dict[str, str], files: dict[str, bytes],
+                 copies: dict[str, str]) -> list[str]:
+    """bundles/ holds exactly the expected links, generated files and copies, nothing else."""
     out: list[str] = []
     for rel, target in links.items():
         p = repo / rel
@@ -282,13 +293,13 @@ def _link_errors(repo: Path, links: dict[str, str], files: dict[str, bytes]) -> 
         p = repo / rel
         if not p.is_file() or p.read_bytes() != data:
             out.append(f"{rel} {_STALE}")
-    dirs = {Path(rel).parent.as_posix() for rel in [*links, *files]}
+    dirs = {Path(rel).parent.as_posix() for rel in [*links, *files, *copies]}
     dirs |= {Path(d).parent.as_posix() for d in dirs}
     root = repo / BUNDLES_DIR
     for dirpath, dirnames, filenames in os.walk(root):
         for name in list(dirnames) + filenames:
             rel = (Path(dirpath) / name).relative_to(repo).as_posix()
-            if rel in links or rel in files:
+            if rel in links or rel in files or rel in copies:
                 if name in dirnames:
                     dirnames.remove(name)  # never descend into an expected link location
             elif rel not in dirs:
@@ -337,7 +348,8 @@ def gate_errors(repo: Path) -> list[str]:
         path = repo / rel
         if not path.exists() or path.read_bytes() != data:
             out.append(f"{rel} {_STALE}")
-    out += _link_errors(repo, links, plugin_manifests(repo))
-    out += _copy_errors(repo, _schema_copy(repo))
+    copies = _copies(repo)
+    out += _link_errors(repo, links, plugin_manifests(repo), copies)
+    out += _copy_errors(repo, copies)
     out += _version_errors(repo, version(repo))
     return out

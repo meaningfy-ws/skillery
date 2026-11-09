@@ -431,6 +431,7 @@ def use_case_changes_registered(repo: Path) -> list[str]:
 TOP_LEVEL_FOLDERS = ("skills", "agents", "mods", "use-cases", "openspec", "docs", "tools", "tests", ".github",
                      ".claude-plugin")
 _GENERATED_FOLDERS = ("bundles",)  # make bundles, committed symlinks; never hand-edit
+_INSTALLED_FOLDERS = ("node_modules",)  # npm ci (make install), git-ignored like .venv
 
 
 def top_level_folders(repo: Path) -> list[str]:
@@ -439,7 +440,7 @@ def top_level_folders(repo: Path) -> list[str]:
     return [f"{d.name}/: not an allowed top-level folder (allowed: {', '.join(TOP_LEVEL_FOLDERS)})"
             for d in sorted(repo.iterdir())
             if d.is_dir() and not d.name.startswith(".") and d.name not in TOP_LEVEL_FOLDERS
-            and d.name not in _GENERATED_FOLDERS]
+            and d.name not in _GENERATED_FOLDERS and d.name not in _INSTALLED_FOLDERS]
 
 
 def cross_skill_paths(repo: Path) -> list[str]:
