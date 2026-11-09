@@ -11,18 +11,28 @@ export type ChangeFiles = {
 }
 
 /** The appetite names are the build-tier workflow's `reviews` keys; the mod holds no list. */
+export function appetitesOf(workflow: unknown): string[] {
+  const reviews = (workflow as { reviews?: unknown } | null)?.reviews
+  return reviews && typeof reviews === 'object' ? Object.keys(reviews) : []
+}
+
+const lines = (text: string) => text.replaceAll('\r\n', '\n')
+const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
 export function appetiteOf(proposal: string, appetites: string[]): string | null {
-  const section = proposal.split(/^## Appetite\s*$/m)[1]
+  const section = lines(proposal).split(/^## Appetite\s*$/m)[1]
   if (!section) return null
   const para = section.trim().split(/\n\s*\n|^## /m)[0] ?? ''
-  const byLength = [...appetites].sort((a, b) => b.length - a.length)
-  return byLength.find(a => para.includes(a)) ?? null
+  const byLength = appetites.filter(a => a.trim()).sort((a, b) => b.length - a.length)
+  // Whole words only: SMALLER is not SMALL.
+  return byLength.find(a => new RegExp(`(?<![\\w-])${escape(a)}(?![\\w-])`).test(para)) ?? null
 }
 
 export function progress(tasks: string | null): { done: number; total: number; groups: Group[] } {
   const groups: Group[] = []
   let current: Group | null = null
-  for (const line of (tasks ?? '').split('\n')) {
+  // Boxes above the first `## ` heading belong to no group and are not counted (§6.1).
+  for (const line of lines(tasks ?? '').split('\n')) {
     const heading = line.match(/^## (.+)$/)
     if (heading?.[1]) {
       const title = heading[1].trim()
@@ -49,8 +59,12 @@ export function progress(tasks: string | null): { done: number; total: number; g
 export function readChange(open: ChangeFiles[], branch: string, appetites: string[]):
   { change: Change | null; openChanges: number } {
   if (open.length === 0) return { change: null, openChanges: 0 }
-  const byBranch = open.filter(c => branch.includes(c.id)).sort((a, b) => b.id.length - a.id.length)[0]
-  const pick = byBranch ?? [...open].sort((a, b) => b.mtime - a.mtime)[0]!
+  const recent = [...open].sort((a, b) => b.mtime - a.mtime || a.id.localeCompare(b.id))
+  // The longest id the branch names; a tie goes to the most recent, so folder order never decides.
+  // shortcut: a substring match, so a short id such as `fix` also matches `fix/other`; match on
+  // separators if people report a wrong change.
+  const byBranch = recent.filter(c => branch.includes(c.id)).sort((a, b) => b.id.length - a.id.length)[0]
+  const pick = byBranch ?? recent[0]!
   return {
     change: { id: pick.id, appetite: appetiteOf(pick.proposal, appetites), ...progress(pick.tasks), planMtime: pick.planMtime },
     openChanges: open.length,

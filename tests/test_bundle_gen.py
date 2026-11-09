@@ -369,3 +369,187 @@ def test_files_the_engine_writes_while_developing_are_not_orphans(tmp_path):
     (repo / "bundles/b-mod/.claude-plugin/types/claude-code").mkdir(parents=True)
     (repo / "bundles/b-mod/tsconfig.json").write_text("{}", encoding="utf-8")
     assert gen.gate_errors(repo) == []
+
+
+# ------------------------------------------------------------------ mods: adversarial (stage 1)
+def _set_mods(repo: Path, value) -> None:
+    doc = yaml.safe_load((repo / "bundles.yaml").read_text())
+    doc["bundles"][-1]["mods"] = value
+    (repo / "bundles.yaml").write_text(yaml.safe_dump(doc), encoding="utf-8")
+
+
+@pytest.mark.parametrize("value", ["nav", {"a": 1}, None, 7, [1], [None], ["Nav"], ["a/b"], ["../x"], [""], ["a_b"]])
+def test_malformed_mods_value_is_rejected(tmp_path, value):
+    repo = _mod_repo(tmp_path)
+    _set_mods(repo, value)
+    with pytest.raises(ValueError):
+        gen.load(repo)
+
+
+def test_empty_mods_list_is_accepted_and_adds_no_hooks(tmp_path):
+    repo = _mod_repo(tmp_path)
+    _set_mods(repo, [])
+    assert "hooks" not in json.loads(gen.plugin_manifests(repo)["bundles/b-mod/.claude-plugin/plugin.json"])
+
+
+def test_same_mod_twice_in_one_bundle_is_rejected(tmp_path):
+    repo = _mod_repo(tmp_path)
+    _set_mods(repo, ["nav", "nav"])
+    with pytest.raises(ValueError):
+        gen.load(repo)
+
+
+def test_mod_missing_config_json_is_rejected_naming_it(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/nav/config.json").unlink()
+    with pytest.raises(ValueError, match="config.json"):
+        gen.load(repo)
+
+
+def test_mod_folder_absent_is_rejected_naming_all_four_files(tmp_path):
+    repo = _mod_repo(tmp_path)
+    shutil.rmtree(repo / "mods/nav")
+    with pytest.raises(ValueError, match="nav") as e:
+        gen.load(repo)
+    assert all(f in str(e.value) for f in gen.MOD_FILES)
+
+
+def test_mod_with_a_directory_in_place_of_a_required_file_is_rejected(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/nav/hooks.json").unlink()
+    (repo / "mods/nav/hooks.json").mkdir()
+    with pytest.raises(ValueError, match="hooks.json"):
+        gen.load(repo)
+
+
+def test_mod_with_invalid_json_config_names_the_file(tmp_path):
+    # The gate reports, never raises (test_gate_reports_load_error_instead_of_raising).
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/nav/config.json").write_text("{not json", encoding="utf-8")
+    assert any("mods/nav/config.json: cannot be read as JSON" in e for e in gen.gate_errors(repo))
+    with pytest.raises(ValueError, match="mods/nav/config.json"):
+        gen.load(repo)
+
+
+def test_mod_config_that_is_not_an_object_is_rejected(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/nav/config.json").write_text("[1, 2]", encoding="utf-8")
+    with pytest.raises(ValueError, match="config"):
+        gen.plugin_manifests(repo)
+
+
+def test_mod_named_like_a_skill_does_not_collide(tmp_path):
+    repo = _mod_repo(tmp_path, mods=("s1",))
+    gen.write(repo)
+    assert (repo / "bundles/b-mod/mods/s1/hooks.json").is_file()
+    assert gen.gate_errors(repo) == []
+
+
+def test_edited_copy_deleted_file_extra_file_and_symlinked_copy_are_all_stale(tmp_path):
+    repo = _mod_repo(tmp_path)
+    gen.write(repo)
+    copy = repo / "bundles/b-mod/mods/nav"
+    (copy / "hooks.json").write_text("x", encoding="utf-8")
+    assert gen.gate_errors(repo)
+    gen.write(repo)
+    (copy / "types.d.ts").unlink()
+    assert gen.gate_errors(repo)
+    gen.write(repo)
+    (copy / "extra.ts").write_text("x", encoding="utf-8")
+    assert gen.gate_errors(repo)
+    gen.write(repo)
+    assert gen.gate_errors(repo) == []
+    shutil.rmtree(copy)
+    copy.symlink_to("../../../../mods/nav")  # DD-31: the engine refuses a linked mod
+    assert any("bundles/b-mod/mods/nav" in e for e in gen.gate_errors(repo))
+
+
+def test_write_drops_a_file_removed_from_the_source_mod(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/nav/old.ts").write_text("x", encoding="utf-8")
+    gen.write(repo)
+    (repo / "mods/nav/old.ts").unlink()
+    gen.write(repo)
+    assert not (repo / "bundles/b-mod/mods/nav/old.ts").exists()
+    assert gen.gate_errors(repo) == []
+
+
+def test_write_is_idempotent_with_a_mod(tmp_path):
+    repo = _mod_repo(tmp_path)
+    gen.write(repo)
+    assert gen.write(repo) is not None
+    assert gen.gate_errors(repo) == []
+
+
+def test_mod_copy_without_the_data_assets_has_no_data_links_and_no_error(tmp_path):
+    repo = _mod_repo(tmp_path)
+    shutil.rmtree(repo / "skills/s1/assets")
+    shutil.rmtree(repo / "skills/guardrails")
+    gen.write(repo)
+    assert not (repo / "bundles/b-mod/data").exists()
+    assert gen.gate_errors(repo) == []
+
+
+def test_two_skills_with_the_same_workflow_file_name_are_not_silently_merged(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "skills/s2/assets/workflows").mkdir(parents=True)
+    (repo / "skills/s2/assets/workflows/build.workflow.json").write_text('{"b": 1}\n', encoding="utf-8")
+    with pytest.raises(ValueError, match="build.workflow.json"):
+        gen.render(repo)
+
+
+def test_mod_only_bundle_with_requires_loads_and_stays_out_of_opencode(tmp_path):
+    repo = _mod_repo(tmp_path)
+    doc = yaml.safe_load((repo / "bundles.yaml").read_text())
+    doc["bundles"][-1]["requires"] = ["b-one"]
+    (repo / "bundles.yaml").write_text(yaml.safe_dump(doc), encoding="utf-8")
+    assert gen.load(repo)["bundles"][-1]["requires"] == ["b-one"]
+    _, _, cat = gen.render(repo)
+    assert [b["name"] for b in json.loads(cat)["bundles"]] == ["b-one", "b-two"]
+
+
+def test_bundle_with_skills_and_a_mod_stays_in_the_opencode_catalogue(tmp_path):
+    repo = _mod_repo(tmp_path)
+    doc = yaml.safe_load((repo / "bundles.yaml").read_text())
+    doc["bundles"][-1]["skills"] = []
+    doc["bundles"][0]["mods"] = []
+    doc["bundles"][1]["mods"] = ["nav"]
+    doc["bundles"][-1]["mods"] = []
+    (repo / "bundles.yaml").write_text(yaml.safe_dump(doc), encoding="utf-8")
+    _, _, cat = gen.render(repo)
+    assert "b-two" in [b["name"] for b in json.loads(cat)["bundles"]]
+
+
+def test_unreleased_ignores_files_under_mods_and_works_without_a_mods_folder(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/README.md").write_text("x", encoding="utf-8")
+    assert gen.unreleased(repo) == []
+    shutil.rmtree(repo / "mods")
+    _set_mods(repo, [])
+    assert gen.unreleased(repo) == []
+
+
+def test_unreleased_lists_a_mod_folder_even_when_empty_and_skips_node_modules_inside_mods(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/empty").mkdir()
+    (repo / "mods/node_modules").mkdir()
+    assert gen.unreleased(repo) == ["mods/empty"]
+
+
+def test_unit_tests_inside_a_mod_folder_do_not_make_the_shipped_copy_stale_or_ship(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/nav/lib").mkdir()
+    (repo / "mods/nav/lib/x.test.ts").write_text("t", encoding="utf-8")
+    gen.write(repo)
+    assert not (repo / "bundles/b-mod/mods/nav/lib/x.test.ts").exists()
+
+
+def test_a_mod_copy_never_takes_dotfiles_and_a_symlink_fails(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/nav/.env").write_text("TOKEN=secret", encoding="utf-8")
+    gen.write(repo)
+    assert not (repo / "bundles/b-mod/mods/nav/.env").exists()
+    assert gen.gate_errors(repo) == []
+    (repo / "mods/nav/secret.json").symlink_to(repo / "VERSION")
+    with pytest.raises(ValueError, match="mods/nav/secret.json is a symlink"):
+        gen.load(repo)

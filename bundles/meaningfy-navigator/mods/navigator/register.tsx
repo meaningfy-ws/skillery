@@ -3,15 +3,12 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import { readChange, type ChangeFiles } from './lib/change.ts'
-import { EMPTY, reduce, revive, type BandDisplay, type Signal } from './lib/state.ts'
+import { appetitesOf, readChange, type ChangeFiles } from './lib/change.ts'
+import { EMPTY, reduce, revive, settingsFrom, type BandDisplay, type Settings, type Signal } from './lib/state.ts'
 import { bandModel, lineText } from './lib/view.ts'
 
 const nav = atom({ plugin: 'meaningfy-navigator', key: 'state' } as const, EMPTY)
-const BANDS: BandDisplay[] = ['unfolded', 'folded', 'hidden']
 const SESSION_MOVES = ['clear', 'resume', 'branch']
-
-type Settings = { band: BandDisplay; statusLine: boolean }
 
 async function send($: EngineInterface, signal: Signal) {
   await update($, nav, s => reduce(revive(s), signal))
@@ -19,13 +16,12 @@ async function send($: EngineInterface, signal: Signal) {
   $.ui.status(s.display.line ? lineText(s) : undefined)
 }
 
-// The appetite names are the build-tier workflow's `reviews` keys (design §6.1); none yet → `?`.
-async function appetites($: EngineInterface): Promise<string[]> {
+// The build-tier workflow names the appetites (design §6.1); none yet → `?`. Only the read is here.
+async function buildTier($: EngineInterface): Promise<unknown> {
   try {
-    const wf = JSON.parse(await $.fs.read(`${$.plugin.root}/data/workflows/build-tier.workflow.json`))
-    return Object.keys(wf.reviews ?? {})
+    return JSON.parse(await $.fs.read(`${$.plugin.root}/data/workflows/build-tier.workflow.json`))
   } catch {
-    return []
+    return null
   }
 }
 
@@ -50,21 +46,17 @@ async function readChangeSignal($: EngineInterface, id: string): Promise<Signal>
   }
   const git = await $.process.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], { cwd: root })
   const branch = git.exitCode === 0 ? git.stdout.trim() : ''
-  return { kind: 'ChangeRead', id, ...readChange(open, branch, await appetites($)) }
+  return { kind: 'ChangeRead', id, ...readChange(open, branch, appetitesOf(await buildTier($))) }
 }
 
 async function start($: EngineInterface, settings: Settings) {
   const sessionId = await $.session.id()
-  await send($, { kind: 'Started', id: sessionId, sessionId, ...settings })
+  await send($, { kind: 'Started', id: sessionId, sessionId, ...settings, model: await $.session.model() })
   await send($, await readChangeSignal($, `change:${sessionId}`))
-  await send($, { kind: 'TurnEnded', id: `model:${sessionId}`, model: await $.session.model() })
 }
 
 export const register: Register = (on, options) => {
-  const settings: Settings = {
-    band: BANDS.includes(options.band as BandDisplay) ? (options.band as BandDisplay) : 'folded',
-    statusLine: options.statusLine !== false,
-  }
+  const settings = settingsFrom(options)
 
   on('session.start', async ($, e, next) => {
     await $.command.register({
@@ -90,10 +82,11 @@ export const register: Register = (on, options) => {
     else return { text: 'Usage: /navigator band | line', isTextDisplayOnly: true }
     const s = revive(await read($, nav))
     return { text: `Navigator: band ${s.display.band}, line ${s.display.line ? 'shown' : 'hidden'}.`, isTextDisplayOnly: true }
-  })
+  }).catch(() => ({ text: 'Navigator could not change the display; see the debug log.', isTextDisplayOnly: true as const }))
 
   on('skill.prompt', async ($, e, next) => {
-    await send($, { kind: 'SkillLoaded', id: `skill:${e.skill}:${await $.clock.now()}`, name: e.skill, at: await $.clock.now() })
+    const at = await $.clock.now()
+    await send($, { kind: 'SkillLoaded', id: `skill:${e.skill}:${at}`, name: e.skill, at })
     return next(e)
   }).catch(($, e, next) => next(e))
 

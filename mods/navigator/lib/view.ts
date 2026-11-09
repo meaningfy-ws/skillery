@@ -6,6 +6,9 @@ const LINE_MAX = 120
 const TRAIL = 8
 const GLYPH = { ok: '✓', fail: '✗', stale: '·', none: '' } as const
 
+// Names come from folders and events: drop control characters so none reaches the terminal.
+const clean = (text: string) => text.replace(/[\u0000-\u001f\u007f-\u009f]/g, '')
+
 export function modeText(s: NavState): string {
   if (s.mode.repo === 'strict' && s.mode.sessionLoose) return '○ loose (strict dropped)'
   return s.mode.repo === 'strict' ? '● strict' : '○ loose'
@@ -21,8 +24,9 @@ export function lineText(s: NavState): string {
     ...(s.mainModel ? [`main ${s.mainModel}`] : []),
     modeText(s),
   ]
-  const text = parts.join(' · ')
-  return text.length > LINE_MAX ? `${text.slice(0, LINE_MAX - 1)}…` : text
+  const text = clean(parts.join(' · '))
+  const chars = [...text] // whole characters, never half an emoji
+  return chars.length > LINE_MAX ? `${chars.slice(0, LINE_MAX - 1).join('')}…` : text
 }
 
 export function subagentText(a: Subagent): string {
@@ -63,5 +67,5 @@ export function bandModel(s: NavState): BandModel {
       items: [`appetite ${c.appetite ?? '?'}`, `tasks ${c.done}/${c.total}`, `groups ${groups}/${c.groups.length}`],
     })
   }
-  return { folded, rows }
+  return { folded: clean(folded), rows: rows.map(r => ({ ...r, items: r.items.map(clean) })) }
 }

@@ -839,6 +839,35 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
   decide their review set again. Raised for the skill as issue #148; the `code-reviewer` agent
   refuses a multi-lens brief, so the merged reviews run on general-purpose agents that load
   `meaningfy-code-review`.
+- **DD-34** *(lead's decision 2026-11-09, stage-1 challenge: reviewer B = L3–L5, adversarial tester)*
+  Accepted and fixed in stage 1:
+  - `lib/change.ts`: CRLF files count as LF; an appetite name matches as a whole word; empty names
+    are ignored; equal-length branch matches fall back to the most recent; the appetite names come
+    from the workflow through `appetitesOf(workflow)` in `lib/` (task 2.1 routes it through
+    `parseWorkflow`), so `register.tsx` only reads the file.
+  - `lib/state.ts`: a subagent whose finish arrives before its spawn is recorded and merged (the
+    engine may resolve the spawn after the subagent's turn completes); `revive` keeps a stored
+    field only when its type matches the default; the model at session start rides on `Started`,
+    not on a made-up `TurnEnded`; `settingsFrom(options)` and `BAND_DISPLAYS` hold the settings
+    check. `NavState` also carries `sessionId` and `mainModel`, beyond §3.
+  - `lib/view.ts`: the line is cut on whole characters.
+  - `tools/bundle_gen`: `config.json` must parse to an object (`ValueError` naming the file); two
+    workflow files with one name fail; `unreleased` skips `mods/node_modules`; the mod copy leaves
+    out `*.test.ts`, so tests neither ship nor make the copy stale; `MOD_DATA` is a labelled
+    shortcut (every mod gets navigator's data).
+  - `register.tsx`: one clock read per signal; the `/navigator` handler fails open.
+  Rejected: band items carrying their own actions (task 2.7 builds the buttons; no caller yet);
+  splitting `_link_errors` (one caller, tested; revisit at the next skip rule); an explicit
+  extension on the `../types` import (type-only, erased, the engine's own examples use this form).
+  Noted for stage 2: fields added inside `Subagent` or `SkillUse` are not defaulted by `revive`'s
+  shallow merge; stage 2 bumps `version` or defaults them.
+  From reviewer A (L1 + L2), accepted: a mod copy never takes dotfiles and a symlink in a mod folder
+  fails `make bundles` (a local `.env` must not reach the committed tree); the line and band drop
+  control characters; the branch-substring match of DD-13 is a labelled shortcut; the `tool.call`
+  hook of task 1.7 moves to stage 2, where the first gate signal needs it. Rejected: type-checking
+  `register.tsx` in `make mods` (the engine types are not in the repo; it stays hand check H-5,
+  run against the engine's `claude-code.d.ts`); narrowing the gate's skip of engine-written files
+  to mod bundles (they are git-ignored; a force-add is not a path we guard).
 
 ## Risks / Trade-offs
 

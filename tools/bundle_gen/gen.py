@@ -26,11 +26,14 @@ AGENTS_DIR = "agents"
 MODS_DIR = "mods"
 MOD_FILES = ("hooks.json", "types.d.ts", "config.json", "register.tsx")
 # Data a mod reads under ${plugin root}/data/ (navigator design §2): skill assets, never copied.
+# shortcut: every mod gets navigator's data; key it by mod when a second mod lands.
 MOD_DATA = (("workflows", "*/assets/workflows/*.workflow.json"),
             ("", "guardrails/assets/session-thresholds.json"))
 # bundles/ holds symlinks into skills/ and agents/ plus one plugin.json per bundle: claude.ai's
 # marketplace sync needs the plugin.json (fix-desktop-marketplace-install).
-_CACHE = ("__pycache__", "*.pyc")  # created by running scripts; git-ignored, never copied or compared
+# Never copied or compared: caches made by running scripts, a mod's unit tests (they do not ship), and
+# dotfiles, so a local .env or .npmrc never reaches the committed bundles/ tree.
+_NOT_COPIED = ("__pycache__", "*.pyc", "*.test.ts", ".*")
 # Written by Claude Code into a plugin loaded with --plugin-dir (editor types); git-ignored, not ours.
 _ENGINE_DEV = (".claude-plugin/types", "tsconfig.json")
 PLUGIN_AUTHOR = {"name": "Meaningfy"}
@@ -108,6 +111,22 @@ def _check_mods(repo: Path, bundles: list[dict]) -> None:
             if missing:
                 raise ValueError(f"{BUNDLES_FILE}: mod '{m}' of bundle '{b['name']}' is missing "
                                  f"{MODS_DIR}/{m}/{', '.join(missing)}")
+            links = [p for p in (repo / MODS_DIR / m).rglob("*") if p.is_symlink()]
+            if links:  # a copy would follow it and commit what it points to
+                raise ValueError(f"mod '{m}': {links[0].relative_to(repo)} is a symlink; a mod holds only real files")
+            _mod_config(repo, m)
+
+
+def _mod_config(repo: Path, mod: str) -> dict:
+    """mods/<m>/config.json, the bundle's userConfig: a JSON object of option definitions."""
+    rel = f"{MODS_DIR}/{mod}/config.json"
+    try:
+        config = json.loads((repo / rel).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"{rel}: cannot be read as JSON ({str(exc).splitlines()[0]})") from exc
+    if not isinstance(config, dict):
+        raise ValueError(f"{rel}: must be a JSON object of option definitions")
+    return config
 
 
 def load(repo: Path) -> dict:
@@ -177,6 +196,9 @@ def render(repo: Path) -> tuple[bytes, dict[str, str], bytes]:
             for sub, pattern in MOD_DATA:
                 for src in sorted((repo / SKILLS_DIR).glob(pattern)):
                     rel = Path(BUNDLES_DIR, b["name"], "data", sub, src.name)
+                    if rel.as_posix() in links:
+                        raise ValueError(f"two skills ship {sub}/{src.name}: {src.relative_to(repo)} and "
+                                         f"{(rel.parent / links[rel.as_posix()]).as_posix()}; rename one")
                     links[rel.as_posix()] = os.path.relpath(src, repo / rel.parent)
     stems = sorted({a for b in doc["bundles"] for a in b["agents"]})
     catalogue = {
@@ -198,7 +220,7 @@ def plugin_manifests(repo: Path) -> dict[str, bytes]:
         for m in b.get("mods", []):
             manifest["hooks"] = [f"./mods/{m}/hooks.json"]
             manifest["types"] = f"./mods/{m}/types.d.ts"
-            manifest["userConfig"] = json.loads((repo / MODS_DIR / m / "config.json").read_text(encoding="utf-8"))
+            manifest["userConfig"] = _mod_config(repo, m)
         out[f"{BUNDLES_DIR}/{b['name']}/.claude-plugin/plugin.json"] = _json_bytes(manifest)
     return out
 
@@ -234,7 +256,7 @@ def write(repo: Path) -> list[str]:
         dst.parent.mkdir(parents=True, exist_ok=True)
         src = dst.parent / target
         if src.is_dir():
-            shutil.copytree(src, dst, ignore=shutil.ignore_patterns(*_CACHE))
+            shutil.copytree(src, dst, ignore=shutil.ignore_patterns(*_NOT_COPIED))
         else:
             shutil.copy2(src, dst)
     _sync_package_version(repo, version(repo))
@@ -260,7 +282,7 @@ def _copies(repo: Path) -> dict[str, str]:
 def _tree(path: Path) -> dict[str, tuple[bytes, bool]]:
     """Every file under path (or path itself) with its bytes and executable bit."""
     files = [path] if path.is_file() else sorted(
-        p for p in path.rglob("*") if p.is_file() and not any(p.match(c) or c in p.parts for c in _CACHE))
+        p for p in path.rglob("*") if p.is_file() and not any(p.match(c) or c in p.parts for c in _NOT_COPIED))
     return {p.relative_to(path).as_posix(): (p.read_bytes(), os.access(p, os.X_OK)) for p in files}
 
 
@@ -337,7 +359,8 @@ def unreleased(repo: Path) -> list[str]:
     out = [f"skills/{p.parent.name}" for p in (repo / "skills").glob("*/SKILL.md") if p.parent.name not in skills]
     out += [f"agents/{p.name}" for p in (repo / "agents").glob("*.md") if p.stem not in agents]
     mods = {m for b in doc["bundles"] for m in b.get("mods", [])}
-    out += [f"{MODS_DIR}/{p.name}" for p in (repo / MODS_DIR).glob("*") if p.is_dir() and p.name not in mods]
+    out += [f"{MODS_DIR}/{p.name}" for p in (repo / MODS_DIR).glob("*")
+            if p.is_dir() and p.name not in mods and p.name != "node_modules"]
     return sorted(out)
 
 
