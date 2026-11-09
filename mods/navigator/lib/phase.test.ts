@@ -171,3 +171,40 @@ test('a malformed repo workflow file is a warning naming the file', () => {
   const s = run({ kind: 'WorkflowsRead', id: id(), workflows: defaults.workflows, errors: ['workflow file docs/navigator/x.workflow.json: not JSON'], mode: 'loose', at: 1 })
   assert.deepEqual(s.warnings.map(w => w.message), ['workflow file docs/navigator/x.workflow.json: not JSON'])
 })
+
+// A file gate advances like a command gate (navigator-workflows D-1): a write is an Advance.
+const filed = {
+  name: 'filed', title: 'Filed', owner: 'o', source: 'repo', activate: { skills: ['wf'] },
+  phases: [
+    { id: 'a', owner: 'o', expect: [], gates: ['ga'], enter: { skills: ['wf'] } },
+    { id: 'b', owner: 'o', expect: [], gates: ['gb'], enter: {} },
+    { id: 'c', owner: 'o', expect: [], gates: ['gc'], enter: {} },
+    { id: 'd', owner: 'o', expect: [], enter: {} },
+  ],
+  gates: { ga: { kind: 'file', glob: 'docs/a.md' }, gb: { kind: 'file', glob: 'docs/b.md' }, gc: { kind: 'file', glob: 'docs/c.md' } },
+} as unknown as NavState['workflows'][number]
+const filedRun = (...signals: Signal[]) => run({ ...workflows(), workflows: [filed] } as Signal, skill('wf', 3), ...signals)
+const write = (path: string, at: number): Signal => ({ kind: 'FileTouched', id: id(), path, at })
+
+test('D-1 a write matching the gate of the current phase advances to the next phase', () => {
+  const s = filedRun(write('docs/a.md', 4))
+  assert.deepEqual([s.workflow, s.phase], ['filed', 'b'])
+})
+
+test('D-1 a write matching a later gate skips forward and the skipped phases warn about their open gates', () => {
+  const s = filedRun(write('docs/c.md', 4))
+  assert.equal(s.phase, 'd')
+  assert.ok(keys(s).includes('process:gate:a:ga'), keys(s).join())
+  assert.ok(keys(s).includes('process:gate:b:gb'), keys(s).join())
+  assert.ok(!keys(s).includes('process:gate:c:gc'))
+})
+
+test('D-1 a write matching an earlier phase gate does not move back', () => {
+  const s = filedRun(write('docs/b.md', 4), write('docs/a.md', 5))
+  assert.equal(s.phase, 'c')
+})
+
+test('D-1 a file write never selects a workflow', () => {
+  const s = run({ ...workflows(), workflows: [filed] } as Signal, write('docs/a.md', 4))
+  assert.deepEqual([s.workflow, s.phase], [null, null])
+})

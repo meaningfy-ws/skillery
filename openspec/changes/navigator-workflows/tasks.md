@@ -2,7 +2,7 @@
 
 ## 1. Engine: a passed file gate advances the phase
 
-- [ ] 1.1 `Advance.file`, the file-gate match in `advanceOn` (`lib/phase.ts`), and `FileTouched` calling `navigate` (`lib/state.ts`) (D-1). Tests in `phase.test.ts`, using a test workflow: a matching write in the gate's phase advances; a write matching a later gate skips forward with the skipped phases' gate warnings; no backward move; a file never selects a workflow
+- [x] 1.1 `Advance.file`, the file-gate match in `advanceOn` (`lib/phase.ts`), and `FileTouched` calling `navigate` (`lib/state.ts`) (D-1). Tests in `phase.test.ts`, using a test workflow: a matching write in the gate's phase advances; a write matching a later gate skips forward with the skipped phases' gate warnings; no backward move; a file never selects a workflow
 
 ## 2. Workflow files
 
@@ -25,7 +25,7 @@
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 2.1a · [ ] 2.1b · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3
+- [x] 1.1 · [ ] 2.1a · [ ] 2.1b · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3
 
 ## Verification
 
