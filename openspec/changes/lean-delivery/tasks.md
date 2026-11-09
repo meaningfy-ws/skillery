@@ -20,7 +20,7 @@
 - [x] 1.6 `meaningfy-code-review`: L2 reads the gate report instead of running the suite; L2 doc agreement (D-11)
 - [x] 1.7 `cosmic-python` `references/testing-checklist.md`: the flaky-test item (D-14)
 - [x] 1.8 `project-setup` `assets/templates/agentic/AGENTS.md.tmpl`: the *Checks* block (D-12)
-- [ ] 1.9 Runbooks made false by 1.1–1.7: `docs/practice/ai-coding/{build-lifecycle,opsx-runbook,dod-quality-gates,working-with-agents}.md`, `playbooks/{developer,solution-builder}.md`, `docs/development/README.md` §*How an EPIC is delivered*; CHANGELOG lines. Acceptance: `tests/features/epic-delivery.feature` agrees with 1.1–1.3; the D-18 grep returns nothing for the stage-1 files; `make bundles`, `make validate`
+- [x] 1.9 Runbooks made false by 1.1–1.7: `docs/practice/ai-coding/{build-lifecycle,opsx-runbook,dod-quality-gates,working-with-agents}.md`, `playbooks/{developer,solution-builder}.md`, `docs/development/README.md` §*How an EPIC is delivered*; CHANGELOG lines. Acceptance: `tests/features/epic-delivery.feature` agrees with 1.1–1.3; the D-18 grep returns nothing for the stage-1 files; `make bundles`, `make validate`
 
 ## Stage 2 — Documentation workflow (PR 2)
 

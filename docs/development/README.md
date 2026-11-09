@@ -84,7 +84,8 @@ When unsure, EPIC.
 
 **How an EPIC is delivered.** skillery's own EPICs run the delivery loop of
 [`epic-delivery`](../../skills/epic-delivery/SKILL.md): the main session leads, briefs the team,
-re-runs `make validate` after each task and runs the loop scaled by the EPIC's appetite.
+reads each builder's reported `make validate` run (re-running it only on a named trigger), runs it
+once for the stage and runs the loop scaled by the EPIC's appetite.
 
 **Verification and validation.** As in any project ([`epic-delivery`](../../skills/epic-delivery/references/verification-validation.md)),
 agents verify and the owner validates. For skillery the two look like this:

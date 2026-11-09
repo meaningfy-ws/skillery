@@ -45,7 +45,7 @@ Each verb has exactly one driving discipline; see the command→skill map in
 
 **Where the delivery loop sits.** `/opsx:apply` is where the team works. Between the gated PLAN and
 `/opsx:archive`, the lead runs the PLAN stage by stage: prepare, build, challenge, decide and fix,
-check, merge, each stage one PR. After the last stage come the acceptance demo (only when the EPIC delivers or changes a use case) and the archive. The
+check, merge, each stage one PR. After the last stage come the acceptance demo (only when the EPIC delivers or changes a use case; skippable below LARGE), the docs the EPIC owes, and the archive. Builders run and report their own task gate; the lead re-runs a gate only on a named trigger. The
 loop is owned by [`epic-delivery`](../../../skills/epic-delivery/SKILL.md); the people's view is
 [working-with-agents.md](working-with-agents.md).
 

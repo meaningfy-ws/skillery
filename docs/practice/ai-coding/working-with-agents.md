@@ -38,7 +38,7 @@ the briefs are in [`team-and-briefs.md`](../../../skills/epic-delivery/reference
 
 - **You, the developer**, decide.
 - **A domain expert** joins when the model changes, to say whether it means what the domain means.
-- **The lead** is your main session. It walks you through each decision with options and a
+- **The lead** is your main session. It asks its open questions together in one round, each with options and a
   recommendation, records your answers, plans the stages and keeps the spine and the docs current.
 - **The members** each do one job: an architect and a planner while shaping; a builder, a reviewer
   and a checker while delivering. Larger EPICs add an adversarial tester, and a UX designer when
@@ -64,7 +64,7 @@ large loop on a small change.
 | Shaping | The why, the appetite and the success measure; each key decision | Options with a recommendation, one plain sentence per term |
 | At the PLAN gate | Whether the scenarios say what you want (sign-off, once per EPIC) | The scenarios, in business language |
 | During a stage | Questions the PLAN did not answer; how to handle a gap in an external library | Options with a recommendation |
-| After the last stage | Whether the EPIC is accepted (the acceptance demo, when it delivers or changes a use case) | The use case, run against the success measure |
+| After the last stage | Whether the EPIC is accepted (the acceptance demo, when it delivers or changes a use case; below LARGE you may skip it and the skip is recorded) | The use case, run against the success measure |
 | End of an iteration | What the validation review changes | Each EPIC and decision, against what happened |
 
 When you say "choose what is best", the lead decides and records the choice as its own. You can

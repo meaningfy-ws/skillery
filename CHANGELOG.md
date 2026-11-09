@@ -11,6 +11,19 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Changed
+
+- `epic-delivery`: each builder now runs its task gate once and reports the command, exit code,
+  counts and duration. The lead reads the diff and that report and re-runs a gate only on a named
+  trigger, instead of after every task; the reviewer reads the stage's gate report and no longer
+  re-runs the suite. Open questions go to the developer in one round. After the last stage the order
+  is accept, the docs the EPIC owes, then archive; the acceptance demo can be skipped below LARGE,
+  with the skip recorded, and is mandatory from LARGE.
+- `guardrails`, `meaningfy-code-review`, `epic-planning`, `clarity-gate`, `cosmic-python`,
+  `project-setup`: the verifiable subagent report, a rule against sleep loops when waiting, a limit
+  of two clarity-gate runs on a TINY or SMALL PLAN, a flaky-test item in the testing checklist, and a
+  Checks block in the generated `AGENTS.md`.
+
 ## [3.11.0] - 2026-11-09
 
 ### Added

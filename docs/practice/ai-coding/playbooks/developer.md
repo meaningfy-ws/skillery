@@ -20,7 +20,7 @@ other agents, checks their work and commits. The picture is in
   a gap in an external library. A gap in one of our own libraries is never worked around; the lead
   reports it upstream.
 - **After the last stage**: when the EPIC delivers or changes a use case, you accept it at the
-  acceptance demo, or name what is wrong.
+  acceptance demo, or name what is wrong; below LARGE you may skip the demo and the skip is recorded.
 - **End of an iteration**: you decide what the validation review changes.
 
 ## Working with the lead
@@ -42,5 +42,5 @@ other agents, checks their work and commits. The picture is in
 
 ## Your done
 
-The EPIC is accepted (at the acceptance demo when it delivers or changes a use case) and archived. See
+The EPIC is accepted (at the acceptance demo when it delivers or changes a use case; skippable below LARGE), its docs are current, and it is archived. See
 [`dod-quality-gates.md`](../dod-quality-gates.md#delivery--release).
