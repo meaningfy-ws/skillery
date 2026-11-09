@@ -58,6 +58,11 @@ probes:
     expect: guardrails
   - probe: "the session is getting long, should I compact or clear before the next stage"
     expect: guardrails
+  - probe: "which model should this subagent run on, haiku, sonnet or opus"
+    expect: guardrails
+  - probe: "which review lenses and checker does a SMALL epic stage need"
+    expect: epic-delivery
+    near_miss_of: guardrails
   - probe: "review this diff before I open the PR"
     expect: meaningfy-code-review
     near_miss_of: guardrails
