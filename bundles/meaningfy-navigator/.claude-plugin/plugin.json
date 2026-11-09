@@ -1,6 +1,6 @@
 {
   "name": "meaningfy-navigator",
-  "version": "3.10.0",
+  "version": "3.10.1",
   "description": "See who runs what and where the work stands in Claude Code: a status line and band over the session, workflow and plan drift warnings, hygiene prompts, and actions that run your own commands (Claude Code only, CLI and desktop)",
   "author": {
     "name": "Meaningfy"
