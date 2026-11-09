@@ -1,3 +1,4 @@
+import { check } from "../mods/no-poll-loops/no-poll-loops.mjs";
 import {
   inferBundleFromInstallAlias,
   loadCatalogue,
@@ -26,6 +27,16 @@ export default async function SkilleryOpenCodePlugin(_input, options = {}) {
   const skills = skillDirectories(catalogue, bundles);
 
   return {
+    // Behaviour, not content: active whatever the bundle selection (lean-delivery D-5).
+    "tool.execute.before": async (input, output) => {
+      let message = null;
+      try {
+        if (input?.tool === "bash") message = check(output?.args?.command);
+      } catch {
+        // fail open: an error in the check lets the command run
+      }
+      if (message) throw new Error(message);
+    },
     config: async (config) => {
       config.skills ??= {};
       config.skills.paths ??= [];

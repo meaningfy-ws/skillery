@@ -16,6 +16,7 @@
     "tools/opencode-plugin.mjs",
     "tools/opencode-bundle-lib.mjs",
     "tools/skillery-opencode.mjs",
+    "mods/no-poll-loops/no-poll-loops.mjs",
     "README.md",
     "LICENSE"
   ],
