@@ -38,11 +38,11 @@
 
 ## Stage 4 — The no-polling hook (PR 4)
 
-- [ ] 4.1 `mods/no-poll-loops/`: `hooks.json` (D-5), `no-poll-loops.mjs` (`check` + CLI), `no-poll-loops.test.mjs` with D-5's table (deny, allow, quoted loop, exit codes, bad JSON). `bundles.yaml`: `meaningfy-core` `mods: [no-poll-loops]`
-- [ ] 4.2 Tooling: D-5 *Tooling it needs* items 1–6, nothing more (RISK-10's re-shape trigger); the two existing mod tests kept for a modules mod plus a hooks-only case each; `hooks.yaml` intent. Test: `meaningfy-core`'s `plugin.json` names the hooks file and no `types`; navigator's bundle unchanged. `make bundles`, `make validate`
-- [ ] 4.3 opencode: `tools/opencode-plugin.mjs` `tool.execute.before` (bash, whatever the bundle selection, fail open); `package.json` `files` adds the module; installer test: throws on a sleep loop, passes a single sleep, passes when `check` throws. `npm run test:opencode-installer`
-- [ ] 4.4 `docs/development/hook-bindings.md` rewritten per D-5 *Correction*; D-5 item 7 (`mods.md`, the Mod row in `governance.md`). `make validate`
-- [ ] 4.5 Load check (by hand, Claude Code), before the PR: install `meaningfy-core` from the branch in a scratch session; a sleep loop is denied with the message, `sleep 1` runs, the hook's `${CLAUDE_PLUGIN_ROOT}` command resolves; navigator's modules still load beside it. Result in `evidence/hook-load-check.md`
+- [x] 4.1 `mods/no-poll-loops/`: `hooks.json` (D-5), `no-poll-loops.mjs` (`check` + CLI), `no-poll-loops.test.mjs` with D-5's table (deny, allow, quoted loop, exit codes, bad JSON). `bundles.yaml`: `meaningfy-core` `mods: [no-poll-loops]`
+- [x] 4.2 Tooling: D-5 *Tooling it needs* items 1–6, nothing more (RISK-10's re-shape trigger); the two existing mod tests kept for a modules mod plus a hooks-only case each; `hooks.yaml` intent. Test: `meaningfy-core`'s `plugin.json` names the hooks file and no `types`; navigator's bundle unchanged. `make bundles`, `make validate`
+- [x] 4.3 opencode: `tools/opencode-plugin.mjs` `tool.execute.before` (bash, whatever the bundle selection, fail open); `package.json` `files` adds the module; installer test: throws on a sleep loop, passes a single sleep, passes when `check` throws. `npm run test:opencode-installer`
+- [x] 4.4 `docs/development/hook-bindings.md` rewritten per D-5 *Correction*; D-5 item 7 (`mods.md`, the Mod row in `governance.md`). `make validate`
+- [x] 4.5 Load check (by hand, Claude Code), before the PR: install `meaningfy-core` from the branch in a scratch session; a sleep loop is denied with the message, `sleep 1` runs, the hook's `${CLAUDE_PLUGIN_ROOT}` command resolves; navigator's modules still load beside it. Result in `evidence/hook-load-check.md`
 
 ## Acceptance, between stages 4 and 5 (mandatory, LARGE; not counted)
 
