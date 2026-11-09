@@ -246,3 +246,5 @@ tests/evals/*/results/
 
 # devops privacy test: private names, never committed (tests/test_devops_privacy.py)
 tests/fixtures/devops/private-names.local.txt
+# Claude Code writes these into a plugin loaded with --plugin-dir
+bundles/*/tsconfig.json

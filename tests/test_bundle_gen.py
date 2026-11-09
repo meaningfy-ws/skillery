@@ -361,3 +361,11 @@ def test_unreleased_lists_a_mod_in_no_bundle(tmp_path):
     repo = _mod_repo(tmp_path)
     (repo / "mods/wip").mkdir()
     assert gen.unreleased(repo) == ["mods/wip"]
+
+
+def test_files_the_engine_writes_while_developing_are_not_orphans(tmp_path):
+    repo = _mod_repo(tmp_path)
+    gen.write(repo)
+    (repo / "bundles/b-mod/.claude-plugin/types/claude-code").mkdir(parents=True)
+    (repo / "bundles/b-mod/tsconfig.json").write_text("{}", encoding="utf-8")
+    assert gen.gate_errors(repo) == []

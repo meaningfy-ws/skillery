@@ -31,6 +31,8 @@ MOD_DATA = (("workflows", "*/assets/workflows/*.workflow.json"),
 # bundles/ holds symlinks into skills/ and agents/ plus one plugin.json per bundle: claude.ai's
 # marketplace sync needs the plugin.json (fix-desktop-marketplace-install).
 _CACHE = ("__pycache__", "*.pyc")  # created by running scripts; git-ignored, never copied or compared
+# Written by Claude Code into a plugin loaded with --plugin-dir (editor types); git-ignored, not ours.
+_ENGINE_DEV = (".claude-plugin/types", "tsconfig.json")
 PLUGIN_AUTHOR = {"name": "Meaningfy"}
 SCHEMA_COPY = ("openspec/schemas/meaningfy", "../../skills/project-setup/assets/openspec-schema/meaningfy")
 
@@ -299,7 +301,10 @@ def _link_errors(repo: Path, links: dict[str, str], files: dict[str, bytes],
     for dirpath, dirnames, filenames in os.walk(root):
         for name in list(dirnames) + filenames:
             rel = (Path(dirpath) / name).relative_to(repo).as_posix()
-            if rel in links or rel in files or rel in copies:
+            if "/".join(Path(rel).parts[2:]) in _ENGINE_DEV:  # bundles/<b>/<path>
+                if name in dirnames:
+                    dirnames.remove(name)
+            elif rel in links or rel in files or rel in copies:
                 if name in dirnames:
                     dirnames.remove(name)  # never descend into an expected link location
             elif rel not in dirs:
