@@ -15,17 +15,17 @@
 
 ## 3. Docs and close
 
-- [ ] 3.1 Docs:
+- [x] 3.1 Docs:
   - `docs/environment/navigator.md`: the six workflows, the new phase names, how a file moves a phase, and how a repo overrides a glob with `extends`;
   - `docs/development/workflows.md`: the *Exploratory* section (around line 55) becomes *Work shaping*; the workflow table (around lines 76–77) gets the variants `work-shaping, brownfield`, the *Architecture* row in place of *Architecting and modelling*, and new *Conceptual modelling* and *Release* rows;
   - the band sample in `docs/environment/navigator.md` (around line 56) uses the new phase names;
   - CHANGELOG, with a BREAKING line for `shape`, `plan` and `exploratory`
-- [ ] 3.2 Check the spec delta against what was built, and add the MODIFIED delta of *Default workflow files live in their host skills* (six files, modelling moved; DEC-8 — `navigator` is now archived); `openspec validate navigator-workflows --strict` and `make validate-spine` green
+- [x] 3.2 Check the spec delta against what was built, and add the MODIFIED delta of *Default workflow files live in their host skills* (six files, modelling moved; DEC-8 — `navigator` is now archived); `openspec validate navigator-workflows --strict` and `make validate-spine` green
 - [ ] 3.3 One review pass (L2 spec and tests, L3 structure); record the accepted findings in `design.md`; open a PR into `develop`; merge on green CI. Archiving waits for `navigator` (DEC-8)
 
 ## Roadmap
 
-- [x] 1.1 · [x] 2.1a · [x] 2.1b · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3
+- [x] 1.1 · [x] 2.1a · [x] 2.1b · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 3.1 · [x] 3.2 · [ ] 3.3
 
 ## Verification
 

@@ -34,3 +34,20 @@ workflows.
 #### Scenario: Editing an old use case
 - **WHEN** an architecture session in `decide` edits `docs/use-cases/use-case-catalogue.adoc`
 - **THEN** the band stays in `decide`
+
+## MODIFIED Requirements
+
+### Requirement: Default workflow files live in their host skills
+The six default workflow files SHALL live in one host skill each: build-tier (with work-shaping and
+brownfield variants) in `epic-delivery`, architecting in `architecture`, modelling in
+`conceptual-modelling`, release in `meaningfy-release`, DevOps (with interactive intervention,
+incident, check-up and unattended variants) in `infrastructure-operations`, and sales in
+`sales-operations` (DEC-13, DEC-8). Each host skill SHALL point to its file.
+
+#### Scenario: Looking up the DevOps workflow
+- **WHEN** a contributor looks for the DevOps phases the band uses
+- **THEN** `infrastructure-operations` points to its workflow file, which names `service-reliability` for incidents and unattended operations
+
+#### Scenario: Looking up the modelling workflow
+- **WHEN** a contributor looks for the modelling phases the band uses
+- **THEN** `conceptual-modelling` points to its workflow file, and `architecture`'s file no longer holds them
