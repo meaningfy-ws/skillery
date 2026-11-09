@@ -109,6 +109,17 @@ export type NavState = {
   warnings: Warning[]
   planTruncated: boolean // the last plan-drift read saw more than the diff cap
   accepted: string[] // warning keys recorded as deviations (deviations.md, or this session outside a change)
+  // ---- subagent rules and hygiene (design §6.3, §6.5); thresholds are the guardrails file, unparsed
+  thresholds: unknown
+  parentModel: string
+  turnId: string // the current main turn; PD-8 counts reviewer spawns per turn
+  turnRoles: string[]
+  turnEvents: ({ kind: 'skill'; name: string } | { kind: 'tool' })[]
+  agentCalls: Record<string, number> // tool calls per subagent (PD-6)
+  shipLog: ({ kind: 'spawn'; role: string } | { kind: 'ship' })[] // per change (PD-9)
+  hygieneEvents: string[] // since the last safe point or task boundary
+  offer: 'compact' | 'fresh' | null
+  pending: string | null // a command to submit when the main turn ends (Reconcile EPIC's second step, DD-16)
   display: { band: BandDisplay; line: boolean }
   seen: string[]
 }

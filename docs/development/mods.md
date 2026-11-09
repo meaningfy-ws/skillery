@@ -89,6 +89,35 @@ returns the command line; `register.tsx` resolves it against the installed comma
 (`commandFor`) and submits it as typed, or toasts that it is not installed. Draw its button in the
 `ui.render` hook only when the function returns something.
 
+### Adding a strict rule
+
+1. Add the intent to [`hooks.yaml`](../../hooks.yaml) with a `mod` binding (`phase-gate` or
+   `quality`) and the owning skill as provenance.
+2. Add an entry with the same `id` to `STRICT_RULES` in `lib/strict.ts` and a pure decision
+   function beside it that returns `allow`, `deny` (through `denyText`, which names every way out)
+   or a rewrite; test it. The lint check `mod_bindings_match` fails until both sides agree.
+3. Ask it from the hook in `register.tsx` *before* `next(e)`; a throw there falls through to
+   `next(e)`, so a broken rule allows (DD-11).
+
+## Events and signals
+
+`register.tsx` turns engine events into signals (design §5); `reduce` in `lib/state.ts` applies
+them, then `lib/lean.ts` feeds the subagent and hygiene checks.
+
+| Event | Signal(s) |
+|---|---|
+| `session.start`, a `clear`/`resume`/`branch` to a new session | `Started`, `ThresholdsRead`, `WorkflowsRead`, `ChangeRead`, `Accepted` |
+| `skill.prompt` | `SkillLoaded` |
+| `tool.call` Bash (after it ran; strict decides before) | `ToolRan` |
+| `tool.call` Edit, Write, NotebookEdit | `FileTouched` |
+| `prompt.submit` (typed or Remote Control) | `UserPrompted` |
+| `agent.spawn` (strict decides before) | `SubagentSpawned` |
+| `turn.complete` of a subagent | `SubagentFinished` |
+| `turn.complete` of the main loop | `AnswerShown`, `ChangeRead`, `PlanRead`, `TurnEnded` |
+| `session.compact` | `Compacted` |
+| `/navigator …` and the band's buttons | `SetBand`, `SetLine`, `SetMode`, `Accepted`, `SetPending`, `ToolRan` (Validate) |
+| `prompt.compose` (strict) | none: adds the phase reminder |
+
 ## Checks
 
 - `make mods` (part of `make validate`) runs the `lib/` unit tests with Node's test runner and

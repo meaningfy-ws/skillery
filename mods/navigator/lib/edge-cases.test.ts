@@ -131,10 +131,11 @@ test('extends: a malformed repo strict file does not make the repo strict; the d
 })
 
 // ================================================================ signals: replay and order
-test('signals: ToolRan before WorkflowsRead changes nothing but seen', () => {
+test('signals: ToolRan before WorkflowsRead changes nothing but seen and the hygiene bookkeeping', () => {
   const s0 = started()
   const s = reduce(s0, cmd('git commit -m x', 1))
-  assert.deepEqual({ ...s, seen: [] }, { ...s0, seen: [] })
+  assert.deepEqual({ ...s, seen: [], turnEvents: [], hygieneEvents: [] }, { ...s0, seen: [] })
+  assert.deepEqual(s.hygieneEvents, ['commit'])
 })
 
 test('signals: the same SkillLoaded id twice is applied once', () => {

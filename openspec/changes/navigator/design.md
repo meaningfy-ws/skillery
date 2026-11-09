@@ -52,7 +52,7 @@ mods/navigator/
   config.json           userConfig fields (rendered into plugin.json, DD-5, DD-25)
   types.d.ts            declare module 'claude-code' { interface PluginState { navigator: {...} } }
   register.tsx          the only file that touches `$`: events → signals → reduce → $.state; draws
-  statusline.sh         optional snippet for a person's own statusLine script (DD-20)
+  statusline.sh         (dropped, DD-40: the plugin status line shows beside a person's own)
   tsconfig.json         strict, noEmit, allowImportingTsExtensions; include lib/**
   lib/
     state.ts            NavState, Signal, reduce(state, signal) — the state contract (§3)
@@ -920,6 +920,36 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
   to skillery (cut line)*). The `hygiene:unused:<skill>` warning therefore has no button; its text
   names `skillery-feedback` for the person to run (§6.3). They can come back as one small EPIC when
   someone asks.
+- **DD-40** *(lead, stage 3 build: three builders on disjoint new files, the lead integrating)*
+  Where the PLAN left the mechanics open:
+  1. **Mode is `{repo, session}`**, `session` ∈ `null | loose | strict`, the switch of DD-35; the
+     effective mode is the session's if set. `/navigator mode <m>` equal to the repo's clears it.
+     In a loose repo `/navigator mode strict` tries strict for the session (supersedes DD-26's
+     refusal).
+  2. **Plan drift** warnings are owned by `epic-planning` (it owns the EPIC and the PLAN) with the
+     remedy `openspec-update-change <id>`; paths under the change's own folder are covered; each
+     read replaces the last, so a fixed drift disappears. PL-3 honours `planDrift.ignore` too.
+  3. **Deviations** are read from `deviations.md` at session start; a key accepted outside a change
+     lives in the session only. An accepted warning stays in the band as `✓ accepted:` and is not
+     counted. `Archive check` lists every recorded key.
+  4. **Subagent rules.** PD-8 and PD-9 read the review set of the workflow that has one (build-tier),
+     whichever is active. PD-9's remedy is the Review action (`meaningfy-code-review`). *shortcut:
+     the spawn event does not say whether the agent declares a model, so PD-7 treats an explicit
+     `model` above the parent's as undeclared and strict rewrites it to the parent's; upgrade by
+     reading the agent's frontmatter.* The unused-skill warning is owned by `skillery-feedback` and
+     names it (DD-39).
+  5. **Hygiene.** A safe point needs its events since the last point, in any order; at a point that
+     is both a boundary and a safe point, *fresh* wins. *shortcut: idle resets are not offered; the
+     gap is known only once the person has typed, too late to offer; upgrade with a timer.* A
+     `hygiene:context` or `hygiene:thresholds-missing` warning is replaced at each turn end, never
+     repeated.
+  6. **Actions.** Reconcile EPIC submits the change update and stores the clarity gate as `pending`,
+     submitted when that turn ends (DD-16). Review shows where the phase expects or allows
+     `meaningfy-code-review`. Mode is always in the unfolded band. Accept is a button on each open
+     plan or process warning, asking the reason with `$.ui.ask`.
+  7. **No `statusline.sh`** (supersedes DD-20). H-1 showed navigator's status line drawn beside the
+     owner's own `statusLine` script, so a snippet that copies the line into that script solves
+     nothing; the mod writes no file outside its state.
 - **DD-37** *(lead, task 2.9)* DEC-13's four host skills were right; keep them. Each file sits
   with the skill that owns the activity's method, and each phase names its own owner, so a file
   that spans skills (build-tier's explore/shape/plan belong to `epic-planning`, archive to

@@ -18,14 +18,22 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   progress, and draws a band above the prompt with the running subagents, the skills loaded, the
   stages and phases, and warnings when a workflow step is skipped (a commit in `apply` without
   `test-driven-development`, a DevOps apply with no answered consent card). **Next step**, **Back
-  on track** and **Validate** type the command that moves the work on. `/navigator band`,
-  `/navigator line` and `/navigator validate` do the same by hand; the plugin settings hold the
-  defaults. Install with `/plugin install meaningfy-navigator@meaningfy-skillery`; guide in
+  on track** and **Validate** type the command that moves the work on. It also catches plan drift
+  (files changed outside the EPIC and PLAN) with **Reconcile EPIC**, **Accept** (a reason in the
+  change's `deviations.md`) and **Archive check**; flags subagent and session-hygiene slips and
+  offers **Compact now** or **Fresh session** at safe points; and, in a repository that declares
+  `"mode": "strict"`, refuses a commit, archive or spawn that breaks the workflow, naming the way
+  out. **Mode** switches loose ⇄ strict for the session. `/navigator band`, `line`, `validate`,
+  `check`, `accept` and `mode` do the same by hand; the plugin settings hold the defaults. Install with `/plugin install meaningfy-navigator@meaningfy-skillery`; guide in
   `docs/environment/navigator.md`.
 - Workflow files: the phases of build-tier delivery, architecting, DevOps and sales are JSON files in
   `epic-delivery`, `architecture`, `infrastructure-operations` and `sales-operations`; a repository
   overrides them in `docs/navigator/`. The review set per appetite now lives only in the build-tier
   file, and `dependencies.yaml` lists the external skills a catalogue file may name (`skills:`).
+- `guardrails`: the subagent and session-hygiene thresholds are data,
+  `skills/guardrails/assets/session-thresholds.json`; the skill names the keys. `spec-stewardship`
+  archives a change only with no open plan drift or each deviation recorded. `hooks.yaml` gains a
+  `mod` mechanism and the four `navigator-strict-*` intents.
 
 ## [3.9.0] - 2026-11-08
 
