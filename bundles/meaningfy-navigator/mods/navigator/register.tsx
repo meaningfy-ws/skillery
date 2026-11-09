@@ -136,8 +136,8 @@ export const register: Register = (on, options) => {
   on('turn.complete', async ($, e, next) => {
     const result = await next(e)
     const u = result.usage
+    const tokens = u ? u.input_tokens + u.output_tokens + u.cache_read_input_tokens + u.cache_creation_input_tokens : 0
     if (e.agentId) {
-      const tokens = u ? u.input_tokens + u.output_tokens + u.cache_read_input_tokens + u.cache_creation_input_tokens : 0
       await send($, { kind: 'SubagentFinished', id: e.turnId, agentId: e.agentId, tokens, answer: result.text })
     } else {
       // Git and file reads run once per main turn, never per subagent turn (design §5).
@@ -147,7 +147,7 @@ export const register: Register = (on, options) => {
       if (accepted) await send($, accepted)
       const plan = await readPlanSignal($, `plan:${e.turnId}`)
       if (plan) await send($, plan)
-      await send($, await turnEndedSignal($, e.turnId))
+      await send($, await turnEndedSignal($, e.turnId, tokens))
       // Reconcile EPIC's second step runs once the first one's turn has ended (DD-16).
       const { pending } = await state($)
       // Only after a turn that answered; an aborted or failed one drops it (DD-41).

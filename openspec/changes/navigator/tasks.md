@@ -55,7 +55,7 @@
 ## 4. Close
 
 - [ ] 4.1 `make validate`, `openspec validate navigator --strict`, hand checks H-1..H-6 recorded in `openspec/changes/navigator/evidence/`.
-- [ ] 4.2 Fresh checker over the full diff against this PLAN; findings become DD-n before any fix.
+- [x] 4.2 Fresh checker over the full diff against this PLAN; findings become DD-n before any fix.
 - [ ] 4.3 Acceptance trial run: one real EPIC session in skillery with navigator loose, one scratch repo strict; verdict in `openspec/changes/navigator/evidence/acceptance.md`.
 - [ ] 4.4 Archive per `spec-stewardship` (navigator's own Archive check passes).
 
@@ -64,7 +64,7 @@
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.8 · [ ] 1.7 · [ ] 1.9 · [x] 1.10 · [ ] 1.11 · [x] 1.12
 - [x] 2.0 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6 · [x] 2.7 · [x] 2.8 · [ ] 2.11 · [x] 2.9 · [x] 2.10
 - [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.6 · [x] 3.5 · [x] 3.7 · [x] 3.12 · [x] 3.13 · [x] 3.8 · [x] 3.9 · [x] 3.10 · [x] 3.11
-- [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4
+- [ ] 4.1 · [x] 4.2 · [ ] 4.3 · [ ] 4.4
 
 ## Verification
 

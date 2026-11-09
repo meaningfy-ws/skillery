@@ -18,8 +18,9 @@ that puts the work back in line (DEC-8).
 The mod SHALL warn when the subagent rules of `guardrails` and the review set of `epic-delivery`
 are broken: a spawn that did not pay, a model above the caller's for an agent that declares no
 model of its own, more reviewers than the appetite calls for, and a missing second check. An agent's
-declared model SHALL never be flagged or rewritten; the model order SHALL come from the guardrails
-data file.
+declared model SHALL never be flagged or rewritten where the spawn event shows it; where it does
+not, an explicit `model` above the caller's is treated as undeclared, a recorded shortcut (DD-40.4).
+The model order SHALL come from the guardrails data file.
 
 #### Scenario: A MEDIUM EPIC without a checker
 - **WHEN** a MEDIUM EPIC ran five review lenses and opens its PR with no checker spawned since
@@ -65,7 +66,9 @@ threshold or definition of its own.
 
 ### Requirement: Strict mode
 In loose mode the mod SHALL never block. In a strict repository it SHALL add phase reminders built
-from the workflow file, block a commit or an archive while drift is open, and stop or correct a
+from the workflow file, block a commit while the phase's process drift is open and an archive while
+any plan or process drift is open (a plan drift is reconciled or accepted before archive, not before
+each commit, DD-42), and stop or correct a
 subagent spawn that breaks the appetite's review set or the model rule; every block SHALL name its
 reason and the way out. A person SHALL be able to drop to loose for the session in one action, and
 the next session SHALL start strict again (DEC-5). A failure inside a strict check SHALL allow the

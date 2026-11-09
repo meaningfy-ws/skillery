@@ -20,7 +20,8 @@ mods/navigator/
   register.tsx    the hooks: events → signals → reduce → state; draws
   io.ts           register.tsx's I/O half (files, git, the engine), no decisions
   tsconfig.json   strict type check of lib/
-  lib/*.ts        pure functions, no I/O, each with a *.test.ts beside it
+  lib/*.ts        pure functions, no I/O, tested by the *.test.ts beside them (process-drift.ts
+                  through phase.test.ts, as it runs)
 ```
 
 The split is the whole testing strategy. `register.tsx` and `io.ts` pass `$` only to functions
@@ -126,7 +127,8 @@ them, then `lib/lean.ts` feeds the subagent and hygiene checks.
 ## Checks
 
 - `make mods` (part of `make validate`) runs the `lib/` unit tests with Node's test runner and
-  type-checks the mod with `tsc`.
+  type-checks `lib/` with `tsc`; `register.tsx` and `io.ts` need the engine's types, so they are
+  type-checked by hand check H-5.
 - By hand, after a change to `register.tsx`: `claude plugin validate bundles/meaningfy-navigator`,
   then `claude --plugin-dir bundles/meaningfy-navigator` in this repo, and check the status line
   and the band on the terminal. On the desktop app, install the bundle from the working-copy

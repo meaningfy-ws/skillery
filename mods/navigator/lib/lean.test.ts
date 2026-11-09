@@ -79,3 +79,20 @@ test('an auto compaction warns; the band shows the offer folded', () => {
   assert.ok(keys(run(...base('SMALL'), { kind: 'Compacted', id: id(), trigger: 'auto' })).includes('hygiene:auto-compact'))
   assert.ok(bandModel(run(...base('SMALL'), turn(80))).folded.includes('⚠'))
 })
+
+test('the appetite row: appetite, tasks, reviewers against the review set, tokens and cost (§9 row 4)', () => {
+  const s = run(...base('SMALL'), spawn('code-reviewer'),
+    { kind: 'TurnEnded', id: id(), turnId: 't9', contextPercent: 10, cleanTree: true, at: 5, tokens: 12345, usd: 0.4 })
+  assert.deepEqual(bandModel(s).rows.find(r => r.label === 'appetite')!.items, ['SMALL', 'tasks 3/9', 'reviewers 0/1 this turn', '12.3k tokens', '$0.40'])
+  assert.deepEqual(bandModel(run(...base('SMALL'), spawn('code-reviewer'))).rows.find(r => r.label === 'appetite')!.items,
+    ['SMALL', 'tasks 3/9', 'reviewers 1/1 this turn'])
+})
+
+test('a skill gate shows the score its skill printed, never one the mod makes (DD-14)', () => {
+  const s = run(...base('SMALL'), { kind: 'SkillLoaded', id: id(), name: 'meaningfy-building:clarity-gate', at: 3 },
+    { kind: 'AnswerShown', id: id(), text: 'Clarity score: 9.1/10 — ready.', at: 4 })
+  assert.match(bandModel(s).folded, /clarity ✓ 9\.1/)
+  const unscored = run(...base('SMALL'), { kind: 'SkillLoaded', id: id(), name: 'clarity-gate', at: 3 },
+    { kind: 'AnswerShown', id: id(), text: 'done', at: 4 })
+  assert.match(bandModel(unscored).folded, /clarity ✓(?! \d)/)
+})

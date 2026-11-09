@@ -67,7 +67,7 @@ export function subagentText(a: Subagent): string {
 }
 
 function tokens(n: number): string {
-  return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n)
+  return n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n)
 }
 
 export type BandModel = {
@@ -83,7 +83,7 @@ export function bandModel(s: NavState): BandModel {
   const last = s.skills.at(-1)
   const gates = Object.entries(s.gates)
     .filter(([, g]) => g.state !== 'none')
-    .map(([id, g]) => `${id} ${GLYPH[g.state]}`)
+    .map(([id, g]) => `${id} ${GLYPH[g.state]}${/^\d+(\.\d+)?$/.test(g.detail) ? ` ${g.detail}` : ''}`)
   // Empty when there is nothing to report: the band then shows only its buttons.
   const folded = [
     ...(running.length ? [`${running.length} running: ${running.map(a => a.type).join(', ')}`] : []),
@@ -109,6 +109,19 @@ export function bandModel(s: NavState): BandModel {
       items: [`${w.title}${s.variant ? ` (${s.variant})` : ''}${w.provisional ? ' (provisional)' : ''}`,
         ...phases.map((p, i) => `${i < now ? '✓' : i === now ? '●' : '○'} ${p.id}`)],
     })
+  }
+  // Appetite against actual (§9 row 4): shown, never judged (no budget, per guardrails).
+  if (s.change) {
+    const c = s.change
+    const r = c.appetite ? s.workflows.find(x => x.reviews)?.reviews?.[c.appetite] : undefined
+    const reviewers = s.turnRoles.filter(x => x === 'reviewer').length
+    rows.push({ label: 'appetite', items: [
+      c.appetite ?? '?', `tasks ${c.done}/${c.total}`,
+      ...(c.groups.length ? [`groups ${c.groups.filter(g => g.total > 0 && g.done === g.total).length}/${c.groups.length}`] : []),
+      ...(r ? [`reviewers ${reviewers}/${r.reviewers + (r.ux?.extra_reviewers ?? 0)} this turn`] : []),
+      ...(s.sessionTokens ? [`${tokens(s.sessionTokens)} tokens`] : []),
+      ...(s.usd !== null ? [`$${s.usd.toFixed(2)}`] : []),
+    ] })
   }
   rows.push(
     { label: 'skills', items: s.skills.slice(-TRAIL).map(k => k.phase ? `${k.name} (${k.phase})` : k.name) },

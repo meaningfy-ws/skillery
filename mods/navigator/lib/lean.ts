@@ -74,6 +74,7 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       n = { ...n, warnings: kept }
       add(r.warnings)
       return { ...n, offer: r.offer, hygieneEvents: r.point ? [] : n.hygieneEvents,
+        sessionTokens: n.sessionTokens + (s.tokens ?? 0), usd: s.usd ?? n.usd,
         turnId: s.turnId, turnRoles: [], turnEvents: [] }
     }
     case 'Compacted':
