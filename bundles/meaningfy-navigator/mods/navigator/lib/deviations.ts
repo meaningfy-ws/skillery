@@ -7,7 +7,8 @@ const SEP = ' · '
 
 /** The keys recorded in deviations.md. */
 export function parseDeviations(text: string): Set<string> {
-  return new Set([...text.matchAll(/^- \d{4}-\d{2}-\d{2} · (.+?) · /gm)].map(m => m[1]!))
+  // A hand-written line without a reason still records its key (DD-41).
+  return new Set([...text.matchAll(/^- \d{4}-\d{2}-\d{2} · (.+?)(?: · .*)?\s*$/gm)].map(m => m[1]!.trim()))
 }
 
 /** The new file text with the line appended (header on create), or null when the key is already there (TC-20).
@@ -20,6 +21,12 @@ export function appendDeviation(text: string | null, key: string, reason: string
   const base = text ?? `${HEADER}\n`
   if (parseDeviations(base).has(key)) return null
   return `${base}${base.endsWith('\n') ? '' : '\n'}- ${date}${SEP}${key}${SEP}${why}\n`
+}
+
+/** `/navigator accept <key> "<reason>"`: the key runs up to the quoted reason, so it may hold spaces. */
+export function parseAccept(args: string): { key: string; reason: string } | null {
+  const m = args.trim().match(/^accept\s+(.+?)\s+"(.*)"\s*$/s) ?? args.trim().match(/^accept\s+(\S+)\s+(.+)$/s)
+  return m && m[1]!.trim() && m[2]!.trim() ? { key: m[1]!.trim(), reason: m[2]!.trim() } : null
 }
 
 export type ArchiveResult = { ok: boolean; open: Warning[]; accepted: string[] }

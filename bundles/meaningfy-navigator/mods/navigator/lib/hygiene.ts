@@ -79,7 +79,7 @@ export function offer(parsed: ParsedThresholds, i: HygieneInput): HygieneResult 
   if ((boundary && i.contextPercent >= t.fresh_offer_min_context_percent) || idle) return { offer: 'fresh', point, warnings: [] }
   if (safe && !boundary && i.contextPercent >= t.compact_offer_context_percent) return { offer: 'compact', point, warnings: [] }
   if (point || i.contextPercent < t.context_warn_percent) return { offer: null, point, warnings: [] }
-  return { offer: null, point, warnings: [warning('hygiene:context', `context ${Math.round(i.contextPercent)}% mid-step: commit, then compact`)] }
+  return { offer: null, point, warnings: [warning('hygiene:context', `context ${Math.round(i.contextPercent)}% mid-step (context_warn_percent)`)] }
 }
 
 /** `session.compact`: an automatic one landed where the rule says not to. */

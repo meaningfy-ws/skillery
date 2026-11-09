@@ -43,3 +43,13 @@ test('archive check: open plan and process drift fail; accepted and hygiene warn
   assert.deepEqual(r.accepted, ['process:missing:apply:x'])
   assert.equal(archiveCheck([w('hygiene:unused:y')], new Set()).ok, true)
 })
+
+test('accept arguments: the key may hold spaces up to the quoted reason; no reason is no accept', async () => {
+  const { parseAccept } = await import('./deviations.ts')
+  assert.deepEqual(parseAccept('accept plan:outside:docs/my file.md "lint check added"'),
+    { key: 'plan:outside:docs/my file.md', reason: 'lint check added' })
+  assert.deepEqual(parseAccept('accept process:missing:apply:tdd agreed with owner'),
+    { key: 'process:missing:apply:tdd', reason: 'agreed with owner' })
+  assert.equal(parseAccept('accept plan:x'), null)
+  assert.equal(parseAccept('accept plan:x ""'), null)
+})

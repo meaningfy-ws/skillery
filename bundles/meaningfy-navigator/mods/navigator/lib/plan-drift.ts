@@ -38,10 +38,10 @@ export function planDrift(i: PlanInput): Warning[] {
     .map(p => warn(`plan:outside:${p}`, `${p} changed; no task, design or proposal names it`))
 
   const changedMatch = (t: string) => i.changed.some(p =>
-    p === t || p.endsWith(`/${t}`) || (t.endsWith('/') && (p.startsWith(t) || p.includes(`/${t}`))))
+    p === t || p.endsWith(`/${t}`) || p.startsWith(t.endsWith('/') ? t : `${t}/`) || (t.endsWith('/') && p.includes(`/${t}`)))
   const pl2: Warning[] = []
   for (const m of i.tasks.matchAll(/^\s*- \[[xX]\]\s+(\d+\.\d+)\b(.*)$/gm)) {
-    const tokens = [...m[2]!.matchAll(/`([^`\s]+)`/g)].map(t => t[1]!).filter(t => t.includes('/') || /\.\w+$/.test(t))
+    const tokens = [...m[2]!.matchAll(/`([^`\s]+)`/g)].map(t => t[1]!).filter(t => t.includes('/') || /^[\w-]+\.[A-Za-z]{1,6}$/.test(t)) // `v3.9.0`, `s.mode.session` are not paths
     if (tokens.length && !tokens.some(changedMatch)) {
       pl2.push(warn(`plan:ticked:${m[1]}`, `task ${m[1]} is ticked but none of ${tokens.join(', ')} changed`))
     }
@@ -62,10 +62,19 @@ export function parseDiffAdded(diff: string): { added: AddedLine[]; truncated: b
   const added: AddedLine[] = []
   let path: string | null = null
   let line = 0
+  // Inside a hunk its header's counts say how many lines are left, so `+++ x` there is an added
+  // line, and outside one it is a file header (DD-41). Git appends a tab to a path with a space.
+  let adds = 0
+  let dels = 0
   for (const l of diff.split('\n')) {
-    if (l.startsWith('+++ ')) path = l === '+++ /dev/null' ? null : l.slice(4).replace(/^b\//, '')
-    else if (l.startsWith('@@')) line = Number(l.match(/\+(\d+)/)?.[1] ?? 0)
-    else if (l.startsWith('+') && path !== null) {
+    if (adds === 0 && dels === 0) {
+      if (l.startsWith('+++ ')) path = l.startsWith('+++ /dev/null') ? null : l.slice(4).replace(/\t$/, '').replace(/^b\//, '')
+      const h = l.match(/^@@ -\d+(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/)
+      if (h) { dels = Number(h[1] ?? 1); line = Number(h[2]); adds = Number(h[3] ?? 1) }
+    } else if (l.startsWith('-')) dels = Math.max(0, dels - 1)
+    else if (l.startsWith('+')) {
+      adds -= 1
+      if (path === null) continue
       if (added.length === ADDED_CAP) return { added, truncated: true }
       added.push({ path, line: line++, text: l.slice(1) })
     }

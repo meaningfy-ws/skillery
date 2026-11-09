@@ -3,12 +3,11 @@
 // guardrails thresholds file.
 
 import { inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
-  type DispatchEvent, type Role, type TurnEvent } from './dispatch.ts'
+  type Role } from './dispatch.ts'
 import { offer, onCompact, thresholdsFrom, type HygieneEvent } from './hygiene.ts'
 import { addWarnings } from './process-drift.ts'
-import type { Change, NavState, Warning } from './state.ts'
-import type { Signal } from './state.ts'
-import { workflowOf } from './workflow.ts'
+import type { Change, NavState, Signal, Warning } from './state.ts'
+import { isArchive, isCommit, isPrMerge, workflowOf } from './workflow.ts'
 
 const groupsDone = (c: Change | null) => c?.groups.filter(g => g.total > 0 && g.done === g.total).length ?? 0
 
@@ -18,9 +17,9 @@ function eventsOf(prev: NavState, next: NavState, s: Signal): HygieneEvent[] {
   if (prev.phase !== null && next.phase !== prev.phase && prev.workflow === next.workflow) out.push('phase-left')
   if (prev.change && prev.change.id === next.change?.id && groupsDone(next.change) > groupsDone(prev.change)) out.push('task-group-done')
   if (s.kind === 'ToolRan' && s.ok && !s.agentId) {
-    if (/\bgit\s+commit\b/.test(s.command)) out.push('commit')
-    if (/\bgh\s+pr\s+merge\b/.test(s.command)) out.push('pr-merged')
-    if (/\bopenspec\s+archive\b/.test(s.command)) out.push('archived')
+    if (isCommit(s.command)) out.push('commit')
+    if (isPrMerge(s.command)) out.push('pr-merged')
+    if (isArchive(s.command)) out.push('archived')
   }
   return out
 }
@@ -38,21 +37,25 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       return { ...n, thresholds: s.raw }
     case 'SkillLoaded':
       return { ...n, turnEvents: [...n.turnEvents, { kind: 'skill', name: s.name }] }
+    case 'AgentCalled': // every tool call of a subagent counts for PD-6, not only Bash (DD-41)
+      return { ...n, agentCalls: { ...n.agentCalls, [s.agentId]: (n.agentCalls[s.agentId] ?? 0) + 1 } }
     case 'ToolRan': {
-      if (s.agentId) return { ...n, agentCalls: { ...n.agentCalls, [s.agentId]: (n.agentCalls[s.agentId] ?? 0) + 1 } }
+      if (s.agentId) return n
       n = { ...n, turnEvents: [...n.turnEvents, { kind: 'tool' }] }
       if (s.ok && shipCommand(s.command)) {
         n = { ...n, shipLog: [...n.shipLog, { kind: 'ship' }] }
-        if (reviews && n.change) add(secondCheck(reviews, appetite, n.change.id, n.shipLog as DispatchEvent[]))
+        if (reviews && n.change) add(secondCheck(reviews, appetite, n.change.id, n.shipLog))
       }
       return n
     }
+    case 'SpawnAsked': { // before the spawn runs: parallel spawns each see the ones before (DD-41)
+      const role = roleIn(n, s.type, s.description)
+      n = { ...n, turnRoles: [...n.turnRoles, role], shipLog: [...n.shipLog, { kind: 'spawn', role }] }
+      if (reviews) add(overspawn(reviews, appetite, n.turnId || 'start', n.turnRoles))
+      return n
+    }
     case 'SubagentSpawned': {
-      const w = workflowOf(n) ?? reviews
-      const role: Role = w ? roleOf(w, s.type, s.description) : 'other'
-      n = { ...n, parentModel: s.parentModel ?? n.parentModel, turnRoles: [...n.turnRoles, role],
-        shipLog: [...n.shipLog, { kind: 'spawn', role }] }
-      if (reviews) add(overspawn(reviews, appetite, n.turnId || 'start', n.turnRoles as Role[]))
+      n = { ...n, parentModel: s.parentModel ?? n.parentModel }
       // shortcut: the event does not say whether the agent declares a model, so an explicit ask is
       // taken as undeclared (DD-40); upgrade by reading the agent's frontmatter.
       if (t.ok && s.asked) add(modelAbove(t.thresholds, { agentId: s.agentId, model: s.asked, declared: false }, n.parentModel))
@@ -63,9 +66,9 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
         ...reportOversized(t.thresholds, s.agentId, s.answer ?? '')])
       return n
     case 'TurnEnded': {
-      add(unusedSkills(n.turnEvents as TurnEvent[]))
+      add(unusedSkills(n.turnEvents))
       // shortcut: idle resets are not offered; the gap is only known once the person has typed (DD-40).
-      const r = offer(t, { events: n.hygieneEvents as HygieneEvent[], contextPercent: s.contextPercent, idleMinutes: 0,
+      const r = offer(t, { events: n.hygieneEvents, contextPercent: s.contextPercent, idleMinutes: 0,
         cleanTree: s.cleanTree, openUnticked: !!n.change && n.change.done < n.change.total })
       const kept = n.warnings.filter(w => w.key !== 'hygiene:context' && w.key !== 'hygiene:thresholds-missing')
       n = { ...n, warnings: kept }
@@ -83,15 +86,21 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
   }
 }
 
-/** Before a spawn runs (strict mode): would it over-spawn (PD-8), and should its model be the
- *  parent's (PD-7)? The same rules as after the spawn, asked one spawn early. */
-export function spawnCheck(s: NavState, type: string, description: string, asked: string | undefined,
-  parentModel: string): { overspawn: Warning | null; rewriteTo: string | null } {
+/** The role of a spawn, from the active workflow's roles, else the one with a review set. */
+function roleIn(s: NavState, type: string, description: string): Role {
+  const w = workflowOf(s) ?? s.workflows.find(x => x.reviews)
+  return w ? roleOf(w, type, description) : 'other'
+}
+
+/** Strict, after `SpawnAsked` recorded this spawn: the over-spawn it makes, if any. */
+export function overspawnNow(s: NavState): Warning | null {
   const reviews = s.workflows.find(w => w.reviews)
-  const w = workflowOf(s) ?? reviews
-  const role: Role = w ? roleOf(w, type, description) : 'other'
-  const over = reviews ? overspawn(reviews, s.change?.appetite ?? null, s.turnId || 'start', [...s.turnRoles as Role[], role]) : []
+  return (reviews && overspawn(reviews, s.change?.appetite ?? null, s.turnId || 'start', s.turnRoles)[0]) || null
+}
+
+/** Strict: the parent's model when the spawn asks one ranked above it (PD-7). */
+export function rewriteModel(s: NavState, asked: string | undefined, parentModel: string): string | null {
   const t = thresholdsFrom(s.thresholds)
-  const above = t.ok && asked ? modelAbove(t.thresholds, { agentId: 'next', model: asked, declared: false }, parentModel) : []
-  return { overspawn: over[0] ?? null, rewriteTo: above.length ? parentModel : null }
+  return t.ok && asked && modelAbove(t.thresholds, { agentId: 'next', model: asked, declared: false }, parentModel).length
+    ? parentModel : null
 }

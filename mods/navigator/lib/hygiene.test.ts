@@ -95,7 +95,7 @@ test('mid-step at the warn threshold → hygiene:context warning, no offer', () 
   const r = offer(parsed, input({ contextPercent: 75 }))
   assert.equal(r.offer, null)
   assert.deepEqual(r.warnings.map(w => [w.key, w.remedy, w.owner]), [['hygiene:context', null, 'guardrails']])
-  assert.match(r.warnings[0]!.message, /commit, then compact/)
+  assert.match(r.warnings[0]!.message, /mid-step \(context_warn_percent\)/)
   assert.deepEqual(offer(parsed, input({ contextPercent: 74 })).warnings, [])
   // not mid-step: a safe point at high context offers instead of warning
   assert.deepEqual(offer(parsed, input({ events: ['commit', 'phase-left'], contextPercent: 80 })).warnings, [])

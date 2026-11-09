@@ -76,7 +76,7 @@ export type BandModel = {
 }
 
 /** Warnings not recorded as deviations; accepted ones show but do not count. */
-const openCount = (s: NavState) => s.warnings.filter(w => !s.accepted.includes(w.key)).length
+const openCount = (s: NavState) => s.warnings.filter(w => !s.accepted.includes(w.key)).length // every kind, accepted aside
 
 export function bandModel(s: NavState): BandModel {
   const running = s.subagents.filter(a => !a.done)

@@ -319,3 +319,306 @@ test('nextStep / backOnTrack with no workflow or phase are null', () => {
   assert.equal(backOnTrack(started()), null)
   assert.deepEqual(validateRuns(started()), [])
 })
+
+// ---- stage 3
+// Plan drift (§6.4), deviations (§8, DD-12), hygiene (§6.5, DD-30), dispatch (§6.3, DD-40), strict (§7,
+// DD-11, DD-35), actions (§8, DD-16). Each asserts what the design says SHOULD happen.
+
+import { ADDED_CAP, parseDiffAdded, parseStatus, planDrift, type PlanInput } from './plan-drift.ts'
+import { appendDeviation, archiveCheck, parseDeviations } from './deviations.ts'
+import { offer, thresholdsFrom } from './hygiene.ts'
+import { modelAbove, overspawn, roleOf, secondCheck, unusedSkills } from './dispatch.ts'
+import { decideArchive, decideCommit, decideSpawn, reminder } from './strict.ts'
+import { hygieneAction, modeAction, reconcile, review } from './actions.ts'
+import { rewriteModel } from './lean.ts'
+
+const THRESHOLDS = JSON.parse(readFileSync(join(REPO, 'skills/guardrails/assets/session-thresholds.json'), 'utf8'))
+const T = (() => { const t = thresholdsFrom(THRESHOLDS); assert.ok(t.ok); return t.thresholds })()
+const plan = (over: Partial<PlanInput> = {}): PlanInput => ({
+  changed: [], added: [], tasks: '', design: '', proposal: '', ignore: [], changeId: 'navigator', ...over })
+const pkeys = (over: Partial<PlanInput>) => planDrift(plan(over)).map(w => w.key)
+const hyg = (events: string[], contextPercent: number, openUnticked = true) =>
+  offer({ ok: true, thresholds: T }, { events: events as never, contextPercent, idleMinutes: 0, cleanTree: true, openUnticked })
+const planWarn = (key: string) => ({ key, message: key, remedy: 'openspec-update-change navigator', owner: 'epic-planning' })
+const planRead = (...ks: string[]): Signal => ({ kind: 'PlanRead', id: id(), warnings: ks.map(planWarn), truncated: false })
+const setMode = (mode: 'loose' | 'strict'): Signal => ({ kind: 'SetMode', id: id(), mode })
+const turnEnd = (contextPercent: number): Signal => ({ kind: 'TurnEnded', id: id(), turnId: id(), contextPercent, cleanTree: true, at: 9 })
+// A spawn is counted when it is asked, before it runs (DD-41): what register.tsx sends first.
+const spawnS = (type: string, description = ''): Signal => ({ kind: 'SpawnAsked', id: id(), type, description })
+const applyState = (mode: 'loose' | 'strict' = 'loose', c = change(3, 9)) => run(workflows(defaults.workflows, [], mode), read(c))
+
+// ---------------------------------------------------------------- plan drift PL-1
+test('s3 PL-1: a path with spaces named in a task is covered', () => {
+  assert.deepEqual(pkeys({ changed: ['docs/my guide.md'], tasks: '- [ ] 1.1 update `docs/my guide.md`' }), [])
+})
+
+test('s3 PL-1: stem of 3 chars does not cover, stem of 4 chars does', () => {
+  assert.deepEqual(pkeys({ changed: ['p/q/abc.ts', 'p/q/abcd.ts'], tasks: 'abc and abcd' }), ['plan:outside:p/q/abc.ts'])
+})
+
+test('s3 PL-1: own change folder and ignore globs are skipped, a sibling change folder is not', () => {
+  assert.deepEqual(pkeys({ changed: ['openspec/changes/navigator/x.md', 'openspec/changes/navigator-2/x.md', 'bundles/a/b.json'],
+    ignore: ['bundles/**'] }), ['plan:outside:openspec/changes/navigator-2/x.md'])
+})
+
+test('s3 PL-1: a path named only inside a code block counts as named (a path anywhere in the PLAN)', () => {
+  assert.deepEqual(pkeys({ changed: ['mods/x/y.ts'], design: '```\nmods/x/y.ts\n```\n' }), [])
+})
+
+test('s3 parseStatus: renames give the new path (quoted with spaces too); a deleted file is a changed path', () => {
+  assert.deepEqual(parseStatus('R  old.ts -> new.ts\nR  "a b.md" -> "c d.md"\nD  gone.ts\n'), ['new.ts', 'c d.md', 'gone.ts'])
+})
+
+test('s3 parseDiffAdded: git appends a tab to a +++ path that has a space; the path excludes it', () => {
+  const r = parseDiffAdded('+++ b/docs/my file.md\t\n@@ -0,0 +1 @@\n+DD-99\n')
+  assert.equal(r.added[0]?.path, 'docs/my file.md')
+})
+
+test('s3 parseDiffAdded: an added line whose text starts with "++ " is an added line, not a file header', () => {
+  const r = parseDiffAdded('diff --git a/x.c b/x.c\n--- a/x.c\n+++ b/x.c\n@@ -0,0 +1,2 @@\n+++ i;\n+DD-99 here\n')
+  assert.deepEqual(r.added.map(a => [a.path, a.line, a.text]), [['x.c', 1, '++ i;'], ['x.c', 2, 'DD-99 here']])
+})
+
+// ---------------------------------------------------------------- plan drift PL-2
+test('s3 PL-2: a ticked task naming a real path that did not change warns; unticked or token-free are not judged', () => {
+  assert.deepEqual(pkeys({ tasks: '- [x] 1.3 edit `tools/a.py`\n- [ ] 1.4 edit `tools/b.py`\n- [x] 1.5 talk to people\n' }), ['plan:ticked:1.3'])
+})
+
+test('s3 PL-2: code tokens like `s.mode.session` or `v3.9.0` are not path tokens', () => {
+  assert.deepEqual(pkeys({ tasks: '- [x] 1.1 set `s.mode.session` and bump to `v3.9.0`\n' }), [])
+})
+
+test('s3 PL-2: a folder token without a trailing slash counts as changed when a file under it changed', () => {
+  assert.deepEqual(pkeys({ changed: ['mods/navigator/lib/x.ts'], tasks: '- [x] 1.2 build `mods/navigator`\n' }), [])
+})
+
+// ---------------------------------------------------------------- plan drift PL-3
+test('s3 PL-3: ids already in design.md are quiet; DD-1 is not DD-10, DEC-20 is not DEC-2', () => {
+  const added = ['DD-10', 'DD-1', 'DEC-2', 'DEC-20'].map((text, n) => ({ path: 'mods/a.ts', line: n + 1, text }))
+  assert.deepEqual(pkeys({ design: 'see DD-10 and DEC-2', added }), ['plan:decision:mods/a.ts:2', 'plan:decision:mods/a.ts:4'])
+})
+
+test('s3 PL-3: a shortcut in a file design.md names is quiet; own folder and ignored paths are skipped', () => {
+  const added = [{ path: 'mods/a.ts', line: 1, text: '// shortcut: x' }, { path: 'mods/b.ts', line: 1, text: '// shortcut: y' },
+    { path: 'openspec/changes/navigator/design.md', line: 5, text: 'DD-99' }, { path: 'bundles/x.json', line: 1, text: 'DD-98' }]
+  assert.deepEqual(pkeys({ design: 'mods/a.ts holds a shortcut', added, ignore: ['bundles/**'] }), ['plan:decision:mods/b.ts:1'])
+})
+
+test('s3 PL-3 cap: exactly 2 000 added lines is not truncated; 2 001 is, and line 2 001 is never judged', () => {
+  const diff = (n: number) => `+++ b/a.ts\n@@ -0,0 +1,${n} @@\n` + Array.from({ length: n }, (_, i) => `+${i === n - 1 ? 'DD-999' : 'x'}`).join('\n')
+  assert.equal(parseDiffAdded(diff(ADDED_CAP)).truncated, false)
+  const r = parseDiffAdded(diff(ADDED_CAP + 1))
+  assert.equal(r.truncated, true)
+  assert.equal(r.added.length, ADDED_CAP)
+  const added = Array.from({ length: ADDED_CAP + 1 }, (_, i) => ({ path: 'a.ts', line: i + 1, text: i === ADDED_CAP ? 'DD-999' : 'x' }))
+  assert.deepEqual(pkeys({ added }), [])
+})
+
+// ---------------------------------------------------------------- deviations
+test('s3 deviations: a key with a bare · is kept; " · " or a newline in a key throws', () => {
+  const t = appendDeviation(null, 'plan:outside:a·b.md', 'r', '2026-11-12')!
+  assert.ok(parseDeviations(t).has('plan:outside:a·b.md'))
+  assert.throws(() => appendDeviation(null, 'plan:outside:a · b', 'r', '2026-11-12'))
+  assert.throws(() => appendDeviation(null, 'plan:x\nplan:y', 'r', '2026-11-12'))
+})
+
+test('s3 deviations: a reason with quotes, " · " and newlines stays one line and the key parses back', () => {
+  const t = appendDeviation(null, 'plan:x', 'he said "ok" · then\nleft\r\n', '2026-11-12')!
+  assert.equal(t.split('\n').filter(l => l.startsWith('- ')).length, 1)
+  assert.ok(t.includes('he said "ok" · then left'))
+  assert.deepEqual([...parseDeviations(t)], ['plan:x'])
+})
+
+test('s3 deviations: accepting the same key twice records it once (DD-12)', () => {
+  const t = appendDeviation(null, 'plan:x', 'r', '2026-11-12')!
+  assert.equal(appendDeviation(t, 'plan:x', 'other', '2026-11-13'), null)
+})
+
+test('s3 deviations: a malformed existing file is appended to, not lost; CRLF lines still count', () => {
+  const t = appendDeviation('garbage\nno newline at end', 'plan:x', 'r', '2026-11-12')!
+  assert.ok(t.startsWith('garbage\nno newline at end\n- 2026-11-12 · plan:x · r\n'))
+  assert.equal(appendDeviation('# h\r\n- 2026-11-12 · plan:x · r\r\n', 'plan:x', 'r', '2026-11-12'), null)
+})
+
+test('s3 deviations: a hand-edited line with the key but no reason still records the key (idempotent per key)', () => {
+  assert.equal(appendDeviation('# h\n- 2026-11-12 · plan:x\n', 'plan:x', 'r', '2026-11-13'), null)
+})
+
+test('s3 archive check: hygiene warnings never block; every accepted key is listed', () => {
+  const r = archiveCheck([{ key: 'hygiene:context', message: '', remedy: null, owner: 'guardrails' }, planWarn('plan:a')], new Set(['plan:a', 'plan:old']))
+  assert.equal(r.ok, true)
+  assert.deepEqual(r.accepted.sort(), ['plan:a', 'plan:old'])
+})
+
+// ---------------------------------------------------------------- hygiene
+test('s3 thresholds: wrong types and unknown event names fail and the warning names the key', () => {
+  const bad: [object, string][] = [[{ compact_offer_context_percent: '50' }, 'compact_offer_context_percent'],
+    [{ model_rank: 'opus' }, 'model_rank'], [{ safe_point: { after: 'push', and_any: [] } }, 'safe_point.after'],
+    [{ task_boundary: { any: ['commit', 'deploy'] } }, 'task_boundary.any'], [{ idle_reset: { requires_clean_tree: 'yes' } }, 'idle_reset']]
+  for (const [over, k] of bad) {
+    const p = thresholdsFrom({ ...THRESHOLDS, ...over })
+    assert.ok(!p.ok && p.error.includes(k), JSON.stringify(over))
+    const r = offer(p, { events: ['commit'], contextPercent: 90, idleMinutes: 0, cleanTree: true, openUnticked: false })
+    assert.equal(r.offer, null)
+    assert.ok(r.warnings[0]!.key === 'hygiene:thresholds-missing' && r.warnings[0]!.message.includes(k))
+  }
+  assert.ok(thresholdsFrom({ ...THRESHOLDS, extra: 1 }).ok)
+  assert.ok(!thresholdsFrom([THRESHOLDS]).ok)
+})
+
+test('s3 hygiene: values exactly at each threshold count (at or above)', () => {
+  assert.equal(hyg(['commit', 'phase-left'], 50).offer, 'compact')
+  assert.equal(hyg(['commit', 'phase-left'], 49.9).offer, null)
+  assert.equal(hyg(['commit'], 15, false).offer, 'fresh')
+  assert.equal(hyg(['commit'], 14.9, false).offer, null)
+  assert.deepEqual(hyg([], 75).warnings.map(w => w.key), ['hygiene:context'])
+  assert.deepEqual(hyg([], 74.9).warnings, [])
+})
+
+test('s3 hygiene: safe-point events in any order (DD-40.5); a bare commit with tasks open is mid-step', () => {
+  assert.equal(hyg(['phase-left', 'commit'], 60).offer, 'compact')
+  assert.equal(hyg(['task-group-done', 'commit'], 60).offer, 'compact')
+  assert.equal(hyg(['commit'], 60).offer, null)
+  assert.equal(hyg(['commit'], 60, false).offer, 'fresh')
+  assert.equal(hyg(['commit', 'phase-left'], 60, false).offer, 'fresh') // both: fresh wins
+})
+
+test('s3 hygiene via reduce: commit in one turn, phase left in the next → compact at the second turn end', () => {
+  const s0 = run({ kind: 'ThresholdsRead', id: id(), raw: THRESHOLDS }, workflows(), read(change(0, 9, { appetite: 'SMALL' })))
+  const s1 = [cmd('git commit -m x', 3), turnEnd(62)].reduce(reduce, s0)
+  assert.equal(s1.offer, null)
+  const s2 = [skill('epic-delivery', 4), turnEnd(62)].reduce(reduce, s1)
+  assert.equal(s2.offer, 'compact')
+})
+
+// ---------------------------------------------------------------- dispatch
+test('s3 roleOf: agent name (plugin-prefixed) first, then description regex, case-insensitive', () => {
+  assert.equal(roleOf(buildTier, 'meaningfy-building:code-reviewer', 'stage checker'), 'reviewer')
+  assert.equal(roleOf(buildTier, 'general-purpose', 'Stage CHECKER'), 'checker')
+  assert.equal(roleOf(buildTier, 'general-purpose', 'adversarial run'), 'tester')
+  assert.equal(roleOf(buildTier, 'general-purpose', 'checklist builder'), 'other')
+})
+
+test('s3 roleOf: a role regex that does not compile classes as other and never throws', () => {
+  const w = { ...buildTier, roles: { checker: { describe: '(' } } } as Workflow
+  assert.equal(roleOf(w, 'general-purpose', '('), 'other')
+  assert.doesNotThrow(() => run(workflows([w]), read(change(3, 9)), spawnS('general-purpose', '(')))
+})
+
+test('s3 PD-8: one reviewer per turn over three turns is fine on SMALL; two in a turn over-spawn; LARGE allows 6', () => {
+  const s = run({ kind: 'ThresholdsRead', id: id(), raw: THRESHOLDS }, workflows(), read(change(3, 9, { appetite: 'SMALL' })),
+    spawnS('code-reviewer'), turnEnd(10), spawnS('code-reviewer'), turnEnd(10), spawnS('code-reviewer'))
+  assert.ok(!keys(s).some(k => k.startsWith('process:overspawn:')), keys(s).join())
+  assert.equal(overspawn(buildTier, 'SMALL', 't', ['reviewer', 'reviewer']).length, 1)
+  assert.equal(overspawn(buildTier, 'LARGE', 't', Array(6).fill('reviewer')).length, 0)
+  assert.equal(overspawn(buildTier, 'LARGE', 't', Array(7).fill('reviewer')).length, 1)
+  assert.equal(overspawn(buildTier, 'LARGE', 't', ['reviewer', 'checker', 'tester', 'other']).length, 0)
+})
+
+test('s3 PD-9: a checker spawned before the reviewers does not count as the second check', () => {
+  assert.equal(secondCheck(buildTier, 'MEDIUM', 'x', [{ kind: 'spawn', role: 'checker' }, { kind: 'spawn', role: 'reviewer' }, { kind: 'ship' }]).length, 1)
+  assert.equal(secondCheck(buildTier, 'MEDIUM', 'x', [{ kind: 'spawn', role: 'reviewer' }, { kind: 'spawn', role: 'checker' }, { kind: 'ship' }]).length, 0)
+  assert.equal(secondCheck(buildTier, 'SMALL', 'x', [{ kind: 'spawn', role: 'reviewer' }, { kind: 'ship' }]).length, 0)
+  const s = run({ kind: 'ThresholdsRead', id: id(), raw: THRESHOLDS }, workflows(), read(change(3, 9, { appetite: 'MEDIUM' })),
+    spawnS('general-purpose', 'stage checker'), ...Array.from({ length: 5 }, () => spawnS('code-reviewer')), cmd('git push origin x', 5))
+  assert.ok(keys(s).includes('process:second-check:navigator'), keys(s).join())
+})
+
+test('s3 PD-7: model ranks by substring; a declared or unranked model is never judged', () => {
+  const sp = (model: string, declared = false) => ({ agentId: 'a', model, declared })
+  assert.equal(modelAbove(T, sp('claude-opus-5-5'), 'claude-sonnet-4-5').length, 1)
+  assert.equal(modelAbove(T, sp('sonnet'), 'claude-opus-5-5').length, 0)
+  assert.equal(modelAbove(T, sp('opus'), 'claude-opus-5-5[1m]').length, 0)
+  assert.equal(modelAbove(T, sp('claude-opus-5-5[1m]'), 'haiku').length, 1)
+  assert.equal(modelAbove(T, sp('opus', true), 'haiku').length, 0)
+  assert.equal(modelAbove(T, sp('fable'), 'haiku').length, 0)
+  const s = run({ kind: 'ThresholdsRead', id: id(), raw: THRESHOLDS }, workflows(), read(change(3, 9)))
+  assert.equal(rewriteModel(s, 'opus', 'claude-sonnet-4-5'), 'claude-sonnet-4-5')
+  assert.equal(rewriteModel(s, 'haiku', 'claude-sonnet-4-5'), null)
+})
+
+test('s3 unused skill: only a load followed directly by another load in the turn; plugin prefix dropped', () => {
+  const ws = unusedSkills([{ kind: 'skill', name: 'p:a' }, { kind: 'skill', name: 'b' }, { kind: 'tool' }, { kind: 'skill', name: 'c' }])
+  assert.deepEqual(ws.map(w => [w.key, w.owner]), [['hygiene:unused:a', 'skillery-feedback']])
+})
+
+// ---------------------------------------------------------------- strict
+test('s3 strict: a loose repo with session strict decides; a strict repo dropped then restored is strict again', () => {
+  assert.ok('deny' in decideCommit(run(workflows(), read(change(3, 9)), setMode('strict'))))
+  const back = [setMode('loose'), setMode('strict')].reduce(reduce, applyState('strict'))
+  assert.equal(back.mode.session, null)
+  assert.ok('deny' in decideCommit(back))
+})
+
+test('s3 strict: a phase with no expect and no gates allows the commit; the reminder says none', () => {
+  const w = minimal({ phases: [{ id: 'a', owner: 'o', expect: [], enter: {} }] })
+  const parsed = resolveWorkflows([src('skills/x/assets/workflows/flow.workflow.json', JSON.stringify(w))], [])
+  const s = run(workflows(parsed.workflows, [], 'strict'), skill('go', 3))
+  assert.equal(s.phase, 'a')
+  assert.deepEqual(decideCommit(s), { allow: true })
+  assert.match(reminder(s) ?? '', /Expected: none\. Gates: none\./)
+})
+
+test('s3 strict: no workflow at all → commit, spawn and archive are allowed, no reminder', () => {
+  const s = run(workflows([], [], 'strict'))
+  assert.deepEqual(decideCommit(s), { allow: true })
+  assert.deepEqual(decideSpawn(s, null, null), { allow: true })
+  assert.deepEqual(decideArchive(s), { allow: true })
+  assert.equal(reminder(s), null)
+})
+
+test('s3 strict: an accepted over-spawn is not denied; the model rewrite still applies', () => {
+  const over = { key: 'process:overspawn:t1', message: 'm', remedy: null, owner: 'epic-delivery' }
+  const s = reduce(applyState('strict'), { kind: 'Accepted', id: id(), keys: [over.key] })
+  assert.deepEqual(decideSpawn(s, over, 'sonnet'), { model: 'sonnet' })
+  assert.deepEqual(decideSpawn(s, over, null), { allow: true })
+})
+
+test('s3 strict archive: open plan drift denies with the remedy and accept command; accepted allows', () => {
+  const s = reduce(applyState('strict'), planRead('plan:outside:a.ts'))
+  const d = decideArchive(s)
+  assert.ok('deny' in d && d.deny.includes('/openspec-update-change navigator') && d.deny.includes('/navigator accept plan:outside:a.ts'))
+  assert.deepEqual(decideArchive(reduce(s, { kind: 'Accepted', id: id(), keys: ['plan:outside:a.ts'] })), { allow: true })
+})
+
+// ---------------------------------------------------------------- actions
+test('s3 reconcile: chains update then clarity gate for a safe id; null for unsafe ids or no open plan drift', () => {
+  const s = reduce(applyState(), planRead('plan:outside:a.ts'))
+  assert.deepEqual(reconcile(s), ['openspec-update-change navigator', 'clarity-gate navigator'])
+  for (const bad of ['x; rm -rf /', 'a b', '$(id)', '']) {
+    assert.equal(reconcile({ ...s, change: { ...s.change!, id: bad } }), null, bad)
+  }
+  assert.equal(reconcile(reduce(s, { kind: 'Accepted', id: id(), keys: ['plan:outside:a.ts'] })), null)
+  assert.equal(reconcile(applyState()), null)
+})
+
+test('s3 reconcile/review: a change id that starts with "-" is not put on a command line (option injection)', () => {
+  const s = reduce(applyState(), planRead('plan:outside:a.ts'))
+  const dash = { ...s, change: { ...s.change!, id: '--help' } }
+  assert.equal(reconcile(dash), null)
+  assert.equal(review(dash), null)
+})
+
+test('s3 review: shown in apply and verify only, with id and appetite', () => {
+  const s = applyState()
+  assert.equal(s.phase, 'apply')
+  assert.equal(review(s), 'meaningfy-code-review navigator VERY LARGE')
+  assert.ok(review({ ...s, phase: 'verify' })?.startsWith('meaningfy-code-review navigator'))
+  for (const p of ['explore', 'shape', 'plan', 'archive']) assert.equal(review({ ...s, phase: p }), null, p)
+  assert.equal(review({ ...s, change: { ...s.change!, id: 'a b' } }), null)
+})
+
+test('s3 modeAction: the switch goes both ways from the effective mode (DD-35)', () => {
+  assert.equal(modeAction(applyState('loose')), 'navigator mode strict')
+  assert.equal(modeAction(reduce(applyState('loose'), setMode('strict'))), 'navigator mode loose')
+  assert.equal(modeAction(applyState('strict')), 'navigator mode loose')
+  assert.equal(modeAction(reduce(applyState('strict'), setMode('loose'))), 'navigator mode strict')
+})
+
+test('s3 hygieneAction: compact keeps change, phase, warnings, decisions; fresh is clear; none otherwise', () => {
+  const s = applyState()
+  assert.deepEqual(hygieneAction({ ...s, offer: 'compact' }),
+    { label: 'Compact now', line: 'compact keep: change navigator, phase apply, open warnings, decisions are in design.md' })
+  assert.deepEqual(hygieneAction({ ...s, offer: 'fresh' }), { label: 'Fresh session', line: 'clear' })
+  assert.equal(hygieneAction(s), null)
+})

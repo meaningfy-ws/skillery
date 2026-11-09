@@ -5,7 +5,7 @@ import { lean } from './lean.ts'
 import { navigate } from './phase.ts'
 import { addWarnings, clearGateWarnings, gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, onCommand,
   onCommit, onSkill, showsConsent, workflowErrors } from './process-drift.ts'
-import { bare, currentPhase, workflowOf } from './workflow.ts'
+import { bare, currentPhase, isCommit, workflowOf } from './workflow.ts'
 
 export type { Activate, BandDisplay, Change, ChangePredicate, Gate, GateState, Group, NavState, Phase, Review, SkillUse,
   Subagent, Warning, Workflow } from '../types'
@@ -69,6 +69,9 @@ export type Signal =
       asked?: string; parentModel?: string }
   | { kind: 'SubagentFinished'; id: string; agentId: string; tokens: number; answer?: string }
   | { kind: 'ThresholdsRead'; id: string; raw: unknown }
+  | { kind: 'AgentCalled'; id: string; agentId: string }
+  | { kind: 'SpawnAsked'; id: string; type: string; description: string }
+  | { kind: 'AcceptedRead'; id: string; keys: string[] }
   | { kind: 'TurnEnded'; id: string; turnId: string; contextPercent: number; cleanTree: boolean; at: number }
   | { kind: 'Compacted'; id: string; trigger: string }
   | { kind: 'ToggleBand'; id: string }
@@ -135,7 +138,7 @@ function apply(state: NavState, s: Signal): NavState {
       const consent = onCommand(next, w, s.command)
       next = { ...next, consent: consent.consent, warnings: addWarnings(next, consent.warnings) }
       const p = currentPhase(next)?.p
-      if (s.ok && p && /\bgit\s+commit\b/.test(s.command)) next = { ...next, warnings: addWarnings(next, onCommit(next, p)) }
+      if (s.ok && p && isCommit(s.command)) next = { ...next, warnings: addWarnings(next, onCommit(next, p)) }
       return s.ok ? navigate(next, s.at, null, { command: s.command }) : next
     }
     case 'FileTouched': {
@@ -183,6 +186,8 @@ function apply(state: NavState, s: Signal): NavState {
     case 'SetMode': // the session switch (DD-35); a new session follows the repo again
       return { ...state, mode: { ...state.mode, session: s.mode === state.mode.repo ? null : s.mode } }
     case 'ThresholdsRead':
+    case 'AgentCalled':
+    case 'SpawnAsked':
     case 'TurnEnded':
     case 'Compacted':
       return state // lean() keeps these (lib/lean.ts)
@@ -191,6 +196,8 @@ function apply(state: NavState, s: Signal): NavState {
         warnings: [...state.warnings.filter(w => !w.key.startsWith('plan:')), ...s.warnings] }
     case 'SetPending':
       return { ...state, pending: s.line }
+    case 'AcceptedRead': // the change's deviations.md, read each main turn: a change switch takes its own
+      return { ...state, accepted: s.keys }
     case 'Accepted':
       return { ...state, accepted: [...new Set([...state.accepted, ...s.keys])] }
   }

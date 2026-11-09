@@ -215,7 +215,7 @@ export function resolveWorkflows(defaults: Source[], repo: Source[]): Resolved {
   for (const src of defaults) {
     const r = parseWorkflow(src, 'default')
     if ('error' in r) errors.push(r.error)
-    else byName.set(r.workflow.name, r.workflow)
+    else byName.set(r.workflow.name, { ...r.workflow, source: src.path })
   }
   let mode: Resolved['mode'] = 'loose'
   for (const src of repo) {
@@ -232,7 +232,8 @@ export function resolveWorkflows(defaults: Source[], repo: Source[]): Resolved {
         errors.push(`workflow file ${src.path}: extends unknown workflow '${base}'`)
         continue
       }
-      merged = { ...from, ...own } // shallow: `phases` and every other field wholesale
+      const { source: _, ...fields } = from
+      merged = { ...fields, ...own } // shallow: `phases` and every other field wholesale
       const error = workflowError(merged, 'repo')
       if (error) {
         errors.push(`workflow file ${src.path}: ${error}`)
@@ -240,7 +241,7 @@ export function resolveWorkflows(defaults: Source[], repo: Source[]): Resolved {
       }
     }
     if (merged.mode === 'strict') mode = 'strict'
-    byName.set(merged.name, merged)
+    byName.set(merged.name, { ...merged, source: src.path })
   }
   return { workflows: [...byName.values()], errors, mode }
 }
@@ -262,6 +263,21 @@ export function namesIn(w: Workflow): string[] {
 
 /** `superpowers:test-driven-development` → `test-driven-development`. */
 export const bare = (name: string) => name.slice(name.lastIndexOf(':') + 1)
+
+// Commands are matched where a shell segment starts, never inside a quoted string or a grep (DD-41).
+const SEG = String.raw`(?:^|[;&|(]\s*|\n\s*)`
+const at = (re: string) => new RegExp(`${SEG}${re}`)
+const COMMIT = at(String.raw`git(?:\s+-[Cc]\s+\S+)*\s+commit\b`)
+const ARCHIVE = at(String.raw`openspec\s+archive\b`)
+const SHIP = at(String.raw`(?:git(?:\s+-[Cc]\s+\S+)*\s+push|gh\s+pr\s+create)\b`)
+const MERGE = at(String.raw`gh\s+pr\s+merge\b`)
+export const isCommit = (c: string) => COMMIT.test(c)
+export const isArchive = (c: string) => ARCHIVE.test(c)
+export const isShip = (c: string) => SHIP.test(c) || ARCHIVE.test(c)
+export const isPrMerge = (c: string) => MERGE.test(c)
+
+/** A change id safe to put in a command line: never an option (DD-41). */
+export const safeChangeId = (s: NavState) => (s.change && /^\w[\w.-]*$/.test(s.change.id) ? s.change.id : null)
 
 /** The effective mode: the session's switch if set, else the repo's (DEC-5, DD-35). */
 export const isStrict = (s: NavState) => (s.mode.session ?? s.mode.repo) === 'strict'

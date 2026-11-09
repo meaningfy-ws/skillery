@@ -4,6 +4,7 @@
 import type { Thresholds } from './hygiene.ts'
 import type { Warning, Workflow } from './state.ts'
 import { bare } from './workflow.ts'
+import { isShip } from './workflow.ts'
 
 const warning = (key: string, message: string, remedy: string | null, owner: string): Warning =>
   ({ key, message, remedy, owner })
@@ -19,6 +20,7 @@ const matches = (pattern: string, text: string) => {
  *  shortcut: an unnamed checker whose description misses the regex counts as `other`. */
 export function roleOf(w: Workflow, type: string, description: string): Role {
   const roles = w.roles ?? {}
+  // The agent name first: a reviewer described as "a quick check" stays a reviewer (DD-41 rejected).
   return ROLES.find(r => roles[r]?.agents?.some(a => bare(a) === bare(type)))
     ?? ROLES.find(r => roles[r]?.describe !== undefined && matches(roles[r]!.describe!, description))
     ?? 'other'
@@ -27,7 +29,7 @@ export function roleOf(w: Workflow, type: string, description: string): Role {
 /** PD-6: a finished subagent that made at most the lookup count of tool calls should have been done inline. */
 export const inlineSpawn = (t: Thresholds, agentId: string, toolCalls: number): Warning[] =>
   toolCalls <= t.lookup_max_tool_calls
-    ? [warning(`process:inline:${agentId}`, `subagent ${agentId} made ${toolCalls} tool calls: a lookup, do it inline`, null, 'guardrails')]
+    ? [warning(`process:inline:${agentId}`, `subagent ${agentId} made ${toolCalls} tool calls (lookup_max_tool_calls)`, null, 'guardrails')]
     : []
 
 /** Position in `model_rank` by substring, cheapest first; -1 when unranked. */
@@ -59,7 +61,7 @@ export function overspawn(w: Workflow, appetite: string | null, turnId: string, 
 export type DispatchEvent = { kind: 'spawn'; role: Role } | { kind: 'ship' }
 
 /** A push, a PR or an archive: the moments the second check must have run by. */
-export const shipCommand = (command: string) => /\bgit\s+push\b|\bgh\s+pr\s+create\b|\bopenspec\s+archive\b/.test(command)
+export const shipCommand = isShip
 
 /** PD-9: the appetite needs a checker, reviewers ran, and a ship followed with no checker spawned since. */
 export function secondCheck(w: Workflow, appetite: string | null, change: string, events: DispatchEvent[]): Warning[] {
@@ -79,7 +81,7 @@ export function secondCheck(w: Workflow, appetite: string | null, change: string
 export function reportOversized(t: Thresholds, agentId: string, answer: string): Warning[] {
   const lines = answer.replace(/\n$/, '').split('\n').length
   return lines > t.subagent_report_max_lines
-    ? [warning(`hygiene:report:${agentId}`, `subagent ${agentId} returned ${lines} lines: put the detail in a file`, null, 'guardrails')]
+    ? [warning(`hygiene:report:${agentId}`, `subagent ${agentId} returned ${lines} lines (subagent_report_max_lines)`, null, 'guardrails')]
     : []
 }
 

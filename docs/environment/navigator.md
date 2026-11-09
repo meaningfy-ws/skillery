@@ -109,7 +109,7 @@ the end of each turn. It warns when:
 
 A worked example. Your branch changes `mods/navigator/lib/view.ts`, which `tasks.md` names through
 `mods/navigator/lib/`, and `tools/repo_lint/lint.py`, which no task names. The band shows
-`⚠ tools/repo_lint/lint.py changed outside the plan (epic-planning)`. You have two ways out:
+`⚠ tools/repo_lint/lint.py changed; no task, design or proposal names it (epic-planning)`. You have two ways out:
 
 - **Reconcile EPIC** runs `/openspec-update-change <id>` to put the file into the PLAN, then
   `/clarity-gate <id>` once that turn ends. The next read finds the file covered and the warning goes.

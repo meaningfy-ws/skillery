@@ -1,8 +1,8 @@
 // Band actions → commands a person could type (design §8, DEC-6). Pure: register.tsx submits them.
 
-import { missingExpect } from './process-drift.ts'
+import { missingExpect, openDrift } from './process-drift.ts'
 import type { NavState } from './state.ts'
-import { bare, currentPhase, phasesOf } from './workflow.ts'
+import { bare, currentPhase, phasesOf, safeChangeId } from './workflow.ts'
 
 export type Command = { command: string; args: string }
 
@@ -19,7 +19,7 @@ export function nextStep(s: NavState): string | null {
 
 /** The remedy of the oldest open warning that has one. */
 export function backOnTrack(s: NavState): string | null {
-  return s.warnings.find(w => w.remedy)?.remedy ?? null
+  return openDrift(s).find(w => w.key.startsWith('process:') && w.remedy)?.remedy ?? null
 }
 
 /** The `run` lines of the phase's command gates, `{change}` filled in. */
@@ -27,7 +27,7 @@ export function validateRuns(s: NavState): string[] {
   const here = currentPhase(s)
   if (!here) return []
   // Only a safe change id goes into a command line; a `{change}` line with none is skipped (DD-38).
-  const id = s.change && /^[\w.-]+$/.test(s.change.id) ? s.change.id : null
+  const id = safeChangeId(s)
   return (here.p.gates ?? []).flatMap(g => {
     const gate = here.w.gates?.[g]
     if (gate?.kind !== 'command' || !gate.run || (gate.run.includes('{change}') && !id)) return []
@@ -45,19 +45,18 @@ export function commandFor(line: string, installed: readonly string[]): Command 
 
 // ---------------------------------------------------------------- stage 3 (design §8, DD-16, DD-35)
 
-const safeId = (s: NavState) => (s.change && /^[\w.-]+$/.test(s.change.id) ? s.change.id : null)
 
 /** Reconcile EPIC: update the change, then — after that turn ends — run the clarity gate (DD-16). */
 export function reconcile(s: NavState): [string, string] | null {
-  const id = safeId(s)
-  const open = s.warnings.some(w => w.key.startsWith('plan:') && !s.accepted.includes(w.key))
+  const id = safeChangeId(s)
+  const open = openDrift(s).some(w => w.key.startsWith('plan:'))
   return id && open ? [`openspec-update-change ${id}`, `clarity-gate ${id}`] : null
 }
 
 /** Review: the code-review skill, where the phase expects or allows it. */
 export function review(s: NavState): string | null {
   const here = currentPhase(s)
-  const id = safeId(s)
+  const id = safeChangeId(s)
   const names = here ? [...here.p.expect.map(x => x.skill), ...(here.p.allow ?? [])].map(bare) : []
   return id && names.includes('meaningfy-code-review') ? `meaningfy-code-review ${id} ${s.change!.appetite ?? ''}`.trim() : null
 }

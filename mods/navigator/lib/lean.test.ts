@@ -20,8 +20,8 @@ const base = (appetite: string, raw: unknown = thresholds): Signal[] => [
   { kind: 'WorkflowsRead', id: id(), workflows, errors: [], mode: 'loose', at: 1 },
   { kind: 'ChangeRead', id: id(), change: change(appetite), openChanges: 1, at: 2 },
 ]
-const spawn = (type: string, description = ''): Signal =>
-  ({ kind: 'SubagentSpawned', id: id(), agentId: id(), type, model: 'sonnet', description, at: 3 })
+// A spawn is counted when it is asked, before it runs (DD-41): what register.tsx sends first.
+const spawn = (type: string, description = ''): Signal => ({ kind: 'SpawnAsked', id: id(), type, description })
 const cmd = (command: string): Signal => ({ kind: 'ToolRan', id: id(), command, ok: true, at: 4 })
 const turn = (contextPercent: number): Signal => ({ kind: 'TurnEnded', id: id(), turnId: id(), contextPercent, cleanTree: true, at: 5 })
 const run = (...signals: Signal[]): NavState => signals.reduce(reduce, EMPTY)

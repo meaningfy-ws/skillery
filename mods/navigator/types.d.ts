@@ -68,7 +68,11 @@ export type Workflow = {
   roles?: Partial<Record<'reviewer' | 'checker' | 'tester', { agents?: string[]; describe?: string }>>
   replaces?: Record<string, string>
   planDrift?: { ignore: string[] }
+  source?: string // the file it was read from; set by resolveWorkflows, never written in a file
 }
+
+export type Role = 'reviewer' | 'checker' | 'tester' | 'other'
+export type HygieneEvent = 'commit' | 'phase-left' | 'task-group-done' | 'pr-merged' | 'archived'
 
 export type Warning = { key: string; message: string; remedy: string | null; owner: string }
 
@@ -113,11 +117,11 @@ export type NavState = {
   thresholds: unknown
   parentModel: string
   turnId: string // the current main turn; PD-8 counts reviewer spawns per turn
-  turnRoles: string[]
+  turnRoles: Role[]
   turnEvents: ({ kind: 'skill'; name: string } | { kind: 'tool' })[]
   agentCalls: Record<string, number> // tool calls per subagent (PD-6)
-  shipLog: ({ kind: 'spawn'; role: string } | { kind: 'ship' })[] // per change (PD-9)
-  hygieneEvents: string[] // since the last safe point or task boundary
+  shipLog: ({ kind: 'spawn'; role: Role } | { kind: 'ship' })[] // per change (PD-9)
+  hygieneEvents: HygieneEvent[] // since the last safe point or task boundary
   offer: 'compact' | 'fresh' | null
   pending: string | null // a command to submit when the main turn ends (Reconcile EPIC's second step, DD-16)
   display: { band: BandDisplay; line: boolean }

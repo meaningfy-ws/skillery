@@ -1036,7 +1036,7 @@ def mod_bindings_match(repo: Path) -> list[str]:
     declared = {h.get("id") for h in hooks if isinstance(h, dict)
                 and any((b or {}).get("mechanism") == "mod" for b in h.get("bindings") or [])}
     coded = {m for f in sorted(repo.glob("mods/*/lib/strict.ts"))
-             for m in re.findall(r"\bid:\s*'([^']+)'", f.read_text(encoding="utf-8"))}
+             for m in re.findall(r"\bid:\s*'([^']+)'", re.sub(r"//[^\n]*", "", f.read_text(encoding="utf-8")))}
     return ([f"{HOOKS_INVENTORY}: mod hook '{h}' has no rule in mods/*/lib/strict.ts" for h in sorted(declared - coded)]
             + [f"mods/*/lib/strict.ts: rule '{h}' has no mod hook in {HOOKS_INVENTORY}" for h in sorted(coded - declared)])
 
