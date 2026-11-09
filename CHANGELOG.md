@@ -13,19 +13,25 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
-- `meaningfy-navigator`: three more workflows. Conceptual modelling (elicit, model, generate,
-  validate) and release (branch, bump, validate, merge, publish, back-merge) now show their phase and
-  warn on a skipped step; architecting, now titled Architecture, runs drivers, use cases, C4,
-  decide and domain, then hands over to conceptual modelling. Writing the
+- `meaningfy-navigator`: an EPIC shaping workflow (explore, variants, decide, propose, design,
+  revise), split out of build-tier. Three more workflows: conceptual modelling (elicit, model,
+  generate, validate) and release (branch, bump, validate, merge, publish, back-merge) now show their
+  phase and warn on a skipped step; architecting, now titled Architecture, is rewritten to run
+  drivers, use cases, C4, decide and domain, then hands over to conceptual modelling. Writing the
   file a phase waits for (a use case, a C4 view, a model file) now moves the session to the next
   phase. A repository changes where those files live with `extends`; see the navigator guide.
 
 ### Changed
 
-- **BREAKING** `meaningfy-navigator`: the build-tier phases `shape` and `plan` are gone, replaced by
-  `variants`, `decide`, `propose`, `design` and `revise`, and the variant `exploratory` is renamed
-  `work-shaping`. A repository file in `docs/navigator/` that names `shape`, `plan` or `exploratory`
-  must use the new names.
+- **BREAKING** `meaningfy-navigator`: the build-tier workflow is renamed `epic-delivery`. A repository
+  file in `docs/navigator/` that extends `build-tier` must rename the file and its `extends`;
+  otherwise the band reports the error and strict mode is lost.
+- **BREAKING** `meaningfy-navigator`: the shaping phases moved to the new `epic-shaping` workflow;
+  `shape`, `plan` and the variant `exploratory` are gone, and delivery starts at `ready`. A
+  repository file that names `shape`, `plan` or `exploratory` must use the new names.
+- **BREAKING** `meaningfy-navigator`: architecting's `explore` and `elicit` phases are removed, and it
+  no longer activates on `conceptual-modelling` or `conceptual-modeller`. A repository file that
+  extends it and names those phases keeps its own phases.
 
 ## [3.10.1] - 2026-11-09
 

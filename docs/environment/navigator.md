@@ -31,8 +31,8 @@ meaningfy-navigator: navigator · VERY LARGE · Stage 1 — See it apply 9/12 ·
 That is the open change, its appetite (its size, once the PLAN names it), the current stage of its
 `tasks.md` with the workflow phase (`apply`) and that stage's progress, the progress of the whole
 change, and how many other changes are open. It shows the one your branch names. With no open
-change it reads `navigator · no open change`, followed by the phase once you load a skill of
-the build-tier workflow (`· explore`). In a repository whose workflow file declares strict
+change it reads `navigator · no open change`; once you load a skill of the EPIC shaping workflow it
+reads `epic-shaping · explore` instead. In a repository whose workflow file declares strict
 mode, it ends with `● strict` (see *Loose and strict* below).
 
 In another workflow (DevOps, sales, architecting), the line names that workflow, its variant and its
@@ -53,9 +53,9 @@ With nothing to report it shows just its buttons. Unfolded, it adds:
 
 ```
 stages    ✓ 1 See it 12/12 · ● 2 Follow the workflow 3/12 · ○ 3 Stay on plan 0/13 · ○ Close 0/4
-phases    Build-tier EPIC delivery · ✓ explore · ✓ variants · ✓ decide · ✓ propose · ✓ design · ✓ revise · ● apply · ○ verify · ○ archive
+phases    EPIC delivery · ✓ ready · ● apply · ○ verify · ○ archive
 appetite  VERY LARGE · tasks 9/41 · groups 1/4 · reviewers 0/6 this turn · 1.2M tokens · $3.40
-skills    clarity-gate (revise) · epic-delivery (apply)
+skills    epic-delivery (apply) · test-driven-development (apply)
 subagents code-reviewer · sonnet · done · 41.0k tokens · implementer · opus · running
 warnings  ⚠ commit in apply without test-driven-development (epic-delivery)
 mode      ○ loose
@@ -64,14 +64,14 @@ mode      ○ loose
 
 ## Workflows and phases
 
-Navigator follows six workflows, each kept as a file in the skill that owns it: build-tier EPIC
-delivery (`epic-delivery`), architecting (`architecture`), conceptual modelling
+Navigator follows seven workflows, each kept as a file in the skill that owns it: EPIC shaping
+(`epic-planning`), EPIC delivery (`epic-delivery`), architecting (`architecture`), conceptual modelling
 (`conceptual-modelling`), release (`meaningfy-release`), DevOps (`infrastructure-operations`) and
-sales (`sales-operations`, provisional). The build-tier phases are explore, variants, decide,
-propose, design, revise, apply, verify and archive; its variants are `work-shaping` (the first six)
-and `brownfield`. Each file lists its own phases. It picks the workflow from
+sales (`sales-operations`, provisional). EPIC shaping has the phases explore, variants,
+decide, propose, design and revise; EPIC delivery has ready, apply, verify and archive, and its
+variant is `brownfield`. Each file lists its own phases. It picks the workflow from
 the skills you load and the subagents you start; with an open change and nothing else loaded, it
-is build-tier. The phase follows the skills you load and the state of the change's files: ticking
+is EPIC delivery, starting at `ready`. The phase follows the skills you load and the state of the change's files: ticking
 the last task of `tasks.md` moves `apply` to `verify`. In DevOps, the commands move it:
 `terraform plan` reaches the consent card, your answer to the card reaches `apply`.
 
@@ -151,15 +151,16 @@ It shows these; it never decides for you.
 ## Loose and strict
 
 Loose is the default: navigator warns and never blocks. A repository becomes strict with a workflow
-file of its own, `docs/navigator/build-tier.workflow.json`:
+file of its own, `docs/navigator/epic-delivery.workflow.json`:
 
 ```json
-{ "name": "build-tier", "extends": "build-tier", "mode": "strict" }
+{ "name": "epic-delivery", "extends": "epic-delivery", "mode": "strict" }
 ```
 
 A repository whose files live elsewhere changes a glob with `extends`. The merge is shallow: a field
 you give replaces the whole field of the default. To move the use-case glob, give the full `gates`
-object, not only the one glob:
+object, not only the one glob (copy `gates` from the
+[default file](../../skills/architecture/assets/workflows/architecting.workflow.json) and change the one glob):
 
 ```json
 { "name": "architecting", "extends": "architecting",
