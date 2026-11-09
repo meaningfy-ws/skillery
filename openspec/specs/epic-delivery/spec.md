@@ -4,7 +4,6 @@
 How a gated PLAN is delivered by a lean agent team: the main session leads and alone talks to the
 developer, the loop of a stage scales with the EPIC's appetite, people validate once per EPIC, and a
 library gap is handled by who owns the library.
-
 ## Requirements
 ### Requirement: One lead talks to the developer
 In an epic session the main session SHALL act as the lead: it alone SHALL talk to the developer,
@@ -20,9 +19,12 @@ SHALL NOT ask the developer, commit or file an issue; it SHALL report what it ne
 
 ### Requirement: The loop scales with the appetite
 The loop of a stage SHALL be Prepare, Build, Challenge, Decide and fix, Check, Merge, and the
-Challenge and Check steps SHALL scale with the EPIC's appetite: TINY and SMALL run one combined
-review pass and no separate checker; MEDIUM runs the five review lenses and one checker per stage;
-LARGE and larger add the adversarial tester and, when screens changed, the UX lens (DEC-7, DEC-10).
+Challenge and Check steps SHALL scale with the EPIC's appetite (align-agent-team-delivery DEC-7,
+DEC-10) as the review set of the build-tier workflow file in `epic-delivery` states for each
+appetite.
+That file SHALL be the only statement of which review set each appetite gets; `epic-delivery`, its
+references, `meaningfy-code-review`, `guardrails` and the docs SHALL point to it, and worked
+examples and tests MAY illustrate it.
 
 #### Scenario: A SMALL EPIC
 - **WHEN** a SMALL EPIC's stage is built
@@ -31,6 +33,10 @@ LARGE and larger add the adversarial tester and, when screens changed, the UX le
 #### Scenario: A LARGE EPIC with screens
 - **WHEN** a stage of a LARGE EPIC that changed screens is built
 - **THEN** the adversarial tester, the five lenses and the UX lens run in parallel, followed by one fresh checker
+
+#### Scenario: The scaling has one source
+- **WHEN** a contributor looks up the review set of a MEDIUM EPIC in `epic-delivery`
+- **THEN** the skill points to the build-tier workflow file, which states five lenses and a checker, and no table in the skill repeats it
 
 ### Requirement: People validate once per EPIC
 Scenario sign-off SHALL happen once per EPIC at the PLAN gate and again only for a changed
@@ -56,4 +62,14 @@ decides on the lead's recommendation (DEC-8).
 #### Scenario: An external library lacks a capability
 - **WHEN** an external library lacks a needed capability
 - **THEN** the lead records the three options with a recommendation in `design.md` before any code, and the developer chooses
+
+### Requirement: The build-tier workflow is data
+`epic-delivery` SHALL host the build-tier workflow file, with its exploratory and brownfield
+variants: the phases, each phase's owning skill, the skills expected to run, the gates, the review
+set per appetite and how reviewers, checkers and testers are recognised. It SHALL cite skills by
+name (DEC-1, DEC-13). The file SHALL be the single source of the review set per appetite.
+
+#### Scenario: The review set the band checks
+- **WHEN** navigator checks a SMALL EPIC's reviewer count
+- **THEN** it reads the count from the build-tier workflow file in `epic-delivery`
 
