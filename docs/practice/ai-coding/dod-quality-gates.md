@@ -25,8 +25,8 @@ stage gates (the Discovery & Onboarding safeguards, for example), see
 | **Code review** | content | [`meaningfy-code-review`](../../../skills/meaningfy-code-review/SKILL.md) | No unaddressed Critical findings (architecture, security, spec conformance) |
 
 **The gates scale with the EPIC's appetite.** Every task runs the project's gates. How much review
-and checking a stage gets depends on the EPIC's size. The scaling table is in
-[`stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md).
+and checking a stage gets depends on the EPIC's size. The review set of each appetite is in
+[`build-tier.workflow.json`](../../../skills/epic-delivery/assets/workflows/build-tier.workflow.json).
 
 **Validation points, per EPIC.** The gates above verify. People validate at a few fixed points: the
 scenario sign-off once at the PLAN gate, the model review when the model changes, the acceptance

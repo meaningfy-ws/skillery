@@ -373,7 +373,8 @@ def use_case_coverage(repo: Path) -> list[str]:
 
 _DEP_REQUIRED = ("name", "kind", "source", "pin", "provenance", "used_by", "opencode_status",
                  "claude_install", "opencode_install")
-_DEP_OPTIONAL = ("summary", "transport", "notes", "why", "hosting")
+_DEP_OPTIONAL = ("summary", "transport", "notes", "why", "hosting", "skills")
+_KEBAB = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 
 def dependencies_register(repo: Path) -> list[str]:
@@ -387,6 +388,7 @@ def dependencies_register(repo: Path) -> list[str]:
         return [f"{path.name}: must be a list of entries"]
     keywords = list(skill_inventory.DEPENDENCY_STATUSES)
     out: list[str] = []
+    owners: dict[str, str] = {}
     for d in entries:
         if not isinstance(d, dict):
             out.append(f"{path.name}: entry {d!r} is not a mapping")
@@ -401,6 +403,34 @@ def dependencies_register(repo: Path) -> list[str]:
         status = str(d.get("opencode_status") or "")
         if status and status.split(" ")[0] not in keywords:
             out.append(f"{who} opencode_status must start with {', '.join(keywords[:-1])} or {keywords[-1]}")
+        out += _dep_skills(repo, d, who, owners)
+    # The navigator's TC-16 reads `skills:` with a line reader: only the inline `[a, b]` form, bare
+    # names, at entry level (DD-28, DD-38); text inside a block string is deeper and never matches.
+    out += [f"{path.name}: line {i}: 'skills:' must be an inline list of bare names, `skills: [a, b]`"
+            for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+            if re.match(r"^(- |  )skills:", line)
+            and not re.match(r"^(- |  )skills:\s*\[[^\]'\"]*\]\s*(#.*)?$", line)]
+    return out
+
+
+def _dep_skills(repo: Path, d: dict, who: str, owners: dict[str, str]) -> list[str]:
+    """The optional `skills:` list (navigator DD-28): kebab names, each in one entry, none shadowing
+    a `skills/` directory."""
+    if "skills" not in d:
+        return []
+    names = d["skills"]
+    if not isinstance(names, list):
+        return [f"{who} 'skills' must be a list"]
+    out: list[str] = []
+    for n in names:
+        if not isinstance(n, str) or not _KEBAB.match(n):
+            out.append(f"{who} skill name {n!r} is not kebab-case")
+        elif n in owners:
+            out.append(f"{who} skill '{n}' is already listed by '{owners[n]}'")
+        elif (repo / "skills" / n).is_dir():
+            out.append(f"{who} skill '{n}' is a skills/ directory of this catalogue")
+        else:
+            owners[n] = str(d.get("name", "?"))
     return out
 
 
@@ -428,9 +458,10 @@ def use_case_changes_registered(repo: Path) -> list[str]:
     return out
 
 
-TOP_LEVEL_FOLDERS = ("skills", "agents", "use-cases", "openspec", "docs", "tools", "tests", ".github",
+TOP_LEVEL_FOLDERS = ("skills", "agents", "mods", "use-cases", "openspec", "docs", "tools", "tests", ".github",
                      ".claude-plugin")
 _GENERATED_FOLDERS = ("bundles",)  # make bundles, committed symlinks; never hand-edit
+_INSTALLED_FOLDERS = ("node_modules",)  # npm ci (make install), git-ignored like .venv
 
 
 def top_level_folders(repo: Path) -> list[str]:
@@ -439,7 +470,7 @@ def top_level_folders(repo: Path) -> list[str]:
     return [f"{d.name}/: not an allowed top-level folder (allowed: {', '.join(TOP_LEVEL_FOLDERS)})"
             for d in sorted(repo.iterdir())
             if d.is_dir() and not d.name.startswith(".") and d.name not in TOP_LEVEL_FOLDERS
-            and d.name not in _GENERATED_FOLDERS]
+            and d.name not in _GENERATED_FOLDERS and d.name not in _INSTALLED_FOLDERS]
 
 
 def cross_skill_paths(repo: Path) -> list[str]:
@@ -924,7 +955,7 @@ def reciprocal_related_report(repo: Path) -> list[str]:
 # ------------------------------------------- dual-CLI foundation invariants (DEC-12/13)
 VERSION_FILE = "VERSION"
 HOOKS_INVENTORY = "hooks.yaml"
-_VALID_MECHANISM = {"git", "ci", "agent"}
+_VALID_MECHANISM = {"git", "ci", "agent", "mod"}
 _VALID_PHASE = {"quality", "phase-gate"}
 # The ONLY skill bodies allowed to carry a CLI-specific (/opsx: or .claude/) reference.
 # Seeded from docs/environment/dual-cli/body-agnosticism-audit.md — any other body fails the guard.
@@ -989,6 +1020,25 @@ def hooks_inventory_shape(repo: Path) -> list[str]:
             if (b or {}).get("phase") not in _VALID_PHASE:
                 out.append(f"hook '{hid}': bad phase '{(b or {}).get('phase')}'")
     return out
+
+
+def mod_bindings_match(repo: Path) -> list[str]:
+    """navigator DD-10: the hook ids with a `mod` binding in hooks.yaml are exactly the rule ids
+    (`id: '<hook id>'`) declared in mods/*/lib/strict.ts — no intent without its rule, no rule
+    without its intent. Silent without hooks.yaml."""
+    path = repo / HOOKS_INVENTORY
+    if not path.exists():
+        return []
+    try:
+        hooks = (yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("hooks") or []
+    except yaml.YAMLError:
+        return []  # hooks_inventory_shape reports it
+    declared = {h.get("id") for h in hooks if isinstance(h, dict)
+                and any((b or {}).get("mechanism") == "mod" for b in h.get("bindings") or [])}
+    coded = {m for f in sorted(repo.glob("mods/*/lib/strict.ts"))
+             for m in re.findall(r"\bid:\s*'([^']+)'", re.sub(r"//[^\n]*", "", f.read_text(encoding="utf-8")))}
+    return ([f"{HOOKS_INVENTORY}: mod hook '{h}' has no rule in mods/*/lib/strict.ts" for h in sorted(declared - coded)]
+            + [f"mods/*/lib/strict.ts: rule '{h}' has no mod hook in {HOOKS_INVENTORY}" for h in sorted(coded - declared)])
 
 
 def body_agnosticism(repo: Path) -> list[str]:
@@ -1123,7 +1173,7 @@ ALL_CHECKS = (
     agent_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
     boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
-    agents_canonical_invariant, hooks_inventory_shape, body_agnosticism,
+    agents_canonical_invariant, hooks_inventory_shape, mod_bindings_match, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
     top_level_folders,

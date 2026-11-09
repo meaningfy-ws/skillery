@@ -21,6 +21,7 @@ implement, and the reason behind the steps of [`setup-claude.md`](setup-claude.m
 | command content | `/opsx:<id>`, `/<name>` (native registration) | `.opencode/commands/<id>.md` (`template` + `$ARGUMENTS`) |
 | root binding | `CLAUDE.md` (pointer → `AGENTS.md`) | `AGENTS.md` (read natively) |
 | `VERSION` | `marketplace.json` `metadata.version` (`make bundles`) | `tools/opencode-catalogue.json` `version` and `package.json` `version` (`make bundles`) |
+| `mods/<name>/` | copied into `bundles/<b>/mods/<name>`; its bundle's `plugin.json` names its hooks, types and settings | not mapped: mods are Claude Code only (see [`compatibility.md`](compatibility.md)) |
 | hook *intent* (`hooks.yaml`) | `settings.json` hooks (agent) + pre-commit/CI (git/ci) | `.opencode/plugin/*` (agent) + the same pre-commit/CI |
 | MCP (documented, not generated) | `.mcp.json` `mcpServers` | `opencode.json` `mcp` |
 

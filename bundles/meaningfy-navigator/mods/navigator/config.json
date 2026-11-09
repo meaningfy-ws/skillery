@@ -1,0 +1,14 @@
+{
+  "band": {
+    "type": "string",
+    "title": "Band",
+    "description": "How the band above the prompt starts each session: unfolded, folded or hidden. /navigator band changes it for the session.",
+    "default": "folded"
+  },
+  "statusLine": {
+    "type": "boolean",
+    "title": "Status line",
+    "description": "Show navigator's line in the status bar at session start. /navigator line changes it for the session.",
+    "default": true
+  }
+}

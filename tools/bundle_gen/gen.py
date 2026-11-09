@@ -23,16 +23,26 @@ PACKAGE_JSON = "package.json"
 VERSION_FILE = "VERSION"
 SKILLS_DIR = "skills"
 AGENTS_DIR = "agents"
+MODS_DIR = "mods"
+MOD_FILES = ("hooks.json", "types.d.ts", "config.json", "register.tsx")
+# Data a mod reads under ${plugin root}/data/ (navigator design §2): skill assets, never copied.
+# shortcut: every mod gets navigator's data; key it by mod when a second mod lands.
+MOD_DATA = (("workflows", "*/assets/workflows/*.workflow.json"),
+            ("", "guardrails/assets/session-thresholds.json"))
 # bundles/ holds symlinks into skills/ and agents/ plus one plugin.json per bundle: claude.ai's
 # marketplace sync needs the plugin.json (fix-desktop-marketplace-install).
-_CACHE = ("__pycache__", "*.pyc")  # created by running scripts; git-ignored, never copied or compared
+# Never copied or compared: caches made by running scripts, a mod's unit tests (they do not ship), and
+# dotfiles, so a local .env or .npmrc never reaches the committed bundles/ tree.
+_NOT_COPIED = ("__pycache__", "*.pyc", "*.test.ts", ".*")
+# Written by Claude Code into a plugin loaded with --plugin-dir (editor types); git-ignored, not ours.
+_ENGINE_DEV = (".claude-plugin/types", "tsconfig.json")
 PLUGIN_AUTHOR = {"name": "Meaningfy"}
 SCHEMA_COPY = ("openspec/schemas/meaningfy", "../../skills/project-setup/assets/openspec-schema/meaningfy")
 
 _TOP_KEYS = ("name", "owner", "description", "bundles")
 _OWNER_KEYS = ("name", "email")
 _BUNDLE_KEYS = ("name", "description", "skills", "agents")
-_BUNDLE_OPTIONAL_KEYS = ("requires",)  # define-catalogue-model D-6; the graph rules live in repo_lint
+_BUNDLE_OPTIONAL_KEYS = ("requires", "mods")  # define-catalogue-model D-6; mods: navigator DD-4/DD-5
 _KEBAB = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _FRONTMATTER = re.compile(r"^---\n(.*?)\n---\n?(.*)$", re.DOTALL)
 _STALE = "is stale — run make bundles"
@@ -82,7 +92,41 @@ def _bundle(raw, index: int, seen: set[str]) -> dict:
            "agents": _str_list(raw["agents"], "agents", where)}
     if "requires" in raw:
         out["requires"] = _str_list(raw["requires"], "requires", where)
+    if "mods" in raw:
+        out["mods"] = _str_list(raw["mods"], "mods", where)
+        if len(out["mods"]) > 1:
+            raise ValueError(f"{BUNDLES_FILE}: {where} lists {len(out['mods'])} mods; a bundle holds at most one")
     return out
+
+
+def _check_mods(repo: Path, bundles: list[dict]) -> None:
+    """A mod is in exactly one bundle and its folder holds the four files (navigator DD-5)."""
+    owner: dict[str, str] = {}
+    for b in bundles:
+        for m in b.get("mods", []):
+            if m in owner:
+                raise ValueError(f"{BUNDLES_FILE}: mod '{m}' is in bundles '{owner[m]}' and '{b['name']}'")
+            owner[m] = b["name"]
+            missing = [f for f in MOD_FILES if not (repo / MODS_DIR / m / f).is_file()]
+            if missing:
+                raise ValueError(f"{BUNDLES_FILE}: mod '{m}' of bundle '{b['name']}' is missing "
+                                 f"{MODS_DIR}/{m}/{', '.join(missing)}")
+            links = [p for p in (repo / MODS_DIR / m).rglob("*") if p.is_symlink()]
+            if links:  # a copy would follow it and commit what it points to
+                raise ValueError(f"mod '{m}': {links[0].relative_to(repo)} is a symlink; a mod holds only real files")
+            _mod_config(repo, m)
+
+
+def _mod_config(repo: Path, mod: str) -> dict:
+    """mods/<m>/config.json, the bundle's userConfig: a JSON object of option definitions."""
+    rel = f"{MODS_DIR}/{mod}/config.json"
+    try:
+        config = json.loads((repo / rel).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"{rel}: cannot be read as JSON ({str(exc).splitlines()[0]})") from exc
+    if not isinstance(config, dict):
+        raise ValueError(f"{rel}: must be a JSON object of option definitions")
+    return config
 
 
 def load(repo: Path) -> dict:
@@ -96,10 +140,12 @@ def load(repo: Path) -> dict:
     if not isinstance(doc["bundles"], list):
         raise ValueError(f"{BUNDLES_FILE}: key 'bundles' must be a list")
     seen: set[str] = set()
+    bundles = [_bundle(b, i, seen) for i, b in enumerate(doc["bundles"])]
+    _check_mods(repo, bundles)
     return {"name": doc["name"],
             "owner": {"name": doc["owner"]["name"], "email": doc["owner"]["email"]},
             "description": doc["description"],
-            "bundles": [_bundle(b, i, seen) for i, b in enumerate(doc["bundles"])]}
+            "bundles": bundles}
 
 
 def _agent_map(repo: Path) -> dict:
@@ -146,11 +192,19 @@ def render(repo: Path) -> tuple[bytes, dict[str, str], bytes]:
             links[f"{BUNDLES_DIR}/{b['name']}/skills/{s}"] = f"../../../{SKILLS_DIR}/{s}"
         for a in b["agents"]:
             links[f"{BUNDLES_DIR}/{b['name']}/agents/{a}.md"] = f"../../../{AGENTS_DIR}/{a}.md"
+        for m in b.get("mods", []):
+            for sub, pattern in MOD_DATA:
+                for src in sorted((repo / SKILLS_DIR).glob(pattern)):
+                    rel = Path(BUNDLES_DIR, b["name"], "data", sub, src.name)
+                    if rel.as_posix() in links:
+                        raise ValueError(f"two skills ship {sub}/{src.name}: {src.relative_to(repo)} and "
+                                         f"{(rel.parent / links[rel.as_posix()]).as_posix()}; rename one")
+                    links[rel.as_posix()] = os.path.relpath(src, repo / rel.parent)
     stems = sorted({a for b in doc["bundles"] for a in b["agents"]})
     catalogue = {
         "version": ver,
         "bundles": [{"name": b["name"], "skills": b["skills"], "agents": b["agents"]}
-                    for b in doc["bundles"]],
+                    for b in doc["bundles"] if b["skills"] or b["agents"]],  # mod-only: Claude only (DD-6)
         "agents": {a: agent_frontmatter(repo, a)[0] for a in stems},
     }
     return _json_bytes(market), links, _json_bytes(catalogue)
@@ -159,9 +213,16 @@ def render(repo: Path) -> tuple[bytes, dict[str, str], bytes]:
 def plugin_manifests(repo: Path) -> dict[str, bytes]:
     """bundles/<b>/.claude-plugin/plugin.json per bundle; it carries VERSION for /plugin."""
     doc, ver = load(repo), version(repo)
-    return {f"{BUNDLES_DIR}/{b['name']}/.claude-plugin/plugin.json":
-            _json_bytes({"name": b["name"], "version": ver, "description": b["description"],
-                         "author": PLUGIN_AUTHOR}) for b in doc["bundles"]}
+    out: dict[str, bytes] = {}
+    for b in doc["bundles"]:
+        manifest = {"name": b["name"], "version": ver, "description": b["description"],
+                    "author": PLUGIN_AUTHOR}
+        for m in b.get("mods", []):
+            manifest["hooks"] = [f"./mods/{m}/hooks.json"]
+            manifest["types"] = f"./mods/{m}/types.d.ts"
+            manifest["userConfig"] = _mod_config(repo, m)
+        out[f"{BUNDLES_DIR}/{b['name']}/.claude-plugin/plugin.json"] = _json_bytes(manifest)
+    return out
 
 
 def _sync_package_version(repo: Path, ver: str) -> None:
@@ -185,7 +246,7 @@ def write(repo: Path) -> list[str]:
     for rel, target in links.items():
         (repo / rel).parent.mkdir(parents=True, exist_ok=True)
         (repo / rel).symlink_to(target)
-    copies = _schema_copy(repo)
+    copies = _copies(repo)
     for rel, target in copies.items():
         dst = repo / rel
         if dst.is_symlink() or dst.is_file():
@@ -195,7 +256,7 @@ def write(repo: Path) -> list[str]:
         dst.parent.mkdir(parents=True, exist_ok=True)
         src = dst.parent / target
         if src.is_dir():
-            shutil.copytree(src, dst, ignore=shutil.ignore_patterns(*_CACHE))
+            shutil.copytree(src, dst, ignore=shutil.ignore_patterns(*_NOT_COPIED))
         else:
             shutil.copy2(src, dst)
     _sync_package_version(repo, version(repo))
@@ -207,10 +268,21 @@ def _schema_copy(repo: Path) -> dict[str, str]:
     return {rel: target} if (repo / rel).parent.joinpath(target).exists() else {}
 
 
+def _mod_copies(repo: Path) -> dict[str, str]:
+    """A mod is copied, not linked: the engine refuses a hooks module or types file behind a
+    symlink (navigator DD-31)."""
+    return {f"{BUNDLES_DIR}/{b['name']}/mods/{m}": f"../../../{MODS_DIR}/{m}"
+            for b in load(repo)["bundles"] for m in b.get("mods", [])}
+
+
+def _copies(repo: Path) -> dict[str, str]:
+    return {**_schema_copy(repo), **_mod_copies(repo)}
+
+
 def _tree(path: Path) -> dict[str, tuple[bytes, bool]]:
     """Every file under path (or path itself) with its bytes and executable bit."""
     files = [path] if path.is_file() else sorted(
-        p for p in path.rglob("*") if p.is_file() and not any(p.match(c) or c in p.parts for c in _CACHE))
+        p for p in path.rglob("*") if p.is_file() and not any(p.match(c) or c in p.parts for c in _NOT_COPIED))
     return {p.relative_to(path).as_posix(): (p.read_bytes(), os.access(p, os.X_OK)) for p in files}
 
 
@@ -228,8 +300,9 @@ def _copy_errors(repo: Path, copies: dict[str, str]) -> list[str]:
     return out
 
 
-def _link_errors(repo: Path, links: dict[str, str], files: dict[str, bytes]) -> list[str]:
-    """bundles/ holds exactly the expected links and generated files, nothing else."""
+def _link_errors(repo: Path, links: dict[str, str], files: dict[str, bytes],
+                 copies: dict[str, str]) -> list[str]:
+    """bundles/ holds exactly the expected links, generated files and copies, nothing else."""
     out: list[str] = []
     for rel, target in links.items():
         p = repo / rel
@@ -244,13 +317,16 @@ def _link_errors(repo: Path, links: dict[str, str], files: dict[str, bytes]) -> 
         p = repo / rel
         if not p.is_file() or p.read_bytes() != data:
             out.append(f"{rel} {_STALE}")
-    dirs = {Path(rel).parent.as_posix() for rel in [*links, *files]}
+    dirs = {Path(rel).parent.as_posix() for rel in [*links, *files, *copies]}
     dirs |= {Path(d).parent.as_posix() for d in dirs}
     root = repo / BUNDLES_DIR
     for dirpath, dirnames, filenames in os.walk(root):
         for name in list(dirnames) + filenames:
             rel = (Path(dirpath) / name).relative_to(repo).as_posix()
-            if rel in links or rel in files:
+            if "/".join(Path(rel).parts[2:]) in _ENGINE_DEV:  # bundles/<b>/<path>
+                if name in dirnames:
+                    dirnames.remove(name)
+            elif rel in links or rel in files or rel in copies:
                 if name in dirnames:
                     dirnames.remove(name)  # never descend into an expected link location
             elif rel not in dirs:
@@ -275,13 +351,16 @@ def _version_errors(repo: Path, ver: str) -> list[str]:
 
 
 def unreleased(repo: Path) -> list[str]:
-    """Paths of skills and agents listed in no bundle: work in progress, never published
+    """Paths of skills, agents and mods listed in no bundle: work in progress, never published
     (rebundle-by-activity D-14). releases.yml drops them from the release tree."""
     doc = load(repo)
     skills = {s for b in doc["bundles"] for s in b["skills"]}
     agents = {a for b in doc["bundles"] for a in b["agents"]}
     out = [f"skills/{p.parent.name}" for p in (repo / "skills").glob("*/SKILL.md") if p.parent.name not in skills]
     out += [f"agents/{p.name}" for p in (repo / "agents").glob("*.md") if p.stem not in agents]
+    mods = {m for b in doc["bundles"] for m in b.get("mods", [])}
+    out += [f"{MODS_DIR}/{p.name}" for p in (repo / MODS_DIR).glob("*")
+            if p.is_dir() and p.name not in mods and p.name != "node_modules"]
     return sorted(out)
 
 
@@ -297,7 +376,8 @@ def gate_errors(repo: Path) -> list[str]:
         path = repo / rel
         if not path.exists() or path.read_bytes() != data:
             out.append(f"{rel} {_STALE}")
-    out += _link_errors(repo, links, plugin_manifests(repo))
-    out += _copy_errors(repo, _schema_copy(repo))
+    copies = _copies(repo)
+    out += _link_errors(repo, links, plugin_manifests(repo), copies)
+    out += _copy_errors(repo, copies)
     out += _version_errors(repo, version(repo))
     return out

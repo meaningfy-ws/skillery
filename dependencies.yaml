@@ -9,6 +9,7 @@
   pin: 'unpinned: installed from the source head'
   provenance: not reviewed
   used_by: CLAUDE.md/AGENTS.md routing, epic-planning, guardrails, spec-stewardship
+  skills: [brainstorming, writing-plans, executing-plans, test-driven-development, systematic-debugging, verification-before-completion, requesting-code-review, receiving-code-review, dispatching-parallel-agents, subagent-driven-development]
   opencode_status: native (own opencode plugin)
   claude_install: plugin marketplace
   opencode_install: 'ships its own opencode plugin — `{"plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]}`
@@ -53,6 +54,7 @@
   pin: 'unpinned: installed from the source head'
   provenance: not reviewed
   used_by: the spine (project-setup, epic-planning, spec-stewardship)
+  skills: [openspec-explore, openspec-propose, openspec-apply-change, openspec-archive-change, openspec-update-change, openspec-sync-specs]
   opencode_status: native
   claude_install: '`npm i -g @fission-ai/openspec`; `openspec update --tools claude`'
   opencode_install: same npm package; `openspec update --tools opencode` registers `opsx-<id>`. Registration

@@ -85,6 +85,12 @@ One skill also has a recorded monitoring gap, which comes from a missing plugin 
 |---|---|---|---|
 | `rule-steward` | rule usage is traced by the Langfuse Claude Code plugin | no Langfuse plugin known | opencode sessions can `load`, `cite` and `check` rules, but nothing records them, so rules used only there look unused in the weekly review. |
 
+One bundle is Claude Code only by design, a deliberate gap rather than a missing capability:
+
+| Bundle | Claude Code | opencode | Gap / degradation |
+|---|---|---|---|
+| `meaningfy-navigator` (the `navigator` mod) | CLI and desktop app: status line, band, actions and strict mode | not offered: `make bundles` leaves a bundle that holds only mods out of `tools/opencode-catalogue.json` | opencode has no hooks module that draws above the prompt; opencode sessions run without navigator's view and drift warnings. |
+
 ## Baseline packs per CLI
 
 A "baseline pack" is the set of capabilities a CLI ships or assumes installed, independent of this

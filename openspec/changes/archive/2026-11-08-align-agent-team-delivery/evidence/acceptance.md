@@ -18,3 +18,9 @@ yet reduced to specifics-only.
 
 **Verdict:** accepted by the owner, 2026-11-08 — "Accept, shrink later": after the 3.9.0 release a
 follow-up cuts the sibling summaries down to specifics plus pointers to `epic-delivery`.  Date: 2026-11-08
+
+**Closed 2026-11-08.** The follow-up of the verdict is done: the sibling summaries were cut down to
+project specifics plus pointers to `epic-delivery` (mapping-workbench-v2#56, rdf-persistence#30),
+after the lean practice landed there (mapping-workbench-v2#55, rdf-persistence#29). Released in
+skillery v3.9.0. Open by design: the loop's first real stage is its first trial; the skill is
+adjusted from what it shows.

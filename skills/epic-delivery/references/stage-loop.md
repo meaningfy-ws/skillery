@@ -1,7 +1,8 @@
 # The stage loop in detail
 
 The six steps of a stage, what each scales with, and how the loop covers every check of the longer
-loop it replaces. The summary and the scaling table are in the skill; this page adds the detail.
+loop it replaces. The summary is in the skill, and the review set of each appetite is in
+[`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json); this page adds the detail.
 
 ## The steps
 
@@ -19,8 +20,8 @@ loop it replaces. The summary and the scaling table are in the skill; this page 
    - The builder also updates the docs its task changed. There is no separate writer.
    - After each task the lead re-runs the project's gates, reads the diff, reads the upstream
      findings and files the issues they call for, and commits the task.
-3. **Challenge.** In parallel, scaled by appetite: the reviewers, and the adversarial tester for
-   LARGE and up. Reviewers are read-only.
+3. **Challenge.** In parallel, scaled by appetite: the reviewers, and the adversarial tester where
+   the appetite's review set names it ([`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json)). Reviewers are read-only.
 4. **Decide and fix.**
    - The lead sorts the findings. Each accepted one becomes a decision in `design.md` before any
      code changes (the Rule of Divergence: the spec first, then the code). The rest are rejected
@@ -28,8 +29,9 @@ loop it replaces. The summary and the scaling table are in the skill; this page 
    - A finding that belongs to one of our libraries becomes an upstream issue, not a fix here.
    - Fixers apply the decisions in batches: security first, then structure. The lead re-runs the
      gates.
-5. **Check.** For MEDIUM and up, one fresh checker over the whole stage. For TINY and SMALL, the
-   lead's re-run of the gates is the check, and the single review pass is the four-eyes pass. A
+5. **Check.** Where the appetite's review set has a checker ([`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json)), one fresh checker over the
+   whole stage. Where it has none, the lead's re-run of the gates is the check, and the single
+   review pass is the four-eyes pass. A
    cold reader runs on any how-to or tutorial page the stage changed, at any appetite. An unmet item
    goes back to step 4.
 6. **Merge.** The lead opens the PR and merges it only on green CI, within its authority.
@@ -77,8 +79,8 @@ one place.
 | 3 Impact | Prepare | — |
 | 4 Build | Build | The builder also updates the docs it changed |
 | 5 Check and commit | Build | — |
-| 6 Deep test | Challenge, LARGE and up | Conditional on appetite |
-| 7 Review (5–7 lenses) | Challenge, scaled | One combined pass for TINY/SMALL; UX only when screens changed |
+| 6 Deep test | Challenge, where the review set names a tester | Conditional on appetite (the workflow file) |
+| 7 Review (5–7 lenses) | Challenge, scaled | The appetite's review set (the workflow file); UX only when screens changed |
 | 8 Decide | Decide and fix | — |
 | 9 Fix | Decide and fix | — |
 | 10 Verify (per fixer) | Check, once per stage | Per member → per stage |
