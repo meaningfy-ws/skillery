@@ -302,6 +302,7 @@ def _mod_repo(tmp_path: Path, mods=("nav",)) -> Path:
         d.mkdir(parents=True)
         for f in gen.MOD_FILES:
             (d / f).write_text("{}\n", encoding="utf-8")
+        (d / "hooks.json").write_text('{"hooks": {}, "modules": ["./register.tsx"]}\n', encoding="utf-8")
         (d / "config.json").write_text('{"band": {"type": "boolean", "default": true}}\n', encoding="utf-8")
     (repo / "skills/s1/assets/workflows").mkdir(parents=True)
     (repo / "skills/s1/assets/workflows/build.workflow.json").write_text("{}\n", encoding="utf-8")
@@ -314,7 +315,7 @@ def test_mod_links_data_links_and_manifest(tmp_path):
     repo = _mod_repo(tmp_path)
     gen.write(repo)
     b = repo / "bundles/b-mod"
-    assert not (b / "mods/nav").is_symlink() and (b / "mods/nav/hooks.json").read_text() == "{}\n"
+    assert not (b / "mods/nav").is_symlink() and (b / "mods/nav/types.d.ts").read_text() == "{}\n"
     assert os.readlink(b / "data/workflows/build.workflow.json") == \
         "../../../../skills/s1/assets/workflows/build.workflow.json"
     assert os.readlink(b / "data/session-thresholds.json") == \
@@ -406,12 +407,71 @@ def test_mod_missing_config_json_is_rejected_naming_it(tmp_path):
         gen.load(repo)
 
 
-def test_mod_folder_absent_is_rejected_naming_all_four_files(tmp_path):
+def test_mod_folder_absent_is_rejected_naming_hooks_json(tmp_path):
     repo = _mod_repo(tmp_path)
     shutil.rmtree(repo / "mods/nav")
     with pytest.raises(ValueError, match="nav") as e:
         gen.load(repo)
-    assert all(f in str(e.value) for f in gen.MOD_FILES)
+    assert "hooks.json" in str(e.value)
+
+
+# ------------------------------------------------------------------ hooks-only mods (lean-delivery D-5)
+def _plain_repo(tmp_path: Path) -> Path:
+    """A bundle with one hooks-only mod: hooks.json, a script and its test, nothing else."""
+    repo = _mod_repo(tmp_path, mods=("plain",))
+    d = repo / "mods/plain"
+    for f in ("types.d.ts", "config.json", "register.tsx"):
+        (d / f).unlink()
+    (d / "hooks.json").write_text('{"hooks": {}}\n', encoding="utf-8")
+    (d / "plain.mjs").write_text("export {};\n", encoding="utf-8")
+    (d / "plain.test.mjs").write_text("// test\n", encoding="utf-8")
+    return repo
+
+
+def test_hooks_only_mod_needs_only_hooks_json(tmp_path):
+    repo = _plain_repo(tmp_path)
+    assert gen.load(repo)
+    gen.write(repo)
+    b = repo / "bundles/b-mod"
+    manifest = json.loads((b / ".claude-plugin/plugin.json").read_text())
+    assert manifest["hooks"] == ["./mods/plain/hooks.json"]
+    assert "types" not in manifest and "userConfig" not in manifest
+    assert not (b / "data").exists()  # data is a modules mod's, not a hooks-only mod's
+    assert (b / "mods/plain/plain.mjs").is_file()
+    assert not (b / "mods/plain/plain.test.mjs").exists()  # a test does not ship
+    assert gen.gate_errors(repo) == []
+
+
+def test_real_core_plugin_names_the_hooks_file_and_no_types_and_navigator_keeps_its_own():
+    manifests = gen.plugin_manifests(REPO)
+    core = json.loads(manifests["bundles/meaningfy-core/.claude-plugin/plugin.json"])
+    assert core["hooks"] == ["./mods/no-poll-loops/hooks.json"]
+    assert "types" not in core and "userConfig" not in core
+    nav = json.loads(manifests["bundles/meaningfy-navigator/.claude-plugin/plugin.json"])
+    assert nav["hooks"] == ["./mods/navigator/hooks.json"]
+    assert nav["types"] == "./mods/navigator/types.d.ts" and nav["userConfig"]
+
+
+def test_hooks_only_mod_missing_hooks_json_is_rejected(tmp_path):
+    repo = _plain_repo(tmp_path)
+    (repo / "mods/plain/hooks.json").unlink()
+    with pytest.raises(ValueError, match=r"mod 'plain' of bundle 'b-mod' is missing mods/plain/hooks.json"):
+        gen.load(repo)
+
+
+def test_hooks_only_mod_with_a_config_json_still_checks_it(tmp_path):
+    repo = _plain_repo(tmp_path)
+    (repo / "mods/plain/config.json").write_text("[1]", encoding="utf-8")
+    with pytest.raises(ValueError, match="config.json"):
+        gen.load(repo)
+
+
+@pytest.mark.parametrize("text", ["{not json", "[1]"])
+def test_malformed_hooks_json_is_an_error_naming_the_file(tmp_path, text):
+    repo = _plain_repo(tmp_path)
+    (repo / "mods/plain/hooks.json").write_text(text, encoding="utf-8")
+    with pytest.raises(ValueError, match="mods/plain/hooks.json"):
+        gen.load(repo)
 
 
 def test_mod_with_a_directory_in_place_of_a_required_file_is_rejected(tmp_path):

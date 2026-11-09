@@ -18,8 +18,8 @@ A closed allowlist. Any other field fails the validator.
 | `description` | yes | one job in one sentence, then `Use when …`; may add `Not for …`; no `<example>` blocks; a `lead` or `scheduled` agent also says `Not for delegation` |
 | `type` | yes | a key of `agentModes` in `tools/opencode-agent-map.json`: `delegated`, `lead` or `scheduled` (see *Types*) |
 | `model` | yes | a family alias, a key of `modelAliases` in the same file (`opus`, `sonnet`, `haiku`); never a pinned model name |
-| `tools` | yes | YAML list (`[Read, Grep]`); the comma-string form is rejected so every renderer sees one shape |
 | `skills` | yes | non-empty YAML list; the first local skill (no `:`, not external) is the agent's **primary skill** |
+| `tools` | no | YAML list (`[Read, Grep]`); the comma-string form is rejected so every renderer sees one shape. Omitted, the agent uses the session's tools, MCP included (`implementer`, `code-reviewer`); allowed only when `disallowedTools` contains `Agent`, so inheriting is always a written choice and the agent cannot fan out |
 | `disallowedTools` | no | YAML list |
 | `color` | no | one of `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan` |
 | `metadata` | in practice yes | the six catalogue facets, as for skills (vocabulary in [`../facets.yaml`](../../facets.yaml)); not rendered for opencode. A change to `metadata` only is not behavioural and needs no new Gherkin scenario |

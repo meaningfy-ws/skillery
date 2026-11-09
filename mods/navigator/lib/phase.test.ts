@@ -16,7 +16,7 @@ const file = (skill: string, name: string) => {
 const defaults = resolveWorkflows([file('epic-delivery', 'epic-delivery'), file('epic-planning', 'epic-shaping'),
   file('architecture', 'architecting'),
   file('conceptual-modelling', 'modelling'), file('meaningfy-release', 'release'),
-  file('infrastructure-operations', 'devops'), file('sales-operations', 'sales')], [])
+  file('infrastructure-operations', 'devops'), file('sales-operations', 'sales'), file('technical-writing', 'documentation')], [])
 
 let n = 0
 const id = () => `x${++n}`
@@ -35,10 +35,10 @@ const keys = (s: NavState) => s.warnings.map(w => w.key)
 
 test('the defaults resolve with no errors', () => assert.deepEqual(defaults.errors, []))
 
-test('an open change with partial tasks places epic-delivery in apply; ticking all moves it to verify', () => {
+test('an open change with partial tasks places epic-delivery in apply; ticking all moves it to accept', () => {
   const s = run(workflows(), read(change(3, 9)))
   assert.deepEqual([s.workflow, s.variant, s.phase], ['epic-delivery', null, 'apply'])
-  assert.equal(run(workflows(), read(change(3, 9)), read(change(9, 9), 3)).phase, 'verify')
+  assert.equal(run(workflows(), read(change(3, 9)), read(change(9, 9), 3)).phase, 'accept')
   assert.equal(run(workflows(), read(null)).workflow, null)
 })
 
@@ -68,11 +68,14 @@ test('a commit after test-driven-development ran in the phase does not warn; run
 
 test('PD-2 leaving a phase without its exit skill; PD-3 command gate not passed on leaving', () => {
   const s = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5), read(change(9, 9), 6))
-  assert.equal(s.phase, 'verify')
+  assert.equal(s.phase, 'accept')
   assert.ok(keys(s).includes('process:missing:apply:cosmic-python'), keys(s).join())
-  assert.ok(keys(s).includes('process:gate:apply:validate'))
+  assert.ok(keys(s).includes('process:missing:apply:meaningfy-code-review'), keys(s).join())
+  assert.ok(keys(s).includes('process:missing:apply:verification-before-completion'), keys(s).join())
+  assert.ok(keys(s).includes('process:gate:apply:full-gates'))
   const passed = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5), skill('cosmic-python', 6),
-    cmd('make validate', 7), read(change(9, 9), 8))
+    skill('meaningfy-code-review', 6), skill('verification-before-completion', 6),
+    cmd('make check-all', 7), read(change(9, 9), 8))
   assert.deepEqual(keys(passed).filter(k => k.startsWith('process:') && k.includes(':apply:')), [])
 })
 
@@ -90,21 +93,22 @@ test('PD-3 skill gate: a delivery session entering apply with no clarity-gate ru
   assert.ok(!keys(gated).includes('process:gate:apply:clarity'))
 })
 
-test('the validate gate: ok after make validate, stale after an edit, fail on a failed run', () => {
-  let s = run(workflows(), read(change(3, 9)), cmd('make validate', 5))
-  assert.equal(s.gates.validate?.state, 'ok')
+test('the full-gates gate: ok after make check-all, stale after an edit, fail on a failed run (D-9)', () => {
+  let s = run(workflows(), read(change(3, 9)), cmd('make check-all', 5))
+  assert.equal(s.gates['full-gates']?.state, 'ok')
   s = reduce(s, { kind: 'FileTouched', id: id(), path: 'tools/x.py', at: 6 })
-  assert.equal(s.gates.validate?.state, 'stale')
-  assert.equal(run(workflows(), read(change(3, 9)), cmd('make validate', 5, false)).gates.validate?.state, 'fail')
+  assert.equal(s.gates['full-gates']?.state, 'stale')
+  assert.equal(run(workflows(), read(change(3, 9)), cmd('make check-all', 5, false)).gates['full-gates']?.state, 'fail')
+  assert.equal(run(workflows(), read(change(3, 9)), cmd('make validate', 5)).gates['full-gates']?.state ?? 'none', 'none')
 })
 
 test('PD-4 a skill of another phase; PD-5 an external skill a Meaningfy skill replaces', () => {
   const s = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5), skill('superpowers:writing-plans', 6))
   assert.ok(keys(s).includes('process:external:writing-plans'))
   assert.equal(s.warnings.find(w => w.key === 'process:external:writing-plans')!.remedy, 'epic-planning')
-  const e = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5), skill('verification-before-completion', 6))
-  assert.ok(keys(e).includes('process:elsewhere:apply:verification-before-completion'), keys(e).join())
-  assert.equal(e.warnings.find(w => w.key === 'process:elsewhere:apply:verification-before-completion')!.remedy, null)
+  const e = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5), skill('spec-stewardship', 6))
+  assert.ok(keys(e).includes('process:elsewhere:apply:spec-stewardship'), keys(e).join())
+  assert.equal(e.warnings.find(w => w.key === 'process:elsewhere:apply:spec-stewardship')!.remedy, null)
 })
 
 // ---------------------------------------------------------------- DevOps and sales
@@ -154,7 +158,7 @@ test('the band shows phases and the skill trail with phases', () => {
   const s = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5))
   const rows = bandModel(s).rows
   assert.deepEqual(rows.find(r => r.label === 'phases')!.items,
-    ['EPIC delivery', '✓ ready', '● apply', '○ verify', '○ archive'])
+    ['EPIC delivery', '✓ ready', '● apply', '○ accept', '○ archive'])
   assert.deepEqual(rows.find(r => r.label === 'skills')!.items, ['epic-delivery (apply)'])
 })
 
@@ -168,7 +172,7 @@ test('Next step: the first unmet expected skill, then the next phase owner', () 
 })
 
 test('Validate runs the phase command gates; commands resolve by name or plugin prefix', () => {
-  assert.deepEqual(validateRuns(run(workflows(), read(change(3, 9)))), ['make validate'])
+  assert.deepEqual(validateRuns(run(workflows(), read(change(3, 9)))), ['make check-all'])
   const installed = ['navigator', 'meaningfy-building:clarity-gate', 'superpowers:test-driven-development']
   assert.deepEqual(commandFor('test-driven-development', installed), { command: 'superpowers:test-driven-development', args: '' })
   assert.deepEqual(commandFor('navigator validate', installed), { command: 'navigator', args: 'validate' })
@@ -276,7 +280,7 @@ test('Delivery, next session: strict still refuses a commit in apply until test-
   assert.deepEqual(decideCommit(reduce(strict, skill('test-driven-development', 6))), { allow: true })
 })
 
-test('Reconcile mid-delivery: update-change revises, epic-delivery returns to apply; all tasks done returns to verify', () => {
+test('Reconcile mid-delivery: update-change revises, epic-delivery returns to apply; all tasks done returns to accept', () => {
   const mid = change(3, 10, { id: 'x' })
   const revised = run(workflows(), read(mid), skill('epic-delivery', 3), skill('openspec-update-change', 4))
   assert.deepEqual(where(revised), ['epic-shaping', null, 'revise'])
@@ -284,7 +288,7 @@ test('Reconcile mid-delivery: update-change revises, epic-delivery returns to ap
   const done = change(10, 10, { id: 'x' })
   const revisedDone = run(workflows(), read(done), skill('openspec-update-change', 4))
   assert.deepEqual(where(revisedDone), ['epic-shaping', null, 'revise'])
-  assert.deepEqual(where(reduce(revisedDone, skill('epic-delivery', 5))), ['epic-delivery', null, 'verify'])
+  assert.deepEqual(where(reduce(revisedDone, skill('epic-delivery', 5))), ['epic-delivery', null, 'accept'])
 })
 
 test('Error matrix: another change open in a delivery state; the new change inputs move shaping from explore', () => {
@@ -389,17 +393,22 @@ test('Architecture to modelling: conceptual-modelling hands over to modelling an
   assert.equal(reduce(s, skill('conceptual-modelling', 13)).phase, 'validate')
 })
 
+// Reduce each signal in turn and assert the phase it lands in.
+const walk = (s: NavState, steps: [Signal, string][]): NavState => {
+  for (const [sig, phase] of steps) { s = reduce(s, sig); assert.equal(s.phase, phase, JSON.stringify(sig)) }
+  return s
+}
+
 test('Release: the seven steps walk branch to back-merge and mark the release done', () => {
   let s = run(workflows(), read(null), skill('meaningfy-release', 3))
   assert.deepEqual(where(s), ['release', null, 'branch'])
-  const steps: [Signal, string][] = [
+  s = walk(s, [
     [cmd('git switch -c release/3.11.0', 4), 'bump'],
     [write('CHANGELOG.md', 5), 'validate'],
     [cmd('make validate', 6), 'merge'],
     [cmd('gh pr merge 160', 7), 'publish'],
     [cmd('git push origin v3.11.0', 8), 'back-merge'],
-  ]
-  for (const [sig, phase] of steps) { s = reduce(s, sig); assert.equal(s.phase, phase, JSON.stringify(sig)) }
+  ])
   s = reduce(s, cmd('gh pr create --base develop', 9))
   assert.equal(s.phase, 'back-merge')
   assert.equal(s.gates.back?.state, 'ok')
@@ -457,3 +466,47 @@ for (const [command, passes] of BACK) {
     assert.equal(s.gates.back?.state ?? 'none', passes ? 'ok' : 'none')
   })
 }
+
+// ---------------------------------------------------------------- documentation (lean-delivery D-6, D-8, D-19)
+// Test names carry the behaviour; the ids D-6 (walk, published), D-8 (docs-owed, archive) and D-19 (switching) are here.
+const OWED = 'openspec/changes/lean-delivery/evidence/docs-owed.md'
+const COLD = 'openspec/changes/lean-delivery/evidence/cold-read.md'
+const docs = () => run(workflows(), read(null), skill('technical-writing', 3))
+
+test('Documentation: the phases walk from inventory to publish as the gates pass (D-6)', () => {
+  let s = docs()
+  assert.deepEqual(where(s), ['documentation', null, 'inventory'])
+  s = walk(s, [
+    [write(OWED, 4), 'write'],
+    [cmd('make build-docs', 5), 'cold-read'],
+    [write(COLD, 6), 'publish'],
+  ])
+  assert.deepEqual(keys(s), [])
+})
+
+test('Documentation: gh pr create passes published from the publish state (D-6)', () => {
+  const s = reduce(walk(docs(), [[write(OWED, 4), 'write'], [cmd('make build-docs', 5), 'cold-read'], [write(COLD, 6), 'publish']]),
+    cmd('gh pr create --base develop', 7))
+  assert.equal(s.phase, 'publish')
+  assert.equal(s.gates.published?.state, 'ok')
+})
+
+test('Documentation: docs-owed written while epic-delivery is active does not move the documentation workflow (D-8)', () => {
+  const s = reduce(run(workflows(), read(change(9, 9)), skill('epic-delivery', 3)), write(OWED, 4))
+  assert.equal(s.workflow, 'epic-delivery')
+  assert.equal(s.phase, 'accept')
+  assert.equal(s.gates.owed, undefined)
+})
+
+test('Documentation: archive lands in epic-delivery archive after docs-owed is written (D-8)', () => {
+  const s = reduce(run(workflows(), read(change(9, 9)), skill('epic-delivery', 3), write(OWED, 4)), skill('openspec-archive-change', 5))
+  assert.deepEqual(where(s), ['epic-delivery', null, 'archive'])
+})
+
+test('Documentation: technical-writing mid-apply shows documentation; epic-delivery or openspec-apply-change switches back (D-19)', () => {
+  const apply = run(workflows(), read(change(3, 9)), skill('epic-delivery', 3))
+  const mid = reduce(apply, skill('technical-writing', 4))
+  assert.deepEqual(where(mid), ['documentation', null, 'inventory'])
+  assert.equal(reduce(mid, skill('epic-delivery', 5)).workflow, 'epic-delivery')
+  assert.equal(reduce(mid, skill('openspec-apply-change', 5)).workflow, 'epic-delivery')
+})

@@ -49,3 +49,8 @@ Feature: code-reviewer reviews one change through exactly one lens
     When the caller dispatches the code-reviewer with lens "L5"
     Then the findings cite the tool's blast radius for each refactor candidate
     And the reviewer edits no file
+
+  Scenario: Asked to fan out, the reviewer has no tool to start another agent
+    When the caller asks the code-reviewer to dispatch another agent for part of the review
+    Then it has no tool to start one
+    And it says so in its report

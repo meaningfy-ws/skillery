@@ -46,14 +46,14 @@ meaningfy-navigator: sales (provisional) · offer
 **The band** sits above the prompt, folded to one row by default. It shows only what is happening:
 
 ```
-2 running: code-reviewer, implementer · last clarity-gate · validate ✓ · ⚠ 1 [Next step] [Back on track] [Unfold] [Hide]
+2 running: code-reviewer, implementer · last clarity-gate · full-gates ✓ · ⚠ 1 [Next step] [Back on track] [Unfold] [Hide]
 ```
 
 With nothing to report it shows just its buttons. Unfolded, it adds:
 
 ```
 stages    ✓ 1 See it 12/12 · ● 2 Follow the workflow 3/12 · ○ 3 Stay on plan 0/13 · ○ Close 0/4
-phases    EPIC delivery · ✓ ready · ● apply · ○ verify · ○ archive
+phases    EPIC delivery · ✓ ready · ● apply · ○ accept · ○ archive
 appetite  VERY LARGE · tasks 9/41 · groups 1/4 · reviewers 0/6 this turn · 1.2M tokens · $3.40
 skills    epic-delivery (apply) · test-driven-development (apply)
 subagents code-reviewer · sonnet · done · 41.0k tokens · implementer · opus · running
@@ -64,15 +64,21 @@ mode      ○ loose
 
 ## Workflows and phases
 
-Navigator follows seven workflows, each kept as a file in the skill that owns it: EPIC shaping
+Navigator follows eight workflows, each kept as a file in the skill that owns it: EPIC shaping
 (`epic-planning`), EPIC delivery (`epic-delivery`), architecting (`architecture`), conceptual modelling
-(`conceptual-modelling`), release (`meaningfy-release`), DevOps (`infrastructure-operations`) and
-sales (`sales-operations`, provisional). EPIC shaping has the phases explore, variants,
-decide, propose, design and revise; EPIC delivery has ready, apply, verify and archive, and its
-variant is `brownfield`. Each file lists its own phases. It picks the workflow from
-the skills you load and the subagents you start; with an open change and nothing else loaded, it
+(`conceptual-modelling`), release (`meaningfy-release`), DevOps (`infrastructure-operations`),
+sales (`sales-operations`, provisional) and documentation (`technical-writing`: inventory, write,
+verify, cold-read, publish). Loading `technical-writing` in the middle of a build shows
+*documentation*; loading `epic-delivery` or `openspec-apply-change` shows the build again. EPIC
+shaping has the phases explore, variants, decide, propose, design and revise; EPIC delivery has
+ready, apply, accept and archive; its variant `brownfield` (tasks and no design) has apply, accept and
+archive. Each file lists its own phases.
+It picks the workflow from the skills you load and the subagents you start; with an open change and nothing else loaded, it
 is EPIC delivery, starting at `ready`. The phase follows the skills you load and the state of the change's files: ticking
-the last task of `tasks.md` moves `apply` to `verify`. In DevOps, the commands move it:
+the last task of `tasks.md` moves `apply` to `accept`, and `accept` passes its gate when
+`evidence/acceptance.md` is written. The docs stage between `accept` and `archive` is the documentation
+workflow: load `technical-writing` and the band shows it; loading `openspec-archive-change` shows
+`archive`. In DevOps, the commands move it:
 `terraform plan` reaches the consent card, your answer to the card reaches `apply`.
 
 A file you write can move the phase too. A phase may name a file gate, a glob for the artifact
@@ -91,8 +97,8 @@ Navigator warns, and never blocks, when:
 
 - you commit during a phase without a skill the phase expects at each commit (for example a commit
   in `apply` without `test-driven-development`);
-- you leave a phase without a skill it expects, or with a gate not passed (`make validate` not run
-  since the last edit);
+- you leave a phase without a skill it expects, or with a gate not passed (the `full-gates` command,
+  `make check-all` unless the repository sets another, not run since the last edit);
 - you enter a phase whose precondition did not run (`apply` without `clarity-gate` on the current
   PLAN);
 - a DevOps apply command runs with no consent card answered;
@@ -100,8 +106,8 @@ Navigator warns, and never blocks, when:
   (`writing-plans` where `epic-planning` owns the PLAN).
 
 Each warning names, in brackets, the skill that owns the rule. A warning about a missing skill
-clears when that skill runs; a warning about a gate clears when the gate passes (`make validate`
-for the validate gate, through **Validate** or typed). A warning about a skill of another phase is
+clears when that skill runs; a warning about a gate clears when the gate passes (`make check-all`
+for the `full-gates` gate, through **Validate** or typed). A warning about a skill of another phase is
 information only and stays for the session.
 
 When you open a session in the middle of a phase, navigator places you there without checking what

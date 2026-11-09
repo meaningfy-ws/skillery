@@ -48,7 +48,9 @@ If a change helps the agent but confuses the user, it is not done.
    provenance note: source, commit, licence, date, reviewer (AST02, AST07). A skill body never tells
    the agent to fetch and follow live remote instructions; snapshot them into `references/` (AST05).
    An agent gets the fewest tools its job needs, and a tool denial survives rendering to every CLI or
-   is recorded as a gap (AST03, AST10). Ids from the
+   is recorded as a gap (AST03, AST10). An agent that needs the project's code-intelligence tools may
+   omit its tool list and inherit the session's, only if it denies `Agent`
+   ([`agent-template.md`](agent-template.md)). Ids from the
    [OWASP Agentic Skills Top 10](https://owasp.org/www-project-agentic-skills-top-10/) (v1.0).
 5. **Failure-first.** A skill or agent exists because an agent did something badly without it. That
    case is written down before the first line of the skill, and it becomes the acceptance test. The
@@ -84,7 +86,9 @@ When unsure, EPIC.
 
 **How an EPIC is delivered.** skillery's own EPICs run the delivery loop of
 [`epic-delivery`](../../skills/epic-delivery/SKILL.md): the main session leads, briefs the team,
-re-runs `make validate` after each task and runs the loop scaled by the EPIC's appetite.
+reads each builder's reported `make validate` run. Builders run and report their own task gate; the
+lead re-runs only on a named trigger. The lead runs `make validate` once before the stage's PR and
+once after the fix round, and runs the loop scaled by the EPIC's appetite.
 
 **Verification and validation.** As in any project ([`epic-delivery`](../../skills/epic-delivery/references/verification-validation.md)),
 agents verify and the owner validates. For skillery the two look like this:
@@ -94,6 +98,7 @@ agents verify and the owner validates. For skillery the two look like this:
 | What | `make validate`, the probes, the review, one fresh checker per stage | Scenario sign-off: the owner approves the EPIC's probes and `.feature` scenarios at the PLAN gate. Acceptance: a **trial run** of the changed skill or agent on a real task or repo, shown against the EPIC's success measure. Validation review: at each release, did each EPIC since the last one deliver? |
 | Who | agents | the owner decides; an agent prepares the evidence |
 | Evidence | CI and the review findings | `evidence/acceptance.md` in the change (what was tried, where, the verdict, the date); review findings go into the next EPIC's `inputs/` |
+| Docs | Docs a change makes false are fixed in the build; the L2 lens checks they agree with the change | Manuals and architecture pages are written in the docs stage after accept; the cold reader validates the task-oriented ones (`evidence/cold-read.md`). Rules: `epic-delivery` (`references/stage-loop.md`) and `technical-writing` |
 
 A trial run replaces the acceptance demo: a skillery EPIC has no running application, but its skills
 and agents can be used on real work.

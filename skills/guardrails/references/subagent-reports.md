@@ -26,8 +26,8 @@ needs. A subagent never reports `done` on work it did not verify.
 |---|---|
 | exploring | where the thing is, ranked; where it is *not* |
 | researching | findings with sources and dates; a file path when long |
-| implementing | tests run and their result; departures from the plan |
-| authoring | files written; checks run (`make validate` or the project's); choices made that were not asked |
+| implementing | per gate run: command, exit code, test counts (passed, failed, skipped), duration, the commit the gate ran on; the narrow checks run, as a list; departures from the plan |
+| authoring | files written; checks run (the project's checks); choices made that were not asked |
 | reviewing | findings by severity with location and the rule they break; a verdict |
 | verifying | the criteria checked; pass or fail per criterion; the gaps |
 | test-running | per scenario or assertion: pass or fail; where the run's output is |

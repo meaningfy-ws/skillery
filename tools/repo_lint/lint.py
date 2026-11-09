@@ -1025,7 +1025,8 @@ def hooks_inventory_shape(repo: Path) -> list[str]:
 def mod_bindings_match(repo: Path) -> list[str]:
     """navigator DD-10: the hook ids with a `mod` binding in hooks.yaml are exactly the rule ids
     (`id: '<hook id>'`) declared in mods/*/lib/strict.ts — no intent without its rule, no rule
-    without its intent. Silent without hooks.yaml."""
+    without its intent. A plain mod (a mods/ folder whose hooks.json has no `modules`) needs no rule
+    but must have a mod intent of its own name, and the other way round. Silent without hooks.yaml."""
     path = repo / HOOKS_INVENTORY
     if not path.exists():
         return []
@@ -1037,8 +1038,17 @@ def mod_bindings_match(repo: Path) -> list[str]:
                 and any((b or {}).get("mechanism") == "mod" for b in h.get("bindings") or [])}
     coded = {m for f in sorted(repo.glob("mods/*/lib/strict.ts"))
              for m in re.findall(r"\bid:\s*'([^']+)'", re.sub(r"//[^\n]*", "", f.read_text(encoding="utf-8")))}
-    return ([f"{HOOKS_INVENTORY}: mod hook '{h}' has no rule in mods/*/lib/strict.ts" for h in sorted(declared - coded)]
-            + [f"mods/*/lib/strict.ts: rule '{h}' has no mod hook in {HOOKS_INVENTORY}" for h in sorted(coded - declared)])
+    plain = set()
+    for f in repo.glob("mods/*/hooks.json"):
+        try:
+            if "modules" not in json.loads(f.read_text(encoding="utf-8")):
+                plain.add(f.parent.name)
+        except (OSError, ValueError, TypeError):
+            pass  # unreadable: bundle_gates reports a malformed hooks.json
+    return ([f"{HOOKS_INVENTORY}: mod hook '{h}' has no rule in mods/*/lib/strict.ts"
+             for h in sorted(declared - coded - plain)]
+            + [f"mods/*/lib/strict.ts: rule '{h}' has no mod hook in {HOOKS_INVENTORY}" for h in sorted(coded - declared)]
+            + [f"mods/{m}: plain mod has no mod hook '{m}' in {HOOKS_INVENTORY}" for m in sorted(plain - declared)])
 
 
 def body_agnosticism(repo: Path) -> list[str]:
@@ -1057,8 +1067,8 @@ def body_agnosticism(repo: Path) -> list[str]:
 
 # ------------------------------------------- agent authoring standard (docs/development/agent-template.md)
 MAX_AGENT_BODY_LINES = 40
-AGENT_REQUIRED_FIELDS = ("name", "description", "type", "model", "tools", "skills")
-AGENT_OPTIONAL_FIELDS = ("disallowedTools", "color", "metadata")
+AGENT_REQUIRED_FIELDS = ("name", "description", "type", "model", "skills")
+AGENT_OPTIONAL_FIELDS = ("tools", "disallowedTools", "color", "metadata")
 CLAUDE_AGENT_COLORS = {"red", "blue", "green", "yellow", "purple", "orange", "pink", "cyan"}
 _AGENT_LIST_FIELDS = ("tools", "skills", "disallowedTools")
 _CONTRACT_LABELS = ("Input", "Output", "Side effects", "Refuses")
@@ -1080,6 +1090,9 @@ def _agent_frontmatter_errors(rel: str, stem: str, fm: dict, modes: set[str] | N
     allowed = AGENT_REQUIRED_FIELDS + AGENT_OPTIONAL_FIELDS
     out += [f"{rel}: frontmatter field '{k}' is not in the agent contract (docs/development/agent-template.md)"
             for k in fm if k not in allowed]
+    if "tools" not in fm and "Agent" not in (fm.get("disallowedTools") or []):
+        out.append(f"{rel}: no 'tools' list and 'disallowedTools' does not deny 'Agent' "
+                   f"(docs/development/agent-template.md)")
     if "name" in fm and fm["name"] != stem:
         out.append(f"{rel}: name '{fm['name']}' does not match the filename")
     if "type" in fm and modes is not None and not (isinstance(fm["type"], str) and fm["type"] in modes):

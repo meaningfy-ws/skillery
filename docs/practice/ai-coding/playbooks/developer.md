@@ -42,5 +42,5 @@ other agents, checks their work and commits. The picture is in
 
 ## Your done
 
-The EPIC is accepted (at the acceptance demo when it delivers or changes a use case) and archived. See
+The EPIC is accepted (at the acceptance demo when it delivers or changes a use case), its docs are current, and it is archived. See
 [`dod-quality-gates.md`](../dod-quality-gates.md#delivery--release).

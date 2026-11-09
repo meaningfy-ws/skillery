@@ -67,7 +67,7 @@ subagent must traverse in full**. Together the five regions cover the whole stan
 | Lens | Catalogue/SKILL region it owns — **review every entry in the region**, the examples are not a limit |
 |------|----------------------------------------------------------------------------------------------------|
 | **L1 · Security & safety** | the security/safety surface: secrets & credentials, injection (command/SQL/XSS), the OWASP top-10, `BP-VALIDATE-AT-BOUNDARY`, `AP-DUP-VALIDATION`, and sensitive-data handling per `guardrails`. |
-| **L2 · Spec correctness & tests** | conformance to the EPIC **requirements/specs** (not the plan) — acceptance criteria, edge/error scenarios, no undocumented divergence — **and** the whole `cosmic-python` testing contract (§"No Clean Code Without Tests", `BP-COVERAGE-PER-LAYER`, FIRST, test-per-layer Workflow 3, Gherkin step defs). |
+| **L2 · Spec correctness & tests** | conformance to the EPIC **requirements/specs** (not the plan) — acceptance criteria, edge/error scenarios, no undocumented divergence — **and** the whole `cosmic-python` testing contract (§"No Clean Code Without Tests", `BP-COVERAGE-PER-LAYER`, FIRST, test-per-layer Workflow 3, Gherkin step defs) — **and** doc agreement: pages the diff changed, or that name a changed symbol, command, phase or file, agree with the code. |
 | **L3 · Architecture conformance** | the `cosmic-python` structural contract in full: the four layers, the dependency law (§1–2), component organisation (`PR-COMPONENT-FIRST`), observability placement, **and every structural anti-pattern** (`AP-IO-IN-MODELS`, `AP-LOGIC-IN-EDGES`, `AP-CROSS-VARIANT-IMPORT`, `AP-PARALLEL-LAYOUTS`, cycles); **plus** each touched ADR's Confirmation — by its tool where one exists, by reading where not; an automatable Confirmation that is not automated is a finding — and any workaround of one of our own libraries (a finding: `epic-delivery`'s dependency rule forbids them). |
 | **L4 · Principles & clean code** | the Clean Code + SOLID standard in full (§"Core Principles") **and every within-unit best-practice/anti-pattern** (`BP-DOMAIN-REVEALING-NAMES`, `BP-CONSTANTS-ENUMS`/`-HOME`, `BP-EXCEPTIONS-MODULE`, `BP-IDIOMATIC-SMALL`; `AP-FREESTR-ANYLAYER`, `AP-DICT-AS-MODEL`, `AP-GENERIC-MODULE-NAMES`, `AP-EXCEPTIONS-EMBEDDED`). |
 | **L5 · Fit, elegance & refactoring** | the reuse/compactness principles in full (`PR-SURVEY-FIRST`, `PR-REUSE-COMPACT`, `PR-SSOT-DRY`, `PR-CONFIG-DECOUPLED`) and the duplication/fragmentation anti-patterns (`AP-DUP-CONST`, `AP-MISPLACED-SHARED-INFRA`, `AP-OVER-FRAGMENTATION`, `AP-VERBATIM-EXTERNAL`), **plus** the forward-looking fit & refactoring investigation (new + touched code) with gitnexus blast radius. |
@@ -92,7 +92,11 @@ scoped to its region:
    filtered to the lens, plus the matching `cosmic-python` SKILL sections (see the Lenses table). The
    *region*, not a sample, is your checklist.
 2. **Gather.** Read the diff (new + touched code), the EPIC requirements/specs, and the covering
-   Gherkin. L2 also runs the project's test suite (`make test` / `pytest`) and reports failures.
+   Gherkin. L2 also reads the stage's gate report instead of running the suite, and applies the T1
+   consistency checks to it (the count against the tests added; exit 0 with failures listed; a file
+   type with no gate); a mismatch, a missing or a red run is a finding. Outside an EPIC the caller
+   supplies the gate report, or L2 runs the project's full gates. L2 checks doc agreement: every page the diff changed, and every page naming a
+   symbol, command, phase or file the diff changed, agrees with the code.
 3. **Traverse exhaustively.** Walk **every** principle (`PR-*`), best-practice (`BP-*`), and
    anti-pattern (`AP-*`) in the region against the changed code; also apply the cosmic-python SKILL
    review questions (Workflow 2) and the ONE-MINUTE CODE STRUCTURE CHECK where the lens owns them. Do
@@ -118,7 +122,7 @@ into one report. Tag each finding with its **lens** (L1–L5). Report by priorit
 
 **Owns:** the two modes (standalone five-way fan-out / interactive main-thread), the **dispatch
 contract** (five lens subagents in parallel, one lens each), the five lens **regions** + MECE
-boundaries, the **methodical per-lens procedure** (traverse the whole region), and the report format.
+boundaries, the L2 doc-agreement criterion, the **methodical per-lens procedure** (traverse the whole region), and the report format.
 **Does NOT** own the rules themselves (the `cosmic-python` catalogue is the checklist — cite, never
 restate), perform the run (external `code-review` / `code-reviewer` wrapper), or fix code (the
 `implementer` applies accepted fixes). The fit & refactoring investigation is **recommendations-only**.

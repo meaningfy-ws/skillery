@@ -288,7 +288,7 @@ flowchart LR
 
 ## Relations
 
-Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (81 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (198 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 279 relation edges plus 48 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
+Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (81 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (200 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 281 relation edges plus 48 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
 
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 12, 'rankSpacing': 45, 'curve': 'basis'}}}%%
@@ -447,6 +447,7 @@ flowchart LR
   s_architecture -.-> s_conceptual_modelling
   s_architecture -.-> s_linkml_engineering
   s_architecture -.-> s_epic_delivery
+  s_architecture -.-> s_technical_writing
   s_bdd_gherkin -.-> s_architecture
   s_bdd_gherkin -.-> s_epic_planning
   s_bdd_gherkin -.-> s_epic_delivery
@@ -602,6 +603,7 @@ flowchart LR
   s_technical_writing -.-> s_clarity_gate
   s_technical_writing -.-> s_epic_planning
   s_technical_writing -.-> s_epic_delivery
+  s_technical_writing -.-> s_architecture
   s_technical_writing -.-> s_explanatory_writing
   s_technical_writing -.-> s_writing_antipatterns
   s_technical_writing -.-> s_executive_communication
@@ -703,7 +705,7 @@ Cross-cutting basics everyone installs: clear technical writing, explanatory-wri
 
 | Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
 |---|---|---|---|---|---|---|---|---|---|
-| [`technical-writing`](../skills/technical-writing/SKILL.md) | Produce clear documentation, explanations, summaries, and docstrings — AsciiDoc/Antora or Markdown — with a lightweight clarity check. | `content` | `cross-cutting` | `generic` | `reusable` | `any` | `stable` | — | `clarity-gate`, `epic-planning`, `epic-delivery`, `explanatory-writing`, `writing-antipatterns`, `executive-communication` |
+| [`technical-writing`](../skills/technical-writing/SKILL.md) | Produce clear documentation, explanations, summaries, and docstrings — AsciiDoc/Antora or Markdown — with a lightweight clarity check. | `content` | `cross-cutting` | `generic` | `reusable` | `any` | `stable` | — | `clarity-gate`, `epic-planning`, `epic-delivery`, `architecture`, `explanatory-writing`, `writing-antipatterns`, `executive-communication` |
 | [`explanatory-writing`](../skills/explanatory-writing/SKILL.md) | Apply explanatory craft so that Explanation-quadrant prose reads clearly — one controlling metaphor, a concrete example beside every abstract claim, self-answered question pivots, short declaratives, coin-and-explain, a confident grounded close. | `content` | `cross-cutting` | `generic` | `reusable` | `any` | `stable` | — | `meaningfy-voice`, `technical-writing`, `executive-communication`, `writing-antipatterns` |
 | [`writing-antipatterns`](../skills/writing-antipatterns/SKILL.md) | The register/genre-conditional catalogue of how writing fails — a genre map (Tutorial, How-to, Reference, Explanation, Decision, Decision record, Contract/specification, Coaching dialogue), a short list of defects that apply regardless of genre, and an inversion matrix of antipatterns whose correctness depends on genre (a rhetorical question is craft in an explainer and a defect in an ADR). | `content` | `cross-cutting` | `generic` | `reusable` | `any` | `stable` | — | `meaningfy-voice`, `technical-writing`, `explanatory-writing`, `executive-communication`, `proposal-writing`, `decision-package`, `architecture`, `semantic-consulting-coach` |
 | [`meaningfy-voice`](../skills/meaningfy-voice/SKILL.md) | The Meaningfy company voice profile — British English, no em dash, plain current vocabulary, honest and direct, the SMILE values, and the register rule (teach, decide, bind). | `content` | `cross-cutting` | `generic` | `precise` | `any` | `stable` | — | `executive-communication`, `explanatory-writing`, `writing-antipatterns`, `vault-daily`, `sales-conversations` |
@@ -713,6 +715,7 @@ Cross-cutting basics everyone installs: clear technical writing, explanatory-wri
 | [`rulebook`](../skills/rulebook/SKILL.md) | Use this skill in any session, when an activity starts (writing, offers, reviews, coding, code-review, planning) and whenever a rule is read, checked or written: load the rules for the activity and context, cite the ones applied, and check an output before handing it over. | `knowledge` | `cross-cutting` | `generic` | `precise` | `any` | `experimental` | `rule-learner`, `rule-steward` | `rule-learner`, `rule-steward`, `vault-conventions`, `vault-setup` |
 | [`rule-learner`](../skills/rule-learner/SKILL.md) | Use this skill in any session when the owner states how work should be done or corrects the agent ("always", "never", "prefer", "from now on", "no, do it this way"): draft candidate rules from the owner's own words, classify them, pick a mutation (new, confirm, update, supersede, split), show them in one rule approval card when the owner wraps up, and write what the owner approves; record a correction against a rule in force with override. | `knowledge` | `cross-cutting` | `generic` | `precise` | `any` | `experimental` | `rulebook`, `rule-steward` | `rulebook`, `rule-steward`, `vault-capture`, `vault-conventions` |
 | [`rule-steward`](../skills/rule-steward/SKILL.md) | Use this skill when the weekly review of a Meaningfy vault reaches its rules step, or when the owner asks how their rules are doing: read the window's rule usage from Langfuse, run the lint and the golden examples, review the staged rule candidates, flag rules never loaded, never cited, overridden, violated or stale, propose retire, revise, merge, split, confirm or promote for each, and apply only what the owner approves. | `knowledge` | `personal` | `obsidian` | `precise` | `any` | `experimental` | `rulebook`, `rule-learner` | `rulebook`, `rule-learner`, `vault-planning`, `vault-conventions` |
+| [`no-poll-loops`](../mods/no-poll-loops/) *(mod)* | Claude Code mod | — | — | — | — | — | — | — | — |
 
 ## meaningfy-consulting
 
@@ -746,7 +749,7 @@ The design / modelling role: system architecture (C4, ArchiMate/UML, ADRs, contr
 
 | Skill / agent | Summary | purpose | area | subject | posture | stage | maturity | Depends on / loads | Related |
 |---|---|---|---|---|---|---|---|---|---|
-| [`architecture`](../skills/architecture/SKILL.md) | System-level solution architecture — C4 levels (Context, Container, Component, Code), ArchiMate and UML notations, ADRs, and contracts (OpenAPI/AsyncAPI/LinkML). | `modelling` | `coding` | `modelling` | `reusable` | `design` | `stable` | — | `cosmic-python`, `stream-coding`, `epic-planning`, `writing-antipatterns`, `bdd-gherkin`, `conceptual-modelling`, `linkml-engineering`, `epic-delivery` |
+| [`architecture`](../skills/architecture/SKILL.md) | System-level solution architecture — C4 levels (Context, Container, Component, Code), ArchiMate and UML notations, ADRs, and contracts (OpenAPI/AsyncAPI/LinkML). | `modelling` | `coding` | `modelling` | `reusable` | `design` | `stable` | — | `cosmic-python`, `stream-coding`, `epic-planning`, `writing-antipatterns`, `bdd-gherkin`, `conceptual-modelling`, `linkml-engineering`, `epic-delivery`, `technical-writing` |
 | [`conceptual-modelling`](../skills/conceptual-modelling/SKILL.md) | Build and evolve a living, representation-agnostic conceptual model for a product (programming) project — the domain's entities, attributes, relationships, and meaning — and choose how it is rendered. | `modelling` | `coding` | `modelling` | `precise` | `design` | `stable` | `linkml-engineering`, `architecture`, `formal-reasoning` | `modelling-conventions`, `linkml-engineering`, `architecture`, `cosmic-python`, `formal-reasoning`, `epic-delivery` |
 | [`modelling-conventions`](../skills/modelling-conventions/SKILL.md) | The shared, representation-agnostic modelling craft reused across the modelling skills — naming discipline, modelling anti-patterns, and the guardrails a modeller follows while working, plus the two load-bearing principles (decouple attributes into reusable first-class properties; identify everything by a stable URI, implicit by default). | `modelling` | `coding` | `modelling` | `reusable` | `design` | `stable` | `conceptual-modelling`, `linkml-engineering` | `conceptual-modelling`, `linkml-engineering` |
 | [`linkml-engineering`](../skills/linkml-engineering/SKILL.md) | The operational LinkML craft, downstream of an existing model or spec — never greenfield. | `modelling` | `coding` | `semantic-data` | `precise` | `design` | `stable` | `conceptual-modelling`, `formal-reasoning` | `modelling-conventions`, `conceptual-modelling`, `architecture`, `cosmic-python`, `project-setup`, `formal-reasoning` |
