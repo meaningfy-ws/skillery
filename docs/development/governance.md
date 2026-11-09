@@ -13,7 +13,7 @@ Every artifact is exactly one of these, and that decides its home:
 | **Agent** | Harness | Isolated context | `agents/` | Thin wrapper — see [`agent-template.md`](agent-template.md) |
 | **Doc** | Humans | Never auto-loaded | `docs/` | Written for people; narrates & points, never restates skill rules |
 | **Binding** | Harness (every session) | Always | root agentic files (`AGENTS.md`, `CLAUDE.md`) + `project-setup`'s agentic templates | Mandates & routes to skills; never carries the standard |
-| **Mod** | People, in the session (Claude Code only) | Every session it is installed in | `mods/` | Observes session events, displays state and runs commands a person could type; carries no method — reads rules, thresholds and phases from skill assets |
+| **Mod** | People, in the session (Claude Code only) | Every session it is installed in | `mods/` | Observes session events, displays state, runs commands a person could type or denies a command; carries no method — reads rules, thresholds and phases from skill assets |
 
 Authoring governance (`docs/development/`, incl. `docs/development/skill-template.md`) and distribution
 (`bundles.yaml`, rendered to `.claude-plugin/`, `bundles/` and

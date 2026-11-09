@@ -1,14 +1,13 @@
 # Hook bindings — how each mechanism is implemented
 
 [`inventory.yaml`](../../hooks.yaml) is the single source of hook *intent*. This page is the
-**binding reference**: how an intent's `mechanism` becomes a concrete, projectable artifact, and how
-`project-setup` writes those artifacts into a target repo per CLI. It points at templates; it does
-not duplicate the inventory.
+**binding reference**: how an intent's `mechanism` becomes a concrete artifact, and which
+mechanisms are only declared. It points at templates; it does not duplicate the inventory.
 
 The rule the whole design turns on: **one intent, mechanism decides duplication.**
 `git` and `ci` bindings are CLI-agnostic — a *single* shared implementation serves both Claude Code
-and opencode. Only `agent` bindings render per CLI, and even then the *intent* is shared; only the
-binding file format differs.
+and opencode. `agent` bindings are declared only; the agent-runtime hooks that run are mods
+(Claude Code) and the catalogue's plugin (opencode).
 
 ## `git` mechanism — one shared implementation (tasks 2.4)
 
@@ -44,72 +43,31 @@ does not know or care which agent authored the branch. Templates live in
 [`../skills/project-setup/assets/templates/ci/`](../../skills/project-setup/assets/templates/ci/)
 (`ci.yaml.tmpl` calls `make validate`).
 
-## `agent` mechanism — same intent, per-CLI binding (task 2.5)
+## `agent` mechanism — declared, not projected
 
-`agent`-mechanism intents fire inside the agent runtime (PreToolUse, PostToolUse, Stop,
-SessionStart, …). The **intent is shared**; the binding is rendered into each targeted CLI's native
-format. The two bindings are *not* required to be byte-identical — only behaviourally equivalent.
+`agent`-mechanism intents name an event inside the agent runtime (PreToolUse, PostToolUse, Stop,
+SessionStart, …) where a check would belong. They are **declared only**: nothing renders a
+`settings.json` hook, a `scripts/hooks/*.sh` script or a `.opencode/plugin/*` file for them, and
+`project-setup` does not project them. An `agent` binding records the intent and its trigger so a
+later binding has one place to start from.
 
-**Claude Code** — `.claude/settings.json` `hooks` array. One matcher per event:
+The agent-runtime hooks that do run ship with the catalogue, as a `mod` (next section) in a bundle
+and, for opencode, through the catalogue's plugin.
 
-```jsonc
-// agent intent `impact-before-edit` (PreToolUse on Edit) → Claude binding
-{ "hooks": { "PreToolUse": [
-  { "matcher": "Edit|Write",
-    "hooks": [{ "type": "command", "command": "scripts/hooks/impact-before-edit.sh" }] } ] } }
-```
+## `mod` mechanism — a hooks module shipped in a bundle
 
-**opencode** — a plugin under `.opencode/plugin/` exporting the equivalent event handler:
-
-```js
-// .opencode/plugin/impact-before-edit.js — same intent, opencode's plugin-hook shape
-export const ImpactBeforeEdit = async ({ project, client }) => ({
-  "tool.execute.before": async ({ tool }, output) => {
-    if (tool === "edit" || tool === "write") { /* run impact, block on HIGH/CRITICAL */ }
-  },
-})
-```
-
-The shared part is the **script the binding calls** (`scripts/hooks/<intent>.sh`) — written once,
-invoked by both bindings. Only the thin event-wiring differs per CLI.
-
-| inventory `trigger` | Claude event | opencode plugin event |
-|---|---|---|
-| `PreToolUse(Edit)` | `PreToolUse` matcher `Edit\|Write` | `tool.execute.before` |
-| `PostToolUse(Edit)` | `PostToolUse` matcher `Edit\|Write` | `tool.execute.after` |
-| `Stop` | `Stop` | `session.idle` |
-| `SessionStart` | `SessionStart` | `session.start` |
-| `UserPromptSubmit` | `UserPromptSubmit` | `chat.message` |
-| `PreCompact` | `PreCompact` | (no native equivalent — recorded gap) |
-
-`PreCompact` has no opencode equivalent at the pinned version → recorded as a gap in
-[`../docs/environment/dual-cli/compatibility.md`](../environment/dual-cli/compatibility.md); the `persist-before-compaction`
-intent degrades to a `Stop`/`session.idle` binding on opencode.
-
-## `mod` mechanism — a rule inside a Claude Code mod
-
-`mod`-mechanism intents are enforced by a mod's own hooks, not by settings or a git hook. Today they
-are the four `navigator-strict-*` intents: navigator's strict mode, active in a repository whose
+`mod`-mechanism intents are enforced by a mod's own hooks, not by settings or a git hook. A mod is
+a hooks module in one of two forms: engine `modules` (navigator) or plain command hooks
+(`no-poll-loops`). Today the intents are the four `navigator-strict-*` intents: navigator's strict mode, active in a repository whose
 workflow file declares `"mode": "strict"`, or in any session switched with `/navigator mode strict`. Each intent's id equals the `id` of one rule in
 `mods/navigator/lib/strict.ts`; the lint check `mod_bindings_match` keeps the two sets equal. Nothing
 is projected at setup: installing the `meaningfy-navigator` bundle is the binding. opencode has no
 mods, a recorded gap in [`compatibility.md`](../environment/dual-cli/compatibility.md). How to add a
 strict rule: [`mods.md`](mods.md).
 
-## Projection at setup (task 2.6)
-
-`project-setup` reads `inventory.yaml` and, for a repo targeting one or more CLIs, writes:
-
-1. the **shared** git-hook config (`.pre-commit-config.yaml`) — **once**, regardless of CLI count;
-2. the **shared** CI workflow(s) — once;
-3. the shared hook **scripts** (`scripts/hooks/<intent>.sh`) — once;
-4. the **agent** bindings **per targeted CLI** — Claude `settings.json` hooks for a Claude target,
-   `.opencode/plugin/*.js` for an opencode target.
-
-So a Claude-only repo gets (1)+(2)+(3)+Claude bindings; a dual-target repo additionally gets the
-opencode plugin bindings — and the git/CI layer is never duplicated.
-
-> Scope note: `project-setup` now follows the same root-binding convention as this repo —
-> `AGENTS.md` canonical, `CLAUDE.md` a thin pointer, never a symlink. It still renders only the
-> Claude agent layer (`settings.json`); adding the opencode agent-binding renderer is tracked as the
-> project-setup reconciliation follow-up, not this foundation change.
+The fifth intent, `no-poll-loops`, is a plain command hook: `mods/no-poll-loops/hooks.json` holds
+one `PreToolUse` hook on `Bash` that runs `no-poll-loops.mjs`, which denies a sleep loop (exit 2
+and a message). Its id is the mod's folder name, so `mod_bindings_match` needs no strict rule for
+it. The bundle `meaningfy-core` carries it. For opencode, `tools/opencode-plugin.mjs` adds a
+`tool.execute.before` handler for `bash` that calls the same `check`, whatever the bundle
+selection. Both fail open.

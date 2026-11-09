@@ -1,13 +1,20 @@
 # Mods — the developer guide
 
 A **mod** is the fifth artifact type (see [`governance.md`](governance.md)): a Claude Code hooks
-module that watches session events, shows state above the prompt and in the status line, and runs
-commands a person could type. It carries no method. Every rule, threshold and phase list it uses is
-a data file in the skill that owns it, read at run time.
+module that watches session events, shows state above the prompt and in the status line, runs
+commands a person could type, or denies a command. It carries no method. Every rule, threshold and
+phase list it uses is a data file in the skill that owns it, read at run time.
 
-skillery has one mod, `navigator`. People install it through the `meaningfy-navigator` bundle; the
-user guide is [`docs/environment/navigator.md`](../environment/navigator.md). This page is for
-whoever changes it. The design it follows is the PLAN of the `navigator` change
+A mod is a hooks module in one of two forms. An **engine `modules` mod** has a `hooks.json` that
+names `modules`, plus `config.json`, `types.d.ts` and `register.tsx`. A **plain command-hooks mod**
+has only a `hooks.json` with command hooks, and whatever scripts it runs.
+
+skillery has two mods. `navigator` is the modules mod; people install it through the
+`meaningfy-navigator` bundle, and the user guide is
+[`docs/environment/navigator.md`](../environment/navigator.md). `no-poll-loops` is the plain one:
+a `PreToolUse` hook on `Bash` that runs `no-poll-loops.mjs` and denies a sleep loop (exit 2 with a
+message); `meaningfy-core` carries it, and `tools/opencode-plugin.mjs` calls the same `check` on
+opencode. This page is for whoever changes them; the sections below describe the modules form. The design it follows is the PLAN of the `navigator` change
 (`openspec/changes/navigator/design.md`); this page points to it and does not restate it.
 
 ## Structure
@@ -46,7 +53,12 @@ at most one per bundle. `make bundles` then renders, for that bundle:
 - `mods/<name>` — a copy of the mod's folder (the engine refuses a hooks module or a types file
   behind a symlink), compared byte for byte by the gate, so edit `mods/`, never the copy;
 - `data/` — symlinks to the skill assets the mod reads (workflow files, session thresholds);
-- `.claude-plugin/plugin.json` — with `hooks`, `types` and `userConfig` taken from the mod.
+- `.claude-plugin/plugin.json` — with `hooks` taken from the mod, and `types` and `userConfig`
+  when the mod has a `types.d.ts` and a `config.json`.
+
+The generator requires `hooks.json` of every mod, and `config.json`, `types.d.ts` and
+`register.tsx` only when `hooks.json` names `modules`. Only `navigator` gets `data/`. A mod's
+`*.test.mjs` and `*.test.ts` do not ship.
 
 The mod reads its data only under `${plugin root}/data/`, which is the same path in development and
 after install. A bundle that holds only mods is left out of the opencode catalogue: mods are
@@ -126,8 +138,8 @@ them, then `lib/lean.ts` feeds the subagent and hygiene checks.
 
 ## Checks
 
-- `make mods` (part of `make validate`) runs the `lib/` unit tests with Node's test runner and
-  type-checks `lib/` with `tsc`; `register.tsx` and `io.ts` need the engine's types, so they are
+- `make mods` (part of `make validate`) runs the `lib/` unit tests and each mod's `*.test.mjs` with
+  Node's test runner and type-checks the mods that have a `tsconfig.json` with `tsc`; `register.tsx` and `io.ts` need the engine's types, so they are
   type-checked by hand check H-5.
 - By hand, after a change to `register.tsx`: `claude plugin validate bundles/meaningfy-navigator`,
   then `claude --plugin-dir bundles/meaningfy-navigator` in this repo, and check the status line
