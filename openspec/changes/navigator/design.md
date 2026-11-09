@@ -913,6 +913,13 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
      negations); `.gitattributes` marks `bundles/*/mods/**` generated, so a PR shows the copy folded.
      Kept: a flat `lib/`, one `register.tsx` (split at about 400 lines into another root `.tsx`),
      the root `package.json`. `MOD_DATA` is keyed by mod when a second mod lands.
+- **DD-39** *(lead, owner delegated "decide" 2026-11-09)* Stage 3 stays on plan for its core
+  (3.1–3.7, 3.12, 3.13) and takes the EPIC's cut line: Board (3.8), Copy status (3.9), Report to
+  skillery (3.10) and the desktop polish (3.11) are not built. Nobody has asked for them, each adds
+  a surface to keep working across Claude Code upgrades, and the spec already lets them go (*Report
+  to skillery (cut line)*). The `hygiene:unused:<skill>` warning therefore has no button; its text
+  names `skillery-feedback` for the person to run (§6.3). They can come back as one small EPIC when
+  someone asks.
 - **DD-37** *(lead, task 2.9)* DEC-13's four host skills were right; keep them. Each file sits
   with the skill that owns the activity's method, and each phase names its own owner, so a file
   that spans skills (build-tier's explore/shape/plan belong to `epic-planning`, archive to

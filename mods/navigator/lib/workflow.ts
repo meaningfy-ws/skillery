@@ -263,6 +263,9 @@ export function namesIn(w: Workflow): string[] {
 /** `superpowers:test-driven-development` → `test-driven-development`. */
 export const bare = (name: string) => name.slice(name.lastIndexOf(':') + 1)
 
+/** The effective mode: the session's switch if set, else the repo's (DEC-5, DD-35). */
+export const isStrict = (s: NavState) => (s.mode.session ?? s.mode.repo) === 'strict'
+
 export function workflowOf(s: NavState): Workflow | undefined {
   return s.workflows.find(w => w.name === s.workflow)
 }

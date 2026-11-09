@@ -1,6 +1,6 @@
 // The state contract (design §3). reduce() is the only writer; every function here is pure.
 
-import type { BandDisplay, Change, NavState, Workflow } from '../types'
+import type { BandDisplay, Change, NavState, Warning, Workflow } from '../types'
 import { navigate } from './phase.ts'
 import { addWarnings, clearGateWarnings, gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, onCommand,
   onCommit, onSkill, showsConsent, workflowErrors } from './process-drift.ts'
@@ -23,11 +23,13 @@ export const EMPTY: NavState = {
   signalPhase: null,
   consent: {},
   consentShown: false,
-  mode: { repo: 'loose', sessionLoose: false },
+  mode: { repo: 'loose', session: null },
   skills: [],
   subagents: [],
   gates: {},
   warnings: [],
+  accepted: [],
+  planTruncated: false,
   display: { band: 'folded', line: true },
   seen: [],
 }
@@ -58,6 +60,9 @@ export type Signal =
   | { kind: 'SetBand'; id: string; band: BandDisplay }
   | { kind: 'ToggleLine'; id: string }
   | { kind: 'SetLine'; id: string; line: boolean }
+  | { kind: 'SetMode'; id: string; mode: 'loose' | 'strict' }
+  | { kind: 'Accepted'; id: string; keys: string[] }
+  | { kind: 'PlanRead'; id: string; warnings: Warning[]; truncated: boolean }
 
 const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v)
 
@@ -159,6 +164,13 @@ function apply(state: NavState, s: Signal): NavState {
       return { ...state, display: { ...state.display, line: !state.display.line } }
     case 'SetLine':
       return { ...state, display: { ...state.display, line: s.line } }
+    case 'SetMode': // the session switch (DD-35); a new session follows the repo again
+      return { ...state, mode: { ...state.mode, session: s.mode === state.mode.repo ? null : s.mode } }
+    case 'PlanRead': // each read replaces the last, so fixed drift disappears
+      return { ...state, planTruncated: s.truncated,
+        warnings: [...state.warnings.filter(w => !w.key.startsWith('plan:')), ...s.warnings] }
+    case 'Accepted':
+      return { ...state, accepted: [...new Set([...state.accepted, ...s.keys])] }
   }
 }
 

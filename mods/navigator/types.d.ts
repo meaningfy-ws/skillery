@@ -101,11 +101,14 @@ export type NavState = {
   signalPhase: string | null // the phase the latest skill, agent or command entered
   consent: Record<string, boolean> // consent gate id → answered since its last `before` command
   consentShown: boolean // an answer matched a consent gate's `shown`; the next prompt answers it
-  mode: { repo: 'loose' | 'strict'; sessionLoose: boolean }
+  // `session` is the Mode switch for this session only (DD-35); null follows the repo.
+  mode: { repo: 'loose' | 'strict'; session: 'loose' | 'strict' | null }
   skills: SkillUse[]
   subagents: Subagent[]
   gates: Record<string, GateState>
   warnings: Warning[]
+  planTruncated: boolean // the last plan-drift read saw more than the diff cap
+  accepted: string[] // warning keys recorded as deviations (deviations.md, or this session outside a change)
   display: { band: BandDisplay; line: boolean }
   seen: string[]
 }

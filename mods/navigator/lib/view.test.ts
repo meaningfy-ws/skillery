@@ -25,14 +25,14 @@ test('the line before the phase and appetite are known: nothing unknown is shown
 })
 
 test('strict shows; loose and strict dropped for the session do not (DD-35)', () => {
-  assert.match(lineText({ ...apply, mode: { repo: 'strict', sessionLoose: false } }), /· ● strict$/)
-  assert.ok(!lineText({ ...apply, mode: { repo: 'strict', sessionLoose: true } }).includes('strict'))
+  assert.match(lineText({ ...apply, mode: { repo: 'strict', session: null } }), /· ● strict$/)
+  assert.ok(!lineText({ ...apply, mode: { repo: 'strict', session: 'loose' } }).includes('strict'))
   assert.ok(!lineText(apply).includes('loose'))
 })
 
 test('the mode is always in the unfolded band', () => {
   assert.deepEqual(bandModel(apply).rows.find(r => r.label === 'mode')!.items, ['○ loose'])
-  assert.deepEqual(bandModel({ ...apply, mode: { repo: 'strict', sessionLoose: true } }).rows.find(r => r.label === 'mode')!.items,
+  assert.deepEqual(bandModel({ ...apply, mode: { repo: 'strict', session: 'loose' } }).rows.find(r => r.label === 'mode')!.items,
     ['○ loose (strict dropped)'])
 })
 

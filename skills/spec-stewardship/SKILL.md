@@ -37,6 +37,9 @@ author in openspec/changes/<id>/     (epic-planning: proposal.md + design.md + t
 
 - **Archive is deterministic** — keep it out of the LLM-generation path. Run
   `openspec validate --strict` first; archive blocks on invalid deltas.
+- **No open plan drift at archive.** A change is archived only when what was built matches its
+  EPIC and PLAN: each drift is either reconciled into the PLAN or recorded as a deviation, with its
+  reason, in the change's `deviations.md`. The navigator mod's *Archive check* lists what is open.
 - **After archive, run `make fix-spec-links`.** The archive copies a delta's relative links into
   `specs/` verbatim, so a delta nested deeper than its merged home leaves over-deep `../` links.
   The auto-fixer recomputes the depth; the validator's `broken_links` check is the safety net.

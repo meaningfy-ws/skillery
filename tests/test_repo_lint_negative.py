@@ -275,6 +275,29 @@ def test_hooks_inventory_version_mismatch_is_flagged(tmp_path):
     assert any("!= VERSION" in e for e in lint.hooks_inventory_shape(tmp_path))
 
 
+def _mod_hooks(tmp_path, ids, rules):
+    (tmp_path / "VERSION").write_text("9.9.9\n", encoding="utf-8")
+    hooks = "".join(f"  - id: {i}\n    intent: x\n    provenance: {{skill: s}}\n"
+                    f"    bindings: [{{mechanism: mod, phase: phase-gate}}]\n" for i in ids)
+    (tmp_path / "hooks.yaml").write_text(f'version: "9.9.9"\nhooks:\n{hooks}', encoding="utf-8")
+    lib = tmp_path / "mods" / "navigator" / "lib"
+    lib.mkdir(parents=True)
+    (lib / "strict.ts").write_text("".join(f"  {{ id: '{r}', check }},\n" for r in rules), encoding="utf-8")
+
+
+def test_mod_mechanism_is_accepted_and_bindings_match(tmp_path):
+    _mod_hooks(tmp_path, ["navigator-strict-commit"], ["navigator-strict-commit"])
+    assert lint.hooks_inventory_shape(tmp_path) == []
+    assert lint.mod_bindings_match(tmp_path) == []
+
+
+def test_mod_bindings_mismatch_is_flagged_both_ways(tmp_path):
+    _mod_hooks(tmp_path, ["navigator-strict-commit"], ["navigator-strict-archive"])
+    assert lint.mod_bindings_match(tmp_path) == [
+        "hooks.yaml: mod hook 'navigator-strict-commit' has no rule in mods/*/lib/strict.ts",
+        "mods/*/lib/strict.ts: rule 'navigator-strict-archive' has no mod hook in hooks.yaml"]
+
+
 def test_body_agnosticism_new_claude_ism_is_flagged(tmp_path):
     _skill(tmp_path, "cosmic-python", body="Run /opsx:apply then edit .claude/settings.json")
     assert lint.body_agnosticism(tmp_path)  # not in the allowlist → flagged
