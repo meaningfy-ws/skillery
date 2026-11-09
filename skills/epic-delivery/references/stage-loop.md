@@ -1,7 +1,8 @@
 # The stage loop in detail
 
 The six steps of a stage, what each scales with, and how the loop covers every check of the longer
-loop it replaces. The summary and the scaling table are in the skill; this page adds the detail.
+loop it replaces. The summary is in the skill, and the review set of each appetite is in
+[`build-tier.workflow.json`](../assets/workflows/build-tier.workflow.json); this page adds the detail.
 
 ## The steps
 

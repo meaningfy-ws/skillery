@@ -935,13 +935,13 @@ def test_dependency_skill_shadowing_a_skills_dir_is_flagged(tmp_path):
 def test_dependency_block_skills_list_is_flagged(tmp_path):
     text = _dep_yaml("a", "skills:\n    - brainstorming")
     assert _deps_text(tmp_path, text) == [
-        "dependencies.yaml: line 10: 'skills:' must be an inline list, `skills: [a, b]`"]
+        "dependencies.yaml: line 10: 'skills:' must be an inline list of bare names, `skills: [a, b]`"]
 
 
 def test_dependency_skills_not_a_list_is_flagged(tmp_path):
     assert _deps_text(tmp_path, _dep_yaml("a", "skills: brainstorming")) == [
         "dependencies.yaml: 'a' 'skills' must be a list",
-        "dependencies.yaml: line 10: 'skills:' must be an inline list, `skills: [a, b]`"]
+        "dependencies.yaml: line 10: 'skills:' must be an inline list of bare names, `skills: [a, b]`"]
 
 
 @pytest.mark.parametrize("name", ["mods2", "Mods", "mod", "node_modules2", "module"])

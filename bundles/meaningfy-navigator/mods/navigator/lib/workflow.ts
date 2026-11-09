@@ -1,7 +1,7 @@
 // Workflow files (design §4.1, §4.3): the one validator of their schema (DD-8) and the repo
 // overrides. Pure: register.tsx reads the files and passes their text in.
 
-import type { ChangePredicate, Workflow } from './state.ts'
+import type { ChangePredicate, NavState, Phase, Workflow } from './state.ts'
 
 export const CHANGE_PREDICATES: readonly ChangePredicate[] =
   ['none', 'proposal', 'plan', 'tasks-no-design', 'tasks-open', 'tasks-partial', 'tasks-done', 'archived']
@@ -72,7 +72,8 @@ export function workflowError(w: unknown, origin: Origin, partial = false): stri
       if (e) return e
     }
   }
-  if (Array.isArray(w.phases)) {
+  // An `extends` file's gate references are checked after the merge (DD-38).
+  if (!partial && Array.isArray(w.phases)) {
     for (const p of w.phases as Obj[]) {
       const stray = ((p.gates as string[] | undefined) ?? []).find(g => !gateIds.includes(g))
       if (stray) return `phase '${p.id}': no gate '${stray}'`
@@ -101,6 +102,8 @@ export function workflowError(w: unknown, origin: Origin, partial = false): stri
   if ('planDrift' in w) {
     const d = w.planDrift
     if (!isObj(d) || Object.keys(d).some(k => k !== 'ignore') || !isStrs(d.ignore)) return `'planDrift' must be {ignore: [globs]}`
+    const bad = (d.ignore as string[]).find(g => globError(g))
+    if (bad) return `planDrift.ignore: ${globError(bad)}`
   }
   return null
 }
@@ -131,7 +134,11 @@ function phaseError(p: unknown, at: string): string | null {
   if (!isObj(p.enter)) return `${at}.enter must be an object`
   for (const [k, v] of Object.entries(p.enter)) {
     if (k === 'skills' || k === 'agents') { if (!isStrs(v)) return `${at}.enter.${k} must be a list of names` }
-    else if (k === 'change') { if (!CHANGE_PREDICATES.includes(v as ChangePredicate)) return `${at}.enter.change: unknown '${String(v)}'` }
+    else if (k === 'change') {
+      const list = Array.isArray(v) ? v : [v]
+      const stray = list.find(x => !CHANGE_PREDICATES.includes(x as ChangePredicate))
+      if (!list.length || stray !== undefined) return `${at}.enter.change: unknown '${String(stray)}'`
+    }
     else return `${at}.enter: unknown key '${k}'`
   }
   return null
@@ -155,6 +162,7 @@ function gateError(g: unknown, at: string): string | null {
   if (missing) return `${at}: needs '${missing}'`
   if ('run' in g && !isStr(g.run)) return `${at}.run must be a command line`
   for (const k of kind.regex) if (regexError(g[k])) return `${at}.${k}: ${regexError(g[k])}`
+  if (g.kind === 'file' && globError(g.glob as string)) return `${at}.glob: ${globError(g.glob as string)}`
   return null
 }
 
@@ -254,3 +262,43 @@ export function namesIn(w: Workflow): string[] {
 
 /** `superpowers:test-driven-development` → `test-driven-development`. */
 export const bare = (name: string) => name.slice(name.lastIndexOf(':') + 1)
+
+export function workflowOf(s: NavState): Workflow | undefined {
+  return s.workflows.find(w => w.name === s.workflow)
+}
+
+export function phasesOf(w: Workflow, variant: string | null): Phase[] {
+  const v = w.variants?.find(v => v.name === variant)
+  return v ? w.phases.filter(p => v.phases.includes(p.id)) : w.phases
+}
+
+/** The active workflow and the phase the session is in, if any. */
+export function currentPhase(s: NavState): { w: Workflow; p: Phase } | undefined {
+  const w = workflowOf(s)
+  const p = w && phasesOf(w, s.variant).find(p => p.id === s.phase)
+  return w && p ? { w, p } : undefined
+}
+
+/** `**` any folders, `*` and `?` within one name, `[..]` a class. Paths are repo-relative. */
+export function globRegex(glob: string): RegExp {
+  let re = ''
+  for (let i = 0; i < glob.length; i++) {
+    const c = glob[i]!
+    if (glob.startsWith('**/', i)) { re += '(?:.*/)?'; i += 2 }
+    else if (glob.startsWith('**', i)) { re += '.*'; i += 1 }
+    else if (c === '*') re += '[^/]*'
+    else if (c === '?') re += '[^/]'
+    else if (c === '[' && glob.indexOf(']', i) > i) { const end = glob.indexOf(']', i); re += glob.slice(i, end + 1); i = end }
+    else re += c.replace(/[.+^${}()|[\]\\]/g, '\\$&')
+  }
+  return new RegExp(`^${re}$`)
+}
+
+function globError(glob: string): string | null {
+  try {
+    globRegex(glob)
+    return null
+  } catch (e) {
+    return `bad glob '${glob}' (${(e as Error).message})`
+  }
+}

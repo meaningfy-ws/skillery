@@ -1,21 +1,23 @@
-// Active workflow, variant and phase (design §6.2). Pure; reduce() calls navigate() after each signal.
+// Active workflow, variant and phase (design §6.2, DD-36, DD-38). Pure; reduce() calls navigate()
+// after each signal.
 
-import { holds } from './change.ts'
-import { onEnter, onLeave } from './process-drift.ts'
-import type { Activate, NavState, Phase, Warning, Workflow } from './state.ts'
-import { bare } from './workflow.ts'
+import { holds, holdsAny } from './change.ts'
+import { addWarnings, onEnter, onLeave } from './process-drift.ts'
+import type { Activate, NavState, Phase, Workflow } from './state.ts'
+import { bare, phasesOf } from './workflow.ts'
 
 /** The skill or agent a signal names, if any. */
 export type Trigger = { skill?: string; agent?: string }
 /** What can advance a phase with no `enter` of its own: a command that ran, or an answered consent. */
 export type Advance = { command?: string; consent?: true }
 
-const conditions = (a: Activate, s: NavState) =>
-  (!a.openChange || s.change !== null) &&
+/** `openChange` gates only the default chosen with no trigger (DD-38). */
+const conditions = (a: Activate, s: NavState, asDefault = false) =>
+  (!a.openChange || !asDefault || s.change !== null) &&
   (!a.change || holds(a.change, s.change)) &&
   (a.interactive === undefined || a.interactive === s.interactive)
 
-const triggered = (a: Activate, t: Trigger | null) =>
+const triggered = (a: { skills?: string[]; agents?: string[] }, t: Trigger | null) =>
   !!t && ((!!t.skill && (a.skills ?? []).map(bare).includes(bare(t.skill))) ||
     (!!t.agent && (a.agents ?? []).map(bare).includes(bare(t.agent))))
 
@@ -25,39 +27,36 @@ const conditionOnly = (a: Activate) => !a.skills && !a.agents
  *  still holds, else the workflow that activates on an open change (build-tier). */
 export function select(s: NavState, t: Trigger | null): { workflow: string | null; variant: string | null } {
   const ws = s.workflows
-  const named = (n: string | null) => ws.find(w => w.name === n && conditions(w.activate, s))
+  // Once active, a workflow stays while its conditions hold (after an archive, build-tier is in explore).
+  const current = ws.find(w => w.name === s.workflow && conditions(w.activate, s))
   const w = ws.find(w => conditions(w.activate, s) && triggered(w.activate, t)) ??
-    named(s.workflow) ?? ws.find(w => w.activate.openChange && conditions(w.activate, s))
+    current ?? ws.find(w => w.activate.openChange && conditions(w.activate, s, true))
   if (!w) return { workflow: null, variant: null }
   const vs = w.variants ?? []
+  // A skill of the workflow that no variant matches ends a variant a skill picked.
+  const ofWorkflow = triggered(w.activate, t) || w.phases.some(p => triggered(p.enter, t))
   const v = vs.find(v => conditions(v.activate, s) && triggered(v.activate, t)) ??
-    (w.name === s.workflow ? vs.find(v => v.name === s.variant && conditions(v.activate, s)) : undefined) ??
+    (w.name === s.workflow && !ofWorkflow ? vs.find(v => v.name === s.variant && conditions(v.activate, s)) : undefined) ??
     vs.find(v => conditionOnly(v.activate) && conditions(v.activate, s))
   return { workflow: w.name, variant: v?.name ?? null }
 }
 
-export function workflowOf(s: NavState): Workflow | undefined {
-  return s.workflows.find(w => w.name === s.workflow)
-}
-
-export function phasesOf(w: Workflow, variant: string | null): Phase[] {
-  const v = w.variants?.find(v => v.name === variant)
-  return v ? w.phases.filter(p => v.phases.includes(p.id)) : w.phases
-}
-
 export function enteredBy(phases: Phase[], t: Trigger | null): string | null {
-  if (!t) return null
-  return phases.find(p => triggered({ skills: p.enter.skills, agents: p.enter.agents }, t))?.id ?? null
+  return phases.find(p => triggered(p.enter, t))?.id ?? null
 }
 
-/** The phase a signal entered, moved forward when the change files now satisfy a later phase; with
- *  no signal, the last phase whose predicate holds, else the first. */
-export function phaseFor(phases: Phase[], signal: string | null, change: NavState['change']): string | null {
-  const byFiles = (after: number) =>
-    phases.findLastIndex((p, i) => i > after && !!p.enter.change && holds(p.enter.change, change))
-  const i = phases.findIndex(p => p.id === signal)
-  const j = byFiles(i)
-  return phases[j >= 0 ? j : i >= 0 ? i : 0]?.id ?? null
+/** The phase a signal entered, moved forward when the change files satisfy a later phase. Files are
+ *  read against the whole workflow, then mapped to the nearest earlier phase of the variant. With
+ *  neither, the current phase stays. */
+export function phaseFor(w: Workflow, phases: Phase[], signal: string | null, change: NavState['change'],
+  current: string | null): string | null {
+  const all = w.phases
+  const i = all.findIndex(p => p.id === signal)
+  const j = all.findLastIndex((p, k) => k > i && p.enter.change !== undefined && holdsAny(p.enter.change, change))
+  const k = j >= 0 ? j : i
+  if (k < 0) return phases.some(p => p.id === current) ? current : phases[0]?.id ?? null
+  const inVariant = all.slice(0, k + 1).findLast(p => phases.some(q => q.id === p.id))
+  return inVariant?.id ?? phases[0]?.id ?? null
 }
 
 const noEnter = (p: Phase | undefined) => !!p && Object.keys(p.enter).length === 0
@@ -83,27 +82,29 @@ export function advanceOn(w: Workflow, phases: Phase[], current: string, ev: Adv
   return null
 }
 
-const addWarnings = (s: NavState, ws: Warning[]): Warning[] =>
-  [...s.warnings, ...ws.filter(w => !s.warnings.some(x => x.key === w.key))]
-
-/** Re-derive workflow, variant and phase; a phase change runs the leave and enter checks (§6.3). */
+/** Re-derive workflow, variant and phase; a phase change runs the leave and enter checks (§6.3),
+ *  and a forward move by a command or consent leaves each phase it skips (DD-38). */
 export function navigate(s: NavState, at: number, t: Trigger | null = null, ev: Advance | null = null): NavState {
   const { workflow, variant } = select(s, t)
   const w = s.workflows.find(x => x.name === workflow)
   if (!w) return { ...s, workflow: null, variant: null, phase: null, signalPhase: null }
   const phases = phasesOf(w, variant)
-  const kept = workflow === s.workflow && phases.some(p => p.id === s.signalPhase) ? s.signalPhase : null
-  const advanced = ev && s.phase && workflow === s.workflow ? advanceOn(w, phases, s.phase, ev) : null
+  const same = workflow === s.workflow && variant === s.variant
+  const kept = same && phases.some(p => p.id === s.signalPhase) ? s.signalPhase : null
+  const advanced = ev && s.phase && same ? advanceOn(w, phases, s.phase, ev) : null
   const signal = enteredBy(phases, t) ?? advanced ?? kept
-  const phase = phaseFor(phases, signal, s.change)
+  const phase = phaseFor(w, phases, signal, s.change, same ? s.phase : null)
   const next: NavState = { ...s, workflow, variant, signalPhase: signal, phase }
-  if (phase === s.phase && workflow === s.workflow) return next
-  // The first placement of a session is not an entry: no checks on what an earlier session did (DD-36).
-  if (s.phase === null || workflow !== s.workflow) return { ...next, phaseAt: at }
-  const from = phases.find(p => p.id === s.phase) ?? w.phases.find(p => p.id === s.phase)
-  const to = phases.find(p => p.id === phase)
-  const warnings = [...(from ? onLeave(s, w, from) : []), ...(to ? onEnter(s, w, to) : [])]
+  if (phase === s.phase && same) return next
+  // A session's first placement, a workflow or a variant change: placed, not entered (DD-36, DD-38).
+  if (s.phase === null || !same) return { ...next, phaseAt: at }
+  const from = phases.findIndex(p => p.id === s.phase)
+  const to = phases.findIndex(p => p.id === phase)
+  const skipped = advanced && to > from + 1 ? phases.slice(from + 1, to) : []
+  const warnings = [
+    ...(from >= 0 ? onLeave(s, w, phases[from]!) : []),
+    ...skipped.flatMap(p => onLeave(s, w, p)),
+    ...(to >= 0 ? onEnter(s, w, phases[to]!) : []),
+  ]
   return { ...next, phaseAt: at, warnings: addWarnings(s, warnings) }
 }
-
-export { addWarnings }

@@ -16,7 +16,7 @@
       "expect": [{ "skill": "test-driven-development", "by": "commit" }, { "skill": "cosmic-python", "by": "exit" }],
       "allow": ["meaningfy-code-review", "systematic-debugging", "subagent-driven-development"],
       "gates": ["clarity", "validate"],
-      "enter": { "skills": ["openspec-apply-change", "epic-delivery"], "change": "tasks-partial" } },
+      "enter": { "skills": ["openspec-apply-change", "epic-delivery"], "change": ["tasks-partial", "tasks-no-design"] } },
     { "id": "verify", "owner": "meaningfy-code-review",
       "expect": [{ "skill": "meaningfy-code-review", "by": "exit" }, { "skill": "verification-before-completion", "by": "exit" }],
       "gates": ["validate"], "enter": { "change": "tasks-done" } },

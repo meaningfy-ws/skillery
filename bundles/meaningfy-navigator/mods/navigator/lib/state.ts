@@ -1,10 +1,10 @@
 // The state contract (design §3). reduce() is the only writer; every function here is pure.
 
-import type { BandDisplay, Change, NavState, Warning, Workflow } from '../types'
-import { addWarnings, navigate, phasesOf, workflowOf } from './phase.ts'
-import { gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, onCommand, onCommit, onSkill,
-  showsConsent } from './process-drift.ts'
-import { bare } from './workflow.ts'
+import type { BandDisplay, Change, NavState, Workflow } from '../types'
+import { navigate } from './phase.ts'
+import { addWarnings, clearGateWarnings, gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, onCommand,
+  onCommit, onSkill, showsConsent, workflowErrors } from './process-drift.ts'
+import { bare, currentPhase, workflowOf } from './workflow.ts'
 
 export type { Activate, BandDisplay, Change, ChangePredicate, Gate, GateState, Group, NavState, Phase, Review, SkillUse,
   Subagent, Warning, Workflow } from '../types'
@@ -86,9 +86,8 @@ function apply(state: NavState, s: Signal): NavState {
     case 'Started':
       return { ...EMPTY, sessionId: s.sessionId, interactive: s.interactive, display: { band: s.band, line: s.statusLine } }
     case 'WorkflowsRead': {
-      const errors = s.errors.map((message, i): Warning => ({ key: `workflow:error:${i}`, message, remedy: null, owner: 'navigator' }))
       const read = { ...state, workflows: s.workflows, mode: { ...state.mode, repo: s.mode },
-        warnings: addWarnings(state, errors) }
+        warnings: workflowErrors(state, s.errors) }
       return navigate(read, s.at)
     }
     case 'ChangeRead': {
@@ -104,10 +103,9 @@ function apply(state: NavState, s: Signal): NavState {
       const w0 = workflowOf(resolved)
       const gated = w0 ? passGates(resolved, gatesAfterSkill(resolved.gates, w0, name, s.at)) : resolved
       const moved = navigate(gated, s.at, { skill: name })
-      const w = workflowOf(moved)
-      const p = w && phasesOf(w, moved.variant).find(p => p.id === moved.phase)
+      const here = currentPhase(moved)
       return { ...moved, skills: [...moved.skills, { name: s.name, at: s.at, phase: moved.phase }],
-        warnings: addWarnings(moved, onSkill(moved, w, p, name)) }
+        warnings: addWarnings(moved, onSkill(moved, workflowOf(moved), here?.p, name)) }
     }
     case 'ToolRan': {
       const w = workflowOf(state)
@@ -115,7 +113,7 @@ function apply(state: NavState, s: Signal): NavState {
       let next = passGates(state, gatesAfterCommand(state.gates, w, s.command, s.ok, s.at))
       const consent = onCommand(next, w, s.command)
       next = { ...next, consent: consent.consent, warnings: addWarnings(next, consent.warnings) }
-      const p = phasesOf(w, next.variant).find(p => p.id === next.phase)
+      const p = currentPhase(next)?.p
       if (s.ok && p && /\bgit\s+commit\b/.test(s.command)) next = { ...next, warnings: addWarnings(next, onCommit(next, p)) }
       return s.ok ? navigate(next, s.at, null, { command: s.command }) : next
     }
@@ -167,6 +165,5 @@ function apply(state: NavState, s: Signal): NavState {
 /** New gate states; a gate that passes clears its open gate warnings. */
 function passGates(state: NavState, gates: NavState['gates']): NavState {
   const passed = Object.keys(gates).filter(id => gates[id]!.state === 'ok' && state.gates[id]?.state !== 'ok')
-  const warnings = state.warnings.filter(w => !passed.some(id => w.key.startsWith('process:gate:') && w.key.endsWith(`:${id}`)))
-  return { ...state, gates, warnings }
+  return { ...state, gates, warnings: clearGateWarnings(state.warnings, passed) }
 }

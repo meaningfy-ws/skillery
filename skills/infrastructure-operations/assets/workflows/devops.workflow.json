@@ -21,7 +21,7 @@
     { "id": "record", "owner": "infrastructure-operations", "expect": [], "enter": {} }
   ],
   "gates": {
-    "dry-run": { "kind": "command", "match": "terraform plan|--check\\b|--diff\\b" },
+    "dry-run": { "kind": "command", "match": "terraform plan|ansible-playbook\\b.*--check" },
     "consent": { "kind": "consent", "shown": "^DECIDE:", "before": "terraform apply|ansible-playbook(?!.*--check)|docker stack deploy" }
   }
 }

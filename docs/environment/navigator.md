@@ -31,8 +31,8 @@ meaningfy-navigator: navigator · VERY LARGE · Stage 1 — See it apply 9/12 ·
 That is the open change, its appetite (its size, once the PLAN names it), the current stage of its
 `tasks.md` with the workflow phase (`apply`) and that stage's progress, the progress of the whole
 change, and how many other changes are open. It shows the one your branch names. With no open
-change it reads `navigator · no open change`. In a repository that runs strict mode, it ends with
-`● strict`.
+change it reads `navigator · no open change`. In a repository whose workflow file declares strict
+mode, it ends with `● strict` (blocking in strict mode is not built yet).
 
 Outside a change, the line names the workflow you are in, its variant and its phase:
 
@@ -44,8 +44,7 @@ meaningfy-navigator: sales (provisional) · offer
 **The band** sits above the prompt, folded to one row by default. It shows only what is happening:
 
 ```
-2 running: code-reviewer, implementer · last clarity-gate · validate ✓ · ⚠ 1
-[Next step] [Back on track] [Unfold] [Hide]
+2 running: code-reviewer, implementer · last clarity-gate · validate ✓ · ⚠ 1 [Next step] [Back on track] [Unfold] [Hide]
 ```
 
 With nothing to report it shows just its buttons. Unfolded, it adds:
@@ -55,7 +54,7 @@ stages    ✓ 1 See it 12/12 · ● 2 Follow the workflow 3/12 · ○ 3 Stay on 
 phases    Build-tier EPIC delivery · ✓ explore · ✓ shape · ✓ plan · ● apply · ○ verify · ○ archive
 skills    clarity-gate (plan) · epic-delivery (apply)
 subagents code-reviewer · sonnet · done · 41.0k tokens · implementer · opus · running
-warnings  ⚠ commit in apply without test-driven-development
+warnings  ⚠ commit in apply without test-driven-development (epic-delivery)
 mode      ○ loose
 [Validate]
 ```
@@ -88,12 +87,18 @@ Navigator warns, and never blocks, when:
 - a skill of another phase runs, or an external skill does a job a Meaningfy skill owns
   (`writing-plans` where `epic-planning` owns the PLAN).
 
-Each warning names the skill that owns the rule. Running the skill it names clears it.
+Each warning names, in brackets, the skill that owns the rule. A warning about a missing skill
+clears when that skill runs; a warning about a gate clears when the gate passes (`make validate`
+for the validate gate, through **Validate** or typed). A warning about a skill of another phase is
+information only and stays for the session.
+
+When you open a session in the middle of a phase, navigator places you there without checking what
+earlier sessions did: it warns only about what happens in this session.
 
 | Button | Runs |
 |---|---|
 | **Next step** | the first skill the phase still expects, else the owner of the next phase |
-| **Back on track** | the command that puts right the oldest warning |
+| **Back on track** | the command that puts right the oldest warning that has one |
 | **Validate** | `/navigator validate`: the phase's gate commands, such as `make validate` |
 
 A button types its command into the session as you would, so you see it in the transcript. If the

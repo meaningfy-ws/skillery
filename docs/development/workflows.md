@@ -80,13 +80,14 @@ reads them to show the phase and to warn when a step is skipped.
 
 A repository can change them with its own files in `docs/navigator/*.workflow.json`. A file with
 the name of a default replaces it; a file with `"extends": "<name>"` replaces only the fields it
-gives; a file with a new name adds a workflow. The smallest one turns on strict mode:
+gives; a file with a new name adds a workflow. The smallest one declares the repository strict
+(today navigator marks the line `● strict`; blocking in strict mode comes with its stage 3):
 
 ```json
 { "name": "build-tier", "extends": "build-tier", "mode": "strict" }
 ```
 
-The schema is in [`mods.md`](mods.md#workflow-files).
+The schema is described in [`mods.md`](mods.md#workflow-files).
 
 ## Command → driving Meaningfy discipline
 

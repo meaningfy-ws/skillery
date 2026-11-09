@@ -52,7 +52,8 @@ async function readChangeSignal($: EngineInterface, id: string): Promise<Signal>
         tasks: has('tasks.md') ? await $.fs.read(`${dir}/${d.name}/tasks.md`) : null,
         design: !!has('design.md'),
         mtime: Math.max(...files.map(f => f.mtimeMs)),
-        planMtime: Math.max(0, ...files.filter(f => f.name === 'design.md' || f.name === 'tasks.md').map(f => f.mtimeMs)),
+        // Ticking a box is not a PLAN change: only design.md stales a skill gate (DD-38).
+        planMtime: files.find(f => f.name === 'design.md')?.mtimeMs ?? 0,
       })
     }
   }
@@ -140,7 +141,8 @@ export const register: Register = (on, options) => {
     const result = await next(e)
     if (result.deny !== undefined) return result
     const at = await $.clock.now()
-    if (e.tool === 'Bash') {
+    // A background call has not run yet when it returns: it passes no gate (DD-38).
+    if (e.tool === 'Bash' && !e.run_in_background) {
       await send($, { kind: 'ToolRan', id: `tool:${e.tool_use_id}`, command: e.command, ok: !result.isError, at })
     } else if (e.tool === 'Edit' || e.tool === 'Write' || e.tool === 'NotebookEdit') {
       const root = await repoRoot($)
@@ -151,9 +153,9 @@ export const register: Register = (on, options) => {
     return result
   }).catch(($, e, next) => next(e))
 
-  // A person's own prompt answers a consent card; a plugin's prompt never does.
+  // Only a person's own prompt answers a consent card: typed, or through Remote Control (DD-38).
   on('prompt.submit', async ($, e, next) => {
-    if (e.origin.kind !== 'plugin') await send($, { kind: 'UserPrompted', id: `prompt:${await $.clock.now()}`, at: await $.clock.now() })
+    if (e.origin.kind === 'composer' || e.origin.kind === 'bridge') await send($, { kind: 'UserPrompted', id: `prompt:${await $.clock.now()}`, at: await $.clock.now() })
     return next(e)
   }).catch(($, e, next) => next(e))
 

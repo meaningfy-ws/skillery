@@ -74,7 +74,7 @@ const defaults = readdirSync(join(REPO, 'skills')).flatMap(skill => {
 
 /** The `skills: [a, b]` lists of dependencies.yaml. shortcut: the inline form only, which the lint enforces (DD-28). */
 const external = readFileSync(join(REPO, 'dependencies.yaml'), 'utf8').split('\n')
-  .flatMap(line => line.match(/^\s+skills:\s*\[([^\]]*)\]/)?.[1]?.split(',').map(s => s.trim()).filter(Boolean) ?? [])
+  .flatMap(line => line.match(/^(?:- | {2})skills:\s*\[([^\]]*)\]/)?.[1]?.split(',').map(s => s.trim()).filter(Boolean) ?? [])
 
 const known = new Set([
   ...readdirSync(join(REPO, 'skills')),

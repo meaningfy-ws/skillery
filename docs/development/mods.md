@@ -55,8 +55,9 @@ Claude Code only, a recorded gap in
 
 A workflow file is JSON: the phases of one activity, the skill that owns each phase, the skills
 expected to run (`by: "commit"` or `by: "exit"`), the gates, and, for build-tier, the review set
-per appetite. The schema is design §4.1 of the `navigator` change; its one validator is
-`lib/workflow.ts` (`parseWorkflow`, `resolveWorkflows`), which the TC-16 test runs on every
+per appetite. The schema is the `Workflow` type in
+[`mods/navigator/types.d.ts`](../../mods/navigator/types.d.ts); its one validator is
+[`lib/workflow.ts`](../../mods/navigator/lib/workflow.ts) (`parseWorkflow`, `resolveWorkflows`), which the TC-16 test runs on every
 `skills/*/assets/workflows/*.workflow.json`, so a misspelt skill name fails `make validate`. A name
 may be a `skills/` folder, an `agents/` file, or an external skill listed in the `skills: [a, b]`
 list of its entry in [`dependencies.yaml`](../../dependencies.yaml).
@@ -67,8 +68,8 @@ shown as a warning naming the file, and the default stays in force. Only a repos
 `"mode"` or `"extends"`.
 
 `lib/phase.ts` places the active workflow, variant and phase; `lib/process-drift.ts` raises the
-process-drift warnings PD-1 to PD-5 and keeps the gate states; design decision DD-36 records how
-they read the file.
+process-drift warnings PD-1 to PD-5, keeps the gate states and owns every warning key; design
+decisions DD-36 and DD-38 record how they read the file.
 
 ### Adding a check
 
@@ -77,7 +78,8 @@ they read the file.
    fill it in the owning skill's file.
 3. Write the check as a pure function in `lib/` with its test, give its warning a key
    `process:<what>:...`, a `remedy` (the command that puts it right, or `null`) and the owning skill.
-4. Call it from `reduce` in `lib/state.ts` for the signal that triggers it.
+4. Call it from `reduce` in `lib/state.ts` for the signal that triggers it, or from `navigate` in
+   `lib/phase.ts` when it runs at a phase boundary (leaving or entering).
 
 ### Adding an action
 

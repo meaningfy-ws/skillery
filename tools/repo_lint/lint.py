@@ -404,10 +404,12 @@ def dependencies_register(repo: Path) -> list[str]:
         if status and status.split(" ")[0] not in keywords:
             out.append(f"{who} opencode_status must start with {', '.join(keywords[:-1])} or {keywords[-1]}")
         out += _dep_skills(repo, d, who, owners)
-    # The navigator's TC-16 reads `skills:` with a line reader: only the inline `[a, b]` form (DD-28).
-    out += [f"{path.name}: line {i}: 'skills:' must be an inline list, `skills: [a, b]`"
+    # The navigator's TC-16 reads `skills:` with a line reader: only the inline `[a, b]` form, bare
+    # names, at entry level (DD-28, DD-38); text inside a block string is deeper and never matches.
+    out += [f"{path.name}: line {i}: 'skills:' must be an inline list of bare names, `skills: [a, b]`"
             for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
-            if re.match(r"^\s+skills:", line) and not re.match(r"^\s+skills:\s*\[[^\]]*\]\s*$", line)]
+            if re.match(r"^(- |  )skills:", line)
+            and not re.match(r"^(- |  )skills:\s*\[[^\]'\"]*\]\s*(#.*)?$", line)]
     return out
 
 

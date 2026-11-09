@@ -1,6 +1,6 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
-import { phasesOf, workflowOf } from './phase.ts'
+import { phasesOf, workflowOf } from './workflow.ts'
 import type { Group, NavState, Subagent } from './state.ts'
 
 const LINE_MAX = 120
@@ -22,7 +22,7 @@ export function lineText(s: NavState): string {
     return cut(clean([`${w.name}${w.provisional ? ' (provisional)' : ''}`, s.variant, s.phase,
       isStrict(s) ? '● strict' : null].filter(Boolean).join(' · ')))
   }
-  if (!s.change) return 'navigator · no open change'
+  if (!s.change) return cut(clean(['navigator · no open change', s.phase].filter(Boolean).join(' · ')))
   const c = s.change
   const stage = currentGroup(c.groups)
   const step = `${s.phase ? `${s.phase} ` : ''}${stage ? `${stage.done}/${stage.total}` : `${c.done}/${c.total}`}`
@@ -110,7 +110,7 @@ export function bandModel(s: NavState): BandModel {
   rows.push(
     { label: 'skills', items: s.skills.slice(-TRAIL).map(k => k.phase ? `${k.name} (${k.phase})` : k.name) },
     { label: 'subagents', items: s.subagents.map(subagentText) },
-    { label: 'warnings', items: s.warnings.map(w => `⚠ ${w.message}`) },
+    { label: 'warnings', items: s.warnings.map(w => `⚠ ${w.message} (${w.owner})`) },
     { label: 'mode', items: [modeText(s)] },
   )
   return { folded: clean(folded), rows: rows.map(r => ({ ...r, items: r.items.map(clean) })) }

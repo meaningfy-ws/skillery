@@ -73,19 +73,23 @@ export function readChange(open: ChangeFiles[], branch: string, appetites: strin
   }
 }
 
-/** The fixed predicates a workflow's `change` field names (design §6.1). */
+/** One predicate, or a list of which any holds (DD-38). */
+export const holdsAny = (p: ChangePredicate | ChangePredicate[], c: Change | null) =>
+  (Array.isArray(p) ? p : [p]).some(q => holds(q, c))
+
+/** The fixed predicates a workflow's `change` field names (design §6.1, DD-38). */
 export function holds(p: ChangePredicate, c: Change | null): boolean {
   if (p === 'none') return c === null
   if (!c) return false
   switch (p) {
-    case 'proposal': return !c.hasDesign && !c.hasTasks
+    case 'proposal': return !c.hasTasks // a design without tasks is still shaping
     case 'plan': return c.hasDesign && c.hasTasks && c.done === 0
     case 'tasks-no-design': return c.hasTasks && !c.hasDesign
     case 'tasks-open': return c.total > 0 && c.done === 0
     case 'tasks-partial': return c.done > 0 && c.done < c.total
-    case 'tasks-done': return c.total > 0 && c.done === c.total
-    // shortcut: the mod does not watch archive/; the archive phase is entered by its skill or
-    // `openspec archive`. Upgrade if the phase is missed.
+    case 'tasks-done': return c.total > 0 && c.done >= c.total
+    // shortcut: the mod does not watch archive/; the archive phase is entered by
+    // `openspec-archive-change` only. Upgrade if the phase is missed.
     case 'archived': return false
   }
 }

@@ -34,7 +34,7 @@ export type Phase = {
   expect: { skill: string; by: 'commit' | 'exit' }[]
   allow?: string[]
   gates?: string[]
-  enter: { skills?: string[]; agents?: string[]; change?: ChangePredicate }
+  enter: { skills?: string[]; agents?: string[]; change?: ChangePredicate | ChangePredicate[] }
 }
 
 export type Gate =
