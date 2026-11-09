@@ -195,7 +195,8 @@ export async function act($: EngineInterface, line: string): Promise<boolean> {
     $.ui.toast(cmd.reason)
     return false
   }
-  await $.prompt.submit({ text: `/${cmd.command}${cmd.args ? ` ${cmd.args}` : ''}`, asUser: true })
+  // A slash command runs through the command channel; prompt.submit refuses a text starting with `/`.
+  void $.command.run({ command: cmd.command, args: cmd.args }).catch((err: Error) => $.ui.toast(`navigator: /${cmd.command} did not run: ${err.message}`))
   return true
 }
 

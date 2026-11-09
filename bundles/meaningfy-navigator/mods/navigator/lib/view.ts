@@ -1,7 +1,7 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
 import { isStrict, phasesOf, workflowOf } from './workflow.ts'
-import type { Group, NavState, Subagent } from './state.ts'
+import type { Group, NavState, Subagent, Warning } from './state.ts'
 
 const LINE_MAX = 120
 const TRAIL = 8
@@ -58,7 +58,24 @@ export function shortTitle(title: string): string {
   const bare = bareTitle(title)
   // shortcut: knows the `Stage <n> — <name>` heading of Meaningfy PLANs; others show as written.
   const stage = bare.match(/^Stage (\d+)\s*[—–-]\s*(.+)$/)
-  return stage ? `${stage[1]} ${stage[2]}` : bare
+  // A long heading keeps its name, not its explanation: `Roots (#55) — BREAKING for …` → `Roots (#55)`.
+  return stage ? `${stage[1]} ${stage[2]}` : bare.replace(/\s+[—–]\s.*$/, '')
+}
+
+/** What an item's glyph says, so the band can colour it: done, current, to do, failed, warning. */
+export type Tone = 'done' | 'now' | 'todo' | 'fail' | 'warn' | null
+export function toneOf(item: string): Tone {
+  if (item.startsWith('⚠')) return 'warn'
+  if (item.startsWith('✗') || / ✗( |$)/.test(item)) return 'fail'
+  if (item.startsWith('✓') || / ✓( |$)/.test(item)) return 'done'
+  if (item.startsWith('●')) return 'now'
+  if (item.startsWith('○')) return 'todo'
+  return null
+}
+
+/** At most `max` lines; the rest become one `+n more` line. */
+export function capped(items: string[], max: number): string[] {
+  return items.length > max ? [...items.slice(0, max - 1), `+${items.length - max + 1} more`] : items
 }
 
 export function subagentText(a: Subagent): string {
@@ -72,6 +89,7 @@ function tokens(n: number): string {
 
 export type BandModel = {
   folded: string
+  foldedItems: string[]
   rows: { label: string; items: string[] }[]
 }
 
@@ -85,12 +103,12 @@ export function bandModel(s: NavState): BandModel {
     .filter(([, g]) => g.state !== 'none')
     .map(([id, g]) => `${id} ${GLYPH[g.state]}${/^\d+(\.\d+)?$/.test(g.detail) ? ` ${g.detail}` : ''}`)
   // Empty when there is nothing to report: the band then shows only its buttons.
-  const folded = [
+  const foldedItems = [
     ...(running.length ? [`${running.length} running: ${running.map(a => a.type).join(', ')}`] : []),
     ...(last ? [`last ${last.name}`] : []),
     ...gates,
     ...(openCount(s) ? [`⚠ ${openCount(s)}`] : []),
-  ].join(' · ')
+  ].map(clean)
   const rows: BandModel['rows'] = []
   if (s.change && s.change.groups.length) {
     const now = currentGroup(s.change.groups)
@@ -127,10 +145,25 @@ export function bandModel(s: NavState): BandModel {
     { label: 'skills', items: s.skills.slice(-TRAIL).map(k => k.phase ? `${k.name} (${k.phase})` : k.name) },
     { label: 'subagents', items: s.subagents.map(subagentText) },
     { label: 'warnings', items: [
-      ...s.warnings.map(w => `${s.accepted.includes(w.key) ? '✓ accepted:' : '⚠'} ${w.message}${w.owner ? ` (${w.owner})` : ''}`),
+      ...warningItems(s),
       ...(s.planTruncated ? ['diff truncated'] : []),
     ] },
     { label: 'mode', items: [modeText(s)] },
   )
-  return { folded: clean(folded), rows: rows.map(r => ({ ...r, items: r.items.map(clean) })) }
+  return { folded: foldedItems.join(' · '), foldedItems, rows: rows.map(r => ({ ...r, items: r.items.map(clean) })) }
+}
+
+const OUTSIDE = 'plan:outside:'
+
+/** One line per warning, except files outside the PLAN: one line for all of them (open, accepted). */
+function warningItems(s: NavState): string[] {
+  const line = (w: Warning) => `${s.accepted.includes(w.key) ? '✓ accepted:' : '⚠'} ${w.message}${w.owner ? ` (${w.owner})` : ''}`
+  const outside = (accepted: boolean) => s.warnings.filter(w => w.key.startsWith(OUTSIDE) && s.accepted.includes(w.key) === accepted)
+  const group = (ws: Warning[], accepted: boolean) => {
+    if (ws.length < 2) return ws.map(line)
+    const paths = ws.map(w => w.key.slice(OUTSIDE.length))
+    return [`${accepted ? '✓ accepted:' : '⚠'} ${ws.length} files outside the PLAN: ${paths.slice(0, 2).join(', ')}` +
+      `${ws.length > 2 ? ` +${ws.length - 2}` : ''} (${ws[0]!.owner})`]
+  }
+  return [...s.warnings.filter(w => !w.key.startsWith(OUTSIDE)).map(line), ...group(outside(false), false), ...group(outside(true), true)]
 }

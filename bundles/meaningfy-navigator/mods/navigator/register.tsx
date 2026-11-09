@@ -8,11 +8,20 @@ import { settingsFrom, type BandDisplay } from './lib/state.ts'
 import { decideArchive, decideCommit, decideSpawn, reminder } from './lib/strict.ts'
 import { parseAccept } from './lib/deviations.ts'
 import { openDrift } from './lib/process-drift.ts'
-import { bandModel } from './lib/view.ts'
+import { bandModel, capped, toneOf, type Tone } from './lib/view.ts'
 import { isArchive, isCommit } from './lib/workflow.ts'
 import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, readAcceptedSignal, readChangeSignal, readPlanSignal,
   reconcileFromBand, repoRoot, send, start, state, turnEndedSignal, validate } from './io.ts'
 
+
+// Colour says state only (done, current, to do, failed, warning); cost and counts stay neutral.
+const STYLE: Record<NonNullable<Tone>, { color?: string; bold?: boolean; dimColor?: boolean }> = {
+  done: { color: 'success' }, now: { color: 'claude', bold: true }, todo: { dimColor: true },
+  fail: { color: 'error' }, warn: { color: 'warning' },
+}
+const style = (item: string) => { const t = toneOf(item); return t ? STYLE[t] : {} }
+const WARNING_LINES = 4
+const ACCEPT_LINES = 3
 
 export const register: Register = (on, options) => {
   const settings = settingsFrom(options)
@@ -183,25 +192,39 @@ export const register: Register = (on, options) => {
     const reviewLine = review(s)
     const press = (line: string) => () => act($, line)
     const openWarnings = openDrift(s)
+    // One line per row, cut at the edge; items coloured by their glyph, labels and separators dim.
+    const row = (key: string, label: string | null, items: string[]) => (
+      <Text key={key} wrap="truncate-end">
+        {label !== null && <Text dimColor>{label.padEnd(10)}</Text>}
+        {items.flatMap((it, i) => [
+          ...(i ? [<Text key={`s${i}`} dimColor> · </Text>] : []),
+          <Text key={`i${i}`} {...style(it)}>{it}</Text>,
+        ])}
+      </Text>
+    )
     return (
       <Box flexDirection="column">
         <Box>
-          {model.folded !== '' && <Text dimColor>{model.folded} </Text>}
-          {step && <Button key="next" label="Next step" onPress={press(step)} />}
+          {model.foldedItems.length > 0 && row('folded', null, model.foldedItems)}
+          {step && <Button key="next" label="Next step" variant="primary" onPress={press(step)} />}
           {back && <Button key="back" label="Back on track" onPress={press(back)} />}
           {hygiene && <Button key="hygiene" label={hygiene.label} onPress={press(hygiene.line)} />}
-          <Button key="fold" label={isFolded ? 'Unfold' : 'Fold'} onPress={set(isFolded ? 'unfolded' : 'folded')} />
-          <Button key="hide" label="Hide" onPress={set('hidden')} />
+          <Button key="fold" label={isFolded ? 'Unfold' : 'Fold'} dimColor onPress={set(isFolded ? 'unfolded' : 'folded')} />
+          <Button key="hide" label="Hide" dimColor onPress={set('hidden')} />
         </Box>
-        {s.display.band === 'unfolded' && model.rows.filter(r => r.items.length > 0).map(r => (
-          <Text key={r.label} dimColor>{r.label.padEnd(10)}{r.items.join(' · ')}</Text>
-        ))}
-        {s.display.band === 'unfolded' && openWarnings.map(w => (
+        {s.display.band === 'unfolded' && model.rows.filter(r => r.items.length > 0).flatMap(r => r.label === 'warnings'
+          // Warnings one per line, so none hides behind another; the rest as `+n more`.
+          ? capped(r.items, WARNING_LINES).map((it, i) => row(`w${i}`, i ? '' : r.label, [it]))
+          : [row(r.label, r.label, r.items)])}
+        {s.display.band === 'unfolded' && openWarnings.slice(0, openWarnings.length > ACCEPT_LINES ? ACCEPT_LINES - 1 : ACCEPT_LINES).map(w => (
           <Box key={`accept:${w.key}`}>
             <Text dimColor>{`⚠ ${w.key} `}</Text>
             <Button key="accept" label="Accept" onPress={() => acceptFromBand($, w.key)} />
           </Box>
         ))}
+        {s.display.band === 'unfolded' && openWarnings.length > ACCEPT_LINES && (
+          <Text dimColor>{`${openWarnings.length - ACCEPT_LINES + 1} more to accept: /navigator accept <key> "<reason>"`}</Text>
+        )}
         {s.display.band === 'unfolded' && (
           <Box>
             {steps && <Button key="reconcile" label="Reconcile EPIC" onPress={() => reconcileFromBand($, steps)} />}
