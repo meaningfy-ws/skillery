@@ -90,7 +90,7 @@ Only `register.tsx` imports from `claude-code` or uses `$` (DEC-14): every `lib/
 
 | Rendered path | Content |
 |---|---|
-| `bundles/meaningfy-navigator/mods/navigator` | symlink `../../../mods/navigator` |
+| `bundles/meaningfy-navigator/mods/navigator` | a copy of `mods/navigator`, gated byte-for-byte like the schema copy (DD-31) |
 | `bundles/meaningfy-navigator/data/workflows/<name>.workflow.json` | symlink to each `skills/*/assets/workflows/<name>.workflow.json` (DD-2) |
 | `bundles/meaningfy-navigator/data/session-thresholds.json` | symlink `../../../skills/guardrails/assets/session-thresholds.json` (DD-9) |
 | `bundles/meaningfy-navigator/.claude-plugin/plugin.json` | as today plus `"hooks": ["./mods/navigator/hooks.json"]`, `"types": "./mods/navigator/types.d.ts"`, `"userConfig": <mods/navigator/config.json>` |
@@ -816,6 +816,16 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
   read the rules with provenance; `lib/hygiene.ts` also holds one labelled shortcut condition (a
   bare commit counts as a task boundary only when no unticked task is open, §6.5), a proxy for §6's
   "next, unrelated task", which no event shows.
+- **DD-31** (lead's decision 2026-11-09, task 1.5; `claude plugin validate` on Claude Code 2.1.319)
+  Four engine rules found in stage 1 change §1–§3 as follows. (1) The bundle holds a **copy** of
+  `mods/navigator`, not a symlink: the engine refuses a `types` file that resolves outside the
+  plugin folder and does not screen a hooks file behind a symlink. `make bundles` copies it and the
+  gate compares bytes, as for the schema copy; the `data/` links stay links (DD-7). (2) The state
+  types live in `types.d.ts`, which must be self-contained; `lib/state.ts` imports them from there.
+  (3) The state atom is keyed by the plugin name, `meaningfy-navigator`, not `navigator`: only the
+  owning plugin writes its state. (4) `register.tsx` passes `$` only to top-level functions.
+  `.gitignore` un-ignores `mods/*/lib/` and `bundles/*/mods/*/lib/` (a global `lib/` rule hid
+  them). `@types/node` is pinned beside `typescript` so the `lib/` tests type-check.
 
 ## Risks / Trade-offs
 

@@ -11,6 +11,16 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- `meaningfy-navigator` (Claude Code only, CLI and desktop): a new bundle holding the `navigator`
+  mod. It pins a status line with the open change, its appetite and task progress, the driving
+  model and the mode, and draws a band above the prompt with the running subagents, the skills
+  loaded and the progress per task group. `/navigator band` and `/navigator line` show and hide
+  them for the session; the plugin settings hold the defaults. Install with
+  `/plugin install meaningfy-navigator@meaningfy-skillery`; guide in
+  `docs/environment/navigator.md`.
+
 ## [3.9.0] - 2026-11-08
 
 ### Added

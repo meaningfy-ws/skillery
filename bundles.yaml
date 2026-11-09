@@ -84,3 +84,8 @@ bundles:
       - vault-planning
       - vault-daily
     agents: []
+  - name: meaningfy-navigator
+    description: "See who runs what and where the work stands in Claude Code: a status line and band over the session, workflow and plan drift warnings, hygiene prompts, and actions that run your own commands (Claude Code only, CLI and desktop)"
+    skills: []
+    agents: []
+    mods: [navigator]

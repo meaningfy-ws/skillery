@@ -16,13 +16,14 @@ whoever changes it. The design it follows is the PLAN of the `navigator` change
 mods/navigator/
   hooks.json      {"hooks": {}, "modules": ["./register.tsx"]}
   config.json     the settings, rendered into the bundle's plugin.json as userConfig
-  types.d.ts      the $.state contract (interface PluginState)
+  types.d.ts      the $.state contract (interface PluginState); self-contained, no imports
   register.tsx    the only file that touches `$`: events → signals → reduce → state; draws
   tsconfig.json   strict type check of lib/
   lib/*.ts        pure functions, no I/O, each with a *.test.ts beside it
 ```
 
-The split is the whole testing strategy. `register.tsx` reads files, runs git and hooks events; it
+The split is the whole testing strategy. `register.tsx` passes `$` only to functions declared at
+the top of the file (an engine rule). It reads files, runs git and hooks events; it
 turns what it sees into *signals* and hands them to `reduce` in `lib/state.ts`, the only writer of
 the state. Everything in `lib/` is plain TypeScript that runs under Node, so `make mods` tests it
 without Claude Code.
@@ -31,15 +32,17 @@ without Claude Code.
 
 `lib/state.ts` holds `NavState`, the `Signal` union and `reduce(state, signal)`. Each signal has an
 id (`tool_use_id`, `agentId`, a turn id); a signal whose id was already seen leaves the state
-unchanged, so an event delivered twice is harmless. The whole state is one session atom
-(`navigator.state`), declared in `types.d.ts`.
+unchanged, so an event delivered twice is harmless. The whole state is one session atom keyed by
+the plugin's name (`meaningfy-navigator.state`). Its types live in `types.d.ts`, which the engine
+requires to be self-contained; `lib/state.ts` imports them from there.
 
 ## Bundling
 
 A mod is declared in exactly one bundle of [`bundles.yaml`](../../bundles.yaml) under `mods:`,
 at most one per bundle. `make bundles` then renders, for that bundle:
 
-- `mods/<name>` — a symlink to the mod's folder;
+- `mods/<name>` — a copy of the mod's folder (the engine refuses a hooks module or a types file
+  behind a symlink), compared byte for byte by the gate, so edit `mods/`, never the copy;
 - `data/` — symlinks to the skill assets the mod reads (workflow files, session thresholds);
 - `.claude-plugin/plugin.json` — with `hooks`, `types` and `userConfig` taken from the mod.
 
