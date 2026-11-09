@@ -51,6 +51,41 @@ after install. A bundle that holds only mods is left out of the opencode catalog
 Claude Code only, a recorded gap in
 [`docs/environment/dual-cli/compatibility.md`](../environment/dual-cli/compatibility.md).
 
+## Workflow files
+
+A workflow file is JSON: the phases of one activity, the skill that owns each phase, the skills
+expected to run (`by: "commit"` or `by: "exit"`), the gates, and, for build-tier, the review set
+per appetite. The schema is design §4.1 of the `navigator` change; its one validator is
+`lib/workflow.ts` (`parseWorkflow`, `resolveWorkflows`), which the TC-16 test runs on every
+`skills/*/assets/workflows/*.workflow.json`, so a misspelt skill name fails `make validate`. A name
+may be a `skills/` folder, an `agents/` file, or an external skill listed in the `skills: [a, b]`
+list of its entry in [`dependencies.yaml`](../../dependencies.yaml).
+
+Repository overrides live in `<repo>/docs/navigator/*.workflow.json` and are resolved over the
+defaults at session start (see [`workflows.md`](workflows.md#workflow-files)). A malformed one is
+shown as a warning naming the file, and the default stays in force. Only a repository file may say
+`"mode"` or `"extends"`.
+
+`lib/phase.ts` places the active workflow, variant and phase; `lib/process-drift.ts` raises the
+process-drift warnings PD-1 to PD-5 and keeps the gate states; design decision DD-36 records how
+they read the file.
+
+### Adding a check
+
+1. Name the rule in the skill that owns it; the mod only applies it.
+2. If it needs data, add a field to the workflow schema in `lib/workflow.ts` (and design §4.1) and
+   fill it in the owning skill's file.
+3. Write the check as a pure function in `lib/` with its test, give its warning a key
+   `process:<what>:...`, a `remedy` (the command that puts it right, or `null`) and the owning skill.
+4. Call it from `reduce` in `lib/state.ts` for the signal that triggers it.
+
+### Adding an action
+
+An action is a command a person could type (DEC-6). Add a pure function in `lib/actions.ts` that
+returns the command line; `register.tsx` resolves it against the installed commands
+(`commandFor`) and submits it as typed, or toasts that it is not installed. Draw its button in the
+`ui.render` hook only when the function returns something.
+
 ## Checks
 
 - `make mods` (part of `make validate`) runs the `lib/` unit tests with Node's test runner and

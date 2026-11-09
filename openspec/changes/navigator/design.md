@@ -907,6 +907,15 @@ Python: `tests/test_repo_lint_negative.py` gains `dependencies.yaml` `skills:` c
      archive phase is entered by `openspec-archive-change`.
   8. **Old stored state.** `SkillUse.phase` and `Warning.remedy`/`owner` are new; a state stored by
      the stage-1 mod lacks them and every reader treats a missing one as `null`, so `version` stays 1.
+- **DD-37** *(lead, task 2.9)* DEC-13's four host skills were right; keep them. Each file sits
+  with the skill that owns the activity's method, and each phase names its own owner, so a file
+  that spans skills (build-tier's explore/shape/plan belong to `epic-planning`, archive to
+  `spec-stewardship`; architecting's elicit to `conceptual-modelling`; DevOps's triage to
+  `service-reliability`) still cites rather than restates them. Moving the planning phases into an
+  `epic-planning` file would split one workflow across two files and break the brownfield variant,
+  which spans both. What writing them showed: the review set is the only rule text a file *owns*
+  (DD-21), and the skills each gained one pointer line, no restated phases. Sales stays provisional
+  (DEC-9) until a sales session tries it.
 
 ## Risks / Trade-offs
 

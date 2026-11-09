@@ -29,12 +29,12 @@
 - [x] 2.3 [skill] `skills/architecture/assets/workflows/architecting.workflow.json`; one pointer line in `SKILL.md`. Deps: 2.1. Acceptance: TC-16.
 - [x] 2.4 [skill] `skills/infrastructure-operations/assets/workflows/devops.workflow.json`; one pointer line. Deps: 2.1. Acceptance: TC-16; spec `operations-practice` *The DevOps workflow is data*.
 - [x] 2.5 [skill] `skills/sales-operations/assets/workflows/sales.workflow.json` (provisional); one pointer line. Deps: 2.1. Acceptance: TC-16; spec `sales-method-ownership` *The sales workflow is simple and provisional*.
-- [ ] 2.6 [mod] the `tool.call` hook of design §5 (`ToolRan`, `FileTouched`); `lib/phase.ts` (design §6.2) and `lib/process-drift.ts` PD-1..PD-5; TC-04 (a), TC-12, TC-13. Deps: 2.1. Acceptance: spec `drift-detection` *Process drift*.
-- [ ] 2.7 [mod] `lib/actions.ts` Next step, Back on track, Validate, Fold/Hide; `register.tsx` phase and progress in the line, phases row in the band, the buttons. Deps: 2.6. Acceptance: TC-15 (partial); spec `session-navigation` *Actions are commands*.
-- [ ] 2.8 [doc] `docs/development/workflows.md`: points to the four files and explains repo overrides (no restated phases); `docs/development/mods.md`: workflow-file schema, repo overrides, adding a check or an action; user guide: workflows, phases, process drift, Next step and Back on track. Deps: 2.7. Acceptance: spec `workflow-definitions` *Repo workflow files override*; doc register green.
+- [x] 2.6 [mod] the `tool.call` hook of design §5 (`ToolRan`, `FileTouched`); `lib/phase.ts` (design §6.2) and `lib/process-drift.ts` PD-1..PD-5; TC-04 (a), TC-12, TC-13. Deps: 2.1. Acceptance: spec `drift-detection` *Process drift*.
+- [x] 2.7 [mod] `lib/actions.ts` Next step, Back on track, Validate, Fold/Hide; `register.tsx` phase and progress in the line, phases row in the band, the buttons. Deps: 2.6. Acceptance: TC-15 (partial); spec `session-navigation` *Actions are commands*.
+- [x] 2.8 [doc] `docs/development/workflows.md`: points to the four files and explains repo overrides (no restated phases); `docs/development/mods.md`: workflow-file schema, repo overrides, adding a check or an action; user guide: workflows, phases, process drift, Next step and Back on track. Deps: 2.7. Acceptance: spec `workflow-definitions` *Repo workflow files override*; doc register green.
 - [ ] 2.11 [mod] H-2 re-run on the desktop for scenario 3 (process drift at commit); append to `openspec/changes/navigator/evidence/desktop-proof.md`. Deps: 2.6, 2.7. Acceptance: H-2 stage-2 part.
-- [ ] 2.9 [skill] Review whether the four host skills (DEC-13) were right; record the verdict in `design.md` §14 as a DD. Deps: 2.2–2.5.
-- [ ] 2.10 [doc] CHANGELOG line; `make bundles`; `make skill-inventory`. Deps: 2.8.
+- [x] 2.9 [skill] Review whether the four host skills (DEC-13) were right; record the verdict in `design.md` §14 as a DD. Deps: 2.2–2.5.
+- [x] 2.10 [doc] CHANGELOG line; `make bundles`; `make skill-inventory`. Deps: 2.8.
 
 ## 3. Stage 3 — Stay on plan and lean
 
@@ -62,7 +62,7 @@
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.8 · [ ] 1.7 · [ ] 1.9 · [x] 1.10 · [ ] 1.11 · [x] 1.12
-- [x] 2.0 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 2.8 · [ ] 2.11 · [ ] 2.9 · [ ] 2.10
+- [x] 2.0 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6 · [x] 2.7 · [x] 2.8 · [ ] 2.11 · [x] 2.9 · [x] 2.10
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.6 · [ ] 3.5 · [ ] 3.7 · [ ] 3.12 · [ ] 3.13 · [ ] 3.8 · [ ] 3.9 · [ ] 3.10 · [ ] 3.11
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4
 
