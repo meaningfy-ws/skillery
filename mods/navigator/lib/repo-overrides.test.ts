@@ -1,4 +1,5 @@
-// skillery's own workflow overrides in docs/navigator/ (lean-delivery 3.2): `extends` merges `gates` shallowly.
+// skillery's own workflow overrides in docs/navigator/ (lean-delivery 3.2): `extends` replaces `gates` whole,
+// so an override restates the gates it keeps.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
@@ -25,25 +26,31 @@ const skill = (name: string, at: number): Signal => ({ kind: 'SkillLoaded', id: 
 
 test('skillery overrides resolve with no errors', () => assert.deepEqual(resolved.errors, []))
 
-const FULL: [string, string][] = [['make validate', 'ok'], ['make check-all', 'none'], ['make validate-spine', 'none'], ['make validate-x', 'none']]
+const FULL: [string, string][] = [['make validate', 'ok'], ['make check-all', 'none'], ['make validate-spine', 'none'], ['make validate-x', 'none'],
+  ['make validate -n', 'none'], ['make validate --dry-run', 'none']]
 for (const [command, state] of FULL) {
   test(`full-gates in skillery: \`${command}\` -> ${state}`, () => {
     assert.equal(run(...base(change), cmd(command, 5)).gates['full-gates']?.state ?? 'none', state)
   })
 }
 
-const DOCS: [string, string][] = [['make validate', 'cold-read'], ['make build-docs', 'inventory'], ['make validate-spine', 'inventory']]
+const DOCS: [string, string][] = [['make validate', 'cold-read'], ['make build-docs', 'inventory'], ['make validate-spine', 'inventory'],
+  ['make validate --dry-run', 'inventory']]
 for (const [command, phase] of DOCS) {
   test(`docs-gate in skillery: \`${command}\` -> ${phase}`, () => {
     assert.equal(run(...base(null), skill('technical-writing', 3), cmd(command, 5)).phase, phase)
   })
 }
 
-test('the documentation override keeps the default gates it does not change', () => {
-  const merged = resolved.workflows.find(w => w.name === 'documentation')!
-  const def = resolveWorkflows(defaults, []).workflows.find(w => w.name === 'documentation')!
-  for (const g of ['owed', 'cold-read', 'published']) assert.deepEqual(merged.gates?.[g], def.gates?.[g], g)
-  const epic = resolved.workflows.find(w => w.name === 'epic-delivery')!
-  const epicDef = resolveWorkflows(defaults, []).workflows.find(w => w.name === 'epic-delivery')!
-  for (const g of ['clarity', 'acceptance', 'openspec']) assert.deepEqual(epic.gates?.[g], epicDef.gates?.[g], g)
-})
+const defaultWorkflows = resolveWorkflows(defaults, []).workflows
+const restated = (name: string, changed: string[]) => {
+  const merged = resolved.workflows.find(w => w.name === name)!
+  const def = defaultWorkflows.find(w => w.name === name)!
+  const kept = Object.keys(def.gates ?? {}).filter(g => !changed.includes(g))
+  assert.ok(kept.length > 0)
+  for (const g of kept) assert.deepEqual(merged.gates?.[g], def.gates?.[g], g)
+}
+test('the epic-delivery override restates the default gates it keeps (drift check)', () =>
+  restated('epic-delivery', ['full-gates']))
+test('the documentation override restates the default gates it keeps (drift check)', () =>
+  restated('documentation', ['docs-gate']))

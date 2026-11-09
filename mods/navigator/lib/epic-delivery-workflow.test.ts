@@ -16,8 +16,9 @@ const defaults = resolveWorkflows([file('epic-delivery', 'epic-delivery'), file(
 
 let n = 0
 const id = () => `e${++n}`
-// This change's real tasks.md with every box ticked: the build tasks done, the docs stage and the close plain lines.
-const ticked = readFileSync(join(REPO, 'openspec/changes/lean-delivery/tasks.md'), 'utf8').replace(/^(\s*- )\[ \]/gm, '$1[x]')
+// An inline tasks.md (the change's own file moves at archive): build tasks ticked, the docs stage and the close plain lines.
+const ticked = ['## Stage 1 — Build', '- [x] 1.1 first', '- [x] 1.2 second', '- [x] 1.3 third', '',
+  '## Stage 5 — Docs', '- D.1 write the docs', '', '## Close (not counted)', '- C.1 archive', ''].join('\n')
 const change = (over: Partial<Change> = {}): Change =>
   ({ id: 'lean-delivery', appetite: 'LARGE', ...progress(ticked), planMtime: 0, hasDesign: true, hasTasks: true, ...over })
 function run(...signals: Signal[]): NavState {
@@ -30,7 +31,7 @@ const cmd = (command: string, at: number, ok = true): Signal => ({ kind: 'ToolRa
 const write = (path: string, at: number): Signal => ({ kind: 'FileTouched', id: id(), path, at })
 const where = (s: NavState) => [s.workflow, s.variant, s.phase]
 
-test('the real tasks.md, boxes ticked, counts the build tasks only and places accept', () => {
+test('a tasks.md with the build boxes ticked and plain docs and close lines counts the build tasks only and places accept', () => {
   const c = change()
   assert.ok(c.total > 0 && c.done === c.total, `${c.done}/${c.total}`)
   assert.deepEqual(where(run(workflows(), read(c), skill('epic-delivery', 3))), ['epic-delivery', null, 'accept'])
@@ -60,10 +61,12 @@ test('brownfield: done tasks land in accept; the phases are apply, accept, archi
   assert.deepEqual(where(mid), ['epic-delivery', 'brownfield', 'apply'])
 })
 
-test('full-gates: ok on make check-all; make validate and make check-architecture do not pass it', () => {
+test('only the exact `make check-all` passes full-gates; other targets do not', () => {
   const at = (c: string) => run(workflows(), read(change({ done: 3, total: 9 })), cmd(c, 5)).gates['full-gates']?.state ?? 'none'
   assert.equal(at('make check-all'), 'ok')
   assert.equal(at('make validate'), 'none')
   assert.equal(at('make check-architecture'), 'none')
   assert.equal(at('make check-all-fast'), 'none')
+  assert.equal(at('make check-all -n'), 'none')
+  assert.equal(at('make check-all --dry-run'), 'none')
 })

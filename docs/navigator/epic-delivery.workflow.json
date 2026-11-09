@@ -2,8 +2,8 @@
   "name": "epic-delivery", "extends": "epic-delivery",
   "gates": {
     "clarity":    { "kind": "skill", "skill": "clarity-gate" },
-    "full-gates": { "kind": "command", "match": "\\bmake validate(?![\\w-])", "run": "make validate" },
+    "full-gates": { "kind": "command", "match": "\\bmake validate(?![\\w-])(?![^&;|]*\\s(-n|--dry-run|--just-print)(?![\\w-]))", "run": "make validate" },
     "acceptance": { "kind": "file", "glob": "openspec/changes/*/evidence/acceptance.md" },
-    "openspec":   { "kind": "command", "match": "\\bopenspec validate\\b", "run": "openspec validate {change} --strict" }
+    "openspec":   { "kind": "command", "match": "\\bopenspec validate(?![\\w-])", "run": "openspec validate {change} --strict" }
   }
 }

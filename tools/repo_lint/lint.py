@@ -1090,6 +1090,9 @@ def _agent_frontmatter_errors(rel: str, stem: str, fm: dict, modes: set[str] | N
     allowed = AGENT_REQUIRED_FIELDS + AGENT_OPTIONAL_FIELDS
     out += [f"{rel}: frontmatter field '{k}' is not in the agent contract (docs/development/agent-template.md)"
             for k in fm if k not in allowed]
+    if "tools" not in fm and "Agent" not in (fm.get("disallowedTools") or []):
+        out.append(f"{rel}: no 'tools' list and 'disallowedTools' does not deny 'Agent' "
+                   f"(docs/development/agent-template.md)")
     if "name" in fm and fm["name"] != stem:
         out.append(f"{rel}: name '{fm['name']}' does not match the filename")
     if "type" in fm and modes is not None and not (isinstance(fm["type"], str) and fm["type"] in modes):

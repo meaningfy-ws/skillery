@@ -51,9 +51,7 @@ propose            → author the EPIC (proposal.md, Shape-Up shape)
 During `apply`, the lead runs the PLAN stage by stage with a small agent team (prepare, build,
 challenge, decide and fix, check, merge), scaled by the EPIC's appetite; when the EPIC delivers or
 changes a use case, the acceptance demo comes before `archive`. The loop is owned by [`epic-delivery`](../../skills/epic-delivery/SKILL.md).
-Navigator names these phases `ready`, `apply`, `accept` and `archive` (the spine's `verify` verb is
-the review inside `apply`); a `brownfield` change, with tasks and no design, runs `apply`, `accept`
-and `archive`. Between `accept` and `archive` comes the docs stage, the *Documentation* workflow below.
+The phases navigator shows are in [`navigator.md`](../environment/navigator.md); their order is owned by `epic-delivery`.
 
 ### Work shaping (seed → gated PLAN)
 ```
@@ -106,12 +104,13 @@ repository does so with `make validate`: see
 ```json
 { "name": "epic-delivery", "extends": "epic-delivery",
   "gates": {
-    "clarity":    { "kind": "skill", "skill": "clarity-gate" },
-    "full-gates": { "kind": "command", "match": "\\bmake validate(?![\\w-])", "run": "make validate" },
-    "acceptance": { "kind": "file", "glob": "openspec/changes/*/evidence/acceptance.md" },
-    "openspec":   { "kind": "command", "match": "\\bopenspec validate\\b", "run": "openspec validate {change} --strict" }
+    "full-gates": { "kind": "command", "match": "\\bmake validate(?![\\w-])", "run": "make validate" }
   } }
 ```
+
+This shows the changed gate only. Because `gates` is replaced whole, the real file
+[`docs/navigator/epic-delivery.workflow.json`](../navigator/epic-delivery.workflow.json) restates the
+other gates too.
 
 The schema is described in [`mods.md`](mods.md#workflow-files).
 

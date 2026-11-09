@@ -189,7 +189,7 @@ test('an override with an invalid full-gates regex is reported', () => {
   const r = override({ name: 'epic-delivery', extends: 'epic-delivery', gates: {
     clarity: { kind: 'skill', skill: 'clarity-gate' }, 'full-gates': { kind: 'command', match: '(', run: 'make x' },
     acceptance: { kind: 'file', glob: 'openspec/changes/*/evidence/acceptance.md' },
-    openspec: { kind: 'command', match: '\\bopenspec validate\\b', run: 'openspec validate {change} --strict' } } })
+    openspec: { kind: 'command', match: '\\bopenspec validate(?![\\w-])', run: 'openspec validate {change} --strict' } } })
   assert.equal(r.errors.length, 1)
 })
 

@@ -190,12 +190,16 @@ test('warnings: two commits without TDD give one warning; the prefixed remedy cl
   assert.ok(!keys(fixed).includes('process:missing:apply:test-driven-development'))
 })
 
-test('warnings: one gate used by two phases warns per phase; passing it clears both (DD-36.5)', () => {
-  const s = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5), read(change(9, 9), 6),
-    skill('openspec-archive-change', 7))
-  assert.ok(keys(s).includes('process:gate:apply:full-gates') && keys(s).includes('process:gate:accept:acceptance'), keys(s).join())
-  const passed = reduce(s, cmd('make check-all', 8))
-  assert.ok(!keys(passed).some(k => k.endsWith(':full-gates')), keys(passed).join())
+test('warnings: one command gate used by two phases warns in both; one run clears both (DD-36.5, inline workflow)', () => {
+  const w: Workflow = { name: 'flow', title: 'T', owner: 'o', activate: { skills: ['go'] },
+    phases: [{ id: 'p', owner: 'o', expect: [], gates: ['g'], enter: { skills: ['go'] } },
+      { id: 'q', owner: 'o', expect: [], gates: ['g'], enter: { skills: ['next'] } },
+      { id: 'r', owner: 'o', expect: [], enter: { skills: ['last'] } }],
+    gates: { g: { kind: 'command', match: '^ship$' } } }
+  const s = run(workflows([w]), read(null), skill('go', 3), skill('next', 4), skill('last', 5))
+  assert.ok(keys(s).includes('process:gate:p:g') && keys(s).includes('process:gate:q:g'), keys(s).join())
+  const passed = reduce(s, cmd('ship', 6))
+  assert.ok(!keys(passed).some(k => k.endsWith(':g')), keys(passed).join())
 })
 
 test('warnings: passing gate "b" does not clear the warning of gate "a:b" (DD-36.5 its own warnings)', () => {
