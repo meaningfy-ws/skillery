@@ -4,7 +4,6 @@
 One owner each for the commercial method facts the sales skills rely on: the offer ladder and its
 names (`engagement-lifecycle`) and prospect qualification (`sales-qualification`), so no other skill
 restates them. Established by `add-sales-bundle` (2026-10-27).
-
 ## Requirements
 ### Requirement: The offer ladder has one owner and one set of names
 `semantic-consulting-coach/references/engagement-lifecycle.md` SHALL own the offer ladder with the
@@ -24,4 +23,14 @@ note (DEC-9). Presale SHALL remain the only free stage.
 #### Scenario: A user asks to qualify a prospect
 - **WHEN** a probe asks "score this deal on the five Ps"
 - **THEN** it routes to `sales-qualification`, and the near-miss "coach me through a first meeting" routes to `semantic-consulting-coach`
+
+### Requirement: The sales workflow is simple and provisional
+`sales-operations` SHALL host one sales workflow file, marked provisional, built only from the
+existing sales skills and agents: research and qualify, meeting, estimate and offer, pipeline kept
+true. It SHALL NOT decide any open question of the sales method and SHALL be revised when that
+method settles (DEC-9).
+
+#### Scenario: A sales session
+- **WHEN** a session loads `proposal-writing`
+- **THEN** navigator shows the sales workflow, marked provisional, in its offer phase
 

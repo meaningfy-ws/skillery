@@ -8,7 +8,6 @@ validator fails the build when single-source-of-authority is broken. Also fixes 
 (free strings / raw dicts in any layer), positions BDD scenario authoring in the design phase, mandates
 component-first organisation with enforced import guardrails for larger projects, and decouples config
 consumption from its source.
-
 ## Requirements
 ### Requirement: A single catalogue owns the code principles, best-practices, and anti-patterns
 
@@ -79,7 +78,11 @@ the implement phase.
 `tools/repo_lint/lint.py` SHALL fail the build when the single-source-of-authority property is broken:
 every `skills/*/SKILL.md` SHALL have a `## Boundary & Related Skills` section; `Related`/`Delegates`
 links SHALL be reciprocal; every skill named in an `agents/*.md` list SHALL exist and the agent's skills
-SHALL cover the delegations its primary skill declares; ownership claims SHALL be blocking.
+SHALL cover the delegations its primary skill declares; ownership claims SHALL be blocking. `make
+validate` SHALL also fail when a default workflow file names a skill or agent that is neither in the
+catalogue nor in the `skills:` list of a `dependencies.yaml` entry, when such a list holds a
+non-kebab name, a name listed in two entries or a name of a `skills/` directory, and when a `mod`
+hook binding and the mod's strict rules disagree.
 
 #### Scenario: A skill without a Boundary section fails CI
 
@@ -95,6 +98,16 @@ SHALL cover the delegations its primary skill declares; ownership claims SHALL b
 
 - **WHEN** an `agents/*.md` primary skill delegates to a skill the agent does not load
 - **THEN** the validator reports the misalignment and fails the build
+
+#### Scenario: A workflow file names a missing skill fails CI
+
+- **WHEN** a default workflow file names a skill that is neither in `skills/` nor in a `dependencies.yaml` `skills:` list
+- **THEN** `make validate` fails, naming the file and the skill
+
+#### Scenario: A malformed dependency skills list fails CI
+
+- **WHEN** `superpowers` and another entry of `dependencies.yaml` both list `brainstorming` under `skills:`
+- **THEN** `make validate` fails, naming the skill and both entries
 
 ### Requirement: Larger projects are organised component-first with enforced, groomed guardrails
 
