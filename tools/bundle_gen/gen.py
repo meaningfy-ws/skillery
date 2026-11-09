@@ -23,6 +23,11 @@ PACKAGE_JSON = "package.json"
 VERSION_FILE = "VERSION"
 SKILLS_DIR = "skills"
 AGENTS_DIR = "agents"
+MODS_DIR = "mods"
+MOD_FILES = ("hooks.json", "types.d.ts", "config.json", "register.tsx")
+# Data a mod reads under ${plugin root}/data/ (navigator design §2): skill assets, never copied.
+MOD_DATA = (("workflows", "*/assets/workflows/*.workflow.json"),
+            ("", "guardrails/assets/session-thresholds.json"))
 # bundles/ holds symlinks into skills/ and agents/ plus one plugin.json per bundle: claude.ai's
 # marketplace sync needs the plugin.json (fix-desktop-marketplace-install).
 _CACHE = ("__pycache__", "*.pyc")  # created by running scripts; git-ignored, never copied or compared
@@ -32,7 +37,7 @@ SCHEMA_COPY = ("openspec/schemas/meaningfy", "../../skills/project-setup/assets/
 _TOP_KEYS = ("name", "owner", "description", "bundles")
 _OWNER_KEYS = ("name", "email")
 _BUNDLE_KEYS = ("name", "description", "skills", "agents")
-_BUNDLE_OPTIONAL_KEYS = ("requires",)  # define-catalogue-model D-6; the graph rules live in repo_lint
+_BUNDLE_OPTIONAL_KEYS = ("requires", "mods")  # define-catalogue-model D-6; mods: navigator DD-4/DD-5
 _KEBAB = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _FRONTMATTER = re.compile(r"^---\n(.*?)\n---\n?(.*)$", re.DOTALL)
 _STALE = "is stale — run make bundles"
@@ -82,7 +87,25 @@ def _bundle(raw, index: int, seen: set[str]) -> dict:
            "agents": _str_list(raw["agents"], "agents", where)}
     if "requires" in raw:
         out["requires"] = _str_list(raw["requires"], "requires", where)
+    if "mods" in raw:
+        out["mods"] = _str_list(raw["mods"], "mods", where)
+        if len(out["mods"]) > 1:
+            raise ValueError(f"{BUNDLES_FILE}: {where} lists {len(out['mods'])} mods; a bundle holds at most one")
     return out
+
+
+def _check_mods(repo: Path, bundles: list[dict]) -> None:
+    """A mod is in exactly one bundle and its folder holds the four files (navigator DD-5)."""
+    owner: dict[str, str] = {}
+    for b in bundles:
+        for m in b.get("mods", []):
+            if m in owner:
+                raise ValueError(f"{BUNDLES_FILE}: mod '{m}' is in bundles '{owner[m]}' and '{b['name']}'")
+            owner[m] = b["name"]
+            missing = [f for f in MOD_FILES if not (repo / MODS_DIR / m / f).is_file()]
+            if missing:
+                raise ValueError(f"{BUNDLES_FILE}: mod '{m}' of bundle '{b['name']}' is missing "
+                                 f"{MODS_DIR}/{m}/{', '.join(missing)}")
 
 
 def load(repo: Path) -> dict:
@@ -96,10 +119,12 @@ def load(repo: Path) -> dict:
     if not isinstance(doc["bundles"], list):
         raise ValueError(f"{BUNDLES_FILE}: key 'bundles' must be a list")
     seen: set[str] = set()
+    bundles = [_bundle(b, i, seen) for i, b in enumerate(doc["bundles"])]
+    _check_mods(repo, bundles)
     return {"name": doc["name"],
             "owner": {"name": doc["owner"]["name"], "email": doc["owner"]["email"]},
             "description": doc["description"],
-            "bundles": [_bundle(b, i, seen) for i, b in enumerate(doc["bundles"])]}
+            "bundles": bundles}
 
 
 def _agent_map(repo: Path) -> dict:
@@ -146,11 +171,17 @@ def render(repo: Path) -> tuple[bytes, dict[str, str], bytes]:
             links[f"{BUNDLES_DIR}/{b['name']}/skills/{s}"] = f"../../../{SKILLS_DIR}/{s}"
         for a in b["agents"]:
             links[f"{BUNDLES_DIR}/{b['name']}/agents/{a}.md"] = f"../../../{AGENTS_DIR}/{a}.md"
+        for m in b.get("mods", []):
+            links[f"{BUNDLES_DIR}/{b['name']}/mods/{m}"] = f"../../../{MODS_DIR}/{m}"
+            for sub, pattern in MOD_DATA:
+                for src in sorted((repo / SKILLS_DIR).glob(pattern)):
+                    rel = Path(BUNDLES_DIR, b["name"], "data", sub, src.name)
+                    links[rel.as_posix()] = os.path.relpath(src, repo / rel.parent)
     stems = sorted({a for b in doc["bundles"] for a in b["agents"]})
     catalogue = {
         "version": ver,
         "bundles": [{"name": b["name"], "skills": b["skills"], "agents": b["agents"]}
-                    for b in doc["bundles"]],
+                    for b in doc["bundles"] if b["skills"] or b["agents"]],  # mod-only: Claude only (DD-6)
         "agents": {a: agent_frontmatter(repo, a)[0] for a in stems},
     }
     return _json_bytes(market), links, _json_bytes(catalogue)
@@ -159,9 +190,16 @@ def render(repo: Path) -> tuple[bytes, dict[str, str], bytes]:
 def plugin_manifests(repo: Path) -> dict[str, bytes]:
     """bundles/<b>/.claude-plugin/plugin.json per bundle; it carries VERSION for /plugin."""
     doc, ver = load(repo), version(repo)
-    return {f"{BUNDLES_DIR}/{b['name']}/.claude-plugin/plugin.json":
-            _json_bytes({"name": b["name"], "version": ver, "description": b["description"],
-                         "author": PLUGIN_AUTHOR}) for b in doc["bundles"]}
+    out: dict[str, bytes] = {}
+    for b in doc["bundles"]:
+        manifest = {"name": b["name"], "version": ver, "description": b["description"],
+                    "author": PLUGIN_AUTHOR}
+        for m in b.get("mods", []):
+            manifest["hooks"] = [f"./mods/{m}/hooks.json"]
+            manifest["types"] = f"./mods/{m}/types.d.ts"
+            manifest["userConfig"] = json.loads((repo / MODS_DIR / m / "config.json").read_text(encoding="utf-8"))
+        out[f"{BUNDLES_DIR}/{b['name']}/.claude-plugin/plugin.json"] = _json_bytes(manifest)
+    return out
 
 
 def _sync_package_version(repo: Path, ver: str) -> None:
@@ -275,13 +313,15 @@ def _version_errors(repo: Path, ver: str) -> list[str]:
 
 
 def unreleased(repo: Path) -> list[str]:
-    """Paths of skills and agents listed in no bundle: work in progress, never published
+    """Paths of skills, agents and mods listed in no bundle: work in progress, never published
     (rebundle-by-activity D-14). releases.yml drops them from the release tree."""
     doc = load(repo)
     skills = {s for b in doc["bundles"] for s in b["skills"]}
     agents = {a for b in doc["bundles"] for a in b["agents"]}
     out = [f"skills/{p.parent.name}" for p in (repo / "skills").glob("*/SKILL.md") if p.parent.name not in skills]
     out += [f"agents/{p.name}" for p in (repo / "agents").glob("*.md") if p.stem not in agents]
+    mods = {m for b in doc["bundles"] for m in b.get("mods", [])}
+    out += [f"{MODS_DIR}/{p.name}" for p in (repo / MODS_DIR).glob("*") if p.is_dir() and p.name not in mods]
     return sorted(out)
 
 

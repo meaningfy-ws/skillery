@@ -289,3 +289,73 @@ def test_python_cache_is_neither_copied_nor_compared(tmp_path):
     (repo / "skills/s1/__pycache__").mkdir()
     (repo / "skills/s1/__pycache__/x.cpython-311.pyc").write_bytes(b"\0")
     assert gen.gate_errors(repo) == []
+
+
+# ------------------------------------------------------------------ mods (navigator DD-4..DD-6)
+def _mod_repo(tmp_path: Path, mods=("nav",)) -> Path:
+    doc = _doc()
+    doc["bundles"].append({"name": "b-mod", "description": "Mod", "skills": [], "agents": [],
+                           "mods": list(mods)})
+    repo = _repo(tmp_path, doc)
+    for m in mods:
+        d = repo / "mods" / m
+        d.mkdir(parents=True)
+        for f in gen.MOD_FILES:
+            (d / f).write_text("{}\n", encoding="utf-8")
+        (d / "config.json").write_text('{"band": {"type": "boolean", "default": true}}\n', encoding="utf-8")
+    (repo / "skills/s1/assets/workflows").mkdir(parents=True)
+    (repo / "skills/s1/assets/workflows/build.workflow.json").write_text("{}\n", encoding="utf-8")
+    (repo / "skills/guardrails/assets").mkdir(parents=True)
+    (repo / "skills/guardrails/assets/session-thresholds.json").write_text("{}\n", encoding="utf-8")
+    return repo
+
+
+def test_mod_links_data_links_and_manifest(tmp_path):
+    repo = _mod_repo(tmp_path)
+    gen.write(repo)
+    b = repo / "bundles/b-mod"
+    assert os.readlink(b / "mods/nav") == "../../../mods/nav"
+    assert os.readlink(b / "data/workflows/build.workflow.json") == \
+        "../../../../skills/s1/assets/workflows/build.workflow.json"
+    assert os.readlink(b / "data/session-thresholds.json") == \
+        "../../../skills/guardrails/assets/session-thresholds.json"
+    assert (b / "data/workflows/build.workflow.json").read_text() == "{}\n"  # resolves
+    manifest = json.loads((b / ".claude-plugin/plugin.json").read_text())
+    assert manifest["hooks"] == ["./mods/nav/hooks.json"]
+    assert manifest["types"] == "./mods/nav/types.d.ts"
+    assert manifest["userConfig"] == {"band": {"type": "boolean", "default": True}}
+    assert "hooks" not in json.loads((repo / "bundles/b-one/.claude-plugin/plugin.json").read_text())
+    assert gen.gate_errors(repo) == []
+
+
+def test_mod_only_bundle_is_in_marketplace_not_in_opencode_catalogue(tmp_path):
+    market, _, cat = gen.render(_mod_repo(tmp_path))
+    assert "b-mod" in [p["name"] for p in json.loads(market)["plugins"]]
+    assert "b-mod" not in [b["name"] for b in json.loads(cat)["bundles"]]
+
+
+def test_mod_missing_files_is_rejected(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/nav/types.d.ts").unlink()
+    with pytest.raises(ValueError, match=r"mod 'nav' of bundle 'b-mod' is missing mods/nav/types.d.ts"):
+        gen.load(repo)
+
+
+def test_two_mods_in_one_bundle_are_rejected(tmp_path):
+    with pytest.raises(ValueError, match="at most one"):
+        gen.load(_mod_repo(tmp_path, mods=("nav", "other")))
+
+
+def test_mod_in_two_bundles_is_rejected(tmp_path):
+    repo = _mod_repo(tmp_path)
+    doc = yaml.safe_load((repo / "bundles.yaml").read_text())
+    doc["bundles"][0]["mods"] = ["nav"]
+    (repo / "bundles.yaml").write_text(yaml.safe_dump(doc), encoding="utf-8")
+    with pytest.raises(ValueError, match="mod 'nav' is in bundles 'b-one' and 'b-mod'"):
+        gen.load(repo)
+
+
+def test_unreleased_lists_a_mod_in_no_bundle(tmp_path):
+    repo = _mod_repo(tmp_path)
+    (repo / "mods/wip").mkdir()
+    assert gen.unreleased(repo) == ["mods/wip"]
