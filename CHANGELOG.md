@@ -11,6 +11,22 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- `meaningfy-navigator`: three more workflows. Conceptual modelling (elicit, model, generate,
+  validate) and release (branch, bump, validate, merge, publish, back-merge) now show their phase and
+  warn on a skipped step; architecting, now titled Architecture, runs drivers, use cases, C4,
+  decide and domain, then hands over to conceptual modelling. Writing the
+  file a phase waits for (a use case, a C4 view, a model file) now moves the session to the next
+  phase. A repository changes where those files live with `extends`; see the navigator guide.
+
+### Changed
+
+- **BREAKING** `meaningfy-navigator`: the build-tier phases `shape` and `plan` are gone, replaced by
+  `variants`, `decide`, `propose`, `design` and `revise`, and the variant `exploratory` is renamed
+  `work-shaping`. A repository file in `docs/navigator/` that names `shape`, `plan` or `exploratory`
+  must use the new names.
+
 ## [3.10.1] - 2026-11-09
 
 ### Fixed

@@ -52,7 +52,7 @@ During `apply`, the lead runs the PLAN stage by stage with a small agent team (p
 challenge, decide and fix, check, merge), scaled by the EPIC's appetite; when the EPIC delivers or
 changes a use case, the acceptance demo comes before `archive`. The loop is owned by [`epic-delivery`](../../skills/epic-delivery/SKILL.md).
 
-### Exploratory (seed → shaped change)
+### Work shaping (seed → shaped change)
 ```
 explore  → elicit from seed inputs (changes/<id>/inputs/)
   → new  → scaffold the change
@@ -73,8 +73,10 @@ reads them to show the phase and to warn when a step is skipped.
 
 | Workflow | File | Variants |
 |---|---|---|
-| Build-tier EPIC delivery | [`epic-delivery`](../../skills/epic-delivery/assets/workflows/build-tier.workflow.json) | exploratory, brownfield |
-| Architecting and modelling | [`architecture`](../../skills/architecture/assets/workflows/architecting.workflow.json) | — |
+| Build-tier EPIC delivery | [`epic-delivery`](../../skills/epic-delivery/assets/workflows/build-tier.workflow.json) | work-shaping, brownfield |
+| Architecture | [`architecture`](../../skills/architecture/assets/workflows/architecting.workflow.json) | — |
+| Conceptual modelling | [`conceptual-modelling`](../../skills/conceptual-modelling/assets/workflows/modelling.workflow.json) | — |
+| Release | [`meaningfy-release`](../../skills/meaningfy-release/assets/workflows/release.workflow.json) | — |
 | DevOps | [`infrastructure-operations`](../../skills/infrastructure-operations/assets/workflows/devops.workflow.json) | intervention, incident, check-up, unattended |
 | Sales (provisional) | [`sales-operations`](../../skills/sales-operations/assets/workflows/sales.workflow.json) | — |
 

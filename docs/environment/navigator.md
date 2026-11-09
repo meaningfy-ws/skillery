@@ -53,9 +53,9 @@ With nothing to report it shows just its buttons. Unfolded, it adds:
 
 ```
 stages    ✓ 1 See it 12/12 · ● 2 Follow the workflow 3/12 · ○ 3 Stay on plan 0/13 · ○ Close 0/4
-phases    Build-tier EPIC delivery · ✓ explore · ✓ shape · ✓ plan · ● apply · ○ verify · ○ archive
+phases    Build-tier EPIC delivery · ✓ explore · ✓ variants · ✓ decide · ✓ propose · ✓ design · ✓ revise · ● apply · ○ verify · ○ archive
 appetite  VERY LARGE · tasks 9/41 · groups 1/4 · reviewers 0/6 this turn · 1.2M tokens · $3.40
-skills    clarity-gate (plan) · epic-delivery (apply)
+skills    clarity-gate (revise) · epic-delivery (apply)
 subagents code-reviewer · sonnet · done · 41.0k tokens · implementer · opus · running
 warnings  ⚠ commit in apply without test-driven-development (epic-delivery)
 mode      ○ loose
@@ -64,13 +64,22 @@ mode      ○ loose
 
 ## Workflows and phases
 
-Navigator follows four workflows, each kept as a file in the skill that owns it: build-tier EPIC
-delivery (`epic-delivery`), architecting and modelling (`architecture`), DevOps
-(`infrastructure-operations`) and sales (`sales-operations`, provisional). It picks the workflow from
+Navigator follows six workflows, each kept as a file in the skill that owns it: build-tier EPIC
+delivery (`epic-delivery`), architecting (`architecture`), conceptual modelling
+(`conceptual-modelling`), release (`meaningfy-release`), DevOps (`infrastructure-operations`) and
+sales (`sales-operations`, provisional). The build-tier phases are explore, variants, decide,
+propose, design, revise, apply, verify and archive; its variants are `work-shaping` (the first six)
+and `brownfield`. Each file lists its own phases. It picks the workflow from
 the skills you load and the subagents you start; with an open change and nothing else loaded, it
 is build-tier. The phase follows the skills you load and the state of the change's files: ticking
 the last task of `tasks.md` moves `apply` to `verify`. In DevOps, the commands move it:
 `terraform plan` reaches the consent card, your answer to the card reaches `apply`.
+
+A file you write can move the phase too. A phase may name a file gate, a glob for the artifact
+that starts the next phase. When a written file matches it, the session moves to the next phase:
+writing the first use case ends `drivers` and enters `use-cases` in architecting; writing under
+`model/` ends `decide` and enters `domain`. It only moves forward, it never blocks, and it does not
+pick a workflow. The globs are in the `gates` of each workflow file.
 
 A repository can change a workflow with its own file in `docs/navigator/`; see
 [`workflows.md`](../development/workflows.md#workflow-files). A file navigator cannot read shows as a
@@ -146,6 +155,16 @@ file of its own, `docs/navigator/build-tier.workflow.json`:
 
 ```json
 { "name": "build-tier", "extends": "build-tier", "mode": "strict" }
+```
+
+A repository whose files live elsewhere changes a glob with `extends`. The merge is shallow: a field
+you give replaces the whole field of the default. To move the use-case glob, give the full `gates`
+object, not only the one glob:
+
+```json
+{ "name": "architecting", "extends": "architecting",
+  "gates": { "usecases": { "kind": "file", "glob": "docs/uc/**" }, "c4": { "kind": "file", "glob": "**/*[Cc]4*" },
+             "adr": { "kind": "file", "glob": "**/[Aa][Dd][Rr]-[0-9]*" }, "model": { "kind": "file", "glob": "model/**" } } }
 ```
 
 Strict adds four checks: a commit is refused while the phase's expected skill or a gate is missing;
