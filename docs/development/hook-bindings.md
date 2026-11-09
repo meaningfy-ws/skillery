@@ -9,7 +9,7 @@ The rule the whole design turns on: **one intent, mechanism decides duplication.
 and opencode. `agent` bindings are declared only; the agent-runtime hooks that run are mods
 (Claude Code) and the catalogue's plugin (opencode).
 
-## `git` mechanism — one shared implementation (tasks 2.4)
+## `git` mechanism — one shared implementation
 
 Every `git`-mechanism intent maps to a hook under a **single git-hook manager config**, committed
 once at the repo root. The manager is CLI-agnostic by nature — git runs the hook regardless of which
@@ -35,7 +35,7 @@ agent CLI is in use, so there is **no per-CLI copy**.
 **Branch-protection** (`protect-base-branches`) has both a `git` binding (local pre-commit guard)
 and a `ci` binding (server-side branch protection); the `ci` half is the authoritative one.
 
-## `ci` mechanism — one shared PR check (tasks 2.4)
+## `ci` mechanism — one shared PR check
 
 `ci`-mechanism intents (`parity-check`, `reference-discipline`, `import-linter-contracts`'s PR half,
 the phase-gate reviews) are GitHub Actions jobs that call `make` targets. Shared across CLIs — CI
@@ -58,16 +58,15 @@ and, for opencode, through the catalogue's plugin.
 
 `mod`-mechanism intents are enforced by a mod's own hooks, not by settings or a git hook. A mod is
 a hooks module in one of two forms: engine `modules` (navigator) or plain command hooks
-(`no-poll-loops`). Today the intents are the four `navigator-strict-*` intents: navigator's strict mode, active in a repository whose
-workflow file declares `"mode": "strict"`, or in any session switched with `/navigator mode strict`. Each intent's id equals the `id` of one rule in
-`mods/navigator/lib/strict.ts`; the lint check `mod_bindings_match` keeps the two sets equal. Nothing
-is projected at setup: installing the `meaningfy-navigator` bundle is the binding. opencode has no
-mods, a recorded gap in [`compatibility.md`](../environment/dual-cli/compatibility.md). How to add a
-strict rule: [`mods.md`](mods.md).
+(`no-poll-loops`); [`mods.md`](mods.md) owns both. There are five `mod` intents: the four
+`navigator-strict-*` intents (navigator's strict mode, active in a repository whose workflow file
+declares `"mode": "strict"`, or in any session switched with `/navigator mode strict`) and
+`no-poll-loops`. Each `navigator-strict-*` id equals the `id` of one rule in
+`mods/navigator/lib/strict.ts`; `no-poll-loops` is the folder name of a plain mod. The lint check
+`mod_bindings_match` keeps each side equal to its intents. Nothing is projected at setup:
+installing the bundle is the binding.
 
-The fifth intent, `no-poll-loops`, is a plain command hook: `mods/no-poll-loops/hooks.json` holds
-one `PreToolUse` hook on `Bash` that runs `no-poll-loops.mjs`, which denies a sleep loop (exit 2
-and a message). Its id is the mod's folder name, so `mod_bindings_match` needs no strict rule for
-it. The bundle `meaningfy-core` carries it. For opencode, `tools/opencode-plugin.mjs` adds a
-`tool.execute.before` handler for `bash` that calls the same `check`, whatever the bundle
-selection. Both fail open.
+opencode has no navigator, a recorded gap in
+[`compatibility.md`](../environment/dual-cli/compatibility.md). `no-poll-loops` does run there:
+`tools/opencode-plugin.mjs` reuses the mod's `check`, whatever the bundle selection (see
+[`mods.md`](mods.md#no-poll-loops)).

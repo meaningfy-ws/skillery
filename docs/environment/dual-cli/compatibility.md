@@ -73,11 +73,12 @@ No MCP server is a gap: every referenced server's transport is expressible in `o
 ## Agent-hook gaps (cross-reference)
 
 The only recorded *capability* gap is on the agent-hook surface, owned by
-[`../../../hooks/bindings.md`](../../development/hook-bindings.md):
+[`hook-bindings.md`](../../development/hook-bindings.md):
 
 | Intent | Claude binding | opencode | Gap / degradation |
 |---|---|---|---|
 | `persist-before-compaction` | `PreCompact` hook | no `PreCompact` equivalent | degrades to `Stop`/`session.idle` binding on opencode. |
+| `no-poll-loops` | `PreToolUse` command hook on `Bash` (the `no-poll-loops` mod in `meaningfy-core`) | `tool.execute.before` handler for `bash` in `tools/opencode-plugin.mjs`, the same `check` | parity: both deny the same sleep loops with the same message and fail open. |
 
 One skill also has a recorded monitoring gap, which comes from a missing plugin rather than a hook:
 
@@ -114,8 +115,9 @@ Two things are **never** shared or generated identically across CLIs — they ar
 
 1. **Slash-command registration/invocation** — only the command *content/template* derives from a
    shared source; the registration form is `/opsx:<id>` (Claude) vs `opsx-<id>` (opencode).
-2. **Agent-hook bindings** — the *intent* is shared (`hooks.yaml`); the binding is a
-   Claude `settings.json` hook vs an opencode plugin handler. See `docs/development/hook-bindings.md`.
+2. **Agent-hook bindings** — the *intent* is shared (`hooks.yaml`); the agent-runtime hooks that run
+   are a mod's command hook on Claude and the catalogue plugin's handler on opencode. See
+   `docs/development/hook-bindings.md`.
 
 Everything else — the root binding (`AGENTS.md`), skill bodies, command content, the hook *intent*
 inventory — is single-sourced and shared.

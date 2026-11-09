@@ -16,7 +16,7 @@ exactly one of five types (defined in [`docs/development/governance.md`](docs/de
 | **Agent** | `agents/` | Thin wrapper — see [`docs/development/agent-template.md`](docs/development/agent-template.md) |
 | **Doc** | `docs/` | Written for people; narrates and points, never restates skill rules |
 | **Binding** | root agentic files (`AGENTS.md`, `CLAUDE.md`) + `project-setup`'s agentic templates | Mandates and routes; never carries the standard |
-| **Mod** | `mods/` | Claude Code hooks module (engine `modules` or plain command hooks); observes, displays, runs commands or denies a command; carries no method |
+| **Mod** | `mods/` | Claude Code hooks module; observes, displays, runs commands or denies a command; carries no method |
 
 **Single-source-of-authority rule:** if a fact belongs to a skill, it lives there and nowhere else.
 See [`docs/development/governance.md`](docs/development/governance.md) for placement rules.
