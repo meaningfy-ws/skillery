@@ -27,5 +27,5 @@ Not run: the reviewer's `permission.edit: "deny"` (the installer test covers the
 `edit` permission is an existing, previously verified mapping). The `tools` map is a no-op switch on
 opencode (gap G-6), which is what makes the MCP tool visible.
 
-Status: run by the implementer subagent, not by hand in an interactive session; the lead decides
-whether that closes 3.4. Raw output was in the scratchpad (`probe/out.json`, `probe/control.json`), not committed.
+Status: run by the implementer subagent, not by hand in an interactive session; the lead accepted
+it as task 3.4's result (design DL-9.3). Raw output was in the scratchpad (`probe/out.json`, `probe/control.json`), not committed.

@@ -293,6 +293,10 @@ appropriate". Decisions taken while delivering:
   merge (a navigator engine change, a no-go here; a follow-up); a structural deny list of products'
   MCP tools (names products, a no-go); RISK-11 stays accepted as DEC-11 decided (Q-12), named in the
   PR; a guard on stale or foreign `acceptance.md` (change-agnostic globs, as DL-7.2).
+- **DL-12 Checker finding (stage 3).** The durable rule "an agent gets the fewest tools its job
+  needs" (`skill-crafting-method`) gains the DEC-11 exception through a MODIFIED delta: an agent
+  that needs the project's code-intelligence tools may inherit the session's tools, only when it
+  denies `Agent`; `docs/development/README.md` narrates it.
 
 ## Algorithm — the check ledger (D-1)
 

@@ -48,7 +48,9 @@ If a change helps the agent but confuses the user, it is not done.
    provenance note: source, commit, licence, date, reviewer (AST02, AST07). A skill body never tells
    the agent to fetch and follow live remote instructions; snapshot them into `references/` (AST05).
    An agent gets the fewest tools its job needs, and a tool denial survives rendering to every CLI or
-   is recorded as a gap (AST03, AST10). Ids from the
+   is recorded as a gap (AST03, AST10). An agent that needs the project's code-intelligence tools may
+   omit its tool list and inherit the session's, only if it denies `Agent`
+   ([`agent-template.md`](agent-template.md)). Ids from the
    [OWASP Agentic Skills Top 10](https://owasp.org/www-project-agentic-skills-top-10/) (v1.0).
 5. **Failure-first.** A skill or agent exists because an agent did something badly without it. That
    case is written down before the first line of the skill, and it becomes the acceptance test. The
