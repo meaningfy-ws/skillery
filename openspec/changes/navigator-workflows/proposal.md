@@ -1,7 +1,8 @@
 <!-- STATUS: EPIC shaped 2026-11-09 from the owner's conversation (inputs/seed.md, inputs/qa.md);
      round 2 (Q-1..Q-3 in inputs/qa.md) answered the same day: recommendations taken. Frozen.
      PLAN derived the same day (design.md, tasks.md); DEC-5 amended by design D-4 (round 3).
-     PLAN NOT GATED: clarity gate 8.2/10 (2nd run); Q-6 open (inputs/qa.md). -->
+     Q-6 answered: shaping and delivery stay separate sessions; the variant stays.
+     PLAN gated 2026-11-09: clarity gate 9.1/10 (fourth run; 7.5, 8.2, 8.7 before). -->
 
 # EPIC: navigator workflows — work shaping, architecture, modelling and release
 

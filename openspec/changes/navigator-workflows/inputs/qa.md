@@ -51,3 +51,8 @@ the one engine rule); Q-3 "okay" (rename now). No question is open.
   2. **Keep the variant, change the engine**: a variant change inside one workflow runs the leave and
      enter checks, and `activate.change` takes a list. Two small rules beyond DEC-6: re-shape as
      MEDIUM.
+
+**Owner's answer (2026-11-09):** "i want to keep separate the sessions of work shaping and
+implementation". Neither option: the variant stays, the shaping session ends at `revise`, and a
+delivery session starts fresh (design D-2). Loading `epic-delivery` inside a shaping session is
+off-method and recorded in the error matrix. Stays SMALL.
