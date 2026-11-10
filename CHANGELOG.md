@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.12.0] - 2026-11-10
+
 ### Added
 
 - `meaningfy-core` and the opencode plugin: a hook that denies a Bash sleep loop (`while`, `until` or
