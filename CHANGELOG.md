@@ -11,6 +11,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Changed
+
+- `epic-delivery`: the acceptance demo is no longer provisional — its first real run (lean-delivery)
+  was accepted. The validation review and the scenario sign-off stay provisional.
+
 ## [3.12.0] - 2026-11-10
 
 ### Added
