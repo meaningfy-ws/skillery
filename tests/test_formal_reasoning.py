@@ -2,8 +2,8 @@
 
 Fixtures under tests/fixtures/formal-reasoning/ are the recorded failure cases (F-1 clingo-dead-rule,
 F-2 prolog-closure) plus one fixture per refusal. Exit codes (design D-8): 0 pass, 1 a test failed,
-2 input refused, 3 engine missing. Engine tests skip when the engine is absent, unless
-REQUIRE_ENGINES=1 (CI sets it), so CI cannot skip them silently.
+2 input refused, 3 engine missing. Engine tests skip when the engine is absent (CI installs
+none; local `make validate` installs clingo), unless REQUIRE_ENGINES=1 forces them to run.
 """
 import importlib.util
 import json
