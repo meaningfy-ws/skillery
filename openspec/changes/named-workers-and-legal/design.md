@@ -274,5 +274,10 @@ its checks, never edit what it declares immutable, report what its instructions 
 
 ## Open Questions
 
-None blocking. Recorded calls for the owner to check: D-5 (`team-lead`), D-8 (skill names), D-9 (no
-config file), D-10 (seven phases, no default gates), D-13 (no rename).
+None. The owner confirmed D-5 (`team-lead`), D-8 (skill names), D-9 (no config file), D-10 (seven
+phases, no default gates) and D-13 (no rename) on 2026-11-11.
+
+- **D-19 — PLAN accepted below the gate.** Four independent clarity-gate runs scored 8.5, 8.6, 8.7
+  and 8.5; each found new wording or fact slips, all fixed in the PLAN (the last scorer estimated
+  about 9.5 after its fixes; there was no fifth run). Owner's answer (2026-11-11): accept and
+  record; stage 1 may start.
