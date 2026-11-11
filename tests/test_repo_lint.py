@@ -47,6 +47,10 @@ def test_agents_conform_to_standard():
     assert lint.agent_conformance(REPO) == []
 
 
+def test_agents_carry_a_persona():
+    assert lint.agent_persona(REPO) == []
+
+
 def test_readme_lists_every_skill():
     assert lint.readme_inventory_gaps(REPO) == []
 

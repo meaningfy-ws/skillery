@@ -1187,6 +1187,33 @@ def agent_conformance(repo: Path) -> list[str]:
     return out
 
 
+_ROLE_LINE = re.compile(r"You are \*\*(?P<persona>\S+) the (?P<role>[^*]+)\*\*\.")
+_PERSONA = re.compile(r"[A-Z][a-z]+")
+
+
+def agent_persona(repo: Path) -> list[str]:
+    """Every agent's role line reads `You are **<Persona> the <role>**.` with an ASCII persona, and its
+    description starts with `<Persona> the <role>` (named-workers-and-legal D-1)."""
+    out: list[str] = []
+    for p in sorted((repo / "agents").glob("*.md")) if (repo / "agents").exists() else []:
+        rel = f"agents/{p.name}"
+        try:
+            fm, body = bundle_gen.agent_frontmatter(repo, p.stem)
+        except ValueError:
+            continue  # agent_conformance reports a rejected frontmatter
+        m = _ROLE_LINE.match(body.strip())
+        if not m:
+            out.append(f"{rel}: role line must read 'You are **<Persona> the <role>**.' "
+                       f"(docs/development/agent-template.md)")
+            continue
+        persona, role = m["persona"], m["role"]
+        if not _PERSONA.fullmatch(persona):
+            out.append(f"{rel}: persona '{persona}' must be one capitalised ASCII word")
+        elif not str(fm.get("description", "")).strip().startswith(f"{persona} the {role}"):
+            out.append(f"{rel}: description must start with '{persona} the {role}'")
+    return out
+
+
 def bundle_gates(repo: Path) -> list[str]:
     """Delegate to tools.bundle_gen: bundles.yaml validates, the renderings
     (marketplace.json, bundles/ links, tools/opencode-catalogue.json) match it, and versions agree."""
@@ -1199,7 +1226,7 @@ ALL_CHECKS = (
     name_mismatch, expected_bundle_membership,
     agent_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
-    boundary_section_present, agent_skill_alignment, agent_conformance, groomed_spec_purpose,
+    boundary_section_present, agent_skill_alignment, agent_conformance, agent_persona, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, mod_bindings_match, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,

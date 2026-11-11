@@ -554,6 +554,33 @@ def test_agent_body_cli_ism_is_flagged(tmp_path):
         "agents/x.md: body has a CLI-specific (/opsx: or .claude/) reference"]
 
 
+def _persona(root: Path, role_line: str, description: str) -> list[str]:
+    """Agent `x` with the given role line and description; returns agent_persona(root)."""
+    _agent_map(root)
+    body = _GOOD_BODY.replace("You are the **X**.", role_line)
+    _agent(root, "x", {**_good_fm(), "description": description}, body)
+    return lint.agent_persona(root)
+
+
+def test_agent_persona_form_is_checked(tmp_path):
+    # named-workers-and-legal D-1: `You are **<Persona> the <role>**.` and a description that starts the same
+    good = "Tolic the lawyer drafts contracts. Use when a contract is due."
+    assert _persona(tmp_path, "You are **Tolic the lawyer**. You draft.", good) == []
+    assert _persona(tmp_path, "You are **Radu the team lead**. You lead.",
+                    "Radu the team lead runs an epic. Use when a PLAN is gated.") == []
+    assert _persona(tmp_path, "You are the **Lawyer**. You draft.", good) == [
+        "agents/x.md: role line must read 'You are **<Persona> the <role>**.' "
+        "(docs/development/agent-template.md)"]
+    assert _persona(tmp_path, "You are **Ionuț the implementer**. You build.",
+                    "Ionuț the implementer builds. Use when ready.") == [
+        "agents/x.md: persona 'Ionuț' must be one capitalised ASCII word"]
+    assert _persona(tmp_path, "You are **Tolic the lawyer**. You draft.", "Drafts contracts. Use when due.") == [
+        "agents/x.md: description must start with 'Tolic the lawyer'"]
+    assert _persona(tmp_path, "You are **tolic the lawyer**. You draft.",
+                    "tolic the lawyer drafts. Use when due.") == [
+        "agents/x.md: persona 'tolic' must be one capitalised ASCII word"]
+
+
 def test_agent_without_feature_is_flagged(tmp_path):
     assert _conforming(tmp_path, feature=False) == ["agents/x.md: no tests/features/agents/x.feature"]
 
