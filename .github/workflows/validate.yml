@@ -1,5 +1,9 @@
 name: validate
-on: [push, pull_request]
+# push only on the long-lived branches: a PR branch is already checked by pull_request (no double runs)
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
 jobs:
   validate:
     runs-on: ubuntu-latest
