@@ -13,6 +13,10 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Fixed
 
+- `AGENTS.md` names skillery's narrow checks (`make lint`, `make skill-inventory`, `make bundles`,
+  `make mods`), and `project-setup`'s AGENTS template asks for each repo's cheap static checks
+  among its narrow checks, so the first full-gates run is green (lean-delivery finding F-1).
+
 - CI: `validate` installs only `pyyaml` and `pytest`. The reasoning engines (clingo, SWI-Prolog)
   and the LinkML toolchain are no longer installed, so their tests skip in CI and run in local
   `make validate`; an apt mirror outage can no longer stall CI. A PR now runs `validate` once, not
