@@ -231,3 +231,13 @@ probes:
   - probe: "in this repo we never merge without a green CI, make that a rule"
     expect: rule-learner
     near_miss_of: ci-cd-delivery
+  - probe: "add a new entry to our brand-guidelines repository, following how that repo says to work"
+    expect: corpus-repository
+  - probe: "load my own rules for agents before you write this note"
+    expect: rulebook
+    near_miss_of: corpus-repository
+  - probe: "draft the freelance contract for this mission and check it against the client addendum"
+    expect: contract-practice
+  - probe: "write the offer for this client with scope, estimate and price"
+    expect: proposal-writing
+    near_miss_of: contract-practice

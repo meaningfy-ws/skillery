@@ -2,21 +2,28 @@
 id: UC-W16
 title: Contracts and NDAs
 primary_actor: the owner
-trigger: a contract or NDA is needed for a client or partner
-success_guarantee: the contract or NDA exists in LaTeX on Overleaf, ready to sign
+trigger: a contract or NDA is needed for a client or partner, or a counterparty sends its own draft
+success_guarantee: the contract or NDA is drafted, revised or aligned in the contract repository on a branch with a PR, ready for the owner to review and sign
 area: legal
 served_by:
-  agents: []
-  skills: []
-status: missing
-change: add-legal-documents
+  agents:
+  - lawyer
+  skills:
+  - contract-practice
+  - corpus-repository
+status: partial
+change: named-workers-and-legal
 ---
 
 # UC-W16 Contracts and NDAs
 
 ## Brief Description
 
-Contracts and NDAs in LaTeX on Overleaf (Overleaf connector available).
+Tolic the lawyer (`lawyer`) drafts, revises and aligns contracts and NDAs with the owner, in a
+session started in the owner's contract repository (`meaningfy-ws/legal-agreements` today). The
+repository holds the clause library, the contracts and its own rules; Tolic follows them
+(`corpus-repository`) and brings the legal judgement (`contract-practice`). Overleaf is reached
+through its connector when installed, git otherwise.
 
 ## Stakeholders and Interests
 
@@ -26,67 +33,74 @@ Contracts and NDAs in LaTeX on Overleaf (Overleaf connector available).
 
 ## Preconditions
 
-Approved contract and NDA templates exist in LaTeX. The Overleaf connector is configured. The deal is
-known: for a contract, usually the accepted proposal (UC-W8).
+The contract repository exists with an `AGENTS.md` that says how to work in it. The session is
+started in that repository. The deal is known: for a contract, usually the accepted proposal (UC-W8).
 
 ## Minimal Guarantees
 
-Nothing is signed or sent by the agent. No clause is written outside the template without being
-flagged. A clause the agent could not fill is left marked, never guessed. The draft is not legal
-advice.
+Nothing is sent, signed or registered without the owner confirming that one action. No clause
+enters the library until the owner merges its PR. A value Tolic could not settle is marked to be
+confirmed, never guessed. The draft is not final legal advice; points for a qualified lawyer are
+listed. No Odoo access.
 
 ## Main Success Scenario
 
 1. The owner names the document (NDA or contract type), the counterparty and the deal.
-2. The agent picks the matching template.
-3. The agent returns the open questions: parties, scope, term, price and payment, confidentiality,
-   intellectual property, governing law.
+2. Tolic loads `contract-practice` and reads the repository's `AGENTS.md` and docs.
+3. Tolic runs the intake interview and asks the open questions in one round.
 4. **[human]** The owner answers them.
-5. The agent fills the template in LaTeX and writes it to an Overleaf project.
-6. The agent returns the link, the list of every deviation from the template and every clause left
-   open.
-7. **[human]** The owner reviews the compiled document, with counsel where needed, and sends it for
-   signature.
+5. Tolic picks the skeleton and variants by the library's own guidance and drafts on a branch.
+6. Tolic aligns the draft with its parent and back-to-back contracts and opens a PR listing every
+   open point and every point for a qualified lawyer.
+7. **[human]** The owner reviews the PR, with counsel where needed, merges it and sends the
+   contract for signature.
 
 ## Extensions
 
-- 1a. The contract follows an accepted proposal: the agent takes scope and price from it and asks only
+- 1a. The contract follows an accepted proposal: Tolic takes scope and price from it and asks only
   what it does not settle.
-- 2a. No template fits: the agent stops and says so; it does not draft a contract from nothing.
-- 5a. Overleaf cannot be reached: the LaTeX source is kept in the working folder and the agent says so.
-- 7a. The counterparty returns changes: the owner decides each one; accepted changes restart at 5.
+- 1b. The counterparty sends its own draft: Tolic sorts each change (legal effect → variant or
+  override; same effect, better wording → version) and proposes how to answer.
+- 5a. The repository's check fails: Tolic stops and reports it; he never bypasses the check.
+- 6a. A figure differs from the parent or back-to-back contract: reported as an open point; neither
+  number is changed.
+- 7a. The same clause was overridden in several contracts: Tolic opens a PR proposing a new version,
+  naming the sources.
 
 ## Out of Scope
 
-Negotiating the terms (UC-W13), the proposal and its price (UC-W8), collecting signatures, and legal
-advice.
+Negotiating the terms (UC-W13), the proposal and its price (UC-W8), collecting signatures, Odoo
+access, HR contracts unless asked, and final legal advice. Building the contract repository itself
+is a software EPIC in that repository.
 
 ## Artefacts
 
-- Planned: the LaTeX source in an Overleaf project and its compiled PDF, read by the owner and the
-  counterparty (`add-legal-documents`).
-- Planned: the question list and the deviation list returned to the owner.
-- Planned: the contract and NDA templates as a skill's assets (`add-legal-documents`).
+- Branches and PRs in the contract repository, read by the owner.
+- The open-point list and the qualified-lawyer list in each PR.
+- The LaTeX source in the repository and, when the connector is installed, the contract's Overleaf
+  project.
 
 ## Evidence
 
-Planned: `tests/features/agents/contract-drafter.feature` (`add-legal-documents`), including the
-refusal when no template fits.
+`tests/features/agents/lawyer.feature` (draft from a mission, revise a counterparty draft, propose
+a clause from three overrides, and the refusals to send, to use Odoo and to touch HR contracts).
+Released without a live trial (`named-workers-and-legal` DEC-17).
 
 ## Feedback Loop
 
-A clause the owner or counsel rewrote becomes a Defect issue; it ends as a template change or a new
-question in the agent's checklist.
+What is off in real use comes back as a skillery issue through `skillery-feedback`; it ends as a fix
+in `contract-practice` or the agent, or, when it is about the repository's rules, in the contract
+repository.
 
 ## Slices
 
-1. NDAs from the template: planned (`add-legal-documents`).
-2. Client and partner contracts from templates: planned (`add-legal-documents`).
+1. Draft, revise and align in the contract repository: released, no live trial yet (`lawyer`,
+   `contract-practice`, `corpus-repository`).
+2. The live trial on real contracts: planned.
+3. Odoo data for deals: planned.
 
 ## Open Points
 
-**Confidence:** low. The brief names the format and the tool only; the templates are not in hand.
+**Confidence:** medium. The method is written; the repository it works in is being built.
 
-- Which templates, contract types and governing laws come first?
-- Is reviewing the counterparty's own paper in scope, or only drafting from ours?
-- One Overleaf project per document, or one project holding all of them?
+- Which gates and strict mode will the contract repository add to the contract workflow?

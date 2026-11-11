@@ -15,6 +15,8 @@ facets:
     crm: create, manage and groom deals and contacts
     devops: environments, CI/CD, releases and operations
     knowledge: the owner's personal notes, plans and rhythm
+    contracts: draft, revise and align contracts and other legal agreements
+    house-material: work from a repository of house material by its own rules
   area:
     coding: building software with AI agents
     consulting: advising clients

@@ -21,6 +21,17 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - Every agent has a persona name in its role line and description (Ionut the implementer, Mircea
   the reviewer, Ana the architect, …); dispatch names are unchanged. Two new `make validate` checks:
   `agent_persona` and `workflow_lead` (each workflow has exactly one lead).
+- New bundle `meaningfy-legal`: Tolic the lawyer (`lawyer`), a lead you start in your own contract
+  repository, drafts, revises and aligns contracts and proposes clause changes, each on a branch
+  with a PR you approve. He never sends, signs or registers a contract without your confirmation of
+  that one action, never uses Odoo, and lists the points a qualified lawyer should see. His method
+  is the `contract-practice` skill, with a provisional contract workflow that has no gates until your
+  repository adds its own. Released without a live trial: report what is off with
+  `skillery-feedback`. Install with `/plugin install meaningfy-legal@meaningfy-skillery` (Claude Code)
+  or `skillery-opencode install meaningfy-legal` (opencode); the Overleaf MCP server is optional.
+- `meaningfy-core`: the `corpus-repository` skill, how any worker uses a repository of house
+  material by that repository's own instructions (read its `AGENTS.md` first, use its commands,
+  stop on its checks, never edit what it declares immutable).
 
 ### Fixed
 
