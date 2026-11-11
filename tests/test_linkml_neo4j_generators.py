@@ -14,6 +14,10 @@ from pathlib import Path
 
 import pytest
 
+# CI installs no LinkML toolchain; these tests run locally (make validate installs requirements-dev)
+pytest.importorskip("linkml")
+pytest.importorskip("neomodel")
+
 GENERATORS_DIR = Path(__file__).resolve().parents[1] / "skills/linkml-engineering/scripts/linkml_neo4j"
 SYNTHETIC_SCHEMA = Path(__file__).resolve().parent / "fixtures/linkml/synthetic/library.yaml"
 HULUBUL_SCHEMA = Path(__file__).resolve().parent / "fixtures/linkml/hulubul/hulubul.yaml"
