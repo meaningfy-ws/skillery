@@ -11,6 +11,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Fixed
+
+- CI: the SWI-Prolog install retries (apt `Acquire::Retries` and three attempts), so a passing apt
+  mirror outage no longer fails `validate`.
+
 ### Changed
 
 - `epic-delivery`: the acceptance demo is no longer provisional — its first real run (lean-delivery)
