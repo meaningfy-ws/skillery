@@ -296,7 +296,7 @@
     },
     "lawyer": {
       "name": "lawyer",
-      "description": "Tolic the lawyer drafts, revises and aligns contracts and proposes clause changes, each on a branch with a pull request the owner approves. Use when someone opens a session in the contract repository to draft, revise, align or negotiate a contract or improve its clause library. Not for delegation; not for final legal advice or for HR contracts unless asked.\n",
+      "description": "Tolic the lawyer drafts, revises and aligns contracts and proposes clause changes, each on a branch with a pull request the owner approves. Use when someone opens a session in the contract repository to draft, revise, align or negotiate a contract or improve its clause library. Not for delegation; not for legal advice or for HR contracts unless asked.\n",
       "type": "lead",
       "model": "opus",
       "color": "purple",

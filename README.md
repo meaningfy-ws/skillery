@@ -40,7 +40,7 @@ each one serves, and which skills depend on which — see
 | **meaningfy-architecture** | **architecture** *(workflow)* · **conceptual-modelling** *(workflow)* · **modelling-conventions** · **linkml-engineering** · **formal-reasoning** | …design systems or model a domain |
 | **meaningfy-building** | **epic-planning** *(workflow)* · **epic-delivery** *(workflow)* · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** *(workflow)* | …build software with the spine |
 | **meaningfy-devops** | **infrastructure-operations** *(workflow)* · **stack-operations** · **service-reliability** · **infrastructure-security** | …operate servers and stacks, run the daily check-up, answer alerts or review an infrastructure change (agent setup: [`docs/environment/devops-agents.md`](docs/environment/devops-agents.md)); requires `meaningfy-consulting` |
-| **meaningfy-legal** | **contract-practice** *(workflow)* | …draft, revise or align contracts in your own contract repository, with Tolic the lawyer; it never sends, signs or registers without your confirmation (no live trial yet) |
+| **meaningfy-legal** | **contract-practice** *(workflow)* | …draft, revise or align contracts in your own contract repository, with Tolic the lawyer (no live trial yet) |
 | **meaningfy-navigator** *(Claude Code only)* | the **navigator** mod — no skills | …want to see, while you work, which change you are on, its task progress and which skills and subagents run (CLI and desktop; see [`docs/environment/navigator.md`](docs/environment/navigator.md)) |
 | **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/environment/vault-assistant.md`](docs/environment/vault-assistant.md)) |
 
@@ -231,7 +231,7 @@ skillery/
 ├── bundles.yaml   # the one bundle definition: each skill and agent in exactly one bundle
 ├── bundles/       # GENERATED per-bundle plugin roots (committed copies; never hand-edit, run make bundles)
 ├── tools/opencode-catalogue.json  # RENDERED opencode catalogue (membership + agent frontmatter); make bundles — never hand-edit
-└── .claude-plugin/# RENDERED marketplace (6 role bundles + 1 workflow bundle); make bundles — never hand-edit
+└── .claude-plugin/# RENDERED marketplace (7 role bundles + 1 workflow bundle); make bundles — never hand-edit
 ```
 
 ## Contributing

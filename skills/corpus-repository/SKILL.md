@@ -29,13 +29,14 @@ partner logo to the guidelines and fix the typo in the 2025 print guide."
 3. Add the logo and its usage note where `AGENTS.md` says, in the format the docs give.
 4. The 2025 print guide is marked released. Do not touch it. The editions page prescribes a new
    edition for a correction, so create the next edition with the typo fixed, as the page describes.
-5. Run the repository's check. It fails: the usage note lacks a required field. Stop, add the field
-   the check names, run the check again. It passes.
-6. Report to the person:
+5. Run the repository's check. It fails: the usage note you wrote lacks a required field. Stop. The
+   fix is inside your task, so add the field the check names and run the check again. It passes.
+6. Report to the person, the failure included:
 
    ```
    Done: partner logo added with its usage note; print guide 2025.2 created with the typo fixed
-   (2025.1 is released and unchanged). The check passes.
+   (2025.1 is released and unchanged). The check first failed on a missing usage-note field;
+   fixed and re-run, it passes.
    Unclear: AGENTS.md does not say who approves a new edition. I left that open; please confirm.
    ```
 
@@ -51,8 +52,9 @@ partner logo to the guidelines and fix the typo in the 2025 print guide."
 5. **Respect immutability.** Never edit what the repository declares immutable (released, signed,
    frozen). Add what its instructions prescribe instead, such as a new version or an amendment; if
    they prescribe nothing, ask.
-6. **Stop on a failing check.** Report the failure, fix what it names if the fix is yours, and run
-   the check again. Never bypass, skip or disable a check.
+6. **Stop on a failing check.** Stop and report the failure. Fix it only when the failure is in
+   your own change, then run the check again and report both runs. Never bypass, skip or disable a
+   check.
 7. **Report the gaps.** Name what the instructions left unclear, as an issue in the repository when
    its instructions say so, otherwise as a note to the person.
 
@@ -65,7 +67,7 @@ partner logo to the guidelines and fix the typo in the 2025 print guide."
 - **"Just a typo" in a released file.** A small edit to immutable material is still an edit. Follow
   the prescribed route or ask.
 - **Working round a check.** A failing check is information, not an obstacle. Disabling it, or
-  writing so it no longer looks, hides the problem from the person.
+  changing the input so the check no longer catches it, hides the problem from the person.
 - **Filling a gap with a guess.** Where the instructions are silent, ask and report the gap; do not
   invent a convention.
 

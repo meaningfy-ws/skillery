@@ -40,8 +40,8 @@ started in that repository. The deal is known: for a contract, usually the accep
 
 Nothing is sent, signed or registered without the owner confirming that one action. No clause
 enters the library until the owner merges its PR. A value Tolic could not settle is marked to be
-confirmed, never guessed. The draft is not final legal advice; points for a qualified lawyer are
-listed. No Odoo access.
+confirmed, never guessed. The draft is not legal advice: it is for the owner and a qualified lawyer,
+and the points for that lawyer are listed. No Odoo access.
 
 ## Main Success Scenario
 
@@ -59,8 +59,8 @@ listed. No Odoo access.
 
 - 1a. The contract follows an accepted proposal: Tolic takes scope and price from it and asks only
   what it does not settle.
-- 1b. The counterparty sends its own draft: Tolic sorts each change (legal effect → variant or
-  override; same effect, better wording → version) and proposes how to answer.
+- 1b. The counterparty sends its own draft: Tolic sorts each change by whether it changes
+  legal effect, and proposes how to answer under the library's clause model.
 - 5a. The repository's check fails: Tolic stops and reports it; he never bypasses the check.
 - 6a. A figure differs from the parent or back-to-back contract: reported as an open point; neither
   number is changed.
@@ -70,7 +70,7 @@ listed. No Odoo access.
 ## Out of Scope
 
 Negotiating the terms (UC-W13), the proposal and its price (UC-W8), collecting signatures, Odoo
-access, HR contracts unless asked, and final legal advice. Building the contract repository itself
+access, HR contracts unless asked, and legal advice. Building the contract repository itself
 is a software EPIC in that repository.
 
 ## Artefacts

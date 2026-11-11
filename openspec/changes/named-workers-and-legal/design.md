@@ -321,13 +321,28 @@ phases, no default gates) and D-13 (no rename) on 2026-11-11.
   hand-kept summary and says so.
 - **D-24 — Stage 3 as built (lead's calls, 2026-11-11).** (a) Three builders wrote the two skills,
   the contract workflow and the `lawyer` agent with its feature; the lead wired the shared files.
-  (b) The `lawyer` body names no repository command (DEC-8's `ctr send/sign/register` stay in the
-  repository's `AGENTS.md`): a refusal says it names "the repository's command". (c) `meaningfy-legal`
+  (b) The `lawyer` body names no repository command (DEC-8's send, sign and register commands stay
+  in the repository's `AGENTS.md`): a refusal says it names "the repository's command". (c) `meaningfy-legal`
   requires no other bundle: `contract-practice` and `lawyer` name `corpus-repository`, `guardrails`
   and `meaningfy-git-workflow`, all in `meaningfy-core`. (d) The Overleaf dependency is optional and
   names no server package: none is pinned in the repository or chosen by the owner. (e) The
   *Workers* bullet now points to `corpus-repository` for how to work in a material repository, and
   no longer states it itself (D-14).
+- **D-25 — Stage 3 review decisions (lead's calls, 2026-11-11).** Accepted: `contract-practice`
+  keeps only judgement and leaves to the repository's instructions where open and lawyer points are
+  recorded, how unknown values are marked, reuse-first and what the clause model does with each
+  kind of counterparty change (L3, against the repository's `AGENTS.md`; RISK-2); its duplicate
+  gotcha goes (L3, L5); it says who owns the statement of work (`proposal-writing`, which now names
+  it as Related) (L5); "not legal advice; a draft for the owner and a qualified lawyer" replaces
+  "not final legal advice" (L1); `corpus-repository` stops on a failing check and fixes only its own
+  change, reporting both runs (L2); wording, pronoun and list fixes (L4); doc counts (L2). Rejected:
+  `corpus-repository` in the contract workflow's `activate.skills` (L5) — it is generic, so it would
+  start the contract workflow in any material repository; adding `corpus-repository` to
+  `devops-engineer` (L5) — a DevOps behaviour change, recorded as a follow-up issue. **Residual risk
+  accepted (L1, RISK-1):** Tolic's Odoo and send/sign/register refusals are prose where tools cannot
+  enforce them — an unscoped `Agent` subagent gets every tool (D-21d), opencode enables unlisted MCP
+  tools, and `Bash` can run any command. Enforcing them needs a deny hook scoped to `lawyer` and a
+  renderer change; filed as a skillery issue, not built here.
 - **D-19 — PLAN accepted below the gate.** Four independent clarity-gate runs scored 8.5, 8.6, 8.7
   and 8.5; each found new wording or fact slips, all fixed in the PLAN (the last scorer estimated
   about 9.5 after its fixes; there was no fifth run). Owner's answer (2026-11-11): accept and

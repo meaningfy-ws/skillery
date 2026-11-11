@@ -101,7 +101,7 @@ honest.
 - Coaching whether/how to run the Proof of Value and holding the free→paid boundary →
   `semantic-consulting-coach`.
 
-**Related:** `estimation`, `decision-package`, `sales-qualification` (hands over the qualified deal and its dossier), `sales-conversations`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` (Contract/specification genre failure modes for the SoW half of this skill's output).
+**Related:** `estimation`, `decision-package`, `sales-qualification` (hands over the qualified deal and its dossier), `sales-conversations`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` (Contract/specification genre failure modes for the SoW half of this skill's output), `contract-practice` (the contract that follows an accepted offer).
 
 ## Tone & style
 
