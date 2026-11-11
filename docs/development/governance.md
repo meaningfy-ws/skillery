@@ -9,7 +9,7 @@ Every artifact is exactly one of these, and that decides its home:
 
 | Type | Audience | Loaded | Home | Rule |
 |------|----------|--------|------|------|
-| **Skill** | Agents | On demand | `skills/` | Reusable knowledge; single source of *authority* per fact. An **activity skill** ships a workflow in `assets/workflows/`; any other is a **know-how skill** (see [`creating-skills.md`](creating-skills.md#activity-skills)) |
+| **Skill** | Agents | On demand | `skills/` | Reusable knowledge; single source of *authority* per fact; two kinds, [activity and know-how](creating-skills.md#activity-skills) |
 | **Agent** | Harness | Isolated context | `agents/` | Thin wrapper — see [`agent-template.md`](agent-template.md); a named agent is a worker ([§ *Workers*](agent-template.md#workers)) |
 | **Doc** | Humans | Never auto-loaded | `docs/` | Written for people; narrates & points, never restates skill rules |
 | **Binding** | Harness (every session) | Always | root agentic files (`AGENTS.md`, `CLAUDE.md`) + `project-setup`'s agentic templates | Mandates & routes to skills; never carries the standard |

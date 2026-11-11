@@ -36,7 +36,7 @@ is rendered on each CLI, and the recorded gaps, live in
 | `type` | The dispatch contract must also state |
 |---|---|
 | `delegated` | the unit of one run; consent-requiring actions are refused (returned as recommendations); open questions are returned, not asked |
-| `lead` | which agents it delegates to (a lead may always delegate: its `tools` include `Agent`); its stop condition; `Not for delegation` in the description; its primary skill is an activity skill (see *Workers*) |
+| `lead` | which agents it delegates to (see *Workers*); its stop condition; `Not for delegation` in the description |
 | `scheduled` | its triggers; where it writes its run record; that its writes are logged and reversible; `Not for delegation` in the description |
 
 A `scheduled` agent MAY also be started interactively by a human. It stays one job and one contract:
@@ -48,8 +48,8 @@ Agent teams are composed at run time from `delegated` and `lead` agents; no team
 ## Workers
 
 A **worker** is an agent of this catalogue with a persona name, a primary skill and, when its work
-needs one, material kept in a repository outside skillery. There is no separate roster or worker
-layer: the agent file under this standard is the worker.
+needs one, material kept in a repository outside skillery. There is no separate worker layer: the
+agent file under this standard is the worker.
 
 - **Persona form.** The role line is `You are **<Persona> the <role>**.` and the description starts
   with the same `<Persona> the <role>` phrase, for example "Tolic the lawyer". `<Persona>` is one
@@ -57,15 +57,17 @@ layer: the agent file under this standard is the worker.
   dispatch name stay the role (`agents/lawyer.md`, `name: lawyer`), and skill names never carry a
   persona. The agents are listed in the roster of
   [`catalogue-architecture.md`](catalogue-architecture.md#agent-roster).
-- **Activity and know-how.** A lead's primary skill is an **activity skill**, one that ships a
-  workflow; the other skills it lists are know-how
+- **A lead's primary skill is an activity skill**
   ([`creating-skills.md` § *Activity skills*](creating-skills.md#activity-skills)).
 - **Workflows.** A workflow is an asset of its activity skill. A worker walks a workflow and never
   owns one: the workflow, the agent's tools and refusals, and its skills' rules together constrain
   it. Each workflow has exactly one lead worker
   ([`workflows.md` § *Workflow files*](workflows.md#workflow-files)).
-- **Leads delegate.** Every `lead` may spawn subagents, so its `tools` include `Agent`; it follows
-  `guardrails`, *Subagent dispatch*. Its **Refuses** line may name whom it delegates a job to.
+- **Leads delegate.** Every agent of type `lead` may spawn subagents, so its `tools` include `Agent`
+  and its `disallowedTools` do not deny it; it follows `guardrails`, *Subagent dispatch*. Its
+  **Refuses** line names whom it delegates a job to, preferring a read-only subagent for a survey or
+  a check. `Agent` stays unscoped: the opencode renderer has no analogue for `Agent(<type>)` and
+  would drop the tool.
 - **A lead loads its primary skill first.** A lead is the main session, and preloaded skills emit no
   load event, so its `## Glue` step 1 is: "Load `<primary skill>` with the Skill tool before anything
   else, so the session's workflow is shown."

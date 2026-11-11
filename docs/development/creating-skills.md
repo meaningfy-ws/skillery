@@ -96,9 +96,8 @@ and epic delivery, which are the activities.
 
 Give a skill a workflow when its job has phases that a person walks through in order, each phase
 with something to check (a file written, a command run), and the same phases come back each time.
-A craft used inside other people's phases stays know-how. One activity skill hosts one workflow,
-and a `lead` agent's primary skill is an activity skill
-([`agent-template.md`](agent-template.md#workers)).
+A craft used inside other people's phases stays know-how. One activity skill hosts one workflow;
+which agent leads it is set in [`agent-template.md` § *Workers*](agent-template.md#workers).
 
 Adding a workflow takes three edits:
 

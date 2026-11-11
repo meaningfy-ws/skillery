@@ -76,15 +76,15 @@ reads them to show the phase and to warn when a step is skipped. A skill that ho
 
 **One lead per workflow.** Each default workflow has exactly one lead worker: the agent whose
 primary skill is the workflow's host skill (its `owner`) and whose type is `lead`, or `scheduled`
-when its **Input** offers a `human session` (as `sales-agent` does). The lead is not declared in the
-workflow file; it follows from the agent's type and primary skill, and the workflow's top-level
-`activate.agents` names it. The lead may delegate parts of the work
-([`agent-template.md` § *Workers*](agent-template.md#workers)). A row marked *planned* has no lead
-agent yet; its lead is the main session following the host skill.
+when its **Input** offers a `human session` (as `sales-agent` does). The workflow file has no field
+of its own for the lead: it follows from the agent's type and primary skill, and the workflow's
+top-level `activate.agents` lists it. The lead may delegate parts of the work
+([`agent-template.md` § *Workers*](agent-template.md#workers)). A row marked *(planned)* has no agent
+of type `lead` for it yet; until then its lead is the main session following the host skill.
 
 | Workflow | File | Lead | Variants |
 |---|---|---|---|
-| EPIC shaping | [`epic-planning`](../../skills/epic-planning/assets/workflows/epic-shaping.workflow.json) | `epic-planner` (planned as a lead) | — |
+| EPIC shaping | [`epic-planning`](../../skills/epic-planning/assets/workflows/epic-shaping.workflow.json) | `epic-planner` (planned) | — |
 | EPIC delivery | [`epic-delivery`](../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json) | `team-lead` (planned) | brownfield |
 | Architecture | [`architecture`](../../skills/architecture/assets/workflows/architecting.workflow.json) | `system-architect` | — |
 | Conceptual modelling | [`conceptual-modelling`](../../skills/conceptual-modelling/assets/workflows/modelling.workflow.json) | `conceptual-modeller` | — |

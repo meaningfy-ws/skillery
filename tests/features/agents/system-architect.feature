@@ -37,7 +37,7 @@ Feature: system-architect designs a new system with the user before code
   Scenario: A bounded survey is delegated, the design is not
     Given the system to design must fit an existing codebase
     When the system-architect needs to know which components the codebase already has
-    Then it may delegate that survey to a general-purpose subagent
+    Then it may delegate that survey to a read-only subagent
     And it decides nothing on the subagent's report without asking the user
 
   Scenario Outline: Work outside the architecture is refused

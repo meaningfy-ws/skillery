@@ -1073,6 +1073,8 @@ CLAUDE_AGENT_COLORS = {"red", "blue", "green", "yellow", "purple", "orange", "pi
 _AGENT_LIST_FIELDS = ("tools", "skills", "disallowedTools")
 _CONTRACT_LABELS = ("Input", "Output", "Side effects", "Refuses")
 _AGENT_FEATURES = "tests/features/agents"
+AGENT_TOOL = "Agent"
+LEAD_TYPE = "lead"
 _FENCED = re.compile(r"^```.*?^```[^\n]*$", re.MULTILINE | re.DOTALL)
 
 
@@ -1085,17 +1087,25 @@ def _agent_modes(repo: Path) -> set[str] | None:
     return set(modes) if isinstance(modes, dict) else None
 
 
+def _grants_agent(fm: dict) -> bool:
+    """Whether the agent may spawn subagents (named-workers-and-legal D-2)."""
+    if AGENT_TOOL in (fm.get("disallowedTools") or []):
+        return False
+    tools = fm.get("tools")
+    if not isinstance(tools, list):  # absent: inherits the session's tools; a non-list fails its own check
+        return True
+    return any(t == AGENT_TOOL or str(t).startswith(f"{AGENT_TOOL}(") for t in tools)
+
+
 def _agent_frontmatter_errors(rel: str, stem: str, fm: dict, modes: set[str] | None) -> list[str]:
     out = [f"{rel}: missing required frontmatter field '{k}'" for k in AGENT_REQUIRED_FIELDS if k not in fm]
     allowed = AGENT_REQUIRED_FIELDS + AGENT_OPTIONAL_FIELDS
     out += [f"{rel}: frontmatter field '{k}' is not in the agent contract (docs/development/agent-template.md)"
             for k in fm if k not in allowed]
-    if "tools" not in fm and "Agent" not in (fm.get("disallowedTools") or []):
+    if "tools" not in fm and AGENT_TOOL not in (fm.get("disallowedTools") or []):
         out.append(f"{rel}: no 'tools' list and 'disallowedTools' does not deny 'Agent' "
                    f"(docs/development/agent-template.md)")
-    tools = fm.get("tools")
-    if fm.get("type") == "lead" and isinstance(tools, list) and not any(
-            t == "Agent" or str(t).startswith("Agent(") for t in tools):
+    if fm.get("type") == LEAD_TYPE and not _grants_agent(fm):
         out.append(f"{rel}: a lead agent's tools must include 'Agent' (docs/development/agent-template.md)")
     if "name" in fm and fm["name"] != stem:
         out.append(f"{rel}: name '{fm['name']}' does not match the filename")

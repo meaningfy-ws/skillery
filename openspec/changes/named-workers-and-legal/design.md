@@ -284,6 +284,18 @@ phases, no default gates) and D-13 (no rename) on 2026-11-11.
   from `agent-template.md` § *Workers* to `corpus-repository` lands with that skill in task 3.1, so
   no doc names a skill that does not exist yet. (d) Task 1.4's agent change is behavioural, so
   `system-architect.feature` and `conceptual-modeller.feature` each gain a delegation scenario.
+- **D-21 — Stage 1 review decisions (lead's calls, 2026-11-11).** Accepted: (a) D-2 also fails a
+  lead that denies `Agent` in `disallowedTools`; a lead with no `tools` list and `Agent` not denied
+  inherits it (helper `_grants_agent`, constants `AGENT_TOOL`, `LEAD_TYPE` for stage 2's checks);
+  the error-matrix row on "a lead with no `tools`" is corrected by this. (b) Single homes: the
+  activity/know-how definition lives only in `creating-skills.md` (D-14's governance row becomes a
+  link); "a lead's primary skill is an activity skill" lives only in `agent-template.md` § *Workers*.
+  (c) L4's wording fixes in `workflows.md` and `agent-template.md`. Rejected: (d) scoping leads to
+  `Agent(<type>)` (L1): `renderAgent` maps only bare `Agent` to `task`, so a scoped entry drops
+  delegation on opencode; the bodies name a read-only subagent instead, and the residual risk (a
+  subagent is not bound by the lead's `tools`; it runs under the session's permissions with the
+  person present) is accepted. (e) A sentence that existing agents adopt the persona form "in the
+  next release" (L2): it would go stale; instead no release is cut between stage 1 and stage 2.
 - **D-19 — PLAN accepted below the gate.** Four independent clarity-gate runs scored 8.5, 8.6, 8.7
   and 8.5; each found new wording or fact slips, all fixed in the PLAN (the last scorer estimated
   about 9.5 after its fixes; there was no fifth run). Owner's answer (2026-11-11): accept and

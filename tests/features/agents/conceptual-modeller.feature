@@ -33,7 +33,7 @@ Feature: conceptual-modeller builds and evolves a domain's conceptual model with
   Scenario: A bounded survey is delegated, the modelling is not
     Given a new entity may already exist in a public vocabulary
     When the conceptual-modeller needs the candidate terms from existing vocabularies
-    Then it may delegate that survey to a general-purpose subagent
+    Then it may delegate that survey to a read-only subagent
     And it adopts no term from the subagent's report without asking the user
 
   Scenario Outline: Work outside the conceptual model is refused
