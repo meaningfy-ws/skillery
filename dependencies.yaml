@@ -138,6 +138,19 @@
   notes: '`odoo-mcp` CLI; env-var credentials.'
   why: ERP data access
   hosting: local (PyPI)
+- name: Overleaf
+  kind: mcp-server
+  source: an Overleaf MCP server of the installer's choice (tools named `mcp__overleaf__*`)
+  pin: 'unpinned: none chosen'
+  provenance: not reviewed
+  used_by: '`lawyer` (optional: without it Tolic works through git and the repository''s Overleaf sync)'
+  opencode_status: native
+  claude_install: a block in `.mcp.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
+  transport: local
+  notes: one Overleaf project per contract; Tolic edits only the current contract's project.
+  why: edit and compile a contract's LaTeX in its Overleaf project
+  hosting: local
 - name: Neo4j
   kind: mcp-server
   summary: per DB

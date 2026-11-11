@@ -23,6 +23,9 @@ The steps of the core job, with the defaults to use. Say when to load each refer
 
 - Read [`references/<question-it-answers>.md`](references/<question-it-answers>.md) when <situation>.
 
+An activity skill also ships `assets/workflows/<name>.workflow.json`; see
+[`creating-skills.md` § *Activity skills*](creating-skills.md#activity-skills).
+
 ## Gotchas
 
 - The mistakes an agent makes here without this skill, and what to do instead.

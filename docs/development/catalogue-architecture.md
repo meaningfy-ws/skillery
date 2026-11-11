@@ -66,7 +66,8 @@ not here.
 |---|---|---|---|---|
 | `meaningfy-sales` | sales | proposals and estimates; the five sales skills (operations, pipeline custody, accounts, qualification, conversations); the commercial chain | `proposal-writer`, `sales-agent`; planned: `qualifier`, `offer-designer`, `demo-builder` | `meaningfy-consulting` |
 | `meaningfy-devops` | operations | infrastructure operations, stack operations, service reliability, infrastructure security | `devops-engineer`, `ops-watch`, `infra-reviewer` | `meaningfy-consulting` |
-| `meaningfy-business` *(planned)* | business, legal | negotiation, internal communication, contracts | planned: `business-coach`, `negotiation-partner`, `internal-comms`, `contract-drafter` | `meaningfy-consulting` |
+| `meaningfy-legal` | legal | contract practice (the contract workflow) | `lawyer` | — |
+| `meaningfy-business` *(planned)* | business | negotiation, internal communication | planned: `business-coach`, `negotiation-partner`, `internal-comms` | `meaningfy-consulting` |
 | `meaningfy-design` *(planned)* | design | visual identity, diagram and slide styles | planned: `graphic-designer` | — |
 
 ## Agent roster
@@ -75,18 +76,22 @@ not here.
 template's (a thinking partner is a `lead` agent). The agents still to build are in
 [`future-features.md`](../future-features.md).
 
-| Agent | Type | Use cases | Bundle | Change |
-|---|---|---|---|---|
-| `epic-planner` | delegated | UC-W18 | `meaningfy-building` | exists |
-| `implementer` | delegated | UC-W18 | `meaningfy-building` | exists |
-| `code-reviewer` | delegated | UC-W18 | `meaningfy-building` | exists |
-| `system-architect` | lead | UC-W19 | `meaningfy-architecture` | exists |
-| `conceptual-modeller` | lead | UC-W20 | `meaningfy-architecture` | exists |
-| `proposal-writer` | delegated | UC-W8 | `meaningfy-sales` | exists |
-| `sales-agent` | scheduled | UC-W7 | `meaningfy-sales` | exists |
-| `devops-engineer` | lead | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
-| `ops-watch` | scheduled | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
-| `infra-reviewer` | delegated | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
+| Agent | Persona | Type | Use cases | Bundle | Change |
+|---|---|---|---|---|---|
+| `epic-planner` | Vasile the planner | lead | UC-W18 | `meaningfy-building` | exists (lead since `named-workers-and-legal`) |
+| `team-lead` | Radu the team lead | lead | UC-W18 | `meaningfy-building` | `named-workers-and-legal` |
+| `implementer` | Ionut the implementer | delegated | UC-W18 | `meaningfy-building` | exists |
+| `code-reviewer` | Mircea the reviewer | delegated | UC-W18 | `meaningfy-building` | exists |
+| `release-manager` | Nelu the release manager | lead | UC-W18 | `meaningfy-building` | `named-workers-and-legal` |
+| `technical-writer` | Viorica the technical writer | lead | UC-W18 | `meaningfy-core` | `named-workers-and-legal` |
+| `system-architect` | Ana the architect | lead | UC-W19 | `meaningfy-architecture` | exists |
+| `conceptual-modeller` | Doina the modeller | lead | UC-W20 | `meaningfy-architecture` | exists |
+| `proposal-writer` | Mariana the proposal writer | delegated | UC-W8 | `meaningfy-sales` | exists |
+| `sales-agent` | Costel the sales agent | scheduled | UC-W7 | `meaningfy-sales` | exists |
+| `devops-engineer` | Sandu the devops engineer | lead | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
+| `ops-watch` | Petrica the infra operator | scheduled | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
+| `infra-reviewer` | Lilia the infrastructure reviewer | delegated | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
+| `lawyer` | Tolic the lawyer | lead | UC-W16 | `meaningfy-legal` | `named-workers-and-legal` |
 
 ## Roadmap
 

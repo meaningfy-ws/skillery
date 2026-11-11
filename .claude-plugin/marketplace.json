@@ -6,12 +6,12 @@
   },
   "metadata": {
     "description": "Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently",
-    "version": "3.12.0"
+    "version": "3.13.0"
   },
   "plugins": [
     {
       "name": "meaningfy-core",
-      "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, how to report a skill or agent problem to skillery, and your own rules for agents: load, learn and groom them (rulebook, rule-learner, rule-steward)",
+      "description": "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, how to report a skill or agent problem to skillery, your own rules for agents: load, learn and groom them (rulebook, rule-learner, rule-steward), and working from a repository of house material by its own rules (corpus-repository)",
       "source": "./bundles/meaningfy-core"
     },
     {
@@ -38,6 +38,11 @@
       "name": "meaningfy-devops",
       "description": "The operations role: provision and change servers as code (infrastructure-operations), run and deploy stacks (stack-operations), monitor, check daily, answer incidents and back up (service-reliability), and keep access and secrets safe (infrastructure-security); with an interactive devops agent, an unattended watch and an infrastructure reviewer",
       "source": "./bundles/meaningfy-devops"
+    },
+    {
+      "name": "meaningfy-legal",
+      "description": "The legal role: draft, revise and align contracts and propose clause changes in your own contract repository (contract-practice), with Tolic the lawyer, a lead who works there with you and never sends, signs or registers without your confirmation",
+      "source": "./bundles/meaningfy-legal"
     },
     {
       "name": "vault-assistant",

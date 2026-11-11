@@ -60,6 +60,11 @@ probes:
     expect: guardrails
   - probe: "which model should this subagent run on, haiku, sonnet or opus"
     expect: guardrails
+  - probe: "which tools must the builder use to read and edit code, Serena and ast-grep or sed"
+    expect: epic-delivery
+  - probe: "should I spawn a subagent to search the codebase with ast-grep"
+    expect: guardrails
+    near_miss_of: epic-delivery
   - probe: "which review lenses and checker does a SMALL epic stage need"
     expect: epic-delivery
     near_miss_of: guardrails
@@ -226,3 +231,13 @@ probes:
   - probe: "in this repo we never merge without a green CI, make that a rule"
     expect: rule-learner
     near_miss_of: ci-cd-delivery
+  - probe: "add a new entry to our brand-guidelines repository, following how that repo says to work"
+    expect: corpus-repository
+  - probe: "load my own rules for agents before you write this note"
+    expect: rulebook
+    near_miss_of: corpus-repository
+  - probe: "draft the freelance contract for this mission and check it against the client addendum"
+    expect: contract-practice
+  - probe: "write the offer for this client with scope, estimate and price"
+    expect: proposal-writing
+    near_miss_of: contract-practice

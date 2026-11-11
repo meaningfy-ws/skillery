@@ -61,6 +61,7 @@ opencode supports the same transport in `opencode.json` `mcp`; see
 | **Atlassian / Rovo** (Confluence, Jira) | remote (http) | native | `type: remote` + `headers`. |
 | **Google Workspace** (Gmail, Drive, Calendar) | remote (OAuth) | native | per-product or gateway endpoint; OAuth identical. |
 | **Odoo** | local | native | `odoo-mcp` CLI; env-var credentials. |
+| **Overleaf** | local | native | one Overleaf project per contract; Tolic edits only the current contract's project. |
 | **Neo4j** (per DB) | local | native | one server per database, same on both CLIs. |
 | **MongoDB** | local | native | `mongodb-mcp-server`. |
 | **Context7** (library docs) | local | native | `@upstash/context7-mcp`. |
@@ -85,6 +86,12 @@ One skill also has a recorded monitoring gap, which comes from a missing plugin 
 | Skill | Claude Code | opencode | Gap / degradation |
 |---|---|---|---|
 | `rule-steward` | rule usage is traced by the Langfuse Claude Code plugin | no Langfuse plugin known | opencode sessions can `load`, `cite` and `check` rules, but nothing records them, so rules used only there look unused in the weekly review. |
+
+One agent has a recorded tool gap (`make opencode-report`):
+
+| Agent | Claude Code | opencode | Gap / degradation |
+|---|---|---|---|
+| `lawyer` | `tools` lists `mcp__overleaf__*`, so Tolic may edit the contract's Overleaf project | a tool glob has no opencode analogue and is left out of the rendered agent | on opencode Tolic works through git only, which his body already names as the fallback. |
 
 One bundle is Claude Code only by design, a deliberate gap rather than a missing capability:
 

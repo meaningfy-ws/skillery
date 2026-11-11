@@ -10,9 +10,9 @@ mechanics (fresh not a copy, inputs as paths, the base report, the four-eyes rul
 |---|---|---|---|
 | Developer | A person | — | Always: decides, signs off scenarios, accepts the EPIC |
 | Domain expert | A person | — | The model changes |
-| Lead | The main session | The session's | Always. Never a subagent: it is the only one that talks to the developer |
+| Lead | The main session, which may be started as the `team-lead` agent | The session's | Always. Never a subagent: it is the only one that talks to the developer |
 | Architect | `system-architect` agent | Declared (opus) | Shaping session |
-| Planner | `epic-planner` agent | Declared (opus) | Shaping, or finishing the PLAN at the start of an epic session |
+| Planner | The lead loads `epic-planning`, or dispatches a general-purpose subagent with it | The session's, or opus | Finishing the PLAN at the start of an epic session (shaping itself is an `epic-planner` session) |
 | Builder | `implementer` agent | Declared (sonnet) | Every task, every accepted fix, every spike |
 | Reviewer | `code-reviewer` agent, one per lens | Declared (opus) | Every stage, scaled by appetite |
 | Checker | A fresh general-purpose subagent | opus | Once per stage, where the appetite's review set has one ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)) |
@@ -43,8 +43,14 @@ tested the stage it checks.
    **Upstream findings**: every bug, gap or awkwardness met in any library, each marked *ours* or
    *external*, with a reproduction, or "none". The lead routes them per the dependency rule.
 
-Builders and reviewers use the project's code-intelligence tools when it has them (symbol-level
-reading and editing, impact analysis), and no other MCP tool. Builders use them for reading and
+Builders and reviewers MUST actively use the code-intelligence tools on every programming task,
+and no other MCP tool: **Serena** for symbol-level reading and editing (find a symbol, its
+references, replace a symbol body), **ast-grep** for structural search and rewrite across files,
+and the project's index for impact analysis (GitNexus). Grep and whole-file reads are the fallback
+only when the tool is unavailable, and the report says so. Files are read and edited with the
+CLI's own file read and edit tools, never with shell or script operations (`cat`, `sed`, `head`,
+a `python` heredoc); shell text tools may filter command output in a pipe, never a file, and
+generated files are written only by their generator. Builders use them for reading and
 editing, reviewers for reading only. Those tools are for code only; the truth stays in the spine.
 
 ## Builder

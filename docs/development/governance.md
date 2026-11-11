@@ -9,8 +9,8 @@ Every artifact is exactly one of these, and that decides its home:
 
 | Type | Audience | Loaded | Home | Rule |
 |------|----------|--------|------|------|
-| **Skill** | Agents | On demand | `skills/` | Reusable knowledge; single source of *authority* per fact |
-| **Agent** | Harness | Isolated context | `agents/` | Thin wrapper — see [`agent-template.md`](agent-template.md) |
+| **Skill** | Agents | On demand | `skills/` | Reusable knowledge; single source of *authority* per fact; two kinds, [activity and know-how](creating-skills.md#activity-skills) |
+| **Agent** | Harness | Isolated context | `agents/` | Thin wrapper — see [`agent-template.md`](agent-template.md); a named agent is a worker ([§ *Workers*](agent-template.md#workers)) |
 | **Doc** | Humans | Never auto-loaded | `docs/` | Written for people; narrates & points, never restates skill rules |
 | **Binding** | Harness (every session) | Always | root agentic files (`AGENTS.md`, `CLAUDE.md`) + `project-setup`'s agentic templates | Mandates & routes to skills; never carries the standard |
 | **Mod** | People, in the session (Claude Code; opencode reuses a plain mod's check through its plugin) | Every session it is installed in | `mods/` | Observes session events, displays state, runs commands a person could type or denies a command; carries no method — reads rules, thresholds and phases from skill assets |

@@ -108,17 +108,17 @@ graph TD
 
     subgraph "EPIC tier (per Epic, repeated - the SDLC loop)"
         SEEDS["Seeds\nchanges/&lt;id&gt;/inputs/"]
-        SHAPE["Shape the Epic\nEPIC = proposal.md\n(epic-planner agent)"]
-        PLAN["Derive the PLAN\nPLAN = design.md + tasks.md\n(epic-planner agent)"]
+        SHAPE["Shape the Epic\nEPIC = proposal.md\n(epic-planner, the shaping lead)"]
+        PLAN["Derive the PLAN\nPLAN = design.md + tasks.md\n(epic-planner, the shaping lead)"]
         GATE{"Clarity gate\n>= 9/10?"}
         BDD["BDD features + test data\n(bdd-gherkin)"]
-        TDD["Build, stage by stage (TDD)\n(lead + implementer - epic-delivery)"]
+        TDD["Build, stage by stage (TDD)\n(team-lead + implementer - epic-delivery)"]
         REVIEW{"Challenge, decide, check\n(code-reviewer + checker)"}
         ACCEPT{"Acceptance demo\n(developer)"}
         ARCHIVE["Archive\nspec-stewardship -> openspec/specs/"]
     end
 
-    DELIVERY["Delivery & Release\nsee dod-quality-gates.md"]
+    DELIVERY["Delivery & Release\n(release-manager)\nsee dod-quality-gates.md"]
 
     REQ --> ADLC --> MDLC --> SETUP --> SEEDS
     SEEDS --> SHAPE --> PLAN --> GATE
@@ -151,11 +151,12 @@ durable record.
 | ADLC | Reviews and approves architecture decisions | Drafts ADRs, C4 views, use-case-driven design |
 | MDLC-lite | Reviews and approves the conceptual/data model | Drafts the conceptual model and LinkML schema, applies naming/reuse checks |
 | Project & repo setup | Confirms project-specific choices | Scaffolds layout, tooling, CI, and the spine |
-| Shape the Epic | Provides seeds, answers clarifying questions, approves the shape | Reads seeds, asks questions, writes `proposal.md` |
-| Derive & gate the PLAN | Reviews the scored PLAN | Derives `design.md` + `tasks.md`, runs the clarity gate |
-| BDD features | Reviews features for business accuracy | Writes `.feature` files, fabricates test data |
-| Implement (TDD) | Approves each commit, intervenes on spec issues | Implements code, runs and reports its task gate once, proposes the spec fix on design-level failures; the developer or epic-planner applies it |
-| Review | Decides which review issues to fix, triggers the PR | Reviews code against the lead's gate report (does not re-run the suite), reports issues by priority |
+| Shape the Epic | Provides seeds, answers clarifying questions, approves the shape | `epic-planner` reads seeds, asks questions, writes `proposal.md` |
+| Derive & gate the PLAN | Reviews the scored PLAN | `epic-planner` derives `design.md` + `tasks.md`, runs the clarity gate |
+| BDD features | Reviews features for business accuracy | `epic-planner` writes `.feature` files, fabricates test data |
+| Implement (TDD) | Approves each commit, intervenes on spec issues | `implementer` implements code, runs and reports its task gate once, proposes the spec fix on design-level failures; `team-lead` records it in `design.md` |
+| Review | Decides which review issues to fix, triggers the PR | `code-reviewer` reviews code against `team-lead`'s gate report (does not re-run the suite), reports issues by priority |
+| Release | Approves publishing | `release-manager` cuts, validates and publishes the release |
 | Acceptance demo (when the EPIC delivers or changes a use case) | Accepts the EPIC or names what is wrong | Runs the use case against the EPIC's success measure |
 | Archive | None | Merges deltas into the durable specs |
 
@@ -268,7 +269,9 @@ notation over the same requirements. We keep one normative home, not two.
 
 The surviving thin wrappers live in [`agents/`](../../../agents):
 
-- [`epic-planner`](../../../agents/epic-planner.md): drives EPIC/PLAN authoring (Opus; type `delegated`).
+- [`epic-planner`](../../../agents/epic-planner.md): drives EPIC/PLAN authoring with the developer (Opus; type `lead`).
+- [`team-lead`](../../../agents/team-lead.md): runs the epic session and its stages (Opus; type `lead`).
+- [`release-manager`](../../../agents/release-manager.md): cuts and publishes a release (Opus; type `lead`).
 - [`implementer`](../../../agents/implementer.md): drives TDD implementation (Sonnet; type `delegated`).
 - [`code-reviewer`](../../../agents/code-reviewer.md): drives pre-PR review (Opus; type `delegated`).
 

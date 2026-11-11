@@ -16,6 +16,7 @@ Install only what you use, from the ones this catalogue's skills/agents referenc
 | **Atlassian / Rovo** (Confluence, Jira) | ticket/doc lookups | hosted (Atlassian-run endpoint) |
 | **Google Workspace** (Gmail, Drive, Calendar) | mail/doc/calendar lookups | hosted (OAuth) or CLI-native connector |
 | **Odoo** | ERP data access | local (PyPI) |
+| **Overleaf** | edit and compile a contract's LaTeX in its Overleaf project | local |
 | **Neo4j** (per DB) | graph queries | local (`uvx`) |
 | **MongoDB** | document-store queries | local (`npx`) |
 | **Context7** (library docs) | live library documentation | local (`npx`) |

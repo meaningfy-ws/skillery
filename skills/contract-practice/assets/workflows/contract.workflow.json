@@ -1,0 +1,13 @@
+{
+  "name": "contract", "title": "Contract", "owner": "contract-practice", "provisional": true,
+  "activate": { "skills": ["contract-practice"], "agents": ["lawyer"] },
+  "phases": [
+    { "id": "intake", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
+    { "id": "draft", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
+    { "id": "align", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
+    { "id": "review", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
+    { "id": "negotiate", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
+    { "id": "sign", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
+    { "id": "harvest", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} }
+  ]
+}

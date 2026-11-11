@@ -110,5 +110,6 @@ of them when they do not fit the task at hand.
   usage before it degrades output quality. Isolate heavy operations, such as large searches or big
   diffs, in a subagent instead of running them in the main thread.
 
-These notes assume today's three-wrapper agent model (`epic-planner`, `implementer`,
-`code-reviewer`); an earlier five-agent framing no longer applies.
+These notes assume today's agent model: leads started as your session (`epic-planner`,
+`team-lead`) and delegated agents they dispatch (`implementer`, `code-reviewer`); an earlier
+five-agent framing no longer applies.

@@ -18,9 +18,9 @@ them. This page is the single source for what to install and how to wire a proje
 ## 1. Install the Meaningfy bundles — choose your CLI
 
 The catalogue runs on **Claude Code** and **opencode** from the same sources, at the same `VERSION`,
-with gate-verified parity. There are **four role bundles**; install `meaningfy-core` plus the role(s)
-you wear. A fifth, **workflow** bundle, `vault-assistant`, is only for people who keep a personal
-Obsidian vault ([`vault-assistant.md`](vault-assistant.md)); `meaningfy-sales` needs Odoo and its config for the sales agent ([`sales-agent.md`](sales-agent.md)); `meaningfy-devops` needs the two infrastructure repositories checked out side by side and a `bw` session ([`devops-agents.md`](devops-agents.md)). The step-by-step install sequence (add marketplace/registry → install bundles → mandatory
+with gate-verified parity. There are **seven role bundles**; install `meaningfy-core` plus the role(s)
+you wear. An eighth, **workflow** bundle, `vault-assistant`, is only for people who keep a personal
+Obsidian vault ([`vault-assistant.md`](vault-assistant.md)); `meaningfy-sales` needs Odoo and its config for the sales agent ([`sales-agent.md`](sales-agent.md)); `meaningfy-devops` needs the two infrastructure repositories checked out side by side and a `bw` session ([`devops-agents.md`](devops-agents.md)); `meaningfy-legal` needs a checkout of your contract repository, and the Overleaf MCP server is optional. The step-by-step install sequence (add marketplace/registry → install bundles → mandatory
 deps → root binding → spine commands → docs/development/MCP → verify) is owned by the per-CLI runbooks — this
 page does not restate it:
 
@@ -175,14 +175,15 @@ The CD building blocks and the DevOps decisions to ratify are in the
 ## 6. Agents → skills migration note
 
 Earlier versions of this repo shipped five sub-agents. The catalog now ships the **knowledge
-as skills** plus **three thin wrappers** (`implementer`, `code-reviewer`, `epic-planner`).
+as skills** plus thin agent wrappers (the list is the
+[agent roster](../development/catalogue-architecture.md#agent-roster)).
 The `docs/practice/ai-coding/` build lifecycle doc no longer names the older agents; the mapping below is
 kept as historical reference for anyone who encounters the old names elsewhere:
 
 | Old agent | Now |
 |-----------|-----|
 | `gherkin-writer` | the `bdd-gherkin` skill |
-| `documenter` | the `technical-writing` skill |
+| `documenter` | the `technical-writing` skill, led by the `technical-writer` agent |
 | `code-reviewer` | thin wrapper loading `meaningfy-code-review` (read-only, opus) |
-| `epic-planner` | thin wrapper loading `epic-planning`, `clarity-gate`, `bdd-gherkin`, external `stream-coding` |
+| `epic-planner` | a lead (started as your session) loading `epic-planning`, `clarity-gate`, `bdd-gherkin`, external `stream-coding` |
 | `implementer` | thin wrapper loading `cosmic-python` + external `stream-coding` + `superpowers` TDD |

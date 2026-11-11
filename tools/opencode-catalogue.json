@@ -1,5 +1,5 @@
 {
-  "version": "3.12.0",
+  "version": "3.13.0",
   "bundles": [
     {
       "name": "meaningfy-core",
@@ -13,9 +13,12 @@
         "skillery-feedback",
         "rulebook",
         "rule-learner",
-        "rule-steward"
+        "rule-steward",
+        "corpus-repository"
       ],
-      "agents": []
+      "agents": [
+        "technical-writer"
+      ]
     },
     {
       "name": "meaningfy-consulting",
@@ -72,8 +75,10 @@
       ],
       "agents": [
         "epic-planner",
+        "team-lead",
         "implementer",
-        "code-reviewer"
+        "code-reviewer",
+        "release-manager"
       ]
     },
     {
@@ -88,6 +93,15 @@
         "devops-engineer",
         "ops-watch",
         "infra-reviewer"
+      ]
+    },
+    {
+      "name": "meaningfy-legal",
+      "skills": [
+        "contract-practice"
+      ],
+      "agents": [
+        "lawyer"
       ]
     },
     {
@@ -109,7 +123,7 @@
   "agents": {
     "code-reviewer": {
       "name": "code-reviewer",
-      "description": "Reviews a change through exactly one review lens (L1–L5) and reports prioritised findings; read-only. Use when a caller fans out a pre-PR review, one code-reviewer per lens (a full review is five dispatches, per meaningfy-code-review). Not for fixing code (implementer) or discussing findings.\n",
+      "description": "Mircea the reviewer reviews a change through exactly one review lens (L1–L5) and reports prioritised findings; read-only. Use when a caller fans out a pre-PR review, one code-reviewer per lens (a full review is five dispatches, per meaningfy-code-review). Not for fixing code (implementer) or discussing findings.\n",
       "type": "delegated",
       "model": "opus",
       "color": "yellow",
@@ -134,7 +148,7 @@
     },
     "conceptual-modeller": {
       "name": "conceptual-modeller",
-      "description": "Builds and evolves a domain's conceptual model with the user, model-driven and data-centric, choosing the model source and rendering. Use when modelling a domain or evolving an ontology. Not for delegation; not for system architecture (system-architect).\n",
+      "description": "Doina the modeller builds and evolves a domain's conceptual model with the user, model-driven and data-centric, choosing the model source and rendering. Use when modelling a domain or evolving an ontology. Not for delegation; not for system architecture (system-architect).\n",
       "type": "lead",
       "model": "opus",
       "color": "green",
@@ -144,7 +158,8 @@
         "Glob",
         "Write",
         "Edit",
-        "Skill"
+        "Skill",
+        "Agent"
       ],
       "skills": [
         "conceptual-modelling",
@@ -162,7 +177,7 @@
     },
     "devops-engineer": {
       "name": "devops-engineer",
-      "description": "Operates Meaningfy's infrastructure with a person who is not a devops engineer: reads both infra repositories and monitoring, plans each change, gets it reviewed, asks consent with a plain-words card, applies exactly what was shown, verifies and records it. Use when someone opens a session in the stacks repository to change, deploy, fix, resize or retire a server or stack. Not for delegation; not for the unattended watch (ops-watch) or a read-only review (infra-reviewer).\n",
+      "description": "Sandu the devops engineer operates Meaningfy's infrastructure with a person who is not a devops engineer: reads both infra repositories and monitoring, plans each change, gets it reviewed, asks consent with a plain-words card, applies exactly what was shown, verifies and records it. Use when someone opens a session in the stacks repository to change, deploy, fix, resize or retire a server or stack. Not for delegation; not for the unattended watch (ops-watch) or a read-only review (infra-reviewer).\n",
       "type": "lead",
       "model": "opus",
       "color": "orange",
@@ -193,8 +208,8 @@
     },
     "epic-planner": {
       "name": "epic-planner",
-      "description": "Shapes an EPIC from human seeds and derives its clarity-gated PLAN (≥9/10) as an OpenSpec change, returning question rounds to the caller until no decision is open. Use when starting or refining an epic. Not for archiving or grooming living specs (spec-stewardship) or for writing code (implementer).\n",
-      "type": "delegated",
+      "description": "Vasile the planner shapes an EPIC from the person's seeds and derives its clarity-gated PLAN (≥9/10) as an OpenSpec change, asking the open questions directly, one round at a time. Use when starting or refining an epic. Not for delegation; not for archiving or grooming living specs (spec-stewardship) or for writing code (implementer).\n",
+      "type": "lead",
       "model": "opus",
       "color": "cyan",
       "tools": [
@@ -204,7 +219,8 @@
         "Grep",
         "Glob",
         "Bash",
-        "Skill"
+        "Skill",
+        "Agent"
       ],
       "skills": [
         "epic-planning",
@@ -223,7 +239,7 @@
     },
     "implementer": {
       "name": "implementer",
-      "description": "Implements one ready task of an OpenSpec change as tested production code, test-first. Use when a task in tasks.md is ready (PLAN gated ≥9/10, Gherkin written). Not for planning (epic-planner), reviewing (code-reviewer) or committing.\n",
+      "description": "Ionut the implementer implements one ready task of an OpenSpec change as tested production code, test-first. Use when a task in tasks.md is ready (PLAN gated ≥9/10, Gherkin written). Not for planning (epic-planner), reviewing (code-reviewer) or committing.\n",
       "type": "delegated",
       "model": "sonnet",
       "color": "blue",
@@ -248,7 +264,7 @@
     },
     "infra-reviewer": {
       "name": "infra-reviewer",
-      "description": "Reviews one infrastructure change — an OpenSpec change's plan or a PR in either infra repository — against the devops skills and reports findings, blast radius, undo path and stack conformance; read-only. Use when a caller wants the four-eyes review before executing a plan, mid-implementation or before merging. Not for applying or fixing changes (devops-engineer).\n",
+      "description": "Lilia the infrastructure reviewer reviews one infrastructure change — an OpenSpec change's plan or a PR in either infra repository — against the devops skills and reports findings, blast radius, undo path and stack conformance; read-only. Use when a caller wants the four-eyes review before executing a plan, mid-implementation or before merging. Not for applying or fixing changes (devops-engineer).\n",
       "type": "delegated",
       "model": "opus",
       "color": "yellow",
@@ -278,9 +294,41 @@
         "maturity": "experimental"
       }
     },
+    "lawyer": {
+      "name": "lawyer",
+      "description": "Tolic the lawyer drafts, revises and aligns contracts and proposes clause changes, each on a branch with a pull request the owner approves. Use when someone opens a session in the contract repository to draft, revise, align or negotiate a contract or improve its clause library. Not for delegation; not for legal advice or for HR contracts unless asked.\n",
+      "type": "lead",
+      "model": "opus",
+      "color": "purple",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Edit",
+        "Write",
+        "Bash",
+        "Skill",
+        "Agent",
+        "mcp__overleaf__*"
+      ],
+      "skills": [
+        "contract-practice",
+        "corpus-repository",
+        "guardrails",
+        "meaningfy-git-workflow"
+      ],
+      "metadata": {
+        "purpose": "contracts",
+        "area": "legal",
+        "subject": "generic",
+        "posture": "precise",
+        "stage": "any",
+        "maturity": "experimental"
+      }
+    },
     "ops-watch": {
       "name": "ops-watch",
-      "description": "Watches Meaningfy's infrastructure with no human present: runs the daily check-up, answers alerts with allow-listed operations only when the unattended-action policy says act, parks everything else with a decision card, and reports every run to Slack and GitHub issues. Use when the schedule or an alert fires, or when the owner starts a check-up by hand. Not for delegation; not for planned changes (devops-engineer).\n",
+      "description": "Petrica the infra operator watches Meaningfy's infrastructure with no human present: runs the daily check-up, answers alerts with allow-listed operations only when the unattended-action policy says act, parks everything else with a decision card, and reports every run to Slack and GitHub issues. Use when the schedule or an alert fires, or when the owner starts a check-up by hand. Not for delegation; not for planned changes (devops-engineer).\n",
       "type": "scheduled",
       "model": "sonnet",
       "color": "red",
@@ -313,7 +361,7 @@
     },
     "proposal-writer": {
       "name": "proposal-writer",
-      "description": "Writes a sendable proposal or offer email from client requirements, asking the questions it needs through its output, with estimate and executive framing. Use when a client asks for an offer. Not for pricing strategy alone (estimation).\n",
+      "description": "Mariana the proposal writer writes a sendable proposal or offer email from client requirements, asking the questions it needs through its output, with estimate and executive framing. Use when a client asks for an offer. Not for pricing strategy alone (estimation).\n",
       "type": "delegated",
       "model": "sonnet",
       "color": "orange",
@@ -338,9 +386,39 @@
         "maturity": "experimental"
       }
     },
+    "release-manager": {
+      "name": "release-manager",
+      "description": "Nelu the release manager cuts a release: chooses the version, prepares the changelog and release notes, runs the release or hotfix branch and the publish steps. Use when someone opens a session to cut, version, publish or document a release. Not for delegation; not for feature work (team-lead).\n",
+      "type": "lead",
+      "model": "opus",
+      "color": "yellow",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Edit",
+        "Write",
+        "Bash",
+        "Skill",
+        "Agent"
+      ],
+      "skills": [
+        "meaningfy-release",
+        "meaningfy-git-workflow",
+        "guardrails"
+      ],
+      "metadata": {
+        "purpose": "devops",
+        "area": "coding",
+        "subject": "git-release",
+        "posture": "precise",
+        "stage": "release",
+        "maturity": "experimental"
+      }
+    },
     "sales-agent": {
       "name": "sales-agent",
-      "description": "Keeps Meaningfy's Odoo sales pipelines true and moving: grooms deals and contacts with logged, reversible writes, prepares meetings and drafts, and asks the owner only through decision cards. Use when the scheduled open-day, close-day and weekly runs fire, or when the owner opens a sales working or intake session. Not for delegation.\n",
+      "description": "Costel the sales agent keeps Meaningfy's Odoo sales pipelines true and moving: grooms deals and contacts with logged, reversible writes, prepares meetings and drafts, and asks the owner only through decision cards. Use when the scheduled open-day, close-day and weekly runs fire, or when the owner opens a sales working or intake session. Not for delegation.\n",
       "type": "scheduled",
       "model": "sonnet",
       "color": "green",
@@ -376,7 +454,7 @@
     },
     "system-architect": {
       "name": "system-architect",
-      "description": "Designs a new system with the user before code: use cases, architectural decisions and system diagrams, stating its view and plan briefly before each step. Use when starting or reshaping a system's architecture. Not for delegation; not for code (implementer).\n",
+      "description": "Ana the architect designs a new system with the user before code: use cases, architectural decisions and system diagrams, stating its view and plan briefly before each step. Use when starting or reshaping a system's architecture. Not for delegation; not for code (implementer).\n",
       "type": "lead",
       "model": "opus",
       "color": "purple",
@@ -386,7 +464,8 @@
         "Glob",
         "Write",
         "Edit",
-        "Skill"
+        "Skill",
+        "Agent"
       ],
       "skills": [
         "architecture",
@@ -399,6 +478,69 @@
         "subject": "modelling",
         "posture": "reusable",
         "stage": "design",
+        "maturity": "experimental"
+      }
+    },
+    "team-lead": {
+      "name": "team-lead",
+      "description": "Radu the team lead delivers a gated PLAN with a lean agent team: runs the epic session, briefs the workers, checks each stage and keeps the person's decisions in view. Use when a PLAN is gated and ready and the person opens a session to deliver the epic. Not for delegation; not for shaping the EPIC or deriving the PLAN (epic-planner).\n",
+      "type": "lead",
+      "model": "opus",
+      "color": "green",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Edit",
+        "Write",
+        "Bash",
+        "Skill",
+        "Agent"
+      ],
+      "skills": [
+        "epic-delivery",
+        "guardrails",
+        "meaningfy-code-review",
+        "spec-stewardship",
+        "meaningfy-git-workflow"
+      ],
+      "metadata": {
+        "purpose": "software-development",
+        "area": "coding",
+        "subject": "spec-driven",
+        "posture": "precise",
+        "stage": "build",
+        "maturity": "experimental"
+      }
+    },
+    "technical-writer": {
+      "name": "technical-writer",
+      "description": "Viorica the technical writer writes and improves documentation with the person: reads the code and existing docs, drafts clearly in the right genre and has a cold reader test it. Use when someone opens a session to document, explain or summarise a module, a project or a change. Not for delegation; not for changing code or specs.\n",
+      "type": "lead",
+      "model": "opus",
+      "color": "pink",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Edit",
+        "Write",
+        "Skill",
+        "Agent"
+      ],
+      "skills": [
+        "technical-writing",
+        "explanatory-writing",
+        "writing-antipatterns",
+        "meaningfy-voice",
+        "guardrails"
+      ],
+      "metadata": {
+        "purpose": "content",
+        "area": "cross-cutting",
+        "subject": "generic",
+        "posture": "reusable",
+        "stage": "any",
         "maturity": "experimental"
       }
     }

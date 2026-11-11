@@ -11,6 +11,63 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.13.0] - 2026-11-11
+
+### Added
+
+- Three lead agents you start as your session: `team-lead` (Radu the team lead, delivers a gated
+  PLAN with `epic-delivery`), `release-manager` (Nelu the release manager, cuts and publishes a
+  release with `meaningfy-release`), both in `meaningfy-building`, and `technical-writer` (Viorica
+  the technical writer, writes docs with `technical-writing` and a cold reader) in `meaningfy-core`.
+  Each workflow now names its lead, so navigator shows the workflow when that lead starts.
+- Every agent has a persona name in its role line and description (Ionut the implementer, Mircea
+  the reviewer, Ana the architect, …); dispatch names are unchanged. Two new `make validate` checks:
+  `agent_persona` and `workflow_lead` (each workflow has exactly one lead).
+- New bundle `meaningfy-legal`: Tolic the lawyer (`lawyer`), a lead you start in your own contract
+  repository, drafts, revises and aligns contracts and proposes clause changes, each on a branch
+  with a PR you approve. He never sends, signs or registers a contract without your confirmation of
+  that one action, never uses Odoo, and lists the points a qualified lawyer should see. His method
+  is the `contract-practice` skill, with a provisional contract workflow that has no gates until your
+  repository adds its own. Released without a live trial: report what is off with
+  `skillery-feedback`. Install with `/plugin install meaningfy-legal@meaningfy-skillery` (Claude Code)
+  or `skillery-opencode install meaningfy-legal` (opencode); the Overleaf MCP server is optional.
+- `meaningfy-core`: the `corpus-repository` skill, how any worker uses a repository of house
+  material by that repository's own instructions (read its `AGENTS.md` first, use its commands,
+  stop on its checks, never edit what it declares immutable).
+
+### Fixed
+
+- `AGENTS.md` names skillery's narrow checks (`make lint`, `make skill-inventory`, `make bundles`,
+  `make mods`), and `project-setup`'s AGENTS template asks for each repo's cheap static checks
+  among its narrow checks, so the first full-gates run is green (lean-delivery finding F-1).
+- CI: `validate` installs only `pyyaml` and `pytest`. The reasoning engines (clingo, SWI-Prolog)
+  and the LinkML toolchain are no longer installed, so their tests skip in CI and run in local
+  `make validate`; an apt mirror outage can no longer stall CI. A PR now runs `validate` once, not
+  twice: `push` triggers only on `develop` and `main`.
+- `workflows.md` no longer says strict mode will block "with its stage 3"; navigator blocks in
+  strict mode today.
+
+### Changed
+
+- **BREAKING** — `epic-planner` (Vasile the planner) is now a lead on both CLIs (a primary agent on
+  opencode): start it as your session and answer its questions there; it can no longer be dispatched
+  as a subagent. To finish a PLAN inside an epic session, load `epic-planning` in that session
+  instead. Reinstall `meaningfy-building`.
+- `epic-delivery`: the acceptance demo is no longer provisional — its first real run (lean-delivery)
+  was accepted. The validation review and the scenario sign-off stay provisional.
+- `system-architect` and `conceptual-modeller` may now spawn subagents (they gain the `Agent` tool,
+  `task` on opencode) to survey a codebase or vocabularies, or to check a finished artefact; they
+  still never hand their whole job to another agent. Reinstall `meaningfy-architecture` to get it.
+- Authors: every `lead` agent must list `Agent` in its `tools` and not deny it (`make validate` fails
+  otherwise). The agent template has a new § *Workers* (persona names, activity skills, one lead per
+  workflow, material kept in its own repository); `creating-skills.md` explains activity and
+  know-how skills and the three edits that add a workflow; `workflows.md` names each workflow's
+  lead. The README marks the skills that host a workflow *(workflow)*.
+- `epic-delivery` and `project-setup`'s AGENTS template: Serena (symbol-level reading and editing)
+  and ast-grep (structural search and rewrite) are now mandatory on every programming task; grep is
+  the declared fallback only. Files are read and edited with the CLI's file tools, never with
+  `cat`, `sed` or `python` heredocs.
+
 ## [3.12.0] - 2026-11-10
 
 ### Added
