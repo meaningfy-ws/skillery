@@ -1,13 +1,14 @@
-<!-- STATUS: EPIC shaped 2026-11-11 from inputs/seed.md, without the owner (delegated shaping).
-     Q-1 to Q-6 are open; every DEC- marked "proposed" stands until the owner answers. Next: the
-     owner's answers, then the PLAN. -->
+<!-- STATUS: DRAFT, parked 2026-11-11 as an input. Shaped from seed.md without the owner
+     (delegated shaping); the owner keeps the EPIC as a note to shape later. Q-1 to Q-6 are open
+     (see open-questions.md); every DEC- marked "proposed" stands only until the owner answers. -->
+
 
 # EPIC: Rules first: skillery's rule skills over the CLI's own memory
 
 **Golden-thread parents:** the archived EPIC
-[`rules-in-every-session`](../archive/2026-10-29-rules-in-every-session/proposal.md), whose reach
+[`rules-in-every-session`](../../archive/2026-10-29-rules-in-every-session/proposal.md), whose reach
 this change makes reliable, and the durable spec
-[`rule-learning`](../../specs/rule-learning/spec.md) (*Rules reach every interactive session*,
+[`rule-learning`](../../../specs/rule-learning/spec.md) (*Rules reach every interactive session*,
 *Learning comes only from the owner's words*). This EPIC deliberately re-shapes that change's DEC-6,
 which rejected a session hook (DEC-1 below).
 
@@ -39,11 +40,11 @@ never reached the rulebook. The seed (`inputs/seed.md`) records why:
    `rule-learner` fires only when its description matches the moment. A standing instruction beats a
    skill description.
 2. **The routing was not installed.** The routing line lives in
-   [`docs/environment/global-prompt.md`](../../../docs/environment/global-prompt.md), which each user
+   [`docs/environment/global-prompt.md`](../../../../docs/environment/global-prompt.md), which each user
    pastes by hand into the CLI's global instructions. Nothing checks that they did.
 3. **The store was unreachable.** `MEANINGFY_VAULT` was not set, so `rules.py load` exits 3
-   ([`skills/rulebook/SKILL.md`](../../../skills/rulebook/SKILL.md), *Running the script*).
-4. **No hook exists.** [`hooks.yaml`](../../../hooks.yaml) declares no rule intent;
+   ([`skills/rulebook/SKILL.md`](../../../../skills/rulebook/SKILL.md), *Running the script*).
+4. **No hook exists.** [`hooks.yaml`](../../../../hooks.yaml) declares no rule intent;
    `meaningfy-core` ships only the `no-poll-loops` mod.
 5. **Rules piled up in the wrong store.** In the auto-memory of the session that raised this, 4 of
    24 notes are `feedback` notes: rules in all but name. `rule-steward`, other projects, other
