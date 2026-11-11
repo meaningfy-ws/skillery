@@ -13,9 +13,10 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Fixed
 
-- CI: SWI-Prolog is installed from a package cache (from Ubuntu's own mirror on a cache miss, with a
-  5-minute limit), so an apt mirror outage no longer stalls or fails `validate`. A PR now runs `validate` once, not twice: `push`
-  triggers only on `develop` and `main`.
+- CI: `validate` installs only `pyyaml` and `pytest`. The reasoning engines (clingo, SWI-Prolog)
+  and the LinkML toolchain are no longer installed, so their tests skip in CI and run in local
+  `make validate`; an apt mirror outage can no longer stall CI. A PR now runs `validate` once, not
+  twice: `push` triggers only on `develop` and `main`.
 
 ### Changed
 
