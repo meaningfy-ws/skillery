@@ -20,7 +20,7 @@ host skill (`openspec/specs/workflow-definitions`). Facts that shape the plan:
 | UC-W23 plans "a delivery lead agent" for client delivery | `docs/future-features.md` | the epic-delivery lead is named `team-lead`, not `delivery-lead` (D-5) |
 | `make bundles` copies every `*/assets/workflows/*.workflow.json` into navigator's data | `tools/bundle_gen/gen.py` `MOD_DATA` | the contract workflow reaches navigator with no generator change |
 | TC-16 lists the eight default workflow files and checks every name they use exists | `mods/navigator/lib/workflow.test.ts:87-88` | a ninth file is added to that list |
-| `ALL_AGENT_NAMES` feeds `orphan_agent_references` (dropped-agent check); it already omits the three devops agents | `tools/repo_lint/lint.py:40` | the five new names are added; the existing omissions are out of scope |
+| `ALL_AGENT_NAMES` feeds `orphan_agent_references` (dropped-agent check); it already omits the three devops agents | `tools/repo_lint/lint.py:40` | the four new names are added; the existing omissions are out of scope |
 | "workflow bundle" for `vault-assistant` appears in two specs, the inventory generator, `bundles.yaml` and six docs | `README.md:6,30,224`, `bundles.yaml:76`, `tools/skill_inventory.py:370`, `openspec/specs/{catalogue-governance,dual-cli-generation}` | D-13 keeps it |
 | A lead's skills are preloaded from frontmatter; navigator activates a workflow only on a `SkillLoaded` (Skill tool) or a `SubagentSpawned` event | `mods/navigator/lib/state.ts:65,163` | a lead loads its primary skill first (D-15) |
 | Every workflow phase must have an `enter` object | `mods/navigator/lib/workflow.ts:134` | D-10 gives `enter: {}` |
@@ -128,7 +128,7 @@ DEC-13). The owner checks the calls listed under *Open Questions* before stage 1
 
 - **D-15 — A lead loads its primary skill first.** Every `lead` agent's body has a `## Glue` step 1:
   "Load `<primary skill>` with the Skill tool before anything else, so the session's workflow is
-  shown." Applied to all eight leads in stage 2. Why: preloaded frontmatter skills emit no
+  shown." Applied to the seven leads of stage 2 and to `lawyer` in stage 3. Why: preloaded frontmatter skills emit no
   `SkillLoaded`, and a lead is the main session, so `activate.agents` never fires for it; the
   `activate.agents` entry of D-3 stays as the declared link, not the trigger. The CLI-agnostic body
   rule holds: "the Skill tool" exists on both CLIs.
