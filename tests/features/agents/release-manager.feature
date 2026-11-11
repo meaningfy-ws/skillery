@@ -6,7 +6,7 @@ Feature: release-manager takes merged work to a published release
   when the person says go. It never does feature work.
 
   Background:
-    Given the release-manager agent is installed with skills `meaningfy-release`, `meaningfy-git-workflow`
+    Given the release-manager agent is installed with skills `meaningfy-release`, `meaningfy-git-workflow`, `guardrails`
     And the person starts a session in the repository to release
 
   Scenario Outline: The lead prepares, checks or refuses

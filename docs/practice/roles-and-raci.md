@@ -191,12 +191,10 @@ developer* is whichever role holds the decision at that point.
 | Solution Shipper | Outside the loop: signs off the review gate from the merged stages and the acceptance evidence, then releases | `release-manager` |
 | Sales/Presales, Technical Consultant | Not in the build-plane team | Their own planes' agents |
 
-A dedicated wrapper for a role stays an open fork, on the same terms as before:
-
-- **Reopening condition:** a role gets a wrapper only once it has been exercised on a real
-  engagement; the fork is not resolved speculatively.
-- **Work Shaper is served:** `epic-planner` is the shaping lead (`named-workers-and-legal`), so no
-  separate `work-shaper` wrapper is needed.
+Two roles are served by lead agents since `named-workers-and-legal`: Work Shaper by `epic-planner`
+and Solution Shipper by `release-manager`, each the lead of its workflow. For the other roles a
+dedicated wrapper stays an open fork: a role gets one only once it has been exercised on a real
+engagement.
 
 ## Known gaps
 

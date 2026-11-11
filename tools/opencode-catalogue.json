@@ -362,7 +362,8 @@
       ],
       "skills": [
         "meaningfy-release",
-        "meaningfy-git-workflow"
+        "meaningfy-git-workflow",
+        "guardrails"
       ],
       "metadata": {
         "purpose": "devops",
@@ -489,7 +490,8 @@
         "technical-writing",
         "explanatory-writing",
         "writing-antipatterns",
-        "meaningfy-voice"
+        "meaningfy-voice",
+        "guardrails"
       ],
       "metadata": {
         "purpose": "content",

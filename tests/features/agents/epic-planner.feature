@@ -28,6 +28,12 @@ Feature: epic-planner shapes an EPIC and derives a gated PLAN with the person
     Then the PLAN scores at least 9 out of 10, or the open gaps are shown to the person
     And the PLAN is not reported Ready below 9 out of 10 unless the person accepts it
 
+  Scenario: A bounded survey is delegated, the shaping is not
+    Given the EPIC touches code the person has not described
+    When the epic-planner needs to know which modules the change reaches
+    Then it may delegate that survey to a read-only subagent
+    And it decides nothing on the subagent's report without asking the person
+
   Scenario Outline: Work outside shaping is refused
     When the person asks the epic-planner to <request>
     Then it refuses

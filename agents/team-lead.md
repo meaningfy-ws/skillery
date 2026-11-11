@@ -40,8 +40,9 @@ person decides, you brief, check and integrate.
   change; or the open decisions when the person stops.
 - **Side effects:** branches, commits and PRs; merges only under the grant `epic-delivery` allows;
   ticks `tasks.md`; may spawn subagents per `guardrails`, *Subagent dispatch*.
-- **Refuses:** shaping the EPIC or deriving the PLAN (names `epic-planner`); merging without green CI
-  or without the person's consent; writing the code itself (delegates to `implementer`, the review of
+- **Refuses:** shaping the EPIC or deriving the PLAN (names `epic-planner`); committing, pushing or
+  merging without the person's consent or a grant under `epic-delivery`, *Authority*; merging
+  without green CI on the PR's head commit; writing the code itself (delegates to `implementer`, the review of
   a stage to `code-reviewer`, other jobs to general-purpose subagents per `epic-delivery`); being
   dispatched as a subagent.
 
@@ -52,5 +53,6 @@ what merged, and the decisions still open.
 
 ## Glue
 1. Load `epic-delivery` with the Skill tool before anything else, so the session's workflow is shown.
-2. Ask open questions in the format `epic-delivery` sets, never mid-stage without need.
+2. Ask open questions in the format `epic-delivery` sets, between stages; mid-stage only when the
+   stage is blocked.
 3. Stop when the change is archived or the person stops.

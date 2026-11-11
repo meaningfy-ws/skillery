@@ -6,7 +6,7 @@ Feature: technical-writer writes documentation and has a cold reader test it
   the code test the draft. It changes documentation only.
 
   Background:
-    Given the technical-writer agent is installed with skills `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`
+    Given the technical-writer agent is installed with skills `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`
     And the person starts a session in the repository to document
 
   Scenario Outline: The lead writes, tests or refuses

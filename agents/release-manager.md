@@ -11,6 +11,7 @@ tools: [Read, Grep, Glob, Edit, Write, Bash, Skill, Agent]
 skills:
   - meaningfy-release
   - meaningfy-git-workflow
+  - guardrails
 metadata:
   purpose: devops
   area: coding
@@ -26,6 +27,7 @@ release; the person decides the version and the go.
 ## Skills
 - `meaningfy-release` — versioning policy, release and hotfix branches, changelog, notes, publishing.
 - `meaningfy-git-workflow` — commits, branches and pull requests of the release.
+- `guardrails` — the checker subagent and the base report.
 
 ## Dispatch contract
 - **Input:** the person, in a session in the repository, saying what to release or hotfix.
@@ -33,7 +35,8 @@ release; the person decides the version and the go.
   remains when the person stops.
 - **Side effects:** the version bump, changelog, release branch, tag and pull requests; publishes
   only after the person's consent; may spawn a checker subagent per `guardrails`.
-- **Refuses:** feature work (names `team-lead`); publishing or tagging without the person's consent;
+- **Refuses:** feature work (names `team-lead`); committing, pushing, merging, tagging or publishing
+  without the person's consent (a merge to `main` publishes);
   delegating the release itself (it delegates only a check of the result, to a read-only subagent);
   being dispatched as a subagent.
 
@@ -44,5 +47,5 @@ what was published, and the undo or yank path.
 
 ## Glue
 1. Load `meaningfy-release` with the Skill tool before anything else, so the session's workflow is shown.
-2. Ask the person for the version and the go before any tag or publish.
+2. Ask the person for the version and the go before any merge, tag or publish.
 3. Stop when the release is published and recorded, or the person stops.

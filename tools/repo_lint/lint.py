@@ -36,7 +36,7 @@ ADVISORY_DESCRIPTION_CHARS = 600
 ADVISORY_SKILL_LINES = 500
 ADVISORY_SKILL_TOKENS = 5000
 
-# documenter, gherkin-writer: DEC-7 backlog candidates (docs/development/agent-template.md), not retired names
+# gherkin-writer: a DEC-7 backlog candidate (docs/development/agent-template.md), not a retired name
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "system-architect",
                    "conceptual-modeller", "proposal-writer", "sales-agent", "team-lead",
                    "release-manager", "technical-writer"}
@@ -664,17 +664,24 @@ def _primary_skill_errors(repo: Path, agent: str, bundle: str, skills: set[str])
     `skills:` entry that is neither namespaced nor external. A missing or non-list `skills:` is
     agent_conformance's to report; unparsable frontmatter is bundle_gates'."""
     try:
-        listed = bundle_gen.agent_frontmatter(repo, agent)[0].get("skills")
+        fm = bundle_gen.agent_frontmatter(repo, agent)[0]
     except ValueError:
         return []
-    if not isinstance(listed, list):
+    if not isinstance(fm.get("skills"), list):
         return []
-    local = [s for s in listed if ":" not in str(s) and s not in EXTERNAL_SKILLS]
-    if not local:
+    primary = _primary_skill(fm)
+    if primary is None:
         return [f"agent '{agent}' has no local primary skill"]
-    if local[0] not in skills:
-        return [f"agent '{agent}' is in bundle '{bundle}' but its primary skill '{local[0]}' is not"]
+    if primary not in skills:
+        return [f"agent '{agent}' is in bundle '{bundle}' but its primary skill '{primary}' is not"]
     return []
+
+
+def _primary_skill(fm: dict) -> str | None:
+    """An agent's primary skill: the first `skills:` entry that is neither namespaced nor external
+    (agent-authoring-standard D-4)."""
+    listed = fm.get("skills") if isinstance(fm.get("skills"), list) else []
+    return next((str(s) for s in listed if ":" not in str(s) and str(s) not in EXTERNAL_SKILLS), None)
 
 
 # Authoring/illustrative docs whose "links" are placeholder examples, not
@@ -1076,6 +1083,8 @@ _CONTRACT_LABELS = ("Input", "Output", "Side effects", "Refuses")
 _AGENT_FEATURES = "tests/features/agents"
 AGENT_TOOL = "Agent"
 LEAD_TYPE = "lead"
+SCHEDULED_TYPE = "scheduled"
+HUMAN_SESSION = "human session"  # the **Input** trigger that lets a scheduled agent lead (D-3)
 _FENCED = re.compile(r"^```.*?^```[^\n]*$", re.MULTILINE | re.DOTALL)
 
 
@@ -1123,7 +1132,7 @@ def _agent_frontmatter_errors(rel: str, stem: str, fm: dict, modes: set[str] | N
         if "<example>" in desc:
             out.append(f"{rel}: description carries <example> blocks; examples belong in "
                        f"{_AGENT_FEATURES}/{stem}.feature")
-        if fm.get("type") in ("lead", "scheduled") and "not for delegation" not in desc:
+        if fm.get("type") in (LEAD_TYPE, SCHEDULED_TYPE) and "not for delegation" not in desc:
             out.append(f"{rel}: a {fm['type']} agent's description must say 'Not for delegation'")
     return out
 
@@ -1202,7 +1211,7 @@ def agent_persona(repo: Path) -> list[str]:
             fm, body = bundle_gen.agent_frontmatter(repo, p.stem)
         except ValueError:
             continue  # agent_conformance reports a rejected frontmatter
-        m = _ROLE_LINE.match(body.strip())
+        m = _ROLE_LINE.match(body.strip().split("\n", 1)[0])  # the role line is the body's first line
         if not m:
             out.append(f"{rel}: role line must read 'You are **<Persona> the <role>**.' "
                        f"(docs/development/agent-template.md)")
@@ -1210,12 +1219,14 @@ def agent_persona(repo: Path) -> list[str]:
         persona, role = m["persona"], m["role"]
         if not _PERSONA.fullmatch(persona):
             out.append(f"{rel}: persona '{persona}' must be one capitalised ASCII word")
-        elif not str(fm.get("description", "")).strip().startswith(f"{persona} the {role}"):
+        elif not re.match(rf"{re.escape(persona)} the {re.escape(role)}(?=[\s,.;:]|$)",
+                          str(fm.get("description", "")).strip()):
             out.append(f"{rel}: description must start with '{persona} the {role}'")
     return out
 
 
-_INPUT_BULLET = re.compile(r"^- \*\*Input:\*\*(.*?)(?=^- \*\*|^## |\Z)", re.MULTILINE | re.DOTALL)
+# The **Input** bullet, up to the next bullet, heading or blank line (a wrapped line is indented).
+_INPUT_BULLET = re.compile(r"^- \*\*Input:\*\*(.*?)(?=^- |^#|^\s*$|\Z)", re.MULTILINE | re.DOTALL)
 
 
 def _lead_workers(repo: Path) -> dict[str, tuple[str, str]]:
@@ -1223,16 +1234,15 @@ def _lead_workers(repo: Path) -> dict[str, tuple[str, str]]:
     whose **Input** offers a `human session` (named-workers-and-legal D-3)."""
     out: dict[str, tuple[str, str]] = {}
     for p in sorted((repo / "agents").glob("*.md")) if (repo / "agents").exists() else []:
-        text = p.read_text(encoding="utf-8")
-        fm = _frontmatter(text) or {}
-        skills = fm.get("skills") if isinstance(fm.get("skills"), list) else []
-        local = [str(s) for s in skills if ":" not in str(s) and s not in EXTERNAL_SKILLS]
-        if not local:
-            continue
-        m = _INPUT_BULLET.search(text)
-        human = bool(m) and "human session" in " ".join(m.group(1).split())
-        if fm.get("type") == LEAD_TYPE or (fm.get("type") == "scheduled" and human):
-            out[p.stem] = (fm["type"], local[0])
+        try:
+            fm, body = bundle_gen.agent_frontmatter(repo, p.stem)
+        except ValueError:
+            continue  # agent_conformance reports a rejected frontmatter
+        primary = _primary_skill(fm)
+        m = _INPUT_BULLET.search(body)
+        human = bool(m) and HUMAN_SESSION in " ".join(m.group(1).split())
+        if primary and (fm.get("type") == LEAD_TYPE or (fm.get("type") == SCHEDULED_TYPE and human)):
+            out[p.stem] = (fm["type"], primary)
     return out
 
 
@@ -1243,20 +1253,23 @@ def workflow_lead(repo: Path) -> list[str]:
     hosts: set[str] = set()
     out: list[str] = []
     for wf in sorted(repo.glob("skills/*/assets/workflows/*.workflow.json")):
-        rel = wf.relative_to(repo).as_posix()
+        rel = wf.relative_to(repo)
+        hosts.add(rel.parts[1])  # skills/<host>/…: an unreadable file still has its host
         try:
             data = json.loads(wf.read_text(encoding="utf-8"))
         except ValueError:
             continue  # navigator's TC-16 reports an unreadable workflow file
-        owner = data.get("owner")
-        hosts.add(owner)
-        leads = sorted(a for a, (_, primary) in workers.items() if primary == owner)
+        if not isinstance(data, dict):
+            continue  # TC-16 reports a workflow that is not an object
+        leads = sorted(a for a, (_, primary) in workers.items() if primary == data.get("owner"))
         if len(leads) != 1:
-            out.append(f"{rel}: has {len(leads)} lead agents ({', '.join(leads)}); exactly one is required "
-                       f"(docs/development/workflows.md)")
+            out.append(f"{rel.as_posix()}: has {len(leads)} lead agents ({', '.join(leads)}); exactly one "
+                       f"is required (docs/development/workflows.md)")
             continue
-        if leads[0] not in ((data.get("activate") or {}).get("agents") or []):
-            out.append(f"{rel}: lead '{leads[0]}' is not in its top-level activate.agents")
+        activate = data.get("activate")
+        listed = activate.get("agents") if isinstance(activate, dict) else None
+        if not isinstance(listed, list) or leads[0] not in listed:
+            out.append(f"{rel.as_posix()}: lead '{leads[0]}' is not in its top-level activate.agents")
     out += [f"agents/{a}.md: a lead agent's primary skill '{primary}' hosts no workflow "
             f"(docs/development/agent-template.md)"
             for a, (type_, primary) in workers.items() if type_ == LEAD_TYPE and primary not in hosts]
@@ -1275,7 +1288,8 @@ ALL_CHECKS = (
     name_mismatch, expected_bundle_membership,
     agent_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
-    boundary_section_present, agent_skill_alignment, agent_conformance, agent_persona, workflow_lead, groomed_spec_purpose,
+    boundary_section_present, agent_skill_alignment, agent_conformance, agent_persona, workflow_lead,
+    groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, mod_bindings_match, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,

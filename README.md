@@ -107,7 +107,7 @@ Pin one exact release with `#vX.Y.Z` instead of `#releases` (from the release af
 - An **agent** is a *delegated worker* by default, in its **own fresh context** with a fixed role,
   model, and tools — "go do X and report back". It keeps your main context clean. Each agent declares
   a type: `delegated`, `lead` or `scheduled`.
-- **skill = teach / guide me; agent = delegate a whole task.** The delegated agents (`implementer`,
+- **skill = teach / guide me; agent = delegate a whole task.** The delegated agents (e.g. `implementer`,
   `code-reviewer`) each just load the relevant skills and run them in isolation; a lead
   (`epic-planner`, `team-lead`, …) is started as your session and works with you. How an agent is written: [`docs/development/agent-template.md`](docs/development/agent-template.md), next to the
   skill template [`docs/development/skill-template.md`](docs/development/skill-template.md).

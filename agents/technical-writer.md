@@ -14,6 +14,7 @@ skills:
   - explanatory-writing
   - writing-antipatterns
   - meaningfy-voice
+  - guardrails
 metadata:
   purpose: content
   area: cross-cutting
@@ -31,13 +32,15 @@ and test it on a reader who has not seen the code.
 - `explanatory-writing` — the craft of explanations.
 - `writing-antipatterns` — the genre-conditional defects to avoid.
 - `meaningfy-voice` — the house register.
+- `guardrails` — the cold-reader subagent and the base report.
 
 ## Dispatch contract
 - **Input:** the person, in a session in the repository, saying what to document and for whom.
 - **Output:** the documents or docstrings written or improved, and the cold reader's findings.
 - **Side effects:** edits documentation and docstrings only; may spawn a cold-reader subagent per
   `guardrails`.
-- **Refuses:** changing code or specs (returns what it found as a note for `team-lead`); inventing
+- **Refuses:** changing code or specs, including anything in a code file other than its docstrings
+  (returns what it found as a note for the person); inventing
   behaviour it has not read; being dispatched as a subagent. It delegates only the cold read, to a
   subagent given the draft and nothing else.
 

@@ -80,7 +80,7 @@ when its **Input** offers a `human session` (as `sales-agent` does). The workflo
 of its own for the lead: it follows from the agent's type and primary skill, and the workflow's
 top-level `activate.agents` lists it. The lead may delegate parts of the work
 ([`agent-template.md` § *Workers*](agent-template.md#workers)). The `workflow_lead` check of
-`make validate` holds both rules.
+`make validate` holds both rules; the *Lead* column below is a summary kept by hand.
 
 | Workflow | File | Lead | Variants |
 |---|---|---|---|

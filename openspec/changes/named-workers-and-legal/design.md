@@ -305,6 +305,20 @@ phases, no default gates) and D-13 (no rename) on 2026-11-11.
   agent" becomes "nothing without the developer's consent; no delegated agent commits", since
   `team-lead` commits under `epic-delivery`'s authority rule. (e) The *Candidate roles* rows for Work
   Shaper and documenter are removed: both are now agents.
+- **D-23 — Stage 2 review decisions (lead's calls, 2026-11-11).** Accepted: the tester's seven
+  defects (role line is the first line only; the description's persona phrase ends on a word;
+  wrong-shape and unreadable workflow files neither crash nor orphan their lead, whose host is the
+  skill folder; `activate.agents` must be a list; the **Input** bullet ends at the next bullet,
+  heading or blank line); one `_primary_skill` helper for `_primary_skill_errors` and
+  `_lead_workers`, which now reads frontmatter through `bundle_gen.agent_frontmatter` (L3, L5);
+  constants `SCHEDULED_TYPE`, `HUMAN_SESSION` (L4); consent on commit, push and merge for
+  `team-lead` and `release-manager`, a merge to `main` counting as a publish (L1); `technical-writer`
+  refuses non-docstring code edits and reports to the person, not `team-lead`, since `meaningfy-core`
+  stands alone (L1, L3); `guardrails` listed by all three new leads (L3); a delegation scenario for
+  `epic-planner` (L2). Rejected: splitting `workflow_lead` into two checks (L4) — the host set is
+  now from paths, the second rule is one comprehension; dropping the empty "()" from the zero-lead
+  message (L4) — tests pin it; checking the *Lead* column against the derived lead (L5) — it is a
+  hand-kept summary and says so.
 - **D-19 — PLAN accepted below the gate.** Four independent clarity-gate runs scored 8.5, 8.6, 8.7
   and 8.5; each found new wording or fact slips, all fixed in the PLAN (the last scorer estimated
   about 9.5 after its fixes; there was no fifth run). Owner's answer (2026-11-11): accept and
