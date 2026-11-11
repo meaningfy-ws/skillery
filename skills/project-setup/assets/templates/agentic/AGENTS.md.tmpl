@@ -118,7 +118,7 @@ artifacts above; do not reintroduce parallel epic files under `.claude/`.
 - **Datastores / external systems:** <!-- e.g. MongoDB, Redis, the ERE engine, an OpenAPI client -->
 - **Deployable?** <!-- yes/no — if yes, see ci-cd-delivery; CD stub pending DevOps ratification -->
 - **Checks:**
-  - **Narrow checks:** <!-- while iterating, the checks an edit touches — e.g. one test file, one target -->
+  - **Narrow checks:** <!-- while iterating, the checks an edit touches — e.g. one test file, one target — plus the cheap static checks (lint, type check, generated-file freshness), so the first full-gates run is green -->
   - **Task gate:** <!-- once per task; default: the full gates -->
   - **Full gates:** <!-- once per stage before the PR — e.g. make check-all -->
   - **Docs gate:** <!-- the docs build or link check — e.g. make build-docs -->

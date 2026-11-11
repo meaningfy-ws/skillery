@@ -112,7 +112,13 @@ Full per-CLI setup and the compatibility matrix: [`docs/environment/dual-cli/`](
 
 ## How to validate
 
-`make validate` is the guardrail. Run it before every PR; CI runs it too, plus the
+**Narrow checks** (while editing, before the first full run): `make lint` (line caps, frontmatter,
+links) and `make skill-inventory` (it rewrites `docs/skill-inventory.md`; commit any change), plus
+`make bundles` after a skill or agent edit and `make mods` after a mod edit. They are cheap and catch
+what turned first full runs red in lean-delivery (finding F-1).
+
+`make validate` is the guardrail. Run it before every PR; CI runs it too (without the reasoning
+engines and the LinkML toolchain, whose tests run only locally), plus the
 `validate-spine` job (`make validate-spine`) and the `opencode-installer` job (`npm run test:opencode-installer`, the node tests of the opencode installer
 and agent renderer). See
 [`docs/development/governance.md`](docs/development/governance.md) for what the validator enforces.
