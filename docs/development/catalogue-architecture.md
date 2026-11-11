@@ -66,7 +66,8 @@ not here.
 |---|---|---|---|---|
 | `meaningfy-sales` | sales | proposals and estimates; the five sales skills (operations, pipeline custody, accounts, qualification, conversations); the commercial chain | `proposal-writer`, `sales-agent`; planned: `qualifier`, `offer-designer`, `demo-builder` | `meaningfy-consulting` |
 | `meaningfy-devops` | operations | infrastructure operations, stack operations, service reliability, infrastructure security | `devops-engineer`, `ops-watch`, `infra-reviewer` | `meaningfy-consulting` |
-| `meaningfy-business` *(planned)* | business, legal | negotiation, internal communication, contracts | planned: `business-coach`, `negotiation-partner`, `internal-comms`, `contract-drafter` | `meaningfy-consulting` |
+| `meaningfy-legal` | legal | contract practice (the contract workflow) | `lawyer` | — |
+| `meaningfy-business` *(planned)* | business | negotiation, internal communication | planned: `business-coach`, `negotiation-partner`, `internal-comms` | `meaningfy-consulting` |
 | `meaningfy-design` *(planned)* | design | visual identity, diagram and slide styles | planned: `graphic-designer` | — |
 
 ## Agent roster
@@ -90,6 +91,7 @@ template's (a thinking partner is a `lead` agent). The agents still to build are
 | `devops-engineer` | Sandu the devops engineer | lead | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
 | `ops-watch` | Petrica the infra operator | scheduled | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
 | `infra-reviewer` | Lilia the infrastructure reviewer | delegated | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
+| `lawyer` | Tolic the lawyer | lead | UC-W16 | `meaningfy-legal` | `named-workers-and-legal` |
 
 ## Roadmap
 

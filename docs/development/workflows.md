@@ -91,6 +91,7 @@ top-level `activate.agents` lists it. The lead may delegate parts of the work
 | Release | [`meaningfy-release`](../../skills/meaningfy-release/assets/workflows/release.workflow.json) | `release-manager` | — |
 | DevOps | [`infrastructure-operations`](../../skills/infrastructure-operations/assets/workflows/devops.workflow.json) | `devops-engineer` | intervention, incident, check-up, unattended |
 | Sales (provisional) | [`sales-operations`](../../skills/sales-operations/assets/workflows/sales.workflow.json) | `sales-agent` | — |
+| Contract (provisional, no gates) | [`contract-practice`](../../skills/contract-practice/assets/workflows/contract.workflow.json) | `lawyer` | — |
 | Documentation | [`technical-writing`](../../skills/technical-writing/assets/workflows/documentation.workflow.json) | `technical-writer` | — |
 
 A *workflow bundle* is something else: a bundle that serves one personal routine

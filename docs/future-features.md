@@ -14,7 +14,7 @@ empty bundle is never created to reserve a place.
 | Vault local config | UC-W1 | `vault-assistant` | — | colleagues' local variations over one shared spine | a colleague's vault variation | no | `add-vault-local-config` |
 | Visual design | UC-W17 | `meaningfy-design` | `graphic-designer` | brand and visual design | the brand guide and design examples | no | `add-visual-design` |
 | Business partners | UC-W14, UC-W15 | `meaningfy-business` | `business-coach`, `internal-comms` (scheduled) | business planning and pitches, internal briefings | the employee handbook, Odoo access, pitch examples | no | `add-business-partners` |
-| Legal documents | UC-W16 | `meaningfy-business` | `contract-drafter` | contracts and NDAs | contract and NDA templates | no | `add-legal-documents` |
+| Legal documents | UC-W16 | `meaningfy-legal` | done: `lawyer`; left: Odoo access | done: `contract-practice`, `corpus-repository`; left: the live trial in the contract repository | the owner's contract repository (`meaningfy-ws/legal-agreements`) | yes | `named-workers-and-legal` |
 | Advisory agent | UC-W22 | `meaningfy-consulting` | an advisory lead agent | — (the skills exist) | a recorded advisory engagement to test against | no | `add-advisory-agent` |
 | Delivery management | UC-W23 | to decide | a delivery lead agent | project planning, status reporting, delivery hand-over | the delivery method and report examples | no | `add-delivery-management` |
 | Content creation and voice channel profiles | UC-W24 | `meaningfy-core` | a content agent | the channel profiles in `meaningfy-voice` (LinkedIn, blog, offer, internal message) | voice samples per channel and audience | no | `add-content-creation` |

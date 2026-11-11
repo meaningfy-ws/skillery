@@ -1217,3 +1217,39 @@ def test_mods_as_a_symlink_to_a_folder_is_allowed_and_nested_node_modules_is_not
 def test_hidden_mods_folder_is_skipped_like_any_hidden_folder(tmp_path):
     (tmp_path / ".mods").mkdir()
     assert lint.top_level_folders(tmp_path) == []
+
+
+# ------------------------------------------------ the shipped lawyer and contract workflow (stage 3)
+_REAL = Path(__file__).resolve().parent.parent
+
+
+def _lawyer_repo(root: Path, swap: bool = False) -> Path:
+    """The real agents/lawyer.md and contract workflow in a scratch repo; `swap` lists corpus-repository first."""
+    _agent_map(root)
+    wf = "skills/contract-practice/assets/workflows/contract.workflow.json"
+    (root / wf).parent.mkdir(parents=True)
+    (root / wf).write_text((_REAL / wf).read_text(encoding="utf-8"), encoding="utf-8")
+    (root / "agents").mkdir()
+    text = (_REAL / "agents/lawyer.md").read_text(encoding="utf-8")
+    if swap:
+        text = text.replace("  - contract-practice\n  - corpus-repository\n", "  - corpus-repository\n  - contract-practice\n")
+        assert "  - corpus-repository\n  - contract-practice\n" in text
+    (root / "agents/lawyer.md").write_text(text, encoding="utf-8")
+    return root
+
+
+def test_shipped_lawyer_leads_the_contract_workflow(tmp_path):
+    assert lint.workflow_lead(_lawyer_repo(tmp_path)) == []
+
+
+def test_lawyer_with_corpus_repository_first_loses_the_contract_lead(tmp_path):
+    assert lint.workflow_lead(_lawyer_repo(tmp_path, swap=True)) == [
+        "skills/contract-practice/assets/workflows/contract.workflow.json: has 0 lead agents (); exactly one "
+        "is required (docs/development/workflows.md)",
+        "agents/lawyer.md: a lead agent's primary skill 'corpus-repository' hosts no workflow "
+        "(docs/development/agent-template.md)"]
+
+
+def test_shipped_lawyer_passes_persona_and_conformance():
+    assert [e for e in lint.agent_persona(_REAL) if "lawyer" in e] == []
+    assert [e for e in lint.agent_conformance(_REAL) if "lawyer" in e] == []

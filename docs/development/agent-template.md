@@ -72,10 +72,10 @@ agent file under this standard is the worker.
   load event, so its `## Glue` step 1 is: "Load `<primary skill>` with the Skill tool before anything
   else, so the session's workflow is shown."
 - **Material lives outside.** Material a worker works from (contracts, infrastructure definitions)
-  stays in its own repository, with its own rules in that repository's `AGENTS.md` and docs. The
-  worker works in a session started in that repository, or in one the person names, and follows
-  those rules; neither its agent file nor its skills copy them. No configuration file names the
-  repository: the agent's **Input** does.
+  stays in its own repository, with its own rules in that repository's `AGENTS.md` and docs; how a
+  worker operates such a repository is the [`corpus-repository`](../../skills/corpus-repository/SKILL.md)
+  skill. Neither the agent file nor its skills copy the repository's rules. No configuration file
+  names the repository: the agent's **Input** does.
 
 ## Dispatch contract
 

@@ -39,7 +39,7 @@ ADVISORY_SKILL_TOKENS = 5000
 # gherkin-writer: a DEC-7 backlog candidate (docs/development/agent-template.md), not a retired name
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "system-architect",
                    "conceptual-modeller", "proposal-writer", "sales-agent", "team-lead",
-                   "release-manager", "technical-writer"}
+                   "release-manager", "technical-writer", "lawyer"}
 # Non-namespaced skills that legitimately live in OTHER plugins (so an agent may load them
 # without a local skills/<name>/ dir). Namespaced skills (e.g. `superpowers:tdd`) are external by form.
 EXTERNAL_SKILLS = {"stream-coding"}
