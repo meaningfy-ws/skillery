@@ -10,9 +10,9 @@ mechanics (fresh not a copy, inputs as paths, the base report, the four-eyes rul
 |---|---|---|---|
 | Developer | A person | — | Always: decides, signs off scenarios, accepts the EPIC |
 | Domain expert | A person | — | The model changes |
-| Lead | The main session | The session's | Always. Never a subagent: it is the only one that talks to the developer |
+| Lead | The main session, which may be started as the `team-lead` agent | The session's | Always. Never a subagent: it is the only one that talks to the developer |
 | Architect | `system-architect` agent | Declared (opus) | Shaping session |
-| Planner | `epic-planner` agent | Declared (opus) | Shaping, or finishing the PLAN at the start of an epic session |
+| Planner | The lead loads `epic-planning`, or dispatches a general-purpose subagent with it | The session's, or opus | Finishing the PLAN at the start of an epic session (shaping itself is an `epic-planner` session) |
 | Builder | `implementer` agent | Declared (sonnet) | Every task, every accepted fix, every spike |
 | Reviewer | `code-reviewer` agent, one per lens | Declared (opus) | Every stage, scaled by appetite |
 | Checker | A fresh general-purpose subagent | opus | Once per stage, where the appetite's review set has one ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)) |

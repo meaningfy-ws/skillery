@@ -296,6 +296,15 @@ phases, no default gates) and D-13 (no rename) on 2026-11-11.
   subagent is not bound by the lead's `tools`; it runs under the session's permissions with the
   person present) is accepted. (e) A sentence that existing agents adopt the persona form "in the
   next release" (L2): it would go stale; instead no release is cut between stage 1 and stage 2.
+- **D-22 — Stage 2 as built (lead's calls, 2026-11-11).** (a) `agent_persona` is its own check in
+  `ALL_CHECKS`, as D-1 names it, not a branch of `agent_conformance`; the conformance fixtures keep
+  their shape, so task 2.2's fixture move is not needed. (b) `workflow_lead` reads agent files
+  directly (`_frontmatter`, the **Input** bullet) rather than `bundle_gen.agent_frontmatter`, so it
+  needs no agent map in its tests. (c) One builder wrote the three new agents and their features
+  (task 2.4's new files); the lead wrote the rest. (d) UC-W18's guarantee "nothing committed by an
+  agent" becomes "nothing without the developer's consent; no delegated agent commits", since
+  `team-lead` commits under `epic-delivery`'s authority rule. (e) The *Candidate roles* rows for Work
+  Shaper and documenter are removed: both are now agents.
 - **D-19 — PLAN accepted below the gate.** Four independent clarity-gate runs scored 8.5, 8.6, 8.7
   and 8.5; each found new wording or fact slips, all fixed in the PLAN (the last scorer estimated
   about 9.5 after its fixes; there was no fifth run). Owner's answer (2026-11-11): accept and

@@ -581,6 +581,58 @@ def test_agent_persona_form_is_checked(tmp_path):
         "agents/x.md: persona 'tolic' must be one capitalised ASCII word"]
 
 
+def _wf(root: Path, skill: str, agents: list[str] | None = None, variant_agents: list[str] | None = None):
+    d = root / "skills" / skill / "assets" / "workflows"
+    d.mkdir(parents=True, exist_ok=True)
+    wf = {"name": skill, "owner": skill, "activate": {"skills": [skill], **({"agents": agents} if agents else {})},
+          "phases": []}
+    if variant_agents:
+        wf["variants"] = [{"name": "v", "activate": {"agents": variant_agents}}]
+    (d / f"{skill}.workflow.json").write_text(json.dumps(wf), encoding="utf-8")
+
+
+def _worker(root: Path, name: str, type_: str, primary: str, inp: str = "- **Input:** the need.\n"):
+    _agent(root, name, {"name": name, "description": "x", "type": type_, "skills": [primary]},
+           f"You are **X the y**.\n\n## Dispatch contract\n{inp}- **Output:** z.\n")
+
+
+def test_workflow_lead_finds_exactly_one_lead_per_workflow(tmp_path):
+    # named-workers-and-legal D-3
+    wf = "skills/act/assets/workflows/act.workflow.json"
+    _wf(tmp_path, "act", agents=["a"])
+    assert lint.workflow_lead(tmp_path) == [
+        f"{wf}: has 0 lead agents (); exactly one is required (docs/development/workflows.md)"]
+    _worker(tmp_path, "a", "lead", "act")
+    assert lint.workflow_lead(tmp_path) == []
+    _worker(tmp_path, "b", "lead", "act")
+    assert lint.workflow_lead(tmp_path) == [
+        f"{wf}: has 2 lead agents (a, b); exactly one is required (docs/development/workflows.md)"]
+
+
+def test_workflow_lead_counts_a_scheduled_agent_only_with_a_human_session(tmp_path):
+    _wf(tmp_path, "act", agents=["s"])
+    _worker(tmp_path, "s", "scheduled", "act", "- **Input:** schedule: daily.\n")
+    assert lint.workflow_lead(tmp_path)[0].endswith("has 0 lead agents (); exactly one is required "
+                                                    "(docs/development/workflows.md)")
+    # sales-agent's form: the trigger list wraps onto a second line
+    _worker(tmp_path, "s", "scheduled", "act", "- **Input:** schedule: daily, weekly; or a\n  human session.\n")
+    assert lint.workflow_lead(tmp_path) == []
+
+
+def test_workflow_lead_must_be_named_in_the_top_level_activate(tmp_path):
+    _wf(tmp_path, "act", variant_agents=["a"])
+    _worker(tmp_path, "a", "lead", "act")
+    assert lint.workflow_lead(tmp_path) == [
+        "skills/act/assets/workflows/act.workflow.json: lead 'a' is not in its top-level activate.agents"]
+
+
+def test_lead_whose_primary_skill_hosts_no_workflow_is_flagged(tmp_path):
+    (tmp_path / "skills" / "know").mkdir(parents=True)
+    _worker(tmp_path, "a", "lead", "know")
+    assert lint.workflow_lead(tmp_path) == [
+        "agents/a.md: a lead agent's primary skill 'know' hosts no workflow (docs/development/agent-template.md)"]
+
+
 def test_agent_without_feature_is_flagged(tmp_path):
     assert _conforming(tmp_path, feature=False) == ["agents/x.md: no tests/features/agents/x.feature"]
 

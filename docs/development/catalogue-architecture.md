@@ -77,9 +77,12 @@ template's (a thinking partner is a `lead` agent). The agents still to build are
 
 | Agent | Persona | Type | Use cases | Bundle | Change |
 |---|---|---|---|---|---|
-| `epic-planner` | Vasile the planner | delegated | UC-W18 | `meaningfy-building` | exists |
+| `epic-planner` | Vasile the planner | lead | UC-W18 | `meaningfy-building` | exists (lead since `named-workers-and-legal`) |
+| `team-lead` | Radu the team lead | lead | UC-W18 | `meaningfy-building` | `named-workers-and-legal` |
 | `implementer` | Ionut the implementer | delegated | UC-W18 | `meaningfy-building` | exists |
 | `code-reviewer` | Mircea the reviewer | delegated | UC-W18 | `meaningfy-building` | exists |
+| `release-manager` | Nelu the release manager | lead | UC-W18 | `meaningfy-building` | `named-workers-and-legal` |
+| `technical-writer` | Viorica the technical writer | lead | UC-W18 | `meaningfy-core` | `named-workers-and-legal` |
 | `system-architect` | Ana the architect | lead | UC-W19 | `meaningfy-architecture` | exists |
 | `conceptual-modeller` | Doina the modeller | lead | UC-W20 | `meaningfy-architecture` | exists |
 | `proposal-writer` | Mariana the proposal writer | delegated | UC-W8 | `meaningfy-sales` | exists |

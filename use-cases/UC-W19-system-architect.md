@@ -101,5 +101,5 @@ its feature file exist.
 
 - Where do the architecture artefacts live in a project (`docs/architecture/`, Antora, Enterprise
   Architect), and does `project-setup` scaffold that place?
-- What does the hand-over at step 6 consist of: an EPIC seed for `epic-planner`, or the artefacts
+- What does the hand-over at step 6 consist of: an EPIC seed for an `epic-planner` session, or the artefacts
   alone?

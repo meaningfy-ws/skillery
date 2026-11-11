@@ -51,6 +51,10 @@ def test_agents_carry_a_persona():
     assert lint.agent_persona(REPO) == []
 
 
+def test_every_workflow_has_one_lead():
+    assert lint.workflow_lead(REPO) == []
+
+
 def test_readme_lists_every_skill():
     assert lint.readme_inventory_gaps(REPO) == []
 

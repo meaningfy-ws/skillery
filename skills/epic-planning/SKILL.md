@@ -40,8 +40,8 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    **Include a risk question**: what could go wrong for this EPIC — in the world around it, not in
    its text — how likely, how bad, and what we do about it (mitigate, accept, or cut scope). Each
    risk gets a `RISK-` id; scope traps go to Rabbit-holes, the rest to the PLAN's Risks.
-   When run as a delegated agent, return the open concerns as one question round to the caller
-   instead of asking.
+   When run inside a subagent (it cannot ask), return the open concerns as one question round to
+   the caller instead of asking.
 3. **Archive the seeds.** Write the captured seeds and the Q&A record to `changes/<id>/inputs/`,
    marked **secondary** and **never deleted or groomed** — the authored EPIC supersedes them but does
    not replace them (the EPIC is the primary, shaped truth).

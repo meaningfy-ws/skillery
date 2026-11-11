@@ -38,7 +38,8 @@ ADVISORY_SKILL_TOKENS = 5000
 
 # documenter, gherkin-writer: DEC-7 backlog candidates (docs/development/agent-template.md), not retired names
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "system-architect",
-                   "conceptual-modeller", "proposal-writer", "sales-agent"}
+                   "conceptual-modeller", "proposal-writer", "sales-agent", "team-lead",
+                   "release-manager", "technical-writer"}
 # Non-namespaced skills that legitimately live in OTHER plugins (so an agent may load them
 # without a local skills/<name>/ dir). Namespaced skills (e.g. `superpowers:tdd`) are external by form.
 EXTERNAL_SKILLS = {"stream-coding"}
@@ -1214,6 +1215,54 @@ def agent_persona(repo: Path) -> list[str]:
     return out
 
 
+_INPUT_BULLET = re.compile(r"^- \*\*Input:\*\*(.*?)(?=^- \*\*|^## |\Z)", re.MULTILINE | re.DOTALL)
+
+
+def _lead_workers(repo: Path) -> dict[str, tuple[str, str]]:
+    """Agents that can lead a workflow, as {name: (type, primary skill)}: type `lead`, or `scheduled`
+    whose **Input** offers a `human session` (named-workers-and-legal D-3)."""
+    out: dict[str, tuple[str, str]] = {}
+    for p in sorted((repo / "agents").glob("*.md")) if (repo / "agents").exists() else []:
+        text = p.read_text(encoding="utf-8")
+        fm = _frontmatter(text) or {}
+        skills = fm.get("skills") if isinstance(fm.get("skills"), list) else []
+        local = [str(s) for s in skills if ":" not in str(s) and s not in EXTERNAL_SKILLS]
+        if not local:
+            continue
+        m = _INPUT_BULLET.search(text)
+        human = bool(m) and "human session" in " ".join(m.group(1).split())
+        if fm.get("type") == LEAD_TYPE or (fm.get("type") == "scheduled" and human):
+            out[p.stem] = (fm["type"], local[0])
+    return out
+
+
+def workflow_lead(repo: Path) -> list[str]:
+    """Each default workflow has exactly one lead worker, named in its top-level `activate.agents`, and
+    every `lead` agent's primary skill hosts a workflow (named-workers-and-legal D-3)."""
+    workers = _lead_workers(repo)
+    hosts: set[str] = set()
+    out: list[str] = []
+    for wf in sorted(repo.glob("skills/*/assets/workflows/*.workflow.json")):
+        rel = wf.relative_to(repo).as_posix()
+        try:
+            data = json.loads(wf.read_text(encoding="utf-8"))
+        except ValueError:
+            continue  # navigator's TC-16 reports an unreadable workflow file
+        owner = data.get("owner")
+        hosts.add(owner)
+        leads = sorted(a for a, (_, primary) in workers.items() if primary == owner)
+        if len(leads) != 1:
+            out.append(f"{rel}: has {len(leads)} lead agents ({', '.join(leads)}); exactly one is required "
+                       f"(docs/development/workflows.md)")
+            continue
+        if leads[0] not in ((data.get("activate") or {}).get("agents") or []):
+            out.append(f"{rel}: lead '{leads[0]}' is not in its top-level activate.agents")
+    out += [f"agents/{a}.md: a lead agent's primary skill '{primary}' hosts no workflow "
+            f"(docs/development/agent-template.md)"
+            for a, (type_, primary) in workers.items() if type_ == LEAD_TYPE and primary not in hosts]
+    return out
+
+
 def bundle_gates(repo: Path) -> list[str]:
     """Delegate to tools.bundle_gen: bundles.yaml validates, the renderings
     (marketplace.json, bundles/ links, tools/opencode-catalogue.json) match it, and versions agree."""
@@ -1226,7 +1275,7 @@ ALL_CHECKS = (
     name_mismatch, expected_bundle_membership,
     agent_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
-    boundary_section_present, agent_skill_alignment, agent_conformance, agent_persona, groomed_spec_purpose,
+    boundary_section_present, agent_skill_alignment, agent_conformance, agent_persona, workflow_lead, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, mod_bindings_match, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,

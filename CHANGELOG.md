@@ -11,6 +11,17 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- Three lead agents you start as your session: `team-lead` (Radu the team lead, delivers a gated
+  PLAN with `epic-delivery`), `release-manager` (Nelu the release manager, cuts and publishes a
+  release with `meaningfy-release`), both in `meaningfy-building`, and `technical-writer` (Viorica
+  the technical writer, writes docs with `technical-writing` and a cold reader) in `meaningfy-core`.
+  Each workflow now names its lead, so navigator shows the workflow when that lead starts.
+- Every agent has a persona name in its role line and description (Ionut the implementer, Mircea
+  the reviewer, Ana the architect, …); dispatch names are unchanged. Two new `make validate` checks:
+  `agent_persona` and `workflow_lead` (each workflow has exactly one lead).
+
 ### Fixed
 
 - CI: `validate` installs only `pyyaml` and `pytest`. The reasoning engines (clingo, SWI-Prolog)
@@ -22,6 +33,10 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Changed
 
+- **BREAKING** — `epic-planner` (Vasile the planner) is now a lead on both CLIs (a primary agent on
+  opencode): start it as your session and answer its questions there; it can no longer be dispatched
+  as a subagent. To finish a PLAN inside an epic session, load `epic-planning` in that session
+  instead. Reinstall `meaningfy-building`.
 - `epic-delivery`: the acceptance demo is no longer provisional — its first real run (lean-delivery)
   was accepted. The validation review and the scenario sign-off stay provisional.
 - `system-architect` and `conceptual-modeller` may now spawn subagents (they gain the `Agent` tool,

@@ -175,14 +175,15 @@ The CD building blocks and the DevOps decisions to ratify are in the
 ## 6. Agents → skills migration note
 
 Earlier versions of this repo shipped five sub-agents. The catalog now ships the **knowledge
-as skills** plus **three thin wrappers** (`implementer`, `code-reviewer`, `epic-planner`).
+as skills** plus thin agent wrappers (the list is the
+[agent roster](../development/catalogue-architecture.md#agent-roster)).
 The `docs/practice/ai-coding/` build lifecycle doc no longer names the older agents; the mapping below is
 kept as historical reference for anyone who encounters the old names elsewhere:
 
 | Old agent | Now |
 |-----------|-----|
 | `gherkin-writer` | the `bdd-gherkin` skill |
-| `documenter` | the `technical-writing` skill |
+| `documenter` | the `technical-writing` skill, led by the `technical-writer` agent |
 | `code-reviewer` | thin wrapper loading `meaningfy-code-review` (read-only, opus) |
-| `epic-planner` | thin wrapper loading `epic-planning`, `clarity-gate`, `bdd-gherkin`, external `stream-coding` |
+| `epic-planner` | a lead (started as your session) loading `epic-planning`, `clarity-gate`, `bdd-gherkin`, external `stream-coding` |
 | `implementer` | thin wrapper loading `cosmic-python` + external `stream-coding` + `superpowers` TDD |

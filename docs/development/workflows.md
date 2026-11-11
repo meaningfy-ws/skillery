@@ -79,19 +79,19 @@ primary skill is the workflow's host skill (its `owner`) and whose type is `lead
 when its **Input** offers a `human session` (as `sales-agent` does). The workflow file has no field
 of its own for the lead: it follows from the agent's type and primary skill, and the workflow's
 top-level `activate.agents` lists it. The lead may delegate parts of the work
-([`agent-template.md` § *Workers*](agent-template.md#workers)). A row marked *(planned)* has no agent
-of type `lead` for it yet; until then its lead is the main session following the host skill.
+([`agent-template.md` § *Workers*](agent-template.md#workers)). The `workflow_lead` check of
+`make validate` holds both rules.
 
 | Workflow | File | Lead | Variants |
 |---|---|---|---|
-| EPIC shaping | [`epic-planning`](../../skills/epic-planning/assets/workflows/epic-shaping.workflow.json) | `epic-planner` (planned) | — |
-| EPIC delivery | [`epic-delivery`](../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json) | `team-lead` (planned) | brownfield |
+| EPIC shaping | [`epic-planning`](../../skills/epic-planning/assets/workflows/epic-shaping.workflow.json) | `epic-planner` | — |
+| EPIC delivery | [`epic-delivery`](../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json) | `team-lead` | brownfield |
 | Architecture | [`architecture`](../../skills/architecture/assets/workflows/architecting.workflow.json) | `system-architect` | — |
 | Conceptual modelling | [`conceptual-modelling`](../../skills/conceptual-modelling/assets/workflows/modelling.workflow.json) | `conceptual-modeller` | — |
-| Release | [`meaningfy-release`](../../skills/meaningfy-release/assets/workflows/release.workflow.json) | `release-manager` (planned) | — |
+| Release | [`meaningfy-release`](../../skills/meaningfy-release/assets/workflows/release.workflow.json) | `release-manager` | — |
 | DevOps | [`infrastructure-operations`](../../skills/infrastructure-operations/assets/workflows/devops.workflow.json) | `devops-engineer` | intervention, incident, check-up, unattended |
 | Sales (provisional) | [`sales-operations`](../../skills/sales-operations/assets/workflows/sales.workflow.json) | `sales-agent` | — |
-| Documentation | [`technical-writing`](../../skills/technical-writing/assets/workflows/documentation.workflow.json) | `technical-writer` (planned) | — |
+| Documentation | [`technical-writing`](../../skills/technical-writing/assets/workflows/documentation.workflow.json) | `technical-writer` | — |
 
 A *workflow bundle* is something else: a bundle that serves one personal routine
 (`vault-assistant`), unrelated to these workflow files.

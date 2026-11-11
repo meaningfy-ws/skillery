@@ -185,27 +185,24 @@ developer* is whichever role holds the decision at that point.
 
 | Role | Seat in the team | Agents it works through |
 |---|---|---|
-| Work Shaper | The developer in a shaping session: decides the why, the appetite and the shape | The lead; the planner (`epic-planner`) |
+| Work Shaper | The developer in a shaping session: decides the why, the appetite and the shape | The shaping lead (`epic-planner`, started as the session) |
 | Solution Architect | The developer for architecture and model decisions; brings in the domain expert when the model changes | The architect (`system-architect`); `conceptual-modeller` |
-| Solution Builder | The developer in an epic session: signs off the scenarios, decides findings, accepts the EPIC | The lead; the builder (`implementer`), the reviewer (`code-reviewer`), the checker |
-| Solution Shipper | Outside the loop: signs off the review gate from the merged stages and the acceptance evidence, then releases | None in the team; the release skills |
+| Solution Builder | The developer in an epic session: signs off the scenarios, decides findings, accepts the EPIC | The delivery lead (`team-lead`, or the main session); the builder (`implementer`), the reviewer (`code-reviewer`), the checker |
+| Solution Shipper | Outside the loop: signs off the review gate from the merged stages and the acceptance evidence, then releases | `release-manager` |
 | Sales/Presales, Technical Consultant | Not in the build-plane team | Their own planes' agents |
 
 A dedicated wrapper for a role stays an open fork, on the same terms as before:
 
 - **Reopening condition:** a role gets a wrapper only once it has been exercised on a real
   engagement; the fork is not resolved speculatively.
-- **Priority order if it ever reopens:** **Work Shaper is the highest-priority candidate**, because
-  `epic-planner` already performs most of the Work Shaper mandate: a dedicated wrapper there would
-  be a thin steering layer over an existing agent, not new capability. This is a priority statement
-  only: no agent, no stub, and no recommendation to build one is made here.
+- **Work Shaper is served:** `epic-planner` is the shaping lead (`named-workers-and-legal`), so no
+  separate `work-shaper` wrapper is needed.
 
 ## Known gaps
 
 | Gap | Nature | Owner / next step |
 |---|---|---|
-| **A `work-shaper` agent wrapper** | Highest-priority candidate of all deferred agent questions: `epic-planner` already performs most of the Work Shaper mandate, so this would be a thin steering layer, not new capability. | Deferred (see Agent wrappers above). Reopens once the role has been exercised on a real engagement. Not built here. |
-| **Agent wrappers for the other four non-Builder roles** | Lower priority; no existing agent covers their mandates. | Deferred, same condition. |
+| **Agent wrappers for the remaining non-Builder roles** | Work Shaper is served by the `epic-planner` lead and Solution Shipper by `release-manager`; no agent covers the others' mandates. | Deferred until the role has been exercised on a real engagement. |
 | **MDLC-standalone has no owning skill** | Genuine capability gap: the ontology/application-profile development methodology (METHONTOLOGY/NeOn/LOT-style) has no skill; `conceptual-modelling` explicitly scopes itself to product-development projects. | Parked for its own shaping cycle. Visible on the matrix as the MDLC-standalone row. |
 | **Agent-assisted review has no non-software equivalent** | `meaningfy-code-review` is code-scoped. The Quality Overseer headcount is retired across *all* planes, but the automated multi-lens review that replaces it exists only for the software plane; ontology and training-material review currently fall back to unaided human sign-off. | Named only. Candidate future skill; not designed here. |
 | **Vocabulary consistency pass pending** | This doc's activity names are provisional until the sibling changes below publish theirs. | Required follow-up: a rename-and-check pass, not a re-derivation, once those changes land. |
