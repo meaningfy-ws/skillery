@@ -17,11 +17,21 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   and the LinkML toolchain are no longer installed, so their tests skip in CI and run in local
   `make validate`; an apt mirror outage can no longer stall CI. A PR now runs `validate` once, not
   twice: `push` triggers only on `develop` and `main`.
+- `workflows.md` no longer says strict mode will block "with its stage 3"; navigator blocks in
+  strict mode today.
 
 ### Changed
 
 - `epic-delivery`: the acceptance demo is no longer provisional — its first real run (lean-delivery)
   was accepted. The validation review and the scenario sign-off stay provisional.
+- `system-architect` and `conceptual-modeller` may now spawn subagents (they gain the `Agent` tool,
+  `task` on opencode) to survey a codebase or vocabularies, or to check a finished artefact; they
+  still never hand their whole job to another agent. Reinstall `meaningfy-architecture` to get it.
+- Authors: every `lead` agent must list `Agent` in its `tools` and not deny it (`make validate` fails
+  otherwise). The agent template has a new § *Workers* (persona names, activity skills, one lead per
+  workflow, material kept in its own repository); `creating-skills.md` explains activity and
+  know-how skills and the three edits that add a workflow; `workflows.md` names each workflow's
+  lead. The README marks the skills that host a workflow *(workflow)*.
 - `epic-delivery` and `project-setup`'s AGENTS template: Serena (symbol-level reading and editing)
   and ast-grep (structural search and rewrite) are now mandatory on every programming task; grep is
   the declared fallback only. Files are read and edited with the CLI's file tools, never with

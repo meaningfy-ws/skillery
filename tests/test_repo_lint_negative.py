@@ -481,10 +481,42 @@ def test_agent_description_example_block_is_flagged(tmp_path):
 
 
 def test_lead_without_not_for_delegation_is_flagged(tmp_path):
-    assert _conforming(tmp_path, {"type": "lead"}) == [
+    assert _conforming(tmp_path, {"type": "lead", "tools": ["Read", "Agent"]}) == [
         "agents/x.md: a lead agent's description must say 'Not for delegation'"]
     desc = "Leads. Use when starting. Not for delegation."
     assert _conforming(tmp_path, {"type": "scheduled", "description": desc}) == []
+
+
+def test_lead_without_agent_tool_is_flagged(tmp_path):
+    # named-workers-and-legal D-2: every lead may delegate
+    lead = {"type": "lead", "description": "Leads. Use when starting. Not for delegation."}
+    assert _conforming(tmp_path, {**lead, "tools": ["Read", "Grep"]}) == [
+        "agents/x.md: a lead agent's tools must include 'Agent' (docs/development/agent-template.md)"]
+    assert _conforming(tmp_path, {**lead, "tools": ["Read", "Agent"]}) == []
+    assert _conforming(tmp_path, {**lead, "tools": ["Read", "Agent(implementer)"]}) == []
+    assert _conforming(tmp_path, {**lead, "tools": ["Read", "AgentX"]}) == [
+        "agents/x.md: a lead agent's tools must include 'Agent' (docs/development/agent-template.md)"]
+
+
+def test_lead_edges_yield_one_sensible_error_and_non_leads_are_untouched(tmp_path):
+    lead = {"type": "lead", "description": "Leads. Use when starting. Not for delegation."}
+    no_tools = "agents/x.md: no 'tools' list and 'disallowedTools' does not deny 'Agent' "
+    assert _conforming(tmp_path, lead, drop=("tools",)) == [no_tools + "(docs/development/agent-template.md)"]
+    assert _conforming(tmp_path, {**lead, "tools": "Read, Agent"}) == ["agents/x.md: 'tools' must be a YAML list"]
+    assert _conforming(tmp_path, {**lead, "tools": ["agent"]}) == [
+        "agents/x.md: a lead agent's tools must include 'Agent' (docs/development/agent-template.md)"]
+    assert _conforming(tmp_path, {**lead, "tools": [1, None]}) == [
+        "agents/x.md: a lead agent's tools must include 'Agent' (docs/development/agent-template.md)"]
+    assert _conforming(tmp_path, {**lead, "type": "scheduled", "tools": ["Read"]}) == []
+    assert _conforming(tmp_path, {"tools": ["Read"]}) == []  # delegated
+
+
+def test_lead_that_denies_agent_is_flagged(tmp_path):
+    # D-2 "every lead may delegate": a lead whose Agent tool is denied cannot delegate
+    lead = {"type": "lead", "description": "Leads. Use when starting. Not for delegation."}
+    err = "agents/x.md: a lead agent's tools must include 'Agent' (docs/development/agent-template.md)"
+    assert _conforming(tmp_path, {**lead, "disallowedTools": ["Agent"]}, drop=("tools",)) == [err]
+    assert _conforming(tmp_path, {**lead, "tools": ["Read", "Agent"], "disallowedTools": ["Agent"]}) == [err]
 
 
 def test_agent_body_over_cap_is_flagged(tmp_path):

@@ -1,0 +1,51 @@
+> Derives from: EPIC `named-workers-and-legal` (`proposal.md`); design `design.md` (D-1..D-18).
+> Appetite VERY LARGE: each stage is one PR into `develop` with VERY LARGE's review set (five
+> lenses, adversarial tester, checker). Gates (this repo's binding): narrow = `make lint`, one
+> `pytest` file, `make mods`, `make validate-spine`; task gate and full gates = `make bundles` when a
+> skill, agent, bundle or mod changed, then `make validate`, plus `make validate-spine` when
+> `openspec/` changed, `make mods` when navigator data or tests changed and
+> `npm run test:opencode-installer` when `tools/` changed, and `make skill-inventory` before
+`make validate` when a description, skill, agent, facet or use case changed (the inventory drift
+test runs in `make validate`). Every task leaves `make validate` green.
+> Before editing a lint function, run GitNexus `impact` on it. A doc a task makes false is fixed in
+> the same stage. Acceptance is not a live trial (DEC-17).
+
+## Stage 1 — The rules written down (PR 1)
+
+- [x] 1.1 Stale fix: `docs/development/workflows.md:90` states strict mode blocks today (as `docs/environment/navigator.md` § *Loose and strict*); grep `docs/` for other "comes with its stage 3" lines. Acceptance: no doc says strict blocking is future
+- [x] 1.2 `docs/development/governance.md` Skill row and `creating-skills.md` § *Activity skills*: activity vs know-how (DEC-3), when a skill should own a workflow, how to add one (file location, `owner`, TC-16's list in `mods/navigator/lib/workflow.test.ts`); `skill-template.md` points to it (D-14). Acceptance: a cold reader answers from these pages alone "is `bdd-gherkin` an activity or a know-how skill, and why?" and "what three edits add a workflow?"
+- [x] 1.3 `docs/development/agent-template.md`: § *Workers* (DEC-1, DEC-2, external material repositories and their own rules, D-9's session convention, D-15); *Types* `lead` row drops "or none" and says a lead may delegate (D-2); a lead's primary skill is an activity skill (D-3); persona form (D-1) in the frontmatter and body rules and the skeleton (role line, description start, `## Glue` step 1 for a lead); *Candidate roles*: Work Shaper and documenter rows point to this EPIC. Acceptance: § *Workers* answers what a worker is, activity vs know-how, one lead per workflow, persona form and where material lives; the `lead` row has no "or none"
+- [x] 1.4 D-2 check in `tools/repo_lint/lint.py` (`_agent_frontmatter_errors`: a `lead` whose `tools` has no entry equal to `Agent` or starting `Agent(`); pytest cases in `tests/test_repo_lint_negative.py` (lead without `Agent` fails; `Agent` and `Agent(implementer)` pass) and the existing lead fixture at line 484 updated to list `Agent`; `agents/system-architect.md`, `agents/conceptual-modeller.md` gain `Agent` and a **Refuses** line naming whom they delegate to. `make bundles`, `npm run test:opencode-installer`, `make validate`
+- [x] 1.5 `docs/development/workflows.md` § *Workflow files*: the lead-worker rule (D-3), a *Lead* column (the four missing leads marked "(planned)", D-20b), the one-line *workflow bundle* distinction (D-13); `docs/environment/navigator.md` points to it; README *Workers* paragraph (points to the agent template and the roster, carries the same distinction) and the README bundle table marks each activity skill with "(workflow)"; CHANGELOG lines. Acceptance: a cold reader of README and `workflows.md` can say which agent leads `architecting` and what a *workflow bundle* is; `make validate`
+
+## Stage 2 — Names and leads (PR 2)
+
+- [ ] 2.1 Persona lines (DEC-5, D-1) in the ten existing agents (role line and description start) and D-15's step 1 in the three existing leads (`devops-engineer` gains a `## Glue` section; `system-architect` and `conceptual-modeller` get step 1 added to their existing one); body cap holds; `catalogue-architecture.md` roster gains a *Persona* column. Lands together with 2.2's check. `make bundles`, `make skill-inventory`, `make validate`
+- [ ] 2.2 `agent_persona` check (D-1) with pytest cases (missing form, diacritic `Ionuț`, description not matching the role line, a good agent); `_GOOD_BODY` and every fixture in `tests/test_repo_lint_negative.py:403-487` move to the persona form so their exact-equality asserts hold
+- [ ] 2.3 `epic-planner` → lead (D-6, D-15): frontmatter (`type: lead`, `Agent`), contract, Glue step, `tests/features/agents/epic-planner.feature` rewritten (asks in session; refuses code, commits, archiving). References rewritten: README lines 47, 103, 108, 116, 141–143; `docs/environment/setup.md`; `docs/practice/ai-coding/{build-lifecycle,opsx-runbook}.md`; `docs/practice/ai-coding/playbooks/work-shaper.md`; `docs/practice/roles-and-raci.md` lines 188, 199, 207 (the work-shaper premise: `epic-planner` now is the shaping lead); `skills/epic-delivery/references/team-and-briefs.md:15`; `skills/epic-planning/SKILL.md` ("when run as a delegated agent" kept for any subagent, not `epic-planner`); `agents/implementer.md:41` and `tests/features/agents/implementer.feature:38` ("the lead"); UC-W18 lines 37, 64–66, 86, 108, 124; `use-cases/UC-W19-system-architect.md:104`; `catalogue-architecture.md` roster (`docs/use-cases.md` is regenerated by `make skill-inventory`). CHANGELOG **BREAKING** line: `epic-planner` is a lead on both CLIs (a primary agent on opencode), with the replacement. Acceptance: `rg -n 'epic-planner' --glob '!openspec/changes/**' --glob '!CHANGELOG.md'` shows no dispatch or "returns question rounds" use; `make bundles`, `make skill-inventory`, `make validate`, `npm run test:opencode-installer`
+- [ ] 2.4 New agents `team-lead`, `release-manager`, `technical-writer` per D-7, D-15 and D-18 (facets), each with `tests/features/agents/<name>.feature` (Background names every skill; a Scenario Outline with Examples covering its main job, a delegation, and a refusal); add the three names to `ALL_AGENT_NAMES` (not the devops three it already omits); `bundles.yaml` agents lists; UC-W18 `served_by` (D-11); roster rows; each workflow's top-level `activate.agents` (epic-delivery `team-lead`, release `release-manager`, documentation `technical-writer`, epic-shaping `epic-planner`). `make bundles`, `make skill-inventory`, `make mods`, `make validate`
+- [ ] 2.5 `workflow_lead` check (D-3) with pytest cases (zero leads, two leads, a lead whose primary hosts no workflow, a scheduled agent without a human session not counted, `sales-agent`'s two-line **Input** bullet counted, a variant's `activate` not counted, the real tree passes); `docs/development/workflows.md` *Lead* column filled
+- [ ] 2.6 Spec text agrees: `build-lifecycle.md` diagram and responsibility table name the build agents per the MODIFIED delta; `epic-delivery` SKILL *The team* says the lead may be started as `team-lead`. `make bundles`, `make skill-inventory`, `make validate`, `make validate-spine`, `npm run test:opencode-installer`
+
+## Stage 3 — Tolic the lawyer (PR 3)
+
+- [ ] 3.1 `facets.yaml` `purpose` gains `contracts` and `house-material` (D-16). `agent-template.md` § *Workers* *Material lives outside* bullet points to the new skill (D-20c). `skills/corpus-repository/` (generic, D-8, D-9, D-17): SKILL.md with Quick Start (worked example on a fabricated repository), *Boundary & Related Skills* (related: `rulebook`, `project-setup`, `technical-writing`), facets; probe and near-miss (`rulebook`) in `tests/trigger_probes.yaml`; `bundles.yaml` `meaningfy-core`; UC-W16 `served_by.skills`; README skill row (`readme_inventory_gaps` needs every skill named) and README line 30's skill count. `make bundles`, `make validate`
+- [ ] 3.2 One task, so no gate sees half of it: `skills/contract-practice/` (DEC-13, D-17: SKILL.md with the activity method, the lawyer-review flag, Quick Start on a fabricated freelance mission contract, *Boundary* with `proposal-writing`, `sales-conversations`, `corpus-repository` as related, facets `area: legal`, `purpose: contracts`), probe and near-miss (`proposal-writing`); `assets/workflows/contract.workflow.json` per D-10; TC-16's list in `mods/navigator/lib/workflow.test.ts:87-88` gains it; `agents/lawyer.md` (Tolic, D-1, D-15, DEC-6, DEC-8, D-9; `tools: [Read, Grep, Glob, Edit, Write, Bash, Skill, Agent, "mcp__overleaf__*"]`, no Odoo; the body says the Overleaf connector is used when installed, git otherwise) and `tests/features/agents/lawyer.feature` (draft from a mission, revise a counterparty draft, propose a clause from three overrides, refuse to send, refuse Odoo, refuse HR without being asked); `ALL_AGENT_NAMES`; `bundles.yaml` `meaningfy-legal` (skills `[contract-practice]`, agents `[lawyer]`); UC-W16 `served_by`; README skill row and bundle row, and README line 30's skill and bundle counts. `make bundles`, `make mods`, `make validate`; `make opencode-report`: a gap for the Overleaf glob is recorded in `docs/environment/dual-cli/compatibility.md`
+- [ ] 3.3 `dependencies.yaml` Overleaf entry (form of the Odoo entry, `used_by: [lawyer]`); UC-W16, `docs/future-features.md`, `catalogue-architecture.md` per D-11, D-12; README bundle table and entry-point row; README entry-point row for Tolic; CHANGELOG lines for the installer. Checker greps the stage diff for real counterparty names the owner supplies. `make skill-inventory`, `make validate`, `make validate-spine`
+
+## Acceptance, after stage 3 (mandatory, VERY LARGE; not counted)
+
+- A.1 Walkthrough to the owner (DEC-17: no live trial of contract work): the worker docs answer Q-13's docs question; Tolic's agent, skills and workflow read against DEC-8 and DEC-13; one hand check that a lead session (any lead) shows its workflow on the band (D-15, RISK-6). Verdict in `evidence/acceptance.md`
+
+## Close (not counted)
+
+- C.1 Spec deltas checked against what was built; `openspec validate named-workers-and-legal --strict`, `make validate-spine`; merge on green CI; archive per `spec-stewardship`; the live trial is owed as a skillery issue
+
+## Roadmap
+
+1.1 → 1.2 → 1.3 → 1.4 → 1.5 → 2.1+2.2 → 2.3 → 2.4 → 2.5 → 2.6 → 3.1 → 3.2 → 3.3 → A.1 → C.1
+
+## Verification
+
+`make validate` (with the D-1, D-2 and D-3 checks), `make validate-spine`, `make mods`,
+`npm run test:opencode-installer` green per task; `openspec validate named-workers-and-legal --strict`; clarity gate ≥ 9/10 before stage 1.

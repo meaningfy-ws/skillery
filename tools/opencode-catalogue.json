@@ -144,7 +144,8 @@
         "Glob",
         "Write",
         "Edit",
-        "Skill"
+        "Skill",
+        "Agent"
       ],
       "skills": [
         "conceptual-modelling",
@@ -386,7 +387,8 @@
         "Glob",
         "Write",
         "Edit",
-        "Skill"
+        "Skill",
+        "Agent"
       ],
       "skills": [
         "architecture",
