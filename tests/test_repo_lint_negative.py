@@ -554,6 +554,161 @@ def test_agent_body_cli_ism_is_flagged(tmp_path):
         "agents/x.md: body has a CLI-specific (/opsx: or .claude/) reference"]
 
 
+def _persona(root: Path, role_line: str, description: str) -> list[str]:
+    """Agent `x` with the given role line and description; returns agent_persona(root)."""
+    _agent_map(root)
+    body = _GOOD_BODY.replace("You are the **X**.", role_line)
+    _agent(root, "x", {**_good_fm(), "description": description}, body)
+    return lint.agent_persona(root)
+
+
+def test_agent_persona_form_is_checked(tmp_path):
+    # named-workers-and-legal D-1: `You are **<Persona> the <role>**.` and a description that starts the same
+    good = "Tolic the lawyer drafts contracts. Use when a contract is due."
+    assert _persona(tmp_path, "You are **Tolic the lawyer**. You draft.", good) == []
+    assert _persona(tmp_path, "You are **Radu the team lead**. You lead.",
+                    "Radu the team lead runs an epic. Use when a PLAN is gated.") == []
+    assert _persona(tmp_path, "You are the **Lawyer**. You draft.", good) == [
+        "agents/x.md: role line must read 'You are **<Persona> the <role>**.' "
+        "(docs/development/agent-template.md)"]
+    assert _persona(tmp_path, "You are **Ionuț the implementer**. You build.",
+                    "Ionuț the implementer builds. Use when ready.") == [
+        "agents/x.md: persona 'Ionuț' must be one capitalised ASCII word"]
+    assert _persona(tmp_path, "You are **Tolic the lawyer**. You draft.", "Drafts contracts. Use when due.") == [
+        "agents/x.md: description must start with 'Tolic the lawyer'"]
+    assert _persona(tmp_path, "You are **tolic the lawyer**. You draft.",
+                    "tolic the lawyer drafts. Use when due.") == [
+        "agents/x.md: persona 'tolic' must be one capitalised ASCII word"]
+
+
+def _wf(root: Path, skill: str, agents: list[str] | None = None, variant_agents: list[str] | None = None):
+    d = root / "skills" / skill / "assets" / "workflows"
+    d.mkdir(parents=True, exist_ok=True)
+    wf = {"name": skill, "owner": skill, "activate": {"skills": [skill], **({"agents": agents} if agents else {})},
+          "phases": []}
+    if variant_agents:
+        wf["variants"] = [{"name": "v", "activate": {"agents": variant_agents}}]
+    (d / f"{skill}.workflow.json").write_text(json.dumps(wf), encoding="utf-8")
+
+
+def _worker(root: Path, name: str, type_: str, primary: str, inp: str = "- **Input:** the need.\n"):
+    _agent(root, name, {"name": name, "description": "x", "type": type_, "skills": [primary]},
+           f"You are **X the y**.\n\n## Dispatch contract\n{inp}- **Output:** z.\n")
+
+
+def test_workflow_lead_finds_exactly_one_lead_per_workflow(tmp_path):
+    # named-workers-and-legal D-3
+    wf = "skills/act/assets/workflows/act.workflow.json"
+    _wf(tmp_path, "act", agents=["a"])
+    assert lint.workflow_lead(tmp_path) == [
+        f"{wf}: has 0 lead agents (); exactly one is required (docs/development/workflows.md)"]
+    _worker(tmp_path, "a", "lead", "act")
+    assert lint.workflow_lead(tmp_path) == []
+    _worker(tmp_path, "b", "lead", "act")
+    assert lint.workflow_lead(tmp_path) == [
+        f"{wf}: has 2 lead agents (a, b); exactly one is required (docs/development/workflows.md)"]
+
+
+def test_workflow_lead_counts_a_scheduled_agent_only_with_a_human_session(tmp_path):
+    _wf(tmp_path, "act", agents=["s"])
+    _worker(tmp_path, "s", "scheduled", "act", "- **Input:** schedule: daily.\n")
+    assert lint.workflow_lead(tmp_path)[0].endswith("has 0 lead agents (); exactly one is required "
+                                                    "(docs/development/workflows.md)")
+    # sales-agent's form: the trigger list wraps onto a second line
+    _worker(tmp_path, "s", "scheduled", "act", "- **Input:** schedule: daily, weekly; or a\n  human session.\n")
+    assert lint.workflow_lead(tmp_path) == []
+
+
+def test_workflow_lead_must_be_named_in_the_top_level_activate(tmp_path):
+    _wf(tmp_path, "act", variant_agents=["a"])
+    _worker(tmp_path, "a", "lead", "act")
+    assert lint.workflow_lead(tmp_path) == [
+        "skills/act/assets/workflows/act.workflow.json: lead 'a' is not in its top-level activate.agents"]
+
+
+def test_lead_whose_primary_skill_hosts_no_workflow_is_flagged(tmp_path):
+    (tmp_path / "skills" / "know").mkdir(parents=True)
+    _worker(tmp_path, "a", "lead", "know")
+    assert lint.workflow_lead(tmp_path) == [
+        "agents/a.md: a lead agent's primary skill 'know' hosts no workflow (docs/development/agent-template.md)"]
+
+
+def test_agent_persona_role_line_is_one_line(tmp_path):
+    # D-1 says the body's FIRST LINE is the role line; `[^*]+` lets the role run across lines
+    assert _persona(tmp_path, "You are **Tolic the lawyer\n\n## Skills\nfoo**.",
+                    "Tolic the lawyer\n\n## Skills\nfoo") != []
+
+
+def test_agent_persona_description_prefix_ends_on_a_word(tmp_path):
+    # role 'lawyer' must not be satisfied by a description starting 'Tolic the lawyers...'
+    assert _persona(tmp_path, "You are **Tolic the lawyer**. You draft.",
+                    "Tolic the lawyers' friend drafts. Use when due.") == [
+        "agents/x.md: description must start with 'Tolic the lawyer'"]
+
+
+def _raw_wf(root: Path, text: str):
+    d = root / "skills" / "act" / "assets" / "workflows"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "act.workflow.json").write_text(text, encoding="utf-8")
+
+
+@pytest.mark.parametrize("text", ["[]", json.dumps({"owner": "act", "activate": ["a"]})])
+def test_workflow_lead_survives_a_workflow_of_the_wrong_shape(tmp_path, text):
+    # valid JSON, wrong shape: the check must not crash the whole lint run
+    _raw_wf(tmp_path, text)
+    _worker(tmp_path, "a", "lead", "act")
+    lint.workflow_lead(tmp_path)
+
+
+def test_workflow_lead_activate_agents_is_a_list_not_a_substring(tmp_path):
+    _raw_wf(tmp_path, json.dumps({"owner": "act", "activate": {"agents": "bad"}}))
+    _worker(tmp_path, "a", "lead", "act")
+    assert lint.workflow_lead(tmp_path) != []
+
+
+def test_workflow_lead_unreadable_workflow_does_not_orphan_its_lead(tmp_path):
+    # TC-16 reports the unreadable file; its lead must not also be called host-less
+    _raw_wf(tmp_path, "{nope")
+    _worker(tmp_path, "a", "lead", "act")
+    assert lint.workflow_lead(tmp_path) == []
+
+
+def test_workflow_lead_input_bullet_stops_at_the_next_bullet_or_heading(tmp_path):
+    _wf(tmp_path, "act", agents=["s"])
+    _agent(tmp_path, "s", {"name": "s", "description": "x", "type": "scheduled", "skills": ["act"]},
+           "You are **S the s**.\n\n## Dispatch contract\n- **Input:** daily.\n- Output: z.\n\n"
+           "### Notes\nNever open a human session.\n")
+    assert lint.workflow_lead(tmp_path)[0].endswith("has 0 lead agents (); exactly one is required "
+                                                    "(docs/development/workflows.md)")
+
+
+def test_workflow_lead_edges_that_hold(tmp_path):
+    # pinned: human session only in Output is not a lead
+    _wf(tmp_path, "act", agents=["s"])
+    _worker(tmp_path, "s", "scheduled", "act", "- **Input:** daily.\n- **Output:** a human session note.\n")
+    assert len(lint.workflow_lead(tmp_path)) == 1
+    # pinned: Input as the last bullet before `## Report`
+    _agent(tmp_path, "s", {"name": "s", "description": "x", "type": "scheduled", "skills": ["act"]},
+           "You are **S the s**.\n\n## Dispatch contract\n- **Output:** z.\n- **Input:** daily, or a\n"
+           "  human session.\n\n## Report\nx\n")
+    assert lint.workflow_lead(tmp_path) == []
+    # pinned: a second workflow with the same owner shares the one lead
+    (tmp_path / "skills/act/assets/workflows/b.workflow.json").write_text(
+        json.dumps({"owner": "act", "activate": {"agents": ["s"]}}), encoding="utf-8")
+    assert lint.workflow_lead(tmp_path) == []
+    # pinned: primary skips namespaced and external skills
+    (tmp_path / "agents" / "s.md").unlink()
+    _agent(tmp_path, "s", {"name": "s", "description": "x", "type": "lead",
+                           "skills": ["superpowers:x", "stream-coding", "act"]}, "b")
+    assert lint.workflow_lead(tmp_path) == []
+
+
+def test_scheduled_human_session_agent_without_a_workflow_is_not_flagged(tmp_path):
+    (tmp_path / "skills" / "know").mkdir(parents=True)
+    _worker(tmp_path, "s", "scheduled", "know", "- **Input:** a human session.\n")
+    assert lint.workflow_lead(tmp_path) == []
+
+
 def test_agent_without_feature_is_flagged(tmp_path):
     assert _conforming(tmp_path, feature=False) == ["agents/x.md: no tests/features/agents/x.feature"]
 

@@ -158,8 +158,6 @@ A backlog, not a roster: a role is added only when a real job needs it, through 
 
 | Candidate | Nearest owner today | Note |
 |---|---|---|
-| Work Shaper | `epic-planner` agent | the shaping role is this agent's job; it becomes the shaping lead in the `named-workers-and-legal` change |
-| documenter | `technical-writing` skill (+ `clarity-gate` lightweight) | "update docs from code changes, keep them aligned to features or specs"; taken up as the `technical-writer` lead in the `named-workers-and-legal` change |
 | gherkin-writer | `bdd-gherkin` skill | the method is owned; an agent only if a dispatched worker is needed |
 
 ## Skeleton

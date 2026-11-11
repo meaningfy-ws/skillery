@@ -75,18 +75,21 @@ not here.
 template's (a thinking partner is a `lead` agent). The agents still to build are in
 [`future-features.md`](../future-features.md).
 
-| Agent | Type | Use cases | Bundle | Change |
-|---|---|---|---|---|
-| `epic-planner` | delegated | UC-W18 | `meaningfy-building` | exists |
-| `implementer` | delegated | UC-W18 | `meaningfy-building` | exists |
-| `code-reviewer` | delegated | UC-W18 | `meaningfy-building` | exists |
-| `system-architect` | lead | UC-W19 | `meaningfy-architecture` | exists |
-| `conceptual-modeller` | lead | UC-W20 | `meaningfy-architecture` | exists |
-| `proposal-writer` | delegated | UC-W8 | `meaningfy-sales` | exists |
-| `sales-agent` | scheduled | UC-W7 | `meaningfy-sales` | exists |
-| `devops-engineer` | lead | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
-| `ops-watch` | scheduled | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
-| `infra-reviewer` | delegated | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
+| Agent | Persona | Type | Use cases | Bundle | Change |
+|---|---|---|---|---|---|
+| `epic-planner` | Vasile the planner | lead | UC-W18 | `meaningfy-building` | exists (lead since `named-workers-and-legal`) |
+| `team-lead` | Radu the team lead | lead | UC-W18 | `meaningfy-building` | `named-workers-and-legal` |
+| `implementer` | Ionut the implementer | delegated | UC-W18 | `meaningfy-building` | exists |
+| `code-reviewer` | Mircea the reviewer | delegated | UC-W18 | `meaningfy-building` | exists |
+| `release-manager` | Nelu the release manager | lead | UC-W18 | `meaningfy-building` | `named-workers-and-legal` |
+| `technical-writer` | Viorica the technical writer | lead | UC-W18 | `meaningfy-core` | `named-workers-and-legal` |
+| `system-architect` | Ana the architect | lead | UC-W19 | `meaningfy-architecture` | exists |
+| `conceptual-modeller` | Doina the modeller | lead | UC-W20 | `meaningfy-architecture` | exists |
+| `proposal-writer` | Mariana the proposal writer | delegated | UC-W8 | `meaningfy-sales` | exists |
+| `sales-agent` | Costel the sales agent | scheduled | UC-W7 | `meaningfy-sales` | exists |
+| `devops-engineer` | Sandu the devops engineer | lead | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
+| `ops-watch` | Petrica the infra operator | scheduled | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
+| `infra-reviewer` | Lilia the infrastructure reviewer | delegated | UC-W6 | `meaningfy-devops` | `add-devops-bundle` |
 
 ## Roadmap
 

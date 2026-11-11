@@ -1,6 +1,6 @@
 {
   "name": "epic-delivery", "title": "EPIC delivery", "owner": "epic-delivery",
-  "activate": { "openChange": true, "skills": ["epic-delivery", "openspec-apply-change", "openspec-archive-change", "spec-stewardship"] },
+  "activate": { "openChange": true, "skills": ["epic-delivery", "openspec-apply-change", "openspec-archive-change", "spec-stewardship"], "agents": ["team-lead"] },
   "variants": [
     { "name": "brownfield", "phases": ["apply", "accept", "archive"], "activate": { "change": "tasks-no-design" } }
   ],

@@ -1,6 +1,6 @@
 {
   "name": "release", "title": "Release", "owner": "meaningfy-release",
-  "activate": { "skills": ["meaningfy-release"] },
+  "activate": { "skills": ["meaningfy-release"], "agents": ["release-manager"] },
   "phases": [
     { "id": "branch", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["cut"], "enter": {} },
     { "id": "bump", "owner": "meaningfy-release", "expect": [], "gates": ["bumped"], "enter": {} },

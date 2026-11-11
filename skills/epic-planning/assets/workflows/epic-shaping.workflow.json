@@ -1,6 +1,6 @@
 {
   "name": "epic-shaping", "title": "EPIC shaping", "owner": "epic-planning",
-  "activate": { "skills": ["epic-planning", "openspec-explore", "openspec-propose", "clarity-gate", "openspec-update-change"] },
+  "activate": { "skills": ["epic-planning", "openspec-explore", "openspec-propose", "clarity-gate", "openspec-update-change"], "agents": ["epic-planner"] },
   "phases": [
     { "id": "explore", "owner": "epic-planning", "expect": [], "allow": ["brainstorming"], "gates": ["inputs"],
       "enter": { "skills": ["openspec-explore"], "change": "none" } },

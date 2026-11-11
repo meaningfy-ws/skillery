@@ -1,6 +1,6 @@
 {
   "name": "documentation", "title": "Documentation", "owner": "technical-writing",
-  "activate": { "skills": ["technical-writing"] },
+  "activate": { "skills": ["technical-writing"], "agents": ["technical-writer"] },
   "phases": [
     { "id": "inventory", "owner": "technical-writing", "expect": [], "gates": ["owed"], "enter": {} },
     { "id": "write", "owner": "technical-writing", "expect": [], "allow": ["architecture"], "enter": {} },

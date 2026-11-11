@@ -18,7 +18,7 @@ bundles:
       - rulebook
       - rule-learner
       - rule-steward
-    agents: []
+    agents: [technical-writer]
     mods: [no-poll-loops]
   - name: meaningfy-consulting
     description: "The advisory role: semantic-technologies coaching, the Decision Package, and executive communication"
@@ -61,7 +61,7 @@ bundles:
       - project-setup
       - ci-cd-delivery
       - meaningfy-release
-    agents: [epic-planner, implementer, code-reviewer]
+    agents: [epic-planner, team-lead, implementer, code-reviewer, release-manager]
     requires: [meaningfy-architecture]
   - name: meaningfy-devops
     description: "The operations role: provision and change servers as code (infrastructure-operations), run and deploy stacks (stack-operations), monitor, check daily, answer incidents and back up (service-reliability), and keep access and secrets safe (infrastructure-security); with an interactive devops agent, an unattended watch and an infrastructure reviewer"

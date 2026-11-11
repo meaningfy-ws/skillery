@@ -55,7 +55,8 @@ missing library capability goes upstream (see *Dependencies*), not into the code
 
 ## The team
 
-Two people, one lead, five working roles. Who plays each role, and the brief each gets, are in
+Two people, one lead, five working roles. The lead is the main session; it may be started as the
+`team-lead` agent. Who plays each role, and the brief each gets, are in
 [`references/team-and-briefs.md`](references/team-and-briefs.md).
 
 | Who | Does |
