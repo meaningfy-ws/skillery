@@ -1093,6 +1093,10 @@ def _agent_frontmatter_errors(rel: str, stem: str, fm: dict, modes: set[str] | N
     if "tools" not in fm and "Agent" not in (fm.get("disallowedTools") or []):
         out.append(f"{rel}: no 'tools' list and 'disallowedTools' does not deny 'Agent' "
                    f"(docs/development/agent-template.md)")
+    tools = fm.get("tools")
+    if fm.get("type") == "lead" and isinstance(tools, list) and not any(
+            t == "Agent" or str(t).startswith("Agent(") for t in tools):
+        out.append(f"{rel}: a lead agent's tools must include 'Agent' (docs/development/agent-template.md)")
     if "name" in fm and fm["name"] != stem:
         out.append(f"{rel}: name '{fm['name']}' does not match the filename")
     if "type" in fm and modes is not None and not (isinstance(fm["type"], str) and fm["type"] in modes):
