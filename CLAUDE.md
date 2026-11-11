@@ -17,10 +17,14 @@ Claude Code loads the canonical manual, GitNexus rules included, through this im
 
 How Claude Code's own tools serve the rules in `AGENTS.md` and the `guardrails` skill:
 
-- **Edit files with Edit or Write**, never with `python3 - <<EOF`, `sed -i` or other shell rewrites.
+- **Read files with Read; edit them with Edit or Write**, never with `cat`, `head`, `sed`,
+  `python3 - <<EOF` or other shell or script operations. Filtering command output in a pipe is
+  fine; generated files are written only by their generator (`make bundles`).
   Edit shows a reviewable diff and fails when the text is not where you expect it.
-- **For code, use symbol-level tools when the session has them** (find and replace a symbol, the
-  code index's impact and context). For prose, Edit is the direct way.
+- **For code, Serena and ast-grep are mandatory** on every programming task: Serena to find, read
+  and replace symbols, ast-grep for structural search and rewrite, GitNexus for impact and context.
+  Grep and whole-file reads only when they are unavailable, and say so. For prose, Edit is the
+  direct way.
 - **Do not poll.** No `until … sleep` or `while … sleep` loops. Run a long command with
   `run_in_background` and wait for its completion notice.
 - **Ask open questions in one AskUserQuestion call**, up to four at a time, each with a recommended

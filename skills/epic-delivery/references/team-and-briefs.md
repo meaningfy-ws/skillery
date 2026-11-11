@@ -43,8 +43,14 @@ tested the stage it checks.
    **Upstream findings**: every bug, gap or awkwardness met in any library, each marked *ours* or
    *external*, with a reproduction, or "none". The lead routes them per the dependency rule.
 
-Builders and reviewers use the project's code-intelligence tools when it has them (symbol-level
-reading and editing, impact analysis), and no other MCP tool. Builders use them for reading and
+Builders and reviewers MUST actively use the code-intelligence tools on every programming task,
+and no other MCP tool: **Serena** for symbol-level reading and editing (find a symbol, its
+references, replace a symbol body), **ast-grep** for structural search and rewrite across files,
+and the project's index for impact analysis (GitNexus). Grep and whole-file reads are the fallback
+only when the tool is unavailable, and the report says so. Files are read and edited with the
+CLI's own file read and edit tools, never with shell or script operations (`cat`, `sed`, `head`,
+a `python` heredoc); shell text tools may filter command output in a pipe, never a file, and
+generated files are written only by their generator. Builders use them for reading and
 editing, reviewers for reading only. Those tools are for code only; the truth stays in the spine.
 
 ## Builder
