@@ -71,23 +71,37 @@ propose (delta-only)  → apply  → archive (merge into specs/)
 
 The phases of these patterns, and of the other Meaningfy activities, are also data: one workflow
 file per activity, kept in the skill that owns it. The [navigator](../environment/navigator.md) mod
-reads them to show the phase and to warn when a step is skipped.
+reads them to show the phase and to warn when a step is skipped. A skill that hosts one is an
+*activity skill* ([`creating-skills.md`](creating-skills.md#activity-skills)).
 
-| Workflow | File | Variants |
-|---|---|---|
-| EPIC shaping | [`epic-planning`](../../skills/epic-planning/assets/workflows/epic-shaping.workflow.json) | — |
-| EPIC delivery | [`epic-delivery`](../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json) | brownfield |
-| Architecture | [`architecture`](../../skills/architecture/assets/workflows/architecting.workflow.json) | — |
-| Conceptual modelling | [`conceptual-modelling`](../../skills/conceptual-modelling/assets/workflows/modelling.workflow.json) | — |
-| Release | [`meaningfy-release`](../../skills/meaningfy-release/assets/workflows/release.workflow.json) | — |
-| DevOps | [`infrastructure-operations`](../../skills/infrastructure-operations/assets/workflows/devops.workflow.json) | intervention, incident, check-up, unattended |
-| Sales (provisional) | [`sales-operations`](../../skills/sales-operations/assets/workflows/sales.workflow.json) | — |
-| Documentation | [`technical-writing`](../../skills/technical-writing/assets/workflows/documentation.workflow.json) | — |
+**One lead per workflow.** Each default workflow has exactly one lead worker: the agent whose
+primary skill is the workflow's host skill (its `owner`) and whose type is `lead`, or `scheduled`
+when its **Input** offers a `human session` (as `sales-agent` does). The workflow file has no field
+of its own for the lead: it follows from the agent's type and primary skill, and the workflow's
+top-level `activate.agents` lists it. The lead may delegate parts of the work
+([`agent-template.md` § *Workers*](agent-template.md#workers)). The `workflow_lead` check of
+`make validate` holds both rules; the *Lead* column below is a summary kept by hand.
+
+| Workflow | File | Lead | Variants |
+|---|---|---|---|
+| EPIC shaping | [`epic-planning`](../../skills/epic-planning/assets/workflows/epic-shaping.workflow.json) | `epic-planner` | — |
+| EPIC delivery | [`epic-delivery`](../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json) | `team-lead` | brownfield |
+| Architecture | [`architecture`](../../skills/architecture/assets/workflows/architecting.workflow.json) | `system-architect` | — |
+| Conceptual modelling | [`conceptual-modelling`](../../skills/conceptual-modelling/assets/workflows/modelling.workflow.json) | `conceptual-modeller` | — |
+| Release | [`meaningfy-release`](../../skills/meaningfy-release/assets/workflows/release.workflow.json) | `release-manager` | — |
+| DevOps | [`infrastructure-operations`](../../skills/infrastructure-operations/assets/workflows/devops.workflow.json) | `devops-engineer` | intervention, incident, check-up, unattended |
+| Sales (provisional) | [`sales-operations`](../../skills/sales-operations/assets/workflows/sales.workflow.json) | `sales-agent` | — |
+| Contract (provisional, no gates) | [`contract-practice`](../../skills/contract-practice/assets/workflows/contract.workflow.json) | `lawyer` | — |
+| Documentation | [`technical-writing`](../../skills/technical-writing/assets/workflows/documentation.workflow.json) | `technical-writer` | — |
+
+A *workflow bundle* is something else: a bundle that serves one personal routine
+(`vault-assistant`), unrelated to these workflow files.
 
 A repository can change them with its own files in `docs/navigator/*.workflow.json`. A file with
 the name of a default replaces it; a file with `"extends": "<name>"` replaces only the fields it
-gives; a file with a new name adds a workflow. The smallest one declares the repository strict
-(today navigator marks the line `● strict`; blocking in strict mode comes with its stage 3):
+gives; a file with a new name adds a workflow. The smallest one declares the repository strict,
+so navigator blocks a skipped step (what strict refuses is in
+[`navigator.md`](../environment/navigator.md#loose-and-strict)):
 
 ```json
 { "name": "epic-delivery", "extends": "epic-delivery", "mode": "strict" }

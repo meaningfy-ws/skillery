@@ -35,7 +35,7 @@ Feature: implementer turns one ready task into tested code and reports back
   Scenario: A design-level failure returns a spec fix
     Given the task cannot be implemented as specified
     When the implementer reports
-    Then the report carries a proposed spec fix for the caller or the epic-planner to apply
+    Then the report carries a proposed spec fix for the lead to apply
     And the code is not patched to hide the failure
 
   Scenario: The report carries each gate run

@@ -77,6 +77,12 @@ Full description: `docs/modules/ROOT/pages/develop/agents.adoc`; the method is t
   upstream, never here; a gap in an external library is a decision recorded in `design.md`.
 - **Before editing a symbol** run gitnexus impact and stop on HIGH/CRITICAL risk; on a design-level
   failure, fix the spec, not the code.
+- **Code tools are mandatory.** Every programming task MUST actively use Serena (symbol-level
+  reading and editing) and ast-grep (structural search and rewrite); grep and whole-file reads only
+  when they are unavailable, said in the report. Files are read and edited with the CLI's own file
+  read and edit tools, never with shell or script operations (`cat`, `sed`, a `python` heredoc).
+  Shell text tools may filter command output in a pipe, never a file; generated files are written
+  only by their generator.
 
 ## Working conventions
 
@@ -112,11 +118,11 @@ artifacts above; do not reintroduce parallel epic files under `.claude/`.
 - **Datastores / external systems:** <!-- e.g. MongoDB, Redis, the ERE engine, an OpenAPI client -->
 - **Deployable?** <!-- yes/no — if yes, see ci-cd-delivery; CD stub pending DevOps ratification -->
 - **Checks:**
-  - **Narrow checks:** <!-- while iterating, the checks an edit touches — e.g. one test file, one target -->
+  - **Narrow checks:** <!-- while iterating, the checks an edit touches — e.g. one test file, one target — plus the cheap static checks (lint, type check, generated-file freshness), so the first full-gates run is green -->
   - **Task gate:** <!-- once per task; default: the full gates -->
   - **Full gates:** <!-- once per stage before the PR — e.g. make check-all -->
   - **Docs gate:** <!-- the docs build or link check — e.g. make build-docs -->
-  - **Code-intelligence tools:** <!-- the index and impact tools, if any — e.g. the GitNexus MCP tools -->
+  - **Code-intelligence tools:** <!-- Serena, ast-grep, and the index and impact tools — e.g. the GitNexus MCP tools -->
 - **Our libraries (no workarounds):** <!-- the co-developed libraries, e.g. `meaningfy-ws/<repo>` — what each does for us -->
 - **GitNexus repo name:** <!-- the name this repo is indexed under (gitnexus_*) -->
 

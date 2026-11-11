@@ -64,15 +64,17 @@ mode      ○ loose
 
 ## Workflows and phases
 
-Navigator follows eight workflows, each kept as a file in the skill that owns it: EPIC shaping
+Navigator follows nine workflows, each kept as a file in the skill that owns it: EPIC shaping
 (`epic-planning`), EPIC delivery (`epic-delivery`), architecting (`architecture`), conceptual modelling
 (`conceptual-modelling`), release (`meaningfy-release`), DevOps (`infrastructure-operations`),
-sales (`sales-operations`, provisional) and documentation (`technical-writing`: inventory, write,
-verify, cold-read, publish). Loading `technical-writing` in the middle of a build shows
+sales (`sales-operations`, provisional), documentation (`technical-writing`: inventory, write,
+verify, cold-read, publish) and contract (`contract-practice`, provisional, with no gates until the
+contract repository adds its own). Loading `technical-writing` in the middle of a build shows
 *documentation*; loading `epic-delivery` or `openspec-apply-change` shows the build again. EPIC
 shaping has the phases explore, variants, decide, propose, design and revise; EPIC delivery has
 ready, apply, accept and archive; its variant `brownfield` (tasks and no design) has apply, accept and
-archive. Each file lists its own phases.
+archive. Each file lists its own phases, and each workflow has one lead agent
+([`workflows.md`](../development/workflows.md#workflow-files) names it).
 It picks the workflow from the skills you load and the subagents you start; with an open change and nothing else loaded, it
 is EPIC delivery, starting at `ready`. The phase follows the skills you load and the state of the change's files: ticking
 the last task of `tasks.md` moves `apply` to `accept`, and `accept` passes its gate when

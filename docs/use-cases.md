@@ -16,7 +16,7 @@
 | `personal` | 1 | 2 | 2 |
 | `operations` | 0 | 1 | 0 |
 | `business` | 0 | 2 | 2 |
-| `legal` | 0 | 0 | 1 |
+| `legal` | 0 | 1 | 0 |
 | `design` | 0 | 0 | 1 |
 
 ## coding
@@ -25,7 +25,7 @@ Building software with AI agents.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W18](../use-cases/UC-W18-programming-team-lead.md) Programming partner and team lead | a Meaningfy developer | `covered` | `epic-planner` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `epic-planning`, `epic-delivery`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `meaningfy-git-workflow`, `guardrails`, `technical-writing`, `rulebook`, `rule-learner` | — | high |
+| [UC-W18](../use-cases/UC-W18-programming-team-lead.md) Programming partner and team lead | a Meaningfy developer | `covered` | `epic-planner` *(agent)*, `team-lead` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `release-manager` *(agent)*, `technical-writer` *(agent)*, `epic-planning`, `epic-delivery`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `meaningfy-git-workflow`, `guardrails`, `technical-writing`, `rulebook`, `rule-learner` | — | high |
 | [UC-W19](../use-cases/UC-W19-system-architect.md) System architect | a Meaningfy architect | `covered` | `system-architect` *(agent)*, `architecture` | — | high |
 | [UC-W20](../use-cases/UC-W20-conceptual-modeller.md) Conceptual modeller and ontology engineer | a Meaningfy modeller | `covered` | `conceptual-modeller` *(agent)*, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `formal-reasoning` | — | high |
 
@@ -89,7 +89,7 @@ Contracts, NDAs and other legal documents.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W16](../use-cases/UC-W16-contracts-and-ndas.md) Contracts and NDAs | the owner | `missing` | — | `add-legal-documents` | low |
+| [UC-W16](../use-cases/UC-W16-contracts-and-ndas.md) Contracts and NDAs | the owner | `partial` | `lawyer` *(agent)*, `contract-practice`, `corpus-repository` | `named-workers-and-legal` | medium |
 
 ## design
 
@@ -120,7 +120,7 @@ How sure each use case's text is (its Open Points) and the first question only t
 | [UC-W13](../use-cases/UC-W13-negotiation-partner.md) | low | `semantic-consulting-coach` already covers negotiation decisions in the consulting domain: extend it, or build a separate partner for all commercial and business situations? |
 | [UC-W14](../use-cases/UC-W14-business-coach.md) | medium | Should `business-coach` reuse `semantic-consulting-coach`'s method and modes, or be a separate coach with its own? |
 | [UC-W15](../use-cases/UC-W15-internal-communication.md) | low | Which audience and channel for each cadence (email, chat, Odoo), and who receives the monthly executive briefing? |
-| [UC-W16](../use-cases/UC-W16-contracts-and-ndas.md) | low | Which templates, contract types and governing laws come first? |
+| [UC-W16](../use-cases/UC-W16-contracts-and-ndas.md) | medium | Which gates and strict mode will the contract repository add to the contract workflow? |
 | [UC-W17](../use-cases/UC-W17-graphic-designer.md) | low | Where is the brand guide today, and is it complete enough to check against? |
 | [UC-W18](../use-cases/UC-W18-programming-team-lead.md) | high | The owner's phrase is "team lead of developers, architects, designers, product developers and modellers": should one lead agent dispatch the others, or does the developer stay the orchestrator as today? |
 | [UC-W19](../use-cases/UC-W19-system-architect.md) | high | Where do the architecture artefacts live in a project (`docs/architecture/`, Antora, Enterprise Architect), and does `project-setup` scaffold that place? |

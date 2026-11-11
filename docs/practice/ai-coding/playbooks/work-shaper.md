@@ -8,8 +8,8 @@
 > [`working-with-agents.md`](../working-with-agents.md).
 
 Seeded from the Employee Handbook's *Project Owner: the Work Shaper* mandate, adapted to today's
-way of working. You own and steer the `epic-planning` skill (and its `epic-planner` agent
-counterpart), governing and checking rather than hand-writing every artifact. See
+way of working. You own and steer the `epic-planning` skill (and the `epic-planner` lead
+you start as your shaping session), governing and checking rather than hand-writing every artifact. See
 [`roles-and-raci.md`](../../roles-and-raci.md#work-shaper).
 
 See [`roles-and-raci.md`](../../roles-and-raci.md#work-shaper)'s Work Shaper block for this role's

@@ -15,7 +15,7 @@ A closed allowlist. Any other field fails the validator.
 | Field | Required | Rule |
 |---|---|---|
 | `name` | yes | equals the filename stem |
-| `description` | yes | one job in one sentence, then `Use when …`; may add `Not for …`; no `<example>` blocks; a `lead` or `scheduled` agent also says `Not for delegation` |
+| `description` | yes | starts with the persona phrase `<Persona> the <role>` (see *Workers*); one job in one sentence, then `Use when …`; may add `Not for …`; no `<example>` blocks; a `lead` or `scheduled` agent also says `Not for delegation` |
 | `type` | yes | a key of `agentModes` in `tools/opencode-agent-map.json`: `delegated`, `lead` or `scheduled` (see *Types*) |
 | `model` | yes | a family alias, a key of `modelAliases` in the same file (`opus`, `sonnet`, `haiku`); never a pinned model name |
 | `skills` | yes | non-empty YAML list; the first local skill (no `:`, not external) is the agent's **primary skill** |
@@ -36,7 +36,7 @@ is rendered on each CLI, and the recorded gaps, live in
 | `type` | The dispatch contract must also state |
 |---|---|
 | `delegated` | the unit of one run; consent-requiring actions are refused (returned as recommendations); open questions are returned, not asked |
-| `lead` | which agents it may delegate to (or "none"); its stop condition; `Not for delegation` in the description |
+| `lead` | which agents it delegates to (see *Workers*); its stop condition; `Not for delegation` in the description |
 | `scheduled` | its triggers; where it writes its run record; that its writes are logged and reversible; `Not for delegation` in the description |
 
 A `scheduled` agent MAY also be started interactively by a human. It stays one job and one contract:
@@ -44,6 +44,38 @@ A `scheduled` agent MAY also be started interactively by a human. It stays one j
 effects** are the same for both; only in a human session may it ask questions directly.
 
 Agent teams are composed at run time from `delegated` and `lead` agents; no team file is shipped.
+
+## Workers
+
+A **worker** is an agent of this catalogue with a persona name, a primary skill and, when its work
+needs one, material kept in a repository outside skillery. There is no separate worker layer: the
+agent file under this standard is the worker.
+
+- **Persona form.** The role line is `You are **<Persona> the <role>**.` and the description starts
+  with the same `<Persona> the <role>` phrase, for example "Tolic the lawyer". `<Persona>` is one
+  capitalised ASCII word, without diacritics. The persona lives only in the text: the file and
+  dispatch name stay the role (`agents/lawyer.md`, `name: lawyer`), and skill names never carry a
+  persona. The agents are listed in the roster of
+  [`catalogue-architecture.md`](catalogue-architecture.md#agent-roster).
+- **A lead's primary skill is an activity skill**
+  ([`creating-skills.md` § *Activity skills*](creating-skills.md#activity-skills)).
+- **Workflows.** A workflow is an asset of its activity skill. A worker walks a workflow and never
+  owns one: the workflow, the agent's tools and refusals, and its skills' rules together constrain
+  it. Each workflow has exactly one lead worker
+  ([`workflows.md` § *Workflow files*](workflows.md#workflow-files)).
+- **Leads delegate.** Every agent of type `lead` may spawn subagents, so its `tools` include `Agent`
+  and its `disallowedTools` do not deny it; it follows `guardrails`, *Subagent dispatch*. Its
+  **Refuses** line names whom it delegates a job to, preferring a read-only subagent for a survey or
+  a check. `Agent` stays unscoped: the opencode renderer has no analogue for `Agent(<type>)` and
+  would drop the tool.
+- **A lead loads its primary skill first.** A lead is the main session, and preloaded skills emit no
+  load event, so its `## Glue` step 1 is: "Load `<primary skill>` with the Skill tool before anything
+  else, so the session's workflow is shown."
+- **Material lives outside.** Material a worker works from (contracts, infrastructure definitions)
+  stays in its own repository, with its own rules in that repository's `AGENTS.md` and docs; how a
+  worker operates such a repository is the [`corpus-repository`](../../skills/corpus-repository/SKILL.md)
+  skill. Neither the agent file nor its skills copy the repository's rules. No configuration file
+  names the repository: the agent's **Input** does.
 
 ## Dispatch contract
 
@@ -62,13 +94,14 @@ and an open question is **returned** in the Output, never asked mid-run.
 
 Sections in this order:
 
-1. Role line: `You are the **<Role>**. <the job>.`
+1. Role line: `You are **<Persona> the <role>**. <the job>.`
 2. `## Skills` — one line per `skills:` entry saying what it is followed for. Never restate a skill:
    on one CLI it is preloaded, on the other loaded on demand; a copy is a second owner.
 3. `## Dispatch contract` — the four labels above.
 4. `## Report` — how the agent reports back: the base report of the `guardrails` skill plus the
    fields of its purpose, and what matters most in its report. It cites the base, never restates it.
-5. `## Glue` (optional) — numbered steps that no skill owns.
+5. `## Glue` (optional) — numbered steps that no skill owns. A `lead` has one, and its step 1 loads
+   its primary skill (see *Workers*).
 
 The body is the text after the frontmatter, leading and trailing blank lines stripped. Its length cap
 is `MAX_AGENT_BODY_LINES` in `tools/repo_lint/lint.py`. The body is CLI-agnostic: no slash-command or
@@ -125,8 +158,6 @@ A backlog, not a roster: a role is added only when a real job needs it, through 
 
 | Candidate | Nearest owner today | Note |
 |---|---|---|
-| Work Shaper | `epic-planner` agent | the shaping role is already this agent's job |
-| documenter | `technical-writing` skill (+ `clarity-gate` lightweight) | "update docs from code changes, keep them aligned to features or specs"; suggested model `haiku` |
 | gherkin-writer | `bdd-gherkin` skill | the method is owned; an agent only if a dispatched worker is needed |
 
 ## Skeleton
@@ -135,7 +166,7 @@ A backlog, not a roster: a role is added only when a real job needs it, through 
 ---
 name: <name>
 description: >
-  <One job in one sentence.> Use when <trigger>. Not for <neighbouring job> (<other agent>).
+  <Persona> the <role> <does one job, in one sentence>. Use when <trigger>. Not for <neighbouring job> (<other agent>).
 type: delegated
 model: sonnet
 color: blue
@@ -152,7 +183,7 @@ metadata:
   maturity: <maturity>
 ---
 
-You are the **<Role>**. <the job>.
+You are **<Persona> the <role>**. <the job>.
 
 ## Skills
 - `<primary-skill>` — <what it is followed for>.
@@ -169,5 +200,7 @@ Returns the base report of `guardrails` (`references/subagent-reports.md`) plus 
 fields. What matters most: <what this agent's caller needs first>.
 
 ## Glue
-1. <a step no skill owns>.
+1. (a `lead`) Load `<primary-skill>` with the Skill tool before anything else, so the session's
+   workflow is shown.
+2. <a step no skill owns>.
 ```

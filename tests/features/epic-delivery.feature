@@ -69,6 +69,19 @@ Feature: The lead delivers a gated PLAN with a team scaled to the appetite
     And the full gates run once after the fix round, then CI
     And no reviewer re-runs the test suite
 
+  Scenario Outline: Builders work through the code tools, not the shell
+    Given a builder on a programming task in a session that <has>
+    When it needs to <need>
+    Then it uses <tool>
+
+    Examples:
+      | has                       | need                                   | tool                                                         |
+      | Serena and ast-grep       | find and replace a function's body     | Serena, never sed or a python heredoc                        |
+      | Serena and ast-grep       | change one call pattern in many files  | an ast-grep rewrite                                          |
+      | Serena and ast-grep       | read a file                            | the CLI's file read tool, never cat or head                  |
+      | Serena and ast-grep       | count failures in the test output      | a grep in the pipe, since no file is read or edited          |
+      | neither Serena nor ast-grep | find a symbol's callers              | grep, and its report says the tools were unavailable         |
+
   Scenario: Questions go out in one round
     Given the lead holds three open questions, none depending on another's answer
     When it asks the developer

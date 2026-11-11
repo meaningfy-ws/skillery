@@ -6,7 +6,7 @@ owner: {name: Meaningfy, email: info@meaningfy.ws}
 description: Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently
 bundles:
   - name: meaningfy-core
-    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, how to report a skill or agent problem to skillery, and your own rules for agents: load, learn and groom them (rulebook, rule-learner, rule-steward)"
+    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, how to report a skill or agent problem to skillery, your own rules for agents: load, learn and groom them (rulebook, rule-learner, rule-steward), and working from a repository of house material by its own rules (corpus-repository)"
     skills:
       - technical-writing
       - explanatory-writing
@@ -18,7 +18,8 @@ bundles:
       - rulebook
       - rule-learner
       - rule-steward
-    agents: []
+      - corpus-repository
+    agents: [technical-writer]
     mods: [no-poll-loops]
   - name: meaningfy-consulting
     description: "The advisory role: semantic-technologies coaching, the Decision Package, and executive communication"
@@ -61,7 +62,7 @@ bundles:
       - project-setup
       - ci-cd-delivery
       - meaningfy-release
-    agents: [epic-planner, implementer, code-reviewer]
+    agents: [epic-planner, team-lead, implementer, code-reviewer, release-manager]
     requires: [meaningfy-architecture]
   - name: meaningfy-devops
     description: "The operations role: provision and change servers as code (infrastructure-operations), run and deploy stacks (stack-operations), monitor, check daily, answer incidents and back up (service-reliability), and keep access and secrets safe (infrastructure-security); with an interactive devops agent, an unattended watch and an infrastructure reviewer"
@@ -72,6 +73,11 @@ bundles:
       - infrastructure-security
     agents: [devops-engineer, ops-watch, infra-reviewer]
     requires: [meaningfy-consulting]
+  - name: meaningfy-legal
+    description: "The legal role: draft, revise and align contracts and propose clause changes in your own contract repository (contract-practice), with Tolic the lawyer, a lead who works there with you and never sends, signs or registers without your confirmation"
+    skills:
+      - contract-practice
+    agents: [lawyer]
   - name: vault-assistant
     description: "The workflow bundle for people who keep a personal Obsidian vault: set it up (vault-setup), write notes one way (vault-conventions), run projects from charter to archive (vault-project, vault-resume, vault-capture), curate (vault-promote, vault-tidy), and keep a rhythm of plans and a morning note (vault-planning, vault-daily). Needs the external obsidian@obsidian-skills plugin and the company memory"
     skills:

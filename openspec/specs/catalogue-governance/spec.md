@@ -83,7 +83,11 @@ its `## Dispatch contract` section with the labels **Input**, **Output**, **Side
 bundle that lists an agent (per "Skills are organised into role bundles with single ownership") SHALL
 also list the agent's primary skill, the first non-namespaced, non-external entry of its `skills:`
 list. Each agent SHALL have `tests/features/agents/<name>.feature` containing a Scenario Outline with
-Examples and a Background that names every entry of the agent's `skills:` list.
+Examples and a Background that names every entry of the agent's `skills:` list. Each agent SHALL
+carry a persona name: its role line reads `You are **<Persona> the <role>**.` and its description
+starts with the same `<Persona> the <role>`, where `<Persona>` is one capitalised ASCII word; its file
+and `name` stay the role (named-workers-and-legal DEC-4, D-1). Every `lead` agent's `tools` list
+SHALL contain `Agent` (DEC-7, D-2).
 
 #### Scenario: An agent without a declared type is rejected
 - **WHEN** the validator reads an agent whose frontmatter has no `type` field
@@ -131,9 +135,18 @@ Examples and a Background that names every entry of the agent's `skills:` list.
   its Background omits one of the agent's skills
 - **THEN** the validator names the agent and the missing element
 
+#### Scenario: An agent without a persona name is rejected
+- **WHEN** an agent's role line reads `You are the **Lawyer**.`, or its persona is `Ionuț`, or its
+  description does not start with the persona phrase of its role line
+- **THEN** the validator names the agent and the persona defect
+
+#### Scenario: A lead that cannot delegate is rejected
+- **WHEN** an agent of type `lead` has a `tools` list without `Agent`
+- **THEN** the validator reports that a lead agent's tools must include `Agent`
+
 #### Scenario: The catalogue's own agents conform
 - **WHEN** the validator runs over the repository
-- **THEN** `code-reviewer`, `epic-planner` and `implementer` produce no agent-standard errors
+- **THEN** every agent in `agents/` produces no agent-standard errors
 
 ### Requirement: Colliding triggers are proven by near-miss probes
 
