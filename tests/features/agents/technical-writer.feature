@@ -19,5 +19,5 @@ Feature: technical-writer writes documentation and has a cold reader test it
       | request                              | does                                                                              |
       | document how a module works          | loads `technical-writing` first, reads the module and drafts the explanation      |
       | test the finished draft              | dispatches a cold-reader subagent given the draft only and reports what it missed |
-      | fix a bug found while documenting    | refuses, changes no code and leaves a note for `team-lead`                        |
+      | fix a bug found while documenting    | refuses, changes no code and leaves a note for the person                        |
       | change a spec to match the docs      | refuses and leaves the spec unchanged                                             |
