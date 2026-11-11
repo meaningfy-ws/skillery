@@ -60,6 +60,11 @@ probes:
     expect: guardrails
   - probe: "which model should this subagent run on, haiku, sonnet or opus"
     expect: guardrails
+  - probe: "which tools must the builder use to read and edit code, Serena and ast-grep or sed"
+    expect: epic-delivery
+  - probe: "should I spawn a subagent to search the codebase with ast-grep"
+    expect: guardrails
+    near_miss_of: epic-delivery
   - probe: "which review lenses and checker does a SMALL epic stage need"
     expect: epic-delivery
     near_miss_of: guardrails
