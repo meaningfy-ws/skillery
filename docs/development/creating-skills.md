@@ -85,6 +85,32 @@ The catalogue ships to Claude Code and opencode from one source. Keep the body C
 The rules and their gates are in
 [`AGENTS.md` → Dual-CLI authoring rules](../../AGENTS.md#dual-cli-authoring-rules).
 
+### Activity skills
+
+There is one Skill type, in two kinds. A skill that ships a workflow file in `assets/workflows/` is
+an **activity skill**: it owns a kind of work with phases a person walks through, such as
+`meaningfy-release` (branch, bump, validate, merge, publish, back-merge). Any other skill is a
+**know-how skill**: it holds a craft that several activities use. `bdd-gherkin` is a know-how
+skill: it has no `assets/workflows/`, and its craft, writing scenarios, is used inside epic shaping
+and epic delivery, which are the activities.
+
+Give a skill a workflow when its job has phases that a person walks through in order, each phase
+with something to check (a file written, a command run), and the same phases come back each time.
+A craft used inside other people's phases stays know-how. One activity skill hosts one workflow,
+and a `lead` agent's primary skill is an activity skill
+([`agent-template.md`](agent-template.md#workers)).
+
+Adding a workflow takes three edits:
+
+1. The file `skills/<skill>/assets/workflows/<name>.workflow.json`, with `"owner": "<skill>"`
+   (schema in [`mods.md`](mods.md#workflow-files)).
+2. Its file name in TC-16's list of default files in
+   [`mods/navigator/lib/workflow.test.ts`](../../mods/navigator/lib/workflow.test.ts).
+3. A row in the table of [`workflows.md` § *Workflow files*](workflows.md#workflow-files), naming
+   its lead.
+
+Then `make bundles` copies it into navigator's data, and `make mods` and `make validate` check it.
+
 ### Scripts, assets and third-party content
 
 Keep scripts small, deterministic and with their dependencies stated. Content taken from outside

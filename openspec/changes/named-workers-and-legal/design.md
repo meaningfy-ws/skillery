@@ -277,6 +277,13 @@ its checks, never edit what it declares immutable, report what its instructions 
 None. The owner confirmed D-5 (`team-lead`), D-8 (skill names), D-9 (no config file), D-10 (seven
 phases, no default gates) and D-13 (no rename) on 2026-11-11.
 
+- **D-20 — Stage 1 as built (lead's calls, 2026-11-11).** (a) The lead wrote stage 1 itself, no
+  builder subagents: docs and one small lint check, cheaper than five briefs; the review set and
+  checker still run. (b) The four leads not yet built are marked "(planned)" in `workflows.md`'s
+  *Lead* column, not "stage 2": a durable doc should not name a stage of a change. (c) The pointer
+  from `agent-template.md` § *Workers* to `corpus-repository` lands with that skill in task 3.1, so
+  no doc names a skill that does not exist yet. (d) Task 1.4's agent change is behavioural, so
+  `system-architect.feature` and `conceptual-modeller.feature` each gain a delegation scenario.
 - **D-19 — PLAN accepted below the gate.** Four independent clarity-gate runs scored 8.5, 8.6, 8.7
   and 8.5; each found new wording or fact slips, all fixed in the PLAN (the last scorer estimated
   about 9.5 after its fixes; there was no fifth run). Owner's answer (2026-11-11): accept and

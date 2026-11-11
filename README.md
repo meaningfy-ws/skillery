@@ -34,12 +34,12 @@ each one serves, and which skills depend on which — see
 
 | Bundle | Skills | Install if you… |
 |--------|--------|-----------------|
-| **meaningfy-core** | **technical-writing** · **explanatory-writing** · **writing-antipatterns** · **meaningfy-voice** · **meaningfy-git-workflow** · **guardrails** · **skillery-feedback** · **rulebook** · **rule-learner** · **rule-steward** | …do anything (cross-cutting basics) |
+| **meaningfy-core** | **technical-writing** *(workflow)* · **explanatory-writing** · **writing-antipatterns** · **meaningfy-voice** · **meaningfy-git-workflow** · **guardrails** · **skillery-feedback** · **rulebook** · **rule-learner** · **rule-steward** | …do anything (cross-cutting basics) |
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **executive-communication** | …do advisory work |
-| **meaningfy-sales** | **proposal-writing** · **estimation** · **sales-operations** · **sales-pipeline-custody** · **sales-accounts** · **sales-qualification** · **sales-conversations** | …write proposals and offers, estimate work, run the daily sales grooming of the Odoo pipelines, qualify a deal, or prepare a meeting and its follow-up (agent setup: [`docs/environment/sales-agent.md`](docs/environment/sales-agent.md)); requires `meaningfy-consulting` |
-| **meaningfy-architecture** | **architecture** · **conceptual-modelling** · **modelling-conventions** · **linkml-engineering** · **formal-reasoning** | …design systems or model a domain |
-| **meaningfy-building** | **epic-planning** · **epic-delivery** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** | …build software with the spine |
-| **meaningfy-devops** | **infrastructure-operations** · **stack-operations** · **service-reliability** · **infrastructure-security** | …operate servers and stacks, run the daily check-up, answer alerts or review an infrastructure change (agent setup: [`docs/environment/devops-agents.md`](docs/environment/devops-agents.md)); requires `meaningfy-consulting` |
+| **meaningfy-sales** | **proposal-writing** · **estimation** · **sales-operations** *(workflow)* · **sales-pipeline-custody** · **sales-accounts** · **sales-qualification** · **sales-conversations** | …write proposals and offers, estimate work, run the daily sales grooming of the Odoo pipelines, qualify a deal, or prepare a meeting and its follow-up (agent setup: [`docs/environment/sales-agent.md`](docs/environment/sales-agent.md)); requires `meaningfy-consulting` |
+| **meaningfy-architecture** | **architecture** *(workflow)* · **conceptual-modelling** *(workflow)* · **modelling-conventions** · **linkml-engineering** · **formal-reasoning** | …design systems or model a domain |
+| **meaningfy-building** | **epic-planning** *(workflow)* · **epic-delivery** *(workflow)* · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** *(workflow)* | …build software with the spine |
+| **meaningfy-devops** | **infrastructure-operations** *(workflow)* · **stack-operations** · **service-reliability** · **infrastructure-security** | …operate servers and stacks, run the daily check-up, answer alerts or review an infrastructure change (agent setup: [`docs/environment/devops-agents.md`](docs/environment/devops-agents.md)); requires `meaningfy-consulting` |
 | **meaningfy-navigator** *(Claude Code only)* | the **navigator** mod — no skills | …want to see, while you work, which change you are on, its task progress and which skills and subagents run (CLI and desktop; see [`docs/environment/navigator.md`](docs/environment/navigator.md)) |
 | **vault-assistant** *(workflow)* | **vault-setup** · **vault-conventions** · **vault-project** · **vault-resume** · **vault-capture** · **vault-promote** · **vault-tidy** · **vault-planning** · **vault-daily** | …keep a personal Obsidian vault; needs a vault, the external `obsidian@obsidian-skills` plugin and the company memory (see [`docs/environment/vault-assistant.md`](docs/environment/vault-assistant.md)) |
 
@@ -50,6 +50,13 @@ above, and ship with the bundle of their primary skill: `epic-planner`, `impleme
 `infra-reviewer` with **`meaningfy-devops`**. `meaningfy-building` requires
 `meaningfy-architecture` (install both); every bundle's requirements are in the
 [catalogue map](docs/skill-inventory.md).
+
+**Workers.** An agent with a persona name is a *worker*: it walks the workflow of its primary skill,
+a skill marked *(workflow)* above, and each workflow has one lead worker
+([`docs/development/workflows.md`](docs/development/workflows.md#workflow-files)). What a worker is
+and how one is written: [§ *Workers* of the agent template](docs/development/agent-template.md#workers);
+the agents: [the roster](docs/development/catalogue-architecture.md#agent-roster). A *workflow
+bundle* such as `vault-assistant` is a different thing: a bundle for one personal routine.
 
 > **Moved:** `proposal-writing` and `estimation` left `meaningfy-consulting` for the new
 > **`meaningfy-sales`** bundle. Install it with `/plugin install meaningfy-sales@meaningfy-skillery`

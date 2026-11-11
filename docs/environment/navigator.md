@@ -72,7 +72,8 @@ verify, cold-read, publish). Loading `technical-writing` in the middle of a buil
 *documentation*; loading `epic-delivery` or `openspec-apply-change` shows the build again. EPIC
 shaping has the phases explore, variants, decide, propose, design and revise; EPIC delivery has
 ready, apply, accept and archive; its variant `brownfield` (tasks and no design) has apply, accept and
-archive. Each file lists its own phases.
+archive. Each file lists its own phases, and each workflow has one lead agent
+([`workflows.md`](../development/workflows.md#workflow-files) names it).
 It picks the workflow from the skills you load and the subagents you start; with an open change and nothing else loaded, it
 is EPIC delivery, starting at `ready`. The phase follows the skills you load and the state of the change's files: ticking
 the last task of `tasks.md` moves `apply` to `accept`, and `accept` passes its gate when

@@ -15,6 +15,19 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 - `epic-delivery`: the acceptance demo is no longer provisional — its first real run (lean-delivery)
   was accepted. The validation review and the scenario sign-off stay provisional.
+- `system-architect` and `conceptual-modeller` may now spawn subagents (they gain the `Agent` tool,
+  `task` on opencode) for a codebase or vocabulary survey or the check of a finished artefact; they
+  still never hand their whole job to another agent. Reinstall `meaningfy-architecture` to get it.
+- Authors: every `lead` agent must list `Agent` in its `tools` (`make validate` fails otherwise). The
+  agent template has a new § *Workers* (persona names, activity skills, one lead per workflow,
+  material kept in its own repository); `creating-skills.md` explains activity and know-how skills
+  and the three edits that add a workflow; `workflows.md` names each workflow's lead. The README
+  marks the skills that host a workflow *(workflow)*.
+
+### Fixed
+
+- `workflows.md` no longer says strict mode will block "with its stage 3"; navigator blocks in
+  strict mode today.
 
 ## [3.12.0] - 2026-11-10
 
