@@ -13,8 +13,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Fixed
 
-- CI: the SWI-Prolog install retries (apt `Acquire::Retries` and three attempts), so a passing apt
-  mirror outage no longer fails `validate`. A PR now runs `validate` once, not twice: `push`
+- CI: SWI-Prolog is installed from a package cache (from Ubuntu's own mirror on a cache miss, with a
+  5-minute limit), so an apt mirror outage no longer stalls or fails `validate`. A PR now runs `validate` once, not twice: `push`
   triggers only on `develop` and `main`.
 
 ### Changed
