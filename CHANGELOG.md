@@ -22,6 +22,10 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 - `epic-delivery`: the acceptance demo is no longer provisional — its first real run (lean-delivery)
   was accepted. The validation review and the scenario sign-off stay provisional.
+- `epic-delivery` and `project-setup`'s AGENTS template: Serena (symbol-level reading and editing)
+  and ast-grep (structural search and rewrite) are now mandatory on every programming task; grep is
+  the declared fallback only. Files are read and edited with the CLI's file tools, never with
+  `cat`, `sed` or `python` heredocs.
 
 ## [3.12.0] - 2026-11-10
 
