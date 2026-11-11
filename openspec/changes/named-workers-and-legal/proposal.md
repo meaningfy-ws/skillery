@@ -2,8 +2,8 @@
 
 ## Appetite
 
-VERY LARGE, delivered in three stages (DEC-14). It touches every agent, adds five, adds a bundle and
-moves the agent standard.
+VERY LARGE, delivered in three stages (DEC-14). It touches every agent, adds four and turns one
+into a lead, adds a bundle and moves the agent standard.
 
 ## Why
 
@@ -68,7 +68,7 @@ Outcomes, by stage:
   `name: lawyer`; the description opens and the role line reads "Tolic the lawyer". No diacritics.
   Skill names stay precise and purpose-named, never personas. Rejected: `name: tolic`,
   `name: tolic-lawyer`.
-- **DEC-5**: Names: Vasile the planner (`epic-planner`), Radu the team lead (`delivery-lead`), Nelu
+- **DEC-5**: Names: Vasile the planner (`epic-planner`), Radu the team lead (`team-lead`, design D-5), Nelu
   the release manager (`release-manager`), Viorica the technical writer (`technical-writer`), Ionut
   the implementer (`implementer`), Mircea the reviewer (`code-reviewer`), Ana the architect
   (`system-architect`), Doina the modeller (`conceptual-modeller`), Sandu the devops engineer
@@ -91,28 +91,29 @@ Outcomes, by stage:
   its `AGENTS.md`, not restated. Tool restrictions enforce what they can.
 - **DEC-9**: The corpus is the owner's contract system, starting with the private repository
   `meaningfy-ws/legal-agreements`; it may later split into a library and instance repositories
-  (the owner's spec). Skillery names the repository in one configuration file and follows its
-  `AGENTS.md` and docs; it never restates the clause model, drafting style, lifecycle or lint
+  (the owner's spec). Tolic works in a session started in that repository (design D-9: no
+  configuration file) and follows its `AGENTS.md` and docs; it never restates the clause model, drafting style, lifecycle or lint
   rules, and never hard-codes the repository's layout. Rejected: clauses or house conventions as
   skills; clauses as `rulebook` rules; an Overleaf project as the corpus.
 - **DEC-10**: Tolic works through GitHub and Overleaf only, for now: git (the corpus repository, a
   branch and PR per contract) is the system of record, and Overleaf is reached through its
   connector and git sync. No Odoo, read or write, in this EPIC. Supersedes Q-10.
 - **DEC-11**: Every workflow has exactly one lead worker. `epic-planner` becomes a lead (Vasile);
-  new leads `delivery-lead` (primary `epic-delivery`), `release-manager` (primary
+  new leads `team-lead` (primary `epic-delivery`), `release-manager` (primary
   `meaningfy-release`) and `technical-writer` (primary `technical-writing`). Rejected: a shaping
   lead beside a delegated planner.
 - **DEC-12**: Legal work has its own **contract** workflow, owned by the legal activity skill, whose
-  phases follow the instance lifecycle (create → draft → align → review → send → negotiate →
-  sign and register → harvest) and whose gates are files and tags in the contract repository, so
-  that repository may turn strict. The epic workflows stay for software change.
+  phases follow the instance lifecycle (intake → draft → align → review → negotiate, which
+  includes sending → sign, which includes registering → harvest; design D-10). The default
+  workflow has no gates; the contract repository adds its own gates (its files and tags) and may
+  turn strict with its own workflow file. The epic workflows stay for software change.
 - **DEC-13**: Tolic has two skills. The **legal activity skill** owns the contract workflow and the
   judgement no repository can hold: the intake interview, skeleton and variant choice by reading
   the library, semantic alignment with `\Parent` and `\BackToBack` contracts, sorting counterparty
   changes (legal effect → variant or override; wording → version), proposals with sources and
   reasons, and when to call for a qualified lawyer. The **corpus skill** is **generic**: how any
-  worker operates an external material repository by that repository's own instructions — find it
-  from configuration, read its `AGENTS.md` and docs before acting, use its own commands, stop on its
+  worker operates an external material repository by that repository's own instructions — work in
+  the repository the session runs in or one the person names (design D-9), read its `AGENTS.md` and docs before acting, use its own commands, stop on its
   checks, never edit what it declares immutable. It names no contract specifics and lives in
   `meaningfy-core` (Claude's call: a generic skill belongs to the bundle everyone installs). Final
   names are set in the PLAN, purpose-named per DEC-4. Luxembourg law is not a separate skill.
@@ -144,8 +145,13 @@ Outcomes, by stage:
   `sales-agent` (`sales-pipeline-custody`); that boundary is a later change, not this one.
 - **Renaming is not a rename.** DEC-4 keeps every dispatch name. Converting `epic-planner` to a lead
   does change how it is invoked: every caller that dispatches it must be found and changed.
-- **One lead per workflow vs scheduled agents.** `devops` has a lead and a scheduled agent; the rule
-  counts leads only.
+- **One lead per workflow vs scheduled agents.** The lead worker is the agent whose primary skill
+  owns the workflow: a `lead`, or a `scheduled` agent that also runs human sessions (`sales-agent`
+  leads sales). `devops` has both a lead and a scheduled agent; only `devops-engineer` owns its
+  workflow, so it is the one lead (design D-3).
+- **A lead is the main session.** Navigator activates a workflow when a skill is loaded or a
+  subagent is spawned, not when a lead starts, so every lead loads its primary skill first (design
+  D-15).
 - **opencode.** Navigator is Claude Code only; on opencode a worker has skills and refusals but no
   workflow gates. Recorded, not solved.
 - **Public repository.** Skillery is public: no clause text, counterparty name, contract or the
@@ -171,17 +177,23 @@ Outcomes, by stage:
 
 - Developer and user docs: the worker concept, activity vs know-how skills, one lead per workflow,
   leads may delegate, persona names, external corpus repositories with their own rules; README
-  marks workflow-carrying skills and resolves the "workflow bundle" name clash; the stale
-  strict-mode line is fixed.
-- Agent standard (`docs/development/agent-template.md`) and its lint: persona name in description
-  and role line; a lead's primary skill is an activity skill; every lead may delegate.
-- All ten agents gain persona names; `system-architect` and `conceptual-modeller` gain `Agent`.
-- **BREAKING**: `epic-planner` changes from `delegated` to `lead`; callers that dispatch it change.
-- New lead agents `delivery-lead`, `release-manager`, `technical-writer`, each named in its
+  marks workflow-carrying skills and tells a *workflow bundle* apart from a workflow file; the
+  stale strict-mode line is fixed.
+- Agent standard (`docs/development/agent-template.md`) and three new lint checks: persona name in
+  description and role line; every lead lists `Agent`; every default workflow has exactly one lead
+  worker, and a lead's primary skill hosts a workflow.
+- All ten agents gain persona names; `system-architect` and `conceptual-modeller` gain `Agent`;
+  every lead loads its primary skill first.
+- **BREAKING**: `epic-planner` changes from `delegated` to `lead` on both CLIs (a primary agent on
+  opencode); callers that dispatch it change.
+- New lead agents `team-lead`, `release-manager`, `technical-writer`, each named in its
   workflow's `activate`.
-- New bundle `meaningfy-legal`: the `lawyer` agent (Tolic), the legal activity skill with the
-  `contract` workflow, and a configuration file naming the corpus repository; a generic corpus skill
-  in `meaningfy-core`; trigger probes, Gherkin scenarios, use cases, Quick Starts and README rows.
+- New bundle `meaningfy-legal`: the `lawyer` agent (Tolic), the `contract-practice` skill with the
+  `contract` workflow; the generic `corpus-repository` skill in `meaningfy-core`; two `purpose`
+  facet values; Overleaf registered as an external dependency; trigger probes, Gherkin scenarios,
+  use cases, Quick Starts and README rows.
+- UC-W16 *Contracts and NDAs* and the roadmap re-pointed from the planned `contract-drafter` to
+  `lawyer` and `meaningfy-legal`.
 
 ## Capabilities
 
@@ -195,16 +207,21 @@ Outcomes, by stage:
 - `catalogue-governance`: agents conform to the standard (persona names, every lead may delegate, a
   lead's primary skill is an activity skill); the activity/know-how distinction within Skill.
 - `workflow-definitions`: every workflow names exactly one lead worker; the contract workflow.
-- `catalogue-architecture`: every new skill and agent serves a use case.
+- `build-lifecycle`: the build-loop agents named in the lifecycle doc include the new leads.
 
 ## Impact
 
-- `agents/*.md` (all ten), five new agent files, `tests/features/agents/*.feature`.
-- `skills/*/assets/workflows/*.workflow.json` (`activate.agents`), a new contract workflow.
-- `bundles.yaml`, `make bundles` outputs, `facets.yaml` (`area: legal` exists), `docs/skill-inventory.md`.
-- `docs/development/` (agent-template, governance, workflows, creating-skills, skill-template),
-  `docs/environment/navigator.md`, `README.md`, use-case entries, `CHANGELOG.md`.
-- `tools/repo_lint/lint.py` (agent conformance), `tools/opencode-agent-map.json` if lead mapping moves.
+- `agents/*.md` (all ten), four new agent files, `tests/features/agents/*.feature`.
+- `skills/*/assets/workflows/*.workflow.json` (`activate.agents`), a new contract workflow,
+  `mods/navigator/lib/workflow.test.ts` (TC-16's list).
+- `bundles.yaml`, `make bundles` outputs, `facets.yaml` (two `purpose` values), `dependencies.yaml`
+  (Overleaf), `tests/trigger_probes.yaml`, `docs/skill-inventory.md` and `docs/use-cases.md`
+  (regenerated).
+- `docs/development/` (agent-template, governance, workflows, creating-skills, skill-template,
+  catalogue-architecture), `docs/environment/navigator.md`, `docs/practice/` pages naming
+  `epic-planner`, `docs/future-features.md`, `README.md`, `use-cases/UC-W16`, `UC-W18`, `UC-W19`,
+  `CHANGELOG.md`.
+- `tools/repo_lint/lint.py` (three checks, `ALL_AGENT_NAMES`), `tests/test_repo_lint_negative.py`.
 - External: `meaningfy-ws/legal-agreements` (private), Overleaf access on the user's machine.
 
 ### Golden-thread parents

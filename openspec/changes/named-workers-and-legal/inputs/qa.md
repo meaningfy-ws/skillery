@@ -112,6 +112,16 @@ Session of 2026-11-11, owner and Claude.
   now."
 - → DEC-9, DEC-13
 
+## Q-22: Reconcile the EPIC with the PLAN
+- Asked because: the owner asked to "finally reconcile epic, once you are done" after the PLAN was
+  attacked and gated three times (8.5, 8.6, 8.7; every gap fixed).
+- Answer (logged EPIC amendments, not a re-shape — the bet is unchanged): DEC-5/DEC-11
+  `delivery-lead` → `team-lead` (D-5); DEC-9 no configuration file (D-9); DEC-12 seven phases, no
+  default gates (D-10); DEC-13 corpus skill works in the session's repository; Appetite counts four
+  new agents; Rabbit-holes gain the lead-worker definition (D-3) and lead activation (D-15); What
+  Changes and Impact list the three lint checks, Overleaf dependency, facets and touched files.
+  Owner to confirm D-5, D-8, D-9, D-10, D-13 before stage 1.
+
 ## Q-21: May Tolic read Odoo?
 - Answer: "let's stick to Overleaf and GitHub for now."
 - → DEC-10, DEC-8
