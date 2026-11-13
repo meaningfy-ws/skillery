@@ -365,4 +365,12 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
      newest folder; the Gherkin steps that need stage 3's display say so.
   8. *Docs agree with D-19* (L2): the spike's verdict and D-4's text point to D-19.
   9. *A live check before merge* (L2): recorded in `evidence/live-check-stage-1.md`.
+  10. *Adversarial tester (12 failing tests, all accepted)*: `revive` validates each field's
+      shape and migrates old subagents (`skills: []`, `rootPath: null`), so an older atom neither
+      throws nor keeps a wrong type; a change archived twice follows the newest folder; a
+      `SpawnResolved` before its `SubagentSpawned` keeps the preloads; a preload is not lost
+      while a loaded lead call of the same name is in flight; `decideRoot` and `relativeTo`
+      normalise paths (trailing `/`, `..`): a file that leaves the root is not relative; D-3's
+      "named later" means the id's **last** occurrence in the branch (the lead's choice: the tail
+      of a branch name is its most specific part).
   Rejected: none.
