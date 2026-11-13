@@ -97,3 +97,62 @@ Feature: The navigator follows the work, not the launch directory
       When the lead accepts a warning
       Then the deviation is written to that worktree's "tenant-dump-restore" change
       And no other change or checkout is written
+
+  Rule: The epic-delivery phase moves on what happens to the followed change
+
+    # Traces to: workflow-definitions, "A merged pull request"
+    Scenario: A merged pull request
+      Given the followed branch "feature/tenant-dump-restore" has an open pull request
+      When the session runs "gh pr merge" and the pull request is then merged
+      Then the phase is "archive"
+
+    # Traces to: workflow-definitions, "A merged pull request" (D-5: --auto exits ok without merging)
+    Scenario: A merge that waits for its checks moves nothing
+      Given the followed branch "feature/tenant-dump-restore" has an open pull request
+      When the session runs "gh pr merge --auto" and the pull request stays open
+      Then the phase does not change
+
+    # Traces to: workflow-definitions, "An archived change"
+    Scenario: An archived change
+      Given the followed change "tenant-dump-restore" has all its tasks ticked
+      When its folder is moved into "openspec/changes/archive/" on the followed branch
+      Then the navigator still follows "tenant-dump-restore" and the phase is "archive"
+
+    # Traces to: navigator-follows-the-work D-21.5, session-navigation (archived change)
+    Scenario: An archived change offers no Accept and no Archive check
+      Given the followed change "tenant-dump-restore" is archived
+      Then the band offers no Accept and no Archive check
+      And accepting a deviation is refused, saying the change is archived
+
+    # Traces to: workflow-definitions, "Moving to the next change"
+    Scenario: Moving to the next change
+      Given the lead followed a merged change
+      When the lead moves to a worktree whose branch names "release-pipeline", with 2 of 5 tasks ticked
+      Then the band follows "release-pipeline" in "apply"
+      And none of the previous change's gates or warnings are shown
+      And no leave or enter warning is raised
+
+  Rule: Release commands start a release; a local tag does not
+
+    # Traces to: workflow-definitions, "Release commands start a release"
+    Scenario Outline: Release commands start a release
+      Given the skill "meaningfy-release" is not loaded
+      When the session <does>
+      Then the release workflow activates
+      And the band warns that "meaningfy-release" is not loaded
+
+      Examples:
+        | does                                   |
+        | creates a branch "release/1.0.0"       |
+        | runs "gh release create v1.0.0"        |
+        | pushes the tag "v1.0.0"                |
+
+    # Traces to: workflow-definitions, "A local tag is not a release"
+    Scenario Outline: A local tag is not a release
+      When the session <does>
+      Then the release workflow does not activate
+
+      Examples:
+        | does                                   |
+        | runs "git tag v1.0.0" without pushing  |
+        | deletes a tag                          |

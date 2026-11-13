@@ -15,7 +15,7 @@
     { "id": "accept", "owner": "epic-delivery", "expect": [],
       "gates": ["acceptance"], "enter": { "change": "tasks-done" } },
     { "id": "archive", "owner": "spec-stewardship", "expect": [{ "skill": "spec-stewardship", "by": "exit" }],
-      "gates": ["openspec"], "enter": { "skills": ["openspec-archive-change"], "change": "archived" } }
+      "gates": ["openspec"], "enter": { "skills": ["openspec-archive-change"], "change": ["archived", "merged"] } }
   ],
   "gates": {
     "clarity":    { "kind": "skill", "skill": "clarity-gate" },

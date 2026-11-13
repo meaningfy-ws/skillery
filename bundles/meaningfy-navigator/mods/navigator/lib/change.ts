@@ -1,6 +1,6 @@
 // Which change, its appetite and its progress (design §6.1). Pure: register.tsx reads the files.
 
-import type { Change, ChangePredicate, Group } from './state.ts'
+import type { Change, ChangePredicate, Group, NavState } from './state.ts'
 
 export type ChangeFiles = {
   id: string // an archived change's is its folder name, `<date>-<id>`
@@ -96,11 +96,16 @@ export function readChange(open: ChangeFiles[], archived: ChangeFiles[], lastCha
 }
 
 /** One predicate, or a list of which any holds (DD-38). */
-export const holdsAny = (p: ChangePredicate | ChangePredicate[], c: Change | null) =>
-  (Array.isArray(p) ? p : [p]).some(q => holds(q, c))
+export const holdsAny = (p: ChangePredicate | ChangePredicate[], c: Change | null, merged = false) =>
+  (Array.isArray(p) ? p : [p]).some(q => holds(q, c, merged))
 
-/** The fixed predicates a workflow's `change` field names (design §6.1, DD-38). */
-export function holds(p: ChangePredicate, c: Change | null): boolean {
+/** Whether the followed branch's pull request was seen merged (D-5). */
+export const branchMerged = (s: Pick<NavState, 'root' | 'mergedBranches'>) =>
+  s.root !== null && s.mergedBranches.includes(s.root.branch)
+
+/** The fixed predicates a workflow's `change` field names (design §6.1, DD-38). `merged` is whether the
+ *  followed branch was merged; it holds only with every task ticked, so a stage's merge moves nothing (D-5). */
+export function holds(p: ChangePredicate, c: Change | null, merged = false): boolean {
   if (p === 'none') return c === null
   if (!c) return false
   switch (p) {
@@ -110,8 +115,7 @@ export function holds(p: ChangePredicate, c: Change | null): boolean {
     case 'tasks-open': return c.total > 0 && c.done === 0
     case 'tasks-partial': return c.done > 0 && c.done < c.total
     case 'tasks-done': return c.total > 0 && c.done >= c.total
-    // shortcut: the mod does not watch archive/; the archive phase is entered by
-    // `openspec-archive-change` only. Upgrade if the phase is missed.
-    case 'archived': return false
+    case 'merged': return merged && c.total > 0 && c.done >= c.total
+    case 'archived': return c.archived
   }
 }

@@ -6,6 +6,7 @@ import type { EngineInterface } from 'claude-code'
 import { commandFor, validatePlan } from './lib/actions.ts'
 import { appetitesOf, archivedFolders, readChange, type ChangeFiles } from './lib/change.ts'
 import { ARCHIVE_DIR, acceptTarget, appendDeviation, archiveCheck, archivedRefusal, parseDeviations } from './lib/deviations.ts'
+import { PR_TIMEOUT_MS, prSignal, prViewArgs, type PrOutcome } from './lib/pr.ts'
 import { parseDiffAdded, parseStatus, planDrift } from './lib/plan-drift.ts'
 import { decideFallback, decideRoot, dirOf, editRoot, needsRoot, parseRevParse, rebranched, relativeTo, startRoot,
   type Tree } from './lib/root.ts'
@@ -15,6 +16,7 @@ import { resolveWorkflows, type Source } from './lib/workflow.ts'
 
 export const nav = atom({ plugin: 'meaningfy-navigator', key: 'state' } as const, EMPTY)
 export const SESSION_MOVES = ['clear', 'resume', 'branch']
+const PR_MERGE = /\bgh\s+pr\s+merge\b/
 
 export async function send($: EngineInterface, signal: Signal) {
   await update($, nav, s => reduce(revive(s), signal))
@@ -50,10 +52,26 @@ export async function rootOf($: EngineInterface, dir: string): Promise<Root | nu
   return tree && branch ? { ...tree, branch } : null
 }
 
+/** Is the followed branch's pull request merged (D-5)? Never blocks a hook: a failure or timeout says nothing. */
+export async function checkPr($: EngineInterface, id: string) {
+  const branch = (await state($)).root?.branch
+  if (!branch) return
+  let outcome: PrOutcome = null
+  try {
+    const r = await $.process.run(prViewArgs(branch), { cwd: (await state($)).root?.path, timeoutMs: PR_TIMEOUT_MS })
+    outcome = { exitCode: r.exitCode, stdout: r.stdout }
+  } catch {
+    // gh missing, offline or timed out: silent
+  }
+  const signal = prSignal(branch, outcome)
+  if (signal) await send($, { ...signal, id: `pr:${id}` })
+}
+
 /** The lead follows `root`: its workflows are re-read from there (a worktree's own docs/navigator applies). */
 async function followRoot($: EngineInterface, id: string, root: Root) {
   await send($, { kind: 'RootFollowed', id: `root:${id}`, root })
   await send($, await readWorkflowsSignal($, `workflows:${id}`))
+  await checkPr($, id)
 }
 
 /** A lead edit in another working tree of the same repository moves the root, before the edit is counted. */
@@ -77,7 +95,10 @@ export async function ensureRoot($: EngineInterface, turnId: string) {
   if (!root) return
   if (await $.fs.exists(root.path)) {
     const moved = rebranched(root, await branchOf($, root.path))
-    if (moved) await send($, { kind: 'RootFollowed', id: `branch:${turnId}`, root: moved })
+    if (moved) {
+      await send($, { kind: 'RootFollowed', id: `branch:${turnId}`, root: moved })
+      await checkPr($, `branch:${turnId}`)
+    }
     return
   }
   const to = decideFallback(root, false, await rootOf($, await $.session.root()))
@@ -109,6 +130,8 @@ export async function recordCall($: EngineInterface, e: ToolCall, isError: boole
   // A background call has not run yet when it returns: it passes no gate (DD-38).
   if (e.tool === 'Bash' && !e.run_in_background) {
     await send($, { kind: 'ToolRan', id: `tool:${e.tool_use_id}`, command: e.command ?? '', ok: !isError, at, ...agent })
+    // `--auto` exits ok without merging: the check then answers OPEN and adds nothing (D-5).
+    if (!isError && PR_MERGE.test(e.command ?? '')) await checkPr($, `merge:${e.tool_use_id}`)
   } else if (e.tool === 'Edit' || e.tool === 'Write' || e.tool === 'NotebookEdit') {
     await recordEdit($, e, e.tool === 'NotebookEdit' ? e.notebook_path : e.file_path, at)
   }
@@ -238,6 +261,7 @@ export async function start($: EngineInterface, settings: Settings, interactive:
   await send($, { kind: 'Started', id: sessionId, sessionId, ...settings, interactive })
   const root = startRoot(carry, await rootOf($, await $.session.root()))
   if (root) await send($, { kind: 'RootFollowed', id: `root:start:${sessionId}`, root })
+  await checkPr($, `start:${sessionId}`)
   await send($, await readThresholdsSignal($, `thresholds:${sessionId}`))
   await send($, await readWorkflowsSignal($, `workflows:${sessionId}`))
   await send($, await readChangeSignal($, `change:${sessionId}`))

@@ -4,7 +4,7 @@
 import type { ChangePredicate, NavState, Phase, Workflow } from './state.ts'
 
 export const CHANGE_PREDICATES: readonly ChangePredicate[] =
-  ['none', 'proposal', 'plan', 'tasks-no-design', 'tasks-open', 'tasks-partial', 'tasks-done', 'archived']
+  ['none', 'proposal', 'plan', 'tasks-no-design', 'tasks-open', 'tasks-partial', 'tasks-done', 'archived', 'merged']
 
 export type Source = { path: string; text: string }
 export type Origin = 'default' | 'repo'
@@ -112,6 +112,11 @@ function activateError(a: unknown, at: string): string | null {
   if (!isObj(a)) return `'${at}' must be an object`
   for (const [k, v] of Object.entries(a)) {
     if (k === 'skills' || k === 'agents') { if (!isStrs(v)) return `${at}.${k} must be a list of names` }
+    else if (k === 'commands') {
+      if (!isStrs(v)) return `${at}.commands must be a list of regular expressions`
+      const bad = (v as string[]).find(r => regexError(r))
+      if (bad !== undefined) return `${at}.commands: ${regexError(bad)}`
+    }
     else if (k === 'openChange' || k === 'interactive') { if (typeof v !== 'boolean') return `${at}.${k} must be true or false` }
     else if (k === 'change') { if (!CHANGE_PREDICATES.includes(v as ChangePredicate)) return `${at}.change: unknown '${String(v)}'` }
     else return `${at}: unknown key '${k}'`
@@ -281,6 +286,8 @@ const COMMIT = at(String.raw`git(?:\s+-[Cc]\s+\S+)*\s+commit\b`)
 const ARCHIVE = at(String.raw`openspec\s+archive\b`)
 const SHIP = at(String.raw`(?:git(?:\s+-[Cc]\s+\S+)*\s+push|gh\s+pr\s+create)\b`)
 const MERGE = at(String.raw`gh\s+pr\s+merge\b`)
+/** Whether a command matches a regex of `activate.commands`, at the start of a shell segment and outside quotes (D-7). */
+export const matchesCommand = (re: string, c: string) => new RegExp(`${SEG}(?:${re})`).test(unquote(c))
 export const isCommit = (c: string) => COMMIT.test(c)
 export const isArchive = (c: string) => ARCHIVE.test(c)
 export const isShip = (c: string) => SHIP.test(c) || ARCHIVE.test(c)

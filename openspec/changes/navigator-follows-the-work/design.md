@@ -406,3 +406,20 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
      (D-12 counts what `git diff` adds); the lead's figure in a `D-n` is that count.
   Rejected: a probe aimed at the agent itself (the probe schema targets skills only; recorded,
   not a gap of this change).
+- **D-24 — Stage 2 build: what the design left open.** Settled by the builders, accepted by the
+  lead.
+  1. *Hand-off from none:* a hand-off fires only when `lastChangeId` is set and the new id
+     differs; none → id needs no reset, because the earlier id → none read already did it. A
+     hand-off also empties `accepted`, which io re-sends each main turn.
+  2. *Activation needs an ok command*, matched at a shell-segment start with quoted text blanked,
+     so a commit message that quotes `gh release create v1` activates nothing.
+  3. *Release activation regexes:* `git (switch -c|checkout -b) (release|hotfix)/`;
+     `gh release create … v<d>`; `git push` carrying a `v<d>` token and no `-d`, `--delete`,
+     `-n` or `--dry-run`.
+  4. *The missing-skill warning is generic:* a command that activates workflow `w` whose owner
+     skill has not loaded raises `process:missing:<w>:<owner>`; the remedy filter clears it on load.
+  5. *A release command outranks an active epic-delivery:* the release workflow takes over.
+  6. *`PrMerged` carries an optional `at`* (default: the phase's start) to place the archive phase.
+  7. *A change switch needs no separate `gh` check:* a change follows its branch, so a switch
+     comes with a re-root or branch move, both of which run it. A failure, a missing `gh` or a
+     timeout says nothing.

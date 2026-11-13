@@ -1,6 +1,9 @@
 {
   "name": "release", "title": "Release", "owner": "meaningfy-release",
-  "activate": { "skills": ["meaningfy-release"], "agents": ["release-manager"] },
+  "activate": { "skills": ["meaningfy-release"], "agents": ["release-manager"], "commands": [
+    "git (switch -c|checkout -b) (release|hotfix)/",
+    "gh release create\\b[^&;|]*\\sv\\d",
+    "git push\\b(?![^&;|]*\\s(-d|--delete|-n|--dry-run)\\b)[^&;|]*\\sv\\d"] },
   "phases": [
     { "id": "branch", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["cut"], "enter": {} },
     { "id": "bump", "owner": "meaningfy-release", "expect": [], "gates": ["bumped"], "enter": {} },
