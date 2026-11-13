@@ -153,11 +153,12 @@ export function gatesAfterSkill(gates: Gates, w: Workflow, skill: string, at: nu
   return out
 }
 
-/** A passed skill gate goes stale when the PLAN's design changed since the last read (DD-14, D-15). */
-export function gatesAfterPlan(gates: Gates, w: Workflow): Gates {
+/** A passed skill gate goes stale when the PLAN's design changed since the last read (DD-14, D-15) and the
+ *  gate ran before design.md was written (D-29): a gate passed after the edit judged the new text. */
+export function gatesAfterPlan(gates: Gates, w: Workflow, designMtime?: number): Gates {
   const out = { ...gates }
   for (const [id, g] of Object.entries(w.gates ?? {})) {
-    if (g.kind === 'skill' && out[id]?.state === 'ok') out[id] = { ...out[id]!, state: 'stale' }
+    if (g.kind === 'skill' && out[id]?.state === 'ok' && out[id]!.at < (designMtime ?? NaN)) out[id] = { ...out[id]!, state: 'stale' }
   }
   return out
 }

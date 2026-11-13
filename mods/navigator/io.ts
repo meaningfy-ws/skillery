@@ -181,6 +181,7 @@ async function changeFolder($: EngineInterface, dir: string, name: string): Prom
     design: !!has('design.md'),
     // Ticking a box is not a PLAN change: only design.md stales a skill gate (DD-38, D-15).
     planHash: planHash(has('design.md') ? await $.fs.read(`${dir}/${name}/design.md`) : null),
+    designMtime: has('design.md')?.mtimeMs ?? 0, // the hash says whether it changed, the mtime when (D-29)
   }
 }
 

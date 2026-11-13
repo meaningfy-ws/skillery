@@ -6,7 +6,7 @@ import { ARCHIVED_CHANGES, OPEN_CHANGES } from './fixtures.test-helpers.ts'
 const APPETITES = ['TINY', 'SMALL', 'MEDIUM', 'LARGE', 'VERY LARGE', 'HUGE']
 
 const file = (id: string, tasks: string | null = null): ChangeFiles =>
-  ({ id, proposal: '## Appetite\n\nVERY LARGE — three stages.\n\n## Problem\nSMALL bits\n', tasks, design: false, planHash: '' })
+  ({ id, proposal: '## Appetite\n\nVERY LARGE — three stages.\n\n## Problem\nSMALL bits\n', tasks, design: false, planHash: '', designMtime: 0 })
 
 test('appetite: the longest name in the first paragraph under ## Appetite', () => {
   assert.equal(appetiteOf(file('x').proposal, APPETITES), 'VERY LARGE')
@@ -202,8 +202,8 @@ test('readChange: carries planHash', () => {
 })
 
 test('readChange: empty proposal and null tasks give a change with null appetite and zero progress', () => {
-  const r = readChange([{ id: 'x', proposal: '', tasks: null, design: false, planHash: '' }], [], null, 'x', APPETITES)
-  assert.deepEqual(r.change, { id: 'x', appetite: null, done: 0, total: 0, groups: [], planHash: '', hasDesign: false,
+  const r = readChange([{ id: 'x', proposal: '', tasks: null, design: false, planHash: '', designMtime: 0 }], [], null, 'x', APPETITES)
+  assert.deepEqual(r.change, { id: 'x', appetite: null, done: 0, total: 0, groups: [], planHash: '', designMtime: 0, hasDesign: false,
     hasTasks: false, archived: false })
 })
 

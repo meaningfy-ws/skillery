@@ -51,7 +51,7 @@ next step, and the warnings.
 ```
 apply · 3 Dump and restore 0/2 · Task 3.1 dump and restore → implementer (4m)
 next: /superpowers:test-driven-development                           [Next step]
-⚠ 2 warnings · clarity-gate has not run since its inputs changed      [Back on track] [Details] [Hide]
+⚠ 2 warnings · apply: clarity-gate has not run since its inputs changed  [Back on track] [Details] [Hide]
 ```
 
 - **now**: the phase, the current stage of `tasks.md` and its progress, then up to two running
@@ -63,7 +63,8 @@ next: /superpowers:test-driven-development                           [Next step]
   `⚠ <message>`). **Back on track** sits here when a skipped step has a fix. Skills loaded and left
   unused are not counted here; they show only in Details.
 
-A line with nothing to say is left out. **Details** unfolds the band:
+The next line is left out when there is no next step and nothing to offer there; with no open
+warning, the warnings line shows only its buttons. **Details** unfolds the band:
 
 ```
 reading ~/r/.claude/worktrees/tdr · feature/tenant-dump-restore
@@ -72,23 +73,28 @@ phases    EPIC delivery · ✓ ready · ● apply · ○ accept · ○ archive �
 appetite  MEDIUM · tasks 6/10 · reviewers 0/5 this turn · small stage: 2 reviewers allowed · 1.2M tokens
 skills    ready: epic-delivery · apply: test-driven-development, cosmic-python
 subagents implementer ×2 done · 3.1M tokens · 1 running · code-reviewer ×2 done · sonnet · 410.0k tokens
-⚠ clarity-gate has not run since its inputs changed (epic-delivery)
-[Accept: tools/repo_lint/lint.py changed; no task, design or pr…]
+[Accept: apply: clarity-gate has not run since its inputs ch…]
+⚠ context 82% mid-step (context_warn_percent)
 mode      ○ loose
 [Reconcile EPIC] [Archive check] [Validate] [Review] [Switch to strict] [Less]
 ```
 
 - **reading** names the working tree navigator reads (`~` for your home folder) and its branch.
 - **phases** ends with each gate's state: `✓` passed, `✗` failed, `·` not run since its inputs
-  changed, with the clarity score when there is one.
+  changed, with the clarity score when there is one. The stale `·` sits where `✓` or `✗` would, so
+  `clarity · 9.1` reads "clarity not run since its inputs changed, last score 9.1", not a separator.
 - **appetite** shows the reviewers the review set allows this turn, and `small stage: 2 reviewers
   allowed` when the stage is small enough for the smaller review (see
-  [`workflows.md`](../development/workflows.md#review-sets)); `diff truncated` when the branch's diff
-  was too long to read whole.
+  [`workflows.md`](../development/workflows.md#review-sets)). The figure is the branch's added lines
+  against its base (`git diff <base>...HEAD`), not the current stage's alone, so a branch that
+  carries several stages adds them up. `diff truncated` shows when the branch's diff was too long to
+  read whole.
 - **skills** are the ones you loaded, grouped by phase; **subagents** are grouped by type, with a
   model only when it differs from yours.
-- **warnings**: every warning, most severe first. A warning you can accept is a button labelled
-  `Accept: <its message>`; an accepted one reads `✓ accepted:`.
+- **warnings**: every warning, most severe first. A warning's message is `<phase>: <what>` for a
+  gate warning. A warning you can accept (every open `plan:` or `process:` one) is drawn only as its
+  button, `Accept: <its message>`, the label cut to 60 characters; any other open warning (such as
+  a hygiene one) is a `⚠ <message>` line; an accepted one reads `✓ accepted: <message>`.
 - **Less** folds the band again.
 
 ## Which change it follows
@@ -99,7 +105,7 @@ follows `tenant-dump-restore`, `feature/atomic-commit-stage-1` follows `atomic-c
 two ids fit, the longer one wins (`docs/shape-navigator-follows-the-work` follows
 `navigator-follows-the-work`, not `navigator`). A branch that names no open change follows none; it
 never guesses the most recently edited one. An archived change is followed only if this session was
-already following it, so the band stays on a change you just archived; Accept and Archive check
+already following it and the branch still names it, so the band stays on a change you just archived; Accept and Archive check
 are not offered on it.
 
 When the change followed switches (a new branch, another worktree), the gates and the warnings of
@@ -286,7 +292,7 @@ to loose, or try strict in a loose one. The next session follows the repository 
 | **Back on track** | the command that puts right the oldest open process warning (a skipped step) | such a warning, on the warning line |
 | **Compact now** / **Fresh session** | `/compact` with what to keep / `/clear` | when offered, on the `next:` line |
 | **Details** / **Less** | unfolds / folds the band | folded / unfolded |
-| **Accept: <message>** | `/navigator accept <key> "<reason>"`, asking the reason; the dialog names the message | each open drift warning (Details) |
+| **Accept: <message>** | `/navigator accept <key> "<reason>"`, asking the reason; the dialog names the message | each open plan or process warning (Details) |
 | **Reconcile EPIC** | `/openspec-update-change <id>`, then `/clarity-gate <id>` | plan drift is open (Details) |
 | **Archive check** | `/navigator check` | a change is open and not archived (Details) |
 | **Validate** | `/navigator validate`: the phase's gate commands, such as `make validate` | the phase has one (Details) |

@@ -55,7 +55,7 @@ What the atom holds beyond the change, the phase and the warnings (the decisions
 | `lastChangeId` | the change last followed; an archived change is matched only when its id equals it, and a new id is a hand-off |
 | `mergedBranches` | branches `gh pr view` answered `MERGED` for, this session |
 | `skillCalls` | `Skill` tool calls in flight, with their `agentId` (`null` for the lead) |
-| `pendingSpawns` | `agent.spawn` calls not yet resolved, keyed by `tool_use_id` |
+| `pendingSpawns` | `agent.spawn` calls not yet resolved: an array, one entry per call, matched by its `toolUseId` |
 | `subagents[]` | one entry per subagent; `rootPath` is its own working tree (from `$.session.cwd()` in its first tool call), `skills` the skills loaded in it |
 | `turnEvents[]` | skill, tool and spawn events, each with its `agent` (`main` or the id), for the unused check |
 

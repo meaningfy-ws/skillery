@@ -158,12 +158,10 @@ change the limit or the groups in its own `docs/navigator/epic-delivery.workflow
 
 #### Delivery decisions
 
-A decision the lead takes while delivering (a small-stage review, a correction found while
-building) is recorded as a `D-n` under a `## Delivery decisions` heading at the end of the change's
-`design.md`. That section is not part of the PLAN the clarity gate scored: navigator hashes
-`design.md` without it, so recording a delivery decision does not mark the clarity gate stale,
-while an edit anywhere else in `design.md` does. The reviewer that merges lenses
-(`code-reviewer`) reads the cited `D-n` there to confirm it.
+Navigator hashes `design.md` without its `## Delivery decisions` section, so recording a delivery
+decision does not mark the clarity gate stale, while an edit anywhere else in `design.md` does. A
+clarity-gate run after the last `design.md` edit, even in the same turn, is not marked stale either. What gets
+recorded there, and when, is owned by [`epic-delivery`](../../skills/epic-delivery/SKILL.md).
 
 ## Command → driving Meaningfy discipline
 

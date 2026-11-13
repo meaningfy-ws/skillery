@@ -492,3 +492,17 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
   read. The hash lives on `state.change`, which already revives. The band check (3.7) and the
   lawyer's trial (4.8) are waived by the owner (`evidence/band-check.md`,
   `evidence/lawyer-trial.md`).
+- **D-29 — Close review (PR #204): accepted findings.** Two passes (code L1–L5, docs cold read).
+  1. *The hash says whether, the mtime says when* (important): a skill gate passed in the turn
+     that edited `design.md` was staled at that turn's end. An ok skill gate now goes stale when
+     the hash changed **and** the gate ran before `design.md`'s mtime; both travel on the change.
+     D-28's known limit is gone.
+  2. *The first decision does not stale the gate*: the strip trims trailing whitespace, so a
+     section born with its blank line hashes like the file before it; the heading matches
+     without regard to case.
+  3. *Docs*: the Details example uses a warning as the band draws it (an acceptable one as its
+     Accept button, the phase prefix included, no owner suffix); "each open plan or process
+     warning"; an archived change is followed only while the branch still names it; the stale
+     glyph explained; the empty-line rule as the band draws it; the review figure is the
+     branch's added lines; *Delivery decisions* in workflows.md keeps the navigator's fact and
+     points to `epic-delivery` for the rest.
