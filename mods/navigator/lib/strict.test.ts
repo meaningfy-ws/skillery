@@ -12,7 +12,7 @@ const path = 'skills/epic-delivery/assets/workflows/epic-delivery.workflow.json'
 const { workflows } = resolveWorkflows([{ path, text: readFileSync(join(REPO, path), 'utf8') }], [])
 let n = 0
 const id = () => `s${++n}`
-const change: Change = { id: 'x', appetite: 'SMALL', done: 3, total: 9, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false }
+const change: Change = { id: 'x', appetite: 'SMALL', done: 3, total: 9, groups: [], planHash: '', hasDesign: true, hasTasks: true, archived: false }
 const started = (): Signal => ({ kind: 'Started', id: id(), sessionId: 's', band: 'folded', statusLine: true, interactive: true })
 const read = (mode: 'loose' | 'strict'): Signal[] => [
   { kind: 'WorkflowsRead', id: id(), workflows, errors: [], mode, at: 1 },

@@ -16,7 +16,7 @@ const TDR: Root = { path: '/r/.claude/worktrees/tdr', common: '/r/.git', branch:
 const BESIDE: Root = { path: '/r-x', common: '/r/.git', branch: 'feature/x' }
 let n = 0
 const send = (s: NavState, sig: Record<string, unknown>): NavState => reduce(s, { id: `f${n++}`, ...sig } as unknown as Signal)
-const change = (archived: boolean) => ({ id: 'nav', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: true,
+const change = (archived: boolean) => ({ id: 'nav', appetite: null, done: 0, total: 0, groups: [], planHash: '', hasDesign: true,
   hasTasks: true, archived })
 const warn = { key: 'process:gate:x', message: 'm', remedy: null, owner: '' }
 

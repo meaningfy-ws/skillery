@@ -9,7 +9,7 @@ const rowOf = (s: NavState, label: string) => bandView(s, env).details.rows.find
 
 const apply: NavState = {
   ...EMPTY,
-  change: { id: 'navigator', appetite: 'VERY LARGE', done: 12, total: 40, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false },
+  change: { id: 'navigator', appetite: 'VERY LARGE', done: 12, total: 40, groups: [], planHash: '', hasDesign: true, hasTasks: true, archived: false },
   openChanges: 1,
   phase: 'apply',
 }

@@ -19,7 +19,7 @@ const defaults = resolveWorkflows([file('epic-delivery', 'epic-delivery'), file(
 let n = 0
 const id = () => `s2-${++n}`
 const change = (done: number, total: number, over: Partial<Change> = {}): Change =>
-  ({ id: 'x', appetite: 'MEDIUM', done, total, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false, ...over })
+  ({ id: 'x', appetite: 'MEDIUM', done, total, groups: [], planHash: '', hasDesign: true, hasTasks: true, archived: false, ...over })
 
 const run = (...signals: Signal[]): NavState =>
   signals.reduce(reduce, reduce(EMPTY, { kind: 'Started', id: id(), sessionId: 's', band: 'folded', statusLine: true, interactive: true }))

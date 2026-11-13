@@ -166,7 +166,10 @@ function apply(state: NavState, s: Signal): NavState {
       const read = { ...(left ? handOff(state, state.lastChangeId!) : state), change: s.change, openChanges: s.openChanges,
         lastChangeId: s.change?.id ?? null, planAdded: switched ? null : state.planAdded }
       const w = workflowOf(read)
-      const gates = w && s.change ? gatesAfterPlan(read.gates, w, s.change.planMtime) : read.gates
+      // The same change's design changed since the previous read (D-15); a first read or another change compares nothing.
+      const before = state.change?.id === s.change?.id ? state.change?.planHash : undefined
+      const edited = typeof before === 'string' && before !== s.change?.planHash
+      const gates = w && edited ? gatesAfterPlan(read.gates, w, s.change?.designMtime) : read.gates
       return navigate({ ...read, gates }, s.at)
     }
     case 'SkillLoaded': {

@@ -46,6 +46,25 @@ unchanged, so an event delivered twice is harmless. The whole state is one sessi
 the plugin's name (`meaningfy-navigator.state`). Its types live in `types.d.ts`, which the engine
 requires to be self-contained; `lib/state.ts` imports them from there.
 
+What the atom holds beyond the change, the phase and the warnings (the decisions are D-1 to D-4 of
+`openspec/changes/navigator-follows-the-work/design.md`, amended under its *Delivery decisions*):
+
+| Field | Holds |
+|---|---|
+| `root` | the lead's working tree: `path` (its toplevel), `common` (`git rev-parse --git-common-dir`, absolute) and `branch`; `null` outside a repository. Every repository read uses it, never `$.session.repo()` |
+| `lastChangeId` | the change last followed; an archived change is matched only when its id equals it, and a new id is a hand-off |
+| `mergedBranches` | branches `gh pr view` answered `MERGED` for, this session |
+| `skillCalls` | `Skill` tool calls in flight, with their `agentId` (`null` for the lead) |
+| `pendingSpawns` | `agent.spawn` calls not yet resolved: an array, one entry per call, matched by its `toolUseId` |
+| `subagents[]` | one entry per subagent; `rootPath` is its own working tree (from `$.session.cwd()` in its first tool call), `skills` the skills loaded in it |
+| `turnEvents[]` | skill, tool and spawn events, each with its `agent` (`main` or the id), for the unused check |
+
+`revive` keeps an older atom readable: it checks each field's shape and backfills the new ones.
+`/clear`, `/resume` and `/branch` carry `root` into the new session's atom; nothing else is
+carried. `root` changes only through `RootFollowed` (a lead edit in another worktree of the same
+`common`, the branch re-read at a main turn's end, or the fall-back when the tree is gone); with
+`root: null` an edit never adopts a repository.
+
 ## Bundling
 
 A mod is declared in exactly one bundle of [`bundles.yaml`](../../bundles.yaml) under `mods:`,
@@ -124,15 +143,17 @@ them, then `lib/lean.ts` feeds the subagent and hygiene checks.
 
 | Event | Signal(s) |
 |---|---|
-| `session.start`, a `clear`/`resume`/`branch` to a new session | `Started`, `ThresholdsRead`, `WorkflowsRead`, `ChangeRead`, `AcceptedRead` |
-| `skill.prompt` | `SkillLoaded` |
-| `tool.call` Bash (after it ran; strict decides before) | `ToolRan` |
-| `tool.call` by a subagent, any tool | `AgentCalled` |
-| `tool.call` Edit, Write, NotebookEdit | `FileTouched` |
+| `session.start`, a `clear`/`resume`/`branch` to a new session | `Started`, `RootFollowed` (the start root, or the one carried), `ThresholdsRead`, `WorkflowsRead`, `ChangeRead`, `AcceptedRead`, `PrMerged` (when `gh pr view` says so) |
+| `skill.prompt` | `SkillLoaded`, credited to an in-flight `Skill` call, a just-started subagent, a pending spawn, else the lead (`lib/attribution.ts`) |
+| `tool.call` Skill | `SkillCallStarted` before it runs, `SkillCallEnded` after (in a `finally`) |
+| `tool.call` Bash (after it ran; strict decides before) | `ToolUsed`, `ToolRan`; after an ok `gh pr merge`, `PrMerged` when `gh pr view` says so |
+| `tool.call` any other tool but Skill | `ToolUsed` |
+| `tool.call` by a subagent, any tool | `AgentCalled`; `AgentRooted` on its first call |
+| `tool.call` Edit, Write, NotebookEdit | `RootFollowed` first when the lead's file is in another worktree of the repository, then `FileTouched` |
 | `prompt.submit` (typed or Remote Control) | `UserPrompted` |
-| `agent.spawn` (not a resume) | `SpawnAsked` before it runs (strict decides then), `SubagentSpawned` after |
+| `agent.spawn` (not a resume) | `SpawnAsked` before it runs (strict decides then), `SpawnStarted` before, `SubagentSpawned` and `SpawnResolved` after |
 | `turn.complete` of a subagent | `SubagentFinished` |
-| `turn.complete` of the main loop | `AnswerShown`, `ChangeRead`, `AcceptedRead`, `PlanRead`, `TurnEnded`, `SetPending` (Reconcile's second step) |
+| `turn.complete` of the main loop | `RootFollowed` (branch re-read, or the fall-back), `AnswerShown`, `ChangeRead`, `AcceptedRead`, `PlanRead`, `PrMerged` (when it can matter), `TurnEnded`, `SetPending` (Reconcile's second step) |
 | `session.compact` | `Compacted` |
 | `/navigator …` and the band's buttons | `SetBand`, `SetLine`, `SetMode`, `Accepted`, `SetPending`, `ToolRan` (Validate) |
 | `prompt.compose` (strict) | none: adds the phase reminder |

@@ -94,7 +94,7 @@ test('SubagentFinished arriving before its Spawned still marks the agent done', 
 test('Started clears everything and keeps only its own id as seen, even when replayed', () => {
   let s = started('s1')
   s = reduce(s, skill(1))
-  s = reduce(s, { kind: 'ChangeRead', id: 'c1', change: { id: 'x', appetite: null, done: 1, total: 2, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false }, openChanges: 2, at: 0 })
+  s = reduce(s, { kind: 'ChangeRead', id: 'c1', change: { id: 'x', appetite: null, done: 1, total: 2, groups: [], planHash: '', hasDesign: true, hasTasks: true, archived: false }, openChanges: 2, at: 0 })
   s = reduce(s, { kind: 'SubagentSpawned', id: 'tu', agentId: 'a', type: 't', model: 'm', description: '', at: 1 })
   const again = reduce(s, { kind: 'Started', id: 's1', sessionId: 's1', band: 'unfolded', statusLine: false, interactive: true })
   assert.deepEqual(again, { ...EMPTY, sessionId: 's1', display: { band: 'unfolded', line: false }, seen: ['s1'] })
@@ -172,7 +172,7 @@ test('RootFollowed: the same signal id twice is applied once', () => {
 })
 
 test('ChangeRead keeps lastChangeId at the id of the change read, null when none is read', () => {
-  const change = { id: 'x', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: false, hasTasks: false, archived: false }
+  const change = { id: 'x', appetite: null, done: 0, total: 0, groups: [], planHash: '', hasDesign: false, hasTasks: false, archived: false }
   let s = reduce(started(), { kind: 'ChangeRead', id: 'c1', change, openChanges: 1, at: 1 })
   assert.equal(s.lastChangeId, 'x')
   s = reduce(s, { kind: 'ChangeRead', id: 'c2', change: null, openChanges: 1, at: 2 })

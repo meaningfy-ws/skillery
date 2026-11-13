@@ -57,7 +57,7 @@ test('accept arguments: the key may hold spaces up to the quoted reason; no reas
 
 const WORKTREE = { path: '/r/.claude/worktrees/tdr', common: '/r/.git', branch: 'feature/tenant-dump-restore' }
 const inChange = (archived: boolean, root: typeof WORKTREE | null = WORKTREE): NavState => ({ ...EMPTY, root,
-  change: { id: 'tenant-dump-restore', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: true,
+  change: { id: 'tenant-dump-restore', appetite: null, done: 0, total: 0, groups: [], planHash: '', hasDesign: true,
     hasTasks: true, archived } })
 
 test('1.5 Accept after a re-root targets the worktree\'s change, not the start checkout', () => {

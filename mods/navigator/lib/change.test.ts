@@ -6,7 +6,7 @@ import { ARCHIVED_CHANGES, OPEN_CHANGES } from './fixtures.test-helpers.ts'
 const APPETITES = ['TINY', 'SMALL', 'MEDIUM', 'LARGE', 'VERY LARGE', 'HUGE']
 
 const file = (id: string, tasks: string | null = null): ChangeFiles =>
-  ({ id, proposal: '## Appetite\n\nVERY LARGE — three stages.\n\n## Problem\nSMALL bits\n', tasks, design: false, planMtime: 0 })
+  ({ id, proposal: '## Appetite\n\nVERY LARGE — three stages.\n\n## Problem\nSMALL bits\n', tasks, design: false, planHash: '', designMtime: 0 })
 
 test('appetite: the longest name in the first paragraph under ## Appetite', () => {
   assert.equal(appetiteOf(file('x').proposal, APPETITES), 'VERY LARGE')
@@ -196,14 +196,14 @@ test('readChange: ids that contain one another, the longest id in the branch win
   assert.equal(readChange(open, [], null, 'feature/nav-1', APPETITES).change?.id, 'nav')
 })
 
-test('readChange: carries planMtime', () => {
-  const f = { ...file('navigator'), planMtime: 77 }
-  assert.equal(readChange([f], [], null, 'feature/navigator-1', APPETITES).change?.planMtime, 77)
+test('readChange: carries planHash', () => {
+  const f = { ...file('navigator'), planHash: 'abc' }
+  assert.equal(readChange([f], [], null, 'feature/navigator-1', APPETITES).change?.planHash, 'abc')
 })
 
 test('readChange: empty proposal and null tasks give a change with null appetite and zero progress', () => {
-  const r = readChange([{ id: 'x', proposal: '', tasks: null, design: false, planMtime: 0 }], [], null, 'x', APPETITES)
-  assert.deepEqual(r.change, { id: 'x', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: false,
+  const r = readChange([{ id: 'x', proposal: '', tasks: null, design: false, planHash: '', designMtime: 0 }], [], null, 'x', APPETITES)
+  assert.deepEqual(r.change, { id: 'x', appetite: null, done: 0, total: 0, groups: [], planHash: '', designMtime: 0, hasDesign: false,
     hasTasks: false, archived: false })
 })
 
@@ -214,7 +214,7 @@ test('appetitesOf: the epic-delivery reviews keys; nothing for a missing or odd 
 
 test('the change predicates of design §6.1', () => {
   const c = (done: number, total: number, hasDesign = true, hasTasks = true) =>
-    ({ id: 'x', appetite: null, done, total, groups: [], planMtime: 0, hasDesign, hasTasks, archived: false })
+    ({ id: 'x', appetite: null, done, total, groups: [], planHash: '', hasDesign, hasTasks, archived: false })
   assert.ok(holds('none', null) && !holds('proposal', null))
   assert.ok(holds('proposal', c(0, 0, false, false)) && !holds('proposal', c(0, 3)))
   assert.ok(holds('plan', c(0, 3)) && holds('tasks-open', c(0, 3)) && !holds('plan', c(1, 3)))

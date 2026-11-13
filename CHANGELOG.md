@@ -11,6 +11,46 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- `meaningfy-navigator` follows the worktree you work in (#185): when Claude edits a file in
+  another worktree of the same repository, inside the checkout (`.claude/worktrees/…`) or beside it,
+  the band moves to that worktree's branch and change. A subagent's edits count in its own worktree,
+  and `/clear`, `/resume` and `/branch` keep the worktree followed. Details names the tree read
+  (`reading <path> · <branch>`). See [Worktrees](docs/environment/navigator.md#worktrees).
+- `meaningfy-navigator`: the release workflow starts from its commands: creating a `release/` or
+  `hotfix/` branch, `gh release create v1.2`, or pushing a version tag. A local `git tag` does not.
+- `meaningfy-navigator`: the unused-skill check judges each agent apart, so a skill preloaded into a
+  subagent is that subagent's, not yours.
+- `epic-delivery` (#148): from MEDIUM up, a stage of at most 600 added lines may be reviewed by two
+  reviewers (L1+L2, L3+L4+L5) instead of five, when the lead judges the risk low and records the
+  decision under `## Delivery decisions` in the change's `design.md`. `code-reviewer` accepts several
+  lenses when the appetite or that recorded decision allows it. Recording such a decision no longer
+  marks the clarity gate stale. Reinstall `meaningfy-building`. See
+  [Review sets](docs/development/workflows.md#review-sets).
+- Every default workflow that names a lead has a scenario and a test that its lead activates it
+  (#188). Tolic the lawyer's live trial in a contract repository is still open: report what is off
+  with `skillery-feedback`.
+
+### Changed
+
+- **BREAKING (display)** `meaningfy-navigator`: the band has a new layout. Folded, it shows three
+  lines: now (phase, stage, running subagents as `<task> → <type> (<time>)`), `next: <command>`
+  with **Next step**, and `⚠ <n> warnings · <most severe>` with **Back on track**, **Details** and
+  **Hide**. **Details** adds the tree read, the gates in the phases row, every warning ranked by
+  severity, an **Accept: <message>** button per acceptable warning, **Reconcile EPIC**, **Archive
+  check**, **Validate**, **Review**, **Switch to strict**/**Switch to loose** and **Less**. **Unfold**,
+  **Fold** and **Mode** are gone. The status line reads `no change for branch <branch>` or
+  `no repository` where it read `no open change`. See
+  [What you see](docs/environment/navigator.md#what-you-see).
+- `meaningfy-navigator`: the change is the one your branch names, matched on whole parts of the
+  branch name; with none it follows nothing instead of the most recently edited change. An archived
+  change is followed only if the session was following it.
+- `meaningfy-navigator`: the phase moves to `archive` when the change's pull request is merged with
+  every task ticked (a stage's merge with tasks open moves nothing) and when the change is archived.
+  Switching to another change drops the old change's gates and warnings and places you in the new
+  one's phase.
+
 ## [3.13.0] - 2026-11-11
 
 ### Added
