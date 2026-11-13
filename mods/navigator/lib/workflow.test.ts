@@ -106,13 +106,14 @@ test('TC-16 epic-delivery has a review set for each of the six appetites', () =>
     ['TINY', 'SMALL', 'MEDIUM', 'LARGE', 'VERY LARGE', 'HUGE'])
 })
 
+const DEFAULT_SMALL_STAGE = { max_added_lines: 600, reviewers: 2, lenses: [['L1', 'L2'], ['L3', 'L4', 'L5']] }
+
 test('D-12 epic-delivery: MEDIUM and above carry the small_stage set, TINY and SMALL do not', () => {
   const r = parseWorkflow(defaults.find(d => d.path.endsWith('epic-delivery.workflow.json'))!, 'default')
   const reviews = (r as { workflow: Workflow }).workflow.reviews ?? {}
   for (const [name, set] of Object.entries(reviews)) {
     const sized = !['TINY', 'SMALL'].includes(name)
-    assert.deepEqual(set.small_stage, sized
-      ? { max_added_lines: 600, reviewers: 2, lenses: [['L1', 'L2'], ['L3', 'L4', 'L5']] } : undefined, name)
+    assert.deepEqual(set.small_stage, sized ? DEFAULT_SMALL_STAGE : undefined, name)
   }
 })
 

@@ -31,7 +31,7 @@ export const EMPTY: NavState = {
   warnings: [],
   accepted: [],
   planTruncated: false,
-  planAdded: 0,
+  planAdded: null,
   thresholds: null,
   parentModel: '',
   turnId: '',
@@ -119,7 +119,8 @@ function apply(state: NavState, s: Signal): NavState {
       return navigate(read, s.at)
     }
     case 'ChangeRead': {
-      const read = { ...state, change: s.change, openChanges: s.openChanges }
+      const switched = s.change?.id !== state.change?.id // a new change has no plan read yet (D-22)
+      const read = { ...state, change: s.change, openChanges: s.openChanges, planAdded: switched ? null : state.planAdded }
       const w = workflowOf(read)
       const gates = w && s.change ? gatesAfterPlan(read.gates, w, s.change.planMtime) : read.gates
       return navigate({ ...read, gates }, s.at)

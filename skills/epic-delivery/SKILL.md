@@ -104,9 +104,11 @@ The fix round, the checker-less check and the report fields are in
 The review set of each appetite (the challenge, the check, the tester, the UX lens) is data: the
 `reviews` of the epic-delivery workflow, [`assets/workflows/epic-delivery.workflow.json`](assets/workflows/epic-delivery.workflow.json). The navigator mod reads the same file.
 A set of MEDIUM and above may carry a `small_stage` (the added-lines limit, the reviewers and the
-lens groups). When a stage's added lines are at or under that limit and the lead judges the risk
-low, it may use the small set; it records that as a `D-n` under `## Delivery decisions` in the
-change's `design.md`, with the stage's size and the reason.
+lens groups). This is where the small-stage rule lives: when a stage's added lines (what `git diff`
+adds, generated files included) are at or under that limit and the lead judges the risk low, it
+**may** use the small set. It records that first as a `D-n` under `## Delivery decisions` in the
+change's `design.md`, with the stage's size and the reason. The small set is an allowance, not a
+ceiling: the full set stays allowed, and the navigator shows the small figure beside it.
 
 ## After the last build stage
 

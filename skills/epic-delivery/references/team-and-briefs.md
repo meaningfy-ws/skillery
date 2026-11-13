@@ -83,9 +83,8 @@ upstream issue, not a fix here.
 > `meaningfy-code-review`, and any workaround of our library as a finding.
 
 Where the appetite's review set is one pass ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)), one reviewer covers its lenses together; the brief names the appetite. For a small stage
-(`small_stage` in the same file) the brief cites the `D-n` recorded under `## Delivery decisions`
-in the change's `design.md` and the lenses that reviewer covers. The lenses themselves are owned by
-`meaningfy-code-review`.
+the brief cites the recorded `D-n` and the lenses that reviewer covers; the rule is in `SKILL.md`
+(the review sets). The lenses themselves are owned by `meaningfy-code-review`.
 
 ## Checker
 

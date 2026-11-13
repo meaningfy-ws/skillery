@@ -166,6 +166,8 @@ function gateError(g: unknown, at: string): string | null {
   return null
 }
 
+const SMALL_STAGE_KEYS = ['max_added_lines', 'reviewers', 'lenses']
+
 function reviewError(r: unknown, at: string): string | null {
   if (!isObj(r)) return `${at}: not an object`
   const fields = ['challenge', 'reviewers', 'lenses', 'small_stage', 'ux', 'check', 'checker', 'tester']
@@ -176,7 +178,7 @@ function reviewError(r: unknown, at: string): string | null {
   if ('lenses' in r && !isStrs(r.lenses)) return `${at}.lenses must be a list`
   if ('small_stage' in r) {
     const s = r.small_stage
-    const ok = isObj(s) && Object.keys(s).length === 3 && Number.isInteger(s.max_added_lines) && (s.max_added_lines as number) > 0 &&
+    const ok = isObj(s) && Object.keys(s).every(k => SMALL_STAGE_KEYS.includes(k)) && Number.isInteger(s.max_added_lines) && (s.max_added_lines as number) > 0 &&
       Number.isInteger(s.reviewers) && (s.reviewers as number) >= 0 && Array.isArray(s.lenses) && s.lenses.every(isStrs)
     if (!ok) return `${at}.small_stage must be {max_added_lines, reviewers, lenses: [[lens, ...], ...]}`
   }

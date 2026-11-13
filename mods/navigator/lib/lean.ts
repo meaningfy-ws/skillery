@@ -2,7 +2,7 @@
 // reduce() calls lean() after apply(); the rules and numbers are in dispatch.ts, hygiene.ts and the
 // guardrails thresholds file.
 
-import { inlineSpawn, modelAbove, overspawn, reportOversized, reviewQuota, roleOf, secondCheck, shipCommand, unusedSkills,
+import { inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
   type Role } from './dispatch.ts'
 import { offer, onCompact, thresholdsFrom, type HygieneEvent } from './hygiene.ts'
 import { addWarnings } from './process-drift.ts'
@@ -51,7 +51,7 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
     case 'SpawnAsked': { // before the spawn runs: parallel spawns each see the ones before (DD-41)
       const role = roleIn(n, s.type, s.description)
       n = { ...n, turnRoles: [...n.turnRoles, role], shipLog: [...n.shipLog, { kind: 'spawn', role }] }
-      if (reviews) add(overspawn(reviews, appetite, n.turnId || 'start', n.turnRoles, reviewQuota(n) ?? undefined))
+      if (reviews) add(overspawn(reviews, appetite, n.turnId || 'start', n.turnRoles))
       return n
     }
     case 'SubagentSpawned': {
@@ -96,7 +96,7 @@ function roleIn(s: NavState, type: string, description: string): Role {
 /** Strict, after `SpawnAsked` recorded this spawn: the over-spawn it makes, if any. */
 export function overspawnNow(s: NavState): Warning | null {
   const reviews = s.workflows.find(w => w.reviews)
-  return (reviews && overspawn(reviews, s.change?.appetite ?? null, s.turnId || 'start', s.turnRoles, reviewQuota(s) ?? undefined)[0]) || null
+  return (reviews && overspawn(reviews, s.change?.appetite ?? null, s.turnId || 'start', s.turnRoles)[0]) || null
 }
 
 /** Strict: the parent's model when the spawn asks one ranked above it (PD-7). */

@@ -1,6 +1,6 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
-import { reviewQuota } from './dispatch.ts'
+import { reviewQuota, smallStageAllowance } from './dispatch.ts'
 import { isStrict, phasesOf, workflowOf } from './workflow.ts'
 import type { Group, NavState, Subagent, Warning } from './state.ts'
 
@@ -132,12 +132,13 @@ export function bandModel(s: NavState): BandModel {
   // Appetite against actual (§9 row 4): shown, never judged (no budget, per guardrails).
   if (s.change) {
     const c = s.change
-    const r = c.appetite ? s.workflows.find(x => x.reviews)?.reviews?.[c.appetite] : undefined
+    const ceiling = reviewQuota(s), small = smallStageAllowance(s)
     const reviewers = s.turnRoles.filter(x => x === 'reviewer').length
     rows.push({ label: 'appetite', items: [
       c.appetite ?? '?', `tasks ${c.done}/${c.total}`,
       ...(c.groups.length ? [`groups ${c.groups.filter(g => g.total > 0 && g.done === g.total).length}/${c.groups.length}`] : []),
-      ...(r ? [`reviewers ${reviewers}/${(reviewQuota(s) ?? r.reviewers) + (r.ux?.extra_reviewers ?? 0)} this turn`] : []),
+      ...(ceiling !== null ? [`reviewers ${reviewers}/${ceiling} this turn`] : []),
+      ...(small !== null ? [`small stage: ${small} allowed`] : []),
       ...(s.sessionTokens ? [`${tokens(s.sessionTokens)} tokens`] : []),
       ...(s.usd !== null ? [`$${s.usd.toFixed(2)}`] : []),
     ] })
