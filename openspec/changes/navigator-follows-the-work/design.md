@@ -338,3 +338,8 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
   directory. A session that starts outside any repository (`root: null`) follows its first edit
   into a repository. A `Write` into a directory that does not exist yet does not re-root (accepted:
   the next edit there does).
+- **D-19 — A just-started subagent is credited before a pending spawn (amends D-4).** Spike 1.1
+  shows two spawns in one turn interleave: the first subagent's preloads fire while the second
+  spawn is still pending, so D-4's order would credit them to the wrong subagent. Order now:
+  in-flight `Skill` call, just-started subagent, pending spawn, lead. Found by the lead reading
+  the 1.6 diff against the spike log.

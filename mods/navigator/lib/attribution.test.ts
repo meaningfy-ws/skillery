@@ -40,8 +40,8 @@ test('a finished subagent is never credited', () => {
   assert.deepEqual(creditSkill(facts({ subagents: [sub('a1', 1, { done: true })] }), 'tdd'), { agent: null, via: 'lead' })
 })
 
-test('a pending spawn wins over a just-started subagent', () => {
-  assert.equal(creditSkill(facts({ pendingSpawns: [spawn('s1', 9)], subagents: [sub('a1', 1)] }), 'tdd').via, 'spawn')
+test('a just-started subagent wins over a pending spawn (D-19)', () => {
+  assert.deepEqual(creditSkill(facts({ pendingSpawns: [spawn('s1', 9)], subagents: [sub('a1', 1)] }), 'tdd'), { agent: 'a1', via: 'preload' })
 })
 
 test('an in-flight call wins over a pending spawn', () => {

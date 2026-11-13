@@ -84,7 +84,13 @@ export const register: Register = (on, options) => {
       const d = isCommit(e.command) ? decideCommit(s) : isArchive(e.command) ? decideArchive(s) : null
       if (d && 'deny' in d) return { deny: d.deny }
     }
+    // A `Skill` call is in flight until it returns: its `skill.prompt` belongs to the caller (D-4).
+    if (e.tool === 'Skill') {
+      await send($, { kind: 'SkillCallStarted', id: `skillcall:${e.tool_use_id}`, toolUseId: e.tool_use_id, name: e.skill,
+        agentId: e.agentId ?? null, at: await $.clock.now() })
+    }
     const result = await next(e)
+    if (e.tool === 'Skill') await send($, { kind: 'SkillCallEnded', id: `skillend:${e.tool_use_id}`, toolUseId: e.tool_use_id })
     if (result.deny !== undefined) return result
     const at = await $.clock.now()
     // Every tool call of a subagent counts for PD-6, whatever the tool (DD-41).
@@ -117,16 +123,25 @@ export const register: Register = (on, options) => {
     const rewriteTo = rewriteModel(s, e.model, e.parentModel)
     const d = decideSpawn(s, overspawnNow(s), rewriteTo)
     if ('deny' in d) return { deny: d.deny }
-    const result = await next('model' in d ? { ...e, model: d.model } : e)
-    if (!result.deny && result.agentId) {
-      await send($, {
-        kind: 'SubagentSpawned', id: `spawn:${e.tool_use_id}:${result.agentId}`, agentId: result.agentId, type: e.subagentType,
-        model: result.model, description: e.description, at: await $.clock.now(), parentModel: e.parentModel,
-        // A model strict already moved to the parent's is no breach (DD-41).
-        ...(e.model && !('model' in d) ? { asked: e.model } : {}),
-      })
+    // Pending until it resolves: a skill prompt in between is that subagent's preload (D-4).
+    await send($, { kind: 'SpawnStarted', id: `spawnpending:${e.tool_use_id}`, toolUseId: e.tool_use_id, type: e.subagentType,
+      at: await $.clock.now() })
+    let agentId: string | null = null
+    try {
+      const result = await next('model' in d ? { ...e, model: d.model } : e)
+      if (!result.deny && result.agentId) {
+        agentId = result.agentId
+        await send($, {
+          kind: 'SubagentSpawned', id: `spawn:${e.tool_use_id}:${result.agentId}`, agentId: result.agentId, type: e.subagentType,
+          model: result.model, description: e.description, at: await $.clock.now(), parentModel: e.parentModel,
+          // A model strict already moved to the parent's is no breach (DD-41).
+          ...(e.model && !('model' in d) ? { asked: e.model } : {}),
+        })
+      }
+      return result
+    } finally { // denied, failed or resolved: the spawn is no longer pending, and its preloads move onto the subagent
+      await send($, { kind: 'SpawnResolved', id: `spawnresolved:${e.tool_use_id}`, toolUseId: e.tool_use_id, agentId })
     }
-    return result
   }).catch(($, e, next) => next(e))
 
   on('command.run', { command: 'opsx:archive' }, async ($, e, next) => {

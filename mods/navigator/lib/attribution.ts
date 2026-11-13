@@ -12,22 +12,24 @@ const newest = <T>(xs: T[], at: (x: T) => number): T | undefined => xs.reduce<T 
 
 /**
  * Who a `skill.prompt` belongs to (D-4): it carries no agentId, so credit by what is in flight.
- * The oldest in-flight `Skill` call of that name, else the newest pending spawn, else the newest
- * running subagent with no tool call yet, else the lead.
+ * The oldest in-flight `Skill` call of that name, else the newest running subagent with no tool
+ * call yet (a preload), else the newest pending spawn, else the lead. A just-started subagent
+ * comes before a pending spawn (D-19): with two spawns in one turn, the first one's preloads fire
+ * while the second is still pending.
  */
 export function creditSkill(state: Pick<NavState, 'skillCalls' | 'pendingSpawns' | 'subagents' | 'agentCalls'>, name: string): Credit {
   const inFlight = state.skillCalls.filter(c => c.name === name)
   const call = inFlight.reduce<(typeof inFlight)[number] | undefined>((a, c) => (a === undefined || c.at < a.at ? c : a), undefined)
   if (call) return { agent: call.agentId, via: 'call', toolUseId: call.toolUseId }
 
-  const pending = newest(state.pendingSpawns, s => s.at)
-  if (pending) return { agent: null, via: 'spawn', toolUseId: pending.toolUseId }
-
   const fresh = newest(
     state.subagents.filter(s => !s.done && !state.agentCalls[s.agentId]),
     s => s.startedAt,
   )
   if (fresh) return { agent: fresh.agentId, via: 'preload' }
+
+  const pending = newest(state.pendingSpawns, s => s.at)
+  if (pending) return { agent: null, via: 'spawn', toolUseId: pending.toolUseId }
 
   return { agent: null, via: 'lead' }
 }

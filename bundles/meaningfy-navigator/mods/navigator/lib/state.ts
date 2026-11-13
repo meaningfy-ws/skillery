@@ -1,6 +1,7 @@
 // The state contract (design §3). reduce() is the only writer; every function here is pure.
 
 import type { BandDisplay, Change, NavState, Root, Warning, Workflow } from '../types'
+import { creditSkill } from './attribution.ts'
 import { lean } from './lean.ts'
 import { navigate } from './phase.ts'
 import { addWarnings, clearGateWarnings, gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, onCommand,
@@ -94,6 +95,8 @@ export type Signal =
   | { kind: 'AgentRooted'; id: string; agentId: string; root: string }
   | { kind: 'SkillCallStarted'; id: string; toolUseId: string; name: string; agentId: string | null; at: number }
   | { kind: 'SkillCallEnded'; id: string; toolUseId: string }
+  | { kind: 'SpawnStarted'; id: string; toolUseId: string; type: string; at: number }
+  | { kind: 'SpawnResolved'; id: string; toolUseId: string; agentId: string | null }
   | { kind: 'ToolUsed'; id: string; agentId?: string }
 
 const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v)
@@ -134,6 +137,12 @@ function apply(state: NavState, s: Signal): NavState {
       return navigate({ ...read, gates }, s.at)
     }
     case 'SkillLoaded': {
+      const credit = creditLoad(state, s.name)
+      if (credit.kind === 'ignore') return state // a second prompt of a call already counted
+      if (credit.kind === 'subagent') return withSkill(credit.state, credit.agentId, s.name)
+      if (credit.kind === 'spawn') return { ...credit.state, pendingSpawns: credit.state.pendingSpawns.map(p =>
+        p.toolUseId === credit.toolUseId ? { ...p, skills: [...(p.skills ?? []), s.name] } : p) }
+      state = credit.state
       const name = bare(s.name)
       // Running a warning's remedy puts it right; a skill gate passes.
       const resolved = { ...state, warnings: state.warnings.filter(w => w.remedy !== name) }
@@ -210,6 +219,13 @@ function apply(state: NavState, s: Signal): NavState {
         { toolUseId: s.toolUseId, name: s.name, agentId: s.agentId, at: s.at }] }
     case 'SkillCallEnded':
       return { ...state, skillCalls: state.skillCalls.filter(c => c.toolUseId !== s.toolUseId) }
+    case 'SpawnStarted':
+      return { ...state, pendingSpawns: [...state.pendingSpawns, { toolUseId: s.toolUseId, type: s.type, at: s.at }] }
+    case 'SpawnResolved': { // the skills loaded while it was pending are the new subagent's
+      const spawn = state.pendingSpawns.find(p => p.toolUseId === s.toolUseId)
+      const rest = { ...state, pendingSpawns: state.pendingSpawns.filter(p => p !== spawn) }
+      return s.agentId ? (spawn?.skills ?? []).reduce((acc, name) => withSkill(acc, s.agentId!, name), rest) : rest
+    }
     case 'ToolUsed': // recorded by lean() (lib/lean.ts)
     case 'ThresholdsRead':
     case 'AgentCalled':
@@ -228,6 +244,30 @@ function apply(state: NavState, s: Signal): NavState {
       return { ...state, accepted: [...new Set([...state.accepted, ...s.keys])] }
   }
 }
+
+type Credited =
+  | { kind: 'lead'; state: NavState }
+  | { kind: 'subagent'; state: NavState; agentId: string }
+  | { kind: 'spawn'; state: NavState; toolUseId: string }
+  | { kind: 'ignore' }
+
+/** Whose load this is (D-4). A `Skill` call is counted once: its first prompt marks it loaded, so a second prompt
+ *  of the same call is ignored and a second concurrent call of that name takes the next one. */
+function creditLoad(state: NavState, name: string): Credited {
+  const open = state.skillCalls.filter(c => c.name === name)
+  if (open.length > 0 && open.every(c => c.loaded)) return { kind: 'ignore' }
+  const c = creditSkill({ ...state, skillCalls: state.skillCalls.filter(k => !k.loaded) }, name)
+  if (c.via === 'spawn') return { kind: 'spawn', state, toolUseId: c.toolUseId! }
+  if (c.via === 'call') {
+    const marked = { ...state, skillCalls: state.skillCalls.map(k => k.toolUseId === c.toolUseId ? { ...k, loaded: true } : k) }
+    return c.agent === null ? { kind: 'lead', state: marked } : { kind: 'subagent', state: marked, agentId: c.agent }
+  }
+  return c.agent === null ? { kind: 'lead', state } : { kind: 'subagent', state, agentId: c.agent }
+}
+
+/** A subagent's own list of the skills it loaded; it touches nothing of the lead's. */
+const withSkill = (state: NavState, agentId: string, name: string): NavState => ({ ...state, subagents: state.subagents.map(a =>
+  a.agentId === agentId && !a.skills.includes(name) ? { ...a, skills: [...a.skills, name] } : a) })
 
 /** A skill gate shows the score its skill printed (`9.1/10`), never one the mod judges (DD-14). */
 function withScore(state: NavState, w: Workflow, text: string): NavState {

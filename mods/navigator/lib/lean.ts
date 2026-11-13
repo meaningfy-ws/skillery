@@ -35,8 +35,8 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
   switch (s.kind) {
     case 'ThresholdsRead':
       return { ...n, thresholds: s.raw }
-    case 'SkillLoaded':
-      return { ...n, turnEvents: [...n.turnEvents, { kind: 'skill', name: s.name }] }
+    case 'SkillLoaded': // only a load that entered the lead's trail is a lead turn event (D-4)
+      return n.skills.length > prev.skills.length ? { ...n, turnEvents: [...n.turnEvents, { kind: 'skill', name: s.name }] } : n
     case 'AgentCalled': // every tool call of a subagent counts for PD-6, not only Bash (DD-41)
       return { ...n, agentCalls: { ...n.agentCalls, [s.agentId]: (n.agentCalls[s.agentId] ?? 0) + 1 } }
     case 'ToolUsed': // any tool but Skill; per agent in 3.2, for now the lead's only
