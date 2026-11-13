@@ -11,8 +11,10 @@ activity (`inputs/seed.md`, inventory sketch). Three facts sit in the wrong plac
 - Verification and validation are defined in `epic-delivery`: its description and Boundary claim
   them, SKILL.md [§ Verification and validation](../../../skills/epic-delivery/SKILL.md#verification-and-validation)
   defines them, and [`references/verification-validation.md`](../../../skills/epic-delivery/references/verification-validation.md#the-v-model-table)
-  holds the V-model table, already an activity × question matrix for seven artefacts. Two docs point
-  at that reference (`docs/development/README.md`, `docs/practice/ai-coding/dod-quality-gates.md`).
+  holds the V-model table, already an activity × question matrix for seven artefacts. Three docs
+  point at that reference: `docs/development/README.md` (line 93),
+  `docs/practice/ai-coding/dod-quality-gates.md` (line 35) and
+  `docs/practice/ai-coding/working-with-agents.md` (line 75).
 - Test data: [`testing-setup.md` § Test-data and fixture conventions](../../../skills/project-setup/references/testing-setup.md#test-data-and-fixture-conventions)
   ("polyfactory for domain objects") and `cosmic-python/references/testing-checklist.md` item 6
   ("small builder functions") disagree. [§ TDD + BDD workflow](../../../skills/project-setup/references/testing-setup.md#tdd--bdd-workflow) restates the loop
@@ -83,18 +85,21 @@ New choices made while planning; settled ones are cited, not repeated.
     one of the eight family files lacks a row for one of the six question ids.
   - *One home per fact:* the same test scans `skills/` line by line, case-insensitively, with
     per-fact allow-lists:
-    - `vv-definition`, pattern `verification asks`: allowed only in `test-strategy/SKILL.md`.
+    - `vv-definition`, pattern `(verification|validation) asks`: allowed only in
+      `test-strategy/SKILL.md`.
     - `test-data`, pattern `polyfactory`: allowed anywhere in the checklist. In
       `pyproject.toml.tmpl`, `config-files.md` and `decisions.md` it is allowed only on a
-      dependency line, meaning a line that also holds a version pin (`==`) or sits in the
-      dependency table row naming the `test` group. In `testing-setup.md` it is allowed only on
-      the pointer line to the checklist.
+      dependency line, meaning a line that also holds a version pin (`==`) or also names `pytest`
+      (the dependency lists name both; today `pyproject.toml.tmpl:49`, `config-files.md:67`,
+      `decisions.md:46`). In `testing-setup.md` it is allowed only on the pointer line to the
+      checklist.
     - `tdd-loop`, pattern `red\W{0,5}green`: allowed only on a line naming
       `test-driven-development`. It catches "RED → GREEN → REFACTOR", "RED-GREEN loop" and
-      "red/green".
+      "red/green". Today two hits are on no such line: `testing-setup.md:102` and
+      `project-setup/assets/templates/project/CONTRIBUTING.md.tmpl:39`; task 1.7 fixes both.
 
-    The test carries its own fixture cases: the arrow form, the hyphen form, a dependency line
-    that passes and a prose line that fails.
+    The test carries its own fixture cases: the arrow form, the hyphen form, "Validation asks", a
+    version-pin line and the wrapped `config-files.md` line that pass, and a prose line that fails.
 
     `tests/ownership.yaml` gains `vv-definition` (owner `test-strategy`) and `test-strategy` itself
     (DoD: ownership checked or updated). Its tripwire stays advisory.
@@ -114,8 +119,8 @@ New choices made while planning; settled ones are cited, not repeated.
     `generic-writing` rows. It is the acceptance demo's script (D-11).
 - **D-8 Pointer lines.** Each technique-owning skill gains one line in its `## Boundary & Related
   Skills`: "Answers `<question ids>` in `test-strategy`'s matrix (`references/<family>.md`)." Where a
-  skill is within two lines of the 650-line cap (`architecture`, 644 body lines), the pointer is folded
-  into its existing *Related* line instead of adding one.
+  skill is within two lines of the 650-line cap (`architecture`: 649 body lines, 1 below the cap),
+  the pointer is folded into its existing *Related* line, adding no line.
 - **D-9 Two stages, after the rebase.** Stage 1: the skill, inventory, matrix, moves, pointers,
   probes, use cases, docs. Stage 2: the criteria field (navigator schema and type, lint, the nine
   files' criteria, `make bundles` for the mod copy) and the bindings. `navigator-follows-the-work` is
@@ -146,7 +151,11 @@ New choices made while planning; settled ones are cited, not repeated.
     | documentation, generic-writing | UC-W24 |
     | generic-writing (offers) | UC-W8 |
     | generic-writing (contracts) | UC-W16 |
-  - the docs that point at the old V&V home are repointed;
+  - the three docs that point at the old V&V home (Context) are repointed;
+  - scenario sign-off: the developer signs off the spec scenarios of this change when accepting the
+    gated PLAN, before task 1.1, recorded in `evidence/acceptance.md`;
+  - no GitHub issue exists for this change; the CHANGELOG line and the PR name the EPIC
+    (`test-strategy`) instead;
   - the `criteria` key is documented for override authors (`docs/environment/navigator.md`,
     `docs/development/workflows.md`).
 
@@ -252,6 +261,12 @@ A fresh subagent attacked the first draft on 2026-11-13. Findings and where they
 | E | Id width; `cross-cutting.md` coverage rule; *Decided by* missing from the spec → D-1, D-2, D-7, spec |
 | F | Unlinked references → links |
 | G | Allow-list per file let prose pass → D-7, per line |
+
+**Clarity gate, run 2 (a second independent scorer): 8.7/10, FAIL.** Gaps folded in: the
+dependency-line rule rejected the wrapped `config-files.md` line (D-7); task 1.7 used the old TDD
+pattern (tasks); three docs, not two, point at the old home (Context, task 1.13); `architecture` has
+649 body lines, not 644 (D-8); the V&V marker missed "Validation asks" (D-7); sign-off and the issue
+reference had no home (D-11, tasks 1.0, 1.13).
 
 ## Open Questions
 
