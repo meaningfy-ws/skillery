@@ -53,6 +53,13 @@ The owner listed three open issues as related: #185, #188, #148.
 | Q-17 | #185's case: the session stays in the main checkout and edits a sibling worktree (`../<repo>-<topic>`) by path, so `session.root()` never moves | **Follow the edits automatically.** Supersedes Q-7 (warn only) |
 | Q-18 | Which issues the EPIC takes in (recommended: #185 all, #188's lead-band half, #148 out) | **All three in**: #185; #188 both parts; #148 (review set by stage size, merged lenses, the `code-reviewer` brief contract) |
 
-Consequence stated to the owner: with #148 the EPIC moves boundaries between `epic-delivery`,
+## Round 6
+
+| Q | Asked | Answer |
+|---|---|---|
+| Q-19 | DEC-5's release trigger contradicts the live scenario *Ordinary work does not start a release* | **"meaningfy release must always be triggered on release."** Release commands activate the release workflow; the old scenario goes |
+| Q-20 | Confirm the risk defaults Q-13..Q-15 | **"as you find appropriate"**: the defaults stand |
+
+Consequence of Q-18, stated to the owner: with #148 the EPIC moves boundaries between `epic-delivery`,
 `meaningfy-code-review` and the `code-reviewer` agent, so the appetite rises from LARGE to
 **VERY LARGE**, delivered in four stages.

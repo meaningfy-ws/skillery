@@ -1,7 +1,6 @@
 <!-- STATUS: EPIC shaped 2026-11-13 from the owner's conversation (inputs/seed.md, inputs/qa.md,
-     rounds 1-5). Folds in issues #185, #188 and #148. Open before the PLAN: DEC-5's release
-     trigger contradicts a live scenario (see Rabbit-holes), and the risk defaults Q-13..Q-15 await
-     the owner's confirmation. PLAN not derived yet. -->
+     rounds 1-6). Folds in issues #185, #188 and #148. Round 6 settled DEC-5 (release always
+     triggers the release workflow) and took the risk defaults Q-13..Q-15. Frozen. -->
 
 # EPIC: navigator follows the work
 
@@ -67,8 +66,10 @@ small stage of a large EPIC pays for five full reviews (#148).
   trail.
 - **DEC-5**: Four signals move the phase: the change folder moving into `archive/` (archive); the
   followed branch's PR merged (accept passed, ready to archive); all tasks ticked (accept, kept);
-  release commands (the release workflow activates) — rejected: skill loads as the only signal.
-  *Open: the last one contradicts a live scenario; see Rabbit-holes.*
+  release commands (the release workflow activates, with or without `meaningfy-release` loaded,
+  and the band asks for the skill when it is not) — rejected: skill loads as the only signal. The
+  owner: "meaningfy release must always be triggered on release" (Q-19); this replaces the
+  `workflow-definitions` scenario *Ordinary work does not start a release*.
 - **DEC-6**: When the followed change changes, the phase is re-placed from the new change's files,
   placed and not entered: no leave or enter warnings, and the old change's gates and warnings leave
   the view (Q-6) — rejected: keeping a record per change in the atom.
@@ -100,10 +101,8 @@ small stage of a large EPIC pays for five full reviews (#148).
 
 ## Rabbit-holes
 
-- **DEC-5 against a live scenario.** `workflow-definitions` says *ordinary work does not start a
-  release*: tagging or pushing a `release/` branch without loading `meaningfy-release` must not
-  activate the release workflow. The owner chose release commands as a trigger. The PLAN must not
-  start until the owner says which commands count, or that the old scenario goes.
+- **Which commands are "release"** (DEC-5): too broad a match (any `git tag`) starts a release
+  for a throwaway tag. The PLAN names the commands in the release workflow's data, not in code.
 - **Following edits can flap** (DEC-2): a stray write into another worktree flips the followed
   change. Only the lead's writes re-root the lead, only writes inside a working tree of the same
   repository count, and the band always names the checkout it reads.
