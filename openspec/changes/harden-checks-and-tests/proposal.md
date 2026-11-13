@@ -58,12 +58,16 @@ selection and misses checks it could make for free.
   on open-source code and most Meaningfy repos are private; rejected: Semgrep plus CodeQL (round 0).
 - **DEC-2**: Checker order: Ruff first (extend the `project-setup` selection), import-linter for
   imports, Semgrep only where neither can, review for the rest. Each catalogue entry records its
-  checker in a "Checked by" column — rejected: Semgrep for all our rules (Q-17).
+  checker in a "Checked by" column, the per-rule source; `test-strategy`'s software rows cite it by
+  `CHK-` id and do not list rules — rejected: Semgrep for all our rules (Q-17).
 - **DEC-3**: Scope is what the catalogue already holds: the cosmic-python catalogue, its clean-code
-  and SOLID sections and the testing checklist. New DDD, TDD and fixture rules are a follow-up EPIC;
+  and SOLID sections and the testing checklist (including item 6 as A's DEC-9 rewrites it). New
+  DDD and TDD rules, and fixture organisation and reuse rules beyond item 6, are a follow-up EPIC;
   PEP style stays with Ruff — rejected: grow the catalogue first (Q-13, Q-18).
 - **DEC-4**: A new top-level folder `quality/` holds the checks, as a sixth artifact type in
-  `governance.md`; the top-level folder check allows it — rejected: skill assets spread over
+  `governance.md`; the top-level folder check allows it. `quality/` holds only executable rule
+  files and configurations; what a rule enforces and why stays in the `cosmic-python` catalogue
+  entry it checks — rejected: skill assets spread over
   several skills; a separate repository (Q-1, Q-5).
 - **DEC-5**: Projects consume `quality/` through a `make` target that fetches it from a pinned
   skillery release tag into a gitignored folder — rejected: raw remote URLs; a vendored copy (Q-6).
@@ -74,12 +78,14 @@ selection and misses checks it could make for free.
 - **DEC-7** *(re-shaped, round 6)*: Vale moves to EPIC C (`activity-test-profiles`), the
   documentation family; Q-16 (hand-picked external styles only) travels with it. `quality/` is
   built so C can add a Vale manifest beside Semgrep's — was: Vale in this EPIC.
-- **DEC-8**: ls-lint checks file and folder names and the canonical layout; checkmake checks
-  Makefile hygiene; the required Makefile targets come from `project-setup`'s template — rejected:
+- **DEC-8**: For projects scaffolded by `project-setup`: ls-lint checks file and folder names and
+  the canonical layout; checkmake checks Makefile hygiene; the required Makefile targets come from
+  `project-setup`'s template. Docs folders and stacks repositories are EPIC C's — rejected:
   a custom layout script (Q-4).
 - **DEC-9**: The adversarial tester stays an `implementer` with a brief, gains Hypothesis
   (properties, stateful), Schemathesis with an OpenAPI contract, and runs from MEDIUM up; the
-  review-set data in `epic-delivery.workflow.json` changes accordingly — rejected: a new tester
+  review-set data in `epic-delivery.workflow.json` changes accordingly. The brief takes
+  `test-strategy`'s adversary stance (`ROB`, `ADQ`) — rejected: a new tester
   agent; LARGE-only (round 0, Q-2).
 - **DEC-10**: mutmut runs weekly on `develop` in scheduled CI and opens or updates one bot PR that
   adds `tests/mutmut-results/`; it never fails a build; whoever picks the results up plans the fixes
@@ -94,11 +100,15 @@ selection and misses checks it could make for free.
   suppression carries a reason); tools missing (pinned installs through `make`, cached in CI).
   Accepted risk: nobody picks up the mutmut results (Q-11).
 - **DEC-14** *(re-shape, round 6)*: This EPIC depends on A and lands after it. It fills the software
-  rows of `test-strategy`'s matrix (each new check with the question it answers: adequacy for
-  mutmut, robustness for Hypothesis and the tester, verification for the static rules). By A's
+  rows of `test-strategy`'s matrix: `ADQ` for mutmut, `ROB` for Hypothesis and the tester, `VER` for
+  the static rules; each fills a `gap` row A marked for B and flips it to `exists`. By A's
   DEC-8 the techniques stay with their owners: how to write a property or a stateful test goes in
   the `cosmic-python` testing checklist, the tester's brief in `epic-delivery`, the wiring in
   `project-setup`.
+- **DEC-15**: B proves three things (Q-12): every catalogued rule has a checker or a "review only,
+  because…" entry, and every Meaningfy Semgrep rule a fixture test; the tester's report lists the
+  properties it stated; the mutmut bot PR and the import-contract check each run once end to end
+  on a sample project.
 
 ## Rabbit-holes
 
@@ -111,9 +121,9 @@ selection and misses checks it could make for free.
   reaches an existing project (a migration note), not only a fresh scaffold.
 - **Fetching at a pin**: offline machines and CI caches. Keep it one `make` target and one pin;
   no package registry, no installer.
-- **Ordering with `navigator-follows-the-work`**: its DEC-12 edits the same review sets in
-  `epic-delivery.workflow.json`. Whichever lands second rebases onto the other; the tester change
-  here is one field per appetite.
+- **Ordering with A**: A adds `criteria` to every phase of `epic-delivery.workflow.json`; this
+  EPIC's review-set edit lands after A and keeps that field. The tester change is one field per
+  appetite.
 - **mutmut on large suites** can run for hours. Scope it to the package, not the tests, and let the
   PLAN set a time budget.
 
@@ -126,6 +136,9 @@ selection and misses checks it could make for free.
 - No change to the discipline, the question set or the matrix's shape (EPIC A); only its software rows.
 - No dogfooding the checks on skillery's own code; no new heavy tools in skillery's CI.
 - No new agent: the tester remains a brief for `implementer`.
+- No ls-lint or checkmake for docs folders or stacks repositories (EPIC C).
+- No change to the test-scenario interview or the PLAN's error matrix (EPIC C); the tester takes
+  its properties from the PLAN as written.
 - No mutation testing per PR, and no build that fails on mutation results.
 - No change to PEP-style checking beyond Ruff's selection.
 
@@ -170,5 +183,4 @@ selection and misses checks it could make for free.
   a weekly workflow.
 - Dependencies for projects: Semgrep, ls-lint, checkmake, mutmut, Hypothesis, Schemathesis
   (pinned).
-- Order: after EPIC A (`test-strategy`); coordinate with `navigator-follows-the-work` on
-  `epic-delivery.workflow.json`.
+- Order: after EPIC A (`test-strategy`).

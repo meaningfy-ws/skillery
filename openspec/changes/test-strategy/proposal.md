@@ -1,7 +1,9 @@
 <!-- STATUS: EPIC shaped 2026-11-13 from the owner's conversation (inputs/seed.md, inputs/qa.md,
      rounds 6-7). EPIC A of four, split from the re-shaped harden-checks-and-tests: A (this) →
      B harden-checks-and-tests → C activity-test-profiles → D generic-task-test-profiles.
-     Not yet readiness-checked; PLAN not derived. -->
+     Readiness-checked 2026-11-13 (ready); three stale non-decision lines corrected then: the
+     BREAKING bullet (narrowed by PLAN D-5) and two references to navigator-follows-the-work, which
+     is archived. No DEC changed. PLAN derived and attacked the same day; gate in progress. -->
 
 # EPIC: test-strategy
 
@@ -81,7 +83,7 @@ Q-2).
   cannot express the object; stated in checklist item 6. `testing-setup.md` keeps only the wiring
   and points to the checklist, superpowers TDD and `bdd-gherkin` (Q-2).
 - **DEC-10**: Every workflow phase declares how it succeeds and how it fails, as data in its
-  workflow file; a validator check fails a phase without them (Q-3) — rejected: the skill alone;
+  workflow file; a validator check fails a default phase without them (Q-3) — rejected: the skill alone;
   the bindings alone.
 - **DEC-11**: No agent. The stances are taken by existing agents and briefs; a tester or critic
   agent waits until a standalone use recurs.
@@ -94,9 +96,8 @@ Q-2).
 - **The neighbours' triggers.** superpowers TDD, `verification-before-completion`, `clarity-gate`
   and `bdd-gherkin` all sit close. The description must route "which check, why, for what" here
   and "how to write the test" to them; the near-miss probes prove it.
-- **A new workflow field** must be read by the navigator mod without breaking it, and
-  `navigator-follows-the-work` is reshaping the same files. Agree the field name in the PLAN and land
-  after, or rebase onto, that change.
+- **A new workflow field** must be read by the navigator mod without breaking it: the navigator
+  validates the field's shape and does not display it (PLAN D-5).
 - **"Success and failure" per phase** can turn into boilerplate. One short line each, naming the
   evidence, not a paragraph.
 - **The inventory** can sprawl into a review of every skill. It records what exists and where; it
@@ -123,8 +124,8 @@ Q-2).
 - `project-setup`: `testing-setup.md` keeps the wiring only; the agentic template mandates the
   principle.
 - `AGENTS.md`: mandates the principle and routes to `test-strategy`.
-- Every `*.workflow.json`: each phase gains its success and failure criteria; a validator check
-  enforces them (**BREAKING** for repo workflow files that override a default without them).
+- Every `*.workflow.json`: each phase gains its success and failure criteria, required in the nine
+  default files and optional (shape-checked) in a repository's override file; nothing breaks.
 - About ten technique-owning skills gain one line naming the question their technique answers.
 
 ## Capabilities
@@ -146,4 +147,4 @@ Q-2).
   `linkml-engineering`.
 - Data: every workflow file; `bundles.yaml`; the navigator mod must tolerate the new field.
 - Tooling: `tools/repo_lint` (the criteria check); `make bundles`, `make skill-inventory`.
-- Order: lands before B (`harden-checks-and-tests`); coordinate with `navigator-follows-the-work`.
+- Order: lands before B (`harden-checks-and-tests`).

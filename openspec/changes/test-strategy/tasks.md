@@ -46,19 +46,24 @@
 
 ## 2. Stage 2: criteria in every workflow
 
-- [ ] 2.1 Navigator: accept and validate the optional `criteria` phase key in `phaseError` and the
-  `Phase` type in `mods/navigator/types.d.ts`. Work test-first in `workflow.test.ts`, then run the
-  full mod test suite and update any fixture that compares whole phases. Finish with `make bundles`
+- [ ] 2.1 Navigator: accept and validate the optional `criteria` phase key in `phaseError`
+  (`mods/navigator/lib/workflow.ts:129`) and the `Phase` type in `mods/navigator/types.d.ts:34`.
+  Work test-first in `workflow.test.ts`, then run `make mods` (tests and `tsc`). Finish with
+  `make bundles`, which copies the mod into `bundles/meaningfy-navigator/`. Done before 2.3
   (D-5; spec *Every workflow phase declares how it succeeds and fails*, scenarios *A repository file
   without criteria*, *Malformed criteria in a repository file*).
-- [ ] 2.2 Repo lint `workflow_criteria` in `ALL_CHECKS`, with a negative test in
-  `tests/test_repo_lint_negative.py` (D-5; scenario *A default phase without criteria*).
+- [ ] 2.2 Repo lint `workflow_criteria` in `ALL_CHECKS`, modelled on `workflow_lead`
+  (`tools/repo_lint/lint.py:1249`). Tests: a positive one in `tests/test_repo_lint.py` once 2.3 is
+  done, and negative ones in `tests/test_repo_lint_negative.py` (a phase without criteria, an empty
+  string, and the wrong-shape file that must not crash) (D-5; scenario *A default phase without
+  criteria*).
 - [ ] 2.3 Write the criteria of all 50 phases in the nine default workflow files (D-5, RISK-3).
 - [ ] 2.4 Bindings: the principle and the route to `test-strategy` in `AGENTS.md` and in
   `project-setup`'s `assets/templates/agentic/AGENTS.md.tmpl` (DEC-2; spec *The bindings mandate the
   founding principle*).
-- [ ] 2.5 Document the `criteria` key for override authors in `docs/environment/navigator.md` and
-  `docs/development/workflows.md` (D-11).
+- [ ] 2.5 Document the `criteria` key in `docs/development/mods.md` § *Workflow files*,
+  `docs/development/workflows.md` § *Workflow files* and `docs/development/creating-skills.md`
+  (D-11).
 - [ ] 2.6 `make bundles`, `make validate`, `openspec validate test-strategy --strict`.
 - [ ] 2.7 Acceptance demo with the developer, using the Quick Start script and a workflow phase's
   criteria, recorded in `evidence/acceptance.md` (D-11; LARGE makes it mandatory).

@@ -72,7 +72,17 @@ New choices made while planning; settled ones are cited, not repeated.
   lint `workflow_criteria`, added to `ALL_CHECKS`); **optional in a repository's override file** (the
   navigator accepts it, validates its shape when present, never requires it). This narrows the
   proposal's *What Changes* bullet "BREAKING for repo workflow files": no repository file breaks. The
-  navigator validates the field and does not display it. A criterion names evidence; it does not
+  navigator validates the field and does not display it. One shape rule in both places: an object
+  with exactly the keys `succeeds` and `fails`, each a non-empty string; anything else is an error.
+  The navigator change is two edits: the phase key whitelist and a shape check in `phaseError`
+  (`mods/navigator/lib/workflow.ts:129`, modelled on `gateError`), and `criteria?` on the `Phase`
+  type (`mods/navigator/types.d.ts:34`). Nothing else reads phase keys and no schema file exists.
+  **Order matters:** the validator and type land before any default file gains `criteria`, because
+  about ten mod tests load the real default files and expect no schema errors. The lint, like
+  `workflow_lead`, skips an unreadable or wrongly shaped workflow file without crashing (the
+  navigator reports those). A default file's criteria are repository-neutral: they name the kind of
+  evidence ("the version file is bumped"), not a file only skillery has (`VERSION`). A criterion
+  names evidence; it does not
   restate a skill's rule (requirement *Workflows are data that cite their owning skills* in
   [`openspec/specs/workflow-definitions/spec.md`](../../specs/workflow-definitions/spec.md)).
 - **D-6 Facets.** `area: cross-cutting`, `subject: generic`, `posture: profiled`, `stage: any`
@@ -132,8 +142,9 @@ New choices made while planning; settled ones are cited, not repeated.
   reports, evidence before a claim (`verification-before-completion`) and `rulebook check`. This adds
   a ninth file; it does not add a family.
 - **D-11 Definition of Done items** (`docs/development/README.md` §9):
-  - the recorded failure case goes to `evidence/failure-case.md`: Q-2 of `harden-checks-and-tests`
-    and the two conflicting homes;
+  - the recorded failure case goes to `evidence/failure-case.md`: the two conflicting fixture rules,
+    and verification and validation being out of reach of work outside an epic delivery (Q-2 of
+    `harden-checks-and-tests`, the method-less tester, is B's failure case);
   - a baseline run goes to `evidence/baseline.md`: the same three tasks with and without the skill,
     a Python module change, a LinkedIn post and a contract clause, each judged by whether success
     and failure were stated before the work;
@@ -156,15 +167,25 @@ New choices made while planning; settled ones are cited, not repeated.
     gated PLAN, before task 1.1, recorded in `evidence/acceptance.md`;
   - no GitHub issue exists for this change; the CHANGELOG line and the PR name the EPIC
     (`test-strategy`) instead;
-  - the `criteria` key is documented for override authors (`docs/environment/navigator.md`,
-    `docs/development/workflows.md`).
+  - the `criteria` key is documented where workflow files are described:
+    `docs/development/mods.md` § *Workflow files* (the schema description),
+    `docs/development/workflows.md` § *Workflow files* (the lint, beside `workflow_lead`) and
+    `docs/development/creating-skills.md` (the edits that adding a workflow takes).
+    `docs/environment/navigator.md` is untouched, since the band does not show the criteria.
 
 ## Algorithm / approach
 
 **Inventory (task 1.2).** Scope: the catalogue, meaning `skills/` and the repo's own checks (trigger
 probes, agent Gherkin under `tests/features/`, the `make validate` gates). For each check record id,
-what it checks, its owner file, its moment. The seed's table is the starting list. The inventory
-describes; it judges nothing.
+what it checks, its owner file, its moment. The seed's table is the starting list, and a first survey is
+in [`inputs/inventory-draft.md`](inputs/inventory-draft.md) (108 checks, drawn from heading and
+keyword searches; some rows are guessed and say so). It is a secondary input: task 1.2 verifies each
+row against its source before it enters the skill. The inventory describes; it judges nothing.
+
+**Criteria (task 2.3).** A first draft for all 50 phases is in
+[`inputs/criteria-draft.md`](inputs/criteria-draft.md), with a list of the phases its author was
+unsure of. It is a secondary input: task 2.3 checks each line against the owning skill and the two
+D-5 rules (names evidence, restates no rule, repository-neutral).
 
 **Worked example (Quick Start, abridged).**
 
@@ -210,7 +231,9 @@ re-running a task rewrites the same files with the same content.
 | A pointer line pushes a skill over 650 lines | `skill_too_long` (blocking) | D-8: fold into the existing *Related* line |
 | A default phase without `criteria`, or an empty string | `workflow_criteria` in `make validate` | Write the line; the lint names file and phase |
 | A repo override phase with malformed `criteria` | Navigator `phaseError` | The band reports file and key, as any schema error |
-| Navigator tests compare whole phase objects and break on `criteria` | The full mod test suite in task 2.1 | Update the fixtures in the same task |
+| A default file gains `criteria` before the validator accepts it | `make mods`: about ten tests that load the default files report "unknown key" | Keep the order 2.1 then 2.3; no test compares whole phase objects (checked 2026-11-13) |
+| The `Phase` type change does not typecheck | The `tsc` step of `make mods` | Fix in task 2.1 |
+| The lint crashes on a malformed workflow file | The parametrised wrong-shape negative test, copied from `workflow_lead`'s | Skip the file; the navigator reports it |
 | The mod copy under `bundles/` is stale after 2.1 | `bundle_gates` in `make validate` | `make bundles`, commit the result |
 | `test-strategy` fires for "write a Gherkin scenario" or for a TDD request | Near-miss probes; the behavioural run | Sharpen the description; re-run; record in `evidence/triggers.md` |
 | `epic-delivery` still fires for "what is validation" | Its near-miss probe; the behavioural run | Sharpen its description |
