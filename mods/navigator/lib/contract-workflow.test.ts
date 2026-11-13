@@ -18,7 +18,7 @@ const defaults = resolveWorkflows(all, [])
 
 let n = 0
 const id = () => `k${++n}`
-const change: Change = { id: 'x', appetite: 'LARGE', done: 1, total: 9, groups: [], planMtime: 0, hasDesign: true, hasTasks: true }
+const change: Change = { id: 'x', appetite: 'LARGE', done: 1, total: 9, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false }
 const run = (...signals: Signal[]): NavState =>
   signals.reduce(reduce, reduce(EMPTY, { kind: 'Started', id: id(), sessionId: 's', band: 'folded', statusLine: true, interactive: true }))
 const workflows = (ws = defaults.workflows): Signal => ({ kind: 'WorkflowsRead', id: id(), workflows: ws, errors: [], mode: 'loose', at: 1 })

@@ -53,7 +53,6 @@ export async function readChangeSignal($: EngineInterface, id: string): Promise<
         proposal: await $.fs.read(`${dir}/${d.name}/proposal.md`),
         tasks: has('tasks.md') ? await $.fs.read(`${dir}/${d.name}/tasks.md`) : null,
         design: !!has('design.md'),
-        mtime: Math.max(...files.map(f => f.mtimeMs)),
         // Ticking a box is not a PLAN change: only design.md stales a skill gate (DD-38).
         planMtime: files.find(f => f.name === 'design.md')?.mtimeMs ?? 0,
       })
@@ -64,7 +63,8 @@ export async function readChangeSignal($: EngineInterface, id: string): Promise<
   // The epic-delivery workflow names the appetites (design §6.1); the mod holds no list.
   const s = revive(await read($, nav))
   const appetites = appetitesOf(s.workflows.find(w => w.activate.openChange) ?? null)
-  return { kind: 'ChangeRead', id, ...readChange(open, branch, appetites), at: await $.clock.now() }
+  // shortcut: no archive read yet; task 1.4/1.5 reads archive/ and the hand-off.
+  return { kind: 'ChangeRead', id, ...readChange(open, [], s.lastChangeId, branch, appetites), at: await $.clock.now() }
 }
 
 export async function state($: EngineInterface): Promise<NavState> {

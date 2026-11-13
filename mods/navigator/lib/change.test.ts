@@ -1,17 +1,18 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { appetiteOf, appetitesOf, progress, readChange, type ChangeFiles } from './change.ts'
+import { appetiteOf, appetitesOf, holds, matchArchived, matchOpen, progress, readChange, type ChangeFiles } from './change.ts'
+import { ARCHIVED_CHANGES, OPEN_CHANGES } from './fixtures.test-helpers.ts'
 
 const APPETITES = ['TINY', 'SMALL', 'MEDIUM', 'LARGE', 'VERY LARGE', 'HUGE']
 
-const file = (id: string, mtime: number, tasks: string | null = null): ChangeFiles =>
-  ({ id, proposal: '## Appetite\n\nVERY LARGE — three stages.\n\n## Problem\nSMALL bits\n', tasks, design: false, mtime, planMtime: 0 })
+const file = (id: string, tasks: string | null = null): ChangeFiles =>
+  ({ id, proposal: '## Appetite\n\nVERY LARGE — three stages.\n\n## Problem\nSMALL bits\n', tasks, design: false, planMtime: 0 })
 
 test('appetite: the longest name in the first paragraph under ## Appetite', () => {
-  assert.equal(appetiteOf(file('x', 0).proposal, APPETITES), 'VERY LARGE')
+  assert.equal(appetiteOf(file('x').proposal, APPETITES), 'VERY LARGE')
   assert.equal(appetiteOf('## Appetite\n\nSome size.\n\nSMALL later', APPETITES), null)
   assert.equal(appetiteOf('no section', APPETITES), null)
-  assert.equal(appetiteOf(file('x', 0).proposal, []), null)
+  assert.equal(appetiteOf(file('x').proposal, []), null)
 })
 
 test('progress counts boxes per group, not the roadmap', () => {
@@ -23,17 +24,94 @@ test('progress counts boxes per group, not the roadmap', () => {
 })
 
 test('TC-18 three open changes, the branch names one: that one, +2', () => {
-  const r = readChange([file('alpha', 3), file('navigator', 1), file('beta', 2)], 'feature/navigator-1', APPETITES)
+  const r = readChange([file('alpha'), file('navigator'), file('beta')], [], null, 'feature/navigator-1', APPETITES)
   assert.equal(r.change?.id, 'navigator')
+  assert.equal(r.change?.archived, false)
   assert.equal(r.openChanges, 3)
 })
 
-test('no branch match: the most recently modified', () => {
-  assert.equal(readChange([file('alpha', 3), file('beta', 5)], 'develop', APPETITES).change?.id, 'beta')
+test('no branch match: no change, whatever the open ones are (DEC-3: never the most recent)', () => {
+  const r = readChange([file('alpha'), file('beta')], [], null, 'develop', APPETITES)
+  assert.deepEqual(r, { change: null, openChanges: 2 })
 })
 
 test('TC-02 (change) no open change', () => {
-  assert.deepEqual(readChange([], 'develop', APPETITES), { change: null, openChanges: 0 })
+  assert.deepEqual(readChange([], [], null, 'develop', APPETITES), { change: null, openChanges: 0 })
+})
+
+// ---------------------------------------------------------------- D-3: matching a branch to a change
+const ids = (list: ChangeFiles[]) => list.map(c => c.id)
+
+test('TC-1 the branch holds the whole id', () => {
+  assert.equal(matchOpen('feature/tenant-dump-restore', ['tenant-dump-restore', 'aggregate-events']), 'tenant-dump-restore')
+})
+
+test('TC-2 a suffix after the id', () => {
+  assert.equal(matchOpen('feature/atomic-commit-stage-1', ['atomic-commit']), 'atomic-commit')
+})
+
+test('TC-3 the longest id wins', () => {
+  assert.equal(matchOpen('docs/shape-navigator-follows-the-work', ['navigator', 'navigator-follows-the-work']),
+    'navigator-follows-the-work')
+})
+
+test('TC-4 no id in the branch: none, and no mtime fallback', () => {
+  assert.equal(matchOpen('docs/shape-backlog-2026-11-12', ['aggregate-events', 'release-pipeline']), null)
+})
+
+test('TC-5 an id inside a word does not match', () => {
+  assert.equal(matchOpen('prefix-x', ['fix']), null)
+  assert.equal(matchOpen('feature/fixture', ['fix']), null)
+  assert.equal(matchOpen('fix/other', ['fix']), 'fix') // bounded by the start and `/`
+})
+
+test('D-3 equal length: the id named later in the branch, then alphabetical; folder order never decides', () => {
+  assert.equal(matchOpen('aaa-bbb', ['aaa', 'bbb']), 'bbb')
+  assert.equal(matchOpen('aaa-bbb', ['bbb', 'aaa']), 'bbb')
+  assert.equal(matchOpen('beta-alpha', ['alpha', 'beta']), 'alpha')
+})
+
+test('D-3 a branch holding two ids of different length picks the longer, whatever the folder order', () => {
+  assert.equal(matchOpen('x/beta-alpha1', ['beta', 'alpha1']), 'alpha1')
+  assert.equal(matchOpen('x/beta-alpha1', ['alpha1', 'beta']), 'alpha1')
+})
+
+test('D-3 ids are matched case-sensitively; an empty branch matches nothing', () => {
+  assert.equal(matchOpen('feature/navigator-1', ['Navigator']), null)
+  assert.equal(matchOpen('', ['a', 'b']), null)
+})
+
+test('TC-6 an old archived change is not followed by an unrelated branch', () => {
+  assert.equal(matchArchived('fix/navigator-band', ['2026-11-09-navigator'], null), null)
+  assert.equal(matchArchived('fix/navigator-band', ['2026-11-09-navigator'], 'aggregate-events'), null)
+})
+
+test('TC-7 the change just archived is still followed', () => {
+  const folder = '2026-11-13-boundary-owned-hint'
+  assert.equal(matchArchived('feature/boundary-owned-hint', [folder], 'boundary-owned-hint'), folder)
+  assert.equal(matchArchived('develop', [folder], 'boundary-owned-hint'), null) // the branch must name it too
+  assert.equal(matchArchived('feature/boundary-owned-hint-2', [folder], 'boundary-owned-hint'), folder)
+})
+
+test('TC-7 readChange: lastChangeId names the archived folder; the change comes back archived', () => {
+  const r = readChange(OPEN_CHANGES, ARCHIVED_CHANGES, 'boundary-owned-hint', 'feature/boundary-owned-hint', APPETITES)
+  assert.equal(r.change?.id, 'boundary-owned-hint')
+  assert.equal(r.change?.archived, true)
+  assert.equal(r.openChanges, OPEN_CHANGES.length)
+  assert.equal(readChange(OPEN_CHANGES, ARCHIVED_CHANGES, null, 'feature/boundary-owned-hint', APPETITES).change, null)
+})
+
+test('an open change is preferred to an archived one', () => {
+  const r = readChange([file('navigator')], ARCHIVED_CHANGES, 'navigator', 'fix/navigator', APPETITES)
+  assert.equal(r.change?.archived, false)
+})
+
+test('fixtures: the open changes of a synthetic repository, one without tasks', () => {
+  assert.deepEqual(ids(OPEN_CHANGES).slice(-1), ['release-pipeline'])
+  const r = readChange(OPEN_CHANGES, [], null, 'docs/shape-release-pipeline', APPETITES)
+  assert.equal(r.change?.hasTasks, false)
+  assert.equal(readChange(OPEN_CHANGES, [], null, 'feature/navigator-follows-the-work-stage-1', APPETITES).change?.id,
+    'navigator-follows-the-work')
 })
 
 // ---------------------------------------------------------------- adversarial (stage 1)
@@ -107,37 +185,20 @@ test('appetite: names with regex characters and the empty-string name do not thr
 })
 
 test('readChange: ids that contain one another, the longest id in the branch wins', () => {
-  const open = [file('nav', 9), file('navigator', 1)]
-  assert.equal(readChange(open, 'feature/navigator-1', APPETITES).change?.id, 'navigator')
-  assert.equal(readChange(open, 'feature/nav-1', APPETITES).change?.id, 'nav')
+  const open = [file('nav'), file('navigator')]
+  assert.equal(readChange(open, [], null, 'feature/navigator-1', APPETITES).change?.id, 'navigator')
+  assert.equal(readChange(open, [], null, 'feature/nav-1', APPETITES).change?.id, 'nav')
 })
 
-test('readChange: a branch holding two ids picks the longer one, whatever the order of the folders', () => {
-  const a = [file('alpha', 1), file('beta', 9)]
-  assert.equal(readChange(a, 'x/beta-alpha', APPETITES).change?.id, 'alpha')
-  assert.equal(readChange([...a].reverse(), 'x/beta-alpha', APPETITES).change?.id, 'alpha')
-})
-
-test('readChange: equal-length ids both in the branch is deterministic across folder order', () => {
-  const a = [file('aaa', 1), file('bbb', 1)]
-  assert.equal(readChange(a, 'aaa-bbb', APPETITES).change?.id, readChange([...a].reverse(), 'aaa-bbb', APPETITES).change?.id)
-})
-
-test('readChange: equal mtimes and an empty branch name still pick a change and never throw', () => {
-  const r = readChange([file('a', 5), file('b', 5)], '', APPETITES)
-  assert.ok(r.change)
-  assert.equal(r.openChanges, 2)
-})
-
-test('readChange: carries planMtime; ids are matched case-sensitively', () => {
-  const f = { ...file('Navigator', 1), planMtime: 77 }
-  assert.equal(readChange([f], 'feature/navigator-1', APPETITES).change?.planMtime, 77) // falls back to most recent
-  assert.equal(readChange([f, file('zzz', 99)], 'feature/navigator-1', APPETITES).change?.id, 'zzz') // ids are case-sensitive
+test('readChange: carries planMtime', () => {
+  const f = { ...file('navigator'), planMtime: 77 }
+  assert.equal(readChange([f], [], null, 'feature/navigator-1', APPETITES).change?.planMtime, 77)
 })
 
 test('readChange: empty proposal and null tasks give a change with null appetite and zero progress', () => {
-  const r = readChange([{ id: 'x', proposal: '', tasks: null, design: false, mtime: 0, planMtime: 0 }], 'x', APPETITES)
-  assert.deepEqual(r.change, { id: 'x', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: false, hasTasks: false })
+  const r = readChange([{ id: 'x', proposal: '', tasks: null, design: false, planMtime: 0 }], [], null, 'x', APPETITES)
+  assert.deepEqual(r.change, { id: 'x', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: false,
+    hasTasks: false, archived: false })
 })
 
 test('appetitesOf: the epic-delivery reviews keys; nothing for a missing or odd workflow', () => {
@@ -145,15 +206,9 @@ test('appetitesOf: the epic-delivery reviews keys; nothing for a missing or odd 
   for (const odd of [null, undefined, 'x', {}, { reviews: null }, { reviews: 'x' }]) assert.deepEqual(appetitesOf(odd), [])
 })
 
-test('readChange: equal-length ids in the branch, the most recent wins', () => {
-  assert.equal(readChange([file('aaa', 1), file('bbb', 5)], 'aaa-bbb', APPETITES).change?.id, 'bbb')
-  assert.equal(readChange([file('aaa', 5), file('bbb', 1)], 'aaa-bbb', APPETITES).change?.id, 'aaa')
-})
-
-test('the change predicates of design §6.1', async () => {
-  const { holds } = await import('./change.ts')
+test('the change predicates of design §6.1', () => {
   const c = (done: number, total: number, hasDesign = true, hasTasks = true) =>
-    ({ id: 'x', appetite: null, done, total, groups: [], planMtime: 0, hasDesign, hasTasks })
+    ({ id: 'x', appetite: null, done, total, groups: [], planMtime: 0, hasDesign, hasTasks, archived: false })
   assert.ok(holds('none', null) && !holds('proposal', null))
   assert.ok(holds('proposal', c(0, 0, false, false)) && !holds('proposal', c(0, 3)))
   assert.ok(holds('plan', c(0, 3)) && holds('tasks-open', c(0, 3)) && !holds('plan', c(1, 3)))

@@ -8,9 +8,9 @@
 ## 1. Stage 1 — Right data (#185)
 
 - [x] 1.1 Spike, recorded in `evidence/spike-1.1.md`, with a debug log in this mod: (a) `$.session.root()` after EnterWorktree and after a shell `cd`; (b) `$.session.cwd()` inside a subagent's `tool.call`, with and without `isolation: 'worktree'`; (c) whether `skill.prompt` fires between the pre and post of a `Skill` tool call; (d) when a skill preloaded into a subagent fires `skill.prompt` relative to `agent.spawn` and its resolution. Update D-4 if the fallback applies
-- [ ] 1.2 Atom and reducer (D-1): `NavState.root`, `lastChangeId`, `mergedBranches`, `skillCalls`, `pendingSpawns`; `Subagent.root`, `skills`; `Change.archived`; signals `RootFollowed`, `AgentRooted`, `SkillCallStarted`/`SkillCallEnded`, `ToolUsed`; `revive` reads an old atom. Tests: each signal's effect and its idempotency
-- [ ] 1.2b Test fixtures (DEC-11): a helper in `lib/fixtures.test-helpers.ts` that builds synthetic repositories as data (`ChangeFiles` lists, git outputs for a main checkout, a worktree inside, a worktree beside, another repository, several open changes, an archive)
-- [ ] 1.3 Branch matching (D-3) in `lib/change.ts`: bounded match, tie rule, archived only for `lastChangeId`. Delete the tests that assert the mtime fallback (`change.test.ts` around lines 31, 126–134, 146–149) and replace them with TC-1..TC-7 and D-3's matrix rows
+- [x] 1.2 Atom and reducer (D-1): `NavState.root`, `lastChangeId`, `mergedBranches`, `skillCalls`, `pendingSpawns`; `Subagent.root`, `skills`; `Change.archived`; signals `RootFollowed`, `AgentRooted`, `SkillCallStarted`/`SkillCallEnded`, `ToolUsed`; `revive` reads an old atom. Tests: each signal's effect and its idempotency
+- [x] 1.2b Test fixtures (DEC-11): a helper in `lib/fixtures.test-helpers.ts` that builds synthetic repositories as data (`ChangeFiles` lists, git outputs for a main checkout, a worktree inside, a worktree beside, another repository, several open changes, an archive)
+- [x] 1.3 Branch matching (D-3) in `lib/change.ts`: bounded match, tie rule, archived only for `lastChangeId`. Delete the tests that assert the mtime fallback (`change.test.ts` around lines 31, 126–134, 146–149) and replace them with TC-1..TC-7 and D-3's matrix rows
 - [ ] 1.4 Roots (D-2): pure `lib/root.ts` (decide re-root from toplevel and common; fall back when gone); `io.ts`/`register.tsx` gather the git facts, memoise per directory, re-root before `FileTouched` is computed, take a subagent's root from `session.cwd()` on its first call, make each edit relative to its agent's root, carry `root` across `SESSION_MOVES`, re-read workflows on re-root. Tests with 1.2b fixtures: worked example 1, steps 1–5; a subagent's write in its own worktree passes a file gate relative to it and leaves the lead's change alone
 - [ ] 1.5 Accept, validate, archive check, plan drift, `planHash` and the clean-tree check read and write in `state.root`; Accept and Archive check disabled on an archived change. Tests: Accept after a re-root targets the worktree's change
 - [ ] 1.6 Skill attribution (D-4, per 1.1): in-flight `Skill` calls, pending spawns, then the lead. Tests: TC-14, TC-14b, TC-14c; none of the subagent cases touch the lead's trail, workflow or gates
@@ -51,7 +51,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [ ] 1.2 · [ ] 1.2b · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [x] 1.7 · [ ] 1.8
+- [x] 1.1 · [x] 1.2 · [x] 1.2b · [x] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [x] 1.7 · [ ] 1.8
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 3.6 · [ ] 3.7 · [ ] 3.8
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5 · [ ] 4.6 · [ ] 4.7 · [ ] 4.8 · [ ] 4.9

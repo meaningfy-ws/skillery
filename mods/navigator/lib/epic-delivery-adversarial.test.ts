@@ -17,7 +17,7 @@ const defaults = resolveWorkflows(DEFAULTS, [])
 let n = 0
 const id = () => `a${++n}`
 const change = (tasks: string | null, over: Partial<Change> = {}): Change =>
-  ({ id: 'x', appetite: 'LARGE', ...progress(tasks), planMtime: 0, hasDesign: true, hasTasks: tasks !== null, ...over })
+  ({ id: 'x', appetite: 'LARGE', ...progress(tasks), planMtime: 0, hasDesign: true, hasTasks: tasks !== null, archived: false, ...over })
 function run(...signals: Signal[]): NavState {
   return signals.reduce(reduce, reduce(EMPTY, { kind: 'Started', id: id(), sessionId: 's', band: 'folded', statusLine: true, interactive: true }))
 }

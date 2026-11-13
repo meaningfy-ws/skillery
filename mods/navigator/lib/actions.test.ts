@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { commandFor, hygieneAction, modeAction, reconcile, review } from './actions.ts'
 import { EMPTY, type NavState } from './state.ts'
 
-const change = { id: 'navigator', appetite: 'VERY LARGE', done: 3, total: 9, groups: [], planMtime: 0, hasDesign: true, hasTasks: true }
+const change = { id: 'navigator', appetite: 'VERY LARGE', done: 3, total: 9, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false }
 const drift = { key: 'plan:outside:tools/x.py', message: 'm', remedy: 'openspec-update-change navigator', owner: 'epic-planning' }
 
 test('TC-15 Reconcile EPIC: the change update, then the clarity gate, both resolved as typed', () => {

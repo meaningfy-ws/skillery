@@ -1,20 +1,25 @@
 // The state contract (design §3). reduce() is the only writer; every function here is pure.
 
-import type { BandDisplay, Change, NavState, Warning, Workflow } from '../types'
+import type { BandDisplay, Change, NavState, Root, Warning, Workflow } from '../types'
 import { lean } from './lean.ts'
 import { navigate } from './phase.ts'
 import { addWarnings, clearGateWarnings, gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, onCommand,
   onCommit, onSkill, showsConsent, workflowErrors } from './process-drift.ts'
 import { bare, currentPhase, isCommit, workflowOf } from './workflow.ts'
 
-export type { Activate, BandDisplay, Change, ChangePredicate, Gate, GateState, Group, NavState, Phase, Review, SkillUse,
-  Subagent, Warning, Workflow } from '../types'
+export type { Activate, BandDisplay, Change, ChangePredicate, Gate, GateState, Group, NavState, PendingSpawn, Phase, Review,
+  Root, SkillCall, SkillUse, Subagent, Warning, Workflow } from '../types'
 
 export const EMPTY: NavState = {
   version: 1,
   sessionId: '',
   change: null,
   openChanges: 0,
+  root: null,
+  lastChangeId: null,
+  mergedBranches: [],
+  skillCalls: [],
+  pendingSpawns: [],
   workflows: [],
   interactive: true,
   workflow: null,
@@ -85,6 +90,11 @@ export type Signal =
   | { kind: 'Accepted'; id: string; keys: string[] }
   | { kind: 'PlanRead'; id: string; warnings: Warning[]; truncated: boolean }
   | { kind: 'SetPending'; id: string; line: string | null }
+  | { kind: 'RootFollowed'; id: string; root: Root }
+  | { kind: 'AgentRooted'; id: string; agentId: string; root: string }
+  | { kind: 'SkillCallStarted'; id: string; toolUseId: string; name: string; agentId: string | null; at: number }
+  | { kind: 'SkillCallEnded'; id: string; toolUseId: string }
+  | { kind: 'ToolUsed'; id: string; agentId?: string }
 
 const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v)
 
@@ -164,13 +174,15 @@ function apply(state: NavState, s: Signal): NavState {
       // The spawn may resolve after the subagent's turn completed: keep what the finish recorded.
       const known = state.subagents.find(a => a.agentId === s.agentId)
       const spawned = { agentId: s.agentId, toolUseId: s.id, type: s.type, model: s.model,
-        description: s.description, startedAt: s.at, tokens: known?.tokens ?? 0, done: known?.done ?? false }
+        description: s.description, startedAt: s.at, tokens: known?.tokens ?? 0, done: known?.done ?? false,
+        root: known?.root ?? null, skills: known?.skills ?? [] }
       return navigate({ ...state, subagents: [...state.subagents.filter(a => a !== known), spawned] }, s.at, { agent: s.type })
     }
     case 'SubagentFinished': {
       const known = state.subagents.some(a => a.agentId === s.agentId)
       const finished = known ? state.subagents : [...state.subagents, {
-        agentId: s.agentId, toolUseId: '', type: '?', model: '?', description: '', startedAt: 0, tokens: 0, done: false }]
+        agentId: s.agentId, toolUseId: '', type: '?', model: '?', description: '', startedAt: 0, tokens: 0, done: false,
+        root: null, skills: [] }]
       return {
         ...state,
         subagents: finished.map(a =>
@@ -189,6 +201,16 @@ function apply(state: NavState, s: Signal): NavState {
       return { ...state, display: { ...state.display, line: s.line } }
     case 'SetMode': // the session switch (DD-35); a new session follows the repo again
       return { ...state, mode: { ...state.mode, session: s.mode === state.mode.repo ? null : s.mode } }
+    case 'RootFollowed': // the same root again is no change; re-reading the workflows is io's job (D-2)
+      return state.root && s.root.path === state.root.path ? state : { ...state, root: s.root }
+    case 'AgentRooted':
+      return { ...state, subagents: state.subagents.map(a => a.agentId === s.agentId ? { ...a, root: s.root } : a) }
+    case 'SkillCallStarted':
+      return { ...state, skillCalls: [...state.skillCalls,
+        { toolUseId: s.toolUseId, name: s.name, agentId: s.agentId, at: s.at }] }
+    case 'SkillCallEnded':
+      return { ...state, skillCalls: state.skillCalls.filter(c => c.toolUseId !== s.toolUseId) }
+    case 'ToolUsed': // recorded by lean() (lib/lean.ts)
     case 'ThresholdsRead':
     case 'AgentCalled':
     case 'SpawnAsked':

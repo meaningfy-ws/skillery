@@ -14,6 +14,7 @@ export type Change = {
   planMtime: number
   hasDesign: boolean
   hasTasks: boolean
+  archived: boolean // the change just archived, still followed (D-3)
 }
 
 // ---- workflow files (design §4.1); lib/workflow.ts is their one validator
@@ -85,7 +86,16 @@ export type Subagent = {
   startedAt: number
   tokens: number
   done: boolean
+  root: string | null // the working tree it writes in; null until its first tool call (D-2)
+  skills: string[] // the skills loaded in it, by name (D-4)
 }
+
+/** The working tree the lead follows; `common` is `git rev-parse --git-common-dir`, absolute (D-1). */
+export type Root = { path: string; common: string; branch: string }
+/** A `Skill` tool call in flight; `agentId` is null for the lead (D-4). */
+export type SkillCall = { toolUseId: string; name: string; agentId: string | null; at: number }
+/** An `agent.spawn` not yet resolved, keyed by its tool_use_id (D-4). */
+export type PendingSpawn = { toolUseId: string; type: string; at: number }
 
 export type SkillUse = { name: string; at: number; phase: string | null }
 
@@ -96,6 +106,11 @@ export type NavState = {
   sessionId: string
   change: Change | null
   openChanges: number
+  root: Root | null // the lead's working tree (D-1, D-2)
+  lastChangeId: string | null // the change last followed; an archived one is still followed while it names the branch (D-3, D-8)
+  mergedBranches: string[] // branches seen merged (D-5)
+  skillCalls: SkillCall[]
+  pendingSpawns: PendingSpawn[]
   workflows: Workflow[]
   interactive: boolean
   workflow: string | null
