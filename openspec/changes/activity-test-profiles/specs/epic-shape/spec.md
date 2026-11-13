@@ -21,8 +21,8 @@ empty. PLANs derived before this requirement SHALL NOT be migrated (activity-tes
 design D-1, D-3).
 
 #### Scenario: A write path left out
-- **WHEN** a PLAN states an invariant on a stored value and its row lists the paths rename and replace
-- **THEN** the write-path column, which asks for create, update, replace, delete, bulk or import and internal paths, shows create missing before the PLAN is gated
+- **WHEN** `epic-planning` derives the PLAN of an EPIC that keeps one label in two stores and offers create, rename and replace
+- **THEN** the invariant's row lists create among its write paths, because the column asks for create, update, replace, delete, bulk or import and internal paths
 
 #### Scenario: A PLAN with no invariant
 - **WHEN** `epic-planning` derives the PLAN of a change for which the interview recorded "None"
