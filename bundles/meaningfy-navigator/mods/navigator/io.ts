@@ -130,6 +130,8 @@ export async function recordCall($: EngineInterface, e: ToolCall, isError: boole
   const agent = e.agentId ? { agentId: e.agentId } : {}
   // Every tool call of a subagent counts for PD-6, whatever the tool (DD-41).
   if (e.agentId) await send($, { kind: 'AgentCalled', id: `call:${e.tool_use_id}`, agentId: e.agentId })
+  // Any tool but Skill is the agent's use of the skills it loaded (D-9).
+  if (e.tool !== 'Skill') await send($, { kind: 'ToolUsed', id: `used:${e.tool_use_id}`, ...agent })
   // A background call has not run yet when it returns: it passes no gate (DD-38).
   if (e.tool === 'Bash' && !e.run_in_background) {
     await send($, { kind: 'ToolRan', id: `tool:${e.tool_use_id}`, command: e.command ?? '', ok: !isError, at, ...agent })

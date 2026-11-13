@@ -45,7 +45,7 @@ test('the stages row marks done, current and next, with short titles', () => {
 })
 
 test('TC-02 (view) no open change: the line says so, the band has nothing to report', () => {
-  assert.equal(lineText(EMPTY), 'navigator · no open change')
+  assert.equal(lineText(EMPTY), 'navigator · no repository')
   assert.equal(bandModel(EMPTY).folded, '')
 })
 

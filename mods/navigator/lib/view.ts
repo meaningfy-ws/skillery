@@ -1,5 +1,6 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
+import { nextStep } from './actions.ts'
 import { openDrift } from './process-drift.ts'
 import { reviewQuota, smallStageAllowance } from './dispatch.ts'
 import { isStrict, phasesOf, workflowOf } from './workflow.ts'
@@ -25,7 +26,10 @@ export function lineText(s: NavState): string {
     return cut(clean([`${w.name}${w.provisional ? ' (provisional)' : ''}`, s.variant, s.phase,
       isStrict(s) ? '● strict' : null].filter(Boolean).join(' · ')))
   }
-  if (!s.change) return cut(clean(['navigator · no open change', s.phase].filter(Boolean).join(' · ')))
+  if (!s.change) {
+    return cut(clean(['navigator', s.root ? `no change for branch ${s.root.branch}` : 'no repository', s.phase,
+      isStrict(s) ? '● strict' : null].filter(Boolean).join(' · ')))
+  }
   const c = s.change
   const stage = currentGroup(c.groups)
   const step = `${s.phase ? `${s.phase} ` : ''}${stage ? `${stage.done}/${stage.total}` : `${c.done}/${c.total}`}`
@@ -160,6 +164,123 @@ export function bandModel(s: NavState): BandModel {
     { label: 'mode', items: [modeText(s)] },
   )
   return { folded: foldedItems.join(' · '), foldedItems, rows: rows.map(r => ({ ...r, items: r.items.map(clean) })) }
+}
+
+/** Severity tier of a warning key, 1 (most severe) to 5 (D-10); an unknown prefix ranks 3. */
+export function tierOf(key: string): 1 | 2 | 3 | 4 | 5 {
+  if (/^(workflow:error|process:(gate|missing|elsewhere|external):)/.test(key)) return 1
+  if (key.startsWith('plan:')) return 2
+  if (key.startsWith('hygiene:unused:')) return 5
+  if (key.startsWith('hygiene:')) return 4
+  return 3 // process:inline, model, overspawn, second-check, and any unknown prefix
+}
+
+/** Every warning by tier; within a tier the newest first (the list is appended in arrival order). */
+export function orderedWarnings(s: NavState): Warning[] {
+  return s.warnings.map((w, i) => ({ w, i, t: tierOf(w.key) })).sort((a, b) => a.t - b.t || b.i - a.i).map(x => x.w)
+}
+
+// ------------------------------------------------------------------ the band (D-11)
+export type BandView = {
+  /** Folded, line 1: phase, stage, running subagents; or why there is nothing to follow. */
+  now: string
+  /** Folded, line 2: `next: <step>`, null when there is none. */
+  next: string | null
+  /** Folded, line 3: `⚠ <top message> · n more` (tiers 1-4, not accepted); null when none. */
+  warning: string | null
+  details: {
+    reading: string | null
+    rows: { label: string; items: string[] }[] // stages, phases (with gates), appetite, skills, subagents
+    warnings: { key: string; message: string; tier: number; accepted: boolean; accept: boolean }[] // `accept`: an Accept button is offered
+    mode: string
+    actions: string[] // button labels, in order
+  }
+}
+
+const bareName = (name: string) => name.slice(name.lastIndexOf(':') + 1)
+const elapsed = (ms: number) => { const m = Math.floor(Math.max(0, ms) / 60_000)
+  return m < 1 ? `${Math.floor(Math.max(0, ms) / 1000)}s` : m < 60 ? `${m}m` : `${Math.floor(m / 60)}h${m % 60}m` }
+
+function nowText(s: NavState, now: number): string {
+  const w = workflowOf(s)
+  const running = s.subagents.filter(a => !a.done)
+  const crew = [...running.slice(0, 2).map(a => `${a.description} → ${bareName(a.type)} (${elapsed(now - a.startedAt)})`),
+    ...(running.length > 2 ? [`+${running.length - 2}`] : [])]
+  if (w && !w.activate.openChange) return [w.name, s.variant, s.phase, ...crew].filter(Boolean).join(' · ')
+  if (!s.change) return s.root ? `no change for branch ${s.root.branch}` : 'no open change'
+  const c = s.change, stage = currentGroup(c.groups)
+  return [s.phase, stage ? `${shortTitle(stage.title)} ${stage.done}/${stage.total}` : `${c.done}/${c.total}`, ...crew]
+    .filter(Boolean).join(' · ')
+}
+
+function subagentGroups(s: NavState): string[] {
+  const types = [...new Set(s.subagents.map(a => bareName(a.type)))]
+  return types.map(t => {
+    const g = s.subagents.filter(a => bareName(a.type) === t)
+    const done = g.filter(a => a.done).length, running = g.length - done
+    const tok = g.reduce((n, a) => n + a.tokens, 0)
+    // A model is shown only when it differs from the lead's; with the lead's model unknown nothing is claimed.
+    const models = s.parentModel ? [...new Set(g.map(a => a.model).filter(m => m !== s.parentModel))] : []
+    return [`${t}${done > 1 ? ` ×${done}` : ''}${done ? ' done' : ''}`, ...models, ...(tok ? [`${tokens(tok)} tokens`] : []),
+      ...(running ? [`${running} running`] : [])].join(' · ')
+  })
+}
+
+function skillGroups(s: NavState): string[] {
+  const out: { phase: string | null; names: string[] }[] = []
+  for (const k of s.skills.slice(-TRAIL)) {
+    const g = out.find(x => x.phase === k.phase) ?? (out.push({ phase: k.phase, names: [] }), out.at(-1)!)
+    g.names.push(bareName(k.name))
+  }
+  return out.map(g => `${g.phase ? `${g.phase}: ` : ''}${g.names.join(', ')}`)
+}
+
+/** What the band says (D-11), as plain data for register.tsx. `now` and `home` come in so it stays pure. */
+export function bandView(s: NavState, env: { now: number; home: string }): BandView {
+  const offers = bandOffers(s)
+  const open = orderedWarnings(s).filter(x => !s.accepted.includes(x.key) && tierOf(x.key) <= 4)
+  const step = nextStep(s)
+  const rows: BandView['details']['rows'] = []
+  const c = s.change
+  if (c?.groups.length) {
+    const cur = currentGroup(c.groups)
+    rows.push({ label: 'stages', items: c.groups.map(g =>
+      `${g.total > 0 && g.done === g.total ? '✓' : g === cur ? '●' : '○'} ${shortTitle(g.title)} ${g.done}/${g.total}`) })
+  }
+  const gates = Object.entries(s.gates).filter(([, g]) => g.state !== 'none')
+    .map(([id, g]) => `${id} ${GLYPH[g.state]}${/^\d+(\.\d+)?$/.test(g.detail) ? ` ${g.detail}` : ''}`)
+  const wf = workflowOf(s)
+  if (wf) {
+    const phases = phasesOf(wf, s.variant)
+    const at = phases.findIndex(p => p.id === s.phase)
+    rows.push({ label: 'phases', items: [`${wf.title}${s.variant ? ` (${s.variant})` : ''}${wf.provisional ? ' (provisional)' : ''}`,
+      ...phases.map((p, i) => `${i < at ? '✓' : i === at ? '●' : '○'} ${p.id}`), ...gates] })
+  } else if (gates.length) rows.push({ label: 'phases', items: gates })
+  if (c) {
+    const ceiling = reviewQuota(s), small = smallStageAllowance(s)
+    const reviewers = s.turnRoles.filter(x => x === 'reviewer').length
+    rows.push({ label: 'appetite', items: [c.appetite ?? '?', `tasks ${c.done}/${c.total}`,
+      ...(c.groups.length ? [`groups ${c.groups.filter(g => g.total > 0 && g.done === g.total).length}/${c.groups.length}`] : []),
+      ...(ceiling !== null ? [`reviewers ${reviewers}/${ceiling} this turn`] : []),
+      ...(small !== null ? [`small stage: ${small} allowed`] : []),
+      ...(s.sessionTokens ? [`${tokens(s.sessionTokens)} tokens`] : [])] })
+  }
+  rows.push({ label: 'skills', items: skillGroups(s) }, { label: 'subagents', items: subagentGroups(s) })
+  const home = env.home
+  const where = s.root && home && (s.root.path === home || s.root.path.startsWith(`${home}/`)) ? `~${s.root.path.slice(home.length)}` : s.root?.path
+  return {
+    now: clean(nowText(s, env.now)),
+    next: step ? clean(`next: ${step}`) : null,
+    warning: open.length ? clean(`⚠ ${open[0]!.message}${open.length > 1 ? ` · ${open.length - 1} more` : ''}`) : null,
+    details: {
+      reading: s.root ? clean(`reading ${where} · ${s.root.branch}`) : null,
+      rows: rows.map(r => ({ ...r, items: r.items.map(clean) })),
+      warnings: orderedWarnings(s).map(x => ({ key: x.key, message: clean(x.message), tier: tierOf(x.key),
+        accepted: s.accepted.includes(x.key), accept: offers.accept.some(o => o.key === x.key) })),
+      mode: modeText(s),
+      actions: ['Reconcile EPIC', ...(offers.check ? ['Archive check'] : []), 'Validate', 'Review', 'Mode', 'Less'],
+    },
+  }
 }
 
 const OUTSIDE = 'plan:outside:'

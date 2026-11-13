@@ -211,9 +211,10 @@ test('SkillCallStarted/Ended: a repeated id changes nothing', () => {
 
 test('ToolUsed of the lead is a tool event of the turn; the same id twice counts once', () => {
   const s = reduce(started(), { kind: 'ToolUsed', id: 't1' })
-  assert.deepEqual(s.turnEvents, [{ kind: 'tool' }])
+  assert.deepEqual(s.turnEvents, [{ kind: 'tool', agent: 'main' }])
   assert.equal(reduce(s, { kind: 'ToolUsed', id: 't1' }), s)
-  assert.deepEqual(reduce(s, { kind: 'ToolUsed', id: 't2', agentId: 'a1' }).turnEvents, [{ kind: 'tool' }]) // 3.2 does the per-agent part
+  assert.deepEqual(reduce(s, { kind: 'ToolUsed', id: 't2', agentId: 'a1' }).turnEvents,
+    [{ kind: 'tool', agent: 'main' }, { kind: 'tool', agent: 'a1' }])
 })
 
 test('revive of an atom written before D-1 fills the new fields and still reduces', () => {

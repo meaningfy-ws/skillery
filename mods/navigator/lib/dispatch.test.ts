@@ -121,13 +121,24 @@ test('PD-10: an answer longer than the report limit', () => {
   assert.deepEqual(reportOversized(t, 'a3', lines(40) + '\n'), []) // a trailing newline is not a line
 })
 
-test('unused skill: a load followed by another load with no tool call between', () => {
-  const w = unusedSkills([
-    { kind: 'skill', name: 'meaningfy-core:guardrails' }, { kind: 'skill', name: 'epic-delivery' },
-    { kind: 'tool' }, { kind: 'skill', name: 'clarity-gate' },
-  ])
-  assert.deepEqual(w.map(x => [x.key, x.remedy]), [['hygiene:unused:guardrails', null]])
+const sk = (name: string, agent = 'main') => ({ kind: 'skill', name, agent }) as const
+const tl = (agent = 'main') => ({ kind: 'tool', agent }) as const
+
+test('unused skill (D-9): a load followed by another load and no tool call of its agent', () => {
+  const w = unusedSkills([sk('meaningfy-core:guardrails'), sk('epic-delivery')], 'main')
+  assert.deepEqual(w.map(x => [x.key, x.remedy]), [['hygiene:unused:main:guardrails', null]])
   assert.match(w[0]!.message, /skillery-feedback/)
-  assert.deepEqual(unusedSkills([{ kind: 'skill', name: 'a' }]), []) // the last load of a turn is not judged
-  assert.deepEqual(unusedSkills([{ kind: 'skill', name: 'a' }, { kind: 'tool' }, { kind: 'skill', name: 'b' }]), [])
+  assert.deepEqual(unusedSkills([sk('a')], 'main'), []) // the last load of a turn is not judged
+  assert.deepEqual(unusedSkills([sk('a'), tl(), sk('b')], 'main'), [])
+})
+
+test('unused skill (D-9): two loads then a tool call leave neither unused', () => {
+  assert.deepEqual(unusedSkills([sk('a'), sk('b'), tl()], 'main'), [])
+  assert.deepEqual(unusedSkills([sk('a'), sk('b'), { kind: 'spawn', agent: 'main' }], 'main'), [])
+})
+
+test('unused skill (D-9): only the judged agent\'s events count, and its warning key carries the agent', () => {
+  const events = [sk('a', 'a1'), sk('b', 'a1'), tl('main')] // the lead's tool call is not the subagent's use
+  assert.deepEqual(unusedSkills(events, 'a1').map(w => w.key), ['hygiene:unused:a1:a'])
+  assert.deepEqual(unusedSkills(events, 'main'), [])
 })

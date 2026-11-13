@@ -34,7 +34,7 @@ const resolved = (toolUseId: string, agentId: string | null): Signal =>
   ({ kind: 'SpawnResolved', id: `resolved:${toolUseId}`, toolUseId, agentId })
 
 /** What a subagent's load must leave alone. */
-const lead = (s: NavState) => ({ skills: s.skills, workflow: s.workflow, phase: s.phase, gates: s.gates, turnEvents: s.turnEvents,
+const lead = (s: NavState) => ({ skills: s.skills, workflow: s.workflow, phase: s.phase, gates: s.gates, turnEvents: s.turnEvents.filter(e => e.agent === 'main'),
   warnings: s.warnings })
 const skillsOf = (s: NavState, agentId: string) => s.subagents.find(a => a.agentId === agentId)?.skills
 
@@ -44,7 +44,7 @@ test('control: a lead load of a gate skill passes its gate, enters the trail and
   const s = leadAfter(loaded('clarity-gate', 3))
   assert.equal(s.gates['clarity']?.state, 'ok')
   assert.deepEqual(s.skills.map(k => k.name), ['clarity-gate'])
-  assert.deepEqual(s.turnEvents, [{ kind: 'skill', name: 'clarity-gate' }])
+  assert.deepEqual(s.turnEvents, [{ kind: 'skill', name: 'clarity-gate', agent: 'main' }])
 })
 
 test('TC-14: a person\'s /name, nothing in flight, activates as today', () => {
@@ -124,5 +124,6 @@ test('TC-14c: two subagents load one skill at once, each credited, the lead neve
 test('a background subagent\'s later load does not add lead turn events', () => {
   const before = leadAfter(spawned('a1', 3))
   const s = [callStart('c1', 'clarity-gate', 'a1', 4), loaded('clarity-gate', 5)].reduce(reduce, before)
-  assert.deepEqual(s.turnEvents, before.turnEvents)
+  assert.deepEqual(lead(s).turnEvents, lead(before).turnEvents)
+  assert.deepEqual(s.turnEvents.map(e => e.agent), ['a1'])
 })

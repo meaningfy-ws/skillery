@@ -58,12 +58,12 @@ test('D-21.2 revive migrates a stored call, spawn and subagent, and drops an ent
   assert.equal(revive({ root: MAIN }).root?.path, '/r')
 })
 
-test('D-21.5 the load of a subagent is not a lead turn event; the lead\'s is', () => {
+test('D-21.5 the load of a subagent is its own turn event, not the lead\'s; the lead\'s is main\'s', () => {
   const sub = { agentId: 'a', toolUseId: '', type: 't', model: 'm', description: '', startedAt: 1, tokens: 0, done: false, rootPath: null, skills: [] }
   const preload = send({ ...EMPTY, subagents: [sub] }, { kind: 'SkillLoaded', name: 'x', at: 2 })
-  assert.deepEqual(preload.turnEvents, [])
+  assert.deepEqual(preload.turnEvents, [{ kind: 'skill', name: 'x', agent: 'a' }])
   assert.equal(creditLoad(EMPTY, 'x').kind, 'lead')
-  assert.deepEqual(send(EMPTY, { kind: 'SkillLoaded', name: 'x', at: 2 }).turnEvents, [{ kind: 'skill', name: 'x' }])
+  assert.deepEqual(send(EMPTY, { kind: 'SkillLoaded', name: 'x', at: 2 }).turnEvents, [{ kind: 'skill', name: 'x', agent: 'main' }])
 })
 
 test('D-21.5 Accept and the Archive check are offered only on a change that is not archived', () => {

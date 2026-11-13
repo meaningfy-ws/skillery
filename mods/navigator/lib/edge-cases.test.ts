@@ -543,9 +543,9 @@ test('s3 PD-7: model ranks by substring; a declared or unranked model is never j
   assert.equal(rewriteModel(s, 'haiku', 'claude-sonnet-4-5'), null)
 })
 
-test('s3 unused skill: only a load followed directly by another load in the turn; plugin prefix dropped', () => {
-  const ws = unusedSkills([{ kind: 'skill', name: 'p:a' }, { kind: 'skill', name: 'b' }, { kind: 'tool' }, { kind: 'skill', name: 'c' }])
-  assert.deepEqual(ws.map(w => [w.key, w.owner]), [['hygiene:unused:a', 'skillery-feedback']])
+test('s3 unused skill: a load with another load after it and no tool call; plugin prefix dropped', () => {
+  const ws = unusedSkills([{ kind: 'skill', name: 'p:a', agent: 'main' }, { kind: 'skill', name: 'b', agent: 'main' }], 'main')
+  assert.deepEqual(ws.map(w => [w.key, w.owner]), [['hygiene:unused:main:a', 'skillery-feedback']])
 })
 
 // ---------------------------------------------------------------- strict

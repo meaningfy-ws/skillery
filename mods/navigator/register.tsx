@@ -98,7 +98,7 @@ export const register: Register = (on, options) => {
     if (e.resume) return next(e) // waking a parked agent is not a spawn (DD-41)
     // Counted before it runs, so parallel spawns each see the ones before; strict reads the count after.
     await send($, { kind: 'SpawnAsked', id: `ask:${e.tool_use_id}:${await $.clock.now()}:${e.name ?? e.description}`,
-      type: e.subagentType, description: e.description })
+      type: e.subagentType, description: e.description, ...(e.parentAgentId ? { agentId: e.parentAgentId } : {}) })
     const s = await state($)
     const rewriteTo = rewriteModel(s, e.model, e.parentModel)
     const d = decideSpawn(s, overspawnNow(s), rewriteTo)
