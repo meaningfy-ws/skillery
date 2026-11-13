@@ -18,6 +18,7 @@ served_by:
   - service-reliability
   - infrastructure-security
   - skillery-feedback
+  - test-strategy
 status: partial
 change: add-devops-bundle
 ---
