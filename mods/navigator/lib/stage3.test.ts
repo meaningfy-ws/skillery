@@ -1,7 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { EMPTY, type NavState } from './state.ts'
-import { bandView, lineText, orderedWarnings, tierOf } from './view.ts'
+import { nextCommand, nextStep } from './actions.ts'
+import { WARNING_CAP, bandView, lineText, orderedWarnings, tierOf } from './view.ts'
 
 const w = (key: string, message = key) => ({ key, message, remedy: null, owner: 'x' })
 const sub = (o: Partial<NavState['subagents'][number]>): NavState['subagents'][number] =>
@@ -82,6 +83,31 @@ test('Details: warnings in tier order with key and message; accepted ones not of
     [['plan:b', 'p', false, true], ['hygiene:a', 'h', true, false]])
   const arch = { ...s, change: { ...change, archived: true } }
   assert.ok(bandView(arch, env).details.warnings.every(x => !x.accept))
+})
+
+test('Details: many open plan:outside warnings are capped, open ones before accepted, the rest counted', () => {
+  const many = Array.from({ length: 12 }, (_, i) => w(`plan:outside:f${i}.py`, `f${i}.py is outside the PLAN`))
+  const s: NavState = { ...EMPTY, change, warnings: [...many, w('hygiene:context', 'ctx')], accepted: ['plan:outside:f11.py'] }
+  const d = bandView(s, env).details
+  assert.equal(d.warnings.length, WARNING_CAP - 1)
+  assert.equal(d.moreWarnings, 13 - (WARNING_CAP - 1))
+  assert.ok(d.warnings.every(x => !x.accepted), 'the accepted one is last, so it falls into the +n more')
+  assert.equal(d.warnings[0]!.key, 'plan:outside:f10.py') // newest first within tier 2
+  assert.equal(bandView({ ...s, warnings: many.slice(0, 3), accepted: [] }, env).details.moreWarnings, 0)
+  assert.equal(bandView({ ...s, warnings: many.slice(0, WARNING_CAP), accepted: [] }, env).details.moreWarnings, 0)
+})
+
+test('next: shows the command the Next step button runs, a slash and the skill; null when there is none', () => {
+  assert.equal(nextCommand('opsx:apply'), '/opsx:apply')
+  assert.equal(nextCommand(null), null)
+  const s: NavState = { ...EMPTY, change, phase: 'apply' }
+  const step = nextStep(s)
+  assert.equal(bandView(s, env).next, step ? `next: /${step}` : null)
+})
+
+test('now line: elapsed counts in the milliseconds $.clock.now() gives, as startedAt does', () => {
+  const s: NavState = { ...EMPTY, change, phase: 'apply', subagents: [sub({ description: 'd', startedAt: 1_700_000_000_000 })] }
+  assert.match(bandView(s, { now: 1_700_000_000_000 + 125_000, home: '' }).now, /\(2m\)$/)
 })
 
 test('Details: actions, Archive check only on an open change', () => {

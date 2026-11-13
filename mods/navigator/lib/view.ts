@@ -1,12 +1,14 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
-import { nextStep } from './actions.ts'
+import { nextCommand, nextStep } from './actions.ts'
 import { openDrift } from './process-drift.ts'
 import { reviewQuota, smallStageAllowance } from './dispatch.ts'
 import { isStrict, phasesOf, workflowOf } from './workflow.ts'
-import type { Group, NavState, Subagent, Warning } from './state.ts'
+import type { Group, NavState, Warning } from './state.ts'
 
 const LINE_MAX = 120
+/** Warning lines in Details, the `+n more` line included: a flood of `plan:outside:` ones cannot push the buttons away. */
+export const WARNING_CAP = 6
 const TRAIL = 8
 const GLYPH = { ok: '✓', fail: '✗', stale: '·', none: '' } as const
 
@@ -84,86 +86,14 @@ export function capped(items: string[], max: number): string[] {
   return items.length > max ? [...items.slice(0, max - 1), `+${items.length - max + 1} more`] : items
 }
 
-export function subagentText(a: Subagent): string {
-  const state = a.done ? `done · ${tokens(a.tokens)} tokens` : 'running'
-  return `${a.type} · ${a.model} · ${state}`
-}
-
 function tokens(n: number): string {
   return n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n)
-}
-
-export type BandModel = {
-  folded: string
-  foldedItems: string[]
-  rows: { label: string; items: string[] }[]
 }
 
 /** Accept and the Archive check do nothing on an archived change, so they are not offered (D-3, D-21.5). */
 export function bandOffers(s: NavState): { accept: Warning[]; check: boolean } {
   const archived = !!s.change?.archived
   return { accept: archived ? [] : openDrift(s), check: !!s.change && !archived }
-}
-
-/** Warnings not recorded as deviations; accepted ones show but do not count. */
-const openCount = (s: NavState) => s.warnings.filter(w => !s.accepted.includes(w.key)).length // every kind, accepted aside
-
-export function bandModel(s: NavState): BandModel {
-  const running = s.subagents.filter(a => !a.done)
-  const last = s.skills.at(-1)
-  const gates = Object.entries(s.gates)
-    .filter(([, g]) => g.state !== 'none')
-    .map(([id, g]) => `${id} ${GLYPH[g.state]}${/^\d+(\.\d+)?$/.test(g.detail) ? ` ${g.detail}` : ''}`)
-  // Empty when there is nothing to report: the band then shows only its buttons.
-  const foldedItems = [
-    ...(running.length ? [`${running.length} running: ${running.map(a => a.type).join(', ')}`] : []),
-    ...(last ? [`last ${last.name}`] : []),
-    ...gates,
-    ...(openCount(s) ? [`⚠ ${openCount(s)}`] : []),
-  ].map(clean)
-  const rows: BandModel['rows'] = []
-  if (s.change && s.change.groups.length) {
-    const now = currentGroup(s.change.groups)
-    rows.push({
-      label: 'stages',
-      items: s.change.groups.map(g =>
-        `${g.total > 0 && g.done === g.total ? '✓' : g === now ? '●' : '○'} ${shortTitle(g.title)} ${g.done}/${g.total}`),
-    })
-  }
-  const w = workflowOf(s)
-  if (w) {
-    const phases = phasesOf(w, s.variant)
-    const now = phases.findIndex(p => p.id === s.phase)
-    rows.push({
-      label: 'phases',
-      items: [`${w.title}${s.variant ? ` (${s.variant})` : ''}${w.provisional ? ' (provisional)' : ''}`,
-        ...phases.map((p, i) => `${i < now ? '✓' : i === now ? '●' : '○'} ${p.id}`)],
-    })
-  }
-  // Appetite against actual (§9 row 4): shown, never judged (no budget, per guardrails).
-  if (s.change) {
-    const c = s.change
-    const ceiling = reviewQuota(s), small = smallStageAllowance(s)
-    const reviewers = s.turnRoles.filter(x => x === 'reviewer').length
-    rows.push({ label: 'appetite', items: [
-      c.appetite ?? '?', `tasks ${c.done}/${c.total}`,
-      ...(c.groups.length ? [`groups ${c.groups.filter(g => g.total > 0 && g.done === g.total).length}/${c.groups.length}`] : []),
-      ...(ceiling !== null ? [`reviewers ${reviewers}/${ceiling} this turn`] : []),
-      ...(small !== null ? [`small stage: ${small} allowed`] : []),
-      ...(s.sessionTokens ? [`${tokens(s.sessionTokens)} tokens`] : []),
-      ...(s.usd !== null ? [`$${s.usd.toFixed(2)}`] : []),
-    ] })
-  }
-  rows.push(
-    { label: 'skills', items: s.skills.slice(-TRAIL).map(k => k.phase ? `${k.name} (${k.phase})` : k.name) },
-    { label: 'subagents', items: s.subagents.map(subagentText) },
-    { label: 'warnings', items: [
-      ...warningItems(s),
-      ...(s.planTruncated ? ['diff truncated'] : []),
-    ] },
-    { label: 'mode', items: [modeText(s)] },
-  )
-  return { folded: foldedItems.join(' · '), foldedItems, rows: rows.map(r => ({ ...r, items: r.items.map(clean) })) }
 }
 
 /** Severity tier of a warning key, 1 (most severe) to 5 (D-10); an unknown prefix ranks 3. */
@@ -191,7 +121,9 @@ export type BandView = {
   details: {
     reading: string | null
     rows: { label: string; items: string[] }[] // stages, phases (with gates), appetite, skills, subagents
+    /** At most WARNING_CAP - 1 (open before accepted, each tier newest first); the rest are `moreWarnings`. */
     warnings: { key: string; message: string; tier: number; accepted: boolean; accept: boolean }[] // `accept`: an Accept button is offered
+    moreWarnings: number
     mode: string
     actions: string[] // button labels, in order
   }
@@ -239,7 +171,10 @@ function skillGroups(s: NavState): string[] {
 export function bandView(s: NavState, env: { now: number; home: string }): BandView {
   const offers = bandOffers(s)
   const open = orderedWarnings(s).filter(x => !s.accepted.includes(x.key) && tierOf(x.key) <= 4)
-  const step = nextStep(s)
+  const step = nextCommand(nextStep(s))
+  // Open first, so a flood of accepted ones never hides an Accept button; `capped` decides how many fit.
+  const all = [...orderedWarnings(s)].sort((a, b) => +s.accepted.includes(a.key) - +s.accepted.includes(b.key))
+  const kept = capped(all.map(x => x.key), WARNING_CAP).length === all.length ? all.length : WARNING_CAP - 1
   const rows: BandView['details']['rows'] = []
   const c = s.change
   if (c?.groups.length) {
@@ -275,25 +210,11 @@ export function bandView(s: NavState, env: { now: number; home: string }): BandV
     details: {
       reading: s.root ? clean(`reading ${where} · ${s.root.branch}`) : null,
       rows: rows.map(r => ({ ...r, items: r.items.map(clean) })),
-      warnings: orderedWarnings(s).map(x => ({ key: x.key, message: clean(x.message), tier: tierOf(x.key),
+      warnings: all.slice(0, kept).map(x => ({ key: x.key, message: clean(x.message), tier: tierOf(x.key),
         accepted: s.accepted.includes(x.key), accept: offers.accept.some(o => o.key === x.key) })),
+      moreWarnings: all.length - kept,
       mode: modeText(s),
       actions: ['Reconcile EPIC', ...(offers.check ? ['Archive check'] : []), 'Validate', 'Review', 'Mode', 'Less'],
     },
   }
-}
-
-const OUTSIDE = 'plan:outside:'
-
-/** One line per warning, except files outside the PLAN: one line for all of them (open, accepted). */
-function warningItems(s: NavState): string[] {
-  const line = (w: Warning) => `${s.accepted.includes(w.key) ? '✓ accepted:' : '⚠'} ${w.message}${w.owner ? ` (${w.owner})` : ''}`
-  const outside = (accepted: boolean) => s.warnings.filter(w => w.key.startsWith(OUTSIDE) && s.accepted.includes(w.key) === accepted)
-  const group = (ws: Warning[], accepted: boolean) => {
-    if (ws.length < 2) return ws.map(line)
-    const paths = ws.map(w => w.key.slice(OUTSIDE.length))
-    return [`${accepted ? '✓ accepted:' : '⚠'} ${ws.length} files outside the PLAN: ${paths.slice(0, 2).join(', ')}` +
-      `${ws.length > 2 ? ` +${ws.length - 2}` : ''} (${ws[0]!.owner})`]
-  }
-  return [...s.warnings.filter(w => !w.key.startsWith(OUTSIDE)).map(line), ...group(outside(false), false), ...group(outside(true), true)]
 }

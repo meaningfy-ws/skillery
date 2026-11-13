@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { EMPTY, reduce, type Change, type NavState, type Signal } from './state.ts'
 import { overspawnNow } from './lean.ts'
 import { decideSpawn } from './strict.ts'
-import { bandModel } from './view.ts'
+import { bandView } from './view.ts'
 import { resolveWorkflows } from './workflow.ts'
 
 const REPO = join(import.meta.dirname, '..', '..', '..')
@@ -28,6 +28,9 @@ const cmd = (command: string): Signal => ({ kind: 'ToolRan', id: id(), command, 
 const turn = (contextPercent: number): Signal => ({ kind: 'TurnEnded', id: id(), turnId: id(), contextPercent, cleanTree: true, at: 5 })
 const run = (...signals: Signal[]): NavState => signals.reduce(reduce, EMPTY)
 const keys = (s: NavState) => s.warnings.map(w => w.key)
+const band = (s: NavState) => bandView(s, { now: 0, home: '' })
+const appetite = (s: NavState) => band(s).details.rows.find(r => r.label === 'appetite')!.items
+const phasesRow = (s: NavState) => band(s).details.rows.find(r => r.label === 'phases')!.items.join(' ')
 
 test('TC-06 MEDIUM: five reviewers then a PR with no checker → second check missing (PD-9)', () => {
   const s = run(...base('MEDIUM'), ...Array.from({ length: 5 }, () => spawn('code-reviewer')), cmd('gh pr create --fill'))
@@ -51,7 +54,7 @@ test('D-22: a small stage (added ≤ 600) is an allowance: the full set still pa
   const five = run(...base('VERY LARGE'), planRead(600), ...fan(5))
   assert.ok(!keys(five).some(k => k.startsWith('process:overspawn:')), keys(five).join())
   assert.deepEqual(decideSpawn(strict(five), overspawnNow(five), null), { allow: true })
-  assert.deepEqual(bandModel(five).rows.find(r => r.label === 'appetite')!.items.slice(2, 4),
+  assert.deepEqual(appetite(five).slice(2, 4),
     ['reviewers 5/6 this turn', 'small stage: 2 allowed'])
   const seven = run(...base('VERY LARGE'), planRead(600), ...fan(7)) // ceiling = 5 + 1 UX
   assert.ok(keys(seven).some(k => k.startsWith('process:overspawn:')), keys(seven).join())
@@ -59,16 +62,16 @@ test('D-22: a small stage (added ≤ 600) is an allowance: the full set still pa
   for (const read of [planRead(601), planRead(10, true)]) {
     const full = run(...base('VERY LARGE'), read, ...fan(5))
     assert.ok(!keys(full).some(k => k.startsWith('process:overspawn:')), keys(full).join())
-    assert.ok(JSON.stringify(bandModel(full)).includes('reviewers 5/6 this turn'))
+    assert.ok(JSON.stringify(band(full)).includes('reviewers 5/6 this turn'))
   }
 })
 
 test('D-22: no plan read yet, or a change switch, shows no small-stage figure', () => {
   const unread = run(...base('VERY LARGE'))
   assert.equal(unread.planAdded, null)
-  assert.ok(!JSON.stringify(bandModel(unread)).includes('small stage'))
+  assert.ok(!JSON.stringify(band(unread)).includes('small stage'))
   const read = reduce(unread, { kind: 'PlanRead', id: id(), warnings: [], truncated: false, added: 10 })
-  assert.ok(JSON.stringify(bandModel(read)).includes('small stage: 2 allowed'))
+  assert.ok(JSON.stringify(band(read)).includes('small stage: 2 allowed'))
   const switched = reduce(read, { kind: 'ChangeRead', id: id(), change: { ...change('VERY LARGE'), id: 'y' }, openChanges: 1, at: 3 })
   assert.equal(switched.planAdded, null)
   const same = reduce(read, { kind: 'ChangeRead', id: id(), change: change('VERY LARGE'), openChanges: 1, at: 3 })
@@ -110,22 +113,22 @@ test('a subagent with few tool calls was a lookup (PD-6); an oversized report (P
 
 test('an auto compaction warns; the band shows the offer folded', () => {
   assert.ok(keys(run(...base('SMALL'), { kind: 'Compacted', id: id(), trigger: 'auto' })).includes('hygiene:auto-compact'))
-  assert.ok(bandModel(run(...base('SMALL'), turn(80))).folded.includes('⚠'))
+  assert.ok(band(run(...base('SMALL'), turn(80))).warning?.startsWith('⚠'))
 })
 
 test('the appetite row: appetite, tasks, reviewers against the review set, tokens and cost (§9 row 4)', () => {
   const s = run(...base('SMALL'), spawn('code-reviewer'),
     { kind: 'TurnEnded', id: id(), turnId: 't9', contextPercent: 10, cleanTree: true, at: 5, tokens: 12345, usd: 0.4 })
-  assert.deepEqual(bandModel(s).rows.find(r => r.label === 'appetite')!.items, ['SMALL', 'tasks 3/9', 'reviewers 0/1 this turn', '12.3k tokens', '$0.40'])
-  assert.deepEqual(bandModel(run(...base('SMALL'), spawn('code-reviewer'))).rows.find(r => r.label === 'appetite')!.items,
+  assert.deepEqual(appetite(s), ['SMALL', 'tasks 3/9', 'reviewers 0/1 this turn', '12.3k tokens']) // no $ (D-11)
+  assert.deepEqual(appetite(run(...base('SMALL'), spawn('code-reviewer'))),
     ['SMALL', 'tasks 3/9', 'reviewers 1/1 this turn'])
 })
 
 test('a skill gate shows the score its skill printed, never one the mod makes (DD-14)', () => {
   const s = run(...base('SMALL'), { kind: 'SkillLoaded', id: id(), name: 'meaningfy-building:clarity-gate', at: 3 },
     { kind: 'AnswerShown', id: id(), text: 'Clarity score: 9.1/10 — ready.', at: 4 })
-  assert.match(bandModel(s).folded, /clarity ✓ 9\.1/)
+  assert.match(phasesRow(s), /clarity ✓ 9\.1/)
   const unscored = run(...base('SMALL'), { kind: 'SkillLoaded', id: id(), name: 'clarity-gate', at: 3 },
     { kind: 'AnswerShown', id: id(), text: 'done', at: 4 })
-  assert.match(bandModel(unscored).folded, /clarity ✓(?! \d)/)
+  assert.match(phasesRow(unscored), /clarity ✓(?! \d)/)
 })

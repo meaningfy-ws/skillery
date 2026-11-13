@@ -233,7 +233,7 @@ export async function readPlanSignal($: EngineInterface, id: string): Promise<Si
   const s = await state($)
   if (!s.change || !s.root) return null
   // An archived change has no PLAN folder left to drift from.
-  if (s.change.archived) return { kind: 'PlanRead', id, warnings: [], truncated: false }
+  if (s.change.archived) return { kind: 'PlanRead', id, warnings: [], truncated: false, added: 0 }
   const root = s.root.path
   let base = 'HEAD'
   for (const ref of ['origin/develop', 'origin/main', 'develop', 'main']) {
@@ -341,6 +341,11 @@ export async function act($: EngineInterface, line: string): Promise<boolean> {
   // A slash command runs through the command channel; prompt.submit refuses a text starting with `/`.
   void $.command.run({ command: cmd.command, args: cmd.args }).catch((err: Error) => $.ui.toast(`navigator: /${cmd.command} did not run: ${err.message}`))
   return true
+}
+
+/** `$HOME`, for the band's `~`; empty when unset. */
+export async function homeDir($: EngineInterface): Promise<string> {
+  return (await $.env.get('HOME')) ?? ''
 }
 
 /** `/navigator validate`: run the phase's gate commands; their results update the gates. */

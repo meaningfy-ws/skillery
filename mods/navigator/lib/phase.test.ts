@@ -5,9 +5,10 @@ import { join } from 'node:path'
 import { backOnTrack, commandFor, nextStep, validateRuns } from './actions.ts'
 import { EMPTY, reduce, type Change, type NavState, type Signal } from './state.ts'
 import { decideCommit } from './strict.ts'
-import { bandModel, lineText } from './view.ts'
+import { bandView, lineText } from './view.ts'
 import { resolveWorkflows } from './workflow.ts'
 
+const env = { now: 0, home: '' }
 const REPO = join(import.meta.dirname, '..', '..', '..')
 const file = (skill: string, name: string) => {
   const path = `skills/${skill}/assets/workflows/${name}.workflow.json`
@@ -139,7 +140,7 @@ test('TC-13 the line names the workflow, variant and phase; sales says provision
   assert.equal(lineText(incident), 'devops · incident · triage · ● strict')
   const sales = run(workflows(), read(null), skill('estimation', 3))
   assert.equal(lineText(sales), 'sales (provisional) · offer')
-  assert.ok(bandModel(sales).rows.find(r => r.label === 'phases')!.items.includes('● offer'))
+  assert.ok(bandView(sales, env).details.rows.find(r => r.label === 'phases')!.items.includes('● offer'))
 })
 
 test('the ops-watch check-up and unattended variants follow isInteractive', () => {
@@ -156,10 +157,10 @@ test('the ops-watch check-up and unattended variants follow isInteractive', () =
 
 test('the band shows phases and the skill trail with phases', () => {
   const s = run(workflows(), read(change(3, 9)), skill('epic-delivery', 5))
-  const rows = bandModel(s).rows
+  const rows = bandView(s, env).details.rows
   assert.deepEqual(rows.find(r => r.label === 'phases')!.items,
     ['EPIC delivery', '✓ ready', '● apply', '○ accept', '○ archive'])
-  assert.deepEqual(rows.find(r => r.label === 'skills')!.items, ['epic-delivery (apply)'])
+  assert.deepEqual(rows.find(r => r.label === 'skills')!.items, ['apply: epic-delivery'])
 })
 
 // ---------------------------------------------------------------- actions (TC-15 partial)
@@ -228,7 +229,7 @@ const shaped = (...signals: Signal[]) => run(workflows(), read(null), skill('epi
 const where = (s: NavState) => [s.workflow, s.variant, s.phase]
 
 const bandPhases = (st: NavState) =>
-  bandModel(st).rows.find(r => r.label === 'phases')!.items.slice(1).map(i => i.slice(2))
+  bandView(st, env).details.rows.find(r => r.label === 'phases')!.items.filter(i => /^[✓●○] /.test(i)).map(i => i.slice(2)) // phases only; the title and the gates are not
 const SIX = ['explore', 'variants', 'decide', 'propose', 'design', 'revise']
 
 test('Shaping: seed, Q&A, proposal, design and tasks, then the clarity gate, walk the six phases with no warnings', () => {
@@ -247,7 +248,7 @@ test('Shaping: seed, Q&A, proposal, design and tasks, then the clarity gate, wal
   const gated = [skill('clarity-gate', 9), { kind: 'AnswerShown', id: id(), text: 'Clarity score: 9.2/10', at: 10 } as Signal]
     .reduce(reduce, planned)
   assert.deepEqual(where(gated), ['epic-shaping', null, 'revise'])
-  assert.match(bandModel(gated).folded, /clarity ✓ 9\.2/)
+  assert.ok(bandView(gated, env).details.rows.find(r => r.label === 'phases')!.items.includes('clarity ✓ 9.2'))
   assert.equal(nextStep(gated), null)
   assert.deepEqual(keys(gated), [])
 })
