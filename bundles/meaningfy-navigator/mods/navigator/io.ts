@@ -221,7 +221,7 @@ export async function readPlanSignal($: EngineInterface, id: string): Promise<Si
   const ignore = s.workflows.find(w => w.planDrift)?.planDrift?.ignore ?? []
   const warnings = planDrift({ changed, added, tasks: await text('tasks.md'), design: await text('design.md'),
     proposal: await text('proposal.md'), ignore, changeId: s.change.id })
-  return { kind: 'PlanRead', id, warnings, truncated }
+  return { kind: 'PlanRead', id, warnings, truncated, added: added.length }
 }
 
 export async function turnEndedSignal($: EngineInterface, turnId: string, tokens: number): Promise<Signal> {

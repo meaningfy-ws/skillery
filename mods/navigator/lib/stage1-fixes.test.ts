@@ -81,3 +81,8 @@ test('D-21.5 Validate says "no repository" with no root, and "no gate" with a ro
 test('D-21.6 one name for the archive folder', () => {
   assert.equal(ARCHIVE_DIR, 'archive')
 })
+
+test('D-22 x D-21.2: revive keeps a stored planAdded count and drops a wrong type', () => {
+  assert.equal(revive({ ...EMPTY, planAdded: 412 }).planAdded, 412)
+  assert.equal(revive({ ...EMPTY, planAdded: 'x' }).planAdded, null)
+})

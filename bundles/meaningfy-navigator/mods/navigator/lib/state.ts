@@ -37,6 +37,7 @@ export const EMPTY: NavState = {
   warnings: [],
   accepted: [],
   planTruncated: false,
+  planAdded: null,
   thresholds: null,
   parentModel: '',
   turnId: '',
@@ -89,7 +90,7 @@ export type Signal =
   | { kind: 'SetLine'; id: string; line: boolean }
   | { kind: 'SetMode'; id: string; mode: 'loose' | 'strict' }
   | { kind: 'Accepted'; id: string; keys: string[] }
-  | { kind: 'PlanRead'; id: string; warnings: Warning[]; truncated: boolean }
+  | { kind: 'PlanRead'; id: string; warnings: Warning[]; truncated: boolean; added: number }
   | { kind: 'SetPending'; id: string; line: string | null }
   | { kind: 'RootFollowed'; id: string; root: Root }
   | { kind: 'AgentRooted'; id: string; agentId: string; root: string }
@@ -103,7 +104,8 @@ const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array'
 
 /** What a field that defaults to null holds otherwise; `thresholds` is unparsed, so anything. */
 const NULLABLE: Record<string, string | undefined> = { change: 'object', root: 'object', lastChangeId: 'string',
-  workflow: 'string', variant: 'string', phase: 'string', signalPhase: 'string', pending: 'string', usd: 'number' }
+  workflow: 'string', variant: 'string', phase: 'string', signalPhase: 'string', pending: 'string', usd: 'number',
+  planAdded: 'number' }
 
 const isObject = (v: unknown): v is Record<string, unknown> => kindOf(v) === 'object'
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v : [])
@@ -156,7 +158,9 @@ function apply(state: NavState, s: Signal): NavState {
       return navigate(read, s.at)
     }
     case 'ChangeRead': {
-      const read = { ...state, change: s.change, openChanges: s.openChanges, lastChangeId: s.change?.id ?? null }
+      const switched = s.change?.id !== state.change?.id // a new change has no plan read yet (D-22)
+      const read = { ...state, change: s.change, openChanges: s.openChanges, lastChangeId: s.change?.id ?? null,
+        planAdded: switched ? null : state.planAdded }
       const w = workflowOf(read)
       const gates = w && s.change ? gatesAfterPlan(read.gates, w, s.change.planMtime) : read.gates
       return navigate({ ...read, gates }, s.at)
@@ -257,7 +261,7 @@ function apply(state: NavState, s: Signal): NavState {
     case 'Compacted':
       return state // lean() keeps these (lib/lean.ts)
     case 'PlanRead': // each read replaces the last, so fixed drift disappears
-      return { ...state, planTruncated: s.truncated,
+      return { ...state, planTruncated: s.truncated, planAdded: s.added,
         warnings: [...state.warnings.filter(w => !w.key.startsWith('plan:')), ...s.warnings] }
     case 'SetPending':
       return { ...state, pending: s.line }

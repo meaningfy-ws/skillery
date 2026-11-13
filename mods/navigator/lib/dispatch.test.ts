@@ -1,9 +1,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
-  type DispatchEvent } from './dispatch.ts'
+import { inlineSpawn, modelAbove, overspawn, reportOversized, reviewQuota, roleOf, secondCheck, shipCommand, smallStageAllowance,
+  unusedSkills, type DispatchEvent } from './dispatch.ts'
 import { thresholdsFrom, type Thresholds } from './hygiene.ts'
-import type { Workflow } from './state.ts'
+import { EMPTY, type Workflow } from './state.ts'
 
 const t = (thresholdsFrom({
   compact_offer_context_percent: 50, context_warn_percent: 75, fresh_offer_min_context_percent: 15,
@@ -58,6 +58,37 @@ test('PD-8: the allowance adds the UX reviewers; other roles do not count', () =
   assert.equal(overspawn(W, 'LARGE', 't', Array(7).fill('reviewer')).length, 1)
   assert.deepEqual(overspawn(W, null, 't', Array(9).fill('reviewer')), [])
   assert.deepEqual(overspawn(W, 'HUGE', 't', Array(9).fill('reviewer')), []) // no reviews entry
+})
+
+const SMALL_STAGE = { max_added_lines: 600, reviewers: 2, lenses: [['L1', 'L2'], ['L3', 'L4', 'L5']] }
+const WS: Workflow = { ...W, reviews: { 'VERY LARGE': { ...review(5, true, 1), small_stage: SMALL_STAGE }, LARGE: review(5, true, 1) } }
+const navAt = (appetite: string, planAdded: number | null, planTruncated = false) => ({
+  ...EMPTY, workflows: [WS], planAdded, planTruncated,
+  change: { id: 'x', appetite, done: 0, total: 1, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false },
+})
+
+test('TC-15: smallStageAllowance, VERY LARGE: added 600 / 601 / truncated → 2 / null / null', () => {
+  assert.equal(smallStageAllowance(navAt('VERY LARGE', 600)), 2)
+  assert.equal(smallStageAllowance(navAt('VERY LARGE', 601)), null)
+  assert.equal(smallStageAllowance(navAt('VERY LARGE', 10, true)), null)
+})
+
+test('D-22: no plan read yet (planAdded null) is not a small stage', () => {
+  assert.equal(smallStageAllowance(navAt('VERY LARGE', null)), null)
+})
+
+test('smallStageAllowance: no small_stage, no review set, no change → null', () => {
+  assert.equal(smallStageAllowance(navAt('LARGE', 1)), null)
+  assert.equal(smallStageAllowance(navAt('HUGE', 1)), null)
+  assert.equal(smallStageAllowance({ ...navAt('VERY LARGE', 1), change: null }), null)
+})
+
+test('reviewQuota is the ceiling, UX included, whatever the plan size; null without a review set', () => {
+  assert.equal(reviewQuota(navAt('VERY LARGE', 600)), 6)
+  assert.equal(reviewQuota(navAt('VERY LARGE', 601)), 6)
+  assert.equal(reviewQuota(navAt('LARGE', 1)), 6)
+  assert.equal(reviewQuota(navAt('HUGE', 1)), null)
+  assert.equal(reviewQuota({ ...navAt('LARGE', 1), change: null }), null)
 })
 
 test('TC-06: MEDIUM, 5 reviewer spawns, then gh pr create → second check missing', () => {

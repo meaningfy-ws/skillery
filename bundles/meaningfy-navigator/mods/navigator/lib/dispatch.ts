@@ -2,7 +2,7 @@
 // model order come from the guardrails data file; review sets and roles from the workflow file.
 
 import type { Thresholds } from './hygiene.ts'
-import type { Warning, Workflow } from './state.ts'
+import type { NavState, Review, Warning, Workflow } from './state.ts'
 import { bare } from './workflow.ts'
 import { isShip } from './workflow.ts'
 
@@ -46,11 +46,27 @@ export function modelAbove(t: Thresholds, s: Spawn, parentModel: string): Warnin
     : []
 }
 
+const ceiling = (r: Review) => r.reviewers + (r.ux?.extra_reviewers ?? 0)
+const reviewOf = (s: NavState) => s.change?.appetite ? s.workflows.find(w => w.reviews)?.reviews?.[s.change.appetite] : undefined
+
+/** D-22: the most reviewers one turn may spawn for the appetite: the full set plus its UX reviewers; null without a review set. */
+export const reviewQuota = (s: NavState): number | null => {
+  const r = reviewOf(s)
+  return r ? ceiling(r) : null
+}
+
+/** D-12, D-22: the reviewers a small stage allows, shown beside the ceiling, never enforced. A stage is small when the
+ *  last plan read added at most `max_added_lines` and was not truncated; no read yet (null) is not small. */
+export function smallStageAllowance(s: NavState): number | null {
+  const small = reviewOf(s)?.small_stage
+  return small && !s.planTruncated && s.planAdded !== null && s.planAdded <= small.max_added_lines ? small.reviewers : null
+}
+
 /** PD-8: reviewer spawns in one main turn beyond the appetite's review set (plus its UX reviewers). */
 export function overspawn(w: Workflow, appetite: string | null, turnId: string, roles: Role[]): Warning[] {
   const r = appetite ? w.reviews?.[appetite] : undefined
   if (!r) return []
-  const allowed = r.reviewers + (r.ux?.extra_reviewers ?? 0)
+  const allowed = ceiling(r)
   const spawned = roles.filter(x => x === 'reviewer').length
   return spawned > allowed
     ? [warning(`process:overspawn:${turnId}`, `over-spawn: ${spawned} reviewers in one turn, ${appetite} calls for ${allowed}`, null, bare(w.owner))]

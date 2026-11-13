@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { EMPTY, reduce, type Change, type NavState, type Signal } from './state.ts'
+import { overspawnNow } from './lean.ts'
+import { decideSpawn } from './strict.ts'
 import { bandModel } from './view.ts'
 import { resolveWorkflows } from './workflow.ts'
 
@@ -40,6 +42,37 @@ test('TC-07 SMALL: five reviewers in one turn → over-spawn (PD-8); the next tu
   assert.ok(keys(s).some(k => k.startsWith('process:overspawn:')), keys(s).join())
   const split = run(...base('SMALL'), spawn('code-reviewer'), turn(10), spawn('code-reviewer'))
   assert.ok(!keys(split).some(k => k.startsWith('process:overspawn:')))
+})
+
+test('D-22: a small stage (added ≤ 600) is an allowance: the full set still passes, the band shows both, six over-spawn', () => {
+  const planRead = (added: number, truncated = false): Signal => ({ kind: 'PlanRead', id: id(), warnings: [], truncated, added })
+  const fan = (n: number) => Array.from({ length: n }, () => spawn('code-reviewer'))
+  const strict = (s: NavState): NavState => ({ ...s, mode: { repo: 'strict', session: null } })
+  const five = run(...base('VERY LARGE'), planRead(600), ...fan(5))
+  assert.ok(!keys(five).some(k => k.startsWith('process:overspawn:')), keys(five).join())
+  assert.deepEqual(decideSpawn(strict(five), overspawnNow(five), null), { allow: true })
+  assert.deepEqual(bandModel(five).rows.find(r => r.label === 'appetite')!.items.slice(2, 4),
+    ['reviewers 5/6 this turn', 'small stage: 2 allowed'])
+  const seven = run(...base('VERY LARGE'), planRead(600), ...fan(7)) // ceiling = 5 + 1 UX
+  assert.ok(keys(seven).some(k => k.startsWith('process:overspawn:')), keys(seven).join())
+  assert.ok('deny' in decideSpawn(strict(seven), overspawnNow(seven), null))
+  for (const read of [planRead(601), planRead(10, true)]) {
+    const full = run(...base('VERY LARGE'), read, ...fan(5))
+    assert.ok(!keys(full).some(k => k.startsWith('process:overspawn:')), keys(full).join())
+    assert.ok(JSON.stringify(bandModel(full)).includes('reviewers 5/6 this turn'))
+  }
+})
+
+test('D-22: no plan read yet, or a change switch, shows no small-stage figure', () => {
+  const unread = run(...base('VERY LARGE'))
+  assert.equal(unread.planAdded, null)
+  assert.ok(!JSON.stringify(bandModel(unread)).includes('small stage'))
+  const read = reduce(unread, { kind: 'PlanRead', id: id(), warnings: [], truncated: false, added: 10 })
+  assert.ok(JSON.stringify(bandModel(read)).includes('small stage: 2 allowed'))
+  const switched = reduce(read, { kind: 'ChangeRead', id: id(), change: { ...change('VERY LARGE'), id: 'y' }, openChanges: 1, at: 3 })
+  assert.equal(switched.planAdded, null)
+  const same = reduce(read, { kind: 'ChangeRead', id: id(), change: change('VERY LARGE'), openChanges: 1, at: 3 })
+  assert.equal(same.planAdded, 10)
 })
 
 test('TC-08 a commit and a phase left at 62% offers compact; no commit at 62% does not', () => {

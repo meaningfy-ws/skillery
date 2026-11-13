@@ -82,8 +82,9 @@ upstream issue, not a fix here.
 > missing or red gate run is a finding. **Report:** findings by priority per
 > `meaningfy-code-review`, and any workaround of our library as a finding.
 
-Where the appetite's review set is one pass ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)), one reviewer covers its lenses together. The lenses themselves are owned by
-`meaningfy-code-review`.
+Where the appetite's review set is one pass ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)), one reviewer covers its lenses together; the brief names the appetite. For a small stage
+the brief cites the recorded `D-n` and the lenses that reviewer covers; the rule is in `SKILL.md`
+(the review sets). The lenses themselves are owned by `meaningfy-code-review`.
 
 ## Checker
 

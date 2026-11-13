@@ -48,6 +48,7 @@ export type Review = {
   challenge: string
   reviewers: number
   lenses?: string[]
+  small_stage?: { max_added_lines: number; reviewers: number; lenses: string[][] } // D-12
   ux: null | { wording: string; extra_reviewers: number }
   check: string
   checker: boolean
@@ -127,6 +128,7 @@ export type NavState = {
   gates: Record<string, GateState>
   warnings: Warning[]
   planTruncated: boolean // the last plan-drift read saw more than the diff cap
+  planAdded: number | null // added lines the last plan-drift read counted (D-12); null before a read and after a change switch (D-22)
   accepted: string[] // warning keys recorded as deviations (deviations.md, or this session outside a change)
   // ---- subagent rules and hygiene (design §6.3, §6.5); thresholds are the guardrails file, unparsed
   thresholds: unknown
