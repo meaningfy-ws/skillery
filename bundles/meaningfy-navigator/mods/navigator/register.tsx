@@ -10,7 +10,7 @@ import { parseAccept } from './lib/deviations.ts'
 import { bandModel, bandOffers, capped, toneOf, type Tone } from './lib/view.ts'
 import { isArchive, isCommit } from './lib/workflow.ts'
 import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, ensureRoot, readAcceptedSignal,
-  readChangeSignal, readPlanSignal, reconcileFromBand, recordCall, rootSubagent, send, start, state, trackSkillCall,
+  checkPr, readChangeSignal, readPlanSignal, reconcileFromBand, recordCall, rootSubagent, send, start, state, trackSkillCall,
   turnEndedSignal, validate } from './io.ts'
 
 
@@ -152,6 +152,7 @@ export const register: Register = (on, options) => {
       await send($, { kind: 'AnswerShown', id: `answer:${e.turnId}`, text: result.text, at: await $.clock.now() })
       await ensureRoot($, e.turnId)
       await send($, await readChangeSignal($, `change:${e.turnId}`))
+      await checkPr($, `turn:${e.turnId}`, false) // after the change read: a re-root's new change decides (D-26)
       const accepted = await readAcceptedSignal($, `accepted:${e.turnId}`)
       if (accepted) await send($, accepted)
       const plan = await readPlanSignal($, `plan:${e.turnId}`)

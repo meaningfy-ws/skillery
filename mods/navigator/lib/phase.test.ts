@@ -416,14 +416,12 @@ test('Release: the seven steps walk branch to back-merge and mark the release do
   assert.equal(reduce(s, skill('meaningfy-release', 10)).phase, 'back-merge')
 })
 
-test('Release: tagging and pushing a release branch without the skill activate nothing', () => {
-  const s = run(workflows(), read(null), cmd('git tag v1.0.0', 3), cmd('git push -u origin release/1.0.0', 4))
-  assert.deepEqual(where(s), [null, null, null])
-})
-
-test('Release: with an open change, tagging and pushing a release branch do not select release', () => {
-  const s = run(workflows(), read(change(3, 9)), cmd('git tag v1.0.0', 3), cmd('git push -u origin release/1.0.0', 4))
-  assert.deepEqual(where(s), ['epic-delivery', null, 'apply'])
+// D-7: a local tag, a deleted tag, --follow-tags and a pushed release branch are not a release; the commands
+// that are (a release/ branch cut, gh release create, a pushed version tag) are tested in stage2.test.ts.
+test('Release: a local tag, a deleted tag and --follow-tags activate nothing, with or without an open change', () => {
+  const cmds = [cmd('git tag v1.0.0', 3), cmd('git tag -d v1.0.0', 4), cmd('git push --follow-tags', 5), cmd('git push -u origin release/1.0.0', 6)]
+  assert.deepEqual(where(run(workflows(), read(null), ...cmds)), [null, null, null])
+  assert.deepEqual(where(run(workflows(), read(change(3, 9)), ...cmds)), ['epic-delivery', null, 'apply'])
 })
 
 test('Release: make validate in branch skips to merge with the cut and bumped gate warnings', () => {

@@ -3,9 +3,9 @@
 import type { BandDisplay, Change, NavState, Root, Warning, Workflow } from '../types'
 import { creditLoad, placeholderAgent, withSkill } from './attribution.ts'
 import { lean } from './lean.ts'
-import { navigate } from './phase.ts'
-import { addWarnings, clearGateWarnings, gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, onCommand,
-  onCommit, onSkill, showsConsent, workflowErrors } from './process-drift.ts'
+import { activatedByCommand, navigate } from './phase.ts'
+import { addWarnings, clearGateWarnings, gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, handOff, onCommand,
+  onCommandActivation, onCommit, onSkill, showsConsent, workflowErrors } from './process-drift.ts'
 import { bare, currentPhase, isCommit, workflowOf } from './workflow.ts'
 
 export type { Activate, BandDisplay, Change, ChangePredicate, Gate, GateState, Group, NavState, PendingSpawn, Phase, Review,
@@ -99,6 +99,7 @@ export type Signal =
   | { kind: 'SpawnStarted'; id: string; toolUseId: string; type: string; at: number }
   | { kind: 'SpawnResolved'; id: string; toolUseId: string; agentId: string | null }
   | { kind: 'ToolUsed'; id: string; agentId?: string }
+  | { kind: 'PrMerged'; id: string; branch: string; at?: number } // `at` defaults to the phase's start
 
 const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v)
 
@@ -108,7 +109,7 @@ const NULLABLE: Record<string, string | undefined> = { change: 'object', root: '
   planAdded: 'number' }
 
 const isObject = (v: unknown): v is Record<string, unknown> => kindOf(v) === 'object'
-const strings = (v: unknown): string[] => (Array.isArray(v) ? v : [])
+const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter(x => typeof x === 'string') : [])
 
 /** Whether a stored value has the shape of the default: the same kind, or for a null default the kind it holds. */
 function fits(k: string, v: unknown, d: unknown): boolean {
@@ -126,6 +127,7 @@ function migrate(out: Record<string, unknown>): void {
     rootPath: typeof a['rootPath'] === 'string' ? a['rootPath'] : null }))
   out['skillCalls'] = objects(out['skillCalls']).map(c => ({ ...c, loaded: c['loaded'] === true }))
   out['pendingSpawns'] = objects(out['pendingSpawns']).map(p => ({ ...p, skills: strings(p['skills']) }))
+  out['mergedBranches'] = strings(out['mergedBranches'])
 }
 
 /** Load a stored state of any earlier shape: new fields, and fields of the wrong shape, take their
@@ -159,8 +161,10 @@ function apply(state: NavState, s: Signal): NavState {
     }
     case 'ChangeRead': {
       const switched = s.change?.id !== state.change?.id // a new change has no plan read yet (D-22)
-      const read = { ...state, change: s.change, openChanges: s.openChanges, lastChangeId: s.change?.id ?? null,
-        planAdded: switched ? null : state.planAdded }
+      // A hand-off needs an old change to leave: the first read of a session only sets lastChangeId (D-8).
+      const left = state.lastChangeId !== null && s.change?.id !== state.lastChangeId
+      const read = { ...(left ? handOff(state, state.lastChangeId!) : state), change: s.change, openChanges: s.openChanges,
+        lastChangeId: s.change?.id ?? null, planAdded: switched ? null : state.planAdded }
       const w = workflowOf(read)
       const gates = w && s.change ? gatesAfterPlan(read.gates, w, s.change.planMtime) : read.gates
       return navigate({ ...read, gates }, s.at)
@@ -183,15 +187,22 @@ function apply(state: NavState, s: Signal): NavState {
         warnings: addWarnings(moved, onSkill(moved, workflowOf(moved), here?.p, name)) }
     }
     case 'ToolRan': {
-      const w = workflowOf(state)
-      if (!w) return state
-      let next = passGates(state, gatesAfterCommand(state.gates, w, s.command, s.ok, s.at))
+      // A command may activate a workflow before any is active (D-7): it is placed, then the same command runs its gates.
+      const hit = s.ok ? activatedByCommand(state, s.command) : undefined
+      const base = hit ? navigate(state, s.at, { command: s.command }) : state
+      const w = workflowOf(base)
+      if (!w) return base
+      let next = passGates(base, gatesAfterCommand(base.gates, w, s.command, s.ok, s.at))
       const consent = onCommand(next, w, s.command)
       next = { ...next, consent: consent.consent, warnings: addWarnings(next, consent.warnings) }
+      if (hit) next = { ...next, warnings: addWarnings(next, onCommandActivation(next, w)) }
       const p = currentPhase(next)?.p
       if (s.ok && p && isCommit(s.command)) next = { ...next, warnings: addWarnings(next, onCommit(next, p)) }
-      return s.ok ? navigate(next, s.at, null, { command: s.command }) : next
+      return s.ok ? navigate(next, s.at, null, hit ? { command: s.command, placed: true } : { command: s.command }) : next
     }
+    case 'PrMerged': // the followed branch's pull request merged: `merged` holds once every task is ticked (D-5)
+      return state.mergedBranches.includes(s.branch) ? state
+        : navigate({ ...state, mergedBranches: [...state.mergedBranches, s.branch] }, s.at ?? state.phaseAt)
     case 'FileTouched': {
       const w = workflowOf(state)
       return w ? navigate(passGates(state, gatesAfterFile(state.gates, w, s.path, s.at)), s.at, null, { file: s.path }) : state

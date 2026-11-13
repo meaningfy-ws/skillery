@@ -19,11 +19,12 @@ export type Change = {
 
 // ---- workflow files (design §4.1); lib/workflow.ts is their one validator
 export type ChangePredicate =
-  'none' | 'proposal' | 'plan' | 'tasks-no-design' | 'tasks-open' | 'tasks-partial' | 'tasks-done' | 'archived'
+  'none' | 'proposal' | 'plan' | 'tasks-no-design' | 'tasks-open' | 'tasks-partial' | 'tasks-done' | 'archived' | 'merged'
 
 export type Activate = {
   skills?: string[]
   agents?: string[]
+  commands?: string[] // regexes; a command that matches activates the workflow (D-7)
   openChange?: boolean
   change?: ChangePredicate
   interactive?: boolean

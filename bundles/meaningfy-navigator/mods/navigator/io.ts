@@ -6,12 +6,13 @@ import type { EngineInterface } from 'claude-code'
 import { commandFor, validatePlan } from './lib/actions.ts'
 import { appetitesOf, archivedFolders, readChange, type ChangeFiles } from './lib/change.ts'
 import { ARCHIVE_DIR, acceptTarget, appendDeviation, archiveCheck, archivedRefusal, parseDeviations } from './lib/deviations.ts'
+import { PR_TIMEOUT_MS, prSignal, prViewArgs, shouldAskGh, type PrOutcome } from './lib/pr.ts'
 import { parseDiffAdded, parseStatus, planDrift } from './lib/plan-drift.ts'
 import { decideFallback, decideRoot, dirOf, editRoot, needsRoot, parseRevParse, rebranched, relativeTo, startRoot,
   type Tree } from './lib/root.ts'
 import { EMPTY, reduce, revive, type BandDisplay, type NavState, type Root, type Settings, type Signal } from './lib/state.ts'
 import { lineText } from './lib/view.ts'
-import { resolveWorkflows, type Source } from './lib/workflow.ts'
+import { isPrMerge, resolveWorkflows, type Source } from './lib/workflow.ts'
 
 export const nav = atom({ plugin: 'meaningfy-navigator', key: 'state' } as const, EMPTY)
 export const SESSION_MOVES = ['clear', 'resume', 'branch']
@@ -48,6 +49,29 @@ export async function rootOf($: EngineInterface, dir: string): Promise<Root | nu
   const tree = await treeOf($, dir)
   const branch = tree && (await branchOf($, tree.path))
   return tree && branch ? { ...tree, branch } : null
+}
+
+// The branch and change last asked about: a turn end asks again only when either moved (D-26).
+let lastAsked = ''
+
+/** Is the followed branch's pull request merged (D-5)? Asks `gh` only when it can matter (D-25), after the
+ *  change is read, then waits up to PR_TIMEOUT_MS; a failure or timeout says nothing. `force`: start, a merge. */
+export async function checkPr($: EngineInterface, id: string, force: boolean) {
+  const s = await state($)
+  if (!s.root || !shouldAskGh(s)) return
+  const branch = s.root.branch
+  const key = `${s.root.path}\n${branch}\n${s.change?.id}`
+  if (!force && key === lastAsked) return
+  lastAsked = key
+  let outcome: PrOutcome = null
+  try {
+    const r = await $.process.run(prViewArgs(branch), { cwd: s.root.path, timeoutMs: PR_TIMEOUT_MS })
+    outcome = { exitCode: r.exitCode, stdout: r.stdout }
+  } catch {
+    // gh missing, offline or timed out: silent
+  }
+  const signal = prSignal(branch, outcome)
+  if (signal) await send($, { ...signal, id: `pr:${id}` })
 }
 
 /** The lead follows `root`: its workflows are re-read from there (a worktree's own docs/navigator applies). */
@@ -109,6 +133,8 @@ export async function recordCall($: EngineInterface, e: ToolCall, isError: boole
   // A background call has not run yet when it returns: it passes no gate (DD-38).
   if (e.tool === 'Bash' && !e.run_in_background) {
     await send($, { kind: 'ToolRan', id: `tool:${e.tool_use_id}`, command: e.command ?? '', ok: !isError, at, ...agent })
+    // `--auto` exits ok without merging: the check then answers OPEN and adds nothing (D-5).
+    if (!isError && isPrMerge(e.command ?? '')) await checkPr($, `merge:${e.tool_use_id}`, true)
   } else if (e.tool === 'Edit' || e.tool === 'Write' || e.tool === 'NotebookEdit') {
     await recordEdit($, e, e.tool === 'NotebookEdit' ? e.notebook_path : e.file_path, at)
   }
@@ -241,6 +267,7 @@ export async function start($: EngineInterface, settings: Settings, interactive:
   await send($, await readThresholdsSignal($, `thresholds:${sessionId}`))
   await send($, await readWorkflowsSignal($, `workflows:${sessionId}`))
   await send($, await readChangeSignal($, `change:${sessionId}`))
+  await checkPr($, `start:${sessionId}`, true)
   const accepted = await readAcceptedSignal($, `accepted:${sessionId}`)
   if (accepted) await send($, accepted)
 }
