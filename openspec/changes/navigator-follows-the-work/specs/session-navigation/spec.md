@@ -71,5 +71,5 @@ DEC-8, DEC-9).
 - **AND** when it finishes it leaves the folded band and Details counts it as done with its token cost
 
 #### Scenario: Many warnings
-- **WHEN** twelve warnings are open, one of them a gate warning
+- **WHEN** twelve warnings are open, none of them an unused-skill heuristic, and one of them a gate warning
 - **THEN** the folded band shows the gate warning and `11 more`, and Details lists all twelve with gate warnings first

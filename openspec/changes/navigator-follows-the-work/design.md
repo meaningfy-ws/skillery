@@ -42,7 +42,7 @@ New choices made while planning; settled ones are cited by their DEC id.
 - **D-1 — The atom (DEC-1, DEC-4).** `NavState` gains `root: { path; common; branch } | null`
   (the lead's), `lastChangeId: string | null`, `mergedBranches: string[]`,
   `skillCalls: { name; agentId: string | null; at }[]` (in flight) and
-  `pendingSpawns: { type; at }[]`. `Subagent` gains `root: string | null` and `skills: string[]`;
+  `pendingSpawns: { toolUseId; type; at }[]`. `Subagent` gains `root: string | null` and `skills: string[]`;
   its `description` is its task. `common` is `git rev-parse --git-common-dir`, absolute: two
   working trees belong to one repository exactly when their `common` paths are equal. `revive`
   keeps an older atom readable. Rejected: one `Record<agentId, Entry>` including the lead (churn
@@ -57,6 +57,9 @@ New choices made while planning; settled ones are cited by their DEC id.
     and one beside it (`../repo-topic`).
   - A write outside any repository or into another repository changes nothing; a subagent's write
     never re-roots the lead.
+  - A subagent's root: `AgentRooted { agentId, root }`, sent on the subagent's first `tool.call`,
+    with `root` = `git rev-parse --show-toplevel` of `$.session.cwd()` read in that hook, else the
+    spawn's `cwd`; idempotent per `agentId` (id `rooted:<agentId>`).
   - At each main turn end, a root whose directory is gone falls back to the start root.
   - `/clear`, `/resume` and `/branch` (`SESSION_MOVES`) carry `root` into the new atom; the
     workflows are re-read from the new root on every re-root, so a worktree's own
@@ -73,20 +76,21 @@ New choices made while planning; settled ones are cited by their DEC id.
   disabled.
 - **D-4 — Whose skill load is it (DEC-4, DEC-7; A-2).** `register.tsx` adds a `skillCalls` entry
   before `next(e)` of a `Skill` tool call (with its `agentId`, `null` for the lead) and removes it
-  after; `agent.spawn` adds a `pendingSpawns` entry before `next(e)` and moves it onto the
-  subagent when the spawn resolves. A `skill.prompt` is credited, in order: to the oldest
-  in-flight `Skill` call with that name; else to the newest pending or just-started subagent
-  (a preload); else to the lead (a person's `/name`). A subagent's load enters only its entry: it
-  activates no workflow, enters no lead trail, passes no skill gate. *Spike 1.1 proves the order
-  for all three sources; if a preload fires after the spawn resolves, "just started" means a
-  running subagent with no tool call yet.*
+  after; `agent.spawn` adds a `pendingSpawns` entry keyed by its `tool_use_id` before `next(e)`
+  and removes it when the spawn with that `tool_use_id` resolves, onto that subagent. A
+  `skill.prompt` is credited, in order: to the oldest in-flight `Skill` call with that name; else
+  to the newest pending spawn, or else the newest *just-started* subagent (running, no tool call
+  yet), as a preload; else to the lead (a person's `/name`). A subagent's load enters only its
+  entry: it activates no workflow, enters no lead trail, passes no skill gate. *Spike 1.1 confirms
+  which of the pending and just-started cases preloads hit; the rule covers both.*
 - **D-5 — Merged (DEC-5; A-1).** `gh pr view <branch> --json state,headRefName` runs, with a
   10-second timeout, at session start, after a `gh pr merge` that ran ok, and on every re-root or
   change switch. `MERGED` for the followed branch adds the branch to `mergedBranches`. The
   predicate `merged` holds when the followed branch is in `mergedBranches` **and all tasks are
   ticked**. So a stage's merge, on its own stage branch with tasks still open, moves nothing; the
-  next stage's branch is not in the list. `epic-delivery.workflow.json`: `archive.enter.change` =
-  `["archived", "merged"]`.
+  next stage's branch is not in the list. `gh pr merge --auto` exits ok without merging; it still
+  triggers the re-check, which then answers `OPEN` and adds nothing. `epic-delivery.workflow.json`:
+  `archive.enter.change` = `["archived", "merged"]`.
 - **D-6 — Archived (DEC-5).** The predicate `archived` holds when `change.archived` (D-3),
   replacing the hard-coded `false` (`lib/change.ts:91`).
 - **D-7 — Release by command (DEC-5, Q-19; A-4).** `Activate` gains `commands?: string[]`
@@ -123,7 +127,8 @@ New choices made while planning; settled ones are cited by their DEC id.
     no workflow: `no change for branch <branch>` or `no open change`.
   - *next*: `next: <the Next step command>` with **Next step**, plus **Back on track** and the
     hygiene button when they apply.
-  - *warning*: `⚠ <top message> · n more` (tiers 1–4; tier 5 counted only in Details).
+  - *warning*: `⚠ <top message> · n more`, where `n` counts the other open warnings of tiers 1–4;
+    tier 5 is counted only in Details.
   - buttons: **Details**, **Hide**.
   Details: `reading <root.path, ~ for $HOME> · <branch>`; stages; phases with each gate's state
   (`clarity ✓ 9.1`, `acceptance ·`), as today's folded gates; appetite (tasks, groups, reviewers,
@@ -136,11 +141,14 @@ New choices made while planning; settled ones are cited by their DEC id.
   gains `"small_stage": { "max_added_lines": 600, "reviewers": 2,
   "lenses": [["L1","L2"],["L3","L4","L5"]] }` (`lib/workflow.ts` `reviewError` accepts and checks
   it). 600 is #148's recorded case (a ~600-line stage judged redundant at five reviewers). The lead
-  may use it when the stage's added lines are at or under the limit and the risk is low, and
-  records a decision (`D-n`) under a `## Delivery decisions` heading of `design.md`. One pure
-  `reviewQuota(state)` gives the expected reviewers (the small set when the plan read's added lines
-  are at or under the limit, else the full set); the band, `overspawn` and strict's `decideSpawn`
-  all use it.
+  may use it when the stage's added lines are at or under the limit and it judges the risk low;
+  the risk is the lead's judgement, not a rule, and the decision (`D-n`) it records under a
+  `## Delivery decisions` heading of `design.md` states the size and the reason. One pure
+  `reviewQuota(state)` gives the expected reviewers: the small set when the plan read's added
+  lines (`added.length` from `parseDiffAdded`, `lib/plan-drift.ts`, of `git diff -U0
+  <base>...HEAD`, base = the merge base with `origin/develop`, as `readPlanSignal` reads it today)
+  are at or under the limit, else the full set; a `truncated` read (over the 2000-line cap)
+  counts as over. The band, `overspawn` and strict's `decideSpawn` all use it.
 - **D-13 — The reviewer's brief (DEC-13; A-7).** `code-reviewer` accepts several lenses when the
   review set authorises them: TINY and SMALL by the workflow's own `lenses` (the brief names the
   appetite), or a small stage by a cited `D-n` that the change's `design.md` records under
@@ -205,6 +213,29 @@ apply · 3 Dump and restore 0/2 · Task 3.1 dump and restore → implementer (4m
 next: /opsx:apply                                                    [Next step]
 ⚠ clarity-gate has not run since its inputs changed · 1 more         [Details] [Hide]
 ```
+
+### Test cases
+
+Unit tests (`mods/navigator/lib/*.test.ts`); tasks cite these ids. Integration checks by hand:
+tasks 3.7 (band on both surfaces) and 4.8 (the lawyer's trial).
+
+| Id | Function | Input | Expected | Edge |
+|---|---|---|---|---|
+| TC-1 | `matchOpen` (D-3) | `feature/tenant-dump-restore`; open `tenant-dump-restore`, `aggregate-events` | `tenant-dump-restore` | — |
+| TC-2 | `matchOpen` | `feature/atomic-commit-stage-1`; open `atomic-commit` | `atomic-commit` | suffix after the id |
+| TC-3 | `matchOpen` | `docs/shape-navigator-follows-the-work`; open `navigator-follows-the-work`, `navigator` | `navigator-follows-the-work` | longest wins |
+| TC-4 | `matchOpen` | `docs/shape-backlog-2026-11-12`; open `aggregate-events`, `release-pipeline` | none | no mtime fallback |
+| TC-5 | `matchOpen` | `prefix-x`; open `fix` | none | inside a word |
+| TC-6 | `matchArchived` | `fix/navigator-band`; archive `2026-11-09-navigator`; `lastChangeId` null | none | old archive (A-5) |
+| TC-7 | `matchArchived` | `feature/boundary-owned-hint`; archive `2026-11-13-boundary-owned-hint`; `lastChangeId` = it | followed, `archived` | — |
+| TC-8 | `decideRoot` (D-2) | edit top `/r/.claude/worktrees/tdr`, common `/r/.git`; root `/r` | re-root | inside the checkout (A-3) |
+| TC-9 | `decideRoot` | edit top `/r-tdr`, common `/r/.git` | re-root | sibling (#185) |
+| TC-10 | `decideRoot` | edit top `/o`, common `/o/.git` | no change | other repository |
+| TC-11 | `holds('merged')` (D-5) | branch merged, tasks 3/10 | false | stage merge (A-1) |
+| TC-12 | `holds('merged')` | branch merged, tasks 10/10 | true | — |
+| TC-13 | `tierOf` (D-10) | `process:gate:x`, `process:external:y`, `plan:outside:z`, `process:overspawn`, `hygiene:context`, `hygiene:unused:main:s`, `foo:bar` | 1, 1, 2, 3, 4, 5, 3 | unknown prefix |
+| TC-14 | `creditSkill` (D-4) | `skill.prompt` with a lead `Skill` call in flight / a pending spawn / nothing | lead / subagent / lead | preload (A-2) |
+| TC-15 | `reviewQuota` (D-12) | VERY LARGE, added 600 / 601 / truncated | 2 / 5 / 5 | at the limit |
 
 ### Idempotency
 
