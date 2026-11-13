@@ -6,7 +6,8 @@ Challenge and Check steps SHALL scale with the EPIC's appetite (align-agent-team
 DEC-10) as the review set of the epic-delivery workflow file in `epic-delivery` states for each
 appetite. For MEDIUM and above, the file SHALL also state a small-stage set: when a stage's added
 lines are at or under its limit and the lead judges the risk low, the lenses MAY run as two merged
-reviewers, provided the lead records the choice as a decision in the change's `design.md`; the
+reviewers, provided the lead records the choice as a decision under `## Delivery decisions` in the
+change's `design.md`, a section whose edits do not make the PLAN's gates stale; the
 adversarial tester and the checker SHALL stay separate (navigator-follows-the-work DEC-12, #148).
 That file SHALL be the only statement of which review set each appetite and stage size gets;
 `epic-delivery`, its references, `meaningfy-code-review`, `guardrails` and the docs SHALL point to

@@ -7,10 +7,10 @@
 **L5 Fit, elegance & refactoring** — and SHALL execute **each lens as its own subagent run**. Each
 lens SHALL bundle its aspects and anchor them to existing `cosmic-python` catalogue ids; the skill
 SHALL NOT mint new catalogue entries for the lenses (DEC-6, DEC-7). A run MAY carry several lenses
-only when the review set allows it (TINY, SMALL, or a small stage per the epic-delivery workflow
-file) and the brief cites the decision, recorded in the change's `design.md`, that merges them; the
-`code-reviewer` agent SHALL refuse a several-lens brief without such a decision
-(navigator-follows-the-work DEC-12, DEC-13, #148).
+only when the review set authorises it: for TINY and SMALL by the epic-delivery workflow file's own
+lenses, named by the brief's appetite; for a small stage by a decision the brief cites and the
+change's `design.md` records under `## Delivery decisions`. The `code-reviewer` agent SHALL refuse
+any other several-lens brief (navigator-follows-the-work DEC-12, DEC-13, #148).
 
 #### Scenario: A full standalone review
 
@@ -24,13 +24,18 @@ file) and the brief cites the decision, recorded in the change's `design.md`, th
 
 #### Scenario: Merged lenses with a recorded decision
 
-- **WHEN** the `code-reviewer` agent is briefed with lenses L3, L4 and L5 and cites `DD-7`, which the change's `design.md` records as merging those lenses for this stage
+- **WHEN** the `code-reviewer` agent is briefed with lenses L3, L4 and L5 and cites `D-7`, which the change's `design.md` records under `## Delivery decisions` as merging those lenses for this stage
 - **THEN** it reviews through the three lenses and reports their findings
 
 #### Scenario: Merged lenses without a decision
 
-- **WHEN** the `code-reviewer` agent is briefed with two lenses and no recorded decision
+- **WHEN** the `code-reviewer` agent is briefed with two lenses for a stage of a LARGE EPIC and no recorded decision
 - **THEN** it refuses with "one lens required (L1–L5), or cite the recorded decision that merges them"
+
+#### Scenario: Merged lenses for a SMALL EPIC
+
+- **WHEN** the `code-reviewer` agent is briefed with lenses L2 and L3 for a SMALL EPIC
+- **THEN** it reviews through both lenses, as the SMALL review set states
 
 #### Scenario: Spec-correctness lens checks requirements, not the plan
 

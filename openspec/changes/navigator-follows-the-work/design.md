@@ -1,4 +1,5 @@
-<!-- PLAN (design half). PLAN = this file + tasks.md. Derived 2026-11-13 from the frozen EPIC. -->
+<!-- PLAN (design half). PLAN = this file + tasks.md. Derived 2026-11-13 from the frozen EPIC;
+     revised the same day after the attack (findings A-1..A-12, below). -->
 
 > Derives from: EPIC `navigator-follows-the-work` (`proposal.md`, DEC-1..DEC-14); issues #185,
 > #188, #148.
@@ -7,193 +8,223 @@
 
 The `navigator` mod (`mods/navigator/`) turns Claude Code events into signals, reduces them into one
 session atom (`NavState`, `types.d.ts`) and draws a status line and a band. Its I/O is in `io.ts`
-and `register.tsx`; every decision is pure in `lib/` and unit-tested under Node (`make mods`).
+and `register.tsx`, which have no tests; every decision is pure in `lib/` and unit-tested under
+Node (`make mods` runs `mods/*/lib/*.test.ts`). This PLAN keeps that split: every new decision is a
+pure `lib/` function, and `io.ts` only gathers its inputs.
 
 What this PLAN builds on, checked in the mod API types (Claude Code `claude-code.d.ts`):
 
 | Fact | Consequence |
 |---|---|
-| `$.session.repo().root` is "the main working tree's for a worktree" | it is the root cause of #185; it is never used for a root again |
+| `$.session.repo().root` is "the main working tree's for a worktree" | the root cause of #185; never used for a root again |
 | `$.session.root()` follows `/cd` and a worktree move, not a shell `cd` | the lead's start root |
 | `$.session.cwd()` read inside a hook is that hook's agent's directory | a subagent's root |
 | `tool.call` and `turn.complete` carry `agentId` (absent on the main loop) | per-agent attribution |
-| `skill.prompt` carries **no** `agentId` | a subagent's skill load is attributed through its `Skill` tool call (D-4) |
-| `agent.spawn` carries `description`, `cwd`, `isolation` | the task of a subagent and its root when set |
-| `session.start` does not name a main-loop agent (`--agent`) | a lead session is recognised by its first skill load (named-workers D-15, kept) |
+| `skill.prompt` carries no `agentId`, and fires for a `/name` typed, a `Skill` tool call, **and a skill preloaded into a subagent** | attribution by what is in flight (D-4) |
+| `agent.spawn` carries `description`, `cwd`, `isolation` | a subagent's task, and its root when set |
+| `session.start` does not name a main-loop agent | a lead session is recognised by its first skill load (named-workers D-15, kept) |
 
-Today `repoRoot()` (`io.ts:24`) feeds every repository read: open changes, branch, `tasks.md`,
-`deviations.md`, the plan-drift diff, the clean-tree check, validate and archive check, and the
-relative path of every edit. `readChange` (`lib/change.ts:59`) picks a change by branch substring,
-else by mtime.
+Today `repoRoot()` (`io.ts:24`) feeds every repository read and the relative path of every edit;
+`readChange` (`lib/change.ts:59`) picks by branch substring, else by mtime.
 
 ## Goals / Non-Goals
 
 **Goals:** the four outcomes of the EPIC's solution outline, one per stage, each shippable alone.
 
-**Non-Goals:** the EPIC's no-gos. Also: no behind-upstream warning (#185's fallback, not needed
-once the worktree is followed); no main-loop agent detection beyond D-15.
+**Non-Goals:** the EPIC's no-gos. Also: no behind-upstream warning (#185's fallback, not needed once
+the worktree is followed); no main-loop agent detection beyond D-15; no automated runner for the
+Gherkin files (in this repository they are walked by hand, `tests/features/*.feature` header).
 
 ## Decisions
 
 New choices made while planning; settled ones are cited by their DEC id.
 
-- **D-1 — Root shape in the atom (DEC-1, DEC-2, DEC-4).** `NavState` gains
-  `root: { path: string; common: string; branch: string } | null` for the lead, and `Subagent`
-  gains `root: string | null`, `skills: string[]` and keeps `description` as its task. `common` is
-  `git rev-parse --git-common-dir` made absolute: two working trees belong to the same repository
-  exactly when their `common` paths are equal. Rejected: a `Record<agentId, Entry>` for all agents
-  including the lead (the lead's trail and gates already live at the top level; moving them is
-  churn with no gain).
-- **D-2 — Re-rooting the lead on a write (DEC-2).** On a lead `Edit`/`Write`/`NotebookEdit` whose
-  file is outside `root.path`, `io` runs one `git -C <dir of file> rev-parse --show-toplevel
-  --git-common-dir --abbrev-ref HEAD`. If `common` equals the current root's, a `RootFollowed`
-  signal re-roots the lead. A write outside any repository or into another repository changes
-  nothing. A subagent's write never re-roots the lead.
-- **D-3 — Matching a branch to a change (DEC-3).** A change id matches a branch when it occurs
-  bounded by the start, the end, `/` or `-` on both sides (`(^|[/-])<id>([/-]|$)`); the longest
-  matching id wins. Examples: `feature/tenant-dump-restore` → `tenant-dump-restore`;
+- **D-1 — The atom (DEC-1, DEC-4).** `NavState` gains `root: { path; common; branch } | null`
+  (the lead's), `lastChangeId: string | null`, `mergedBranches: string[]`,
+  `skillCalls: { name; agentId: string | null; at }[]` (in flight) and
+  `pendingSpawns: { type; at }[]`. `Subagent` gains `root: string | null` and `skills: string[]`;
+  its `description` is its task. `common` is `git rev-parse --git-common-dir`, absolute: two
+  working trees belong to one repository exactly when their `common` paths are equal. `revive`
+  keeps an older atom readable. Rejected: one `Record<agentId, Entry>` including the lead (churn
+  with no gain).
+- **D-2 — The lead's root (DEC-2; A-3, A-12).** A pure `lib/root.ts` decides; `io` gathers.
+  - Start: `git -C $.session.root() rev-parse --show-toplevel --git-common-dir --abbrev-ref HEAD`.
+  - On **every** lead `Edit`/`Write`/`NotebookEdit`: the same command in the file's directory
+    (memoised per directory for the session in `io`, a cache of git facts, not state). If its
+    toplevel differs from `root.path` and its `common` equals `root.common`, a `RootFollowed`
+    signal re-roots the lead **before** the edit's relative path is computed; the edit then counts
+    against the new root. This covers a worktree inside the main checkout (`.claude/worktrees/…`)
+    and one beside it (`../repo-topic`).
+  - A write outside any repository or into another repository changes nothing; a subagent's write
+    never re-roots the lead.
+  - At each main turn end, a root whose directory is gone falls back to the start root.
+  - `/clear`, `/resume` and `/branch` (`SESSION_MOVES`) carry `root` into the new atom; the
+    workflows are re-read from the new root on every re-root, so a worktree's own
+    `docs/navigator/` overrides apply.
+- **D-3 — Matching a branch to a change (DEC-3; A-5).** A change id matches a branch when it
+  occurs bounded by the start, the end, `/` or `-` on both sides (`(^|[/-])<id>([/-]|$)`); the
+  longest id wins; on equal length, the one named later in the branch; then alphabetical. Never
+  mtime. Examples: `feature/tenant-dump-restore` → `tenant-dump-restore`;
   `feature/atomic-commit-stage-1` → `atomic-commit`; `docs/shape-navigator-follows-the-work` →
-  `navigator-follows-the-work`; `docs/shape-backlog-2026-11-12` → none of `aggregate-events`,
-  `release-pipeline`; `prefix-x` does not match `fix`. With no open match, archived folders
-  (`archive/<YYYY-MM-DD>-<id>`) are matched the same way; a match there gives
-  `{ ..., archived: true }`. Otherwise `change: null` with `unmatchedBranch` set.
-- **D-4 — A subagent's skill load (DEC-4, DEC-7).** `register.tsx` marks a `Skill` tool call as
-  in flight (`SkillCallStarted { agentId?, name }`) before `next(e)` and clears it after. The
-  `skill.prompt` handler consumes the oldest in-flight call with the same name and sends
-  `SkillLoaded { agentId }`; with none in flight the load is the lead's (a person's `/skill`). A
-  subagent's load goes to `subagents[i].skills` only: it never activates a workflow, never enters
-  the lead's trail and never passes a skill gate. *This order is the stage-1 spike (task 1.1); if
-  `skill.prompt` does not fire inside the tool call, the `Skill` tool call alone is the subagent's
-  load and `skill.prompt` is ignored while any call is in flight.*
-- **D-5 — The merged signal (DEC-5).** A new change predicate `merged`. `Change` gains
-  `merged: boolean`. `io` asks `gh pr view <branch> --json state` for the followed branch at
-  session start, after a `gh pr merge` that ran ok, and when the followed change changes; the
-  answer `MERGED` sets it. The atom keeps it per change id (`merged: string[]`), so later reads
-  do not undo it. `epic-delivery.workflow.json`: `archive.enter.change` becomes
+  `navigator-follows-the-work`; `docs/shape-backlog-2026-11-12` → none; `prefix-x` does not match
+  `fix`. An **archived** folder (`archive/<date>-<id>`) is matched only when its id equals
+  `lastChangeId`: the session keeps following a change it just archived, and an unrelated branch
+  never lands on an old archived change. On an archived change, Accept and Archive check are
+  disabled.
+- **D-4 — Whose skill load is it (DEC-4, DEC-7; A-2).** `register.tsx` adds a `skillCalls` entry
+  before `next(e)` of a `Skill` tool call (with its `agentId`, `null` for the lead) and removes it
+  after; `agent.spawn` adds a `pendingSpawns` entry before `next(e)` and moves it onto the
+  subagent when the spawn resolves. A `skill.prompt` is credited, in order: to the oldest
+  in-flight `Skill` call with that name; else to the newest pending or just-started subagent
+  (a preload); else to the lead (a person's `/name`). A subagent's load enters only its entry: it
+  activates no workflow, enters no lead trail, passes no skill gate. *Spike 1.1 proves the order
+  for all three sources; if a preload fires after the spawn resolves, "just started" means a
+  running subagent with no tool call yet.*
+- **D-5 — Merged (DEC-5; A-1).** `gh pr view <branch> --json state,headRefName` runs, with a
+  10-second timeout, at session start, after a `gh pr merge` that ran ok, and on every re-root or
+  change switch. `MERGED` for the followed branch adds the branch to `mergedBranches`. The
+  predicate `merged` holds when the followed branch is in `mergedBranches` **and all tasks are
+  ticked**. So a stage's merge, on its own stage branch with tasks still open, moves nothing; the
+  next stage's branch is not in the list. `epic-delivery.workflow.json`: `archive.enter.change` =
   `["archived", "merged"]`.
-- **D-6 — The archived signal (DEC-5).** The `archived` predicate holds when `change.archived`
-  (D-3). Replaces the hard-coded `false` (`lib/change.ts:91`).
-- **D-7 — Release by command (DEC-5, Q-19).** `Activate` gains `commands?: string[]` (regexes).
-  `select()` treats a `ToolRan` whose command matches as a trigger, like a skill. The release
-  workflow's `activate.commands`: the `cut` regex (a `release/` or `hotfix/` branch created), `gh
-  release create`, and a pushed `v<digit>` tag (the `published` push alternative). A local
-  `git tag` without a push does not activate. While the release workflow is active and
-  `meaningfy-release` has not loaded, a tier-1 warning `process:missing:release:meaningfy-release`
-  names it as its remedy (the existing remedy clearing applies).
-- **D-8 — Hand-off (DEC-6).** On `ChangeRead` whose change id differs from the previous non-null
-  one: `gates` reset to `{}`, change-scoped warnings dropped (`process:gate:`, `process:missing:`,
-  `process:elsewhere:`, `process:second-check:<old id>`, `plan:`), `accepted` re-read for the new
-  change, `phase` and `signalPhase` set to `null`, then `navigate` places the phase from the new
-  change's files (placed, not entered: no leave or enter warnings). `null → id` (first read) is a
-  placement as today, not a hand-off.
-- **D-9 — The unused check (DEC-7).** `turnEvents` entries gain `agent: string` (`'main'` or the
-  agent id) and a `spawn` kind. A skill is used when a later event of the same agent is a `tool`
-  or a `spawn`. The lead's skills are judged at the main turn's end; a subagent's at its
-  `SubagentFinished`. Key `hygiene:unused:<agent>:<skill>`; tier 5.
-- **D-10 — Severity tiers (DEC-9).** A pure `tierOf(key)` in `lib/view.ts`, by prefix:
-  1 `workflow:error`, `process:gate:`, `process:missing:`, `process:elsewhere:`;
-  2 `plan:`; 3 `process:inline`, `process:model`, `process:overspawn`, `process:second-check`,
-  `process:external`; 4 `hygiene:` except `hygiene:unused:`; 5 `hygiene:unused:`.
-  Unknown prefixes rank 3. Within a tier, newest first.
-- **D-11 — The band (DEC-8, DEC-10).** Folded:
+- **D-6 — Archived (DEC-5).** The predicate `archived` holds when `change.archived` (D-3),
+  replacing the hard-coded `false` (`lib/change.ts:91`).
+- **D-7 — Release by command (DEC-5, Q-19; A-4).** `Activate` gains `commands?: string[]`
+  (regexes) and `Trigger` gains `command`. `ToolRan` checks activation **before** its
+  "no workflow" return. When a command activates a workflow, the reducer then passes that same
+  command through the new workflow's gates and advances, so `gh release create v1.0.0` lands in
+  the phase it passes, not in `branch`; phases before an activation are not "left", so
+  no `onLeave` gate warnings are raised for them. The release workflow's own activation regexes
+  need a `v<digit>` or a `release/`/`hotfix/` token: a `release/` or `hotfix/` branch created;
+  `gh release create v<d>`; `git push … v<d>…`. `git push --follow-tags` and a local `git tag`
+  do not activate. While release is active and `meaningfy-release` has not loaded, a tier-1
+  warning `process:missing:release:meaningfy-release` names it as its remedy.
+- **D-8 — Hand-off (DEC-6; A-6).** When the followed change id differs from `lastChangeId`
+  (including id → none and none → another id after a first read): `gates` reset, change-scoped
+  warnings dropped (`process:gate:`, `process:missing:`, `process:elsewhere:`,
+  `process:second-check:<old id>`, `plan:`), `accepted` re-read, `workflow`, `phase` and
+  `signalPhase` set to `null`, then `navigate` re-selects and places from the new change's files
+  (placed, not entered). With no change, epic-delivery is not selected by default. The first read
+  of a session only sets `lastChangeId`.
+- **D-9 — The unused check (DEC-7; A-8).** `register.tsx` sends a `ToolUsed { agentId? }` for every
+  tool call except `Skill` (today only Bash makes a lead event). `turnEvents` entries carry
+  `agent` (`'main'` or the id) and include `spawn`. A skill is used when a later `tool` or `spawn`
+  event of the same agent follows; another `Skill` call is not use. The lead's skills are judged
+  at the main turn's end, which clears only the lead's events; a subagent's at its
+  `SubagentFinished`, which clears its own. Key `hygiene:unused:<agent>:<skill>`.
+- **D-10 — Severity tiers (DEC-9; A-11).** A pure `tierOf(key)` in `lib/view.ts`:
+  1 `workflow:error`, `process:gate:`, `process:missing:`, `process:elsewhere:`,
+  `process:external:` (process drift); 2 `plan:`; 3 `process:inline`, `process:model`,
+  `process:overspawn`, `process:second-check`; 4 `hygiene:` except `hygiene:unused:`;
+  5 `hygiene:unused:`. Unknown prefixes rank 3; within a tier, newest first.
+- **D-11 — The band (DEC-8, DEC-10; A-11).** Folded:
   - *now*: phase, stage short title and `done/total`, then up to two running subagents as
-    `<task> → <type> (<elapsed>)` and `+n`; `<type>` without its plugin prefix. With no change and
+    `<task> → <type> (<elapsed>)` and `+n`, `<type>` without its plugin prefix. With no change and
     no workflow: `no change for branch <branch>` or `no open change`.
   - *next*: `next: <the Next step command>` with **Next step**, plus **Back on track** and the
     hygiene button when they apply.
-  - *warning*: `⚠ <top message> · n more` (tiers 1–4 counted; tier 5 counted only in Details).
-  - buttons: **Details** (unfolds) and **Hide**.
-  Details: `reading <root.path relative to $HOME>` and the branch; stages; phases; appetite
-  (tasks, groups, reviewers, tokens; no `$`); skills (the lead's, bare names, grouped by phase:
-  `apply: test-driven-development, systematic-debugging`); subagents grouped by type
-  (`implementer ×3 done · 5.2M tokens · 1 running`, model shown only when it differs from the
-  parent's); warnings in tier order, each with **Accept** labelled by its message; mode;
-  **Archive check**, **Validate**, **Review**, **Mode**, **Less**. The `Accept` command still
-  carries the key, so the transcript names it.
-- **D-12 — Review set by stage size (DEC-12).** Each `reviews` entry of MEDIUM and above in
-  `epic-delivery.workflow.json` gains `"small_stage": { "max_added_lines": 600, "reviewers": 2,
-  "lenses": [["L1","L2"],["L3","L4","L5"]] }`. 600 is the recorded case of #148 (a ~600-line stage
-  judged redundant at five reviewers). The lead may use it when the stage's added lines are at or
-  under the limit and it judges the risk low, and records a `DD-` in `design.md` naming the size
-  and the reason; above the limit or with risky logic, the full set runs. Tester and checker are
-  unchanged. The navigator's quota shows `reviewers x/2` when the plan read's added lines are at
-  or under the limit, else the full number.
-- **D-13 — The reviewer's brief (DEC-13).** `code-reviewer` accepts a brief naming several lenses
-  when it cites a decision id (`DD-n` or `DEC-n`) that the change's `design.md` records with those
-  lenses; it reads `design.md` to confirm. Without such a decision, it refuses as today. Its
-  description changes, so it ships with trigger probes.
-- **D-14 — #188 (DEC-14).** One Gherkin scenario per default workflow that names a lead worker
-  (the `workflow-definitions` requirement *Every default workflow has one lead worker*): a lead
-  session whose first act is loading its primary skill shows that workflow. The lawyer's live
-  trial is a close-stage task done by hand and reported through `skillery-feedback`.
+  - *warning*: `⚠ <top message> · n more` (tiers 1–4; tier 5 counted only in Details).
+  - buttons: **Details**, **Hide**.
+  Details: `reading <root.path, ~ for $HOME> · <branch>`; stages; phases with each gate's state
+  (`clarity ✓ 9.1`, `acceptance ·`), as today's folded gates; appetite (tasks, groups, reviewers,
+  tokens; no `$`); skills (the lead's, bare names, grouped by phase); subagents grouped by type
+  (`implementer ×3 done · 5.2M tokens · 1 running`, a model only when it differs from the
+  parent's); warnings in tier order, each with **Accept** labelled by its message (the command
+  still carries the key); mode; **Reconcile EPIC** (kept, as the live specs require), **Archive
+  check**, **Validate**, **Review**, **Mode**, **Less**.
+- **D-12 — Review set by stage size (DEC-12; A-7, A-9).** Each `reviews` entry of MEDIUM and above
+  gains `"small_stage": { "max_added_lines": 600, "reviewers": 2,
+  "lenses": [["L1","L2"],["L3","L4","L5"]] }` (`lib/workflow.ts` `reviewError` accepts and checks
+  it). 600 is #148's recorded case (a ~600-line stage judged redundant at five reviewers). The lead
+  may use it when the stage's added lines are at or under the limit and the risk is low, and
+  records a decision (`D-n`) under a `## Delivery decisions` heading of `design.md`. One pure
+  `reviewQuota(state)` gives the expected reviewers (the small set when the plan read's added lines
+  are at or under the limit, else the full set); the band, `overspawn` and strict's `decideSpawn`
+  all use it.
+- **D-13 — The reviewer's brief (DEC-13; A-7).** `code-reviewer` accepts several lenses when the
+  review set authorises them: TINY and SMALL by the workflow's own `lenses` (the brief names the
+  appetite), or a small stage by a cited `D-n` that the change's `design.md` records under
+  `## Delivery decisions` with those lenses, which the agent reads to confirm. Otherwise it refuses
+  as today. Its description changes, so it ships with trigger probes.
+- **D-14 — #188 (DEC-14).** One Gherkin scenario per default workflow naming a lead worker, and a
+  unit test per workflow that its lead's primary skill activates it. The lawyer's live trial is a
+  close-stage task, reported through `skillery-feedback`.
+- **D-15 — Delivery decisions do not stale the PLAN (A-7).** The clarity gate goes stale on a PLAN
+  change (`gatesAfterPlan`, `planMtime`). `io` now reads `design.md` and gives a hash of its text
+  without the `## Delivery decisions` section (`planHash`); a skill gate goes stale when that hash
+  changes, not on mtime. Recording a review decision therefore does not raise the clarity warning.
 
 ## Algorithm / approach
 
-### Reads per main turn end (stage 1)
+### Per main turn end (stage 1)
 
 ```
-root   = state.root?.path ?? gitTop(await $.session.root())    // never session.repo()
-open   = list(root/openspec/changes/*) minus archive/          // proposal.md required
-arch   = names(root/openspec/changes/archive/*) stripped of the date
-branch = git -C root rev-parse --abbrev-ref HEAD
-change = match(branch, open) ?? archivedMatch(branch, arch) ?? null     // D-3
-accepted, plan drift, clean tree   all read in root
+root   = state.root (D-2)                               // never session.repo()
+open   = root/openspec/changes/* minus archive/         // proposal.md required
+arch   = root/openspec/changes/archive/<date>-<id>      // only lastChangeId may match (D-3)
+branch = root.branch, re-read
+change = matchOpen(branch, open) ?? matchArchived(branch, arch, lastChangeId) ?? null
+if change.id ≠ lastChangeId → hand-off (D-8)
+accepted, plan drift, clean tree, planHash               // all in root
 ```
 
-A subagent's events use its own root only to make its edits' paths relative; all change reads use
-the lead's root.
+A subagent's events use its own root only to make its edits relative; every change read uses the
+lead's root.
 
 ### Worked example 1 — #185 and session 3
 
-1. A session starts in `/r` (branch `docs/shape-backlog`), open changes `aggregate-events` (no
-   tasks) and `tenant-dump-restore`. `root = /r`; no change matches → line: `no change for branch
-   docs/shape-backlog`; no change warnings.
-2. The lead edits `/r/.claude/worktrees/tdr/mod/x.py`. `git -C …` gives top
-   `/r/.claude/worktrees/tdr`, the same `common` (`/r/.git`), branch `feature/tenant-dump-restore`
-   → `RootFollowed`. At turn end the change read runs in the worktree: `tenant-dump-restore`,
-   4/8, stage 3. Details: `reading ~/r/.claude/worktrees/tdr · feature/tenant-dump-restore`.
-3. The same with a sibling worktree `/r-tdr` (#185's layout): same `common`, same outcome.
-4. An edit to `/tmp/notes.md` (no repository) or `/other-repo/a.py` (different `common`): no
-   re-root.
+1. A session starts in `/r` (branch `docs/shape-backlog`); open: `aggregate-events` (no tasks),
+   `tenant-dump-restore`. Line: `no change for branch docs/shape-backlog`; no change warnings.
+2. The lead edits `/r/.claude/worktrees/tdr/mod/x.py`. Its directory's toplevel is
+   `/r/.claude/worktrees/tdr` (≠ `/r`), `common` `/r/.git` (=) → `RootFollowed` before the edit
+   is recorded; the edit counts as `mod/x.py`. At the turn end: `tenant-dump-restore`, 4/8,
+   stage 3; hand-off from none; Details: `reading ~/r/.claude/worktrees/tdr ·
+   feature/tenant-dump-restore`.
+3. The same with a sibling worktree `/r-tdr`: same `common`, same outcome.
+4. `/tmp/notes.md` (no repository) or `/other/a.py` (other `common`): no re-root.
+5. `/clear`: the new atom keeps `root`, so the band stays on `tenant-dump-restore`.
 
-### Worked example 2 — session 2 (merge, archive, next change)
+### Worked example 2 — session 2 and a staged EPIC
 
-1. Followed: `boundary-owned-hint`, phase `apply`, tasks all ticked → `accept` (files).
-2. `gh pr merge 85` runs ok → `gh pr view feature/boundary-owned-hint` → `MERGED` → `merged` holds
-   → `archive` entered.
-3. The change folder is moved to `archive/2026-11-13-boundary-owned-hint` on the same branch:
-   D-3's archived match keeps following it with `archived: true`; phase stays `archive`.
-4. The lead re-roots into the `ci/release-pipeline` worktree (an edit there): the change becomes
-   `release-pipeline` → D-8 hand-off: gates and change warnings cleared, phase placed from its
-   files (e.g. `apply`, 2/5), no leave or enter warnings.
-5. The lead runs `git switch -c release/0.2.0` → the release workflow activates (D-7) in `branch`;
-   `meaningfy-release` not loaded → tier-1 warning naming it.
+1. A staged EPIC on `feature/x-stage-1`, tasks 3/10. `gh pr merge 41` → `MERGED` → branch added;
+   tasks not all ticked → `merged` does not hold → phase stays `apply`. Stage 2 on
+   `feature/x-stage-2`: not in the list.
+2. Session 2: `boundary-owned-hint`, all tasks ticked → `accept`. `gh pr merge 85` → `MERGED` →
+   `merged` holds → `archive`.
+3. The folder moves to `archive/2026-11-13-boundary-owned-hint`; `lastChangeId` matches → still
+   followed, `archived`, phase `archive`; Accept disabled.
+4. The lead edits in the `ci/release-pipeline` worktree → re-root → change `release-pipeline` →
+   hand-off: placed from its files (`apply`, 2/5), no leave or enter warnings.
+5. `git switch -c release/0.2.0` → release activates (D-7) and passes `cut`, so the phase is
+   `bump`; `meaningfy-release` not loaded → tier-1 warning naming it.
 
 ### Worked example 3 — the band of session 3, after
 
 ```
-apply · 3 Dump and restore 0/2 · dump and restore → implementer (4m)
-next: /opsx:apply                                   [Next step]
-⚠ clarity-gate has not run since its inputs changed · 1 more     [Details] [Hide]
+apply · 3 Dump and restore 0/2 · Task 3.1 dump and restore → implementer (4m)
+next: /opsx:apply                                                    [Next step]
+⚠ clarity-gate has not run since its inputs changed · 1 more         [Details] [Hide]
 ```
 
 ### Idempotency
 
 Every new signal carries an id (`root:<tool_use_id>`, `skillcall:<tool_use_id>`,
-`merged:<change>:<turn>`) and the reducer's `seen` list drops a repeat, as today. `RootFollowed`
-to the current root is a no-op. A hand-off is decided by comparing ids, so a repeated
-`ChangeRead` does not reset twice.
+`merged:<branch>:<turn>`, `used:<tool_use_id>`) and the reducer's `seen` list drops a repeat.
+`RootFollowed` to the current root is a no-op; a hand-off compares ids, so a repeated
+`ChangeRead` does not reset twice; `mergedBranches` is a set.
 
 ### Anti-patterns
 
 | Don't | Do instead | Why |
 |---|---|---|
-| Call `$.session.repo()` for a root | `state.root`, else `$.session.root()` | it is the main working tree's for a worktree (#185) |
-| Fall back to the most recent change | `change: null` with the branch named | it is whichever session wrote last (DEC-3) |
-| Re-root on a subagent's write | re-root only on the lead's | a subagent in an isolated worktree would steal the lead's change |
-| Decide a repository from a path prefix | compare `--git-common-dir` | a sibling worktree has no common prefix with the main checkout |
-| Hard-code release commands in `lib/` | `activate.commands` in the workflow file | workflows are data (`workflow-definitions`) |
-| Parse `design.md` DDs in the navigator to size the review | use the plan read's added lines | the navigator shows, the lead decides (DEC-12) |
+| Call `$.session.repo()` for a root | `state.root` (D-2) | it is the main working tree's for a worktree (#185) |
+| Decide "elsewhere" by a path prefix | compare toplevel and `--git-common-dir` | a worktree may lie inside or beside the main checkout (A-3) |
+| Record an edit, then re-root | re-root first | the first edit would miss its file gate (A-3) |
+| Fall back to the most recent change, or to any archived one | `none`, or `lastChangeId` only | it is whichever session wrote last; old archives match loosely (A-5) |
+| Treat a stage's merge as the change's | `merged` needs all tasks ticked | stages merge one by one (A-1) |
+| Credit an unattributed `skill.prompt` to the lead | in-flight call, then pending spawn, then lead | preloads are subagents' (A-2) |
+| Hard-code release commands in `lib/` | `activate.commands` in the workflow file | workflows are data |
+| Put decisions in `io.ts` | pure functions in `lib/` | `io.ts` has no test harness (A-10) |
 | Persist anything outside the atom | keep it in `NavState` | DEC-1 |
 
 ## Error matrix
@@ -201,37 +232,60 @@ to the current root is a no-op. A hand-off is decided by comparing ids, so a rep
 | Failure mode | How it is detected | Expected handling |
 |---|---|---|
 | `$.session.root()` is not in a git repository | `git rev-parse` exits non-zero | `root: null`; line says `no repository`; no change reads |
-| An edit's directory no longer exists (deleted file) | `git -C` exits non-zero | no re-root |
-| A worktree is removed while followed | change read finds no `openspec/` or git fails | `root` falls back to `$.session.root()` at the next turn end; hand-off rules apply |
-| Two open changes match the branch at the same length | D-3 tie | the one named later in the branch wins; ties of equal position go to the alphabetically first, never to mtime |
-| `gh` missing, offline or unauthenticated | non-zero exit | `merged` stays false; no warning (accepted: rare, Q-16) |
-| `gh pr view` names a PR of another branch | `headRefName` differs | ignored |
-| `skill.prompt` fires outside the `Skill` tool call | spike 1.1 | the fallback in D-4 |
-| Two subagents load the same skill at once | two in-flight calls with one name | consumed oldest first; both attributed to a subagent, never the lead |
-| A background subagent outlives the main turn | its `SubagentFinished` comes later | its skills are judged then (D-9), not at the main turn's end |
-| The lead edits two worktrees in one turn | two `RootFollowed` | the last write wins; the change read at turn end uses it |
+| An edit's directory no longer exists | `git -C` exits non-zero | no re-root |
+| The followed worktree is removed | its path is gone at the turn end | fall back to the start root; hand-off rules apply |
+| Two open changes match the branch | D-3 tie rule | later in the branch, then alphabetical; never mtime |
+| A branch matches an old archived change only | id ≠ `lastChangeId` | no change followed |
+| A stage PR is merged with tasks open (A-1) | `merged` needs all tasks ticked | no phase move |
+| `gh` missing, offline, unauthenticated or slow | non-zero exit or the 10 s timeout | branch not added; no warning (accepted, Q-16) |
+| `gh pr view` answers for another branch | `headRefName` differs | ignored |
+| A skill preloaded into a subagent (A-2) | no in-flight `Skill` call; a spawn pending or just started | credited to that subagent |
+| Two subagents load the same skill at once | two in-flight calls with one name | oldest first; never the lead |
+| A background subagent outlives the main turn | its `SubagentFinished` comes later | its skills judged then; the main turn clears only the lead's events |
+| The lead edits two worktrees in one turn | two `RootFollowed` | the last wins at the turn end |
+| A release command arrives with no workflow active (A-4) | activation checked before the no-workflow return | release activates, the command passes its gates |
+| `git push --follow-tags` on a feature branch | no `v<d>` token | no activation |
+| A malformed `small_stage` | `reviewError` | `workflow:error`, as any malformed file |
+| A delivery decision is recorded in `design.md` | `planHash` ignores that section | the clarity gate stays fresh (D-15) |
+| `/clear` mid-session (A-12) | `Started` from a session move | `root` carried over |
 | A duplicate event | `seen` | ignored |
-| A release regex matches an ordinary command | a test per regex (task 2.4) | the regex list is data; a false match is fixed there |
-| A workflow file sets `small_stage` without `reviewers` | workflow parse | a `workflow:error` warning, as for any malformed file |
 
 ## Risks / Trade-offs
 
-- **RISK-1 — The platform behaves unlike its docs or changes** (medium likelihood, medium impact:
-  the band misleads; in strict mode a gate can block). Mitigation: spike 1.1 proves `root()`,
-  `cwd()` in a subagent's hook and the `Skill`/`skill.prompt` order before stage 1 builds on them;
-  every API fact is pinned by a unit test of `io` through a fake `$`. Drift after release is
-  accepted (Q-16): the issue loop handles it.
-- **RISK-2 — People move between worktrees in ways the design does not see** (shell `cd` with no
-  write; reading only). Likelihood medium, impact low: Details always names the checkout read.
-  Accepted as a rare edge (Q-16).
-- **RISK-3 — Strict mode acts on a wrong change during the transition** (low, high). Mitigation:
-  stage 1 ships before any display work; strict decisions use the same `change`, so fixing the
-  root fixes them.
-- **RISK-4 — Field response** (Q-15): a person hides or disables the band; a PATCH release fixes
-  the cause; the failure becomes a test.
-- **Trade-off:** state stays in the atom (DEC-1), so gates and phase are forgotten after `/clear`
-  and are not shared by parallel sessions on one change.
+- **RISK-1 — The platform behaves unlike its docs or changes** (medium, medium: the band misleads;
+  in strict mode a gate can block). Mitigation: spike 1.1 proves `root()`, a subagent's `cwd()`
+  and the `skill.prompt` order for all three sources before stage 1 builds on them; every rule
+  the facts feed is a pure, tested `lib/` function. Drift after release is accepted (Q-16).
+- **RISK-2 — People move between worktrees without writing** (shell `cd`, reading only); medium,
+  low. Details always names the checkout read. Accepted (Q-16).
+- **RISK-3 — Strict mode acts on a wrong change** (low, high). Stage 1 ships first; strict uses the
+  same `change`, so fixing the root fixes it.
+- **RISK-4 — Field response** (Q-15): hide or disable the band; a PATCH release; the failure
+  becomes a test.
+- **RISK-5 — `gh pr view` adds latency** at start and after merges (low, low): one call, a 10 s
+  timeout, never per turn.
+- **Trade-off:** state stays in the atom (DEC-1): gates and phase are forgotten after `/clear`
+  (the root is carried, D-2) and not shared by parallel sessions on one change.
+
+## Attack findings (2026-11-13)
+
+A fresh subagent attacked the first draft; every finding is folded in above.
+
+| Id | Finding | Where handled |
+|---|---|---|
+| A-1 | A stage merge sent the EPIC to archive for good | D-5, matrix |
+| A-2 | Preloaded skills credited to the lead | D-4, spike 1.1 (d), matrix |
+| A-3 | A worktree inside the main checkout never followed; edit recorded before re-root | D-2, anti-patterns |
+| A-4 | Release could not activate from no workflow; wrong phase and false gate warnings; `--follow-tags` | D-7, matrix |
+| A-5 | Archived fallback matched old changes; Accept into a stray folder | D-3 |
+| A-6 | Change → none not a hand-off | D-8 |
+| A-7 | Merged lenses vs TINY/SMALL; decision stales the clarity gate; quota mismatch; id style | D-12, D-13, D-15 |
+| A-8 | The lead's non-Bash tools are invisible to the unused check; per-agent clearing | D-9 |
+| A-9 | Parser rejects `small_stage`, `merged`, `commands` | D-7, D-12, tasks 2.1, 2.4, 4.1 |
+| A-10 | `io.ts` has no harness; no fixtures | Context, D-2, task 1.2b |
+| A-11 | Reconcile EPIC and gate states dropped; tests that assert mtime; `process:external` tier | D-10, D-11, task 1.3 |
+| A-12 | `/clear` forgets the root; overrides read from the launch root | D-2 |
 
 ## Open Questions
 
-None blocking. Spike 1.1 settles D-4's event order; its fallback is already specified.
+None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
