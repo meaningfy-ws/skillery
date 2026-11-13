@@ -149,3 +149,4 @@ Q-2).
 - Data: every workflow file; `bundles.yaml`; the navigator mod must tolerate the new field.
 - Tooling: `tools/repo_lint` (the criteria check); `make bundles`, `make skill-inventory`.
 - Order: lands before B (`harden-checks-and-tests`).
+- Follow-ups recorded as issues: #211 (a tester or critic agent).

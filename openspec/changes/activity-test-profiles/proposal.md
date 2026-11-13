@@ -144,3 +144,5 @@ The candidates already agreed, each still subject to step 1:
   only where a check gains a gate.
 - Order: after A and B (the documentation, shaping and DevOps stages need B's `quality/` and
   tester). Independent of D. Each stage ships alone.
+- Follow-ups recorded as issues: #212 (Meaningfy-own Vale rules), #213 (formal methods, parked),
+  #216 (adopting the layout checks in the stacks repositories).

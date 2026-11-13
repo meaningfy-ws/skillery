@@ -191,3 +191,5 @@ selection and misses checks it could make for free.
 - Dependencies for projects: Semgrep, ls-lint, checkmake, mutmut, Hypothesis, Schemathesis
   (pinned).
 - Order: after EPIC A (`test-strategy`).
+- Follow-ups recorded as issues: #210 (DDD, TDD and fixture rules), #214 (CodeQL, declined for now),
+  #215 (the hygiene rules).
