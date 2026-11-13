@@ -322,3 +322,10 @@ A fresh subagent attacked the first draft; every finding is folded in above.
 ## Open Questions
 
 None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
+
+## Delivery decisions
+
+- **D-16 — Spike 1.1 (`evidence/spike-1.1.md`).** D-4 stands: a preload's `skill.prompt` fires
+  after `agent.spawn` resolves, so the just-started-subagent case credits it. D-2 drops "else the
+  spawn's `cwd`": `agent.spawn` carries neither `cwd` nor `isolation` on this build; a subagent's
+  root comes only from `cwd()` in its first `tool.call`.

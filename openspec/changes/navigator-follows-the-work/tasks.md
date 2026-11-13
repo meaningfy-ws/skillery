@@ -7,7 +7,7 @@
 
 ## 1. Stage 1 — Right data (#185)
 
-- [ ] 1.1 Spike, recorded in `evidence/spike-1.1.md`, with a debug log in this mod: (a) `$.session.root()` after EnterWorktree and after a shell `cd`; (b) `$.session.cwd()` inside a subagent's `tool.call`, with and without `isolation: 'worktree'`; (c) whether `skill.prompt` fires between the pre and post of a `Skill` tool call; (d) when a skill preloaded into a subagent fires `skill.prompt` relative to `agent.spawn` and its resolution. Update D-4 if the fallback applies
+- [x] 1.1 Spike, recorded in `evidence/spike-1.1.md`, with a debug log in this mod: (a) `$.session.root()` after EnterWorktree and after a shell `cd`; (b) `$.session.cwd()` inside a subagent's `tool.call`, with and without `isolation: 'worktree'`; (c) whether `skill.prompt` fires between the pre and post of a `Skill` tool call; (d) when a skill preloaded into a subagent fires `skill.prompt` relative to `agent.spawn` and its resolution. Update D-4 if the fallback applies
 - [ ] 1.2 Atom and reducer (D-1): `NavState.root`, `lastChangeId`, `mergedBranches`, `skillCalls`, `pendingSpawns`; `Subagent.root`, `skills`; `Change.archived`; signals `RootFollowed`, `AgentRooted`, `SkillCallStarted`/`SkillCallEnded`, `ToolUsed`; `revive` reads an old atom. Tests: each signal's effect and its idempotency
 - [ ] 1.2b Test fixtures (DEC-11): a helper in `lib/fixtures.test-helpers.ts` that builds synthetic repositories as data (`ChangeFiles` lists, git outputs for a main checkout, a worktree inside, a worktree beside, another repository, several open changes, an archive)
 - [ ] 1.3 Branch matching (D-3) in `lib/change.ts`: bounded match, tie rule, archived only for `lastChangeId`. Delete the tests that assert the mtime fallback (`change.test.ts` around lines 31, 126–134, 146–149) and replace them with TC-1..TC-7 and D-3's matrix rows
@@ -51,7 +51,7 @@
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 1.2 · [ ] 1.2b · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8
+- [x] 1.1 · [ ] 1.2 · [ ] 1.2b · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 3.6 · [ ] 3.7 · [ ] 3.8
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5 · [ ] 4.6 · [ ] 4.7 · [ ] 4.8 · [ ] 4.9
