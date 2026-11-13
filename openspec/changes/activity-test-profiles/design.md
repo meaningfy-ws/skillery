@@ -1,4 +1,5 @@
 <!-- PLAN (design half), derived 2026-11-13 from proposal.md, before A and B are delivered.
+     NOT GATED: five clarity-gate runs, 8.7 to 8.9, the last 8.82 (see § Attack record).
      Written against A's gated PLAN and B's EPIC (B has no PLAN yet). Delivery does not start
      until the re-checks of § Re-check when A and B land are done. -->
 
@@ -632,6 +633,23 @@ deltas); "nothing to check" and the fourth proof (D-8); stale facts (the tasks h
 `architecture` line count, R-A1); D-20's default; the stacks draft (D-8); what follows a revision
 at preflight (§ Re-check); `vale sync` in the project command (D-6); bare references (D-15, error
 matrix).
+
+**Clarity gate, run 5 (a fifth independent scorer, on commit aef158e): 8.82/10, FAIL.** All 13
+checklist items pass; the score does not. **These gaps are open, not folded in**; the developer
+decides whether to fold them and gate again, or to accept them:
+
+| Gap | Open point | Proposed fix |
+|---|---|---|
+| G5-1 | The baseline's observable: any PLAN "names create" somewhere (D-21; tasks 2.4, 2.8) | Count only create named as a path on which the one-label rule must hold; cap the 2.8 loop at two revisions |
+| G5-2 | The owner round cannot answer "none of these" in call 2; what selecting means in call 1 (D-7) | Reserve one option per rule question for "none"; redo the arithmetic; state call 1's semantics |
+| G5-3 | The `test-strategy` delta fixes checkmake on `infrastructure-stacks`, against D-8's two other outcomes | Add the "no Makefile" outcome to the requirement; name "the stacks checkout of D-8" |
+| G5-4 | D-18's qualifying PLAN need not have a tester (a SMALL EPIC has none) | A fourth condition: the appetite carries the tester (MEDIUM or above) |
+| G5-5 | Which question rows a check adds is stated three ways (D-5, D-13, *Expected rows*) | One sentence in D-13; align the others |
+| G5-6 | Stage 3 searches `cloud-infrastructure` issues but task 3.1 provides no checkout of it | Add the checkout to 3.1, or record the source as not searched |
+| G5-7 | Overlapping rules: which of the two is enabled (D-7) | A tie-break |
+| G5-8 | "B's stage 1" and "stage 2" are C's names for stages B has not planned | Define them once in D-20; map them in task 0.2 |
+| G5-9 | "Up to three calls" against the overflow rule (D-7) | "Three kinds of call" |
+| G5-10 | Whether A's test accepts "none" in three columns of an `accepted` row (D-13) | Extend R-A2 |
 
 The attacker did not check the contents of the two infra repositories, Vale's behaviour with the
 four packages, or how `openspec archive` treats a delta to a capability with no live spec (D-23
