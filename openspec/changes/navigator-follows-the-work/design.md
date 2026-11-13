@@ -374,3 +374,9 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
       "named later" means the id's **last** occurrence in the branch (the lead's choice: the tail
       of a branch name is its most specific part).
   Rejected: none.
+- **D-23 — Stage 1 check: scope of the gaps.** The checker found the stage met except: the
+  `no repository` status line, which is task 3.5's (stage 1 leaves `change: null`, the line says
+  `no open change` until then); `planHash`, which is task 4.2's and reads `state.root` when built;
+  a per-subagent branch, which D-1 narrowed out of DEC-4 (a subagent's root is enough to place
+  its edits; its branch shows nothing the band uses); and the live check (D-21.9), recorded in
+  `evidence/live-check-stage-1.md` by the owner's run before merge.
