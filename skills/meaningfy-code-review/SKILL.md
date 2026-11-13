@@ -53,7 +53,10 @@ context budget and the passes overlap in wall-clock.
   default for a full review.
 - **Size hook.** Inside an EPIC's delivery the fan-out scales with the appetite: the review set of
   each appetite is the `reviews` of `epic-delivery`'s workflow file. Its one-pass entries
-  (`lenses`) are the only allowed combined pass. Where an entry has `ux`, an optional UX lens runs
+  (`lenses`) are the allowed combined pass for TINY and SMALL. A small stage of a larger appetite
+  may also combine lenses, in the groups of the entry's `small_stage.lenses`; the rule is in
+  `epic-delivery` (the review sets). No lens
+  changes what it checks, combined or not. Where an entry has `ux`, an optional UX lens runs
   when screens changed: usability and accessibility of the changed screens. The UX lens is review
   only; designing screens is the UX designer's job at any size, per `epic-delivery`.
 

@@ -15,7 +15,7 @@ const resolved = resolveWorkflows(defaults, [src('docs/navigator/epic-delivery.w
 
 let n = 0
 const id = () => `o${++n}`
-const change: Change = { id: 'x', appetite: 'LARGE', done: 3, total: 9, groups: [], planMtime: 0, hasDesign: true, hasTasks: true }
+const change: Change = { id: 'x', appetite: 'LARGE', done: 3, total: 9, groups: [], planHash: '', hasDesign: true, hasTasks: true, archived: false }
 const run = (...signals: Signal[]): NavState =>
   signals.reduce(reduce, reduce(EMPTY, { kind: 'Started', id: id(), sessionId: 's', band: 'folded', statusLine: true, interactive: true }))
 const base = (c: Change | null): Signal[] => [

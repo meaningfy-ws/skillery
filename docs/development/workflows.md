@@ -128,6 +128,41 @@ other gates too.
 
 The schema is described in [`mods.md`](mods.md#workflow-files).
 
+#### Activation by command
+
+A workflow can start from a command as well as from a skill or an agent: `activate.commands` is a
+list of regular expressions, and a Bash command that ran ok and matches one at the start of a shell
+segment (quoted text ignored) activates the workflow, then passes through its gates, so the session
+lands in the phase that command completes. The release workflow uses it for a `release/` or
+`hotfix/` branch created, `gh release create v<major>.<minor>…` and a `git push` carrying a version
+tag ([`release.workflow.json`](../../skills/meaningfy-release/assets/workflows/release.workflow.json)).
+A command that activates a workflow whose owner skill has not loaded raises a warning naming that
+skill. A repository changes the patterns through `extends`, giving the whole `activate` object.
+
+#### Review sets
+
+The `reviews` of [`epic-delivery.workflow.json`](../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json)
+give, per appetite, the reviewers, lenses, check and tester of a stage. From MEDIUM up each entry
+also has a `small_stage`:
+
+```json
+"small_stage": { "max_added_lines": 600, "reviewers": 2, "lenses": [["L1", "L2"], ["L3", "L4", "L5"]] }
+```
+
+It is an allowance for a stage whose added lines are at or under the limit: two reviewers, each
+covering one group of lenses. When the lead may use it, and what it records, are owned by
+[`epic-delivery`](../../skills/epic-delivery/SKILL.md) (*The loop of a stage*); navigator shows the
+small figure beside the full set and checks the over-spawn against the full set. A repository can
+change the limit or the groups in its own `docs/navigator/epic-delivery.workflow.json`; as with
+`gates`, it then gives the whole `reviews` object.
+
+#### Delivery decisions
+
+Navigator hashes `design.md` without its `## Delivery decisions` section, so recording a delivery
+decision does not mark the clarity gate stale, while an edit anywhere else in `design.md` does. A
+clarity-gate run after the last `design.md` edit, even in the same turn, is not marked stale either. What gets
+recorded there, and when, is owned by [`epic-delivery`](../../skills/epic-delivery/SKILL.md).
+
 ## Command → driving Meaningfy discipline
 
 Which skill / superpowers discipline owns each verb. This is the concrete

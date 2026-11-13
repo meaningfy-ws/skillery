@@ -35,6 +35,13 @@ export function validateRuns(s: NavState): string[] {
   })
 }
 
+/** What `/navigator validate` runs, or why it runs nothing (no repository is its own reply). */
+export function validatePlan(s: NavState): { root: string; runs: string[] } | { reply: string } {
+  if (!s.root) return { reply: 'Navigator: no repository; there is nothing to validate.' }
+  const runs = validateRuns(s)
+  return runs.length ? { root: s.root.path, runs } : { reply: 'Navigator: this phase has no gate to run.' }
+}
+
 /** Resolve `name args` against the installed commands: the name itself or `<plugin>:<name>` (DD-15). */
 export function commandFor(line: string, installed: readonly string[]): Command | { reason: string } {
   const [name = '', ...rest] = line.trim().split(/\s+/)

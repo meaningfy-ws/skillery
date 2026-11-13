@@ -1,9 +1,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
-  type DispatchEvent } from './dispatch.ts'
+import { inlineSpawn, modelAbove, overspawn, reportOversized, reviewQuota, roleOf, secondCheck, shipCommand, smallStageAllowance,
+  unusedSkills, type DispatchEvent } from './dispatch.ts'
 import { thresholdsFrom, type Thresholds } from './hygiene.ts'
-import type { Workflow } from './state.ts'
+import { EMPTY, type Workflow } from './state.ts'
 
 const t = (thresholdsFrom({
   compact_offer_context_percent: 50, context_warn_percent: 75, fresh_offer_min_context_percent: 15,
@@ -60,6 +60,37 @@ test('PD-8: the allowance adds the UX reviewers; other roles do not count', () =
   assert.deepEqual(overspawn(W, 'HUGE', 't', Array(9).fill('reviewer')), []) // no reviews entry
 })
 
+const SMALL_STAGE = { max_added_lines: 600, reviewers: 2, lenses: [['L1', 'L2'], ['L3', 'L4', 'L5']] }
+const WS: Workflow = { ...W, reviews: { 'VERY LARGE': { ...review(5, true, 1), small_stage: SMALL_STAGE }, LARGE: review(5, true, 1) } }
+const navAt = (appetite: string, planAdded: number | null, planTruncated = false) => ({
+  ...EMPTY, workflows: [WS], planAdded, planTruncated,
+  change: { id: 'x', appetite, done: 0, total: 1, groups: [], planHash: '', hasDesign: true, hasTasks: true, archived: false },
+})
+
+test('TC-15: smallStageAllowance, VERY LARGE: added 600 / 601 / truncated → 2 / null / null', () => {
+  assert.equal(smallStageAllowance(navAt('VERY LARGE', 600)), 2)
+  assert.equal(smallStageAllowance(navAt('VERY LARGE', 601)), null)
+  assert.equal(smallStageAllowance(navAt('VERY LARGE', 10, true)), null)
+})
+
+test('D-22: no plan read yet (planAdded null) is not a small stage', () => {
+  assert.equal(smallStageAllowance(navAt('VERY LARGE', null)), null)
+})
+
+test('smallStageAllowance: no small_stage, no review set, no change → null', () => {
+  assert.equal(smallStageAllowance(navAt('LARGE', 1)), null)
+  assert.equal(smallStageAllowance(navAt('HUGE', 1)), null)
+  assert.equal(smallStageAllowance({ ...navAt('VERY LARGE', 1), change: null }), null)
+})
+
+test('reviewQuota is the ceiling, UX included, whatever the plan size; null without a review set', () => {
+  assert.equal(reviewQuota(navAt('VERY LARGE', 600)), 6)
+  assert.equal(reviewQuota(navAt('VERY LARGE', 601)), 6)
+  assert.equal(reviewQuota(navAt('LARGE', 1)), 6)
+  assert.equal(reviewQuota(navAt('HUGE', 1)), null)
+  assert.equal(reviewQuota({ ...navAt('LARGE', 1), change: null }), null)
+})
+
 test('TC-06: MEDIUM, 5 reviewer spawns, then gh pr create → second check missing', () => {
   const events = [...spawns(5), { kind: 'ship' } as DispatchEvent]
   const w = secondCheck(W, 'MEDIUM', 'navigator', events)
@@ -90,13 +121,24 @@ test('PD-10: an answer longer than the report limit', () => {
   assert.deepEqual(reportOversized(t, 'a3', lines(40) + '\n'), []) // a trailing newline is not a line
 })
 
-test('unused skill: a load followed by another load with no tool call between', () => {
-  const w = unusedSkills([
-    { kind: 'skill', name: 'meaningfy-core:guardrails' }, { kind: 'skill', name: 'epic-delivery' },
-    { kind: 'tool' }, { kind: 'skill', name: 'clarity-gate' },
-  ])
-  assert.deepEqual(w.map(x => [x.key, x.remedy]), [['hygiene:unused:guardrails', null]])
+const sk = (name: string, agent = 'main') => ({ kind: 'skill', name, agent }) as const
+const tl = (agent = 'main') => ({ kind: 'tool', agent }) as const
+
+test('unused skill (D-9): a load followed by another load and no tool call of its agent', () => {
+  const w = unusedSkills([sk('meaningfy-core:guardrails'), sk('epic-delivery')], 'main')
+  assert.deepEqual(w.map(x => [x.key, x.remedy]), [['hygiene:unused:main:guardrails', null]])
   assert.match(w[0]!.message, /skillery-feedback/)
-  assert.deepEqual(unusedSkills([{ kind: 'skill', name: 'a' }]), []) // the last load of a turn is not judged
-  assert.deepEqual(unusedSkills([{ kind: 'skill', name: 'a' }, { kind: 'tool' }, { kind: 'skill', name: 'b' }]), [])
+  assert.deepEqual(unusedSkills([sk('a')], 'main'), []) // the last load of a turn is not judged
+  assert.deepEqual(unusedSkills([sk('a'), tl(), sk('b')], 'main'), [])
+})
+
+test('unused skill (D-9): two loads then a tool call leave neither unused', () => {
+  assert.deepEqual(unusedSkills([sk('a'), sk('b'), tl()], 'main'), [])
+  assert.deepEqual(unusedSkills([sk('a'), sk('b'), { kind: 'spawn', agent: 'main' }], 'main'), [])
+})
+
+test('unused skill (D-9): only the judged agent\'s events count, and its warning key carries the agent', () => {
+  const events = [sk('a', 'a1'), sk('b', 'a1'), tl('main')] // the lead's tool call is not the subagent's use
+  assert.deepEqual(unusedSkills(events, 'a1').map(w => w.key), ['hygiene:unused:a1:a'])
+  assert.deepEqual(unusedSkills(events, 'main'), [])
 })

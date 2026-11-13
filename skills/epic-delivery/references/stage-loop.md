@@ -40,6 +40,7 @@ and one owner. The summary is in the skill, and the review set of each appetite 
      in the PR body and opens the PR.
    - Then, in parallel and scaled by appetite: the reviewers, and the adversarial tester where
      the appetite's review set names it ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)).
+   - A small stage may take the small review set: the rule is in `SKILL.md` (the review sets).
    - Reviewers are read-only. They read the gate report in the PR body and never re-run the suite;
      a missing or red run is a finding.
 4. **Decide and fix.**

@@ -1,5 +1,5 @@
 {
-  "version": "3.13.0",
+  "version": "3.14.0",
   "bundles": [
     {
       "name": "meaningfy-core",
@@ -123,7 +123,7 @@
   "agents": {
     "code-reviewer": {
       "name": "code-reviewer",
-      "description": "Mircea the reviewer reviews a change through exactly one review lens (L1–L5) and reports prioritised findings; read-only. Use when a caller fans out a pre-PR review, one code-reviewer per lens (a full review is five dispatches, per meaningfy-code-review). Not for fixing code (implementer) or discussing findings.\n",
+      "description": "Mircea the reviewer reviews a change through one review lens (L1–L5), or through several only where the review set or a recorded decision authorises it, and reports prioritised findings; read-only. Use when a caller fans out a pre-PR review, one code-reviewer per lens (a full review is five dispatches, per meaningfy-code-review), or dispatches one pass for a TINY or SMALL appetite or a recorded small stage. Not for fixing code (implementer) or discussing findings.\n",
       "type": "delegated",
       "model": "opus",
       "color": "yellow",

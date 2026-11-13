@@ -4,7 +4,7 @@
 import type { ChangePredicate, NavState, Phase, Workflow } from './state.ts'
 
 export const CHANGE_PREDICATES: readonly ChangePredicate[] =
-  ['none', 'proposal', 'plan', 'tasks-no-design', 'tasks-open', 'tasks-partial', 'tasks-done', 'archived']
+  ['none', 'proposal', 'plan', 'tasks-no-design', 'tasks-open', 'tasks-partial', 'tasks-done', 'archived', 'merged']
 
 export type Source = { path: string; text: string }
 export type Origin = 'default' | 'repo'
@@ -112,6 +112,11 @@ function activateError(a: unknown, at: string): string | null {
   if (!isObj(a)) return `'${at}' must be an object`
   for (const [k, v] of Object.entries(a)) {
     if (k === 'skills' || k === 'agents') { if (!isStrs(v)) return `${at}.${k} must be a list of names` }
+    else if (k === 'commands') {
+      if (!isStrs(v)) return `${at}.commands must be a list of regular expressions`
+      const bad = (v as string[]).find(r => regexError(r))
+      if (bad !== undefined) return `${at}.commands: ${regexError(bad)}`
+    }
     else if (k === 'openChange' || k === 'interactive') { if (typeof v !== 'boolean') return `${at}.${k} must be true or false` }
     else if (k === 'change') { if (!CHANGE_PREDICATES.includes(v as ChangePredicate)) return `${at}.change: unknown '${String(v)}'` }
     else return `${at}: unknown key '${k}'`
@@ -166,14 +171,22 @@ function gateError(g: unknown, at: string): string | null {
   return null
 }
 
+const SMALL_STAGE_KEYS = ['max_added_lines', 'reviewers', 'lenses']
+
 function reviewError(r: unknown, at: string): string | null {
   if (!isObj(r)) return `${at}: not an object`
-  const fields = ['challenge', 'reviewers', 'lenses', 'ux', 'check', 'checker', 'tester']
+  const fields = ['challenge', 'reviewers', 'lenses', 'small_stage', 'ux', 'check', 'checker', 'tester']
   const extra = Object.keys(r).find(k => !fields.includes(k))
   if (extra) return `${at}: unknown key '${extra}'`
   if (!isStr(r.challenge) || !isStr(r.check)) return `${at}: needs 'challenge' and 'check' wording`
   if (!Number.isInteger(r.reviewers) || (r.reviewers as number) < 0) return `${at}.reviewers must be a whole number`
   if ('lenses' in r && !isStrs(r.lenses)) return `${at}.lenses must be a list`
+  if ('small_stage' in r) {
+    const s = r.small_stage
+    const ok = isObj(s) && Object.keys(s).every(k => SMALL_STAGE_KEYS.includes(k)) && Number.isInteger(s.max_added_lines) && (s.max_added_lines as number) > 0 &&
+      Number.isInteger(s.reviewers) && (s.reviewers as number) >= 0 && Array.isArray(s.lenses) && s.lenses.every(isStrs)
+    if (!ok) return `${at}.small_stage must be {max_added_lines, reviewers, lenses: [[lens, ...], ...]}`
+  }
   if (typeof r.checker !== 'boolean') return `${at}.checker must be true or false`
   if (!(r.tester === null || isStr(r.tester))) return `${at}.tester must be its wording or null`
   const ux = r.ux
@@ -273,6 +286,8 @@ const COMMIT = at(String.raw`git(?:\s+-[Cc]\s+\S+)*\s+commit\b`)
 const ARCHIVE = at(String.raw`openspec\s+archive\b`)
 const SHIP = at(String.raw`(?:git(?:\s+-[Cc]\s+\S+)*\s+push|gh\s+pr\s+create)\b`)
 const MERGE = at(String.raw`gh\s+pr\s+merge\b`)
+/** Whether a command matches a regex of `activate.commands`, at the start of a shell segment and outside quotes (D-7). */
+export const matchesCommand = (re: string, c: string) => at(`(?:${re})`).test(c)
 export const isCommit = (c: string) => COMMIT.test(c)
 export const isArchive = (c: string) => ARCHIVE.test(c)
 export const isShip = (c: string) => SHIP.test(c) || ARCHIVE.test(c)

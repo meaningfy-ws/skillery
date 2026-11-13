@@ -15,7 +15,7 @@
     { "id": "accept", "owner": "epic-delivery", "expect": [],
       "gates": ["acceptance"], "enter": { "change": "tasks-done" } },
     { "id": "archive", "owner": "spec-stewardship", "expect": [{ "skill": "spec-stewardship", "by": "exit" }],
-      "gates": ["openspec"], "enter": { "skills": ["openspec-archive-change"], "change": "archived" } }
+      "gates": ["openspec"], "enter": { "skills": ["openspec-archive-change"], "change": ["archived", "merged"] } }
   ],
   "gates": {
     "clarity":    { "kind": "skill", "skill": "clarity-gate" },
@@ -30,15 +30,19 @@
     "SMALL":  { "challenge": "One review pass: L2 spec and tests, L3 structure with ADR conformance",
                 "reviewers": 1, "lenses": ["L2", "L3"], "ux": null,
                 "check": "The stage's full gates and CI; the single review pass is the four-eyes pass", "checker": false, "tester": null },
-    "MEDIUM": { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5, "ux": null,
+    "MEDIUM": { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5,
+                "small_stage": { "max_added_lines": 600, "reviewers": 2, "lenses": [["L1", "L2"], ["L3", "L4", "L5"]] }, "ux": null,
                 "check": "Checker", "checker": true, "tester": null },
     "LARGE":  { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5,
+                "small_stage": { "max_added_lines": 600, "reviewers": 2, "lenses": [["L1", "L2"], ["L3", "L4", "L5"]] },
                 "ux": { "wording": "plus the UX lens when screens changed", "extra_reviewers": 1 },
                 "check": "Checker", "checker": true, "tester": "Adversarial tester" },
     "VERY LARGE": { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5,
+                "small_stage": { "max_added_lines": 600, "reviewers": 2, "lenses": [["L1", "L2"], ["L3", "L4", "L5"]] },
                 "ux": { "wording": "plus the UX lens when screens changed", "extra_reviewers": 1 },
                 "check": "Checker", "checker": true, "tester": "Adversarial tester" },
     "HUGE":   { "challenge": "Five lenses, read-only, in parallel", "reviewers": 5,
+                "small_stage": { "max_added_lines": 600, "reviewers": 2, "lenses": [["L1", "L2"], ["L3", "L4", "L5"]] },
                 "ux": { "wording": "plus the UX lens when screens changed", "extra_reviewers": 1 },
                 "check": "Checker", "checker": true, "tester": "Adversarial tester" }
   },

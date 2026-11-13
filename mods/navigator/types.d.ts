@@ -11,18 +11,21 @@ export type Change = {
   done: number
   total: number
   groups: Group[]
-  planMtime: number
+  planHash: string // hash of design.md without its Delivery decisions (D-15); '' if none
+  designMtime?: number // design.md's mtime in ms (D-29); absent in a change stored by an older version
   hasDesign: boolean
   hasTasks: boolean
+  archived: boolean // the change just archived, still followed (D-3)
 }
 
 // ---- workflow files (design §4.1); lib/workflow.ts is their one validator
 export type ChangePredicate =
-  'none' | 'proposal' | 'plan' | 'tasks-no-design' | 'tasks-open' | 'tasks-partial' | 'tasks-done' | 'archived'
+  'none' | 'proposal' | 'plan' | 'tasks-no-design' | 'tasks-open' | 'tasks-partial' | 'tasks-done' | 'archived' | 'merged'
 
 export type Activate = {
   skills?: string[]
   agents?: string[]
+  commands?: string[] // regexes; a command that matches activates the workflow (D-7)
   openChange?: boolean
   change?: ChangePredicate
   interactive?: boolean
@@ -47,6 +50,7 @@ export type Review = {
   challenge: string
   reviewers: number
   lenses?: string[]
+  small_stage?: { max_added_lines: number; reviewers: number; lenses: string[][] } // D-12
   ux: null | { wording: string; extra_reviewers: number }
   check: string
   checker: boolean
@@ -85,7 +89,16 @@ export type Subagent = {
   startedAt: number
   tokens: number
   done: boolean
+  rootPath: string | null // the working tree it writes in; null until its first tool call (D-2)
+  skills: string[] // the skills loaded in it, by name (D-4)
 }
+
+/** The working tree the lead follows; `common` is `git rev-parse --git-common-dir`, absolute (D-1). */
+export type Root = { path: string; common: string; branch: string }
+/** A `Skill` tool call in flight; `agentId` is null for the lead (D-4). */
+export type SkillCall = { toolUseId: string; name: string; agentId: string | null; at: number; loaded: boolean }
+/** An `agent.spawn` not yet resolved, keyed by its tool_use_id (D-4). */
+export type PendingSpawn = { toolUseId: string; type: string; at: number; skills: string[] }
 
 export type SkillUse = { name: string; at: number; phase: string | null }
 
@@ -96,6 +109,11 @@ export type NavState = {
   sessionId: string
   change: Change | null
   openChanges: number
+  root: Root | null // the lead's working tree (D-1, D-2)
+  lastChangeId: string | null // the change last followed; an archived one is still followed while it names the branch (D-3, D-8)
+  mergedBranches: string[] // branches seen merged (D-5)
+  skillCalls: SkillCall[]
+  pendingSpawns: PendingSpawn[]
   workflows: Workflow[]
   interactive: boolean
   workflow: string | null
@@ -112,13 +130,14 @@ export type NavState = {
   gates: Record<string, GateState>
   warnings: Warning[]
   planTruncated: boolean // the last plan-drift read saw more than the diff cap
+  planAdded: number | null // added lines the last plan-drift read counted (D-12); null before a read and after a change switch (D-22)
   accepted: string[] // warning keys recorded as deviations (deviations.md, or this session outside a change)
   // ---- subagent rules and hygiene (design §6.3, §6.5); thresholds are the guardrails file, unparsed
   thresholds: unknown
   parentModel: string
   turnId: string // the current main turn; PD-8 counts reviewer spawns per turn
   turnRoles: Role[]
-  turnEvents: ({ kind: 'skill'; name: string } | { kind: 'tool' })[]
+  turnEvents: ({ kind: 'skill'; name: string; agent: string } | { kind: 'tool' | 'spawn'; agent: string })[]
   agentCalls: Record<string, number> // tool calls per subagent (PD-6)
   shipLog: ({ kind: 'spawn'; role: Role } | { kind: 'ship' })[] // per change (PD-9)
   hygieneEvents: HygieneEvent[] // since the last safe point or task boundary

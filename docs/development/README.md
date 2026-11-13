@@ -253,6 +253,7 @@ at any depth below it.
 | `docs/environment/devops-agents.md` | hand-written | Running the devops agents; the unattended runtime contract | — |
 | `docs/environment/communication.md` | hand-written | How the voice and communication skills fit together, what they cover, how to extend them | — |
 | `docs/environment/rules.md` | hand-written | How the three rule skills learn, apply and review the owner's rules, and what they need | — |
+| `docs/rules/**` | generated | This repository's rules for agents, one note per rule (`P-NNNN`), approved by the owner | the rulebook script (`rules.py add --store repo`) |
 | `docs/environment/langfuse-deployment-spec.md` | hand-written | The Langfuse deployment rule-steward needs, specified for the infrastructure stacks repository | — |
 | `docs/environment/langfuse-setup.md` | hand-written | Connect a machine to Langfuse: the plugin for the CLI and Claude Desktop, the user id, the read variables | — |
 | `docs/environment/dual-cli/**` | hand-written | Dual-CLI setup, mapping and gates; the dependency tables in `compatibility.md` and `mcp-setup.md` are generated from [`dependencies.yaml`](../../dependencies.yaml) between `GENERATED:dependencies` markers | `make skill-inventory` (those tables) |
