@@ -346,7 +346,7 @@ const pkeys = (over: Partial<PlanInput>) => planDrift(plan(over)).map(w => w.key
 const hyg = (events: string[], contextPercent: number, openUnticked = true) =>
   offer({ ok: true, thresholds: T }, { events: events as never, contextPercent, idleMinutes: 0, cleanTree: true, openUnticked })
 const planWarn = (key: string) => ({ key, message: key, remedy: 'openspec-update-change navigator', owner: 'epic-planning' })
-const planRead = (...ks: string[]): Signal => ({ kind: 'PlanRead', id: id(), warnings: ks.map(planWarn), truncated: false })
+const planRead = (...ks: string[]): Signal => ({ kind: 'PlanRead', id: id(), warnings: ks.map(planWarn), truncated: false, added: 0 })
 const setMode = (mode: 'loose' | 'strict'): Signal => ({ kind: 'SetMode', id: id(), mode })
 const turnEnd = (contextPercent: number): Signal => ({ kind: 'TurnEnded', id: id(), turnId: id(), contextPercent, cleanTree: true, at: 9 })
 // A spawn is counted when it is asked, before it runs (DD-41): what register.tsx sends first.

@@ -31,6 +31,7 @@ export const EMPTY: NavState = {
   warnings: [],
   accepted: [],
   planTruncated: false,
+  planAdded: 0,
   thresholds: null,
   parentModel: '',
   turnId: '',
@@ -83,7 +84,7 @@ export type Signal =
   | { kind: 'SetLine'; id: string; line: boolean }
   | { kind: 'SetMode'; id: string; mode: 'loose' | 'strict' }
   | { kind: 'Accepted'; id: string; keys: string[] }
-  | { kind: 'PlanRead'; id: string; warnings: Warning[]; truncated: boolean }
+  | { kind: 'PlanRead'; id: string; warnings: Warning[]; truncated: boolean; added: number }
   | { kind: 'SetPending'; id: string; line: string | null }
 
 const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v)
@@ -196,7 +197,7 @@ function apply(state: NavState, s: Signal): NavState {
     case 'Compacted':
       return state // lean() keeps these (lib/lean.ts)
     case 'PlanRead': // each read replaces the last, so fixed drift disappears
-      return { ...state, planTruncated: s.truncated,
+      return { ...state, planTruncated: s.truncated, planAdded: s.added,
         warnings: [...state.warnings.filter(w => !w.key.startsWith('plan:')), ...s.warnings] }
     case 'SetPending':
       return { ...state, pending: s.line }

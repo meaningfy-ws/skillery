@@ -33,6 +33,23 @@ Feature: code-reviewer reviews one change through exactly one lens
     Then it returns "one lens required (L1–L5)"
     And it reviews nothing
 
+  Scenario: Several lenses are accepted for a SMALL appetite whose review set lists them
+    When the caller dispatches the code-reviewer with lenses "L2" and "L3" and names the appetite "SMALL"
+    Then every finding reported is tagged with its own lens "L2" or "L3"
+    And no file in the change is modified
+
+  Scenario: Several lenses are accepted with a recorded small-stage decision
+    Given the change's design.md records "D-3" under "## Delivery decisions" with lenses "L1" and "L2"
+    When the caller dispatches the code-reviewer with lenses "L1" and "L2" and cites "D-3"
+    Then it reads "D-3" in design.md to confirm the lenses
+    And every finding reported is tagged with its own lens "L1" or "L2"
+
+  Scenario: Several lenses are refused when the cited decision is not recorded
+    Given the change's design.md records no "D-3" under "## Delivery decisions"
+    When the caller dispatches the code-reviewer with lenses "L1" and "L2" and cites "D-3"
+    Then it returns "one lens required (L1–L5)"
+    And it reviews nothing
+
   Scenario: L2 reads the gate report instead of running the suite
     Given the stage's gate report shows one failing test
     When the caller dispatches the code-reviewer with lens "L2"

@@ -40,6 +40,9 @@ and one owner. The summary is in the skill, and the review set of each appetite 
      in the PR body and opens the PR.
    - Then, in parallel and scaled by appetite: the reviewers, and the adversarial tester where
      the appetite's review set names it ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)).
+   - A stage at or under the review set's `small_stage` limit, judged low risk, may take the small
+     set instead. The lead records the choice first as a `D-n` under `## Delivery decisions` in
+     `design.md` (the size and the reason).
    - Reviewers are read-only. They read the gate report in the PR body and never re-run the suite;
      a missing or red run is a finding.
 4. **Decide and fix.**

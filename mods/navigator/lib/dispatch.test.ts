@@ -1,9 +1,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
+import { inlineSpawn, modelAbove, overspawn, reportOversized, reviewQuota, roleOf, secondCheck, shipCommand, unusedSkills,
   type DispatchEvent } from './dispatch.ts'
 import { thresholdsFrom, type Thresholds } from './hygiene.ts'
-import type { Workflow } from './state.ts'
+import { EMPTY, type Workflow } from './state.ts'
 
 const t = (thresholdsFrom({
   compact_offer_context_percent: 50, context_warn_percent: 75, fresh_offer_min_context_percent: 15,
@@ -58,6 +58,31 @@ test('PD-8: the allowance adds the UX reviewers; other roles do not count', () =
   assert.equal(overspawn(W, 'LARGE', 't', Array(7).fill('reviewer')).length, 1)
   assert.deepEqual(overspawn(W, null, 't', Array(9).fill('reviewer')), [])
   assert.deepEqual(overspawn(W, 'HUGE', 't', Array(9).fill('reviewer')), []) // no reviews entry
+})
+
+const SMALL_STAGE = { max_added_lines: 600, reviewers: 2, lenses: [['L1', 'L2'], ['L3', 'L4', 'L5']] }
+const WS: Workflow = { ...W, reviews: { 'VERY LARGE': { ...review(5, true, 1), small_stage: SMALL_STAGE }, LARGE: review(5, true, 1) } }
+const navAt = (appetite: string, planAdded: number, planTruncated = false) => ({
+  ...EMPTY, workflows: [WS], planAdded, planTruncated,
+  change: { id: 'x', appetite, done: 0, total: 1, groups: [], planMtime: 0, hasDesign: true, hasTasks: true },
+})
+
+test('TC-15: reviewQuota, VERY LARGE: added 600 / 601 / truncated → 2 / 5 / 5', () => {
+  assert.equal(reviewQuota(navAt('VERY LARGE', 600)), 2)
+  assert.equal(reviewQuota(navAt('VERY LARGE', 601)), 5)
+  assert.equal(reviewQuota(navAt('VERY LARGE', 10, true)), 5)
+})
+
+test('reviewQuota: no small_stage keeps the full set; no review set is null', () => {
+  assert.equal(reviewQuota(navAt('LARGE', 1)), 5)
+  assert.equal(reviewQuota(navAt('HUGE', 1)), null)
+  assert.equal(reviewQuota({ ...navAt('LARGE', 1), change: null }), null)
+})
+
+test('overspawn with the small quota: 3 reviewers + the UX one are allowed, a 4th is over', () => {
+  assert.deepEqual(overspawn(WS, 'VERY LARGE', 't', Array(3).fill('reviewer'), 2), [])
+  assert.equal(overspawn(WS, 'VERY LARGE', 't', Array(4).fill('reviewer'), 2).length, 1)
+  assert.deepEqual(overspawn(WS, 'VERY LARGE', 't', Array(6).fill('reviewer')), []) // full quota by default
 })
 
 test('TC-06: MEDIUM, 5 reviewer spawns, then gh pr create → second check missing', () => {

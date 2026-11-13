@@ -2,7 +2,7 @@
 // model order come from the guardrails data file; review sets and roles from the workflow file.
 
 import type { Thresholds } from './hygiene.ts'
-import type { Warning, Workflow } from './state.ts'
+import type { NavState, Warning, Workflow } from './state.ts'
 import { bare } from './workflow.ts'
 import { isShip } from './workflow.ts'
 
@@ -46,11 +46,20 @@ export function modelAbove(t: Thresholds, s: Spawn, parentModel: string): Warnin
     : []
 }
 
+/** D-12: the reviewers the appetite's review set expects (UX reviewers aside): the small-stage set when the last
+ *  plan read added at most `max_added_lines` and was not truncated, else the full set; null without a review set. */
+export function reviewQuota(s: NavState): number | null {
+  const r = s.change?.appetite ? s.workflows.find(w => w.reviews)?.reviews?.[s.change.appetite] : undefined
+  if (!r) return null
+  const small = r.small_stage
+  return small && !s.planTruncated && s.planAdded <= small.max_added_lines ? small.reviewers : r.reviewers
+}
+
 /** PD-8: reviewer spawns in one main turn beyond the appetite's review set (plus its UX reviewers). */
-export function overspawn(w: Workflow, appetite: string | null, turnId: string, roles: Role[]): Warning[] {
+export function overspawn(w: Workflow, appetite: string | null, turnId: string, roles: Role[], reviewers?: number): Warning[] {
   const r = appetite ? w.reviews?.[appetite] : undefined
   if (!r) return []
-  const allowed = r.reviewers + (r.ux?.extra_reviewers ?? 0)
+  const allowed = (reviewers ?? r.reviewers) + (r.ux?.extra_reviewers ?? 0)
   const spawned = roles.filter(x => x === 'reviewer').length
   return spawned > allowed
     ? [warning(`process:overspawn:${turnId}`, `over-spawn: ${spawned} reviewers in one turn, ${appetite} calls for ${allowed}`, null, bare(w.owner))]

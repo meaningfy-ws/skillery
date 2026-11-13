@@ -57,6 +57,10 @@ test('the schema rejects what it does not know', () => {
     [{ variants: [{ name: 'v', phases: ['nope'], activate: {} }] }, /no phase 'nope'/],
     [{ reviews: { SMALL: { challenge: 'c', reviewers: 1, ux: null, check: 'c', checker: 'no', tester: null } } }, /checker/],
     [{ activate: { skills: 'one' } }, /list of names/],
+    ...[{ max_added_lines: 0, reviewers: 2, lenses: [['L1']] }, { max_added_lines: 600, reviewers: '2', lenses: [['L1']] },
+      { max_added_lines: 600, reviewers: 2, lenses: ['L1'] }, { max_added_lines: 600, reviewers: 2, lenses: [['L1']], x: 1 },
+      { max_added_lines: 600, reviewers: 2 }, 'small'].map((small_stage): [object, RegExp] =>
+      [{ reviews: { MEDIUM: { challenge: 'c', reviewers: 5, ux: null, check: 'c', checker: true, tester: null, small_stage } } }, /small_stage/]),
   ]
   for (const [over, error] of cases) {
     const r = parseWorkflow(src('f', minimal(over)), 'default')
@@ -100,6 +104,16 @@ test('TC-16 epic-delivery has a review set for each of the six appetites', () =>
   const r = parseWorkflow(defaults.find(d => d.path.endsWith('epic-delivery.workflow.json'))!, 'default')
   assert.deepEqual(Object.keys((r as { workflow: Workflow }).workflow.reviews ?? {}),
     ['TINY', 'SMALL', 'MEDIUM', 'LARGE', 'VERY LARGE', 'HUGE'])
+})
+
+test('D-12 epic-delivery: MEDIUM and above carry the small_stage set, TINY and SMALL do not', () => {
+  const r = parseWorkflow(defaults.find(d => d.path.endsWith('epic-delivery.workflow.json'))!, 'default')
+  const reviews = (r as { workflow: Workflow }).workflow.reviews ?? {}
+  for (const [name, set] of Object.entries(reviews)) {
+    const sized = !['TINY', 'SMALL'].includes(name)
+    assert.deepEqual(set.small_stage, sized
+      ? { max_added_lines: 600, reviewers: 2, lenses: [['L1', 'L2'], ['L3', 'L4', 'L5']] } : undefined, name)
+  }
 })
 
 test('a misspelt skill in a workflow is caught', () => {

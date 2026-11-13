@@ -322,3 +322,12 @@ A fresh subagent attacked the first draft; every finding is folded in above.
 ## Open Questions
 
 None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
+
+## Delivery decisions
+
+- **D-20 — The #148 PR is reviewed as a small stage.** 147 added lines (generated files aside), at
+  or under `small_stage.max_added_lines` (600); risk low (review counts, skill and agent text, one
+  template label; no change to what any lens checks). Two reviewers, L1+L2 and L3+L4+L5. Because
+  the installed `code-reviewer` still refuses several lenses until this PR ships, each pass is a
+  general-purpose reviewer loading `meaningfy-code-review`. The stage-1 branch records D-16..D-19
+  under this heading too; the two lists merge when both land.

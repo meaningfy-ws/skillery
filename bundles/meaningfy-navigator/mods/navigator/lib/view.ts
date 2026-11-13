@@ -1,5 +1,6 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
+import { reviewQuota } from './dispatch.ts'
 import { isStrict, phasesOf, workflowOf } from './workflow.ts'
 import type { Group, NavState, Subagent, Warning } from './state.ts'
 
@@ -136,7 +137,7 @@ export function bandModel(s: NavState): BandModel {
     rows.push({ label: 'appetite', items: [
       c.appetite ?? '?', `tasks ${c.done}/${c.total}`,
       ...(c.groups.length ? [`groups ${c.groups.filter(g => g.total > 0 && g.done === g.total).length}/${c.groups.length}`] : []),
-      ...(r ? [`reviewers ${reviewers}/${r.reviewers + (r.ux?.extra_reviewers ?? 0)} this turn`] : []),
+      ...(r ? [`reviewers ${reviewers}/${(reviewQuota(s) ?? r.reviewers) + (r.ux?.extra_reviewers ?? 0)} this turn`] : []),
       ...(s.sessionTokens ? [`${tokens(s.sessionTokens)} tokens`] : []),
       ...(s.usd !== null ? [`$${s.usd.toFixed(2)}`] : []),
     ] })
