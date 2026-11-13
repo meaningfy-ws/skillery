@@ -24,20 +24,24 @@ design D-1, D-3).
 - **WHEN** a PLAN states an invariant on a stored value and its row lists the paths rename and replace
 - **THEN** the write-path column, which asks for create, update, replace, delete, bulk or import and internal paths, shows create missing before the PLAN is gated
 
-#### Scenario: An empty section
-- **WHEN** a PLAN's `## Invariants` heading has nothing under it
-- **THEN** the clarity gate's scorer reports the PLAN as incomplete
+#### Scenario: A PLAN with no invariant
+- **WHEN** `epic-planning` derives the PLAN of a change for which the interview recorded "None"
+- **THEN** the section holds the one line "None" with the reason, not an empty heading
 
 ### Requirement: Invariants reach the tester
 The adversarial tester's properties SHALL be traceable to the PLAN's invariants: for a PLAN with an
-`## Invariants` table, every invariant whose test is left to the tester SHALL appear among the
-properties the tester's report states. The tester's brief SHALL NOT be changed for this; the PLAN's
+`## Invariants` table, every invariant whose *Test* cell starts with `tester` SHALL appear among the
+properties the tester's report states. This EPIC SHALL NOT change the tester's brief; the PLAN's
 error matrix SHALL be named in the template as the tester's target list
 (activity-test-profiles DEC-5, DEC-7; design D-2, D-18).
 
 #### Scenario: Tracing one PLAN
-- **WHEN** the tester is dispatched on a PLAN whose table holds `INV-1` with the test "tester"
+- **WHEN** the tester is dispatched on a PLAN that changes code and whose table holds `INV-1` with a *Test* cell starting with `tester`
 - **THEN** its report states a property for `INV-1`, and the comparison is recorded in `evidence/invariants-trace.md`
+
+#### Scenario: A PLAN that leaves nothing to the tester
+- **WHEN** a PLAN's table has no *Test* cell starting with `tester`
+- **THEN** it does not count as the trace, and another PLAN is used
 
 ## MODIFIED Requirements
 

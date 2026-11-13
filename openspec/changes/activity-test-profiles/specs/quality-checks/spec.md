@@ -4,19 +4,20 @@
 ## ADDED Requirements
 
 ### Requirement: Vale's styles are pinned, never copied
-`quality/` SHALL hold Vale's configuration and a manifest of its external styles, each with its
-source, pinned version, licence and the reason it was picked, approved by the developer; the styles
-SHALL be fetched at their pin and no style rule file SHALL be committed. Only rules backed by a
-finding the developer marked worth fixing SHALL be enabled, and no Meaningfy-own rule SHALL be
-added (activity-test-profiles DEC-4, No-gos; harden-checks-and-tests DEC-6; design D-9).
+`quality/` SHALL hold Vale's configuration, its word lists and a manifest of its external styles,
+each with its source, pinned version, licence and the reason it was picked, approved by the
+developer; the styles SHALL be fetched at their pin and no style rule file SHALL be committed. Only
+rules backed by a finding the developer marked worth fixing SHALL be enabled, and no Meaningfy-own
+rule SHALL be added (activity-test-profiles DEC-4, No-gos; harden-checks-and-tests DEC-6; design
+D-9, D-11).
 
 #### Scenario: A style file committed
-- **WHEN** a file other than the manifest and the configuration is added under `quality/vale/`
+- **WHEN** a file other than the manifest, the configuration and the word lists is added under `quality/vale/`
 - **THEN** the local `make validate` fails, naming the file
 
 #### Scenario: A style without a licence
 - **WHEN** a manifest entry has no licence
-- **THEN** the developer does not approve it, and the style is not enabled
+- **THEN** the local `make validate` fails, naming the entry
 
 ### Requirement: Docs and stacks configurations
 `quality/` SHALL hold, for each one its stage adopted, an ls-lint configuration for docs trees, an
