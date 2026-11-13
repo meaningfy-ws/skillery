@@ -18,7 +18,7 @@
   *One discipline, stated once*; *A non-code activity uses the skill*).
 - [ ] 1.5 Add `purpose: quality` to `facets.yaml`; add `test-strategy` to `meaningfy-core` in
   `bundles.yaml` (D-6, DEC-7).
-- [ ] 1.6 `epic-delivery`: replace with pointers the definition in SKILL.md § *Verification and
+- [x] 1.6 `epic-delivery`: replace with pointers the definition in SKILL.md § *Verification and
   validation*, the intro of `references/verification-validation.md` and the V-model table; update
   its description and Boundary *Owns* (D-4; spec *Verification and validation are defined in
   test-strategy*).
@@ -71,7 +71,7 @@
 
 ## Roadmap
 
-- [x] 1.0 · [x] 1.1 · [x] 1.10 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [x] 1.7 · [ ] 1.8 · [ ] 1.9
+- [x] 1.0 · [x] 1.1 · [x] 1.10 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8 · [ ] 1.9
   · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 
 ## Verification

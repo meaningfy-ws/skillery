@@ -1,21 +1,8 @@
 # Verification and validation
 
-Every artefact is checked twice, in two different ways. Going down (shaping), each level is
-validated against the level above. Coming up (building), each artefact is verified against its own
-specification. Validation always ends with a person; an agent prepares the evidence and may
-recommend, but never validates on the developer's behalf.
-
-## The V-model table
-
-| Artefact | Validated against (right thing?) | Verified against (built right?) | When | Validation owned by |
-|---|---|---|---|---|
-| EPIC and PLAN | The need: the developer agrees the why, the appetite and the success measure | The clarity gate (≥ 9/10) | Shaping; before the first task | `epic-planning` |
-| Architecture (C4, ADRs) | The use cases and drivers: the walkthrough; spikes for risky assumptions | Each ADR's Confirmation as a check; the architecture-conformance review lens | Walkthrough before an ADR is accepted; conformance every stage | `architecture` |
-| Model | The domain: example instances, competency questions, the domain-expert review | The model's own checks and generated-code freshness | When the model changes, in shaping; every commit | `conceptual-modelling` |
-| Scenarios | What the developer wants: scenario sign-off *(provisional)* | The traceability check | Sign-off once per EPIC at the PLAN gate; traceability before each PR | `bdd-gherkin` |
-| Code | The EPIC's success measure: the acceptance demo | Tests, gates, the review lenses, the checker | Every task (verification); after the last stage (validation) | `epic-delivery` |
-| Docs | A reader can act on them: the cold reader, on a page whose type is how-to or tutorial | Snippets run; the docs gate; the L2 lens checks changed docs agree with the code | Every stage that changes a how-to or tutorial page; every task-oriented page of the docs stage | `technical-writing` |
-| The iteration | The validation review *(provisional)*: did each EPIC deliver its value, did each ADR hold | Every change archived, its specs merged | End of an iteration | `epic-delivery` |
+The definition of verification and validation and the matrix of what each artefact is checked
+against are owned by `test-strategy`. Validation always ends with a person; an agent prepares the
+evidence and may recommend, but never validates on the developer's behalf.
 
 The activities owned elsewhere are described in their skill. This skill owns two.
 
