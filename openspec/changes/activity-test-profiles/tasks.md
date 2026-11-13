@@ -19,44 +19,50 @@ of the first stage delivered (D-14).
 
 ## 1. Stage 1: documentation
 
-- [ ] 1.1 Preflight: R-A4, R-A5, R-B1, R-B2, R-B3, R-B5, R-B6, R-S1, appended to
+- [ ] 1.1 Preflight: R-A1 for `documentation.md`, R-A4, R-A5, R-B1, R-B2, R-B3, R-B5, R-B6, R-S1, appended to
   `evidence/preflight.md`.
 - [ ] 1.2 Copy every gap row of `documentation.md` into `evidence/survey-documentation.md` and run
   the survey searches (design § Algorithm, steps 2 and 3; D-5; spec *Each stage's failures come
   from a recorded survey*).
-- [ ] 1.3 Tool run: install Vale and ls-lint pinned into scratch; run Vale with the four candidate
+- [ ] 1.3 Tool run: install Vale and ls-lint pinned into scratch; first confirm Vale's three
+  layout facts of D-9 (a difference is a PLAN revision before 1.5); run Vale with the four candidate
   packages, and a docs ls-lint draft, on skillery's `docs/`; write `evidence/toolrun-vale.md` and
   `evidence/toolrun-ls-lint-docs.md` (D-8, D-9, D-10; spec *Each tool runs once on a real tree*).
-- [ ] 1.4 Owner round: failures seen, findings marked "would fix" or "noise", packages and rules
-  picked, any gap row naming B or D decided, the decision table confirmed; answers to
-  `inputs/qa.md` (D-7, D-9).
-- [ ] 1.5 *Fill only.* Add `documentation` to `CLOSED_FAMILIES` (red). Fixture pairs under
-  `quality/tests/`, red first; extend the meta-test to configurations and manifest entries; then
-  `quality/vale/` and `quality/ls-lint/docs.yml` as decided, and INV-3's test (D-11, D-12; spec
+- [ ] 1.4 Owner round, one call: failures seen; per tool, at most ten rules marked "would fix" or
+  "noise", which picks the packages and rules; any gap row naming B or D decided; the decision
+  table confirmed; a conditional scenario that no longer fits the recorded failure rewritten and
+  signed off; answers to `inputs/qa.md` (D-7, D-9, D-16).
+- [ ] 1.5 *Fill only.* With the pinned tools on `PATH`, so no test skips: fixture pairs under
+  `quality/tests/`, red first; the meta-test for configurations and manifest entries (extended
+  from B's, or written here, R-B2); then `quality/vale/`, its ignore entry and
+  `quality/ls-lint/docs.yml` as decided, and INV-3's test; keep each test's red and passed output
+  for the catch file (D-11, D-12; spec
   *Vale's styles are pinned, never copied*; *Docs and stacks configurations*).
 - [ ] 1.6 *Fill only.* `technical-writing` SKILL.md: the adopted checks as a step of the
   documentation workflow's `verify` row, and a short section naming for each the command against
-  the fetched `quality/`, when it runs, whether it blocks and its cost; the pointer line. Add each
+  the fetched `quality/`, when it runs, whether it blocks, its cost, and the one-line skip note for
+  a project that has not fetched `quality/`; the pointer line. Add each
   adopted tool to `dependencies.yaml` unless B did (D-6, D-13, D-21; spec *Documentation checks
   run in the verify phase*).
-- [ ] 1.7 Close: matrix edits in `documentation.md` and `inventory.md`; `documentation` in
-  `CLOSED_FAMILIES`, green; keep or delete the conditional requirements; for each fill a line in
-  `evidence/catch-documentation.md`; CHANGELOG line; `make bundles`, `make skill-inventory`,
+- [ ] 1.7 Close: add `documentation` to `CLOSED_FAMILIES` (red); matrix edits in
+  `documentation.md` and `inventory.md` until it is green; keep or delete the conditional requirements; for each fill a line in
+  `evidence/catch-documentation.md` with its red and passed test results; CHANGELOG line; `make bundles`, `make skill-inventory`,
   `make validate`, `openspec validate activity-test-profiles --strict` (D-12..D-16, D-21; spec *A
   family's gaps are filled from recorded failures or accepted*).
 - [ ] 1.8 Stage checker (a subagent that built nothing of the stage): the decision table against
-  the diff (INV-2), the evidence scrub (INV-4), the D-21 items; then one PR into `develop` naming
+  the diff (INV-2), the evidence scrub (INV-4), no skipped test behind a catch line (D-12), the D-21 items; then one PR into `develop` naming
   #212.
 
 ## 2. Stage 2: shaping
 
-- [ ] 2.1 Preflight: R-A4, R-A5, R-B4, R-S1. If R-B4 fails, stop and ask the developer (error
+- [ ] 2.1 Preflight: R-A1 for `shaping.md`, R-A4, R-A5, R-B4, R-S1. If R-B4 fails, stop and ask the developer (error
   matrix).
 - [ ] 2.2 Copy every gap row of `shaping.md` into `evidence/survey-shaping.md`; record #143 as
   `F-shaping-1`; run the survey searches for further failures.
 - [ ] 2.3 Owner round: failures seen, the decision table confirmed.
-- [ ] 2.4 Baseline, before any skill edit: the sample two-store EPIC planned by a fresh subagent
-  with today's `epic-planning`; record in `evidence/baseline-shaping.md` whether the create path is
+- [ ] 2.4 Baseline, before any skill edit: write the sample two-store EPIC to
+  `evidence/baseline-shaping-epic.md`; a fresh subagent derives its PLAN with today's
+  `epic-planning`; record in `evidence/baseline-shaping.md` whether the create path is
   named (D-21).
 - [ ] 2.5 Write `skills/epic-planning/references/invariants.md`: what an invariant is and is not,
   the write-path list, the #143 case replayed as in design § Algorithm (D-4, D-12).
@@ -68,7 +74,7 @@ of the first stage delivered (D-14).
   `schema.yaml`; `make bundles`; `tests/test_bundle_gen.py` green (D-1, D-2; spec *The PLAN records
   invariants*; *The EPIC and PLAN templates speak plain language*). Comment on #143: the columns
   delivered here, the `clarity-gate` item still open (D-3).
-- [ ] 2.8 Baseline, after: the same sample EPIC with the changed skill, a fresh subagent; add the
+- [ ] 2.8 Baseline, after: the same file with the changed skill, a fresh subagent; add the
   result to `evidence/baseline-shaping.md`. If the create path is still not named, revise 2.5 and
   2.6 and re-run (D-21).
 - [ ] 2.9 Close as 1.7, for `shaping.md` and `evidence/catch-shaping.md`; then the stage checker
@@ -76,7 +82,7 @@ of the first stage delivered (D-14).
 
 ## 3. Stage 3: DevOps
 
-- [ ] 3.1 Preflight: R-A4, R-A5, R-B1, R-B2, R-B3, R-B5, R-S1; a read-only checkout of
+- [ ] 3.1 Preflight: R-A1 for `devops.md`, R-A4, R-A5, R-B1, R-B2, R-B3, R-B5, R-S1; a read-only checkout of
   `infrastructure-stacks` is available; list its Makefiles, and `cloud-infrastructure`'s if it has
   none (D-8).
 - [ ] 3.2 Copy every gap row of `devops.md` into `evidence/survey-devops.md`; run the survey
@@ -85,13 +91,14 @@ of the first stage delivered (D-14).
   checkmake on the checkout, fix modes off; confirm with `git status` that the checkout is
   unchanged; write `evidence/toolrun-ls-lint-stacks.md` and `evidence/toolrun-checkmake.md`,
   scrubbed (D-8, D-10).
-- [ ] 3.4 Owner round: failures seen (the runbook question included), findings marked, the decision
-  table confirmed.
-- [ ] 3.5 *Fill only.* Add `devops` to `CLOSED_FAMILIES` (red). Fixture pairs, red first, covered by
-  the meta-test; then `quality/ls-lint/stacks.yml` and `quality/checkmake/stacks.ini` as decided
+- [ ] 3.4 Owner round, one call: failures seen (the runbook question included); per tool, at most
+  ten rules marked; the decision table confirmed; a conditional scenario that no longer fits the
+  recorded failure, or that the tool cannot express, rewritten and signed off (D-7, D-16).
+- [ ] 3.5 *Fill only.* With the pinned tools on `PATH`, so no test skips: fixture pairs, red first,
+  covered by the meta-test; then `quality/ls-lint/stacks.yml` and `quality/checkmake/stacks.ini` as decided
   (D-11, D-12).
 - [ ] 3.6 *Fill only.* For each adopted check, first the rule it encodes and why, then the check
-  with its three facts, under a subsection *Recommended checks*: the layout rule and ls-lint in
+  with its three facts and a pointer to #216, under a subsection *Recommended checks*: the layout rule and ls-lint in
   `stack-operations`' `references/stack-standard.md`; the Makefile rule and checkmake in
   `infrastructure-operations`' `references/repo-checks.md`, outside its MUST. A runbook check only
   if a runbook failure was recorded. Add each adopted tool to `dependencies.yaml` unless B did
@@ -102,29 +109,30 @@ of the first stage delivered (D-14).
 
 ## 4. Stage 4: architecture and modelling
 
-- [ ] 4.1 Preflight: R-A4.
+- [ ] 4.1 Preflight: R-A1 for `architecture.md` and `modelling.md`, R-A4.
 - [ ] 4.2 Copy every gap row of `architecture.md` and `modelling.md` into
   `evidence/survey-architecture-modelling.md`; run the survey searches.
 - [ ] 4.3 Owner round: failures seen, the decision table confirmed; for a `fill`, the capability
   and the scenarios of its new delta are signed off here (D-16).
-- [ ] 4.4 *Fill only.* Add the families to `CLOSED_FAMILIES` (red). Write the spec delta, then the
+- [ ] 4.4 *Fill only.* Write the spec delta, then the
   worked example, then the check in a reference file of the owning skill (D-12, D-16, D-17).
 - [ ] 4.5 Close as 1.7, for both family files and `evidence/catch-architecture-modelling.md`; then
   the stage checker and one PR as 1.8, naming the EPIC.
 
 ## 5. Stage 5: UI
 
-- [ ] 5.1 Preflight: R-A4.
-- [ ] 5.2 Copy every gap row of `ui.md` into `evidence/survey-ui.md`; run the survey searches.
+- [ ] 5.1 Preflight: R-A1 for `ui.md`.
+- [ ] 5.2 Copy every gap row of `ui.md` into `evidence/survey-ui.md`; run the survey searches;
+  record in the survey file the external design plugin skills installed in the session.
 - [ ] 5.3 Owner round: failures seen, the decision table confirmed. Each `accepted` reason names
-  the external design plugin skill that covers the question, where one does.
+  the external design plugin skill that covers the question, where the 5.2 record has one.
 - [ ] 5.4 *Fill only.* As 4.4.
 - [ ] 5.5 Close as 1.7, for `ui.md`; then the stage checker and one PR as 1.8, naming the EPIC.
 
 ## 6. Closing the EPIC
 
-- [ ] 6.1 The invariants trace: on the first PLAN that qualifies (D-18), dispatch the tester with
-  B's brief and write `evidence/invariants-trace.md`. If none has appeared when stages 1 to 5 are
+- [ ] 6.1 The invariants trace: on the first PLAN that qualifies (D-18), read the tester's report
+  from that EPIC's own delivery and write the comparison to `evidence/invariants-trace.md`. If none has appeared when stages 1 to 5 are
   closed, ask the developer: wait, or a sample PLAN (spec *Invariants reach the tester*).
 - [ ] 6.2 Check DEC-7's four proofs against the evidence folder and list them in
   `evidence/acceptance.md`: a catch file for each stage that filled, `CLOSED_FAMILIES` holding all
