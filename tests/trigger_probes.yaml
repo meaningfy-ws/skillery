@@ -77,6 +77,12 @@ probes:
     expect: bdd-gherkin
   - probe: "review this change against the cosmic-python layers before the PR"
     expect: meaningfy-code-review
+  # code-reviewer (D-13): several lenses in one dispatch only with the review set's or a recorded decision's authority.
+  - probe: "dispatch one code-reviewer for lenses L1 and L2 on this small stage, per D-3 under Delivery decisions"
+    expect: meaningfy-code-review
+  - probe: "how many reviewers does this small stage need, and record the decision in design.md"
+    expect: epic-delivery
+    near_miss_of: meaningfy-code-review
   - probe: "set up my Obsidian vault and connect it to Google Drive"
     expect: vault-setup
   - probe: "what properties does a meeting note in my vault need"

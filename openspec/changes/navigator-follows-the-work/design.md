@@ -322,3 +322,32 @@ A fresh subagent attacked the first draft; every finding is folded in above.
 ## Open Questions
 
 None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
+
+## Delivery decisions
+
+- **D-20 — The #148 PR is reviewed as a small stage.** 147 added lines (generated files aside), at
+  or under `small_stage.max_added_lines` (600); risk low (review counts, skill and agent text, one
+  template label; no change to what any lens checks). Two reviewers, L1+L2 and L3+L4+L5. Because
+  the installed `code-reviewer` still refuses several lenses until this PR ships, each pass is a
+  general-purpose reviewer loading `meaningfy-code-review`. The stage-1 branch records D-16..D-19
+  under this heading too; the two lists merge when both land.
+- **D-22 — #148 review (PR #201): accepted findings.** Two merged-lens passes, no critical finding.
+  1. *The small set is an allowance, not a ceiling* (both passes; spec `epic-delivery` "MAY",
+     D-12 "the lead's judgement"): over-spawn and strict's spawn decision keep the full set (plus
+     UX) as their ceiling; the band shows the small figure beside it when the stage qualifies.
+     `reviewQuota` returns one number for the ceiling (UX included), so callers stop re-reading
+     the review entry.
+  2. *Unknown is not small* (L2): `planAdded` is `null` until a plan read and after a change
+     switch; `null` never qualifies.
+  3. *One owner for the rule* (L5): the small-stage rule lives in `epic-delivery` SKILL.md;
+     `stage-loop.md`, `team-and-briefs.md`, `meaningfy-code-review` and `code-reviewer` point to
+     it in one line; the agent keeps only its accept/refuse test.
+  4. *Refusal text as the spec says* (L2, L4): "one lens required (L1–L5), or cite the recorded
+     decision that merges them"; the agent's and the feature's "one lens" wording updated.
+  5. *The appetite is checked* (L1): for a TINY/SMALL multi-lens brief the agent reads the
+     appetite from the change's `proposal.md`.
+  6. *Small fixes* (L4, L5): `small_stage` keys checked against an explicit list; the tests use
+     one constant for the default set. The navigator's added-line count includes generated files
+     (D-12 counts what `git diff` adds); the lead's figure in a `D-n` is that count.
+  Rejected: a probe aimed at the agent itself (the probe schema targets skills only; recorded,
+  not a gap of this change).
