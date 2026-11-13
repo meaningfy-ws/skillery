@@ -14,7 +14,7 @@
 - [ ] 1.4 Roots (D-2): pure `lib/root.ts` (decide re-root from toplevel and common; fall back when gone); `io.ts`/`register.tsx` gather the git facts, memoise per directory, re-root before `FileTouched` is computed, take a subagent's root from `session.cwd()` on its first call, make each edit relative to its agent's root, carry `root` across `SESSION_MOVES`, re-read workflows on re-root. Tests with 1.2b fixtures: worked example 1, steps 1–5; a subagent's write in its own worktree passes a file gate relative to it and leaves the lead's change alone
 - [ ] 1.5 Accept, validate, archive check, plan drift, `planHash` and the clean-tree check read and write in `state.root`; Accept and Archive check disabled on an archived change. Tests: Accept after a re-root targets the worktree's change
 - [ ] 1.6 Skill attribution (D-4, per 1.1): in-flight `Skill` calls, pending spawns, then the lead. Tests: TC-14, TC-14b, TC-14c; none of the subagent cases touch the lead's trail, workflow or gates
-- [ ] 1.7 Gherkin `tests/features/navigator-follows-the-work.feature`: the scenarios of `specs/session-navigation/spec.md` § *The navigator follows the worktree being worked* and `specs/drift-detection/spec.md` § *Deviations are recorded in the change*
+- [x] 1.7 Gherkin `tests/features/navigator-follows-the-work.feature`: the scenarios of `specs/session-navigation/spec.md` § *The navigator follows the worktree being worked* and `specs/drift-detection/spec.md` § *Deviations are recorded in the change*
 - [ ] 1.8 Stage gates: `make mods`, `make bundles`, `make validate`; review per the review set; merge into `develop`
 
 ## 2. Stage 2 — The phase follows what happens
@@ -51,7 +51,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [ ] 1.2 · [ ] 1.2b · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8
+- [x] 1.1 · [ ] 1.2 · [ ] 1.2b · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [x] 1.7 · [ ] 1.8
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 3.6 · [ ] 3.7 · [ ] 3.8
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5 · [ ] 4.6 · [ ] 4.7 · [ ] 4.8 · [ ] 4.9
