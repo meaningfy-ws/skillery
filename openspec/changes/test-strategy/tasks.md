@@ -8,10 +8,10 @@
   `evidence/acceptance.md` (D-11).
 - [x] 1.1 Confirm the branch is on current `develop`; re-read each spec delta against the live
   specs and fix any conflict (RISK-1).
-- [ ] 1.2 Write `skills/test-strategy/references/inventory.md`: every check in the catalogue with
+- [x] 1.2 Write `skills/test-strategy/references/inventory.md`: every check in the catalogue with
   its `CHK-<n>`, what it checks, owner file and moment (design § Algorithm; spec *The matrix covers
   every check the catalogue has*).
-- [ ] 1.3 Write the eight family files and `cross-cutting.md` with the D-2 table, moving the V-model
+- [x] 1.3 Write the eight family files and `cross-cutting.md` with the D-2 table, moving the V-model
   rows per D-10 (D-1, D-2, D-4; spec *Every activity family has a matrix*).
 - [ ] 1.4 Write `skills/test-strategy/SKILL.md`: the D-6 facets, the loop, the test definition, the
   questions and stances (D-3), reading the matrix, the LinkedIn Quick Start, Gotchas, Boundary (spec
@@ -71,7 +71,7 @@
 
 ## Roadmap
 
-- [x] 1.0 · [x] 1.1 · [x] 1.10 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8 · [x] 1.9
+- [x] 1.0 · [x] 1.1 · [x] 1.10 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [ ] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8 · [x] 1.9
   · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 
 ## Verification
