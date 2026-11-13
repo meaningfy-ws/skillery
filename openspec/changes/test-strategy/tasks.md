@@ -13,10 +13,10 @@
   every check the catalogue has*).
 - [x] 1.3 Write the eight family files and `cross-cutting.md` with the D-2 table, moving the V-model
   rows per D-10 (D-1, D-2, D-4; spec *Every activity family has a matrix*).
-- [ ] 1.4 Write `skills/test-strategy/SKILL.md`: the D-6 facets, the loop, the test definition, the
+- [x] 1.4 Write `skills/test-strategy/SKILL.md`: the D-6 facets, the loop, the test definition, the
   questions and stances (D-3), reading the matrix, the LinkedIn Quick Start, Gotchas, Boundary (spec
   *One discipline, stated once*; *A non-code activity uses the skill*).
-- [ ] 1.5 Add `purpose: quality` to `facets.yaml`; add `test-strategy` to `meaningfy-core` in
+- [x] 1.5 Add `purpose: quality` to `facets.yaml`; add `test-strategy` to `meaningfy-core` in
   `bundles.yaml` (D-6, DEC-7).
 - [x] 1.6 `epic-delivery`: replace with pointers the definition in SKILL.md § *Verification and
   validation*, the intro of `references/verification-validation.md` and the V-model table; update
@@ -71,7 +71,7 @@
 
 ## Roadmap
 
-- [x] 1.0 · [x] 1.1 · [x] 1.10 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [ ] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8 · [x] 1.9
+- [x] 1.0 · [x] 1.1 · [x] 1.10 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8 · [x] 1.9
   · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 
 ## Verification
