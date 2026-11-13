@@ -35,26 +35,26 @@
 - [x] 3.5 Status line (D-11): `no change for branch <b>`, `no repository`; `● strict` kept. Tests in `view.test.ts`
 - [x] 3.6 #188 lead band (D-14): Gherkin for `specs/workflow-definitions/spec.md` § *A lead session shows its workflow*, one scenario per default workflow naming a lead worker; a unit test per workflow that its lead's primary skill activates it
 - [x] 3.7 Integration check by hand, on the CLI and the desktop app: the band in a worktree session of a scratch repository, against `specs/session-navigation/spec.md` § *The band shows who runs what* and the live `openspec/specs/session-navigation/spec.md` § *Both Claude Code surfaces*; recorded in `evidence/band-check.md`
-- [ ] 3.8 Stage gates as 1.8
+- [x] 3.8 Stage gates as 1.8
 
 ## 4. Stage 4 — Review sized to the stage (#148) and close
 
 - [x] 4.1 `small_stage` (D-12): accepted and checked by `reviewError` in `lib/workflow.ts` and typed in `types.d.ts`; set in `epic-delivery.workflow.json` for MEDIUM and above; one `reviewQuota(state)` used by the band, `overspawn` (`lib/dispatch.ts`) and `decideSpawn` (`lib/strict.ts`). Tests: TC-15; a malformed `small_stage`
-- [ ] 4.2 `planHash` (D-15): the hash of `design.md` without `## Delivery decisions` replaces `planMtime` for skill-gate staleness (`lib/change.ts`, `gatesAfterPlan`). Correct the stale comment at `lib/change.ts:11`. Tests: a decision added there keeps the clarity gate; an edit elsewhere stales it
+- [x] 4.2 `planHash` (D-15): the hash of `design.md` without `## Delivery decisions` replaces `planMtime` for skill-gate staleness (`lib/change.ts`, `gatesAfterPlan`). Correct the stale comment at `lib/change.ts:11`. Tests: a decision added there keeps the clarity gate; an edit elsewhere stales it
 - [x] 4.3 `epic-delivery` SKILL.md and `references/` (stage-loop, team-and-briefs): point to `small_stage` and the `## Delivery decisions` record; no table restating the data
 - [x] 4.4 `meaningfy-code-review` SKILL.md: a combined pass for TINY and SMALL by the review set, and for a small stage by a recorded decision (D-13)
 - [x] 4.5 `agents/code-reviewer.md` (D-13): the brief rule; new description with trigger probes (`tests/trigger_probes.yaml`, one positive, one near-miss); Gherkin in `tests/features/agents/code-reviewer.feature`
 - [x] 4.6 `.github/ISSUE_TEMPLATE/defect.yml`: `labels: ["bug"]`
-- [ ] 4.7 Docs: `docs/environment/navigator.md` (the band, worktrees, release by command, a worked example), `docs/development/mods.md` (the state contract: root, agent entries), `docs/development/workflows.md` (`activate.commands`, `small_stage`, `## Delivery decisions`); CHANGELOG with a BREAKING (display) line; `make skill-inventory`
-- [ ] 4.8 The lawyer's live trial (#188, D-14): run `tests/features/agents/lawyer.feature`'s scenarios in the contract repository; file what is off through `skillery-feedback`; record the result in `evidence/lawyer-trial.md`
+- [x] 4.7 Docs: `docs/environment/navigator.md` (the band, worktrees, release by command, a worked example), `docs/development/mods.md` (the state contract: root, agent entries), `docs/development/workflows.md` (`activate.commands`, `small_stage`, `## Delivery decisions`); CHANGELOG with a BREAKING (display) line; `make skill-inventory`
+- [x] 4.8 The lawyer's live trial (#188, D-14): run `tests/features/agents/lawyer.feature`'s scenarios in the contract repository; file what is off through `skillery-feedback`; record the result in `evidence/lawyer-trial.md`
 - [ ] 4.9 Check the spec deltas against what was built; `openspec validate navigator-follows-the-work --strict`, `make validate`, `make validate-spine` green; review; PR into `develop`; close #185, #188, #148 on merge
 
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.2b · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
 - [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6
-- [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.5 · [x] 3.6 · [x] 3.7 · [ ] 3.8
-- [x] 4.1 · [ ] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5 · [x] 4.6 · [ ] 4.7 · [ ] 4.8 · [ ] 4.9
+- [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.5 · [x] 3.6 · [x] 3.7 · [x] 3.8
+- [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5 · [x] 4.6 · [x] 4.7 · [x] 4.8 · [ ] 4.9
 
 ## Verification
 

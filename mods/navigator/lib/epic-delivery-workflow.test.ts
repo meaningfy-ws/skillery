@@ -20,7 +20,7 @@ const id = () => `e${++n}`
 const ticked = ['## Stage 1 — Build', '- [x] 1.1 first', '- [x] 1.2 second', '- [x] 1.3 third', '',
   '## Stage 5 — Docs', '- D.1 write the docs', '', '## Close (not counted)', '- C.1 archive', ''].join('\n')
 const change = (over: Partial<Change> = {}): Change =>
-  ({ id: 'lean-delivery', appetite: 'LARGE', ...progress(ticked), planMtime: 0, hasDesign: true, hasTasks: true, archived: false, ...over })
+  ({ id: 'lean-delivery', appetite: 'LARGE', ...progress(ticked), planHash: '', hasDesign: true, hasTasks: true, archived: false, ...over })
 function run(...signals: Signal[]): NavState {
   return signals.reduce(reduce, reduce(EMPTY, { kind: 'Started', id: id(), sessionId: 's', band: 'folded', statusLine: true, interactive: true }))
 }

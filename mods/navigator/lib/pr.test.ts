@@ -4,7 +4,7 @@ import { prSignal, shouldAskGh, type PrOutcome } from './pr.ts'
 import { EMPTY, type Change, type NavState } from './state.ts'
 
 const change = (done: number, total: number): Change =>
-  ({ id: 'x', appetite: 'MEDIUM', done, total, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false })
+  ({ id: 'x', appetite: 'MEDIUM', done, total, groups: [], planHash: '', hasDesign: true, hasTasks: true, archived: false })
 const asking = (c: Change | null, mergedBranches: string[] = [], root: NavState['root'] = { path: '/r', common: '/r/.git', branch: 'b' }) =>
   shouldAskGh({ ...EMPTY, root, change: c, mergedBranches })
 

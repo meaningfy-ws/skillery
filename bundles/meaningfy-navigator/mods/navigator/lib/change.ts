@@ -7,7 +7,7 @@ export type ChangeFiles = {
   proposal: string
   tasks: string | null
   design: boolean
-  planMtime: number // newest mtime of design.md and tasks.md, 0 if neither
+  planHash: string // planHash of design.md (D-15), '' if none; ticking a task is not a PLAN change (DD-38)
 }
 
 /** The appetite names are the epic-delivery workflow's `reviews` keys; the mod holds no list. */
@@ -86,7 +86,7 @@ export function matchArchived(branch: string, archived: string[], lastChangeId: 
 }
 
 const toChange = (c: ChangeFiles, id: string, appetites: string[], archived: boolean): Change =>
-  ({ id, appetite: appetiteOf(c.proposal, appetites), ...progress(c.tasks), planMtime: c.planMtime,
+  ({ id, appetite: appetiteOf(c.proposal, appetites), ...progress(c.tasks), planHash: c.planHash,
     hasDesign: c.design, hasTasks: c.tasks !== null, archived })
 
 /** The branch's change: an open one it names, else the archived one it just followed; else none (D-3). */

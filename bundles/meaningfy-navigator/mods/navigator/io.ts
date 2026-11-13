@@ -8,6 +8,7 @@ import { appetitesOf, archivedFolders, readChange, type ChangeFiles } from './li
 import { ARCHIVE_DIR, acceptTarget, appendDeviation, archiveCheck, archivedRefusal, parseDeviations } from './lib/deviations.ts'
 import { PR_TIMEOUT_MS, prSignal, prViewArgs, shouldAskGh, type PrOutcome } from './lib/pr.ts'
 import { parseDiffAdded, parseStatus, planDrift } from './lib/plan-drift.ts'
+import { planHash } from './lib/plan-hash.ts'
 import { decideFallback, decideRoot, dirOf, editRoot, needsRoot, parseRevParse, rebranched, relativeTo, startRoot,
   type Tree } from './lib/root.ts'
 import { EMPTY, reduce, revive, type BandDisplay, type NavState, type Root, type Settings, type Signal } from './lib/state.ts'
@@ -178,8 +179,8 @@ async function changeFolder($: EngineInterface, dir: string, name: string): Prom
     proposal: await $.fs.read(`${dir}/${name}/proposal.md`),
     tasks: has('tasks.md') ? await $.fs.read(`${dir}/${name}/tasks.md`) : null,
     design: !!has('design.md'),
-    // Ticking a box is not a PLAN change: only design.md stales a skill gate (DD-38).
-    planMtime: files.find(f => f.name === 'design.md')?.mtimeMs ?? 0,
+    // Ticking a box is not a PLAN change: only design.md stales a skill gate (DD-38, D-15).
+    planHash: planHash(has('design.md') ? await $.fs.read(`${dir}/${name}/design.md`) : null),
   }
 }
 

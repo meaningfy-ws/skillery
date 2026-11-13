@@ -21,7 +21,7 @@ const applying = (): NavState => run(
   { kind: 'WorkflowsRead', id: `w${++n}`, workflows: epicDelivery, errors: [], mode: 'loose', at: 1 },
   { kind: 'ChangeRead', id: `c${++n}`, change: change0, openChanges: 1, at: 2 })
 const change = { id: 'c', appetite: 'MEDIUM', done: 0, total: 2, groups: [{ title: '3. Stage 3 — Dump and restore', done: 0, total: 2 }],
-  planMtime: 0, hasDesign: true, hasTasks: true, archived: false }
+  planHash: '', hasDesign: true, hasTasks: true, archived: false }
 const root = { path: '/home/lps/work/r', common: '/home/lps/work/r/.git', branch: 'feature/c' }
 const change0 = { ...change, done: 1, groups: [] } // partly ticked: epic-delivery places it in apply
 

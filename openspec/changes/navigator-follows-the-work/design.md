@@ -484,3 +484,11 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
   config keys and agent ids inside hygiene and dispatch messages (stage 1's wording, out of this
   stage; a follow-up issue); renaming the `appetite` row and the action buttons (the specs name
   them).
+- **D-28 — The close: `planHash` and the waived trials.** `planHash` is an FNV-1a hash of
+  `design.md` without its `## Delivery decisions` section; `tasks.md` is not in it (a tick is not a
+  PLAN change, as `planMtime` already held). An ok skill gate goes stale when the same change's
+  hash differs from the previous read's; a first read, a hand-off or a stored change without a hash
+  stales nothing. Known limit: a gate passed between an edit and the next read is staled by that
+  read. The hash lives on `state.change`, which already revives. The band check (3.7) and the
+  lawyer's trial (4.8) are waived by the owner (`evidence/band-check.md`,
+  `evidence/lawyer-trial.md`).

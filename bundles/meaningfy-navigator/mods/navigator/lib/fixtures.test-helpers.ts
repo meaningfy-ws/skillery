@@ -7,7 +7,7 @@ const PROPOSAL = '## Appetite\n\nSMALL — one stage.\n'
 
 /** An open change; `tasks` null is a change still being shaped. */
 export const changeFiles = (id: string, tasks: string | null = '## 1. One\n- [ ] 1.1 a\n', design = tasks !== null): ChangeFiles =>
-  ({ id, proposal: PROPOSAL, tasks, design, planMtime: 0 })
+  ({ id, proposal: PROPOSAL, tasks, design, planHash: '' })
 
 /** Several open changes, one of them without tasks. */
 export const OPEN_CHANGES: ChangeFiles[] = [

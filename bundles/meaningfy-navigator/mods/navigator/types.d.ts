@@ -11,7 +11,7 @@ export type Change = {
   done: number
   total: number
   groups: Group[]
-  planMtime: number
+  planHash: string // hash of design.md without its Delivery decisions (D-15); '' if none
   hasDesign: boolean
   hasTasks: boolean
   archived: boolean // the change just archived, still followed (D-3)
