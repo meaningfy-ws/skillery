@@ -163,3 +163,5 @@ scripts; the pure subsets; the reasoning patterns; rules from text; and competen
 
 **Related:** `conceptual-modelling` and `linkml-engineering` cite this skill for competency
 questions; `bdd-gherkin` and `clarity-gate` when the rules come from a text.
+
+Answers `VAL, VER, ADQ, ROB, CLR` in `test-strategy`'s matrix (`references/modelling.md`).

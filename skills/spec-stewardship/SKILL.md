@@ -84,3 +84,5 @@ merge, grooming the durable store, brownfield delta conventions, and the orienta
 conventions → OpenSpec and the `meaningfy` schema; implementation → external `implementer`/TDD;
 scoring the PLAN → `clarity-gate`.
 **Related:** `epic-planning`, `epic-delivery`, `clarity-gate`, `bdd-gherkin`.
+
+Answers `VAL, VER` in `test-strategy`'s matrix (`references/shaping.md`, `references/cross-cutting.md`).

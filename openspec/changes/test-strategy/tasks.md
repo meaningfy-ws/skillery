@@ -26,7 +26,7 @@
   fixture prose and TDD/BDD loop to wiring plus pointers; fix the two D-7 `tdd-loop` hits that name
   no owner (`testing-setup.md:102`, `CONTRIBUTING.md.tmpl:39`) so each names
   `test-driven-development` or drops the phrase (DEC-9; spec *The test-data rule has one home*).
-- [ ] 1.8 Add the D-8 pointer line to each technique owner the inventory names.
+- [x] 1.8 Add the D-8 pointer line to each technique owner the inventory names.
 - [x] 1.9 Add `test-strategy` to the `served_by` of UC-W18, UC-W19, UC-W20, UC-W6, UC-W17, UC-W24,
   UC-W8 and UC-W16 (D-11 table).
 - [x] 1.10 Write `tests/test_test_strategy.py` (D-7: ids, six questions per family, one-home
@@ -71,7 +71,7 @@
 
 ## Roadmap
 
-- [x] 1.0 · [x] 1.1 · [x] 1.10 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8 · [x] 1.9
+- [x] 1.0 · [x] 1.1 · [x] 1.10 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9
   · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 
 ## Verification

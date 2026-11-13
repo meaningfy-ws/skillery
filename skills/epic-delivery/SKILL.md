@@ -192,3 +192,5 @@ validation, the questions and the matrix → `test-strategy`.
 
 **Related:** `epic-planning` (shapes the EPIC and derives the PLAN this skill delivers),
 `clarity-gate` (the PLAN gate), `meaningfy-git-workflow` (commit body and PR mechanics).
+
+Answers `VAL, VER, ADQ, ROB, RSK` in `test-strategy`'s matrix (`references/software.md`, `references/shaping.md`, `references/cross-cutting.md`).

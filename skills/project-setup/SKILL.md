@@ -189,3 +189,5 @@ stewardship → `epic-planning` and the spine; doc prose → `technical-writing`
 scaffolds), `meaningfy-release` (the release workflow a scaffolded repo adopts), `linkml-engineering`
 (its gates and per-module layout, when the project uses LinkML), and the external `superpowers` and
 `stream-coding` skills.
+
+Answers `VER, ADQ` in `test-strategy`'s matrix (`references/software.md`).

@@ -251,3 +251,5 @@ structure, the decision card for asynchronous decision requests, and applying th
 See also `clarity-gate` for checking that a spec or EPIC is ready; it judges readiness, not persuasion.
 
 **Related:** `meaningfy-voice`, `proposal-writing`, `sales-operations`, `sales-pipeline-custody`, `sales-accounts`, `sales-conversations` (they ask through the decision card), `decision-package`, `semantic-consulting-coach`, `technical-writing`, `explanatory-writing`, `writing-antipatterns` (Decision/Decision-record genre failure modes).
+
+Answers `VAL, CLR` in `test-strategy`'s matrix (`references/generic-writing.md`).

@@ -128,3 +128,5 @@ four-eyes rule and break-glass; the secret-flow, offboarding and bastion-users t
 
 **Related:** `infrastructure-operations`, `stack-operations`, `service-reliability`,
 `meaningfy-release`, `guardrails`, `ci-cd-delivery` (where the image build and its scan job live).
+
+Answers `RSK` in `test-strategy`'s matrix (`references/devops.md`).

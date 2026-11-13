@@ -155,3 +155,5 @@ usage monitoring, grooming and forgetting → `rule-steward`.
 **Related:** `rule-learner`, `rule-steward`, and, when the vault-assistant bundle is installed,
 `vault-conventions` (where a note goes, the required properties of every kind, the move procedure)
 and `vault-setup`.
+
+Answers `VER, CLR` in `test-strategy`'s matrix (`references/cross-cutting.md`).

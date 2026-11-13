@@ -119,6 +119,8 @@ one-way, since shaping an EPIC needs no estimate.
 
 **Related:** `proposal-writing`, `decision-package`, `sales-qualification`, `sales-conversations` (cite this skill for any price in a draft).
 
+Answers `VER, RSK` in `test-strategy`'s matrix (`references/generic-writing.md`).
+
 ## Tone & style
 
 British English. Terse and numeric. Every number traces to a leaf, an assumption, and a technique; no
