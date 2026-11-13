@@ -25,7 +25,7 @@ loading that lead's primary skill (named-workers D-15; navigator-follows-the-wor
 
 #### Scenario: A lead session
 - **WHEN** a session runs a lead worker that owns a default workflow and the lead loads its primary skill
-- **THEN** the band shows that workflow and its first phase
+- **THEN** the band shows that workflow and a phase of it (the phase the workflow opens in, D-27)
 
 ## MODIFIED Requirements
 

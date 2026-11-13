@@ -211,7 +211,7 @@ lead's root.
 
 ```
 apply · 3 Dump and restore 0/2 · Task 3.1 dump and restore → implementer (4m)
-next: /opsx:apply                                                    [Next step]
+next: /superpowers:test-driven-development                           [Next step]
 ⚠ 2 warnings · clarity-gate has not run since its inputs changed      [Details] [Hide]
 ```
 
