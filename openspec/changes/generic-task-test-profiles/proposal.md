@@ -2,12 +2,14 @@
      EPIC D of four: A test-strategy → B harden-checks-and-tests → C activity-test-profiles → D
      (this). Not yet readiness-checked; PLAN not derived. It is derived when its epic session
      starts, after A is delivered; it does not depend on B or C. Readiness-checked 2026-11-13; the
-     fixes and the owner's second round (Q-7..Q-9) are folded in. -->
+     fixes and the owner's second round (Q-7..Q-9) are folded in. PLAN derived 2026-11-14 from A's
+     gated design, before A's delivery. The owner's third round (Q-10..Q-13) amended two statements,
+     logged as DEC-8 and DEC-9: Capabilities and Impact below follow them. No earlier DEC changed. -->
 
 # EPIC: generic task test profiles
 
 **Parents:** EPIC A [`test-strategy`](../test-strategy/proposal.md) (the loop, the adversary stance
-and the `generic-writing` rows this EPIC fills); the owner's requests of 2026-11-13
+and the `generic-writing` rows this EPIC fills); the owner's requests of 2026-11-13 and 2026-11-14
 (`inputs/seed.md`, `inputs/qa.md`).
 
 ## Appetite
@@ -80,6 +82,13 @@ A failed criterion sends the work back to the draft. Each owning skill says what
   risk: client-confidential text passes through reader subagents; they run in the same session
   with the same permissions and send nothing outside. The third mitigated risk of Q-6, external
   styles and tools that change, belongs to C (its DEC-8).
+- **DEC-8** (added 2026-11-14, Q-10): posts get a capability of their own, `company-voice`, for
+  `meaningfy-voice` and its channel profiles — rejected: a second requirement in the
+  `test-strategy` delta. This replaces "New Capabilities: none".
+- **DEC-9** (added 2026-11-14, Q-11): `proposal-writer` and `sales-agent` gain the `Agent` tool so
+  each can start its own reader — rejected: no agent file change, with the reader run by the
+  calling session; the tool for `sales-agent` only. This replaces "no agent file changes". What a
+  scheduled run does is still unchanged (DEC-4); no new agent is added.
 
 ## Rabbit-holes
 
@@ -114,11 +123,14 @@ A failed criterion sends the work back to the draft. Each owning skill says what
   attacks.
 - `test-strategy`: the `generic-writing` rows for `VAL` and `ROB` become `exists`.
 - Trigger probes for each description that changes; three agent scenarios under `tests/features/`.
+- `agents/proposal-writer.md`, `agents/sales-agent.md`: the `Agent` tool and the `guardrails` skill
+  (DEC-9).
 
 ## Capabilities
 
 ### New Capabilities
-<!-- None: every change lands in an existing capability. -->
+- `company-voice`: the post profile in `meaningfy-voice`'s LinkedIn and blog channels, and the
+  trigger that finds it (DEC-8).
 
 ### Modified Capabilities
 - `test-strategy`: the `generic-writing` rows.
@@ -127,13 +139,12 @@ A failed criterion sends the work back to the draft. Each owning skill says what
 - `executive-communication`: the message profile.
 - `sales-method-ownership`: a requirement that the offer profile is owned by `proposal-writing`,
   and the sales-message profile by `sales-conversations`.
-- Posts have no capability of their own today; the PLAN places their requirement (with
-  `meaningfy-voice`'s channel) when it is derived.
 
 ## Impact
 
 - Skills: `guardrails`, `proposal-writing`, `contract-practice`, `meaningfy-voice`,
   `executive-communication`, `sales-conversations`, `test-strategy`.
 - Agents that write such pieces (`proposal-writer`, `lawyer`, `sales-agent`) follow the profile
-  through their skills; no agent file changes, and each gets a scenario.
+  through their skills, and each gets a scenario. `proposal-writer` and `sales-agent` change
+  (DEC-9); `lawyer` does not.
 - Order: after A. Independent of B and C.
