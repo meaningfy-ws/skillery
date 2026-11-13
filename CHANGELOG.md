@@ -11,6 +11,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.14.0] - 2026-11-13
+
 ### Added
 
 - `meaningfy-navigator` follows the worktree you work in (#185): when Claude edits a file in
