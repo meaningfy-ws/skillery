@@ -14,7 +14,8 @@ capabilities `epic-delivery` (the adversarial tester and the review sets), `code
 
 ## Appetite
 
-**LARGE**, in stages. Several related capabilities change together (static rules, test strength,
+**VERY LARGE**, in stages (the owner's call, 2026-11-13, after the readiness check found the
+scope beyond LARGE). Several related capabilities change together (static rules, test strength,
 the import-linter review), a new artifact type and top-level folder appear, and the tester's
 boundary moves from LARGE to MEDIUM. If encoding the catalogue needs new catalogue entries (DDD,
 TDD, fixtures), that is the follow-up EPIC, not this one (Q-18).

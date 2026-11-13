@@ -65,3 +65,9 @@ their techniques, workflows own when and who. The bet became HUGE and was split:
 | D | `generic-task-test-profiles` | Seeded |
 
 The owner's words and the rest of round 6 are in `../../test-strategy/inputs/seed.md`.
+
+## Round 7: after the readiness check
+
+| # | Question | Answer |
+|---|---|---|
+| Q-19 | B's appetite: VERY LARGE, or LARGE with mutmut and the import review cut out? | "okay go for very large, for B" |
