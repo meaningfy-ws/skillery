@@ -4,7 +4,7 @@
 
 ## 1. Stage 1: the skill, the matrix and the moves
 
-- [ ] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
+- [x] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
   `evidence/acceptance.md` (D-11).
 - [ ] 1.1 Confirm the branch is on current `develop`; re-read each spec delta against the live
   specs and fix any conflict (RISK-1).
@@ -71,7 +71,7 @@
 
 ## Roadmap
 
-- [ ] 1.0 · [ ] 1.1 · [ ] 1.10 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
+- [x] 1.0 · [ ] 1.1 · [ ] 1.10 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
   · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 
 ## Verification
