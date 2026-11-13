@@ -15,10 +15,11 @@ const MAIN = rootOf(GIT.main)
 const INSIDE = rootOf(GIT.inside)
 
 const agent = (agentId: string, over: Partial<Subagent> = {}): Subagent =>
-  ({ agentId, toolUseId: '', type: 't', model: 'm', description: '', startedAt: 1, tokens: 0, done: false, root: null, skills: [], ...over })
+  ({ agentId, toolUseId: '', type: 't', model: 'm', description: '', startedAt: 1, tokens: 0, done: false, rootPath: null, skills: [], ...over })
 const withState = (over: Partial<NavState>): NavState => ({ ...EMPTY, ...over })
 let n = 0
-const send = (s: NavState, sig: Omit<Signal, 'id'> & { id?: string }): NavState => reduce(s, { id: `t${n++}`, ...sig } as Signal)
+type Sent = Signal extends infer S ? (S extends Signal ? Omit<S, 'id'> & { id?: string } : never) : never
+const send = (s: NavState, sig: Sent): NavState => reduce(s, { id: `t${n++}`, ...sig } as Signal)
 
 // ------------------------------------------------------------------ matchOpen
 
@@ -97,7 +98,7 @@ test('DEFECT decideRoot: the same working tree with a trailing slash is a re-roo
 
 test('PIN decideRoot/decideFallback/startRoot basics', () => {
   assert.equal(decideRoot(null, null), null)
-  assert.deepEqual(decideRoot(null, rootOf(GIT.other)), rootOf(GIT.other)) // no root yet: any repo is followed
+  assert.equal(decideRoot(null, rootOf(GIT.other)), null) // no root: an edit adopts nothing (D-21.3)
   assert.equal(decideRoot(MAIN, rootOf(GIT.other)), null)
   assert.equal(decideFallback(INSIDE, false, INSIDE), null)
   assert.equal(decideFallback(INSIDE, false, null), null)
@@ -137,10 +138,11 @@ test('PIN editRoot: a subagent not yet rooted (or unlisted) falls back to the le
 
 // ------------------------------------------------------------------ reducer: RootFollowed / AgentRooted
 
-test('PIN RootFollowed: same path is a no-op even with another id; a different path replaces; same id replays', () => {
+test('PIN RootFollowed: same path and branch is a no-op; a new branch updates it (D-21.1); a different path replaces; same id replays', () => {
   const s1 = send(EMPTY, { kind: 'RootFollowed', id: 'r1', root: MAIN })
+  assert.equal(send(s1, { kind: 'RootFollowed', id: 'r1b', root: { ...MAIN } }).root, s1.root)
   const s2 = send(s1, { kind: 'RootFollowed', id: 'r2', root: { ...MAIN, branch: 'other' } })
-  assert.equal(s2.root?.branch, 'develop')
+  assert.equal(s2.root?.branch, 'other')
   const s3 = send(s2, { kind: 'RootFollowed', id: 'r3', root: INSIDE })
   assert.equal(s3.root, INSIDE)
   assert.equal(send(s3, { kind: 'RootFollowed', id: 'r3', root: MAIN }), s3) // seen id
@@ -150,19 +152,19 @@ test('PIN AgentRooted before SubagentSpawned is lost, and the subagent is then r
   const early = send(EMPTY, { kind: 'AgentRooted', agentId: 'a1', root: '/w' })
   assert.equal(early.subagents.length, 0)
   const listed = send(early, { kind: 'SubagentSpawned', agentId: 'a1', type: 't', model: 'm', description: '', at: 1 })
-  assert.equal(listed.subagents[0]?.root, null)
+  assert.equal(listed.subagents[0]?.rootPath, null)
   assert.equal(needsRoot(listed, 'a1'), true)
 })
 
 test('PIN AgentRooted: same id twice is applied once, a later id re-roots the agent', () => {
   const s = withState({ subagents: [agent('a1')] })
   const a = send(s, { kind: 'AgentRooted', id: 'rooted:a1', agentId: 'a1', root: '/w1' })
-  assert.equal(send(a, { kind: 'AgentRooted', id: 'rooted:a1', agentId: 'a1', root: '/w2' }).subagents[0]?.root, '/w1')
+  assert.equal(send(a, { kind: 'AgentRooted', id: 'rooted:a1', agentId: 'a1', root: '/w2' }).subagents[0]?.rootPath, '/w1')
 })
 
 // ------------------------------------------------------------------ creditSkill / SkillLoaded
 
-const call = (toolUseId: string, name: string, agentId: string | null, at: number) => ({ toolUseId, name, agentId, at })
+const call = (toolUseId: string, name: string, agentId: string | null, at: number) => ({ toolUseId, name, agentId, at, loaded: false })
 
 test('PIN creditSkill: a finished subagent is never a preload; a denied/unresolved spawn is the last resort before the lead', () => {
   const done = withState({ subagents: [agent('a1', { done: true })] })
@@ -255,8 +257,9 @@ test('PIN acceptTarget: no change or no root is the session; archived wins even 
   const archived = { ...change, archived: true }
   assert.deepEqual(acceptTarget(withState({ root: MAIN, change: null })), { kind: 'session' })
   assert.deepEqual(acceptTarget(withState({ root: null, change })), { kind: 'session' })
-  assert.deepEqual(acceptTarget(withState({ root: null, change: archived })), { kind: 'archived' })
-  assert.deepEqual(acceptTarget(withState({ root: INSIDE, change: archived })), { kind: 'archived' })
+  const refused = { kind: 'archived', refusal: 'Navigator: nav is archived; there is nothing to accept or check.' } // D-21.5
+  assert.deepEqual(acceptTarget(withState({ root: null, change: archived })), refused)
+  assert.deepEqual(acceptTarget(withState({ root: INSIDE, change: archived })), refused)
   assert.deepEqual(acceptTarget(withState({ root: INSIDE, change })), { kind: 'file', path: '/r/.claude/worktrees/tdr/openspec/changes/nav/deviations.md' })
 })
 

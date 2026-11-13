@@ -55,10 +55,10 @@ export function progress(tasks: string | null): { done: number; total: number; g
   }
 }
 
-/** Where `id` occurs in `branch` bounded by the start, the end, `/` or `-` on both sides; -1 if it does not (D-3). */
+/** Where `id` last occurs in `branch` bounded by the start, the end, `/` or `-` on both sides; -1 if it does not (D-3, D-21.10). */
 function boundedAt(branch: string, id: string): number {
-  const m = new RegExp(`(^|[/-])${escape(id)}([/-]|$)`).exec(branch)
-  return m ? m.index + m[1]!.length : -1
+  const last = [...branch.matchAll(new RegExp(`(^|[/-])${escape(id)}(?=[/-]|$)`, 'g'))].at(-1)
+  return last ? last.index + last[1]!.length : -1
 }
 
 /** The open change id a branch names: the longest, on a tie the one named later, then alphabetical.
@@ -75,10 +75,11 @@ const ARCHIVE_DATE = /^\d{4}-\d{2}-\d{2}-/
 export const archivedFolders = (names: string[], lastChangeId: string | null): string[] =>
   lastChangeId ? names.filter(f => f.replace(ARCHIVE_DATE, '') === lastChangeId) : []
 
-/** The archived folder (`<date>-<id>`) of the change just archived: only `lastChangeId`, and only when the branch names it. */
+/** The archived folder (`<date>-<id>`) of the change just archived: only `lastChangeId`, and only when the branch names it.
+ *  Archived twice, the newest folder (the date sorts it). */
 export function matchArchived(branch: string, archived: string[], lastChangeId: string | null): string | null {
   if (!lastChangeId || boundedAt(branch, lastChangeId) < 0) return null
-  return archivedFolders(archived, lastChangeId)[0] ?? null
+  return archivedFolders(archived, lastChangeId).sort().at(-1) ?? null
 }
 
 const toChange = (c: ChangeFiles, id: string, appetites: string[], archived: boolean): Change =>

@@ -154,7 +154,7 @@ const spawned = (agentId: string) =>
 test('D-1 a new atom has no root, no last change, nothing merged, no calls in flight', () => {
   assert.deepEqual([EMPTY.root, EMPTY.lastChangeId, EMPTY.mergedBranches, EMPTY.skillCalls, EMPTY.pendingSpawns],
     [null, null, [], [], []])
-  assert.deepEqual([spawned('a1')].map(sg => reduce(started(), sg).subagents[0]).map(a => [a?.root, a?.skills]), [[null, []]])
+  assert.deepEqual([spawned('a1')].map(sg => reduce(started(), sg).subagents[0]).map(a => [a?.rootPath, a?.skills]), [[null, []]])
 })
 
 test('RootFollowed sets the lead root; to the current root it changes nothing', () => {
@@ -182,7 +182,7 @@ test('ChangeRead keeps lastChangeId at the id of the change read, null when none
 test('AgentRooted sets that subagent root only; idempotent per agent', () => {
   let s = reduce(reduce(started(), spawned('a1')), spawned('a2'))
   s = reduce(s, { kind: 'AgentRooted', id: 'rooted:a1', agentId: 'a1', root: '/r-tdr' })
-  assert.deepEqual(s.subagents.map(a => [a.agentId, a.root]), [['a1', '/r-tdr'], ['a2', null]])
+  assert.deepEqual(s.subagents.map(a => [a.agentId, a.rootPath]), [['a1', '/r-tdr'], ['a2', null]])
   assert.equal(reduce(s, { kind: 'AgentRooted', id: 'rooted:a1', agentId: 'a1', root: '/elsewhere' }), s)
 })
 
@@ -195,8 +195,8 @@ test('SkillCallStarted adds an in-flight call; SkillCallEnded removes it by tool
   let s = reduce(started(), { kind: 'SkillCallStarted', id: 'c1', toolUseId: 'tu1', name: 'clarity-gate', agentId: null, at: 1 })
   s = reduce(s, { kind: 'SkillCallStarted', id: 'c2', toolUseId: 'tu2', name: 'clarity-gate', agentId: 'a1', at: 2 })
   assert.deepEqual(s.skillCalls, [
-    { toolUseId: 'tu1', name: 'clarity-gate', agentId: null, at: 1 },
-    { toolUseId: 'tu2', name: 'clarity-gate', agentId: 'a1', at: 2 }])
+    { toolUseId: 'tu1', name: 'clarity-gate', agentId: null, at: 1, loaded: false },
+    { toolUseId: 'tu2', name: 'clarity-gate', agentId: 'a1', at: 2, loaded: false }])
   s = reduce(s, { kind: 'SkillCallEnded', id: 'e1', toolUseId: 'tu1' })
   assert.deepEqual(s.skillCalls.map(c => c.toolUseId), ['tu2'])
   assert.equal(reduce(s, { kind: 'SkillCallEnded', id: 'e2', toolUseId: 'unknown' }).skillCalls.length, 1)

@@ -49,8 +49,8 @@ test('an edit in no repository, or in the followed root itself, changes nothing'
   assert.equal(decideRoot(INSIDE, INSIDE), null)
 })
 
-test('a session that started outside any repository follows its first repository edit', () => {
-  assert.deepEqual(decideRoot(null, MAIN), MAIN)
+test('D-21.3 a session with no root never adopts a repository from an edit', () => {
+  assert.equal(decideRoot(null, MAIN), null)
 })
 
 // ---------------------------------------------------------------- fallback and carry

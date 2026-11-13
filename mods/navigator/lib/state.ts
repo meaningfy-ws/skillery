@@ -1,7 +1,7 @@
 // The state contract (design §3). reduce() is the only writer; every function here is pure.
 
 import type { BandDisplay, Change, NavState, Root, Warning, Workflow } from '../types'
-import { creditSkill } from './attribution.ts'
+import { creditLoad, placeholderAgent, withSkill } from './attribution.ts'
 import { lean } from './lean.ts'
 import { navigate } from './phase.ts'
 import { addWarnings, clearGateWarnings, gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, onCommand,
@@ -101,15 +101,40 @@ export type Signal =
 
 const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v)
 
-/** Load a stored state of any earlier shape: new fields, and fields of the wrong type, take their
- *  defaults; unknown fields of a later version are kept. */
+/** What a field that defaults to null holds otherwise; `thresholds` is unparsed, so anything. */
+const NULLABLE: Record<string, string | undefined> = { change: 'object', root: 'object', lastChangeId: 'string',
+  workflow: 'string', variant: 'string', phase: 'string', signalPhase: 'string', pending: 'string', usd: 'number' }
+
+const isObject = (v: unknown): v is Record<string, unknown> => kindOf(v) === 'object'
+const strings = (v: unknown): string[] => (Array.isArray(v) ? v : [])
+
+/** Whether a stored value has the shape of the default: the same kind, or for a null default the kind it holds. */
+function fits(k: string, v: unknown, d: unknown): boolean {
+  if (d !== null) return kindOf(v) === kindOf(d)
+  if (k === 'thresholds' || v === null) return true
+  if (k === 'root') return isObject(v) && typeof v['path'] === 'string' && typeof v['common'] === 'string' && typeof v['branch'] === 'string'
+  return kindOf(v) === NULLABLE[k]
+}
+
+/** Entries of an older atom get the fields added since: a stored subagent without `skills` or `rootPath`, a call
+ *  without `loaded`, a pending spawn without `skills`. Anything that is not an object is dropped. */
+function migrate(out: Record<string, unknown>): void {
+  const objects = (v: unknown) => (Array.isArray(v) ? v.filter(isObject) : [])
+  out['subagents'] = objects(out['subagents']).map(a => ({ ...a, skills: strings(a['skills']),
+    rootPath: typeof a['rootPath'] === 'string' ? a['rootPath'] : null }))
+  out['skillCalls'] = objects(out['skillCalls']).map(c => ({ ...c, loaded: c['loaded'] === true }))
+  out['pendingSpawns'] = objects(out['pendingSpawns']).map(p => ({ ...p, skills: strings(p['skills']) }))
+}
+
+/** Load a stored state of any earlier shape: new fields, and fields of the wrong shape, take their
+ *  defaults; unknown fields of a later version are kept; older subagents are migrated. */
 export function revive(stored: unknown): NavState {
   if (!stored || typeof stored !== 'object') return EMPTY
   const out: Record<string, unknown> = { ...EMPTY }
   for (const [k, v] of Object.entries(stored)) {
-    const d = (EMPTY as Record<string, unknown>)[k]
-    if (!(k in EMPTY) || kindOf(v) === kindOf(d) || d === null) out[k] = v
+    if (!(k in EMPTY) || fits(k, v, (EMPTY as Record<string, unknown>)[k])) out[k] = v
   }
+  migrate(out)
   return out as NavState
 }
 
@@ -141,7 +166,7 @@ function apply(state: NavState, s: Signal): NavState {
       if (credit.kind === 'ignore') return state // a second prompt of a call already counted
       if (credit.kind === 'subagent') return withSkill(credit.state, credit.agentId, s.name)
       if (credit.kind === 'spawn') return { ...credit.state, pendingSpawns: credit.state.pendingSpawns.map(p =>
-        p.toolUseId === credit.toolUseId ? { ...p, skills: [...(p.skills ?? []), s.name] } : p) }
+        p.toolUseId === credit.toolUseId ? { ...p, skills: [...p.skills, s.name] } : p) }
       state = credit.state
       const name = bare(s.name)
       // Running a warning's remedy puts it right; a skill gate passes.
@@ -184,14 +209,12 @@ function apply(state: NavState, s: Signal): NavState {
       const known = state.subagents.find(a => a.agentId === s.agentId)
       const spawned = { agentId: s.agentId, toolUseId: s.id, type: s.type, model: s.model,
         description: s.description, startedAt: s.at, tokens: known?.tokens ?? 0, done: known?.done ?? false,
-        root: known?.root ?? null, skills: known?.skills ?? [] }
+        rootPath: known?.rootPath ?? null, skills: known?.skills ?? [] }
       return navigate({ ...state, subagents: [...state.subagents.filter(a => a !== known), spawned] }, s.at, { agent: s.type })
     }
     case 'SubagentFinished': {
       const known = state.subagents.some(a => a.agentId === s.agentId)
-      const finished = known ? state.subagents : [...state.subagents, {
-        agentId: s.agentId, toolUseId: '', type: '?', model: '?', description: '', startedAt: 0, tokens: 0, done: false,
-        root: null, skills: [] }]
+      const finished = known ? state.subagents : [...state.subagents, placeholderAgent(s.agentId)]
       return {
         ...state,
         subagents: finished.map(a =>
@@ -210,17 +233,17 @@ function apply(state: NavState, s: Signal): NavState {
       return { ...state, display: { ...state.display, line: s.line } }
     case 'SetMode': // the session switch (DD-35); a new session follows the repo again
       return { ...state, mode: { ...state.mode, session: s.mode === state.mode.repo ? null : s.mode } }
-    case 'RootFollowed': // the same root again is no change; re-reading the workflows is io's job (D-2)
-      return state.root && s.root.path === state.root.path ? state : { ...state, root: s.root }
+    case 'RootFollowed': // the same root and branch again is no change; re-reading the workflows is io's job (D-2, D-21.1)
+      return state.root && s.root.path === state.root.path && s.root.branch === state.root.branch ? state : { ...state, root: s.root }
     case 'AgentRooted':
-      return { ...state, subagents: state.subagents.map(a => a.agentId === s.agentId ? { ...a, root: s.root } : a) }
+      return { ...state, subagents: state.subagents.map(a => a.agentId === s.agentId ? { ...a, rootPath: s.root } : a) }
     case 'SkillCallStarted':
       return { ...state, skillCalls: [...state.skillCalls,
-        { toolUseId: s.toolUseId, name: s.name, agentId: s.agentId, at: s.at }] }
+        { toolUseId: s.toolUseId, name: s.name, agentId: s.agentId, at: s.at, loaded: false }] }
     case 'SkillCallEnded':
       return { ...state, skillCalls: state.skillCalls.filter(c => c.toolUseId !== s.toolUseId) }
     case 'SpawnStarted':
-      return { ...state, pendingSpawns: [...state.pendingSpawns, { toolUseId: s.toolUseId, type: s.type, at: s.at }] }
+      return { ...state, pendingSpawns: [...state.pendingSpawns, { toolUseId: s.toolUseId, type: s.type, at: s.at, skills: [] }] }
     case 'SpawnResolved': { // the skills loaded while it was pending are the new subagent's
       const spawn = state.pendingSpawns.find(p => p.toolUseId === s.toolUseId)
       const rest = { ...state, pendingSpawns: state.pendingSpawns.filter(p => p !== spawn) }
@@ -244,30 +267,6 @@ function apply(state: NavState, s: Signal): NavState {
       return { ...state, accepted: [...new Set([...state.accepted, ...s.keys])] }
   }
 }
-
-type Credited =
-  | { kind: 'lead'; state: NavState }
-  | { kind: 'subagent'; state: NavState; agentId: string }
-  | { kind: 'spawn'; state: NavState; toolUseId: string }
-  | { kind: 'ignore' }
-
-/** Whose load this is (D-4). A `Skill` call is counted once: its first prompt marks it loaded, so a second prompt
- *  of the same call is ignored and a second concurrent call of that name takes the next one. */
-function creditLoad(state: NavState, name: string): Credited {
-  const open = state.skillCalls.filter(c => c.name === name)
-  if (open.length > 0 && open.every(c => c.loaded)) return { kind: 'ignore' }
-  const c = creditSkill({ ...state, skillCalls: state.skillCalls.filter(k => !k.loaded) }, name)
-  if (c.via === 'spawn') return { kind: 'spawn', state, toolUseId: c.toolUseId! }
-  if (c.via === 'call') {
-    const marked = { ...state, skillCalls: state.skillCalls.map(k => k.toolUseId === c.toolUseId ? { ...k, loaded: true } : k) }
-    return c.agent === null ? { kind: 'lead', state: marked } : { kind: 'subagent', state: marked, agentId: c.agent }
-  }
-  return c.agent === null ? { kind: 'lead', state } : { kind: 'subagent', state, agentId: c.agent }
-}
-
-/** A subagent's own list of the skills it loaded; it touches nothing of the lead's. */
-const withSkill = (state: NavState, agentId: string, name: string): NavState => ({ ...state, subagents: state.subagents.map(a =>
-  a.agentId === agentId && !a.skills.includes(name) ? { ...a, skills: [...a.skills, name] } : a) })
 
 /** A skill gate shows the score its skill printed (`9.1/10`), never one the mod judges (DD-14). */
 function withScore(state: NavState, w: Workflow, text: string): NavState {

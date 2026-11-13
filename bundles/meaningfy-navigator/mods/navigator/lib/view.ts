@@ -1,5 +1,6 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
+import { openDrift } from './process-drift.ts'
 import { isStrict, phasesOf, workflowOf } from './workflow.ts'
 import type { Group, NavState, Subagent, Warning } from './state.ts'
 
@@ -91,6 +92,12 @@ export type BandModel = {
   folded: string
   foldedItems: string[]
   rows: { label: string; items: string[] }[]
+}
+
+/** Accept and the Archive check do nothing on an archived change, so they are not offered (D-3, D-21.5). */
+export function bandOffers(s: NavState): { accept: Warning[]; check: boolean } {
+  const archived = !!s.change?.archived
+  return { accept: archived ? [] : openDrift(s), check: !!s.change && !archived }
 }
 
 /** Warnings not recorded as deviations; accepted ones show but do not count. */

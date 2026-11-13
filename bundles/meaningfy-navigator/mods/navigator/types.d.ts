@@ -86,16 +86,16 @@ export type Subagent = {
   startedAt: number
   tokens: number
   done: boolean
-  root: string | null // the working tree it writes in; null until its first tool call (D-2)
+  rootPath: string | null // the working tree it writes in; null until its first tool call (D-2)
   skills: string[] // the skills loaded in it, by name (D-4)
 }
 
 /** The working tree the lead follows; `common` is `git rev-parse --git-common-dir`, absolute (D-1). */
 export type Root = { path: string; common: string; branch: string }
 /** A `Skill` tool call in flight; `agentId` is null for the lead (D-4). */
-export type SkillCall = { toolUseId: string; name: string; agentId: string | null; at: number; loaded?: boolean }
+export type SkillCall = { toolUseId: string; name: string; agentId: string | null; at: number; loaded: boolean }
 /** An `agent.spawn` not yet resolved, keyed by its tool_use_id (D-4). */
-export type PendingSpawn = { toolUseId: string; type: string; at: number; skills?: string[] }
+export type PendingSpawn = { toolUseId: string; type: string; at: number; skills: string[] }
 
 export type SkillUse = { name: string; at: number; phase: string | null }
 

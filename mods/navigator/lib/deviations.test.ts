@@ -68,7 +68,8 @@ test('1.5 Accept after a re-root targets the worktree\'s change, not the start c
 
 test('1.5 Accept is session-only outside a change, and refused on an archived change', () => {
   assert.deepEqual(acceptTarget({ ...EMPTY, root: WORKTREE }), { kind: 'session' })
-  assert.deepEqual(acceptTarget(inChange(true)), { kind: 'archived' })
+  assert.deepEqual(acceptTarget(inChange(true)),
+    { kind: 'archived', refusal: 'Navigator: tenant-dump-restore is archived; there is nothing to accept or check.' }) // D-21.5
   assert.equal(acceptTarget(inChange(false, null)).kind, 'session') // no repository: nowhere to write
 })
 

@@ -18,6 +18,7 @@ Feature: The navigator follows the work, not the launch directory
       And the open change "tenant-dump-restore" has 4 of 8 tasks ticked
       When the lead writes a file in that worktree
       Then after the turn the line and the band show "tenant-dump-restore" with 4 of 8
+      # Stage 3 (tasks 3.3, 3.5) draws Details; until then this step is checked by hand on the status line only.
       And Details names that worktree as the checkout read
 
       Examples:
@@ -56,6 +57,7 @@ Feature: The navigator follows the work, not the launch directory
     Scenario: A branch that names no change
       Given the open changes are "aggregate-events" and "release-pipeline"
       And the followed branch is "docs/shape-backlog"
+      # The "no change for branch" wording is drawn in stage 3 (tasks 3.3, 3.5); checked there.
       Then the line says there is no change for branch "docs/shape-backlog"
       And no change's tasks, gates or warnings are shown
 

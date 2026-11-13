@@ -5,10 +5,10 @@ import type { PendingSpawn, SkillCall, Subagent } from '../types.d.ts'
 
 type Facts = Parameters<typeof creditSkill>[0]
 
-const call = (toolUseId: string, name: string, agentId: string | null, at: number): SkillCall => ({ toolUseId, name, agentId, at })
-const spawn = (toolUseId: string, at: number): PendingSpawn => ({ toolUseId, type: 'implementer', at })
+const call = (toolUseId: string, name: string, agentId: string | null, at: number): SkillCall => ({ toolUseId, name, agentId, at, loaded: false })
+const spawn = (toolUseId: string, at: number): PendingSpawn => ({ toolUseId, type: 'implementer', at, skills: [] })
 const sub = (agentId: string, startedAt: number, over: Partial<Subagent> = {}): Subagent =>
-  ({ agentId, toolUseId: `t-${agentId}`, type: 'implementer', model: 'm', description: '', startedAt, tokens: 0, done: false, root: null, skills: [], ...over }) as Subagent
+  ({ agentId, toolUseId: `t-${agentId}`, type: 'implementer', model: 'm', description: '', startedAt, tokens: 0, done: false, rootPath: null, skills: [], ...over }) as Subagent
 const facts = (over: Partial<Facts> = {}): Facts => ({ skillCalls: [], pendingSpawns: [], subagents: [], agentCalls: {}, ...over })
 
 test('TC-14: a lead call in flight credits the lead and names the call', () => {

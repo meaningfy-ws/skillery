@@ -6,13 +6,12 @@ import { backOnTrack, hygieneAction, modeAction, nextStep, reconcile, review, va
 import { overspawnNow, rewriteModel } from './lib/lean.ts'
 import { settingsFrom, type BandDisplay } from './lib/state.ts'
 import { decideArchive, decideCommit, decideSpawn, reminder } from './lib/strict.ts'
-import { archivedRefusal, parseAccept } from './lib/deviations.ts'
-import { openDrift } from './lib/process-drift.ts'
-import { bandModel, capped, toneOf, type Tone } from './lib/view.ts'
+import { parseAccept } from './lib/deviations.ts'
+import { bandModel, bandOffers, capped, toneOf, type Tone } from './lib/view.ts'
 import { isArchive, isCommit } from './lib/workflow.ts'
-import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, ensureRoot, followEdit, readAcceptedSignal,
-  readChangeSignal, readPlanSignal, reconcileFromBand, rootSubagent, send, start, state, touchedPath, turnEndedSignal,
-  validate } from './io.ts'
+import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, ensureRoot, readAcceptedSignal,
+  readChangeSignal, readPlanSignal, reconcileFromBand, recordCall, rootSubagent, send, start, state, trackSkillCall,
+  turnEndedSignal, validate } from './io.ts'
 
 
 // Colour says state only (done, current, to do, failed, warning); cost and counts stay neutral.
@@ -84,27 +83,8 @@ export const register: Register = (on, options) => {
       const d = isCommit(e.command) ? decideCommit(s) : isArchive(e.command) ? decideArchive(s) : null
       if (d && 'deny' in d) return { deny: d.deny }
     }
-    // A `Skill` call is in flight until it returns: its `skill.prompt` belongs to the caller (D-4).
-    if (e.tool === 'Skill') {
-      await send($, { kind: 'SkillCallStarted', id: `skillcall:${e.tool_use_id}`, toolUseId: e.tool_use_id, name: e.skill,
-        agentId: e.agentId ?? null, at: await $.clock.now() })
-    }
-    const result = await next(e)
-    if (e.tool === 'Skill') await send($, { kind: 'SkillCallEnded', id: `skillend:${e.tool_use_id}`, toolUseId: e.tool_use_id })
-    if (result.deny !== undefined) return result
-    const at = await $.clock.now()
-    // Every tool call of a subagent counts for PD-6, whatever the tool (DD-41).
-    if (e.agentId) await send($, { kind: 'AgentCalled', id: `call:${e.tool_use_id}`, agentId: e.agentId })
-    // A background call has not run yet when it returns: it passes no gate (DD-38).
-    if (e.tool === 'Bash' && !e.run_in_background) {
-      await send($, { kind: 'ToolRan', id: `tool:${e.tool_use_id}`, command: e.command, ok: !result.isError, at,
-        ...(e.agentId ? { agentId: e.agentId } : {}) })
-    } else if (e.tool === 'Edit' || e.tool === 'Write' || e.tool === 'NotebookEdit') {
-      const file = e.tool === 'NotebookEdit' ? e.notebook_path : e.file_path
-      // The lead's edit may move its root first, so it counts against the new one (D-2); a subagent's never does.
-      if (!e.agentId) await followEdit($, e.tool_use_id, file)
-      await send($, { kind: 'FileTouched', id: `tool:${e.tool_use_id}`, path: await touchedPath($, file, e.agentId), at })
-    }
+    const result = await trackSkillCall($, e, () => next(e))
+    if (result.deny === undefined) await recordCall($, e, !!result.isError)
     return result
   }).catch(($, e, next) => next(e))
 
@@ -211,9 +191,8 @@ export const register: Register = (on, options) => {
     const steps = reconcile(s)
     const reviewLine = review(s)
     const press = (line: string) => () => act($, line)
-    // Accept and the Archive check do nothing on an archived change, so they are not offered (D-3).
-    const archived = archivedRefusal(s) !== null
-    const openWarnings = archived ? [] : openDrift(s)
+    const offers = bandOffers(s)
+    const openWarnings = offers.accept
     // One line per row, cut at the edge; items coloured by their glyph, labels and separators dim.
     const row = (key: string, label: string | null, items: string[]) => (
       <Text key={key} wrap="truncate-end">
@@ -250,7 +229,7 @@ export const register: Register = (on, options) => {
         {s.display.band === 'unfolded' && (
           <Box>
             {steps && <Button key="reconcile" label="Reconcile EPIC" onPress={() => reconcileFromBand($, steps)} />}
-            {s.change && !archived && <Button key="check" label="Archive check" onPress={press('navigator check')} />}
+            {offers.check && <Button key="check" label="Archive check" onPress={press('navigator check')} />}
             {validateRuns(s).length > 0 && <Button key="validate" label="Validate" onPress={press('navigator validate')} />}
             {reviewLine && <Button key="review" label="Review" onPress={press(reviewLine)} />}
             <Button key="mode" label="Mode" onPress={press(modeAction(s))} />
