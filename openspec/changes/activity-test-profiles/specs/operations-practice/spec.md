@@ -12,14 +12,14 @@ SHALL recommend them as pull-request checks and SHALL NOT state that the infrast
 repositories run them: adopting them there is that repository's own change
 (activity-test-profiles DEC-4, DEC-8; design D-6).
 
-#### Scenario: A stack folder that breaks the layout
-- **WHEN** the stacks ls-lint configuration is run on a repository where one stack's compose file sits outside its stack folder
-- **THEN** the run names the file and the rule, and changes nothing
+#### Scenario: A stack folder that breaks the naming rule
+- **WHEN** the stacks ls-lint configuration is run on a repository where one stack folder is named `Reverse_Proxy` and the others are in kebab-case
+- **THEN** the run names the folder and the rule, and changes nothing
 
 #### Scenario: A Makefile target without a phony declaration
 - **WHEN** checkmake runs with the stacks configuration on a Makefile whose `deploy` target is not declared phony
 - **THEN** the run reports the target and the rule
 
 #### Scenario: Reading the skill before adoption
-- **WHEN** a devops engineer reads `repo-checks.md` before the stacks repositories adopt the checks
-- **THEN** the checks are listed as recommended, with a pointer to the adoption issue, not as required
+- **WHEN** a devops engineer reads `stack-standard.md` or `repo-checks.md` before the stacks repositories adopt the checks
+- **THEN** each file lists its check under *Recommended checks*, with a pointer to the adoption issue, and not among the required checks
