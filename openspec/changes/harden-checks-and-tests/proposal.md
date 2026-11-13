@@ -1,9 +1,13 @@
 <!-- STATUS: EPIC shaped 2026-11-13 from the owner's conversation (inputs/seed.md, inputs/qa.md,
-     rounds 0-5). Not yet readiness-checked; PLAN not derived. -->
+     rounds 0-5). RE-SHAPED the same day (round 6, logged in inputs/qa.md): the bet grew into a
+     catalogue-wide test strategy and was split into four EPICs. This is B, the software slice; it
+     depends on A (test-strategy) and fills the software rows of A's matrix (DEC-14). Vale moved to
+     C (DEC-7). Not yet readiness-checked; PLAN not derived. -->
 
 # EPIC: harden checks and tests
 
-**Parents:** the owner's requests of 2026-11-13 (`inputs/seed.md`, `inputs/qa.md`); the live
+**Parents:** EPIC A [`test-strategy`](../test-strategy/proposal.md) (the discipline and the matrix
+this EPIC fills for software); the owner's requests of 2026-11-13 (`inputs/seed.md`, `inputs/qa.md`); the live
 capabilities `epic-delivery` (the adversarial tester and the review sets), `code-principles-governance`
 (the catalogue and the groomed import-linter guardrails), `pr-review-modes` (the L3 lens) and
 `catalogue-governance` (the agreed top-level folders and artifact types).
@@ -32,8 +36,8 @@ selection and misses checks it could make for free.
    Ruff (a wider selection), import-linter, a Meaningfy Semgrep rule, or "review only, because…".
    The catalogue shows which, so coverage is visible. Outcome: an antipattern that a tool can see
    fails `make` before any reviewer reads the code.
-2. **A `quality/` home in skillery.** Meaningfy Semgrep rules with their tests, the manifests of
-   hand-picked external rule sources (Semgrep, Vale), and the ls-lint and checkmake configurations
+2. **A `quality/` home in skillery.** Meaningfy Semgrep rules with their tests, the manifest of
+   hand-picked external Semgrep sources, and the ls-lint and checkmake configurations
    that encode the canonical layout, names and Makefile. Projects fetch it at a pinned skillery
    release through a `make` target that `project-setup` scaffolds. Outcome: one source of checks,
    upgraded by bumping a pin.
@@ -67,8 +71,9 @@ selection and misses checks it could make for free.
   pinned version, licence, why picked); agents propose candidates, the owner approves each in the
   PR; no external rule text is copied in — rejected: whole packs with a deny-list; vendored rules
   (Q-1, Q-7).
-- **DEC-7**: Vale starts with hand-picked external styles only; Meaningfy-own Vale rules come
-  later — rejected: encoding writing rules now (Q-16).
+- **DEC-7** *(re-shaped, round 6)*: Vale moves to EPIC C (`activity-test-profiles`), the
+  documentation family; Q-16 (hand-picked external styles only) travels with it. `quality/` is
+  built so C can add a Vale manifest beside Semgrep's — was: Vale in this EPIC.
 - **DEC-8**: ls-lint checks file and folder names and the canonical layout; checkmake checks
   Makefile hygiene; the required Makefile targets come from `project-setup`'s template — rejected:
   a custom layout script (Q-4).
@@ -88,6 +93,12 @@ selection and misses checks it could make for free.
   source, re-approval on bump); noise (few rules, new external sources start report-only, every
   suppression carries a reason); tools missing (pinned installs through `make`, cached in CI).
   Accepted risk: nobody picks up the mutmut results (Q-11).
+- **DEC-14** *(re-shape, round 6)*: This EPIC depends on A and lands after it. It fills the software
+  rows of `test-strategy`'s matrix (each new check with the question it answers: adequacy for
+  mutmut, robustness for Hypothesis and the tester, verification for the static rules). By A's
+  DEC-8 the techniques stay with their owners: how to write a property or a stateful test goes in
+  the `cosmic-python` testing checklist, the tester's brief in `epic-delivery`, the wiring in
+  `project-setup`.
 
 ## Rabbit-holes
 
@@ -111,7 +122,8 @@ selection and misses checks it could make for free.
 - No CodeQL, no paid static-analysis service.
 - No formal methods (TLA+, Alloy, CrossHair) in this EPIC; they stay design-time tools, parked.
 - No new catalogue entries (DDD, TDD, fixture organisation): follow-up EPIC.
-- No Meaningfy-own Vale rules; no copying of external rule text into skillery.
+- No Vale or other documentation checks (EPIC C); no copying of external rule text into skillery.
+- No change to the discipline, the question set or the matrix's shape (EPIC A); only its software rows.
 - No dogfooding the checks on skillery's own code; no new heavy tools in skillery's CI.
 - No new agent: the tester remains a brief for `implementer`.
 - No mutation testing per PR, and no build that fails on mutation results.
@@ -121,13 +133,14 @@ selection and misses checks it could make for free.
 
 ## What Changes
 
-- New top-level folder `quality/` (Semgrep rules + tests, external-source manifests, Vale, ls-lint
+- New top-level folder `quality/` (Semgrep rules + tests, the external-source manifest, ls-lint
   and checkmake configurations, README); `governance.md`, `AGENTS.md` and the top-level folder
   check name it as the sixth artifact type.
 - `cosmic-python`: the catalogue gains a "Checked by" column; the testing checklist names its
   checkers; Hypothesis item extended with stateful tests and Schemathesis.
+- `test-strategy` (from EPIC A): the software rows of the matrix name the new checks.
 - `project-setup`: wider Ruff selection; `make` targets to fetch `quality/` at a pin and run Semgrep,
-  Vale, ls-lint and checkmake; a weekly mutmut workflow in the CI template; the mechanical
+  ls-lint and checkmake; a weekly mutmut workflow in the CI template; the mechanical
   import-contract check; a migration note for existing projects.
 - `epic-delivery`: the tester brief gains its methods and report fields; the review sets name the
   tester from MEDIUM up (**BREAKING** for MEDIUM EPICs: one more dispatch per stage).
@@ -155,5 +168,7 @@ selection and misses checks it could make for free.
   folders), `Makefile` (`make validate`), `docs/skill-inventory.md` if descriptions change.
 - Projects scaffolded or modernised by `project-setup`: new `make` targets, a wider Ruff selection,
   a weekly workflow.
-- Dependencies for projects: Semgrep, Vale, ls-lint, checkmake, mutmut, Hypothesis, Schemathesis
+- Dependencies for projects: Semgrep, ls-lint, checkmake, mutmut, Hypothesis, Schemathesis
   (pinned).
+- Order: after EPIC A (`test-strategy`); coordinate with `navigator-follows-the-work` on
+  `epic-delivery.workflow.json`.

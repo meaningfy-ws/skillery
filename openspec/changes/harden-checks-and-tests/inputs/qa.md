@@ -49,3 +49,19 @@ Vale, a Makefile check and a folder-structure check; shape now in a new worktree
 |---|---|---|
 | Q-17 | How is the work split between checkers? | Ruff first (extend its selection), import-linter for imports, Semgrep only where neither can, review for the rest; every catalogue entry gets a "Checked by" column. |
 | Q-18 | How far does "ALL of them" go? | LARGE: encode what is catalogued (cosmic-python catalogue, its clean-code/SOLID sections, the testing checklist). Growing the catalogue with DDD, TDD and fixture rules is a follow-up EPIC. |
+
+## Round 6: the re-shape (logged)
+
+The owner widened the question from software to every activity ("TDD/BDD philosophy is core across
+all activities we do, and for each activity we execute we shall know when/how we fail and how we
+succeed") and agreed the model: one `test-strategy` skill owns the discipline, domain skills keep
+their techniques, workflows own when and who. The bet became HUGE and was split:
+
+| EPIC | Change | Status |
+|---|---|---|
+| A | `test-strategy` | Shaped 2026-11-13 |
+| B | `harden-checks-and-tests` (this) | Re-based on A: depends on it, fills its software rows (DEC-14) |
+| C | `activity-test-profiles` | Seeded; receives Vale (DEC-7) |
+| D | `generic-task-test-profiles` | Seeded |
+
+The owner's words and the rest of round 6 are in `../../test-strategy/inputs/seed.md`.
