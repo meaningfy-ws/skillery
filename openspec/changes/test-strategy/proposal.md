@@ -3,7 +3,8 @@
      B harden-checks-and-tests → C activity-test-profiles → D generic-task-test-profiles.
      Readiness-checked 2026-11-13 (ready); three stale non-decision lines corrected then: the
      BREAKING bullet (narrowed by PLAN D-5) and two references to navigator-follows-the-work, which
-     is archived. No DEC changed. PLAN derived and attacked the same day; gate in progress. -->
+     is archived. No DEC changed. PLAN derived and attacked the same day; clarity gate 9.1/10 PASS
+     on the third run by an independent scorer. Ready for delivery. -->
 
 # EPIC: test-strategy
 

@@ -1,5 +1,6 @@
 <!-- PLAN (design half), derived 2026-11-13 from proposal.md; attacked the same day by a fresh
-     subagent (A-1..A-11, all folded in, see § Attack record). Not yet gated. -->
+     subagent (A-1..A-11, all folded in, see § Attack record). Clarity gate: 8.6, 8.7, then
+     9.1/10 PASS on the third run, each by an independent scorer. Ready for delivery. -->
 
 > Derives from: EPIC `test-strategy` ([`proposal.md`](proposal.md)), DEC-1..DEC-12.
 
@@ -50,8 +51,9 @@ New choices made while planning; settled ones are cited, not repeated.
   the form `CHK-` plus a number of any width, unpadded (`CHK-7`, `CHK-112`; pattern `CHK-\d+`). The V-model table moves into the family files; SKILL.md keeps the two-sentence
   definition.
 - **D-2 Matrix row.** Each family file has one table: *Question* · *Check* (`CHK-<n>`) · *Technique
-  owner* · *Tool* · *Moment* (workflow and phase, or "any") · *Decided by* (a person, or the agent
-  stance; a `VAL` row is always a person, the V-model's "validation owned by") · *Status* (`exists`
+  owner* (a skill; the V-model's "validation owned by" lands here) · *Tool* · *Moment* (workflow and
+  phase, or "any") · *Decided by* (the agent stance, or a person; a `VAL` row is always a person:
+  "the developer", or a named role such as the domain expert) · *Status* (`exists`
   or `gap`). A `gap` row names the EPIC expected to fill it (B, C or D) or "none yet". Every family
   file has at least one row for each of the six questions, an `exists` or a `gap` (DEC-6).
   `cross-cutting.md` uses the same columns but is exempt from the six-question rule; its citations
@@ -64,7 +66,10 @@ New choices made while planning; settled ones are cited, not repeated.
   (`epic-delivery`) or the dispatch mechanics (`guardrails`).
 - **D-4 What stays in `epic-delivery`.** `references/verification-validation.md` keeps the acceptance
   demo, the validation review, the evidence folder and the provisional steps (when and who, DEC-5).
-  The definition paragraph and the V-model table move, one pointer line replacing each. Its
+  Three pieces of text move, one pointer line replacing each: the definition in SKILL.md
+  § *Verification and validation* (lines 160–164), the intro of the reference (lines 3–6, which
+  restates it without the word "asks", so the one-home test does not catch it and the stage
+  checker confirms it), and the V-model table. Its
   description and Boundary *Owns* drop "verification vs validation" and name "the acceptance demo and
   the validation review"; that description change ships with a positive and a near-miss probe.
 - **D-5 Criteria field.** Each phase gains `criteria: {"succeeds": "<one line>", "fails": "<one
@@ -111,12 +116,25 @@ New choices made while planning; settled ones are cited, not repeated.
     The test carries its own fixture cases: the arrow form, the hyphen form, "Validation asks", a
     version-pin line and the wrapped `config-files.md` line that pass, and a prose line that fails.
 
-    `tests/ownership.yaml` gains `vv-definition` (owner `test-strategy`) and `test-strategy` itself
-    (DoD: ownership checked or updated). Its tripwire stays advisory.
+    `tests/ownership.yaml` gains two entries (DoD: ownership checked or updated): `vv-definition`,
+    owner `test-strategy`, `claim_patterns: ["(verification|validation) asks"]`; and
+    `test-matrix`, owner `test-strategy`, `claim_patterns: ["which check answers which question"]`.
+    Its tripwire stays advisory and reads SKILL.md only. The existing `tdd-loop` tag there (owner
+    `external:superpowers`) is kept as it is; the new test's `tdd-loop` check complements it by
+    also scanning references and templates.
   - *Triggers:*
-    - Static: probes in `tests/trigger_probes.yaml`, two positives for `test-strategy`, plus
-      near-misses for `clarity-gate`, `bdd-gherkin`, `technical-writing` and `meaningfy-code-review`,
-      plus the `epic-delivery` pair of D-4.
+    - Static: probes in `tests/trigger_probes.yaml`:
+      - positive: "which checks does this LinkedIn post need before I publish it";
+      - positive: "how do we know this contract review succeeded or failed";
+      - near-miss of `test-strategy`, expects `bdd-gherkin`: "write Gherkin scenarios for this
+        acceptance criterion";
+      - near-miss, expects `clarity-gate`: "score this spec before implementation";
+      - near-miss, expects `technical-writing`: "run a cold reader on this how-to page";
+      - near-miss, expects `meaningfy-code-review`: "review this change against the cosmic-python
+        layers";
+      - the `epic-delivery` pair of D-4: positive "run the acceptance demo for this EPIC";
+        near-miss of `epic-delivery`, expects `test-strategy`: "what is the difference between
+        verification and validation".
     - Behavioural: one run with `skill-creator`, following the method in the
       `tests/trigger_probes.yaml` header. It uses 20 queries: 10 positives and 10 near-misses,
       including phrases aimed at the external superpowers TDD and `verification-before-completion`,
@@ -128,7 +146,9 @@ New choices made while planning; settled ones are cited, not repeated.
   - *Non-code use:* SKILL.md's Quick Start takes a LinkedIn post through the loop with the
     `generic-writing` rows. It is the acceptance demo's script (D-11).
 - **D-8 Pointer lines.** Each technique-owning skill gains one line in its `## Boundary & Related
-  Skills`: "Answers `<question ids>` in `test-strategy`'s matrix (`references/<family>.md`)." Where a
+  Skills`: "Answers `<question ids>` in `test-strategy`'s matrix (`references/<family>.md`)." The
+  verified inventory's owner list governs which skills get the line; the ten skills in the
+  proposal's Impact are the expected minimum. Where a
   skill is within two lines of the 650-line cap (`architecture`: 649 body lines, 1 below the cap),
   the pointer is folded into its existing *Related* line, adding no line.
 - **D-9 Two stages, after the rebase.** Stage 1: the skill, inventory, matrix, moves, pointers,
@@ -290,6 +310,11 @@ dependency-line rule rejected the wrapped `config-files.md` line (D-7); task 1.7
 pattern (tasks); three docs, not two, point at the old home (Context, task 1.13); `architecture` has
 649 body lines, not 644 (D-8); the V&V marker missed "Validation asks" (D-7); sign-off and the issue
 reference had no home (D-11, tasks 1.0, 1.13).
+
+**Clarity gate, run 3 (a third independent scorer, on commit ef334a9): 9.1/10, PASS.** Its four
+recommendations were folded in afterwards: both definition paragraphs named (D-4, task 1.6);
+*Decided by* separated from *Technique owner* (D-2); the `ownership.yaml` patterns and the existing
+`tdd-loop` tag (D-7); the probe phrases written out and the pointer-line set pinned (D-7, D-8).
 
 ## Open Questions
 

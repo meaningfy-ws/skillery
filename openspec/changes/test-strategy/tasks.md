@@ -1,4 +1,4 @@
-<!-- PLAN (tasks half), derived 2026-11-13; attack folded in. Not yet gated. -->
+<!-- PLAN (tasks half), derived 2026-11-13; attack folded in; clarity gate 9.1/10 PASS (run 3). -->
 
 > Derives from: EPIC `test-strategy` ([`proposal.md`](proposal.md)); design in [`design.md`](design.md).
 
@@ -18,8 +18,9 @@
   *One discipline, stated once*; *A non-code activity uses the skill*).
 - [ ] 1.5 Add `purpose: quality` to `facets.yaml`; add `test-strategy` to `meaningfy-core` in
   `bundles.yaml` (D-6, DEC-7).
-- [ ] 1.6 `epic-delivery`: replace the definition paragraph and the V-model table with pointers;
-  update its description and Boundary *Owns* (D-4; spec *Verification and validation are defined in
+- [ ] 1.6 `epic-delivery`: replace with pointers the definition in SKILL.md § *Verification and
+  validation*, the intro of `references/verification-validation.md` and the V-model table; update
+  its description and Boundary *Owns* (D-4; spec *Verification and validation are defined in
   test-strategy*).
 - [ ] 1.7 Test data: state the polyfactory rule in checklist item 6; cut `testing-setup.md`'s
   fixture prose and TDD/BDD loop to wiring plus pointers; fix the two D-7 `tdd-loop` hits that name
