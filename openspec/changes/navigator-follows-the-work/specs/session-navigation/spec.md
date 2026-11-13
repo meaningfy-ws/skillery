@@ -72,4 +72,4 @@ DEC-8, DEC-9).
 
 #### Scenario: Many warnings
 - **WHEN** twelve warnings are open, none of them an unused-skill heuristic, and one of them a gate warning
-- **THEN** the folded band shows the gate warning and `11 more`, and Details lists all twelve with gate warnings first
+- **THEN** the folded band shows `⚠ 12 warnings` and the gate warning, and Details lists all twelve with gate warnings first

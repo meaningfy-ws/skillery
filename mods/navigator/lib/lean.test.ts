@@ -28,7 +28,7 @@ const cmd = (command: string): Signal => ({ kind: 'ToolRan', id: id(), command, 
 const turn = (contextPercent: number): Signal => ({ kind: 'TurnEnded', id: id(), turnId: id(), contextPercent, cleanTree: true, at: 5 })
 const run = (...signals: Signal[]): NavState => signals.reduce(reduce, EMPTY)
 const keys = (s: NavState) => s.warnings.map(w => w.key)
-const band = (s: NavState) => bandView(s, { now: 0, home: '' })
+const band = (s: NavState) => bandView(s, { now: 0, home: '', commands: [] })
 const appetite = (s: NavState) => band(s).details.rows.find(r => r.label === 'appetite')!.items
 const phasesRow = (s: NavState) => band(s).details.rows.find(r => r.label === 'phases')!.items.join(' ')
 
@@ -55,7 +55,7 @@ test('D-22: a small stage (added ≤ 600) is an allowance: the full set still pa
   assert.ok(!keys(five).some(k => k.startsWith('process:overspawn:')), keys(five).join())
   assert.deepEqual(decideSpawn(strict(five), overspawnNow(five), null), { allow: true })
   assert.deepEqual(appetite(five).slice(2, 4),
-    ['reviewers 5/6 this turn', 'small stage: 2 allowed'])
+    ['reviewers 5/6 this turn', 'small stage: 2 reviewers allowed'])
   const seven = run(...base('VERY LARGE'), planRead(600), ...fan(7)) // ceiling = 5 + 1 UX
   assert.ok(keys(seven).some(k => k.startsWith('process:overspawn:')), keys(seven).join())
   assert.ok('deny' in decideSpawn(strict(seven), overspawnNow(seven), null))
@@ -71,7 +71,7 @@ test('D-22: no plan read yet, or a change switch, shows no small-stage figure', 
   assert.equal(unread.planAdded, null)
   assert.ok(!JSON.stringify(band(unread)).includes('small stage'))
   const read = reduce(unread, { kind: 'PlanRead', id: id(), warnings: [], truncated: false, added: 10 })
-  assert.ok(JSON.stringify(band(read)).includes('small stage: 2 allowed'))
+  assert.ok(JSON.stringify(band(read)).includes('small stage: 2 reviewers allowed'))
   const switched = reduce(read, { kind: 'ChangeRead', id: id(), change: { ...change('VERY LARGE'), id: 'y' }, openChanges: 1, at: 3 })
   assert.equal(switched.planAdded, null)
   const same = reduce(read, { kind: 'ChangeRead', id: id(), change: change('VERY LARGE'), openChanges: 1, at: 3 })

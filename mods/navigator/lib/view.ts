@@ -1,14 +1,16 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
-import { nextCommand, nextStep } from './actions.ts'
+import { backOnTrack, commandFor, hygieneAction, modeAction, nextStep, reconcile, review, validateRuns } from './actions.ts'
+import { groupDone } from './change.ts'
 import { openDrift } from './process-drift.ts'
 import { reviewQuota, smallStageAllowance } from './dispatch.ts'
-import { isStrict, phasesOf, workflowOf } from './workflow.ts'
+import { bare, isStrict, phasesOf, workflowOf } from './workflow.ts'
 import type { Group, NavState, Warning } from './state.ts'
 
 const LINE_MAX = 120
-/** Warning lines in Details, the `+n more` line included: a flood of `plan:outside:` ones cannot push the buttons away. */
-export const WARNING_CAP = 6
+const TASK_MAX = 30 // a subagent's task in the now line
+const ACCEPT_MAX = 60 // an Accept button's label
+const NO_ROOT = 'no repository' // the status line and the band say the same
 const TRAIL = 8
 const GLYPH = { ok: '✓', fail: '✗', stale: '·', none: '' } as const
 
@@ -29,7 +31,7 @@ export function lineText(s: NavState): string {
       isStrict(s) ? '● strict' : null].filter(Boolean).join(' · ')))
   }
   if (!s.change) {
-    return cut(clean(['navigator', s.root ? `no change for branch ${s.root.branch}` : 'no repository', s.phase,
+    return cut(clean(['navigator', s.root ? `no change for branch ${s.root.branch}` : NO_ROOT, s.phase,
       isStrict(s) ? '● strict' : null].filter(Boolean).join(' · ')))
   }
   const c = s.change
@@ -47,9 +49,9 @@ export function lineText(s: NavState): string {
   return cut(clean(parts.join(' · ')))
 }
 
-function cut(text: string): string {
+function cut(text: string, max = LINE_MAX): string {
   const chars = [...text] // whole characters, never half an emoji
-  return chars.length > LINE_MAX ? `${chars.slice(0, LINE_MAX - 1).join('')}…` : text
+  return chars.length > max ? `${chars.slice(0, max - 1).join('')}…` : text
 }
 
 
@@ -81,17 +83,12 @@ export function toneOf(item: string): Tone {
   return null
 }
 
-/** At most `max` lines; the rest become one `+n more` line. */
-export function capped(items: string[], max: number): string[] {
-  return items.length > max ? [...items.slice(0, max - 1), `+${items.length - max + 1} more`] : items
-}
-
 function tokens(n: number): string {
   return n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n)
 }
 
 /** Accept and the Archive check do nothing on an archived change, so they are not offered (D-3, D-21.5). */
-export function bandOffers(s: NavState): { accept: Warning[]; check: boolean } {
+function bandOffers(s: NavState): { accept: Warning[]; check: boolean } {
   const archived = !!s.change?.archived
   return { accept: archived ? [] : openDrift(s), check: !!s.change && !archived }
 }
@@ -111,44 +108,51 @@ export function orderedWarnings(s: NavState): Warning[] {
 }
 
 // ------------------------------------------------------------------ the band (D-11)
+/** A button of the band: a line to run as typed, or Reconcile EPIC's two lines (the second after the first one's turn). */
+export type BandAction = { label: string; line: string } | { label: string; steps: [string, string] }
+
 export type BandView = {
   /** Folded, line 1: phase, stage, running subagents; or why there is nothing to follow. */
   now: string
-  /** Folded, line 2: `next: <step>`, null when there is none. */
+  /** Folded, line 2: `next: <the command Next step runs>`, null when there is none. */
   next: string | null
-  /** Folded, line 3: `⚠ <top message> · n more` (tiers 1-4, not accepted); null when none. */
+  nextAction: BandAction | null
+  /** Folded, line 3: `⚠ n warnings · <top message>` (tiers 1-4, not accepted; one: `⚠ <message>`); null when none. */
   warning: string | null
+  backAction: BandAction | null
+  hygieneAction: BandAction | null
   details: {
     reading: string | null
     rows: { label: string; items: string[] }[] // stages, phases (with gates), appetite, skills, subagents
-    /** At most WARNING_CAP - 1 (open before accepted, each tier newest first); the rest are `moreWarnings`. */
-    warnings: { key: string; message: string; tier: number; accepted: boolean; accept: boolean }[] // `accept`: an Accept button is offered
-    moreWarnings: number
+    /** Every warning (open before accepted, each tier newest first). `accept`: an Accept button, labelled `label`, is offered. */
+    warnings: { key: string; message: string; label: string; tier: number; accepted: boolean; accept: boolean }[]
     mode: string
-    actions: string[] // button labels, in order
+    actions: BandAction[] // Reconcile EPIC, Archive check, Validate, Review, Mode: only those that apply, in order
   }
 }
 
-const bareName = (name: string) => name.slice(name.lastIndexOf(':') + 1)
+/** What the band needs from outside: the clock, `$HOME` and the installed command names. */
+export type BandEnv = { now: number; home: string; commands: readonly string[] }
+
 const elapsed = (ms: number) => { const m = Math.floor(Math.max(0, ms) / 60_000)
   return m < 1 ? `${Math.floor(Math.max(0, ms) / 1000)}s` : m < 60 ? `${m}m` : `${Math.floor(m / 60)}h${m % 60}m` }
 
 function nowText(s: NavState, now: number): string {
   const w = workflowOf(s)
   const running = s.subagents.filter(a => !a.done)
-  const crew = [...running.slice(0, 2).map(a => `${a.description} → ${bareName(a.type)} (${elapsed(now - a.startedAt)})`),
+  const crew = [...running.slice(0, 2).map(a => `${cut(a.description, TASK_MAX)} → ${bare(a.type)} (${elapsed(now - a.startedAt)})`),
     ...(running.length > 2 ? [`+${running.length - 2}`] : [])]
   if (w && !w.activate.openChange) return [w.name, s.variant, s.phase, ...crew].filter(Boolean).join(' · ')
-  if (!s.change) return s.root ? `no change for branch ${s.root.branch}` : 'no open change'
+  if (!s.change) return s.root ? `no change for branch ${s.root.branch}` : NO_ROOT
   const c = s.change, stage = currentGroup(c.groups)
   return [s.phase, stage ? `${shortTitle(stage.title)} ${stage.done}/${stage.total}` : `${c.done}/${c.total}`, ...crew]
     .filter(Boolean).join(' · ')
 }
 
 function subagentGroups(s: NavState): string[] {
-  const types = [...new Set(s.subagents.map(a => bareName(a.type)))]
+  const types = [...new Set(s.subagents.map(a => bare(a.type)))]
   return types.map(t => {
-    const g = s.subagents.filter(a => bareName(a.type) === t)
+    const g = s.subagents.filter(a => bare(a.type) === t)
     const done = g.filter(a => a.done).length, running = g.length - done
     const tok = g.reduce((n, a) => n + a.tokens, 0)
     // A model is shown only when it differs from the lead's; with the lead's model unknown nothing is claimed.
@@ -162,59 +166,94 @@ function skillGroups(s: NavState): string[] {
   const out: { phase: string | null; names: string[] }[] = []
   for (const k of s.skills.slice(-TRAIL)) {
     const g = out.find(x => x.phase === k.phase) ?? (out.push({ phase: k.phase, names: [] }), out.at(-1)!)
-    g.names.push(bareName(k.name))
+    g.names.push(bare(k.name))
   }
   return out.map(g => `${g.phase ? `${g.phase}: ` : ''}${g.names.join(', ')}`)
 }
 
-/** What the band says (D-11), as plain data for register.tsx. `now` and `home` come in so it stays pure. */
-export function bandView(s: NavState, env: { now: number; home: string }): BandView {
-  const offers = bandOffers(s)
-  const open = orderedWarnings(s).filter(x => !s.accepted.includes(x.key) && tierOf(x.key) <= 4)
-  const step = nextCommand(nextStep(s))
-  // Open first, so a flood of accepted ones never hides an Accept button; `capped` decides how many fit.
-  const all = [...orderedWarnings(s)].sort((a, b) => +s.accepted.includes(a.key) - +s.accepted.includes(b.key))
-  const kept = capped(all.map(x => x.key), WARNING_CAP).length === all.length ? all.length : WARNING_CAP - 1
-  const rows: BandView['details']['rows'] = []
-  const c = s.change
-  if (c?.groups.length) {
-    const cur = currentGroup(c.groups)
-    rows.push({ label: 'stages', items: c.groups.map(g =>
-      `${g.total > 0 && g.done === g.total ? '✓' : g === cur ? '●' : '○'} ${shortTitle(g.title)} ${g.done}/${g.total}`) })
-  }
+type Row = BandView['details']['rows'][number]
+
+const stagesRow = (c: NonNullable<NavState['change']>): Row[] => {
+  const cur = currentGroup(c.groups)
+  return c.groups.length ? [{ label: 'stages', items: c.groups.map(g =>
+    `${groupDone(g) ? '✓' : g === cur ? '●' : '○'} ${shortTitle(g.title)} ${g.done}/${g.total}`) }] : []
+}
+
+function phasesRow(s: NavState): Row[] {
   const gates = Object.entries(s.gates).filter(([, g]) => g.state !== 'none')
     .map(([id, g]) => `${id} ${GLYPH[g.state]}${/^\d+(\.\d+)?$/.test(g.detail) ? ` ${g.detail}` : ''}`)
   const wf = workflowOf(s)
-  if (wf) {
-    const phases = phasesOf(wf, s.variant)
-    const at = phases.findIndex(p => p.id === s.phase)
-    rows.push({ label: 'phases', items: [`${wf.title}${s.variant ? ` (${s.variant})` : ''}${wf.provisional ? ' (provisional)' : ''}`,
-      ...phases.map((p, i) => `${i < at ? '✓' : i === at ? '●' : '○'} ${p.id}`), ...gates] })
-  } else if (gates.length) rows.push({ label: 'phases', items: gates })
-  if (c) {
-    const ceiling = reviewQuota(s), small = smallStageAllowance(s)
-    const reviewers = s.turnRoles.filter(x => x === 'reviewer').length
-    rows.push({ label: 'appetite', items: [c.appetite ?? '?', `tasks ${c.done}/${c.total}`,
-      ...(c.groups.length ? [`groups ${c.groups.filter(g => g.total > 0 && g.done === g.total).length}/${c.groups.length}`] : []),
-      ...(ceiling !== null ? [`reviewers ${reviewers}/${ceiling} this turn`] : []),
-      ...(small !== null ? [`small stage: ${small} allowed`] : []),
-      ...(s.sessionTokens ? [`${tokens(s.sessionTokens)} tokens`] : [])] })
-  }
-  rows.push({ label: 'skills', items: skillGroups(s) }, { label: 'subagents', items: subagentGroups(s) })
+  if (!wf) return gates.length ? [{ label: 'phases', items: gates }] : []
+  const phases = phasesOf(wf, s.variant)
+  const at = phases.findIndex(p => p.id === s.phase)
+  return [{ label: 'phases', items: [`${wf.title}${s.variant ? ` (${s.variant})` : ''}${wf.provisional ? ' (provisional)' : ''}`,
+    ...phases.map((p, i) => `${i < at ? '✓' : i === at ? '●' : '○'} ${p.id}`), ...gates] }]
+}
+
+function appetiteRow(s: NavState, c: NonNullable<NavState['change']>): Row {
+  const ceiling = reviewQuota(s), small = smallStageAllowance(s)
+  const reviewers = s.turnRoles.filter(x => x === 'reviewer').length
+  // The stages row already counts the groups.
+  return { label: 'appetite', items: [c.appetite ?? '?', `tasks ${c.done}/${c.total}`,
+    ...(ceiling !== null ? [`reviewers ${reviewers}/${ceiling} this turn`] : []),
+    ...(small !== null ? [`small stage: ${small} reviewers allowed`] : []),
+    ...(s.planTruncated ? ['diff truncated'] : []),
+    ...(s.sessionTokens ? [`${tokens(s.sessionTokens)} tokens`] : [])] }
+}
+
+/** The folded warning line: the count first, so a cut line still shows it. */
+function warningLine(open: Warning[]): string | null {
+  if (!open.length) return null
+  return `⚠ ${open.length > 1 ? `${open.length} warnings · ` : ''}${open[0]!.message}`
+}
+
+/** The command the Next step button runs, as typed; a step that is not installed shows as typed (the button then says so). */
+function nextLine(step: string, installed: readonly string[]): string {
+  const c = commandFor(step, installed)
+  return 'reason' in c ? `/${step}` : `/${c.command}${c.args ? ` ${c.args}` : ''}`
+}
+
+/** The Details buttons that apply, in order (Less and Hide are the screen's). */
+function detailActions(s: NavState, offers: ReturnType<typeof bandOffers>): BandAction[] {
+  const steps = reconcile(s), reviewLine = review(s)
+  const mode = modeAction(s)
+  return [
+    ...(steps ? [{ label: 'Reconcile EPIC', steps }] : []),
+    ...(offers.check ? [{ label: 'Archive check', line: 'navigator check' }] : []),
+    ...(validateRuns(s).length ? [{ label: 'Validate', line: 'navigator validate' }] : []),
+    ...(reviewLine ? [{ label: 'Review', line: reviewLine }] : []),
+    { label: `Switch to ${mode.split(' ').at(-1)}`, line: mode },
+  ]
+}
+
+/** What the band says (D-11), as plain data for register.tsx, which only maps it to widgets. `env` comes in so it stays pure. */
+export function bandView(s: NavState, env: BandEnv): BandView {
+  const offers = bandOffers(s)
+  const open = orderedWarnings(s).filter(x => !s.accepted.includes(x.key) && tierOf(x.key) <= 4)
+  const step = nextStep(s)
+  // Open first, so a flood of accepted ones never hides an Accept button.
+  const all = [...orderedWarnings(s)].sort((a, b) => +s.accepted.includes(a.key) - +s.accepted.includes(b.key))
+  const c = s.change
+  const rows = [...(c ? stagesRow(c) : []), ...phasesRow(s), ...(c ? [appetiteRow(s, c)] : []),
+    { label: 'skills', items: skillGroups(s) }, { label: 'subagents', items: subagentGroups(s) }]
   const home = env.home
   const where = s.root && home && (s.root.path === home || s.root.path.startsWith(`${home}/`)) ? `~${s.root.path.slice(home.length)}` : s.root?.path
+  const back = backOnTrack(s), hygiene = hygieneAction(s)
+  const warning = warningLine(open)
   return {
     now: clean(nowText(s, env.now)),
-    next: step ? clean(`next: ${step}`) : null,
-    warning: open.length ? clean(`⚠ ${open[0]!.message}${open.length > 1 ? ` · ${open.length - 1} more` : ''}`) : null,
+    next: step ? clean(`next: ${nextLine(step, env.commands)}`) : null,
+    nextAction: step ? { label: 'Next step', line: step } : null,
+    warning: warning && clean(warning),
+    backAction: back ? { label: 'Back on track', line: back } : null,
+    hygieneAction: hygiene,
     details: {
       reading: s.root ? clean(`reading ${where} · ${s.root.branch}`) : null,
       rows: rows.map(r => ({ ...r, items: r.items.map(clean) })),
-      warnings: all.slice(0, kept).map(x => ({ key: x.key, message: clean(x.message), tier: tierOf(x.key),
-        accepted: s.accepted.includes(x.key), accept: offers.accept.some(o => o.key === x.key) })),
-      moreWarnings: all.length - kept,
+      warnings: all.map(x => ({ key: x.key, message: clean(x.message), label: clean(cut(`Accept: ${x.message}`, ACCEPT_MAX)),
+        tier: tierOf(x.key), accepted: s.accepted.includes(x.key), accept: offers.accept.some(o => o.key === x.key) })),
       mode: modeText(s),
-      actions: ['Reconcile EPIC', ...(offers.check ? ['Archive check'] : []), 'Validate', 'Review', 'Mode', 'Less'],
+      actions: detailActions(s, offers),
     },
   }
 }

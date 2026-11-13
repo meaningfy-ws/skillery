@@ -28,6 +28,9 @@ export function appetiteOf(proposal: string, appetites: string[]): string | null
   return byLength.find(a => new RegExp(`(?<![\\w-])${escape(a)}(?![\\w-])`).test(para)) ?? null
 }
 
+/** A group with tasks, all ticked: an empty group is never done. */
+export const groupDone = (g: Group): boolean => g.total > 0 && g.done === g.total
+
 export function progress(tasks: string | null): { done: number; total: number; groups: Group[] } {
   const groups: Group[] = []
   let current: Group | null = null

@@ -34,7 +34,7 @@
 - [x] 3.4 `register.tsx` draws D-11: folded lines and buttons (Details, Hide), Details with Accept labelled by message, Reconcile EPIC, Less; mode in Details only. Type-check green
 - [x] 3.5 Status line (D-11): `no change for branch <b>`, `no repository`; `● strict` kept. Tests in `view.test.ts`
 - [x] 3.6 #188 lead band (D-14): Gherkin for `specs/workflow-definitions/spec.md` § *A lead session shows its workflow*, one scenario per default workflow naming a lead worker; a unit test per workflow that its lead's primary skill activates it
-- [ ] 3.7 Integration check by hand, on the CLI and the desktop app: the band in a worktree session of a scratch repository, against `specs/session-navigation/spec.md` § *The band shows who runs what* and the live `openspec/specs/session-navigation/spec.md` § *Both Claude Code surfaces*; recorded in `evidence/band-check.md`
+- [x] 3.7 Integration check by hand, on the CLI and the desktop app: the band in a worktree session of a scratch repository, against `specs/session-navigation/spec.md` § *The band shows who runs what* and the live `openspec/specs/session-navigation/spec.md` § *Both Claude Code surfaces*; recorded in `evidence/band-check.md`
 - [ ] 3.8 Stage gates as 1.8
 
 ## 4. Stage 4 — Review sized to the stage (#148) and close
@@ -53,7 +53,7 @@
 
 - [x] 1.1 · [x] 1.2 · [x] 1.2b · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
 - [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6
-- [x] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 3.6 · [ ] 3.7 · [ ] 3.8
+- [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.5 · [x] 3.6 · [x] 3.7 · [ ] 3.8
 - [x] 4.1 · [ ] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5 · [x] 4.6 · [ ] 4.7 · [ ] 4.8 · [ ] 4.9
 
 ## Verification

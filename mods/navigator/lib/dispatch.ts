@@ -101,6 +101,9 @@ export function reportOversized(t: Thresholds, agentId: string, answer: string):
     : []
 }
 
+/** The lead's agent name in turn events (D-9). */
+export const MAIN = 'main'
+
 /** Oldest first: skill loads, tool calls other than skill loads, and spawns, each by `agent` ('main' or an agent id; D-9). */
 export type TurnEvent = { kind: 'skill'; name: string; agent: string } | { kind: 'tool' | 'spawn'; agent: string }
 

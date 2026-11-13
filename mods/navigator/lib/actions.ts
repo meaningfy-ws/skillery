@@ -17,9 +17,6 @@ export function nextStep(s: NavState): string | null {
   return unmet ?? (after ? bare(after.owner) : null)
 }
 
-/** The command the Next step button runs, as a person types it: `act` resolves the skill name to `/<name>` (D-11). */
-export const nextCommand = (step: string | null): string | null => (step ? `/${step}` : null)
-
 /** The remedy of the oldest open warning that has one. */
 export function backOnTrack(s: NavState): string | null {
   return openDrift(s).find(w => w.key.startsWith('process:') && w.remedy)?.remedy ?? null

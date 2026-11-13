@@ -16,12 +16,8 @@ const all = readdirSync(join(REPO, 'skills')).flatMap(skill => {
 })
 const defaults = resolveWorkflows(all, [])
 
-/** The lead worker of each default workflow (named-workers; the Gherkin scenarios of #188 name the same). */
-const LEADS: Record<string, string> = {
-  'architecting': 'system-architect', 'modelling': 'conceptual-modeller', 'contract': 'lawyer',
-  'epic-delivery': 'team-lead', 'epic-shaping': 'epic-planner', 'devops': 'devops-engineer',
-  'release': 'release-manager', 'documentation': 'technical-writer', 'sales': 'sales-agent',
-}
+/** The agents a workflow names in `activate.agents`; one of them is its lead (sales names two). */
+const agentsOf = (name: string) => defaults.workflows.find(w => w.name === name)!.activate.agents ?? []
 
 /** The first entry of the `skills:` list in an agent's frontmatter. */
 const primarySkill = (agent: string) => {
@@ -42,17 +38,15 @@ const session = (...more: Signal[]): NavState => {
   return signals.reduce(reduce, EMPTY)
 }
 
-test('the table names a lead for every default workflow, and no other', () => {
-  assert.deepEqual(defaults.workflows.map(w => w.name).sort(), Object.keys(LEADS).sort())
-})
-
-for (const [name, lead] of Object.entries(LEADS)) {
-  test(`${name}: its lead ${lead} loading its primary skill shows the workflow and a phase`, () => {
-    const w = defaults.workflows.find(x => x.name === name)!
-    const skill = primarySkill(lead)
-    const s = session({ kind: 'SkillLoaded', id: id(), name: skill, at: 3 })
-    assert.equal(s.workflow, name, `${skill} did not activate ${name}`)
+for (const w of defaults.workflows) {
+  test(`${w.name}: the lead among its activate.agents, loading its primary skill, shows the workflow and a phase`, () => {
+    assert.ok(agentsOf(w.name).length > 0, `${w.name} names no agent`)
+    // A workflow may list several agents (sales: two); the lead is the one whose primary skill activates it.
+    const leads = agentsOf(w.name).filter(agent =>
+      session({ kind: 'SkillLoaded', id: id(), name: primarySkill(agent), at: 3 }).workflow === w.name)
+    assert.ok(leads.length > 0, `no agent of ${w.name} activates it by its primary skill`)
+    const s = session({ kind: 'SkillLoaded', id: id(), name: primarySkill(leads[0]!), at: 3 })
     // The skill may enter a later phase by design (sales-operations opens `pipeline`, epic-delivery `apply`).
-    assert.ok(w.phases.some(p => p.id === s.phase), `${name} shows no phase: ${s.phase}`)
+    assert.ok(w.phases.some(p => p.id === s.phase), `${w.name} shows no phase: ${s.phase}`)
   })
 }

@@ -8,7 +8,7 @@ import { decideCommit } from './strict.ts'
 import { bandView, lineText } from './view.ts'
 import { resolveWorkflows } from './workflow.ts'
 
-const env = { now: 0, home: '' }
+const env = { now: 0, home: '', commands: [] }
 const REPO = join(import.meta.dirname, '..', '..', '..')
 const file = (skill: string, name: string) => {
   const path = `skills/${skill}/assets/workflows/${name}.workflow.json`

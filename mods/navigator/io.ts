@@ -316,9 +316,9 @@ export async function check($: EngineInterface): Promise<string> {
 }
 
 /** Accept from the band: ask the reason, then the same as the command. */
-export async function acceptFromBand($: EngineInterface, key: string) {
+export async function acceptFromBand($: EngineInterface, key: string, message: string) {
   try {
-    const reason = await $.ui.ask(`Why accept ${key}?`, ['Agreed with the owner', 'Out of scope; follow-up recorded'])
+    const reason = await $.ui.ask(`Why accept: ${message}?`, ['Agreed with the owner', 'Out of scope; follow-up recorded'])
     // Typed into the session as a person would, so the transcript shows it (DEC-6, DD-41).
     await act($, `navigator accept ${key} "${reason.replace(/["\r\n]/g, ' ')}"`)
   } catch {
@@ -331,9 +331,14 @@ export async function reconcileFromBand($: EngineInterface, steps: [string, stri
   if (await act($, steps[0])) await send($, { kind: 'SetPending', id: `pending:${await $.clock.now()}`, line: steps[1] })
 }
 
+/** The installed command names: what a band line resolves against, to run it and to show it. */
+export async function commandNames($: EngineInterface): Promise<string[]> {
+  return (await $.command.list()).map(c => c.name)
+}
+
 /** A band action: submit the command as if the person typed it (DEC-6); not installed → say so. */
 export async function act($: EngineInterface, line: string): Promise<boolean> {
-  const cmd = commandFor(line, (await $.command.list()).map(c => c.name))
+  const cmd = commandFor(line, await commandNames($))
   if ('reason' in cmd) {
     $.ui.toast(cmd.reason)
     return false

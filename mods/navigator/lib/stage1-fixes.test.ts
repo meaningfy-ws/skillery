@@ -8,8 +8,9 @@ import { matchOpen } from './change.ts'
 import { ARCHIVE_DIR } from './deviations.ts'
 import { decideRoot, rebranched, relativeTo } from './root.ts'
 import { EMPTY, reduce, revive, type NavState, type Root, type Signal } from './state.ts'
-import { bandOffers } from './view.ts'
+import { bandView } from './view.ts'
 
+const ENV = { now: 0, home: '', commands: [] }
 const MAIN: Root = { path: '/r', common: '/r/.git', branch: 'develop' }
 const TDR: Root = { path: '/r/.claude/worktrees/tdr', common: '/r/.git', branch: 'feature/tdr' }
 const BESIDE: Root = { path: '/r-x', common: '/r/.git', branch: 'feature/x' }
@@ -68,9 +69,11 @@ test('D-21.5 the load of a subagent is its own turn event, not the lead\'s; the 
 
 test('D-21.5 Accept and the Archive check are offered only on a change that is not archived', () => {
   const open = { ...EMPTY, change: change(false), warnings: [warn] }
-  assert.deepEqual(bandOffers(open), { accept: [warn], check: true })
-  assert.deepEqual(bandOffers({ ...open, change: change(true) }), { accept: [], check: false })
-  assert.deepEqual(bandOffers({ ...EMPTY, warnings: [warn] }), { accept: [warn], check: false })
+  const offered = (s: NavState) => { const d = bandView(s, ENV).details
+    return { accept: d.warnings.map(x => x.accept), check: d.actions.some(a => a.label === 'Archive check') } }
+  assert.deepEqual(offered(open), { accept: [true], check: true })
+  assert.deepEqual(offered({ ...open, change: change(true) }), { accept: [false], check: false })
+  assert.deepEqual(offered({ ...EMPTY, warnings: [warn] }), { accept: [true], check: false })
 })
 
 test('D-21.5 Validate says "no repository" with no root, and "no gate" with a root but nothing to run', () => {

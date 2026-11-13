@@ -56,3 +56,18 @@ test('a background subagent outliving the turn keeps its events until it finishe
   assert.equal(s.turnEvents.filter(e => e.agent === 'a1').length, 2)
   assert.deepEqual(unused(reduce(s, finished('a1'))), ['hygiene:unused:a1:x'])
 })
+
+// ---------------------------------------------------------------- D-27.5
+const ran = (): Signal => ({ kind: 'ToolRan', id: id(), command: 'ls', ok: true, at: 2 })
+
+test('a Bash call is one tool event: ToolUsed counts, the ToolRan beside it adds none', () => {
+  assert.deepEqual(run(used(), ran()).turnEvents, [{ kind: 'tool', agent: 'main' }])
+  assert.deepEqual(run(ran()).turnEvents, [], 'ToolRan alone (a Validate run) is not the lead using its skills')
+})
+
+test('the lead\'s turn end drops the events of a subagent that is not running; a running one keeps its own', () => {
+  const s = run(spawned('a1'), load('x'), load('y'), used('ghost'), used('a1'), used(), turnEnd())
+  assert.deepEqual([...new Set(s.turnEvents.map(e => e.agent))], ['a1'])
+  const done = run(spawned('a1'), load('x'), finished('a1'), used('a1'), turnEnd()) // an event after its finish: the agent is done
+  assert.deepEqual(done.turnEvents, [])
+})

@@ -1,9 +1,10 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { groupDone } from './change.ts'
 import { EMPTY, type NavState } from './state.ts'
-import { bandView, capped, lineText, shortTitle, toneOf } from './view.ts'
+import { bandView, lineText, shortTitle, toneOf } from './view.ts'
 
-const env = { now: 0, home: '' }
+const env = { now: 0, home: '', commands: [] }
 const rowOf = (s: NavState, label: string) => bandView(s, env).details.rows.find(r => r.label === label)
 
 const apply: NavState = {
@@ -49,7 +50,7 @@ test('the stages row marks done, current and next, with short titles', () => {
 test('TC-02 (view) no open change: the line says so, the band has no next step and no warning', () => {
   assert.equal(lineText(EMPTY), 'navigator · no repository')
   const v = bandView(EMPTY, env)
-  assert.deepEqual([v.now, v.next, v.warning], ['no open change', null, null])
+  assert.deepEqual([v.now, v.next, v.warning], ['no repository', null, null])
 })
 
 test('TC-10 hiding the band leaves the line text unchanged and complete', () => {
@@ -141,6 +142,11 @@ test('band: the skill trail is the last 8, oldest first', () => {
   assert.deepEqual(rowOf({ ...EMPTY, skills }, 'skills')!.items, ['s2, s3, s4, s5, s6, s7, s8, s9'])
 })
 
+test('groupDone: a group is done when it has tasks and all are ticked', () => {
+  assert.deepEqual([{ done: 2, total: 2 }, { done: 1, total: 2 }, { done: 0, total: 0 }].map(g => groupDone({ title: 't', ...g })),
+    [true, false, false])
+})
+
 test('tokens: 999 stays plain, 1000 becomes 1.0k', () => {
   const a = (tokens: number): NavState => ({ ...EMPTY, subagents: [
     { agentId: 'a', toolUseId: 't', type: 'x', model: 'm', description: '', startedAt: 0, tokens, done: true, rootPath: null, skills: [] }] })
@@ -170,10 +176,5 @@ test('a stage heading drops its explanation after a dash; Stage n headings keep 
 test('the folded warning: the top message by tier, the other open ones counted', () => {
   const w = (key: string, message = key) => ({ key, message, remedy: null, owner: 'epic-planning' })
   const s: NavState = { ...EMPTY, warnings: [w('plan:outside:a.py'), w('plan:outside:b.py'), w('plan:outside:c.py'), w('gate', 'gate open')] }
-  assert.equal(bandView(s, env).warning, '⚠ plan:outside:c.py · 3 more') // tier 2 before the unknown prefix (3); newest first
-})
-
-test('capped: up to max lines, the rest as one "+n more" line', () => {
-  assert.deepEqual(capped(['a', 'b'], 3), ['a', 'b'])
-  assert.deepEqual(capped(['a', 'b', 'c', 'd'], 3), ['a', 'b', '+2 more'])
+  assert.equal(bandView(s, env).warning, '⚠ 4 warnings · plan:outside:c.py') // tier 2 before the unknown prefix (3); newest first
 })

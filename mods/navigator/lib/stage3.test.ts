@@ -1,17 +1,29 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { EMPTY, type NavState } from './state.ts'
-import { nextCommand, nextStep } from './actions.ts'
-import { WARNING_CAP, bandView, lineText, orderedWarnings, tierOf } from './view.ts'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { EMPTY, reduce, type NavState, type Signal } from './state.ts'
+import { bandView, lineText, orderedWarnings, tierOf } from './view.ts'
+import { resolveWorkflows } from './workflow.ts'
 
 const w = (key: string, message = key) => ({ key, message, remedy: null, owner: 'x' })
 const sub = (o: Partial<NavState['subagents'][number]>): NavState['subagents'][number] =>
   ({ agentId: 'a', toolUseId: 't', type: 'implementer', model: 'sonnet', description: '', startedAt: 0, tokens: 0, done: false,
     rootPath: null, skills: [], ...o })
-const env = { now: 4 * 60_000, home: '/home/lps' }
+const env = { now: 4 * 60_000, home: '/home/lps', commands: [] as string[] }
+const REPO = join(import.meta.dirname, '..', '..', '..')
+const epicDelivery = resolveWorkflows([{ path: 'skills/epic-delivery/assets/workflows/epic-delivery.workflow.json',
+  text: readFileSync(join(REPO, 'skills/epic-delivery/assets/workflows/epic-delivery.workflow.json'), 'utf8') }], []).workflows
+let n = 0
+const run = (...signals: Signal[]): NavState => signals.reduce(reduce, EMPTY)
+/** The state of worked example 3: epic-delivery in apply on a change with two tasks open. */
+const applying = (): NavState => run(
+  { kind: 'WorkflowsRead', id: `w${++n}`, workflows: epicDelivery, errors: [], mode: 'loose', at: 1 },
+  { kind: 'ChangeRead', id: `c${++n}`, change: change0, openChanges: 1, at: 2 })
 const change = { id: 'c', appetite: 'MEDIUM', done: 0, total: 2, groups: [{ title: '3. Stage 3 — Dump and restore', done: 0, total: 2 }],
   planMtime: 0, hasDesign: true, hasTasks: true, archived: false }
 const root = { path: '/home/lps/work/r', common: '/home/lps/work/r/.git', branch: 'feature/c' }
+const change0 = { ...change, done: 1, groups: [] } // partly ticked: epic-delivery places it in apply
 
 test('TC-13 tierOf ranks the keys in five tiers; an unknown prefix is 3', () => {
   const keys = ['process:gate:x', 'process:external:y', 'plan:outside:z', 'process:overspawn', 'hygiene:context', 'hygiene:unused:main:s', 'foo:bar']
@@ -31,18 +43,37 @@ test('worked example 3: the folded band of session 3', () => {
     warnings: [w('process:gate:clarity', 'clarity-gate has not run since its inputs changed'), w('plan:outside:a.py', 'a.py is outside the PLAN')] }
   const v = bandView(s, env)
   assert.equal(v.now, 'apply · 3 Dump and restore 0/2 · Task 3.1 dump and restore → implementer (4m)')
-  assert.equal(v.warning, '⚠ clarity-gate has not run since its inputs changed · 1 more')
+  assert.equal(v.warning, '⚠ 2 warnings · clarity-gate has not run since its inputs changed')
+})
+
+test('worked example 3, line 2: next: is the command the Next step button runs, asserted literally', () => {
+  const s = applying()
+  const installed = { ...env, commands: ['navigator', 'superpowers:test-driven-development'] }
+  const v = bandView(s, installed)
+  assert.equal(v.next, 'next: /superpowers:test-driven-development')
+  assert.deepEqual(v.nextAction, { label: 'Next step', line: 'test-driven-development' })
+  // not installed: the button still tells the person so when pressed; the line shows the step as typed
+  assert.equal(bandView(s, env).next, 'next: /test-driven-development')
+  assert.equal(bandView(run(), env).next, null)
+  assert.equal(bandView(run(), env).nextAction, null)
 })
 
 test('the folded warning counts tiers 1-4 only, never accepted ones; tier 5 alone shows none', () => {
   const s = { ...EMPTY, warnings: [w('hygiene:unused:main:s'), w('hygiene:context', 'ctx'), w('plan:a', 'p'), w('plan:b', 'q')], accepted: ['plan:b'] }
-  assert.equal(bandView(s, env).warning, '⚠ p · 1 more')
+  assert.equal(bandView(s, env).warning, '⚠ 2 warnings · p')
+  assert.equal(bandView({ ...s, warnings: [w('plan:a', 'p')], accepted: [] }, env).warning, '⚠ p')
   assert.equal(bandView({ ...EMPTY, warnings: [w('hygiene:unused:main:s')] }, env).warning, null)
 })
 
 test('now line: no change, no workflow', () => {
   assert.equal(bandView({ ...EMPTY, root }, env).now, 'no change for branch feature/c')
-  assert.equal(bandView(EMPTY, env).now, 'no open change')
+  assert.equal(bandView(EMPTY, env).now, 'no repository') // one text for no root, as the status line says
+})
+
+test('now line: a subagent task is cut to 30 characters', () => {
+  const s: NavState = { ...EMPTY, change, phase: 'apply',
+    subagents: [sub({ description: 'T'.repeat(30) }), sub({ agentId: 'b', description: 'U'.repeat(31) })] }
+  assert.match(bandView(s, env).now, new RegExp(`· ${'T'.repeat(30)} → implementer .* · ${'U'.repeat(29)}… → implementer`))
 })
 
 test('now line: three running subagents show two and +1', () => {
@@ -85,36 +116,71 @@ test('Details: warnings in tier order with key and message; accepted ones not of
   assert.ok(bandView(arch, env).details.warnings.every(x => !x.accept))
 })
 
-test('Details: many open plan:outside warnings are capped, open ones before accepted, the rest counted', () => {
-  const many = Array.from({ length: 12 }, (_, i) => w(`plan:outside:f${i}.py`, `f${i}.py is outside the PLAN`))
-  const s: NavState = { ...EMPTY, change, warnings: [...many, w('hygiene:context', 'ctx')], accepted: ['plan:outside:f11.py'] }
-  const d = bandView(s, env).details
-  assert.equal(d.warnings.length, WARNING_CAP - 1)
-  assert.equal(d.moreWarnings, 13 - (WARNING_CAP - 1))
-  assert.ok(d.warnings.every(x => !x.accepted), 'the accepted one is last, so it falls into the +n more')
-  assert.equal(d.warnings[0]!.key, 'plan:outside:f10.py') // newest first within tier 2
-  assert.equal(bandView({ ...s, warnings: many.slice(0, 3), accepted: [] }, env).details.moreWarnings, 0)
-  assert.equal(bandView({ ...s, warnings: many.slice(0, WARNING_CAP), accepted: [] }, env).details.moreWarnings, 0)
+test('Many warnings (spec): twelve open, one a gate: folded shows the count and the gate one, Details lists all twelve, gate first', () => {
+  const plan = Array.from({ length: 11 }, (_, i) => w(`plan:outside:f${i}.py`, `f${i}.py is outside the PLAN`))
+  const s: NavState = { ...EMPTY, change, warnings: [w('process:gate:clarity', 'clarity-gate has not run'), ...plan] }
+  const v = bandView(s, env)
+  assert.equal(v.warning, '⚠ 12 warnings · clarity-gate has not run')
+  assert.equal(v.details.warnings.length, 12)
+  assert.equal(v.details.warnings[0]!.key, 'process:gate:clarity')
+  assert.equal(v.details.warnings[1]!.key, 'plan:outside:f10.py') // newest first within tier 2
+  assert.ok(!('moreWarnings' in v.details))
 })
 
-test('next: shows the command the Next step button runs, a slash and the skill; null when there is none', () => {
-  assert.equal(nextCommand('opsx:apply'), '/opsx:apply')
-  assert.equal(nextCommand(null), null)
-  const s: NavState = { ...EMPTY, change, phase: 'apply' }
-  const step = nextStep(s)
-  assert.equal(bandView(s, env).next, step ? `next: /${step}` : null)
+test('Details: open warnings come before accepted ones, so a flood of accepted never hides an Accept button', () => {
+  const many = Array.from({ length: 12 }, (_, i) => w(`plan:outside:f${i}.py`))
+  const s: NavState = { ...EMPTY, change, warnings: many, accepted: ['plan:outside:f11.py'] }
+  const d = bandView(s, env).details
+  assert.equal(d.warnings.length, 12)
+  assert.deepEqual([d.warnings[0]!.accepted, d.warnings.at(-1)!.accepted], [false, true])
+})
+
+test('an Accept button reads "Accept: <message>", cut to 60 characters', () => {
+  const s: NavState = { ...EMPTY, change, warnings: [w('plan:a', 'short'), w('plan:b', 'm'.repeat(80))] }
+  const [long, short] = bandView(s, env).details.warnings
+  assert.equal(short!.label, 'Accept: short')
+  assert.equal([...long!.label].length, 60)
+  assert.ok(long!.label.startsWith('Accept: mmm') && long!.label.endsWith('…'))
 })
 
 test('now line: elapsed counts in the milliseconds $.clock.now() gives, as startedAt does', () => {
   const s: NavState = { ...EMPTY, change, phase: 'apply', subagents: [sub({ description: 'd', startedAt: 1_700_000_000_000 })] }
-  assert.match(bandView(s, { now: 1_700_000_000_000 + 125_000, home: '' }).now, /\(2m\)$/)
+  assert.match(bandView(s, { now: 1_700_000_000_000 + 125_000, home: '', commands: [] }).now, /\(2m\)$/)
 })
 
-test('Details: actions, Archive check only on an open change', () => {
-  const labels = (s: NavState) => bandView(s, env).details.actions
-  assert.deepEqual(labels({ ...EMPTY, change }), ['Reconcile EPIC', 'Archive check', 'Validate', 'Review', 'Mode', 'Less'])
-  assert.ok(!labels(EMPTY).includes('Archive check'))
+const labels = (s: NavState) => bandView(s, env).details.actions.map(a => a.label)
+
+test('Details: actions offer only what applies; Archive check only on an open change, Mode always', () => {
+  assert.deepEqual(labels({ ...EMPTY, change }), ['Archive check', 'Switch to strict'])
+  assert.deepEqual(labels(EMPTY), ['Switch to strict'])
   assert.ok(!labels({ ...EMPTY, change: { ...change, archived: true } }).includes('Archive check'))
+  assert.deepEqual(labels({ ...EMPTY, mode: { repo: 'strict', session: null } }), ['Switch to loose'])
+})
+
+test('Details: Reconcile EPIC carries its two steps, Validate and Review their command lines', () => {
+  const drift = { key: 'plan:outside:a.py', message: 'm', remedy: 'openspec-update-change c', owner: 'epic-planning' }
+  const s = { ...applying(), warnings: [drift] }
+  const a = bandView(s, env).details.actions
+  assert.deepEqual(a.find(x => x.label === 'Reconcile EPIC'), { label: 'Reconcile EPIC', steps: ['openspec-update-change c', 'clarity-gate c'] })
+  assert.ok(a.some(x => x.label === 'Review' && 'line' in x && x.line.startsWith('meaningfy-code-review c')), JSON.stringify(a))
+})
+
+test('the Back on track and hygiene buttons come from the view, with their lines', () => {
+  const gate = { key: 'process:missing:apply:tdd', message: 'tdd missing', remedy: 'test-driven-development', owner: 'epic-delivery' }
+  const v = bandView({ ...applying(), warnings: [gate], offer: 'compact' }, env)
+  assert.deepEqual(v.backAction, { label: 'Back on track', line: 'test-driven-development' })
+  assert.equal(v.hygieneAction!.label, 'Compact now')
+  assert.equal(bandView(applying(), env).backAction, null)
+  assert.equal(bandView(applying(), env).hygieneAction, null)
+})
+
+test('the appetite row: no groups when a stages row shows, "diff truncated" when the plan read was cut', () => {
+  const grouped = { ...EMPTY, change: { ...change, groups: [{ title: '1. Stage 1 — a', done: 1, total: 2 }] } }
+  const items = (s: NavState) => bandView(s, env).details.rows.find(r => r.label === 'appetite')!.items
+  assert.ok(!items(grouped).some(i => i.startsWith('groups')))
+  assert.ok(items({ ...EMPTY, change: { ...change, groups: [] } }).every(i => !i.startsWith('groups')))
+  assert.ok(!items(grouped).includes('diff truncated'))
+  assert.ok(items({ ...grouped, planTruncated: true }).includes('diff truncated'))
 })
 
 test('status line: no change for the branch, no repository, strict kept', () => {

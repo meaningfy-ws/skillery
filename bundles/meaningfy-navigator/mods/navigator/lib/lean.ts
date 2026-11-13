@@ -3,15 +3,15 @@
 // guardrails thresholds file.
 
 import { creditLoad } from './attribution.ts'
-import { inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
+import { groupDone } from './change.ts'
+import { MAIN, inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
   type Role } from './dispatch.ts'
 import { offer, onCompact, thresholdsFrom, type HygieneEvent } from './hygiene.ts'
 import { addWarnings } from './process-drift.ts'
 import type { Change, NavState, Signal, Warning } from './state.ts'
 import { isArchive, isCommit, isPrMerge, workflowOf } from './workflow.ts'
 
-const MAIN = 'main' // the lead's agent name in turn events (D-9)
-const groupsDone =(c: Change | null) => c?.groups.filter(g => g.total > 0 && g.done === g.total).length ?? 0
+const groupsDone = (c: Change | null) => c?.groups.filter(groupDone).length ?? 0
 
 /** The hygiene events a signal makes (§6.5's fixed vocabulary). */
 function eventsOf(prev: NavState, next: NavState, s: Signal): HygieneEvent[] {
@@ -46,8 +46,7 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       return { ...n, agentCalls: { ...n.agentCalls, [s.agentId]: (n.agentCalls[s.agentId] ?? 0) + 1 } }
     case 'ToolUsed': // any tool but Skill, by its agent (D-9)
       return { ...n, turnEvents: [...n.turnEvents, { kind: 'tool', agent: s.agentId ?? MAIN }] }
-    case 'ToolRan': {
-      n = { ...n, turnEvents: [...n.turnEvents, { kind: 'tool', agent: s.agentId ?? MAIN }] }
+    case 'ToolRan': { // not a tool event: the call's ToolUsed is (one event per call)
       if (s.agentId) return n
       if (s.ok && shipCommand(s.command)) {
         n = { ...n, shipLog: [...n.shipLog, { kind: 'ship' }] }
@@ -84,7 +83,9 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       add(r.warnings)
       return { ...n, offer: r.offer, hygieneEvents: r.point ? [] : n.hygieneEvents,
         sessionTokens: n.sessionTokens + (s.tokens ?? 0), usd: s.usd ?? n.usd,
-        turnId: s.turnId, turnRoles: [], turnEvents: n.turnEvents.filter(e => e.agent !== MAIN) }
+        turnId: s.turnId, turnRoles: [],
+        // The lead's events end with its turn; a subagent's stay only while it runs (D-27.5).
+        turnEvents: n.turnEvents.filter(e => n.subagents.some(a => a.agentId === e.agent && !a.done)) }
     }
     case 'Compacted':
       add(onCompact(s.trigger))

@@ -2,14 +2,13 @@
 // and the band. Its I/O helpers are in io.ts; everything it decides is in lib/, pure and unit-tested.
 import type { Register } from 'claude-code'
 
-import { backOnTrack, hygieneAction, modeAction, nextStep, reconcile, review, validateRuns } from './lib/actions.ts'
 import { overspawnNow, rewriteModel } from './lib/lean.ts'
 import { settingsFrom, type BandDisplay } from './lib/state.ts'
 import { decideArchive, decideCommit, decideSpawn, reminder } from './lib/strict.ts'
 import { parseAccept } from './lib/deviations.ts'
-import { bandView, toneOf, type Tone } from './lib/view.ts'
+import { bandView, toneOf, type BandAction, type Tone } from './lib/view.ts'
 import { isArchive, isCommit } from './lib/workflow.ts'
-import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, ensureRoot, readAcceptedSignal,
+import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, commandNames, ensureRoot, readAcceptedSignal,
   checkPr, homeDir, readChangeSignal, readPlanSignal, reconcileFromBand, recordCall, rootSubagent, send, start, state, trackSkillCall,
   turnEndedSignal, validate } from './io.ts'
 
@@ -182,15 +181,13 @@ export const register: Register = (on, options) => {
         </Box>
       )
     }
-    const v = bandView(s, { now: await $.clock.now(), home: await homeDir($) })
+    const v = bandView(s, { now: await $.clock.now(), home: await homeDir($), commands: await commandNames($) })
     const open = s.display.band === 'unfolded'
-    const step = nextStep(s)
-    const back = backOnTrack(s)
-    const hygiene = hygieneAction(s)
-    const steps = reconcile(s)
-    const reviewLine = review(s)
-    const press = (line: string) => () => act($, line)
-    const offers = (label: string) => v.details.actions.includes(label)
+    // bandView decides which buttons apply and what they run; this only turns them into widgets.
+    const press = (a: BandAction) => () => ('steps' in a ? reconcileFromBand($, a.steps) : act($, a.line))
+    const button = (a: BandAction | null, variant?: 'primary') =>
+      a && <Button key={a.label} label={a.label} {...(variant ? { variant } : {})} onPress={press(a)} />
+    const detailButtons = v.details.actions.map(a => button(a))
     // One line per row, cut at the edge; items coloured by their glyph, labels and separators dim.
     const row = (key: string, label: string | null, items: string[]) => (
       <Text key={key} wrap="truncate-end">
@@ -204,16 +201,16 @@ export const register: Register = (on, options) => {
     return (
       <Box flexDirection="column">
         <Text key="now" wrap="truncate-end">{v.now}</Text>
-        {(v.next || back || hygiene) && (
+        {(v.next || v.hygieneAction) && (
           <Box>
             {v.next && <Text key="next-text" wrap="truncate-end">{v.next}</Text>}
-            {step && <Button key="next" label="Next step" variant="primary" onPress={press(step)} />}
-            {back && <Button key="back" label="Back on track" onPress={press(back)} />}
-            {hygiene && <Button key="hygiene" label={hygiene.label} onPress={press(hygiene.line)} />}
+            {button(v.nextAction, 'primary')}
+            {button(v.hygieneAction)}
           </Box>
         )}
         <Box>
           {v.warning && <Text key="warning" color="warning" wrap="truncate-end">{v.warning}</Text>}
+          {button(v.backAction)}
           {!open && <Button key="details" label="Details" dimColor onPress={set('unfolded')} />}
           <Button key="hide" label="Hide" dimColor onPress={set('hidden')} />
         </Box>
@@ -222,21 +219,14 @@ export const register: Register = (on, options) => {
         {open && v.details.warnings.map(w => (
           <Box key={`warning:${w.key}`}>
             {w.accept
-              ? <Button key="accept" label={w.message} onPress={() => acceptFromBand($, w.key)} />
+              ? <Button key="accept" label={w.label} onPress={() => acceptFromBand($, w.key, w.message)} />
               : <Text wrap="truncate-end" {...(w.accepted ? STYLE.done : STYLE.warn)}>{`${w.accepted ? '✓ accepted: ' : '⚠ '}${w.message}`}</Text>}
           </Box>
         ))}
-        {open && v.details.moreWarnings > 0 && (
-          <Text dimColor>{`+${v.details.moreWarnings} more; /navigator accept <key> "<reason>"`}</Text>
-        )}
         {open && row('mode', 'mode', [v.details.mode])}
         {open && (
           <Box>
-            {steps && offers('Reconcile EPIC') && <Button key="reconcile" label="Reconcile EPIC" onPress={() => reconcileFromBand($, steps)} />}
-            {offers('Archive check') && <Button key="check" label="Archive check" onPress={press('navigator check')} />}
-            {validateRuns(s).length > 0 && offers('Validate') && <Button key="validate" label="Validate" onPress={press('navigator validate')} />}
-            {reviewLine && offers('Review') && <Button key="review" label="Review" onPress={press(reviewLine)} />}
-            {offers('Mode') && <Button key="mode" label="Mode" onPress={press(modeAction(s))} />}
+            {detailButtons}
             <Button key="less" label="Less" dimColor onPress={set('folded')} />
           </Box>
         )}
