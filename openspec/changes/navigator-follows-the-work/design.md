@@ -448,3 +448,9 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
   churn across files for no behaviour; `handOff` stays the one list. `--delete-branch` ending the
   archive phase at the turn end: conforms to D-8, noted. `gh release create "$TAG"`: not matched
   (quoted text is blanked by design).
+- **D-26 — Stage 2 check: the `gh` check runs after the change read.** The checker found the
+  re-root and branch-move checks ran before the turn-end change read, so they judged the old
+  change's ticks against the new branch. The check now runs at the main turn's end, right after
+  the change read, and asks again only when the root, branch or change moved since it last asked
+  (a module value; a reload asks once more). At start and after an ok `gh pr merge` it always
+  asks. The Gherkin *A merged pull request* gains its missing "all tasks ticked" Given.

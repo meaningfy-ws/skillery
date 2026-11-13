@@ -102,7 +102,8 @@ Feature: The navigator follows the work, not the launch directory
 
     # Traces to: workflow-definitions, "A merged pull request"
     Scenario: A merged pull request
-      Given the followed branch "feature/tenant-dump-restore" has an open pull request
+      Given the followed change "tenant-dump-restore" has all its tasks ticked
+      And its branch "feature/tenant-dump-restore" has an open pull request
       When the session runs "gh pr merge" and the pull request is then merged
       Then the phase is "archive"
 
