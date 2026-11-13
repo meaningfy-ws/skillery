@@ -47,14 +47,14 @@
 - [x] 4.6 `.github/ISSUE_TEMPLATE/defect.yml`: `labels: ["bug"]`
 - [x] 4.7 Docs: `docs/environment/navigator.md` (the band, worktrees, release by command, a worked example), `docs/development/mods.md` (the state contract: root, agent entries), `docs/development/workflows.md` (`activate.commands`, `small_stage`, `## Delivery decisions`); CHANGELOG with a BREAKING (display) line; `make skill-inventory`
 - [x] 4.8 The lawyer's live trial (#188, D-14): run `tests/features/agents/lawyer.feature`'s scenarios in the contract repository; file what is off through `skillery-feedback`; record the result in `evidence/lawyer-trial.md`
-- [ ] 4.9 Check the spec deltas against what was built; `openspec validate navigator-follows-the-work --strict`, `make validate`, `make validate-spine` green; review; PR into `develop`; close #185, #188, #148 on merge
+- [x] 4.9 Check the spec deltas against what was built; `openspec validate navigator-follows-the-work --strict`, `make validate`, `make validate-spine` green; review; PR into `develop`; close #185, #188, #148 on merge
 
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.2b · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
 - [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6
 - [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.5 · [x] 3.6 · [x] 3.7 · [x] 3.8
-- [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5 · [x] 4.6 · [x] 4.7 · [x] 4.8 · [ ] 4.9
+- [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5 · [x] 4.6 · [x] 4.7 · [x] 4.8 · [x] 4.9
 
 ## Verification
 

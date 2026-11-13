@@ -62,3 +62,7 @@ for the skill while it is not (navigator-follows-the-work DEC-5, Q-19).
 #### Scenario: A local tag is not a release
 - **WHEN** a session runs `git tag v1.0.0` without pushing it, or deletes a tag
 - **THEN** the release workflow does not activate
+
+#### Scenario: Ordinary work does not start a release
+- **WHEN** a session tags a commit or pushes a `release/` branch without loading `meaningfy-release`
+- **THEN** the release workflow does not activate
