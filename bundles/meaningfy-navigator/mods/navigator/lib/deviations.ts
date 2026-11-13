@@ -1,7 +1,22 @@
 // deviations.md of a change: one keyed line per accepted deviation (design §8, DD-12). Pure.
 
 import { isDrift } from './process-drift.ts'
-import type { Warning } from './state.ts'
+import type { NavState, Warning } from './state.ts'
+
+export const deviationsPath = (root: string, change: string) => `${root}/openspec/changes/${change}/deviations.md`
+
+export type AcceptTarget = { kind: 'file'; path: string } | { kind: 'session' } | { kind: 'archived' }
+
+/** Where Accept writes: the followed change's deviations.md in the followed root (D-2); this session
+ *  only when there is no change or no root; nowhere on an archived change (D-3). */
+export function acceptTarget(s: NavState): AcceptTarget {
+  if (s.change?.archived) return { kind: 'archived' }
+  return s.change && s.root ? { kind: 'file', path: deviationsPath(s.root.path, s.change.id) } : { kind: 'session' }
+}
+
+/** Why Accept and the Archive check do nothing: the change is already archived. */
+export const archivedRefusal = (s: NavState): string | null =>
+  s.change?.archived ? `Navigator: ${s.change.id} is archived; there is nothing to accept or check.` : null
 
 const HEADER = '# Deviations accepted with /navigator accept'
 const SEP = ' · '

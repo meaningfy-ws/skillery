@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { appetiteOf, appetitesOf, holds, matchArchived, matchOpen, progress, readChange, type ChangeFiles } from './change.ts'
+import { appetiteOf, appetitesOf, archivedFolders, holds, matchArchived, matchOpen, progress, readChange, type ChangeFiles } from './change.ts'
 import { ARCHIVED_CHANGES, OPEN_CHANGES } from './fixtures.test-helpers.ts'
 
 const APPETITES = ['TINY', 'SMALL', 'MEDIUM', 'LARGE', 'VERY LARGE', 'HUGE']
@@ -91,6 +91,12 @@ test('TC-7 the change just archived is still followed', () => {
   assert.equal(matchArchived('feature/boundary-owned-hint', [folder], 'boundary-owned-hint'), folder)
   assert.equal(matchArchived('develop', [folder], 'boundary-owned-hint'), null) // the branch must name it too
   assert.equal(matchArchived('feature/boundary-owned-hint-2', [folder], 'boundary-owned-hint'), folder)
+})
+
+test('archivedFolders: only the folder of the last followed change is read, not the whole archive', () => {
+  const names = ['2026-11-09-navigator', '2026-11-13-boundary-owned-hint', '2026-11-10-boundary-owned-hint-two']
+  assert.deepEqual(archivedFolders(names, 'boundary-owned-hint'), ['2026-11-13-boundary-owned-hint'])
+  assert.deepEqual(archivedFolders(names, null), [])
 })
 
 test('TC-7 readChange: lastChangeId names the archived folder; the change comes back archived', () => {

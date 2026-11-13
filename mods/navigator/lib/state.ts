@@ -128,7 +128,7 @@ function apply(state: NavState, s: Signal): NavState {
       return navigate(read, s.at)
     }
     case 'ChangeRead': {
-      const read = { ...state, change: s.change, openChanges: s.openChanges }
+      const read = { ...state, change: s.change, openChanges: s.openChanges, lastChangeId: s.change?.id ?? null }
       const w = workflowOf(read)
       const gates = w && s.change ? gatesAfterPlan(read.gates, w, s.change.planMtime) : read.gates
       return navigate({ ...read, gates }, s.at)

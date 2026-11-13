@@ -6,12 +6,13 @@ import { backOnTrack, hygieneAction, modeAction, nextStep, reconcile, review, va
 import { overspawnNow, rewriteModel } from './lib/lean.ts'
 import { settingsFrom, type BandDisplay } from './lib/state.ts'
 import { decideArchive, decideCommit, decideSpawn, reminder } from './lib/strict.ts'
-import { parseAccept } from './lib/deviations.ts'
+import { archivedRefusal, parseAccept } from './lib/deviations.ts'
 import { openDrift } from './lib/process-drift.ts'
 import { bandModel, capped, toneOf, type Tone } from './lib/view.ts'
 import { isArchive, isCommit } from './lib/workflow.ts'
-import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, readAcceptedSignal, readChangeSignal, readPlanSignal,
-  reconcileFromBand, repoRoot, send, start, state, turnEndedSignal, validate } from './io.ts'
+import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, ensureRoot, followEdit, readAcceptedSignal,
+  readChangeSignal, readPlanSignal, reconcileFromBand, rootSubagent, send, start, state, touchedPath, turnEndedSignal,
+  validate } from './io.ts'
 
 
 // Colour says state only (done, current, to do, failed, warning); cost and counts stay neutral.
@@ -37,9 +38,10 @@ export const register: Register = (on, options) => {
   }).catch(($, e, next) => next(e))
 
   on('command.run', { command: SESSION_MOVES }, async ($, e, next) => {
+    const carried = (await state($)).root // the new session keeps the followed root (D-2)
     const result = await next(e)
     const s = await state($)
-    if (s.sessionId !== (await $.session.id())) await start($, settings, s.interactive)
+    if (s.sessionId !== (await $.session.id())) await start($, settings, s.interactive, carried)
     return result
   }).catch(($, e, next) => next(e))
 
@@ -74,6 +76,8 @@ export const register: Register = (on, options) => {
 
   // Commands and edits feed the gates, the commit checks and the DevOps phases (design §5).
   on('tool.call', async ($, e, next) => {
+    // A subagent's root is its `cwd()` in its first call (D-16).
+    if (e.agentId) await rootSubagent($, e.agentId)
     // Strict mode decides before the command runs (design §7); loose never blocks.
     if (e.tool === 'Bash') {
       const s = await state($)
@@ -90,10 +94,10 @@ export const register: Register = (on, options) => {
       await send($, { kind: 'ToolRan', id: `tool:${e.tool_use_id}`, command: e.command, ok: !result.isError, at,
         ...(e.agentId ? { agentId: e.agentId } : {}) })
     } else if (e.tool === 'Edit' || e.tool === 'Write' || e.tool === 'NotebookEdit') {
-      const root = await repoRoot($)
       const file = e.tool === 'NotebookEdit' ? e.notebook_path : e.file_path
-      const path = file.startsWith(`${root}/`) ? file.slice(root.length + 1) : file
-      await send($, { kind: 'FileTouched', id: `tool:${e.tool_use_id}`, path, at })
+      // The lead's edit may move its root first, so it counts against the new one (D-2); a subagent's never does.
+      if (!e.agentId) await followEdit($, e.tool_use_id, file)
+      await send($, { kind: 'FileTouched', id: `tool:${e.tool_use_id}`, path: await touchedPath($, file, e.agentId), at })
     }
     return result
   }).catch(($, e, next) => next(e))
@@ -151,6 +155,7 @@ export const register: Register = (on, options) => {
     } else {
       // Git and file reads run once per main turn, never per subagent turn (design §5).
       await send($, { kind: 'AnswerShown', id: `answer:${e.turnId}`, text: result.text, at: await $.clock.now() })
+      await ensureRoot($, e.turnId)
       await send($, await readChangeSignal($, `change:${e.turnId}`))
       const accepted = await readAcceptedSignal($, `accepted:${e.turnId}`)
       if (accepted) await send($, accepted)
@@ -191,7 +196,9 @@ export const register: Register = (on, options) => {
     const steps = reconcile(s)
     const reviewLine = review(s)
     const press = (line: string) => () => act($, line)
-    const openWarnings = openDrift(s)
+    // Accept and the Archive check do nothing on an archived change, so they are not offered (D-3).
+    const archived = archivedRefusal(s) !== null
+    const openWarnings = archived ? [] : openDrift(s)
     // One line per row, cut at the edge; items coloured by their glyph, labels and separators dim.
     const row = (key: string, label: string | null, items: string[]) => (
       <Text key={key} wrap="truncate-end">
@@ -228,7 +235,7 @@ export const register: Register = (on, options) => {
         {s.display.band === 'unfolded' && (
           <Box>
             {steps && <Button key="reconcile" label="Reconcile EPIC" onPress={() => reconcileFromBand($, steps)} />}
-            {s.change && <Button key="check" label="Archive check" onPress={press('navigator check')} />}
+            {s.change && !archived && <Button key="check" label="Archive check" onPress={press('navigator check')} />}
             {validateRuns(s).length > 0 && <Button key="validate" label="Validate" onPress={press('navigator validate')} />}
             {reviewLine && <Button key="review" label="Review" onPress={press(reviewLine)} />}
             <Button key="mode" label="Mode" onPress={press(modeAction(s))} />

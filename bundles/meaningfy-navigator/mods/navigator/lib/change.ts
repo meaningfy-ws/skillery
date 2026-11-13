@@ -71,10 +71,14 @@ export function matchOpen(branch: string, open: string[]): string | null {
 
 const ARCHIVE_DATE = /^\d{4}-\d{2}-\d{2}-/
 
+/** The archive folders (`<date>-<id>`) of `lastChangeId`: the only ones io reads (D-3). */
+export const archivedFolders = (names: string[], lastChangeId: string | null): string[] =>
+  lastChangeId ? names.filter(f => f.replace(ARCHIVE_DATE, '') === lastChangeId) : []
+
 /** The archived folder (`<date>-<id>`) of the change just archived: only `lastChangeId`, and only when the branch names it. */
 export function matchArchived(branch: string, archived: string[], lastChangeId: string | null): string | null {
   if (!lastChangeId || boundedAt(branch, lastChangeId) < 0) return null
-  return archived.find(f => f.replace(ARCHIVE_DATE, '') === lastChangeId) ?? null
+  return archivedFolders(archived, lastChangeId)[0] ?? null
 }
 
 const toChange = (c: ChangeFiles, id: string, appetites: string[], archived: boolean): Change =>

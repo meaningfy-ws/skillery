@@ -329,3 +329,12 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
   after `agent.spawn` resolves, so the just-started-subagent case credits it. D-2 drops "else the
   spawn's `cwd`": `agent.spawn` carries neither `cwd` nor `isolation` on this build; a subagent's
   root comes only from `cwd()` in its first `tool.call`.
+- **D-17 — #148 runs in parallel with stage 1.** Tasks 4.1 and 4.3–4.6 touch the review data,
+  skills and agent, not the files stage 1 changes, so they run on their own branch
+  (`feature/navigator-follows-the-work-review-sizing`, off `develop`) and ship as their own PR.
+  Tasks 4.2 and 4.7–4.9 stay in the closing stage. Reason: the owner asked for parallel work.
+- **D-18 — Corrections to D-2 found while building 1.4.** `git rev-parse --git-common-dir` prints a
+  relative path against the directory it ran in, not the toplevel, so it is resolved against that
+  directory. A session that starts outside any repository (`root: null`) follows its first edit
+  into a repository. A `Write` into a directory that does not exist yet does not re-root (accepted:
+  the next edit there does).

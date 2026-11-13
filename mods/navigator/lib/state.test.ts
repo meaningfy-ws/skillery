@@ -171,6 +171,14 @@ test('RootFollowed: the same signal id twice is applied once', () => {
   assert.equal(reduce(once, { kind: 'RootFollowed', id: 'r1', root: root('/x') }), once)
 })
 
+test('ChangeRead keeps lastChangeId at the id of the change read, null when none is read', () => {
+  const change = { id: 'x', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: false, hasTasks: false, archived: false }
+  let s = reduce(started(), { kind: 'ChangeRead', id: 'c1', change, openChanges: 1, at: 1 })
+  assert.equal(s.lastChangeId, 'x')
+  s = reduce(s, { kind: 'ChangeRead', id: 'c2', change: null, openChanges: 1, at: 2 })
+  assert.equal(s.lastChangeId, null)
+})
+
 test('AgentRooted sets that subagent root only; idempotent per agent', () => {
   let s = reduce(reduce(started(), spawned('a1')), spawned('a2'))
   s = reduce(s, { kind: 'AgentRooted', id: 'rooted:a1', agentId: 'a1', root: '/r-tdr' })
