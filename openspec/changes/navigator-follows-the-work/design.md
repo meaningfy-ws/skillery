@@ -80,7 +80,8 @@ New choices made while planning; settled ones are cited by their DEC id.
   and removes it when the spawn with that `tool_use_id` resolves, onto that subagent. A
   `skill.prompt` is credited, in order: to the oldest in-flight `Skill` call with that name; else
   to the newest pending spawn, or else the newest *just-started* subagent (running, no tool call
-  yet), as a preload; else to the lead (a person's `/name`). A subagent's load enters only its
+  yet), as a preload; else to the lead (a person's `/name`). *Order amended by D-19: just-started
+  subagent before pending spawn.* A subagent's load enters only its
   entry: it activates no workflow, enters no lead trail, passes no skill gate. *Spike 1.1 confirms
   which of the pending and just-started cases preloads hit; the rule covers both.*
 - **D-5 — Merged (DEC-5; A-1).** `gh pr view <branch> --json state,headRefName` runs, with a
@@ -255,7 +256,7 @@ Every new signal carries an id (`root:<tool_use_id>`, `skillcall:<tool_use_id>`,
 | Record an edit, then re-root | re-root first | the first edit would miss its file gate (A-3) |
 | Fall back to the most recent change, or to any archived one | `none`, or `lastChangeId` only | it is whichever session wrote last; old archives match loosely (A-5) |
 | Treat a stage's merge as the change's | `merged` needs all tasks ticked | stages merge one by one (A-1) |
-| Credit an unattributed `skill.prompt` to the lead | in-flight call, then pending spawn, then lead | preloads are subagents' (A-2) |
+| Credit an unattributed `skill.prompt` to the lead | in-flight call, then just-started subagent, then pending spawn, then lead (D-19) | preloads are subagents' (A-2) |
 | Hard-code release commands in `lib/` | `activate.commands` in the workflow file | workflows are data |
 | Put decisions in `io.ts` | pure functions in `lib/` | `io.ts` has no test harness (A-10) |
 | Persist anything outside the atom | keep it in `NavState` | DEC-1 |
@@ -335,11 +336,33 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
   Tasks 4.2 and 4.7–4.9 stay in the closing stage. Reason: the owner asked for parallel work.
 - **D-18 — Corrections to D-2 found while building 1.4.** `git rev-parse --git-common-dir` prints a
   relative path against the directory it ran in, not the toplevel, so it is resolved against that
-  directory. A session that starts outside any repository (`root: null`) follows its first edit
-  into a repository. A `Write` into a directory that does not exist yet does not re-root (accepted:
+  directory. ~~A session that starts outside any repository (`root: null`) follows its first edit
+  into a repository.~~ (superseded by D-21.3) A `Write` into a directory that does not exist yet does not re-root (accepted:
   the next edit there does).
 - **D-19 — A just-started subagent is credited before a pending spawn (amends D-4).** Spike 1.1
   shows two spawns in one turn interleave: the first subagent's preloads fire while the second
   spawn is still pending, so D-4's order would credit them to the wrong subagent. Order now:
   in-flight `Skill` call, just-started subagent, pending spawn, lead. Found by the lead reading
-  the 1.6 diff against the spike log.
+  the 1.6 diff against the spike log. Known limit: while a background subagent is running with no
+  tool call yet, a skill the person types (`/name`) is credited to it, not the lead (rare; it
+  ends at that subagent's first tool call).
+- **D-21 — Stage 1 review (PR #200): accepted findings.** Five lenses, no critical finding.
+  1. *One branch source* (L3, L4, L5): the per-directory memo keeps only `path` and `common`;
+     the branch is re-read every main turn into `root.branch`, and the change read uses it.
+  2. *`revive` backfills the new `Subagent` fields* (`root`, `skills`) of an older atom (L3; D-1).
+  3. *No re-root from no root* (L1, security): with `root: null` an edit never adopts a
+     repository, so an untrusted clone's `docs/navigator` gate commands are never loaded by
+     accident. Supersedes D-18's second sentence; the root then comes only from `session.root()`.
+  4. *`SkillCallEnded` in a `finally`* (L1), as the spawn pair already is.
+  5. *Decisions out of the entrypoint* (L3, L4): whether Accept and Archive check are offered, the
+     archived refusal (carried on the `archived` Accept target), the no-repository reply of
+     Validate, and whose load a `SkillLoaded` was (the reducer says so; `lean` stops comparing
+     trail lengths) move into `lib/` with tests; the `tool.call` handler is split into helpers.
+  6. *Names and types* (L4, L5): `Subagent.root` → `rootPath`; `SkillCall.loaded` and
+     `PendingSpawn.skills` required; one `ARCHIVE_DIR`; `relativeTo` for every relative path;
+     `attribution.ts` owns `creditLoad` and imports types through `state.ts`; `dirOf` total.
+  7. *Tests* (L2): two lead edits in one turn (the last wins); a change archived twice follows the
+     newest folder; the Gherkin steps that need stage 3's display say so.
+  8. *Docs agree with D-19* (L2): the spike's verdict and D-4's text point to D-19.
+  9. *A live check before merge* (L2): recorded in `evidence/live-check-stage-1.md`.
+  Rejected: none.

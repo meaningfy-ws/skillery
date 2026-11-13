@@ -45,9 +45,10 @@ The worktree subagent's `git rev-parse --show-toplevel --git-common-dir --abbrev
 | (b'') `agent.spawn` input `cwd` / `isolation` | **absent** even with `isolation: worktree` | D-2's "else the spawn's `cwd`" fallback has nothing to read: drop it; a subagent with no tool call yet has no root |
 | (c) `skill.prompt` within a `Skill` tool call | between its pre and post, lead and subagent alike | D-4's in-flight rule works |
 | (d) a preloaded skill's `skill.prompt` | **after** `agent.spawn` resolves (and after the `Agent` tool call's post), before the subagent's first tool call | D-4's *just-started subagent* case is the one that fires; the *pending spawn* case does not occur on this build. Kept as a harmless first check (cheap, covers a future order) |
-| (d') two spawns in one turn | their `spawn` posts and preloads interleave | the newest just-started subagent is credited, as D-4 says; with two started at once a preload may land on the wrong one of them (rare; both are subagents, so the lead's trail stays clean) |
+| (d') two spawns in one turn | their `spawn` posts and preloads interleave: the first subagent's preloads fire while the second spawn is still pending | D-4's order (pending spawn before just-started) would credit them to the second spawn: amended by D-19 (just-started first) |
 
 ## Verdict
 
-D-4 stands as written (no fallback needed). D-2 changes in one detail: the spawn's `cwd` fallback is
-dropped (the input carries none); recorded in `design.md` § Delivery decisions.
+D-4's in-flight rule stands; its order is amended by D-19 (found reading the 1.6 diff against this
+log). D-2 changes in one detail: the spawn's `cwd` fallback is dropped (the input carries none),
+D-16. Both are in `design.md` § Delivery decisions.
