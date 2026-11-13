@@ -61,15 +61,16 @@ stage.
 ## 2. Stage 2: shaping
 
 - [ ] 2.1 Preflight: R-A1 for `shaping.md`, R-A4, R-A5, R-B4, R-S1. If R-B4 fails, stop and ask
-  the developer (§ Re-check; error matrix).
+  the developer (§ Re-check; error-matrix row "B's tester brief does not read `design.md`").
 - [ ] 2.2 Copy every gap row of `shaping.md` into `evidence/survey-shaping.md`; record #143 as
   `F-shaping-1`; run the survey searches for further failures (design § Algorithm, steps 2 and 3;
   D-5).
 - [ ] 2.3 Owner round, calls 1 and 3 (D-7): failures seen; the decision table confirmed.
 - [ ] 2.4 Baseline, before any skill edit: write the sample two-store EPIC to
-  `evidence/baseline-shaping-epic.md`; a fresh subagent derives its PLAN with today's
-  `epic-planning`; record in `evidence/baseline-shaping.md` whether the create path is named
-  (D-21).
+  `evidence/baseline-shaping-epic.md`; a fresh subagent derives its PLAN following
+  `skills/epic-planning/SKILL.md` as read from the stage's base commit; record in
+  `evidence/baseline-shaping.md` whether the create path is named; if it already is, make the
+  sample harder once, as D-21 says (D-21).
 - [ ] 2.5 Write `skills/epic-planning/references/invariants.md`: what an invariant is and is not,
   the write-path list, the #143 case replayed as in design § Algorithm (D-4, D-12).
 - [ ] 2.6 `epic-planning` SKILL.md: the invariants question in step 2 and the table in step 6, at
@@ -80,9 +81,10 @@ stage.
   `schema.yaml`; `make bundles`; `tests/test_bundle_gen.py` green (D-1, D-2; spec *The PLAN records
   invariants*; *The EPIC and PLAN templates speak plain language*). Comment on #143: the columns
   delivered here, the `clarity-gate` item still open (D-3).
-- [ ] 2.8 Baseline, after: the same file with the changed skill, a fresh subagent; add the
-  result to `evidence/baseline-shaping.md`. If the create path is still not named, revise 2.5 and
-  2.6 and re-run (D-21).
+- [ ] 2.8 Baseline, after: the same file, a fresh subagent following the skill as read from the
+  stage's head commit; add the result to `evidence/baseline-shaping.md`. If the create path is
+  still not named, revise 2.5 and 2.6 and re-run (D-21; spec *The PLAN records invariants*,
+  scenario *A write path left out*, of which this run is the proof).
 - [ ] 2.9 Close as 1.7, for `shaping.md` and `evidence/catch-shaping.md` (the worked example of
   2.5 is the catch); then the stage checker and one PR as 1.8, naming #143 (D-12..D-15, D-21).
 
@@ -109,7 +111,8 @@ stage.
   with its three facts and a pointer to #216, under a subsection *Recommended checks*: the layout
   rule and ls-lint in `stack-operations`' `references/stack-standard.md`; the Makefile rule and
   checkmake in `infrastructure-operations`' `references/repo-checks.md`, outside its MUST. A
-  runbook check only if a runbook failure was recorded. Add each adopted tool to
+  runbook check only if a runbook failure was recorded, in `infrastructure-operations`'
+  `references/documentation.md` § Runbooks, with its signed-off requirement (D-16). Add each adopted tool to
   `dependencies.yaml` unless B did (D-6, D-21; spec *Layout and Makefile checks for stacks*).
 - [ ] 3.7 Comment on #216 with the scrubbed findings and what `quality/` now offers (D-21).
 - [ ] 3.8 Close as 1.7, for `devops.md` and `evidence/catch-devops.md`; then the stage checker and
@@ -138,7 +141,8 @@ stage.
 - [ ] 5.3 Owner round, calls 1 and 3 (D-7): failures seen; the decision table confirmed. Each
   `accepted` reason names the external design plugin skill that covers the question, where the 5.2
   record has one. A failure that would need a check has no owning skill here: it becomes a
-  skillery issue and its row is `accepted` with the issue number (error matrix).
+  skillery issue and its row is `accepted` with the issue number (error-matrix row "A stage 5
+  survey decides a `fill`").
 - [ ] 5.4 Close as 1.7, for `ui.md`; then the stage checker and one PR as 1.8, naming the EPIC
   (D-13..D-15, D-21).
 
