@@ -1,4 +1,5 @@
-<!-- PLAN (design half), derived 2026-11-13 from proposal.md. Not yet attacked or gated. -->
+<!-- PLAN (design half), derived 2026-11-13 from proposal.md; attacked the same day by a fresh
+     subagent (A-1..A-11, all folded in, see § Attack record). Not yet gated. -->
 
 > Derives from: EPIC `test-strategy` ([`proposal.md`](proposal.md)), DEC-1..DEC-12.
 
@@ -7,21 +8,29 @@
 Checks exist across the catalogue but no skill says which check answers which question for which
 activity (`inputs/seed.md`, inventory sketch). Three facts sit in the wrong place or in two places:
 
-- Verification and validation are defined in `epic-delivery` (SKILL.md § *Verification and
-  validation*, and the V-model table in `references/verification-validation.md`). The V-model table
-  is already an activity × question matrix, for six artefacts.
+- Verification and validation are defined in `epic-delivery`: its description and Boundary claim
+  them, SKILL.md § *Verification and validation* defines them, and `references/verification-validation.md`
+  holds the V-model table, already an activity × question matrix for seven artefacts. Two docs point
+  at that reference (`docs/development/README.md`, `docs/practice/ai-coding/dod-quality-gates.md`).
 - Test data: `project-setup/references/testing-setup.md` § *Test-data and fixture conventions*
   ("polyfactory for domain objects") and `cosmic-python/references/testing-checklist.md` item 6
   ("small builder functions") disagree. `testing-setup.md` § *TDD + BDD workflow* restates the loop
-  owned by superpowers TDD and `bdd-gherkin`.
-- Workflow phases (`skills/*/assets/workflows/*.workflow.json`, nine files) carry `id`, `owner`,
-  `expect`, `allow`, `gates`, `enter`; nothing says how a phase succeeds or fails. The navigator's
-  schema check (`mods/navigator/lib/workflow.ts`, `phaseError`) rejects any other phase key.
+  owned by superpowers TDD and `bdd-gherkin`. `polyfactory` also appears, legitimately, in three
+  dependency lists (`pyproject.toml.tmpl`, `config-files.md`, `decisions.md`).
+- Workflow phases (`skills/*/assets/workflows/*.workflow.json`: nine files, 50 phases) carry `id`,
+  `owner`, `expect`, `allow`, `gates`, `enter`; nothing says how a phase succeeds or fails. The
+  navigator's `phaseError` (`mods/navigator/lib/workflow.ts`) rejects any other key; the `Phase`
+  type is in `mods/navigator/types.d.ts`; the mod is copied into `bundles/meaningfy-navigator/` by
+  `make bundles`.
+
+The branch was rebased onto `develop` after `navigator-follows-the-work` was merged, released
+(3.14.0) and archived; the deltas are written against the specs as they are after that archive.
 
 ## Goals / Non-Goals
 
 **Goals:** the skill and its matrix (DEC-1..DEC-6); the moves (DEC-4, DEC-9); the criteria field and
-its lint (DEC-10); the bindings (DEC-2); the four proofs (DEC-12).
+its lint (DEC-10); the bindings (DEC-2); the four proofs (DEC-12); the Definition of Done of a new
+skill and a boundary move (`docs/development/README.md` §9).
 
 **Non-Goals:** the proposal's No-gos. In particular no new technique, no profile work beyond
 marking gaps, no navigator display of the criteria.
@@ -31,69 +40,101 @@ marking gaps, no navigator display of the criteria.
 New choices made while planning; settled ones are cited, not repeated.
 
 - **D-1 Skill shape.** `skills/test-strategy/SKILL.md` holds the loop, the definition of a test
-  (DEC-3), the six questions and five stances (DEC-4), how to read the matrix, the worked example
-  and the boundary. `references/<family>.md`, one per family of DEC-6: `software`, `documentation`,
-  `devops`, `ui`, `shaping`, `modelling`, `architecture`, `generic-writing`. `references/inventory.md`
-  lists every check found, each with a stable id `CHK-nn`. The V-model table moves into the family
-  files as their verification and validation rows; SKILL.md keeps the two-sentence definition.
-- **D-2 Matrix row.** Every family file has one table with the columns *Question* · *Check* (with
-  its `CHK-nn`) · *Technique owner* · *Tool* · *Moment* (workflow and phase, or "any") · *Status*
-  (`exists` or `gap`). A `gap` row names the EPIC expected to fill it (B, C or D) or "none yet". A
-  family with no check today still has its file, with its questions and `gap` rows (DEC-6).
-- **D-3 The six questions**, each with a short id used in the matrix: `VAL` (are we building the
-  right thing), `VER` (are we building it right), `ADQ` (are the checks representative and do they
-  bite), `ROB` (does it hold at the edges and under attack), `CLR` (can its reader act on it), `RSK`
-  (what outside the work can go wrong). **The five stances:** verifier, validator, adversary, cold
-  reader, checker; each names the questions it asks. A review lens or a brief takes a stance; the
-  stance does not own the brief (`epic-delivery`) or the dispatch mechanics (`guardrails`).
-- **D-4 What stays in `epic-delivery`.** `references/verification-validation.md` keeps the
-  acceptance demo, the validation review, the evidence folder and the provisional steps (all are
-  when and who, DEC-5). Its V-model table and the SKILL.md definition paragraph move; one pointer
-  line replaces each.
+  (DEC-3), the six questions and five stances (D-3), how to read the matrix, the worked example and
+  the boundary. `references/<family>.md`, one per family of DEC-6 (`software`, `documentation`,
+  `devops`, `ui`, `shaping`, `modelling`, `architecture`, `generic-writing`), plus
+  `references/cross-cutting.md` (D-10). `references/inventory.md` lists every check with an id
+  `CHK-<n>`. The V-model table moves into the family files; SKILL.md keeps the two-sentence
+  definition.
+- **D-2 Matrix row.** Each family file has one table: *Question* · *Check* (`CHK-<n>`) · *Technique
+  owner* · *Tool* · *Moment* (workflow and phase, or "any") · *Decided by* (a person, or the agent
+  stance; a `VAL` row is always a person, the V-model's "validation owned by") · *Status* (`exists`
+  or `gap`). A `gap` row names the EPIC expected to fill it (B, C or D) or "none yet". Every family
+  file has at least one row for each of the six questions, an `exists` or a `gap` (DEC-6).
+- **D-3 The six questions**, with ids: `VAL` (are we building the right thing), `VER` (are we building
+  it right), `ADQ` (are the checks representative and do they bite), `ROB` (does it hold at the edges
+  and under attack), `CLR` (can its reader act on it), `RSK` (what outside the work can go wrong).
+  **The five stances:** verifier, validator, adversary, cold reader, checker; each names the
+  questions it asks. A review lens or a brief takes a stance; the stance does not own the brief
+  (`epic-delivery`) or the dispatch mechanics (`guardrails`).
+- **D-4 What stays in `epic-delivery`.** `references/verification-validation.md` keeps the acceptance
+  demo, the validation review, the evidence folder and the provisional steps (when and who, DEC-5).
+  The definition paragraph and the V-model table move, one pointer line replacing each. Its
+  description and Boundary *Owns* drop "verification vs validation" and name "the acceptance demo and
+  the validation review"; that description change ships with a positive and a near-miss probe.
 - **D-5 Criteria field.** Each phase gains `criteria: {"succeeds": "<one line>", "fails": "<one
-  line>"}`, both non-empty strings naming the evidence. Required in the nine **default** files
-  (repo lint); **optional in a repository's override file** (the navigator accepts it, validates its
-  shape when present, and never requires it). This narrows the proposal's *What Changes* bullet
-  "BREAKING for repo workflow files": no repository file breaks. The navigator reads and validates
-  the field; it does not display it (Non-Goals).
-- **D-6 Facets.** `area: cross-cutting`, `subject: generic`, `posture: profiled` (a core with one
-  profile per family), `stage: verify`, `maturity: experimental`. `purpose` gains a new value in
-  `facets.yaml`, `quality: "state and check how work succeeds and fails, in any activity"`, because
-  no existing value fits an activity-agnostic skill.
+  line>"}`, both non-empty strings naming the evidence. Required in the nine **default** files (repo
+  lint `workflow_criteria`, added to `ALL_CHECKS`); **optional in a repository's override file** (the
+  navigator accepts it, validates its shape when present, never requires it). This narrows the
+  proposal's *What Changes* bullet "BREAKING for repo workflow files": no repository file breaks. The
+  navigator validates the field and does not display it. A criterion names evidence; it does not
+  restate a skill's rule (the live *Workflows are data that cite their owning skills* requirement).
+- **D-6 Facets.** `area: cross-cutting`, `subject: generic`, `posture: profiled`, `stage: any`
+  (criteria are stated before the work and checked after it), `maturity: experimental`. `purpose`
+  gains a new value in `facets.yaml`, `quality: "state and check how work succeeds and fails, in any
+  activity"`.
 - **D-7 Proof mechanics** (DEC-12).
-  - *Inventory coverage:* `tests/test_test_strategy.py` reads every `CHK-nn` in `inventory.md`
-    and fails if one is cited by no family file, or a family file cites an id the inventory lacks.
-  - *One home per fact:* the same test asserts each moved fact's marker sentence occurs once in
-    `skills/` and in its new home: the verification definition ("Verification asks"), the test-data
-    rule (`polyfactory`, allowed in the checklist and in `testing-setup.md`'s install line only),
-    the TDD loop ("RED → GREEN → REFACTOR", allowed only where the external skill is cited).
-  - *Triggers:* probes in `tests/trigger_probes.yaml`: two positives for `test-strategy`, near-misses
-    against `clarity-gate`, `bdd-gherkin`, `technical-writing` and `meaningfy-code-review`.
-  - *Non-code use:* SKILL.md's Quick Start is a LinkedIn post taken through the loop with the
-    `generic-writing` rows; the stage checker confirms each step cites a matrix row.
+  - *Inventory coverage:* `tests/test_test_strategy.py` fails if an id `CHK-\d+` in `inventory.md`
+    is cited by no family file, a family file cites an undefined id, or a family file lacks a row
+    for one of the six question ids.
+  - *One home per fact:* the same test scans `skills/` case-insensitively with per-fact allow-lists:
+    - `vv-definition`, pattern `verification asks`: allowed only in `test-strategy/SKILL.md`.
+    - `test-data`, pattern `polyfactory`: allowed in the checklist and the three dependency lists.
+    - `tdd-loop`, pattern `red.?green.?refactor`: allowed only on a line naming
+      `test-driven-development`.
+
+    `tests/ownership.yaml` gains `vv-definition` (owner `test-strategy`) and `test-strategy` itself
+    (DoD: ownership checked or updated). Its tripwire stays advisory.
+  - *Triggers:*
+    - Static: probes in `tests/trigger_probes.yaml`, two positives for `test-strategy`, plus
+      near-misses for `clarity-gate`, `bdd-gherkin`, `technical-writing` and `meaningfy-code-review`,
+      plus the `epic-delivery` pair of D-4.
+    - Behavioural: one run with `skill-creator`, about 20 queries, half near-misses, including
+      phrases aimed at the external superpowers TDD and `verification-before-completion`. The
+      before and after results go to `evidence/triggers.md`. The probe file cannot name external
+      skills; this run covers them (RISK-4).
+  - *Non-code use:* SKILL.md's Quick Start takes a LinkedIn post through the loop with the
+    `generic-writing` rows. It is the acceptance demo's script (D-11).
 - **D-8 Pointer lines.** Each technique-owning skill gains one line in its `## Boundary & Related
-  Skills`: "Answers `<question ids>` in `test-strategy`'s matrix (`references/<family>.md`)." No
-  other change to those skills (No-gos).
-- **D-9 Two stages.** Stage 1: the skill, the inventory, the matrix, the moves, the pointers, the
-  probes, the docs. Stage 2: the criteria field (navigator schema, lint, the nine files' criteria)
-  and the bindings. Stage 2 waits for, or rebases onto, `navigator-follows-the-work`'s changes to
-  `mods/navigator/` and the workflow files.
+  Skills`: "Answers `<question ids>` in `test-strategy`'s matrix (`references/<family>.md`)." Where a
+  skill is within two lines of the 650-line cap (`architecture`, 644 body lines), the pointer is folded
+  into its existing *Related* line instead of adding one.
+- **D-9 Two stages, after the rebase.** Stage 1: the skill, inventory, matrix, moves, pointers,
+  probes, use cases, docs. Stage 2: the criteria field (navigator schema and type, lint, the nine
+  files' criteria, `make bundles` for the mod copy) and the bindings. `navigator-follows-the-work` is
+  archived, so nothing waits on it.
+- **D-10 Rows outside the eight families.** The V-model row *Scenarios* goes to `shaping`
+  (sign-off, `VAL`) and `software` (traceability, `VER`); *The iteration* goes to `shaping`
+  (validation review). Contract and sales checks go to `generic-writing`. Checks of agent behaviour
+  that apply to every family go to `references/cross-cutting.md`: the four-eyes rule, subagent
+  reports, evidence before a claim (`verification-before-completion`) and `rulebook check`. This adds
+  a ninth file; it does not add a family.
+- **D-11 Definition of Done items** (`docs/development/README.md` §9):
+  - the recorded failure case goes to `evidence/failure-case.md`: Q-2 of `harden-checks-and-tests`
+    and the two conflicting homes;
+  - a baseline run (the same three tasks with and without the skill) goes to `evidence/baseline.md`;
+  - the acceptance demo is mandatory at LARGE and goes to `evidence/acceptance.md`;
+  - the skill is registered in the `served_by` of the use cases whose activity has a family file
+    (`use_case_coverage` blocks otherwise);
+  - the docs that point at the old V&V home are repointed;
+  - the `criteria` key is documented for override authors (`docs/environment/navigator.md`,
+    `docs/development/workflows.md`).
 
 ## Algorithm / approach
 
-**Inventory (task 1.1).** Search `skills/` for checks: gates, rubrics, review lenses, briefs that
-challenge, scenario and probe practices, `check` commands. For each, record id, what it checks, its
-owner file, its moment. The seed's table is the starting list. The inventory is descriptive; it
-judges nothing.
+**Inventory (task 1.2).** Scope: the catalogue, meaning `skills/` and the repo's own checks (trigger
+probes, agent Gherkin under `tests/features/`, the `make validate` gates). For each check record id,
+what it checks, its owner file, its moment. The seed's table is the starting list. The inventory
+describes; it judges nothing.
 
 **Worked example (Quick Start, abridged).**
 
 > **Input:** "write a LinkedIn post announcing our new SHACL service."
 > 1. *Succeeds:* a data engineer who has never heard of us understands what the service does and
->    clicks through. *Fails:* it reads as an advert, or as jargon (CLR, VAL).
-> 2. Matrix, `generic-writing.md`: CLR → cold reader (`technical-writing`, CHK-nn); house rules →
->    `rulebook check` (CHK-nn); genre defects → `writing-antipatterns` (CHK-nn); VAL → the owner
->    approves the stated success before drafting (gap → D).
+>    clicks through. *Fails:* it reads as an advert, or as jargon (`CLR`, `VAL`).
+> 2. Matrix, `generic-writing.md`: `CLR` → cold reader (`technical-writing`); house rules →
+>    `rulebook check` (`cross-cutting.md`); genre defects → `writing-antipatterns`; `VAL` → the
+>    owner approves the stated success before drafting (`gap` → D).
 > 3. Draft; run the checks; a failed criterion goes back to the draft, not to the post.
 
 **Criteria example (epic-shaping, phase `decide`).**
@@ -105,8 +146,8 @@ judges nothing.
 }
 ```
 
-**Idempotency.** All edits are file edits under review; the inventory test and the lint are pure
-reads; re-running any task overwrites the same files with the same content.
+**Idempotency.** All edits are file edits under review; the test and the lint are pure reads;
+re-running a task rewrites the same files with the same content.
 
 ### Anti-patterns
 
@@ -114,35 +155,61 @@ reads; re-running any task overwrites the same files with the same content.
 |---|---|---|
 | Copy a technique's steps into a family file | Cite the owning skill and its section | Single source (DEC-5, DEC-8) |
 | Fill a gap row with a technique invented here | Mark it `gap` and name the EPIC | No-gos: no new technique |
-| Write paragraph-long criteria | One line each, naming the evidence | Rabbit-hole: boilerplate |
+| Write paragraph-long criteria, or a criterion that restates a skill's rule | One line naming the evidence | Boilerplate; the workflow-definitions requirement |
 | Require `criteria` in repo override files | Require it only in defaults | D-5: no repo breaks |
-| A test that greps prose loosely | Marker sentences with exact allowed homes | D-7: a stable proof |
+| Exact-string marker checks | Case-insensitive patterns with per-file allow-lists | A-3: exact strings pass when they should fail |
+| Claim the triggers are proven by the static probes | Static probes plus one behavioural run | A-4: the probe report is advisory |
 
 ## Error matrix
 
 | Failure mode | How it is detected | Expected handling |
 |---|---|---|
-| A check exists but is missing from the inventory | The stage checker reads the seed table against `inventory.md`; the reviewer of L2 | Add the `CHK-nn` and its matrix row before merge |
-| A `CHK-nn` cited nowhere, or cited but undefined | `tests/test_test_strategy.py` | Fix the family file or the inventory |
-| A moved fact still stated in the old home | `tests/test_test_strategy.py` marker check | Replace the old text with the pointer |
-| A default phase without `criteria`, or an empty string | Repo lint `workflow_criteria` in `make validate` | Write the line; the lint names file and phase |
-| A repo override phase with malformed `criteria` | Navigator `phaseError` (schema) | The band reports the file and key, as for any schema error |
-| The navigator rejects `criteria` after a rebase onto `navigator-follows-the-work` | `mods/navigator` tests (`workflow.test.ts`) | Re-apply D-5 to the rebased schema; re-run the mod tests |
-| `test-strategy` fires for "write a Gherkin scenario" | Near-miss probe vs `bdd-gherkin` | Sharpen the description; re-run the probes |
-| `make bundles` stale after the new skill | `bundle_gates` in `make validate` | Run `make bundles`, commit the result |
+| A check exists but is missing from the inventory | The stage checker reads the seed table and `skills/` against `inventory.md`; the L2 reviewer | Add the `CHK-<n>` and its row before merge |
+| A `CHK-<n>` cited nowhere or undefined; a family without a row for a question | `tests/test_test_strategy.py` | Fix the family file or the inventory |
+| A moved fact still stated outside its allow-list | `tests/test_test_strategy.py` | Replace the text with a pointer, or cite the owner on the line |
+| The new skill serves no use case | `use_case_coverage` in `make validate` (blocking) | Task 1.9 registers it |
+| A pointer line pushes a skill over 650 lines | `skill_too_long` (blocking) | D-8: fold into the existing *Related* line |
+| A default phase without `criteria`, or an empty string | `workflow_criteria` in `make validate` | Write the line; the lint names file and phase |
+| A repo override phase with malformed `criteria` | Navigator `phaseError` | The band reports file and key, as any schema error |
+| Navigator tests compare whole phase objects and break on `criteria` | The full mod test suite in task 2.2 | Update the fixtures in the same task |
+| The mod copy under `bundles/` is stale after 2.2 | `bundle_gates` in `make validate` | `make bundles`, commit the result |
+| `test-strategy` fires for "write a Gherkin scenario" or for a TDD request | Near-miss probes; the behavioural run | Sharpen the description; re-run; record in `evidence/triggers.md` |
+| `epic-delivery` still fires for "what is validation" | Its near-miss probe; the behavioural run | Sharpen its description |
 
 ## Risks / Trade-offs
 
-- **RISK-1** The two EPICs touching `mods/navigator/` collide. Likelihood medium, impact low (one
-  key). Mitigation: D-9 puts the field in stage 2 and rebases it.
+- **RISK-1** A spec delta conflicts with a requirement changed by the archived
+  `navigator-follows-the-work`. Likelihood low, impact low. Mitigation: task 1.1 re-reads every delta
+  against the live specs after the rebase.
 - **RISK-2** The matrix goes stale as skills change. Likelihood high over time, impact medium.
-  Mitigation: the `CHK-nn` test catches dangling ids; a new check without a row is caught only by
-  review. Accepted for now; B, C and D add rows as they go.
-- **RISK-3** Criteria for about fifty phases read as boilerplate. Mitigation: one line naming the
-  evidence; the L2 reviewer rejects generic lines ("the phase is done").
-- **Trade-off:** keeping the Python checklist in `cosmic-python` (DEC-8) leaves `cosmic-python` over
-  its body budget; that budget concerns SKILL.md, and the checklist is a reference, so nothing moves
-  for it.
+  Mitigation: the id test catches dangling ids; a new check without a row is caught only by review.
+  Accepted; B, C and D add rows as they go.
+- **RISK-3** Criteria for 50 phases read as boilerplate. Mitigation: one line naming the evidence;
+  the L2 reviewer rejects generic lines ("the phase is done").
+- **RISK-4** The external neighbours (superpowers TDD, `verification-before-completion`) cannot be
+  named in the probe file, so a collision with them is found only by the behavioural run. Likelihood
+  medium, impact medium. Mitigation: D-7's run includes them; the description routes "how to write
+  the test" away explicitly.
+- **Trade-off:** keeping the Python checklist in `cosmic-python` (DEC-8) leaves `cosmic-python`'s
+  SKILL.md as it is; the checklist is a reference, so the body budget is unaffected.
+
+## Attack record
+
+A fresh subagent attacked the first draft on 2026-11-13. Findings and where they went:
+
+| Id | Finding | Folded into |
+|---|---|---|
+| A-1 | Concurrent change already archived on `develop`; branch behind | Rebased; Context, D-9, RISK-1, task 1.1 |
+| A-2 | `use_case_coverage` blocks a skill no use case serves | D-11, error matrix, task 1.9 |
+| A-3 | Marker checks wrong both ways; `ownership.yaml` not used | D-7, anti-patterns, task 1.10; spec scenario fixed |
+| A-4 | Trigger proof static only; external neighbours unprobeable | D-7, RISK-4, task 1.11 |
+| A-5 | `epic-delivery` description and Boundary left behind | D-4, task 1.6 |
+| A-6 | Pointer line breaks the 650-line cap | D-8, error matrix |
+| A-7 | V-model rows and some owners fit no family; "validation owned by" dropped | D-2, D-10 |
+| A-8 | DoD items missing (failure case, baseline, acceptance demo) | D-11, tasks 1.12, 2.7 |
+| A-9 | Docs pointing at the old V&V home; `criteria` undocumented | D-11, tasks 1.13, 2.5 |
+| A-10 | Inventory scope; no six-question assertion; id width | Algorithm, D-2, D-7 |
+| A-11 | `Phase` type location, `make bundles` for the mod, `ALL_CHECKS`, `stage` facet, rule restatement in criteria | Context, D-5, D-6, D-9, error matrix |
 
 ## Open Questions
 
