@@ -2,7 +2,8 @@
      rounds 0-5). RE-SHAPED the same day (round 6, logged in inputs/qa.md): the bet grew into a
      catalogue-wide test strategy and was split into four EPICs. This is B, the software slice; it
      depends on A (test-strategy) and fills the software rows of A's matrix (DEC-14). Vale moved to
-     C (DEC-7). Not yet readiness-checked; PLAN not derived. -->
+     C (DEC-7). Readiness-checked twice on 2026-11-13; the fixes and the appetite (Q-19) are
+     folded in. PLAN not derived: it is derived when its epic session starts, after A. -->
 
 # EPIC: harden checks and tests
 
@@ -14,8 +15,10 @@ capabilities `epic-delivery` (the adversarial tester and the review sets), `code
 
 ## Appetite
 
-**VERY LARGE**, in stages (the owner's call, 2026-11-13, after the readiness check found the
-scope beyond LARGE). Several related capabilities change together (static rules, test strength,
+**VERY LARGE**, in three stages (the owner's call, Q-19, after the readiness check found the scope
+beyond LARGE): (1) `quality/`, the wider Ruff selection, the Semgrep rules and the "Checked by"
+column; (2) the tester's methods and its range; (3) the weekly mutmut run and the import-contract
+check. Several related capabilities change together (static rules, test strength,
 the import-linter review), a new artifact type and top-level folder appear, and the tester's
 boundary moves from LARGE to MEDIUM. If encoding the catalogue needs new catalogue entries (DDD,
 TDD, fixtures), that is the follow-up EPIC, not this one (Q-18).
@@ -64,11 +67,14 @@ selection and misses checks it could make for free.
 - **DEC-3**: Scope is what the catalogue already holds: the cosmic-python catalogue, its clean-code
   and SOLID sections and the testing checklist (including item 6 as A's DEC-9 rewrites it). New
   DDD and TDD rules, and fixture organisation and reuse rules beyond item 6, are a follow-up EPIC;
-  PEP style stays with Ruff — rejected: grow the catalogue first (Q-13, Q-18).
+  PEP style stays with Ruff — rejected: grow the catalogue first (Q-13, Q-18). The hygiene group
+  the owner chose in Q-13 is kept: `requests` without a timeout, naive `datetime` and bare `except`
+  come with Ruff's wider selection (DEC-2) and need no catalogue entry; "SPARQL built from strings"
+  is the one exception to "no new entries": it gets a catalogue entry and a Semgrep rule.
 - **DEC-4**: A new top-level folder `quality/` holds the checks, as a sixth artifact type in
   `governance.md`; the top-level folder check allows it. `quality/` holds only executable rule
-  files and configurations; what a rule enforces and why stays in the `cosmic-python` catalogue
-  entry it checks — rejected: skill assets spread over
+  files and configurations; what a rule enforces and why stays with the skill that owns it (for
+  this EPIC, the `cosmic-python` catalogue entry it checks) — rejected: skill assets spread over
   several skills; a separate repository (Q-1, Q-5).
 - **DEC-5**: Projects consume `quality/` through a `make` target that fetches it from a pinned
   skillery release tag into a gitignored folder — rejected: raw remote URLs; a vendored copy (Q-6).

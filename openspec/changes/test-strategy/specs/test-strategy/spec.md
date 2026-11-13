@@ -19,9 +19,9 @@ DEC-7). Other skills SHALL cite these, not restate them.
 ### Requirement: Every activity family has a matrix
 `test-strategy` SHALL have one reference per activity family (software, documentation, DevOps, UI,
 shaping, modelling, architecture, generic writing), each a table of question, check with its id,
-technique owner, tool, moment, decided by (a person for every `VAL` row) and status `exists` or
-`gap`, with at least one row for each of the six questions; a `gap` row SHALL name the EPIC expected
-to fill it or "none yet". A `cross-cutting` reference with the same columns MAY hold checks that
+technique owner, tool, moment, decided by (a person for every `VAL` row) and status `exists`, `gap`
+or `accepted`, with at least one row for each of the six questions; a `gap` row SHALL name the EPIC
+expected to fill it or "none yet", and an `accepted` row SHALL state why the gap is left open. A `cross-cutting` reference with the same columns MAY hold checks that
 apply to every family; it is exempt from the six-question rule (DEC-6, design D-2).
 
 #### Scenario: A family with no checks today

@@ -53,9 +53,11 @@ New choices made while planning; settled ones are cited, not repeated.
 - **D-2 Matrix row.** Each family file has one table: *Question* · *Check* (`CHK-<n>`) · *Technique
   owner* (a skill; the V-model's "validation owned by" lands here) · *Tool* · *Moment* (workflow and
   phase, or "any") · *Decided by* (the agent stance, or a person; a `VAL` row is always a person:
-  "the developer", or a named role such as the domain expert) · *Status* (`exists`
-  or `gap`). A `gap` row names the EPIC expected to fill it (B, C or D) or "none yet". Every family
-  file has at least one row for each of the six questions, an `exists` or a `gap` (DEC-6).
+  "the developer", or a named role such as the domain expert) · *Status* (`exists`,
+  `gap` or `accepted`). A `gap` row names the EPIC expected to fill it (B, C or D) or "none yet". An
+  `accepted` row is a gap the developer chose to leave open and states why; A writes none, C and D
+  may (added 2026-11-13 after C's readiness check, after the gate). Every family file has at least
+  one row for each of the six questions, in any status (DEC-6).
   `cross-cutting.md` uses the same columns but is exempt from the six-question rule; its citations
   count as coverage of an inventory id.
 - **D-3 The six questions**, with ids: `VAL` (are we building the right thing), `VER` (are we building

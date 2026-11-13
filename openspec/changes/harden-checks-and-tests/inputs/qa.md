@@ -71,3 +71,7 @@ The owner's words and the rest of round 6 are in `../../test-strategy/inputs/see
 | # | Question | Answer |
 |---|---|---|
 | Q-19 | B's appetite: VERY LARGE, or LARGE with mutmut and the import review cut out? | "okay go for very large, for B" |
+| Q-20 | Follow-ups promised across the four EPICs: how are they recorded? | As GitHub issues. |
+
+The shaper kept Q-13's hygiene group in DEC-3 (three rules through Ruff, "SPARQL built from strings"
+as the one new catalogue entry with a Semgrep rule), since the owner chose that group.
