@@ -15,7 +15,7 @@
 - [x] 1.5 Accept, validate, archive check, plan drift and the clean-tree check (`planHash` reads `state.root` when task 4.2 builds it, D-23) read and write in `state.root`; Accept and Archive check disabled on an archived change. Tests: Accept after a re-root targets the worktree's change
 - [x] 1.6 Skill attribution (D-4, per 1.1, order by D-19): in-flight `Skill` calls, just-started subagents, pending spawns, then the lead. Tests: TC-14, TC-14b, TC-14c; none of the subagent cases touch the lead's trail, workflow or gates
 - [x] 1.7 Gherkin `tests/features/navigator-follows-the-work.feature`: the scenarios of `specs/session-navigation/spec.md` § *The navigator follows the worktree being worked* and `specs/drift-detection/spec.md` § *Deviations are recorded in the change*
-- [ ] 1.8 Stage gates: `make mods`, `make bundles`, `make validate`; review per the review set; merge into `develop`
+- [x] 1.8 Stage gates: `make mods`, `make bundles`, `make validate`; review per the review set; merge into `develop`
 
 ## 2. Stage 2 — The phase follows what happens
 
@@ -24,7 +24,7 @@
 - [x] 2.3 Hand-off (D-8) in the `ChangeRead` reducer, using `lastChangeId`. Tests: worked example 2, step 4; change → none (epic-delivery not kept); first read is not a hand-off; a repeated read does not reset twice
 - [x] 2.4 Release by command (D-7): `Activate.commands` and `Trigger.command` in `types.d.ts`, parsed and checked in `lib/workflow.ts`; `select()` in `lib/phase.ts`; the `ToolRan` reducer checks activation before its no-workflow return, then passes the command through the new workflow's gates with no `onLeave` for phases before activation; `activate.commands` in `release.workflow.json`; the missing-skill warning. Replace the tests asserting that a tag or `release/` push activates nothing (`phase.test.ts`, `edge-cases.test.ts`) with: `git switch -c release/1.0.0` lands in `bump`; `gh release create v1.0.0` lands past `publish`'s gate; `git push origin v1.0.0` activates; `git tag v1.0.0`, `git tag -d v1.0.0` and `git push --follow-tags` do not; a release command from no workflow raises no `process:gate:` warning
 - [x] 2.5 Gherkin: `specs/workflow-definitions/spec.md` § *Repository events move the epic-delivery phase*, and its scenarios *Release commands start a release* and *A local tag is not a release*
-- [ ] 2.6 Stage gates as 1.8
+- [x] 2.6 Stage gates as 1.8
 
 ## 3. Stage 3 — A band you can read at a glance (#188)
 
@@ -51,8 +51,8 @@
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.2b · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8
-- [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [ ] 2.6
+- [x] 1.1 · [x] 1.2 · [x] 1.2b · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
+- [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 3.6 · [ ] 3.7 · [ ] 3.8
 - [x] 4.1 · [ ] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5 · [x] 4.6 · [ ] 4.7 · [ ] 4.8 · [ ] 4.9
 
