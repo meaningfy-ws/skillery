@@ -1,7 +1,9 @@
 <!-- STATUS: EPIC shaped 2026-11-13 from the owner's conversation (inputs/seed.md, inputs/qa.md).
      EPIC C of four: A test-strategy → B harden-checks-and-tests → C (this) → D
-     generic-task-test-profiles. Readiness-checked 2026-11-13, the fixes folded in. PLAN not
-     derived: it is derived when its epic session starts, after A and B are delivered. -->
+     generic-task-test-profiles. Readiness-checked 2026-11-13, the fixes folded in. PLAN derived
+     2026-11-13 ahead of delivery, against A's gated PLAN and B's EPIC; DEC-5's recording place
+     confirmed then (Q-8), no other DEC changed. Delivery waits for A, and per stage for the
+     re-checks listed in design.md. -->
 
 # EPIC: activity test profiles
 
@@ -66,8 +68,9 @@ The candidates already agreed, each still subject to step 1:
   DEC-6) and for where `quality/`'s own tests run (its DEC-12) — rejected: formal
   methods (TLA+, Alloy) as optional architecture spikes (Q-3; B's DEC-6, DEC-7).
 - **DEC-5**: The shaping interview gains the invariants question and the invariants reach the
-  tester as its properties (Q-3). *(Proposed, the shaper's choice:)* they are recorded in the
-  EPIC's PLAN, beside the error matrix, through the PLAN template. The tester's brief is B's and is
+  tester as its properties (Q-3). They are recorded in the EPIC's PLAN, beside the error matrix,
+  through the PLAN template *(proposed at shaping; confirmed by the owner 2026-11-13, Q-8: a new
+  `## Invariants` section of `design.md`)*. The tester's brief is B's and is
   not edited here: B's brief already takes its properties "from the PLAN as written" — rejected:
   the tester derives its own properties.
 - **DEC-6**: Each technique lives in the skill that owns the activity; `test-strategy` gains only
