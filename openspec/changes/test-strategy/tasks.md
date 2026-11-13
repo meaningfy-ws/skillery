@@ -6,7 +6,7 @@
 
 - [x] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
   `evidence/acceptance.md` (D-11).
-- [ ] 1.1 Confirm the branch is on current `develop`; re-read each spec delta against the live
+- [x] 1.1 Confirm the branch is on current `develop`; re-read each spec delta against the live
   specs and fix any conflict (RISK-1).
 - [ ] 1.2 Write `skills/test-strategy/references/inventory.md`: every check in the catalogue with
   its `CHK-<n>`, what it checks, owner file and moment (design § Algorithm; spec *The matrix covers
@@ -22,14 +22,14 @@
   validation*, the intro of `references/verification-validation.md` and the V-model table; update
   its description and Boundary *Owns* (D-4; spec *Verification and validation are defined in
   test-strategy*).
-- [ ] 1.7 Test data: state the polyfactory rule in checklist item 6; cut `testing-setup.md`'s
+- [x] 1.7 Test data: state the polyfactory rule in checklist item 6; cut `testing-setup.md`'s
   fixture prose and TDD/BDD loop to wiring plus pointers; fix the two D-7 `tdd-loop` hits that name
   no owner (`testing-setup.md:102`, `CONTRIBUTING.md.tmpl:39`) so each names
   `test-driven-development` or drops the phrase (DEC-9; spec *The test-data rule has one home*).
 - [ ] 1.8 Add the D-8 pointer line to each technique owner the inventory names.
 - [ ] 1.9 Add `test-strategy` to the `served_by` of UC-W18, UC-W19, UC-W20, UC-W6, UC-W17, UC-W24,
   UC-W8 and UC-W16 (D-11 table).
-- [ ] 1.10 Write `tests/test_test_strategy.py` (D-7: ids, six questions per family, one-home
+- [x] 1.10 Write `tests/test_test_strategy.py` (D-7: ids, six questions per family, one-home
   patterns with allow-lists), test-first: red before 1.2–1.8, green after. Add the `ownership.yaml`
   entries.
 - [ ] 1.11 Triggers: the static probes in `tests/trigger_probes.yaml` (including the `epic-delivery`
@@ -71,7 +71,7 @@
 
 ## Roadmap
 
-- [x] 1.0 · [ ] 1.1 · [ ] 1.10 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
+- [x] 1.0 · [x] 1.1 · [x] 1.10 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [x] 1.7 · [ ] 1.8 · [ ] 1.9
   · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 
 ## Verification

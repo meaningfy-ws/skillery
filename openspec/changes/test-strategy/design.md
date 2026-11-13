@@ -195,6 +195,28 @@ New choices made while planning; settled ones are cited, not repeated.
     `docs/development/creating-skills.md` (the edits that adding a workflow takes).
     `docs/environment/navigator.md` is untouched, since the band does not show the criteria.
 
+## Delivery decisions
+
+Taken by the lead during delivery (2026-11-13); the developer may overrule any of them.
+
+- **D-12 Inventory rulings**, after three verifiers checked the 108 draft rows against their
+  sources (84 confirmed, 23 corrected, 1 not found; 40 further checks proposed):
+  - The inventory is numbered afresh, consecutively, grouped by family; the draft's ids are not
+    kept, since nothing published cites them.
+  - Dropped: the draft's terminology and ontology practice row (guidance with no pass or fail
+    step). Declared-only items are not listed either: the `hooks.yaml` git-hook intents that have
+    no implementation in the tree.
+  - Merged: the diagram checklists with the diagram review; the Gherkin quality checks with the
+    use-case traceability bullet (one row, cited from `software` and `architecture`). Folded into
+    an existing row rather than added: the clarity gate's self-assessment, the archive delta merge
+    (into `openspec validate --strict`), the archetype gate profiles (into CI on each push).
+  - Split: the sales rubrics from the rot and exit criteria; the narrow checks and task gate (with
+    its re-run triggers) from the lead's full gates.
+  - Every other proposed row that carries a `path:line` enters the inventory.
+  - Families: vault checks and customer outcome reviews go to `generic-writing`, read as the
+    owner's "generic tasks" family (seed); the repository's own gates (`make validate`, `make
+    mods`, CI jobs, mods that deny a command) go to `cross-cutting.md`. D-10 named neither.
+
 ## Algorithm / approach
 
 **Inventory (task 1.2).** Scope: the catalogue, meaning `skills/` and the repo's own checks (trigger
