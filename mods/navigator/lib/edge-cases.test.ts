@@ -8,7 +8,7 @@ import { join } from 'node:path'
 import { backOnTrack, commandFor, nextStep, validateRuns } from './actions.ts'
 import { phaseFor } from './phase.ts'
 import { EMPTY, reduce, type Change, type NavState, type Signal, type Workflow } from './state.ts'
-import { bandModel, lineText } from './view.ts'
+import { bandView, lineText } from './view.ts'
 import { globRegex, parseWorkflow, resolveWorkflows, workflowError, type Source } from './workflow.ts'
 
 const REPO = join(import.meta.dirname, '..', '..', '..')
@@ -26,7 +26,7 @@ const epicDelivery = defaults.workflows.find(w => w.name === 'epic-delivery')!
 let n = 0
 const id = () => `adv${++n}`
 const change = (done: number, total: number, over: Partial<Change> = {}): Change =>
-  ({ id: 'navigator', appetite: 'VERY LARGE', done, total, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, ...over })
+  ({ id: 'navigator', appetite: 'VERY LARGE', done, total, groups: [], planHash: '', hasDesign: true, hasTasks: true, archived: false, ...over })
 const started = (interactive = true): NavState =>
   reduce(EMPTY, { kind: 'Started', id: id(), sessionId: 's', band: 'folded', statusLine: true, interactive })
 const run = (...signals: Signal[]): NavState => signals.reduce(reduce, started())
@@ -286,8 +286,8 @@ test('view: long and control-character names stay within 120 chars and carry no 
   const line = lineText(s)
   assert.ok([...line].length <= 120, String(line.length))
   assert.ok(!/[\u0000-\u001f\u007f-\u009f]/.test(line))
-  const b = bandModel(s)
-  assert.ok(!/[\u0000-\u001f\u007f-\u009f]/.test(b.folded + b.rows.flatMap(r => r.items).join('')))
+  const b = bandView(s, { now: 0, home: '', commands: [] })
+  assert.ok(!/[\u0000-\u001f\u007f-\u009f]/.test([b.now, b.next, b.warning, ...b.details.rows.flatMap(r => r.items)].join('')))
   const c = run(workflows(), read(change(3, 9, { id: 'x\u001b'.repeat(300) })))
   assert.ok([...lineText(c)].length <= 120 && !/\u001b/.test(lineText(c)))
 })
@@ -346,7 +346,7 @@ const pkeys = (over: Partial<PlanInput>) => planDrift(plan(over)).map(w => w.key
 const hyg = (events: string[], contextPercent: number, openUnticked = true) =>
   offer({ ok: true, thresholds: T }, { events: events as never, contextPercent, idleMinutes: 0, cleanTree: true, openUnticked })
 const planWarn = (key: string) => ({ key, message: key, remedy: 'openspec-update-change navigator', owner: 'epic-planning' })
-const planRead = (...ks: string[]): Signal => ({ kind: 'PlanRead', id: id(), warnings: ks.map(planWarn), truncated: false })
+const planRead = (...ks: string[]): Signal => ({ kind: 'PlanRead', id: id(), warnings: ks.map(planWarn), truncated: false, added: 0 })
 const setMode = (mode: 'loose' | 'strict'): Signal => ({ kind: 'SetMode', id: id(), mode })
 const turnEnd = (contextPercent: number): Signal => ({ kind: 'TurnEnded', id: id(), turnId: id(), contextPercent, cleanTree: true, at: 9 })
 // A spawn is counted when it is asked, before it runs (DD-41): what register.tsx sends first.
@@ -543,9 +543,9 @@ test('s3 PD-7: model ranks by substring; a declared or unranked model is never j
   assert.equal(rewriteModel(s, 'haiku', 'claude-sonnet-4-5'), null)
 })
 
-test('s3 unused skill: only a load followed directly by another load in the turn; plugin prefix dropped', () => {
-  const ws = unusedSkills([{ kind: 'skill', name: 'p:a' }, { kind: 'skill', name: 'b' }, { kind: 'tool' }, { kind: 'skill', name: 'c' }])
-  assert.deepEqual(ws.map(w => [w.key, w.owner]), [['hygiene:unused:a', 'skillery-feedback']])
+test('s3 unused skill: a load with another load after it and no tool call; plugin prefix dropped', () => {
+  const ws = unusedSkills([{ kind: 'skill', name: 'p:a', agent: 'main' }, { kind: 'skill', name: 'b', agent: 'main' }], 'main')
+  assert.deepEqual(ws.map(w => [w.key, w.owner]), [['hygiene:unused:main:a', 'skillery-feedback']])
 })
 
 // ---------------------------------------------------------------- strict

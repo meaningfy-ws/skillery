@@ -57,7 +57,7 @@ export function planDrift(i: PlanInput): Warning[] {
   return [...pl1, ...pl2, ...pl3]
 }
 
-/** The added lines of `git diff -U0`, at most ADDED_CAP; `truncated` feeds the band's `diff truncated`. */
+/** The added lines of `git diff -U0`, at most ADDED_CAP; `truncated` is the appetite row's `diff truncated` (and rules out `smallStageAllowance`). */
 export function parseDiffAdded(diff: string): { added: AddedLine[]; truncated: boolean } {
   const added: AddedLine[] = []
   let path: string | null = null

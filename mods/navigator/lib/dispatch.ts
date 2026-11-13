@@ -2,7 +2,7 @@
 // model order come from the guardrails data file; review sets and roles from the workflow file.
 
 import type { Thresholds } from './hygiene.ts'
-import type { Warning, Workflow } from './state.ts'
+import type { NavState, Review, Warning, Workflow } from './state.ts'
 import { bare } from './workflow.ts'
 import { isShip } from './workflow.ts'
 
@@ -46,11 +46,27 @@ export function modelAbove(t: Thresholds, s: Spawn, parentModel: string): Warnin
     : []
 }
 
+const ceiling = (r: Review) => r.reviewers + (r.ux?.extra_reviewers ?? 0)
+const reviewOf = (s: NavState) => s.change?.appetite ? s.workflows.find(w => w.reviews)?.reviews?.[s.change.appetite] : undefined
+
+/** D-22: the most reviewers one turn may spawn for the appetite: the full set plus its UX reviewers; null without a review set. */
+export const reviewQuota = (s: NavState): number | null => {
+  const r = reviewOf(s)
+  return r ? ceiling(r) : null
+}
+
+/** D-12, D-22: the reviewers a small stage allows, shown beside the ceiling, never enforced. A stage is small when the
+ *  last plan read added at most `max_added_lines` and was not truncated; no read yet (null) is not small. */
+export function smallStageAllowance(s: NavState): number | null {
+  const small = reviewOf(s)?.small_stage
+  return small && !s.planTruncated && s.planAdded !== null && s.planAdded <= small.max_added_lines ? small.reviewers : null
+}
+
 /** PD-8: reviewer spawns in one main turn beyond the appetite's review set (plus its UX reviewers). */
 export function overspawn(w: Workflow, appetite: string | null, turnId: string, roles: Role[]): Warning[] {
   const r = appetite ? w.reviews?.[appetite] : undefined
   if (!r) return []
-  const allowed = r.reviewers + (r.ux?.extra_reviewers ?? 0)
+  const allowed = ceiling(r)
   const spawned = roles.filter(x => x === 'reviewer').length
   return spawned > allowed
     ? [warning(`process:overspawn:${turnId}`, `over-spawn: ${spawned} reviewers in one turn, ${appetite} calls for ${allowed}`, null, bare(w.owner))]
@@ -85,20 +101,22 @@ export function reportOversized(t: Thresholds, agentId: string, answer: string):
     : []
 }
 
-/** One main turn, oldest first: skill loads, and tool calls other than skill loads. */
-export type TurnEvent = { kind: 'skill'; name: string } | { kind: 'tool' }
+/** The lead's agent name in turn events (D-9). */
+export const MAIN = 'main'
 
-/** A skill loaded and followed by another load with no tool call between: skimmed and abandoned.
- *  shortcut: catches only skim-and-abandon. No button (DD-39): the text names skillery-feedback. */
-export function unusedSkills(events: TurnEvent[]): Warning[] {
-  const out: Warning[] = []
-  events.forEach((e, i) => {
-    const next = events[i + 1]
-    if (e.kind === 'skill' && next?.kind === 'skill') {
-      const name = bare(e.name)
-      out.push(warning(`hygiene:unused:${name}`,
-        `${name} loaded and left unused: if it should not have fired, run skillery-feedback`, null, 'skillery-feedback'))
-    }
+/** Oldest first: skill loads, tool calls other than skill loads, and spawns, each by `agent` ('main' or an agent id; D-9). */
+export type TurnEvent = { kind: 'skill'; name: string; agent: string } | { kind: 'tool' | 'spawn'; agent: string }
+
+/** `agent`'s skills skimmed and abandoned: another load of the same agent follows and no tool call or spawn of it does.
+ *  shortcut: catches only skim-and-abandon (a trailing load is not judged). No button (DD-39): the text names skillery-feedback. */
+export function unusedSkills(events: TurnEvent[], agent: string): Warning[] {
+  const mine = events.filter(e => e.agent === agent)
+  return mine.flatMap((e, i) => {
+    if (e.kind !== 'skill') return []
+    const later = mine.slice(i + 1)
+    if (later.some(l => l.kind !== 'skill') || !later.some(l => l.kind === 'skill')) return []
+    const name = bare(e.name)
+    return [warning(`hygiene:unused:${agent}:${name}`,
+      `${name} loaded and left unused: if it should not have fired, run skillery-feedback`, null, 'skillery-feedback')]
   })
-  return out
 }

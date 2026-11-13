@@ -1,14 +1,14 @@
 // Which change, its appetite and its progress (design §6.1). Pure: register.tsx reads the files.
 
-import type { Change, ChangePredicate, Group } from './state.ts'
+import type { Change, ChangePredicate, Group, NavState } from './state.ts'
 
 export type ChangeFiles = {
-  id: string
+  id: string // an archived change's is its folder name, `<date>-<id>`
   proposal: string
   tasks: string | null
   design: boolean
-  mtime: number // newest mtime of the change's files
-  planMtime: number // newest mtime of design.md and tasks.md, 0 if neither
+  planHash: string // planHash of design.md (D-15), '' if none; ticking a task is not a PLAN change (DD-38)
+  designMtime: number // design.md's mtime in ms (D-29), 0 if none
 }
 
 /** The appetite names are the epic-delivery workflow's `reviews` keys; the mod holds no list. */
@@ -28,6 +28,9 @@ export function appetiteOf(proposal: string, appetites: string[]): string | null
   // Whole words only: SMALLER is not SMALL.
   return byLength.find(a => new RegExp(`(?<![\\w-])${escape(a)}(?![\\w-])`).test(para)) ?? null
 }
+
+/** A group with tasks, all ticked: an empty group is never done. */
+export const groupDone = (g: Group): boolean => g.total > 0 && g.done === g.total
 
 export function progress(tasks: string | null): { done: number; total: number; groups: Group[] } {
   const groups: Group[] = []
@@ -56,29 +59,57 @@ export function progress(tasks: string | null): { done: number; total: number; g
   }
 }
 
-/** The branch's change if its name contains an id, else the most recently modified (DD-13). */
-export function readChange(open: ChangeFiles[], branch: string, appetites: string[]):
-  { change: Change | null; openChanges: number } {
-  if (open.length === 0) return { change: null, openChanges: 0 }
-  const recent = [...open].sort((a, b) => b.mtime - a.mtime || a.id.localeCompare(b.id))
-  // The longest id the branch names; a tie goes to the most recent, so folder order never decides.
-  // shortcut: a substring match, so a short id such as `fix` also matches `fix/other`; match on
-  // separators if people report a wrong change.
-  const byBranch = recent.filter(c => branch.includes(c.id)).sort((a, b) => b.id.length - a.id.length)[0]
-  const pick = byBranch ?? recent[0]!
-  return {
-    change: { id: pick.id, appetite: appetiteOf(pick.proposal, appetites), ...progress(pick.tasks), planMtime: pick.planMtime,
-      hasDesign: pick.design, hasTasks: pick.tasks !== null },
-    openChanges: open.length,
-  }
+/** Where `id` last occurs in `branch` bounded by the start, the end, `/` or `-` on both sides; -1 if it does not (D-3, D-21.10). */
+function boundedAt(branch: string, id: string): number {
+  const last = [...branch.matchAll(new RegExp(`(^|[/-])${escape(id)}(?=[/-]|$)`, 'g'))].at(-1)
+  return last ? last.index + last[1]!.length : -1
+}
+
+/** The open change id a branch names: the longest, on a tie the one named later, then alphabetical.
+ *  Never the most recently modified (DEC-3). */
+export function matchOpen(branch: string, open: string[]): string | null {
+  const hits = open.filter(id => id && boundedAt(branch, id) >= 0)
+  hits.sort((a, b) => b.length - a.length || boundedAt(branch, b) - boundedAt(branch, a) || a.localeCompare(b))
+  return hits[0] ?? null
+}
+
+const ARCHIVE_DATE = /^\d{4}-\d{2}-\d{2}-/
+
+/** The archive folders (`<date>-<id>`) of `lastChangeId`: the only ones io reads (D-3). */
+export const archivedFolders = (names: string[], lastChangeId: string | null): string[] =>
+  lastChangeId ? names.filter(f => f.replace(ARCHIVE_DATE, '') === lastChangeId) : []
+
+/** The archived folder (`<date>-<id>`) of the change just archived: only `lastChangeId`, and only when the branch names it.
+ *  Archived twice, the newest folder (the date sorts it). */
+export function matchArchived(branch: string, archived: string[], lastChangeId: string | null): string | null {
+  if (!lastChangeId || boundedAt(branch, lastChangeId) < 0) return null
+  return archivedFolders(archived, lastChangeId).sort().at(-1) ?? null
+}
+
+const toChange = (c: ChangeFiles, id: string, appetites: string[], archived: boolean): Change =>
+  ({ id, appetite: appetiteOf(c.proposal, appetites), ...progress(c.tasks), planHash: c.planHash,
+    designMtime: c.designMtime, hasDesign: c.design, hasTasks: c.tasks !== null, archived })
+
+/** The branch's change: an open one it names, else the archived one it just followed; else none (D-3). */
+export function readChange(open: ChangeFiles[], archived: ChangeFiles[], lastChangeId: string | null, branch: string,
+  appetites: string[]): { change: Change | null; openChanges: number } {
+  const id = matchOpen(branch, open.map(c => c.id))
+  const folder = id === null ? matchArchived(branch, archived.map(c => c.id), lastChangeId) : null
+  const files = id === null ? archived.find(c => c.id === folder) : open.find(c => c.id === id)
+  return { change: files ? toChange(files, id ?? lastChangeId!, appetites, id === null) : null, openChanges: open.length }
 }
 
 /** One predicate, or a list of which any holds (DD-38). */
-export const holdsAny = (p: ChangePredicate | ChangePredicate[], c: Change | null) =>
-  (Array.isArray(p) ? p : [p]).some(q => holds(q, c))
+export const holdsAny = (p: ChangePredicate | ChangePredicate[], c: Change | null, merged = false) =>
+  (Array.isArray(p) ? p : [p]).some(q => holds(q, c, merged))
 
-/** The fixed predicates a workflow's `change` field names (design §6.1, DD-38). */
-export function holds(p: ChangePredicate, c: Change | null): boolean {
+/** Whether the followed branch's pull request was seen merged (D-5). */
+export const branchMerged = (s: Pick<NavState, 'root' | 'mergedBranches'>) =>
+  s.root !== null && s.mergedBranches.includes(s.root.branch)
+
+/** The fixed predicates a workflow's `change` field names (design §6.1, DD-38). `merged` is whether the
+ *  followed branch was merged; it holds only with every task ticked, so a stage's merge moves nothing (D-5). */
+export function holds(p: ChangePredicate, c: Change | null, merged = false): boolean {
   if (p === 'none') return c === null
   if (!c) return false
   switch (p) {
@@ -88,8 +119,7 @@ export function holds(p: ChangePredicate, c: Change | null): boolean {
     case 'tasks-open': return c.total > 0 && c.done === 0
     case 'tasks-partial': return c.done > 0 && c.done < c.total
     case 'tasks-done': return c.total > 0 && c.done >= c.total
-    // shortcut: the mod does not watch archive/; the archive phase is entered by
-    // `openspec-archive-change` only. Upgrade if the phase is missed.
-    case 'archived': return false
+    case 'merged': return merged && holds('tasks-done', c)
+    case 'archived': return c.archived
   }
 }
