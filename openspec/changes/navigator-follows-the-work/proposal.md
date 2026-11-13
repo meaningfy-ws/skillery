@@ -1,6 +1,9 @@
 <!-- STATUS: EPIC shaped 2026-11-13 from the owner's conversation (inputs/seed.md, inputs/qa.md,
      rounds 1-6). Folds in issues #185, #188 and #148. Round 6 settled DEC-5 (release always
-     triggers the release workflow) and took the risk defaults Q-13..Q-15. Frozen. -->
+     triggers the release workflow) and took the risk defaults Q-13..Q-15. Frozen.
+     PLAN derived the same day (design.md, tasks.md, five spec deltas); attacked by a fresh
+     subagent (A-1..A-12, all folded in); clarity gate 9.4/10 by an independent scorer (second
+     run; 9.0 with one item failing before). Ready for delivery. -->
 
 # EPIC: navigator follows the work
 

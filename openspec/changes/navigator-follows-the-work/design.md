@@ -235,6 +235,8 @@ tasks 3.7 (band on both surfaces) and 4.8 (the lawyer's trial).
 | TC-12 | `holds('merged')` | branch merged, tasks 10/10 | true | — |
 | TC-13 | `tierOf` (D-10) | `process:gate:x`, `process:external:y`, `plan:outside:z`, `process:overspawn`, `hygiene:context`, `hygiene:unused:main:s`, `foo:bar` | 1, 1, 2, 3, 4, 5, 3 | unknown prefix |
 | TC-14 | `creditSkill` (D-4) | `skill.prompt` with a lead `Skill` call in flight / a pending spawn / nothing | lead / subagent / lead | preload (A-2) |
+| TC-14b | `creditSkill` | `skill.prompt`, no call in flight, no pending spawn, a subagent running with no tool call yet | that subagent | just-started preload |
+| TC-14c | `creditSkill` | two subagents' `Skill` calls for one skill in flight, then two `skill.prompt` | the older call first, then the newer; never the lead | concurrent loads |
 | TC-15 | `reviewQuota` (D-12) | VERY LARGE, added 600 / 601 / truncated | 2 / 5 / 5 | at the limit |
 
 ### Idempotency
