@@ -423,3 +423,28 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
   7. *A change switch needs no separate `gh` check:* a change follows its branch, so a switch
      comes with a re-root or branch move, both of which run it. A failure, a missing `gh` or a
      timeout says nothing.
+- **D-25 — Stage 2 review (PR #202): accepted findings.** Two merged-lens passes (L1+L2,
+  L3+L4+L5).
+  1. *A hand-off keeps a workflow that is not about a change* (L2, critical): `git switch -c
+     release/0.2.0` from a change branch activates release, then the turn-end read (no change)
+     handed off and dropped it. `handOff` nulls the workflow, phase and its warnings only when the
+     active workflow is bound to a change (`activate.openChange` or `activate.change`); release and
+     its `process:missing:release:` warning survive. Worked example 2 step 5 becomes a test.
+  2. *`gh pr view` runs only when it can matter* (L2, L5): only when the followed change has every
+     task ticked and its branch is not already in `mergedBranches`; at start, after the change is
+     read; one state read. `merged` cannot hold otherwise, so nothing is lost, and the wait on a
+     hung network falls to the one moment it can change the phase. The "never blocks" comment is
+     corrected.
+  3. *One `gh pr merge` matcher* (L1, L5): io reuses the workflow's segment-anchored, quote-blind
+     matcher instead of its own regex.
+  4. *Release activation regexes* (L2): accept `git -C <dir>`, `switch --create`, and require a
+     version shape `v<d>.<d>` so `v2-api` does not activate.
+  5. *Small fixes* (L5): `matchesCommand` reuses `at()`; `merged` reuses `tasks-done`; `strings()`
+     filters non-strings itself; the tasks.md roadmap line.
+  Rejected, with reasons: A → none → A clearing A's gates conforms to D-8 (A-6 made id → none a
+  hand-off); the gates re-run, and a change of D-8 is the owner's call, raised at acceptance.
+  `mergedBranches` growing: it is session-scoped (`Started` resets it) and only counts with every
+  task ticked. Named constants for the hand-off prefixes, moving `handOff` and `branchMerged`:
+  churn across files for no behaviour; `handOff` stays the one list. `--delete-branch` ending the
+  archive phase at the turn end: conforms to D-8, noted. `gh release create "$TAG"`: not matched
+  (quoted text is blanked by design).

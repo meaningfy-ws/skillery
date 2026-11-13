@@ -109,7 +109,7 @@ const NULLABLE: Record<string, string | undefined> = { change: 'object', root: '
   planAdded: 'number' }
 
 const isObject = (v: unknown): v is Record<string, unknown> => kindOf(v) === 'object'
-const strings = (v: unknown): string[] => (Array.isArray(v) ? v : [])
+const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter(x => typeof x === 'string') : [])
 
 /** Whether a stored value has the shape of the default: the same kind, or for a null default the kind it holds. */
 function fits(k: string, v: unknown, d: unknown): boolean {
@@ -127,7 +127,7 @@ function migrate(out: Record<string, unknown>): void {
     rootPath: typeof a['rootPath'] === 'string' ? a['rootPath'] : null }))
   out['skillCalls'] = objects(out['skillCalls']).map(c => ({ ...c, loaded: c['loaded'] === true }))
   out['pendingSpawns'] = objects(out['pendingSpawns']).map(p => ({ ...p, skills: strings(p['skills']) }))
-  out['mergedBranches'] = strings(out['mergedBranches']).filter(b => typeof b === 'string')
+  out['mergedBranches'] = strings(out['mergedBranches'])
 }
 
 /** Load a stored state of any earlier shape: new fields, and fields of the wrong shape, take their

@@ -6,17 +6,16 @@ import type { EngineInterface } from 'claude-code'
 import { commandFor, validatePlan } from './lib/actions.ts'
 import { appetitesOf, archivedFolders, readChange, type ChangeFiles } from './lib/change.ts'
 import { ARCHIVE_DIR, acceptTarget, appendDeviation, archiveCheck, archivedRefusal, parseDeviations } from './lib/deviations.ts'
-import { PR_TIMEOUT_MS, prSignal, prViewArgs, type PrOutcome } from './lib/pr.ts'
+import { PR_TIMEOUT_MS, prSignal, prViewArgs, shouldAskGh, type PrOutcome } from './lib/pr.ts'
 import { parseDiffAdded, parseStatus, planDrift } from './lib/plan-drift.ts'
 import { decideFallback, decideRoot, dirOf, editRoot, needsRoot, parseRevParse, rebranched, relativeTo, startRoot,
   type Tree } from './lib/root.ts'
 import { EMPTY, reduce, revive, type BandDisplay, type NavState, type Root, type Settings, type Signal } from './lib/state.ts'
 import { lineText } from './lib/view.ts'
-import { resolveWorkflows, type Source } from './lib/workflow.ts'
+import { isPrMerge, resolveWorkflows, type Source } from './lib/workflow.ts'
 
 export const nav = atom({ plugin: 'meaningfy-navigator', key: 'state' } as const, EMPTY)
 export const SESSION_MOVES = ['clear', 'resume', 'branch']
-const PR_MERGE = /\bgh\s+pr\s+merge\b/
 
 export async function send($: EngineInterface, signal: Signal) {
   await update($, nav, s => reduce(revive(s), signal))
@@ -52,13 +51,15 @@ export async function rootOf($: EngineInterface, dir: string): Promise<Root | nu
   return tree && branch ? { ...tree, branch } : null
 }
 
-/** Is the followed branch's pull request merged (D-5)? Never blocks a hook: a failure or timeout says nothing. */
+/** Is the followed branch's pull request merged (D-5)? Asks `gh` only when it can matter (D-25), then waits up
+ *  to PR_TIMEOUT_MS; a failure or timeout says nothing. */
 export async function checkPr($: EngineInterface, id: string) {
-  const branch = (await state($)).root?.branch
-  if (!branch) return
+  const s = await state($)
+  if (!s.root || !shouldAskGh(s)) return
+  const branch = s.root.branch
   let outcome: PrOutcome = null
   try {
-    const r = await $.process.run(prViewArgs(branch), { cwd: (await state($)).root?.path, timeoutMs: PR_TIMEOUT_MS })
+    const r = await $.process.run(prViewArgs(branch), { cwd: s.root.path, timeoutMs: PR_TIMEOUT_MS })
     outcome = { exitCode: r.exitCode, stdout: r.stdout }
   } catch {
     // gh missing, offline or timed out: silent
@@ -131,7 +132,7 @@ export async function recordCall($: EngineInterface, e: ToolCall, isError: boole
   if (e.tool === 'Bash' && !e.run_in_background) {
     await send($, { kind: 'ToolRan', id: `tool:${e.tool_use_id}`, command: e.command ?? '', ok: !isError, at, ...agent })
     // `--auto` exits ok without merging: the check then answers OPEN and adds nothing (D-5).
-    if (!isError && PR_MERGE.test(e.command ?? '')) await checkPr($, `merge:${e.tool_use_id}`)
+    if (!isError && isPrMerge(e.command ?? '')) await checkPr($, `merge:${e.tool_use_id}`)
   } else if (e.tool === 'Edit' || e.tool === 'Write' || e.tool === 'NotebookEdit') {
     await recordEdit($, e, e.tool === 'NotebookEdit' ? e.notebook_path : e.file_path, at)
   }
@@ -261,10 +262,10 @@ export async function start($: EngineInterface, settings: Settings, interactive:
   await send($, { kind: 'Started', id: sessionId, sessionId, ...settings, interactive })
   const root = startRoot(carry, await rootOf($, await $.session.root()))
   if (root) await send($, { kind: 'RootFollowed', id: `root:start:${sessionId}`, root })
-  await checkPr($, `start:${sessionId}`)
   await send($, await readThresholdsSignal($, `thresholds:${sessionId}`))
   await send($, await readWorkflowsSignal($, `workflows:${sessionId}`))
   await send($, await readChangeSignal($, `change:${sessionId}`))
+  await checkPr($, `start:${sessionId}`)
   const accepted = await readAcceptedSignal($, `accepted:${sessionId}`)
   if (accepted) await send($, accepted)
 }

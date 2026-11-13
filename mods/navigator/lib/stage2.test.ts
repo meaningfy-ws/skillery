@@ -104,6 +104,13 @@ test('D-8 the hand-off drops only change-scoped warnings and re-reads accepted',
   assert.deepEqual(s.accepted, [])
 })
 
+test('worked example 2, step 5: a release started on a change branch survives the turn-end read with no change', () => {
+  const s = run(workflows, rooted('ci/release-pipeline'), read(change(2, 5, { id: 'release-pipeline' })),
+    cmd('git switch -c release/0.2.0', 3), read(null, 4))
+  assert.deepEqual(where(s), ['release', 'bump'])
+  assert.deepEqual(keys(s), ['process:missing:release:meaningfy-release'])
+})
+
 test('D-8 change to none: epic-delivery is not kept', () => {
   const s = run(workflows, read(change(3, 5)), read(null, 3))
   assert.deepEqual([s.workflow, s.phase, s.change], [null, null, null])
@@ -156,6 +163,19 @@ for (const command of ['git tag v1.0.0', 'git tag -d v1.0.0', 'git push --follow
   'git push -u origin release/1.0.0', 'git commit -m "git switch -c release/1.0.0"', 'gh release view v1.0.0']) {
   test(`D-7 \`${command}\` does not activate release`, () => {
     assert.deepEqual(where(released([command, 3])), [null, null])
+  })
+}
+
+for (const command of ['git -C ../wt switch -c release/1.0.0', 'git switch --create release/1.0.0',
+  'git -C /r push origin v1.0.0', 'gh release create v1.0']) {
+  test(`D-25 \`${command}\` activates release`, () => {
+    assert.equal(released([command, 3]).workflow, 'release')
+  })
+}
+
+for (const command of ['git push origin v2-api', 'gh release create v2-api', 'git push origin vnext']) {
+  test(`D-25 \`${command}\` does not activate release`, () => {
+    assert.equal(released([command, 3]).workflow, null)
   })
 }
 

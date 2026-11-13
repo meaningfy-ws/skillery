@@ -76,8 +76,13 @@ export function onCommandActivation(s: NavState, w: Workflow): Warning[] {
 }
 
 /** The state left behind when the followed change becomes another one or none (D-8): what belonged to the
- *  old change goes, and the workflow is chosen again from the new change's files. */
+ *  old change goes, and the workflow is chosen again from the new change's files. A workflow that is not
+ *  about a change (release) keeps its phase, gates and warnings (D-25). */
 export function handOff(s: NavState, oldId: string): NavState {
+  const w = s.workflows.find(x => x.name === s.workflow)
+  if (w && !w.activate.openChange && !w.activate.change) {
+    return { ...s, accepted: [], warnings: s.warnings.filter(x => !x.key.startsWith('plan:') && x.key !== `process:second-check:${oldId}`) }
+  }
   const scoped = ['process:gate:', 'process:missing:', 'process:elsewhere:', `process:second-check:${oldId}`, 'plan:']
   return { ...s, gates: {}, accepted: [], workflow: null, variant: null, phase: null, signalPhase: null,
     warnings: s.warnings.filter(w => !scoped.some(p => w.key.startsWith(p))) }

@@ -115,7 +115,7 @@ export function holds(p: ChangePredicate, c: Change | null, merged = false): boo
     case 'tasks-open': return c.total > 0 && c.done === 0
     case 'tasks-partial': return c.done > 0 && c.done < c.total
     case 'tasks-done': return c.total > 0 && c.done >= c.total
-    case 'merged': return merged && c.total > 0 && c.done >= c.total
+    case 'merged': return merged && holds('tasks-done', c)
     case 'archived': return c.archived
   }
 }

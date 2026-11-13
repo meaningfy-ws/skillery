@@ -1,6 +1,21 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { prSignal, type PrOutcome } from './pr.ts'
+import { prSignal, shouldAskGh, type PrOutcome } from './pr.ts'
+import { EMPTY, type Change, type NavState } from './state.ts'
+
+const change = (done: number, total: number): Change =>
+  ({ id: 'x', appetite: 'MEDIUM', done, total, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false })
+const asking = (c: Change | null, mergedBranches: string[] = [], root: NavState['root'] = { path: '/r', common: '/r/.git', branch: 'b' }) =>
+  shouldAskGh({ ...EMPTY, root, change: c, mergedBranches })
+
+test('D-25 gh is asked only with every task ticked and the branch not yet seen merged', () => {
+  assert.equal(asking(change(5, 5)), true)
+  assert.equal(asking(change(3, 5)), false)
+  assert.equal(asking(change(0, 0)), false)
+  assert.equal(asking(null), false)
+  assert.equal(asking(change(5, 5), ['b']), false)
+  assert.equal(asking(change(5, 5), [], null), false)
+})
 
 const BRANCH = 'feature/tenant-dump-restore'
 const view = (state: string, headRefName = BRANCH): PrOutcome =>

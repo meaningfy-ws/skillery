@@ -1,6 +1,15 @@
 // What `gh pr view <branch> --json state,headRefName` tells the navigator (D-5): the followed branch's
 // pull request is merged, or nothing. Pure: io.ts runs the command.
 
+import { branchMerged } from './change.ts'
+import type { NavState } from './state.ts'
+
+/** Ask `gh` only when the answer can move the phase: every task ticked and the branch not yet seen merged (D-25). */
+export function shouldAskGh(s: Pick<NavState, 'root' | 'change' | 'mergedBranches'>): boolean {
+  const c = s.change
+  return s.root !== null && c !== null && c.total > 0 && c.done >= c.total && !branchMerged(s)
+}
+
 /** The command's result; null when it could not run or timed out. */
 export type PrOutcome = { exitCode: number; stdout: string } | null
 

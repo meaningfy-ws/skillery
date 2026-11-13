@@ -287,7 +287,7 @@ const ARCHIVE = at(String.raw`openspec\s+archive\b`)
 const SHIP = at(String.raw`(?:git(?:\s+-[Cc]\s+\S+)*\s+push|gh\s+pr\s+create)\b`)
 const MERGE = at(String.raw`gh\s+pr\s+merge\b`)
 /** Whether a command matches a regex of `activate.commands`, at the start of a shell segment and outside quotes (D-7). */
-export const matchesCommand = (re: string, c: string) => new RegExp(`${SEG}(?:${re})`).test(unquote(c))
+export const matchesCommand = (re: string, c: string) => at(`(?:${re})`).test(c)
 export const isCommit = (c: string) => COMMIT.test(c)
 export const isArchive = (c: string) => ARCHIVE.test(c)
 export const isShip = (c: string) => SHIP.test(c) || ARCHIVE.test(c)
