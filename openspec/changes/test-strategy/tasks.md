@@ -24,15 +24,18 @@
   lines in `skills/` name `test-driven-development` or point to it (DEC-9; spec *The test-data rule
   has one home*).
 - [ ] 1.8 Add the D-8 pointer line to each technique owner the inventory names.
-- [ ] 1.9 Add `test-strategy` to the `served_by` of each use case whose activity has a family file
-  (D-11).
+- [ ] 1.9 Add `test-strategy` to the `served_by` of UC-W18, UC-W19, UC-W20, UC-W6, UC-W17, UC-W24,
+  UC-W8 and UC-W16 (D-11 table).
 - [ ] 1.10 Write `tests/test_test_strategy.py` (D-7: ids, six questions per family, one-home
   patterns with allow-lists), test-first: red before 1.2–1.8, green after. Add the `ownership.yaml`
   entries.
 - [ ] 1.11 Triggers: the static probes in `tests/trigger_probes.yaml` (including the `epic-delivery`
-  pair) and one behavioural run with `skill-creator`, recorded in `evidence/triggers.md` (D-7;
+  pair) and one behavioural run with `skill-creator` (20 queries × 3 runs, the D-7 pass bar),
+  recorded in `evidence/triggers.md` (D-7;
   spec *The skill's trigger is proven against its neighbours*).
-- [ ] 1.12 Evidence: `evidence/failure-case.md` and `evidence/baseline.md` (D-11).
+- [ ] 1.12 Evidence: `evidence/failure-case.md`; `evidence/baseline.md` from the three baseline
+  tasks (a Python module change, a LinkedIn post, a contract clause) with and without the skill
+  (D-11).
 - [ ] 1.13 User-facing docs: the README entry-point row and a CHANGELOG line. Repoint
   `docs/development/README.md` and `docs/practice/ai-coding/dod-quality-gates.md`, and add a pointer
   from `working-with-agents.md`. Then run `make bundles` and `make skill-inventory` (D-11).

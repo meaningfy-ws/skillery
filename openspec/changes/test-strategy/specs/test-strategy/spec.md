@@ -18,22 +18,29 @@ DEC-7). Other skills SHALL cite these, not restate them.
 
 ### Requirement: Every activity family has a matrix
 `test-strategy` SHALL have one reference per activity family (software, documentation, DevOps, UI,
-shaping, modelling, architecture, generic writing), each a table of question, check with its
-`CHK-nn`, technique owner, tool, moment and status `exists` or `gap`; a `gap` row SHALL name the
-EPIC expected to fill it or "none yet" (DEC-6, design D-2).
+shaping, modelling, architecture, generic writing), each a table of question, check with its id,
+technique owner, tool, moment, decided by (a person for every `VAL` row) and status `exists` or
+`gap`, with at least one row for each of the six questions; a `gap` row SHALL name the EPIC expected
+to fill it or "none yet". A `cross-cutting` reference with the same columns MAY hold checks that
+apply to every family; it is exempt from the six-question rule (DEC-6, design D-2).
 
 #### Scenario: A family with no checks today
 - **WHEN** the UI family is read
 - **THEN** its file lists the six questions, each with a check or a `gap` row naming its EPIC
 
 ### Requirement: The matrix covers every check the catalogue has
-Every check found in the catalogue SHALL appear in `references/inventory.md` with an id `CHK-nn`, and
-every id SHALL be cited by at least one family file; `make validate` SHALL fail on an uncited or an
-undefined id (DEC-12, design D-7).
+Every check found in the catalogue SHALL appear in `references/inventory.md` with an id `CHK-<n>`
+(an unpadded number), and every id SHALL be cited by at least one family file or the
+`cross-cutting` reference; `make validate` SHALL fail on an uncited or an undefined id, and on a
+family file without a row for one of the six questions (DEC-12, design D-7).
 
 #### Scenario: A check left out of the matrix
-- **WHEN** `inventory.md` defines `CHK-07` and no family file cites it
-- **THEN** `make validate` fails, naming `CHK-07`
+- **WHEN** `inventory.md` defines `CHK-7` and no family file nor `cross-cutting.md` cites it
+- **THEN** `make validate` fails, naming `CHK-7`
+
+#### Scenario: A family without a robustness row
+- **WHEN** `devops.md` has no row for `ROB`
+- **THEN** `make validate` fails, naming `devops.md` and `ROB`
 
 #### Scenario: A family file cites an unknown check
 - **WHEN** `software.md` cites `CHK-99` and the inventory has no such id
