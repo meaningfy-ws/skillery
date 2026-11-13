@@ -45,7 +45,8 @@
     (`references/stack-standard.md`) and
     [`infrastructure-operations`](../../../skills/infrastructure-operations/SKILL.md)
     (`references/repo-checks.md`; the runbook shape in `references/documentation.md` § Runbooks).
-  - `architecture`'s SKILL.md has 649 body lines against a cap of 650 (A's D-8).
+  - `architecture`'s SKILL.md body is at its cap: the lint counts 650 lines against a cap of 650
+    (A's D-8 says 649; either way no line can be added).
 - **skillery is a public repository.** Evidence written here is public.
 
 ## Goals / Non-Goals
@@ -128,7 +129,9 @@ New choices made while planning. Settled ones are cited.
   Both documentation tools run only in a project that has fetched `quality/` through B's `make`
   target (B's DEC-5); the commands are written in `technical-writing` against the fetched folder.
   In a project that has not fetched it, the writer skips the step and says so in one line of the
-  PR description.
+  PR description. The fetched `quality/vale/` holds no styles (D-11), so the Vale command in
+  `technical-writing` is `vale sync` followed by the run, and its cost line says it needs network
+  the first time.
   C does not edit `make build-docs`, `project-setup`'s Makefile or any `*.workflow.json` file:
   `project-setup` is outside the EPIC's Impact. Wiring the tools into a project's docs gate is
   left to the project, and is noted as a follow-up in the stage's PR if the developer wants it.
@@ -151,10 +154,19 @@ New choices made while planning. Settled ones are cited.
   Rule marking: the unit is the rule, not the single finding. Each rule is shown with its count
   and three example findings. At most eight rules per tool are put to the developer: the eight
   with the most findings after the lead has dropped rules whose three examples are all house terms
-  or code identifiers. They are asked as two multi-select questions of four rules each per tool
-  ("which of these would you fix"); a rule not selected is "noise". Rules not shown default to
-  "noise" and are listed in the tool-run summary, so the developer can pull one back. Two tools
-  make four questions: one call. Where two packages flag the same thing (Microsoft and Google
+  or code identifiers. They are asked as multi-select questions ("which of these would you fix"),
+  each with two to four rules as options, at most two questions per tool; a rule not selected is
+  "noise". Five rules split 3 + 2, never 4 + 1. A tool with one flagged rule gets one question
+  with the options "would fix" and "noise". A tool with no finding gets no question, and its
+  decision is `accept`. Rules not shown default to "noise" and are listed in the tool-run summary,
+  so the developer can pull one back. Two tools make at most four questions: one call.
+
+  Call 3 is one question per decision table (stage 4 has two families and one table): the table
+  is in the question text and the options are "confirm" and "change". On "change" the developer
+  names the lines, the lead corrects them and asks once more. Each rewritten or new scenario is
+  one further question in the same call, with its text and the options "sign off" and "change".
+  In call 1, more than four failures found by the survey are split over further questions of the
+  same call. Where two packages flag the same thing (Microsoft and Google
   overlap), both rules are shown as one option and only one is enabled.
 
   Edge cases of the round. When the survey found no failure, call 1's options are the family's
@@ -174,8 +186,12 @@ New choices made while planning. Settled ones are cited.
     |---|---|
     | Vale | the four candidate packages of D-9, every rule at its default level |
     | ls-lint, docs | kebab-case for directories and for `.md` and `.adoc` files under `docs/`; `README.md` and `CHANGELOG.md` exempt; `docs/rules/` exempt (the rulebook's tooling names those files) |
-    | ls-lint, stacks | the naming form most existing stack folders and their files already follow, counted in the checkout and stated in the summary; the findings are the ones that depart from it |
+    | ls-lint, stacks | the naming form most stacks already follow, counted in the checkout for directories at the stack level and one level below, and for each file extension present in more than half of the stacks; each counted form is stated in the summary; the findings are the names that depart from it |
     | checkmake | its default rule set |
+
+    If no Makefile is checked, `evidence/toolrun-checkmake.md` is still written, with the version
+    and "no Makefile in the checkout"; the developer's answer to that question accepts it as
+    checkmake's run for DEC-7's fourth proof.
   - Each tool is installed as its latest stable release binary on the day of the run, into the
     scratch folder; the version goes into the summary and becomes the pin if the tool is adopted.
   - The draft configurations and the raw output stay in the session's scratch folder. Only the
@@ -221,7 +237,8 @@ New choices made while planning. Settled ones are cited.
     rule fires on its case; the good fixture passes all of them. Vale's fixture test needs the
     styles synced, so the delivery session needs network for `vale sync`. Elsewhere a fixture test skips with a message when its tool, or Vale's synced
     styles, are missing (B's DEC-12); in the delivery session it must run: the pinned tool from
-    the tool run is put on `PATH`, and a skipped test is not proof. One meta-test fails when a
+    the tool run is put on `PATH` (reinstalled at the version the summary records if the scratch
+    folder was cleared), and a skipped test is not proof. One meta-test fails when a
     configuration file of D-11 has no fixture pair, and when a manifest entry lacks its source,
     pin, licence or reason; if B ships no meta-test to extend (R-B2), C writes it;
   - a technique in a skill: a worked example in a reference file of the owning skill that replays
@@ -260,10 +277,10 @@ New choices made while planning. Settled ones are cited.
 - **D-15 A stage that only accepts** ships: the survey file, the decision table, the rows as
   `accepted`, the family in `CLOSED_FAMILIES`, a CHANGELOG line, and the removal of that stage's
   conditional spec delta (D-16). It adds no skill text, no `quality/` file and no probe. Its PR is
-  reviewed with the small review set (the small-stage rule:
-  [`stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md) line 43, which points
-  to the review sets in `epic-delivery`'s SKILL.md). As that rule asks, the lead first records the
-  choice as a `D-<n>` under `## Delivery decisions` of this file.
+  reviewed with the small review set, under the small-stage rule and its limits in
+  [`epic-delivery`'s SKILL.md](../../../skills/epic-delivery/SKILL.md) (lines 106–111). As that
+  rule asks, the lead first records the choice under `## Delivery decisions` of this file, with
+  ids continuing from `D-24`.
 - **D-16 Conditional spec deltas.** The deltas for `documentation-workflow`, `operations-practice`
   and `quality-checks` are written now for the agreed candidates and are marked conditional in
   their header comment. Their scenarios name cases guessed before any survey (a docs file named
@@ -281,8 +298,13 @@ New choices made while planning. Settled ones are cited.
   developer the worked example's outline instead, and C creates no capability.
 
   A fill outside the agreed candidates, in any stage (a documentation `ROB` fill, a shaping `ADQ`
-  fill, a runbook check): the check lands in a reference file of the skill in the row's
-  *Technique owner* column; the lead drafts one ADDED requirement with a scenario in that stage's
+  fill, a runbook check): the check lands in a reference file of the family's default owner,
+  since a gap row may carry no technique owner (R-A3): documentation → `technical-writing` (which
+  gains a `references/` folder); shaping → `epic-planning`; devops → `infrastructure-operations`,
+  or `stack-operations` for a check on one stack; architecture → `architecture`; modelling →
+  `conceptual-modelling`; UI → none (error matrix). Where the lead judges another skill the
+  better owner (`modelling-conventions` and `linkml-engineering` are outside the proposal's
+  Impact), the developer confirms the owner in call 3. The lead drafts one ADDED requirement with a scenario in that stage's
   existing delta (`documentation-workflow`, `epic-shape` or `operations-practice`); the developer
   signs it off in call 3. A runbook check, if a runbook failure is recorded, lands in
   `infrastructure-operations`' `references/documentation.md` § Runbooks.
@@ -296,16 +318,22 @@ New choices made while planning. Settled ones are cited.
   the tester's report that the qualifying EPIC's own delivery produced, with B's brief unchanged. **Proven** means at least one such invariant exists and every one of them appears,
   by its `INV-<n>` id or its statement, among the properties the report states. The comparison
   goes to `evidence/invariants-trace.md`. Stage 2 ships without it when no such PLAN exists yet;
-  task 6.1 holds the EPIC open. If none has appeared when the other four stages are closed, the
-  developer decides: wait, or run the trace on a small sample PLAN written for it.
+  task 6.1 holds the EPIC open. A qualifying PLAN may be in skillery or in any project the
+  developer points to. The report is read where that EPIC recorded it (R-B4 checks where B's
+  brief has it kept); if it was not kept, C's lead asks that EPIC's lead to save it to its
+  `evidence/` folder. If no qualifying PLAN has appeared when the other four stages are closed,
+  the developer decides: wait, or name a small code change whose own session shapes it, plans it
+  with a tester-marked invariant and delivers it with B's tester. C's lead still only reads the
+  report.
 - **D-19 Descriptions do not change by default.** The new checks are steps inside triggers the
   skills already have. If a stage must change a description, it ships a positive and a near-miss
   probe with the before and after kept (`AGENTS.md`, *Proven triggers*).
 - **D-20 Order and independence.** Stages run in DEC-1's order, one PR each into `develop`. "A is
   delivered" means A's stage 1 is merged (the family files); A's stage 2 matters only for R-A5.
   A stage needs its own preflight (§ Re-check): stages 1 and 3 need B's stage 1; stage 2 needs B's
-  stage 2 for the brief (R-B4), not only for the trace; stages 4 and 5 need A alone. The proposal's
-  Impact says "after A and B", and that is the default. A later stage overtakes an earlier one only
+  stage 2 for the brief (R-B4), not only for the trace; stages 4 and 5 need A alone. No stage
+  waits for more of B than its own preflight names; that is how this PLAN reads the proposal's
+  "after A and B". A later stage overtakes an earlier one only
   when the earlier is blocked at preflight, by B or by missing access to an infra repository, and
   the developer agrees; the deviation from DEC-1's order is recorded in `evidence/preflight.md`.
 - **D-21 Definition of Done items** (`docs/development/README.md` §9) beyond the stage loop:
@@ -320,8 +348,8 @@ New choices made while planning. Settled ones are cited.
     result is recorded as it is and the sample is made harder once (a bulk import added, the
     operations listed out of order); if it is still named, the baseline shows no difference, #143
     stays the failure evidence, and the developer is told in the stage's PR. Tool checks need no baseline; their fixture pair is the test.
-  - *Issue referenced:* stage 1's PR names #212, stage 2's #143, stage 3's #216; stages 4 and 5
-    name the EPIC, as A's D-11 does.
+  - *Issue referenced:* stage 1's PR names #212 (the follow-up that waits on stage 1's Vale run),
+    stage 2's #143, stage 3's #216; stages 4 and 5 name the EPIC, as A's D-11 does.
   - *External tools:* each adopted tool gets an entry in `dependencies.yaml` (kind `cli-tool`),
     unless B has already added it (R-B3).
   - *Ownership:* `tests/ownership.yaml` gains `plan-invariants`, owner `epic-planning`,
@@ -458,7 +486,7 @@ The adversarial tester takes these rows as its targets.
 | `quality/` is missing or laid out differently from D-11 | Preflight R-B1 | Stop stages 1 and 3; adapt D-11 to B's layout as a PLAN revision |
 | A survey finds no failure | The failures table is empty and lists the sources searched | D-15: an accept-only stage; valid |
 | A survey finds a failure that fits no single technique, or one outside the family | The decision line cannot name one technique | Record it as an issue; the row is `accepted` with the issue number as reason |
-| A fill grows past one technique per gap, or a check is proposed with no failure id | Stage checker, INV-2; the lead's diff reading | Cut it; the proposal's overrun rule: stop and accept the gap |
+| A fill grows past one technique per gap, or a check is proposed with no failure id | Stage checker, INV-2; the lead's diff reading | Cut it; the overrun rule of `proposal.md` § Appetite: stop and accept the gap |
 | The developer marks no Vale finding "would fix" | The owner round's answers | Vale is not adopted; its rows are not added; the `quality-checks` and `documentation-workflow` Vale requirements are deleted (D-16); the run summary stays as evidence; DEC-7's fourth proof still holds |
 | Vale or a style package is unavailable, relicensed or changed at the pin | The run fails, or the manifest check at a pin bump | Drop that package from the candidates and record why; never vendor it |
 | A style file or raw output is committed | INV-3's test; the stage checker (INV-4) | Remove it; add the ignore entry |
@@ -487,7 +515,7 @@ The adversarial tester takes these rows as its targets.
 | An `accepted` reason points into `openspec/` | A Markdown link: `cross_skill_paths` (blocking). A plain-text path: only the stage checker | D-13: neither; the change id as text |
 | C is ready to archive before A or B | Task 6.4 | D-23: wait |
 | Evidence names a host or client | Stage checker (INV-4) | Scrub before the PR; if already pushed, rewrite the file and tell the developer |
-| A description changes without probes | The stage checker; the DoD list | Add the probe pair, or revert the description (D-19) |
+| A description changes without probes | The stage checker, against D-19 and D-21 | Add the probe pair, or revert the description (D-19) |
 
 ## Risks / Trade-offs
 
@@ -515,22 +543,25 @@ The adversarial tester takes these rows as its targets.
 
 ## Re-check when A and B land
 
-Each line is a preflight task of the stages named. "Holds" means this PLAN needs no change.
+Each line is a preflight task of the stages named. When a re-check shows a difference, the PLAN
+is revised before the stage: a revision limited to paths or file names is confirmed by the
+developer and noted in `evidence/preflight.md`; one that changes a decision or a scenario is
+gated again.
 
 | Id | Re-check | Against | Stages |
 |---|---|---|---|
-| R-A1 | The six family files exist under `skills/test-strategy/references/` with A's D-2 columns and the statuses `exists`, `gap`, `accepted` | A's stage 1, merged | all: once in task 0.2, and again in each stage's preflight for that stage's family file |
+| R-A1 | C's six family files (documentation, shaping, devops, architecture, modelling, ui) exist under `skills/test-strategy/references/` with A's D-2 columns and the statuses `exists`, `gap`, `accepted` | A's stage 1, merged | all: once in task 0.2, and again in each stage's preflight for that stage's family file |
 | R-A2 | `inventory.md` uses `CHK-<n>` ids; `tests/test_test_strategy.py` exists and is green; whether it accepts prose in the *Check* cell of an `accepted` row (if not, D-13's reason moves to the cell A's test allows); whether it catches a duplicate id | A's stage 1 | once, in task 0.2; a duplicate id is looked for again at each stage's close, after the rebase |
-| R-A3 | Which rows are `gap` and which EPIC each names; the delivered rows replace the *Expected rows* guesses | the delivered family files | a first look in task 0.2 (recorded in `evidence/preflight.md`); per stage it is that stage's survey task (x.2), which copies the rows |
+| R-A3 | Which rows are `gap`, which EPIC each names and whether a gap row carries a technique owner (D-16); the delivered rows replace the *Expected rows* guesses | the delivered family files | a first look in task 0.2 (recorded in `evidence/preflight.md`); per stage it is that stage's survey task (x.2), which copies the rows |
 | R-A4 | The pointer-line wording in the owning skills (A's D-8), so new question ids are added in the same form | A's stage 1 | 1, 2, 3, 4 (stage 5 has no owning skill in the catalogue) |
 | R-A5 | A's stage 2 `criteria` on `documentation`, `epic-shaping` and `devops` phases: C changes no workflow file, so nothing to edit; confirm no criterion contradicts D-6. If A's stage 2 is not merged: "not yet applicable", re-run at the close step | A's stage 2 | 1, 2, 3 |
 | R-B1 | `quality/` exists; its layout, manifest format and test location match D-11, or D-11 is revised | B's PLAN and stage 1 | 1, 3 |
 | R-B2 | How `quality/`'s tests run in `make validate` and skip in CI (B's DEC-12), so D-12's fixtures and INV-3's test sit in the right place; whether B ships a meta-test ("a rule without a fixture fails") that C can extend to configurations, or C writes its own | B's stage 1 | 1, 3 |
 | R-B3 | B's ls-lint and checkmake configurations for scaffolded projects: C's docs and stacks variants are separate files and repeat none of their rules; whether B added ls-lint and checkmake to `dependencies.yaml` | B's stage 1 | 1, 3 |
-| R-B4 | The tester brief's Read list names `design.md` § Invariants and § Error matrix, and its report lists the properties it stated | B's stage 2 | 2 (task 2.1) and 6 (task 6.1) |
+| R-B4 | The tester brief's Read list names `design.md` § Invariants and § Error matrix, its report lists the properties it stated, and where that report is kept after a delivery | B's stage 2 | 2 (task 2.1) and 6 (task 6.1) |
 | R-B6 | B's fetch target delivers every folder under `quality/` (so `vale/` and the docs configuration reach a project), and the folder it fetches into, which `technical-writing`'s commands name | B's stage 1 | 1 |
 | R-B5 | `governance.md` names `quality/` as an artifact type and the top-level folder check allows it | B's stage 1 | 1, 3 |
-| R-S1 | The live `epic-shape`, `documentation-workflow` and `operations-practice` requirements still read as the deltas assume | `openspec/specs/` on `develop` | 1, 2, 3 |
+| R-S1 | The live `epic-shape`, `documentation-workflow` and `operations-practice` requirements still read as the deltas assume | `openspec/specs/` on `develop` | 1, 2, 3; stage 4 only if it drafts a delta, for that capability |
 | R-S2 | The `test-strategy` and `quality-checks` capabilities exist in `openspec/specs/` or in their unarchived changes, so C's deltas have a base | A's and B's archive state | once, in task 0.2 |
 
 ## Attack record
@@ -592,6 +623,15 @@ candidates in stages 1 to 3 (D-16, task 3.6); call 1 with an empty survey and ov
 baseline already green, and which skill text each run reads (D-21, tasks 2.4, 2.8); stale counts
 and citations (Goals, Context, R-S2, G-1); bare "error matrix" citations (tasks 2.1, 5.3); the
 observer of the scenario *A write path left out* (task 2.8).
+
+**Clarity gate, run 4 (a fourth independent scorer, on commit c30901a): 8.9/10, FAIL.** Gaps folded
+in: the form of calls 2 and 3 (D-7); the owner of a fill outside the candidates and its task in
+stages 1 and 2 (D-16, R-A3, tasks 1.6, 2.5); D-18's fallback and where the report is read (D-18,
+R-B4); "edits no skill" and "finding" against "rule" (the `test-strategy` and `quality-checks`
+deltas); "nothing to check" and the fourth proof (D-8); stale facts (the tasks header, the
+`architecture` line count, R-A1); D-20's default; the stacks draft (D-8); what follows a revision
+at preflight (§ Re-check); `vale sync` in the project command (D-6); bare references (D-15, error
+matrix).
 
 The attacker did not check the contents of the two infra repositories, Vale's behaviour with the
 four packages, or how `openspec archive` treats a delta to a capability with no live spec (D-23
