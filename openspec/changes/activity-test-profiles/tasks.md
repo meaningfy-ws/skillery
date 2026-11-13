@@ -1,4 +1,5 @@
-<!-- PLAN (tasks half), derived 2026-11-13; attack and two gate runs folded in 2026-11-14.
+<!-- PLAN (tasks half), derived 2026-11-13; the attack and the gate runs recorded in design.md
+     § Attack record are folded in.
      Delivery does not start before A's stage 1 is merged and each stage's preflight passes
      (design D-20). -->
 
@@ -45,7 +46,9 @@ stage.
   the fetched `quality/`, when it runs, whether it blocks, its cost, and the one-line skip note for
   a project that has not fetched `quality/`; the pointer line. Add each adopted tool to
   `dependencies.yaml` unless B did (D-6, D-13, D-21; spec *Documentation checks run in the verify
-  phase*).
+  phase*). A fill outside the agreed candidates (a `ROB` or `RSK` row with a failure) is a
+  separate step: commit its signed-off requirement, then the worked example, then the check in
+  `skills/technical-writing/references/` (D-12, D-16).
 - [ ] 1.7 Close: add `documentation` to `CLOSED_FAMILIES` (red); matrix edits in
   `documentation.md` and `inventory.md` until it is green, with no duplicate `CHK-<n>` after the
   rebase; keep, rewrite or delete the conditional requirements; for each fill a line in
@@ -72,7 +75,10 @@ stage.
   `evidence/baseline-shaping.md` whether the create path is named; if it already is, make the
   sample harder once, as D-21 says (D-21).
 - [ ] 2.5 Write `skills/epic-planning/references/invariants.md`: what an invariant is and is not,
-  the write-path list, the #143 case replayed as in design § Algorithm (D-4, D-12).
+  the write-path list, the #143 case replayed as in design § Algorithm (D-4, D-12). A fill
+  outside the invariants technique (an `ADQ` row with its own failure) is a separate step: commit
+  its signed-off requirement, then the worked example, then the check in another reference file of
+  `epic-planning` (D-12, D-16).
 - [ ] 2.6 `epic-planning` SKILL.md: the invariants question in step 2 and the table in step 6, at
   most four added lines, linking 2.5; the `plan-invariants` entry in `tests/ownership.yaml` (D-3,
   D-4, D-21; spec *The shaping interview asks for invariants*).
@@ -120,7 +126,8 @@ stage.
 
 ## 4. Stage 4: architecture and modelling
 
-- [ ] 4.1 Preflight: R-A1 for `architecture.md` and `modelling.md`, R-A4 (§ Re-check).
+- [ ] 4.1 Preflight: R-A1 for `architecture.md` and `modelling.md`, R-A4; R-S1 later, for the
+  capability of a delta if 4.3 drafts one (§ Re-check).
 - [ ] 4.2 Copy every gap row of `architecture.md` and `modelling.md` into
   `evidence/survey-architecture-modelling.md`; run the survey searches (design § Algorithm, steps
   2 and 3; D-5).
@@ -128,7 +135,8 @@ stage.
   for a `fill`, the lead's draft of the new delta's scenarios signed off, or the worked example's
   outline where the skill has no capability (D-16).
 - [ ] 4.4 *Fill only.* Commit the signed-off delta if there is one, then the worked example, then
-  the check in a reference file of the owning skill (D-12, D-16, D-17).
+  the check in a reference file of the owner D-16 names or the developer confirmed (D-12, D-16,
+  D-17).
 - [ ] 4.5 Close as 1.7, for both family files and `evidence/catch-architecture-modelling.md`; then
   the stage checker and one PR as 1.8, naming the EPIC (D-12..D-15, D-21).
 
@@ -149,12 +157,14 @@ stage.
 ## 6. Closing the EPIC
 
 - [ ] 6.1 The invariants trace: re-run R-B4; on the first PLAN that qualifies (D-18), read the
-  tester's report from that EPIC's own delivery and write the comparison to
+  tester's report where that EPIC's delivery recorded it and write the comparison to
   `evidence/invariants-trace.md`. If none has appeared when stages 1 to 5 are closed, ask the
-  developer: wait, or a sample PLAN (D-18; spec *Invariants reach the tester*).
+  developer: wait, or name a small code change to be delivered by its own session (D-18; spec
+  *Invariants reach the tester*).
 - [ ] 6.2 Check DEC-7's four proofs against the evidence folder and list them in
   `evidence/acceptance.md`: a catch file for each stage that filled, `CLOSED_FAMILIES` holding all
-  six families, the trace, the four tool-run summaries (DEC-7, D-21).
+  six families, the trace, the four tool-run summaries (checkmake's may read "no Makefile in the
+  checkout", D-8) (DEC-7, D-21).
 - [ ] 6.3 Acceptance with the developer: one survey file read end to end and the invariants path
   shown on a real PLAN; the verdict recorded in `evidence/acceptance.md` (D-21).
 - [ ] 6.4 Archive only after A and B are archived (D-23).

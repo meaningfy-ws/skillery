@@ -20,17 +20,17 @@ DEC-6, DEC-7).
 
 #### Scenario: A stage with no failure at all
 - **WHEN** a stage's survey records no failure for any gap row of its family
-- **THEN** the stage ships only the survey record and the `accepted` rows, and edits no skill
+- **THEN** the stage ships only the survey record and the `accepted` rows, and edits no skill other than the family's rows in `test-strategy`
 
 ### Requirement: Each stage's failures come from a recorded survey
 Each stage SHALL start with a survey kept in the change's `evidence/` folder that lists the
 family's gap rows, the failures found with their sources, the sources searched, and one decision
 per gap row, `fill` or `accept`; the developer SHALL confirm the decisions before a check is
-written. A tool finding SHALL count as a failure only when the developer marks it as one worth
+written. A tool's findings SHALL count as a failure only for a rule the developer marks as worth
 fixing (activity-test-profiles DEC-3, DEC-7; design D-5, D-7).
 
 #### Scenario: A candidate tool with only noise
-- **WHEN** Vale's run on a real docs tree produces findings and the developer marks none as worth fixing
+- **WHEN** Vale's run on a real docs tree produces findings and the developer marks none of its rules as worth fixing
 - **THEN** Vale is not adopted, and the run's summary stays in `evidence/`
 
 #### Scenario: A check proposed without a failure
