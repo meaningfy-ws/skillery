@@ -5,7 +5,7 @@ import { bandModel, capped, lineText, shortTitle, toneOf } from './view.ts'
 
 const apply: NavState = {
   ...EMPTY,
-  change: { id: 'navigator', appetite: 'VERY LARGE', done: 12, total: 40, groups: [], planMtime: 0, hasDesign: true, hasTasks: true },
+  change: { id: 'navigator', appetite: 'VERY LARGE', done: 12, total: 40, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false },
   openChanges: 1,
   phase: 'apply',
 }
@@ -59,8 +59,8 @@ test('the band: running subagents, last skill, gates, warnings; unfolded rows', 
     ...apply,
     skills: [{ name: 'epic-delivery', at: 1, phase: null }, { name: 'clarity-gate', at: 2, phase: null }],
     subagents: [
-      { agentId: 'a', toolUseId: 't', type: 'code-reviewer', model: 'sonnet', description: '', startedAt: 0, tokens: 0, done: false },
-      { agentId: 'b', toolUseId: 'u', type: 'implementer', model: 'opus', description: '', startedAt: 0, tokens: 12345, done: true },
+      { agentId: 'a', toolUseId: 't', type: 'code-reviewer', model: 'sonnet', description: '', startedAt: 0, tokens: 0, done: false, rootPath: null, skills: [] },
+      { agentId: 'b', toolUseId: 'u', type: 'implementer', model: 'opus', description: '', startedAt: 0, tokens: 12345, done: true, rootPath: null, skills: [] },
     ],
     gates: { validate: { state: 'ok', at: 1, detail: '' }, clarity: { state: 'none', at: 0, detail: '' } },
     warnings: [{ key: 'k', message: 'm', remedy: null, owner: 'x' }],
@@ -125,7 +125,7 @@ test('a phase with no tasks still prints', () => {
 
 test('band: no skills, all subagents done, no gates, no warnings', () => {
   const s: NavState = { ...EMPTY, subagents: [
-    { agentId: 'a', toolUseId: 't', type: 'x', model: 'm', description: '', startedAt: 0, tokens: 0, done: true }] }
+    { agentId: 'a', toolUseId: 't', type: 'x', model: 'm', description: '', startedAt: 0, tokens: 0, done: true, rootPath: null, skills: [] }] }
   const b = bandModel(s)
   assert.equal(b.folded, '')
   assert.deepEqual(b.rows.find(r => r.label === 'skills')!.items, [])
@@ -152,7 +152,7 @@ test('band: the skill trail is the last 8, oldest first', () => {
 
 test('tokens: 999 stays plain, 1000 becomes 1.0k', () => {
   const a = (tokens: number): NavState => ({ ...EMPTY, subagents: [
-    { agentId: 'a', toolUseId: 't', type: 'x', model: 'm', description: '', startedAt: 0, tokens, done: true }] })
+    { agentId: 'a', toolUseId: 't', type: 'x', model: 'm', description: '', startedAt: 0, tokens, done: true, rootPath: null, skills: [] }] })
   assert.deepEqual(bandModel(a(999)).rows[1]!.items, ['x · m · done · 999 tokens'])
   assert.deepEqual(bandModel(a(1000)).rows[1]!.items, ['x · m · done · 1.0k tokens'])
 })

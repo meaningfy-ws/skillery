@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { appendDeviation, archiveCheck, parseDeviations } from './deviations.ts'
+import { acceptTarget, appendDeviation, archiveCheck, archivedRefusal, deviationsPath, parseDeviations } from './deviations.ts'
+import { EMPTY, type NavState } from './state.ts'
 
 const w = (key: string) => ({ key, message: key, remedy: null, owner: 'x' })
 
@@ -52,4 +53,28 @@ test('accept arguments: the key may hold spaces up to the quoted reason; no reas
     { key: 'process:missing:apply:tdd', reason: 'agreed with owner' })
   assert.equal(parseAccept('accept plan:x'), null)
   assert.equal(parseAccept('accept plan:x ""'), null)
+})
+
+const WORKTREE = { path: '/r/.claude/worktrees/tdr', common: '/r/.git', branch: 'feature/tenant-dump-restore' }
+const inChange = (archived: boolean, root: typeof WORKTREE | null = WORKTREE): NavState => ({ ...EMPTY, root,
+  change: { id: 'tenant-dump-restore', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: true,
+    hasTasks: true, archived } })
+
+test('1.5 Accept after a re-root targets the worktree\'s change, not the start checkout', () => {
+  assert.deepEqual(acceptTarget(inChange(false)),
+    { kind: 'file', path: '/r/.claude/worktrees/tdr/openspec/changes/tenant-dump-restore/deviations.md' })
+  assert.equal(deviationsPath('/r-tdr', 'x'), '/r-tdr/openspec/changes/x/deviations.md')
+})
+
+test('1.5 Accept is session-only outside a change, and refused on an archived change', () => {
+  assert.deepEqual(acceptTarget({ ...EMPTY, root: WORKTREE }), { kind: 'session' })
+  assert.deepEqual(acceptTarget(inChange(true)),
+    { kind: 'archived', refusal: 'Navigator: tenant-dump-restore is archived; there is nothing to accept or check.' }) // D-21.5
+  assert.equal(acceptTarget(inChange(false, null)).kind, 'session') // no repository: nowhere to write
+})
+
+test('1.5 the Archive check is refused on an archived change, and runs on an open one', () => {
+  assert.match(archivedRefusal(inChange(true))!, /archived/)
+  assert.equal(archivedRefusal(inChange(false)), null)
+  assert.equal(archivedRefusal(EMPTY), null)
 })

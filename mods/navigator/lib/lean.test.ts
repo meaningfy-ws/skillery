@@ -15,7 +15,7 @@ const thresholds = JSON.parse(readFileSync(join(REPO, 'skills/guardrails/assets/
 let n = 0
 const id = () => `l${++n}`
 const change = (appetite: string, done = 3, total = 9): Change =>
-  ({ id: 'x', appetite, done, total, groups: [], planMtime: 0, hasDesign: true, hasTasks: true })
+  ({ id: 'x', appetite, done, total, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false })
 const base = (appetite: string, raw: unknown = thresholds): Signal[] => [
   { kind: 'Started', id: id(), sessionId: 's', band: 'folded', statusLine: true, interactive: true },
   { kind: 'ThresholdsRead', id: id(), raw },

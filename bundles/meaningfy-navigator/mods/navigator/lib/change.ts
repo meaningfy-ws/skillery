@@ -3,11 +3,10 @@
 import type { Change, ChangePredicate, Group } from './state.ts'
 
 export type ChangeFiles = {
-  id: string
+  id: string // an archived change's is its folder name, `<date>-<id>`
   proposal: string
   tasks: string | null
   design: boolean
-  mtime: number // newest mtime of the change's files
   planMtime: number // newest mtime of design.md and tasks.md, 0 if neither
 }
 
@@ -56,21 +55,44 @@ export function progress(tasks: string | null): { done: number; total: number; g
   }
 }
 
-/** The branch's change if its name contains an id, else the most recently modified (DD-13). */
-export function readChange(open: ChangeFiles[], branch: string, appetites: string[]):
-  { change: Change | null; openChanges: number } {
-  if (open.length === 0) return { change: null, openChanges: 0 }
-  const recent = [...open].sort((a, b) => b.mtime - a.mtime || a.id.localeCompare(b.id))
-  // The longest id the branch names; a tie goes to the most recent, so folder order never decides.
-  // shortcut: a substring match, so a short id such as `fix` also matches `fix/other`; match on
-  // separators if people report a wrong change.
-  const byBranch = recent.filter(c => branch.includes(c.id)).sort((a, b) => b.id.length - a.id.length)[0]
-  const pick = byBranch ?? recent[0]!
-  return {
-    change: { id: pick.id, appetite: appetiteOf(pick.proposal, appetites), ...progress(pick.tasks), planMtime: pick.planMtime,
-      hasDesign: pick.design, hasTasks: pick.tasks !== null },
-    openChanges: open.length,
-  }
+/** Where `id` last occurs in `branch` bounded by the start, the end, `/` or `-` on both sides; -1 if it does not (D-3, D-21.10). */
+function boundedAt(branch: string, id: string): number {
+  const last = [...branch.matchAll(new RegExp(`(^|[/-])${escape(id)}(?=[/-]|$)`, 'g'))].at(-1)
+  return last ? last.index + last[1]!.length : -1
+}
+
+/** The open change id a branch names: the longest, on a tie the one named later, then alphabetical.
+ *  Never the most recently modified (DEC-3). */
+export function matchOpen(branch: string, open: string[]): string | null {
+  const hits = open.filter(id => id && boundedAt(branch, id) >= 0)
+  hits.sort((a, b) => b.length - a.length || boundedAt(branch, b) - boundedAt(branch, a) || a.localeCompare(b))
+  return hits[0] ?? null
+}
+
+const ARCHIVE_DATE = /^\d{4}-\d{2}-\d{2}-/
+
+/** The archive folders (`<date>-<id>`) of `lastChangeId`: the only ones io reads (D-3). */
+export const archivedFolders = (names: string[], lastChangeId: string | null): string[] =>
+  lastChangeId ? names.filter(f => f.replace(ARCHIVE_DATE, '') === lastChangeId) : []
+
+/** The archived folder (`<date>-<id>`) of the change just archived: only `lastChangeId`, and only when the branch names it.
+ *  Archived twice, the newest folder (the date sorts it). */
+export function matchArchived(branch: string, archived: string[], lastChangeId: string | null): string | null {
+  if (!lastChangeId || boundedAt(branch, lastChangeId) < 0) return null
+  return archivedFolders(archived, lastChangeId).sort().at(-1) ?? null
+}
+
+const toChange = (c: ChangeFiles, id: string, appetites: string[], archived: boolean): Change =>
+  ({ id, appetite: appetiteOf(c.proposal, appetites), ...progress(c.tasks), planMtime: c.planMtime,
+    hasDesign: c.design, hasTasks: c.tasks !== null, archived })
+
+/** The branch's change: an open one it names, else the archived one it just followed; else none (D-3). */
+export function readChange(open: ChangeFiles[], archived: ChangeFiles[], lastChangeId: string | null, branch: string,
+  appetites: string[]): { change: Change | null; openChanges: number } {
+  const id = matchOpen(branch, open.map(c => c.id))
+  const folder = id === null ? matchArchived(branch, archived.map(c => c.id), lastChangeId) : null
+  const files = id === null ? archived.find(c => c.id === folder) : open.find(c => c.id === id)
+  return { change: files ? toChange(files, id ?? lastChangeId!, appetites, id === null) : null, openChanges: open.length }
 }
 
 /** One predicate, or a list of which any holds (DD-38). */

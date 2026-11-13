@@ -94,7 +94,7 @@ test('SubagentFinished arriving before its Spawned still marks the agent done', 
 test('Started clears everything and keeps only its own id as seen, even when replayed', () => {
   let s = started('s1')
   s = reduce(s, skill(1))
-  s = reduce(s, { kind: 'ChangeRead', id: 'c1', change: { id: 'x', appetite: null, done: 1, total: 2, groups: [], planMtime: 0, hasDesign: true, hasTasks: true }, openChanges: 2, at: 0 })
+  s = reduce(s, { kind: 'ChangeRead', id: 'c1', change: { id: 'x', appetite: null, done: 1, total: 2, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false }, openChanges: 2, at: 0 })
   s = reduce(s, { kind: 'SubagentSpawned', id: 'tu', agentId: 'a', type: 't', model: 'm', description: '', at: 1 })
   const again = reduce(s, { kind: 'Started', id: 's1', sessionId: 's1', band: 'unfolded', statusLine: false, interactive: true })
   assert.deepEqual(again, { ...EMPTY, sessionId: 's1', display: { band: 'unfolded', line: false }, seen: ['s1'] })
@@ -145,3 +145,82 @@ test('settingsFrom: known values pass, anything else takes the default', () => {
   assert.deepEqual(settingsFrom({}), { band: 'folded', statusLine: true })
 })
 
+
+// ---------------------------------------------------------------- D-1: root, skill calls, per-agent entries
+const root = (path: string, branch = 'b') => ({ path, common: '/r/.git', branch })
+const spawned = (agentId: string) =>
+  ({ kind: 'SubagentSpawned' as const, id: `tu-${agentId}`, agentId, type: 'implementer', model: 'opus', description: 'd', at: 1 })
+
+test('D-1 a new atom has no root, no last change, nothing merged, no calls in flight', () => {
+  assert.deepEqual([EMPTY.root, EMPTY.lastChangeId, EMPTY.mergedBranches, EMPTY.skillCalls, EMPTY.pendingSpawns],
+    [null, null, [], [], []])
+  assert.deepEqual([spawned('a1')].map(sg => reduce(started(), sg).subagents[0]).map(a => [a?.rootPath, a?.skills]), [[null, []]])
+})
+
+test('RootFollowed sets the lead root; to the current root it changes nothing', () => {
+  let s = reduce(started(), { kind: 'RootFollowed', id: 'r1', root: root('/r') })
+  assert.deepEqual(s.root, root('/r'))
+  const again = reduce(s, { kind: 'RootFollowed', id: 'r2', root: root('/r') })
+  assert.deepEqual(again.root, s.root)
+  s = reduce(s, { kind: 'RootFollowed', id: 'r3', root: root('/r/.claude/worktrees/tdr') })
+  assert.equal(s.root?.path, '/r/.claude/worktrees/tdr')
+})
+
+test('RootFollowed: the same signal id twice is applied once', () => {
+  const once = reduce(started(), { kind: 'RootFollowed', id: 'r1', root: root('/r') })
+  assert.equal(reduce(once, { kind: 'RootFollowed', id: 'r1', root: root('/x') }), once)
+})
+
+test('ChangeRead keeps lastChangeId at the id of the change read, null when none is read', () => {
+  const change = { id: 'x', appetite: null, done: 0, total: 0, groups: [], planMtime: 0, hasDesign: false, hasTasks: false, archived: false }
+  let s = reduce(started(), { kind: 'ChangeRead', id: 'c1', change, openChanges: 1, at: 1 })
+  assert.equal(s.lastChangeId, 'x')
+  s = reduce(s, { kind: 'ChangeRead', id: 'c2', change: null, openChanges: 1, at: 2 })
+  assert.equal(s.lastChangeId, null)
+})
+
+test('AgentRooted sets that subagent root only; idempotent per agent', () => {
+  let s = reduce(reduce(started(), spawned('a1')), spawned('a2'))
+  s = reduce(s, { kind: 'AgentRooted', id: 'rooted:a1', agentId: 'a1', root: '/r-tdr' })
+  assert.deepEqual(s.subagents.map(a => [a.agentId, a.rootPath]), [['a1', '/r-tdr'], ['a2', null]])
+  assert.equal(reduce(s, { kind: 'AgentRooted', id: 'rooted:a1', agentId: 'a1', root: '/elsewhere' }), s)
+})
+
+test('AgentRooted for an agent not yet listed changes nothing', () => {
+  const s = started()
+  assert.deepEqual(reduce(s, { kind: 'AgentRooted', id: 'rooted:zz', agentId: 'zz', root: '/x' }).subagents, [])
+})
+
+test('SkillCallStarted adds an in-flight call; SkillCallEnded removes it by toolUseId', () => {
+  let s = reduce(started(), { kind: 'SkillCallStarted', id: 'c1', toolUseId: 'tu1', name: 'clarity-gate', agentId: null, at: 1 })
+  s = reduce(s, { kind: 'SkillCallStarted', id: 'c2', toolUseId: 'tu2', name: 'clarity-gate', agentId: 'a1', at: 2 })
+  assert.deepEqual(s.skillCalls, [
+    { toolUseId: 'tu1', name: 'clarity-gate', agentId: null, at: 1, loaded: false },
+    { toolUseId: 'tu2', name: 'clarity-gate', agentId: 'a1', at: 2, loaded: false }])
+  s = reduce(s, { kind: 'SkillCallEnded', id: 'e1', toolUseId: 'tu1' })
+  assert.deepEqual(s.skillCalls.map(c => c.toolUseId), ['tu2'])
+  assert.equal(reduce(s, { kind: 'SkillCallEnded', id: 'e2', toolUseId: 'unknown' }).skillCalls.length, 1)
+})
+
+test('SkillCallStarted/Ended: a repeated id changes nothing', () => {
+  const a = reduce(started(), { kind: 'SkillCallStarted', id: 'c1', toolUseId: 'tu1', name: 'x', agentId: null, at: 1 })
+  assert.equal(reduce(a, { kind: 'SkillCallStarted', id: 'c1', toolUseId: 'tu1', name: 'x', agentId: null, at: 1 }), a)
+  const b = reduce(a, { kind: 'SkillCallEnded', id: 'e1', toolUseId: 'tu1' })
+  assert.equal(reduce(b, { kind: 'SkillCallEnded', id: 'e1', toolUseId: 'tu1' }), b)
+})
+
+test('ToolUsed of the lead is a tool event of the turn; the same id twice counts once', () => {
+  const s = reduce(started(), { kind: 'ToolUsed', id: 't1' })
+  assert.deepEqual(s.turnEvents, [{ kind: 'tool' }])
+  assert.equal(reduce(s, { kind: 'ToolUsed', id: 't1' }), s)
+  assert.deepEqual(reduce(s, { kind: 'ToolUsed', id: 't2', agentId: 'a1' }).turnEvents, [{ kind: 'tool' }]) // 3.2 does the per-agent part
+})
+
+test('revive of an atom written before D-1 fills the new fields and still reduces', () => {
+  const old = { ...EMPTY } as Record<string, unknown>
+  for (const k of ['root', 'lastChangeId', 'mergedBranches', 'skillCalls', 'pendingSpawns']) delete old[k]
+  old['subagents'] = [{ agentId: 'a1', toolUseId: 't', type: 'x', model: 'm', description: '', startedAt: 0, tokens: 0, done: false }]
+  const s = revive(old)
+  assert.deepEqual([s.root, s.lastChangeId, s.mergedBranches, s.skillCalls, s.pendingSpawns], [null, null, [], [], []])
+  assert.doesNotThrow(() => reduce(s, { kind: 'RootFollowed', id: 'r', root: root('/r') }))
+})

@@ -1,20 +1,26 @@
 // The state contract (design §3). reduce() is the only writer; every function here is pure.
 
-import type { BandDisplay, Change, NavState, Warning, Workflow } from '../types'
+import type { BandDisplay, Change, NavState, Root, Warning, Workflow } from '../types'
+import { creditLoad, placeholderAgent, withSkill } from './attribution.ts'
 import { lean } from './lean.ts'
 import { navigate } from './phase.ts'
 import { addWarnings, clearGateWarnings, gatesAfterCommand, gatesAfterFile, gatesAfterPlan, gatesAfterSkill, onCommand,
   onCommit, onSkill, showsConsent, workflowErrors } from './process-drift.ts'
 import { bare, currentPhase, isCommit, workflowOf } from './workflow.ts'
 
-export type { Activate, BandDisplay, Change, ChangePredicate, Gate, GateState, Group, NavState, Phase, Review, SkillUse,
-  Subagent, Warning, Workflow } from '../types'
+export type { Activate, BandDisplay, Change, ChangePredicate, Gate, GateState, Group, NavState, PendingSpawn, Phase, Review,
+  Root, SkillCall, SkillUse, Subagent, Warning, Workflow } from '../types'
 
 export const EMPTY: NavState = {
   version: 1,
   sessionId: '',
   change: null,
   openChanges: 0,
+  root: null,
+  lastChangeId: null,
+  mergedBranches: [],
+  skillCalls: [],
+  pendingSpawns: [],
   workflows: [],
   interactive: true,
   workflow: null,
@@ -86,18 +92,51 @@ export type Signal =
   | { kind: 'Accepted'; id: string; keys: string[] }
   | { kind: 'PlanRead'; id: string; warnings: Warning[]; truncated: boolean; added: number }
   | { kind: 'SetPending'; id: string; line: string | null }
+  | { kind: 'RootFollowed'; id: string; root: Root }
+  | { kind: 'AgentRooted'; id: string; agentId: string; root: string }
+  | { kind: 'SkillCallStarted'; id: string; toolUseId: string; name: string; agentId: string | null; at: number }
+  | { kind: 'SkillCallEnded'; id: string; toolUseId: string }
+  | { kind: 'SpawnStarted'; id: string; toolUseId: string; type: string; at: number }
+  | { kind: 'SpawnResolved'; id: string; toolUseId: string; agentId: string | null }
+  | { kind: 'ToolUsed'; id: string; agentId?: string }
 
 const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v)
 
-/** Load a stored state of any earlier shape: new fields, and fields of the wrong type, take their
- *  defaults; unknown fields of a later version are kept. */
+/** What a field that defaults to null holds otherwise; `thresholds` is unparsed, so anything. */
+const NULLABLE: Record<string, string | undefined> = { change: 'object', root: 'object', lastChangeId: 'string',
+  workflow: 'string', variant: 'string', phase: 'string', signalPhase: 'string', pending: 'string', usd: 'number',
+  planAdded: 'number' }
+
+const isObject = (v: unknown): v is Record<string, unknown> => kindOf(v) === 'object'
+const strings = (v: unknown): string[] => (Array.isArray(v) ? v : [])
+
+/** Whether a stored value has the shape of the default: the same kind, or for a null default the kind it holds. */
+function fits(k: string, v: unknown, d: unknown): boolean {
+  if (d !== null) return kindOf(v) === kindOf(d)
+  if (k === 'thresholds' || v === null) return true
+  if (k === 'root') return isObject(v) && typeof v['path'] === 'string' && typeof v['common'] === 'string' && typeof v['branch'] === 'string'
+  return kindOf(v) === NULLABLE[k]
+}
+
+/** Entries of an older atom get the fields added since: a stored subagent without `skills` or `rootPath`, a call
+ *  without `loaded`, a pending spawn without `skills`. Anything that is not an object is dropped. */
+function migrate(out: Record<string, unknown>): void {
+  const objects = (v: unknown) => (Array.isArray(v) ? v.filter(isObject) : [])
+  out['subagents'] = objects(out['subagents']).map(a => ({ ...a, skills: strings(a['skills']),
+    rootPath: typeof a['rootPath'] === 'string' ? a['rootPath'] : null }))
+  out['skillCalls'] = objects(out['skillCalls']).map(c => ({ ...c, loaded: c['loaded'] === true }))
+  out['pendingSpawns'] = objects(out['pendingSpawns']).map(p => ({ ...p, skills: strings(p['skills']) }))
+}
+
+/** Load a stored state of any earlier shape: new fields, and fields of the wrong shape, take their
+ *  defaults; unknown fields of a later version are kept; older subagents are migrated. */
 export function revive(stored: unknown): NavState {
   if (!stored || typeof stored !== 'object') return EMPTY
   const out: Record<string, unknown> = { ...EMPTY }
   for (const [k, v] of Object.entries(stored)) {
-    const d = (EMPTY as Record<string, unknown>)[k]
-    if (!(k in EMPTY) || kindOf(v) === kindOf(d) || d === null) out[k] = v
+    if (!(k in EMPTY) || fits(k, v, (EMPTY as Record<string, unknown>)[k])) out[k] = v
   }
+  migrate(out)
   return out as NavState
 }
 
@@ -120,12 +159,19 @@ function apply(state: NavState, s: Signal): NavState {
     }
     case 'ChangeRead': {
       const switched = s.change?.id !== state.change?.id // a new change has no plan read yet (D-22)
-      const read = { ...state, change: s.change, openChanges: s.openChanges, planAdded: switched ? null : state.planAdded }
+      const read = { ...state, change: s.change, openChanges: s.openChanges, lastChangeId: s.change?.id ?? null,
+        planAdded: switched ? null : state.planAdded }
       const w = workflowOf(read)
       const gates = w && s.change ? gatesAfterPlan(read.gates, w, s.change.planMtime) : read.gates
       return navigate({ ...read, gates }, s.at)
     }
     case 'SkillLoaded': {
+      const credit = creditLoad(state, s.name)
+      if (credit.kind === 'ignore') return state // a second prompt of a call already counted
+      if (credit.kind === 'subagent') return withSkill(credit.state, credit.agentId, s.name)
+      if (credit.kind === 'spawn') return { ...credit.state, pendingSpawns: credit.state.pendingSpawns.map(p =>
+        p.toolUseId === credit.toolUseId ? { ...p, skills: [...p.skills, s.name] } : p) }
+      state = credit.state
       const name = bare(s.name)
       // Running a warning's remedy puts it right; a skill gate passes.
       const resolved = { ...state, warnings: state.warnings.filter(w => w.remedy !== name) }
@@ -166,13 +212,13 @@ function apply(state: NavState, s: Signal): NavState {
       // The spawn may resolve after the subagent's turn completed: keep what the finish recorded.
       const known = state.subagents.find(a => a.agentId === s.agentId)
       const spawned = { agentId: s.agentId, toolUseId: s.id, type: s.type, model: s.model,
-        description: s.description, startedAt: s.at, tokens: known?.tokens ?? 0, done: known?.done ?? false }
+        description: s.description, startedAt: s.at, tokens: known?.tokens ?? 0, done: known?.done ?? false,
+        rootPath: known?.rootPath ?? null, skills: known?.skills ?? [] }
       return navigate({ ...state, subagents: [...state.subagents.filter(a => a !== known), spawned] }, s.at, { agent: s.type })
     }
     case 'SubagentFinished': {
       const known = state.subagents.some(a => a.agentId === s.agentId)
-      const finished = known ? state.subagents : [...state.subagents, {
-        agentId: s.agentId, toolUseId: '', type: '?', model: '?', description: '', startedAt: 0, tokens: 0, done: false }]
+      const finished = known ? state.subagents : [...state.subagents, placeholderAgent(s.agentId)]
       return {
         ...state,
         subagents: finished.map(a =>
@@ -191,6 +237,23 @@ function apply(state: NavState, s: Signal): NavState {
       return { ...state, display: { ...state.display, line: s.line } }
     case 'SetMode': // the session switch (DD-35); a new session follows the repo again
       return { ...state, mode: { ...state.mode, session: s.mode === state.mode.repo ? null : s.mode } }
+    case 'RootFollowed': // the same root and branch again is no change; re-reading the workflows is io's job (D-2, D-21.1)
+      return state.root && s.root.path === state.root.path && s.root.branch === state.root.branch ? state : { ...state, root: s.root }
+    case 'AgentRooted':
+      return { ...state, subagents: state.subagents.map(a => a.agentId === s.agentId ? { ...a, rootPath: s.root } : a) }
+    case 'SkillCallStarted':
+      return { ...state, skillCalls: [...state.skillCalls,
+        { toolUseId: s.toolUseId, name: s.name, agentId: s.agentId, at: s.at, loaded: false }] }
+    case 'SkillCallEnded':
+      return { ...state, skillCalls: state.skillCalls.filter(c => c.toolUseId !== s.toolUseId) }
+    case 'SpawnStarted':
+      return { ...state, pendingSpawns: [...state.pendingSpawns, { toolUseId: s.toolUseId, type: s.type, at: s.at, skills: [] }] }
+    case 'SpawnResolved': { // the skills loaded while it was pending are the new subagent's
+      const spawn = state.pendingSpawns.find(p => p.toolUseId === s.toolUseId)
+      const rest = { ...state, pendingSpawns: state.pendingSpawns.filter(p => p !== spawn) }
+      return s.agentId ? (spawn?.skills ?? []).reduce((acc, name) => withSkill(acc, s.agentId!, name), rest) : rest
+    }
+    case 'ToolUsed': // recorded by lean() (lib/lean.ts)
     case 'ThresholdsRead':
     case 'AgentCalled':
     case 'SpawnAsked':

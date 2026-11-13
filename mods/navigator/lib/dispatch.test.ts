@@ -64,7 +64,7 @@ const SMALL_STAGE = { max_added_lines: 600, reviewers: 2, lenses: [['L1', 'L2'],
 const WS: Workflow = { ...W, reviews: { 'VERY LARGE': { ...review(5, true, 1), small_stage: SMALL_STAGE }, LARGE: review(5, true, 1) } }
 const navAt = (appetite: string, planAdded: number | null, planTruncated = false) => ({
   ...EMPTY, workflows: [WS], planAdded, planTruncated,
-  change: { id: 'x', appetite, done: 0, total: 1, groups: [], planMtime: 0, hasDesign: true, hasTasks: true },
+  change: { id: 'x', appetite, done: 0, total: 1, groups: [], planMtime: 0, hasDesign: true, hasTasks: true, archived: false },
 })
 
 test('TC-15: smallStageAllowance, VERY LARGE: added 600 / 601 / truncated → 2 / null / null', () => {
