@@ -130,6 +130,8 @@ export async function recordCall($: EngineInterface, e: ToolCall, isError: boole
   const agent = e.agentId ? { agentId: e.agentId } : {}
   // Every tool call of a subagent counts for PD-6, whatever the tool (DD-41).
   if (e.agentId) await send($, { kind: 'AgentCalled', id: `call:${e.tool_use_id}`, agentId: e.agentId })
+  // Any tool but Skill is the agent's use of the skills it loaded (D-9).
+  if (e.tool !== 'Skill') await send($, { kind: 'ToolUsed', id: `used:${e.tool_use_id}`, ...agent })
   // A background call has not run yet when it returns: it passes no gate (DD-38).
   if (e.tool === 'Bash' && !e.run_in_background) {
     await send($, { kind: 'ToolRan', id: `tool:${e.tool_use_id}`, command: e.command ?? '', ok: !isError, at, ...agent })
@@ -231,7 +233,7 @@ export async function readPlanSignal($: EngineInterface, id: string): Promise<Si
   const s = await state($)
   if (!s.change || !s.root) return null
   // An archived change has no PLAN folder left to drift from.
-  if (s.change.archived) return { kind: 'PlanRead', id, warnings: [], truncated: false }
+  if (s.change.archived) return { kind: 'PlanRead', id, warnings: [], truncated: false, added: 0 }
   const root = s.root.path
   let base = 'HEAD'
   for (const ref of ['origin/develop', 'origin/main', 'develop', 'main']) {
@@ -314,9 +316,9 @@ export async function check($: EngineInterface): Promise<string> {
 }
 
 /** Accept from the band: ask the reason, then the same as the command. */
-export async function acceptFromBand($: EngineInterface, key: string) {
+export async function acceptFromBand($: EngineInterface, key: string, message: string) {
   try {
-    const reason = await $.ui.ask(`Why accept ${key}?`, ['Agreed with the owner', 'Out of scope; follow-up recorded'])
+    const reason = await $.ui.ask(`Why accept: ${message}?`, ['Agreed with the owner', 'Out of scope; follow-up recorded'])
     // Typed into the session as a person would, so the transcript shows it (DEC-6, DD-41).
     await act($, `navigator accept ${key} "${reason.replace(/["\r\n]/g, ' ')}"`)
   } catch {
@@ -329,9 +331,14 @@ export async function reconcileFromBand($: EngineInterface, steps: [string, stri
   if (await act($, steps[0])) await send($, { kind: 'SetPending', id: `pending:${await $.clock.now()}`, line: steps[1] })
 }
 
+/** The installed command names: what a band line resolves against, to run it and to show it. */
+export async function commandNames($: EngineInterface): Promise<string[]> {
+  return (await $.command.list()).map(c => c.name)
+}
+
 /** A band action: submit the command as if the person typed it (DEC-6); not installed → say so. */
 export async function act($: EngineInterface, line: string): Promise<boolean> {
-  const cmd = commandFor(line, (await $.command.list()).map(c => c.name))
+  const cmd = commandFor(line, await commandNames($))
   if ('reason' in cmd) {
     $.ui.toast(cmd.reason)
     return false
@@ -339,6 +346,11 @@ export async function act($: EngineInterface, line: string): Promise<boolean> {
   // A slash command runs through the command channel; prompt.submit refuses a text starting with `/`.
   void $.command.run({ command: cmd.command, args: cmd.args }).catch((err: Error) => $.ui.toast(`navigator: /${cmd.command} did not run: ${err.message}`))
   return true
+}
+
+/** `$HOME`, for the band's `~`; empty when unset. */
+export async function homeDir($: EngineInterface): Promise<string> {
+  return (await $.env.get('HOME')) ?? ''
 }
 
 /** `/navigator validate`: run the phase's gate commands; their results update the gates. */

@@ -101,20 +101,22 @@ export function reportOversized(t: Thresholds, agentId: string, answer: string):
     : []
 }
 
-/** One main turn, oldest first: skill loads, and tool calls other than skill loads. */
-export type TurnEvent = { kind: 'skill'; name: string } | { kind: 'tool' }
+/** The lead's agent name in turn events (D-9). */
+export const MAIN = 'main'
 
-/** A skill loaded and followed by another load with no tool call between: skimmed and abandoned.
- *  shortcut: catches only skim-and-abandon. No button (DD-39): the text names skillery-feedback. */
-export function unusedSkills(events: TurnEvent[]): Warning[] {
-  const out: Warning[] = []
-  events.forEach((e, i) => {
-    const next = events[i + 1]
-    if (e.kind === 'skill' && next?.kind === 'skill') {
-      const name = bare(e.name)
-      out.push(warning(`hygiene:unused:${name}`,
-        `${name} loaded and left unused: if it should not have fired, run skillery-feedback`, null, 'skillery-feedback'))
-    }
+/** Oldest first: skill loads, tool calls other than skill loads, and spawns, each by `agent` ('main' or an agent id; D-9). */
+export type TurnEvent = { kind: 'skill'; name: string; agent: string } | { kind: 'tool' | 'spawn'; agent: string }
+
+/** `agent`'s skills skimmed and abandoned: another load of the same agent follows and no tool call or spawn of it does.
+ *  shortcut: catches only skim-and-abandon (a trailing load is not judged). No button (DD-39): the text names skillery-feedback. */
+export function unusedSkills(events: TurnEvent[], agent: string): Warning[] {
+  const mine = events.filter(e => e.agent === agent)
+  return mine.flatMap((e, i) => {
+    if (e.kind !== 'skill') return []
+    const later = mine.slice(i + 1)
+    if (later.some(l => l.kind !== 'skill') || !later.some(l => l.kind === 'skill')) return []
+    const name = bare(e.name)
+    return [warning(`hygiene:unused:${agent}:${name}`,
+      `${name} loaded and left unused: if it should not have fired, run skillery-feedback`, null, 'skillery-feedback')]
   })
-  return out
 }

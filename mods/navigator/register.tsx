@@ -2,15 +2,14 @@
 // and the band. Its I/O helpers are in io.ts; everything it decides is in lib/, pure and unit-tested.
 import type { Register } from 'claude-code'
 
-import { backOnTrack, hygieneAction, modeAction, nextStep, reconcile, review, validateRuns } from './lib/actions.ts'
 import { overspawnNow, rewriteModel } from './lib/lean.ts'
 import { settingsFrom, type BandDisplay } from './lib/state.ts'
 import { decideArchive, decideCommit, decideSpawn, reminder } from './lib/strict.ts'
 import { parseAccept } from './lib/deviations.ts'
-import { bandModel, bandOffers, capped, toneOf, type Tone } from './lib/view.ts'
+import { bandView, toneOf, type BandAction, type Tone } from './lib/view.ts'
 import { isArchive, isCommit } from './lib/workflow.ts'
-import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, ensureRoot, readAcceptedSignal,
-  checkPr, readChangeSignal, readPlanSignal, reconcileFromBand, recordCall, rootSubagent, send, start, state, trackSkillCall,
+import { BAND_ARGS, SESSION_MOVES, accept, acceptFromBand, act, check, commandNames, ensureRoot, readAcceptedSignal,
+  checkPr, homeDir, readChangeSignal, readPlanSignal, reconcileFromBand, recordCall, rootSubagent, send, start, state, trackSkillCall,
   turnEndedSignal, validate } from './io.ts'
 
 
@@ -20,8 +19,6 @@ const STYLE: Record<NonNullable<Tone>, { color?: string; bold?: boolean; dimColo
   fail: { color: 'error' }, warn: { color: 'warning' },
 }
 const style = (item: string) => { const t = toneOf(item); return t ? STYLE[t] : {} }
-const WARNING_LINES = 4
-const ACCEPT_LINES = 3
 
 export const register: Register = (on, options) => {
   const settings = settingsFrom(options)
@@ -98,7 +95,7 @@ export const register: Register = (on, options) => {
     if (e.resume) return next(e) // waking a parked agent is not a spawn (DD-41)
     // Counted before it runs, so parallel spawns each see the ones before; strict reads the count after.
     await send($, { kind: 'SpawnAsked', id: `ask:${e.tool_use_id}:${await $.clock.now()}:${e.name ?? e.description}`,
-      type: e.subagentType, description: e.description })
+      type: e.subagentType, description: e.description, ...(e.parentAgentId ? { agentId: e.parentAgentId } : {}) })
     const s = await state($)
     const rewriteTo = rewriteModel(s, e.model, e.parentModel)
     const d = decideSpawn(s, overspawnNow(s), rewriteTo)
@@ -184,16 +181,13 @@ export const register: Register = (on, options) => {
         </Box>
       )
     }
-    const model = bandModel(s)
-    const isFolded = s.display.band === 'folded'
-    const step = nextStep(s)
-    const back = backOnTrack(s)
-    const hygiene = hygieneAction(s)
-    const steps = reconcile(s)
-    const reviewLine = review(s)
-    const press = (line: string) => () => act($, line)
-    const offers = bandOffers(s)
-    const openWarnings = offers.accept
+    const v = bandView(s, { now: await $.clock.now(), home: await homeDir($), commands: await commandNames($) })
+    const open = s.display.band === 'unfolded'
+    // bandView decides which buttons apply and what they run; this only turns them into widgets.
+    const press = (a: BandAction) => () => ('steps' in a ? reconcileFromBand($, a.steps) : act($, a.line))
+    const button = (a: BandAction | null, variant?: 'primary') =>
+      a && <Button key={a.label} label={a.label} {...(variant ? { variant } : {})} onPress={press(a)} />
+    const detailButtons = v.details.actions.map(a => button(a))
     // One line per row, cut at the edge; items coloured by their glyph, labels and separators dim.
     const row = (key: string, label: string | null, items: string[]) => (
       <Text key={key} wrap="truncate-end">
@@ -206,34 +200,34 @@ export const register: Register = (on, options) => {
     )
     return (
       <Box flexDirection="column">
+        <Text key="now" wrap="truncate-end">{v.now}</Text>
+        {(v.next || v.hygieneAction) && (
+          <Box>
+            {v.next && <Text key="next-text" wrap="truncate-end">{v.next}</Text>}
+            {button(v.nextAction, 'primary')}
+            {button(v.hygieneAction)}
+          </Box>
+        )}
         <Box>
-          {model.foldedItems.length > 0 && row('folded', null, model.foldedItems)}
-          {step && <Button key="next" label="Next step" variant="primary" onPress={press(step)} />}
-          {back && <Button key="back" label="Back on track" onPress={press(back)} />}
-          {hygiene && <Button key="hygiene" label={hygiene.label} onPress={press(hygiene.line)} />}
-          <Button key="fold" label={isFolded ? 'Unfold' : 'Fold'} dimColor onPress={set(isFolded ? 'unfolded' : 'folded')} />
+          {v.warning && <Text key="warning" color="warning" wrap="truncate-end">{v.warning}</Text>}
+          {button(v.backAction)}
+          {!open && <Button key="details" label="Details" dimColor onPress={set('unfolded')} />}
           <Button key="hide" label="Hide" dimColor onPress={set('hidden')} />
         </Box>
-        {s.display.band === 'unfolded' && model.rows.filter(r => r.items.length > 0).flatMap(r => r.label === 'warnings'
-          // Warnings one per line, so none hides behind another; the rest as `+n more`.
-          ? capped(r.items, WARNING_LINES).map((it, i) => row(`w${i}`, i ? '' : r.label, [it]))
-          : [row(r.label, r.label, r.items)])}
-        {s.display.band === 'unfolded' && openWarnings.slice(0, openWarnings.length > ACCEPT_LINES ? ACCEPT_LINES - 1 : ACCEPT_LINES).map(w => (
-          <Box key={`accept:${w.key}`}>
-            <Text dimColor>{`⚠ ${w.key} `}</Text>
-            <Button key="accept" label="Accept" onPress={() => acceptFromBand($, w.key)} />
+        {open && v.details.reading && <Text key="reading" dimColor wrap="truncate-end">{v.details.reading}</Text>}
+        {open && v.details.rows.filter(r => r.items.length > 0).map(r => row(r.label, r.label, r.items))}
+        {open && v.details.warnings.map(w => (
+          <Box key={`warning:${w.key}`}>
+            {w.accept
+              ? <Button key="accept" label={w.label} onPress={() => acceptFromBand($, w.key, w.message)} />
+              : <Text wrap="truncate-end" {...(w.accepted ? STYLE.done : STYLE.warn)}>{`${w.accepted ? '✓ accepted: ' : '⚠ '}${w.message}`}</Text>}
           </Box>
         ))}
-        {s.display.band === 'unfolded' && openWarnings.length > ACCEPT_LINES && (
-          <Text dimColor>{`${openWarnings.length - ACCEPT_LINES + 1} more to accept: /navigator accept <key> "<reason>"`}</Text>
-        )}
-        {s.display.band === 'unfolded' && (
+        {open && row('mode', 'mode', [v.details.mode])}
+        {open && (
           <Box>
-            {steps && <Button key="reconcile" label="Reconcile EPIC" onPress={() => reconcileFromBand($, steps)} />}
-            {offers.check && <Button key="check" label="Archive check" onPress={press('navigator check')} />}
-            {validateRuns(s).length > 0 && <Button key="validate" label="Validate" onPress={press('navigator validate')} />}
-            {reviewLine && <Button key="review" label="Review" onPress={press(reviewLine)} />}
-            <Button key="mode" label="Mode" onPress={press(modeAction(s))} />
+            {detailButtons}
+            <Button key="less" label="Less" dimColor onPress={set('folded')} />
           </Box>
         )}
         {below}

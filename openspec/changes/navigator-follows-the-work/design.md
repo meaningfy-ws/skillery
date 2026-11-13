@@ -128,7 +128,7 @@ New choices made while planning; settled ones are cited by their DEC id.
     no workflow: `no change for branch <branch>` or `no open change`.
   - *next*: `next: <the Next step command>` with **Next step**, plus **Back on track** and the
     hygiene button when they apply.
-  - *warning*: `⚠ <top message> · n more`, where `n` counts the other open warnings of tiers 1–4;
+  - *warning*: `⚠ <n> warnings · <top message>` (one: `⚠ <message>`, D-27), where `n` counts the open warnings of tiers 1–4;
     tier 5 is counted only in Details.
   - buttons: **Details**, **Hide**.
   Details: `reading <root.path, ~ for $HOME> · <branch>`; stages; phases with each gate's state
@@ -211,8 +211,8 @@ lead's root.
 
 ```
 apply · 3 Dump and restore 0/2 · Task 3.1 dump and restore → implementer (4m)
-next: /opsx:apply                                                    [Next step]
-⚠ clarity-gate has not run since its inputs changed · 1 more         [Details] [Hide]
+next: /superpowers:test-driven-development                           [Next step]
+⚠ 2 warnings · clarity-gate has not run since its inputs changed      [Details] [Hide]
 ```
 
 ### Test cases
@@ -454,3 +454,33 @@ None blocking. Spike 1.1 settles D-4's event order; its fallback is specified.
   the change read, and asks again only when the root, branch or change moved since it last asked
   (a module value; a reload asks once more). At start and after an ok `gh pr merge` it always
   asks. The Gherkin *A merged pull request* gains its missing "all tasks ticked" Given.
+- **D-27 — Stage 3 review (PR #203): accepted findings.** Three passes (L1+L2, L3+L4+L5, UX); no
+  critical finding. Stage 3 build choices accepted with them: a lead session lands in a phase of
+  its workflow, not necessarily the first (sales and epic-delivery open mid-way on purpose); the
+  status line keeps its `navigator ·` prefix; a trailing load with nothing after it is not judged
+  (a skill loaded to answer in prose), amending D-9; the spawn's loop is `parentAgentId`.
+  1. *Details lists every warning* (L2): the spec's *Many warnings* scenario lists all twelve, so
+     the cap goes; a test of twelve, folded `⚠ 12 warnings` included.
+  2. *`next:` shows the command the button runs* (L2): the view resolves the step through
+     `commandFor` against the installed command names (passed in, pure); worked example 3's line 2
+     is asserted literally.
+  3. *One builder of the band's buttons* (L3): `bandView` returns the actions that apply
+     (Reconcile EPIC, Archive check, Validate, Review, Mode, Back on track, the hygiene button,
+     Next step) with their command lines; `register.tsx` only maps them to buttons. `bandView`
+     splits into row helpers like the existing ones.
+  4. *Wording and layout* (UX): the folded warning line puts the count first, `⚠ 3 warnings ·
+     <top message>` (one warning: `⚠ <message>`), so a cut line still shows it; Back on track sits
+     on the warning line; Hide goes last; an Accept button reads `Accept: <message>`, cut to 60
+     characters; the accept dialog names the message, not the key; one text for no root, `no
+     repository`, in the line and the band; the now line cuts a subagent's task to 30 characters;
+     the Mode button reads `Switch to strict` or `Switch to loose`; the appetite row drops
+     `groups` when a stages row is shown, reads `small stage: 2 reviewers allowed`, and shows
+     `diff truncated` again when the plan read was cut.
+  5. *Small fixes* (L5): Bash makes one tool event (`ToolUsed`, not also `ToolRan`); the lead
+     table in `lead-workflow.test.ts` is derived from `activate.agents`; `bare` and one
+     `groupDone` reused; `MAIN` exported beside `TurnEvent`; turn events of a subagent no longer
+     running are pruned at the lead's turn end; `bandOffers` un-exported; the plan-drift comment.
+  Rejected: a plain-words `next:` line (the action is a command, as typed, per the live spec);
+  config keys and agent ids inside hygiene and dispatch messages (stage 1's wording, out of this
+  stage; a follow-up issue); renaming the `appetite` row and the action buttons (the specs name
+  them).

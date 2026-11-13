@@ -1,11 +1,16 @@
 // What the status line and the band say (design §9). Plain data, no JSX: register.tsx draws it.
 
+import { backOnTrack, commandFor, hygieneAction, modeAction, nextStep, reconcile, review, validateRuns } from './actions.ts'
+import { groupDone } from './change.ts'
 import { openDrift } from './process-drift.ts'
 import { reviewQuota, smallStageAllowance } from './dispatch.ts'
-import { isStrict, phasesOf, workflowOf } from './workflow.ts'
-import type { Group, NavState, Subagent, Warning } from './state.ts'
+import { bare, isStrict, phasesOf, workflowOf } from './workflow.ts'
+import type { Group, NavState, Warning } from './state.ts'
 
 const LINE_MAX = 120
+const TASK_MAX = 30 // a subagent's task in the now line
+const ACCEPT_MAX = 60 // an Accept button's label
+const NO_ROOT = 'no repository' // the status line and the band say the same
 const TRAIL = 8
 const GLYPH = { ok: '✓', fail: '✗', stale: '·', none: '' } as const
 
@@ -25,7 +30,10 @@ export function lineText(s: NavState): string {
     return cut(clean([`${w.name}${w.provisional ? ' (provisional)' : ''}`, s.variant, s.phase,
       isStrict(s) ? '● strict' : null].filter(Boolean).join(' · ')))
   }
-  if (!s.change) return cut(clean(['navigator · no open change', s.phase].filter(Boolean).join(' · ')))
+  if (!s.change) {
+    return cut(clean(['navigator', s.root ? `no change for branch ${s.root.branch}` : NO_ROOT, s.phase,
+      isStrict(s) ? '● strict' : null].filter(Boolean).join(' · ')))
+  }
   const c = s.change
   const stage = currentGroup(c.groups)
   const step = `${s.phase ? `${s.phase} ` : ''}${stage ? `${stage.done}/${stage.total}` : `${c.done}/${c.total}`}`
@@ -41,9 +49,9 @@ export function lineText(s: NavState): string {
   return cut(clean(parts.join(' · ')))
 }
 
-function cut(text: string): string {
+function cut(text: string, max = LINE_MAX): string {
   const chars = [...text] // whole characters, never half an emoji
-  return chars.length > LINE_MAX ? `${chars.slice(0, LINE_MAX - 1).join('')}…` : text
+  return chars.length > max ? `${chars.slice(0, max - 1).join('')}…` : text
 }
 
 
@@ -75,104 +83,177 @@ export function toneOf(item: string): Tone {
   return null
 }
 
-/** At most `max` lines; the rest become one `+n more` line. */
-export function capped(items: string[], max: number): string[] {
-  return items.length > max ? [...items.slice(0, max - 1), `+${items.length - max + 1} more`] : items
-}
-
-export function subagentText(a: Subagent): string {
-  const state = a.done ? `done · ${tokens(a.tokens)} tokens` : 'running'
-  return `${a.type} · ${a.model} · ${state}`
-}
-
 function tokens(n: number): string {
   return n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n)
 }
 
-export type BandModel = {
-  folded: string
-  foldedItems: string[]
-  rows: { label: string; items: string[] }[]
-}
-
 /** Accept and the Archive check do nothing on an archived change, so they are not offered (D-3, D-21.5). */
-export function bandOffers(s: NavState): { accept: Warning[]; check: boolean } {
+function bandOffers(s: NavState): { accept: Warning[]; check: boolean } {
   const archived = !!s.change?.archived
   return { accept: archived ? [] : openDrift(s), check: !!s.change && !archived }
 }
 
-/** Warnings not recorded as deviations; accepted ones show but do not count. */
-const openCount = (s: NavState) => s.warnings.filter(w => !s.accepted.includes(w.key)).length // every kind, accepted aside
-
-export function bandModel(s: NavState): BandModel {
-  const running = s.subagents.filter(a => !a.done)
-  const last = s.skills.at(-1)
-  const gates = Object.entries(s.gates)
-    .filter(([, g]) => g.state !== 'none')
-    .map(([id, g]) => `${id} ${GLYPH[g.state]}${/^\d+(\.\d+)?$/.test(g.detail) ? ` ${g.detail}` : ''}`)
-  // Empty when there is nothing to report: the band then shows only its buttons.
-  const foldedItems = [
-    ...(running.length ? [`${running.length} running: ${running.map(a => a.type).join(', ')}`] : []),
-    ...(last ? [`last ${last.name}`] : []),
-    ...gates,
-    ...(openCount(s) ? [`⚠ ${openCount(s)}`] : []),
-  ].map(clean)
-  const rows: BandModel['rows'] = []
-  if (s.change && s.change.groups.length) {
-    const now = currentGroup(s.change.groups)
-    rows.push({
-      label: 'stages',
-      items: s.change.groups.map(g =>
-        `${g.total > 0 && g.done === g.total ? '✓' : g === now ? '●' : '○'} ${shortTitle(g.title)} ${g.done}/${g.total}`),
-    })
-  }
-  const w = workflowOf(s)
-  if (w) {
-    const phases = phasesOf(w, s.variant)
-    const now = phases.findIndex(p => p.id === s.phase)
-    rows.push({
-      label: 'phases',
-      items: [`${w.title}${s.variant ? ` (${s.variant})` : ''}${w.provisional ? ' (provisional)' : ''}`,
-        ...phases.map((p, i) => `${i < now ? '✓' : i === now ? '●' : '○'} ${p.id}`)],
-    })
-  }
-  // Appetite against actual (§9 row 4): shown, never judged (no budget, per guardrails).
-  if (s.change) {
-    const c = s.change
-    const ceiling = reviewQuota(s), small = smallStageAllowance(s)
-    const reviewers = s.turnRoles.filter(x => x === 'reviewer').length
-    rows.push({ label: 'appetite', items: [
-      c.appetite ?? '?', `tasks ${c.done}/${c.total}`,
-      ...(c.groups.length ? [`groups ${c.groups.filter(g => g.total > 0 && g.done === g.total).length}/${c.groups.length}`] : []),
-      ...(ceiling !== null ? [`reviewers ${reviewers}/${ceiling} this turn`] : []),
-      ...(small !== null ? [`small stage: ${small} allowed`] : []),
-      ...(s.sessionTokens ? [`${tokens(s.sessionTokens)} tokens`] : []),
-      ...(s.usd !== null ? [`$${s.usd.toFixed(2)}`] : []),
-    ] })
-  }
-  rows.push(
-    { label: 'skills', items: s.skills.slice(-TRAIL).map(k => k.phase ? `${k.name} (${k.phase})` : k.name) },
-    { label: 'subagents', items: s.subagents.map(subagentText) },
-    { label: 'warnings', items: [
-      ...warningItems(s),
-      ...(s.planTruncated ? ['diff truncated'] : []),
-    ] },
-    { label: 'mode', items: [modeText(s)] },
-  )
-  return { folded: foldedItems.join(' · '), foldedItems, rows: rows.map(r => ({ ...r, items: r.items.map(clean) })) }
+/** Severity tier of a warning key, 1 (most severe) to 5 (D-10); an unknown prefix ranks 3. */
+export function tierOf(key: string): 1 | 2 | 3 | 4 | 5 {
+  if (/^(workflow:error|process:(gate|missing|elsewhere|external):)/.test(key)) return 1
+  if (key.startsWith('plan:')) return 2
+  if (key.startsWith('hygiene:unused:')) return 5
+  if (key.startsWith('hygiene:')) return 4
+  return 3 // process:inline, model, overspawn, second-check, and any unknown prefix
 }
 
-const OUTSIDE = 'plan:outside:'
+/** Every warning by tier; within a tier the newest first (the list is appended in arrival order). */
+export function orderedWarnings(s: NavState): Warning[] {
+  return s.warnings.map((w, i) => ({ w, i, t: tierOf(w.key) })).sort((a, b) => a.t - b.t || b.i - a.i).map(x => x.w)
+}
 
-/** One line per warning, except files outside the PLAN: one line for all of them (open, accepted). */
-function warningItems(s: NavState): string[] {
-  const line = (w: Warning) => `${s.accepted.includes(w.key) ? '✓ accepted:' : '⚠'} ${w.message}${w.owner ? ` (${w.owner})` : ''}`
-  const outside = (accepted: boolean) => s.warnings.filter(w => w.key.startsWith(OUTSIDE) && s.accepted.includes(w.key) === accepted)
-  const group = (ws: Warning[], accepted: boolean) => {
-    if (ws.length < 2) return ws.map(line)
-    const paths = ws.map(w => w.key.slice(OUTSIDE.length))
-    return [`${accepted ? '✓ accepted:' : '⚠'} ${ws.length} files outside the PLAN: ${paths.slice(0, 2).join(', ')}` +
-      `${ws.length > 2 ? ` +${ws.length - 2}` : ''} (${ws[0]!.owner})`]
+// ------------------------------------------------------------------ the band (D-11)
+/** A button of the band: a line to run as typed, or Reconcile EPIC's two lines (the second after the first one's turn). */
+export type BandAction = { label: string; line: string } | { label: string; steps: [string, string] }
+
+export type BandView = {
+  /** Folded, line 1: phase, stage, running subagents; or why there is nothing to follow. */
+  now: string
+  /** Folded, line 2: `next: <the command Next step runs>`, null when there is none. */
+  next: string | null
+  nextAction: BandAction | null
+  /** Folded, line 3: `⚠ n warnings · <top message>` (tiers 1-4, not accepted; one: `⚠ <message>`); null when none. */
+  warning: string | null
+  backAction: BandAction | null
+  hygieneAction: BandAction | null
+  details: {
+    reading: string | null
+    rows: { label: string; items: string[] }[] // stages, phases (with gates), appetite, skills, subagents
+    /** Every warning (open before accepted, each tier newest first). `accept`: an Accept button, labelled `label`, is offered. */
+    warnings: { key: string; message: string; label: string; tier: number; accepted: boolean; accept: boolean }[]
+    mode: string
+    actions: BandAction[] // Reconcile EPIC, Archive check, Validate, Review, Mode: only those that apply, in order
   }
-  return [...s.warnings.filter(w => !w.key.startsWith(OUTSIDE)).map(line), ...group(outside(false), false), ...group(outside(true), true)]
+}
+
+/** What the band needs from outside: the clock, `$HOME` and the installed command names. */
+export type BandEnv = { now: number; home: string; commands: readonly string[] }
+
+const elapsed = (ms: number) => { const m = Math.floor(Math.max(0, ms) / 60_000)
+  return m < 1 ? `${Math.floor(Math.max(0, ms) / 1000)}s` : m < 60 ? `${m}m` : `${Math.floor(m / 60)}h${m % 60}m` }
+
+function nowText(s: NavState, now: number): string {
+  const w = workflowOf(s)
+  const running = s.subagents.filter(a => !a.done)
+  const crew = [...running.slice(0, 2).map(a => `${cut(a.description, TASK_MAX)} → ${bare(a.type)} (${elapsed(now - a.startedAt)})`),
+    ...(running.length > 2 ? [`+${running.length - 2}`] : [])]
+  if (w && !w.activate.openChange) return [w.name, s.variant, s.phase, ...crew].filter(Boolean).join(' · ')
+  if (!s.change) return s.root ? `no change for branch ${s.root.branch}` : NO_ROOT
+  const c = s.change, stage = currentGroup(c.groups)
+  return [s.phase, stage ? `${shortTitle(stage.title)} ${stage.done}/${stage.total}` : `${c.done}/${c.total}`, ...crew]
+    .filter(Boolean).join(' · ')
+}
+
+function subagentGroups(s: NavState): string[] {
+  const types = [...new Set(s.subagents.map(a => bare(a.type)))]
+  return types.map(t => {
+    const g = s.subagents.filter(a => bare(a.type) === t)
+    const done = g.filter(a => a.done).length, running = g.length - done
+    const tok = g.reduce((n, a) => n + a.tokens, 0)
+    // A model is shown only when it differs from the lead's; with the lead's model unknown nothing is claimed.
+    const models = s.parentModel ? [...new Set(g.map(a => a.model).filter(m => m !== s.parentModel))] : []
+    return [`${t}${done > 1 ? ` ×${done}` : ''}${done ? ' done' : ''}`, ...models, ...(tok ? [`${tokens(tok)} tokens`] : []),
+      ...(running ? [`${running} running`] : [])].join(' · ')
+  })
+}
+
+function skillGroups(s: NavState): string[] {
+  const out: { phase: string | null; names: string[] }[] = []
+  for (const k of s.skills.slice(-TRAIL)) {
+    const g = out.find(x => x.phase === k.phase) ?? (out.push({ phase: k.phase, names: [] }), out.at(-1)!)
+    g.names.push(bare(k.name))
+  }
+  return out.map(g => `${g.phase ? `${g.phase}: ` : ''}${g.names.join(', ')}`)
+}
+
+type Row = BandView['details']['rows'][number]
+
+const stagesRow = (c: NonNullable<NavState['change']>): Row[] => {
+  const cur = currentGroup(c.groups)
+  return c.groups.length ? [{ label: 'stages', items: c.groups.map(g =>
+    `${groupDone(g) ? '✓' : g === cur ? '●' : '○'} ${shortTitle(g.title)} ${g.done}/${g.total}`) }] : []
+}
+
+function phasesRow(s: NavState): Row[] {
+  const gates = Object.entries(s.gates).filter(([, g]) => g.state !== 'none')
+    .map(([id, g]) => `${id} ${GLYPH[g.state]}${/^\d+(\.\d+)?$/.test(g.detail) ? ` ${g.detail}` : ''}`)
+  const wf = workflowOf(s)
+  if (!wf) return gates.length ? [{ label: 'phases', items: gates }] : []
+  const phases = phasesOf(wf, s.variant)
+  const at = phases.findIndex(p => p.id === s.phase)
+  return [{ label: 'phases', items: [`${wf.title}${s.variant ? ` (${s.variant})` : ''}${wf.provisional ? ' (provisional)' : ''}`,
+    ...phases.map((p, i) => `${i < at ? '✓' : i === at ? '●' : '○'} ${p.id}`), ...gates] }]
+}
+
+function appetiteRow(s: NavState, c: NonNullable<NavState['change']>): Row {
+  const ceiling = reviewQuota(s), small = smallStageAllowance(s)
+  const reviewers = s.turnRoles.filter(x => x === 'reviewer').length
+  // The stages row already counts the groups.
+  return { label: 'appetite', items: [c.appetite ?? '?', `tasks ${c.done}/${c.total}`,
+    ...(ceiling !== null ? [`reviewers ${reviewers}/${ceiling} this turn`] : []),
+    ...(small !== null ? [`small stage: ${small} reviewers allowed`] : []),
+    ...(s.planTruncated ? ['diff truncated'] : []),
+    ...(s.sessionTokens ? [`${tokens(s.sessionTokens)} tokens`] : [])] }
+}
+
+/** The folded warning line: the count first, so a cut line still shows it. */
+function warningLine(open: Warning[]): string | null {
+  if (!open.length) return null
+  return `⚠ ${open.length > 1 ? `${open.length} warnings · ` : ''}${open[0]!.message}`
+}
+
+/** The command the Next step button runs, as typed; a step that is not installed shows as typed (the button then says so). */
+function nextLine(step: string, installed: readonly string[]): string {
+  const c = commandFor(step, installed)
+  return 'reason' in c ? `/${step}` : `/${c.command}${c.args ? ` ${c.args}` : ''}`
+}
+
+/** The Details buttons that apply, in order (Less and Hide are the screen's). */
+function detailActions(s: NavState, offers: ReturnType<typeof bandOffers>): BandAction[] {
+  const steps = reconcile(s), reviewLine = review(s)
+  const mode = modeAction(s)
+  return [
+    ...(steps ? [{ label: 'Reconcile EPIC', steps }] : []),
+    ...(offers.check ? [{ label: 'Archive check', line: 'navigator check' }] : []),
+    ...(validateRuns(s).length ? [{ label: 'Validate', line: 'navigator validate' }] : []),
+    ...(reviewLine ? [{ label: 'Review', line: reviewLine }] : []),
+    { label: `Switch to ${mode.split(' ').at(-1)}`, line: mode },
+  ]
+}
+
+/** What the band says (D-11), as plain data for register.tsx, which only maps it to widgets. `env` comes in so it stays pure. */
+export function bandView(s: NavState, env: BandEnv): BandView {
+  const offers = bandOffers(s)
+  const open = orderedWarnings(s).filter(x => !s.accepted.includes(x.key) && tierOf(x.key) <= 4)
+  const step = nextStep(s)
+  // Open first, so a flood of accepted ones never hides an Accept button.
+  const all = [...orderedWarnings(s)].sort((a, b) => +s.accepted.includes(a.key) - +s.accepted.includes(b.key))
+  const c = s.change
+  const rows = [...(c ? stagesRow(c) : []), ...phasesRow(s), ...(c ? [appetiteRow(s, c)] : []),
+    { label: 'skills', items: skillGroups(s) }, { label: 'subagents', items: subagentGroups(s) }]
+  const home = env.home
+  const where = s.root && home && (s.root.path === home || s.root.path.startsWith(`${home}/`)) ? `~${s.root.path.slice(home.length)}` : s.root?.path
+  const back = backOnTrack(s), hygiene = hygieneAction(s)
+  const warning = warningLine(open)
+  return {
+    now: clean(nowText(s, env.now)),
+    next: step ? clean(`next: ${nextLine(step, env.commands)}`) : null,
+    nextAction: step ? { label: 'Next step', line: step } : null,
+    warning: warning && clean(warning),
+    backAction: back ? { label: 'Back on track', line: back } : null,
+    hygieneAction: hygiene,
+    details: {
+      reading: s.root ? clean(`reading ${where} · ${s.root.branch}`) : null,
+      rows: rows.map(r => ({ ...r, items: r.items.map(clean) })),
+      warnings: all.map(x => ({ key: x.key, message: clean(x.message), label: clean(cut(`Accept: ${x.message}`, ACCEPT_MAX)),
+        tier: tierOf(x.key), accepted: s.accepted.includes(x.key), accept: offers.accept.some(o => o.key === x.key) })),
+      mode: modeText(s),
+      actions: detailActions(s, offers),
+    },
+  }
 }

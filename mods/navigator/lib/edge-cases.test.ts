@@ -8,7 +8,7 @@ import { join } from 'node:path'
 import { backOnTrack, commandFor, nextStep, validateRuns } from './actions.ts'
 import { phaseFor } from './phase.ts'
 import { EMPTY, reduce, type Change, type NavState, type Signal, type Workflow } from './state.ts'
-import { bandModel, lineText } from './view.ts'
+import { bandView, lineText } from './view.ts'
 import { globRegex, parseWorkflow, resolveWorkflows, workflowError, type Source } from './workflow.ts'
 
 const REPO = join(import.meta.dirname, '..', '..', '..')
@@ -286,8 +286,8 @@ test('view: long and control-character names stay within 120 chars and carry no 
   const line = lineText(s)
   assert.ok([...line].length <= 120, String(line.length))
   assert.ok(!/[\u0000-\u001f\u007f-\u009f]/.test(line))
-  const b = bandModel(s)
-  assert.ok(!/[\u0000-\u001f\u007f-\u009f]/.test(b.folded + b.rows.flatMap(r => r.items).join('')))
+  const b = bandView(s, { now: 0, home: '', commands: [] })
+  assert.ok(!/[\u0000-\u001f\u007f-\u009f]/.test([b.now, b.next, b.warning, ...b.details.rows.flatMap(r => r.items)].join('')))
   const c = run(workflows(), read(change(3, 9, { id: 'x\u001b'.repeat(300) })))
   assert.ok([...lineText(c)].length <= 120 && !/\u001b/.test(lineText(c)))
 })
@@ -543,9 +543,9 @@ test('s3 PD-7: model ranks by substring; a declared or unranked model is never j
   assert.equal(rewriteModel(s, 'haiku', 'claude-sonnet-4-5'), null)
 })
 
-test('s3 unused skill: only a load followed directly by another load in the turn; plugin prefix dropped', () => {
-  const ws = unusedSkills([{ kind: 'skill', name: 'p:a' }, { kind: 'skill', name: 'b' }, { kind: 'tool' }, { kind: 'skill', name: 'c' }])
-  assert.deepEqual(ws.map(w => [w.key, w.owner]), [['hygiene:unused:a', 'skillery-feedback']])
+test('s3 unused skill: a load with another load after it and no tool call; plugin prefix dropped', () => {
+  const ws = unusedSkills([{ kind: 'skill', name: 'p:a', agent: 'main' }, { kind: 'skill', name: 'b', agent: 'main' }], 'main')
+  assert.deepEqual(ws.map(w => [w.key, w.owner]), [['hygiene:unused:main:a', 'skillery-feedback']])
 })
 
 // ---------------------------------------------------------------- strict

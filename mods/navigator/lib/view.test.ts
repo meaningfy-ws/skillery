@@ -1,7 +1,11 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { groupDone } from './change.ts'
 import { EMPTY, type NavState } from './state.ts'
-import { bandModel, capped, lineText, shortTitle, toneOf } from './view.ts'
+import { bandView, lineText, shortTitle, toneOf } from './view.ts'
+
+const env = { now: 0, home: '', commands: [] }
+const rowOf = (s: NavState, label: string) => bandView(s, env).details.rows.find(r => r.label === label)
 
 const apply: NavState = {
   ...EMPTY,
@@ -30,23 +34,23 @@ test('strict shows; loose and strict dropped for the session do not (DD-35)', ()
   assert.ok(!lineText(apply).includes('loose'))
 })
 
-test('the mode is always in the unfolded band', () => {
-  assert.deepEqual(bandModel(apply).rows.find(r => r.label === 'mode')!.items, ['○ loose'])
-  assert.deepEqual(bandModel({ ...apply, mode: { repo: 'strict', session: 'loose' } }).rows.find(r => r.label === 'mode')!.items,
-    ['○ loose (strict dropped)'])
+test('the mode is always in Details', () => {
+  assert.equal(bandView(apply, env).details.mode, '○ loose')
+  assert.equal(bandView({ ...apply, mode: { repo: 'strict', session: 'loose' } }, env).details.mode, '○ loose (strict dropped)')
 })
 
 test('the stages row marks done, current and next, with short titles', () => {
   const s = { ...staged, change: { ...staged.change!, groups: [{ title: '1. Stage 1 — See it', done: 12, total: 12 },
     ...staged.change!.groups.slice(1)] } }
-  assert.deepEqual(bandModel(s).rows.find(r => r.label === 'stages')!.items,
+  assert.deepEqual(rowOf(s, 'stages')!.items,
     ['✓ 1 See it 12/12', '● 2 Follow the workflow 0/12', '○ 3 Stay on plan and lean 0/13', '○ Close 0/4'])
   assert.equal(shortTitle('Verification'), 'Verification')
 })
 
-test('TC-02 (view) no open change: the line says so, the band has nothing to report', () => {
-  assert.equal(lineText(EMPTY), 'navigator · no open change')
-  assert.equal(bandModel(EMPTY).folded, '')
+test('TC-02 (view) no open change: the line says so, the band has no next step and no warning', () => {
+  assert.equal(lineText(EMPTY), 'navigator · no repository')
+  const v = bandView(EMPTY, env)
+  assert.deepEqual([v.now, v.next, v.warning], ['no repository', null, null])
 })
 
 test('TC-10 hiding the band leaves the line text unchanged and complete', () => {
@@ -54,21 +58,21 @@ test('TC-10 hiding the band leaves the line text unchanged and complete', () => 
   assert.equal(lineText(hidden), lineText(apply))
 })
 
-test('the band: running subagents, last skill, gates, warnings; unfolded rows', () => {
+test('the band: running subagents and the warning folded; subagents grouped by type in Details', () => {
   const s: NavState = {
     ...apply,
-    skills: [{ name: 'epic-delivery', at: 1, phase: null }, { name: 'clarity-gate', at: 2, phase: null }],
+    parentModel: 'opus',
     subagents: [
-      { agentId: 'a', toolUseId: 't', type: 'code-reviewer', model: 'sonnet', description: '', startedAt: 0, tokens: 0, done: false, rootPath: null, skills: [] },
+      { agentId: 'a', toolUseId: 't', type: 'code-reviewer', model: 'sonnet', description: 'look', startedAt: 0, tokens: 0, done: false, rootPath: null, skills: [] },
       { agentId: 'b', toolUseId: 'u', type: 'implementer', model: 'opus', description: '', startedAt: 0, tokens: 12345, done: true, rootPath: null, skills: [] },
     ],
     gates: { validate: { state: 'ok', at: 1, detail: '' }, clarity: { state: 'none', at: 0, detail: '' } },
     warnings: [{ key: 'k', message: 'm', remedy: null, owner: 'x' }],
   }
-  const b = bandModel(s)
-  assert.equal(b.folded, '1 running: code-reviewer · last clarity-gate · validate ✓ · ⚠ 1')
-  assert.deepEqual(b.rows.find(r => r.label === 'subagents')?.items,
-    ['code-reviewer · sonnet · running', 'implementer · opus · done · 12.3k tokens'])
+  const v = bandView(s, env)
+  assert.equal(v.now, 'apply · 12/40 · look → code-reviewer (0s)')
+  assert.equal(v.warning, '⚠ m')
+  assert.deepEqual(rowOf(s, 'subagents')!.items, ['code-reviewer · sonnet · 1 running', 'implementer done · 12.3k tokens'])
 })
 
 test('the line never exceeds 120 characters', () => {
@@ -104,13 +108,13 @@ test('a multibyte line under the limit is not cut', () => {
 test('zero tasks: the line and the band say 0/0 and never NaN', () => {
   const s = { ...apply, change: { ...apply.change!, done: 0, total: 0, groups: [] } }
   assert.equal(lineText(s), 'navigator · VERY LARGE · apply 0/0')
-  assert.equal(bandModel(s).rows.find(r => r.label === 'stages'), undefined)
+  assert.equal(rowOf(s, 'stages'), undefined)
 })
 
 test('the current stage is the first unfinished one; an empty group is never done', () => {
   const groups = [{ title: 'a', done: 2, total: 2 }, { title: 'b', done: 1, total: 2 }, { title: 'c', done: 0, total: 0 }]
   const s = { ...apply, change: { ...apply.change!, groups } }
-  assert.deepEqual(bandModel(s).rows.find(r => r.label === 'stages')!.items, ['✓ a 2/2', '● b 1/2', '○ c 0/0'])
+  assert.deepEqual(rowOf(s, 'stages')!.items, ['✓ a 2/2', '● b 1/2', '○ c 0/0'])
   assert.equal(lineText({ ...s, phase: null }), 'navigator · VERY LARGE · b 1/2 · 12/40')
 })
 
@@ -126,43 +130,36 @@ test('a phase with no tasks still prints', () => {
 test('band: no skills, all subagents done, no gates, no warnings', () => {
   const s: NavState = { ...EMPTY, subagents: [
     { agentId: 'a', toolUseId: 't', type: 'x', model: 'm', description: '', startedAt: 0, tokens: 0, done: true, rootPath: null, skills: [] }] }
-  const b = bandModel(s)
-  assert.equal(b.folded, '')
-  assert.deepEqual(b.rows.find(r => r.label === 'skills')!.items, [])
-  assert.deepEqual(b.rows.find(r => r.label === 'subagents')!.items, ['x · m · done · 0 tokens'])
-  assert.equal(b.rows.find(r => r.label === 'stages'), undefined)
-})
-
-test('band: every gate state prints its glyph, none prints nothing, order follows the gates', () => {
-  const g = (state: 'ok' | 'fail' | 'stale' | 'none') => ({ state, at: 1, detail: '' })
-  const s: NavState = { ...EMPTY, gates: { validate: g('fail'), clarity: g('stale'), review: g('none'), tests: g('ok') } }
-  assert.equal(bandModel(s).folded, 'validate ✗ · clarity · · tests ✓')
-})
-
-test('band: only warnings, no last skill, no gates', () => {
-  const s: NavState = { ...EMPTY, warnings: [{ key: 'a', message: '', remedy: null, owner: 'x' }, { key: 'b', message: '', remedy: null, owner: 'x' }] }
-  assert.equal(bandModel(s).folded, '⚠ 2')
+  const v = bandView(s, env)
+  assert.equal(v.warning, null)
+  assert.deepEqual(rowOf(s, 'skills')!.items, [])
+  assert.deepEqual(rowOf(s, 'subagents')!.items, ['x done'])
+  assert.equal(rowOf(s, 'stages'), undefined)
 })
 
 test('band: the skill trail is the last 8, oldest first', () => {
   const skills = Array.from({ length: 10 }, (_, i) => ({ name: `s${i}`, at: i, phase: null }))
-  assert.deepEqual(bandModel({ ...EMPTY, skills }).rows.find(r => r.label === 'skills')!.items,
-    ['s2', 's3', 's4', 's5', 's6', 's7', 's8', 's9'])
+  assert.deepEqual(rowOf({ ...EMPTY, skills }, 'skills')!.items, ['s2, s3, s4, s5, s6, s7, s8, s9'])
+})
+
+test('groupDone: a group is done when it has tasks and all are ticked', () => {
+  assert.deepEqual([{ done: 2, total: 2 }, { done: 1, total: 2 }, { done: 0, total: 0 }].map(g => groupDone({ title: 't', ...g })),
+    [true, false, false])
 })
 
 test('tokens: 999 stays plain, 1000 becomes 1.0k', () => {
   const a = (tokens: number): NavState => ({ ...EMPTY, subagents: [
     { agentId: 'a', toolUseId: 't', type: 'x', model: 'm', description: '', startedAt: 0, tokens, done: true, rootPath: null, skills: [] }] })
-  assert.deepEqual(bandModel(a(999)).rows[1]!.items, ['x · m · done · 999 tokens'])
-  assert.deepEqual(bandModel(a(1000)).rows[1]!.items, ['x · m · done · 1.0k tokens'])
+  assert.deepEqual(rowOf(a(999), 'subagents')!.items, ['x done · 999 tokens'])
+  assert.deepEqual(rowOf(a(1000), 'subagents')!.items, ['x done · 1.0k tokens'])
 })
 
 test('control characters in names never reach the line or the band', () => {
   const s: NavState = { ...apply, change: { ...apply.change!, id: 'evil\u001b]0;x\u0007' },
     skills: [{ name: 'a\u001b[2Jb', at: 1, phase: null }] }
   assert.equal(lineText(s), 'evil]0;x · VERY LARGE · apply 12/40')
-  const b = bandModel(s)
-  assert.ok(!/[\u0000-\u001f]/.test(b.folded + b.rows.flatMap(r => r.items).join('')))
+  const v = bandView(s, env)
+  assert.ok(!/[\u0000-\u001f]/.test([v.now, v.next, v.warning, v.details.reading, ...v.details.rows.flatMap(r => r.items)].join('')))
 })
 
 test('band tones: each glyph says done, now, to do, failed or warning; plain text has none', () => {
@@ -176,17 +173,8 @@ test('a stage heading drops its explanation after a dash; Stage n headings keep 
   assert.equal(shortTitle('1. Stage 1 — See it'), '1 See it')
 })
 
-test('files outside the PLAN show as one warning line; other warnings stay one per line', () => {
+test('the folded warning: the top message by tier, the other open ones counted', () => {
   const w = (key: string, message = key) => ({ key, message, remedy: null, owner: 'epic-planning' })
   const s: NavState = { ...EMPTY, warnings: [w('plan:outside:a.py'), w('plan:outside:b.py'), w('plan:outside:c.py'), w('gate', 'gate open')] }
-  assert.deepEqual(bandModel(s).rows.find(r => r.label === 'warnings')!.items,
-    ['⚠ gate open (epic-planning)', '⚠ 3 files outside the PLAN: a.py, b.py +1 (epic-planning)'])
-  assert.equal(bandModel(s).folded, '⚠ 4') // the count still counts every warning
-  const two: NavState = { ...EMPTY, warnings: [w('plan:outside:a.py'), w('plan:outside:b.py')], accepted: ['plan:outside:a.py', 'plan:outside:b.py'] }
-  assert.deepEqual(bandModel(two).rows.find(r => r.label === 'warnings')!.items, ['✓ accepted: 2 files outside the PLAN: a.py, b.py (epic-planning)'])
-})
-
-test('capped: up to max lines, the rest as one "+n more" line', () => {
-  assert.deepEqual(capped(['a', 'b'], 3), ['a', 'b'])
-  assert.deepEqual(capped(['a', 'b', 'c', 'd'], 3), ['a', 'b', '+2 more'])
+  assert.equal(bandView(s, env).warning, '⚠ 4 warnings · plan:outside:c.py') // tier 2 before the unknown prefix (3); newest first
 })

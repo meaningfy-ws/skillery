@@ -157,3 +157,63 @@ Feature: The navigator follows the work, not the launch directory
         | does                                   |
         | runs "git tag v1.0.0" without pushing  |
         | deletes a tag                          |
+
+  Rule: Warnings rank by severity
+
+    # Traces to: drift-detection, "A heuristic never hides a gate" (D-10)
+    Scenario: A heuristic never hides a gate
+      Given the band shows a process gate warning
+      When an unused-skill warning arrives after it
+      Then the folded band shows the gate warning
+      And the unused-skill warning is listed last in Details
+
+    # Traces to: drift-detection, "Warnings rank by severity" (D-10: within a tier, newest first)
+    Scenario: Within a tier the newest warning comes first
+      Given two plan-drift warnings are open
+      When a third plan-drift warning arrives
+      Then the third is listed before the other two
+
+  Rule: A skill's use is counted per agent
+
+    # Traces to: drift-detection, "Skills loaded together, then used" (D-9)
+    Scenario: Skills loaded together, then used
+      When the lead loads "cosmic-python", then "test-driven-development", then makes a tool call
+      Then neither skill is reported unused
+
+    # Traces to: drift-detection, "A skill's use is counted per agent" (D-9: another Skill call is not use)
+    Scenario: A load followed by another load and no tool call
+      When the lead loads "cosmic-python", then "test-driven-development", and the turn ends
+      Then "cosmic-python" is reported unused for "main"
+
+    # Traces to: drift-detection, "A subagent's skill" (D-9)
+    Scenario: A subagent's skill
+      When an implementer subagent loads "test-driven-development" and edits a file
+      Then the skill shows on the implementer's entry, not in the lead's trail
+      And it is not reported unused
+
+    # Traces to: drift-detection, "A skill's use is counted per agent" (D-9: judged at its finish)
+    Scenario: A background subagent is judged when it finishes, not at the lead's turn end
+      Given a subagent loaded two skills and made no tool call
+      When the lead's turn ends while the subagent still runs
+      Then no unused-skill warning is raised
+      When the subagent finishes
+      Then its first skill is reported unused for that subagent
+
+  Rule: A lead session shows its workflow
+
+    # Traces to: workflow-definitions, "A lead session" (D-14, #188)
+    Scenario Outline: A lead's primary skill shows its workflow
+      When a session runs the lead worker "<lead>" and loads its primary skill "<skill>"
+      Then the band shows the "<workflow>" workflow and a phase of it
+
+      Examples:
+        | workflow       | lead              | skill                   |
+        | architecting   | system-architect  | architecture            |
+        | modelling      | conceptual-modeller | conceptual-modelling  |
+        | contract       | lawyer            | contract-practice       |
+        | epic-delivery  | team-lead         | epic-delivery           |
+        | epic-shaping   | epic-planner      | epic-planning           |
+        | devops         | devops-engineer   | infrastructure-operations |
+        | release        | release-manager   | meaningfy-release       |
+        | documentation  | technical-writer  | technical-writing       |
+        | sales          | sales-agent       | sales-operations        |

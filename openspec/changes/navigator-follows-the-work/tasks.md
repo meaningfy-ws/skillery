@@ -28,13 +28,13 @@
 
 ## 3. Stage 3 — A band you can read at a glance (#188)
 
-- [ ] 3.1 `tierOf` and the warning order (D-10). Tests: TC-13, newest first within a tier. Gherkin for `specs/drift-detection/spec.md` § *Warnings rank by severity*, in `tests/features/navigator-follows-the-work.feature`
-- [ ] 3.2 Unused check per agent (D-9): `ToolUsed` from `register.tsx` for every non-`Skill` tool; `turnEvents` per agent; the lead judged and cleared at the main turn end, a subagent at its finish (`lib/dispatch.ts`, `lib/lean.ts`). Tests: two loads then a Read (none unused); a load then another `Skill` call then nothing (unused); a subagent's skill judged at its finish; a background subagent outliving the turn. Gherkin for `specs/drift-detection/spec.md` § *A skill's use is counted per agent*, in `tests/features/navigator-follows-the-work.feature`
-- [ ] 3.3 `bandModel` (D-11) in `lib/view.ts`: folded lines; Details rows including gate states and Reconcile EPIC; prefixes and models trimmed; subagents grouped; no `$`. Update `view.test.ts` (the gate-state assertions around lines 57 and 136 move to the phases row). Tests: worked example 3; no change; no workflow; three running subagents (`+1`)
-- [ ] 3.4 `register.tsx` draws D-11: folded lines and buttons (Details, Hide), Details with Accept labelled by message, Reconcile EPIC, Less; mode in Details only. Type-check green
-- [ ] 3.5 Status line (D-11): `no change for branch <b>`, `no repository`; `● strict` kept. Tests in `view.test.ts`
-- [ ] 3.6 #188 lead band (D-14): Gherkin for `specs/workflow-definitions/spec.md` § *A lead session shows its workflow*, one scenario per default workflow naming a lead worker; a unit test per workflow that its lead's primary skill activates it
-- [ ] 3.7 Integration check by hand, on the CLI and the desktop app: the band in a worktree session of a scratch repository, against `specs/session-navigation/spec.md` § *The band shows who runs what* and the live `openspec/specs/session-navigation/spec.md` § *Both Claude Code surfaces*; recorded in `evidence/band-check.md`
+- [x] 3.1 `tierOf` and the warning order (D-10). Tests: TC-13, newest first within a tier. Gherkin for `specs/drift-detection/spec.md` § *Warnings rank by severity*, in `tests/features/navigator-follows-the-work.feature`
+- [x] 3.2 Unused check per agent (D-9): `ToolUsed` from `register.tsx` for every non-`Skill` tool; `turnEvents` per agent; the lead judged and cleared at the main turn end, a subagent at its finish (`lib/dispatch.ts`, `lib/lean.ts`). Tests: two loads then a Read (none unused); a load then another `Skill` call then nothing (unused); a subagent's skill judged at its finish; a background subagent outliving the turn. Gherkin for `specs/drift-detection/spec.md` § *A skill's use is counted per agent*, in `tests/features/navigator-follows-the-work.feature`
+- [x] 3.3 `bandModel` (D-11) in `lib/view.ts`: folded lines; Details rows including gate states and Reconcile EPIC; prefixes and models trimmed; subagents grouped; no `$`. Update `view.test.ts` (the gate-state assertions around lines 57 and 136 move to the phases row). Tests: worked example 3; no change; no workflow; three running subagents (`+1`)
+- [x] 3.4 `register.tsx` draws D-11: folded lines and buttons (Details, Hide), Details with Accept labelled by message, Reconcile EPIC, Less; mode in Details only. Type-check green
+- [x] 3.5 Status line (D-11): `no change for branch <b>`, `no repository`; `● strict` kept. Tests in `view.test.ts`
+- [x] 3.6 #188 lead band (D-14): Gherkin for `specs/workflow-definitions/spec.md` § *A lead session shows its workflow*, one scenario per default workflow naming a lead worker; a unit test per workflow that its lead's primary skill activates it
+- [x] 3.7 Integration check by hand, on the CLI and the desktop app: the band in a worktree session of a scratch repository, against `specs/session-navigation/spec.md` § *The band shows who runs what* and the live `openspec/specs/session-navigation/spec.md` § *Both Claude Code surfaces*; recorded in `evidence/band-check.md`
 - [ ] 3.8 Stage gates as 1.8
 
 ## 4. Stage 4 — Review sized to the stage (#148) and close
@@ -53,7 +53,7 @@
 
 - [x] 1.1 · [x] 1.2 · [x] 1.2b · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
 - [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6
-- [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 3.6 · [ ] 3.7 · [ ] 3.8
+- [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.5 · [x] 3.6 · [x] 3.7 · [ ] 3.8
 - [x] 4.1 · [ ] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5 · [x] 4.6 · [ ] 4.7 · [ ] 4.8 · [ ] 4.9
 
 ## Verification

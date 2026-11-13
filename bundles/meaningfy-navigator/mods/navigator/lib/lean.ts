@@ -3,14 +3,15 @@
 // guardrails thresholds file.
 
 import { creditLoad } from './attribution.ts'
-import { inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
+import { groupDone } from './change.ts'
+import { MAIN, inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
   type Role } from './dispatch.ts'
 import { offer, onCompact, thresholdsFrom, type HygieneEvent } from './hygiene.ts'
 import { addWarnings } from './process-drift.ts'
 import type { Change, NavState, Signal, Warning } from './state.ts'
 import { isArchive, isCommit, isPrMerge, workflowOf } from './workflow.ts'
 
-const groupsDone = (c: Change | null) => c?.groups.filter(g => g.total > 0 && g.done === g.total).length ?? 0
+const groupsDone = (c: Change | null) => c?.groups.filter(groupDone).length ?? 0
 
 /** The hygiene events a signal makes (§6.5's fixed vocabulary). */
 function eventsOf(prev: NavState, next: NavState, s: Signal): HygieneEvent[] {
@@ -36,15 +37,17 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
   switch (s.kind) {
     case 'ThresholdsRead':
       return { ...n, thresholds: s.raw }
-    case 'SkillLoaded': // only a load that entered the lead's trail is a lead turn event (D-4)
-      return creditLoad(prev, s.name).kind === 'lead' ? { ...n, turnEvents: [...n.turnEvents, { kind: 'skill', name: s.name }] } : n
+    case 'SkillLoaded': { // a load credited to the lead or to a subagent is that agent's turn event (D-4, D-9)
+      const c = creditLoad(prev, s.name)
+      const agent = c.kind === 'lead' ? MAIN : c.kind === 'subagent' ? c.agentId : null
+      return agent ? { ...n, turnEvents: [...n.turnEvents, { kind: 'skill', name: s.name, agent }] } : n
+    }
     case 'AgentCalled': // every tool call of a subagent counts for PD-6, not only Bash (DD-41)
       return { ...n, agentCalls: { ...n.agentCalls, [s.agentId]: (n.agentCalls[s.agentId] ?? 0) + 1 } }
-    case 'ToolUsed': // any tool but Skill; per agent in 3.2, for now the lead's only
-      return s.agentId ? n : { ...n, turnEvents: [...n.turnEvents, { kind: 'tool' }] }
-    case 'ToolRan': {
+    case 'ToolUsed': // any tool but Skill, by its agent (D-9)
+      return { ...n, turnEvents: [...n.turnEvents, { kind: 'tool', agent: s.agentId ?? MAIN }] }
+    case 'ToolRan': { // not a tool event: the call's ToolUsed is (one event per call)
       if (s.agentId) return n
-      n = { ...n, turnEvents: [...n.turnEvents, { kind: 'tool' }] }
       if (s.ok && shipCommand(s.command)) {
         n = { ...n, shipLog: [...n.shipLog, { kind: 'ship' }] }
         if (reviews && n.change) add(secondCheck(reviews, appetite, n.change.id, n.shipLog))
@@ -53,7 +56,8 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
     }
     case 'SpawnAsked': { // before the spawn runs: parallel spawns each see the ones before (DD-41)
       const role = roleIn(n, s.type, s.description)
-      n = { ...n, turnRoles: [...n.turnRoles, role], shipLog: [...n.shipLog, { kind: 'spawn', role }] }
+      n = { ...n, turnRoles: [...n.turnRoles, role], shipLog: [...n.shipLog, { kind: 'spawn', role }],
+        turnEvents: [...n.turnEvents, { kind: 'spawn', agent: s.agentId ?? MAIN }] }
       if (reviews) add(overspawn(reviews, appetite, n.turnId || 'start', n.turnRoles))
       return n
     }
@@ -67,9 +71,10 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
     case 'SubagentFinished':
       if (t.ok) add([...inlineSpawn(t.thresholds, s.agentId, n.agentCalls[s.agentId] ?? 0),
         ...reportOversized(t.thresholds, s.agentId, s.answer ?? '')])
-      return n
+      add(unusedSkills(n.turnEvents, s.agentId))
+      return { ...n, turnEvents: n.turnEvents.filter(e => e.agent !== s.agentId) }
     case 'TurnEnded': {
-      add(unusedSkills(n.turnEvents))
+      add(unusedSkills(n.turnEvents, MAIN)) // only the lead's; a background subagent's events wait for its finish (D-9)
       // shortcut: idle resets are not offered; the gap is only known once the person has typed (DD-40).
       const r = offer(t, { events: n.hygieneEvents, contextPercent: s.contextPercent, idleMinutes: 0,
         cleanTree: s.cleanTree, openUnticked: !!n.change && n.change.done < n.change.total })
@@ -78,7 +83,9 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       add(r.warnings)
       return { ...n, offer: r.offer, hygieneEvents: r.point ? [] : n.hygieneEvents,
         sessionTokens: n.sessionTokens + (s.tokens ?? 0), usd: s.usd ?? n.usd,
-        turnId: s.turnId, turnRoles: [], turnEvents: [] }
+        turnId: s.turnId, turnRoles: [],
+        // The lead's events end with its turn; a subagent's stay only while it runs (D-27.5).
+        turnEvents: n.turnEvents.filter(e => n.subagents.some(a => a.agentId === e.agent && !a.done)) }
     }
     case 'Compacted':
       add(onCompact(s.trigger))

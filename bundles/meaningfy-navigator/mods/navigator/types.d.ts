@@ -136,7 +136,7 @@ export type NavState = {
   parentModel: string
   turnId: string // the current main turn; PD-8 counts reviewer spawns per turn
   turnRoles: Role[]
-  turnEvents: ({ kind: 'skill'; name: string } | { kind: 'tool' })[]
+  turnEvents: ({ kind: 'skill'; name: string; agent: string } | { kind: 'tool' | 'spawn'; agent: string })[]
   agentCalls: Record<string, number> // tool calls per subagent (PD-6)
   shipLog: ({ kind: 'spawn'; role: Role } | { kind: 'ship' })[] // per change (PD-9)
   hygieneEvents: HygieneEvent[] // since the last safe point or task boundary
