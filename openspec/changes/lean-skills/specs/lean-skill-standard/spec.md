@@ -40,13 +40,9 @@ skill, or a malformed file. A missing file SHALL mean no skill is listed.
 
 ### Requirement: A pointer to a reference says when to open it
 Every mention in a `SKILL.md` body of a file in the skill's own `references/` SHALL be one
-sentence that opens with Read or Open, names the situation with when, if, before, after, while,
-once, whenever, until or unless, and ends with ": it adds|gives|holds <what>." (the exact grammar
-is in design D-5), at the point of need. No
-heading that names references, resources, further reading, see also or supporting material SHALL
-close the body with a list. The catalogue check SHALL fail for a pointer in another form and for
-such a heading. A path into another skill's `references/` and text inside fenced code SHALL NOT
-count as pointers.
+sentence of the form "Read <file> when <situation>: it adds <what>." (grammar in design D-5). No
+heading SHALL close the body with a list of references. The catalogue check SHALL fail for
+either. Another skill's references and fenced code SHALL NOT count.
 
 #### Scenario: A bare reference link
 - **WHEN** a skill body holds a list item that is only a link to `references/patterns.md` and a
