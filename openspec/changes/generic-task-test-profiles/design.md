@@ -208,7 +208,9 @@ New choices made while planning; settled ones are cited.
     | B-5 | internal message | a status note to the team: the registry project slips one week |
 
     Each run is one call, started in an empty scratch directory:
-    `claude -p "<prompt>" --model sonnet --output-format json --plugin-dir "$P"`, with
+    `claude -p "<prompt>" --model sonnet --output-format json --permission-mode acceptEdits
+    --plugin-dir "$P"`, so the run can write its draft into the scratch directory (D-9 needs the
+    draft as a file), with
     `CLAUDE_CONFIG_DIR` set to an empty directory that holds only the login, as
     [`tests/evals/README.md`](../../../tests/evals/README.md) does it (section *Trigger sets*,
     paragraph "Isolate the run"), so that no installed copy of a skill answers. `$P` is one
@@ -216,8 +218,11 @@ New choices made while planning; settled ones are cited.
     `bundles/meaningfy-core`, `bundles/meaningfy-consulting`, `bundles/meaningfy-sales` and
     `bundles/meaningfy-legal` copied with their links resolved (`cp -rL`) into one directory, and
     one `.claude-plugin/plugin.json` naming it `baseline` (the same README, section *Outcome
-    suites*, paragraph "Locally", shows the copy). Those four bundles hold the five owning skills
-    and `guardrails`. A run sees no repository file: B-2's prompt
+    suites*, paragraph "Locally", shows the copy). Those four bundles hold the five owning skills,
+    `guardrails` and, once A is delivered, `test-strategy` (A's DEC-7 puts it in
+    `meaningfy-core`), on the base commit as on the head. A run whose output shows a refused tool
+    call is discarded, the command is corrected, and the run is made again; that is not counted
+    as a rerun. A run sees no repository file: B-2's prompt
     carries the term table inline, copied from the fixture. The prompt is the task plus one
     sentence: "where a skill tells you to ask the owner, write the question, take
     the answer as yes and go on". The *without* runs use the base commit; the *with* runs the head
@@ -249,18 +254,20 @@ New choices made while planning; settled ones are cited.
     |---|---|
     | `offer-planted.md` | the scope lists a "data-quality dashboard"; the price table and the exclusions leave it out (DEC-6) |
     | `offer-planted-2.md` | the offer is "valid until 30 June" in one place and "valid for 14 days" in another; no bullet of *Attacks* names this kind of flaw |
-    | `offer-clean.md` | the twin of both: the dashboard priced, one validity date |
+    | `offer-clean.md` | the twin of both: the dashboard priced, one validity date. Each planted offer differs from it only in its own planted lines, so `offer-planted-2.md` has the dashboard priced |
     | `contract-planted.md` | a term table in plain words, not clause text: one party may end the contract without cause at five days' notice, the other may not (DEC-6) |
     | `contract-clean.md` | its twin: both may, at thirty days |
-    | `expected.yaml` | for each planted file: its twin, the owning skill, the role and the *Attacks* bullets of D-3 given to the reader, the criteria as an owner would confirm them, and `must_quote`, a substring of the planted line |
+    | `expected.yaml` | for each planted file: its twin, the owning skill, the role and the *Attacks* bullets of D-3 given to the reader, the criteria as an owner would confirm them, and `must_quote`, a list of substrings of the planted file of which the reader's fail must quote at least one (for `offer-planted.md`: "data-quality dashboard", the scope line a reader quotes for an omission; for `offer-planted-2.md`: "30 June" and "14 days"; for `contract-planted.md`: "five days") |
 
-    `tests/test_generic_task_profiles.py` checks the fixtures deterministically: `must_quote`
-    occurs in the planted file and not in its twin, and the twin differs from it in at most three
-    lines. The model runs are by hand: a reader briefed per D-1 with the role and *Attacks* of the
-    owning skill, three runs per file, fifteen in all. `offer-clean.md` is read with the criteria
+    `tests/test_generic_task_profiles.py` checks the fixtures deterministically: every
+    `must_quote` string occurs in its planted file, and the twin differs from the planted file in
+    at most three lines. The model runs are by hand: each is a fresh general-purpose subagent
+    started from the attended delivery session on that session's model (D-9), briefed per D-1 with
+    the role and *Attacks* of the owning skill, three runs per file, fifteen in all. The owner is
+    told the number of runs, fifteen and at most forty-five, before the first round. `offer-clean.md` is read with the criteria
     of both offer fixtures together, and each of the two planted criteria is counted on its own.
-    **Proven** means, on each planted file, the criterion is failed and `must_quote` quoted in at
-    least two of three runs; and on each twin, each planted criterion is failed in at most one of
+    **Proven** means, on each planted file, the criterion is failed with one of the `must_quote`
+    strings quoted in at least two of three runs; and on each twin, each planted criterion is failed in at most one of
     three. The runs take the role and the *Attacks* bullets from `expected.yaml`, as the
     profiles are not written yet. A stage-2 assertion then requires the sections of
     `proposal-writing` and `contract-practice` to hold those bullets word for word, so what was
@@ -641,6 +648,11 @@ description edit (D-12, task 2.9); one rule for the second read (D-6, the brief)
 tasks; the brief quotes the *Attacks* and sends the reader to no file (D-9, the brief), which also
 replaces the repeat of the planted-flaw runs by an assertion; `guardrails` is the last skill entry
 (D-5); B-2's drafts are discarded and left out of O-5 (D-11); baseline reruns are capped (D-11).
+
+**Clarity gate, run 4 (a fourth independent scorer, on commit c97c17a): 8.8/10, FAIL.** Four gaps,
+all in D-11 and all folded in: the baseline command lets the run write its draft; `must_quote` is
+a list that fits an omission; how the planted-flaw runs start and that the owner is told their
+number; `test-strategy` is in the plugin through `meaningfy-core`.
 
 ## Open Questions
 
