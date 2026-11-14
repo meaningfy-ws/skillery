@@ -35,8 +35,8 @@ marks as worth fixing (activity-test-profiles DEC-3, DEC-7; design D-5, D-6).
 - **THEN** the stage checker reports it and the check is removed before the PR
 
 ### Requirement: A closed family stays closed
-`make validate` SHALL fail when a family file whose stage has closed holds a row whose status
-starts with `gap`, or an `accepted` row without a reason (design D-11).
+`make validate` SHALL fail when a family file whose stage has closed holds a row whose status is
+not exactly `exists` or `accepted`, or an `accepted` row without a reason (design D-11).
 
 #### Scenario: A gap row added later
 - **WHEN** a later change adds a `gap → D` row to `documentation.md` after the documentation stage closed it
@@ -45,9 +45,10 @@ starts with `gap`, or an `accepted` row without a reason (design D-11).
 ### Requirement: Each tool runs once on a real tree
 Vale and ls-lint SHALL each be run once on a real docs tree, and ls-lint and checkmake once on a
 checkout of a real stacks repository, read-only, with a summary recorded in `evidence/` that names
-no host, address, client or person. Where the checkout holds no Makefile, checkmake's summary SHALL
-record that, or the run on the other infrastructure repository the developer chose
-(activity-test-profiles DEC-7; design D-7, D-17).
+no host, address, client or person. Where the checkout holds no Makefile, checkmake SHALL run on
+the other infrastructure repository if the developer chooses it; otherwise its summary SHALL
+record that it did not run, and the proof SHALL be listed as not met for checkmake and accepted by
+the developer (activity-test-profiles DEC-7; design D-7, D-17).
 
 #### Scenario: checkmake on the stacks checkout
 - **WHEN** stage 3 runs checkmake on the stacks checkout, which holds Makefiles
@@ -55,4 +56,4 @@ record that, or the run on the other infrastructure repository the developer cho
 
 #### Scenario: A checkout without a Makefile
 - **WHEN** the stacks checkout holds no Makefile and the developer chooses to record that
-- **THEN** `evidence/toolrun-checkmake.md` holds the version and "no Makefile in the checkout", and it counts as checkmake's run
+- **THEN** `evidence/toolrun-checkmake.md` holds the version and "no Makefile in the checkout", and `evidence/acceptance.md` lists the proof as not met for checkmake, accepted by the developer with the date

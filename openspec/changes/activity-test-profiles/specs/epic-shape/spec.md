@@ -3,11 +3,12 @@
 ### Requirement: The shaping interview asks for invariants
 `epic-planning`'s test-scenario interview SHALL ask which invariants must hold, each stated so that
 a property test could check it and each with an example; "none" SHALL be a valid answer recorded
-with its reason (activity-test-profiles DEC-5; design D-4).
+with its reason. The answers SHALL be recorded with the interview, in the change's `inputs/qa.md`,
+where PLAN derivation reads them (activity-test-profiles DEC-5; design D-4).
 
 #### Scenario: An EPIC that keeps one fact in two places
 - **WHEN** the developer says a label is held in two stores
-- **THEN** the interview records the invariant "the label is the same in both stores" with an example that holds and one that would break it
+- **THEN** `inputs/qa.md` records the invariant "the label is the same in both stores" with an example that holds and one that would break it
 
 #### Scenario: An EPIC with no invariant
 - **WHEN** the developer answers that a wording-only change has no invariant
@@ -37,11 +38,11 @@ brief (activity-test-profiles DEC-5, DEC-7; design D-1, D-2, D-13).
 
 #### Scenario: Tracing this EPIC's own invariant
 - **WHEN** the tester is dispatched on the stage of activity-test-profiles that adds the closed-family test, whose PLAN holds `INV-1` with a *Test* cell starting with `tester` and an error-matrix row citing `INV-1`
-- **THEN** the tester's table of properties has a row for `INV-1` with a test and a result, and the three rows are recorded together in `evidence/invariants-trace.md`
+- **THEN** the tester's table of properties has a row for the property of that error-matrix row, with a test and a result, and the three rows are recorded together in `evidence/invariants-trace.md`
 
-#### Scenario: An invariant without its error-matrix row
-- **WHEN** a PLAN's *Test* cell starts with `tester` and no error-matrix row cites that invariant
-- **THEN** the PLAN breaks the rule `epic-planning` states for PLAN derivation, and whoever derives or scores it adds the row
+#### Scenario: Deriving a PLAN with an invariant left to the tester
+- **WHEN** `epic-planning` derives a PLAN whose invariant's *Test* cell starts with `tester`
+- **THEN** the PLAN's error matrix holds a row that names the breach and cites that invariant's id
 
 ## MODIFIED Requirements
 
