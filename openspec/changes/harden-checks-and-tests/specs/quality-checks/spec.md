@@ -166,6 +166,10 @@ a run that finds the same survivors as `develop` already holds SHALL open nothin
 - **WHEN** `develop` has moved since last week and the run finds the same survivors that `develop` already holds
 - **THEN** no pull request is opened or updated
 
+#### Scenario: The same survivors as the open pull request
+- **WHEN** last week's bot pull request is still open and this week's run finds the same survivors
+- **THEN** the pull request's branch is not pushed again
+
 #### Scenario: An open bot pull request exists
 - **WHEN** last week's bot pull request is still open and this week's results differ
 - **THEN** that pull request is updated, and no second one is opened
