@@ -709,6 +709,59 @@ def test_scheduled_human_session_agent_without_a_workflow_is_not_flagged(tmp_pat
     assert lint.workflow_lead(tmp_path) == []
 
 
+_CRITERIA_WF = "skills/act/assets/workflows/act.workflow.json"
+_GOOD_CRITERIA = {"succeeds": "the evidence is there", "fails": "the evidence is missing"}
+
+
+def _criteria_wf(root: Path, *phases: dict):
+    _raw_wf(root, json.dumps({"owner": "act", "phases": list(phases)}))
+
+
+def test_workflow_criteria_flags_a_phase_without_criteria(tmp_path):
+    # test-strategy D-5; scenario "A default phase without criteria"
+    _criteria_wf(tmp_path, {"id": "one", "criteria": _GOOD_CRITERIA}, {"id": "two"})
+    assert lint.workflow_criteria(tmp_path) == [
+        f"{_CRITERIA_WF}: phase 'two' needs criteria, an object with exactly the keys "
+        f"'succeeds' and 'fails', each a non-empty string"]
+
+
+def test_workflow_criteria_accepts_well_formed_criteria(tmp_path):
+    _criteria_wf(tmp_path, {"id": "one", "criteria": _GOOD_CRITERIA})
+    assert lint.workflow_criteria(tmp_path) == []
+
+
+@pytest.mark.parametrize("criteria", [
+    {"succeeds": "", "fails": "x"},
+    {"succeeds": "x", "fails": "   "},
+    {"succeeds": "x", "fails": 3},
+    {"succeeds": "x"},
+    {"succeeds": "x", "fails": "y", "extra": "z"},
+    {"succeeds": "x", "other": "y"},
+    "succeeds and fails",
+    ["succeeds", "fails"],
+    None,
+])
+def test_workflow_criteria_flags_malformed_criteria(tmp_path, criteria):
+    _criteria_wf(tmp_path, {"id": "p", "criteria": criteria})
+    out = lint.workflow_criteria(tmp_path)
+    assert len(out) == 1 and out[0].startswith(f"{_CRITERIA_WF}: phase 'p' needs criteria")
+
+
+@pytest.mark.parametrize("text", ["[]", "{nope", json.dumps({"phases": "x"}),
+                                  json.dumps({"phases": ["x", None, {"id": "p", "criteria": {}}]})])
+def test_workflow_criteria_survives_a_workflow_of_the_wrong_shape(tmp_path, text):
+    # unreadable or wrong shape: the navigator reports it; the check must not crash the lint run
+    _raw_wf(tmp_path, text)
+    lint.workflow_criteria(tmp_path)
+
+
+def test_workflow_criteria_ignores_files_that_are_not_default_workflows(tmp_path):
+    d = tmp_path / ".claude" / "workflows"
+    d.mkdir(parents=True)
+    (d / "x.workflow.json").write_text(json.dumps({"phases": [{"id": "p"}]}), encoding="utf-8")
+    assert lint.workflow_criteria(tmp_path) == []
+
+
 def test_agent_without_feature_is_flagged(tmp_path):
     assert _conforming(tmp_path, feature=False) == ["agents/x.md: no tests/features/agents/x.feature"]
 
