@@ -1,5 +1,6 @@
 <!-- PLAN (tasks half), derived 2026-11-14; the attack (AT-1..AT-21) is folded in; clarity
-     gate 9.0/10 PASS (run 5); re-shaped the same day on DEC-11 (an assessment, not a test). -->
+     gate 9.0/10 PASS (run 5); re-shaped the same day on DEC-11 (an assessment, not a test)
+     and gated again, 9.1/10 PASS (run 7). -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)); design in
 > [`design.md`](design.md). Starts after EPIC A `test-strategy` is delivered.
@@ -62,7 +63,7 @@
   the Background skill lists of `proposal-writer.feature` and `sales-agent.feature` (D-5, D-11).
 - [ ] 2.7 Agents: edit `agents/proposal-writer.md` and `agents/sales-agent.md` as D-5 lists, in the
   same commit as 2.6; run `make bundles`. Run the scenarios by hand on both CLIs and record per CLI
-  what happened in `evidence/agent-scenarios.md`; force *No reader can be started* on Claude Code
+  what happened in `evidence/agent-scenarios.md`, step by step and with no contract text (D-11); force *No reader can be started* on Claude Code
   with `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1`, and on opencode record what the CLI allows (D-5,
   D-7, RISK-1).
 - [ ] 2.8 Static probes for `meaningfy-voice` (D-12) and its description before and after in

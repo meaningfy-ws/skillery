@@ -2,8 +2,8 @@
      delivery. Attacked the same day by a fresh subagent (AT-1..AT-21, all folded in, see § Attack
      record). Clarity gate: 8.9, 8.8, 8.9, 8.8, then 9.0/10 PASS on the fifth run, each by an
      independent scorer. Re-shaped the same day on the owner's word (Q-15, DEC-11: an
-     assessment, not a test; no contract fixtures or baseline) and gated again, see the end of
-     § Attack record. -->
+     assessment, not a test; no contract fixtures or baseline) and gated again: 9.1/10 PASS (run 7, end
+     of § Attack record). Ready for delivery once A is delivered. -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-11.
 > Depends on: EPIC A `test-strategy`, its gated [`design.md`](../test-strategy/design.md) (D-1, D-2,
@@ -189,7 +189,7 @@ New choices made while planning; settled ones are cited.
   | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
   |---|---|---|---|---|---|---|
   | `VAL` | the profile's `CHK-<n>` | the owning skill | none | see below | the owner | `exists` |
-  | `ROB` | the same `CHK-<n>` | the owning skill | a fresh subagent, briefed per `guardrails` (`references/adversarial-reader.md`) | see below | the adversary stance; the owner after the second read | `exists` |
+  | `ROB` | the same `CHK-<n>` | the owning skill | a fresh subagent, briefed per `guardrails` (`references/adversarial-reader.md`) | see below | the author on each finding; the owner after the second read | `exists` |
 
   *Moment* takes A's form, a workflow and phase or "any": for a contract, `contract`, phase
   `intake` (`VAL`) and phase `review` (`ROB`); for an offer, the sales workflow of
@@ -299,7 +299,10 @@ New choices made while planning; settled ones are cited.
     files, each with a `# Traces to:` line naming this change. In `proposal-writer.feature` the
     existing outline *The output depends on what the requirements answer* gains the line "And the
     caller passed the criteria the owner confirmed", so its rows stay true. They are run by hand
-    on both CLIs (the files' own header) and the results go to `evidence/agent-scenarios.md`. The
+    on both CLIs (the files' own header) and the results go to `evidence/agent-scenarios.md`: what
+    happened at each step, yes or no, and nothing else. The `lawyer` scenario runs in a checkout
+    of the contract repository, so its record holds no clause text, no quotation and no
+    counterparty name, and the branch and PR it opens there are closed unmerged after the run. The
     *No reader can be started* path is forced on Claude Code by starting the session with
     `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1`; on opencode the run records what the CLI allows
     (RISK-1).
@@ -500,7 +503,7 @@ This PLAN was derived from A's design, not from A's files. Task 1.1 checks each 
 | Give the reader the dossier, the thread or the author's reasoning | The draft, the criteria, the role, one recipient line | An anchored reader confirms the author (`guardrails`, *Fresh, not a copy*) |
 | Let the reader return a new draft or better wording | It reports; the author revises | Rabbit-holes: a reader that rewrites has left its brief |
 | Ask the reader for pass or fail, a verdict or a score | Findings with quotations; the owner judges | DEC-11: qualitative work is assessed, not tested |
-| Write test cases or fixtures for a contract or a post | Criteria, one read, the owner's review | DEC-11 |
+| Write test cases or fixtures for a contract or a post | Criteria, the reader (two reads at most, D-6), the owner's review | DEC-11 |
 | Attach a finding that matches no criterion to one anyway | A proposed criterion, for the owner | A criterion is agreed before the work (A's DEC-3) |
 | Change a contract's number or term because the reader raised it | An open point with the quotation | `contract-practice`: which one is right is the owner's decision |
 | Score the baseline or the reader's report | Yes or no observations, and the kept drafts | No-gos: no rubric, no pass mark |
@@ -661,6 +664,13 @@ and the contract baseline task are gone; the offer keeps one planted-flaw check,
 once and not under `tests/`; the fixture checks and `expected.yaml` are gone, so the test file
 checks only where the skill text sits. Findings AT-10 and G-4, the fixture fixes of gate
 runs 4 and 5 and the B-2 fixes above describe machinery that no longer exists.
+
+**Clarity gate after the re-shape.** Run 6 (a sixth independent scorer, on commit 1262314):
+8.9/10, FAIL; one blocking gap, the *reviewing* fields carry a verdict, and four minor ones, all
+folded in. Run 7 (a seventh independent scorer, on commit e2ddaf1): **9.1/10, PASS**, all 13
+checklist items passed. Its four minor recommendations were folded in afterwards: *Decided by* in
+D-10, the "one read" wording, what the `lawyer` scenario's record may hold (D-11), and this
+record.
 
 ## Open Questions
 

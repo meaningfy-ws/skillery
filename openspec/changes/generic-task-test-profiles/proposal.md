@@ -7,7 +7,8 @@
      logged as DEC-8 and DEC-9: Capabilities and Impact below follow them. After the attack on the
      PLAN, Q-14 narrowed DEC-4 and one no-go, logged as DEC-10. No other DEC changed. Clarity gate
      9.0/10 PASS on the fifth run by an independent scorer. After that gate the owner's Q-15
-     re-shaped the proofs and the reader's output, logged as DEC-11, which narrows DEC-6. -->
+     re-shaped the proofs and the reader's output, logged as DEC-11, which narrows DEC-6; the
+     PLAN was gated again, 9.1/10 PASS. Ready for delivery once A is delivered. -->
 
 # EPIC: generic task test profiles
 
