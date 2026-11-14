@@ -25,6 +25,7 @@ session. No EPIC is shaped yet.
 | 3 | Report the plugin's duplicate-turn defect upstream? | No. Make the script aware of the glitches. |
 | 4 | Phase, stage and review outcome need the skills to declare them. | Yes, shape a new EPIC. It also carries proper setup instructions and traces every important parameter. |
 | 5 | Commit the Langfuse setup doc change? | Yes (PR #232). |
+| 6 | `epic-planning` limits the clarity gate to two runs for TINY and SMALL EPICs only; larger ones have no limit. | At most two gate runs hold on any re-gate. The new EPIC extends the limit to all sizes; the skill is not edited before that. Meanwhile the four test EPICs were revised on 2026-11-14 without a new gate run ([`cross-check-test-epics.md`](cross-check-test-epics.md), decision 7). |
 
 ## What the owner wants next
 
