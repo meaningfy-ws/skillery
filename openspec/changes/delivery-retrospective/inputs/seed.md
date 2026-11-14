@@ -33,11 +33,19 @@ session. No EPIC is shaped yet.
 | 11 | The adversarial tester is conditional at MEDIUM only (`harden-checks-and-tests` D-28). Apply the same condition at every size? | Yes, at every size, in the new EPIC: it changes the living `epic-delivery` spec. |
 | 12 | The reader of `generic-task-test-profiles`: a thin agent, or the tool list in the brief only? | A thin agent (its DEC-13). |
 | 13 | The result line of `harden-checks-and-tests` D-29, the changed scenarios, and deletion at once in the test sort of `test-suite-care` D-35. | Accepted as written. |
+| 14 | One EPIC or several for the three kinds of change (delivery process; tools per activity and the instruction template; the retrospective itself)? | Two EPICs: process and tools together, the retrospective tooling apart. |
+| 15 | Which goes first? | Process and tools first. |
+| 16 | How does a stage boundary become a real reset, since an unattended lead cannot compact? | The lead writes a hand-over note and stops; the next stage starts in a fresh session. A stage lead per stage was offered and not chosen. |
+| 17 | Where do the two scripts live for good? | A new skill with the scripts in its `scripts/` folder. |
 
 ## What the owner wants next
 
 Compare these findings with the open test-improvement EPICs, then discuss both together before
 anything is shaped. Done on 2026-11-14; see the cross-check and the second pass.
+
+Next: shape the two EPICs, each in its own fresh session. This folder becomes the retrospective
+tooling EPIC; the process and tools EPIC gets its own change folder and cites these inputs. The
+elicitation still owes, for each: the appetite, the test-scenario interview and the risk question.
 
 ## Inputs in this folder
 
