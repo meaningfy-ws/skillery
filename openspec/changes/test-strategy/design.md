@@ -281,7 +281,7 @@ Taken by the lead during delivery (2026-11-13); the developer may overrule any o
   - Found on the way and left alone (no change to a gate or a phase, proposal No-gos): the
     `architecting` gates look one phase ahead; `meaningfy-release` describes no validate step
     although its workflow has one; the release `back` gate matches only `develop` while the
-    runbook says every long-lived line. They are follow-ups for the developer to rule on.
+    runbook says every long-lived line. They are follow-ups, filed as issue #225 on the developer's decision.
 - **D-17 Stage 2 takes the small review set.** The stage adds 285 lines against `develop`
   (generated files included), under the 600-line limit of the LARGE set's `small_stage`, and the
   risk is low: the impact analysis of `phaseError` shows one direct caller and four impacted
