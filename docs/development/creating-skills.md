@@ -102,7 +102,8 @@ which agent leads it is set in [`agent-template.md` § *Workers*](agent-template
 Adding a workflow takes three edits:
 
 1. The file `skills/<skill>/assets/workflows/<name>.workflow.json`, with `"owner": "<skill>"`
-   (schema in [`mods.md`](mods.md#workflow-files)).
+   (schema in [`mods.md`](mods.md#workflow-files)). Each phase states its `criteria`, how it
+   succeeds and how it fails; `make validate` requires them in a default file.
 2. Its file name in TC-16's list of default files in
    [`mods/navigator/lib/workflow.test.ts`](../../mods/navigator/lib/workflow.test.ts).
 3. A row in the table of [`workflows.md` § *Workflow files*](workflows.md#workflow-files), naming

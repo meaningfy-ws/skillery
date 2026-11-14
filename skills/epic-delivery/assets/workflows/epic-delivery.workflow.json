@@ -5,17 +5,28 @@
     { "name": "brownfield", "phases": ["apply", "accept", "archive"], "activate": { "change": "tasks-no-design" } }
   ],
   "phases": [
-    { "id": "ready", "owner": "epic-delivery", "expect": [], "enter": { "change": "plan" } },
+    { "id": "ready", "owner": "epic-delivery", "expect": [],
+      "criteria": { "succeeds": "the PLAN's clarity-gate verdict is a pass, or each accepted gap is a DEC- with the developer's answer in design.md",
+                    "fails": "a stage starts while the verdict is missing or a failing gap has no developer decision" },
+      "enter": { "change": "plan" } },
     { "id": "apply", "owner": "epic-delivery",
       "expect": [{ "skill": "test-driven-development", "by": "commit" }, { "skill": "cosmic-python", "by": "exit" },
                  { "skill": "meaningfy-code-review", "by": "exit" }, { "skill": "verification-before-completion", "by": "exit" }],
       "allow": ["meaningfy-code-review", "systematic-debugging", "subagent-driven-development"],
       "gates": ["clarity", "full-gates"],
+      "criteria": { "succeeds": "each stage's PR body holds the full-gates report and CI on its head commit is green before the merge",
+                    "fails": "a stage merges on a red CI run, or its PR body carries no gate report" },
       "enter": { "skills": ["openspec-apply-change", "epic-delivery"], "change": ["tasks-partial", "tasks-no-design"] } },
     { "id": "accept", "owner": "epic-delivery", "expect": [],
-      "gates": ["acceptance"], "enter": { "change": "tasks-done" } },
+      "gates": ["acceptance"],
+      "criteria": { "succeeds": "evidence/acceptance.md records what was shown, the date and the developer's verdict, or a skip with who and why",
+                    "fails": "evidence/acceptance.md is missing, or it records a rejection that has no decision in design.md" },
+      "enter": { "change": "tasks-done" } },
     { "id": "archive", "owner": "spec-stewardship", "expect": [{ "skill": "spec-stewardship", "by": "exit" }],
-      "gates": ["openspec"], "enter": { "skills": ["openspec-archive-change"], "change": ["archived", "merged"] } }
+      "gates": ["openspec"],
+      "criteria": { "succeeds": "the strict change validation passes and the change sits in the archive folder with its deltas merged into the specs",
+                    "fails": "the strict validation fails, or what was built differs from the PLAN with no record in deviations.md" },
+      "enter": { "skills": ["openspec-archive-change"], "change": ["archived", "merged"] } }
   ],
   "gates": {
     "clarity":    { "kind": "skill", "skill": "clarity-gate" },

@@ -136,6 +136,8 @@ and agent renderer). See
   second subagent.
 - **Context** — follow *Session hygiene* in the `guardrails` skill: a fresh session at a task
   boundary, compact at a phase boundary right after a commit, never mid-step.
+- **Success and failure first** — for every activity, state how the work succeeds and how it fails
+  before you start it. The method is the [`test-strategy`](skills/test-strategy) skill.
 - **Hooks** — hook *intent* is single-sourced in [`hooks.yaml`](hooks.yaml) (see [`docs/development/hooks.md`](docs/development/hooks.md)); git-mechanism hooks are shared across CLIs, agent-mechanism hooks are rendered per CLI.
 
 GitNexus scope in this repo: the code in `tools/`, `tests/` and skills' `scripts/`. This block lives here only (not in

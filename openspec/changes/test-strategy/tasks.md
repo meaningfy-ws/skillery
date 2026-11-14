@@ -47,32 +47,32 @@
 
 ## 2. Stage 2: criteria in every workflow
 
-- [ ] 2.1 Navigator: accept and validate the optional `criteria` phase key in `phaseError`
+- [x] 2.1 Navigator: accept and validate the optional `criteria` phase key in `phaseError`
   (`mods/navigator/lib/workflow.ts:129`) and the `Phase` type in `mods/navigator/types.d.ts:34`.
   Work test-first in `workflow.test.ts`, then run `make mods` (tests and `tsc`). Finish with
   `make bundles`, which copies the mod into `bundles/meaningfy-navigator/`. Done before 2.3
   (D-5; spec *Every workflow phase declares how it succeeds and fails*, scenarios *A repository file
   without criteria*, *Malformed criteria in a repository file*).
-- [ ] 2.2 Repo lint `workflow_criteria` in `ALL_CHECKS`, modelled on `workflow_lead`
+- [x] 2.2 Repo lint `workflow_criteria` in `ALL_CHECKS`, modelled on `workflow_lead`
   (`tools/repo_lint/lint.py:1249`). Tests: a positive one in `tests/test_repo_lint.py` once 2.3 is
   done, and negative ones in `tests/test_repo_lint_negative.py` (a phase without criteria, an empty
   string, and the wrong-shape file that must not crash) (D-5; scenario *A default phase without
   criteria*).
-- [ ] 2.3 Write the criteria of all 50 phases in the nine default workflow files (D-5, RISK-3).
-- [ ] 2.4 Bindings: the principle and the route to `test-strategy` in `AGENTS.md` and in
+- [x] 2.3 Write the criteria of all 50 phases in the nine default workflow files (D-5, RISK-3).
+- [x] 2.4 Bindings: the principle and the route to `test-strategy` in `AGENTS.md` and in
   `project-setup`'s `assets/templates/agentic/AGENTS.md.tmpl` (DEC-2; spec *The bindings mandate the
   founding principle*).
-- [ ] 2.5 Document the `criteria` key in `docs/development/mods.md` § *Workflow files*,
+- [x] 2.5 Document the `criteria` key in `docs/development/mods.md` § *Workflow files*,
   `docs/development/workflows.md` § *Workflow files* and `docs/development/creating-skills.md`
   (D-11).
-- [ ] 2.6 `make bundles`, `make validate`, `openspec validate test-strategy --strict`.
+- [x] 2.6 `make bundles`, `make validate`, `openspec validate test-strategy --strict`.
 - [ ] 2.7 Acceptance demo with the developer, using the Quick Start script and a workflow phase's
   criteria, recorded in `evidence/acceptance.md` (D-11; LARGE makes it mandatory).
 
 ## Roadmap
 
 - [x] 1.0 · [x] 1.1 · [x] 1.10 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9
-  · [x] 1.11 · [x] 1.12 · [x] 1.13 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
+  · [x] 1.11 · [x] 1.12 · [x] 1.13 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6 · [ ] 2.7
 
 ## Verification
 
