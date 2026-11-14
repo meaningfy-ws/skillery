@@ -19,5 +19,28 @@
 | Q-8 | Gherkin for the agents whose behaviour changes? | A scenario per agent (`proposal-writer`, `lawyer`, `sales-agent`). |
 | Q-9 | Where does the adversarial reader's brief live? | `guardrails`. |
 
+## Round 3: while the PLAN was derived (2026-11-14)
+
+| # | Question | Answer |
+|---|---|---|
+| Q-10 | Posts have no capability spec. Where does their requirement go? | A new capability, `company-voice`. Not chosen (the planner's recommendation): a second requirement in the `test-strategy` delta. |
+| Q-11 | `proposal-writer` and `sales-agent` have no `Agent` tool and cannot start a reader. How does the profile work for them? | Grant `Agent` to both. Not chosen (the planner's recommendation): no agent file change, the reader run by the calling session; `Agent` for `sales-agent` only. |
+| Q-12 | Where do the rules all four profiles share live (the "leaves the company" test, the confirmation, mandatory or on request, pick-up)? | `guardrails`, with the brief. Not chosen: `test-strategy`'s `generic-writing` file. |
+| Q-13 | Should `meaningfy-voice`'s description fire on "write a LinkedIn post" or "a blog article"? | Yes, with a positive probe and a near-miss against `explanatory-writing`. Not chosen: no description change. |
+
+Q-10 and Q-11 change two statements of the shaped EPIC ("New Capabilities: none"; "no agent file
+changes"). They are recorded in the EPIC as DEC-8 and DEC-9; the bet itself is unchanged.
+
+## Round 4: after the attack on the PLAN (2026-11-14)
+
+| # | Question | Answer |
+|---|---|---|
+| Q-14 | With `Agent`, the sales agent's scheduled runs can start `sales-operations`' three reviewers, where they recorded "unverified" until now. What should the PLAN do? | Accept the change: scheduled runs may start them. Not chosen (the planner's recommendation): subagents in human sessions only; no `Agent` for `sales-agent`. Recorded as DEC-10. |
+
+The attack's other three questions were settled in the PLAN without the owner, each from a rule
+already in force: a failed contract term is an open point (`contract-practice`); the post's two
+step lines sit in the channel file (design D-2); a blog explainer written through
+`explanatory-writing` is an accepted risk and a follow-up for `add-content-creation` (RISK-11).
+
 The shaper added `sales-conversations` as the owner of sales client messages (it was in the seed);
 the owner has not objected.
