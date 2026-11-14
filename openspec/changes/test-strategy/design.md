@@ -287,6 +287,30 @@ Taken by the lead during delivery (2026-11-13); the developer may overrule any o
   risk is low: the impact analysis of `phaseError` shows one direct caller and four impacted
   symbols, the lint is a new function, and the rest is data and prose. Two reviewers (L1 with
   L2; L3 with L4 and L5), the adversarial tester and the checker.
+- **D-18 Findings of the stage 2 review** (two reviewers and the adversarial tester, PR #222; no
+  critical finding). Accepted, fixed before merge:
+  - `workflow_criteria` joins the lint group of the inventory (CHK-127), the row the error matrix
+    asks for.
+  - Three criteria: `release` *publish* drops the dry run (only the package path has one);
+    `contract` *review* names the lawyer-review list without copying the skill's categories;
+    `epic-shaping` *revise* says "passes the clarity gate" and leaves the threshold to
+    `clarity-gate`.
+  - The nine workflow files use one layout for the new key: `succeeds` and `fails` each on its
+    own line.
+  - `phaseError` checks `criteria` after the required keys, with its optional neighbours.
+  - The lint skips a workflow file too deeply nested to parse instead of crashing.
+  - Tests: the navigator gains the two-wrong-keys case; the override-file test uses the real
+    override path; the wrong-shape test asserts its findings. The adversarial tests are kept.
+
+  Rejected, with the reason:
+  - *The same whitespace set in both validators*: they agree on every ordinary and Unicode space;
+    they differ only on six control or format characters (U+FEFF, U+0085, U+001C to U+001F) that
+    no author types into a criterion. The gap is known and left; the agreement test covers the
+    rest of the case list, which is also the guard against the two rules drifting apart.
+  - *A shared file-walk helper with `workflow_lead`*: six lines, and it would widen the change to
+    a check this EPIC does not touch.
+  - *A shared fixture file for both test suites*: the agreement test already runs both validators
+    over one case list.
 
 ## Algorithm / approach
 
