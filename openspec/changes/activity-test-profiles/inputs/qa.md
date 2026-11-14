@@ -21,5 +21,12 @@
 | Q-10 | Which real repositories do the tool runs of DEC-7 use? | skillery's own `docs/` for Vale and the docs ls-lint; a read-only checkout of `infrastructure-stacks` for the stacks ls-lint and checkmake. Not chosen: a client docs tree; both infra repositories. |
 | Q-11 | When and from what are Vale's external styles picked? | In stage 1, from a report-only run of four candidates (Microsoft, Google, write-good, proselint). Not chosen: picking now; one package only. |
 
+## Round 3, after the PLAN passed the gate (2026-11-14)
+
+| # | Question | Answer |
+|---|---|---|
+| Q-12 | Sign off the scenarios, the start condition (after B's stages 1 and 2) and the limit of the trace proof? | Yes, recorded in `evidence/acceptance.md`; merge the PLAN. |
+| Q-13 | If `infrastructure-stacks` has no Makefile, what does checkmake do? | Decide at stage 3. Not chosen now: run on `cloud-infrastructure`; record that it did not run. |
+
 Carried in from `harden-checks-and-tests`: Q-16 there (Vale starts with hand-picked external styles
 only) and its DEC-7 (Vale moved here).

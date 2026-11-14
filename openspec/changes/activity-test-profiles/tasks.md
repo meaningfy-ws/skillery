@@ -10,7 +10,7 @@ subagent that built nothing of the stage.
 
 ## 0. Before stage 1
 
-- [ ] 0.1 The owner signs off the spec scenarios of this change (the PLAN gate) and confirms the
+- [x] 0.1 The owner signs off the spec scenarios of this change (the PLAN gate) and confirms the
   start condition of D-16 and the stated limit of D-13's proof, all recorded in
   `evidence/acceptance.md` (D-13, D-15, D-16).
 - [ ] 0.2 Confirm B's stages 1 and 2 are merged and the branch is on current `develop`; walk the
@@ -165,7 +165,7 @@ subagent that built nothing of the stage.
 
 ## Roadmap
 
-- [ ] 0.1 · [ ] 0.2 · [ ] 0.3
+- [x] 0.1 · [ ] 0.2 · [ ] 0.3
 - [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9 · [ ] 1.10
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 2.8 · [ ] 2.9
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 3.6 · [ ] 3.7 · [ ] 3.8 · [ ] 3.9
