@@ -1,4 +1,4 @@
-<!-- The `test-strategy` capability is created by the EPIC of that name; this delta adds to it.
+<!-- This delta adds to the live `test-strategy` capability (`openspec/specs/test-strategy`).
      The shaping-level headline requirement that stood here ("What leaves the company is drafted
      against confirmed criteria and read by an adversary") moved to `subagent-dispatch`, where the
      rule has its one home (design D-1); `test-strategy` gains rows only. -->
@@ -12,7 +12,10 @@ drafting, decided by the owner, and one `ROB` row for the adversarial reader, ea
 `exists`, the profile's check id defined in `references/inventory.md`, and the owning skill as
 technique owner (`proposal-writing`, `contract-practice`, `meaningfy-voice`,
 `executive-communication`, `sales-conversations`, in that order). Every `ROB` row SHALL name, as
-its tool, a fresh subagent briefed per `guardrails`. No row SHALL name a reader's role. This change
+its tool, a fresh subagent briefed per `guardrails`. The `ADQ` row that waited on this change
+SHALL become `accepted`, with the reason that this work is assessed and reviewed, not tested
+(DEC-11), and no row SHALL be left naming this change as the one to fill it. No row SHALL name a
+reader's role. This change
 SHALL edit those two references and, in the skill's SKILL.md, only a status quoted from a changed
 row; it SHALL add no question, stance or column (generic-task-test-profiles DEC-5, DEC-6;
 test-strategy DEC-5, DEC-8).

@@ -3,31 +3,35 @@
      record). Clarity gate: 8.9, 8.8, 8.9, 8.8, then 9.0/10 PASS on the fifth run, each by an
      independent scorer. Re-shaped the same day on the owner's word (Q-15, DEC-11: an
      assessment, not a test; no contract fixtures or baseline) and gated again: 9.1/10 PASS (run 7, end
-     of § Attack record). Ready for delivery once A is delivered. -->
+     of § Attack record). A was delivered the same day; the PLAN was merged with `develop` and
+     checked against A's files (R-1..R-12), which set the check ids, the `ADQ` row and the
+     *Moment* wording of D-10. Ready for delivery. -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-11.
-> Depends on: EPIC A `test-strategy`, its gated [`design.md`](../test-strategy/design.md) (D-1, D-2,
-> D-3, D-8). Delivery starts after A is delivered (proposal, *Impact*).
+> Depends on: EPIC A `test-strategy`, its
+> [`design.md`](../archive/2026-11-14-test-strategy/design.md) (D-1, D-2, D-3, D-8). A was delivered
+> and archived on 2026-11-14, while this PLAN was written; the PLAN was then checked against A's
+> files (§ *Checked against A as delivered*).
 
 ## Context
 
 Four kinds of piece are written today with no criterion stated first and no reader who tries to
-break them (A's inventory draft, `generic-writing`: "no ROB; VAL is only sales"). What exists:
+break them (`test-strategy`'s `generic-writing` matrix marks both as `gap → D`). What exists:
 
 - **`guardrails`** § 5 *Subagent dispatch* ([SKILL.md](../../../skills/guardrails/SKILL.md), lines
-  69–109) owns the brief rules and the base report
+  69–110) owns the brief rules and the base report
   ([`references/subagent-reports.md`](../../../skills/guardrails/references/subagent-reports.md)); the
   *reviewing* purpose adds "findings by severity with location and the rule they break; a
   verdict" (`subagent-reports.md`, line 31). The reader takes the findings and leaves the verdict.
-  Its description is 681 characters, over the advisory target of 600.
+  Its description is 685 characters, over the advisory target of 600.
 - **The five owning skills** hold method and no profile:
-  [`proposal-writing`](../../../skills/proposal-writing/SKILL.md) (111 lines, *Flow* steps 1–4),
-  [`contract-practice`](../../../skills/contract-practice/SKILL.md) (161 lines, phases intake to
-  harvest), [`executive-communication`](../../../skills/executive-communication/SKILL.md) (253
+  [`proposal-writing`](../../../skills/proposal-writing/SKILL.md) (113 lines, *Flow* steps 1–4),
+  [`contract-practice`](../../../skills/contract-practice/SKILL.md) (163 lines, phases intake to
+  harvest), [`executive-communication`](../../../skills/executive-communication/SKILL.md) (255
   lines, *Start here: diagnose before you structure*),
   [`sales-conversations`](../../../skills/sales-conversations/SKILL.md) (120 lines, an *Acceptance
   criteria* table per work item) and
-  [`meaningfy-voice`](../../../skills/meaningfy-voice/SKILL.md) (34 lines; its
+  [`meaningfy-voice`](../../../skills/meaningfy-voice/SKILL.md) (36 lines; its
   `references/channels/linkedin.md` and `blog.md` are three-line placeholders).
 - **A reader exists for sales drafts already:** `sales-operations` tells every run to start three
   reviewers, one of them the
@@ -44,9 +48,13 @@ break them (A's inventory draft, `generic-writing`: "no ROB; VAL is only sales")
 - **Lint rules this change meets:** a skill may not link by path into another skill
   (`cross_skill_paths`), so a pointer to `guardrails` is plain text; an agent body holds at most 40
   lines (22 and 26 today for the two agents that change).
-- **A's side.** `skills/test-strategy/` does not exist yet. A's design fixes what this PLAN builds
-  on: the row columns (D-2), the question ids `VAL` and `ROB` and the adversary stance (D-3), the
-  inventory ids `CHK-<n>` and their test (D-1, D-7), and the pointer line (D-8).
+- **A's side.** `skills/test-strategy/` exists since 2026-11-14. Its
+  [`references/generic-writing.md`](../../../skills/test-strategy/references/generic-writing.md)
+  has the seven columns of A's D-2 and three rows marked `gap → D`: a `VAL` row ("the owner
+  approves the stated success before drafting"), a `ROB` row ("an adversarial reader who tries to
+  break the draft") and an `ADQ` row ("whether the writing checks would catch a bad piece"). Its
+  *Moment* cells are short free text ("before drafting", "contract revision"). The inventory ends
+  at `CHK-144`. Five of the six skills carry A's pointer line; `sales-conversations` has none.
 - `openspec/specs/legal-contract-practice` forbids clause text, templates and real names in
   `contract-practice`, the `lawyer` agent and their tests. `openspec/specs/subagent-dispatch`
   requires a brief's inputs as paths and the subagent's model to be the agent's or the caller's.
@@ -92,8 +100,8 @@ New choices made while planning; settled ones are cited.
   existing dispatch parenthesis ("the second check, the adversarial reader", 24 characters more)
   and adds the trigger "have a reader attack this draft" (35 more). To pay for them it drops two
   triggers that no probe uses and that other triggers cover: "is this agent step safe" and "keep
-  the context small" (53 fewer). It ends at 687 characters, six more than today; the lint's advisory target of 600 is already
-  exceeded and its hard limit is 1024. The reference names no
+  the context small" (53 fewer). It ends at 691 characters, six more than today's 685; the lint's
+  advisory target of 600 is already exceeded and its hard limit is 1024. The reference names no
   role: the role is an input of the brief.
 - **D-2 A profile is one section of fixed shape in its owning skill.** Heading `## Review profile`,
   then one pointer sentence in plain text, with no link (the lint forbids a path into another
@@ -182,26 +190,33 @@ New choices made while planning; settled ones are cited.
   new agent) on the caller's model, as the live `subagent-dispatch` requirement says; this change
   adds no model rule.
 - **D-10 Matrix rows and checks** (A's D-1, D-2). `inventory.md` gains five checks, one per
-  profile, numbered from the next free id at delivery; the brief is the tool of those checks, not
-  a check of its own. `generic-writing.md` gains or updates ten rows, a `VAL` and a `ROB` row for
-  each of the five profiles (offer, contract, post, message, sales message):
+  profile: `CHK-145` offer (`proposal-writing`), `CHK-146` contract (`contract-practice`),
+  `CHK-147` post (`meaningfy-voice`), `CHK-148` message (`executive-communication`), `CHK-149`
+  sales message (`sales-conversations`); if an id is taken by then, the next free ones. The brief
+  is the tool of those checks, not a check of its own. In `generic-writing.md` A's two rows
+  `VAL … gap → D` and `ROB … gap → D` are replaced by ten rows, a `VAL` and a `ROB` row for each
+  profile:
 
   | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
   |---|---|---|---|---|---|---|
-  | `VAL` | the profile's `CHK-<n>` | the owning skill | none | see below | the owner | `exists` |
-  | `ROB` | the same `CHK-<n>` | the owning skill | a fresh subagent, briefed per `guardrails` (`references/adversarial-reader.md`) | see below | the author on each finding; the owner after the second read | `exists` |
+  | `VAL` | the profile's `CHK-<n>` and its name | the owning skill | none | before drafting; at pick-up for an unattended draft | the owner | `exists` |
+  | `ROB` | the same `CHK-<n>` | the owning skill | a fresh subagent, briefed per `guardrails` (`references/adversarial-reader.md`) | before hand-over | the author on each finding; the owner after the second read | `exists` |
 
-  *Moment* takes A's form, a workflow and phase or "any": for a contract, `contract`, phase
-  `intake` (`VAL`) and phase `review` (`ROB`); for an offer, the sales workflow of
-  `sales-operations`, phase `offer`; for a post, a message and a sales message, "any". When inside
-  that moment the step runs (before drafting, before hand-over, at pick-up) is the owning skill's
-  and the reference's to say, not the row's. No row names a role: roles stay in the owning skills.
-  The internal-message case is the same `VAL` row of `executive-communication`: the owner decides
-  by correcting or not. Each of the five skills carries A's pointer line with `VAL`, `ROB` added
-  and `references/generic-writing.md` named. `guardrails` is the tool of these rows, not their
-  technique owner, so its pointer line stays as A wrote it. In `test-strategy`'s
-  SKILL.md only a status quoted from a changed row may change (the Quick Start's "`gap` → D");
-  nothing else (No-gos).
+  *Moment* is short free text, as in A's file. A's third row, `ADQ … gap → D` ("whether the
+  writing checks would catch a bad piece"), becomes `accepted`, with the reason: "this work is
+  assessed and reviewed, not tested (generic-task-test-profiles DEC-11); the owner judges the
+  findings, and one planted-flaw check on an offer is kept as evidence". After that no row names
+  D. No row names a role: roles stay in the owning skills. The internal-message case is the same
+  `VAL` row of `executive-communication`: the owner decides by correcting or not.
+
+  Pointer lines, each naming `references/generic-writing.md`: `proposal-writing` and
+  `contract-practice` go from `VER, RSK` to `VAL, VER, ROB, RSK`; `meaningfy-voice` from `CLR` to
+  `VAL, ROB, CLR`; `executive-communication` from `VAL, CLR` to `VAL, ROB, CLR`;
+  `sales-conversations` gains the line with `VAL, ROB`. `guardrails` is the tool of these rows,
+  not their technique owner, so its line (`VER, RSK`, `cross-cutting.md`) stays. In
+  `test-strategy`'s SKILL.md only the Quick Start's sentence on the `VAL` row may change ("This
+  row is a `gap` (no check yet), so say so and keep the criterion anyway", lines 33–34), to name
+  `CHK-147`; nothing else (No-gos).
 - **D-11 Proof mechanics** (DEC-6).
   - *Baseline.* Four fixed tasks, fabricated, written to `evidence/baseline/inputs.md` before any
     run. Contracts have none (DEC-11): contract work is assessed in its own repository, and the
@@ -228,8 +243,7 @@ New choices made while planning; settled ones are cited.
     one `.claude-plugin/plugin.json` naming it `baseline`, written last so that it replaces the
     manifests the copies brought (the same README, section *Outcome
     suites*, paragraph "Locally", shows the copy). Those three bundles hold the four owning skills the
-    tasks need, `guardrails` and, once A is delivered, `test-strategy` (A's DEC-7 puts it in
-    `meaningfy-core`), on the base commit as on the head. A run whose output shows a refused tool
+    tasks need, `guardrails` and `test-strategy` (in `meaningfy-core`), on the base commit as on the head. A run whose output shows a refused tool
     call is discarded, the command is corrected, and the run is made again; that is not counted
     as a rerun. A run sees no repository file. The prompt is the task plus one
     sentence: "where a skill tells you to ask the owner, write the question, take
@@ -286,8 +300,8 @@ New choices made while planning; settled ones are cited.
       `sceptical[\s-]buyer` (`proposal-writing`), `opposing[\s-]counsel` (`contract-practice`),
       `stranger[\s-]scrolling` (`meaningfy-voice`), `busy[\s-]recipient`
       (`executive-communication`, `sales-conversations`).
-    - **stage 3:** `test-strategy/references/generic-writing.md` exists (a missing file fails; A
-      is delivered by then), every skill it names as technique owner of a `ROB` row has the
+    - **stage 3:** `test-strategy/references/generic-writing.md` exists (a missing file
+      fails), no row of it names D, every skill it names as technique owner of a `ROB` row has the
       section, and each of the five owning skills is named in a `VAL` and a `ROB` row with status
       `exists`.
 
@@ -334,8 +348,8 @@ New choices made while planning; settled ones are cited.
   The reader is proven before any skill relies on it, and `make validate` is green at the end of
   every stage.
 - **D-14 Definition of Done items.**
-  - the failure case, `evidence/failure-case.md`: the gap line of A's inventory for
-    `generic-writing`, and the *without* baseline runs;
+  - the failure case, `evidence/failure-case.md`: the three `gap → D` rows of A's
+    `generic-writing.md`, and the *without* baseline runs;
   - a baseline run (a discipline rule needs one): D-11;
   - `CHANGELOG.md`: two lines for the installer, naming the EPIC as no issue exists: "an offer, a
     contract, a post or a client message now starts from criteria you confirm and is read by an
@@ -474,24 +488,27 @@ reads and writes nothing, so a read can be repeated; D-6 caps how often. Picking
 twice proposes the criteria again unless the session's note already holds them confirmed (D-8), in
 which case the agent quotes them and asks nothing.
 
-### Re-check once A is delivered
+### Checked against A as delivered
 
-This PLAN was derived from A's design, not from A's files. Task 1.1 checks each line below against
-`skills/test-strategy/` as delivered, before any other task, and fixes this PLAN first if one fails.
+This PLAN was derived from A's design. A was delivered on 2026-11-14, and each assumption was then
+checked against `skills/test-strategy/` on `develop` (commit 48dfc9c). Task 1.1 reads the table
+again at the start of delivery, since `develop` moves, and fixes this PLAN first if a line no
+longer holds.
 
-| # | Assumed from A's design | Used in |
-|---|---|---|
-| R-1 | The file is `skills/test-strategy/references/generic-writing.md` and its table has the seven columns of A's D-2 | D-10, D-11 (stage 3), spec `test-strategy` |
-| R-2 | The statuses are `exists`, `gap`, `accepted`; A's `gap` rows for `VAL` and `ROB` name D | D-10: none may still name D afterwards |
-| R-3 | Inventory ids are `CHK-<n>`, unpadded; the next free number is read from `inventory.md` | D-10 |
-| R-4 | `tests/test_test_strategy.py` fails on an uncited or undefined id and on a family without a row per question | D-10: it must stay green with the new rows |
-| R-5 | The stance is named *adversary*; the loop and the definition of a test are in `test-strategy`'s SKILL.md, under headings that can be cited | D-1 § 2, D-10 |
-| R-6 | Which of the five skills and `guardrails` already carry A's pointer line (D-8), and its exact wording | D-10 |
-| R-7 | The Quick Start quotes "`VAL` → … (`gap` → D)" | D-10: the one line of SKILL.md that may change |
-| R-8 | `sales-operations`' `recipient-reader` is in the inventory as a `CLR` check of `generic-writing` | D-4: its row stays as A wrote it |
-| R-9 | The probe "which checks does this LinkedIn post need before I publish it" expects `test-strategy` | D-12: kept out of the behavioural set |
-| R-10 | A added `criteria` to the phases of `contract.workflow.json` and the sales workflow file; this change edits neither | Non-Goals: read them, and report a line that contradicts a profile as a finding for A's owner |
-| R-11 | The *Check* column holds one `CHK-<n>` per row, and two rows may cite the same id | D-10: a profile's `VAL` and `ROB` rows share its id |
+| # | Assumed from A's design | Found in A's files | Used in |
+|---|---|---|---|
+| R-1 | The file is `references/generic-writing.md` with the seven columns of A's D-2 | Holds | D-10, D-11 (stage 3) |
+| R-2 | A's `gap` rows for `VAL` and `ROB` name D | Holds, and a third row, `ADQ`, names D too | D-10: `ADQ` becomes `accepted` |
+| R-3 | Inventory ids are `CHK-<n>`, unpadded | Holds; the last is `CHK-144` | D-10: `CHK-145` to `CHK-149` |
+| R-4 | `tests/test_test_strategy.py` checks ids and a row per question | The file exists; it must stay green with the new rows | D-10, task 3.1 |
+| R-5 | The stance is *adversary*; the loop and the definition of a test have headings | Holds: *The loop*, *What a test is*, *The five stances* | D-1 § 2 |
+| R-6 | Which skills carry A's pointer line | Five of six; `sales-conversations` has none | D-10 |
+| R-7 | The Quick Start quotes the `VAL` gap | Holds in other words (SKILL.md lines 33–34) | D-10 |
+| R-8 | `recipient-reader` is a `CLR` check of `generic-writing` | Holds: `CHK-95` | D-4 |
+| R-9 | A's LinkedIn probe expects `test-strategy` | Holds (`tests/trigger_probes.yaml`, line 251) | D-12 |
+| R-10 | The contract and sales workflow files carry `criteria` | Hold; the `intake`, `review` and `offer` lines name evidence and contradict no profile | Non-Goals |
+| R-11 | One `CHK-<n>` per row; two rows may share an id | Holds (`CHK-94` is cited twice) | D-10 |
+| R-12 | *Moment* is "workflow and phase, or any" | Does not hold: the cells are short free text | D-10 follows the file |
 
 ### Anti-patterns
 
@@ -517,7 +534,7 @@ This PLAN was derived from A's design, not from A's files. Task 1.1 checks each 
 
 | Failure mode | How it is detected | Expected handling |
 |---|---|---|
-| A's delivered files differ from A's design | Task 1.1, the R-1..R-11 table | Fix this PLAN before any other task; a change that touches a DEC goes to the owner |
+| A's files have changed since they were checked | Task 1.1, the R-1..R-12 table | Fix this PLAN before any other task; a change that touches a DEC goes to the owner |
 | An owning skill lacks the section, a label, or the pointer | `tests/test_generic_task_profiles.py` (stage 2) | Complete the section |
 | A line of the brief or the "leaves the company" test is copied outside the reference, or missing from it | The same test (stage 1) | Replace the copy with a pointer; restore the line |
 | A role name appears in another skill, in an agent file or in `test-strategy` | The same test (stage 2) | Move it to its owner |
@@ -571,8 +588,8 @@ This PLAN was derived from A's design, not from A's files. Task 1.1 checks each 
   there the owner's own reading of the first real findings is the check.
 - **RISK-6** The new trigger of `meaningfy-voice` collides with `explanatory-writing`. Likelihood
   medium, impact low. Mitigation: D-12's behavioural run, before and after.
-- **RISK-7** A is delivered differently from its design. Likelihood medium, impact low.
-  Mitigation: the re-check table and task 1.1.
+- **RISK-7** `develop` moves between this check against A's files and the start of delivery.
+  Likelihood medium, impact low. Mitigation: the table above and task 1.1.
 - **RISK-8** Client-confidential text passes through reader subagents. Accepted in DEC-7; D-9
   keeps the reader's inputs to the draft and one line.
 - **RISK-9** The reader is a model: one run can miss. Mitigation: three runs in the offer

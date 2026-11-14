@@ -8,7 +8,8 @@
      PLAN, Q-14 narrowed DEC-4 and one no-go, logged as DEC-10. No other DEC changed. Clarity gate
      9.0/10 PASS on the fifth run by an independent scorer. After that gate the owner's Q-15
      re-shaped the proofs and the reader's output, logged as DEC-11, which narrows DEC-6; the
-     PLAN was gated again, 9.1/10 PASS. Ready for delivery once A is delivered. -->
+     PLAN was gated again, 9.1/10 PASS. A was delivered and archived the same day and the PLAN
+     was checked against its files. Ready for delivery. -->
 
 # EPIC: generic task test profiles
 

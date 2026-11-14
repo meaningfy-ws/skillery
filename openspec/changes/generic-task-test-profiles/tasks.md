@@ -3,29 +3,29 @@
      and gated again, 9.1/10 PASS (run 7). -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)); design in
-> [`design.md`](design.md). Starts after EPIC A `test-strategy` is delivered.
+> [`design.md`](design.md). EPIC A `test-strategy` is delivered (2026-11-14), so this can start.
 
 ## 1. Stage 1: the reader
 
 - [ ] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
   `evidence/acceptance.md` (D-14).
-- [ ] 1.1 Confirm A is delivered and the branch is on current `develop`. Check R-1..R-11 of design
-  § *Re-check once A is delivered* against `skills/test-strategy/`; fix this PLAN first where one
+- [ ] 1.1 Confirm the branch is on current `develop`. Read R-1..R-12 of design § *Checked against
+  A as delivered* against `skills/test-strategy/` again; fix this PLAN first where one
   fails. Re-read each spec delta against the live specs (RISK-7).
 - [ ] 1.2 Write the two fabricated offers, `offer-planted.md` and `offer-clean.md`, under
   `evidence/planted-flaw/`; nothing under `tests/` (D-11, DEC-11).
 - [ ] 1.3 Write `evidence/baseline/inputs.md` (the four prompts and the prompt sentence). Run the
   calibration call and get the owner's approval of the amount. Run the four *without* runs with
   the command of D-11, the plugin built from the base commit; record the commit and O-1..O-4 and
-  keep the drafts (D-11). Write `evidence/failure-case.md` from them and from A's inventory gap
-  line (D-14).
+  keep the drafts (D-11). Write `evidence/failure-case.md` from them and from
+  the three `gap → D` rows of A's `generic-writing.md` (D-14).
 - [ ] 1.4 Write `tests/test_generic_task_profiles.py` with the stage-1 assertions of D-11 (the
   three lines present in the reference and nowhere else), each with its passing and failing
   example line; red before 1.5, green after. Add the
   `adversarial-reader-brief` entry to `tests/ownership.yaml`.
 - [ ] 1.5 Write `skills/guardrails/references/adversarial-reader.md` with the eight sections of D-1
   and the brief of design § *Algorithm*; add the bullet to § 5 of `guardrails`' SKILL.md and
-  change its description as D-1 says, to 687 characters; its pointer line for `test-strategy`
+  change its description as D-1 says, to 691 characters; its pointer line for `test-strategy`
   stays as A wrote it (D-1, D-10, D-3's rule, D-6..D-9; spec
   `subagent-dispatch`, both requirements).
 - [ ] 1.6 Probes for `guardrails` in `tests/trigger_probes.yaml` (D-12); its description before
@@ -79,8 +79,9 @@
 ## 3. Stage 3: the rows and the proofs
 
 - [ ] 3.1 Add the stage-3 assertions of D-11 to the test file (red). Then
-  `skills/test-strategy/references/inventory.md`: the five checks; `generic-writing.md`: the ten
-  rows of D-10, no row left naming D; the Quick Start's quoted status if R-7 holds (green) (D-10;
+  `skills/test-strategy/references/inventory.md`: `CHK-145` to `CHK-149`; `generic-writing.md`:
+  the ten rows of D-10 and the `ADQ` row set to `accepted` with its reason, no row left naming D;
+  the Quick Start's sentence on the `VAL` row; `tests/test_test_strategy.py` still green (D-10;
   spec `test-strategy`).
 - [ ] 3.2 Run the four *with* runs, isolated, from the head of stage 2, with the prompts of 1.3;
   complete `evidence/baseline.md` with the pairs and O-1..O-4.
