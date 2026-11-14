@@ -1,6 +1,7 @@
 <!-- STATUS: PLAN derived 2026-11-14 from proposal.md and inputs/spike.md; attacked the same day
      by a fresh reader, whose findings are folded in (Attack record). Clarity gate, first run:
-     8.6, fail; second run: 8.6, fail on other gaps; both sets are closed (Gate record). -->
+     8.6, fail; second run: 8.6, fail on other gaps; third run: 8.8, fail on ten small gaps; all closed
+     (Gate record). -->
 
 # PLAN (design): test suite care
 
@@ -35,7 +36,8 @@ and quicker without losing a specified feature. The spike changed two assumption
 
 - No time target, no automatic deletion, no score for a check.
 - No scheduled CI run and no `pytest-testmon` (the changed-files lane works by folder rules).
-- No mutation testing here (EPIC B, stage 3, supplies mutants when it exists); branch data is
+- No mutation testing here (stage 3 of `openspec/changes/harden-checks-and-tests/` supplies
+  mutants when it exists); branch data is
   used only for the lines it names.
 - No executable step definitions for the catalogue's own Gherkin features.
 
@@ -68,17 +70,19 @@ and quicker without losing a specified feature. The spike changed two assumption
   # run A: time per phase and per fixture, without coverage
   PYTHONPATH=<skill>/scripts PYTEST_ADDOPTS="-p phase_times --phase-times-out=<out>/phases.jsonl --no-cov" <test command>
   # run B: the lines each test covers
-  COVERAGE_FILE=<out>/.coverage PYTEST_ADDOPTS="--cov-context=test --cov-fail-under=0" <test command>
+  COVERAGE_FILE=<out>/.coverage PYTEST_ADDOPTS="--cov-context=test" <test command>
   python <skill>/scripts/overlap.py <out>/.coverage --phases <out>/phases.jsonl > <out>/overlap.json
   ```
 
   - `--no-cov` is passed only when the project has pytest-cov; run B adds `--cov=<package>` only
     when the command does not already measure coverage.
   - Run B uses pytest-cov's `--cov-context=test`, never `dynamic_context` in the coverage config
-    (it fails under xdist and merges parametrised cases; spike).
+    (it fails under xdist and merges parametrised cases; `inputs/spike.md`).
   - Without pytest-cov, run B is skipped and the report says which kinds of waste were not looked
     for (Error matrix).
-  - Timings come from run A only: coverage slows a run by about 2.3 times.
+  - Run B may end with a failure when the command carries a coverage floor (flags on the
+    command line win over `PYTEST_ADDOPTS`); the data file is complete and is used all the same.
+  - Timings come from run A only: coverage slows a run by about 2.3 times (`inputs/spike.md`).
 
 - **D-3 The scripts.** Both use the standard library only (and pytest's hooks), are read-only on
   the audited repository and need no install.
@@ -93,7 +97,9 @@ and quicker without losing a specified feature. The spike changed two assumption
     scaffold's and the trial's setting) the lines of a context are the positive `fromno` and
     `tono` of its rows in `arc`; otherwise they are decoded from `line_bits.numbits` (bit *j* of
     byte *i* set means line *8i + j*). It keeps the contexts ending in `|run` and prints JSON with
-    three lists: `contained` (test, the test that contains it, number of lines),
+    three lists: `contained` (test, the test that contains it, number of lines; when several
+    tests contain it, the one with the fewest lines, then the first by node id; two tests with
+    equal lines are listed once, the first by node id as the container),
     `identical_cases` (test function, the groups of parametrised ids with the same lines) and
     `no_lines` (tests that passed their call in `--phases` and have no `|run` context: coverage
     stores no context for a test that executes no measured line).
@@ -241,7 +247,7 @@ and quicker without losing a specified feature. The spike changed two assumption
     left out of `make test-fast`").
   - `assets/templates/root/Makefile.tmpl`: `test-fast` (unit and feature, not `slow`, no
     coverage), `test-changed` (the tests of the files changed against `BASE`, default `develop`;
-    falls back to `test-fast`), `profile-tests` (`--durations=15 -vv`). No parallel run: the
+    falls back to `test-fast`), `profile-tests` (`-m "unit or feature" --durations=15 -vv`). No parallel run: the
     scaffold has no pytest-xdist and gains none here.
   - `assets/templates/tests/changed.py`, rendered by `scripts/scaffold.sh` beside
     `tests/conftest.py` (its section 4) with the package name in place of `<<PACKAGE>>`. Its
@@ -254,12 +260,12 @@ and quicker without losing a specified feature. The spike changed two assumption
 
       | Path | Result |
       |---|---|
-      | `pytest.ini`, `pyproject.toml`, a lock file, `Makefile`, `.coveragerc` at the root; `tests/conftest.py`; anything under `tests/fixtures/` | fall back |
+      | `pytest.ini`, `pyproject.toml`, a lock file, `Makefile`, `.coveragerc` at the root | fall back |
       | `tests/unit/<folder>/…` | `tests/unit/<folder>/` |
       | `tests/unit/test_*.py` | that file |
       | `tests/feature/…` | `tests/feature/` |
       | `tests/integration/…`, `tests/e2e/…` | no test; a hint on standard error names `make test-integration` or `make test-e2e` |
-      | any other file directly under `tests/` (`tests/changed.py`, a helper) | fall back |
+      | any other file under `tests/` (`tests/conftest.py`, `tests/unit/conftest.py`, `tests/test_data/…`, `tests/changed.py`, a helper) | fall back |
       | `<<PACKAGE>>/<layer>/…` | `tests/unit/<layer>/` when that folder exists, else fall back |
       | any other file under `<<PACKAGE>>/` | fall back |
       | anything else (docs, specs, CI files) | no test |
@@ -267,7 +273,8 @@ and quicker without losing a specified feature. The spike changed two assumption
     - A deleted file is matched by the same rules as a changed one; a resulting path that no
       longer exists is left out of the output.
     - *Output:* the pytest paths on standard output, one per line, sorted, each once; nothing
-      when no test is to run. The reason for each fallback goes to standard error.
+      when no test is to run, and nothing on a fallback. The reason for each fallback goes to
+      standard error.
     - *The target:* `test-changed` runs pytest on the printed paths with `-m "unit or feature"`,
       slow tests included; on empty output it prints "no test to run" and succeeds.
     - *Exit codes:* 0; 3 when any path fell back (the `test-changed` target then runs
@@ -333,22 +340,19 @@ and quicker without losing a specified feature. The spike changed two assumption
     `openspec/changes/harden-checks-and-tests/tasks.md`: "keep the two report fields and the
     words 'Distilled in step 4'".
 
-- **D-13 `test-strategy` rows.** `inventory.md` gains the next free id at delivery (`CHK-145` if
-  none was taken): "Test suite audit; whether the suite's tests earn their cost; owner
-  `test-suite-care`; moment: on request". `references/software.md` gains the row
-  ``| ADQ | CHK-<n> Test suite audit | `test-suite-care` | `phase_times.py`, `overlap.py` | on request | the developer | exists |``
-  (the owner in backticks, as the test's pattern requires), and the new `SKILL.md` carries the
-  pointer line "Answers `ADQ` in `test-strategy`'s matrix (`references/software.md`)." The
-  inventory's Owner cell is ``` `skills/test-suite-care/SKILL.md` (The five steps) ```. In
-  `software.md` both rows of `CHK-2` (the `VER` row and the `ADQ` row) change their Moment cell
-  from "writing and reviewing tests" to "writing and reviewing tests; the developer's lanes
-  (`make test-fast`, `make test-changed`)" (DEC-9). Stage 2 adds the same `ADQ` row to
-  `references/ui.md`. Stage 3 adds a second id with the inventory row "Assessment of a check that
-  is not code; whether a reader or a checklist catches what it claims, the same way twice; owner
-  `skills/test-suite-care/references/non-code-checks.md`; moment: on request" and, in
-  `references/cross-cutting.md`, the row
-  ``| ADQ | CHK-<m> Assessment of a check that is not code | `test-suite-care` | five planted flaws, three runs | on request | the owner | exists |``.
-  The pointer line is extended each time to list exactly the files that hold a row.
+- **D-13 `test-strategy` rows.** All under `skills/test-strategy/references/`. A new id is the
+  next free one at delivery (`CHK-145` if none was taken). Owners are in backticks, as the test's
+  pattern requires.
+
+  | Stage | File | Edit |
+  |---|---|---|
+  | 1 | `inventory.md` | New row: `CHK-<n>`; "Test suite audit"; "whether the suite's tests earn their cost"; owner `` `skills/test-suite-care/SKILL.md` (The five steps) ``; moment "on request" |
+  | 1 | `software.md` | New row: ``\| ADQ \| CHK-<n> Test suite audit \| `test-suite-care` \| `phase_times.py`, `overlap.py` \| on request \| the developer \| exists \|`` |
+  | 1 | `software.md` | Both rows of `CHK-2` (the `VER` row and the `ADQ` row): the Moment cell changes from "writing and reviewing tests" to "writing and reviewing tests; the developer's lanes (`make test-fast`, `make test-changed`)" (DEC-9) |
+  | 1 | the new `SKILL.md` | Pointer line: "Answers `ADQ` in `test-strategy`'s matrix (`references/software.md`)." |
+  | 2 | `ui.md` | The same `ADQ` row as in `software.md`, with the tool "the runner's JSON report"; the pointer line lists both files |
+  | 3 | `inventory.md` | New row: `CHK-<m>`; "Assessment of a check that is not code"; "whether a reader or a checklist catches what it claims, the same way each time"; owner `` `skills/test-suite-care/references/non-code-checks.md` ``; moment "on request" |
+  | 3 | `cross-cutting.md` | New row: ``\| ADQ \| CHK-<m> Assessment of a check that is not code \| `test-suite-care` \| five planted flaws, three runs \| on request \| the owner \| exists \|``; the pointer line lists the three files |
 
 - **D-14 The trial.** Stage 1 is tried on `rdf-persistence`: both runs on an idle machine for its
   unit, feature and integration lanes, the
@@ -369,7 +373,7 @@ and quicker without losing a specified feature. The spike changed two assumption
   | T-7 | 1 | Skipped when `coverage` is not importable (CI has only pytest and pyyaml): a real `--cov-context=test` run with branch coverage on, fed to `overlap.py` |
   | T-8 | 1 | The `changed.py` template on a temporary git repository: each row of D-10's rule table, and the three exit codes |
   | T-9 | 1 | `scaffold.sh` into a temporary directory produces `tests/changed.py`, the `slow` marker and the three targets |
-  | T-10 | 1 | No file under `skills/test-suite-care/` contains `rdf-persistence`, a path starting with `/home` or a pinned version (`==`). Thresholds cannot be tested for: the stage's reviewers read for them (DEC-12) |
+  | T-10 | 1 | No file under `skills/test-suite-care/` contains `rdf-persistence` or a path starting with `/home`, and no `.md` file there matches a pinned version (`[\w.-]+==\d`). Thresholds cannot be tested for: the stage's reviewers read for them (DEC-12) |
   | T-11 | 1 | `references/waste.md` has eight `W-` rows, each with a class; the checklist has rules 1 to 21 in order and a Sources entry for 6, 14 and 17 to 21; every rule number cited under `skills/test-suite-care/` exists |
   | T-12 | 1 | The tester brief names the two report fields; the ledger row reads "Distilled in step 4"; `epic-delivery.feature` has the scenario of D-12 |
   | T-13 | 2 | `references/ui-suites.md` has the four sections of D-9 and six rules, each with a source; checklist rule 11 names its scope |
@@ -422,6 +426,7 @@ The audit, as the skill's Quick Start will show it on a small project:
 
 | Condition | Behaviour |
 |---|---|
+| The project has no `slow` marker | W-2 is not looked for; the report proposes, as class 1, adding the marker with a threshold read from the measured times |
 | The project has no pytest-cov | Run A only; the report says the audit is limited to W-1, W-2 and the broken rules |
 | The project measures branches | `overlap.py` reads `arc` (D-3) |
 | A test's code is under the coverage `omit` setting | It is not reported as W-6; the report names the setting |
@@ -471,6 +476,7 @@ recorded reason.
 | DEC-11: "the same verdict twice" | Three runs on each copy (D-11) | Two runs cannot tell "sometimes" from "never" |
 | Modified capabilities: lanes placed "when the PLAN is derived" | The lane requirement sits in the `test-suite-care` spec | No capability exists for `project-setup` |
 | DEC-8: the PLAN names the trial repositories of stages 2 and 3 | Stage 3 is named (this repository's cold reader); stage 2 is open question OQ-2 | Only the owner knows which repository has a UI suite worth auditing |
+| DEC-2: a test that serves no scenario is listed for the owner, never proposed for dropping | One exception: a test that runs no measured line may be proposed under W-6 (D-6) | It guards nothing; the owner still decides |
 | Impact: `bdd-gherkin` not listed | It gains one check box (D-8) | DEC-10's survey found the rule in Cucumber's anti-patterns, and Gherkin rules belong to that skill |
 
 ## Attack record
@@ -509,6 +515,12 @@ for the matrix cells and the rule count; the Gherkin task wording; three more ro
 target's behaviour in the `changed.py` contract (D-10); the place of the Gherkin check box (D-8);
 the spec delta's wording on properties; two more rows under Deviations; T-10 and the sources of
 the UI rules (D-9).
+
+Third run, a third independent scorer: 8.8, fail, all thirteen items passing. Closed: the
+`changed.py` table against the scaffold's real folders, and its fallback output (D-10); the W-6
+exception in the spec delta and under Deviations; the reach of T-15 in tasks 1.7 and 1.10; T-10's
+pattern; run B under a coverage floor (D-2); which container `contained` prints (D-3); a project
+without a `slow` marker (Error matrix); the second inventory id in task 3.2; D-13 as a table.
 
 ## Open Questions
 

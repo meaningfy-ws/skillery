@@ -4,7 +4,7 @@
 
 **Derives from:** [`proposal.md`](proposal.md) and [`design.md`](design.md). Three stages, one pull
 request each in skillery; the trial pull requests live in the trial repositories. Every task names
-the design decision it carries out; test ids (`T-n`) are those of D-15. After any skill edit: `make bundles`, `make skill-inventory`,
+the design decision it carries out, or is procedural (sign-off, baseline, review, archive); test ids (`T-n`) are those of D-15. After any skill edit: `make bundles`, `make skill-inventory`,
 `make lint`. Before each stage PR: `make validate`.
 
 ## 1. Stage 1: the audit for Python suites, the rules, the distilling, the lanes
@@ -42,7 +42,7 @@ the design decision it carries out; test ids (`T-n`) are those of D-15. After an
 - [ ] 1.7 `test-strategy` row and pointer (D-13): the next free `CHK-` id in `inventory.md`, the
       `ADQ` row in `references/software.md`, the lanes in the Moment cell of the checklist's row,
       the pointer line in the new `SKILL.md`.
-      *Acceptance:* T-15 passes and `tests/test_test_strategy.py` stays green.
+      *Acceptance:* the matrix parts of T-15 pass and `tests/test_test_strategy.py` stays green.
 - [ ] 1.8 Lanes in `project-setup` (D-10): `pytest.ini`, `Makefile.tmpl`, `tests/changed.py`
       template, its line in `scripts/scaffold.sh`, the "Developer lanes" section of
       `references/testing-setup.md`. *Acceptance:* T-8 and T-9 pass: on a temporary
@@ -55,7 +55,7 @@ the design decision it carries out; test ids (`T-n`) are those of D-15. After an
       `tests/features/agents/team-lead.feature`; the order rule against EPIC B applied.
       *Acceptance:* `make lint` is clean (agent features); T-12 passes.
 - [ ] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
-      T-1 to T-12 green (T-7 and T-2 may skip in CI).
+      T-1 to T-12 and T-15 green (T-7 and T-2 may skip in CI).
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
       feature and integration lanes; build the map with one subagent per test folder; write the
       report; open the pull request there with both files. *Acceptance:* the report has every
@@ -85,8 +85,8 @@ the design decision it carries out; test ids (`T-n`) are those of D-15. After an
 ## 3. Stage 3: checks that are not code
 
 - [ ] 3.1 Write T-14 (D-15). *Acceptance:* red, because the file and the id are missing.
-- [ ] 3.2 Write `references/non-code-checks.md` (D-11); add the row to
-      `skills/test-strategy/references/cross-cutting.md` and extend the pointer line.
+- [ ] 3.2 Write `references/non-code-checks.md` (D-11); add the second inventory id and its row
+      in `skills/test-strategy/references/cross-cutting.md`, and extend the pointer line (D-13).
       *Acceptance:* 3.1 and `tests/test_test_strategy.py` pass.
 - [ ] 3.3 Trigger probe (D-16): "is our cold reader any good, does it catch real problems" expects
       `test-suite-care`; asked three times, recorded as in 1.5.

@@ -40,7 +40,8 @@ lane, and removes no test; class 2 merges parametrised cases; class 3 drops a te
 SHALL list class 1 first. A fixture SHALL be shared only in the part no test changes, and a mock
 SHALL NOT be shared. A class 2 or class 3 proposal SHALL name its survivor, and a survivor SHALL
 take part in no other such proposal of the same audit. A class 3 proposal SHALL require that the
-test and its survivor are mapped to the same scenario with high confidence. A test that runs
+test and its survivor are mapped to the same scenario with high confidence, except for a test
+that runs no measured line, which needs neither. A test that runs
 something real which the lower-tier test replaces with a fake SHALL NOT be proposed as a duplicate.
 Overlap of covered lines SHALL NOT be the only evidence of a class 2 or class 3 proposal (design
 D-4, D-6).
