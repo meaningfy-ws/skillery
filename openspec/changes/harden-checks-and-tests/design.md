@@ -5,8 +5,9 @@
      matrix is marked [A] and listed in D-12. -->
 
 > Derives from: EPIC `harden-checks-and-tests` ([`proposal.md`](proposal.md)), DEC-1..DEC-15; parent
-> EPIC A [`test-strategy`](../test-strategy/proposal.md) and its PLAN
-> ([`design.md`](../test-strategy/design.md)).
+> EPIC A [`test-strategy`](../archive/2026-11-14-test-strategy/proposal.md) and its PLAN
+> ([`design.md`](../archive/2026-11-14-test-strategy/design.md)). A was delivered and archived on
+> 2026-11-14, after this PLAN was gated; the re-check of D-12 against A as merged is task 1.1.
 
 ## Context
 

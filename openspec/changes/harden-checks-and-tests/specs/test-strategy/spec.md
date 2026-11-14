@@ -1,5 +1,5 @@
-<!-- Written against EPIC A's delta (openspec/changes/test-strategy/specs/test-strategy/spec.md),
-     which is not archived yet. Re-check against the live spec once A is archived (design D-12). -->
+<!-- Written against EPIC A's delta before A was archived (2026-11-14). Task 1.1 re-checks it
+     against the live spec openspec/specs/test-strategy/spec.md (design D-12). -->
 
 ## ADDED Requirements
 
