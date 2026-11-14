@@ -11,8 +11,68 @@ the budget without one.
 - **THEN** `make validate` fails and names the skill and its size
 
 #### Scenario: A skill with a recorded exception
-- **WHEN** a skill is over the budget and records why it must be
-- **THEN** the check passes and reports the exception
+- **WHEN** a skill is over the budget and records why it must be in `skill-budget.yaml`
+- **THEN** the check passes
+
+#### Scenario: An exception that is no longer needed
+- **WHEN** a skill with a recorded exception is at or under the budget
+- **THEN** `make validate` fails and asks for the exception to be removed
+
+### Requirement: Skills waiting for their rewrite are listed, and the list cannot rot
+Until every skill is rewritten, a skill that existed when the standard was introduced MAY be
+listed as pending in `skill-budget.yaml`, with the checks it is exempt from. A skill added later
+SHALL NOT be listed. The check SHALL fail for an exemption no longer needed, a name that is not a
+skill, or a malformed file. A missing file SHALL mean no skill is listed.
+
+#### Scenario: A rewritten skill left on the list
+- **WHEN** a skill pending for its pointers now passes the pointer check
+- **THEN** `make validate` fails and asks for the exemption to be removed
+
+#### Scenario: A skill pending for its pointers only grows past the budget
+- **WHEN** a skill exempt only from the pointer check goes over 24 KB of prose
+- **THEN** `make validate` fails on the budget
+
+#### Scenario: A catalogue with no list
+- **WHEN** the method checks run on a root holding only `skills/foo/SKILL.md`, within budget and
+  without `skill-budget.yaml`
+- **THEN** they report no error
+
+### Requirement: A pointer to a reference says when to open it
+Every mention in a `SKILL.md` body of a file in the skill's own `references/` SHALL be one
+sentence of the form "Read <file> when <situation>: it adds <what>.", at the point of need. No
+heading that names references, resources, further reading, see also or supporting material SHALL
+close the body with a list. The catalogue check SHALL fail for a pointer in another form and for
+such a heading. A path into another skill's `references/` and text inside fenced code SHALL NOT
+count as pointers.
+
+#### Scenario: A bare reference link
+- **WHEN** a skill body holds a list item that is only a link to `references/patterns.md` and a
+  topic list
+- **THEN** `make validate` fails and names the skill, the file line and the target
+
+#### Scenario: A pointer at its point of need
+- **WHEN** a list item reads "Read `references/alerting.md` when writing an alert rule: it adds the
+  severity table."
+- **THEN** the check passes
+
+#### Scenario: A citation of another skill's reference
+- **WHEN** a skill body cites "`test-strategy`'s matrix (`references/software.md`)"
+- **THEN** the pointer check ignores it
+
+### Requirement: The lean standard is written once
+The shape of a skill (its three tiers, the body sections, the sorting of content and the five
+practices of DEC-11) SHALL be stated in `docs/development/creating-skills.md` only; the method,
+the template and any skill SHALL link to it.
+
+#### Scenario: Looking up the budget
+- **WHEN** a skill author looks for how large a skill may be
+- **THEN** `creating-skills.md` gives the tiers, 24 KB and 6 KB, and the method's principle 7 links
+  there and states no number of its own
+
+#### Scenario: A skill names an external dependency
+- **WHEN** a skill body tells the agent to use an external skill
+- **THEN** it says in one sentence what to do when that skill is not installed: offer the install
+  command, and if declined, work without it and say what is lost
 
 ### Requirement: A skill holds only what is Meaningfy's own
 A skill SHALL keep Meaningfy-specific rules, house conventions and preferences distilled from
