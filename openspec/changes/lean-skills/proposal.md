@@ -37,7 +37,7 @@ repetition inside skillery. Evidence and measurements are in
 **It succeeds when** every skill is within budget and the lint enforces it; a second reader who did
 not make the cuts finds no Meaningfy-specific rule or distilled preference lost in any skill; the
 existing trigger probes, agent scenarios and `make validate` stay green; and the prose and example
-code of `skills/` total no more than 0.7 MB (from 1.45 MB).
+code of `skills/` total no more than 1 MB (from 1.45 MB).
 
 **It fails when** a skill meets the budget by moving text into another file that is read just as
 often; when a rule that came from a real review or from the owner disappears; or when a skill
@@ -74,8 +74,8 @@ names a dependency for knowledge the dependency does not hold.
 - **DEC-8**: A cut that turns out to have mattered is accepted as a risk: it is reported through
   `skillery-feedback` and restored from git history. Rejected: one release per stage; a soak period
   between stages.
-- **DEC-9**: Proof of done is the four checks under "It succeeds when". The 0.7 MB total is the
-  agent's proposal for the owner's "a size target for the whole". Rejected: budget and tests alone,
+- **DEC-9**: Proof of done is the four checks under "It succeeds when". The 1 MB total is the
+  owner's figure (the agent had proposed 0.7 MB). Rejected: budget and tests alone,
   without the second reader.
 
 ## Rabbit-holes

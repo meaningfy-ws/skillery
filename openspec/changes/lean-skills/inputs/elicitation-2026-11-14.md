@@ -60,6 +60,8 @@ is public, so links to it work for any reader.
 
 - The 24 KB budget covers body plus references; the body target is 6 KB; templates and scripts are
   outside it.
-- The size target for the whole: prose and example code down from 1.45 MB to 0.7 MB.
+- The size target for the whole: the agent proposed 0.7 MB; the owner set it: "total size could go
+  to 1MB instead of 0.7MB". "Don't measure, follow intuition" holds for this EPIC only, not as a
+  standing rule ("only in this session, not a rule").
 - Whole catalogue sized VERY LARGE in stages, not HUGE.
 - The change was renamed from `book-rule-sets` to `lean-skills` when the scope widened.
