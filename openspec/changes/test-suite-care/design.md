@@ -1,4 +1,5 @@
-<!-- STATUS: PLAN derived 2026-11-14 from proposal.md and inputs/spike.md. -->
+<!-- STATUS: PLAN derived 2026-11-14 from proposal.md and inputs/spike.md; attacked the same day
+     by a fresh reader, whose findings are folded in (Attack record). -->
 
 # PLAN (design): test suite care
 
@@ -11,8 +12,8 @@ The EPIC asks for a skill that audits an existing test suite and proposes how to
 and quicker without losing a specified feature. The spike changed two assumptions of the EPIC:
 
 - **Most of the time is set-up, not tests.** On the measured subset 89 % of the time was spent in
-  function-scoped fixtures. Sharing a fixture removes no test and loses no coverage, so it comes
-  before any merging or dropping.
+  function-scoped fixtures. Making set-up cheaper removes no test, so it comes before any merging
+  or dropping. It is not free: a shared fixture can let one test pass on another's work (D-6).
 - **Half of the unit tests cannot be assigned to a scenario** from their name and docstring. The
   map therefore records a level (scenario, requirement, capability or none) and a confidence, and
   a drop is proposed only on a confident assignment.
@@ -33,7 +34,8 @@ and quicker without losing a specified feature. The spike changed two assumption
 
 - No time target, no automatic deletion, no score for a check.
 - No scheduled CI run and no `pytest-testmon` (the changed-files lane works by folder rules).
-- No branch coverage and no mutation testing here (EPIC B, stage 3, supplies mutants when it exists).
+- No mutation testing here (EPIC B, stage 3, supplies mutants when it exists); branch data is
+  used only for the lines it names.
 - No executable step definitions for the catalogue's own Gherkin features.
 
 ## Decisions
@@ -56,54 +58,64 @@ and quicker without losing a specified feature. The spike changed two assumption
   `subject: generic`, `posture: reusable`, `stage: verify`, `maturity: experimental`. Bundle
   `meaningfy-building`. Use case: added to `served_by.skills` of `UC-W18` (programming team lead).
 
-- **D-2 Step 1, measure.** Two runs of the suite's own test command, changed only by added flags.
-  Output goes to a directory outside the repository or one git ignores; the repository's files are
-  not edited.
+- **D-2 Step 1, measure.** Two runs of the project's own test command (often a `make` target),
+  with the added flags passed in the `PYTEST_ADDOPTS` environment variable so the command itself
+  is not edited. Output goes to a directory outside the repository; no file of the repository is
+  edited. Each tier the project has (unit, feature, integration, end to end) is run in both.
 
   ```
-  # run A: time per phase and per fixture
-  PYTHONPATH=<skill>/scripts <test command> -p phase_times --phase-times-out=<out>/phases.jsonl
+  # run A: time per phase and per fixture, without coverage
+  PYTHONPATH=<skill>/scripts PYTEST_ADDOPTS="-p phase_times --phase-times-out=<out>/phases.jsonl --no-cov" <test command>
   # run B: the lines each test covers
-  COVERAGE_FILE=<out>/.coverage <test command> --cov=<package> --cov-context=test --cov-report=
-  python <skill>/scripts/overlap.py <out>/.coverage > <out>/overlap.json
+  COVERAGE_FILE=<out>/.coverage PYTEST_ADDOPTS="--cov-context=test --cov-fail-under=0" <test command>
+  python <skill>/scripts/overlap.py <out>/.coverage --phases <out>/phases.jsonl > <out>/overlap.json
   ```
 
-  Run B uses pytest-cov's `--cov-context=test`, never `dynamic_context` in the coverage config
-  (it fails under xdist and merges parametrised cases; spike). Run B is skipped, and the report
-  says so, when the project has no pytest-cov. Timings are taken from run A only, because coverage
-  slows a run by about 2.3 times.
+  - `--no-cov` is passed only when the project has pytest-cov; run B adds `--cov=<package>` only
+    when the command does not already measure coverage.
+  - Run B uses pytest-cov's `--cov-context=test`, never `dynamic_context` in the coverage config
+    (it fails under xdist and merges parametrised cases; spike).
+  - Without pytest-cov, run B is skipped and the report says which kinds of waste were not looked
+    for (Error matrix).
+  - Timings come from run A only: coverage slows a run by about 2.3 times.
 
-- **D-3 The scripts.**
-  - `phase_times.py` implements `pytest_addoption` (`--phase-times-out`),
-    `pytest_runtest_logreport` (writes `{"test": nodeid, "phase": "setup"|"call"|"teardown",
-    "seconds": float}`) and `pytest_fixture_setup` as a hook wrapper (writes `{"fixture": name,
-    "scope": scope, "test": nodeid, "seconds": float}`). Under xdist each worker appends to
-    `<out>.<worker id>`; the controller writes nothing.
-  - `overlap.py` uses only `sqlite3` and `json`. It reads `context`, `file` and `line_bits`,
-    decodes each `numbits` blob (bit *j* of byte *i* set means line *8i + j*), keeps the contexts
-    ending in `|run`, and prints JSON with three lists: `contained` (test, the test that contains
-    it, number of lines), `identical_cases` (test function, the groups of parametrised ids with the
-    same lines) and `empty` (tests that execute no line of the package in their call).
-  - Both are read-only on the audited repository and need no install.
+- **D-3 The scripts.** Both use the standard library only (and pytest's hooks), are read-only on
+  the audited repository and need no install.
+  - `phase_times.py` implements `pytest_addoption` (`--phase-times-out`). The controller process
+    (the only process without xdist) writes the phase lines from `pytest_runtest_logreport`:
+    `{"test": nodeid, "phase": "setup"|"call"|"teardown", "outcome": ..., "seconds": float}`. The
+    process that runs the test (a worker under xdist) writes the fixture lines from a
+    `pytest_fixture_setup` hook wrapper, one line each time a fixture is built:
+    `{"fixture": name, "scope": scope, "test": nodeid, "seconds": float}`; a worker writes to
+    `<out>.<worker id>` and the controller's file is `<out>`.
+  - `overlap.py` reads the coverage SQLite file. When `meta.has_arcs` is 1 (branch coverage, the
+    scaffold's and the trial's setting) the lines of a context are the positive `fromno` and
+    `tono` of its rows in `arc`; otherwise they are decoded from `line_bits.numbits` (bit *j* of
+    byte *i* set means line *8i + j*). It keeps the contexts ending in `|run` and prints JSON with
+    three lists: `contained` (test, the test that contains it, number of lines),
+    `identical_cases` (test function, the groups of parametrised ids with the same lines) and
+    `no_lines` (tests that passed their call in `--phases` and have no `|run` context: coverage
+    stores no context for a test that executes no measured line). It also prints the coverage
+    file's `omit` setting when the metadata holds it, because a test of omitted code looks like a
+    test that runs nothing.
 
 - **D-4 Step 3, the kinds of waste.** `references/waste.md` holds this table. The class says how
-  much a proposal can lose (D-6).
+  much a proposal can lose (D-6). Rules are cited by number, never restated.
 
-  | Id | Waste | Evidence | Class |
+  | Id | Waste | Evidence, all of it required | Class |
   |---|---|---|---|
-  | W-1 | Set-up repeated for every test | A fixture whose summed set-up time is in the ten largest, with function scope, and whose tests do not change what it builds | 1 |
-  | W-2 | A test in a tier its cost does not fit | Set-up plus call over the project's `slow` threshold with no `slow` marker; a unit test that opens a socket or a file outside `tmp_path` | 1 |
-  | W-3 | A dead test | `skip` or `xfail` with no issue link | 1 |
-  | W-4 | Parametrised cases that test the same thing | `identical_cases` from `overlap.py`, and the cases fall in one equivalence class when read | 2 |
-  | W-5 | A test contained in another | `contained` from `overlap.py`, the same scenario in the map at high confidence, and assertions that the containing test also makes | 3 |
-  | W-6 | The same behaviour proven at two tiers | An end-to-end or integration test whose scenario a unit or feature test serves at high confidence | 3 |
-  | W-7 | A test that proves nothing | No `assert` and no `pytest.raises`, or listed in `empty` | 3 |
-  | W-8 | An adversarial test that never found a defect | The file is named by stage, and no fix commit, delivery log or decision names the test | 3 |
-  | W-9 | A test that kills no mutant of its own | The mutation results of EPIC B, when the repository has them | 3 |
-  | W-10 | A broken test rule | The rule's number in its checklist | by rule |
+  | W-1 | Set-up repeated for every test | A fixture among the ten with the largest summed set-up time; and a reading of the fixture and of every test using it that sorts what it builds into "no test changes it" and "tests change it" | 1 |
+  | W-2 | A test in a lane its cost does not fit | Set-up plus call over the project's `slow` threshold with no `slow` marker (checklist rule 20) | 1 |
+  | W-3 | Parametrised cases that test the same thing | `identical_cases`; the cases expect the same outcome and differ only by values of one equivalence class; none is a case that checklist rule 8 or a Scenario Outline's boundary rows require | 2 |
+  | W-4 | A test contained in another | `contained`; both tests at `high` for the same scenario in the map; every assertion of the test is also made by the survivor | 3 |
+  | W-5 | The same behaviour proven at two tiers | A higher-tier test at `high` for a scenario that a lower-tier test serves at `high`; and the higher test runs nothing real that the lower one replaces with a fake (a test against a real adapter, store or service is never W-5) | 3 |
+  | W-6 | A test that runs nothing | Listed in `no_lines`, and its code is not under the coverage `omit` setting | 3 |
+  | W-7 | An adversarial test that never found a defect | The file is named by stage, and no fix commit, delivery log or decision names the test | 3 |
+  | W-8 | A test that kills no mutant of its own | The mutation results of EPIC B, when the repository has them | 3 |
 
-  Overlap of covered lines is a hint, never proof (Shi et al., FSE 2014): W-4 and W-5 need the
-  second piece of evidence in their row.
+  A broken checklist rule is not a kind of waste: it is listed under *Broken rules* by its number
+  (D-7). Overlap of covered lines is a hint, never proof (Shi et al., FSE 2014), which is why W-3
+  and W-4 need every piece of evidence in their row.
 
 - **D-5 Step 2, the map.** One file in the audited repository, `tests/audit/scenario-map.csv`,
   one row per test function (not per parametrised case):
@@ -124,19 +136,35 @@ and quicker without losing a specified feature. The spike changed two assumption
     covers (run B) and the specs. A repository without a spec spine is mapped to its `.feature`
     scenarios, or all rows are `none` and the report says reductions are limited to class 1.
   - Before any proposal is discussed, the owner checks a sample: ten rows of each confidence,
-    chosen at random. More than two wrong `high` rows in ten sends the map back.
+    chosen at random. One wrong `high` row sends the rows of that test file back to be mapped
+    again, and a new sample of `high` rows is drawn.
+  - Size: the trial has about 2,500 test functions in 179 files. The map is built by one fresh
+    subagent per test folder, in parallel, each returning its rows; the lead merges them.
   - A later audit re-reads only the tests added or changed since the map's commit.
 
 - **D-6 Step 4, three classes of proposal.** The report lists class 1 first.
 
   | Class | What changes | What it can lose | Needs |
   |---|---|---|---|
-  | 1 | A fixture's scope, a marker, a lane; no test is removed or merged | Nothing | Evidence from run A |
-  | 2 | Parametrised cases are merged | A case that mattered | Evidence from run B and a reading of the cases |
-  | 3 | A test is dropped | The only guard of a behaviour | A `high` map row for the test, and another `high` test for the same scenario; never the last test of a scenario |
+  | 1 | A fixture is split or shared, a marker or a lane changes; no test is removed or merged | Isolation: a test may pass on what another test left behind | For a fixture: the reading of W-1; then the check below |
+  | 2 | Parametrised cases are merged | A case that mattered | All the evidence of W-3 |
+  | 3 | A test is dropped | The only guard of a behaviour | All the evidence of its row; a `high` map row for the test and for its survivor |
 
-  A test at level `none` or confidence below `high` is never proposed for class 3; it is listed
-  under "serves no scenario" for the owner.
+  Rules for every class:
+  - **A fixture is shared only in its unchanging part.** What tests change (a store they write to,
+    a mock whose calls they assert) keeps function scope; what no test changes (the built
+    application, loaded read-only data) may move to a wider scope, with a cheap reset per test
+    where needed. A mock or a spy is never shared. An async fixture is widened only to a scope
+    the project's event-loop setting allows.
+  - **The check of a class 1 fixture change:** run B before and after gives the same covered lines
+    for every test that uses the fixture, and the suite passes twice in a different order (file
+    order reversed where the project has no random-order plugin).
+  - **Every class 2 and class 3 proposal names its survivor.** A survivor takes part in no other
+    class 2 or class 3 proposal of the same audit, so two tests that contain each other cannot
+    both go.
+  - A test at level `none`, or below `high`, is never proposed for class 3; it is listed under
+    "Tests that serve no scenario" for the owner.
+  - No proposal leaves a test that breaks a checklist rule it did not break before (DEC-10).
 
 - **D-7 Step 4 and 5, the report and the decisions.** `tests/audit/report-<yyyy-mm-dd>.md` with
   these sections, in order: *Numbers* (tests, wall time, summed time, share of set-up, the commands
@@ -146,34 +174,40 @@ and quicker without losing a specified feature. The spike changed two assumption
   approved, rejected or later, with the owner's reason, filled in during the discussion).
   The map and the report go to the audited repository in one pull request. Each approved proposal,
   or group of the same class, lands as its own pull request whose body gives the wall time of the
-  same command before and after, each run twice on the same machine, and the map rows it touches.
+  same command before and after, each run twice on the same machine, the map rows it touches, the
+  check of D-6 for a fixture change, and the result of the repository's coverage floor (DEC-5).
   "No proposal approved" completes the audit.
 
-- **D-8 The test rules.** Added to `cosmic-python`'s testing checklist as rules 17 to 23, each
-  with its source in `references/waste.md`:
+- **D-8 The test rules.** In `cosmic-python`'s testing checklist, two rules are amended and five
+  added (17 to 21). A "Sources" list at the end of the checklist gives each one's source by rule
+  number; `test-suite-care` cites the numbers.
 
   | Rule | Text | Source |
   |---|---|---|
+  | 6 (amended, one sentence added) | Set-up that costs is shared at the widest scope whose tests do not change what it builds; a mock is never shared. | Meszaros, General Fixture; spike |
+  | 14 (amended, one sentence added) | A `skip` or `xfail` that is not a quarantine carries an issue link, unless it skips for a tool the machine lacks. | Fowler, Eradicating Non-Determinism in Tests |
   | 17 | Every test asserts something. | testsmells.org, Empty Test |
-  | 18 | A fixture builds only what every test using it needs, and set-up that costs is shared at the widest scope whose tests do not change it. | Meszaros, General Fixture; spike |
-  | 19 | No two parametrised cases fall in the same equivalence class. | testsmells.org, Lazy Test; spike |
-  | 20 | A behaviour proven at a lower tier is not proven again at a higher one. | Vocke, The Practical Test Pyramid |
-  | 21 | A test whose set-up and call take longer than the project's threshold carries the `slow` marker; the threshold is written in the marker's description. | *Software Engineering at Google*, ch. 11 |
-  | 22 | Every `skip` and `xfail` carries an issue link. | Fowler, Eradicating Non-Determinism in Tests |
-  | 23 | A file of adversarial tests is named by the feature it attacks, never by the stage that wrote it. | The recorded failure |
+  | 18 | No two parametrised cases fall in the same equivalence class, beyond the cases rule 8 requires. | testsmells.org, Lazy Test; spike |
+  | 19 | A behaviour proven at a lower tier is not proven again at a higher one, unless the higher test runs something real that the lower one fakes. | Vocke, The Practical Test Pyramid |
+  | 20 | A test whose set-up and call take longer than the project's threshold carries the `slow` marker; the threshold is written in the marker's description. | *Software Engineering at Google*, ch. 11 |
+  | 21 | A file of adversarial tests is named by the feature it attacks, never by the stage that wrote it. | The recorded failure |
 
-  `bdd-gherkin` gains two rules from Cucumber's anti-patterns: no step joins two actions with
-  "and", and step definitions are written to be reused across features. If EPIC B stage 1 has
-  landed, each new checklist rule ends with B's `*Checked by:*` value (`test-suite-care` audit, or
-  the tool that checks it). The words "rules 1-16" in `skills/test-strategy/references/software.md`
-  and `inventory.md` become "rules 1-23".
+  `bdd-gherkin` gains one rule from Cucumber's anti-patterns: no step joins two actions with
+  "and". The words "rules 1-16" in `skills/test-strategy/references/software.md` and
+  `inventory.md` become "rules 1-21".
+
+  Order against EPIC B's "Checked by" (its D-3, task 1.12). If B's stage 1 has landed, rules 17 to
+  21 each end with `*Checked by:* review only, because the audit of test-suite-care reads it`,
+  which is B's grammar. If it has not, task 1.6 adds one line to B's task 1.12: "the checklist has
+  21 items; 17 to 21 take the value above".
 
 - **D-9 UI suites (stage 2).** `references/ui-suites.md`:
   - *Measure:* the runner's own JSON report (Cypress: the mocha JSON reporter; Playwright:
     `--reporter=json`) gives time per test and retries. Coverage per test is not assumed.
   - *Map:* a spec file's `describe` and `it` titles, or its `.feature` file, give the scenario.
-  - *Waste:* logging in through the screen in every test; fixed waits; two specs walking the same
-    journey; tests retried to pass; a selector by CSS class or XPath.
+  - *Waste:* logging in through the screen in every test (class 1); two specs walking the same
+    journey (class 3, with the map's evidence). Fixed waits, tests retried to pass and selectors
+    by CSS class or XPath are broken rules.
   - *Rules:* six UI test rules from the Cypress and Playwright best practices (set state through
     the API, not the screen; select by role, label or `data-*`; assertions that retry, no fixed
     wait; never visit a site you do not control; reset state before a test, not after; one journey
@@ -184,17 +218,21 @@ and quicker without losing a specified feature. The spike changed two assumption
   - The stage starts with a spike on the trial repository, as stage 1 did.
 
 - **D-10 Lanes in scaffolded projects.** The home is `project-setup`, which owns every test run in
-  CI; this corrects the EPIC's DEC-6, which named `ci-cd-delivery`.
+  CI; this corrects the EPIC's DEC-6, which named `ci-cd-delivery`. A second deviation from
+  DEC-6: no scheduled run is added. Slow tests leave the developer's lanes only and still run in
+  CI on every pull request (OQ-3 asks the owner to confirm).
   - `assets/templates/root/pytest.ini`: a `slow` marker ("set-up plus call of 2 s or more alone;
     left out of `make test-fast`").
-  - `assets/templates/root/Makefile.tmpl`: `test-fast` (unit and feature, not `slow`, parallel, no
+  - `assets/templates/root/Makefile.tmpl`: `test-fast` (unit and feature, not `slow`, no
     coverage), `test-changed` (the tests of the files changed against `BASE`, default `develop`;
-    falls back to `test-fast`), `profile-tests` (`--durations=15 -vv`).
-  - `assets/templates/tests/changed.py`: the mechanism of `rdf-persistence`'s script with one rule
-    table for the scaffold's layers (`<package>/<layer>/` to `tests/unit/<layer>/`); shared files
-    (`pytest.ini`, the lock file, `tests/fixtures/`) fall back.
-  - `references/testing-setup.md`: a "Developer lanes" section. CI is unchanged: `ci-quick` and
-    `ci-full` run every test of their tier, `slow` included.
+    falls back to `test-fast`), `profile-tests` (`--durations=15 -vv`). No parallel run: the
+    scaffold has no pytest-xdist and gains none here.
+  - `assets/templates/tests/changed.py`: the mechanism of the trial repository's script with one
+    rule table for the scaffold's layers (`<package>/<layer>/` to `tests/unit/<layer>/`); shared
+    files (`pytest.ini`, the lock file, `tests/fixtures/`) fall back. `scripts/scaffold.sh` renders
+    it beside `tests/conftest.py` (its section 4).
+  - `references/testing-setup.md`: a "Developer lanes" section. `ci-quick` and `ci-full` are
+    unchanged.
 
 - **D-11 Checks that are not code (stage 3).** `references/non-code-checks.md`:
   1. Name the check, the project and the kind of task, and take one real past item the check
@@ -218,41 +256,56 @@ and quicker without losing a specified feature. The spike changed two assumption
   - `references/team-and-briefs.md`, tester brief, **Report:** each test added carries the
     scenario or error-matrix row it attacks ("none" with a reason is allowed) and whether it
     failed on its first run.
-  - `SKILL.md` step 4 gains one sentence, and `references/stage-loop.md` step 4 the detail: the
-    lead keeps a tester's test that failed on its first run, one that alone covers a scenario or
-    an error-matrix row, and a property that states an invariant of the PLAN; kept tests go into
-    files named by feature (checklist rule 23); the rest are deleted, and the stage PR lists them
-    with one reason per group.
+  - `SKILL.md` step 4 gains one sentence, and `references/stage-loop.md` step 4 the detail. After
+    deciding the findings, the lead sorts the tester's tests:
+    - **kept:** a test that failed on its first run and whose finding the lead accepted; a test
+      that alone covers a scenario or an error-matrix row; one property per invariant that the
+      PLAN's design names;
+    - **deleted:** every other one, including a test whose finding the lead rejected.
+    A builder moves the kept tests into files named by feature (checklist rule 21) and deletes the
+    rest in the fix round, before the second run of the full gates, so the coverage floor is
+    checked on what remains. The stage PR lists each deleted test with its reason.
   - The ledger row of the tester in `stage-loop.md` gains "distilled in step 4".
-  - Order against EPIC B: if B's stage 2 has landed, these edits go into B's version of the brief
-    and the ledger row. If it has not, they go into today's text, and task 1.9 adds one line to
-    B's `tasks.md` (task 2.2) saying the two report fields are kept.
+  - Order against EPIC B, whose task 2.4 replaces the tester brief and the ledger row. If B's
+    stage 2 has landed, these edits go into B's text. If it has not, they go into today's text,
+    and task 1.9 adds one line to B's task 2.4: "keep the two report fields and the words
+    'distilled in step 4'".
 
-- **D-13 `test-strategy` rows.** `inventory.md` gains the next free id (`CHK-145` today): "Test
-  suite audit; whether the suite's tests earn their cost; owner `test-suite-care`; moment: on
-  request, at an EPIC boundary". `references/software.md` gains
-  `| ADQ | CHK-<n> Test suite audit | test-suite-care | phase_times.py, overlap.py | on request | the developer | exists |`,
-  and `SKILL.md` of the new skill carries the pointer line
-  "Answers `ADQ` in `test-strategy`'s matrix (`references/software.md`)." Stage 2 adds the same
-  row to `references/ui.md`, stage 3 a row to `references/cross-cutting.md`; the pointer line is
-  extended each time.
+- **D-13 `test-strategy` rows.** `inventory.md` gains the next free id at delivery (`CHK-145` if
+  none was taken): "Test suite audit; whether the suite's tests earn their cost; owner
+  `test-suite-care`; moment: on request". `references/software.md` gains the row
+  ``| ADQ | CHK-<n> Test suite audit | `test-suite-care` | `phase_times.py`, `overlap.py` | on request | the developer | exists |``
+  (the owner in backticks, as the test's pattern requires), and the new `SKILL.md` carries the
+  pointer line "Answers `ADQ` in `test-strategy`'s matrix (`references/software.md`)." In the same
+  file the Moment cell of the testing checklist's row gains "the developer's lanes
+  (`make test-fast`, `make test-changed`)" (DEC-9). Stage 2 adds the same `ADQ` row to
+  `references/ui.md`. Stage 3 adds a second id, "Assessment of a check that is not code", with an
+  `ADQ` row in `references/cross-cutting.md`. The pointer line is extended each time to list
+  exactly the files that hold a row.
 
-- **D-14 The trial.** Stage 1 is tried on `rdf-persistence`: both runs on an idle machine, the
+- **D-14 The trial.** Stage 1 is tried on `rdf-persistence`: both runs on an idle machine for its
+  unit, feature and integration lanes, the
   map, the report, the discussion with the owner (the acceptance demo), then the approved pull
   requests under that repository's own rules. What the trial teaches goes back into the skill in
   general words; a lint-like test (D-15) keeps the repository's name out of the skill.
 
 - **D-15 Tests in skillery.** `tests/test_test_suite_care.py`, written first and red:
-  - `phase_times.py` under pytest's `pytester`: a module with one slow fixture and two tests
-    yields one fixture line and six phase lines with the right names.
-  - `overlap.py` on a SQLite file the test builds with the three tables: one contained test, one
-    group of identical cases, one empty test are reported; a file with no `|run` context exits 2
-    with the message of the error matrix.
-  - A second test, skipped when `coverage` is not importable (CI has only pytest and pyyaml), runs
-    a real `--cov-context=test` and feeds the result to `overlap.py`.
+  - `phase_times.py` under pytest's `pytester`: a module with one slow function-scoped fixture
+    and two tests yields two fixture lines and six phase lines with the right names. The same
+    module under `-n 2` yields the same lines once (skipped when xdist is not installed).
+  - `overlap.py` on SQLite files the test builds: one with `line_bits`, one with `has_arcs = 1`
+    and rows in `arc`. Each reports one contained test and one group of identical cases; a test
+    present in the phases file with no context is in `no_lines`; a file with no `|run` context
+    exits 2 with the message of the error matrix.
+  - A test, skipped when `coverage` is not importable (CI has only pytest and pyyaml), runs a
+    real `--cov-context=test` with branch coverage on and feeds the result to `overlap.py`. Task
+    1.2 runs it once with `uv run --with pytest-cov --with pytest-xdist` and records the output.
+  - The `changed.py` template on a temporary git repository (task 1.8), and `scaffold.sh` run
+    into a temporary directory produces `tests/changed.py` and a `Makefile` with the three targets.
   - The skill's text names no repository: no `rdf-persistence`, no path starting with `/home`.
-  - `references/waste.md` has ten `W-` rows, each with a class; the checklist has rules 1 to 23 in
-    order; every rule number cited in `waste.md` exists.
+  - `references/waste.md` has eight `W-` rows, each with a class; the checklist has rules 1 to 21
+    in order and a source for 17 to 21; every rule number cited under `skills/test-suite-care/`
+    exists.
 
 ## Algorithm / approach
 
@@ -260,22 +313,28 @@ The audit, as the skill's Quick Start will show it on a small project:
 
 1. Run A and run B (D-2). Read `phases.jsonl`: total 310 s, set-up 240 s.
 2. Build the map (D-5). The owner samples thirty rows.
-3. Read the evidence against `waste.md`. Example finding: fixture `client` has function scope,
-   costs 2.1 s, is used by 90 tests, and no test changes the service it builds (W-1).
-4. Write the report. Example proposal: "P-1, class 1: make `client` module-scoped in
-   `tests/unit/api/conftest.py`; evidence: 189 s of set-up over 90 tests; saving about 185 s;
-   scenarios touched: none."
+3. Read the evidence against `waste.md`. Example finding: fixture `service` has function scope,
+   costs 2.1 s and is used by 90 tests; it builds an application (no test changes it) and an
+   empty store (every test writes to it) (W-1).
+4. Write the report. Example proposal: "P-1, class 1: split `service` in
+   `tests/unit/api/conftest.py` into a module-scoped application and a function-scoped store
+   reset; evidence: 189 s of set-up over 90 tests, 1.9 s of each in building the application;
+   saving about 170 s; scenarios touched: none; survivor: not applicable."
 5. Discuss. The owner approves P-1 and rejects P-4 ("these cases document the format"). P-1 lands
-   as a pull request: 310 s before, 128 s after.
+   as a pull request: 310 s before, 140 s after, the same covered lines for all 90 tests.
 
 ### Anti-patterns
 
 | Don't | Do | Why |
 |---|---|---|
-| Propose dropping tests first | List class 1 first | Set-up was 89 % of the time in the spike, and class 1 loses nothing |
+| Propose dropping tests first | List class 1 first | Set-up was 89 % of the time in the spike, and class 1 removes no test |
+| Widen the scope of a whole fixture | Share only the part no test changes; never a mock | A test can pass on a call another test made |
+| Let two overlapping tests both be dropped | Name the survivor of every proposal | Each contains the other |
+| Drop the integration test because a unit test serves the scenario | Keep a test that runs the real adapter | The unit test runs a fake |
 | Drop a test because its lines are covered elsewhere | Require the second evidence of W-4 and W-5 | Covered lines are a hint, never proof |
 | Assign every test to some scenario | Record `none` | A forced assignment makes a drop look safe |
-| Take timings from the coverage run | Take them from run A | Coverage slows a run by about 2.3 times |
+| Take timings from the coverage run | Take them from run A, with `--no-cov` | Coverage slows a run by about 2.3 times |
+| Append flags to a `make` target | Pass them in `PYTEST_ADDOPTS` | The target takes no flags |
 | Put `dynamic_context` in the coverage config | Pass `--cov-context=test` | The config way fails under xdist |
 | Write the audited repository's name or thresholds into the skill | State them in the report | DEC-12 |
 | Keep a stage's adversarial tests as written | Distil them in step 4 | DEC-3 |
@@ -284,18 +343,22 @@ The audit, as the skill's Quick Start will show it on a small project:
 
 | Condition | Behaviour |
 |---|---|
-| The project has no pytest-cov | Run A only; the report says the audit is limited to W-1, W-2, W-3, W-7 (no assert) and W-10 |
+| The project has no pytest-cov | Run A only; the report says the audit is limited to W-1, W-2 and the broken rules |
+| The project measures branches | `overlap.py` reads `arc` (D-3) |
+| A test's code is under the coverage `omit` setting | It is not reported as W-6; the report names the setting |
+| Tests change what a costly fixture builds | The proposal splits the fixture; if nothing unchanging is left, no proposal is made and the report says why |
+| Covered lines differ before and after a fixture change | The pull request is not merged; the proposal returns to the report as rejected with the evidence |
 | The coverage file has no context ending in `\|run` | `overlap.py` exits 2: "no per-test contexts: run with --cov-context=test" |
 | A test fails or is flaky during a run | The run continues; the test is listed under *Not measured* and takes part in no proposal |
 | The machine is loaded during run A | The report gives shares, not seconds; the before and after of a pull request are measured again |
 | The repository has no specs and no feature files | Every map row is `none`; proposals are limited to class 1 |
 | A spec scenario belongs to a change not yet archived | The map uses the change's delta spec and marks the row `evidence: open change` |
 | A test in the map no longer exists | The row is removed at the next audit; a renamed test is mapped again |
-| The owner's sample finds more than two wrong `high` rows in ten | The map is rebuilt for the files concerned before any class 3 proposal |
+| The owner's sample finds a wrong `high` row | The rows of that test file are mapped again and a new sample is drawn, before any class 3 proposal |
 | A proposal would remove the last `high` test of a scenario | It is not made; the test may get a class 1 proposal |
 | The suite is not pytest (stage 1) | The skill says which kinds it covers and stops |
 | A non-code check reports different planted flaws in each of three runs | The report says "unstable" with the three lists; the owner decides |
-| EPIC B's stage 2 lands while stage 1 is open | D-12's order rule: the edits are redone on B's text before merge |
+| EPIC B's stage 1 or 2 lands while stage 1 is open | The order rules of D-8 and D-12: the edits are redone on B's text before merge |
 
 ## Risks / Trade-offs
 
@@ -308,11 +371,32 @@ The audit, as the skill's Quick Start will show it on a small project:
 - **RISK-4** (one repository's pattern does not fit others; possible, moderate): D-15's test keeps
   the name out; thresholds live in the project's marker text.
 - **RISK-5** (assessing a non-code check is costly and noisy; likely, minor): six runs, fixed by D-11.
-- **RISK-6** (a shared fixture leaks state between tests; possible, serious): W-1 requires that no
-  test changes what the fixture builds; the pull request runs the suite in random order twice
-  where the project has `pytest-randomly`, and says so where it has not.
+- **RISK-6** (a shared fixture lets a test pass on another's work; likely where tried carelessly,
+  serious): only the unchanging part is shared and a mock never is (D-6); the pull request shows
+  the same covered lines per test before and after. Residual: a false pass that changes no covered
+  line; accepted, and named in the skill's Gotchas.
 - **RISK-7** (lines attributed to the wrong test in async code; unknown): not checked by the
   spike; W-4 and W-5 never rest on coverage alone.
+
+## Attack record
+
+A fresh reader attacked the PLAN on 2026-11-14 with small experiments (coverage 7.17, pytest-cov
+7.1, pytest 9.2, xdist). Confirmed as planned: the `|run` suffix, the bit order, parametrised ids,
+xdist with `--cov-context=test`. Folded in:
+
+| # | Finding | Where it went |
+|---|---|---|
+| A-1 | With branch coverage `line_bits` is empty | D-3 reads `arc`; D-15 |
+| A-2 | Coverage stores no context for a test that runs no line | D-3 `no_lines` from the phases file; W-6 |
+| A-3 | "Class 1 loses nothing" is false: a shared mock gave a false pass; async scope; the trial's fixtures hold a store tests write to | D-6 class 1 and its check; RISK-6; error matrix |
+| A-4 | A `make` target takes no flags and carries its own coverage flags | D-2 `PYTEST_ADDOPTS`, `--no-cov` |
+| A-5 | Drops that remove the only guard: the real-adapter test; required parametrised cases; two tests containing each other; a lax sample | W-3, W-5, the survivor rule, the sample rule |
+| A-6 | Conflicts with EPIC B: the "Checked by" grammar, the order, the brief's task number, properties all kept, a rejected finding, who deletes and when | D-8, D-12 |
+| A-7 | The matrix row would fail A's test; the stage 3 row had no id | D-13 |
+| A-8 | `scaffold.sh` renders a fixed list; the scaffold has no xdist | D-10, D-15 |
+| A-9 | Rules restating rules 6 and 14; a step-definition rule in a skill that writes none; sources in two places | D-8 amends 6 and 14, drops that Gherkin rule, one Sources list; D-4 cites numbers |
+| A-10 | Undeclared deviations: coverage floor, lanes as moments, scheduled runs, DEC-10, a reason per deleted test, integration tests in the trial | D-7, D-13, D-10, D-6, D-12, D-14 |
+| A-11 | Tasks that could not fail | tasks.md |
 
 ## Open Questions
 
@@ -320,4 +404,5 @@ None blocks stage 1. To confirm with the owner at scenario sign-off (task 1.0):
 
 - **OQ-1** The UI test rules live in `test-suite-care` until a UI skill exists (D-9).
 - **OQ-2** Which repository with a Cypress or Playwright suite is the trial ground of stage 2.
-- **OQ-3** The developer lanes change no CI run; slow tests still run on every pull request (D-10).
+- **OQ-3** The developer lanes change no CI run and no scheduled run is added; slow tests still
+  run on every pull request (D-10, a deviation from DEC-6).

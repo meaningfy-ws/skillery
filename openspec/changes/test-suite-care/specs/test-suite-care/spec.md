@@ -35,15 +35,31 @@ owner SHALL decide what follows; the assessment SHALL NOT retire a check (test-s
 - **THEN** the report says "unstable", gives the three lists and no pass mark
 
 ### Requirement: Proposals are classed by what they can lose
-The audit SHALL class each proposal: class 1 changes a fixture's scope, a marker or a lane and
-removes no test; class 2 merges parametrised cases; class 3 drops a test. The report SHALL list
-class 1 first. A class 3 proposal SHALL require that the test and one other test are mapped to the
-same scenario with high confidence. Overlap of covered lines SHALL NOT be the only evidence of a
-class 2 or class 3 proposal (design D-4, D-6).
+The audit SHALL class each proposal: class 1 splits or shares a fixture, or changes a marker or a
+lane, and removes no test; class 2 merges parametrised cases; class 3 drops a test. The report
+SHALL list class 1 first. A fixture SHALL be shared only in the part no test changes, and a mock
+SHALL NOT be shared. A class 2 or class 3 proposal SHALL name its survivor, and a survivor SHALL
+take part in no other such proposal of the same audit. A class 3 proposal SHALL require that the
+test and its survivor are mapped to the same scenario with high confidence. A test that runs
+something real which the lower-tier test replaces with a fake SHALL NOT be proposed as a duplicate.
+Overlap of covered lines SHALL NOT be the only evidence of a class 2 or class 3 proposal (design
+D-4, D-6).
 
 #### Scenario: Set-up dominates
-- **WHEN** the measurements show a function-scoped fixture among the ten costliest and no test changes what it builds
-- **THEN** the report's first proposal is to share that fixture, classed 1, with "scenarios touched: none"
+- **WHEN** the measurements show a function-scoped fixture among the ten costliest, which builds an application no test changes and a store every test writes to
+- **THEN** the report's first proposal is to share the application and keep the store per test, classed 1, with "scenarios touched: none"
+
+#### Scenario: A shared mock
+- **WHEN** a costly fixture returns a mock whose calls the tests assert
+- **THEN** the audit does not propose sharing it
+
+#### Scenario: Two tests that contain each other
+- **WHEN** two tests cover exactly the same lines and serve the same scenario with high confidence
+- **THEN** at most one proposal is made, it names the other test as its survivor, and the survivor is in no other proposal
+
+#### Scenario: The only test against the real adapter
+- **WHEN** an integration test and a unit test serve the same scenario, and the unit test uses a fake of the adapter
+- **THEN** the audit does not propose dropping the integration test
 
 #### Scenario: Covered lines only
 - **WHEN** a test's covered lines are contained in another test's and the map gives the test confidence "medium"
@@ -53,7 +69,8 @@ class 2 or class 3 proposal (design D-4, D-6).
 The map SHALL hold one row per test function with the level it reaches (scenario, requirement,
 capability or none), a confidence (high, medium or none) and the evidence. A test that cannot be
 assigned SHALL be recorded as "none" and listed for the owner. The owner SHALL check a random
-sample of the map before any proposal is discussed (design D-5).
+sample of the map before any proposal is discussed, and a wrong high-confidence row SHALL send
+that test file's rows back to be mapped again (design D-5).
 
 #### Scenario: A test that fits no scenario
 - **WHEN** a unit test's name, docstring and covered code match no scenario or requirement
@@ -75,7 +92,8 @@ of a particular project (test-suite-care DEC-12; design D-2, D-15).
 ### Requirement: A scaffolded project has developer lanes
 A project scaffolded by `project-setup` SHALL have a `slow` marker whose description states the
 project's threshold, a lane that leaves slow tests out, a lane that runs the tests of the changed
-files, and a profiling target. The lanes SHALL NOT remove a test from a CI run (design D-10).
+files, and a profiling target. The lanes SHALL NOT remove a test from a CI run, and no scheduled
+run is added (design D-10).
 
 #### Scenario: A change in one layer
 - **WHEN** a developer changes a file under the package's services layer and runs the changed-files lane

@@ -4,11 +4,12 @@
 
 ### Requirement: A stage's adversarial tests are distilled before the stage merges
 The tester's report SHALL name, for each new adversarial test, the scenario or error-matrix row it
-attacks and whether it failed on its first run. In step 4 of the
-stage loop (Decide and fix) the lead SHALL distil them: a test that failed on its first run, a test that
-alone covers a scenario or an error-matrix row and a property that states an invariant of the PLAN SHALL be kept in a
-file named by feature; every other one SHALL be deleted and listed in the stage's pull request
-with a reason (test-suite-care DEC-3; design D-12).
+attacks and whether it failed on its first run. In step 4 of the stage loop (Decide and fix) the
+lead SHALL sort them. Kept: a test that failed on its first run and whose finding was accepted, a
+test that alone covers a scenario or an error-matrix row, and one property per invariant the
+PLAN's design names. Every other test SHALL be deleted in the fix round, before the second run of
+the full gates, and listed in the stage's pull request with its reason. Kept tests SHALL be in
+files named by feature (test-suite-care DEC-3; design D-12).
 
 #### Scenario: Deciding a stage's adversarial tests
 - **WHEN** the lead decides the findings of a stage whose tester wrote forty adversarial tests, three of which found a defect
@@ -17,3 +18,7 @@ with a reason (test-suite-care DEC-3; design D-12).
 #### Scenario: A test that attacks nothing named
 - **WHEN** the tester's report gives "none" as the scenario of a test that passed on its first run
 - **THEN** the lead deletes it, unless it is a property that states an invariant of the PLAN
+
+#### Scenario: A rejected finding
+- **WHEN** a tester's test failed on its first run and the lead rejects its finding as not a defect
+- **THEN** the test is deleted and the pull request gives the rejection as its reason
