@@ -541,6 +541,12 @@ of task 1.11; what a repository without specs is limited to (D-5); how a probe i
 `medium` defined (D-5); one more row under Deviations; the shared file of tasks 1.6 and 1.9; three
 wording mismatches.
 
+Revised after the gate, not gated again (2026-11-14): D-35 and D-36, under Delivery decisions,
+were added by owner decision after the fourth run. No clarity-gate run followed: the owner wants
+at most two gate runs on any re-gate
+([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+decisions 4, 5 and 7).
+
 ## Delivery decisions
 
 Recorded 2026-11-14, after the five changes of the test strategy work were read against each
@@ -623,6 +629,53 @@ above where they differ.
 - **D-34 Follow-ups.** The fixture sentence added to checklist rule 6 (D-8) overlaps issue #210
   (DDD, TDD and fixture rules); task 1.6 comments there. The home of UI test rules (D-23, OQ-1)
   is issue #230.
+
+Revised 2026-11-14 by owner decision, after the gate. The session measurements were compared with
+this EPIC and the owner decided on the result
+([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+decisions 4, 5 and 7). The clarity gate was not run again on these entries.
+
+- **D-35 The builder sorts and the lead confirms (corrects D-12; bears on D-31; proposal DEC-3
+  as revised).** Reason: the lead's session is about half of all cost, and that cost grows with
+  what the lead reads (findings F-2, F-3, R-3); sorting forty tests is reading work.
+  - *Who does what.* The rule of D-12 (what is kept, what is deleted) is unchanged. After the
+    lead has decided the findings, the builder of the fix round sorts the tester's tests by
+    that rule, moves the kept ones into files named by feature, deletes the rest, and returns
+    two lists: kept and deleted, each test with its reason. The lead reads the lists and
+    confirms them before the second run of the full gates; a deletion it does not confirm is
+    restored from the branch. The decision stays the lead's (D-31): it confirms a list and no
+    longer reads forty tests.
+  - *Refactoring opportunities.* While sorting, the builder also notes what it sees that could
+    be refactored, in the tests or in the code they exercise (a repeated set-up, a helper
+    written twice, a test that needs a seam the code lacks). It returns them as a third list,
+    under *Recommendations* of its report. That is a report: the builder refactors nothing
+    beyond moving the kept tests, and the stage's scope does not grow. The lead copies the list
+    into the stage's pull request and may open an issue for an item.
+  - *The texts of D-12 read:* the `SKILL.md` sentence, "A builder sorts the tester's tests into
+    kept and deleted and the lead confirms the lists (`references/stage-loop.md`, step 4)."; the
+    Examples row of `team-lead.feature`, does "has a builder sort them by the rule, confirms
+    the kept and the deleted list, and lists each deleted test in the PR"; and the scenario:
+
+    ```gherkin
+    Scenario: A stage's adversarial tests are distilled
+      Given the tester reported forty tests, each with what it attacks and whether it failed on its first run
+      And three failed on their first run and the lead accepted their findings
+      When the builder of the fix round sorts the tests by the rule
+      Then it keeps the three, any test that alone covers a scenario and one property per PLAN invariant, in files named by feature
+      And it deletes the rest and returns the kept list, the deleted list and the refactoring opportunities it saw
+      And the lead confirms the lists before the second run of the full gates
+      And the stage PR lists each deleted test with its reason
+    ```
+  - *The tester's result line* (owner decision 4) is defined once, in
+    `harden-checks-and-tests` (its design D-29). This change defines no line. The two report
+    fields of D-12 stay: they are per test, and the line's `failed-first` number is their count.
+- **D-36 Where the cost numbers of D-11 come from (adds to D-11, step 4).** "Its cost (tokens
+  and minutes)" is read from the session transcripts with the two scripts kept in
+  [`inputs/scripts/`](../delivery-retrospective/inputs/scripts/) of `delivery-retrospective`:
+  `session_digest.py` writes one row per subagent with its tokens and its duration, and
+  `epic_report.py` groups them. The procedure cites the scripts by that path until they have a
+  durable home (finding R-11); it then cites the new one. Tokens and minutes are recorded;
+  an amount of money is not, since a cost per subagent is an estimate.
 
 ## Open Questions
 
