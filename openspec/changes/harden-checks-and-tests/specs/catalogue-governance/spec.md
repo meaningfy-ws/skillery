@@ -24,8 +24,8 @@ otherwise (harden-checks-and-tests DEC-4).
 The catalogue SHALL have a sixth artifact type, **Check**, home `quality/`: an executable rule file
 or a tool configuration that projects fetch and run. A check SHALL carry no rule text of its own:
 what it enforces and why SHALL stay with the skill that owns the rule, and the check SHALL name
-that owner entry by id. `docs/development/governance.md` and the `AGENTS.md` type table SHALL list
-the type and its rule (harden-checks-and-tests DEC-4).
+that owner. `docs/development/governance.md`, the `AGENTS.md` type table and `CLAUDE.md` SHALL
+name six types (harden-checks-and-tests DEC-4).
 
 #### Scenario: A Semgrep rule that explains its own standard
 - **WHEN** a review finds a rule file under `quality/` whose message restates a catalogue entry's text instead of citing its id
