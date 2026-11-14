@@ -10,8 +10,9 @@ subagent that built nothing of the stage.
 
 ## 0. Before stage 1
 
-- [ ] 0.1 The owner signs off the spec scenarios of this change (the PLAN gate), recorded in
-  `evidence/acceptance.md` (D-15).
+- [ ] 0.1 The owner signs off the spec scenarios of this change (the PLAN gate) and confirms the
+  start condition of D-16 and the stated limit of D-13's proof, all recorded in
+  `evidence/acceptance.md` (D-13, D-15, D-16).
 - [ ] 0.2 Confirm B's stages 1 and 2 are merged and the branch is on current `develop`; walk the
   two Context tables of the design against the repository (the ten gap rows; B's facts) and record
   each difference in `evidence/preflight.md`, handled as D-16 says. For B, read in particular:
@@ -36,7 +37,7 @@ subagent that built nothing of the stage.
   tool runs once on a real tree*).
 - [ ] 1.4 Owner round, the three kinds of call of D-6; answers to `inputs/qa.md` (D-6, D-14).
 - [ ] 1.5 *Fill only.* With the tools on `PATH` and network for Vale's sync, so no tool test skips:
-  the fixture pairs and the tests TC-9, TC-10, TC-11, IT-1 and IT-2 in `tests/test_quality.py`,
+  the fixture pairs and the tests TC-9 to TC-12, IT-1 and IT-2 in `tests/test_quality.py`,
   red first; then `quality/vale/vale.ini`, the manifest and `quality/ls-lint/docs.yml` as decided;
   the rows in `quality/README.md`; Vale in `docs/development/quality.md` and its install note in
   `CONTRIBUTING.md`; keep each test's red and passed output (D-9, D-18; design § Tests and
@@ -60,11 +61,9 @@ subagent that built nothing of the stage.
   its report write `evidence/invariants-trace.md`; if the report lacks the property D-13 asks
   for, return it once; then run `make validate` again (IT-9; D-11, D-13; spec *Invariants reach
   the tester*).
-- [ ] 1.10 Stage checker: the decision table against the diff (INV-2); the evidence scrub,
-  including `evidence/pr-documentation.md`, the PR body to be posted (INV-4, D-17); no skipped
-  test behind a catch line (D-18); no description changed without probes (D-19); the D-15 items.
-  Then one PR into `develop` naming #212. If review adds commits, the checker reads INV-2 and INV-4 again on the final diff before
-  the merge (design § Algorithm, step 6).
+- [ ] 1.10 Stage checker, with the list of step 6 of the stage loop, CK-3 included; the PR body is
+  written to `evidence/pr-documentation.md` first. Then one PR into `develop` naming #212, and the
+  second reading if review adds commits (design § Algorithm, step 6; § Tests and proofs; D-17).
 
 ## 2. Stage 2: shaping
 
@@ -93,7 +92,8 @@ subagent that built nothing of the stage.
   whose interview had no invariants answer*; IT-7 proves *Deriving a PLAN with an invariant left
   to the tester*; IT-8 proves *A PLAN with no invariant*.
 - [ ] 2.9 Close as 1.8, for `shaping.md` and `evidence/catch-shaping.md` (the worked example of 2.5
-  is the catch); then the stage checker and one PR as 1.10, naming #143 (D-10, D-11, D-15, D-18).
+  is the catch); then the stage checker and one PR as 1.10, with CK-1 and CK-2, naming #143 (D-10,
+  D-11, D-15, D-18; design § Tests and proofs).
 
 ## 3. Stage 3: DevOps
 
@@ -123,7 +123,7 @@ subagent that built nothing of the stage.
 - [ ] 3.8 Comment on #216 with the scrubbed findings and what `quality/` now offers, written to
   `evidence/comment-216.md` first and posted as the checker read it (D-15, D-17).
 - [ ] 3.9 Close as 1.8, for `devops.md` and `evidence/catch-devops.md`; then the stage checker and
-  one PR as 1.10, naming #216 (D-10, D-11, D-15, D-18).
+  one PR as 1.10, with CK-3, naming #216 (D-10, D-11, D-15, D-18).
 
 ## 4. Stage 4: architecture and modelling
 
@@ -158,7 +158,8 @@ subagent that built nothing of the stage.
 - [ ] 6.2 Acceptance with the owner: one survey file read end to end and the invariants path shown
   on this PLAN, from the `## Invariants` row to the tester's property; the verdict recorded in
   `evidence/acceptance.md` (D-15).
-- [ ] 6.3 Archive only after B is archived (D-16).
+- [ ] 6.3 Archive only after B is archived, unless no `quality-checks` requirement is left in this
+  change (D-14, D-16).
 
 ## Roadmap
 
@@ -176,5 +177,5 @@ This is DEC-1's order. Stages 4 and 5 go before stage 3 only under D-16's rule.
 
 Per stage: `make validate` green (it includes the closed-family test and, locally with the tools
 installed, the tool tests of `tests/test_quality.py`), `openspec validate activity-test-profiles
---strict`, and the stage checker's verdict on INV-2, INV-4 and the D-15 items. For the EPIC: the
+--strict`, and the stage checker's verdict on the list of step 6 of the stage loop. For the EPIC: the
 four proofs listed in `evidence/acceptance.md` with the owner's verdict.

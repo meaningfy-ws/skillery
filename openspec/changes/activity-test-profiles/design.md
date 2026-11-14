@@ -182,7 +182,7 @@ further call when it needs more than four questions.
 | Kind | Asked | Options | Stages |
 |---|---|---|---|
 | 1 Failures | "Which of these went wrong in `<family>` work?", multi-select, one question per three failures the survey found | up to three failures, and "None of these". A failure not selected stays in the failures table marked "not confirmed" and backs no fill. The free-text answer adds a failure, recorded as "the owner's words, `<date>`". When the survey found nothing: "None seen" and "One I describe in the free text". Stage 3 adds one question, "Has a runbook failed someone who followed it?", with "No" and "Yes, described in the free text" | all |
-| 2 Rules | "Which of these rules would you fix?", multi-select, per tool | up to three rules, each with its count and one example, and "None of these". At most six rules per tool, so two questions per tool: the six with the most findings after the lead drops each rule whose three recorded examples are all house terms or code identifiers (the summary lists the dropped rules with that reason). A rule not selected or not shown is noise; the tool-run summary lists them all. Where two packages flag the same thing, they are one option, and the rule of the package listed first in D-8 is the one enabled | 1 and 3 |
+| 2 Rules | "Which of these rules would you fix?", multi-select, per tool | up to three rules, each with its count and one example, and "None of these". At most six rules per tool, so two questions per tool: the six with the most findings after the lead drops each rule whose three recorded examples are all house terms or code identifiers (the summary lists the dropped rules with that reason). A rule not selected or not shown is noise; the tool-run summary lists them all. A selected rule counts even if "None of these" is ticked beside it. Where two packages flag the same thing, they are one option, and the rule of the package listed first in D-8 is the one enabled | 1 and 3 |
 | 3 Decisions | One question per decision table, the table in the question text; one more per scenario rewritten or added (D-14), with its text | "Confirm" and "Change". On "Change" the owner says which lines in the free text, the lead corrects them and asks once more | all |
 
 A tool with no finding gets no question of kind 2 and its decision is `accept`. Stages 4 and 5
@@ -199,7 +199,7 @@ Each run happens in the session's scratch folder with a draft configuration; not
 |---|---|---|---|
 | Vale | 1 | skillery's `docs/` (Q-10) | the four packages of D-8, every rule at its default level |
 | ls-lint, docs | 1 | skillery's `docs/` | kebab-case for directories and for `.md` and `.adoc` files; `README.md`, `CHANGELOG.md` and `docs/rules/` exempt (the rulebook's tooling names those files) |
-| ls-lint, stacks | 3 | a read-only checkout of `infrastructure-stacks` (Q-10) | the naming form with the highest count, counted in the checkout for directories at the stack level and one level below and for each file extension present in more than half of the stacks; the summary states each form and its count; the findings are the names that depart from it. On a tie, or when no form covers more than half, the run is not made on a guess: the summary lists the forms and the owner picks one in the round, after which the run is made |
+| ls-lint, stacks | 3 | a read-only checkout of `infrastructure-stacks` (Q-10) | the naming form with the highest count among ls-lint's kebab-case, snake_case, camelCase and PascalCase. A stack is a directory that holds a compose file; names are counted for stack directories, the directories one level below them and each file extension present in more than half of the stacks; a single-word lowercase name fits every form and is left out of the count. The summary states each form and its count; the findings are the names that depart from the winning form. On a tie, or when no form covers more than half of the counted names, the run is not made on a guess: the summary lists the forms and the owner picks one in the round, after which the run is made |
 | checkmake | 3 | the same checkout | its default rule set |
 
 - ls-lint and checkmake are installed at the versions B pins in `Makefile.tmpl`
@@ -214,7 +214,9 @@ Each run happens in the session's scratch folder with a draft configuration; not
   clean).
 - If the checkout holds no Makefile, the lead asks the owner one question before the run: run
   checkmake on `cloud-infrastructure` instead (Q-10 did not choose that repository), or record
-  "no Makefile in the checkout". On the second answer `evidence/toolrun-checkmake.md` says so, and
+  "no Makefile in the checkout". On the first answer the same rules apply to that checkout
+  (read-only, `git status` clean afterwards, the scrub, the same summary file). On the second
+  answer `evidence/toolrun-checkmake.md` says so, and
   task 6.1 lists DEC-7's fourth proof as "not met for checkmake, accepted by the owner on
   `<date>`": a tool that had nothing to read did not run.
 - skillery adopts none of these checks on itself (B's DEC-12). Fixing its docs after the report is
@@ -229,9 +231,10 @@ No style file is committed (No-gos; B's DEC-6): `vale sync` fetches the packages
 `vale.ini`.
 
 Each adopted package is one entry of `quality/vale/external.json`, in the field form of B's D-7
-with `tag` and `archive` in place of `commit` and `paths`: `id`, `repo`, `tag`, `archive` (the
-address of the package's release archive at that tag, the same address `vale.ini`'s `Packages`
-line holds), `licence`, `why`, `mode` (`report-only`; C adds no gating Vale rule).
+with `tag` in place of `commit` and `paths`: `id` (the package's name), `repo`, `tag`, `licence`,
+`why`, `mode` (`report-only`; C adds no gating Vale rule). The address a package is fetched from
+is held once, in `vale.ini`'s `Packages` line: the release archive of that `repo` at that `tag`.
+The package names in `vale.ini` and the manifest's ids are the same set (INV-6, TC-12).
 
 The planner did not run Vale. The first step of task 1.3 confirms five facts against the
 documentation of the Vale version installed for the run (D-7) and a trial run:
@@ -273,8 +276,10 @@ Four of these files are configurations and need a fixture pair: `vale/vale.ini`,
 | `ls-lint/stacks.yml` | the directory `ls-lint/stacks/bad/` | the directory `ls-lint/stacks/good/` |
 | `checkmake/stacks.ini` | `checkmake/stacks/bad.mk` | `checkmake/stacks/good.mk` |
 
-The tests are in `tests/test_quality.py`; § Algorithm lists them as TC-9..TC-11 (Python only, run
-in CI) and IT-1..IT-4 (need the tool, skip in CI in B's `skipif` form).
+The tests are in `tests/test_quality.py`; § Algorithm lists them as TC-9..TC-12 (Python only, run
+in CI) and IT-1..IT-4 (need the tool, skip in CI in B's `skipif` form). IT-1 also needs network
+for the sync and takes about as long as fetching the adopted packages; when the sync cannot reach
+the network it skips with that reason.
 
 Adding a tool also touches B's two guides: `docs/development/quality.md` gains Vale and the second
 manifest form, and `CONTRIBUTING.md` gains Vale's install note beside B's.
@@ -317,7 +322,8 @@ In the family files the question and status cells are written bare, as A's rows 
 `exists`, without the backticks this table shows them in): A's pointer check compares the status
 cell to `exists` exactly. An `accepted` reason is self-contained plain text without a `|`: no path
 and no link into `openspec/` (a skill file may not link there, and the folder moves at archive).
-The middle three cells of an `accepted` row keep what the gap row had.
+The middle three cells of an `accepted` row keep what the gap row had, and its *Decided by* cell
+becomes "the developer".
 
 ### D-11 The closed-family test
 
@@ -402,7 +408,8 @@ the row alone carried it.
   are written now for the agreed candidates and say so in their header. Their scenarios name cases
   guessed before any survey. Each candidate has its own requirement in each delta, so a stage
   whose candidate ends `accept` deletes that candidate's requirement whole, and the delta file if
-  nothing is left. A stage that fills from a different failure than
+  nothing is left. If no `quality-checks` requirement is left after stage 3, C's archive no longer
+  waits for B (D-16). A stage that fills from a different failure than
   the guessed one, or finds the tool cannot express the scenario, rewrites the scenario from the
   recorded failure; the owner signs off the new text in a call of kind 3.
 - **A fill outside the agreed candidates** (any of the eight gap rows that have none: all but
@@ -421,7 +428,8 @@ the row alone carried it.
 ### D-15 Definition of Done items beyond the stage loop
 
 - **Baseline, stage 2 only** (the invariants question is a discipline rule): the four runs IT-5 to
-  IT-8 of § Algorithm, each by a fresh subagent working in a checkout of a named commit and told
+  IT-8 of § Algorithm, each by a fresh subagent of the same agent type and model, working in a
+  checkout of a named commit and told
   to follow that checkout's `skills/epic-planning/` and PLAN template, not the installed plugin.
   Results go to `evidence/baseline-shaping.md`. If IT-5 already meets its observable, the result
   is recorded as it is, #143 stays the failure evidence and the owner is told in the stage's PR.
@@ -501,9 +509,14 @@ triggers*).
    assumes. A difference is handled as D-16 says.
 2. *Gap rows.* Copy the stage's rows into the survey file.
 3. *Survey.* Search, and record each source even when it yields nothing:
-   - skillery issues and PR review comments, one search per skill named in the family file's
-     *Technique owner* column (`gh issue list --search`, `gh pr list --search`);
-   - `openspec/changes/archive/*/evidence/` and `inputs/`, for findings and deviations;
+   - skillery issues and pull requests, one pair of searches per skill named in the family file's
+     *Technique owner* column: `gh issue list --state all --search "<skill name>"` and
+     `gh pr list --state all --search "<skill name>"`; each hit's title and body are read for
+     something that went wrong;
+   - the archive: `grep -ril "<skill name>" openspec/changes/archive/*/evidence
+     openspec/changes/archive/*/inputs`, and each file found is read for a finding or a deviation
+     about that skill's work;
+   - the survey file lists every command as run, with its number of hits;
    - stage 3 only: the issues and review comments of `infrastructure-stacks`, with `gh` run inside
      the checkout, and the question "has a runbook failed someone who followed it" in the owner
      round (a yes is a failure for the `ADQ` row: `CHK-57` did not catch it);
@@ -516,11 +529,18 @@ triggers*).
    conditional delta is kept, rewritten or deleted (D-14); the catch file; the CHANGELOG line;
    `make bundles`, `make skill-inventory`, `make validate`,
    `openspec validate activity-test-profiles --strict`. The stage checker is the Checker of the
-   `epic-delivery` review set, with two readings added to its brief: the decision table against
-   the diff (INV-2) and the evidence with the texts to be posted (D-17); it also confirms no
-   description changed without probes (D-19);
-   then one PR. If review adds commits, the checker reads both again on the final diff before the
-   merge.
+   `epic-delivery` review set. This is the one list of what C adds to its brief; the tasks point
+   here:
+   - the decision table against the diff (INV-2);
+   - the evidence and the texts to be posted, for the scrub (INV-4, D-17);
+   - no skipped test behind a catch line (D-18);
+   - no description changed without probes (D-19);
+   - the D-15 items that apply to the stage;
+   - the `CK` readings of § Tests and proofs that name the stage;
+   - in an accept-only stage, that no skill was edited beyond the family's rows.
+
+   Then one PR. If review adds commits, the checker reads the first two again on the final diff
+   before the merge.
 
 **What each stage is expected to do** (the survey decides; this is not a commitment):
 
@@ -587,6 +607,7 @@ in the delivery session; `CK` is a reading by the stage checker. The fixture pat
 | TC-9 | fixture presence | each of the four configurations that exists | its bad and good fixture exist | `tests/test_quality.py` |
 | TC-10 | manifest fields | each entry of the Vale manifest | every field of D-8 present; `mode` is `report-only` | the same |
 | TC-11 | no style file (INV-3) | `quality/vale/` on disk | exactly `vale.ini` and the manifest | the same |
+| TC-12 | one set of packages (INV-6) | the package names in `vale.ini`'s `Packages` line; the manifest's ids | the two sets are equal | the same |
 | IT-1 | Vale flags its fixture | `vale.ini` copied to `tmp_path`, synced there; the pair | `bad.md` flagged once per enabled rule, by rule name; `good.md` silent | `tests/test_quality.py`, skips without Vale |
 | IT-2 | docs ls-lint | `ls-lint/docs.yml`; the pair | the same, for directories | the same, skips without ls-lint |
 | IT-3 | stacks ls-lint | `ls-lint/stacks.yml`; the pair | the same | the same |
@@ -598,6 +619,24 @@ in the delivery session; `CK` is a reading by the stage checker. The fixture pat
 | IT-9 | the invariants trace | the tester's report on stage 1 | D-13's "Proven" | `evidence/invariants-trace.md` |
 | CK-1 | the template's one new heading | the `##` headings of the design template before and after task 2.7 | identical except `## Invariants` before `## Error matrix` | the stage 2 checker's verdict |
 | CK-2 | the interview question | `epic-planning` step 2 as changed, and the two sample `inputs/qa.md` files written in the form it asks for | the text asks for each invariant with an example and accepts "none" with a reason; the samples fit it | the same |
+| CK-3 | the skill text of an adopted tool check | the new section of `technical-writing` (stage 1), `stack-standard.md` and `repo-checks.md` (stage 3), read against each scenario of that stage's `documentation-workflow` or `operations-practice` requirements | the text says what each scenario's THEN says: where findings go, that nothing blocks, the skip note, the rename before the PR, *Recommended checks* with the pointer to #216 | the stage 1 and stage 3 checkers' verdicts |
+
+Which proof covers which scenario outside `epic-shape` (task 2.8 lists that capability's):
+
+| Capability | Scenario | Proof |
+|---|---|---|
+| `test-strategy` | *A gap with a recorded failure*; *A gap without a failure*; *A stage with no failure at all*; *A check proposed without a failure* | the stage checker's list, step 6 of the stage loop |
+| `test-strategy` | *A candidate tool with only noise* | the answers of kind 2 in `inputs/qa.md` against the stage's diff, by the stage checker |
+| `test-strategy` | *A gap row added later* | TC-1 |
+| `test-strategy` | *checkmake on the stacks checkout*; *A checkout without a Makefile* | `evidence/toolrun-checkmake.md`, read by the stage 3 checker |
+| `quality-checks` | *A style file in the folder* | TC-11 |
+| `quality-checks` | *A style without a licence* | TC-10 |
+| `quality-checks` | the three *… without a fixture* scenarios | TC-9 |
+| `quality-checks` | *The docs fixture is flagged* | IT-2 |
+| `documentation-workflow` | all three | CK-3, stage 1 |
+| `operations-practice` | *A stack folder that breaks the naming rule* | IT-3 |
+| `operations-practice` | *A Makefile target without a phony declaration* | IT-4 |
+| `operations-practice` | the two *Reading … before adoption* scenarios | CK-3, stage 3 |
 
 "Ties create to both stores" (IT-5, IT-6) means an invariant row, a scenario or a test task that
 says the label must be the same in both stores after a create; a task that merely implements
@@ -631,8 +670,9 @@ A stage's PR can be rebuilt from its survey file and decision table.
 |---|---|---|---|---|
 | INV-1 | In a family in `CLOSED_FAMILIES` every row's status is exactly `exists` or `accepted`, and each `accepted` row has a reason | holds: `ui.md` with every row `exists` or `accepted` with text; breaks: a later PR adds a `gap → D` row to `documentation.md` | a stage's close step; any later edit of a family file (D's rows, a new check); a status in bold or backticks, a misspelt one, a reason holding a pipe that shifts the columns | tester: a property over generated family tables, that `closed_family_errors` reports exactly the rows whose status is not `exists` or `accepted` and the `accepted` rows with an empty *Check* cell; plus the fixture cases of task 0.3 |
 | INV-2 | Every check C adds names a failure id that exists in its stage's survey file | holds: `CHK-<n>` ← `F-shaping-1` ← #143; breaks: Vale adopted with no rule marked | a stage's fill; a commit added after review | the stage checker reads the decision table against the diff, before the PR and again before the merge when review added commits (no automatic test: the survey moves at archive) |
-| INV-3 | `quality/vale/` holds no style file | holds: `vale.ini` and the manifest; breaks: `styles/Microsoft/Passive.yml` left there by a `vale sync` run in the folder | stage 1's fill; a contributor syncing inside `quality/vale/`; a fixture copied from a style | the exact-contents test of D-9, which reads the folder on disk |
+| INV-3 | `quality/vale/` holds no style file | holds: `vale.ini` and the manifest; breaks: `styles/Microsoft/Passive.yml` left there by a `vale sync` run in the folder | stage 1's fill; a contributor syncing inside `quality/vale/`; a fixture copied from a style | TC-11, which reads the folder on disk |
 | INV-4 | No evidence or input file names a host, address, client or person from the infra repositories | holds: "`<stack>/Makefile`: 3 findings of rule `minphony`"; breaks: a pasted finding line with a real path | a tool-run summary; a failure row quoting an infra issue; the owner's answers copied to `inputs/qa.md`; a commit added after review | the stage checker (D-17); no automatic test |
+| INV-6 | The packages named in `vale.ini` and the ids in the Vale manifest are the same set | holds: both name Microsoft and write-good; breaks: a package added to `vale.ini` with no manifest entry, so no licence is on record | stage 1's fill; a tag bump; a package dropped later | TC-12 |
 | INV-5 | A PLAN's `## Invariants` section is never empty | holds: a table, or "None: `<why>`"; breaks: the heading alone | a PLAN derived from the template; a PLAN revised after its gate | none automatic: the rule is in `epic-planning` step 6; the gap is accepted and named in #143 (D-3) |
 
 ## Error matrix
@@ -654,6 +694,8 @@ The adversarial tester takes these rows as its targets.
 | Vale's layout, pin form or command form differs from D-8 | The first step of task 1.3 | A `D-20+` delivery decision, confirmed by the owner in the round, before task 1.5 |
 | A package is unavailable, relicensed or changed at its tag | The run fails, or the manifest check at a pin bump | Drop it from the candidates and record why; never vendor it |
 | A style file lies under `quality/vale/` (INV-3) | The exact-contents test; B's `quality_files` lint if it reads the disk | Remove it; sync only in `tmp_path` or in a project's `.quality/` |
+| A package is in `vale.ini` and not in the manifest, or the reverse (INV-6) | TC-12 | Add or remove the entry; a new package is a new approval |
+| IT-1 cannot reach the network for its sync | The sync fails inside the test | The test skips with that reason; in the delivery session a skip is not proof (D-18), so the fill waits for network |
 | The tester's Hypothesis test breaks collection in CI | CI's `make validate`, which has no Hypothesis | D-11: its own file, opening with `importorskip` |
 | A tool is not installed where a run or a tool test executes | The command is not found | The run installs it into scratch (D-7); elsewhere the test skips, which is not proof (D-18) |
 | No checkout of `infrastructure-stacks` in the delivery session | Stage 3's preflight | Ask the owner for one; without it stage 3 waits, and stages 4 and 5 go first only with the owner's agreement (D-16) |

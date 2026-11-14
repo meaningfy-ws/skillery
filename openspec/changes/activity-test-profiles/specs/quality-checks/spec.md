@@ -6,8 +6,9 @@
 
 ### Requirement: Vale's styles are pinned, never copied
 `quality/vale/` SHALL hold Vale's configuration and a manifest of its external styles, each entry
-with its id, repository, tag, archive address, licence, the reason it was picked and the mode
-`report-only`, approved by the developer; the styles SHALL be fetched at their tag and no style
+with its id, repository, tag, licence, the reason it was picked and the mode `report-only`,
+approved by the developer; the packages the configuration names and the manifest's ids SHALL be
+the same set; the styles SHALL be fetched at their tag and no style
 file SHALL be committed. Only rules the developer marked worth fixing, from their findings, SHALL
 be enabled, and no Meaningfy-own rule or word list SHALL be added. Vale's tool test SHALL run
 locally where Vale is installed and SHALL skip in CI, as the other tool tests of `quality/` do
