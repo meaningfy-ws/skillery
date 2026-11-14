@@ -61,7 +61,8 @@ or when it names a skill that is not installed and says nothing.
   agents that have external help, and through its own description. Rejected: an instruction in
   `AGENTS.md` for every session; preloading it in the commercial agents.
 - **DEC-5**: Skillery depends on a Meaningfy fork of `wondelai/skills`, as it does for the book
-  rule sets. The owner creates the fork. Skills are installed one by one, never as a collection and
+  rule sets. The owner created the fork on 2026-11-15: `meaningfy-ws/wondel-ai-skills`, at
+  upstream commit `c526558`, the commit the study read. Skills are installed one by one, never as a collection and
   never a composite. Rejected: upstream at a pinned commit; upstream head.
 - **DEC-6**: Sixteen skills are adopted. Sales and positioning: `negotiation`,
   `hundred-million-offers`, `mom-test`, `obviously-awesome`, `jobs-to-be-done`,
@@ -137,7 +138,8 @@ or when it names a skill that is not installed and says nothing.
   override. The owner accepted this risk; the scenarios of DEC-7 show whether it bites.
 - **No Meaningfy preference yet** for marketing and management. The orchestrator must not invent
   one; it points, and says no house rule exists.
-- **The fork does not exist yet.** Until it does, nothing can be registered or installed.
+- **The fork is public**, like skillery. Nothing private goes into it, and it is kept in step
+  with upstream by hand; how often is left to the PLAN.
 - Left vague on purpose: the goal list, the row format, the reference split by domain, and how a
   bundle declares its external skills.
 
@@ -193,7 +195,8 @@ or when it names a skill that is not installed and says nothing.
 - Skills `sales-conversations`, `sales-qualification`, `technical-writing`, and each skill and
   agent that gains the pointer.
 - Every installer gains install steps for the external skills of its bundles, on both CLIs.
-- A new repository to keep: the Meaningfy fork of `wondelai/skills`.
+- A new repository to keep: `meaningfy-ws/wondel-ai-skills`, the Meaningfy fork of
+  `wondelai/skills`.
 - `lean-skills` (PR #236, not merged): its registration of the book rule sets and its routing in
   three agents move here (DEC-17); it is revised to say so.
 - `commercial-portfolio` follows this EPIC and shares the sales skills and one spec with it.
