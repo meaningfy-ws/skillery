@@ -20,7 +20,7 @@ What exists today, checked on `develop` at 6a54619:
 | Testing checklist | 16 numbered items; Hypothesis is item 10 | [`testing-checklist.md`](../../../skills/cosmic-python/references/testing-checklist.md) |
 | Tester | A brief for `implementer`, names targets and no method; runs at LARGE and above | [`team-and-briefs.md` § Adversarial tester](../../../skills/epic-delivery/references/team-and-briefs.md#adversarial-tester), [`epic-delivery.workflow.json`](../../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json) (`reviews.<appetite>.tester`) |
 | Import contracts | A `layers` contract with full module names, no `exhaustive`; grooming is prose | [`dot-importlinter.tmpl`](../../../skills/project-setup/assets/templates/root/dot-importlinter.tmpl), [`architecture-guardrails.md` § grooming](../../../skills/project-setup/references/architecture-guardrails.md#keeping-the-contracts-living-grooming) |
-| Scaffold | [`scaffold.sh`](../../../skills/project-setup/scripts/scaffold.sh) renders a fixed list of templates by name (lines 272–283, 412–431) and creates `<pkg>/commons/` and `<pkg>/__main__.py` (lines 297–305, 345); the Makefile is rendered for all three archetypes | — |
+| Scaffold | [`scaffold.sh`](../../../skills/project-setup/scripts/scaffold.sh) renders a fixed list of templates by name (lines 272–283, 412–431) and creates `<pkg>/commons/` and `<pkg>/__main__.py` (lines 297–306, 345); the Makefile is rendered for all three archetypes | — |
 | Project CI | Calls `make lint`, `typecheck`, `check-architecture`, `test`, `clean-code` one by one, never `check-quality` | [`ci.yaml.tmpl`](../../../skills/project-setup/assets/templates/ci/ci.yaml.tmpl) (lines 105–118) |
 | Top-level folders | `TOP_LEVEL_FOLDERS` has no `quality` | [`tools/repo_lint/lint.py`](../../../tools/repo_lint/lint.py) (line 462) |
 | Artifact types | Five | [`governance.md`](../../../docs/development/governance.md#the-five-artifact-types), [`AGENTS.md`](../../../AGENTS.md) (line 11), [`CLAUDE.md`](../../../CLAUDE.md) (line 4) |
@@ -310,7 +310,22 @@ That is eight Meaningfy Semgrep rules: five gating in `rules/` (`sparql-built-fr
 `exception-outside-exceptions-module`, `test-network-call`, `test-rdf-string-compare`,
 `test-real-sleep`), two in `report-only/` (`dict-as-model`, `free-string-key`) and one in
 `suppressions/` (D-6). A report-only rule moves to `rules/` by a pull request the owner approves,
-after its findings on one real project have been read.
+after its findings on one real project have been read. In a "Checked by" value a report-only rule
+is written `(partial: report-only)`.
+
+What each rule flags, the near miss its fixture must leave alone, and its path scope (the SPARQL
+rule is the worked example below):
+
+| Rule | Bad case (`ruleid:`) | Near miss (`ok:`) | `paths` |
+|---|---|---|---|
+| `mfy-exception-outside-exceptions-module` | `class GraphStoreError(Exception):` in `graph_store.py` | The same class in `exceptions.py`; a class whose base is not an exception | Exclude `**/exceptions.py`, `**/tests/**` |
+| `mfy-test-network-call` | A call to `requests.<method>`, `httpx.<method>` or `urllib.request.urlopen` | The same call under `tests/integration/` or `tests/e2e/`; `fake_client.get(url)` | Include `**/tests/unit/**`, `**/tests/feature/**` |
+| `mfy-test-rdf-string-compare` | `assert g.serialize(format="turtle") == expected` | `assert isomorphic(g, expected)`; `assert len(g.serialize()) > 0` | Include `**/tests/**` |
+| `mfy-test-real-sleep` | `time.sleep(1)`; `await asyncio.sleep(1)` | A call of an injected `sleep(1)` parameter; `await asyncio.sleep(0)` | Include `**/tests/**` |
+| `mfy-dict-as-model` (report-only) | `return {"uid": uid, "dataset_name": name}, 200`; `return {"a": x, "b": y}` | `return {}`; `return Model(**row)`; a dict literal passed as an argument | Include `**/entrypoints/**`, `**/services/**` |
+| `mfy-free-string-key` (report-only) | `row["status"]`; `hasattr(obj, "name")`; `getattr(obj, "name")` | `row[STATUS]`; `row[0]`; `getattr(obj, attr)` | Exclude `**/adapters/**`, `**/tests/**` |
+
+A path-scoped rule also includes its own fixture file name (tool facts).
 
 ### D-4 Fetch and tools in a project
 
@@ -352,8 +367,11 @@ machine's OS and architecture into `.quality/bin/`, each verified with `shasum -
 GitHub releases: `https://github.com/loeffel-io/ls-lint/releases/download/v$(LS_LINT_VERSION)/ls-lint-<os>-<arch>`
 and `https://github.com/checkmake/checkmake/releases/download/v$(CHECKMAKE_VERSION)/checkmake-v$(CHECKMAKE_VERSION).<os>.<arch>`
 (the `linux`/`amd64` names were run; the builder reads the other three asset names from the release
-pages when writing the checksums). `tools.sha256` holds one line per tool, version, OS and
-architecture. The three tool versions are Makefile variables beside the pin, and the checksum file
+pages when writing the checksums). `uname -s` gives the OS in lower case; `uname -m` maps
+`x86_64` to `amd64` and `aarch64` or `arm64` to `arm64`. Each binary is saved under a name that
+carries tool, version, OS and architecture, and `tools.sha256` holds one `shasum` line per saved
+name, for example `<64 hex>  ls-lint-2.3.2-linux-amd64`; `quality-tools` checks the one line of
+the machine's platform and fails when there is none. The three tool versions are Makefile variables beside the pin, and the checksum file
 sits in the same project (D-1), so a project moves a tool's version and its checksums in one commit.
 After the installs `quality-tools` runs `python3 scripts/quality/external_sources.py fetch` (D-7). `.quality/` joins `dot-gitignore`. Hypothesis and
 Schemathesis are pinned in the `test` group of `pyproject.toml.tmpl` (stage 2); mutmut in stage 3
@@ -502,7 +520,9 @@ Schemathesis (kind, source, pin, used by `project-setup`'s templates and `qualit
   ```
 
   `MUTATION_BUDGET` defaults to `150m`.
-- **`mutation_report.py`** reads `mutmut results` and `mutants/mutmut-cicd-stats.json` and writes:
+- **`mutation_report.py`** runs `mutmut results` and `mutmut show <name>` as subprocesses (the
+  tests replace the runner with canned text), takes as survivors the lines ending `: survived`,
+  reads `mutants/mutmut-cicd-stats.json` and writes:
   `survivors.txt` (one survivor per line, sorted); `diffs/<mutant>.diff` from `mutmut show` for the
   first 200 survivors; `README.md` with the counts, the line "incomplete: the time budget was
   reached" when `--incomplete` is given, and the pick-up rule of DEC-10. It writes no date, no
@@ -516,7 +536,9 @@ Schemathesis (kind, source, pin, used by `project-setup`'s templates and `qualit
   succeeds (same as the open pull request). Otherwise it commits as `github-actions[bot]` (the
   identity `releases.yml` uses) to `bot/mutmut-results`, force-pushes it and, with `gh` (the
   workflow sets `GH_TOKEN: ${{ github.token }}`), edits the open pull request of that branch or
-  creates one into the default branch.
+  creates one into the default branch. When the results equal the default branch while an older
+  bot pull request is still open, that pull request is left for the person who picks it up
+  (DEC-10); the target does not close it.
 - **Workflow** `ci/mutation.yml.tmpl`: `schedule` (Monday 03:00 UTC) and `workflow_dispatch`;
   `permissions: contents: write, pull-requests: write`; `concurrency: mutation` without cancel;
   job `timeout-minutes: 180`; checks out `<<DEFAULT_BRANCH>>`; restores `mutants/` from
@@ -690,7 +712,7 @@ decision comment on the line above` and exits 1: each entry needs its own line.
 | Id | Under test | Input | Expected | Edge cases |
 |---|---|---|---|---|
 | TC-01 | `top_level_folders` | a repo with `quality/` | no finding | `quality` as a file; `Quality/` |
-| TC-02 | `quality_files` lint | `quality/semgrep/notes.md` | names the file | `quality/README.md` passes; a nested `README.md` fails; a `.py` with no rule of its name fails; `__pycache__` is skipped |
+| TC-02 | `quality_files` lint | `quality/semgrep/notes.md` | names the file | `quality/README.md` passes; a nested `README.md` fails; a `.py` with no rule of its name fails; `__pycache__` is skipped; a rule or configuration file that `quality/README.md` does not name fails |
 | TC-03 | Fixture presence and message form | `x.yaml` without `x.py` | names `x` | fixture with `ruleid:` only; with `ok:` only; rule id not `mfy-`; message with none of the three D-3 forms |
 | TC-04 | "Checked by" parser | each of the three shapes | parsed value | empty cell; `review only` without reason; `review only` joined to a tool; two tools; `(partial: …)`; a `make` target |
 | TC-05 | "Checked by" cross-check | a value naming `mfy-x` with no rule file; a rule in `rules/` no value names | names entry and id | the `suppressions/` rule is not required to be named; a Ruff family covering a code; a code not selected; a `make` target not in the template |
@@ -712,7 +734,7 @@ Integration tests:
 | IT-03 | checkmake on the template | checkmake on PATH; `Makefile.tmpl` rendered with a package name | exit 0; exit 1 with `test` removed |
 | IT-04 | Scaffold run | The product and the library archetype scaffolded from the stage's branch, `QUALITY_VERSION` set to the branch's commit | `make check-quality` green on each skeleton, and still green after adding the folders `openspec/changes/add-billing-component/` and `tests/mutmut-results/` and after adding only a `dict-as-model` case (printed, exit 0). Red after each of: `utils.py`; an f-string SPARQL query; `requests.get(url)`; `import requests` in `domain`; a bare `# nosemgrep`; `# nosemgrep: mfy-test-real-sleep` without a reason; deleting `ruff.toml`. Recorded in the stage PR |
 | IT-05 | Fetch | The same project, after its first fetch | a second `make quality-fetch` offline exits 0; with the pin `v0.0.0` it exits non-zero and `.quality/` is unchanged; in a fresh clone with that pin `.quality/` is absent |
-| IT-06 | Weekly workflow and contract check | The sample project (D-13); `poetry lock` succeeds | `evidence/sample-project.md` |
+| IT-06 | Weekly workflow and contract check | The sample project (D-13); `poetry lock` succeeds | Three manual dispatches: the first opens the pull request; the second, with nothing changed, pushes nothing; the third, after a test is weakened on the default branch, updates the same pull request. Then a failing and a passing `make check-architecture`. All in `evidence/sample-project.md` |
 | IT-07 | Tester report | Stage 3 of this EPIC | `evidence/tester-report.md` |
 
 **Idempotency.** `quality-fetch` and `quality-tools` do nothing when the version file and the tools
@@ -857,6 +879,13 @@ items passed. Gaps folded in:
 | G8 | Same survivors with an open bot PR; the bot's identity → D-10, a spec scenario |
 | G9 | IT-04 missed three spec scenarios → IT-04 |
 | Item 12 | Files named without a path → the table *Files this plan names by short name* |
+
+**Clarity gate, run 2 (a second independent scorer, on commit 2f3898c): 9.0/10, PASS**, all
+thirteen items, with no margin. Its ten recommendations were folded in afterwards and not
+re-scored: a row per Semgrep rule and the report-only form (D-3); three dispatches in IT-06; the
+README completed and tested (task 1.16, TC-02); the checksum line and platform mapping (D-4); the
+stale-pull-request case and the script's inputs (D-10); "the default branch" in the mutation
+requirement; what the Gherkin scenarios prove (task 2.4); the new entry in the L1 lens (task 1.7).
 
 ## Open Questions
 
