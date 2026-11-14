@@ -1,7 +1,5 @@
 ## ADDED Requirements
 
-<!-- Shaping-level delta for the new capability only. The deltas of the modified capabilities
-     (epic-delivery, epic-shape, subagent-dispatch, workflow-definitions) are written with the PLAN. -->
 
 ### Requirement: One table recommends the tools for each activity
 The catalogue SHALL hold one table, in `guardrails`, that names the recommended tools for each
@@ -14,8 +12,16 @@ their own tool rules (proposal DEC-8).
 - **THEN** the table gives it the recommended tools for that activity under names it can call, and the fallback when one is absent
 
 #### Scenario: The table names a tool an agent cannot call
-- **WHEN** the table names a tool for an activity and the agent that performs the activity does not carry it in its tool list
-- **THEN** the catalogue's check fails and names the row
+- **WHEN** a row's Claude Code cell names a tool that an agent named in that row's Agents cell does not carry in its `tools:` list, globs included
+- **THEN** the lint check `activity_tools_table` fails and names the row and the agent
+
+#### Scenario: The lead row
+- **WHEN** a row's Agents cell says `lead`
+- **THEN** the check maps it to the agent `team-lead` and compares that agent's `tools:` list
+
+#### Scenario: The opencode column is not checked
+- **WHEN** a row's opencode cell names a tool
+- **THEN** the check does not compare it with any agent's tool list, because there the list does not restrict (gap G-6 in `docs/environment/dual-cli/mapping.md`)
 
 ### Requirement: Serena is encouraged for everything it supports
 The table SHALL recommend Serena for every code operation it supports (symbol and reference search,
