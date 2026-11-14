@@ -120,9 +120,10 @@ project.
   and the distilling rule has a Gherkin scenario for the agent whose behaviour changes.
 - **DEC-9** (confirmed, Q-10): Depends on A: its software matrix gains one row for the audit
   (question `ADQ`, technique owner `test-suite-care`), and the lanes are named as moments in the
-  existing rows. The matrix shape does not change. Stages 1 and 2 are independent of C and D; stage 3 needs the checks of C or D to exist. E and B stage 2 both
-  edit the tester's brief and the testing checklist: whichever lands second keeps the other's
-  change, and the PLAN states the order. Mutation results from B stage 3 are an optional input.
+  existing rows. The matrix shape does not change. Stages 1 and 2 are independent of C and D;
+  stage 3 needs the checks of C or D to exist. E and B stage 2 both edit the tester's brief and
+  the testing checklist: whichever lands second keeps the other's change, and the PLAN states the
+  order. Mutation results from B stage 3 are an optional input.
 - **DEC-10** (Q-9): "Best practices of test creation" means the testing checklist and more. The
   EPIC surveys the published test smells and test design patterns, and writes the ones that are
   missing as rules, each with the smell it prevents and its source. The rules live with their
