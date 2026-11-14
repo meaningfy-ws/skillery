@@ -6,7 +6,7 @@
 
 # EPIC: test suite care
 
-**Parents:** EPIC A [`test-strategy`](../test-strategy/proposal.md) (the loop and the software rows
+**Parents:** EPIC A [`test-strategy`](../archive/2026-11-14-test-strategy/proposal.md) (the loop and the software rows
 this EPIC adds to); the owner's request of 2026-11-14 and the measurements of `rdf-persistence`
 (`inputs/seed.md`, `inputs/qa.md`).
 

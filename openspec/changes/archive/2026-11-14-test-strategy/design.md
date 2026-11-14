@@ -219,7 +219,7 @@ Taken by the lead during delivery (2026-11-13); the developer may overrule any o
 - **D-13 Two proofs deferred to `evaluate-catalogue`** (the developer, 2026-11-14: "defer to that
   epic that aims for evaluations, add these tasks there"). The behavioural trigger run (task 1.11,
   D-7) and the baseline (task 1.12, D-11) move to tasks 6b.1 and 6b.2 of
-  [`evaluate-catalogue`](../evaluate-catalogue/tasks.md). Three baseline runs without the skill
+  [`evaluate-catalogue`](../../evaluate-catalogue/tasks.md). Three baseline runs without the skill
   were stopped by the model's safeguards and were not retried. Until 6b.1 runs, the triggers rest
   on the eight static probes and RISK-4 stays open. The trigger set is ready in
   `tests/evals/triggers/test-strategy.json`.
