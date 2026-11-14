@@ -85,4 +85,4 @@ conventions → OpenSpec and the `meaningfy` schema; implementation → external
 scoring the PLAN → `clarity-gate`.
 **Related:** `epic-planning`, `epic-delivery`, `clarity-gate`, `bdd-gherkin`.
 
-Answers `VAL, VER` in `test-strategy`'s matrix (`references/shaping.md`, `references/cross-cutting.md`).
+Answers `VER` in `test-strategy`'s matrix (`references/shaping.md`, `references/cross-cutting.md`).

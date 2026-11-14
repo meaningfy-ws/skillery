@@ -12,15 +12,15 @@ Checks on every non-code piece of work: posts, messages, offers and estimates, c
 | VAL | CHK-102 Governing-thought readiness test | `executive-communication` | three questions on who decides | before drafting | the owner | exists |
 | VER | CHK-90 Estimation checklist | `estimation` | the checklist | before any number leaves | the verifier | exists |
 | VER | CHK-91 Scope-boundary checklist | `proposal-writing` | the checklist | before the proposal and SoW ship | the verifier | exists |
-| VER | CHK-93 Contract library alignment | `contract-practice` | comparison with parent contracts | contract revision | the verifier | exists |
+| VER | CHK-93 Contract library alignment and counterparty-change sorting | `contract-practice` | comparison with parent contracts | contract revision | the verifier | exists |
 | VER | CHK-94 Sales goal verifier | `sales-operations` | independent reviewer prompt | end of each sales iteration | the verifier | exists |
 | VER | CHK-98 Sales rot and exit criteria | `sales-pipeline-custody` | the Exit-when line | each stage move; each sweep | the verifier | exists |
-| VER | CHK-99 Vault final check | `vault-setup` | sixteen present-or-missing lines | after vault setup | the verifier | exists |
+| VER | CHK-99 Vault final check | `vault-setup` | seventeen present-or-missing lines | after vault setup | the verifier | exists |
 | VER | CHK-104 Decision Package five required parts | `decision-package` | the five-part list | before the package ships | the verifier | exists |
 | VER | CHK-105 Repository's own check and immutability | `corpus-repository` | the repository's own check | before a pull request | the verifier | exists |
 | VER | CHK-106 Vault promotion check | `vault-promote` | kind and property check | each promotion | the verifier | exists |
 | VER | CHK-107 Vault table check | `vault-conventions` | the table rules | before saving a note | the verifier | exists |
-| ADQ | whether the writing checks would catch a bad piece | none yet | none yet | none yet | the checker | gap → none yet |
+| ADQ | whether the writing checks would catch a bad piece | none yet | none yet | none yet | the checker | gap → D |
 | ROB | an adversarial reader who tries to break the draft | none yet | none yet | none yet | the adversary | gap → D |
 | CLR | CHK-33 Cold reader | `technical-writing` | fresh agent given only the page | a how-to or tutorial changed; any page meant to be followed | the cold reader | exists |
 | CLR | CHK-86 Writing antipatterns self-check and genre map | `writing-antipatterns` | the genre's antipattern file | any prose | the cold reader | exists |

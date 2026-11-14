@@ -1,10 +1,9 @@
 # Verification and validation
 
-The definition of verification and validation and the matrix of what each artefact is checked
-against are owned by `test-strategy`. Validation always ends with a person; an agent prepares the
-evidence and may recommend, but never validates on the developer's behalf.
-
-The activities owned elsewhere are described in their skill. This skill owns two.
+The definition of verification and validation, and the matrix of what each artefact is checked
+against, are owned by `test-strategy`. In a delivery the developer validates; an agent prepares the
+evidence and may recommend. The other checks are rows of that matrix. This skill owns two: the
+acceptance demo and the validation review.
 
 ## Acceptance demo
 

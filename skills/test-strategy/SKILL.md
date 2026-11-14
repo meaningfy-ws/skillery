@@ -22,8 +22,8 @@ check the work stay with the skills that own them.
 
 Input: "write a LinkedIn post announcing our new SHACL service."
 
-1. **State success and failure first.** Succeeds: a data engineer who has never heard of us
-   understands what the service does and clicks through. Fails: it reads as an advert, or as jargon.
+1. **State success and failure first.** Succeeds: a cold reader given only the post says in one
+   sentence what the service does. Fails: the reader cannot, or the antipattern check flags an advert.
 2. **Take the checks from the matrix.** Open
    [`references/generic-writing.md`](references/generic-writing.md) and
    [`references/cross-cutting.md`](references/cross-cutting.md):
@@ -40,7 +40,8 @@ Input: "write a LinkedIn post announcing our new SHACL service."
 1. **State** how the work succeeds and how it fails, before doing it.
 2. **Do** the work.
 3. **Challenge** it against those criteria, with the checks the matrix names.
-4. **Decide:** pass, fail, or accept the miss. A person decides every `VAL` result.
+4. **Decide:** pass, fail, or accept the miss. A person decides every `VAL` result, and accepting a
+   miss, on any question, is a person's decision.
 5. **Revise** the work, not the criteria. Change a criterion only by going back to step 1.
 
 ## What a test is
@@ -55,7 +56,7 @@ an opinion. A finding without a criterion is never a failed test.
 Verification asks "did we build it right?": each artefact against its own specification, mostly by
 agents. Validation asks "did we build the right thing?": each artefact against the need one level up;
 it always ends with a person, and an agent never marks it done. Green gates prove verification only.
-When and who run each in an epic delivery stays with `epic-delivery`.
+Who runs each, and when, in an epic delivery is owned by `epic-delivery`.
 
 ## The six questions
 
@@ -80,8 +81,8 @@ A stance is the point of view a reviewer or a brief takes. Each asks its own que
 | cold reader | `CLR` | has only the page |
 | checker | `ADQ` | a fresh agent that did not build or test the work |
 
-A review lens or a brief takes a stance; it does not become one. The brief stays with
-`epic-delivery` and the dispatch mechanics with `guardrails`.
+A review lens or a brief takes a stance. The stance does not own the brief (`epic-delivery`) or the
+dispatch (`guardrails`).
 
 ## Reading the matrix
 
@@ -99,10 +100,17 @@ One file per activity family, each a table. Start from the family of the work, t
 | [`generic-writing.md`](references/generic-writing.md) | posts, offers, contracts, sales, notes |
 | [`cross-cutting.md`](references/cross-cutting.md) | checks that apply to every family |
 
+[`cross-cutting.md`](references/cross-cutting.md) always applies besides the family file.
 [`inventory.md`](references/inventory.md) defines every check once, as `CHK-<n>`; the family files
 cite it. Columns: question, check, technique owner, tool, moment, decided by, status.
+*Decided by* names who judges pass or fail on that row: a stance or a person. Accepting a miss, on
+any question, is a person's decision. "The developer" and "the owner" are the person the work is for:
+the developer in a delivery, the owner for the owner's own writing, sales and vault. A *technique
+owner* in `cross-cutting.md` may be a repository tool or doc, not a skill.
 Status is `exists`, `gap` (no check yet; it names the EPIC expected to fill it, or "none yet") or
-`accepted` (a gap the developer chose to leave open, with the reason).
+`accepted` (a gap the developer chose to leave open, with the reason). Gap targets: `gap → B` is the
+EPIC `harden-checks-and-tests`, `C` is `activity-test-profiles`, `D` is `generic-task-test-profiles`;
+`none yet` means no EPIC claims it.
 
 On a gap, say so, state the criterion anyway, and let a person judge it. Never invent a technique to
 fill a row.

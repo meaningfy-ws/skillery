@@ -16,5 +16,5 @@ Checks on conceptual models, LinkML schemas and rule sets. `conceptual-modelling
 | ADQ | CHK-71 Competency questions | `conceptual-modelling` | queries with agreed answers | model changes | the checker | exists |
 | ADQ | CHK-77 Rules-from-text test per obligation | `formal-reasoning` | a test per obligation | deriving rules from a text | the checker | exists |
 | ROB | CHK-73 Engine-checked rule sets, UNSAT cases | `formal-reasoning` | clingo, SWI-Prolog | rule authoring; every model change | the adversary | exists |
-| CLR | CHK-76 Paraphrase-back, a human reads each `means:` line | `formal-reasoning` | the `%%` paraphrase | rule authoring | the cold reader | exists |
+| CLR | CHK-76 Paraphrase-back and runner refusals, a human reads each `means:` line | `formal-reasoning` | the `%%` paraphrase | rule authoring | the cold reader | exists |
 | RSK | what outside the model can go wrong (a vocabulary changes, a consumer breaks) | none yet | none yet | none yet | the adversary | gap → C |

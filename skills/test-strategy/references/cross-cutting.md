@@ -7,15 +7,13 @@ Checks that apply to every family: how agents report and check each other (`guar
 | VAL | CHK-118 Rule approval card | `rule-learner` | one approval card | wrap-up or on request | the owner | exists |
 | VAL | CHK-119 Rule usage flags | `rule-steward` | flags from session traces | weekly review | the owner | exists |
 | VAL | CHK-122 Agent Gherkin scenarios | `bdd-gherkin` | pytest-bdd features under `tests/features/` | behavioural agent change | the developer | exists |
-| VAL | CHK-128 Lint group, use cases and dependencies | repository lint | `use_case_coverage` | `make validate`; CI | the developer | exists |
-| VAL | CHK-137 No open plan drift at archive | `spec-stewardship` | the navigator's Archive check | archive | the developer | exists |
 | VER | CHK-108 Evidence before a claim | `superpowers:verification-before-completion` (external) | the verification command, read in full | before a stage is reported done | the verifier | exists |
-| VER | CHK-109 Four-eyes rule | `guardrails` | a fresh subagent | after delegated work | the checker | exists |
+| VER | CHK-109 Four-eyes rule, a second check on finished work | `guardrails` | a fresh subagent | after delegated work | the verifier | exists |
 | VER | CHK-110 Subagent base report | `guardrails` | the report template | every subagent return | the verifier | exists |
 | VER | CHK-111 Output validation guardrail | `guardrails` | schema, `openspec validate --strict`, tests | before output feeds the next step | the verifier | exists |
 | VER | CHK-112 Rulebook check | `rulebook` | `rules.py check` | before handing over an output | the verifier | exists |
 | VER | CHK-113 Rulebook lint and golden check | `rulebook` | `rules.py lint`, `check --golden` | weekly review | the verifier | exists |
-| VER | CHK-114 `openspec validate --strict` and `/opsx:verify` | `spec-stewardship` | `openspec validate --strict` | archive | the verifier | exists |
+| VER | CHK-114 `openspec validate --strict` and the opsx verify command | `spec-stewardship` | `openspec validate --strict` | archive | the verifier | exists |
 | VER | CHK-117 Rulebook write-time lint refusal | `rulebook` | `rules.py add`, exit 4 | every rule write | the verifier | exists |
 | VER | CHK-122 Agent Gherkin scenarios | `bdd-gherkin` | pytest-bdd features | behavioural agent change | the verifier | exists |
 | VER | CHK-124 Lint group, frontmatter and naming | repository lint | `tools/repo_lint` | `make validate`; CI | the verifier | exists |
