@@ -1,7 +1,6 @@
 <!-- PLAN (design half). Type: Implementation. First derived 2026-11-13 before A and B existed;
      rewritten 2026-11-14 against A as delivered and archived and against B's gated PLAN (both on
-     develop at 48dfc9c). The first version's attack and five gate runs are summarised in
-     inputs/planning-record.md. -->
+     develop at 48dfc9c). History is in inputs/planning-record.md. -->
 
 > Derives from: EPIC `activity-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-8; the
 > owner's answers Q-8..Q-11 in [`inputs/qa.md`](inputs/qa.md). Parents as delivered or planned:
@@ -81,7 +80,7 @@ What C uses, with the place in [B's design](../harden-checks-and-tests/design.md
 **Goals:** five stages, each closing its families' `gap → C` rows as `exists` or `accepted`
 (DEC-1, DEC-2); the invariants path from the interview to the tester (DEC-5); the four tool runs
 of three tools (DEC-7); DEC-7's four proofs; the Definition of Done of a skill change
-(`docs/development/README.md` §9).
+([`docs/development/README.md` §9](../../../docs/development/README.md#9-definition-of-done)).
 
 **Non-Goals:** the proposal's No-gos. In particular: no check without a failure id; no change in
 the stacks repositories; no edit to the tester's brief or to any file of `project-setup` other than
@@ -151,7 +150,7 @@ must hold, each stated so that a property test could check it, each with an exam
 valid answer, recorded with its reason. The answers are recorded with the rest of the interview,
 in the change's `inputs/qa.md`, and step 6 reads them from there (the EPIC template gains no
 field). Step 6 gains the three rules of D-1. SKILL.md grows by at
-most five lines. The detail goes to a new reference,
+most seven lines. The detail goes to a new reference,
 `skills/epic-planning/references/invariants.md`: what an invariant is and is not, the write-path
 list, the error-matrix row, and the #143 case replayed (§ Algorithm).
 
@@ -200,7 +199,7 @@ Each run happens in the session's scratch folder with a draft configuration; not
 |---|---|---|---|
 | Vale | 1 | skillery's `docs/` (Q-10) | the four packages of D-8, every rule at its default level |
 | ls-lint, docs | 1 | skillery's `docs/` | kebab-case for directories and for `.md` and `.adoc` files; `README.md`, `CHANGELOG.md` and `docs/rules/` exempt (the rulebook's tooling names those files) |
-| ls-lint, stacks | 3 | a read-only checkout of `infrastructure-stacks` (Q-10) | the naming form most stacks already follow, counted in the checkout for directories at the stack level and one level below and for each file extension present in more than half of the stacks; the summary states each counted form; the findings are the names that depart from it |
+| ls-lint, stacks | 3 | a read-only checkout of `infrastructure-stacks` (Q-10) | the naming form with the highest count, counted in the checkout for directories at the stack level and one level below and for each file extension present in more than half of the stacks; the summary states each form and its count; the findings are the names that depart from it. On a tie, or when no form covers more than half, the run is not made on a guess: the summary lists the forms and the owner picks one in the round, after which the run is made |
 | checkmake | 3 | the same checkout | its default rule set |
 
 - ls-lint and checkmake are installed at the versions B pins in `Makefile.tmpl`
@@ -224,7 +223,8 @@ Each run happens in the session's scratch folder with a draft configuration; not
 ### D-8 Vale's styles
 
 Candidates, in this order, run report-only (Q-11): Microsoft, Google, write-good, proselint. The
-owner picks packages and rules in the stage's round; a rule not marked "would fix" is not enabled.
+owner marks rules in the stage's round (D-6, kind 2); a rule not marked "would fix" is not enabled,
+and a package is adopted, with a manifest entry, only when at least one of its rules is marked.
 No style file is committed (No-gos; B's DEC-6): `vale sync` fetches the packages named in
 `vale.ini`.
 
@@ -233,10 +233,12 @@ with `tag` and `archive` in place of `commit` and `paths`: `id`, `repo`, `tag`, 
 address of the package's release archive at that tag, the same address `vale.ini`'s `Packages`
 line holds), `licence`, `why`, `mode` (`report-only`; C adds no gating Vale rule).
 
-The planner did not run Vale. The first step of task 1.3 confirms four facts against the pinned
-Vale's documentation and a trial run: `vale --config <file> sync` reads that file and writes each
-package to its `<StylesPath>/<Package>/`; `Packages` accepts an archive address; a bare package
-name fetches the latest; a run with `--config <file>` uses the same `StylesPath`. A difference is a
+The planner did not run Vale. The first step of task 1.3 confirms five facts against the
+documentation of the Vale version installed for the run (D-7) and a trial run:
+`vale --config <file> sync` reads that file and writes each package to its
+`<StylesPath>/<Package>/`; `Packages` accepts an archive address; a bare package name fetches the
+latest; a run with `--config <file>` uses the same `StylesPath`; `vale.ini` can enable single
+rules of a package without switching on the whole style. A difference is a
 correction of this decision and of D-9, confirmed by the owner in the stage's round before task
 1.5 and recorded under `## Delivery decisions` (D-16).
 
@@ -271,14 +273,8 @@ Four of these files are configurations and need a fixture pair: `vale/vale.ini`,
 | `ls-lint/stacks.yml` | the directory `ls-lint/stacks/bad/` | the directory `ls-lint/stacks/good/` |
 | `checkmake/stacks.ini` | `checkmake/stacks/bad.mk` | `checkmake/stacks/good.mk` |
 
-Tests, all in `tests/test_quality.py`:
-
-| Test | Needs | In CI |
-|---|---|---|
-| Each of the four configurations that exists has its fixture pair | Python only | runs |
-| Each entry of the Vale manifest has every field of D-8, and `mode` is `report-only` | Python only | runs |
-| `quality/vale/` holds exactly `vale.ini` and the manifest, on disk (INV-3) | Python only | runs |
-| Per configuration: the bad fixture is flagged once per enabled rule, by that rule's name; the good one is silent | the tool; Vale also syncs its styles into `tmp_path`, so network | skips, in B's `skipif` form |
+The tests are in `tests/test_quality.py`; § Algorithm lists them as TC-9..TC-11 (Python only, run
+in CI) and IT-1..IT-4 (need the tool, skip in CI in B's `skipif` form).
 
 Adding a tool also touches B's two guides: `docs/development/quality.md` gains Vale and the second
 manifest form, and `CONTRIBUTING.md` gains Vale's install note beside B's.
@@ -330,7 +326,7 @@ The middle three cells of an `accepted` row keep what the gap row had.
 in the list, a row whose status cell is not exactly `exists` or `accepted`, or an `accepted` row
 whose *Check* cell is empty, is an error naming the file and the row; a listed file that is
 missing is an error too. So a `gap` row, a decorated or misspelt status and a row whose columns
-shifted are all reported. The tester's property test for this function goes in its own file,
+shifted are all reported (TC-1..TC-8, § Algorithm). The tester's property test for this function goes in its own file,
 `tests/test_closed_families_properties.py`, which opens with
 `pytest.importorskip("hypothesis")`, so CI, which installs no Hypothesis, skips it and still
 collects A's tests. The list starts empty with the function's own fixture cases, so the test is green
@@ -424,25 +420,18 @@ the row alone carried it.
 
 ### D-15 Definition of Done items beyond the stage loop
 
-- **Baseline, stage 2 only** (the invariants question is a discipline rule). A sample EPIC of
-  about twenty lines that keeps one label in two stores and offers create, rename and replace is
-  written once to `evidence/baseline-shaping-epic.md`; it mentions neither invariants nor write
-  paths. Its PLAN is derived twice from that file by fresh subagents, each working in a checkout
-  of a named commit (the stage's base commit, then its head) and told to follow that checkout's
-  `skills/epic-planning/` and PLAN template, not the installed plugin. The sample has no
-  `inputs/qa.md`, so the after-run exercises rule 3 of D-1 (invariants proposed from the EPIC).
-  `evidence/baseline-shaping.md` records two observables for each run. The first: **the PLAN ties
-  create to both stores**, in an invariant row, a scenario or a test task that says the label must be the
-  same in both stores after a create. A task that merely implements create does not count. The
-  second: **an invariant row whose *Test* cell starts with `tester` has an error-matrix row citing
-  its id** (not applicable when no row is left to the tester). Expected for both: no before, yes
-  after. If the before-run already shows the first, the result is recorded as it is, #143 stays
-  the failure evidence and the owner is told in the stage's PR. If the after-run misses either,
-  the texts of tasks 2.5, 2.6 and 2.7 are revised and the run repeated, at most twice; then it
-  goes to the owner.
+- **Baseline, stage 2 only** (the invariants question is a discipline rule): the four runs IT-5 to
+  IT-8 of § Algorithm, each by a fresh subagent working in a checkout of a named commit and told
+  to follow that checkout's `skills/epic-planning/` and PLAN template, not the installed plugin.
+  Results go to `evidence/baseline-shaping.md`. If IT-5 already meets its observable, the result
+  is recorded as it is, #143 stays the failure evidence and the owner is told in the stage's PR.
+  If an after-run misses its expected result, the texts of tasks 2.5, 2.6 and 2.7 are revised and
+  that run repeated, at most twice; then it goes to the owner.
 - **Failure case:** the survey files; for stage 2, #143.
-- **Issue referenced:** stage 1's PR names #212 (the follow-up that waits on stage 1's Vale run),
-  stage 2's #143, stage 3's #216; stages 4 and 5 name the EPIC.
+- **Issue referenced:** stage 1's PR names
+  [#212](https://github.com/meaningfy-ws/skillery/issues/212) (the follow-up that waits on stage
+  1's Vale run), stage 2's #143, stage 3's
+  [#216](https://github.com/meaningfy-ws/skillery/issues/216); stages 4 and 5 name the EPIC.
 - **Follow-up comments:** stage 2 comments on #143 and stage 3 on #216 (the proposal: "revisit
   when stage 3 has recorded its findings"), each with what was delivered.
 - **External tools:** Vale gets an entry in `dependencies.yaml` (kind `cli-tool`) if adopted;
@@ -500,7 +489,8 @@ passed result after. An accept-only stage writes no catch file.
 
 The new checks are steps inside triggers the skills already have, so no probe is owed. If a stage
 must change a description, it ships a positive and a near-miss probe with the before and after
-kept (`AGENTS.md`, *Proven triggers*).
+kept ([`AGENTS.md`](../../../AGENTS.md), § Skills and agents development method, *Proven
+triggers*).
 
 ## Algorithm / approach
 
@@ -578,6 +568,41 @@ kept (`AGENTS.md`, *Proven triggers*).
 A reason names an external skill only if task 5.2 recorded it as installed in the session; today
 those are the `design` plugin's `design-critique`, `accessibility-review`, `ux-copy`,
 `user-research` and `design-system`, and `frontend-design`.
+
+### Tests and proofs
+
+`TC` is an automatic test that runs in CI; `IT` needs a tool, a subagent or a delivery and is run
+in the delivery session; `CK` is a reading by the stage checker. The fixture paths are D-9's.
+
+| Id | What | Input | Expected | Home |
+|---|---|---|---|---|
+| TC-1 | `closed_family_errors`, a gap row | a table with a `gap → C` row | one error naming file and row | `tests/test_test_strategy.py` |
+| TC-2 | a status in bold | `**exists**` | one error | the same |
+| TC-3 | a status in backticks | `` `accepted` `` | one error | the same |
+| TC-4 | a misspelt status | `exist` | one error | the same |
+| TC-5 | a row shifted by a pipe in its reason | a reason holding a pipe | one error | the same |
+| TC-6 | `accepted` without a reason | an empty *Check* cell | one error | the same |
+| TC-7 | a clean file | rows `exists` and `accepted` with text | no error | the same |
+| TC-8 | a listed file that is missing | a name with no text | one error | the same |
+| TC-9 | fixture presence | each of the four configurations that exists | its bad and good fixture exist | `tests/test_quality.py` |
+| TC-10 | manifest fields | each entry of the Vale manifest | every field of D-8 present; `mode` is `report-only` | the same |
+| TC-11 | no style file (INV-3) | `quality/vale/` on disk | exactly `vale.ini` and the manifest | the same |
+| IT-1 | Vale flags its fixture | `vale.ini` copied to `tmp_path`, synced there; the pair | `bad.md` flagged once per enabled rule, by rule name; `good.md` silent | `tests/test_quality.py`, skips without Vale |
+| IT-2 | docs ls-lint | `ls-lint/docs.yml`; the pair | the same, for directories | the same, skips without ls-lint |
+| IT-3 | stacks ls-lint | `ls-lint/stacks.yml`; the pair | the same | the same |
+| IT-4 | stacks checkmake | `checkmake/stacks.ini`; the pair | `bad.mk` flagged once per enabled rule; `good.mk` silent | the same, skips without checkmake |
+| IT-5 | baseline, before | sample EPIC 1 (one label in two stores; create, rename, replace; about twenty lines; no word of invariants or write paths; no `inputs/qa.md`), at the stage's base commit | the derived PLAN does not tie create to both stores | `evidence/baseline-shaping.md` |
+| IT-6 | baseline, after, no interview answer | sample EPIC 1, at the stage's head commit | an `## Invariants` row marked "proposed, not confirmed" whose write paths include create (rule 3 of D-1) | the same |
+| IT-7 | after, an invariant left to the tester | sample EPIC 1 with a sample `inputs/qa.md` that answers the question: the one-label invariant, an example, "leave it to the tester" | the row is not marked "proposed"; its *Test* cell starts with `tester`; an error-matrix row cites its id (rule 2) | the same |
+| IT-8 | after, no invariant | sample EPIC 2 (a wording-only change) with a sample `inputs/qa.md` answering "None" with a reason | the section holds "None: `<that reason>`" (rule 1) | the same |
+| IT-9 | the invariants trace | the tester's report on stage 1 | D-13's "Proven" | `evidence/invariants-trace.md` |
+| CK-1 | the template's one new heading | the `##` headings of the design template before and after task 2.7 | identical except `## Invariants` before `## Error matrix` | the stage 2 checker's verdict |
+| CK-2 | the interview question | `epic-planning` step 2 as changed, and the two sample `inputs/qa.md` files written in the form it asks for | the text asks for each invariant with an example and accepts "none" with a reason; the samples fit it | the same |
+
+"Ties create to both stores" (IT-5, IT-6) means an invariant row, a scenario or a test task that
+says the label must be the same in both stores after a create; a task that merely implements
+create does not count. The sample EPICs and `inputs/qa.md` files are written once, to
+`evidence/baseline/`, and every run reads them from there.
 
 **Idempotency.** Every step is a file edit under review or a read-only run. Re-running a survey
 appends failures under new ids and never renumbers. Re-running a tool run overwrites its summary.
