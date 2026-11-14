@@ -12,16 +12,23 @@ list, shape, practices) and the modified `skill-crafting-method`.
 - [ ] 1.1 Failing tests first, in `tests/test_repo_lint_negative.py` on synthetic roots: one test
   per check outcome of the design's error matrix (over budget unlisted; stale `over_budget`; empty
   reason; stale per-check `pending` exemption; unknown name; budget-pending and `over_budget` both;
-  malformed file gives one error only; pointer not in the sentence form, as a link, a code span, a
-  bold file name and a table cell; closing heading containing "reference"), and passing tests on a
-  bare root without `skill-budget.yaml`: a pointer in the sentence form, a link into another
-  skill's `references/`, a link inside fenced code. All fail before 1.2. (D-3, D-4, D-5)
-- [ ] 1.2 In `tools/repo_lint/lint.py`: `_skill_budget`, `prose_budget`, `reference_pointers`
-  (D-3, D-4, D-5); both in `ALL_CHECKS` and `METHOD_CHECKS`. Run impact analysis on
+  malformed file gives one error only; an empty exemption list; a check named twice; pointer not
+  in the sentence form, as a link, a code span, a bold file name and a table cell; closing heading
+  containing "reference"), asserting the exact messages of D-4, and passing tests on a bare root
+  without `skill-budget.yaml`: a pointer in the sentence form wrapped over two list lines, one
+  whose sentence holds "e.g." and "3.12", one in a blockquote, two pointers in one sentence, a
+  heading "Quick reference", a link into another skill's `references/`, a link inside fenced
+  code, keys set to `{}`. Failing cases also include a code span holding only an own file name, a
+  folder path, and a topic mention in its own sentence. All fail
+  before 1.2. (D-3, D-4, D-5)
+- [ ] 1.2 In `tools/repo_lint/lint.py`: `_skill_budget`, `_pointer_errors`, `prose_budget`,
+  `reference_pointers` (D-3, D-4, D-5); both in `ALL_CHECKS` and `METHOD_CHECKS`. Run impact analysis on
   `skill_size_report` first. The tests of 1.1 pass.
 - [ ] 1.3 Change `skill_size_report` to the 6 KB body target and its label in
   `_print_trigger_notes` to "lean body target"; remove `ADVISORY_SKILL_LINES` and
-  `ADVISORY_SKILL_TOKENS` (D-3). `skill_too_long` is unchanged.
+  `ADVISORY_SKILL_TOKENS` (D-3). Message: `<skill>: SKILL.md body is <n> bytes (lean body target
+  6144)`. Test first: a body of 6,145 bytes gives a note, one of 6,144 none. `skill_too_long` is
+  unchanged.
 - [ ] 1.4 Run both checks on the real tree with no list; write `skill-budget.yaml` with every
   failing skill under `pending`, sorted, each with the checks it fails, and `over_budget: {}`;
   header comment as in D-4. Record the list and its count in the PR description. Repeat after the
@@ -36,8 +43,9 @@ list, shape, practices) and the modified `skill-crafting-method`.
 - [ ] 1.8 `docs/development/README.md` principle 7: one sentence on the three tiers, linking to
   § *The lean standard*, with no number of its own.
 - [ ] 1.9 CHANGELOG `[Unreleased]` › Added: the lean standard and its two checks, written for
-  someone authoring a skill. Add the two checks as rows to
-  `skills/test-strategy/references/inventory.md` beside CHK-125 and CHK-130 (RISK-8).
+  someone authoring a skill. In `skills/test-strategy/references/inventory.md`, add
+  `prose_budget` and `reference_pointers` to the check cell of CHK-125 and change "skill size" to
+  "lean body target" in CHK-130; no new CHK id (RISK-8).
 - [ ] 1.10 `make lint`, `make validate`, `make validate-spine` green; `detect_changes` against
   `develop` shows only the lint symbols named above. Pull request into `develop`.
 

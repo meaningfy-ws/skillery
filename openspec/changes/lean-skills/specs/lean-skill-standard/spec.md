@@ -2,7 +2,8 @@
 
 ### Requirement: A skill's prose stays within the budget
 A skill's prose (its `SKILL.md` body and its reference files, example code included) SHALL stay
-within the budget of DEC-2. Templates, assets and scripts SHALL NOT count. A skill over the budget
+within the budget of DEC-2. Files outside `SKILL.md` and `references/` SHALL NOT count; every
+file under `references/` counts, whatever its kind. A skill over the budget
 SHALL carry a recorded, justified exception, and the catalogue check SHALL fail for a skill over
 the budget without one.
 
@@ -21,7 +22,7 @@ the budget without one.
 ### Requirement: Skills waiting for their rewrite are listed, and the list cannot rot
 Until every skill is rewritten, a skill that existed when the standard was introduced MAY be
 listed as pending in `skill-budget.yaml`, with the checks it is exempt from. A skill added later
-SHALL NOT be listed. The check SHALL fail for an exemption no longer needed, a name that is not a
+SHALL NOT be listed (enforced by review; the lint does not know when a skill was added). The check SHALL fail for an exemption no longer needed, a name that is not a
 skill, or a malformed file. A missing file SHALL mean no skill is listed.
 
 #### Scenario: A rewritten skill left on the list
@@ -39,7 +40,9 @@ skill, or a malformed file. A missing file SHALL mean no skill is listed.
 
 ### Requirement: A pointer to a reference says when to open it
 Every mention in a `SKILL.md` body of a file in the skill's own `references/` SHALL be one
-sentence of the form "Read <file> when <situation>: it adds <what>.", at the point of need. No
+sentence that opens with Read or Open, names the situation with when, if, before, after, while,
+once, whenever, until or unless, and ends with ": it adds|gives|holds <what>." (the exact grammar
+is in design D-5), at the point of need. No
 heading that names references, resources, further reading, see also or supporting material SHALL
 close the body with a list. The catalogue check SHALL fail for a pointer in another form and for
 such a heading. A path into another skill's `references/` and text inside fenced code SHALL NOT

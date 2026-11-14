@@ -140,7 +140,26 @@ file, so it cannot rot:
 - an `over_budget` skill at or under the budget fails ("remove its exception");
 - an `over_budget` reason that is empty fails;
 - a file that is not valid YAML, has another top-level key or another exemption name gives one
-  error, and both checks then report nothing else until it is fixed (no flood of 40 errors).
+  error, and both checks then report nothing else until it is fixed (no flood of 40 errors);
+- a missing key, or a key set to `{}` or null, means empty; an empty exemption list or a check
+  named twice in one entry is a malformed file.
+
+The exact messages, which the tests of task 1.1 assert:
+
+| Rule | Message |
+|---|---|
+| over budget, unlisted | `prose_budget: <skill>: prose is <n> bytes (body <b>, references <r>); budget 24576` |
+| unknown name | `prose_budget: skill-budget.yaml: <name> is not a skill` |
+| double listing | `prose_budget: skill-budget.yaml: <skill> is exempt from the budget twice (pending and over_budget)` |
+| stale pending | `prose_budget: skill-budget.yaml: <skill> passes <checks>; remove it from pending` |
+| stale `over_budget` | `prose_budget: skill-budget.yaml: <skill> is within budget (<n> bytes); remove its exception` |
+| empty reason | `prose_budget: skill-budget.yaml: <skill> has no reason for its exception` |
+| malformed file | `prose_budget: skill-budget.yaml: <the parse or shape problem>` |
+
+`<checks>` is the comma-separated list of exemptions no longer needed, in the order `budget,
+pointers`. The stale-pending rule needs the pointer scan, so `prose_budget` and
+`reference_pointers` share one helper, `_pointer_errors(repo, skill)`, which returns the pointer
+errors of one skill.
 
 At delivery of stage 1, `pending` holds exactly the skills and checks that fail on that day (about
 46 skills, computed with an empty list), and `over_budget` is empty: no exception is granted before
@@ -164,16 +183,37 @@ of practice 1 are checked.
 - Its **sentence** is the text from the previous `.`, `!`, `?` or block start to the next `.`,
   `!`, `?` or block end, where a block is a paragraph, a list item with its continuation lines, or
   a table cell. Every pointer, every other link and code span are replaced by a placeholder
-  before the split, so the dots in `alerting.md` or a URL never end a sentence. The list marker
+  before the split, so the dots in `alerting.md` or a URL never end a sentence. A `.`, `!` or `?`
+  ends a sentence only when followed by whitespace or the block end, and never in `e.g.` or
+  `i.e.`, so "v3.14" and "§ 2.1" do not split. The list marker
   and Markdown emphasis are stripped before the match.
 - (a) The sentence SHALL have the form, case-insensitive:
   `Read|Open <pointer> when|if|before|after|while|once|whenever|until|unless <situation>: it adds|it gives|it holds <what>.`
   As a regular expression on the sentence with the pointer replaced by `P`:
   `^(read|open) P(, P)*( and P)? (when|if|before|after|while|once|whenever|until|unless) .+?: it (adds|gives|holds) .+$`.
-- (b) No heading of the body contains, case-insensitive, `reference`, `see also`, `further
-  reading`, `resources` or `supporting material`: a heading of that kind closes the body with a
-  list, which DEC-11 forbids.
-- Errors give the line number in the file, frontmatter included, as `rulebook`'s check does.
+- (b) No heading of the body matches, case-insensitive and as whole words,
+  `\b(references|see also|further reading|resources|supporting materials?)\b`: a heading of that
+  kind closes the body with a list, which DEC-11 forbids. "Quick reference" and "Boundary & Related
+  Skills" pass; "References for Deeper Understanding" fails.
+
+Parsing rules, fixed by a simulation of this check on all 51 skills (280 pointers today, none in
+the form; the 11 skills without `references/` pass):
+
+- Runs of whitespace, newlines included, collapse to one space before the match, so a sentence
+  wrapped over the lines of a list item matches.
+- A blockquote line is read without its `>`. A nested list item is its own block. A pointer in a
+  heading fails.
+- A file name is the name with its extension (`checklists.md`, never the word "checklists"). A
+  code span equal to an own reference file's name, or to its path under `references/`, is a
+  pointer. A path to a folder under `references/` (`references/channels/`) points to that folder
+  and is held to the form too.
+- Every pointer must sit in a sentence of the form; further pointers in the same sentence, before
+  or after `it adds`, are covered by it. A separate sentence that mentions an own reference as a
+  topic ("the severity table in P decides the channel") fails: it is reworded as a pointer or
+  drops the file name.
+- The Boundary section is held to the form like any other part of the body.
+- The error names the line that holds the pointer.
+- Errors give the 1-based line in `SKILL.md`, frontmatter lines counted.
 
 ```
 reference_pointers: formal-reasoning: line 44: pointer to references/patterns.md is not "Read <file> when <situation>: it adds <what>."
@@ -250,7 +290,8 @@ Second reader: <who or which subagent>, <date>. Verdict: nothing lost | lost: <l
 5. **A fallback for a named external dependency.** Where a body names an external dependency, it
    says what to do when it is missing, in one sentence: "If `<dependency>` is not installed, offer
    `<install command>`; if the person declines, say that you work without it and what is lost."
-   The install command is the one recorded in `dependencies.yaml`, which R2 owns.
+   The body names no CLI: it offers to install the dependency as `dependencies.yaml` records it
+   for the running CLI (R2 owns that register).
 
 ## Algorithm / approach
 
@@ -274,7 +315,8 @@ The checks are pure functions of the tree: re-running them is safe and gives the
 **Worked example of the transition.** Stage 2 rewrites `cosmic-python` from 126 KB to, say, 22 KB
 with its pointers reworded to the sentence form. The pull request removes `cosmic-python` from
 `pending`; both checks now run on it and pass. Had the pull request forgotten to remove it, the
-check fails with "cosmic-python: passes budget, pointers; remove it from pending".
+check fails with `prose_budget: skill-budget.yaml: cosmic-python passes budget, pointers; remove
+it from pending`.
 
 ### Stages 2 to 5, outline
 
@@ -289,7 +331,7 @@ ships with it.
 | 2 pilot | `cosmic-python` | R2 stage 1 has registered the book rule sets (DEC-10, DEC-13) | `code-principles-governance` delta (ids survive, DEC-12); the extraction-threshold defect; the `docs/` page linking `mapping-suite-sdk` (DEC-7); **owner checkpoint** before stage 3 |
 | 3 | the other engineering skills (`meaningfy-building`, `meaningfy-architecture`) | B's prose side and E stage 1 have landed (wave 5) | `architecture`, `project-setup`, `test-strategy` decide keep or exception |
 | 4 | sales (`meaningfy-sales`) | `commercial-portfolio` and the rest of R2 have landed | |
-| 5 | devops, core, consulting, legal, vault | after stage 4 | the 1 MB total measured as in the Context and recorded; `pending` key removed when empty |
+| 5 | every skill not rewritten in stages 2 to 4 (devops, core, consulting, legal, vault-assistant, navigator) | after stage 4 | the 1 MB total measured as in the Context and recorded; `pending` key removed when empty |
 
 ### Anti-patterns
 
@@ -321,6 +363,7 @@ ships with it.
 | A link inside fenced code | skipped | none |
 | A closing heading with "reference", "see also", "resources", "further reading", "supporting material" | `reference_pointers` fails with file line and heading | Put each pointer at its point of need |
 | A new skill from another EPIC adds the matrix line (as `test-suite-care` does) | not a pointer; passes | none |
+| A skill added after stage 1 is listed as pending | review (the lint cannot tell) | Remove the entry; the skill meets the standard |
 | A pointer that names a missing file | the existing `broken_links` | unchanged |
 | A non-UTF-8 file under `references/` | sized by bytes, never decoded | none needed |
 | A new skill added by another EPIC fails a check | `make validate` red in that EPIC's PR | It meets the standard (S-9); it is never added to `pending` |
@@ -348,8 +391,13 @@ ships with it.
   side adds `quality/` and Semgrep and does not touch the lint's skill checks; R3 edits
   `epic-delivery` and agents. The conflict can be semantic (a merged PR makes a `pending` entry
   stale), so task 1.4 recomputes the list after the last rebase (error matrix).
+- **RISK-9** A skill cites `test-strategy`'s matrix with a path that also names one of its own
+  reference files (`infrastructure-operations` owns a `references/documentation.md`, as does
+  `test-strategy`). Its own check then judges the citation. Not the case today. If it happens, the
+  citation is written as `test-strategy/references/<file>`, which resolves to no file of the
+  citing skill. Accepted.
 - **RISK-8** `test-strategy/references/inventory.md` lists the lint checks (CHK-125, CHK-130) and
-  B edits it too. Mitigation: stage 1 adds the two rows (task 1.9), a two-line change B rebases
+  B edits it too. Mitigation: stage 1 changes two cells (task 1.9), a two-line change B rebases
   over.
 
 ## Attack record
@@ -371,6 +419,13 @@ taken:
 | 10 | Spec and design disagree in five places | Spec deltas and D-4, D-6 aligned; `prose_budget` owns file errors |
 | 11 | The test-strategy check inventory goes stale | Task 1.9; RISK-8 |
 | 12 | Line numbers, untracked files, fenced code | D-5 file lines and fences; D-1 working tree, CI is the reference |
+
+A second reader then implemented D-5 literally and ran it on all 51 skills (280 pointers, none
+in the form). Its twelve holes (line wraps, abbreviations, blockquotes, nested lists, file-name
+code spans, folders, topic mentions, whole-word headings, line numbers, the Boundary section, a
+latent matrix collision) are closed by D-5's parsing rules and RISK-9. Clarity gate run 1 scored
+8.7; its twelve gaps are folded in (D-4 messages and edge cases, the spec wording, practice 5,
+tasks 1.1, 1.3, 1.9, stage 5).
 
 ## Decisions taken with the owner (2026-11-15, one round)
 
