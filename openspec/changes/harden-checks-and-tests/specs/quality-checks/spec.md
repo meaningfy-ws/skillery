@@ -1,6 +1,7 @@
 <!-- Full delta, derived with the PLAN on 2026-11-14. The shaping-level requirement "Every catalogued
      rule names its checker" was split: its catalogue half moved to the code-principles-governance
-     delta, its fixture half is the second requirement below. -->
+     delta, its fixture half is the second requirement below. Revised 2026-11-15 (design D-35): the
+     requirement on weekly mutation results was removed with the weekly runs. -->
 
 ## ADDED Requirements
 
@@ -121,7 +122,7 @@ target. The layout check SHALL fail on a banned module file name and on a missin
 - **THEN** `make check-layout` fails, naming `ruff.toml`
 
 #### Scenario: A kebab-case folder
-- **WHEN** the project holds `openspec/changes/add-billing-component/` and `tests/mutmut-results/`
+- **WHEN** the project holds `openspec/changes/add-billing-component/`
 - **THEN** `make check-layout` passes
 
 #### Scenario: A required Makefile target is removed
@@ -153,31 +154,3 @@ the wider selection (harden-checks-and-tests DEC-2, DEC-3, issue #215).
 #### Scenario: A code the catalogue names is not selected
 - **WHEN** a catalogue entry names `Ruff PLR2004` and the template's selection does not include it
 - **THEN** `make validate` fails in skillery, naming the entry and the code
-
-### Requirement: Mutation results arrive weekly and never fail a build
-A project scaffolded by `project-setup` SHALL run mutation testing weekly on its default branch
-(`develop` in a GitFlow project), on the
-package and not on the tests, within a stated time budget, and deliver the surviving mutants as one
-bot pull request that adds or updates `tests/mutmut-results/`; the run SHALL NOT fail a build, and
-a run that finds the same survivors as `develop` already holds SHALL open nothing
-(harden-checks-and-tests DEC-10).
-
-#### Scenario: Survivors are found
-- **WHEN** the weekly run finds surviving mutants
-- **THEN** one pull request adds or updates `tests/mutmut-results/`, and no build fails because of it
-
-#### Scenario: The budget runs out
-- **WHEN** the run reaches its time budget before every mutant is tested
-- **THEN** the results are delivered with a line saying the run is incomplete, and the workflow ends green
-
-#### Scenario: Nothing new
-- **WHEN** `develop` has moved since last week and the run finds the same survivors that `develop` already holds
-- **THEN** no pull request is opened or updated
-
-#### Scenario: The same survivors as the open pull request
-- **WHEN** last week's bot pull request is still open and this week's run finds the same survivors
-- **THEN** the pull request's branch is not pushed again
-
-#### Scenario: An open bot pull request exists
-- **WHEN** last week's bot pull request is still open and this week's results differ
-- **THEN** that pull request is updated, and no second one is opened

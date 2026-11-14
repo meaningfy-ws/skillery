@@ -1,11 +1,14 @@
 <!-- STATUS: PLAN derived, attacked and gated 2026-11-14 (9.05 on the fourth run). Nothing
      delivered. Revised 2026-11-14 by owner decision (design D-35, D-36: tasks 1.9 and 3.2);
      not gated again. Revised 2026-11-15 against the three refactoring EPICs (design D-37 to
-     D-42: tasks 1.0, 1.3, 1.5, 1.9, 1.13, 2.3, 3.2, 3.7 and the Roadmap); not gated again. -->
+     D-42: tasks 1.0, 1.3, 1.5, 1.9, 1.13, 2.3, 3.2, 3.7 and the Roadmap); not gated again.
+     Revised 2026-11-15 again by owner agreement (D-43 to D-46): stage 2 deferred (2.1 to 2.6, id
+     kept), stage 3 after the retrospective tooling EPIC, 3.7 handed over, tasks 1.0 and 3.2
+     and the Roadmap corrected; not gated again. -->
 
 # PLAN (tasks): test suite care
 
-**Derives from:** [`proposal.md`](proposal.md) and [`design.md`](design.md). Three stages, one pull
+**Derives from:** [`proposal.md`](proposal.md) and [`design.md`](design.md). Three stages, of which stage 2 is deferred (D-43), one pull
 request each in skillery; the trial pull requests live in the trial repositories. Every task names
 the design decision it carries out, or is procedural (sign-off, baseline, review, archive); test ids (`T-n`) are those of D-15. After any skill edit: `make bundles`, `make skill-inventory`,
 `make lint`. Before each stage PR: `make validate`.
@@ -15,7 +18,9 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
 - [ ] 1.0 Scenario sign-off: the owner reads the scenarios of `specs/` and answers OQ-1 to OQ-5;
       the answers are recorded in `evidence/acceptance.md`. *Acceptance:* the file exists with the
       owner's words.
-      Also put to the owner: D-33 (the closing check) and the deviations table of the design.
+      Also put to the owner: the deviations table of the design.
+      *Revised 2026-11-15 (D-43, D-45, D-46):* OQ-1 and OQ-2 wait with stage 2, OQ-4 and OQ-5
+      are answered, and D-33 (the closing check) is handed over; so only OQ-3 is asked.
 - [ ] 1.0b Baseline: `make validate` on the fresh branch, result recorded in
       `evidence/validate-baseline.md` (D-32). *Acceptance:* the record names any check already
       failing.
@@ -87,6 +92,10 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       merged. It adds the sentence of D-35 to step 4 as that EPIC wrote it and rewrites nothing
       else there; the texts say the sort happens in the stage's one fix pass, before the gate run
       that checks the pass (its DEC-4).
+      *Added 2026-11-15 (D-46):* the texts also say that the severity floor applies to the
+      tester's findings ("under the floor" is the reason for such a deletion), that with no
+      finding above the floor the sort is the whole pass, and that the builder restores a
+      deletion the lead does not confirm in the same pass.
 - [ ] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
       T-1 to T-12 and T-15 green (T-7 and T-2 may skip in CI).
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
@@ -103,23 +112,22 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       *Acceptance:* each merged pull request names its proposal id; or the report records that
       none was approved.
 
-## 2. Stage 2: UI suites
+## 2. Stage 2: UI suites (deferred 2026-11-15, D-43)
 
-- [ ] 2.1 Spike (D-9) on the trial repository named in OQ-2: the runner's JSON report, how specs name
-      their scenario, where the time goes. Recorded in `inputs/spike-ui.md`.
-- [ ] 2.2 Write T-13 (D-15). *Acceptance:* red, because the file and the scope are missing.
-- [ ] 2.3 Write `references/ui-suites.md` (D-9); scope checklist rule 11 to unit and feature
-      tests; add the `ADQ` row to `skills/test-strategy/references/ui.md` and extend the pointer
-      line (D-13). Link the file from `SKILL.md`. *Acceptance:* 2.2 and `tests/test_test_strategy.py` pass.
-      *Reconciled with B, C and D:* apply D-23 of the design's Delivery decisions.
-      *Revised 2026-11-15 (D-40):* the file is at most 3 KB, each rule one line with the name of
-      its source; the skill stays within 24 KB and the link says when to open the file.
-- [ ] 2.4 Trigger probe (D-16): "our Cypress run takes forty minutes" expects `test-suite-care`; asked
-      three times, recorded as in 1.5.
-- [ ] 2.5 Stage review, a line in `CHANGELOG.md`, `make validate`, PR, merge.
-- [ ] 2.6 Trial and discussion with the owner on that repository (D-14), as 1.11 to 1.13.
+Not delivered with this EPIC. It waits until a trial repository is named and the UI rules have an
+owner (issue #230). The ids are kept; the tasks are not part of this delivery.
+
+- 2.1 *Deferred (D-43), id kept.*
+- 2.2 *Deferred (D-43), id kept.*
+- 2.3 *Deferred (D-43), id kept.*
+- 2.4 *Deferred (D-43), id kept.*
+- 2.5 *Deferred (D-43), id kept.*
+- 2.6 *Deferred (D-43), id kept.*
 
 ## 3. Stage 3: checks that are not code
+
+Starts after the retrospective tooling EPIC (`openspec/changes/delivery-retrospective`) is
+delivered, no earlier than wave 4 (D-44).
 
 - [ ] 3.1 Write T-14 (D-15). *Acceptance:* red, because the file and the id are missing.
 - [ ] 3.2 Write `references/non-code-checks.md` (D-11); add the second inventory id and its row
@@ -134,6 +142,9 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       24 KB; the link says when to open the file. The scripts are named at their path in
       `openspec/changes/delivery-retrospective/inputs/scripts/` and are neither moved nor
       changed; no skill is assumed for them.
+      *Revised 2026-11-15 (D-44, D-46):* this task starts after the retrospective tooling EPIC
+      is delivered; the file may still cite the scripts' present path until that EPIC corrects
+      the line.
 - [ ] 3.3 Trigger probe (D-16): "is our cold reader any good, does it catch real problems" expects
       `test-suite-care`; near-miss "have a reader attack this draft" expects the skill that holds
       the adversarial reader's brief (`guardrails`, EPIC D); asked three times, recorded as in 1.5.
@@ -143,19 +154,18 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       Recorded in `evidence/non-code-trial.md`. *Acceptance:* the record has the six run results,
       the owner's own findings and the decision.
 - [ ] 3.6 Archive the change (`spec-stewardship`).
-- [ ] 3.7 *(proposed, D-33)* The programme's closing check, run by whichever of this EPIC and
-      B stage 3 lands last. *Acceptance:* the one-page result is in `evidence/programme-close.md`
-      and the owner has read it.
-      *Note, 2026-11-15 (D-37):* B stage 3 now lands last, so the check is run there.
+- 3.7 *Handed over 2026-11-15 (D-45), id kept.* The programme's closing check (D-33) is run in
+      the last stage of `harden-checks-and-tests`, which now lands last. This EPIC runs none.
 
 ## Roadmap
 
 Stage 1 (1.0 → 1.0b → 1.1 → 1.2 ∥ 1.3 → 1.4 → 1.5 to 1.9 in any order → 1.10 → 1.11 → 1.12 → 1.13) →
-stage 2 → stage 3. The order against the other EPICs is D-17 as replaced by D-37: stage 1 in wave 3
-of the reassessment of 2026-11-15, after `delivery-process-and-tools` and stage 1 of
-`lean-skills`; stages 2 and 3 in wave 4. Tasks 1.6, 1.8 and 1.9 may run in parallel: their files are disjoint, except that 1.6 and 1.9
+stage 3 (stage 2 is deferred, D-43). The order against the other EPICs is D-17 as replaced by D-37,
+D-43 and D-44: stage 1 in wave 3 of the reassessment of 2026-11-15, after
+`delivery-process-and-tools` and stage 1 of `lean-skills`; stage 3 after the retrospective
+tooling EPIC is delivered, no earlier than wave 4; stage 2 deferred. Tasks 1.6, 1.8 and 1.9 may run in parallel: their files are disjoint, except that 1.6 and 1.9
 may each add one line to `openspec/changes/harden-checks-and-tests/tasks.md`, which the lead adds. Stage 1
-tasks 1.6 and 1.9 are ordered against EPIC B's stages 1 and 2 by D-8 and D-12. Stages 2 and 3 do not depend on each other.
+tasks 1.6 and 1.9 are ordered against EPIC B's stages 1 and 2 by D-8 and D-12. Stage 3 does not depend on stage 2.
 
 ## Verification
 

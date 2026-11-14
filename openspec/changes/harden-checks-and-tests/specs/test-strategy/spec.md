@@ -3,17 +3,19 @@
 
 ## ADDED Requirements
 
-### Requirement: The software rows name the static, mutation and import-contract checks
+### Requirement: The software rows name the static and import-contract checks
 The inventory of `test-strategy` SHALL hold one `CHK-<n>` for each of: the wider Ruff selection,
-the Meaningfy Semgrep rules, the ls-lint and checkmake checks, the weekly mutation report, the
+the Meaningfy Semgrep rules, the ls-lint and checkmake checks, the
 import-contract check and the tester's stateful and contract-driven methods. The software family
-file SHALL cite each with status `exists`, and SHALL hold no row with status `gap → B`. A row
+file SHALL cite each with status `exists`, and SHALL hold no row with status `gap → B`. The
+mutation row (`ADQ`, whether the tests bite) SHALL have status `accepted`, with the reason that
+the weekly mutation runs were dropped. A row
 SHALL point to the "Checked by" column of the `cosmic-python` catalogue for the per-rule detail
-and SHALL NOT list rules (harden-checks-and-tests DEC-2, DEC-14).
+and SHALL NOT list rules (harden-checks-and-tests DEC-2, DEC-14, D-35).
 
 #### Scenario: Do the tests bite
 - **WHEN** a contributor looks up `ADQ` in the software family file
-- **THEN** a row with status `exists` names the weekly mutation report, with `cosmic-python` as technique owner and the `project-setup` workflow as its tool
+- **THEN** the mutation row has status `accepted` and states that the weekly mutation runs were dropped
 
 #### Scenario: A gap left behind
 - **WHEN** the software family file holds a row with status `gap → B`

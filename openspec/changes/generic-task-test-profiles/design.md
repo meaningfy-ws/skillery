@@ -6,7 +6,8 @@
      of § Attack record). A was delivered the same day; the PLAN was merged with `develop` and
      checked against A's files (R-1..R-12), which set the check ids, the `ADQ` row and the
      *Moment* wording of D-10. Ready for delivery. Revised 2026-11-15 after the owner's settlement of
-     the open EPICs (D-28 to D-32); not gated again. -->
+     the open EPICs (D-28 to D-32); not gated again. Also on 2026-11-15, the owner agreed to drop
+     the baseline tallies O-1 to O-4 and the cost sign-off (D-33). -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-11.
 > Depends on: EPIC A `test-strategy`, its
@@ -249,24 +250,16 @@ New choices made while planning; settled ones are cited.
     as a rerun. A run sees no repository file. The prompt is the task plus one
     sentence: "where a skill tells you to ask the owner, write the question, take
     the answer as yes and go on". The *without* runs use the base commit; the *with* runs the head
-    of stage 2. Before the runs, one calibration call of B-5 gives `total_cost_usd`; eight times
-    that (four tasks, twice), doubled for the longer tasks and the reruns, is the amount the owner approves, and the
-    runs stop when it is spent. A *with* run that misses an expected observation may be repeated
-    at most twice, from the commit that holds the fix, which is recorded.
-    `evidence/baseline.md` records the commit of each run and five observations, yes or no, never
-    a score:
-    - **O-1** success and failure were stated before the first line of the draft;
-    - **O-2** the run wrote a confirmation question to the owner (not applicable to B-5);
-    - **O-3** a reader's report exists, each finding naming a criterion and quoting the draft, or
-      saying it has none (B-5: expected no report);
-    - **O-4** a finding led to a change in the draft, or the reader had none;
+    of stage 2. *Dropped 2026-11-15 (D-33):* the calibration call and the cost approval; the
+    runs are made without an approved amount, and the reruns of a *with* run are gone.
+    `evidence/baseline.md` records the commit of each run and one observation, yes or no, never
+    a score. *O-1 to O-4 were dropped (D-33); their ids stay unused.*
     - **O-5**, judged by the owner on the kept pair at the acceptance demo: the *with* run's reader
       raised something that the *without* draft still contains.
 
-    The drafts and reports are kept under `evidence/baseline/`. **Proven** means every *with* run
-    shows the expected value on O-1 to O-3, O-4 is yes for the *with* runs of B-1, B-3 and B-4,
-    and O-5 is yes for at least two of those three. O-1 to O-4 show that the steps happen; only
-    O-5 shows that they changed the piece (RISK-10).
+    The drafts and reports are kept under `evidence/baseline/`. **Proven** means O-5 is yes for at
+    least two of the pairs of B-1, B-3 and B-4. Only O-5 shows that the profile changed the piece
+    (RISK-10).
   - *Planted flaw: one check, for the offer only* (DEC-11). It is evidence made once during
     delivery, not a test: nothing goes under `tests/`. Two fabricated offers are written to
     `evidence/planted-flaw/`: `offer-planted.md`, whose scope lists a "data-quality dashboard"
@@ -542,8 +535,6 @@ longer holds.
 | `generic-writing.md` is missing or renamed at stage 3 | The same test fails (stage 3) | Task 1.1 should have caught it: fix R-1 and the test's path |
 | The reader misses the planted flaw in 2 of 3 runs | `evidence/planted-flaw.md` | Sharpen the brief or the skill's *Attacks*; run all six again, twice at most; then the owner |
 | The reader claims a scope and price mismatch in the clean offer in 2 of 3 runs | `evidence/planted-flaw.md` | The reader is theatre: tighten the brief's report lines; run again within the same limit |
-| A *with* run misses O-1, O-2, O-3 or O-4 | `evidence/baseline.md` | Fix the owning skill's step line (D-3); run that task again from the commit with the fix, twice at most and within the approved amount; then the owner |
-| The approved amount is spent before the baseline bar can be judged | The sum of `total_cost_usd` | The owner approves more, or the unfinished tasks are recorded as not proven |
 | O-5 is yes for fewer than two pairs | The acceptance demo | The profile did not change the pieces: the owner decides whether to ship, sharpen or drop a profile |
 | The owner does not answer the confirmation | The agent is waiting | It does not draft a piece that leaves the company; a delegated agent returns the question |
 | The owner corrects the criteria after the draft exists | The owner's message | The corrected criteria replace the old ones; the draft is revised and read against them; the read count starts again |
@@ -595,9 +586,10 @@ longer holds.
   keeps the reader's inputs to the draft and one line.
 - **RISK-9** The reader is a model: one run can miss. Mitigation: three runs in the offer
   check; in daily use the reader only assesses, and the owner still reads the piece and judges.
-- **RISK-10** The baseline's O-1 to O-3 can only show that the steps were followed, and its
-  confirmation is simulated. Likelihood certain, impact low. Mitigation: O-5, the owner's own
-  reading of the pairs; accepted beyond that, since a scored comparison is a no-go.
+- **RISK-10** The baseline's confirmation is simulated, and tallies of steps taken would only show
+  that the steps were followed (O-1 to O-4, dropped by D-33). Likelihood certain, impact low.
+  Mitigation: O-5, the owner's own reading of the pairs; accepted beyond that, since a scored
+  comparison is a no-go.
 - **RISK-11** An explainer published as a blog article fires `explanatory-writing`, which claims
   blog posts and is not edited here, so it may be written with no criteria and no reader.
   Likelihood medium, impact medium. Accepted for this change: the rule of D-1 covers the piece
@@ -954,6 +946,17 @@ they differ.
   `CHK-145` to `CHK-149`; B, C and E rebase on it and take the next free ids. D-26's rule after a
   rebase (rerun `make bundles` and `make skill-inventory`, read R-1..R-12 again, take the next free
   ids at 3.1) stays.
+- **D-33 The baseline tallies O-1 to O-4 and their cost sign-off are dropped (2026-11-15; corrects
+  D-11, RISK-10 and tasks 1.3 and 3.2).** Agreed by the owner on 2026-11-15, from the candidate
+  drops in
+  [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md):
+  the tallies show that the steps happened, not that they helped (RISK-10). Gone with them: the
+  calibration call, the approved amount, the stop when it is spent, the reruns of a *with* run and
+  the two error-matrix rows that guarded them. Kept: the eight runs and the kept pairs, because
+  O-5, the owner's judgement of a pair at the acceptance demo, needs them; the planted-flaw check
+  of the offer; the behavioural trigger run of task 2.9, DEC-9 and DEC-10, the sales profile and
+  the allow-lists, which were not dropped. The proof of done for the baseline is O-5 yes for at
+  least two of the pairs of B-1, B-3 and B-4. Ids are not renumbered: O-1 to O-4 stay unused.
 
 ## Open Questions
 

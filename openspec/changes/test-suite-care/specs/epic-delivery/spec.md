@@ -16,8 +16,12 @@ implement none of them, and they SHALL NOT widen the stage. Kept: a test that fa
 test that alone covers a scenario or an error-matrix row, and one property per invariant the
 PLAN's design names. Every other test SHALL be deleted in that pass, before the gate run that
 checks it, and listed in the stage's pull request with its reason. The sort SHALL NOT add a fix
-pass or a gate run to the stage. Kept tests SHALL be in
-files named by feature (test-suite-care DEC-3, revised 2026-11-14; design D-12, D-35, D-38;
+pass or a gate run to the stage. The severity floor of `delivery-process-and-tools` DEC-4 applies
+to the tester's findings: a test that failed on its first run and whose finding is under the
+floor SHALL be deleted with the reason "under the floor". When no finding is above the floor, the
+sort SHALL be the whole fix pass. A deletion the lead does not confirm SHALL be restored by the
+builder in the same pass. Kept tests SHALL be in
+files named by feature (test-suite-care DEC-3, revised 2026-11-14; design D-12, D-35, D-38, D-46;
 delivery-process-and-tools DEC-4).
 
 #### Scenario: Deciding a stage's adversarial tests
@@ -31,6 +35,18 @@ delivery-process-and-tools DEC-4).
 #### Scenario: A refactoring opportunity seen while sorting
 - **WHEN** the builder sees, while sorting, that four of the kept tests repeat the same set-up
 - **THEN** its report lists that as a refactoring opportunity, and it changes nothing beyond moving the kept tests
+
+#### Scenario: A finding under the floor
+- **WHEN** a tester's test failed on its first run and its finding is under the severity floor
+- **THEN** the test is deleted and the pull request gives "under the floor" as its reason
+
+#### Scenario: A stage with no finding above the floor
+- **WHEN** every finding of a stage is under the floor
+- **THEN** the sort is the whole of the stage's fix pass, and the gate run checks it
+
+#### Scenario: A deletion the lead does not confirm
+- **WHEN** the lead does not confirm a deletion on the builder's deleted list
+- **THEN** the builder restores that test in the same pass, and no second pass follows
 
 #### Scenario: A rejected finding
 - **WHEN** a tester's test failed on its first run and the lead rejects its finding as not a defect

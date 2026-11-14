@@ -4,7 +4,9 @@
      to 2.4 and 2.7); not gated again. Revised 2026-11-15 by owner decision (design D-30 to
      D-34, from ../delivery-process-and-tools/inputs/reassessment-2026-11-15.md): the tester's
      condition and the result line moved to delivery-process-and-tools, task 2.3 removed, no
-     example code in a skill, stage 1 in a tool side and a prose side; not gated again. -->
+     example code in a skill, stage 1 in a tool side and a prose side; not gated again.
+     Revised again 2026-11-15 by owner decision (design D-35): the weekly mutation runs are
+     dropped, tasks 3.5 and 3.6 removed; not gated again. -->
 
 > Derives from: EPIC `harden-checks-and-tests` ([`proposal.md`](proposal.md)); design in [`design.md`](design.md).
 
@@ -21,8 +23,8 @@ in D-33. Each side ends with the checks of task 1.16.
 | Prose side | 1.12, 1.14; of 1.5 `config-files.md` § Ruff and `decisions.md` D4; of 1.7 the catalogue entry and the L1 lens; of 1.8 the *Suppressions* heading; of 1.13 the five `project-setup` references; of 1.16 a CHANGELOG line |
 
 - [x] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
-  `evidence/acceptance.md` (D-13). *Open for the developer:* the three proposals of D-24, D-25
-  and D-26 (the type's name), to confirm or decline.
+  `evidence/acceptance.md` (D-13). *Open for the developer:* the two proposals of D-24
+  and D-26 (the type's name), to confirm or decline (D-25 is withdrawn, D-35).
 - [ ] 1.1 [A] Confirm A is merged and the branch is on current `develop`; walk the D-12 table
   against A as merged and note each difference in the stage PR; re-read every spec delta against
   the live specs and fix any conflict (error matrix rows 1–2). *Done on 2026-11-14 (D-15):* A is
@@ -39,7 +41,7 @@ in D-33. Each side ends with the checks of task 1.16.
 - [ ] 1.4 Write the Python-only group of `tests/test_quality.py`, red first (TC-03, TC-04, TC-05,
   TC-06, TC-10), with the `skipif` markers for the tool groups; add `requirements-quality.txt`
   (Semgrep, Ruff, Hypothesis) to `make install`; add the install note to `CONTRIBUTING.md`; add
-  the six tool entries to `dependencies.yaml` (D-8; spec *The quality folder's tool tests run
+  the five tool entries to `dependencies.yaml` (D-8, D-35; spec *The quality folder's tool tests run
   locally and skip in CI*). `tests/test_quality.py` never imports Hypothesis (D-18). TC-12 is
   written as skipped, with the message "switched on by task 3.7" (D-17). *Reconciled with
   test-suite-care (EPIC E):* if its stage 1 is merged and `requirements-quality.txt` exists, its
@@ -96,7 +98,7 @@ in D-33. Each side ends with the checks of task 1.16.
   make*).
 - [ ] 1.14 [A] Add the stage's inventory rows and software rows, flip the rows A marked for B that
   this stage fills, extend the pointer lines (D-12, D-15: `software.md`
-  line 33; spec *The software rows name the static, mutation and import-contract checks*).
+  line 33; spec *The software rows name the static and import-contract checks*).
 - [ ] 1.15 Scaffold the product and the library archetype from the stage branch with
   `QUALITY_VERSION` set to the branch's commit and run IT-04 and IT-05; paste the output into the
   stage PR. *Acceptance:* the wall time of `make check-quality` on each scaffold, with a warm
@@ -153,11 +155,12 @@ in D-33. Each side ends with the checks of task 1.16.
   result line are in the line of `delivery-process-and-tools`, D-30); `make bundles`,
   `make skill-inventory`, `make validate`, `openspec validate harden-checks-and-tests --strict`.
 
-## 3. Stage 3: the weekly mutation report and the import-contract check
+## 3. Stage 3: the import-contract check
 
-*Revised 2026-11-15 (D-33, D-34):* stage 3 is in wave 5, after the remaining stages of
-`lean-skills`. The reference and lens text of tasks 3.3, 3.4 and 3.6 is written as sorted in
-D-33. The brief and ledger lines of task 3.4 stay this EPIC's (D-30).
+*Revised 2026-11-15 (D-33, D-34, D-35):* stage 3 is in wave 5, after the remaining stages of
+`lean-skills`. The reference and lens text of tasks 3.3 and 3.4 is written as sorted in
+D-33. The brief and ledger lines of task 3.4 stay this EPIC's (D-30). The weekly mutation runs
+are dropped (D-35).
 
 - [ ] 3.1 [A] Walk the D-12 table again (A-1, A-2, A-3).
 - [ ] 3.2 The template `check_contracts.py`, test-first (TC-07) (D-11; spec *Import contracts are
@@ -172,25 +175,19 @@ D-33. The brief and ledger lines of task 3.4 stay this EPIC's (D-30).
   `tests/features/agents/code-reviewer.feature`; then the L3 lens text in `meaningfy-code-review`,
   and the reviewer brief and the ledger row in `epic-delivery` (D-11; spec *L3 judges the import
   contracts once per EPIC*).
-- [ ] 3.5 The template `mutation_report.py`, test-first (TC-08) (D-10).
-- [ ] 3.6 mutmut in the template: first resolve the lock in D-10's order on a scaffold; then
-  `[tool.mutmut]` and the pin in `pyproject.toml.tmpl`; `mutation-report` and `mutation-pr` in
-  `Makefile.tmpl`; `ci/mutation.yml.tmpl` and the script's `render` lines in `scaffold.sh` (code
-  archetypes); `mutants/` in `dot-gitignore`; update `ci-and-infra.md` (with the setup note),
-  `decisions.md` (the D2 exception) and `layout.md` (D-10; spec *Mutation results arrive weekly
-  and never fail a build*).
-- [ ] 3.7 [A] Add the mutation and import-contract rows (`software.md` lines 41 and 34, each with
-  the next free id), update the L3 row `CHK-82` in
-  `skills/test-strategy/references/architecture.md`, flip the last rows A marked for B and remove
-  the sentence about "`gap → B` rows" from line 3 of `software.md`; switch TC-12 on (D-12, D-15,
-  D-17).
-  *Reconciled 2026-11-14:* A's mutation row names `cosmic-python` as technique owner, but this
-  stage writes the mutation rule into `project-setup`. The row's owner becomes `project-setup`,
-  with its pointer line, when the row turns `exists`.
+- 3.5 *Dropped 2026-11-15 (D-35).* It wrote the template `mutation_report.py`.
+- 3.6 *Dropped 2026-11-15 (D-35).* It put mutmut, the two `make` targets and the weekly workflow
+  into the template.
+- [ ] 3.7 [A] Add the import-contract row (`software.md` line 34, with the next free id), update
+  the L3 row `CHK-82` in `skills/test-strategy/references/architecture.md`, flip the last rows A
+  marked for B and remove the sentence about "`gap → B` rows" from line 3 of `software.md`;
+  switch TC-12 on (D-12, D-15, D-17).
+  *Revised 2026-11-15 (D-35):* the mutation row (`software.md` line 41, `ADQ`) is not filled. Its
+  status becomes `accepted`, with the reason "weekly mutation runs dropped, nobody named to read
+  them", so no `gap → B` row remains.
 - [ ] 3.8 Ask the developer which repository is the sample project (Q-22, with D-13's
-  recommendation); run IT-06 there: the three manual dispatches of the weekly workflow, and one
-  failing and one passing `make check-architecture`; record them in
-  `evidence/sample-project.md` (DEC-15, D-13).
+  recommendation); run IT-06 there: one failing and one passing `make check-architecture`;
+  record them in `evidence/sample-project.md` (DEC-15, D-13).
 - [ ] 3.9 Save this stage's tester report as `evidence/tester-report.md` (IT-07; DEC-15, D-13).
   The tester's property tests go in `tests/test_quality_properties.py`, not in
   `tests/test_quality.py` (D-18).
@@ -198,16 +195,24 @@ D-33. The brief and ledger lines of task 3.4 stay this EPIC's (D-30).
   `openspec validate harden-checks-and-tests --strict`.
 - [ ] 3.11 Acceptance demo with the developer: the three proofs of DEC-15, verdict in
   `evidence/acceptance.md` (D-13).
+- [ ] 3.12 *Added 2026-11-15 (handed over by `test-suite-care` D-45, was its task 3.7 and D-33;
+  reassessment of 2026-11-15).* The programme's closing check is run here, because this stage
+  lands last. Adopt `make check-quality` in the trial repository and record its wall time and the
+  test time before and after the reductions of `test-suite-care` stage 1. List every row of the
+  nine matrix files that is still `gap`. Walk one SMALL EPIC and one offer through the catalogue
+  and count the steps that need the owner. The one-page result goes to the owner in
+  `evidence/programme-close.md`. Acceptance: the file exists and the owner has read it. Stage 2 of
+  `test-suite-care` is deferred and its stage 3 follows the retrospective tooling EPIC, so the
+  check does not wait for either.
 
 ## Roadmap
 
 - [x] 1.0 · [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
   · [ ] 1.10 · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14 · [ ] 1.15 · [ ] 1.16 · [ ] 2.1 · [ ] 2.2
-  · 2.3 removed (D-30) · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
-  · [ ] 3.6 · [ ] 3.7 · [ ] 3.8 · [ ] 3.9 · [ ] 3.10 · [ ] 3.11
+  · 2.3 removed (D-30) · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · 3.5 dropped
+  · 3.6 dropped (D-35) · [ ] 3.7 · [ ] 3.8 · [ ] 3.9 · [ ] 3.10 · [ ] 3.11
 
-Tasks 1.5 to 1.11 are independent of each other and may be built in parallel; so may 3.2–3.4 and
-3.5–3.6.
+Tasks 1.5 to 1.11 are independent of each other and may be built in parallel; so may 3.2–3.4.
 
 *Order, revised 2026-11-15 (D-34; it replaces the waves of 14 November):* wave 1, the tool side
 of stage 1, free now, with a release after it; wave 3, the prose side of stage 1 and then

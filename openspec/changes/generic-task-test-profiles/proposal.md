@@ -14,7 +14,9 @@
      Revised 2026-11-15 after the owner's settlement of the open EPICs
      (`../delivery-process-and-tools/inputs/reassessment-2026-11-15.md`): the reader's tools come
      from the one table of `guardrails` (R3 DEC-8), `guardrails` keeps its size budget, and the
-     order is wave 2; design D-28 to D-32; not gated again. -->
+     order is wave 2; design D-28 to D-32; not gated again. Also on 2026-11-15, the owner agreed to
+     drop the baseline tallies O-1 to O-4 and the cost sign-off (design D-33); the baseline keeps
+     its pairs and O-5. -->
 
 # EPIC: generic task test profiles
 

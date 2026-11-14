@@ -69,6 +69,16 @@ DEC-18, and the no-go against it is lifted); DEC-17 now says this EPIC owns ever
 stage loop and gives the new order; DEC-3 states the tester's condition in full. RISK-2 (parallel
 EPICs editing the same skills) is answered by that reassessment.
 
+Later the same day the owner added one more change, recorded as DEC-19:
+
+> i lso propoe that the epic lanning and epic shaping are executed together in the same workflow ,
+> as parte of epic shaping skill ?, i mean that epic planning is odd in epic dleivery skills, if
+> you know what i mean. plan to make this adjustment also in on eof tehse epics
+
+It is placed here because this EPIC already edits `epic-planning` and the Sessions part of
+`epic-delivery`. The reset allowed between the EPIC and its PLAN is the agent's addition: the two
+most expensive shaping sessions measured were the ones that carried several EPICs.
+
 ## The agent's own proposals, for the owner to overrule
 
 - The tool table lives in `guardrails` (DEC-8). The owner asked for the table, not for its home.

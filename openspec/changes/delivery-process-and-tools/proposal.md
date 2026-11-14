@@ -60,13 +60,15 @@ finding.
   to the developer as one question round, as the rule for TINY and SMALL already says. Rejected: a
   higher limit for larger EPICs.
 - **DEC-3**: The adversarial tester runs on a condition at every appetite: the stage changed code,
-  and the PLAN names an invariant for that code. This EPIC defines the condition once, taking it
+  and the PLAN names an invariant for that code whose test is the tester's (a row of its
+  `## Invariants` section marked so, not any row). This EPIC defines the condition once, taking it
   from `harden-checks-and-tests` D-28, which then cites it. Rejected: a tester on every stage from
   MEDIUM up.
 - **DEC-4**: A review finding becomes a fix only at or above a severity floor, and a stage has one
   fix pass, checked by the stage's gate. Findings under the floor are rejected with a reason and
-  stay listed in `design.md`. In the most expensive delivery the fixers used more tokens than the
-  builders. Rejected: every finding becomes a fix; a verifier round after the fix pass.
+  stay listed in `design.md`. The floor applies to the tester's findings too: a test that failed
+  on its first run for a finding under the floor is deleted with the reason "under the floor". In
+  the most expensive delivery the fixers used more tokens than the builders. Rejected: every finding becomes a fix; a verifier round after the fix pass.
 - **DEC-5**: A MEDIUM stage takes the small review set by default; a risk recorded for the stage
   restores the full set. Today the small set is an allowance the lead must justify. Rejected:
   keeping the full set as the default.
@@ -119,6 +121,14 @@ finding.
   ```
 
   Rejected: outcomes in prose only, which no retrospective can count.
+- **DEC-19** *(owner, 2026-11-15)*: Deriving the PLAN and gating it are part of shaping, in one
+  workflow owned by `epic-planning`: seeds, the EPIC, the PLAN, the gate. A delivery session
+  starts from a gated PLAN and plans nothing. Today `epic-planning` ends a shaping session with
+  the EPICs "shaped, not planned" and `epic-delivery` lists "the PLAN finished and gated" as
+  the first thing an epic session leaves behind; both change. The owner's words: "epic planning is
+  odd in epic delivery skills". Between the EPIC and its PLAN the session may still be reset with
+  a hand-over note, as between stages (DEC-1). Rejected: the PLAN derived at the start of the
+  delivery session, which loads the lead with planning before the first stage.
 
 ## Rabbit-holes
 
@@ -135,8 +145,10 @@ finding.
   condition at every size" must not add one there.
 - **The owner's own rule on gate scores** (accept a score close to 9 without a new run) is personal
   and stays in the owner's rules; the skill states only the limit.
-- **Navigator** reads the review sets and the session thresholds from the same files. A changed
-  default there changes what it shows.
+- **Navigator** reads the review sets, the session thresholds and the two workflow files
+  (shaping and delivery). A changed default, or the PLAN phases moving from one workflow to the
+  other (DEC-19), changes what it shows; changes that were shaped under the old split and are
+  half-way through must still be read correctly.
 - Left vague on purpose: the name and place of the hand-over note, the figure of the `AGENTS.md`
   budget, the exact rows of the tool table, and the form of the watch-and-merge command.
 - Order of stages, for the PLAN to confirm: the process rules; then the tool table and the agents;
@@ -170,7 +182,9 @@ finding.
   stages or on the full review set at MEDIUM.
 - `guardrails`: Session hygiene follows DEC-1; a new table of recommended tools per activity
   (DEC-8, DEC-9); batched reads (DEC-7).
-- `epic-planning`: the two-run gate limit at every appetite (DEC-2).
+- `epic-planning`: the two-run gate limit at every appetite (DEC-2); the shaping workflow runs
+  through the PLAN and its gate (DEC-19), and its workflow file follows. `epic-delivery`: the
+  Sessions table and the start of an epic session no longer hold the PLAN (DEC-19).
 - `agents/implementer.md`: a shorter preload (DEC-10). Both workers point to the tool table.
 - `project-setup`'s agentic templates, and this repository's `AGENTS.md` and `CLAUDE.md`: the
   habits block, the code-navigation text for tools that exist, one impact check per task, the size
@@ -189,7 +203,8 @@ finding.
 
 - `epic-delivery`: stage boundary, fix rule, review default at MEDIUM, tester condition, result
   line, lead's duties, watch-and-merge.
-- `epic-shape`: the gate limit at every appetite.
+- `epic-shape`: the gate limit at every appetite; the PLAN and its gate inside the shaping
+  workflow.
 - `subagent-dispatch`: session hygiene at a stage boundary, and batched reads.
 - `workflow-definitions`: the review sets. To confirm when the PLAN is derived, together with the
   spec that owns the instruction template.

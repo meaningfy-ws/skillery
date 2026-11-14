@@ -1,4 +1,5 @@
-<!-- Delta of the PLAN (design.md). The first requirement and the one on checks that are not code come from the shaping. -->
+<!-- Delta of the PLAN (design.md). The first requirement and the one on checks that are not code come from the shaping. Revised 2026-11-15 (design D-43): the requirement on UI suites is removed;
+     stage 2 is deferred. -->
 
 ## ADDED Requirements
 
@@ -99,12 +100,3 @@ scheduled run (design D-10).
 #### Scenario: A change in one layer
 - **WHEN** a developer changes a file under the package's services layer and runs the changed-files lane
 - **THEN** the unit tests of the services layer run, and a change to a shared file falls back to the fast lane
-
-### Requirement: A UI suite is audited from its runner's report
-For a UI suite the audit SHALL take time per test and retries from the runner's own report, SHALL
-map a spec to its scenario by its titles or its feature file, and SHALL report a broken UI test
-rule as a finding (design D-9).
-
-#### Scenario: Logging in through the screen
-- **WHEN** every spec of a UI suite logs in through the login page
-- **THEN** the report proposes setting the session through the API, classed 1
