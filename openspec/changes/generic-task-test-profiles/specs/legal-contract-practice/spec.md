@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: A contract is drafted against confirmed criteria and read by opposing counsel
-`contract-practice` SHALL hold the contract profile in a `## Test profile` section: what makes a
+`contract-practice` SHALL hold the contract profile in a `## Review profile` section: what makes a
 contract or a revision succeed and fail, the reader's role (opposing counsel) and what that reader
 attacks. The criteria SHALL be proposed in the intake round and confirmed by the owner before
 drafting. Before the draft is reported ready for the owner, the opposing-counsel reader SHALL read

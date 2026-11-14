@@ -95,7 +95,7 @@ New choices made while planning; settled ones are cited.
   the context small" (53 fewer). It ends at 687 characters, six more than today; the lint's advisory target of 600 is already
   exceeded and its hard limit is 1024. The reference names no
   role: the role is an input of the brief.
-- **D-2 A profile is one section of fixed shape in its owning skill.** Heading `## Test profile`,
+- **D-2 A profile is one section of fixed shape in its owning skill.** Heading `## Review profile`,
   then one pointer sentence in plain text, with no link (the lint forbids a path into another
   skill): "The steps, and when they apply, are in `guardrails`
   (`references/adversarial-reader.md`)." Then four bold labels in this order: **Succeeds**,
@@ -280,7 +280,7 @@ New choices made while planning; settled ones are cited.
       occurs in the repository today.)
     - **stage 2:** each of `proposal-writing/SKILL.md`, `contract-practice/SKILL.md`,
       `executive-communication/SKILL.md`, `sales-conversations/SKILL.md` and
-      `meaningfy-voice/references/channels/linkedin.md` has a `## Test profile` section holding
+      `meaningfy-voice/references/channels/linkedin.md` has a `## Review profile` section holding
       the four labels in order and the string `adversarial-reader.md`. Each role name, with a
       space or a hyphen between its words, occurs only in its owning skill's files:
       `sceptical[\s-]buyer` (`proposal-writing`), `opposing[\s-]counsel` (`contract-practice`),
@@ -366,7 +366,7 @@ Criteria (<confirmed by the owner on DATE | stated by the author>):
   Succeeds: <…>
   Fails: <…>
 Attack along:
-  <the Attacks bullets of the owning skill's Test profile, quoted>
+  <the Attacks bullets of the owning skill's Review profile, quoted>
 Open, with the owner (second read only): <criteria already handed over as open points, or none>
 Do not rewrite and do not propose wording.
 Report: the base report plus the reviewing fields, without a verdict. Give your findings in order of weight; each

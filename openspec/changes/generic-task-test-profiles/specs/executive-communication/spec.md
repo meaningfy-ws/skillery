@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: A message is written against stated criteria and read by a busy recipient
-`executive-communication` SHALL hold the message profile in a `## Test profile` section, for
+`executive-communication` SHALL hold the message profile in a `## Review profile` section, for
 decision requests, client messages that are not sales emails, and internal messages: what makes
 the message succeed and fail, the reader's role (a busy recipient) and what that reader attacks.
 The criteria SHALL be stated after the diagnosis and before drafting. When the recipient is outside

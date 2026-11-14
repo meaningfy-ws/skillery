@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: The offer profile has one owner
-`proposal-writing` SHALL own the offer profile in a `## Test profile` section: what makes a
+`proposal-writing` SHALL own the offer profile in a `## Review profile` section: what makes a
 proposal and its statement of work succeed and fail, the reader's role (a sceptical buyer) and what
 that reader attacks. The criteria SHALL be confirmed by the owner before the offer is framed, and
 the sceptical-buyer reader SHALL read the finished draft by the brief of `guardrails` before it is
@@ -24,7 +24,7 @@ reader's report with the draft (generic-task-test-profiles DEC-1, DEC-5, DEC-9).
 
 ### Requirement: The sales-message profile has one owner
 `sales-conversations` SHALL own the profile of sales emails and follow-ups to clients and partners
-in a `## Test profile` section: the reader's role (a busy recipient) and what that reader attacks,
+in a `## Review profile` section: the reader's role (a busy recipient) and what that reader attacks,
 with the criteria of a piece proposed from the skill's acceptance criteria. In an attended session
 the owner SHALL confirm the criteria and the reader SHALL run by the brief of `guardrails` before a
 draft is presented as ready to send; this applies to a draft the owner picks up from a scheduled

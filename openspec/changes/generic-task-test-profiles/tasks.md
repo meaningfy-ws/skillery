@@ -41,7 +41,7 @@
 
 - [ ] 2.0 Add the stage-2 assertions of D-11 to the test file (the section in five files, the role
   allow-lists with the hyphen form); red before 2.1–2.5, green after.
-- [ ] 2.1 `proposal-writing`: the `## Test profile` section, its *Attacks* bullets as they were
+- [ ] 2.1 `proposal-writing`: the `## Review profile` section, its *Attacks* bullets as they were
   used in 1.7 (`evidence/planted-flaw.md`), the criteria sentence in *Flow* step
   1, the new step 5, the pointer line (D-2, D-3, D-10; spec `sales-method-ownership`, *The offer
   profile has one owner*).

@@ -22,7 +22,7 @@ test-strategy DEC-5, DEC-8).
 - **THEN** one row names `contract-practice` as technique owner and a subagent briefed per `guardrails` as the tool, with status `exists`
 
 #### Scenario: A row whose owning skill holds no profile
-- **WHEN** a `ROB` row of `generic-writing.md` names `sales-conversations` and that skill has no `## Test profile` section
+- **WHEN** a `ROB` row of `generic-writing.md` names `sales-conversations` and that skill has no `## Review profile` section
 - **THEN** `make validate` fails, naming the skill
 
 #### Scenario: An owning skill without its rows

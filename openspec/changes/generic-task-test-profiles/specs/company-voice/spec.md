@@ -6,7 +6,7 @@
 
 ### Requirement: A public post is drafted against confirmed criteria and read by a stranger
 `meaningfy-voice` SHALL hold the post profile in the LinkedIn channel file
-(`references/channels/linkedin.md`), in a `## Test profile` section: what makes a public post
+(`references/channels/linkedin.md`), in a `## Review profile` section: what makes a public post
 succeed and fail, the reader's role (a stranger scrolling), what that reader attacks, and the two
 step lines (criteria before drafting, the reader before hand-over). The blog channel file SHALL
 point to that section and state only what differs for an article. For a post or
