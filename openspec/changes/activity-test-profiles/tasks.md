@@ -20,6 +20,8 @@ subagent that built nothing of the stage.
   `quality_files` reads the disk or tracked files; which manifest files B's manifest test covers;
   whether `make quality-tools` runs in a doc-only project;
   the Method and Read lines of the tester's brief (D-7, D-8, D-9, D-12, D-13, D-16; RISK-1).
+  Also record whether test-suite-care (EPIC E) stage 1 is merged: the tester's two report
+  fields, the distilling in step 4, checklist rules 17 to 21 (D-20).
 - [ ] 0.3 Add `CLOSED_FAMILIES` (empty), `closed_family_errors` and its test to
   `tests/test_test_strategy.py`, test-first, with the cases TC-1 to TC-8 (D-11; design § Tests
   and proofs; spec *A closed family stays closed*).

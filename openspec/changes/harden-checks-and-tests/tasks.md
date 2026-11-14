@@ -53,6 +53,9 @@
 - [ ] 1.12 "Checked by": add the column to the three catalogue tables and the suffix to the 16
   checklist items and the 10 clean-code and SOLID bullets, from the first assignment as confirmed
   by 1.5–1.10 (D-3; spec *Every catalogued rule names its checker*; TC-04 and TC-05 green).
+  *Reconciled with test-suite-care (EPIC E):* if its stage 1 is merged, the checklist has 21
+  items; items 17 to 21 each end with `*Checked by:* review only, because the audit of
+  test-suite-care reads it`, and the "Sources" table after "The report" is not a list of items.
 - [ ] 1.13 Project wiring. In `Makefile.tmpl`: the pin and the three tool versions,
   `quality-fetch`, `quality-tools`, `check-semgrep` (three passes), `check-layout` (ls-lint and the
   four `test -f` lines), `check-makefile`, the new `check-quality`. The template
@@ -87,6 +90,9 @@
   `docs/practice/ai-coding/working-with-agents.md` (D-9; spec *The adversarial tester works by
   stated methods*). The scenarios of 2.2 are written scenarios, not executed tests: the stage's
   checker reads the brief against each of them.
+  *Reconciled with test-suite-care (EPIC E):* if its stage 1 is merged, keep the brief's two
+  report fields (what each test attacks; whether it failed on its first run) and the words
+  "Distilled in step 4" in the tester's ledger row; its test T-12 stays green.
 - [ ] 2.5 `cosmic-python`: extend checklist item 10 and add the stateful and the Schemathesis
   example to `example-testing-patterns.md`; pin Hypothesis and Schemathesis in the `test` group of
   `pyproject.toml.tmpl` and confirm `poetry lock` on a scaffold (D-9, D-4).

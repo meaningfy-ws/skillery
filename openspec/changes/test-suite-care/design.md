@@ -541,6 +541,42 @@ of task 1.11; what a repository without specs is limited to (D-5); how a probe i
 `medium` defined (D-5); one more row under Deviations; the shared file of tasks 1.6 and 1.9; three
 wording mismatches.
 
+## Delivery decisions
+
+Recorded 2026-11-14, after the five changes of the test strategy work were read against each
+other (A delivered; B, C, D and E planned in separate sessions). These override the decisions
+above where they differ.
+
+- **D-17 Order of the five.** B stage 1 → B stage 2 → C and E stage 1 in either order → B
+  stage 3; D at any time after A; E stages 2 and 3 after E stage 1. E stage 1 may also land
+  before B: D-8 and D-12 give the rule for each order, and B's tasks 1.12 and 2.4 now carry the
+  matching lines.
+- **D-18 The tester's ledger row and brief (corrects D-12).** If B stage 2 has landed, the last
+  cell of the tester's row is no longer "—": the row gains the words "Distilled in step 4", and
+  the two report fields are added to B's brief. The property kept is one per invariant in the
+  PLAN's `## Invariants` section where the PLAN has one (the template gains it in C stage 2),
+  else one per row of its error matrix.
+- **D-19 The checklist (adds to D-8).** The "Sources" list is a table under its own heading
+  after "The report", so that neither B's "Checked by" lint nor T-11 reads its rows as rules.
+  A sentence added to rule 6, 14 or 11 goes before B's `*Checked by:*` suffix where that exists,
+  and rule 11 keeps its value.
+- **D-20 W-8 (corrects D-4).** B commits the surviving mutants, not which test killed which, and
+  its `mutants/` folder is not in git. W-8 is looked for only when a local mutmut run's per-test
+  results are at hand; otherwise the report lists it under *Not measured*.
+- **D-21 The scaffold's own gates (adds to D-10).** If B stage 1 has landed, the scaffold with
+  the lane files passes `make check-quality` (Ruff on `tests/changed.py`, checkmake on the new
+  targets); T-9 runs it when the target exists.
+- **D-22 Adequacy of a check that is not code (adds to D-13).** D sets the `ADQ` row of
+  `generic-writing.md` to `accepted`, and C fills or accepts the `ADQ` gaps of
+  `documentation.md`, `devops.md` and `ui.md`. Stage 3 changes none of those statuses: each such
+  row gains the words "assessed on request by `CHK-<m>`".
+- **D-23 UI test rules (corrects D-9).** One UI rule has an owner already: testing checklist
+  rule 2 (front-end tests beside their layer, an accessibility check per page). It stays there;
+  `ui-suites.md` cites it by number and holds only the six new rules. OQ-1 asks the owner about
+  this split.
+- **D-24 Ids.** B, C, D and E each take "the next free" `CHK-` id at their own delivery; no PLAN
+  owns a number. `CHK-145` in D-13 is an example.
+
 ## Open Questions
 
 None blocks stage 1. To confirm with the owner at scenario sign-off (task 1.0):
