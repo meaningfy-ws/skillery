@@ -65,3 +65,27 @@ is public, so links to it work for any reader.
   standing rule ("only in this session, not a rule").
 - Whole catalogue sized VERY LARGE in stages, not HUGE.
 - The change was renamed from `book-rule-sets` to `lean-skills` when the scope widened.
+
+## Re-shaped on 2026-11-15, from another session
+
+The owner had a second source of skills studied (`wondelai/skills`), shaped
+`orchestrate-external-skills` from it, and then had every open EPIC reassessed against the three
+refactoring EPICs. The record is on `develop`:
+`openspec/changes/delivery-process-and-tools/inputs/reassessment-2026-11-15.md` (S-1, S-7, S-9 and
+the order) and `openspec/changes/orchestrate-external-skills/inputs/elicitation-2026-11-14.md`
+(the side by side with this EPIC). The owner agreed to each point. What changed here, on purpose:
+
+- DEC-10: this EPIC only cuts; registration of the book rule sets and routing to them move to
+  `orchestrate-external-skills`.
+- DEC-11: five practices from the study go into the lean standard. On the budget the owner asked,
+  "our target may be 6-7KB, but the boundary is 24kb, right?": yes, as DEC-2 has it.
+- DEC-12: the clean-code and SOLID bullets of `cosmic-python` stay as short catalogue entries tied
+  to checks.
+- DEC-13: the new order.
+
+The owner's frame for the second source: "the last set of skill was not added to compete tith teh
+books skills, but to complete/extend/strenghten manignfy killery in the same way the books skills
+do".
+
+The two rules this change added, P-0002 and P-0003, were given new ids by the rule script on the
+same day, because `develop` had taken P-0002 in the meantime.

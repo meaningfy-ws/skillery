@@ -29,8 +29,9 @@ repetition inside skillery. Evidence and measurements are in
    material that is really a template or a script (move it there). The sorting is recorded per
    skill.
 4. **Book rule sets as a dependency.** Eight sets from Meaningfy's fork of `agent-rules-books`
-   carry the generic engineering knowledge and fill six areas skillery has no owner for. Skills and
-   agents route to them by name for the kind of task at hand.
+   carry the generic engineering knowledge and fill six areas skillery has no owner for. They are
+   registered and routed to by `orchestrate-external-skills` (DEC-10); a skill here names the
+   dependency its cut text now lives in.
 5. **Stages.** The standard and its lint check first; then `cosmic-python` as the pilot, followed by
    a checkpoint with the owner; then the remaining engineering skills, sales, devops, and the rest.
 
@@ -78,6 +79,28 @@ names a dependency for knowledge the dependency does not hold.
   owner's figure (the agent had proposed 0.7 MB). Rejected: budget and tests alone,
   without the second reader.
 
+- **DEC-10** *(owner, 2026-11-15)*: This EPIC only cuts. Registering the book rule sets, their
+  install steps and the routing to them are delivered by `orchestrate-external-skills` (its
+  DEC-17), in its first stage and before the pilot here. Which sets are relied on stays DEC-5.
+  Rejected: routing in three agents, as first shaped; two EPICs each registering a source.
+- **DEC-11** *(owner, 2026-11-15)*: The lean standard takes five practices from the study of a
+  second source of skills: every pointer to a reference says when to open it and what it adds, and
+  no list of references closes a body (checked by lint); two table forms, common mistakes and
+  quick diagnostic, for decision rules and the final checklist; the content filters of the sorting
+  step (non-obvious points only, no "why it works" that restates the rule, nothing the model
+  already does); rules shared by several workflows stated once and cited; a fallback sentence for
+  a named external dependency that is missing. The study is in
+  `orchestrate-external-skills/inputs/`.
+- **DEC-12** *(owner, 2026-11-15)*: The ten clean-code and SOLID bullets of `cosmic-python` stay,
+  as short catalogue entries each tied to the check that enforces it
+  (`harden-checks-and-tests` D-3). A rule with a check behind it is a house rule. Rejected:
+  cutting them as restated general knowledge, as first shaped.
+- **DEC-13** *(owner, 2026-11-15)*: Order. Stage 1 (the standard, its lint, the practices of
+  DEC-11) runs first, beside `delivery-process-and-tools`. The pilot follows the first stage of
+  `orchestrate-external-skills`. Each later stage runs once the EPICs that add text to its domain
+  have landed, so that a skill is rewritten once. The order of all open EPICs is in
+  `delivery-process-and-tools/inputs/reassessment-2026-11-15.md`.
+
 ## Rabbit-holes
 
 - **Moving text is not shrinking.** A body cut to 6 KB by pushing its prose into a reference the
@@ -101,7 +124,7 @@ names a dependency for knowledge the dependency does not hold.
 - No evals, benchmarks or before-and-after runs (DEC-1).
 - No copying of book rule text into skillery.
 - No change to Stream Coding's status or to how agents load it (DEC-6).
-- No new agents. Routing to the book sets goes into the existing ones.
+- No new agents, and no routing to the book sets written here (DEC-10).
 - No change to what any skill owns, and no skill merged, split, renamed or retired here. A
   boundary move found during the assessment becomes its own EPIC.
 - No description changes unless a trigger probe ships with them.
@@ -116,15 +139,15 @@ names a dependency for knowledge the dependency does not hold.
   budget, with recorded exceptions.
 - Every skill is assessed and rewritten to the lean shape, in five stages: the standard and lint;
   `cosmic-python`; the other engineering skills; sales; devops and the rest.
-- `cosmic-python` loses its copied example files and its restatements of Clean Code, SOLID, the TDD
-  ritual, ADR advice and Stream Coding; it keeps the layer contract, the component layout, the
-  catalogue and the house conventions.
+- `cosmic-python` loses its copied example files and its restatements of the TDD ritual, ADR
+  advice and Stream Coding; its Clean Code and SOLID bullets shrink to short catalogue entries
+  tied to their checks (DEC-12); it keeps the layer contract, the component layout, the catalogue
+  and the house conventions.
 - A page in `docs/` links to worked examples in `mapping-suite-sdk`.
-- `dependencies.yaml` registers `meaningfy-ws/agent-rules-books` with the eight sets of DEC-5; the
-  setup docs for both CLIs gain its install step.
-- `implementer`, `code-reviewer` and `system-architect` route to a book set by kind of task
-  (refactoring pass, change to untested code, reliability change, data-consistency design,
-  modelling-heavy feature).
+- The standard states the five practices of DEC-11, and the lint checks the reference pointers.
+- Moved to `orchestrate-external-skills` on 2026-11-15 (DEC-10): the entry of
+  `meaningfy-ws/agent-rules-books` in `dependencies.yaml`, its install step, and the routing of
+  agents to a book set by kind of task.
 
 ## Capabilities
 
@@ -135,16 +158,16 @@ names a dependency for knowledge the dependency does not hold.
 
 ### Modified Capabilities
 
-- `external-dependency-register`: a new registered dependency, installed from a Meaningfy fork.
 - `skill-crafting-method`: the method refers to the lean standard. To confirm when the PLAN is
   derived, together with `code-principles-governance` (the `cosmic-python` catalogue).
 
 ## Impact
 
 - All 51 skills under `skills/`, and the generated `bundles/` tree and inventory that follow them.
-- `tools/repo_lint` (the budget check), `dependencies.yaml`, `docs/environment/` setup pages,
-  `docs/development/` (the standard), three agents.
-- Every installer of skillery gains one install step (the book skills) on both CLIs.
+- `tools/repo_lint` (the budget check and the pointer check) and `docs/development/` (the
+  standard).
+- The install step for the book skills reaches installers through
+  `orchestrate-external-skills`, not through this EPIC.
 - A new repository to keep: `meaningfy-ws/agent-rules-books`. Its upstream marks its own legal
   question (text distilled through ChatGPT from books) as unresolved; the fork brings that into a
   Meaningfy organisation.
