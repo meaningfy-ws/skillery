@@ -30,6 +30,9 @@ session. No EPIC is shaped yet.
 | 8 | The instructions call Serena and ast-grep mandatory, but they are almost never used and the named Serena tools do not exist. | Fix it by context and activity: the owner wants a recommended set of tools for each activity. |
 | 9 | One EPIC in skillery for skills, agents and the project template, and one issue in each other repository for its own instructions? | Agreed. |
 | 10 | Model prices in Langfuse (revisits row 2). | Not needed: the owner pays by subscription, not per token. Cost stays a relative measure from the transcripts. |
+| 11 | The adversarial tester is conditional at MEDIUM only (`harden-checks-and-tests` D-28). Apply the same condition at every size? | Yes, at every size, in the new EPIC: it changes the living `epic-delivery` spec. |
+| 12 | The reader of `generic-task-test-profiles`: a thin agent, or the tool list in the brief only? | A thin agent (its DEC-13). |
+| 13 | The result line of `harden-checks-and-tests` D-29, the changed scenarios, and deletion at once in the test sort of `test-suite-care` D-35. | Accepted as written. |
 
 ## What the owner wants next
 

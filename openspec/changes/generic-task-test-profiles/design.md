@@ -66,7 +66,7 @@ five skills (DEC-1, DEC-2); the two agents able to start a reader (DEC-9, DEC-10
 `generic-writing` rows; the four proofs of DEC-6; the post capability and its trigger (DEC-8,
 Q-13); the Definition of Done of a discipline rule (`docs/development/README.md` §9).
 
-**Non-Goals:** the proposal's No-gos. In particular: no score or pass mark; no new agent; no
+**Non-Goals:** the proposal's No-gos. In particular: no score or pass mark; no new agent other than the reader (DEC-13); no
 criteria step and no adversarial reader on a scheduled run; no edit to `sales-operations`, its
 reviewer prompts, `explanatory-writing` or any workflow file; no tone profile for LinkedIn or blog
 (`add-content-creation`).
@@ -845,14 +845,15 @@ decisions 2 and 7). The clarity gate was not run again on this entry.
     ([`inputs/scripts/`](../delivery-retrospective/inputs/scripts/) of `delivery-retrospective`),
     in `evidence/planted-flaw.md`. It is a number the owner reads at the acceptance demo, not a
     bar.
-  - *How the list is enforced* *(proposed, the owner confirms at scenario sign-off)*. A line in a
-    brief tells the reader what to use; it does not make its starting context smaller. On Claude
-    Code only an agent definition with a `tools` list does that (`guardrails`, § 1, *Enforced
-    by*), and the No-go "No new agent" forbids one. Proposal: stage 1 ships the list in the brief
-    only, and the observation above shows what that leaves. If the starting context is still
-    that of a general-purpose subagent, the owner decides between a thin reader agent (which
-    replaces "No new agent" by a new DEC, adds a bundle entry and a feature file, and lets D-5
-    stay as it is) and accepting the cost.
+  - *How the list is enforced* *(decided by the owner on 2026-11-14; proposal DEC-13)*. A line in
+    a brief tells the reader what to use; it does not make its starting context smaller. On
+    Claude Code only an agent definition with a `tools` list does that (`guardrails`, § 1,
+    *Enforced by*). So the reader is a thin agent, `adversarial-reader`, in the bundle that holds
+    `guardrails`: `tools: [Read, Grep, Glob]`, no `Agent`, no preloaded skill, and a body that
+    points to the brief of D-1's reference and carries no method. It replaces the No-go "No new
+    agent" for the reader only. It needs a bundle entry, a feature file and `make bundles`
+    (task 1.5). A reader of code is outside this EPIC; it would be a second list, not a wider
+    one here. D-5 stays as it is.
   - *D-5 is unchanged.* `Agent` stays unscoped in the two agent files, for the reason D-5 cites:
     the opencode renderer has no form for a scoped `Agent` and would drop the tool.
   - The spec delta `subagent-dispatch`, requirement *The adversarial reader has one brief*,

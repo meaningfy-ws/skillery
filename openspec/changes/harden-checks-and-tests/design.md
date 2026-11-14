@@ -1041,8 +1041,8 @@ decisions 3, 4 and 7). The clarity gate was not run again on these entries.
   *Report check*).** Reason: the outcome of a review round is traced nowhere, so its value
   cannot be measured (findings F-7, F-15, R-9). This is the one definition of the line;
   `test-suite-care` (its D-35) and any later change point here and define none.
-  - *The line* is the last line of the report, one per dispatch, in this form *(the form is
-    proposed; the owner confirms it with the changed scenarios in task 2.1)*:
+  - *The line* is the last line of the report, one per dispatch, in this form *(confirmed
+    by the owner on 2026-11-14)*:
 
     ```text
     result: stage=<s> role=tester tests=<n> failed-first=<n> findings=<n> accepted=<n|->

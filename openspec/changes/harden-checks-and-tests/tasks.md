@@ -91,10 +91,10 @@
 ## 2. Stage 2: the tester's methods and range
 
 - [ ] 2.1 [A] Walk the D-12 table again (A-4, A-6, A-7).
-  *Revised 2026-11-14 (D-28, D-29):* the developer signs off the scenarios that changed after
-  task 1.0 (the two MEDIUM scenarios, *The scaling has one source*, and the three of *A
-  challenge or check result ends in one line*) and confirms the form of the result line;
-  recorded in `evidence/acceptance.md`.
+  *Revised 2026-11-14 (D-28, D-29):* the scenarios that changed after task 1.0 (the two MEDIUM
+  scenarios, *The scaling has one source*, and the three of *A challenge or check result ends in
+  one line*) and the form of the result line were signed off by the owner on 2026-11-14, through
+  the decisions that changed them; record that in `evidence/acceptance.md`.
 - [ ] 2.2 `tests/features/epic-delivery.feature`: the MEDIUM row names the tester; add the four
   scenarios of D-9, one per scenario of the spec requirement (D-9; spec *The adversarial tester
   works by stated methods*).

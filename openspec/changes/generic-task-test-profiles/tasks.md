@@ -46,6 +46,9 @@
   *Reconciled 2026-11-14:* the `subagent-dispatch` delta now has three requirements, not two;
   `skills/guardrails/references/subagent-reports.md` (the reviewing fields, which list a
   verdict) gains the reader's exception.
+  *Revised 2026-11-14 (D-27, DEC-13):* add the thin agent `agents/adversarial-reader.md`
+  (`tools: [Read, Grep, Glob]`, no method in its body), declare it in `bundles.yaml` beside
+  `guardrails`, add `tests/features/agents/adversarial-reader.feature`, and run `make bundles`.
   *Revised 2026-11-14 (D-27):* section 5 of the reference states the two tool lists, and the
   brief carries the line "Tools: `<the list>`, and no other."
 - [ ] 1.6 Probes for `guardrails` in `tests/trigger_probes.yaml` (D-12); its description before
