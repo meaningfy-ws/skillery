@@ -116,3 +116,5 @@ shared-service consumers and stack acceptance tests; the stack templates.
 **Related:** `infrastructure-operations`, `service-reliability`, `infrastructure-security` and
 `ci-cd-delivery` for the jobs above; `bdd-gherkin` for writing the acceptance features;
 `meaningfy-git-workflow` for commit and branch conventions in the stacks repository.
+
+Answers `VAL, VER, ROB, RSK` in `test-strategy`'s matrix (`references/devops.md`).

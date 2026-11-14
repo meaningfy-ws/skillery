@@ -69,6 +69,28 @@ test('the schema rejects what it does not know', () => {
   assert.match((parseWorkflow(src('f', '{'), 'repo') as { error: string }).error, /^workflow file f: not JSON/)
 })
 
+const withCriteria = (criteria?: unknown) =>
+  src('docs/navigator/c.workflow.json', minimal({ phases: [{ id: 'apply', owner: 'o', expect: [], enter: {},
+    ...(criteria === undefined ? {} : { criteria }) }] }))
+
+test('criteria is optional on a phase; valid criteria load (D-5)', () => {
+  for (const c of [undefined, { succeeds: 'tests pass', fails: 'a test is red' }]) {
+    assert.deepEqual(resolveWorkflows([], [withCriteria(c)]).errors, [], JSON.stringify(c))
+  }
+})
+
+test('malformed criteria is a schema error naming the file and the phase (D-5)', () => {
+  const bad = [{ succeeds: '' }, 'text', ['a'], null, { succeeds: 'a' }, { fails: 'b' },
+    { succeeds: 'a', fails: 'b', extra: 'c' }, { succeeds: 'a', fails: '' }, { succeeds: 'a', fails: '   ' },
+    { succeeds: 1, fails: 'b' },
+    { succeeds: 'a', other: 'b' }]
+  for (const c of bad) {
+    assert.deepEqual(resolveWorkflows([], [withCriteria(c)]).errors,
+      ['workflow file docs/navigator/c.workflow.json: phases[0].criteria must be {succeeds, fails}, each a non-empty string'],
+      JSON.stringify(c))
+  }
+})
+
 // ---------------------------------------------------------------- TC-16: the shipped defaults
 const defaults = readdirSync(join(REPO, 'skills')).flatMap(skill => {
   const dir = join(REPO, 'skills', skill, 'assets', 'workflows')

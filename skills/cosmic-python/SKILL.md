@@ -394,6 +394,8 @@ service: the four layers, SOLID, what to test per layer, and CI guardrails.
 **Related:** `architecture`, `meaningfy-code-review`, `bdd-gherkin`, `guardrails`,
 `conceptual-modelling`, `linkml-engineering`, `ci-cd-delivery`, `meaningfy-git-workflow`, `epic-delivery`.
 
+Answers `VER, ADQ, ROB` in `test-strategy`'s matrix (`references/software.md`, `references/ui.md`).
+
 ### Canonical vocabulary
 
 **This skill owns** code structure inside a service: the four layers, SOLID, what to test per

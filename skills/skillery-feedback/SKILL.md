@@ -94,3 +94,5 @@ repository, the forms, the context to collect, what never goes into an issue.
 **Related:** `meaningfy-git-workflow` — branches and PRs when you fix a skill yourself in a checkout
 of skillery; `guardrails` — what an agent may do without asking, which includes filing a public
 issue.
+
+Answers `RSK` in `test-strategy`'s matrix (`references/cross-cutting.md`).

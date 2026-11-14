@@ -1,6 +1,6 @@
 ---
 name: epic-delivery
-description: Use this skill when a gated PLAN is ready and the work must be delivered by a lean agent team, or when a question comes up about how that delivery runs — "run this epic", "deliver the PLAN with agents", "who does what in the stage loop", "how many reviewers for a SMALL EPIC", "can I work around this library", "acceptance demo", "validation review", "can the agent commit and merge". It owns the epic session, the team and its briefs, the six-step stage loop scaled by appetite, the lead's authority, the question format, verification vs validation, and the rule for our own and external libraries. Not for shaping the EPIC or deriving the PLAN (epic-planning).
+description: Use this skill when a gated PLAN is ready and the work must be delivered by a lean agent team, or when a question comes up about how that delivery runs — "run this epic", "deliver the PLAN with agents", "who does what in the stage loop", "how many reviewers for a SMALL EPIC", "can I work around this library", "acceptance demo", "validation review", "can the agent commit and merge". It owns the epic session, the team and its briefs, the six-step stage loop scaled by appetite, the lead's authority, the question format, the acceptance demo and the validation review, and the rule for our own and external libraries. Not for shaping the EPIC or deriving the PLAN (epic-planning).
 license: Apache 2.0
 metadata:
   purpose: software-development
@@ -157,11 +157,9 @@ The full rule, the issue shape and the worktree rules:
 
 ## Verification and validation
 
-Verification asks "did we build it right?": each artefact against its own specification. Agents
-do most of it. Validation asks "did we build the right thing?": each artefact against the need one
-level up; it always ends with a person, and an agent never marks it done. Green gates prove
-verification only. The demo, by appetite, the V-model table, the evidence folder and the
-provisional steps:
+The definition of verification and validation, the questions and the matrix are owned by
+`test-strategy`. Validation always ends with a person, and an agent never marks it done. The
+demo, by appetite, the evidence folder and the provisional steps:
 [`references/verification-validation.md`](references/verification-validation.md).
 
 ## Gotchas
@@ -182,14 +180,17 @@ provisional steps:
 
 **Owns:** delivery of a gated PLAN: the sessions, the team and its brief templates, the stage loop
 and its scaling by appetite, the check ledger, the order after the last build stage, the lead's
-authority, the question format, the verification and validation principle, the acceptance demo
+authority, the question format, the acceptance demo
 and the validation review, and the rule for our own and external libraries.
 
 **Delegates:** the brief and report mechanics and the four-eyes rule → `guardrails` (§5);
 scenario sign-off and the traceability check → `bdd-gherkin`; the walkthrough and the spike →
 `architecture`; model validation → `conceptual-modelling`; the cold reader and the docs stage → `technical-writing`;
 the review lenses → `meaningfy-code-review`; archiving the change → `spec-stewardship`; the testing
-checklist → `cosmic-python` (`references/testing-checklist.md`).
+checklist → `cosmic-python` (`references/testing-checklist.md`); the definition of verification and
+validation, the questions and the matrix → `test-strategy`.
 
 **Related:** `epic-planning` (shapes the EPIC and derives the PLAN this skill delivers),
 `clarity-gate` (the PLAN gate), `meaningfy-git-workflow` (commit body and PR mechanics).
+
+Answers `VAL, VER, ADQ, ROB, RSK` in `test-strategy`'s matrix (`references/software.md`, `references/shaping.md`, `references/cross-cutting.md`).

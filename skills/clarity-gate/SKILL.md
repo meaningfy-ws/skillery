@@ -56,6 +56,8 @@ design-phase `.feature` coverage the gate scores), `spec-stewardship` (lifecycle
 `guardrails` (behaviour gate alongside this content gate), `stream-coding` (the doc-first method this
 gate sits inside), `technical-writing` (applies the lightweight check).
 
+Answers `VER, CLR` in `test-strategy`'s matrix (`references/documentation.md`, `references/shaping.md`).
+
 ## Tips
 
 - Score honestly: a 9/10 that hides one critical assumption is a failed gate, not a pass.

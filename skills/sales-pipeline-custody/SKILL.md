@@ -199,3 +199,5 @@ scoring, the dossier and the five Ps (`sales-qualification`); identity and profi
 
 **Related:** `sales-operations`, `sales-accounts`, `sales-qualification`, `sales-conversations`,
 `guardrails`, `executive-communication`, `semantic-consulting-coach`.
+
+Answers `VAL, VER, RSK` in `test-strategy`'s matrix (`references/generic-writing.md`).

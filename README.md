@@ -34,7 +34,7 @@ each one serves, and which skills depend on which — see
 
 | Bundle | Skills | Install if you… |
 |--------|--------|-----------------|
-| **meaningfy-core** | **technical-writing** *(workflow)* · **explanatory-writing** · **writing-antipatterns** · **meaningfy-voice** · **meaningfy-git-workflow** · **guardrails** · **skillery-feedback** · **rulebook** · **rule-learner** · **rule-steward** · **corpus-repository** | …do anything (cross-cutting basics) |
+| **meaningfy-core** | **technical-writing** *(workflow)* · **explanatory-writing** · **writing-antipatterns** · **meaningfy-voice** · **meaningfy-git-workflow** · **guardrails** · **skillery-feedback** · **rulebook** · **rule-learner** · **rule-steward** · **corpus-repository** · **test-strategy** | …do anything (cross-cutting basics) |
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **executive-communication** | …do advisory work |
 | **meaningfy-sales** | **proposal-writing** · **estimation** · **sales-operations** *(workflow)* · **sales-pipeline-custody** · **sales-accounts** · **sales-qualification** · **sales-conversations** | …write proposals and offers, estimate work, run the daily sales grooming of the Odoo pipelines, qualify a deal, or prepare a meeting and its follow-up (agent setup: [`docs/environment/sales-agent.md`](docs/environment/sales-agent.md)); requires `meaningfy-consulting` |
 | **meaningfy-architecture** | **architecture** *(workflow)* · **conceptual-modelling** *(workflow)* · **modelling-conventions** · **linkml-engineering** · **formal-reasoning** | …design systems or model a domain |
@@ -135,6 +135,7 @@ Pin one exact release with `#vX.Y.Z` instead of `#releases` (from the release af
 | Write a clear explainer / blog-style explanation | `explanatory-writing` |
 | Understand what the voice and writing skills cover, or add a register, channel or genre | [`docs/environment/communication.md`](docs/environment/communication.md) |
 | Keep your rules for agents: load them, learn new ones, review them weekly | `rulebook` · `rule-learner` · `rule-steward`, in `meaningfy-core` (how they work: [`docs/environment/rules.md`](docs/environment/rules.md); settings in [`docs/environment/setup.md`](docs/environment/setup.md); the Langfuse deployment they need: [`docs/environment/langfuse-deployment-spec.md`](docs/environment/langfuse-deployment-spec.md)) |
+| Know how a piece of work (code, doc, post, offer, contract) will succeed or fail, and which checks it needs | `test-strategy` (the loop, the questions, the matrix per activity family) → the skill that owns each check |
 | Ship a service | `ci-cd-delivery` (deploy contract) |
 | Change, deploy, resize or retire a server or stack | `devops-engineer` (consent card before anything is applied) → `infrastructure-operations`, `stack-operations` |
 | Check the fleet every day, answer alerts at night | `ops-watch` (scheduled; setup in [`docs/environment/devops-agents.md`](docs/environment/devops-agents.md)) → `service-reliability` |

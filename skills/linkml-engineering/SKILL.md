@@ -99,3 +99,5 @@ without a LinkML pivot does not need this skill.
 
 **Related:** `modelling-conventions`, `conceptual-modelling`, `architecture`, `cosmic-python`,
 `project-setup`, `formal-reasoning`.
+
+Answers `VER` in `test-strategy`'s matrix (`references/modelling.md`).

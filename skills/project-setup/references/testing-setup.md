@@ -89,17 +89,10 @@ bookkeeping-free.
 
 ## TDD + BDD workflow
 
-- **TDD** — `superpowers:test-driven-development`. RED → GREEN → REFACTOR, one
-  layer at a time. Write the failing unit test before the production code; let
-  it drive the smallest implementation that passes.
-- **BDD** — the `bdd-gherkin` skill. Write `.feature` files in business language
-  from the EPIC's acceptance criteria **before** implementation. Prefer
-  `Scenario Outline` + `Examples` for data-driven coverage. Step definitions sit
-  next to the feature.
-
-The two compose: BDD features pin the observable behaviour of a capability; unit
-tests pin the internals of each layer. Features come from acceptance criteria;
-unit tests come from the RED-GREEN loop.
+- **TDD** — the loop is owned by the external superpowers skill
+  `test-driven-development`.
+- **BDD** — scenarios and `.feature` files are owned by the `bdd-gherkin` skill.
+  Step definitions sit next to the feature.
 
 ## Where features and step defs live
 
@@ -171,19 +164,8 @@ wired to an inline stub so the skeleton is green before any real code exists.
 - **`test_data/` sparingly** — only for fixtures awkward to build in code (real
   payloads, sample documents). Load via the `load_text_file(relative_path)`
   helper in the root conftest; do not scatter `open()` calls.
-- **polyfactory** for domain objects — subclass `ModelFactory` per model and
-  call `.build()`. Keeps tests resilient to model changes and free of brittle
-  hand-built literals:
-
-  ```python
-  from polyfactory.factories.pydantic_factory import ModelFactory
-
-  class UserFactory(ModelFactory):
-      __model__ = User
-
-  user = UserFactory.build(email="a@example.com")   # other fields auto-filled
-  ```
-
+- **Model objects** — how to build them in tests is rule 6 of the `cosmic-python`
+  `testing-checklist` (polyfactory factories).
 - **testcontainers** for integration/e2e datastores — spin a real container in a
   module-scoped fixture, flush and close per test. The root conftest ships a
   commented Redis example to copy. These tests carry the `integration`/`e2e`

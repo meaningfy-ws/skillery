@@ -12,8 +12,9 @@
 
 # EPIC: generic task test profiles
 
-**Parents:** EPIC A [`test-strategy`](../test-strategy/proposal.md) (the loop, the adversary stance
-and the `generic-writing` rows this EPIC fills); the owner's requests of 2026-11-13 and 2026-11-14
+**Parents:** EPIC A [`test-strategy`](../archive/2026-11-14-test-strategy/proposal.md) (the loop,
+the adversary stance and the `generic-writing` rows this EPIC fills); the owner's requests of
+2026-11-13 and 2026-11-14
 (`inputs/seed.md`, `inputs/qa.md`).
 
 ## Appetite

@@ -6,7 +6,7 @@ owner: {name: Meaningfy, email: info@meaningfy.ws}
 description: Meaningfy company-wide skills, agents, methodologies, and engineering standards for working with LLM agents consistently
 bundles:
   - name: meaningfy-core
-    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, how to report a skill or agent problem to skillery, your own rules for agents: load, learn and groom them (rulebook, rule-learner, rule-steward), and working from a repository of house material by its own rules (corpus-repository)"
+    description: "Cross-cutting basics everyone installs: clear technical writing, explanatory-writing craft, the writing antipatterns catalogue, the Meaningfy company voice, the Meaningfy git/PR workflow, agentic guardrails, how to report a skill or agent problem to skillery, your own rules for agents: load, learn and groom them (rulebook, rule-learner, rule-steward), working from a repository of house material by its own rules (corpus-repository), and stating and checking how any work succeeds and fails (test-strategy)"
     skills:
       - technical-writing
       - explanatory-writing
@@ -19,6 +19,7 @@ bundles:
       - rule-learner
       - rule-steward
       - corpus-repository
+      - test-strategy
     agents: [technical-writer]
     mods: [no-poll-loops]
   - name: meaningfy-consulting

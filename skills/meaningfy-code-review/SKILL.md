@@ -130,3 +130,5 @@ boundaries, the L2 doc-agreement criterion, the **methodical per-lens procedure*
 restate), perform the run (external `code-review` / `code-reviewer` wrapper), or fix code (the
 `implementer` applies accepted fixes). The fit & refactoring investigation is **recommendations-only**.
 **Related:** `cosmic-python`, `guardrails`, `meaningfy-git-workflow`, `epic-delivery` (scales the review to the EPIC's size), external `code-review`, `superpowers:requesting-code-review`, `superpowers:receiving-code-review`.
+
+Answers `VAL, VER, ADQ, ROB, CLR, RSK` in `test-strategy`'s matrix (`references/software.md`, `references/documentation.md`, `references/ui.md`, `references/architecture.md`).

@@ -82,6 +82,12 @@ top-level `activate.agents` lists it. The lead may delegate parts of the work
 ([`agent-template.md` § *Workers*](agent-template.md#workers)). The `workflow_lead` check of
 `make validate` holds both rules; the *Lead* column below is a summary kept by hand.
 
+**Criteria on every phase.** Each phase of a default workflow says how it succeeds and how it fails,
+in one line each (`criteria`, schema in [`mods.md`](mods.md#workflow-files)). The
+`workflow_criteria` check of `make validate`, beside `workflow_lead`, requires it in the default
+files. A line names the evidence and stays neutral to the repository ("the version file is bumped",
+not a file only skillery has). A repository's own file may add criteria and need not.
+
 | Workflow | File | Lead | Variants |
 |---|---|---|---|
 | EPIC shaping | [`epic-planning`](../../skills/epic-planning/assets/workflows/epic-shaping.workflow.json) | `epic-planner` | — |

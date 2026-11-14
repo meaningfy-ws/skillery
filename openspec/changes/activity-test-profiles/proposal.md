@@ -5,11 +5,11 @@
 
 # EPIC: activity test profiles
 
-**Parents:** EPIC A [`test-strategy`](../test-strategy/proposal.md) (the matrix whose gap rows this
+**Parents:** EPIC A [`test-strategy`](../archive/2026-11-14-test-strategy/proposal.md) (the matrix whose gap rows this
 EPIC closes) and EPIC B [`harden-checks-and-tests`](../harden-checks-and-tests/proposal.md) (the
 `quality/` folder and the tester this EPIC feeds); the owner's requests of 2026-11-13
 (`inputs/seed.md`, `inputs/qa.md`); the first survey of gaps in
-[`../test-strategy/inputs/inventory-draft.md`](../test-strategy/inputs/inventory-draft.md).
+[`../archive/2026-11-14-test-strategy/inputs/inventory-draft.md`](../archive/2026-11-14-test-strategy/inputs/inventory-draft.md).
 
 ## Appetite
 

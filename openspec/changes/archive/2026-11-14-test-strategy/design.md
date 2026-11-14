@@ -195,6 +195,124 @@ New choices made while planning; settled ones are cited, not repeated.
     `docs/development/creating-skills.md` (the edits that adding a workflow takes).
     `docs/environment/navigator.md` is untouched, since the band does not show the criteria.
 
+## Delivery decisions
+
+Taken by the lead during delivery (2026-11-13); the developer may overrule any of them.
+
+- **D-12 Inventory rulings**, after three verifiers checked the 108 draft rows against their
+  sources (84 confirmed, 23 corrected, 1 not found; 40 further checks proposed):
+  - The inventory is numbered afresh, consecutively, grouped by family; the draft's ids are not
+    kept, since nothing published cites them.
+  - Dropped: the draft's terminology and ontology practice row (guidance with no pass or fail
+    step). Declared-only items are not listed either: the `hooks.yaml` git-hook intents that have
+    no implementation in the tree.
+  - Merged: the diagram checklists with the diagram review; the Gherkin quality checks with the
+    use-case traceability bullet (one row, cited from `software` and `architecture`). Folded into
+    an existing row rather than added: the clarity gate's self-assessment, the archive delta merge
+    (into `openspec validate --strict`), the archetype gate profiles (into CI on each push).
+  - Split: the sales rubrics from the rot and exit criteria; the narrow checks and task gate (with
+    its re-run triggers) from the lead's full gates.
+  - Every other proposed row that carries a `path:line` enters the inventory.
+  - Families: vault checks and customer outcome reviews go to `generic-writing`, read as the
+    owner's "generic tasks" family (seed); the repository's own gates (`make validate`, `make
+    mods`, CI jobs, mods that deny a command) go to `cross-cutting.md`. D-10 named neither.
+- **D-13 Two proofs deferred to `evaluate-catalogue`** (the developer, 2026-11-14: "defer to that
+  epic that aims for evaluations, add these tasks there"). The behavioural trigger run (task 1.11,
+  D-7) and the baseline (task 1.12, D-11) move to tasks 6b.1 and 6b.2 of
+  [`evaluate-catalogue`](../../evaluate-catalogue/tasks.md). Three baseline runs without the skill
+  were stopped by the model's safeguards and were not retried. Until 6b.1 runs, the triggers rest
+  on the eight static probes and RISK-4 stays open. The trigger set is ready in
+  `tests/evals/triggers/test-strategy.json`.
+- **D-14 Task 1.13, two docs keep their link.** Of the three docs D-11 names, only
+  `docs/development/README.md` is repointed. `working-with-agents.md` speaks of the provisional
+  steps, which stay in `epic-delivery`. `dod-quality-gates.md` is split: who owns each validation
+  point is in `test-strategy`'s matrix, where the evidence goes stays with `epic-delivery`.
+- **D-15 Findings of the stage 1 review** (five lenses and the adversarial tester, PR #218; no
+  critical finding). Accepted, fixed before merge:
+  - *Decided by* is defined in SKILL.md: it names who judges pass or fail, a stance or a person;
+    accepting a miss on any question is a person's decision. Each cell holds the stance the
+    stance table gives its question, or the person the owning skill names (the author for the
+    infra reviewer's report, the Terraform plan and the four-eyes rule; the person on duty for
+    break-glass). The L2 lens, use-case coverage and plan drift have no `VAL` row.
+  - The stage checker found one check missing from the inventory, the vault move and delete
+    check; it enters as CHK-144 (error matrix, first row).
+  - The V-model row *EPIC and PLAN* (the developer agrees the why, the appetite and the success
+    measure) is held by `test-strategy` itself, in `references/shaping.md`: no other skill states
+    it, and this change rewrites no other skill's technique.
+  - Inventory ids are stable from this release on: a new check takes the next free number and is
+    never renumbered. The range sentence in `inventory.md` goes.
+  - The matrix's *Technique owner* column governs the D-8 pointer lines (one owner per row); a
+    co-owner named only in the inventory gets none. `tests/test_test_strategy.py` checks each
+    pointer line against the matrix, so later EPICs cannot let them drift.
+  - `epic-delivery`'s reference keeps one pointer and its own rule (who signs, and when); the
+    sentence left without its table is reworded.
+  - SKILL.md gains a legend for `gap → B`, `C`, `D` with the EPIC ids, an evidence-based worked
+    example (the § *Worked example* above is superseded on its two criteria lines: "a cold reader
+    given only the post says in one sentence what the service does" and "the reader cannot, or
+    the antipattern check flags an advert"), and the clearer stance sentence. A check carries its
+    inventory name in every file; the generic-writing `ADQ` gap names D; `/opsx:verify` is
+    phrased neutrally; the vault final check has seventeen lines.
+  - The test: word boundaries on the definition and loop patterns, line numbers that match an
+    editor, exact failure messages, one case per rule; the adversarial tests are kept.
+  - The three verification records under `inputs/` drop the absolute local path.
+
+  Rejected, with the reason:
+  - *Move the repository's own gates out of the installed skill* (L3): the gated PLAN sets the
+    inventory's scope to `skills/` plus the repository's own checks (§ Algorithm). The developer
+    may reopen it.
+  - *Load the patterns from `ownership.yaml`* (L5): D-7 keeps the advisory tripwire and the
+    blocking test as two complementary checks.
+  - *Move the polyfactory example into `example-testing-patterns.md`* (L4): the D-7 allow-list
+    names the checklist as the only home.
+  - *Write the pointer path as `test-strategy/references/…`* (L4): D-8 fixes the form, and the
+    line names the skill.
+  - *Drop the repeated intro sentence of the family files; shorten the description* (L4, L5):
+    cosmetic; the "Not for" list is what keeps the neighbours apart (RISK-4).
+- **D-16 Criteria rulings** (task 2.3; three builders checked each draft line against the owning
+  skill: 14 kept, 36 corrected or rewritten).
+  - A criterion describes what its phase produces, not what its gate matches. In `architecting`
+    each gate matches the next phase's artefact; the criteria follow the skill's order.
+  - Four pairs rest on thin skill text and are the lead's wording: `release` *validate* and the
+    "gates are red" half of *merge* (the release skill names no validate step; the workflow's
+    own gate is the basis), `epic-shaping` *variants* (no skill names where the choice is
+    recorded; `inputs/qa.md` follows the gate) and `modelling` *elicit* (the skill has no
+    elicitation step; the terminology rule is the basis).
+  - Whitespace-only text counts as empty in both validators (the navigator and the lint).
+  - Found on the way and left alone (no change to a gate or a phase, proposal No-gos): the
+    `architecting` gates look one phase ahead; `meaningfy-release` describes no validate step
+    although its workflow has one; the release `back` gate matches only `develop` while the
+    runbook says every long-lived line. They are follow-ups, filed as issue #225 on the developer's decision.
+- **D-17 Stage 2 takes the small review set.** The stage adds 285 lines against `develop`
+  (generated files included), under the 600-line limit of the LARGE set's `small_stage`, and the
+  risk is low: the impact analysis of `phaseError` shows one direct caller and four impacted
+  symbols, the lint is a new function, and the rest is data and prose. Two reviewers (L1 with
+  L2; L3 with L4 and L5), the adversarial tester and the checker.
+- **D-18 Findings of the stage 2 review** (two reviewers and the adversarial tester, PR #222; no
+  critical finding). Accepted, fixed before merge:
+  - `workflow_criteria` joins the lint group of the inventory (CHK-127), the row the error matrix
+    asks for.
+  - Three criteria: `release` *publish* drops the dry run (only the package path has one);
+    `contract` *review* names the lawyer-review list without copying the skill's categories;
+    `epic-shaping` *revise* says "passes the clarity gate" and leaves the threshold to
+    `clarity-gate`.
+  - The nine workflow files use one layout for the new key: `succeeds` and `fails` each on its
+    own line.
+  - `phaseError` checks `criteria` after `id`, `owner` and `expect`, with its optional neighbours
+    `allow` and `gates`.
+  - The lint skips a workflow file too deeply nested to parse instead of crashing.
+  - Tests: the navigator gains the two-wrong-keys case; the override-file test uses the real
+    override path; the wrong-shape test asserts its findings. The adversarial tests are kept.
+
+  Rejected, with the reason:
+  - *The same whitespace set in both validators*: they agree on every ordinary and Unicode space;
+    they differ only on six control or format characters (U+FEFF, U+0085, U+001C to U+001F) that
+    no author types into a criterion. The gap is known and left; the agreement test covers the
+    rest of the case list, which is also the guard against the two rules drifting apart.
+  - *A shared file-walk helper with `workflow_lead`*: six lines, and it would widen the change to
+    a check this EPIC does not touch.
+  - *A shared fixture file for both test suites*: the agreement test already runs both validators
+    over one case list.
+
 ## Algorithm / approach
 
 **Inventory (task 1.2).** Scope: the catalogue, meaning `skills/` and the repo's own checks (trigger
