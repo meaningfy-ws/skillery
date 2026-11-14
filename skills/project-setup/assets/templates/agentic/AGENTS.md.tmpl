@@ -96,6 +96,8 @@ Full description: `docs/modules/ROOT/pages/develop/agents.adoc`; the method is t
   second subagent.
 - **Context** — follow *Session hygiene* in the `guardrails` skill: a fresh session at a task
   boundary, compact at a phase boundary right after a commit, never mid-step.
+- **Success and failure first** — for every activity, state how the work succeeds and how it fails
+  before you start it. The method is the **test-strategy** skill.
 - Default branch is **`<<DEFAULT_BRANCH>>`** (the PR target). Branch off it; never commit to it
   directly.
 

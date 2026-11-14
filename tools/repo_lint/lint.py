@@ -1276,6 +1276,33 @@ def workflow_lead(repo: Path) -> list[str]:
     return out
 
 
+CRITERIA_KEYS = {"succeeds", "fails"}
+
+
+def _criteria_ok(criteria: object) -> bool:
+    return (isinstance(criteria, dict) and set(criteria) == CRITERIA_KEYS
+            and all(isinstance(v, str) and v.strip() for v in criteria.values()))
+
+
+def workflow_criteria(repo: Path) -> list[str]:
+    """Every phase of every default workflow carries `criteria`: an object with exactly the keys
+    `succeeds` and `fails`, each a non-empty string (test-strategy D-5). Repo override files are the
+    navigator's business, not this check's."""
+    out: list[str] = []
+    for wf in sorted(repo.glob("skills/*/assets/workflows/*.workflow.json")):
+        try:
+            data = json.loads(wf.read_text(encoding="utf-8"))
+        except (ValueError, RecursionError):
+            continue  # navigator's TC-16 reports an unreadable workflow file
+        phases = data.get("phases") if isinstance(data, dict) else None
+        if not isinstance(phases, list):
+            continue  # TC-16 reports a workflow of the wrong shape
+        out += [f"{wf.relative_to(repo).as_posix()}: phase '{p.get('id')}' needs criteria, an object with "
+                f"exactly the keys 'succeeds' and 'fails', each a non-empty string"
+                for p in phases if isinstance(p, dict) and not _criteria_ok(p.get("criteria"))]
+    return out
+
+
 def bundle_gates(repo: Path) -> list[str]:
     """Delegate to tools.bundle_gen: bundles.yaml validates, the renderings
     (marketplace.json, bundles/ links, tools/opencode-catalogue.json) match it, and versions agree."""
@@ -1289,7 +1316,7 @@ ALL_CHECKS = (
     agent_bundle_membership,
     broken_links, skill_too_long, orphan_agent_references,
     boundary_section_present, agent_skill_alignment, agent_conformance, agent_persona, workflow_lead,
-    groomed_spec_purpose,
+    workflow_criteria, groomed_spec_purpose,
     agents_canonical_invariant, hooks_inventory_shape, mod_bindings_match, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,

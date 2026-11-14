@@ -5,11 +5,22 @@
                 "agents": ["proposal-writer", "sales-agent"] },
   "phases": [
     { "id": "research", "owner": "sales-qualification", "expect": [{ "skill": "sales-qualification", "by": "exit" }],
-      "allow": ["sales-accounts"], "enter": { "skills": ["sales-accounts", "sales-qualification"] } },
-    { "id": "meet", "owner": "sales-conversations", "expect": [], "enter": { "skills": ["sales-conversations"] } },
+      "allow": ["sales-accounts"],
+      "criteria": { "succeeds": "the dossier is written to the deal with every fact sourced or marked OPEN, and the write logged",
+                    "fails": "a dossier fact has no source and is marked neither OPEN nor as an inference" },
+      "enter": { "skills": ["sales-accounts", "sales-qualification"] } },
+    { "id": "meet", "owner": "sales-conversations", "expect": [],
+      "criteria": { "succeeds": "the meeting plan is a note on the deal, and the follow-up is a draft logged with its draft id",
+                    "fails": "a follow-up is sent rather than drafted, or no draft exists after the meeting notes arrived" },
+      "enter": { "skills": ["sales-conversations"] } },
     { "id": "offer", "owner": "proposal-writing", "expect": [{ "skill": "estimation", "by": "exit" }],
+      "criteria": { "succeeds": "the proposal and the SoW exist, with the estimate's effort range and contingency attached",
+                    "fails": "the proposal quotes a price with no estimate behind it, or the SoW has no out-of-scope list" },
       "enter": { "skills": ["estimation", "proposal-writing"], "agents": ["proposal-writer"] } },
     { "id": "pipeline", "owner": "sales-pipeline-custody", "expect": [],
-      "allow": ["sales-operations"], "enter": { "skills": ["sales-pipeline-custody", "sales-operations"], "agents": ["sales-agent"] } }
+      "allow": ["sales-operations"],
+      "criteria": { "succeeds": "each deal touched has a dated next activity, and any stage move is logged with its cited evidence",
+                    "fails": "a stage moved with no cited evidence, or a deal touched has no dated next activity" },
+      "enter": { "skills": ["sales-pipeline-custody", "sales-operations"], "agents": ["sales-agent"] } }
   ]
 }
