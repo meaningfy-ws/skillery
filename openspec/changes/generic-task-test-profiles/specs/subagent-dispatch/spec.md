@@ -24,7 +24,7 @@ DEC-2, DEC-5).
 
 #### Scenario: The brief is copied elsewhere
 - **WHEN** a file under `skills/` or `agents/`, other than `guardrails`' reference, holds the brief's line "Do not rewrite and do not propose wording"
-- **THEN** `make validate` fails, naming the file and the line
+- **THEN** `make validate` fails, naming the file
 
 ### Requirement: The reader runs on what leaves the company
 The same reference SHALL state, once, when the profile applies. A piece leaves the company when

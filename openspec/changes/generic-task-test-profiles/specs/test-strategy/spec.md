@@ -31,4 +31,4 @@ test-strategy DEC-5, DEC-8).
 
 #### Scenario: A role written into test-strategy
 - **WHEN** a file under `skills/test-strategy/` names a reader's role ("sceptical buyer", "opposing counsel", "stranger scrolling", "busy recipient")
-- **THEN** `make validate` fails, naming the file and the line
+- **THEN** `make validate` fails, naming the file
