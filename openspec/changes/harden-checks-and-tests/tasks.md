@@ -35,7 +35,8 @@
 - [ ] 1.7 The five gating rules in `quality/semgrep/rules/`, each fixture first (with a near
   miss), then the rule (`sparql-built-from-strings`, `exception-outside-exceptions-module`,
   `test-network-call`, `test-rdf-string-compare`, `test-real-sleep`); add the catalogue entry
-  `AP-SPARQL-FROM-STRINGS` (D-3, worked example; spec *Every Meaningfy Semgrep rule has a fixture
+  `AP-SPARQL-FROM-STRINGS` and name it in the L1 lens of `meaningfy-code-review` (D-3, the rule
+  table and the worked example; spec *Every Meaningfy Semgrep rule has a fixture
   test*, *SPARQL is not built from strings*; IT-01).
 - [ ] 1.8 The two report-only rules (`dict-as-model`, `free-string-key`) in
   `quality/semgrep/report-only/`, and `mfy-suppression-without-reason` in
@@ -69,7 +70,8 @@
 - [ ] 1.15 Scaffold the product and the library archetype from the stage branch with
   `QUALITY_VERSION` set to the branch's commit and run IT-04 and IT-05; paste the output into the
   stage PR.
-- [ ] 1.16 `README.md` row and `CHANGELOG.md` line; `make bundles`, `make skill-inventory`,
+- [ ] 1.16 Complete `quality/README.md` with every check of the stage (TC-02's last case; spec
+  scenario *Looking for a check*); `README.md` row and `CHANGELOG.md` line; `make bundles`, `make skill-inventory`,
   `make validate`, `openspec validate harden-checks-and-tests --strict`.
 
 ## 2. Stage 2: the tester's methods and range
@@ -83,7 +85,8 @@
 - [ ] 2.4 Replace the tester brief in `team-and-briefs.md`; add the report rule to the tester's
   row of the check ledger in `stage-loop.md`; repoint
   `docs/practice/ai-coding/working-with-agents.md` (D-9; spec *The adversarial tester works by
-  stated methods*; the scenarios of 2.2 turn green).
+  stated methods*). The scenarios of 2.2 are written scenarios, not executed tests: the stage's
+  checker reads the brief against each of them.
 - [ ] 2.5 `cosmic-python`: extend checklist item 10 and add the stateful and the Schemathesis
   example to `example-testing-patterns.md`; pin Hypothesis and Schemathesis in the `test` group of
   `pyproject.toml.tmpl` and confirm `poetry lock` on a scaffold (D-9, D-4).
@@ -117,8 +120,8 @@
 - [ ] 3.7 [A] Add the mutation and import-contract rows, update the L3 row, flip the last rows A
   marked for B; switch TC-12 on (D-12).
 - [ ] 3.8 Ask the developer which repository is the sample project (Q-22, with D-13's
-  recommendation); run IT-06 there: one manual dispatch of the weekly workflow up to its pull
-  request, and one failing and one passing `make check-architecture`; record them in
+  recommendation); run IT-06 there: the three manual dispatches of the weekly workflow, and one
+  failing and one passing `make check-architecture`; record them in
   `evidence/sample-project.md` (DEC-15, D-13).
 - [ ] 3.9 Save this stage's tester report as `evidence/tester-report.md` (IT-07; DEC-15, D-13).
 - [ ] 3.10 `CHANGELOG.md` line; `make bundles`, `make skill-inventory`, `make validate`,

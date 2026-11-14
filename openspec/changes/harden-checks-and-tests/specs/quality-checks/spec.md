@@ -148,7 +148,8 @@ the wider selection (harden-checks-and-tests DEC-2, DEC-3, issue #215).
 - **THEN** `make validate` fails in skillery, naming the entry and the code
 
 ### Requirement: Mutation results arrive weekly and never fail a build
-A project scaffolded by `project-setup` SHALL run mutation testing weekly on `develop`, on the
+A project scaffolded by `project-setup` SHALL run mutation testing weekly on its default branch
+(`develop` in a GitFlow project), on the
 package and not on the tests, within a stated time budget, and deliver the surviving mutants as one
 bot pull request that adds or updates `tests/mutmut-results/`; the run SHALL NOT fail a build, and
 a run that finds the same survivors as `develop` already holds SHALL open nothing
