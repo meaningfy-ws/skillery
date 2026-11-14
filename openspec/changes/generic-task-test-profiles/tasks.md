@@ -45,7 +45,8 @@
   1, the new step 5, the pointer line (D-2, D-3, D-10; spec `sales-method-ownership`, *The offer
   profile has one owner*).
 - [ ] 2.2 `contract-practice`: the section, the fifth intake bullet, the *review* row and the
-  sentence under *Lawyer-review flag* (a finding on a number or a term is an open point), the pointer
+  sentence under *Lawyer-review flag* (a finding on a number, or on a term that changes what a party can claim or must do, is an open
+  point), the pointer
   line; the workflow file is not touched (D-2, D-3, D-6; spec `legal-contract-practice`).
 - [ ] 2.3 `meaningfy-voice`: the section with its two step lines in
   `references/channels/linkedin.md`, the pointer and differences in `blog.md`, lines 23–24 of
@@ -53,7 +54,7 @@
   `company-voice`, both requirements).
 - [ ] 2.4 `executive-communication`: the section, the criteria and reader lines in *Start here*,
   the pointer line (D-2, D-3; spec `executive-communication`).
-- [ ] 2.5 `sales-conversations`: the section, the subsection *At pick-up: criteria and a reader*
+- [ ] 2.5 `sales-conversations`: the section, the subsection *In an attended session: criteria and a reader* (pick-up included)
   under *Workflow*, the pointer line; `sales-operations` is not touched (D-2, D-3, D-4; spec
   `sales-method-ownership`, *The sales-message profile has one owner*).
 - [ ] 2.6 Feature files: add the scenarios of design § *Scenarios* to the three files, with the
@@ -87,7 +88,7 @@
   in the PR (D-14, RISK-11).
 - [ ] 3.4 `make bundles`, `make validate`, `openspec validate generic-task-test-profiles --strict`.
 - [ ] 3.5 Acceptance demo with the developer: one offer from request to hand-over, one pick-up of a
-  sales draft, the baseline pairs with the owner's O-5 verdict, and the scheduled scenario's
+  sales draft, the baseline pairs with the owner's O-5 answers, and the scheduled scenario's
   hand-run result from 2.7 (RISK-2, RISK-3); recorded in `evidence/acceptance.md` (D-11, D-14; LARGE makes it
   mandatory).
 
@@ -104,7 +105,7 @@ Tasks 2.1 to 2.5 touch different files and may run in parallel, once 2.9 is done
 `make validate` green at the end of each stage, which includes
 `tests/test_generic_task_profiles.py`, the agent and agent-feature lint, the bundle gates and the
 static probes. Also required: `openspec validate generic-task-test-profiles --strict`; the
-offer's planted-flaw check shown (`evidence/planted-flaw.md`); the baseline verdict (`evidence/baseline.md`);
+offer's planted-flaw check shown (`evidence/planted-flaw.md`); the baseline result, *Proven* or not (`evidence/baseline.md`);
 the behavioural run of `meaningfy-voice` (`inputs/evidence/triggers-meaningfy-voice.md`); the agent
 scenarios run on both CLIs (`evidence/agent-scenarios.md`); and the developer's verdict in
 `evidence/acceptance.md`.

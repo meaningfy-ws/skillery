@@ -17,7 +17,8 @@ break them (A's inventory draft, `generic-writing`: "no ROB; VAL is only sales")
 - **`guardrails`** § 5 *Subagent dispatch* ([SKILL.md](../../../skills/guardrails/SKILL.md), lines
   69–109) owns the brief rules and the base report
   ([`references/subagent-reports.md`](../../../skills/guardrails/references/subagent-reports.md)); the
-  *reviewing* purpose already adds "findings by severity with location and the rule they break".
+  *reviewing* purpose adds "findings by severity with location and the rule they break; a
+  verdict" (`subagent-reports.md`, line 31). The reader takes the findings and leaves the verdict.
   Its description is 681 characters, over the advisory target of 600.
 - **The five owning skills** hold method and no profile:
   [`proposal-writing`](../../../skills/proposal-writing/SKILL.md) (111 lines, *Flow* steps 1–4),
@@ -80,7 +81,7 @@ New choices made while planning; settled ones are cited.
      unattended run made.
   5. *The brief* (below, § Algorithm).
   6. *The report*: an assessment, not a verdict (DEC-11). The base report plus the *reviewing*
-     fields: findings in order of weight, each naming the criterion it bears on and quoting the
+     fields without their verdict: findings in order of weight, each naming the criterion it bears on and quoting the
      draft; then the criteria that drew no finding. No pass, no fail, no score. A finding that
      matches no criterion goes under *Open questions* as a proposed criterion.
   7. *The loop's end*: at most two reads, and what the agent may not revise (D-6).
@@ -115,7 +116,7 @@ New choices made while planning; settled ones are cited.
   | `contract-practice` | opposing counsel | a right or risk given to one side only; a term that reads two ways; an undefined term; a gap against the parent or back-to-back contract; a missing cap or exit | *Intake interview*, a fifth bullet | *The contract workflow* table, row *review*, and one sentence under *Lawyer-review flag* |
   | `meaningfy-voice` (`linkedin.md`) | a stranger scrolling | the first two lines do not say what this is or why to care; it reads as an advert; jargon unexplained; a claim that names no real work; no next step | the section's first step line (D-2) | the section's second step line (D-2) |
   | `executive-communication` | a busy recipient | the ask not found in ten seconds; no decision or deadline; an answer that needs another document; a claim they would doubt; heavier than the artefact deserves | *Start here*, after the three questions | a new closing line of *Start here* |
-  | `sales-conversations` | a busy recipient | the ask unclear or hard to say yes to; whose turn got wrong; a commitment nobody approved; a line any vendor could send; not readable on a phone in 20 seconds | a new subsection *At pick-up: criteria and a reader*, under *Workflow* | the same subsection |
+  | `sales-conversations` | a busy recipient | the ask unclear or hard to say yes to; whose turn got wrong; a commitment nobody approved; a line any vendor could send; not readable on a phone in 20 seconds | a new subsection *In an attended session: criteria and a reader*, under *Workflow*; it covers a fresh draft and a draft picked up from a scheduled run | the same subsection |
 
   Example criteria (offer): *Succeeds:* the budget holder can say in two minutes what they get,
   what it costs and what is excluded, and has no question left before signing. *Fails:* a
@@ -365,7 +366,7 @@ Attack along:
   <the Attacks bullets of the owning skill's Test profile, quoted>
 Open, with the owner (second read only): <criteria already handed over as open points, or none>
 Do not rewrite and do not propose wording.
-Report: the base report plus the reviewing fields. Give your findings in order of weight; each
+Report: the base report plus the reviewing fields, without a verdict. Give your findings in order of weight; each
 names the criterion it bears on. Every finding quotes the draft. Then list the criteria you have
 no finding on. Give no verdict and no score. Anything you notice that matches no criterion goes
 under Open questions as a proposed criterion.
@@ -441,7 +442,7 @@ Added to `tests/features/agents/lawyer.feature`:
     When the lawyer runs the intake round
     Then he proposes the success and failure criteria in that round and drafts after the owner confirms them
     And before reporting the PR he starts a fresh reader with the opposing-counsel role, the draft and the criteria only
-    And each finding on a number or a term becomes an open point or a point for a qualified lawyer, with the reader's quotation, and he changes neither
+    And each finding on a number, or on a term that changes what a party can claim or must do, becomes an open point or a point for a qualified lawyer, with the reader's quotation, and he changes neither
     And he presents the reader's report as a read, not as approval or legal advice
 ```
 
@@ -658,8 +659,8 @@ scenarios and the spec deltas: the reader returns findings with quotations and n
 verdict, for all four kinds; the contract fixtures, the contract half of the planted-flaw proof
 and the contract baseline task are gone; the offer keeps one planted-flaw check, as evidence made
 once and not under `tests/`; the fixture checks and `expected.yaml` are gone, so the test file
-checks only where the skill text sits. Findings AT-10, G-4, K-2 and L-1 and the B-2 fixes above
-describe machinery that no longer exists.
+checks only where the skill text sits. Findings AT-10 and G-4, the fixture fixes of gate
+runs 4 and 5 and the B-2 fixes above describe machinery that no longer exists.
 
 ## Open Questions
 

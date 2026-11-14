@@ -4,9 +4,9 @@
 `guardrails` SHALL hold, in `references/adversarial-reader.md`, the one brief of the adversarial
 reader: a fresh subagent that is given only the draft as a path, the criteria, the role and the
 attack list its owning skill supplies, and one line about who receives the piece. The reader SHALL
-return an assessment, not a verdict: the base report plus the reviewing fields, with its findings
+return an assessment, not a verdict: the base report plus the reviewing fields without their verdict, with its findings
 in order of weight, each naming the criterion it bears on and quoting the draft, and then the
-criteria it has no finding on. It SHALL NOT give a pass, a fail or a score, and SHALL NOT rewrite
+criteria it has no finding on. It SHALL NOT give a verdict, a pass, a fail or a score, and SHALL NOT rewrite
 the draft or propose wording; the author revises and the owner judges. What it notices that matches
 no criterion SHALL be returned as a proposed criterion under *Open questions*, not as a finding
 against a criterion. No other skill or agent file SHALL copy the brief
