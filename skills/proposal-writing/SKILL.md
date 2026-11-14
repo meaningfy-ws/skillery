@@ -103,6 +103,8 @@ honest.
 
 **Related:** `estimation`, `decision-package`, `sales-qualification` (hands over the qualified deal and its dossier), `sales-conversations`, `executive-communication`, `semantic-consulting-coach`, `writing-antipatterns` (Contract/specification genre failure modes for the SoW half of this skill's output), `contract-practice` (the contract that follows an accepted offer).
 
+Answers `VER, RSK` in `test-strategy`'s matrix (`references/generic-writing.md`).
+
 ## Tone & style
 
 British English. The proposal is an executive artefact: answer-first, concise, every claim

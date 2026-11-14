@@ -11,6 +11,21 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- `test-strategy` (EPIC `test-strategy`, stage 1; bundle `meaningfy-core`): a new skill that says,
+  for any activity (code, a doc, a post, an offer, a contract clause, a model), how the work
+  succeeds or fails before you start, and carries the matrix of which check answers which question
+  per activity family. Use it when you need to choose the checks for a piece of work.
+
+### Changed
+
+- Verification and validation are now defined in `test-strategy`, not in `epic-delivery`. Its
+  `verification-validation.md` keeps the acceptance demo, the validation review and the evidence
+  folder.
+- The test-data rule (build test data with polyfactory factories) is now stated once, in the
+  `cosmic-python` testing checklist.
+
 ## [3.14.0] - 2026-11-13
 
 ### Added

@@ -92,3 +92,5 @@ the day → `vault-daily`; promoting and tidying what the weekly sweep finds →
 `vault-promote`, `vault-tidy`.
 
 **Related:** `vault-daily`, `vault-project`, `vault-conventions`, `vault-promote`, `rule-steward`.
+
+Answers `VAL` in `test-strategy`'s matrix (`references/generic-writing.md`).

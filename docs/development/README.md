@@ -90,7 +90,7 @@ reads each builder's reported `make validate` run. Builders run and report their
 lead re-runs only on a named trigger. The lead runs `make validate` once before the stage's PR and
 once after the fix round, and runs the loop scaled by the EPIC's appetite.
 
-**Verification and validation.** As in any project ([`epic-delivery`](../../skills/epic-delivery/references/verification-validation.md)),
+**Verification and validation.** As in any project ([`test-strategy`](../../skills/test-strategy/SKILL.md)),
 agents verify and the owner validates. For skillery the two look like this:
 
 | | Verification (built right?) | Validation (the right thing?) |

@@ -110,3 +110,5 @@ governs Reference and How-to output.
 **Owns:** documentation, explanations, summaries, docstrings, the documentation workflow (docs stage) and the cold reader. **Does NOT** plan (`epic-planning`),
 run the full clarity gate (`clarity-gate`), or write/modify production code or tests.
 **Related:** `clarity-gate` (full gate), `epic-planning`, `epic-delivery` (order of the docs stage, when the cold reader runs), `architecture` (method for C4 and ADR pages), `explanatory-writing` (Explanation-quadrant texture), `writing-antipatterns` (genre-conditional failure modes for Tutorial/How-to/Reference), `executive-communication` (answer-first structure when a document carries a recommendation).
+
+Answers `VAL, VER, CLR` in `test-strategy`'s matrix (`references/documentation.md`, `references/generic-writing.md`).

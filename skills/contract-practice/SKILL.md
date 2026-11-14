@@ -159,3 +159,5 @@ negotiation strategy, commercial terms and the decision to send, sign or registe
 **Related:** `corpus-repository` (how to work in the contract repository by its own instructions),
 `proposal-writing` (the commercial offer a contract often follows), `sales-conversations`
 (negotiating with the client before terms reach the contract).
+
+Answers `VER, RSK` in `test-strategy`'s matrix (`references/generic-writing.md`).

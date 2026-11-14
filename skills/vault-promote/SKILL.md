@@ -60,3 +60,5 @@ owner makes it *shared*, by setting `memory: common` later.
 `rulebook`.
 
 **Related:** `vault-conventions`, `vault-tidy`, `vault-capture`, `vault-planning`.
+
+Answers `VER` in `test-strategy`'s matrix (`references/generic-writing.md`).

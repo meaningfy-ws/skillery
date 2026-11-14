@@ -153,6 +153,8 @@ for the model sketch and `architecture` for the system design that follows.
 sells the Proof of Value), `estimation` (effort ranges for the sequenced options),
 `writing-antipatterns` (Decision genre failure modes).
 
+Answers `VER` in `test-strategy`'s matrix (`references/generic-writing.md`).
+
 ## Tone & style
 
 British English. The Decision Package is an executive artefact: answer-first, concise, every claim

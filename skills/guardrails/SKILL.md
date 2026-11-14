@@ -195,3 +195,5 @@ rules here are the rules they should follow.
 
 **Related:** `clarity-gate` (content quality), `cosmic-python` (structural validation with
 import-linter, alongside the spine's `openspec validate --strict`), `meaningfy-code-review` (review), `epic-delivery` (the delivery loop whose briefs, checker and upstream rule build on these dispatch rules), `sales-pipeline-custody` and `sales-operations` (a concrete instance: the sales agent's write rules and auditor).
+
+Answers `VER, RSK` in `test-strategy`'s matrix (`references/cross-cutting.md`).

@@ -29,6 +29,7 @@ served_by:
   - technical-writing
   - rulebook
   - rule-learner
+  - test-strategy
 status: covered
 ---
 

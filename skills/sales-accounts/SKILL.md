@@ -134,3 +134,5 @@ homework and scoring (`sales-qualification`); how personal touches are used in a
 
 **Related:** `sales-pipeline-custody`, `sales-qualification`, `sales-conversations`,
 `sales-operations`, `executive-communication`.
+
+Answers `VAL` in `test-strategy`'s matrix (`references/generic-writing.md`).

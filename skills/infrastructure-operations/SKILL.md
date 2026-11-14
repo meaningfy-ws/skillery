@@ -149,3 +149,5 @@ structure; the instance/practice split and the sibling layout.
 **Related:** `stack-operations`, `service-reliability`, `infrastructure-security`,
 `ci-cd-delivery`, `meaningfy-git-workflow`, `executive-communication`, `epic-planning`,
 `spec-stewardship`, `clarity-gate`.
+
+Answers `VER, CLR, RSK` in `test-strategy`'s matrix (`references/devops.md`).

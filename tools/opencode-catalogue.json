@@ -14,7 +14,8 @@
         "rulebook",
         "rule-learner",
         "rule-steward",
-        "corpus-repository"
+        "corpus-repository",
+        "test-strategy"
       ],
       "agents": [
         "technical-writer"

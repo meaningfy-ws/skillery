@@ -247,3 +247,25 @@ probes:
   - probe: "write the offer for this client with scope, estimate and price"
     expect: proposal-writing
     near_miss_of: contract-practice
+  # test-strategy D-7: the skill and its neighbours.
+  - probe: "which checks does this LinkedIn post need before I publish it"
+    expect: test-strategy
+  - probe: "how do we know this contract review succeeded or failed"
+    expect: test-strategy
+  - probe: "write Gherkin scenarios for this acceptance criterion"
+    expect: bdd-gherkin
+    near_miss_of: test-strategy
+  - probe: "score this spec before implementation"
+    expect: clarity-gate
+    near_miss_of: test-strategy
+  - probe: "run a cold reader on this how-to page"
+    expect: technical-writing
+    near_miss_of: test-strategy
+  - probe: "review this change against the cosmic-python layers"
+    expect: meaningfy-code-review
+    near_miss_of: test-strategy
+  - probe: "run the acceptance demo for this EPIC"
+    expect: epic-delivery
+  - probe: "what is the difference between verification and validation"
+    expect: test-strategy
+    near_miss_of: epic-delivery

@@ -7,7 +7,8 @@ success_guarantee: the visual exists in Meaningfy style, fitted to its purpose, 
 area: design
 served_by:
   agents: []
-  skills: []
+  skills:
+  - test-strategy
 status: missing
 change: add-visual-design
 ---

@@ -123,3 +123,5 @@ the GHCR image + deploy + secrets flow (`ci-cd-delivery`), or CI +
 scaffolding/projection (`project-setup`).
 **Related:** `meaningfy-git-workflow`,
 `ci-cd-delivery`, `project-setup`.
+
+Answers `VER, RSK` in `test-strategy`'s matrix (`references/devops.md`).

@@ -150,3 +150,5 @@ prose (the proposal "why" and "solution outline" are Explanation-quadrant), the 
 **Not an EPIC:** a team's Shape Up work shape kept in a personal vault is a `work-shape` note
 (`vault-conventions`); it may feed an EPIC but is not one.
 **Related:** `clarity-gate`, `epic-delivery`, `spec-stewardship`, `bdd-gherkin`, `architecture`, `technical-writing`, `stream-coding` (external).
+
+Answers `VAL, VER, ADQ, ROB, CLR, RSK` in `test-strategy`'s matrix (`references/shaping.md`).

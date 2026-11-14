@@ -145,3 +145,5 @@ Code layering and what consumes the generated contract belong to the related ski
 **Conditional:** product-development (programming) projects only — see the Overview.
 
 **Related:** `modelling-conventions`, `linkml-engineering`, `architecture`, `cosmic-python`, `formal-reasoning`, `epic-delivery` (when model validation runs in a delivery).
+
+Answers `VAL, ADQ` in `test-strategy`'s matrix (`references/modelling.md`).

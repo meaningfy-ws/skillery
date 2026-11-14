@@ -110,3 +110,5 @@ unattended-action policy, its decider and the runtime contract's summary.
 
 **Related:** `infrastructure-operations`, `stack-operations`, `infrastructure-security`,
 `executive-communication`.
+
+Answers `VER, CLR, RSK` in `test-strategy`'s matrix (`references/devops.md`).

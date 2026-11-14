@@ -10,6 +10,7 @@ served_by:
   - system-architect
   skills:
   - architecture
+  - test-strategy
 status: covered
 ---
 
