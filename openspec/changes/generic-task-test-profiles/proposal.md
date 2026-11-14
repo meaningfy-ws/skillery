@@ -4,7 +4,8 @@
      starts, after A is delivered; it does not depend on B or C. Readiness-checked 2026-11-13; the
      fixes and the owner's second round (Q-7..Q-9) are folded in. PLAN derived 2026-11-14 from A's
      gated design, before A's delivery. The owner's third round (Q-10..Q-13) amended two statements,
-     logged as DEC-8 and DEC-9: Capabilities and Impact below follow them. No earlier DEC changed. -->
+     logged as DEC-8 and DEC-9: Capabilities and Impact below follow them. After the attack on the
+     PLAN, Q-14 narrowed DEC-4 and one no-go, logged as DEC-10. No other DEC changed. -->
 
 # EPIC: generic task test profiles
 
@@ -88,7 +89,12 @@ A failed criterion sends the work back to the draft. Each owning skill says what
 - **DEC-9** (added 2026-11-14, Q-11): `proposal-writer` and `sales-agent` gain the `Agent` tool so
   each can start its own reader — rejected: no agent file change, with the reader run by the
   calling session; the tool for `sales-agent` only. This replaces "no agent file changes". What a
-  scheduled run does is still unchanged (DEC-4); no new agent is added.
+  profile is still not applied on a scheduled run (DEC-4); no new agent is added.
+- **DEC-10** (added 2026-11-14, Q-14): with the tool, the sales agent's scheduled runs may start the
+  three reviewers `sales-operations` already names, so runs recorded *unverified* become verified —
+  rejected: starting subagents in human sessions only; no tool for `sales-agent`. This narrows
+  "unattended runs are unchanged" (DEC-4) to: no criteria step and no adversarial reader on an
+  unattended run.
 
 ## Rabbit-holes
 
@@ -108,7 +114,9 @@ A failed criterion sends the work back to the draft. Each owning skill says what
 
 - No scored rubric and no pass mark.
 - No new agent; the reader is a brief for a fresh general-purpose subagent.
-- No change to the sales agent's scheduled runs or to any worker's workflow phases.
+- No criteria step and no adversarial reader on the sales agent's scheduled runs (narrowed by
+  DEC-10, which lets them start the reviewers they already name), and no change to any worker's
+  workflow phases.
 - No legal advice, and no reader verdict that replaces the owner's or the lawyer worker's decision.
 - No documentation, DevOps, UI, modelling or architecture checks (C); no software checks (B).
 - No change to `test-strategy`'s questions, stances or matrix shape (A); only its rows.

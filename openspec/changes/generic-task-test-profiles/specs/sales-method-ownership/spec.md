@@ -28,9 +28,9 @@ in a `## Test profile` section: the reader's role (a busy recipient) and what th
 with the criteria of a piece proposed from the skill's acceptance criteria. In an attended session
 the owner SHALL confirm the criteria and the reader SHALL run by the brief of `guardrails` before a
 draft is presented as ready to send; this applies to a draft the owner picks up from a scheduled
-run. A scheduled run SHALL do what it did before this change: it asks for no confirmation, starts
-no adversarial reader, and its `recipient-reader` of `sales-operations` runs as before. Sending
-SHALL stay the owner's act (DEC-3, DEC-4, DEC-5, DEC-9).
+run. A scheduled run SHALL ask for no confirmation of criteria and SHALL start no adversarial
+reader; it MAY start the reviewers `sales-operations` names, the `recipient-reader` among them,
+which stay as they are. Sending SHALL stay the owner's act (DEC-3, DEC-4, DEC-5, DEC-9, DEC-10).
 
 #### Scenario: A follow-up picked up from a scheduled run
 - **WHEN** the owner opens a working session and asks the sales agent to finish the follow-up that yesterday's close-day run drafted
@@ -38,7 +38,7 @@ SHALL stay the owner's act (DEC-3, DEC-4, DEC-5, DEC-9).
 
 #### Scenario: A scheduled run
 - **WHEN** the close-day run drafts a follow-up
-- **THEN** the run note holds no criteria confirmation and no adversarial reader's report, and the draft is logged as before
+- **THEN** the run note holds no criteria confirmation and no adversarial reader's report, and its *Verification* holds the output of the reviewers of `sales-operations`, or "unverified"
 
 #### Scenario: Several drafts picked up together
 - **WHEN** the owner picks up three drafts in one working session

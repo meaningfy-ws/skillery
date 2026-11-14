@@ -7,8 +7,9 @@
 ### Requirement: A public post is drafted against confirmed criteria and read by a stranger
 `meaningfy-voice` SHALL hold the post profile in the LinkedIn channel file
 (`references/channels/linkedin.md`), in a `## Test profile` section: what makes a public post
-succeed and fail, the reader's role (a stranger scrolling) and what that reader attacks. The blog
-channel file SHALL point to that section and state only what differs for an article. For a post or
+succeed and fail, the reader's role (a stranger scrolling), what that reader attacks, and the two
+step lines (criteria before drafting, the reader before hand-over). The blog channel file SHALL
+point to that section and state only what differs for an article. For a post or
 an article the owner SHALL confirm the criteria before drafting, and the reader SHALL read the
 draft by the brief of `guardrails` before it is handed over. The agent SHALL NOT publish or post.
 Until their tone is written, both channel files SHALL keep pointing to the default voice profile

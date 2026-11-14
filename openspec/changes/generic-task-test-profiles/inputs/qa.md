@@ -31,5 +31,16 @@
 Q-10 and Q-11 change two statements of the shaped EPIC ("New Capabilities: none"; "no agent file
 changes"). They are recorded in the EPIC as DEC-8 and DEC-9; the bet itself is unchanged.
 
+## Round 4: after the attack on the PLAN (2026-11-14)
+
+| # | Question | Answer |
+|---|---|---|
+| Q-14 | With `Agent`, the sales agent's scheduled runs can start `sales-operations`' three reviewers, where they recorded "unverified" until now. What should the PLAN do? | Accept the change: scheduled runs may start them. Not chosen (the planner's recommendation): subagents in human sessions only; no `Agent` for `sales-agent`. Recorded as DEC-10. |
+
+The attack's other three questions were settled in the PLAN without the owner, each from a rule
+already in force: a failed contract term is an open point (`contract-practice`); the post's two
+step lines sit in the channel file (design D-2); a blog explainer written through
+`explanatory-writing` is an accepted risk and a follow-up for `add-content-creation` (RISK-11).
+
 The shaper added `sales-conversations` as the owner of sales client messages (it was in the seed);
 the owner has not objected.
