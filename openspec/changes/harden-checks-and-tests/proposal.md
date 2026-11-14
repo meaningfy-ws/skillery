@@ -12,7 +12,9 @@
      owner decision (../delivery-process-and-tools/inputs/reassessment-2026-11-15.md, S-1, S-6,
      S-9 and the order; design D-30 to D-34): the tester's condition and the result line are
      delivered by delivery-process-and-tools, no example code goes into a skill, stage 1 has a
-     tool side and a prose side; not gated again. -->
+     tool side and a prose side; not gated again. Revised again 2026-11-15 by owner decision
+     (reassessment-2026-11-15.md; design D-35): the weekly mutation runs are dropped (DEC-10,
+     the fourth outcome, stage 3's mutation half); not gated again. -->
 
 # EPIC: harden checks and tests
 
@@ -26,8 +28,8 @@ capabilities `epic-delivery` (the adversarial tester and the review sets), `code
 
 **VERY LARGE**, in three stages (the owner's call, Q-19, after the readiness check found the scope
 beyond LARGE): (1) `quality/`, the wider Ruff selection, the Semgrep rules and the "Checked by"
-column; (2) the tester's methods; (3) the weekly mutmut run and the import-contract
-check. Several related capabilities change together (static rules, test strength,
+column; (2) the tester's methods; (3) the import-contract
+check. Several related capabilities change together (static rules, the tester,
 the import-linter review), and a new artifact type and top-level folder appear. The tester's
 boundary and stage 1's two sides are as revised on 2026-11-15 (DEC-9, *Order* under Impact). If encoding the catalogue needs new catalogue entries (DDD,
 TDD, fixtures), that is the follow-up EPIC, not this one (Q-18).
@@ -59,9 +61,8 @@ selection and misses checks it could make for free.
    report lists the properties it stated. When it runs is set by `delivery-process-and-tools`
    (DEC-9 as revised). Outcome: "try to break it" becomes
    a repeatable technique with a visible result.
-4. **Tests that are measured.** A weekly mutmut run on `develop` writes the surviving mutants to
-   `tests/mutmut-results/` in a bot PR; a person picks them up, plans the fixes and deletes the
-   folder once empty. Outcome: weak tests are found every week, not by accident.
+4. *Dropped 2026-11-15 (D-35).* **Tests that are measured** by a weekly mutmut run and a bot PR
+   is not delivered: nobody is named to read the results.
 5. **Import contracts that stay true.** A mechanical check on every PR (every top-level package is
    under a contract; `ignore_imports` does not grow without a recorded decision) and an L3 judgement
    once per EPIC (the contracts still match the layering and the EPIC's ADRs).
@@ -115,9 +116,10 @@ selection and misses checks it could make for free.
   [`delivery-process-and-tools`](../delivery-process-and-tools/proposal.md) (its DEC-3 and
   DEC-18), which owns the stage loop and the review sets; this EPIC changes no review-set data
   and delivers the tester's methods and what its report holds (design D-30).
-- **DEC-10**: mutmut runs weekly on `develop` in scheduled CI and opens or updates one bot PR that
-  adds `tests/mutmut-results/`; it never fails a build; whoever picks the results up plans the fixes
-  and deletes the folder when empty — rejected: per-PR runs; direct push to `develop` (Q-8, Q-9).
+- **DEC-10** *(dropped 2026-11-15 by owner decision, design D-35)*: was: mutmut runs weekly on
+  `develop` in scheduled CI and opens or updates one bot PR that adds `tests/mutmut-results/`;
+  it never fails a build — rejected then: per-PR runs; direct push to `develop` (Q-8, Q-9).
+  Nothing of it is delivered.
 - **DEC-11**: The import-linter review is a mechanical check on every PR plus the L3 lens once per
   EPIC — rejected: L3 only; weekly with mutmut (Q-10).
 - **DEC-12**: In skillery, `quality/`'s own tests run locally in `make validate` and CI skips them
@@ -126,17 +128,19 @@ selection and misses checks it could make for free.
 - **DEC-13**: Mitigated risks: external sources change or relicense (pinned versions, licence per
   source, re-approval on bump); noise (few rules, new external sources start report-only, every
   suppression carries a reason); tools missing (pinned installs through `make`, cached in CI).
-  Accepted risk: nobody picks up the mutmut results (Q-11).
+  The accepted risk "nobody picks up the mutmut results" (Q-11) is moot: the runs are dropped
+  (D-35).
 - **DEC-14** *(re-shape, round 6)*: This EPIC depends on A and lands after it. It fills the software
-  rows of `test-strategy`'s matrix: `ADQ` for mutmut, `ROB` for Hypothesis and the tester, `VER` for
-  the static rules; each fills a `gap` row A marked for B and flips it to `exists`. By A's
+  rows of `test-strategy`'s matrix: `ROB` for Hypothesis and the tester, `VER` for
+  the static rules; each fills a `gap` row A marked for B and flips it to `exists`. The `ADQ`
+  mutation row is not filled; it becomes `accepted` (D-35). By A's
   DEC-8 the techniques stay with their owners: how to write a property or a stateful test goes in
   the `cosmic-python` testing checklist, the tester's brief in `epic-delivery`, the wiring in
   `project-setup`.
 - **DEC-15**: B proves three things (Q-12): every catalogued rule has a checker or a "review only,
   because…" entry, and every Meaningfy Semgrep rule a fixture test; the tester's report lists the
-  properties it stated; the mutmut bot PR and the import-contract check each run once end to end
-  on a sample project.
+  properties it stated; the import-contract check runs once end to end
+  on a sample project (the mutmut bot PR is dropped, D-35).
 
 ## Rabbit-holes
 
@@ -152,8 +156,6 @@ selection and misses checks it could make for free.
 - **Ordering with A**: A adds `criteria` to every phase of `epic-delivery.workflow.json`; this
   EPIC's review-set edit lands after A and keeps that field. The tester change is one field per
   appetite. *Since 2026-11-15 this EPIC edits no review set (DEC-9 as revised).*
-- **mutmut on large suites** can run for hours. Scope it to the package, not the tests, and let the
-  PLAN set a time budget.
 
 ## No-gos
 
@@ -167,7 +169,7 @@ selection and misses checks it could make for free.
 - No ls-lint or checkmake for docs folders or stacks repositories (EPIC C).
 - No change to the test-scenario interview or the PLAN's error matrix (EPIC C); the tester takes
   its properties from the PLAN as written.
-- No mutation testing per PR, and no build that fails on mutation results.
+- No mutation testing: not per PR, not weekly (D-35).
 - No change to PEP-style checking beyond Ruff's selection.
 
 ---
@@ -182,7 +184,7 @@ selection and misses checks it could make for free.
   and SOLID bullets stay, each with its check; no example code is added (design D-31, D-32).
 - `test-strategy` (from EPIC A): the software rows of the matrix name the new checks.
 - `project-setup`: wider Ruff selection; `make` targets to fetch `quality/` at a pin and run Semgrep,
-  ls-lint and checkmake; a weekly mutmut workflow in the CI template; the mechanical
+  ls-lint and checkmake; the mechanical
   import-contract check; a migration note for existing projects.
 - `epic-delivery`: the tester brief gains its methods and report fields. The review sets, the
   tester's condition and the result line are changed by `delivery-process-and-tools`, not here
@@ -194,7 +196,7 @@ selection and misses checks it could make for free.
 
 ### New Capabilities
 - `quality-checks`: the `quality/` artifact type, its rules and their tests, external-source
-  manifests, the pinned fetch, and the weekly mutation report.
+  manifests and the pinned fetch.
 
 ### Modified Capabilities
 - `catalogue-governance`: the agreed top-level folders include `quality/`; a sixth artifact type.
@@ -206,13 +208,13 @@ selection and misses checks it could make for free.
 ## Impact
 
 - Skills: `cosmic-python`, `project-setup`, `epic-delivery`, `meaningfy-code-review`; possibly
-  `ci-cd-delivery` for the scheduled workflow.
+  `ci-cd-delivery` is not touched.
 - Repo: `quality/`, `docs/development/governance.md`, `AGENTS.md`, `tools/repo_lint` (top-level
   folders), `Makefile` (`make validate`), `docs/skill-inventory.md` if descriptions change.
 - Projects scaffolded or modernised by `project-setup`: new `make` targets, a wider Ruff selection,
-  a weekly workflow.
-- Dependencies for projects: Semgrep, ls-lint, checkmake, mutmut, Hypothesis, Schemathesis
-  (pinned).
+  no weekly workflow (D-35).
+- Dependencies for projects: Semgrep, ls-lint, checkmake, Hypothesis, Schemathesis
+  (pinned). They are tools, so their entries in `dependencies.yaml` stay in this EPIC (D-35).
 - Order: after EPIC A (`test-strategy`). *Revised 2026-11-15 (design D-34):* stage 1's tool side
   is free now; its prose side and stage 2 follow `delivery-process-and-tools` and stage 1 and
   the `cosmic-python` pilot of `lean-skills`; stage 3 follows the remaining stages of

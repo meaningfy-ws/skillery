@@ -120,6 +120,26 @@ was removed. The readers' reasons are short; each item needs the owner's yes bef
 7. **B, two check messages** cite skill text that arrives two waves later. Suggested: allow those
    few lines of skill text on the tool side.
 
+## Answered by the owner on 2026-11-15
+
+Shown the four questions that mattered most, the suggested drops and the rest of this file, the
+owner answered "I agree, go ahead", and then "proceeed with reconciliation pull, merge prs, combine
+them all into develope". So:
+
+- All seven questions above are settled as suggested. Questions 1 and 2 are written into R3 (DEC-4
+  and DEC-3); 3 into E; 4 and 5 stand as C already has them; 6 and 7 into B.
+- Dropped or moved, from the table of candidates: E stage 2 (UI suites) is deferred until a
+  repository is named; E stage 3 moves after the retrospective tooling; B's weekly mutation runs
+  (tasks 3.5 and 3.6, with D-25) are dropped; D's baseline tallies O-1 to O-4 and their cost
+  sign-off are dropped.
+- What followed from the drops: B registers five tools, not six (mutmut went with the weekly
+  runs); B's stage 3 is the import-contract check only and gains the programme's closing check,
+  handed over by E; E's skill cap falls to 16.5 KB; D's proof of done is the owner's judgement of
+  the kept pairs.
+- Added the same day, the owner's proposal that planning belongs to shaping: R3 DEC-19.
+- Every other candidate stays for now and is looked at again in its own EPIC's delivery session.
+- `lean-skills` was merged (PR #236).
+
 ## Limits
 
 The revisions were made by one reader per EPIC and checked by the spine validation and the lint,

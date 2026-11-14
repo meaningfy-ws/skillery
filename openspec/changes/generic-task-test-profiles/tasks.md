@@ -3,7 +3,8 @@
      and gated again, 9.1/10 PASS (run 7). Reconciled 2026-11-14 with the sibling changes and
      with A as delivered: design § Delivery decisions, D-15 to D-26. Revised 2026-11-14 by
      owner decision (D-27, the reader's tool list); not gated again. Revised 2026-11-15 after the
-     owner's settlement of the open EPICs (design D-28 to D-32); not gated again. -->
+     owner's settlement of the open EPICs (design D-28 to D-32); not gated again. Also on 2026-11-15,
+     the owner agreed to drop the baseline tallies O-1 to O-4 and the cost sign-off (D-33). -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)); design in
 > [`design.md`](design.md). EPIC A `test-strategy` is delivered (2026-11-14). Order (D-32): this
@@ -39,8 +40,8 @@
   Read the planted offer against `skills/proposal-writing/references/scope-boundary-checklist.md`
   (`CHK-91`) and record that every line of it passes.
 - [ ] 1.3 Write `evidence/baseline/inputs.md` (the four prompts and the prompt sentence). Run the
-  calibration call and get the owner's approval of the amount. Run the four *without* runs with
-  the command of D-11, the plugin built from the base commit; record the commit and O-1..O-4 and
+  calibration call and the cost approval are dropped (D-33). Run the four *without* runs with
+  the command of D-11, the plugin built from the base commit; record the commit of each and
   keep the drafts (D-11). Write `evidence/failure-case.md` from them and from
   the three `gap → D` rows of A's `generic-writing.md` (D-14).
 - [ ] 1.4 Write `tests/test_generic_task_profiles.py` with the stage-1 assertions of D-11 (the
@@ -144,7 +145,7 @@ that the line matches the skill's `exists` rows, and those rows arrive in 3.1 (D
     and the two cells "none yet (a gap)" in the column *Example in a post* (lines 67–68): the
     `ROB` cell names the adversarial reader's read, the `ADQ` cell says the gap is `accepted`.
 - [ ] 3.2 Run the four *with* runs, isolated, from the head of stage 2, with the prompts of 1.3;
-  complete `evidence/baseline.md` with the pairs and O-1..O-4.
+  complete `evidence/baseline.md` with the pairs (no tallies, D-33).
 - [ ] 3.3 Docs: the two CHANGELOG lines, the `docs/future-features.md` row, `guardrails` under
   `served_by.skills` of UC-W7, UC-W8, UC-W16 and UC-W24. File a GitHub issue for
   the follow-up of RISK-11 (a blog explainer written through `explanatory-writing` gets no
@@ -171,7 +172,7 @@ after A, R3 and R1 stage 1; D-26 says what the lead reruns after each rebase.
 `make validate` green at the end of each stage, which includes
 `tests/test_generic_task_profiles.py`, the agent and agent-feature lint, the bundle gates and the
 static probes. Also required: `openspec validate generic-task-test-profiles --strict`; the
-offer's planted-flaw check shown (`evidence/planted-flaw.md`); the baseline result, *Proven* or not (`evidence/baseline.md`);
+offer's planted-flaw check shown (`evidence/planted-flaw.md`); the baseline result, *Proven* (O-5 yes for two pairs) or not (`evidence/baseline.md`);
 the behavioural run of `meaningfy-voice` (`inputs/evidence/triggers-meaningfy-voice.md`); the agent
 scenarios run on both CLIs (`evidence/agent-scenarios.md`); and the developer's verdict in
 `evidence/acceptance.md`.

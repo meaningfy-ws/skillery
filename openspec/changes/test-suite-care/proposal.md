@@ -10,7 +10,9 @@
      a new decision. Revised 2026-11-14 by owner decision: DEC-3 (a builder sorts, the lead
      confirms), design D-35 and D-36; not gated again. Revised 2026-11-15 against the three
      refactoring EPICs (delivery-process-and-tools/inputs/reassessment-2026-11-15.md; design
-     D-37 to D-42): DEC-3, DEC-7 and the order; not gated again. -->
+     D-37 to D-42): DEC-3, DEC-7 and the order; not gated again. Revised 2026-11-15 again by
+     owner agreement (design D-43 to D-46): stage 2 deferred, stage 3 after the retrospective
+     tooling EPIC, closing check handed over; not gated again. -->
 
 # EPIC: test suite care
 
@@ -24,8 +26,10 @@ this EPIC adds to); the owner's request of 2026-11-14 and the measurements of `r
 
 1. The audit skill for Python suites of every tier (unit, Gherkin feature, integration, end to
    end), the catalogue of test rules, the distilling rule and the lanes.
-2. UI suites (Cypress and the like).
-3. The assessment of checks that are not code.
+2. UI suites (Cypress and the like). **Deferred, not delivered with this EPIC** (design D-43): it
+   waits until a trial repository is named and the UI rules have an owner (issue #230).
+3. The assessment of checks that are not code. Delivered after the retrospective tooling EPIC
+   (`delivery-retrospective`), because its cost numbers need the scripts to have a home (D-44).
 
 Each stage ends usable on its own. If the work starts building a tool that rewrites tests on its
 own, or a dashboard of test timings, it has overrun.
@@ -117,9 +121,9 @@ project.
   No scheduled run is added and `ci-cd-delivery`, which owns deployment only, is not touched
   (corrected by the PLAN).
 - **DEC-7** (Q-5, Q-6): The skill is named `test-suite-care` and lives in `meaningfy-building`. It
-  covers every kind of test: unit, Gherkin feature, integration, end to end, and UI suites such as
-  Cypress. The procedure is the same for all; what differs per kind (how cost is measured, how a
-  test names its scenario) is a short section each. UI suites are stage 2. The skill is born
+  covers every kind of test: unit, Gherkin feature, integration and end to end. The procedure is
+  the same for all; what differs per kind (how cost is measured, how a test names its scenario) is
+  a short section each. UI suites (stage 2) are deferred, not delivered (design D-43). The skill is born
   within the lean budget of `lean-skills`: at most 24 KB of prose, a body near 6 KB (design D-40).
 - **DEC-11** (Q-6): A check that is not code is assessed for how good and reliable it is for the
   project and the task: does it catch a planted flaw, does it give the same verdict on each of three runs, what
@@ -132,13 +136,13 @@ project.
   report; the owner discusses the report and decides each proposal; an approved reduction lands
   there as a pull request with timings before and after and every mapped scenario still covered.
   The trial is how the owner judges the skill; what it teaches goes back into the skill in general
-  words. Stage 2 is tried on a repository with a UI suite, which the owner names at sign-off, and
-  stage 3 on the cold reader of `technical-writing`. In skillery: the skill has its trigger probes,
+  words. Stage 2 (deferred) would be tried on a repository with a UI suite, once the owner names
+  one; stage 3 is tried on the cold reader of `technical-writing`. In skillery: the skill has its trigger probes,
   and the distilling rule has a Gherkin scenario for the agent whose behaviour changes.
 - **DEC-9** (confirmed, Q-10): Depends on A: its software matrix gains one row for the audit
   (question `ADQ`, technique owner `test-suite-care`), and the lanes are named as moments in the
-  existing rows; the wider scope of Q-6 adds the same row to the UI matrix and one row, with a
-  second id, to the cross-cutting matrix. The matrix shape does not change. No stage waits for
+  existing rows; the wider scope of Q-6 adds one row, with a second id, to the cross-cutting
+  matrix (the UI matrix row is deferred with stage 2). The matrix shape does not change. No stage waits for
   C or D. E and B both edit the tester's brief (B stage 2) and the testing checklist (B stage
   1): whichever lands second keeps the other's change, and the PLAN states the order. Mutation
   results are an optional input, when a local run supplies them per test.
@@ -146,8 +150,8 @@ project.
   EPIC surveys the published test smells and test design patterns, and writes the ones that are
   missing as rules, each with the smell it prevents and its source. The rules live with their
   owners (A's rule): Python test rules in `cosmic-python`'s testing checklist, one Gherkin rule
-  in `bdd-gherkin`, and the new UI test rules in `test-suite-care` until a UI skill exists,
-  because no skill owns them today. The audit reports a broken rule as a finding, and a
+  in `bdd-gherkin`. The new UI test rules (in `test-suite-care` until a UI skill exists) are
+  deferred with stage 2. The audit reports a broken rule as a finding, and a
   reduction never leaves a test that breaks one.
 
 ## Risks
@@ -210,7 +214,7 @@ project.
   `bdd-gherkin`: one check box.
 - `project-setup`: the `slow` marker, the lane targets and the changed-files script in the
   scaffold.
-- `test-strategy`: a row for the audit in the software and UI matrices, a row for the
+- `test-strategy`: a row for the audit in the software matrix, a row for the
   assessment in the cross-cutting matrix, two inventory ids; the lanes named as moments.
 - In the trial repositories (`rdf-persistence` first): the map, the report and the approved
   reductions, as their own changes.
@@ -223,7 +227,7 @@ project.
 
 ### Modified Capabilities
 - `epic-delivery`: the distilling of adversarial tests in step 4 of the stage loop.
-- `test-strategy`: rows in the software, UI and cross-cutting matrices.
+- `test-strategy`: rows in the software and cross-cutting matrices.
 - `code-principles-governance`: testing checklist rules 17 to 21, and rules 6 and 14 amended.
 - The lane requirement of the scaffold sits in the `test-suite-care` capability, because no
   capability exists for `project-setup`.
@@ -236,5 +240,5 @@ project.
   agent file changes.
 - Other repositories: the trials (DEC-8).
 - Order: after A; stage 1 after `delivery-process-and-tools` and stage 1 of `lean-skills`
-  (design D-37), and ordered against B stages 1 and 2 by the PLAN; stages 2 and 3
-  independent of B, C and D.
+  (design D-37), and ordered against B stages 1 and 2 by the PLAN; stage 3 after the
+  retrospective tooling EPIC (D-44), independent of B, C and D; stage 2 deferred (D-43).
