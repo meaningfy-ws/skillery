@@ -33,6 +33,24 @@ The navigator accepts any string or `null` in `reviews.<appetite>.tester`
 (`mods/navigator/lib/workflow.ts`, line 191) and no navigator test pins the MEDIUM value, so the
 tester's new range needs no mod change.
 
+### Files this plan names by short name
+
+| Short name | File |
+|---|---|
+| `Makefile.tmpl`, `dot-gitignore`, `dot-pre-commit-config.yaml` | [`Makefile.tmpl`](../../../skills/project-setup/assets/templates/root/Makefile.tmpl), [`dot-gitignore`](../../../skills/project-setup/assets/templates/root/dot-gitignore), [`dot-pre-commit-config.yaml`](../../../skills/project-setup/assets/templates/root/dot-pre-commit-config.yaml) |
+| `config-files.md` | [`project-setup/references/config-files.md`](../../../skills/project-setup/references/config-files.md) (§ `ruff.toml`; the template table at the top) |
+| `decisions.md` | [`project-setup/references/decisions.md`](../../../skills/project-setup/references/decisions.md) (sections D2, D4, D12) |
+| `ci-and-infra.md` | [`project-setup/references/ci-and-infra.md`](../../../skills/project-setup/references/ci-and-infra.md) |
+| `layout.md`, `checklists.md` | [`layout.md`](../../../skills/project-setup/references/layout.md), [`checklists.md`](../../../skills/project-setup/references/checklists.md) |
+| `modernizing-existing-projects.md` | [`project-setup/references/modernizing-existing-projects.md`](../../../skills/project-setup/references/modernizing-existing-projects.md) |
+| `stage-loop.md` | [`epic-delivery/references/stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md) (the check ledger, line 136) |
+| `example-testing-patterns.md` | [`cosmic-python/references/example-testing-patterns.md`](../../../skills/cosmic-python/references/example-testing-patterns.md) |
+| The L3 lens | [`meaningfy-code-review/SKILL.md`](../../../skills/meaningfy-code-review/SKILL.md) (the lens table, line 74) |
+| `working-with-agents.md` | [`docs/practice/ai-coding/working-with-agents.md`](../../../docs/practice/ai-coding/working-with-agents.md) (line 44) |
+| The reviewer's scenarios | [`tests/features/agents/code-reviewer.feature`](../../../tests/features/agents/code-reviewer.feature) |
+| `CONTRIBUTING.md`, `dependencies.yaml` | [`CONTRIBUTING.md`](../../../CONTRIBUTING.md), [`dependencies.yaml`](../../../dependencies.yaml) |
+| `tests/test_quality.py`, `requirements-quality.txt`, `docs/development/quality.md`, everything under `quality/` and `skills/project-setup/assets/templates/quality/` | New files of this change |
+
 ### Issue #215: what Ruff really flags
 
 Probed on 2026-11-14 with Ruff 0.17.5 on the fixtures in
@@ -88,7 +106,10 @@ Appetite; the three proofs of DEC-15; the Definition of Done of
 code; no tool installed in skillery's CI; no description change in any skill (so no new trigger
 probe is owed); no change to `ci-cd-delivery` (the proposal's "possibly": the weekly workflow is a
 CI template, which `project-setup` owns); nothing for the doc-only archetype (DEC-8 gives docs
-folders to EPIC C; its Makefile behaves as today).
+folders to EPIC C). `Makefile.tmpl` is one file for all three archetypes, so a doc-only project
+also gets the new targets; its `check-quality` already fails today at `lint`, which has no package
+to read, and that stays as it is. The `scripts/quality/` templates and the weekly workflow are
+rendered inside `scaffold.sh`'s `CODE` block, so a doc-only project does not get them.
 
 ## Decisions
 
@@ -184,7 +205,13 @@ A value is one or more of the following, separated by `; `:
 | None | `review only, because <reason>` (reason of at least 3 words; never combined with a tool) |
 
 A tool that checks only part of a rule is written with the tool first, then `(partial: <what is left
-to review>)`.
+to review>)`; it is the only parenthesis a value may hold. The word `make` is plain and its target
+is in backticks. Two full values as they are written in the catalogue:
+
+```
+Ruff `PLR2004`; Semgrep `mfy-free-string-key` (partial: subscripts and attribute names are report-only)
+review only, because duplication across files needs a reader
+```
 
 `tests/test_quality.py` (pure Python, runs in CI) fails when: an entry, item or bullet has no value;
 a value does not parse; a named Semgrep id has no rule file under `quality/semgrep/rules/` or
@@ -204,6 +231,9 @@ the same test:
 **First assignment.** It is the stage builder's starting point; each tool row is confirmed by a
 fixture that fails without the check, test-first, and a row whose fixture cannot be made to work
 becomes `review only, because …` with the reason found (the proposal's rabbit-hole "ALL of them").
+The table is shorthand: it names the checker of each entry, and its notes in parentheses explain
+the choice to the builder. The builder writes each value in the grammar above; for a review-only
+row the reason is the one in the table below this one.
 
 | Entry | Checked by |
 |---|---|
@@ -227,6 +257,55 @@ becomes `review only, because …` with the reason found (the proposal's rabbit-
 | Checklist 12 (no real sleeps) | Semgrep `mfy-test-real-sleep` |
 | Checklist 1, 2, 4, 5, 6, 8, 9, 10, 13, 14, 15, 16 | review only |
 
+Reasons for the review-only rows (the text after "because"):
+
+| Rows | Reason |
+|---|---|
+| `PR-SURVEY-FIRST` | it is a working step that leaves no trace in the code |
+| `PR-SSOT-DRY`, `PR-REUSE-COMPACT`, `AP-DUP-CONST`, `AP-DUP-VALIDATION`, clean code: DRY | duplication across files needs a reader |
+| `BP-VALIDATE-AT-BOUNDARY`, `AP-LOGIC-IN-EDGES`, `AP-MISPLACED-SHARED-INFRA`, `BP-CONSTANTS-HOME` | where a rule or a helper belongs is a judgement on meaning |
+| `BP-IDIOMATIC-SMALL`, `AP-VERBATIM-EXTERNAL` | the origin and licence of code are not visible in its shape |
+| `AP-OVER-FRAGMENTATION`, `AP-PARALLEL-LAYOUTS` | whether files form one concern or one layout needs the component names |
+| Clean code: names | a tool checks the case of a name, not what it reveals |
+| Clean code: nesting | Ruff's nesting rule is preview-only; `C901` bounds complexity |
+| SOLID: SRP, OCP, LSP, ISP, DIP | each is a judgement on responsibilities and contracts |
+| Checklist 1, 2, 13 | the test folder layout below the tier is the project's own |
+| Checklist 4, 5, 6 | which double or builder fits is a choice between correct options |
+| Checklist 8, 9, 16 | whether every rule or example has its case needs the rule table |
+| Checklist 10 | whether an invariant exists is a design judgement; the tester's report lists the properties |
+| Checklist 14 | a flaky test shows only across runs |
+| Checklist 15 | traceability is checked by reading, in the `bdd-gherkin` traceability check |
+
+The `AP-IO-IN-MODELS` contract, added to `dot-importlinter.tmpl` in stage 1 (the catalogue says
+`models/`; the scaffold's layer is `domain`, the divergence `decisions.md` D7 records):
+
+```ini
+[importlinter]
+root_package = <<PACKAGE>>
+include_external_packages = True
+
+[importlinter:contract:domain-no-io]
+name = The domain layer does no I/O (cosmic-python:AP-IO-IN-MODELS)
+type = forbidden
+source_modules =
+    <<PACKAGE>>.domain
+forbidden_modules =
+    requests
+    httpx
+    urllib3
+    aiohttp
+    sqlalchemy
+    psycopg
+    pymongo
+    redis
+    boto3
+    SPARQLWrapper
+    fastapi
+    flask
+```
+
+A project adds its own I/O packages to the list.
+
 That is eight Meaningfy Semgrep rules: five gating in `rules/` (`sparql-built-from-strings`,
 `exception-outside-exceptions-module`, `test-network-call`, `test-rdf-string-compare`,
 `test-real-sleep`), two in `report-only/` (`dict-as-model`, `free-string-key`) and one in
@@ -244,8 +323,11 @@ that stage's `quality/` content; installs come from `releases` only, so only a s
 checkout meets this, and it sets the ref by hand (task 1.15 does).
 
 ```make
-QUALITY_VERSION = v3.15.0
-QUALITY_DIR     = $(REPO_ROOT)/.quality
+QUALITY_VERSION   = v3.15.0
+QUALITY_DIR       = $(REPO_ROOT)/.quality
+SEMGREP_VERSION   = 1.185.0
+LS_LINT_VERSION   = 2.3.2
+CHECKMAKE_VERSION = 0.3.2
 
 quality-fetch: ## Fetch the shared checks at the pinned skillery release
 	@ if [ "$$(cat $(QUALITY_DIR)/.version 2>/dev/null)" != "$(QUALITY_VERSION)" ]; then \
@@ -266,9 +348,14 @@ without `quality/`, a rerun and an old folder all behaved as stated.
 virtual environment (`python3 -m venv .quality/venv`, `pip install semgrep==$(SEMGREP_VERSION)`),
 so its dependencies never meet the project's; the ls-lint and checkmake release binaries for the
 machine's OS and architecture into `.quality/bin/`, each verified with `shasum -a 256 -c` against
-`scripts/quality/tools.sha256` before it is made executable. The three tool versions are Makefile
-variables beside the pin, and the checksum file sits in the same project (D-1), so a project moves
-a tool's version and its checksums in one commit. `.quality/` joins `dot-gitignore`. Hypothesis and
+`scripts/quality/tools.sha256` before it is made executable. The binaries come from the tools'
+GitHub releases: `https://github.com/loeffel-io/ls-lint/releases/download/v$(LS_LINT_VERSION)/ls-lint-<os>-<arch>`
+and `https://github.com/checkmake/checkmake/releases/download/v$(CHECKMAKE_VERSION)/checkmake-v$(CHECKMAKE_VERSION).<os>.<arch>`
+(the `linux`/`amd64` names were run; the builder reads the other three asset names from the release
+pages when writing the checksums). `tools.sha256` holds one line per tool, version, OS and
+architecture. The three tool versions are Makefile variables beside the pin, and the checksum file
+sits in the same project (D-1), so a project moves a tool's version and its checksums in one commit.
+After the installs `quality-tools` runs `python3 scripts/quality/external_sources.py fetch` (D-7). `.quality/` joins `dot-gitignore`. Hypothesis and
 Schemathesis are pinned in the `test` group of `pyproject.toml.tmpl` (stage 2); mutmut in stage 3
 (D-10).
 
@@ -323,10 +410,17 @@ names" check of D-3 does not apply to it.
   "why": "…", "mode": "report-only" }
 ```
 
-`mode` is `report-only` or `gate`. `scripts/quality/external_sources.py` (run by
-`make quality-tools`) reads `.quality/semgrep/external.json`, downloads each source's archive at its
-commit into `.quality/external/<id>/` when absent and prints the config paths of one mode for
-`check-semgrep`. The stage PR proposes at most five candidate sources, each with its licence and
+`mode` is `report-only` or `gate`. `scripts/quality/external_sources.py` reads
+`.quality/semgrep/external.json` and has two commands:
+
+| Command | Does | Output |
+|---|---|---|
+| `external_sources.py fetch` | For each entry whose folder `.quality/external/<id>/` is absent: downloads `<repo>/archive/<commit>.tar.gz`, unpacks it whole into a temporary folder and moves it into place | One line per source fetched; exit 1 on a failed download, leaving no folder for that source |
+| `external_sources.py paths gate` (or `report-only`) | Nothing on disk | On one line, `--config .quality/external/<id>/<path>` for every path of every entry of that mode; an empty line when there is none |
+
+`check-semgrep` takes its `$(external gate paths)` from
+`$$(python3 scripts/quality/external_sources.py paths gate)` and skips pass 3's external part when
+the `report-only` line is empty. The stage PR proposes at most five candidate sources, each with its licence and
 reason; the owner approves each in the review and unapproved ones are removed before merge, so the
 manifest may ship as an empty list. Raising a `commit` is a new approval (DEC-13).
 `tests/test_quality.py` checks every field, the 40-character commit and the mode; that a new entry
@@ -379,8 +473,10 @@ Schemathesis (kind, source, pin, used by `project-setup`'s templates and `qualit
 - **Other statements of the range** are repointed, not restated:
   `docs/practice/ai-coding/working-with-agents.md` (line 44, "Larger EPICs add an adversarial
   tester") and [`tests/features/epic-delivery.feature`](../../../tests/features/epic-delivery.feature)
-  (the MEDIUM row, line 21, and two new scenarios for the report). `stage-loop.md`'s worked
-  examples are a SMALL and a LARGE one and stay true.
+  (the MEDIUM row, line 21, and four new scenarios, one per scenario of the spec requirement *The
+  adversarial tester works by stated methods*: a parser stage, a stage with an OpenAPI contract, a
+  report without properties, a stage without Python). `stage-loop.md`'s worked examples are a
+  SMALL and a LARGE one and stay true.
 - **Report check:** the lead returns a Python-stage report without a properties table as
   incomplete; the tester's row in `stage-loop.md`'s check ledger (line 136) says so.
 
@@ -413,9 +509,13 @@ Schemathesis (kind, source, pin, used by `project-setup`'s templates and `qualit
   commit and no version, so the same survivors give the same files whatever `develop` did. With no
   survivor it removes the folder's content. It prints the commit and the mutmut version to standard
   output for the pull request's body.
-- **Target `mutation-pr`** holds the git and `gh` steps, so the workflow stays thin (D12): if
-  `git status --porcelain tests/mutmut-results` is empty it stops; otherwise it commits to the
-  branch `bot/mutmut-results`, force-pushes it and edits the open pull request of that branch or
+- **Target `mutation-pr`** holds the git and `gh` steps, so the workflow stays thin (D12). It
+  stops when the results equal what is already delivered: `git status --porcelain
+  tests/mutmut-results` is empty (same as the default branch), or the branch `bot/mutmut-results`
+  exists on the remote and `git diff --quiet origin/bot/mutmut-results -- tests/mutmut-results`
+  succeeds (same as the open pull request). Otherwise it commits as `github-actions[bot]` (the
+  identity `releases.yml` uses) to `bot/mutmut-results`, force-pushes it and, with `gh` (the
+  workflow sets `GH_TOKEN: ${{ github.token }}`), edits the open pull request of that branch or
   creates one into the default branch.
 - **Workflow** `ci/mutation.yml.tmpl`: `schedule` (Monday 03:00 UTC) and `workflow_dispatch`;
   `permissions: contents: write, pull-requests: write`; `concurrency: mutation` without cancel;
@@ -460,6 +560,9 @@ Schemathesis (kind, source, pin, used by `project-setup`'s templates and `qualit
 - **Per EPIC:** the L3 lens text in `meaningfy-code-review` gains the contract judgement (the
   `pr-review-modes` delta); `epic-delivery`'s reviewer brief and ledger name the moment (the last
   build stage); `architecture-guardrails.md` § grooming points to both and drops "periodically".
+  Its proof is three scenarios in `tests/features/agents/code-reviewer.feature`, one per scenario
+  of the spec requirement (the last build stage, an earlier stage, a repository without
+  `.importlinter`); skillery has no import contracts, so this EPIC's own review cannot show it.
 
 ### D-12 What depends on EPIC A
 
@@ -491,15 +594,27 @@ brief and the moment).
 | Failure case | `evidence/failure-case.md`: the method-less tester (Q-2), and one antipattern that passed review unflagged, taken from a past PR |
 | Docs | `governance.md` (six types), `AGENTS.md` (line 11 and the type table; "four rendered files"), `CLAUDE.md` (line 4), a new `docs/development/quality.md` (how to add a rule, a source, a tool; registered for `doc_register_complete`), `README.md` row, one `CHANGELOG.md` line per stage |
 | `project-setup` references | `config-files.md` (Ruff, *Suppressions*, the template table), `decisions.md` (D4 selection, the mutmut exception), `ci-and-infra.md` (cache, the three steps, the weekly workflow, the setting), `architecture-guardrails.md`, `layout.md` (`.quality/`, `scripts/quality/`, `tests/mutmut-results/`), `checklists.md` |
-| Existing projects | `modernizing-existing-projects.md`, a section *Adopting the shared checks*: one target per pull request, in the order Ruff (D-2's steps), `check-makefile`, `check-layout` (rename the banned files first), `check-semgrep`, then the import contracts (move to the container form; give each existing `ignore_imports` entry its decision comment, with a new ADR where none exists). A target joins `check-quality` in the pull request that makes it green. Upgrading: copy the newer `scripts/quality/` templates |
+| Existing projects | `modernizing-existing-projects.md`, a section *Adopting the shared checks*: one target per pull request, in the order Ruff (the four steps below this table), `check-makefile`, `check-layout` (rename the banned files first), `check-semgrep`, then the import contracts (move to the container form; give each existing `ignore_imports` entry its decision comment, with a new ADR where none exists). A target joins `check-quality` in the pull request that makes it green. Upgrading: copy the newer `scripts/quality/` templates |
 | Register | `dependencies.yaml` (D-8) |
-| Gherkin | `tests/features/epic-delivery.feature` (D-9) |
+| Gherkin | `tests/features/epic-delivery.feature` (D-9); `tests/features/agents/code-reviewer.feature` (D-11) |
 | Generated files | `make bundles`, `make skill-inventory` after every skill edit |
 | Scenario sign-off | The developer signs off this change's spec scenarios when accepting the gated PLAN, recorded in `evidence/acceptance.md` |
 | Proof 1 (DEC-15) | `tests/test_quality.py` green |
 | Proof 2 | `evidence/tester-report.md`: stage 3's tester report with its properties table. The stage 3 lead briefs the tester with the brief text read from the repository (stage 2 is merged; the installed skill may be older). The tester's property tests target `check_contracts.py` and `mutation_report.py` and are guarded by `importorskip` (D-8) |
 | Proof 3 | `evidence/sample-project.md`: the bot pull request's URL and the output of a failing and a passing `make check-architecture`. The sample repository is chosen by the developer at stage 3 (Q-22): the stage 3 lead asks before task 3.8, with the recommendation "a new private scratch repository scaffolded by `project-setup`, archived afterwards" |
 | Acceptance demo | Mandatory at VERY LARGE: the three proofs shown to the developer, verdict in `evidence/acceptance.md` |
+
+**Adopting the wider Ruff selection in an existing project** (the proposal's rabbit-hole; written
+into the section *Adopting the shared checks*):
+
+1. Add the new codes in three pull requests, quietest first: `S113`, `DTZ`, `BLE001`; then
+   `PT018`, `TID251`; then `PLR0912`, `PLR0913`, `PLR0915`, `PLR2004`.
+2. In each, run `ruff check --statistics` and fix the findings.
+3. Where one code has more than 50 findings, list the files that still fail under that code in
+   `[lint.per-file-ignores]` of `ruff.toml`, with a comment line above naming the issue that tracks
+   their clean-up; remove a file from the list when it is clean.
+4. Never use `ruff check --add-noqa`: it writes `# noqa` comments without a reason, which the
+   suppression rule of D-6 then fails.
 
 ## Algorithm / approach
 
@@ -595,7 +710,7 @@ Integration tests:
 | IT-01 | Semgrep rule tests | Semgrep on PATH | `semgrep scan --test` exits 0 for the three rule folders; skipped otherwise |
 | IT-02 | ls-lint on trees | ls-lint on PATH; a good tree and one with `pkg/utils.py` and `tests/helpers.py` | exit 0; exit 1 naming both |
 | IT-03 | checkmake on the template | checkmake on PATH; `Makefile.tmpl` rendered with a package name | exit 0; exit 1 with `test` removed |
-| IT-04 | Scaffold run | The product and the library archetype scaffolded from the stage's branch, `QUALITY_VERSION` set to the branch's commit | `make check-quality` green on each skeleton; red after adding `utils.py`, an f-string SPARQL query, a `requests.get(url)`, a bare `# nosemgrep`, and after deleting `ruff.toml`; recorded in the stage PR |
+| IT-04 | Scaffold run | The product and the library archetype scaffolded from the stage's branch, `QUALITY_VERSION` set to the branch's commit | `make check-quality` green on each skeleton, and still green after adding the folders `openspec/changes/add-billing-component/` and `tests/mutmut-results/` and after adding only a `dict-as-model` case (printed, exit 0). Red after each of: `utils.py`; an f-string SPARQL query; `requests.get(url)`; `import requests` in `domain`; a bare `# nosemgrep`; `# nosemgrep: mfy-test-real-sleep` without a reason; deleting `ruff.toml`. Recorded in the stage PR |
 | IT-05 | Fetch | The same project, after its first fetch | a second `make quality-fetch` offline exits 0; with the pin `v0.0.0` it exits non-zero and `.quality/` is unchanged; in a fresh clone with that pin `.quality/` is absent |
 | IT-06 | Weekly workflow and contract check | The sample project (D-13); `poetry lock` succeeds | `evidence/sample-project.md` |
 | IT-07 | Tester report | Stage 3 of this EPIC | `evidence/tester-report.md` |
@@ -726,6 +841,22 @@ project scaffolded by `scaffold.sh`. Findings and where they went:
 | F-20 | No MEDIUM example exists in `stage-loop.md` | D-9 |
 | F-21 | ls-lint as a checker; scripts in `quality/`; `ci-cd-delivery`; existing gates unnamed | D-3 (grammar), Q-23, Non-Goals |
 | F-22 | The SPARQL draft flags an English sentence | Worked example; anti-patterns |
+
+**Clarity gate, run 1 (independent scorer, on commit c64e432): 8.8/10, FAIL.** Twelve of thirteen
+items passed. Gaps folded in:
+
+| Gap | Fix |
+|---|---|
+| G1 | The `AP-IO-IN-MODELS` contract had no package list and no test → the contract block in D-3; IT-04; task 1.6 |
+| G2 | "D-2's steps" for Ruff adoption did not exist → the four steps under D-13 |
+| G3 | The L3 judgement had no test → three scenarios in `code-reviewer.feature` (D-11, D-13, task 3.4) |
+| G4 | The first-assignment table did not follow the grammar; review-only rows had no reason → the shorthand note, two full examples, the reasons table (D-3) |
+| G5 | `external_sources.py`'s commands, the tool versions and the binaries' sources were unstated → D-7, D-4 |
+| G6 | The doc-only archetype → Non-Goals |
+| G7 | Two tester scenarios had no test → four scenarios (D-9, task 2.2) |
+| G8 | Same survivors with an open bot PR; the bot's identity → D-10, a spec scenario |
+| G9 | IT-04 missed three spec scenarios → IT-04 |
+| Item 12 | Files named without a path → the table *Files this plan names by short name* |
 
 ## Open Questions
 

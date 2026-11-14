@@ -29,9 +29,9 @@
   and the `rev` in `dot-pre-commit-config.yaml` per D-2; update `config-files.md` § Ruff and
   `decisions.md` D4; comment the probe table and the accepted `Session` gap on issue #215 (D-2;
   spec *The Ruff selection flags the hygiene cases*).
-- [ ] 1.6 `AP-IO-IN-MODELS`: add the `forbidden` contract with `include_external_packages` to
-  `dot-importlinter.tmpl`; show on a scaffolded project that it is green on the skeleton and red
-  on `import requests` in the domain layer (D-3).
+- [ ] 1.6 `AP-IO-IN-MODELS`: add the `domain-no-io` contract of D-3 to `dot-importlinter.tmpl`;
+  its proof is IT-04's case "`import requests` in `domain`" (D-3; spec *Every catalogued rule
+  names its checker*).
 - [ ] 1.7 The five gating rules in `quality/semgrep/rules/`, each fixture first (with a near
   miss), then the rule (`sparql-built-from-strings`, `exception-outside-exceptions-module`,
   `test-network-call`, `test-rdf-string-compare`, `test-real-sleep`); add the catalogue entry
@@ -75,14 +75,15 @@
 ## 2. Stage 2: the tester's methods and range
 
 - [ ] 2.1 [A] Walk the D-12 table again (A-4, A-6, A-7).
-- [ ] 2.2 `tests/features/epic-delivery.feature`: the MEDIUM row names the tester; add a scenario
-  for the properties table in the report and one for a stage without Python (D-9; spec *The
-  adversarial tester works by stated methods*).
+- [ ] 2.2 `tests/features/epic-delivery.feature`: the MEDIUM row names the tester; add the four
+  scenarios of D-9, one per scenario of the spec requirement (D-9; spec *The adversarial tester
+  works by stated methods*).
 - [ ] 2.3 Set `reviews.MEDIUM.tester` in `epic-delivery.workflow.json`; run `make mods` and
   `make bundles` (D-9; spec *The loop scales with the appetite*).
 - [ ] 2.4 Replace the tester brief in `team-and-briefs.md`; add the report rule to the tester's
   row of the check ledger in `stage-loop.md`; repoint
-  `docs/practice/ai-coding/working-with-agents.md` (D-9).
+  `docs/practice/ai-coding/working-with-agents.md` (D-9; spec *The adversarial tester works by
+  stated methods*; the scenarios of 2.2 turn green).
 - [ ] 2.5 `cosmic-python`: extend checklist item 10 and add the stateful and the Schemathesis
   example to `example-testing-patterns.md`; pin Hypothesis and Schemathesis in the `test` group of
   `pyproject.toml.tmpl` and confirm `poetry lock` on a scaffold (D-9, D-4).
@@ -102,8 +103,10 @@
   product and the library archetype and run `make check-architecture` on each, green; update
   `architecture-guardrails.md` and the import-contract step of
   `modernizing-existing-projects.md` (D-11, D-13).
-- [ ] 3.4 The per-EPIC judgement: the L3 lens text in `meaningfy-code-review`; the reviewer brief
-  and the ledger row in `epic-delivery` (D-11; spec *L3 judges the import contracts once per EPIC*).
+- [ ] 3.4 The per-EPIC judgement: first the three scenarios in
+  `tests/features/agents/code-reviewer.feature`; then the L3 lens text in `meaningfy-code-review`,
+  and the reviewer brief and the ledger row in `epic-delivery` (D-11; spec *L3 judges the import
+  contracts once per EPIC*).
 - [ ] 3.5 The template `mutation_report.py`, test-first (TC-08) (D-10).
 - [ ] 3.6 mutmut in the template: first resolve the lock in D-10's order on a scaffold; then
   `[tool.mutmut]` and the pin in `pyproject.toml.tmpl`; `mutation-report` and `mutation-pr` in
