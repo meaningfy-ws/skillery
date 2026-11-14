@@ -1,7 +1,8 @@
 <!-- STATUS: EPIC shaped 2026-11-14 from the owner's conversation (inputs/seed.md, inputs/qa.md).
      EPIC E, added to the four of the test strategy work (A test-strategy, B
-     harden-checks-and-tests, C activity-test-profiles, D generic-task-test-profiles). PLAN not
-     derived; it is derived when its epic session starts, after A is delivered.
+     harden-checks-and-tests, C activity-test-profiles, D generic-task-test-profiles). PLAN
+     derived, attacked and gated 2026-11-14 (design.md, tasks.md; 9.05 on the fourth gate run;
+     A is delivered).
      Readiness-checked 2026-11-14 by a fresh reader; its eight findings are folded in.
      Round 2 with the owner the same day (Q-5..Q-10) widened the scope and the appetite. -->
 
