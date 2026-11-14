@@ -1,7 +1,9 @@
 <!-- PLAN (design half). Type: Implementation. First derived 2026-11-13 before A and B existed;
      rewritten 2026-11-14 against A as delivered and archived and against B's gated PLAN (both on
      develop at 48dfc9c). Clarity gate 9.15/10 PASS on commit 1b043fe by an independent scorer;
-     its five recommendations folded in afterwards. History is in inputs/planning-record.md. -->
+     its five recommendations folded in afterwards. History is in inputs/planning-record.md.
+     Revised 2026-11-14 by owner decision after the gate (D-36, under Delivery decisions) and not
+     gated again: ../delivery-retrospective/inputs/cross-check-test-epics.md, decisions 6 and 7. -->
 
 > Derives from: EPIC `activity-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-8; the
 > owner's answers Q-8..Q-11 in [`inputs/qa.md`](inputs/qa.md). Parents as delivered or planned:
@@ -889,3 +891,29 @@ developer confirms them in task 0.2, before stage 1.
   `references/team-and-briefs.md`, which B's stage 2 and E's stage 1 edit; C points to it from
   `epic-planning` and does not restate it. For a tester-left invariant D-1's rule 2 still asks
   for the error-matrix row, so either list carries it.
+
+Revised 2026-11-14 by owner decision, after the gate. The session measurements were compared with
+this EPIC and the owner decided on the result
+([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+decisions 6 and 7). The clarity gate was not run again on this entry.
+
+- **D-36 An accept-only stage takes the small review set (corrects D-14, "It may take"; bears
+  on D-13 and § Algorithm, step 6).** Reason: review and verification are 53% of all subagents
+  (findings F-7, R-5), and a stage that only records accepted gaps changes no skill text beyond
+  the family's rows, which the stage checker already confirms (step 6, last item).
+  - A stage whose decision table has no `fill` line takes the small review set: two merged
+    reviewers (L1 with L2; L3 with L4 and L5) in place of five. The lead records it under this
+    section before the Challenge step, with the stage's added lines, as D-14 already asks.
+  - It stays inside the live requirement *The loop scales with the appetite*
+    (`openspec/specs/epic-delivery/spec.md`), which this change does not modify. That
+    requirement allows the small set only when the stage's added lines are at or under the
+    limit of the workflow file (600 today) and the lead judges the risk low. An accept-only
+    stage is low risk by what it ships (D-14). If its added lines pass the limit, for example
+    through a long survey file, the full set applies and the lead records that instead.
+  - The same requirement keeps the adversarial tester and the checker separate, so at VERY
+    LARGE both still run on an accept-only stage (D-13 stays as written). On such a stage the
+    tester has no code to state a property about. Dropping it there would contradict the live
+    requirement and needs a MODIFIED block in an `epic-delivery` delta, which this change does
+    not carry: it is left to the owner (see B's D-28, which makes the tester conditional at
+    MEDIUM only).
+  - No task changes: the tasks of stages 4 and 5 ship "as D-14 says", read with this entry.
