@@ -297,7 +297,8 @@ Taken by the lead during delivery (2026-11-13); the developer may overrule any o
     `clarity-gate`.
   - The nine workflow files use one layout for the new key: `succeeds` and `fails` each on its
     own line.
-  - `phaseError` checks `criteria` after the required keys, with its optional neighbours.
+  - `phaseError` checks `criteria` after `id`, `owner` and `expect`, with its optional neighbours
+    `allow` and `gates`.
   - The lint skips a workflow file too deeply nested to parse instead of crashing.
   - Tests: the navigator gains the two-wrong-keys case; the override-file test uses the real
     override path; the wrong-shape test asserts its findings. The adversarial tests are kept.
