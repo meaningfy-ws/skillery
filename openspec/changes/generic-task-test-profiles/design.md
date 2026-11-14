@@ -1,6 +1,7 @@
 <!-- PLAN (design half), derived 2026-11-14 from proposal.md and from A's gated design, before A's
      delivery. Attacked the same day by a fresh subagent (AT-1..AT-21, all folded in, see § Attack
-     record). Not yet gated. -->
+     record). Clarity gate: 8.9, 8.8, 8.9, 8.8, then 9.0/10 PASS on the fifth run, each by an
+     independent scorer. Ready for delivery once A is delivered. -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-10.
 > Depends on: EPIC A `test-strategy`, its gated [`design.md`](../test-strategy/design.md) (D-1, D-2,
@@ -217,7 +218,8 @@ New choices made while planning; settled ones are cited.
     temporary plugin built from a checkout of one commit: the contents of
     `bundles/meaningfy-core`, `bundles/meaningfy-consulting`, `bundles/meaningfy-sales` and
     `bundles/meaningfy-legal` copied with their links resolved (`cp -rL`) into one directory, and
-    one `.claude-plugin/plugin.json` naming it `baseline` (the same README, section *Outcome
+    one `.claude-plugin/plugin.json` naming it `baseline`, written last so that it replaces the
+    manifests the copies brought (the same README, section *Outcome
     suites*, paragraph "Locally", shows the copy). Those four bundles hold the five owning skills,
     `guardrails` and, once A is delivered, `test-strategy` (A's DEC-7 puts it in
     `meaningfy-core`), on the base commit as on the head. A run whose output shows a refused tool
@@ -253,7 +255,7 @@ New choices made while planning; settled ones are cited.
     | File | What is planted |
     |---|---|
     | `offer-planted.md` | the scope lists a "data-quality dashboard"; the price table and the exclusions leave it out (DEC-6) |
-    | `offer-planted-2.md` | the offer is "valid until 30 June" in one place and "valid for 14 days" in another; no bullet of *Attacks* names this kind of flaw |
+    | `offer-planted-2.md` | the offer is "valid until 30 June" in one place and "valid for 14 days" in another; no bullet of *Attacks* names this kind of flaw. Its criterion covers the flaw without naming it: "the buyer can tell from the offer alone what it costs and until when it holds" |
     | `offer-clean.md` | the twin of both: the dashboard priced, one validity date. Each planted offer differs from it only in its own planted lines, so `offer-planted-2.md` has the dashboard priced |
     | `contract-planted.md` | a term table in plain words, not clause text: one party may end the contract without cause at five days' notice, the other may not (DEC-6) |
     | `contract-clean.md` | its twin: both may, at thirty days |
@@ -530,6 +532,7 @@ This PLAN was derived from A's design, not from A's files. Task 1.1 checks each 
 | The reader fails a clean twin in 2 of 3 runs | `evidence/planted-flaw.md` | The reader is theatre: tighten the brief's report lines; run again within the same limit |
 | A B-2 run stops because there is no contract repository | The run's output | The stop is recorded as its result; B-2 is left out of the bar (D-11) |
 | A *with* run misses O-1, O-2, O-3 or O-4 | `evidence/baseline.md` | Fix the owning skill's step line (D-3); run that task again from the commit with the fix, twice at most and within the approved amount; then the owner |
+| The approved amount is spent before the baseline bar can be judged | The sum of `total_cost_usd` | The owner approves more, or the unfinished tasks are recorded as not proven |
 | O-5 is yes for fewer than two pairs | The acceptance demo | The profile did not change the pieces: the owner decides whether to ship, sharpen or drop a profile |
 | The owner does not answer the confirmation | The agent is waiting | It does not draft a piece that leaves the company; a delegated agent returns the question |
 | The owner corrects the criteria after the draft exists | The owner's message | The corrected criteria replace the old ones; the draft is revised and read against them; the read count starts again |
@@ -653,6 +656,11 @@ replaces the repeat of the planted-flaw runs by an assertion; `guardrails` is th
 all in D-11 and all folded in: the baseline command lets the run write its draft; `must_quote` is
 a list that fits an omission; how the planted-flaw runs start and that the owner is told their
 number; `test-strategy` is in the plugin through `meaningfy-core`.
+
+**Clarity gate, run 5 (a fifth independent scorer, on commit d144b6c): 9.0/10, PASS.** All 13
+checklist items passed and no gap blocked delivery. Its three minor recommendations were folded in
+afterwards: the criterion of `offer-planted-2.md`, the order in which the plugin manifest is
+written, and the error-matrix row for a spent amount (all D-11).
 
 ## Open Questions
 

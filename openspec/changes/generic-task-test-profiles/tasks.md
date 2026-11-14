@@ -1,4 +1,5 @@
-<!-- PLAN (tasks half), derived 2026-11-14; the attack (AT-1..AT-21) is folded in. Not yet gated. -->
+<!-- PLAN (tasks half), derived 2026-11-14; the attack (AT-1..AT-21) is folded in; clarity
+     gate 9.0/10 PASS (run 5). -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)); design in
 > [`design.md`](design.md). Starts after EPIC A `test-strategy` is delivered.
@@ -30,7 +31,7 @@
   `subagent-dispatch`, both requirements).
 - [ ] 1.6 Probes for `guardrails` in `tests/trigger_probes.yaml` (D-12); its description before
   and after in `evidence/probes.md`. Run `make skill-inventory`.
-- [ ] 1.7 Planted-flaw proof: fifteen reader runs (five fixtures, three each), with the role and
+- [ ] 1.7 Planted-flaw proof: tell the owner the number of runs, then fifteen reader runs (five fixtures, three each), with the role and
   *Attacks* bullets of `expected.yaml` quoted in the brief; the counts and the
   D-11 bar in `evidence/planted-flaw.md`. On a miss, sharpen and repeat all fifteen, twice at most;
   then the owner.

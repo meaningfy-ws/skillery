@@ -5,7 +5,9 @@
      fixes and the owner's second round (Q-7..Q-9) are folded in. PLAN derived 2026-11-14 from A's
      gated design, before A's delivery. The owner's third round (Q-10..Q-13) amended two statements,
      logged as DEC-8 and DEC-9: Capabilities and Impact below follow them. After the attack on the
-     PLAN, Q-14 narrowed DEC-4 and one no-go, logged as DEC-10. No other DEC changed. -->
+     PLAN, Q-14 narrowed DEC-4 and one no-go, logged as DEC-10. No other DEC changed. Clarity gate
+     9.0/10 PASS on the fifth run by an independent scorer. Ready for delivery once A is
+     delivered. -->
 
 # EPIC: generic task test profiles
 
