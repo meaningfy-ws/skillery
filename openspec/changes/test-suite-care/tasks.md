@@ -1,5 +1,6 @@
 <!-- STATUS: PLAN derived, attacked and gated 2026-11-14 (9.05 on the fourth run). Nothing
-     delivered. -->
+     delivered. Revised 2026-11-14 by owner decision (design D-35, D-36: tasks 1.9 and 3.2);
+     not gated again. -->
 
 # PLAN (tasks): test suite care
 
@@ -68,6 +69,10 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       *Reconciled with B, C and D:* apply D-18 of the design's Delivery decisions.
       The rule on which properties the tester writes has one home, the tester's brief (D-31).
       Whichever of this task and B's task 2.4 lands first writes it; the other keeps it.
+      *Revised 2026-11-14 (D-35):* the `SKILL.md` sentence, the `stage-loop.md` detail, the
+      scenario and the Examples row say that a builder sorts and returns the kept list, the
+      deleted list and the refactoring opportunities, and that the lead confirms. The tester's
+      result line is B's (its D-29): this task adds none.
 - [ ] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
       T-1 to T-12 and T-15 green (T-7 and T-2 may skip in CI).
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
@@ -106,6 +111,8 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       *Acceptance:* 3.1 and `tests/test_test_strategy.py` pass.
       *Reconciled with B, C and D:* apply D-22 of the design's Delivery decisions.
       *Reconciled:* D-29 names the four files and the cell.
+      *Revised 2026-11-14 (D-36):* step 4 of the procedure names the two scripts as the source
+      of the tokens and minutes.
 - [ ] 3.3 Trigger probe (D-16): "is our cold reader any good, does it catch real problems" expects
       `test-suite-care`; near-miss "have a reader attack this draft" expects the skill that holds
       the adversarial reader's brief (`guardrails`, EPIC D); asked three times, recorded as in 1.5.

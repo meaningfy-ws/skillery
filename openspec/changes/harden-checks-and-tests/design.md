@@ -888,6 +888,12 @@ README completed and tested (task 1.16, TC-02); the checksum line and platform m
 stale-pull-request case and the script's inputs (D-10); "the default branch" in the mutation
 requirement; what the Gherkin scenarios prove (task 2.4); the new entry in the L1 lens (task 1.7).
 
+**Revised after the gate, not gated again (2026-11-14).** D-28 and D-29, under § Delivery
+decisions, were added by owner decision after run 2. No clarity-gate run followed: the owner
+wants at most two gate runs on any re-gate
+([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+decisions 3, 4 and 7).
+
 ## Delivery decisions
 
 Recorded 2026-11-14, when the five changes of the test strategy work were read against each other
@@ -997,6 +1003,63 @@ and against A as delivered. These override the decisions above where they differ
 - **D-27 Test ids (completes the test table).** `TC-01` to `TC-13` and `IT-01` to `IT-07` are
   this PLAN's ids. C's tests in `tests/test_quality.py` (its `TC-9` to `TC-12`, `IT-1` to
   `IT-4`) are C's own, and C prefixes them where a test name or comment could be confused.
+
+Revised 2026-11-14 by owner decision, after the gate. The session measurements were compared with
+this EPIC and the owner decided on the result
+([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+decisions 3, 4 and 7). The clarity gate was not run again on these entries.
+
+- **D-28 At MEDIUM the tester runs on a condition (corrects D-9 *Range*, RISK-8 and the
+  error-matrix row "A MEDIUM EPIC's lead skips the tester"; proposal DEC-9 as revised).** Reason:
+  review and verification are 53% of all subagents and nothing records what a round found
+  (findings F-7, R-5); a tester on every MEDIUM stage adds a dispatch where it has nothing to
+  state.
+  - *The condition.* At MEDIUM the tester runs on a stage when both hold: the stage changed
+    code, and the PLAN names an invariant for that code (a row of its `## Invariants` section
+    with a write path in the stage's diff). A PLAN with no such section, or with "None", names
+    none, so its MEDIUM stages get no tester, as today. The lead judges both in Prepare.
+  - *Why this condition.* The brief already tells a tester on a stage without Python code to
+    say so and test by hand (D-9), and the tester writes one property per row of `## Invariants`
+    (task 2.4). A stage that fails either half gives the tester no property to state.
+    Considered and not taken: "the stage changed Python code" alone, which would dispatch a
+    tester on every code stage, with or without a property to hold.
+  - *Where it is stated.* Still one field: `reviews.MEDIUM.tester` becomes "Adversarial tester,
+    when the stage changed code and the PLAN names an invariant for it", in the way
+    `reviews.LARGE.ux.wording` already carries "when screens changed". The navigator reads the
+    field as wording and counts no tester (`mods/navigator/lib/dispatch.ts`), so no mod change.
+  - *LARGE and above are unchanged:* the tester runs on every stage there, as the live
+    requirement has it. Whether the condition should also hold from LARGE up is the owner's to
+    say; it would change live behaviour this EPIC does not touch (anti-pattern row "Change
+    `reviews.MEDIUM.tester` only").
+  - *What follows.* RISK-8 reads: the tester at MEDIUM costs one more dispatch on each stage
+    that meets the condition; accepted with DEC-9. The error-matrix row reads: a MEDIUM lead
+    skips the tester on a stage that meets the condition; the checker reads the review set; a
+    finding. The `epic-delivery` delta, the MEDIUM row and scenario of task 2.2, task 2.3 and
+    the CHANGELOG line of task 2.7 carry the condition. The scenarios the developer signed off
+    in task 1.0 and that changed here are signed off again in task 2.1.
+- **D-29 One result line for the tester, a reviewer and the checker (adds to D-9 *Brief* and
+  *Report check*).** Reason: the outcome of a review round is traced nowhere, so its value
+  cannot be measured (findings F-7, F-15, R-9). This is the one definition of the line;
+  `test-suite-care` (its D-35) and any later change point here and define none.
+  - *The line* is the last line of the report, one per dispatch, in this form *(confirmed
+    by the owner on 2026-11-14)*:
+
+    ```text
+    result: stage=<s> role=tester tests=<n> failed-first=<n> findings=<n> accepted=<n|->
+    result: stage=<s> role=reviewer lens=<L1+L2> findings=<n> accepted=<n|->
+    result: stage=<s> role=checker verdict=<pass|fail> findings=<n> accepted=<n|->
+    ```
+
+    `tests` is the number of tests written, `failed-first` the number that failed on their
+    first run, `findings` the number reported, `accepted` the number the lead accepted.
+  - *Who writes it.* The worker ends its report with the line and `accepted=-`, since it cannot
+    know the lead's decision. In step 4 the lead writes each line again with the number
+    accepted, in the stage's pull request. One form, two moments; a script reads either.
+  - *Where it lives.* `references/team-and-briefs.md`, once under *What every brief names*, and
+    named in the Report line of the tester's, the reviewer's and the checker's brief (task
+    2.4). The lead returns a report without the line as incomplete, as for the properties
+    table. The `epic-delivery` delta carries the requirement *A challenge or check result ends
+    in one line*.
 
 ## Open Questions
 
