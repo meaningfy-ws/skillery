@@ -6,8 +6,9 @@
 
 ### Requirement: The quality folder holds the shared checks
 The repository SHALL hold its executable checks under `quality/`: the Meaningfy Semgrep rules with
-their fixtures, the manifest of external Semgrep sources, the ls-lint and checkmake configurations
-and the check scripts, with one `README.md` that lists them. `quality/` SHALL hold no other prose
+their fixtures, the manifest of external Semgrep sources and the ls-lint and checkmake
+configurations, with one `README.md` that lists them. `quality/` SHALL hold no other prose and no
+script; the scripts a project's checks need SHALL be `project-setup` templates
 (harden-checks-and-tests DEC-4, design D-1).
 
 #### Scenario: Looking for a check
@@ -18,11 +19,16 @@ and the check scripts, with one `README.md` that lists them. `quality/` SHALL ho
 - **WHEN** a change adds `quality/semgrep/notes.md`
 - **THEN** `make validate` fails, naming the file
 
+#### Scenario: A script under quality
+- **WHEN** a change adds `quality/import-contracts/check_contracts.py`, a Python file that is no rule's fixture
+- **THEN** `make validate` fails, naming the file
+
 ### Requirement: Every Meaningfy Semgrep rule has a fixture test
-A Meaningfy Semgrep rule SHALL have the id prefix `mfy-`, SHALL cite in its message the id of the
-entry it checks, and SHALL ship with a fixture file beside it that marks at least one bad case
-(`ruleid:`) and one good case (`ok:`). The fixture check SHALL need no Semgrep installation
-(harden-checks-and-tests DEC-15, design D-3, D-8).
+A Meaningfy Semgrep rule SHALL have the id prefix `mfy-`, SHALL cite in its message the owner of
+what it checks (a catalogue entry id, a testing checklist item, or for the suppression rule the
+suppression convention of `project-setup`), and SHALL ship with a fixture file beside it that marks
+at least one bad case (`ruleid:`) and one good case (`ok:`). The fixture check SHALL need no
+Semgrep installation (harden-checks-and-tests DEC-15, design D-3, D-8).
 
 #### Scenario: A Semgrep rule without a fixture
 - **WHEN** a rule file under `quality/semgrep/` has no fixture file beside it
@@ -85,10 +91,11 @@ download fails (harden-checks-and-tests DEC-5, design D-4).
 
 ### Requirement: Projects run the shared checks through make
 A scaffolded project's `make check-quality` SHALL run, besides Ruff, mypy and import-linter, the
-Meaningfy Semgrep rules, ls-lint and checkmake from the fetched folder. A finding of a gating rule
-SHALL fail the target; a finding of a report-only rule SHALL be printed and SHALL NOT fail it. A
-suppression comment without a reason SHALL fail the target (harden-checks-and-tests DEC-2, DEC-8,
-DEC-13).
+Meaningfy Semgrep rules, ls-lint and checkmake from the fetched folder, and its CI SHALL run the
+same targets. A finding of a gating rule SHALL fail the target; a finding of a report-only rule
+SHALL be printed and SHALL NOT fail it. A suppression comment without a reason SHALL fail the
+target. The layout check SHALL fail on a banned module file name and on a missing required file
+(harden-checks-and-tests DEC-2, DEC-8 as narrowed by design D-5, DEC-13).
 
 #### Scenario: A gating rule fires
 - **WHEN** the package builds a SPARQL query with an f-string
@@ -102,12 +109,24 @@ DEC-13).
 - **WHEN** the package holds a file named `utils.py`
 - **THEN** `make check-quality` fails in the ls-lint step, naming the file
 
+#### Scenario: A required file is missing
+- **WHEN** the project has no `ruff.toml`
+- **THEN** `make check-layout` fails, naming `ruff.toml`
+
+#### Scenario: A kebab-case folder
+- **WHEN** the project holds `openspec/changes/add-billing-component/` and `tests/mutmut-results/`
+- **THEN** `make check-layout` passes
+
 #### Scenario: A required Makefile target is removed
 - **WHEN** the project's Makefile loses its `test` target
 - **THEN** `make check-quality` fails in the checkmake step, naming the target
 
 #### Scenario: A suppression without a reason
 - **WHEN** a line carries `# nosemgrep: mfy-dict-as-model` with no reason after it
+- **THEN** `make check-quality` fails, naming the line
+
+#### Scenario: A bare suppression
+- **WHEN** a line carries `# nosemgrep` with no rule id and no reason
 - **THEN** `make check-quality` fails, naming the line
 
 ### Requirement: The Ruff selection flags the hygiene cases
@@ -144,7 +163,7 @@ a run that finds the same survivors as `develop` already holds SHALL open nothin
 - **THEN** the results are delivered with a line saying the run is incomplete, and the workflow ends green
 
 #### Scenario: Nothing new
-- **WHEN** the run produces the same results that `develop` already holds
+- **WHEN** `develop` has moved since last week and the run finds the same survivors that `develop` already holds
 - **THEN** no pull request is opened or updated
 
 #### Scenario: An open bot pull request exists

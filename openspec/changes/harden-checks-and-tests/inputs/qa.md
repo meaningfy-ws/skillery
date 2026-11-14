@@ -73,5 +73,20 @@ The owner's words and the rest of round 6 are in `../../test-strategy/inputs/see
 | Q-19 | B's appetite: VERY LARGE, or LARGE with mutmut and the import review cut out? | "okay go for very large, for B" |
 | Q-20 | Follow-ups promised across the four EPICs: how are they recorded? | As GitHub issues. |
 
+## Round 8: while deriving the PLAN (2026-11-14)
+
+Asked after the Ruff probe for issue #215 and the attack on the PLAN's first draft. Each question
+came with a recommendation; the owner's choice is given as chosen.
+
+| # | Question | Answer |
+|---|---|---|
+| Q-21 | Ruff `S113` flags `requests.get(url)` without a timeout but not `requests.Session().get(url)`. How do we treat the gap, given DEC-3? | "Accept the gap": Ruff `S113` only, recorded on issue #215 and as a risk. (Recommended.) |
+| Q-22 | Which GitHub repository is the sample project of DEC-15? | "Decide at stage 3": the stage 3 lead asks before the end-to-end run. (Recommended was a new scratch repository.) |
+| Q-23 | DEC-4 says `quality/` holds only executable rule files and configurations. Where do the three small scripts and the file of tool checksums live? | "In project-setup templates": copied into every scaffolded project; `quality/` keeps rules and configurations only. (Recommended was `quality/`.) |
+| Q-24 | ls-lint cannot require a named file, cannot join "snake case and not banned" in one rule, and fails on kebab-case folders. How far does the layout check of DEC-8 go? | "Plus required files in make": ls-lint bans the generic file names; required files are a few `test -f` lines in the `make` target; snake case stays with Ruff. |
+
+Q-24 narrows DEC-8 (ls-lint no longer checks folder names or the layout as a whole); the EPIC is
+not re-shaped, and the narrowing is recorded in `design.md` D-5.
+
 The shaper kept Q-13's hygiene group in DEC-3 (three rules through Ruff, "SPARQL built from strings"
 as the one new catalogue entry with a Semgrep rule), since the owner chose that group.

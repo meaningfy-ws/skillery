@@ -3,7 +3,11 @@
      catalogue-wide test strategy and was split into four EPICs. This is B, the software slice; it
      depends on A (test-strategy) and fills the software rows of A's matrix (DEC-14). Vale moved to
      C (DEC-7). Readiness-checked twice on 2026-11-13; the fixes and the appetite (Q-19) are
-     folded in. PLAN not derived: it is derived when its epic session starts, after A. -->
+     folded in. PLAN derived 2026-11-14 (design.md, tasks.md), ahead of A's delivery and written
+     against A's PLAN. No DEC text changed; the owner's round-8 answers (inputs/qa.md) narrow DEC-8
+     (ls-lint: banned file names only, required files checked in make) and read DEC-4 strictly
+     (scripts live in project-setup's templates, not in quality/). Both are recorded in design.md
+     D-1 and D-5. -->
 
 # EPIC: harden checks and tests
 
