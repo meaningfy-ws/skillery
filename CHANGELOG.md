@@ -17,6 +17,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   for any activity (code, a doc, a post, an offer, a contract clause, a model), how the work
   succeeds or fails before you start, and carries the matrix of which check answers which question
   per activity family. Use it when you need to choose the checks for a piece of work.
+- Every phase of the nine default workflows now declares how it succeeds and how it fails
+  (`criteria`; EPIC `test-strategy`, stage 2). A repository's own workflow file may add them, and
+  nothing breaks if it does not.
+- `AGENTS.md`, and the `AGENTS.md` of a new project, now mandate stating how work succeeds and
+  fails before starting it, and point to `test-strategy`.
 
 ### Changed
 

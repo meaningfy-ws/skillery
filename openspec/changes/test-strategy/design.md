@@ -268,6 +268,20 @@ Taken by the lead during delivery (2026-11-13); the developer may overrule any o
     line names the skill.
   - *Drop the repeated intro sentence of the family files; shorten the description* (L4, L5):
     cosmetic; the "Not for" list is what keeps the neighbours apart (RISK-4).
+- **D-16 Criteria rulings** (task 2.3; three builders checked each draft line against the owning
+  skill: 14 kept, 36 corrected or rewritten).
+  - A criterion describes what its phase produces, not what its gate matches. In `architecting`
+    each gate matches the next phase's artefact; the criteria follow the skill's order.
+  - Four pairs rest on thin skill text and are the lead's wording: `release` *validate* and the
+    "gates are red" half of *merge* (the release skill names no validate step; the workflow's
+    own gate is the basis), `epic-shaping` *variants* (no skill names where the choice is
+    recorded; `inputs/qa.md` follows the gate) and `modelling` *elicit* (the skill has no
+    elicitation step; the terminology rule is the basis).
+  - Whitespace-only text counts as empty in both validators (the navigator and the lint).
+  - Found on the way and left alone (no change to a gate or a phase, proposal No-gos): the
+    `architecting` gates look one phase ahead; `meaningfy-release` describes no validate step
+    although its workflow has one; the release `back` gate matches only `develop` while the
+    runbook says every long-lived line. They are follow-ups for the developer to rule on.
 
 ## Algorithm / approach
 
