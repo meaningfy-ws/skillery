@@ -21,3 +21,12 @@ stays covered and the owner has approved the proposal. The audit SHALL NOT set a
 #### Scenario: Nothing worth reducing
 - **WHEN** the owner discusses the report and approves no proposal
 - **THEN** the audit is complete, and the report records the decision
+
+### Requirement: A check that is not code is assessed for the project and the task
+An assessment of a check that is not code SHALL show whether the check catches a planted flaw,
+whether it gives the same verdict when run again, and what it costs against what it has found. The
+owner SHALL decide what follows; the assessment SHALL NOT retire a check (test-suite-care DEC-11).
+
+#### Scenario: A reader that misses the planted flaw
+- **WHEN** an adversarial reader is run on a draft with a planted flaw and does not report it
+- **THEN** the assessment records the miss with the run's evidence, and the owner decides whether the check is changed, kept or dropped
