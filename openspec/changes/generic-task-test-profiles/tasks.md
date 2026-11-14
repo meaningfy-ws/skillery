@@ -1,7 +1,8 @@
 <!-- PLAN (tasks half), derived 2026-11-14; the attack (AT-1..AT-21) is folded in; clarity
      gate 9.0/10 PASS (run 5); re-shaped the same day on DEC-11 (an assessment, not a test)
      and gated again, 9.1/10 PASS (run 7). Reconciled 2026-11-14 with the sibling changes and
-     with A as delivered: design § Delivery decisions, D-15 to D-26. -->
+     with A as delivered: design § Delivery decisions, D-15 to D-26. Revised 2026-11-14 by
+     owner decision (D-27, the reader's tool list); not gated again. -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)); design in
 > [`design.md`](design.md). EPIC A `test-strategy` is delivered (2026-11-14), so this can start.
@@ -15,6 +16,9 @@
     recorded and the owner judges?
   - D-21: does a post get two reads at most, like the other kinds, or one?
   - D-25: do `CHK-102` and `CHK-95` stay beside the new steps, as D-25 divides the work?
+  - D-27 *(added 2026-11-14 by owner decision)*: is the reader's tool list carried by the brief
+    only in stage 1, with the choice of a reader agent left until its starting context is
+    measured?
 - [ ] 1.1 Confirm the branch is on current `develop`. Read R-1..R-12 of design § *Checked against
   A as delivered* against `skills/test-strategy/` again; fix this PLAN first where one
   fails. Re-read each spec delta against the live specs (RISK-7). After each later rebase on
@@ -42,6 +46,8 @@
   *Reconciled 2026-11-14:* the `subagent-dispatch` delta now has three requirements, not two;
   `skills/guardrails/references/subagent-reports.md` (the reviewing fields, which list a
   verdict) gains the reader's exception.
+  *Revised 2026-11-14 (D-27):* section 5 of the reference states the two tool lists, and the
+  brief carries the line "Tools: `<the list>`, and no other."
 - [ ] 1.6 Probes for `guardrails` in `tests/trigger_probes.yaml` (D-12); its description before
   and after in `evidence/probes.md`. Run `make skill-inventory`. The near-miss of D-12 ("have a
   cold reader test this installation manual", expects `technical-writing`) is the probe that
@@ -51,6 +57,8 @@
   the example criteria of D-3 quoted in the brief, plus the criterion of D-18; the bullets used,
   the counts and the D-11 bar (or the owner's answer on D-19) in `evidence/planted-flaw.md`. On
   a miss, sharpen and repeat all six, twice at most; then the owner.
+  *Revised 2026-11-14 (D-27):* each run's brief names the tools `Read`, `Grep` and `Glob`; the
+  tokens of each run's first call are recorded in the same file.
 - [ ] 1.8 `make validate` green; the stage's PR.
 
 ## 2. Stage 2: the profiles

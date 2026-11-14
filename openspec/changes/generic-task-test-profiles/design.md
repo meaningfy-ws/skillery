@@ -689,6 +689,12 @@ checklist items passed. Its four minor recommendations were folded in afterwards
 D-10, the "one read" wording, what the `lawyer` scenario's record may hold (D-11), and this
 record.
 
+**Revised after the gate, not gated again (2026-11-14).** D-27, under § Delivery decisions, was
+added by owner decision after run 7. No clarity-gate run followed: the owner wants at most two
+gate runs on any re-gate
+([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+decisions 2 and 7).
+
 ## Delivery decisions
 
 Recorded 2026-11-14, when the five changes of the test strategy work were read against each other
@@ -817,6 +823,40 @@ and against A as delivered. These override the decisions above where they differ
   before or after B, C and E. After each rebase on `develop` the lead reruns `make bundles` and
   `make skill-inventory`, reads R-1..R-12 again (task 1.1), and takes the next five free check
   ids at task 3.1; `CHK-145` to `CHK-149` hold only if no sibling has taken them.
+
+Revised 2026-11-14 by owner decision, after the gate. The session measurements were compared with
+this EPIC and the owner decided on the result
+([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+decisions 2 and 7). The clarity gate was not run again on this entry.
+
+- **D-27 The reader has a named tool list (corrects D-9, "a fresh general-purpose subagent", the
+  two "general-purpose" runs of D-11 and the brief of § Algorithm; bears on D-5; proposal
+  DEC-12).** Reason: a subagent that inherits every tool of the session starts 26,000 to 38,000
+  tokens heavier and reads them again on each call (findings F-5, R-1).
+  - *The list.* A reader of prose (an offer, a contract, a post, a mail or message) gets `Read`,
+    `Grep` and `Glob`, and nothing else. A reader of code or of a repository also gets the code
+    tools: Serena, ast-grep and GitNexus. The four kinds of this EPIC are all prose, so every
+    reader it starts has the three tools. Section 5 of D-1's reference states both lists, and the
+    brief gains one line after "You know only this brief and the draft.": "Tools: `<the list>`,
+    and no other."
+  - *An acceptance observation.* Task 1.7 records, for each of its six reader runs, the tokens of
+    the run's first call (its starting context), read from the session transcript with
+    `session_digest.py`
+    ([`inputs/scripts/`](../delivery-retrospective/inputs/scripts/) of `delivery-retrospective`),
+    in `evidence/planted-flaw.md`. It is a number the owner reads at the acceptance demo, not a
+    bar.
+  - *How the list is enforced* *(proposed, the owner confirms at scenario sign-off)*. A line in a
+    brief tells the reader what to use; it does not make its starting context smaller. On Claude
+    Code only an agent definition with a `tools` list does that (`guardrails`, § 1, *Enforced
+    by*), and the No-go "No new agent" forbids one. Proposal: stage 1 ships the list in the brief
+    only, and the observation above shows what that leaves. If the starting context is still
+    that of a general-purpose subagent, the owner decides between a thin reader agent (which
+    replaces "No new agent" by a new DEC, adds a bundle entry and a feature file, and lets D-5
+    stay as it is) and accepting the cost.
+  - *D-5 is unchanged.* `Agent` stays unscoped in the two agent files, for the reason D-5 cites:
+    the opencode renderer has no form for a scoped `Agent` and would drop the tool.
+  - The spec delta `subagent-dispatch`, requirement *The adversarial reader has one brief*,
+    carries the list and one scenario.
 
 ## Open Questions
 
