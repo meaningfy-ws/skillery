@@ -17,7 +17,7 @@ files named by feature (test-suite-care DEC-3; design D-12).
 
 #### Scenario: A test that attacks nothing named
 - **WHEN** the tester's report gives "none" as the scenario of a test that passed on its first run
-- **THEN** the lead deletes it, unless it is a property that states an invariant of the PLAN
+- **THEN** the lead deletes it, unless it is the one property kept for an invariant the PLAN's design names
 
 #### Scenario: A rejected finding
 - **WHEN** a tester's test failed on its first run and the lead rejects its finding as not a defect

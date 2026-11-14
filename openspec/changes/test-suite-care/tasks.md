@@ -14,19 +14,19 @@ the design decision it carries out; test ids (`T-n`) are those of D-15. After an
       owner's words.
 - [ ] 1.0b Baseline: `make validate` on the fresh branch, result recorded in
       `evidence/baseline.md`. *Acceptance:* the record names any check already failing.
-- [ ] 1.1 Write `tests/test_test_suite_care.py` (D-15), every group. *Acceptance:* each test
+- [ ] 1.1 Write `tests/test_test_suite_care.py` (D-15), T-1 to T-12 and T-15. *Acceptance:* each test
       fails for its own reason (a missing script, a missing file, a checklist of 16 rules, a
       scaffold without `tests/changed.py`), recorded in `evidence/red.md`.
 - [ ] 1.2 Write `skills/test-suite-care/scripts/phase_times.py` and `scripts/overlap.py` (D-3).
-      *Acceptance:* the two script groups of 1.1 pass; the real-coverage test and the `-n 2` test
-      pass once under `uv run --with pytest-cov --with pytest-xdist`, output in
+      *Acceptance:* T-1 and T-3 to T-6 pass; T-2 and T-7 pass once under `uv run --with pytest-cov --with pytest-xdist`, output in
       `evidence/scripts.md`.
 - [ ] 1.3 Write `SKILL.md` and `references/measuring.md`, `scenario-map.md`, `waste.md`,
       `report.md` (D-1, D-2, D-4 to D-7), with the frontmatter and facets of D-1. *Acceptance:*
-      the text groups of 1.1 pass; `make lint` is clean.
+      T-10 passes, and the `waste.md` part of T-11.
 - [ ] 1.4 Register the skill (D-16): `bundles.yaml`, `use-cases/UC-W18-programming-team-lead.md`,
       the two README rows, `CHANGELOG.md`, `make bundles`, `make skill-inventory`. *Acceptance:*
-      `make lint` and `make bundles` leave no difference; `tests/test_skill_inventory.py` passes.
+      `make lint` is clean; `make bundles` leaves no difference; `tests/test_skill_inventory.py`
+      passes.
       (`make validate` is the acceptance of 1.10.)
 - [ ] 1.5 Trigger probes in `tests/trigger_probes.yaml` (D-16): positive "our test suite takes too long,
       find what to cut" expects `test-suite-care`; near-miss "write tests for this function"
@@ -38,24 +38,22 @@ the design decision it carries out; test ids (`T-n`) are those of D-15. After an
       and 14, add rules 17 to 21 and the Sources list; the one Gherkin rule in
       `skills/bdd-gherkin/SKILL.md` (D-8); "rules 1-16" becomes "rules 1-21" in
       `skills/test-strategy/references/software.md` and `inventory.md`; the order rule against
-      EPIC B's "Checked by" applied. *Acceptance:* the checklist group of 1.1 passes;
-      `tests/test_test_strategy.py` passes.
+      EPIC B's "Checked by" applied. *Acceptance:* T-11 passes, and the rule-count and Gherkin parts of T-15.
 - [ ] 1.7 `test-strategy` row and pointer (D-13): the next free `CHK-` id in `inventory.md`, the
       `ADQ` row in `references/software.md`, the lanes in the Moment cell of the checklist's row,
       the pointer line in the new `SKILL.md`.
-      *Acceptance:* `tests/test_test_strategy.py` passes.
+      *Acceptance:* T-15 passes and `tests/test_test_strategy.py` stays green.
 - [ ] 1.8 Lanes in `project-setup` (D-10): `pytest.ini`, `Makefile.tmpl`, `tests/changed.py`
       template, its line in `scripts/scaffold.sh`, the "Developer lanes" section of
-      `references/testing-setup.md`. *Acceptance:* the two lane tests of 1.1 pass: on a temporary
+      `references/testing-setup.md`. *Acceptance:* T-8 and T-9 pass: on a temporary
       git repository a change under `<package>/services/` prints `tests/unit/services` and a
       change to `pytest.ini` exits 3; `scaffold.sh` into a temporary directory produces
       `tests/changed.py` and the three targets.
 - [ ] 1.9 Distilling in `epic-delivery` (D-12): tester brief, `SKILL.md` step 4, `stage-loop.md`
-      step 4 and ledger row; one Examples row and one scenario in
-      `tests/features/epic-delivery.feature`, one outline row in
+      step 4 and ledger row; the scenario in
+      `tests/features/epic-delivery.feature`, the Examples row in
       `tests/features/agents/team-lead.feature`; the order rule against EPIC B applied.
-      *Acceptance:* `make lint` passes (agent features); a test of 1.1 finds the two report
-      fields in the brief and "distilled in step 4" in the ledger row.
+      *Acceptance:* `make lint` is clean (agent features); T-12 passes.
 - [ ] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
       T-1 to T-12 green (T-7 and T-2 may skip in CI).
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
@@ -101,7 +99,7 @@ the design decision it carries out; test ids (`T-n`) are those of D-15. After an
 
 ## Roadmap
 
-Stage 1 (1.0 → 1.0b → 1.1 → 1.2 ∥ 1.3 → 1.5 to 1.9 in any order → 1.4 → 1.10 → 1.11 → 1.12 → 1.13) →
+Stage 1 (1.0 → 1.0b → 1.1 → 1.2 ∥ 1.3 → 1.4 → 1.5 to 1.9 in any order → 1.10 → 1.11 → 1.12 → 1.13) →
 stage 2 → stage 3. Tasks 1.6, 1.8 and 1.9 touch disjoint files and may run in parallel. Stage 1
 tasks 1.6 and 1.9 are ordered against EPIC B's stages 1 and 2 by D-8 and D-12. Stages 2 and 3 do not depend on each other.
 
