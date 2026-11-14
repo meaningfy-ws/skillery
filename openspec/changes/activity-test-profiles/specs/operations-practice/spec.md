@@ -6,7 +6,8 @@
 
 ### Requirement: A naming check for stacks repositories
 `stack-operations` SHALL state the naming rule of a stacks repository and name the stacks ls-lint
-configuration as its check, with when it runs, whether it blocks and what it costs. The skill SHALL
+configuration as its check, in a line each, and point to the check's row of `quality/README.md`,
+which SHALL state when it runs, whether it blocks and what it costs (design D-40). The skill SHALL
 recommend it as a pull-request check and SHALL NOT state that the stacks repositories run it:
 adopting it there is that repository's own change (activity-test-profiles DEC-4, DEC-8; design
 D-12).
@@ -21,7 +22,8 @@ D-12).
 
 ### Requirement: A Makefile check for infrastructure repositories
 `infrastructure-operations` SHALL state the Makefile rule and name the checkmake configuration as
-its check, with when it runs, whether it blocks and what it costs, as a recommended pull-request
+its check, in a line each, pointing to the check's row of `quality/README.md`, which SHALL state
+when it runs, whether it blocks and what it costs (design D-40), as a recommended pull-request
 check outside the required checks (activity-test-profiles DEC-4, DEC-8; design D-12).
 
 #### Scenario: A Makefile target without a phony declaration

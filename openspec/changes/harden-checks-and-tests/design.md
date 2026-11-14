@@ -45,7 +45,7 @@ tester's new range needs no mod change.
 | `layout.md`, `checklists.md` | [`layout.md`](../../../skills/project-setup/references/layout.md), [`checklists.md`](../../../skills/project-setup/references/checklists.md) |
 | `modernizing-existing-projects.md` | [`project-setup/references/modernizing-existing-projects.md`](../../../skills/project-setup/references/modernizing-existing-projects.md) |
 | `stage-loop.md` | [`epic-delivery/references/stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md) (the check ledger, line 136) |
-| `example-testing-patterns.md` | [`cosmic-python/references/example-testing-patterns.md`](../../../skills/cosmic-python/references/example-testing-patterns.md) |
+| `example-testing-patterns.md` | [`cosmic-python/references/example-testing-patterns.md`](../../../skills/cosmic-python/references/example-testing-patterns.md) (no longer edited, D-32) |
 | The L3 lens | [`meaningfy-code-review/SKILL.md`](../../../skills/meaningfy-code-review/SKILL.md) (the lens table, line 74) |
 | `working-with-agents.md` | [`docs/practice/ai-coding/working-with-agents.md`](../../../docs/practice/ai-coding/working-with-agents.md) (line 44) |
 | The reviewer's scenarios | [`tests/features/agents/code-reviewer.feature`](../../../tests/features/agents/code-reviewer.feature) |
@@ -469,9 +469,9 @@ Schemathesis (kind, source, pin, used by `project-setup`'s templates and `qualit
 
 ### D-9 The tester (stage 2)
 
-- **Range:** `reviews.MEDIUM.tester` becomes `"Adversarial tester"` in
-  `epic-delivery.workflow.json`; no other field of the file changes, and A's `criteria` fields are
-  kept as found [A].
+- **Range:** not set by this EPIC any more (D-30). The tester's cell at MEDIUM and its condition
+  are written by `delivery-process-and-tools` (its DEC-3); this EPIC edits no field of
+  `epic-delivery.workflow.json`.
 - **Brief** (`team-and-briefs.md`), replacing the current one:
 
   > **Goal:** break the behaviour of stage `<s>` of `<id>`, in the adversary stance of
@@ -483,17 +483,16 @@ Schemathesis (kind, source, pin, used by `project-setup`'s templates and `qualit
   > builder. **Report:** base report + a table of properties (property, test, result) + each
   > failing test with what it shows + Upstream findings.
 
-- **Technique** (DEC-14): checklist item 10 is extended, in `cosmic-python`, with: which invariants
-  to look for (round trip, order independence, bounds, idempotence); a stateful test
-  (`RuleBasedStateMachine`) for an object whose behaviour depends on the order of calls;
-  Schemathesis (`schema.parametrize()`, `case.call_and_validate()`) where the project has an
-  OpenAPI contract; CI runs under Hypothesis's built-in `ci` profile. `example-testing-patterns.md`
-  gains one worked stateful test and one Schemathesis test.
+- **Technique** (DEC-14): checklist item 10 is extended, in `cosmic-python`, with which method
+  fits when: a stateful test (`RuleBasedStateMachine`) for an object whose behaviour depends on
+  the order of calls; Schemathesis (`schema.parametrize()`, `case.call_and_validate()`) where the
+  project has an OpenAPI contract. No example code is added to the skill, and the list of
+  invariants and the note on the `ci` profile are not written (D-32, D-33).
 - **Other statements of the range** are repointed, not restated:
   `docs/practice/ai-coding/working-with-agents.md` (line 44, "Larger EPICs add an adversarial
   tester") and [`tests/features/epic-delivery.feature`](../../../tests/features/epic-delivery.feature)
-  (the MEDIUM row, line 21, and four new scenarios, one per scenario of the spec requirement *The
-  adversarial tester works by stated methods*: a parser stage, a stage with an OpenAPI contract, a
+  (four new scenarios, one per scenario of the spec requirement *The
+  adversarial tester works by stated methods*; the MEDIUM row is no longer this EPIC's, D-30: a parser stage, a stage with an OpenAPI contract, a
   report without properties, a stage without Python). `stage-loop.md`'s worked examples are a
   SMALL and a LARGE one and stay true.
 - **Report check:** the lead returns a Python-stage report without a properties table as
@@ -605,7 +604,7 @@ against A as merged:
 
 New inventory rows [A]: the wider Ruff selection (`VER`); the Meaningfy Semgrep rules (`VER`); the
 ls-lint and checkmake checks (`VER`); the weekly mutation report (`ADQ`); the import-contract check
-(`VER`). Changed rows: the tester (`ROB`, now MEDIUM up, with methods); property-based tests
+(`VER`). Changed rows: the tester (`ROB`, with methods; its range as R3 leaves it, D-30); property-based tests
 (`ROB`, with stateful tests and Schemathesis); L3 (`VER`, with the per-EPIC judgement). Owners per
 DEC-14: `cosmic-python` (rules and techniques), `project-setup` (wiring), `epic-delivery` (the
 brief and the moment).
@@ -646,8 +645,11 @@ into the section *Adopting the shared checks*):
 | Stage | Delivers | Proof |
 |---|---|---|
 | 1 | `quality/` and the Check type; the Ruff selection; the eight Semgrep rules; "Checked by"; fetch, tools and the three new `make` targets; ls-lint and checkmake | DEC-15 (1) |
-| 2 | The tester's range, brief and report; checklist item 10 | DEC-15 (2), recorded in stage 3 |
+| 2 | The tester's brief and report; checklist item 10 (the range is R3's, D-30) | DEC-15 (2), recorded in stage 3 |
 | 3 | The weekly mutation report; the import-contract check; the L3 judgement | DEC-15 (3) |
+
+Stage 1 is delivered in two parts, a tool side and a prose side; the split and the order of the
+stages among the other open EPICs are in D-34.
 
 Within a stage the order is test first: the failing test or fixture, then the artifact. Every
 template change is run on a real scaffold before the stage's PR (IT-04, IT-06, task 3.3): the
@@ -763,7 +765,8 @@ All checks are pure reads.
 | Verify a template change on a toy fixture only | Scaffold a project and run the target | Four attack findings were of this kind |
 | Move or delete `inputs/ruff-probe/` | Copy its cases to `tests/fixtures/quality/ruff/` | This file links to it; `broken_links` scans `openspec/changes/` |
 | Restate the tester's methods in the brief | Point to checklist item 10 | DEC-14 |
-| Edit other fields of `epic-delivery.workflow.json` | Change `reviews.MEDIUM.tester` only | A's `criteria` live in the same file |
+| Edit `epic-delivery.workflow.json` or a paragraph of the stage loop | Cite `delivery-process-and-tools`, which owns them (D-30) | One owner for the stage loop and the review sets |
+| Copy example code into a skill, or write general knowledge into one | A link to a real project file, or nothing; sort the prose first (D-32, D-33) | The lean rule: a skill holds the house rule, short |
 
 ## Error matrix
 
@@ -791,7 +794,6 @@ All checks are pure reads.
 | An external source disappears, or its licence changes at a new commit | `external_sources.py` exits 1; the review of a commit bump | The pinned commit keeps working while the repository exists; remove or replace the entry by PR |
 | A tester report on a Python stage without the properties table | The lead reads it (D-9) | Return it as incomplete |
 | The tester is dispatched on a stage without Python | The brief | It says so and tests by hand |
-| A MEDIUM EPIC's lead skips the tester | The checker reads the review set | A finding |
 | The tester's property tests fail on import in skillery's CI | CI is red on `hypothesis` | `pytest.importorskip("hypothesis")` at the top of the test module |
 | mutmut does not lock with the template's pins | `poetry lock` in task 3.6 | D-10's order: raise `linkml`, else an older mutmut, else ask |
 | mutmut reaches the budget | `timeout` exits 124 | Results delivered with `--incomplete`; the next run resumes from the cached `mutants/` |
@@ -824,8 +826,8 @@ All checks are pure reads.
   D-12 and the first task of each stage.
 - **RISK-7** checkmake's `required` key is undocumented and may change. Likelihood low, impact low.
   Mitigated: the pinned version; IT-03 fails on an upgrade that drops it.
-- **RISK-8** The tester from MEDIUM up costs one more dispatch per stage (the proposal's BREAKING
-  note). Accepted with DEC-9.
+- **RISK-8** *(moved, D-30)* The cost of a tester at MEDIUM is no longer a risk of this EPIC: the
+  range and its condition are delivered by `delivery-process-and-tools` (its DEC-3).
 - **RISK-9** `S113` misses `requests.Session` calls. Accepted by the developer (Q-21); recorded on
   issue #215.
 - **RISK-10** The script copies in projects drift from the templates. Likelihood high over time,
@@ -893,6 +895,13 @@ decisions, were added by owner decision after run 2. No clarity-gate run followe
 wants at most two gate runs on any re-gate
 ([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 3, 4 and 7).
+
+**Revised after the gate, not gated again (2026-11-15).** D-30 to D-34, under § Delivery
+decisions, were added when the open EPICs were read against the three refactoring EPICs and the
+owner settled the result
+([`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+S-1, S-6, S-9, S-10 and its order). No clarity-gate run followed (S-10). The texts they supersede
+above are corrected in place and name the decision.
 
 ## Delivery decisions
 
@@ -1009,7 +1018,9 @@ this EPIC and the owner decided on the result
 ([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 3, 4 and 7). The clarity gate was not run again on these entries.
 
-- **D-28 At MEDIUM the tester runs on a condition (corrects D-9 *Range*, RISK-8 and the
+- **D-28 At MEDIUM the tester runs on a condition** *(moved on 2026-11-15 to
+  `delivery-process-and-tools` DEC-3, which defines the condition once and delivers it; kept
+  here as history and delivers nothing, see D-30)* **(corrects D-9 *Range*, RISK-8 and the
   error-matrix row "A MEDIUM EPIC's lead skips the tester"; proposal DEC-9 as revised).** Reason:
   review and verification are 53% of all subagents and nothing records what a round found
   (findings F-7, R-5); a tester on every MEDIUM stage adds a dispatch where it has nothing to
@@ -1037,7 +1048,9 @@ decisions 3, 4 and 7). The clarity gate was not run again on these entries.
     finding. The `epic-delivery` delta, the MEDIUM row and scenario of task 2.2, task 2.3 and
     the CHANGELOG line of task 2.7 carry the condition. The scenarios the developer signed off
     in task 1.0 and that changed here are signed off again in task 2.1.
-- **D-29 One result line for the tester, a reviewer and the checker (adds to D-9 *Brief* and
+- **D-29 One result line for the tester, a reviewer and the checker** *(moved verbatim on
+  2026-11-15 to `delivery-process-and-tools` DEC-18, now the one definition of the line; kept
+  here as history and delivers nothing, see D-30)* **(adds to D-9 *Brief* and
   *Report check*).** Reason: the outcome of a review round is traced nowhere, so its value
   cannot be measured (findings F-7, F-15, R-9). This is the one definition of the line;
   `test-suite-care` (its D-35) and any later change point here and define none.
@@ -1060,6 +1073,129 @@ decisions 3, 4 and 7). The clarity gate was not run again on these entries.
     2.4). The lead returns a report without the line as incomplete, as for the properties
     table. The `epic-delivery` delta carries the requirement *A challenge or check result ends
     in one line*.
+
+Revised 2026-11-15 by owner decision, after the gate. The open EPICs were read against the three
+refactoring EPICs: R1 `lean-skills`, R2 `orchestrate-external-skills` and R3
+[`delivery-process-and-tools`](../delivery-process-and-tools/proposal.md). What the owner settled
+is in [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
+(S-1 to S-10 and the order). The clarity gate was not run again on these entries (S-10).
+
+- **D-30 The tester's condition and the result line are delivered by R3 (S-6; corrects D-9
+  *Range*, D-28, D-29, RISK-8, the error matrix, the anti-pattern row on the workflow file, the
+  `epic-delivery` delta, tasks 2.1 to 2.4, 2.6 and 2.7, and proposal DEC-9).** R3 owns every
+  change to the stage loop of `epic-delivery` and to the review sets.
+  - *Moved.* The condition of D-28 is R3 DEC-3, which holds it at every appetite. The result
+    line of D-29 is R3 DEC-18, with the same three forms. D-28 and D-29 stay above as history
+    and deliver nothing.
+  - *Removed from this change.* The MODIFIED requirement *The loop scales with the appetite*
+    and the ADDED requirement *A challenge or check result ends in one line*, with their
+    scenarios; task 2.3; the MEDIUM row of `tests/features/epic-delivery.feature` and the four
+    scenarios of the condition and the line in task 2.2; the error-matrix row "A MEDIUM EPIC's
+    lead skips the tester"; RISK-8; the condition and the line in the CHANGELOG line of
+    task 2.7. This EPIC edits no field of `epic-delivery.workflow.json`, so stage 2 no longer
+    runs `make mods`.
+  - *Kept, because it only uses them.* The tester's brief (D-9) is replaced in stage 2 and its
+    Report line keeps the result line as R3 wrote it; the brief cites R3 DEC-18 and defines
+    nothing of the line. The properties the tester writes still come from the PLAN's
+    `## Invariants` section (task 2.4), the same rows R3's condition reads.
+  - *Other edits to `epic-delivery`, read against R3 DEC-3, DEC-4 and DEC-5.*
+
+    | Edit of this EPIC | Verdict | Why |
+    |---|---|---|
+    | The tester's brief: stance, method, report fields (D-9, D-16; task 2.4) | Kept | It says how the tester works, not when it runs (DEC-3), how findings become fixes (DEC-4) or which set a stage takes (DEC-5) |
+    | The tester's row of the check ledger: a Python-stage report without a properties table is incomplete (D-9; task 2.4) | Kept | A rule on what the report holds; it is added to the row as R3 left it and changes no step of the loop |
+    | The reviewer's brief and the ledger row name the last build stage for the contract judgement (D-11; task 3.4) | Kept | It gives one lens a moment and changes no review set. Under DEC-5 a MEDIUM stage takes the small set by default; D-20 already gives the judgement to whoever takes L3 |
+    | `reviews.MEDIUM.tester` and the MEDIUM row of the feature file (D-9, D-28; tasks 2.2, 2.3) | Dropped | R3's (DEC-3, DEC-5) |
+    | The sentence of `working-with-agents.md` on the tester's range (D-9; task 2.4) | Kept as a check | Repointed only if R3 left it untrue |
+    | D-25, proposed: the lead reads the weekly results in Prepare | Not this EPIC's to add | It would change a step of the loop and add reading to the lead, against R3 DEC-7. Still unconfirmed; if the owner wants it, it goes to R3 |
+
+  - *Order.* Stage 2 starts only when R3 is merged, and writes on R3's text (D-34).
+  - *Open for the owner.* DEC-9 of this EPIC moved the tester's range from LARGE to MEDIUM. R3
+    DEC-3 says "at every appetite", and its rabbit-hole says the condition must not add a tester
+    where the review set names none; the live MEDIUM set names none. This PLAN assumes R3 writes
+    the tester into the MEDIUM set with the condition, as D-28 did, and no longer writes the
+    cell itself. If R3's PLAN reads DEC-3 otherwise, the methods of stage 2 still hold and the
+    tester keeps its live range.
+- **D-31 The ten clean-code and SOLID bullets stay, each tied to its check (S-1; confirms D-3).**
+  R1 would have removed the bullets as restated general knowledge. The owner settled that they
+  stay, as short catalogue entries each tied to its check. D-3's "Checked by" value on every
+  one of the ten is therefore kept, with its place in the first-assignment table and the
+  reasons table, and TC-04 and TC-05 keep failing on a bullet without a value. R1's pilot on
+  `cosmic-python` may shorten a bullet or move the ten into a catalogue table; it keeps all ten
+  and their values. The value takes the form of the place it is in: the suffix on a bullet, the
+  column in a table (D-3 has both). This EPIC mints no id for them (DEC-3).
+- **D-32 No example code is copied into a skill (S-9; corrects D-9 *Technique* and task 2.5).**
+  The worked stateful test and the worked Schemathesis test are not added to
+  `example-testing-patterns.md`, and this EPIC no longer touches that file. This PLAN names no
+  real project file that holds such a test, so there is no link to put in their place. What is
+  lost: a shape an agent could copy for a `RuleBasedStateMachine` and for a Schemathesis test.
+  What remains: checklist item 10 names both methods, their calls and when each fits, and the
+  tester's report shows the properties. When a Meaningfy project holds such a test, the page of
+  worked examples that R1 plans (its DEC-7) is the place for the link. Item 10 itself is cut to
+  the house rule (D-33).
+- **D-33 The new skill prose is sorted by the lean rule before it is written (S-9; narrows D-13
+  rows *`project-setup` references* and *Existing projects*, D-9, D-10 and D-11).** A check
+  becomes a tool or a template and costs no context; a Meaningfy house rule stays, short;
+  general knowledge is not written. The builder writes only what the last column names, within
+  the sizes R1's standard sets.
+
+    | New prose | Sort | What is written |
+    |---|---|---|
+    | "Checked by" values on the catalogue tables, the 16 checklist items and the ten bullets (D-3, D-31) | House rule, tied to a check | The value only, a few words per entry |
+    | The entry `AP-SPARQL-FROM-STRINGS` and its id in the L1 region of `meaningfy-code-review` (task 1.7) | House rule | One catalogue row; one id in the lens row |
+    | `config-files.md` § Ruff: the wider selection (D-2) | Check | Nothing new in prose: the codes and the reason for each are comments in `ruff.toml.tmpl`; the section points to the template |
+    | `config-files.md` *Suppressions* (D-6) | House rule | The convention in two or three lines; the Semgrep rule checks it |
+    | `config-files.md` template table (D-4) | House rule | One row per new template |
+    | `decisions.md`: the D4 selection, the mutmut exception to D2 (D-2, D-10) | House rule | One line each |
+    | `ci-and-infra.md`: the cache step, the three target steps, the weekly workflow (D-4, D-10) | Check | A pointer only: they are `ci.yaml.tmpl` and `ci/mutation.yml.tmpl` |
+    | `ci-and-infra.md`: the setup note for the bot pull request (D-10) | House rule | Two lines, and the same as a comment at the top of `ci/mutation.yml.tmpl` |
+    | `layout.md`: `.quality/`, `scripts/quality/`, `tests/mutmut-results/` (D-13) | House rule | One line per folder. The supported platforms and the missing `timeout` on macOS are printed by the targets and are not written |
+    | `checklists.md` (D-13) | Check | One line naming `make check-quality`, or none |
+    | `modernizing-existing-projects.md`, *Adopting the shared checks* (D-13) | House rule, in part | The order (one target per pull request, the three groups of Ruff codes), the rule for more than 50 findings, "never `--add-noqa`" and "copy the newer script templates": about six lines. Step 2 (`ruff check --statistics`, then fix) is general knowledge and is not written |
+    | `architecture-guardrails.md` § grooming (D-11) | Check | The section shrinks to a pointer to `check_contracts.py` and to the L3 judgement; the script's messages state the rule |
+    | The tester's brief and its ledger clause (D-9, D-16) | House rule | The brief replaces the old one at about the same size; one clause in the ledger row |
+    | Checklist item 10 (D-9) | House rule, in part | Which method fits when, with the names of the calls: about three lines. Which invariants to look for and the `ci` profile are general knowledge or tool behaviour and are not written |
+    | The stateful and the Schemathesis example (D-9) | Example code | Dropped (D-32) |
+    | The L3 contract judgement in `meaningfy-code-review`, the reviewer's brief and the ledger row (D-11) | House rule | The three things judged, once, in the lens; the brief and the ledger name the moment and point to it |
+    | The rows of `test-strategy`'s inventory and family files (D-12, D-15) | House rule (a register) | One row per check, no prose |
+
+  `quality/README.md`, `docs/development/quality.md`, `governance.md`, `AGENTS.md` and the other
+  documents are not skill prose and are written as planned; the lines added to `AGENTS.md` stay
+  within the size budget R3 sets for that file (its DEC-12).
+- **D-34 Stage 1 has a tool side and a prose side; the order among the open EPICs (replaces the
+  waves of 14 November; corrects D-12's first sentence, D-23, the stage table, D-8 and the
+  proposal's *Order*).** The order the owner settled on 2026-11-15 replaces the order of
+  14 November (B1, B2, then C and E1, then B3), which now holds only inside the test EPICs.
+  - *The tool side of stage 1* adds no skill prose: the Check type and `quality/` with its
+    README, the lint and its tests, the Ruff selection and its fixtures, the contract of task
+    1.6, the eight Semgrep rules, ls-lint, checkmake, the manifest, the templates, `scaffold.sh`,
+    the pin, the documents outside `skills/`, and the scaffold runs. It needs nothing from R1,
+    R2 or R3 and is its own pull request, in wave 1. The release after wave 1 carries
+    `quality/` (D-19).
+  - *The prose side of stage 1* is every line of stage 1 written into a skill: the "Checked by"
+    values (task 1.12), the entry `AP-SPARQL-FROM-STRINGS` and its place in the L1 region, the
+    `project-setup` references of tasks 1.5, 1.8 and 1.13, and the `test-strategy` rows of task
+    1.14, which point to the column. It is a second pull request, in wave 3, after stage 1 of R1
+    (the lean standard and its lint) and after R1's pilot on `cosmic-python`, so each line is
+    written once, to the lean shape, as sorted in D-33.
+  - *Between the two sides.* The cases of TC-04 and TC-05 that read the live catalogue are
+    written on the tool side as skipped, with the message "switched on by task 1.12", as TC-12
+    is (D-17); the parser's own cases run on fixtures from the start. Proof 1 of DEC-15 is
+    complete when task 1.12 removes the skips. Two rule messages point ahead until then:
+    `cosmic-python:AP-SPARQL-FROM-STRINGS` and `project-setup:config-files#suppressions`. The
+    id and the heading are reserved by this PLAN.
+  - *The order.*
+
+    | Wave | Of this EPIC | Needs first |
+    |---|---|---|
+    | 1 | Stage 1, tool side | EPIC A (delivered). Free of R1, R2 and R3; R3 and stage 1 of R1 run in the same wave, and the lines both add to `AGENTS.md` and `tools/repo_lint` are rebased |
+    | 3 | Stage 1, prose side, then stage 2 | R3 merged (D-30); stage 1 of R1 and its pilot on `cosmic-python` (wave 2) |
+    | 5 | Stage 3 and the closing check | C (wave 4) and stage 1 of E (wave 3); the remaining stages of R1, so that `project-setup`, `epic-delivery` and `meaningfy-code-review` are each rewritten once |
+
+  - *What follows.* E's stage 1 is in wave 3, after the tool side, so `requirements-quality.txt`
+    exists before E adds to it and the case of D-23 no longer arises for task 1.4; the lines
+    reconciled with E in tasks 1.12 and 2.4 still apply, since the three run in one wave. C
+    still waits for this EPIC's `quality/` and tester.
 
 ## Open Questions
 

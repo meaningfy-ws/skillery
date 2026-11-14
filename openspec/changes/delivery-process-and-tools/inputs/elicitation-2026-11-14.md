@@ -60,6 +60,15 @@ operations fit in one REPL call.
 | RISK-3 | Claude Code or opencode changes how tools, skills and agents load, and the tool table or the measured weights go stale. | Medium | Low: stale advice | Mitigate: a check compares the table with the agents' tool lists. |
 | RISK-4 | With the owner starting each stage, a multi-stage EPIC waits whenever the owner is away. | High | Low to medium: longer elapsed time, no extra tokens | Accepted. Looked at again after the first measured EPIC. |
 
+## Re-shaped on 2026-11-15
+
+The EPIC was frozen on 14 November and is changed here on purpose, by the owner's decision in the
+reassessment of all open EPICs ([`reassessment-2026-11-15.md`](reassessment-2026-11-15.md), S-6
+and S-8). What changed: the result line moves here from `harden-checks-and-tests` D-29 (new
+DEC-18, and the no-go against it is lifted); DEC-17 now says this EPIC owns every change to the
+stage loop and gives the new order; DEC-3 states the tester's condition in full. RISK-2 (parallel
+EPICs editing the same skills) is answered by that reassessment.
+
 ## The agent's own proposals, for the owner to overrule
 
 - The tool table lives in `guardrails` (DEC-8). The owner asked for the table, not for its home.

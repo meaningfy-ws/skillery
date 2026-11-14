@@ -8,7 +8,11 @@
      (ls-lint: banned file names only, required files checked in make) and read DEC-4 strictly
      (scripts live in project-setup's templates, not in quality/). Both are recorded in design.md
      D-1 and D-5. Revised 2026-11-14 by owner decision: DEC-9 (the tester at MEDIUM runs on a
-     condition; one result line), design D-28 and D-29; not gated again. -->
+     condition; one result line), design D-28 and D-29; not gated again. Revised 2026-11-15 by
+     owner decision (../delivery-process-and-tools/inputs/reassessment-2026-11-15.md, S-1, S-6,
+     S-9 and the order; design D-30 to D-34): the tester's condition and the result line are
+     delivered by delivery-process-and-tools, no example code goes into a skill, stage 1 has a
+     tool side and a prose side; not gated again. -->
 
 # EPIC: harden checks and tests
 
@@ -22,10 +26,10 @@ capabilities `epic-delivery` (the adversarial tester and the review sets), `code
 
 **VERY LARGE**, in three stages (the owner's call, Q-19, after the readiness check found the scope
 beyond LARGE): (1) `quality/`, the wider Ruff selection, the Semgrep rules and the "Checked by"
-column; (2) the tester's methods and its range; (3) the weekly mutmut run and the import-contract
+column; (2) the tester's methods; (3) the weekly mutmut run and the import-contract
 check. Several related capabilities change together (static rules, test strength,
-the import-linter review), a new artifact type and top-level folder appear, and the tester's
-boundary moves from LARGE to MEDIUM. If encoding the catalogue needs new catalogue entries (DDD,
+the import-linter review), and a new artifact type and top-level folder appear. The tester's
+boundary and stage 1's two sides are as revised on 2026-11-15 (DEC-9, *Order* under Impact). If encoding the catalogue needs new catalogue entries (DDD,
 TDD, fixtures), that is the follow-up EPIC, not this one (Q-18).
 
 ## Why
@@ -52,8 +56,8 @@ selection and misses checks it could make for free.
    upgraded by bumping a pin.
 3. **An adversarial tester with proper methods.** The tester keeps its brief and gains methods:
    Hypothesis properties and stateful tests, and Schemathesis where an OpenAPI contract exists; its
-   report lists the properties it stated. It runs from MEDIUM up, at MEDIUM on a condition
-   (DEC-9). Outcome: "try to break it" becomes
+   report lists the properties it stated. When it runs is set by `delivery-process-and-tools`
+   (DEC-9 as revised). Outcome: "try to break it" becomes
    a repeatable technique with a visible result.
 4. **Tests that are measured.** A weekly mutmut run on `develop` writes the surviving mutants to
    `tests/mutmut-results/` in a bot PR; a person picks them up, plans the fixes and deletes the
@@ -105,7 +109,12 @@ selection and misses checks it could make for free.
   `test-strategy`'s adversary stance (`ROB`, `ADQ`) — rejected: a new tester
   agent; LARGE-only (round 0, Q-2) — was: from MEDIUM up on every stage, and no result line
   (the measurements show review and verification as 53% of all subagents, with no outcome
-  recorded).
+  recorded). *Revised again on 2026-11-15 by owner decision
+  ([`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+  S-6):* the condition and the result line are defined and delivered by
+  [`delivery-process-and-tools`](../delivery-process-and-tools/proposal.md) (its DEC-3 and
+  DEC-18), which owns the stage loop and the review sets; this EPIC changes no review-set data
+  and delivers the tester's methods and what its report holds (design D-30).
 - **DEC-10**: mutmut runs weekly on `develop` in scheduled CI and opens or updates one bot PR that
   adds `tests/mutmut-results/`; it never fails a build; whoever picks the results up plans the fixes
   and deletes the folder when empty — rejected: per-PR runs; direct push to `develop` (Q-8, Q-9).
@@ -142,7 +151,7 @@ selection and misses checks it could make for free.
   no package registry, no installer.
 - **Ordering with A**: A adds `criteria` to every phase of `epic-delivery.workflow.json`; this
   EPIC's review-set edit lands after A and keeps that field. The tester change is one field per
-  appetite.
+  appetite. *Since 2026-11-15 this EPIC edits no review set (DEC-9 as revised).*
 - **mutmut on large suites** can run for hours. Scope it to the package, not the tests, and let the
   PLAN set a time budget.
 
@@ -169,15 +178,15 @@ selection and misses checks it could make for free.
   and checkmake configurations, README); `governance.md`, `AGENTS.md` and the top-level folder
   check name it as the sixth artifact type.
 - `cosmic-python`: the catalogue gains a "Checked by" column; the testing checklist names its
-  checkers; Hypothesis item extended with stateful tests and Schemathesis.
+  checkers; Hypothesis item extended with stateful tests and Schemathesis. The ten clean-code
+  and SOLID bullets stay, each with its check; no example code is added (design D-31, D-32).
 - `test-strategy` (from EPIC A): the software rows of the matrix name the new checks.
 - `project-setup`: wider Ruff selection; `make` targets to fetch `quality/` at a pin and run Semgrep,
   ls-lint and checkmake; a weekly mutmut workflow in the CI template; the mechanical
   import-contract check; a migration note for existing projects.
-- `epic-delivery`: the tester brief gains its methods and report fields; the review sets name the
-  tester from MEDIUM up (**BREAKING** for MEDIUM EPICs: one more dispatch on each stage that
-  changed code and has an invariant named for it; DEC-9 as revised); the tester's, a reviewer's
-  and the checker's report end in one result line.
+- `epic-delivery`: the tester brief gains its methods and report fields. The review sets, the
+  tester's condition and the result line are changed by `delivery-process-and-tools`, not here
+  (DEC-9 as revised on 2026-11-15); the brief cites them.
 - `meaningfy-code-review`: L3 judges the import-linter contracts once per EPIC.
 - `make validate` runs `quality/`'s tests locally; CI skips them when a tool is missing.
 
@@ -191,7 +200,7 @@ selection and misses checks it could make for free.
 - `catalogue-governance`: the agreed top-level folders include `quality/`; a sixth artifact type.
 - `code-principles-governance`: every catalogue entry records its checker; the import-linter
   contracts are checked per PR and judged per EPIC.
-- `epic-delivery`: the adversarial tester's methods, report and appetite range.
+- `epic-delivery`: the adversarial tester's methods and report.
 - `pr-review-modes`: the L3 lens's once-per-EPIC contract review.
 
 ## Impact
@@ -204,6 +213,9 @@ selection and misses checks it could make for free.
   a weekly workflow.
 - Dependencies for projects: Semgrep, ls-lint, checkmake, mutmut, Hypothesis, Schemathesis
   (pinned).
-- Order: after EPIC A (`test-strategy`).
+- Order: after EPIC A (`test-strategy`). *Revised 2026-11-15 (design D-34):* stage 1's tool side
+  is free now; its prose side and stage 2 follow `delivery-process-and-tools` and stage 1 and
+  the `cosmic-python` pilot of `lean-skills`; stage 3 follows the remaining stages of
+  `lean-skills`.
 - Follow-ups recorded as issues: #210 (DDD, TDD and fixture rules), #214 (CodeQL, declined for now),
   #215 (the hygiene rules).

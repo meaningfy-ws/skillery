@@ -8,7 +8,9 @@
      Reconciled with the PLAN and with EPICs B, C and D on 2026-11-14: the sentences the PLAN's
      "Deviations from the EPIC" had made false are corrected below, each a logged change, not
      a new decision. Revised 2026-11-14 by owner decision: DEC-3 (a builder sorts, the lead
-     confirms), design D-35 and D-36; not gated again. -->
+     confirms), design D-35 and D-36; not gated again. Revised 2026-11-15 against the three
+     refactoring EPICs (delivery-process-and-tools/inputs/reassessment-2026-11-15.md; design
+     D-37 to D-42): DEC-3, DEC-7 and the order; not gated again. -->
 
 # EPIC: test suite care
 
@@ -92,7 +94,9 @@ project.
   decision 5)*: A stage's adversarial tests are distilled before the stage merges. The tester's
   report names the scenario each new test attacks. In step 4 of the stage loop of `epic-delivery`
   (Decide and fix), where the lead already decides each tester finding, a builder sorts the tests
-  by the rule and the lead confirms its lists. Kept: the tests
+  by the rule and the lead confirms its lists. The sort is part of the stage's one fix pass,
+  before the gate run that checks it (`delivery-process-and-tools` DEC-4, which owns the stage
+  loop; design D-38). Kept: the tests
   that found a defect, the ones that alone cover a scenario, and one property per invariant the
   PLAN names (B's DEC-9); they go into files named by feature. The rest are deleted and listed
   in the stage's pull request, each with its reason (Q-3). The builder also reports the
@@ -115,7 +119,8 @@ project.
 - **DEC-7** (Q-5, Q-6): The skill is named `test-suite-care` and lives in `meaningfy-building`. It
   covers every kind of test: unit, Gherkin feature, integration, end to end, and UI suites such as
   Cypress. The procedure is the same for all; what differs per kind (how cost is measured, how a
-  test names its scenario) is a short section each. UI suites are stage 2.
+  test names its scenario) is a short section each. UI suites are stage 2. The skill is born
+  within the lean budget of `lean-skills`: at most 24 KB of prose, a body near 6 KB (design D-40).
 - **DEC-11** (Q-6): A check that is not code is assessed for how good and reliable it is for the
   project and the task: does it catch a planted flaw, does it give the same verdict on each of three runs, what
   does it cost against what it has found. The outcome is a judgement the owner discusses, as for
@@ -198,7 +203,8 @@ project.
 - New skill `test-suite-care` in `meaningfy-building`: the audit procedure, the map format, the
   report format, the kinds of waste and their evidence, a section per kind of test, and the
   assessment of a check that is not code.
-- `epic-delivery`: the stage loop gains the distilling of adversarial tests (DEC-3).
+- `epic-delivery`: the stage loop gains the distilling of adversarial tests (DEC-3), as one
+  sentence added to the step that `delivery-process-and-tools` rewrites.
 - `cosmic-python` (testing checklist): the rules the survey adds, the `slow` marker rule and "name
   adversarial files by feature, not by stage" (rules 17 to 21; rules 6 and 14 amended).
   `bdd-gherkin`: one check box.
@@ -229,5 +235,6 @@ project.
 - Agents: `team-lead` and `implementer` follow the distilling rule through `epic-delivery`; no
   agent file changes.
 - Other repositories: the trials (DEC-8).
-- Order: after A; stage 1 ordered against B stages 1 and 2 by the PLAN; stages 2 and 3
+- Order: after A; stage 1 after `delivery-process-and-tools` and stage 1 of `lean-skills`
+  (design D-37), and ordered against B stages 1 and 2 by the PLAN; stages 2 and 3
   independent of B, C and D.

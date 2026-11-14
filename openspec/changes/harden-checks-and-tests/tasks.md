@@ -1,11 +1,24 @@
 <!-- PLAN (tasks half), derived 2026-11-14; attack and the developer's round-8 answers folded in.
      Three stages, each its own PR into develop. [A] marks a task that reads EPIC A's delivered
      files (design D-12). Revised 2026-11-14 by owner decision (design D-28, D-29: tasks 2.1
-     to 2.4 and 2.7); not gated again. -->
+     to 2.4 and 2.7); not gated again. Revised 2026-11-15 by owner decision (design D-30 to
+     D-34, from ../delivery-process-and-tools/inputs/reassessment-2026-11-15.md): the tester's
+     condition and the result line moved to delivery-process-and-tools, task 2.3 removed, no
+     example code in a skill, stage 1 in a tool side and a prose side; not gated again. -->
 
 > Derives from: EPIC `harden-checks-and-tests` ([`proposal.md`](proposal.md)); design in [`design.md`](design.md).
 
 ## 1. Stage 1: `quality/`, the Ruff selection, the Semgrep rules and "Checked by"
+
+*Revised 2026-11-15 (D-34):* stage 1 is two pull requests. The **tool side** adds no skill
+prose and is free now (wave 1). The **prose side** is every line written into a skill; it waits
+for stage 1 of `lean-skills` and its pilot on `cosmic-python` (wave 3) and is written as sorted
+in D-33. Each side ends with the checks of task 1.16.
+
+| Side | Tasks |
+|---|---|
+| Tool side | 1.1, 1.2, 1.3, 1.4, 1.6, 1.9, 1.10, 1.11, 1.15; of 1.5 the fixtures, TC-13, the templates and the comment on #215; of 1.7 and 1.8 the rules and their fixtures; of 1.13 everything but the `project-setup` references; of 1.16 the README, the `README.md` row, the CHANGELOG line and issue #215 |
+| Prose side | 1.12, 1.14; of 1.5 `config-files.md` § Ruff and `decisions.md` D4; of 1.7 the catalogue entry and the L1 lens; of 1.8 the *Suppressions* heading; of 1.13 the five `project-setup` references; of 1.16 a CHANGELOG line |
 
 - [x] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
   `evidence/acceptance.md` (D-13). *Open for the developer:* the three proposals of D-24, D-25
@@ -31,6 +44,9 @@
   written as skipped, with the message "switched on by task 3.7" (D-17). *Reconciled with
   test-suite-care (EPIC E):* if its stage 1 is merged and `requirements-quality.txt` exists, its
   three packages (pytest-xdist, coverage, pytest-cov) stay in the file (D-23).
+  *Revised 2026-11-15 (D-34):* the cases of TC-04 and TC-05 that read the live catalogue are
+  written as skipped, with the message "switched on by task 1.12"; the parser's cases run on
+  fixtures.
 - [ ] 1.5 Ruff: copy the cases of `inputs/ruff-probe/` to `tests/fixtures/quality/ruff/` (the
   inputs stay) and write TC-13; then change `ruff.toml.tmpl`, the Ruff pin in `pyproject.toml.tmpl`
   and the `rev` in `dot-pre-commit-config.yaml` per D-2; update `config-files.md` § Ruff and
@@ -63,6 +79,9 @@
   *Reconciled with test-suite-care (EPIC E):* if its stage 1 is merged, the checklist has 21
   items; items 17 to 21 each end with `*Checked by:* review only, because the audit of
   test-suite-care reads it`, and the "Sources" table after "The report" is not a list of items.
+  *Revised 2026-11-15 (D-31, D-34):* prose side. The ten bullets stay and each keeps its value,
+  in the place and form the `lean-skills` pilot left them; this task switches on the skipped
+  cases of TC-04 and TC-05.
 - [ ] 1.13 Project wiring. In `Makefile.tmpl`: the pin and the three tool versions,
   `quality-fetch`, `quality-tools`, `check-semgrep` (three passes), `check-layout` (ls-lint and the
   four `test -f` lines), `check-makefile`, the new `check-quality`. The template
@@ -91,18 +110,19 @@
 ## 2. Stage 2: the tester's methods and range
 
 - [ ] 2.1 [A] Walk the D-12 table again (A-4, A-6, A-7).
-  *Revised 2026-11-14 (D-28, D-29):* the scenarios that changed after task 1.0 (the two MEDIUM
-  scenarios, *The scaling has one source*, and the three of *A challenge or check result ends in
-  one line*) and the form of the result line were signed off by the owner on 2026-11-14, through
-  the decisions that changed them; record that in `evidence/acceptance.md`.
-- [ ] 2.2 `tests/features/epic-delivery.feature`: the MEDIUM row names the tester; add the four
+  *Revised 2026-11-15 (D-30):* confirm `delivery-process-and-tools` is merged, and read its text
+  of the tester's cell, the briefs and the check ledger before editing them. The scenarios of
+  the condition and of the result line left this change, so nothing of them is recorded in
+  `evidence/acceptance.md` here.
+- [ ] 2.2 `tests/features/epic-delivery.feature`: add the four
   scenarios of D-9, one per scenario of the spec requirement (D-9; spec *The adversarial tester
   works by stated methods*).
-  *Revised 2026-11-14 (D-28, D-29):* the MEDIUM row names the tester with its condition; add
-  the scenario *A MEDIUM stage with nothing for the tester* and the three of the result line.
-- [ ] 2.3 Set `reviews.MEDIUM.tester` in `epic-delivery.workflow.json`; run `make mods` and
-  `make bundles` (D-9; spec *The loop scales with the appetite*).
-  *Revised 2026-11-14 (D-28):* the value is the wording with the condition.
+  *Revised 2026-11-15 (D-30):* the MEDIUM row, the scenario *A MEDIUM stage with nothing for the
+  tester* and the three scenarios of the result line are `delivery-process-and-tools`' and are
+  not written here.
+- 2.3 *Removed 2026-11-15 (D-30).* It set `reviews.MEDIUM.tester` in
+  `epic-delivery.workflow.json`; the cell and its condition are written by
+  `delivery-process-and-tools` (its DEC-3).
 - [ ] 2.4 Replace the tester brief in `team-and-briefs.md`; add the report rule to the tester's
   row of the check ledger in `stage-loop.md`; repoint
   `docs/practice/ai-coding/working-with-agents.md` (D-9; spec *The adversarial tester works by
@@ -115,22 +135,29 @@
   The rule on which properties the tester writes (one per row of the PLAN's `## Invariants`
   section where it has one, else per error-matrix row) has one home, this brief. Whichever of
   this task and test-suite-care's task 1.9 lands first writes it; the other keeps it.
-  *Revised 2026-11-14 (D-29):* define the result line once under *What every brief names* and
-  name it in the Report line of the tester's, the reviewer's and the checker's brief; the
-  ledger rule returns a report without it as incomplete (spec *A challenge or check result ends
-  in one line*).
-- [ ] 2.5 `cosmic-python`: extend checklist item 10 and add the stateful and the Schemathesis
-  example to `example-testing-patterns.md`; pin Hypothesis and Schemathesis in the `test` group of
+  *Revised 2026-11-15 (D-30):* this task defines nothing of the result line. The new brief's
+  Report line keeps the result line as `delivery-process-and-tools` wrote it (its DEC-18), and
+  the properties rule is added to the tester's ledger row as that EPIC left it. Repoint
+  `working-with-agents.md` only if its sentence on the tester's range is still untrue.
+- [ ] 2.5 `cosmic-python`: extend checklist item 10; pin Hypothesis and Schemathesis in the `test` group of
   `pyproject.toml.tmpl` and confirm `poetry lock` on a scaffold (D-9, D-4).
+  *Revised 2026-11-15 (D-32, D-33):* no example is added to `example-testing-patterns.md`;
+  item 10 gains about three lines, which method fits when.
 - [ ] 2.6 [A] Update the tester and property-test rows of the inventory and the software file
   (`CHK-17`, `CHK-5`), and fill the `ROB` row "stateful and contract-driven properties for the
   tester" (`software.md` line 45, `gap → B`): it takes the next free id and status `exists`
   (D-12, D-15).
-- [ ] 2.7 `CHANGELOG.md` line naming the change for MEDIUM EPICs, with the condition (D-28), and
-  the result line (D-29); `make bundles`,
+  *Revised 2026-11-15 (D-30):* the new wording of the tester's row names its methods; its
+  range stays as `delivery-process-and-tools` left it.
+- [ ] 2.7 `CHANGELOG.md` line naming the tester's methods and its report (the condition and the
+  result line are in the line of `delivery-process-and-tools`, D-30); `make bundles`,
   `make skill-inventory`, `make validate`, `openspec validate harden-checks-and-tests --strict`.
 
 ## 3. Stage 3: the weekly mutation report and the import-contract check
+
+*Revised 2026-11-15 (D-33, D-34):* stage 3 is in wave 5, after the remaining stages of
+`lean-skills`. The reference and lens text of tasks 3.3, 3.4 and 3.6 is written as sorted in
+D-33. The brief and ledger lines of task 3.4 stay this EPIC's (D-30).
 
 - [ ] 3.1 [A] Walk the D-12 table again (A-1, A-2, A-3).
 - [ ] 3.2 The template `check_contracts.py`, test-first (TC-07) (D-11; spec *Import contracts are
@@ -176,16 +203,22 @@
 
 - [x] 1.0 · [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
   · [ ] 1.10 · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14 · [ ] 1.15 · [ ] 1.16 · [ ] 2.1 · [ ] 2.2
-  · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
+  · 2.3 removed (D-30) · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
   · [ ] 3.6 · [ ] 3.7 · [ ] 3.8 · [ ] 3.9 · [ ] 3.10 · [ ] 3.11
 
 Tasks 1.5 to 1.11 are independent of each other and may be built in parallel; so may 3.2–3.4 and
 3.5–3.6.
 
+*Order, revised 2026-11-15 (D-34; it replaces the waves of 14 November):* wave 1, the tool side
+of stage 1, free now, with a release after it; wave 3, the prose side of stage 1 and then
+stage 2, after `delivery-process-and-tools` is merged and after stage 1 of `lean-skills` and its
+pilot on `cosmic-python`; wave 5, stage 3 and the closing check, after `activity-test-profiles`,
+stage 1 of `test-suite-care` and the remaining stages of `lean-skills`.
+
 ## Verification
 
 Per stage: `make validate` green (it includes `tests/test_quality.py`, the repo lint and the
-bundle gates), `make mods` green in stage 2, `openspec validate harden-checks-and-tests --strict`,
+bundle gates), `openspec validate harden-checks-and-tests --strict`,
 and the stage's scaffold runs recorded (IT-04 and IT-05 in the stage 1 PR, task 3.3's in the
 stage 3 PR). For the EPIC: the three proofs of DEC-15 in `evidence/`, and the developer's verdict
 in `evidence/acceptance.md`.

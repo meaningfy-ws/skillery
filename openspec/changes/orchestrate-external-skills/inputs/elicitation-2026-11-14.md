@@ -114,7 +114,12 @@ Read on 2026-11-14 from PR #236 as it stood (proposal with DEC-1 to DEC-9, one s
 | Evidence | By reasoning, no evals (DEC-1) | Agent scenarios and trigger probes | Different, not in conflict |
 | Rules in `docs/rules/` | Adds P-0002 and P-0003 | None | Its two ids collide with the P-0002 now on `develop` |
 
-**What the owner has to settle (DEC-16):**
+**Settled on 2026-11-15.** The owner agreed to all four suggestions below, in the reassessment of
+the open EPICs
+([`reassessment-2026-11-15.md`](../../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+S-3, S-4, S-7). The EPIC was re-shaped for it on purpose: DEC-16 closed, DEC-17 to DEC-21 added.
+
+**What the owner had to settle (DEC-16):**
 
 1. **Who routes to the book rule sets.** Suggested: the orchestrator, since the owner chose one
    central place. `lean-skills` then drops its routing in the three agents, and its spec says a

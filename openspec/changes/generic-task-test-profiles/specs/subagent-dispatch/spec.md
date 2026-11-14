@@ -13,9 +13,10 @@ so the author can fix it before the recipient reads it, with one line about who 
 piece); the draft as a path; what is already decided (the criteria and who confirmed them, the
 attack list its owning skill supplies, and, at a second read, the points already open with the
 owner, or "none"); the no-gos (no rewrite, no proposed wording, no verdict); and the report
-expected. The brief SHALL also name the tools the reader may use: `Read`, `Grep` and `Glob` for a
-piece of prose, and also the code tools (Serena, ast-grep, GitNexus) where the piece read is code
-or a repository (DEC-12). What was decided about the piece reaches the reader as criteria and open points: the
+expected. The brief SHALL also name the tools the reader may use, taken from the table of recommended tools
+per activity in `guardrails` (the row for reading prose; for code or a repository, the row for
+reading code), and the reference SHALL NOT define a tool list of its own (DEC-12, revised
+2026-11-15; design D-28). What was decided about the piece reaches the reader as criteria and open points: the
 brief SHALL carry no dossier, no thread and none of the author's reasoning. The reader SHALL
 return an assessment, not a verdict: the base report plus the reviewing fields without their
 verdict, with its findings in order of weight, each naming the criterion it bears on and quoting
@@ -47,7 +48,7 @@ against a criterion. No other skill or agent file SHALL copy the brief
 
 #### Scenario: A reader of an offer
 - **WHEN** an agent briefs the reader of an offer
-- **THEN** the brief names `Read`, `Grep` and `Glob` as the reader's tools, and no other
+- **THEN** the brief names the tools the table of `guardrails` gives for reading prose, and no other
 
 #### Scenario: The brief is copied elsewhere
 - **WHEN** a file under `skills/` or `agents/`, other than `guardrails`' reference, holds the brief's line "Do not rewrite and do not propose wording"
