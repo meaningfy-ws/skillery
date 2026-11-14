@@ -127,8 +127,9 @@ New choices made while planning; settled ones are cited.
   adversarial reader answers `ROB` at pick-up, against confirmed criteria. Rejected: turning
   `recipient-reader` into the adversarial reader, which would add the profile to scheduled runs and
   change a sixth skill (No-gos).
-- **D-5 The two agent files** (DEC-9, DEC-10). Both gain `Agent` in `tools`, `guardrails` in
-  `skills` and its line under `## Skills` ("the adversarial-reader subagent and the base report").
+- **D-5 The two agent files** (DEC-9, DEC-10). Both gain `Agent` in `tools`, `guardrails` as the
+  last entry of `skills` (the first entry is the agent's primary skill for the lint, as in
+  `lawyer`) and its line under `## Skills` ("the adversarial-reader subagent and the base report").
   `Agent` stays unscoped (`docs/development/agent-template.md`, *Leads delegate*). The Background
   of each agent's feature file gains `guardrails` in its skill list, which the lint requires.
   - `proposal-writer`: **Input** adds "the criteria the owner confirmed". **Output** names the
@@ -154,8 +155,9 @@ New choices made while planning; settled ones are cited.
   the owner decides (send, revise, drop). Where the owning skill reserves a change to the owner,
   the agent does not revise it: for a contract, a number or a term that changes what a party can
   claim or must do (`contract-practice`, *Alignment*, *Counterparty changes*). A fail on such a
-  point is recorded as an open point or a lawyer point with the reader's quotation; that counts as
-  handled, and the second read checks only what the agent did revise. Rejected: reading until
+  point is recorded as an open point or a lawyer point with the reader's quotation. The second
+  read is still against all criteria; its brief lists such a criterion as "open, with the owner",
+  and the reader's fail on it is not counted again. Rejected: reading until
   everything passes, which has no end and slows daily work (DEC-7).
 - **D-7 *Unread*.** When the agent cannot start a subagent (the tool is absent or withheld), the
   piece is marked *unread*: said first in the hand-over or the report, under *Recommendations* for
@@ -167,8 +169,8 @@ New choices made while planning; settled ones are cited.
   for a post or a message. A confirmed criterion is quoted with its date.
 - **D-9 The reader's inputs and model.** The brief gives the draft as a path; a piece that exists
   only as a mail draft is first saved to a scratch file, so the live rule "inputs as paths" holds
-  without exception. The reader knows the brief, the draft and the *Attacks* list at the path the
-  brief names, and nothing else. The recipient line is one sentence (role, relationship, what they
+  without exception. The brief quotes the owning skill's *Attacks* bullets; the reader is not sent to the
+  skill's file, so it knows the brief and the draft and nothing else. The recipient line is one sentence (role, relationship, what they
   last asked); no dossier, no thread. The reader is a fresh general-purpose subagent (No-gos: no
   new agent) on the caller's model, as the live `subagent-dispatch` requirement says; this change
   adds no model rule.
@@ -186,9 +188,11 @@ New choices made while planning; settled ones are cited.
   `intake` (`VAL`) and phase `review` (`ROB`); for an offer, the sales workflow of
   `sales-operations`, phase `offer`; for a post, a message and a sales message, "any". When inside
   that moment the step runs (before drafting, before hand-over, at pick-up) is the owning skill's
-  and the reference's to say, not the row's. No row names a role: roles stay in the owning skills. The internal-message case is the same
-  `VAL` row of `executive-communication`: the owner decides by correcting or not. Each of the five
-  skills, and `guardrails`, carries A's pointer line with `VAL`, `ROB` added. In `test-strategy`'s
+  and the reference's to say, not the row's. No row names a role: roles stay in the owning skills.
+  The internal-message case is the same `VAL` row of `executive-communication`: the owner decides
+  by correcting or not. Each of the five skills carries A's pointer line with `VAL`, `ROB` added
+  and `references/generic-writing.md` named. `guardrails` is the tool of these rows, not their
+  technique owner, so its pointer line stays as A wrote it. In `test-strategy`'s
   SKILL.md only a status quoted from a changed row may change (the Quick Start's "`gap` → D");
   nothing else (No-gos).
 - **D-11 Proof mechanics** (DEC-6).
@@ -203,15 +207,24 @@ New choices made while planning; settled ones are cited.
     | B-4 | sales message | the follow-up to a first call with a head of data who asked for a one-page summary |
     | B-5 | internal message | a status note to the team: the registry project slips one week |
 
-    Each run is one `claude -p` call on `sonnet`, started in an empty scratch directory with an
-    isolated configuration directory and a temporary plugin assembled from the repository at one
-    commit, as [`tests/evals/README.md`](../../../tests/evals/README.md) describes (section
-    *Trigger sets*, paragraph "Isolate the run"; section *Outcome suites*, paragraph "Locally"),
-    so that no installed copy of a skill answers. A run sees no repository file: B-2's prompt
+    Each run is one call, started in an empty scratch directory:
+    `claude -p "<prompt>" --model sonnet --output-format json --plugin-dir "$P"`, with
+    `CLAUDE_CONFIG_DIR` set to an empty directory that holds only the login, as
+    [`tests/evals/README.md`](../../../tests/evals/README.md) does it (section *Trigger sets*,
+    paragraph "Isolate the run"), so that no installed copy of a skill answers. `$P` is one
+    temporary plugin built from a checkout of one commit: the contents of
+    `bundles/meaningfy-core`, `bundles/meaningfy-consulting`, `bundles/meaningfy-sales` and
+    `bundles/meaningfy-legal` copied with their links resolved (`cp -rL`) into one directory, and
+    one `.claude-plugin/plugin.json` naming it `baseline` (the same README, section *Outcome
+    suites*, paragraph "Locally", shows the copy). Those four bundles hold the five owning skills
+    and `guardrails`. A run sees no repository file: B-2's prompt
     carries the term table inline, copied from the fixture. The prompt is the task plus one
     sentence: "where a skill tells you to ask the owner, write the question, take
     the answer as yes and go on". The *without* runs use the base commit; the *with* runs the head
-    of stage 2. The owner approves the estimate of the ten runs first, as that README requires.
+    of stage 2. Before the runs, one calibration call of B-5 gives `total_cost_usd`; ten times
+    that, doubled for the longer tasks and the reruns, is the amount the owner approves, and the
+    runs stop when it is spent. A *with* run that misses an expected observation may be repeated
+    at most twice, from the commit that holds the fix, which is recorded.
     `evidence/baseline.md` records the commit of each run and five observations, yes or no, never
     a score:
     - **O-1** success and failure were stated before the first line of the draft;
@@ -223,15 +236,14 @@ New choices made while planning; settled ones are cited.
       failed something that the *without* draft still contains.
 
     The drafts and reports are kept under `evidence/baseline/`, except B-2's: a contract response
-    may read as clause text, which skillery does not hold, so B-2's drafts stay in the session's
-    scratch directory for the demo and the evidence keeps only its observations and the reader's
-    pass or fail lines. B-2's prompt says "there is no contract repository; work from the table
+    may read as clause text, which skillery does not hold, so B-2's drafts are discarded once its
+    observations and the reader's pass or fail lines are recorded, and O-5 is not judged for B-2. B-2's prompt says "there is no contract repository; work from the table
     in this prompt". If a B-2 run still stops for lack of one, the stop is its result: O-1 to O-4
     are recorded as no, and B-2 is left out of the bar. **Proven** means every *with* run shows
     the expected value on O-1 to O-3, O-4 is yes for the *with* runs of B-1 to B-4, and O-5 is yes
-    for at least two of B-1 to B-4. O-1 to O-4 show that the steps happen; only O-5 shows that
+    for at least two of B-1, B-3 and B-4. O-1 to O-4 show that the steps happen; only O-5 shows that
     they changed the piece (RISK-10).
-  - *Planted flaw.* Six fabricated fixtures under `tests/fixtures/readers/`:
+  - *Planted flaw.* Five fabricated fixtures and one data file under `tests/fixtures/readers/`:
 
     | File | What is planted |
     |---|---|
@@ -240,7 +252,7 @@ New choices made while planning; settled ones are cited.
     | `offer-clean.md` | the twin of both: the dashboard priced, one validity date |
     | `contract-planted.md` | a term table in plain words, not clause text: one party may end the contract without cause at five days' notice, the other may not (DEC-6) |
     | `contract-clean.md` | its twin: both may, at thirty days |
-    | `expected.yaml` | for each planted file: its twin, the owning skill, the criteria as an owner would confirm them, and `must_quote`, a substring of the planted line |
+    | `expected.yaml` | for each planted file: its twin, the owning skill, the role and the *Attacks* bullets of D-3 given to the reader, the criteria as an owner would confirm them, and `must_quote`, a substring of the planted line |
 
     `tests/test_generic_task_profiles.py` checks the fixtures deterministically: `must_quote`
     occurs in the planted file and not in its twin, and the twin differs from it in at most three
@@ -249,10 +261,10 @@ New choices made while planning; settled ones are cited.
     of both offer fixtures together, and each of the two planted criteria is counted on its own.
     **Proven** means, on each planted file, the criterion is failed and `must_quote` quoted in at
     least two of three runs; and on each twin, each planted criterion is failed in at most one of
-    three. In stage 1 the role and the *Attacks* bullets of D-3 are written into the brief; the
-    sections written in stage 2 hold those bullets word for word, and the fifteen runs are
-    repeated once at the end of stage 2 with the brief's "Attack along" line naming the skill's
-    file, to the same bar. The twins are the theatre check: a reader
+    three. The runs take the role and the *Attacks* bullets from `expected.yaml`, as the
+    profiles are not written yet. A stage-2 assertion then requires the sections of
+    `proposal-writing` and `contract-practice` to hold those bullets word for word, so what was
+    proven is what ships, with no second round of runs. The twins are the theatre check: a reader
     that fails everything proves nothing (DEC-7). `offer-planted-2.md` checks that the reader
     finds what the criteria cover even where the attack list does not point at it. On a miss the
     brief or the skill's *Attacks* may be sharpened and all fifteen runs repeated, at most twice;
@@ -302,17 +314,21 @@ New choices made while planning; settled ones are cited.
 
   Both descriptions, before and after, are kept in `evidence/probes.md`. `meaningfy-voice` also
   gets one behavioural run, because a blog request sits close to `explanatory-writing`: a set of
-  10 positives and 10 near-misses in `tests/evals/triggers/meaningfy-voice.json`, run before and
-  after as `tests/evals/README.md` says (3 runs per query, its pass bar, the owner's approval of
-  the estimate first). The near-misses aim at `explanatory-writing`, `executive-communication`
+  10 positives and 10 near-misses in `tests/evals/triggers/meaningfy-voice.json`, run as
+  `tests/evals/README.md` says (3 runs per query, its pass bar, the owner's approval of the
+  estimate first): "before" on the skill as it is and "after" with `--description` and the
+  candidate text, both before task 2.3 edits the description, which then takes the text that
+  passed. The near-misses aim at `explanatory-writing`, `executive-communication`
   and `technical-writing`. A request about the checks of a post ("which checks does this LinkedIn
   post need before I publish it", A's probe for `test-strategy`) is in neither half: both skills
   may rightly load. The result is recorded where that README says,
   `inputs/evidence/triggers-meaningfy-voice.md`, with its ten-column header. The descriptions of
   the other four skills do not change.
-- **D-13 Three stages, each green on its own.** Stage 1, the reader: the *without* baseline, the
-  reference, the fixtures, the stage-1 assertions and the planted-flaw proof. Stage 2, the
-  profiles: the five skills, the two agents, the scenarios, the probes, the stage-2 assertions.
+- **D-13 Three stages, each green on its own.** Stage 1, the reader: the fixtures, the *without*
+  baseline, the stage-1 assertions, the reference with `guardrails`' bullet, description and
+  probes, and the planted-flaw proof. Stage 2, the profiles: the behavioural run of
+  `meaningfy-voice`, the five skills, the two agents, the scenarios, `meaningfy-voice`'s probes,
+  the stage-2 assertions.
   Stage 3: the matrix and its assertions, the *with* baseline, the docs and the acceptance demo.
   The reader is proven before any skill relies on it, and `make validate` is green at the end of
   every stage.
@@ -344,11 +360,13 @@ New choices made while planning; settled ones are cited.
 ```text
 Goal: read <draft path> as <role> and try to break it, so its author can fix it before
 <recipient, one line> reads it.
-You know only this brief, the draft, and the Attacks list named below.
+You know only this brief and the draft.
 Criteria (<confirmed by the owner on DATE | stated by the author>):
   Succeeds: <…>
   Fails: <…>
-Attack along: <owning skill's file>, section "Test profile", Attacks.
+Attack along:
+  <the Attacks bullets of the owning skill's Test profile, quoted>
+Open, with the owner (second read only): <criteria already handed over as open points, or none>
 Do not rewrite and do not propose wording.
 Report: the base report plus the verifying fields. For each criterion: pass or fail. Every fail
 quotes the draft. Anything you notice that matches no criterion goes under Open questions as a
@@ -363,8 +381,8 @@ proposed criterion.
 >    but not in the price, or priced but out of scope. The owner: "yes, and it must name the stop
 >    option". The criteria now have three lines.
 > 2. The agent drafts, runs `rulebook check` and the genre self-check as today.
-> 3. A fresh sceptical buyer gets the draft's path, the three criteria, the path of
->    `proposal-writing`'s profile and the line "head of data at a public registry; asked for an
+> 3. A fresh sceptical buyer gets the draft's path, the three criteria, the five
+>    *Attacks* bullets of `proposal-writing` and the line "head of data at a public registry; asked for an
 >    offer after one call". It reports: criterion 2 **fail**, quoting "a data-quality dashboard"
 >    from the scope and the price table that does not list it; the others pass; one open question,
 >    "should the offer say who signs?".
@@ -383,7 +401,7 @@ start a reader, the report's first recommendation is "unread: run the sceptical-
 **A contract.** The opposing-counsel reader fails the criterion "no right is given to one side
 only" and quotes the termination term. Tolic does not change the term (D-6): he records the open
 point with the quotation, fixes an undefined term the reader also failed, and has the draft read
-once more for that second point only.
+once more against all criteria, the termination criterion listed as "open, with the owner".
 
 **Pick-up (sales).** Yesterday's close-day run left three follow-up drafts. In a working session
 the owner says "let's finish the follow-ups". The agent lists the three with their proposed
@@ -504,7 +522,7 @@ This PLAN was derived from A's design, not from A's files. Task 1.1 checks each 
 | The reader misses a planted flaw in 2 of 3 runs | `evidence/planted-flaw.md` | Sharpen the brief or the skill's *Attacks*; run all fifteen again, twice at most; then the owner |
 | The reader fails a clean twin in 2 of 3 runs | `evidence/planted-flaw.md` | The reader is theatre: tighten the brief's report lines; run again within the same limit |
 | A B-2 run stops because there is no contract repository | The run's output | The stop is recorded as its result; B-2 is left out of the bar (D-11) |
-| A *with* run misses O-1, O-2, O-3 or O-4 | `evidence/baseline.md` | Fix the owning skill's step line (D-3); run that task again |
+| A *with* run misses O-1, O-2, O-3 or O-4 | `evidence/baseline.md` | Fix the owning skill's step line (D-3); run that task again from the commit with the fix, twice at most and within the approved amount; then the owner |
 | O-5 is yes for fewer than two pairs | The acceptance demo | The profile did not change the pieces: the owner decides whether to ship, sharpen or drop a profile |
 | The owner does not answer the confirmation | The agent is waiting | It does not draft a piece that leaves the company; a delegated agent returns the question |
 | The owner corrects the criteria after the draft exists | The owner's message | The corrected criteria replace the old ones; the draft is revised and read against them; the read count starts again |
@@ -606,7 +624,7 @@ items passed; seven gaps, all folded in:
 | G-3 | The baseline used a fixture written by a later task → tasks reordered; B-2's table inline; the run's directory stated |
 | G-4 | Which criteria the shared clean twin is read against → D-11 |
 | G-5 | No signal for a contaminated baseline run → the error-matrix row removed; the isolation steps are the guard |
-| G-6 | The *Attacks* written in stage 2 were never proven → bullets word for word, and one repeat of the runs (D-11, task 2.9) |
+| G-6 | The *Attacks* written in stage 2 were never proven → bullets word for word, asserted by the test (D-11, task 2.0) |
 | G-7 | `served_by` key; README paragraphs cited as headings → D-14, D-11 |
 
 **Clarity gate, run 2 (a second independent scorer, on commit 0a8a1a0): 8.8/10, FAIL.** Six gaps,
@@ -615,6 +633,14 @@ pointer line (task 1.5); *Moment* did not take A's form (D-10); the first week o
 notes cannot exist before the release (RISK-2, task 3.5); B-2's drafts could be clause text in a
 public repository, and the run has no contract repository (D-11, error matrix); O-4 was in no bar
 (D-11).
+
+**Clarity gate, run 3 (a third independent scorer, on commit 3a3f2a9): 8.9/10, FAIL.** Nine gaps,
+all folded in: the baseline's command, plugin and estimate (D-11); `guardrails` is the rows' tool,
+so it gets no `VAL`, `ROB` pointer (D-10, task 1.5); the trigger set's "before" runs ahead of the
+description edit (D-12, task 2.9); one rule for the second read (D-6, the brief); D-13 matches the
+tasks; the brief quotes the *Attacks* and sends the reader to no file (D-9, the brief), which also
+replaces the repeat of the planted-flaw runs by an assertion; `guardrails` is the last skill entry
+(D-5); B-2's drafts are discarded and left out of O-5 (D-11); baseline reruns are capped (D-11).
 
 ## Open Questions
 
