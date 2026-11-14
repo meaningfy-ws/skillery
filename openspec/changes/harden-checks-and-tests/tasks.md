@@ -6,7 +6,7 @@
 
 ## 1. Stage 1: `quality/`, the Ruff selection, the Semgrep rules and "Checked by"
 
-- [ ] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
+- [x] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
   `evidence/acceptance.md` (D-13).
 - [ ] 1.1 [A] Confirm A is merged and the branch is on current `develop`; walk the D-12 table
   against A as merged and note each difference in the stage PR; re-read every spec delta against
@@ -131,7 +131,7 @@
 
 ## Roadmap
 
-- [ ] 1.0 · [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
+- [x] 1.0 · [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
   · [ ] 1.10 · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14 · [ ] 1.15 · [ ] 1.16 · [ ] 2.1 · [ ] 2.2
   · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
   · [ ] 3.6 · [ ] 3.7 · [ ] 3.8 · [ ] 3.9 · [ ] 3.10 · [ ] 3.11
