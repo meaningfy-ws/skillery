@@ -1,9 +1,9 @@
 <!-- STATUS: EPIC shaped 2026-11-13 from the owner's conversation (inputs/seed.md, inputs/qa.md).
      EPIC C of four: A test-strategy → B harden-checks-and-tests → C (this) → D
-     generic-task-test-profiles. Readiness-checked 2026-11-13, the fixes folded in. PLAN derived
-     2026-11-13 ahead of delivery, against A's gated PLAN and B's EPIC; DEC-5's recording place
-     confirmed then (Q-8), no other DEC changed. Delivery waits for A, and per stage for the
-     re-checks listed in design.md. -->
+     generic-task-test-profiles. Readiness-checked 2026-11-13, the fixes folded in. PLAN first
+     derived 2026-11-13; DEC-5's recording place confirmed then (Q-8), no other DEC changed. PLAN
+     rewritten 2026-11-14 against A as delivered and B's gated PLAN (inputs/planning-record.md).
+     Delivery waits for B's stages 1 and 2 (design D-16). -->
 
 # EPIC: activity test profiles
 

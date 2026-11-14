@@ -1,16 +1,17 @@
-<!-- CONDITIONAL (design D-16): this delta holds only if stage 3's decision table says `fill`.
-     A check that ends `accept` has its part deleted in stage 3's PR. -->
+<!-- CONDITIONAL (design D-14): this delta holds only if stage 3's decision table says `fill`.
+     A check that ends `accept` has its part deleted in stage 3's PR; a scenario that no longer
+     fits the recorded failure is rewritten and signed off there. -->
 
 ## ADDED Requirements
 
 ### Requirement: Layout and Makefile checks for stacks
 Where the DevOps stage adopted them from a recorded failure, `stack-operations` SHALL name the
-stacks ls-lint configuration as the check of a stacks repository's layout and names, and
+stacks ls-lint configuration as the check of a stacks repository's names, and
 `infrastructure-operations` SHALL name the checkmake configuration among the checks of an
-infrastructure repository, each with when it runs, whether it blocks and what it costs. The skills
-SHALL recommend them as pull-request checks and SHALL NOT state that the infrastructure
-repositories run them: adopting them there is that repository's own change
-(activity-test-profiles DEC-4, DEC-8; design D-6).
+infrastructure repository, each after the rule it encodes and with when it runs, whether it blocks
+and what it costs. The skills SHALL recommend them as pull-request checks and SHALL NOT state that
+the infrastructure repositories run them: adopting them there is that repository's own change
+(activity-test-profiles DEC-4, DEC-8; design D-12).
 
 #### Scenario: A stack folder that breaks the naming rule
 - **WHEN** the stacks ls-lint configuration is run on a repository where one stack folder is named `Reverse_Proxy` and the others are in kebab-case

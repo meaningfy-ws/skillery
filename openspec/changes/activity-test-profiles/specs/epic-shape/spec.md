@@ -18,30 +18,30 @@ A PLAN's `design.md` SHALL hold an `## Invariants` section directly before `## E
 table with an id `INV-<n>`, the invariant, an example, every write path that can break it and the
 test that proves it on each path, or one line "None" with the reason. The section SHALL NOT be
 empty. PLANs derived before this requirement SHALL NOT be migrated (activity-test-profiles DEC-5;
-design D-1, D-3).
+design D-1, D-2, D-3).
 
 #### Scenario: A write path left out
 - **WHEN** `epic-planning` derives the PLAN of an EPIC that keeps one label in two stores and offers create, rename and replace
-- **THEN** the invariant's row lists create among its write paths, because the column asks for create, update, replace, delete, bulk or import and internal paths
+- **THEN** the PLAN ties create to both stores, because the write-path column asks for create, update, replace, delete, bulk or import and internal paths
 
 #### Scenario: A PLAN with no invariant
 - **WHEN** `epic-planning` derives the PLAN of a change for which the interview recorded "None"
 - **THEN** the section holds the one line "None" with the reason, not an empty heading
 
 ### Requirement: Invariants reach the tester
-The adversarial tester's properties SHALL be traceable to the PLAN's invariants: for a PLAN with an
-`## Invariants` table, every invariant whose *Test* cell starts with `tester` SHALL appear among the
-properties the tester's report states. This EPIC SHALL NOT change the tester's brief; the PLAN's
-error matrix SHALL be named in the template as the tester's target list
-(activity-test-profiles DEC-5, DEC-7; design D-2, D-18).
+An invariant left to the adversarial tester SHALL have a *Test* cell that starts with `tester` and
+a row in the PLAN's error matrix that names the breach and cites the invariant's id, so that the
+tester, which takes its properties from the error matrix, states a property for it. The template
+SHALL name the error matrix as the tester's target list. This EPIC SHALL NOT change the tester's
+brief (activity-test-profiles DEC-5, DEC-7; design D-1, D-2, D-13).
 
-#### Scenario: Tracing one PLAN
-- **WHEN** the tester is dispatched on a PLAN that changes code and whose table holds `INV-1` with a *Test* cell starting with `tester`
-- **THEN** its report states a property for `INV-1`, and the comparison is recorded in `evidence/invariants-trace.md`
+#### Scenario: Tracing this EPIC's own invariant
+- **WHEN** the tester is dispatched on the stage of activity-test-profiles that adds the closed-family test, whose PLAN holds `INV-1` with a *Test* cell starting with `tester` and an error-matrix row citing `INV-1`
+- **THEN** the tester's table of properties has a row for `INV-1` with a test and a result, and the three rows are recorded together in `evidence/invariants-trace.md`
 
-#### Scenario: A PLAN that leaves nothing to the tester
-- **WHEN** a PLAN's table has no *Test* cell starting with `tester`
-- **THEN** it does not count as the trace, and another PLAN is used
+#### Scenario: An invariant without its error-matrix row
+- **WHEN** a PLAN's *Test* cell starts with `tester` and no error-matrix row cites that invariant
+- **THEN** the PLAN breaks the rule `epic-planning` states for PLAN derivation, and whoever derives or scores it adds the row
 
 ## MODIFIED Requirements
 
