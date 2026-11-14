@@ -11,7 +11,10 @@ succeed and fail, the reader's role (a stranger scrolling), what that reader att
 step lines (criteria before drafting, the reader before hand-over). The blog channel file SHALL
 point to that section and state only what differs for an article. For a post or
 an article the owner SHALL confirm the criteria before drafting, and the reader SHALL read the
-draft by the brief of `guardrails` before it is handed over. The agent SHALL NOT publish or post.
+draft by the brief of `guardrails` before it is handed over and return an assessment: findings
+with quotations, for the author to revise on and the owner to judge. A post SHALL be assessed and
+reviewed, not tested: skillery SHALL hold no test case or fixture for posts or articles
+(DEC-11). The agent SHALL NOT publish or post.
 Until their tone is written, both channel files SHALL keep pointing to the default voice profile
 (generic-task-test-profiles DEC-1, DEC-3, DEC-5, DEC-8).
 
