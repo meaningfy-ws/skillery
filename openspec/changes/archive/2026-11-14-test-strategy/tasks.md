@@ -66,13 +66,13 @@
   `docs/development/workflows.md` § *Workflow files* and `docs/development/creating-skills.md`
   (D-11).
 - [x] 2.6 `make bundles`, `make validate`, `openspec validate test-strategy --strict`.
-- [ ] 2.7 Acceptance demo with the developer, using the Quick Start script and a workflow phase's
+- [x] 2.7 Acceptance demo with the developer, using the Quick Start script and a workflow phase's
   criteria, recorded in `evidence/acceptance.md` (D-11; LARGE makes it mandatory).
 
 ## Roadmap
 
 - [x] 1.0 · [x] 1.1 · [x] 1.10 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9
-  · [x] 1.11 · [x] 1.12 · [x] 1.13 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6 · [ ] 2.7
+  · [x] 1.11 · [x] 1.12 · [x] 1.13 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6 · [x] 2.7
 
 ## Verification
 

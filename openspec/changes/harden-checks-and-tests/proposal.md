@@ -7,7 +7,7 @@
 
 # EPIC: harden checks and tests
 
-**Parents:** EPIC A [`test-strategy`](../test-strategy/proposal.md) (the discipline and the matrix
+**Parents:** EPIC A [`test-strategy`](../archive/2026-11-14-test-strategy/proposal.md) (the discipline and the matrix
 this EPIC fills for software); the owner's requests of 2026-11-13 (`inputs/seed.md`, `inputs/qa.md`); the live
 capabilities `epic-delivery` (the adversarial tester and the review sets), `code-principles-governance`
 (the catalogue and the groomed import-linter guardrails), `pr-review-modes` (the L3 lens) and

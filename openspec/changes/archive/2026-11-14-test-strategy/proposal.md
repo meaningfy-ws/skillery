@@ -9,7 +9,7 @@
 # EPIC: test-strategy
 
 **Parents:** the owner's requests of 2026-11-13 (`inputs/seed.md`, `inputs/qa.md`); the re-shape of
-[`harden-checks-and-tests`](../harden-checks-and-tests/proposal.md); the live capabilities
+[`harden-checks-and-tests`](../../harden-checks-and-tests/proposal.md); the live capabilities
 `epic-delivery` (its *Verification and validation* section), `code-principles-governance`,
 `workflow-definitions` and `catalogue-governance`.
 
