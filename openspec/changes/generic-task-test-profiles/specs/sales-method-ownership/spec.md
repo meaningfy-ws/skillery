@@ -16,11 +16,11 @@ reader's report with the draft (generic-task-test-profiles DEC-1, DEC-5, DEC-9).
 
 #### Scenario: Dispatched with confirmed criteria
 - **WHEN** a caller dispatches `proposal-writer` with the requirements and the criteria the owner confirmed
-- **THEN** it drafts, has a sceptical-buyer reader read the draft, revises on a failed criterion, and returns the draft with the reader's last report
+- **THEN** it drafts, has a sceptical-buyer reader read the draft, revises on the reader's findings, and returns the draft with the reader's last report
 
 #### Scenario: Scope and price disagree
 - **WHEN** the statement of work lists a deliverable that the price excludes, and a criterion says scope and price name the same deliverables
-- **THEN** the reader marks that criterion failed and quotes both passages
+- **THEN** the reader raises a finding on that criterion and quotes both passages
 
 ### Requirement: The sales-message profile has one owner
 `sales-conversations` SHALL own the profile of sales emails and follow-ups to clients and partners

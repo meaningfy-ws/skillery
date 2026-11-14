@@ -6,8 +6,8 @@
      gated design, before A's delivery. The owner's third round (Q-10..Q-13) amended two statements,
      logged as DEC-8 and DEC-9: Capabilities and Impact below follow them. After the attack on the
      PLAN, Q-14 narrowed DEC-4 and one no-go, logged as DEC-10. No other DEC changed. Clarity gate
-     9.0/10 PASS on the fifth run by an independent scorer. Ready for delivery once A is
-     delivered. -->
+     9.0/10 PASS on the fifth run by an independent scorer. After that gate the owner's Q-15
+     re-shaped the proofs and the reader's output, logged as DEC-11, which narrows DEC-6. -->
 
 # EPIC: generic task test profiles
 
@@ -97,6 +97,13 @@ A failed criterion sends the work back to the draft. Each owning skill says what
   rejected: starting subagents in human sessions only; no tool for `sales-agent`. This narrows
   "unattended runs are unchanged" (DEC-4) to: no criteria step and no adversarial reader on an
   unattended run.
+- **DEC-11** (added 2026-11-14, Q-15, after the PLAN was gated): this work is assessed, reviewed
+  and revised, not tested with cases. The reader returns an assessment (findings against the
+  criteria, each with a quotation) and no pass, fail or verdict; the author revises and the owner
+  judges. Contracts and posts get no fixtures and no test cases: the contract profile is tried in
+  the first real contract session. Of DEC-6's planted flaws only the offer's stays, as evidence
+  made once and kept out of `tests/`; of its baselines, the contract's goes — rejected: the
+  planted contract clause, the contract baseline, pass or fail per criterion.
 
 ## Rabbit-holes
 
@@ -115,6 +122,8 @@ A failed criterion sends the work back to the draft. Each owning skill says what
 ## No-gos
 
 - No scored rubric and no pass mark.
+- No pass, fail or verdict from the reader, and no test cases or fixtures for contracts or posts
+  (DEC-11).
 - No new agent; the reader is a brief for a fresh general-purpose subagent.
 - No criteria step and no adversarial reader on the sales agent's scheduled runs (narrowed by
   DEC-10, which lets them start the reviewers they already name), and no change to any worker's

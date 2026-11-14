@@ -42,5 +42,11 @@ already in force: a failed contract term is an open point (`contract-practice`);
 step lines sit in the channel file (design D-2); a blog explainer written through
 `explanatory-writing` is an accepted risk and a follow-up for `add-content-creation` (RISK-11).
 
+## Round 5: after the PLAN was gated (2026-11-14)
+
+| # | Question | Answer |
+|---|---|---|
+| Q-15 | The owner, on reading the summary: "why do we need contract fixtures? … we will have to assess them, not establish test units. the legal work is mostly qualitative, no need to create test cases for contracts, and neither blogs need to be tested, only assessed and revised/reviewed". The planner proposed four changes: the reader's output becomes an assessment for all four kinds (findings with quotations, no pass or fail); the contract fixtures, the contract planted-flaw proof and the contract baseline go; one planted-flaw check stays, for the offer only, as evidence and not under `tests/`; posts keep criteria and one read. | "go ahead". Recorded as DEC-11. |
+
 The shaper added `sales-conversations` as the owner of sales client messages (it was in the seed);
 the owner has not objected.

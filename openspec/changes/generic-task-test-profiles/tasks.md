@@ -1,5 +1,5 @@
 <!-- PLAN (tasks half), derived 2026-11-14; the attack (AT-1..AT-21) is folded in; clarity
-     gate 9.0/10 PASS (run 5). -->
+     gate 9.0/10 PASS (run 5); re-shaped the same day on DEC-11 (an assessment, not a test). -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)); design in
 > [`design.md`](design.md). Starts after EPIC A `test-strategy` is delivered.
@@ -11,18 +11,16 @@
 - [ ] 1.1 Confirm A is delivered and the branch is on current `develop`. Check R-1..R-11 of design
   § *Re-check once A is delivered* against `skills/test-strategy/`; fix this PLAN first where one
   fails. Re-read each spec delta against the live specs (RISK-7).
-- [ ] 1.2 Write the five fixtures and `expected.yaml` under `tests/fixtures/readers/`, fabricated,
-  the contract ones as term tables in plain words (D-11; live spec `legal-contract-practice`,
-  scenario *No contract material in skillery*).
-- [ ] 1.3 Write `evidence/baseline/inputs.md` (the five prompts, B-2's with the term table of 1.2
-  inline, and the prompt sentence). Run the calibration call and get the owner's approval of the
-  amount. Run the five *without* runs with the command of D-11, the plugin built from the base
-  commit; record the commit and O-1..O-4; keep the drafts, and discard B-2's once its observations
-  are recorded (D-11). Write
-  `evidence/failure-case.md` from them and from A's inventory gap line (D-14).
-- [ ] 1.4 Write `tests/test_generic_task_profiles.py` with the fixture checks and the stage-1
-  assertions of D-11 (the three lines present in the reference and nowhere else), each with its
-  passing and failing fixture line; red before 1.5, green after. Add the
+- [ ] 1.2 Write the two fabricated offers, `offer-planted.md` and `offer-clean.md`, under
+  `evidence/planted-flaw/`; nothing under `tests/` (D-11, DEC-11).
+- [ ] 1.3 Write `evidence/baseline/inputs.md` (the four prompts and the prompt sentence). Run the
+  calibration call and get the owner's approval of the amount. Run the four *without* runs with
+  the command of D-11, the plugin built from the base commit; record the commit and O-1..O-4 and
+  keep the drafts (D-11). Write `evidence/failure-case.md` from them and from A's inventory gap
+  line (D-14).
+- [ ] 1.4 Write `tests/test_generic_task_profiles.py` with the stage-1 assertions of D-11 (the
+  three lines present in the reference and nowhere else), each with its passing and failing
+  example line; red before 1.5, green after. Add the
   `adversarial-reader-brief` entry to `tests/ownership.yaml`.
 - [ ] 1.5 Write `skills/guardrails/references/adversarial-reader.md` with the eight sections of D-1
   and the brief of design § *Algorithm*; add the bullet to § 5 of `guardrails`' SKILL.md and
@@ -31,22 +29,23 @@
   `subagent-dispatch`, both requirements).
 - [ ] 1.6 Probes for `guardrails` in `tests/trigger_probes.yaml` (D-12); its description before
   and after in `evidence/probes.md`. Run `make skill-inventory`.
-- [ ] 1.7 Planted-flaw proof: tell the owner the number of runs, then fifteen reader runs (five fixtures, three each), with the role and
-  *Attacks* bullets of `expected.yaml` quoted in the brief; the counts and the
-  D-11 bar in `evidence/planted-flaw.md`. On a miss, sharpen and repeat all fifteen, twice at most;
-  then the owner.
+- [ ] 1.7 The offer's planted-flaw check: tell the owner the number of runs, then six reader runs
+  (the two offers of 1.2, three each), with the sceptical-buyer role, the *Attacks* bullets and
+  the example criteria of D-3 quoted in the brief; the bullets used, the counts and the D-11 bar
+  in `evidence/planted-flaw.md`. On a miss, sharpen and repeat all six, twice at most; then the
+  owner.
 - [ ] 1.8 `make validate` green; the stage's PR.
 
 ## 2. Stage 2: the profiles
 
 - [ ] 2.0 Add the stage-2 assertions of D-11 to the test file (the section in five files, the role
-  allow-lists with the hyphen form, and the *Attacks* bullets of `expected.yaml` word for word in
-  the sections of `proposal-writing` and `contract-practice`); red before 2.1–2.5, green after.
-- [ ] 2.1 `proposal-writing`: the `## Test profile` section, the criteria sentence in *Flow* step
+  allow-lists with the hyphen form); red before 2.1–2.5, green after.
+- [ ] 2.1 `proposal-writing`: the `## Test profile` section, its *Attacks* bullets as they were
+  used in 1.7 (`evidence/planted-flaw.md`), the criteria sentence in *Flow* step
   1, the new step 5, the pointer line (D-2, D-3, D-10; spec `sales-method-ownership`, *The offer
   profile has one owner*).
 - [ ] 2.2 `contract-practice`: the section, the fifth intake bullet, the *review* row and the
-  sentence under *Lawyer-review flag* (a fail on a number or a term is an open point), the pointer
+  sentence under *Lawyer-review flag* (a finding on a number or a term is an open point), the pointer
   line; the workflow file is not touched (D-2, D-3, D-6; spec `legal-contract-practice`).
 - [ ] 2.3 `meaningfy-voice`: the section with its two step lines in
   `references/channels/linkedin.md`, the pointer and differences in `blog.md`, lines 23–24 of
@@ -81,7 +80,7 @@
   `skills/test-strategy/references/inventory.md`: the five checks; `generic-writing.md`: the ten
   rows of D-10, no row left naming D; the Quick Start's quoted status if R-7 holds (green) (D-10;
   spec `test-strategy`).
-- [ ] 3.2 Run the five *with* runs, isolated, from the head of stage 2, with the prompts of 1.3;
+- [ ] 3.2 Run the four *with* runs, isolated, from the head of stage 2, with the prompts of 1.3;
   complete `evidence/baseline.md` with the pairs and O-1..O-4.
 - [ ] 3.3 Docs: the two CHANGELOG lines, the `docs/future-features.md` row, `guardrails` under
   `served_by.skills` of UC-W7, UC-W8, UC-W16 and UC-W24; the follow-up for `add-content-creation` named
@@ -105,7 +104,7 @@ Tasks 2.1 to 2.5 touch different files and may run in parallel, once 2.9 is done
 `make validate` green at the end of each stage, which includes
 `tests/test_generic_task_profiles.py`, the agent and agent-feature lint, the bundle gates and the
 static probes. Also required: `openspec validate generic-task-test-profiles --strict`; the
-planted-flaw bar met (`evidence/planted-flaw.md`); the baseline verdict (`evidence/baseline.md`);
+offer's planted-flaw check shown (`evidence/planted-flaw.md`); the baseline verdict (`evidence/baseline.md`);
 the behavioural run of `meaningfy-voice` (`inputs/evidence/triggers-meaningfy-voice.md`); the agent
 scenarios run on both CLIs (`evidence/agent-scenarios.md`); and the developer's verdict in
 `evidence/acceptance.md`.

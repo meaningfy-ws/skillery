@@ -1,9 +1,11 @@
 <!-- PLAN (design half), derived 2026-11-14 from proposal.md and from A's gated design, before A's
      delivery. Attacked the same day by a fresh subagent (AT-1..AT-21, all folded in, see § Attack
      record). Clarity gate: 8.9, 8.8, 8.9, 8.8, then 9.0/10 PASS on the fifth run, each by an
-     independent scorer. Ready for delivery once A is delivered. -->
+     independent scorer. Re-shaped the same day on the owner's word (Q-15, DEC-11: an
+     assessment, not a test; no contract fixtures or baseline) and gated again, see the end of
+     § Attack record. -->
 
-> Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-10.
+> Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-11.
 > Depends on: EPIC A `test-strategy`, its gated [`design.md`](../test-strategy/design.md) (D-1, D-2,
 > D-3, D-8). Delivery starts after A is delivered (proposal, *Impact*).
 
@@ -15,7 +17,7 @@ break them (A's inventory draft, `generic-writing`: "no ROB; VAL is only sales")
 - **`guardrails`** § 5 *Subagent dispatch* ([SKILL.md](../../../skills/guardrails/SKILL.md), lines
   69–109) owns the brief rules and the base report
   ([`references/subagent-reports.md`](../../../skills/guardrails/references/subagent-reports.md)); the
-  *verifying* purpose already adds "the criteria checked; pass or fail per criterion; the gaps".
+  *reviewing* purpose already adds "findings by severity with location and the rule they break".
   Its description is 681 characters, over the advisory target of 600.
 - **The five owning skills** hold method and no profile:
   [`proposal-writing`](../../../skills/proposal-writing/SKILL.md) (111 lines, *Flow* steps 1–4),
@@ -77,8 +79,10 @@ New choices made while planning; settled ones are cited.
      agent, in an attended session, to finish, revise or make ready to send a draft that an
      unattended run made.
   5. *The brief* (below, § Algorithm).
-  6. *The report*: the base report plus the *verifying* fields; a quotation for every fail; a
-     finding that matches no criterion goes under *Open questions* as a proposed criterion.
+  6. *The report*: an assessment, not a verdict (DEC-11). The base report plus the *reviewing*
+     fields: findings in order of weight, each naming the criterion it bears on and quoting the
+     draft; then the criteria that drew no finding. No pass, no fail, no score. A finding that
+     matches no criterion goes under *Open questions* as a proposed criterion.
   7. *The loop's end*: at most two reads, and what the agent may not revise (D-6).
   8. *No reader*: the piece is *unread* (D-7).
 
@@ -150,16 +154,17 @@ New choices made while planning; settled ones are cited.
   already tells it to do, so runs recorded *unverified* until now become verified. No instruction
   of a scheduled run changes, and a scheduled run still gets no criteria step and no adversarial
   reader (RISK-2).
-- **D-6 Two reads at most, and the author revises only what is theirs.** A failed criterion sends
-  the work back to the draft. A fresh reader then reads the revised draft against all criteria.
-  Whatever still fails after that second read goes to the owner with the draft and the quotations;
-  the owner decides (send, revise, drop). Where the owning skill reserves a change to the owner,
-  the agent does not revise it: for a contract, a number or a term that changes what a party can
-  claim or must do (`contract-practice`, *Alignment*, *Counterparty changes*). A fail on such a
-  point is recorded as an open point or a lawyer point with the reader's quotation. The second
-  read is still against all criteria; its brief lists such a criterion as "open, with the owner",
-  and the reader's fail on it is not counted again. Rejected: reading until
-  everything passes, which has no end and slows daily work (DEC-7).
+- **D-6 Two reads at most, and the author revises only what is theirs.** The reader's
+  findings send the work back to the draft: the author revises on each finding or says in one
+  line why not. A fresh reader then reads the revised draft against all criteria. The findings of
+  that second read go to the owner with the draft and the quotations; the owner judges them and
+  decides (send, revise, drop). Where the owning skill reserves a change to the owner, the agent
+  does not revise it: for a contract, a number or a term that changes what a party can claim or
+  must do (`contract-practice`, *Alignment*, *Counterparty changes*). A finding on such a point
+  is recorded as an open point or a lawyer point with the reader's quotation. The second read is
+  still against all criteria; its brief lists such a criterion as "open, with the owner", so the
+  reader does not raise it again. Rejected: reading until the reader has nothing left, which has
+  no end and slows daily work (DEC-7).
 - **D-7 *Unread*.** When the agent cannot start a subagent (the tool is absent or withheld), the
   piece is marked *unread*: said first in the hand-over or the report, under *Recommendations* for
   a delegated agent. An unread piece is never called ready to send; the session that receives it
@@ -197,13 +202,14 @@ New choices made while planning; settled ones are cited.
   SKILL.md only a status quoted from a changed row may change (the Quick Start's "`gap` → D");
   nothing else (No-gos).
 - **D-11 Proof mechanics** (DEC-6).
-  - *Baseline.* Five fixed tasks, fabricated, written to `evidence/baseline/inputs.md` before any
-    run:
+  - *Baseline.* Four fixed tasks, fabricated, written to `evidence/baseline/inputs.md` before any
+    run. Contracts have none (DEC-11): contract work is assessed in its own repository, and the
+    contract profile is tried in the first real contract session there, with the `lawyer`
+    scenario of § Scenarios as its check inside this change.
 
     | Id | Kind | Task |
     |---|---|---|
     | B-1 | offer | a proposal email for `Example Registry`: map the supplier codes of three systems to one vocabulary, six weeks, ceiling 40 000 EUR |
-    | B-2 | contract | our response to the term table `Example Client SA` sent back (`tests/fixtures/readers/contract-planted.md`) |
     | B-3 | post | a LinkedIn post announcing our new SHACL validation service |
     | B-4 | sales message | the follow-up to a first call with a head of data who asked for a one-page summary |
     | B-5 | internal message | a status note to the team: the registry project slips one week |
@@ -216,76 +222,58 @@ New choices made while planning; settled ones are cited.
     [`tests/evals/README.md`](../../../tests/evals/README.md) does it (section *Trigger sets*,
     paragraph "Isolate the run"), so that no installed copy of a skill answers. `$P` is one
     temporary plugin built from a checkout of one commit: the contents of
-    `bundles/meaningfy-core`, `bundles/meaningfy-consulting`, `bundles/meaningfy-sales` and
-    `bundles/meaningfy-legal` copied with their links resolved (`cp -rL`) into one directory, and
+    `bundles/meaningfy-core`, `bundles/meaningfy-consulting` and `bundles/meaningfy-sales`
+    copied with their links resolved (`cp -rL`) into one directory, and
     one `.claude-plugin/plugin.json` naming it `baseline`, written last so that it replaces the
     manifests the copies brought (the same README, section *Outcome
-    suites*, paragraph "Locally", shows the copy). Those four bundles hold the five owning skills,
-    `guardrails` and, once A is delivered, `test-strategy` (A's DEC-7 puts it in
+    suites*, paragraph "Locally", shows the copy). Those three bundles hold the four owning skills the
+    tasks need, `guardrails` and, once A is delivered, `test-strategy` (A's DEC-7 puts it in
     `meaningfy-core`), on the base commit as on the head. A run whose output shows a refused tool
     call is discarded, the command is corrected, and the run is made again; that is not counted
-    as a rerun. A run sees no repository file: B-2's prompt
-    carries the term table inline, copied from the fixture. The prompt is the task plus one
+    as a rerun. A run sees no repository file. The prompt is the task plus one
     sentence: "where a skill tells you to ask the owner, write the question, take
     the answer as yes and go on". The *without* runs use the base commit; the *with* runs the head
-    of stage 2. Before the runs, one calibration call of B-5 gives `total_cost_usd`; ten times
-    that, doubled for the longer tasks and the reruns, is the amount the owner approves, and the
+    of stage 2. Before the runs, one calibration call of B-5 gives `total_cost_usd`; eight times
+    that (four tasks, twice), doubled for the longer tasks and the reruns, is the amount the owner approves, and the
     runs stop when it is spent. A *with* run that misses an expected observation may be repeated
     at most twice, from the commit that holds the fix, which is recorded.
     `evidence/baseline.md` records the commit of each run and five observations, yes or no, never
     a score:
     - **O-1** success and failure were stated before the first line of the draft;
     - **O-2** the run wrote a confirmation question to the owner (not applicable to B-5);
-    - **O-3** a reader's report exists with pass or fail per criterion and a quotation per fail
-      (B-5: expected no);
-    - **O-4** a fail led to a change in the draft, or all criteria passed;
+    - **O-3** a reader's report exists, each finding naming a criterion and quoting the draft, or
+      saying it has none (B-5: expected no report);
+    - **O-4** a finding led to a change in the draft, or the reader had none;
     - **O-5**, judged by the owner on the kept pair at the acceptance demo: the *with* run's reader
-      failed something that the *without* draft still contains.
+      raised something that the *without* draft still contains.
 
-    The drafts and reports are kept under `evidence/baseline/`, except B-2's: a contract response
-    may read as clause text, which skillery does not hold, so B-2's drafts are discarded once its
-    observations and the reader's pass or fail lines are recorded, and O-5 is not judged for B-2. B-2's prompt says "there is no contract repository; work from the table
-    in this prompt". If a B-2 run still stops for lack of one, the stop is its result: O-1 to O-4
-    are recorded as no, and B-2 is left out of the bar. **Proven** means every *with* run shows
-    the expected value on O-1 to O-3, O-4 is yes for the *with* runs of B-1 to B-4, and O-5 is yes
-    for at least two of B-1, B-3 and B-4. O-1 to O-4 show that the steps happen; only O-5 shows that
-    they changed the piece (RISK-10).
-  - *Planted flaw.* Five fabricated fixtures and one data file under `tests/fixtures/readers/`:
-
-    | File | What is planted |
-    |---|---|
-    | `offer-planted.md` | the scope lists a "data-quality dashboard"; the price table and the exclusions leave it out (DEC-6) |
-    | `offer-planted-2.md` | the offer is "valid until 30 June" in one place and "valid for 14 days" in another; no bullet of *Attacks* names this kind of flaw. Its criterion covers the flaw without naming it: "the buyer can tell from the offer alone what it costs and until when it holds" |
-    | `offer-clean.md` | the twin of both: the dashboard priced, one validity date. Each planted offer differs from it only in its own planted lines, so `offer-planted-2.md` has the dashboard priced |
-    | `contract-planted.md` | a term table in plain words, not clause text: one party may end the contract without cause at five days' notice, the other may not (DEC-6) |
-    | `contract-clean.md` | its twin: both may, at thirty days |
-    | `expected.yaml` | for each planted file: its twin, the owning skill, the role and the *Attacks* bullets of D-3 given to the reader, the criteria as an owner would confirm them, and `must_quote`, a list of substrings of the planted file of which the reader's fail must quote at least one (for `offer-planted.md`: "data-quality dashboard", the scope line a reader quotes for an omission; for `offer-planted-2.md`: "30 June" and "14 days"; for `contract-planted.md`: "five days") |
-
-    `tests/test_generic_task_profiles.py` checks the fixtures deterministically: every
-    `must_quote` string occurs in its planted file, and the twin differs from the planted file in
-    at most three lines. The model runs are by hand: each is a fresh general-purpose subagent
-    started from the attended delivery session on that session's model (D-9), briefed per D-1 with
-    the role and *Attacks* of the owning skill, three runs per file, fifteen in all. The owner is
-    told the number of runs, fifteen and at most forty-five, before the first round. `offer-clean.md` is read with the criteria
-    of both offer fixtures together, and each of the two planted criteria is counted on its own.
-    **Proven** means, on each planted file, the criterion is failed with one of the `must_quote`
-    strings quoted in at least two of three runs; and on each twin, each planted criterion is failed in at most one of
-    three. The runs take the role and the *Attacks* bullets from `expected.yaml`, as the
-    profiles are not written yet. A stage-2 assertion then requires the sections of
-    `proposal-writing` and `contract-practice` to hold those bullets word for word, so what was
-    proven is what ships, with no second round of runs. The twins are the theatre check: a reader
-    that fails everything proves nothing (DEC-7). `offer-planted-2.md` checks that the reader
-    finds what the criteria cover even where the attack list does not point at it. On a miss the
-    brief or the skill's *Attacks* may be sharpened and all fifteen runs repeated, at most twice;
-    a third miss goes to the owner. Every round, the change made and the counts go to
-    `evidence/planted-flaw.md`; a fixture is never edited to fit.
-  - *Ownership.* The same test file scans every file under `skills/` and `agents/`,
+    The drafts and reports are kept under `evidence/baseline/`. **Proven** means every *with* run
+    shows the expected value on O-1 to O-3, O-4 is yes for the *with* runs of B-1, B-3 and B-4,
+    and O-5 is yes for at least two of those three. O-1 to O-4 show that the steps happen; only
+    O-5 shows that they changed the piece (RISK-10).
+  - *Planted flaw: one check, for the offer only* (DEC-11). It is evidence made once during
+    delivery, not a test: nothing goes under `tests/`. Two fabricated offers are written to
+    `evidence/planted-flaw/`: `offer-planted.md`, whose scope lists a "data-quality dashboard"
+    that the price table and the exclusions leave out, and `offer-clean.md`, the same offer with
+    the dashboard priced. A scope and price that disagree is a matter of fact, so the check is
+    fair. Each run is a fresh general-purpose subagent started from the attended delivery session
+    on that session's model (D-9), briefed per D-1 with the sceptical-buyer role, the *Attacks*
+    bullets of D-3 and the example criteria of D-3; three runs per file, six in all, which the
+    owner is told before the first. **Shown** means: on the planted offer, a finding quotes the
+    dashboard in at least two of three runs; on the clean one, no finding claims a scope and price
+    mismatch in at least two of three. The clean offer is the theatre check: a reader that finds
+    fault with everything shows nothing (DEC-7). On a miss the brief or the *Attacks* may be
+    sharpened and the six runs repeated, at most twice; then the owner decides. The role, the
+    bullets used, each round's change and the counts go to `evidence/planted-flaw.md`, and task
+    2.1 writes those bullets into `proposal-writing`'s section as they were used.
+  - *Ownership.* `tests/test_generic_task_profiles.py` checks where the skill text sits, never a
+    piece of writing. It scans every file under `skills/` and `agents/`,
     case-insensitively, on the file's text with each run of whitespace, line breaks included,
     turned into one space, so a pattern wrapped over two lines is still found; a failure names the
     file. Each assertion is written in the stage that makes it true, red before that
     stage's edits and green before its PR (D-13):
-    - **stage 1:** the patterns `do not rewrite and do not propose wording`, `every fail quotes
-      the draft` and `will someone outside Meaningfy read it` each occur in
+    - **stage 1:** the patterns `do not rewrite and do not propose wording`, `every finding
+      quotes the draft` and `will someone outside Meaningfy read it` each occur in
       `guardrails/references/adversarial-reader.md` and in no other file. They are lines of the
       brief and of the test themselves, so a copy of either is caught. (Checked 2026-11-14: none
       occurs in the repository today.)
@@ -302,7 +290,7 @@ New choices made while planning; settled ones are cited.
       section, and each of the five owning skills is named in a `VAL` and a `ROB` row with status
       `exists`.
 
-    The test carries its own fixture lines: one that passes and one that fails for each pattern,
+    The test carries its own example lines: one that passes and one that fails for each pattern,
     the hyphen form of a role included. `tests/ownership.yaml` gains `adversarial-reader-brief`,
     owner `guardrails`, `claim_patterns: ["do not rewrite and do not propose wording"]`; its
     tripwire is advisory and reads SKILL.md only, so the test above is the guard.
@@ -333,7 +321,7 @@ New choices made while planning; settled ones are cited.
   may rightly load. The result is recorded where that README says,
   `inputs/evidence/triggers-meaningfy-voice.md`, with its ten-column header. The descriptions of
   the other four skills do not change.
-- **D-13 Three stages, each green on its own.** Stage 1, the reader: the fixtures, the *without*
+- **D-13 Three stages, each green on its own.** Stage 1, the reader: the *without*
   baseline, the stage-1 assertions, the reference with `guardrails`' bullet, description and
   probes, and the planted-flaw proof. Stage 2, the profiles: the behavioural run of
   `meaningfy-voice`, the five skills, the two agents, the scenarios, `meaningfy-voice`'s probes,
@@ -377,9 +365,10 @@ Attack along:
   <the Attacks bullets of the owning skill's Test profile, quoted>
 Open, with the owner (second read only): <criteria already handed over as open points, or none>
 Do not rewrite and do not propose wording.
-Report: the base report plus the verifying fields. For each criterion: pass or fail. Every fail
-quotes the draft. Anything you notice that matches no criterion goes under Open questions as a
-proposed criterion.
+Report: the base report plus the reviewing fields. Give your findings in order of weight; each
+names the criterion it bears on. Every finding quotes the draft. Then list the criteria you have
+no finding on. Give no verdict and no score. Anything you notice that matches no criterion goes
+under Open questions as a proposed criterion.
 ```
 
 **Worked example (an offer, attended).**
@@ -392,11 +381,11 @@ proposed criterion.
 > 2. The agent drafts, runs `rulebook check` and the genre self-check as today.
 > 3. A fresh sceptical buyer gets the draft's path, the three criteria, the five
 >    *Attacks* bullets of `proposal-writing` and the line "head of data at a public registry; asked for an
->    offer after one call". It reports: criterion 2 **fail**, quoting "a data-quality dashboard"
->    from the scope and the price table that does not list it; the others pass; one open question,
->    "should the offer say who signs?".
+>    offer after one call". It reports one finding, on criterion 2, quoting "a data-quality dashboard"
+>    from the scope and the price table that does not list it; no finding on the other two; one
+>    open question, "should the offer say who signs?".
 > 4. The agent prices the dashboard out or in with `estimation`, has a second fresh reader read the
->    revised draft, gets three passes, and hands the owner the draft, the criteria and the report.
+>    revised draft, which has no finding, and hands the owner the draft, the criteria and the report.
 >    The open question goes to the owner as a proposed criterion.
 
 **The same offer through `proposal-writer`.** First dispatch, no criteria in the input: it returns
@@ -407,9 +396,9 @@ criteria revises the existing draft against them and starts the read count again
 start a reader, the report's first recommendation is "unread: run the sceptical-buyer reader"
 (D-7).
 
-**A contract.** The opposing-counsel reader fails the criterion "no right is given to one side
-only" and quotes the termination term. Tolic does not change the term (D-6): he records the open
-point with the quotation, fixes an undefined term the reader also failed, and has the draft read
+**A contract.** The opposing-counsel reader raises a finding on the criterion "no right is given
+to one side only" and quotes the termination term. Tolic does not change the term (D-6): he records
+the open point with the quotation, fixes an undefined term the reader also raised, and has the draft read
 once more against all criteria, the termination criterion listed as "open, with the owner".
 
 **Pick-up (sales).** Yesterday's close-day run left three follow-up drafts. In a working session
@@ -434,7 +423,7 @@ Added to `tests/features/agents/proposal-writer.feature`:
     Given the caller passed the criteria the owner confirmed
     When the proposal-writer has drafted the proposal
     Then it starts a fresh reader with the sceptical-buyer role, the draft and the criteria only
-    And it revises on each failed criterion and has the draft read at most twice
+    And it revises on the reader's findings and has the draft read at most twice
     And it returns the draft with the reader's last report
 
   Scenario: No reader can be started
@@ -452,7 +441,7 @@ Added to `tests/features/agents/lawyer.feature`:
     When the lawyer runs the intake round
     Then he proposes the success and failure criteria in that round and drafts after the owner confirms them
     And before reporting the PR he starts a fresh reader with the opposing-counsel role, the draft and the criteria only
-    And each failed criterion on a number or a term becomes an open point or a point for a qualified lawyer, with the reader's quotation, and he changes neither
+    And each finding on a number or a term becomes an open point or a point for a qualified lawyer, with the reader's quotation, and he changes neither
     And he presents the reader's report as a read, not as approval or legal advice
 ```
 
@@ -509,15 +498,16 @@ This PLAN was derived from A's design, not from A's files. Task 1.1 checks each 
 | A criterion such as "the offer is convincing" | Name the reader and what they do or decide | It cannot fail (Rabbit-holes) |
 | Give the reader the dossier, the thread or the author's reasoning | The draft, the criteria, the role, one recipient line | An anchored reader confirms the author (`guardrails`, *Fresh, not a copy*) |
 | Let the reader return a new draft or better wording | It reports; the author revises | Rabbit-holes: a reader that rewrites has left its brief |
-| Mark a finding outside the criteria as a fail | A proposed criterion, for the owner | A test is a criterion agreed before the work (A's DEC-3) |
-| Change a contract's number or term because the reader failed it | An open point with the quotation | `contract-practice`: which one is right is the owner's decision |
+| Ask the reader for pass or fail, a verdict or a score | Findings with quotations; the owner judges | DEC-11: qualitative work is assessed, not tested |
+| Write test cases or fixtures for a contract or a post | Criteria, one read, the owner's review | DEC-11 |
+| Attach a finding that matches no criterion to one anyway | A proposed criterion, for the owner | A criterion is agreed before the work (A's DEC-3) |
+| Change a contract's number or term because the reader raised it | An open point with the quotation | `contract-practice`: which one is right is the owner's decision |
 | Score the baseline or the reader's report | Yes or no observations, and the kept drafts | No-gos: no rubric, no pass mark |
 | Present "all criteria passed" as approval of a contract | A read, done; the lawyer-review list and the owner's approval remain | No-gos: no legal advice |
 | Add the two steps to a scheduled run, or edit `recipient-reader` | The steps run at pick-up | DEC-4, DEC-10; No-gos |
-| Put clause text or a real name in a fixture | A fabricated term table in plain words | `legal-contract-practice`: no contract material in skillery |
 | Write a technique or a role into `test-strategy` | Rows that name the owning skill | A's DEC-5, DEC-8; No-gos |
 | Run a baseline in a session where the catalogue is installed | An isolated configuration directory and a plugin built from one commit | An installed copy of a skill would answer |
-| Edit a fixture, or rerun without limit, until the reader passes | Sharpen the brief or *Attacks*; two reruns at most | A proof that cannot fail proves nothing |
+| Edit the planted offer, or rerun without limit, until the reader finds the flaw | Sharpen the brief or *Attacks*; two reruns at most | A check that cannot miss shows nothing |
 
 ## Error matrix
 
@@ -528,17 +518,16 @@ This PLAN was derived from A's design, not from A's files. Task 1.1 checks each 
 | A line of the brief or the "leaves the company" test is copied outside the reference, or missing from it | The same test (stage 1) | Replace the copy with a pointer; restore the line |
 | A role name appears in another skill, in an agent file or in `test-strategy` | The same test (stage 2) | Move it to its owner |
 | `generic-writing.md` is missing or renamed at stage 3 | The same test fails (stage 3) | Task 1.1 should have caught it: fix R-1 and the test's path |
-| The reader misses a planted flaw in 2 of 3 runs | `evidence/planted-flaw.md` | Sharpen the brief or the skill's *Attacks*; run all fifteen again, twice at most; then the owner |
-| The reader fails a clean twin in 2 of 3 runs | `evidence/planted-flaw.md` | The reader is theatre: tighten the brief's report lines; run again within the same limit |
-| A B-2 run stops because there is no contract repository | The run's output | The stop is recorded as its result; B-2 is left out of the bar (D-11) |
+| The reader misses the planted flaw in 2 of 3 runs | `evidence/planted-flaw.md` | Sharpen the brief or the skill's *Attacks*; run all six again, twice at most; then the owner |
+| The reader claims a scope and price mismatch in the clean offer in 2 of 3 runs | `evidence/planted-flaw.md` | The reader is theatre: tighten the brief's report lines; run again within the same limit |
 | A *with* run misses O-1, O-2, O-3 or O-4 | `evidence/baseline.md` | Fix the owning skill's step line (D-3); run that task again from the commit with the fix, twice at most and within the approved amount; then the owner |
 | The approved amount is spent before the baseline bar can be judged | The sum of `total_cost_usd` | The owner approves more, or the unfinished tasks are recorded as not proven |
 | O-5 is yes for fewer than two pairs | The acceptance demo | The profile did not change the pieces: the owner decides whether to ship, sharpen or drop a profile |
 | The owner does not answer the confirmation | The agent is waiting | It does not draft a piece that leaves the company; a delegated agent returns the question |
 | The owner corrects the criteria after the draft exists | The owner's message | The corrected criteria replace the old ones; the draft is revised and read against them; the read count starts again |
-| A criterion still fails after the second read | The second report | The draft, the criterion and the quotation go to the owner; no third read (D-6) |
-| The reader fails a contract's number or term | The report | An open point or a lawyer point; the agent changes neither (D-6) |
-| The reader returns a rewrite, or a fail without a quotation | The author reads the report | Discard that part; dispatch a fresh reader once; it counts as the same read |
+| The second read still has findings | The second report | The draft and the findings with their quotations go to the owner; no third read (D-6) |
+| The reader raises a finding on a contract's number or term | The report | An open point or a lawyer point; the agent changes neither (D-6) |
+| The reader returns a rewrite, a verdict, or a finding without a quotation | The author reads the report | Discard that part; dispatch a fresh reader once; it counts as the same read |
 | No subagent can be started (tool absent, or withheld at the CLI's depth limit) | The tool is missing or the call is refused | *Unread*, said first; never "ready to send" (D-7) |
 | The draft exists only in the mail system | The agent has no path to give | Save it to a scratch file first (D-9) |
 | A piece is internal, then is to be sent outside | The "leaves the company" test at hand-over | Confirm the criteria and run the reader then |
@@ -573,16 +562,17 @@ This PLAN was derived from A's design, not from A's files. Task 1.1 checks each 
 - **RISK-4** Confirming criteria becomes a reflex "yes". Likelihood medium, impact medium.
   Mitigation: one or two lines, one message for a batch, and a form that can fail; the baseline's
   kept pairs show the owner what a confirmed criterion bought.
-- **RISK-5** The reader is theatre. Mitigation: quotations, the clean twins, the unpointed second
-  offer fixture, the capped reruns, O-5 (DEC-7).
+- **RISK-5** The reader is theatre. Mitigation: quotations, the planted offer and its
+  clean twin, the capped reruns, O-5 (DEC-7). For contracts and posts nothing is planted (DEC-11):
+  there the owner's own reading of the first real findings is the check.
 - **RISK-6** The new trigger of `meaningfy-voice` collides with `explanatory-writing`. Likelihood
   medium, impact low. Mitigation: D-12's behavioural run, before and after.
 - **RISK-7** A is delivered differently from its design. Likelihood medium, impact low.
   Mitigation: the re-check table and task 1.1.
 - **RISK-8** Client-confidential text passes through reader subagents. Accepted in DEC-7; D-9
   keeps the reader's inputs to the draft and one line.
-- **RISK-9** The reader is a model: one run can miss. Mitigation: three runs and a 2-of-3 bar in the
-  proof; in daily use the owner still reads the piece before sending.
+- **RISK-9** The reader is a model: one run can miss. Mitigation: three runs in the offer
+  check; in daily use the reader only assesses, and the owner still reads the piece and judges.
 - **RISK-10** The baseline's O-1 to O-3 can only show that the steps were followed, and its
   confirmation is simulated. Likelihood certain, impact low. Mitigation: O-5, the owner's own
   reading of the pairs; accepted beyond that, since a scored comparison is a no-go.
@@ -662,9 +652,15 @@ checklist items passed and no gap blocked delivery. Its three minor recommendati
 afterwards: the criterion of `offer-planted-2.md`, the order in which the plugin manifest is
 written, and the error-matrix row for a spent amount (all D-11).
 
+**Re-shape after the gate (2026-11-14, Q-15, DEC-11).** The owner: legal work and posts are
+assessed, reviewed and revised, not tested with cases. Changed, in D-1, D-6, D-11, the brief, the
+scenarios and the spec deltas: the reader returns findings with quotations and no pass, fail or
+verdict, for all four kinds; the contract fixtures, the contract half of the planted-flaw proof
+and the contract baseline task are gone; the offer keeps one planted-flaw check, as evidence made
+once and not under `tests/`; the fixture checks and `expected.yaml` are gone, so the test file
+checks only where the skill text sits. Findings AT-10, G-4, K-2 and L-1 and the B-2 fixes above
+describe machinery that no longer exists.
+
 ## Open Questions
 
-None blocking. One default the owner may overrule: the contract fixtures are fabricated term
-tables in plain words (D-11), which this PLAN reads as allowed by `legal-contract-practice`'s "no
-clause text". If they are not, the contract half of the planted-flaw proof runs in the contract
-repository and skillery records only its result.
+None.

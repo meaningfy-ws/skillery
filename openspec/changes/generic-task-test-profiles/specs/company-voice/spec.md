@@ -21,7 +21,7 @@ Until their tone is written, both channel files SHALL keep pointing to the defau
 
 #### Scenario: A claim with nothing behind it
 - **WHEN** the draft says a service "is trusted across the EU" and a criterion says every claim names real work
-- **THEN** the reader marks that criterion failed and quotes the sentence
+- **THEN** the reader raises a finding on that criterion and quotes the sentence, and the author revises or the owner decides
 
 #### Scenario: A blog article
 - **WHEN** an agent is asked for a blog article

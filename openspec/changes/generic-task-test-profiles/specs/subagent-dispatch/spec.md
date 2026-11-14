@@ -4,23 +4,29 @@
 `guardrails` SHALL hold, in `references/adversarial-reader.md`, the one brief of the adversarial
 reader: a fresh subagent that is given only the draft as a path, the criteria, the role and the
 attack list its owning skill supplies, and one line about who receives the piece. The reader SHALL
-return the base report plus the verifying fields, with pass or fail for each criterion and a
-quotation from the draft for every fail. It SHALL NOT rewrite the draft or propose wording. What it
-notices that matches no criterion SHALL be returned as a proposed criterion under *Open questions*,
-never as a fail. No other skill or agent file SHALL copy the brief (generic-task-test-profiles
-DEC-2, DEC-5).
+return an assessment, not a verdict: the base report plus the reviewing fields, with its findings
+in order of weight, each naming the criterion it bears on and quoting the draft, and then the
+criteria it has no finding on. It SHALL NOT give a pass, a fail or a score, and SHALL NOT rewrite
+the draft or propose wording; the author revises and the owner judges. What it notices that matches
+no criterion SHALL be returned as a proposed criterion under *Open questions*, not as a finding
+against a criterion. No other skill or agent file SHALL copy the brief
+(generic-task-test-profiles DEC-2, DEC-5, DEC-11).
 
-#### Scenario: A fail carries its quotation
-- **WHEN** the reader judges that an offer fails the criterion "every priced deliverable is in scope"
-- **THEN** its report marks that criterion failed and quotes the lines of the offer that show it
+#### Scenario: A finding carries its quotation
+- **WHEN** the reader sees that an offer goes against the criterion "every priced deliverable is in scope"
+- **THEN** its report holds a finding that names that criterion and quotes the lines of the offer that show it
 
 #### Scenario: A finding outside the criteria
 - **WHEN** the reader notices a weak opening that no criterion covers
-- **THEN** it returns it as a proposed criterion under *Open questions*, and no criterion is marked failed for it
+- **THEN** it returns it as a proposed criterion under *Open questions*, and attaches it to no criterion
+
+#### Scenario: No verdict
+- **WHEN** the reader has read a contract draft and has findings on two of four criteria
+- **THEN** its report lists the two findings and the two criteria without a finding, and holds no pass, fail, score or approval
 
 #### Scenario: The reader is asked to improve the text
-- **WHEN** a draft fails a criterion
-- **THEN** the reader's report holds no rewritten passage, and the author revises
+- **WHEN** the reader has a finding on a draft
+- **THEN** its report holds no rewritten passage, and the author revises
 
 #### Scenario: The brief is copied elsewhere
 - **WHEN** a file under `skills/` or `agents/`, other than `guardrails`' reference, holds the brief's line "Do not rewrite and do not propose wording"
@@ -33,10 +39,10 @@ drafting and the reader SHALL run before the piece is handed over as ready to se
 piece the agent SHALL state the criteria without waiting for confirmation and the reader SHALL run
 only on request. One piece SHALL get one profile: a piece that states scope or price is an offer,
 whatever its form. An unattended run SHALL do neither step; both SHALL run when the owner picks its
-draft up in an attended session. A failed criterion SHALL send the work back to the draft, except
-where the owning skill reserves the change to the owner: such a fail SHALL be handed to the owner
-as an open point with the reader's quotation. After the second read, any criterion still failed
-SHALL go to the owner with the draft, and no third read is started. When no reader can be started,
+draft up in an attended session. The reader's findings SHALL send the work back to the draft, except
+where the owning skill reserves the change to the owner: a finding on such a point SHALL be handed
+to the owner as an open point with the reader's quotation. The findings of the second read SHALL go
+to the owner with the draft, and no third read is started. When no reader can be started,
 the piece SHALL be marked *unread* and SHALL NOT be presented as ready to send (DEC-3, DEC-4).
 
 #### Scenario: An offer
@@ -51,9 +57,9 @@ the piece SHALL be marked *unread* and SHALL NOT be presented as ready to send (
 - **WHEN** a scheduled run drafts a follow-up to a client
 - **THEN** the run asks for no confirmation of criteria and starts no adversarial reader
 
-#### Scenario: Still failing after two reads
-- **WHEN** an offer still fails one criterion after it was revised and read a second time
-- **THEN** the agent hands the owner the draft with that failed criterion and its quotation, and starts no third read
+#### Scenario: A finding remains after two reads
+- **WHEN** the second reader still has a finding on an offer that was revised after the first read
+- **THEN** the agent hands the owner the draft with that finding and its quotation, and starts no third read
 
 #### Scenario: The criteria are corrected after the draft exists
 - **WHEN** the owner corrects a criterion after the first read
