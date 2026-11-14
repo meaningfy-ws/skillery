@@ -126,8 +126,14 @@ function activateError(a: unknown, at: string): string | null {
 
 function phaseError(p: unknown, at: string): string | null {
   if (!isObj(p)) return `${at}: not an object`
-  const extra = Object.keys(p).find(k => !['id', 'owner', 'expect', 'allow', 'gates', 'enter'].includes(k))
+  const extra = Object.keys(p).find(k => !['id', 'owner', 'expect', 'allow', 'gates', 'enter', 'criteria'].includes(k))
   if (extra) return `${at}: unknown key '${extra}'`
+  if ('criteria' in p) {
+    const c = p.criteria
+    if (!isObj(c) || Object.keys(c).length !== 2 || ![c.succeeds, c.fails].every(v => isStr(v) && v.trim())) {
+      return `${at}.criteria must be {succeeds, fails}, each a non-empty string`
+    }
+  }
   if (!isStr(p.id) || !isStr(p.owner)) return `${at}: needs 'id' and 'owner'`
   if (!Array.isArray(p.expect)) return `${at}.expect must be a list`
   for (const x of p.expect) {

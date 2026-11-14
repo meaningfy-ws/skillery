@@ -37,6 +37,7 @@ export type Phase = {
   expect: { skill: string; by: 'commit' | 'exit' }[]
   allow?: string[]
   gates?: string[]
+  criteria?: { succeeds: string; fails: string }
   enter: { skills?: string[]; agents?: string[]; change?: ChangePredicate | ChangePredicate[] }
 }
 
