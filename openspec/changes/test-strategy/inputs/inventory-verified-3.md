@@ -1,6 +1,6 @@
 # Verified inventory rows CHK-73 to CHK-108
 
-Worktree: `/home/lps/work/repos/skillery/.claude/worktrees/test-strategy`. Paths relative to it. Final (corrected) cell values.
+Paths relative to the repository root. Final (corrected) cell values.
 Tally: 36 rows; confirmed 25, corrected 11 (73, 79, 83, 84, 85, 88, 89, 92, 103, 105, 108), not found 0.
 Lint groups: `ALL_CHECKS` (tools/repo_lint/lint.py:1285-1297) holds 34 functions; rows 96-101 name exactly those 34, each once; every name resolves to a `def` in lint.py. No gap, no stray name.
 

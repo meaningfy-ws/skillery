@@ -1,6 +1,6 @@
 # Verified inventory, rows CHK-35 to CHK-72
 
-Worktree: `/home/lps/work/repos/skillery/.claude/worktrees/test-strategy`. Paths relative to it. Final (corrected) cell values. 38 rows: 31 confirmed, 7 corrected, 0 not found.
+Paths relative to the repository root. Final (corrected) cell values. 38 rows: 31 confirmed, 7 corrected, 0 not found.
 Line numbers are those of the worktree on 2026-11-13.
 
 | Id | Check | What it checks | Owner file (section) | Moment | Questions | Family | Verdict | Evidence (path:line) |

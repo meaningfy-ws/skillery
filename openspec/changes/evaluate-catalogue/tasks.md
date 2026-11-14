@@ -66,6 +66,20 @@ D-12.
 - [ ] 6.3 Rerun every suite as "after", agent cases included. **Accept:** `inputs/evidence/suites.md`
       has the after column; any worse case has a recorded verdict.
 
+## 6b. Deferred from `test-strategy` (owner, 2026-11-14; that change's design D-13)
+
+- [ ] 6b.1 **Behavioural trigger run of `test-strategy`** (its task 1.11, design D-7): run
+      `tests/evals/triggers/test-strategy.json` (20 queries, 3 runs each, the `epic-delivery` pair
+      included) after the owner approves the estimate. **Accept:** every positive fires in at
+      least 2 of 3 runs, no near-miss in more than 1 of 3; on a miss the description is sharpened
+      and the set re-run; before and after are in `inputs/evidence/`. It covers the external
+      neighbours the static probes cannot name (`test-strategy` RISK-4).
+- [ ] 6b.2 **Baseline of `test-strategy`** (its task 1.12, design D-11): the same three tasks with
+      and without the skill, a Python module change, a LinkedIn post and a contract clause, each
+      judged by whether success and failure were stated before the work. **Accept:** the result
+      is in `inputs/evidence/`. Three runs without the skill were stopped by the model's
+      safeguards on 2026-11-14; plan the run as an outcome suite (4.2), not as ad-hoc agents.
+
 - [ ] 7.3 Total spend across `inputs/evidence/*.md` against the approvals. **Accept:** the sum is ≤
       the approved amounts and is stated in the final PR.
 

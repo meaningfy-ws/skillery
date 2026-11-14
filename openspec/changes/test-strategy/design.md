@@ -216,6 +216,56 @@ Taken by the lead during delivery (2026-11-13); the developer may overrule any o
   - Families: vault checks and customer outcome reviews go to `generic-writing`, read as the
     owner's "generic tasks" family (seed); the repository's own gates (`make validate`, `make
     mods`, CI jobs, mods that deny a command) go to `cross-cutting.md`. D-10 named neither.
+- **D-13 Two proofs deferred to `evaluate-catalogue`** (the developer, 2026-11-14: "defer to that
+  epic that aims for evaluations, add these tasks there"). The behavioural trigger run (task 1.11,
+  D-7) and the baseline (task 1.12, D-11) move to tasks 6b.1 and 6b.2 of
+  [`evaluate-catalogue`](../evaluate-catalogue/tasks.md). Three baseline runs without the skill
+  were stopped by the model's safeguards and were not retried. Until 6b.1 runs, the triggers rest
+  on the eight static probes and RISK-4 stays open. The trigger set is ready in
+  `tests/evals/triggers/test-strategy.json`.
+- **D-14 Task 1.13, two docs keep their link.** Of the three docs D-11 names, only
+  `docs/development/README.md` is repointed. `working-with-agents.md` speaks of the provisional
+  steps, which stay in `epic-delivery`. `dod-quality-gates.md` is split: who owns each validation
+  point is in `test-strategy`'s matrix, where the evidence goes stays with `epic-delivery`.
+- **D-15 Findings of the stage 1 review** (five lenses and the adversarial tester, PR #218; no
+  critical finding). Accepted, fixed before merge:
+  - *Decided by* is defined in SKILL.md: it names who judges pass or fail, a stance or a person;
+    accepting a miss on any question is a person's decision. Each cell holds the stance the
+    stance table gives its question, or the person the owning skill names (the author for the
+    infra reviewer's report, the Terraform plan and the four-eyes rule; the person on duty for
+    break-glass). The L2 lens, use-case coverage and plan drift are `VER` rows only.
+  - The V-model row *EPIC and PLAN* (the developer agrees the why, the appetite and the success
+    measure) is held by `test-strategy` itself, in `references/shaping.md`: no other skill states
+    it, and this change rewrites no other skill's technique.
+  - Inventory ids are stable from this release on: a new check takes the next free number and is
+    never renumbered. The range sentence in `inventory.md` goes.
+  - The matrix's *Technique owner* column governs the D-8 pointer lines (one owner per row); a
+    co-owner named only in the inventory gets none. `tests/test_test_strategy.py` checks each
+    pointer line against the matrix, so later EPICs cannot let them drift.
+  - `epic-delivery`'s reference keeps one pointer and its own rule (who signs, and when); the
+    sentence left without its table is reworded.
+  - SKILL.md gains a legend for `gap → B`, `C`, `D` with the EPIC ids, an evidence-based worked
+    example (the § *Worked example* above is superseded on its two criteria lines: "a cold reader
+    given only the post says in one sentence what the service does" and "the reader cannot, or
+    the antipattern check flags an advert"), and the clearer stance sentence. A check carries its
+    inventory name in every file; the generic-writing `ADQ` gap names D; `/opsx:verify` is
+    phrased neutrally; the vault final check has seventeen lines.
+  - The test: word boundaries on the definition and loop patterns, line numbers that match an
+    editor, exact failure messages, one case per rule; the adversarial tests are kept.
+  - The three verification records under `inputs/` drop the absolute local path.
+
+  Rejected, with the reason:
+  - *Move the repository's own gates out of the installed skill* (L3): the gated PLAN sets the
+    inventory's scope to `skills/` plus the repository's own checks (§ Algorithm). The developer
+    may reopen it.
+  - *Load the patterns from `ownership.yaml`* (L5): D-7 keeps the advisory tripwire and the
+    blocking test as two complementary checks.
+  - *Move the polyfactory example into `example-testing-patterns.md`* (L4): the D-7 allow-list
+    names the checklist as the only home.
+  - *Write the pointer path as `test-strategy/references/…`* (L4): D-8 fixes the form, and the
+    line names the skill.
+  - *Drop the repeated intro sentence of the family files; shorten the description* (L4, L5):
+    cosmetic; the "Not for" list is what keeps the neighbours apart (RISK-4).
 
 ## Algorithm / approach
 

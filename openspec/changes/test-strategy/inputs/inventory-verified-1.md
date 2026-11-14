@@ -1,6 +1,6 @@
 # Verified inventory, rows CHK-1 to CHK-34
 
-Paths relative to `/home/lps/work/repos/skillery/.claude/worktrees/test-strategy`. All owner files exist. Cells shown are the FINAL values; "corrected" rows say what changed under the table.
+Paths relative to the repository root. All owner files exist. Cells shown are the FINAL values; "corrected" rows say what changed under the table.
 
 | Id | Check | What it checks | Owner file (section) | Moment | Questions | Family | Verdict | Evidence (path:line) |
 |---|---|---|---|---|---|---|---|---|

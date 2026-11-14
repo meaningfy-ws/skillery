@@ -32,18 +32,18 @@
 - [x] 1.10 Write `tests/test_test_strategy.py` (D-7: ids, six questions per family, one-home
   patterns with allow-lists), test-first: red before 1.2–1.8, green after. Add the `ownership.yaml`
   entries.
-- [ ] 1.11 Triggers: the static probes in `tests/trigger_probes.yaml` (including the `epic-delivery`
-  pair) and one behavioural run with `skill-creator` (20 queries × 3 runs, the D-7 pass bar),
-  recorded in `evidence/triggers.md` (D-7;
-  spec *The skill's trigger is proven against its neighbours*).
-- [ ] 1.12 Evidence: `evidence/failure-case.md`; `evidence/baseline.md` from the three baseline
-  tasks (a Python module change, a LinkedIn post, a contract clause) with and without the skill
-  (D-11).
-- [ ] 1.13 User-facing docs: the README entry-point row and a CHANGELOG line naming the EPIC.
-  Repoint the three docs that link the old V&V home: `docs/development/README.md` (line 93),
-  `docs/practice/ai-coding/dod-quality-gates.md` (line 35) and
-  `docs/practice/ai-coding/working-with-agents.md` (line 75). Then run `make bundles` and
-  `make skill-inventory` (D-11).
+- [x] 1.11 Triggers: the static probes in `tests/trigger_probes.yaml` (including the `epic-delivery`
+  pair) and the 20-query set `tests/evals/triggers/test-strategy.json` (D-7; spec *The skill's
+  trigger is proven against its neighbours*). The behavioural run (20 queries × 3 runs, the D-7
+  pass bar) is deferred to `evaluate-catalogue` task 6b.1 (D-13).
+- [x] 1.12 Evidence: `evidence/failure-case.md` (D-11). The baseline from the three tasks (a Python
+  module change, a LinkedIn post, a contract clause) with and without the skill is deferred to
+  `evaluate-catalogue` task 6b.2 (D-13).
+- [x] 1.13 User-facing docs: the README entry-point row and a CHANGELOG line naming the EPIC.
+  Of the three docs that link the old V&V home, repoint `docs/development/README.md` (line 93)
+  and split the sentence of `docs/practice/ai-coding/dod-quality-gates.md` (line 35);
+  `docs/practice/ai-coding/working-with-agents.md` (line 75) keeps its link (D-14). Then run
+  `make bundles` and `make skill-inventory` (D-11).
 
 ## 2. Stage 2: criteria in every workflow
 
@@ -72,7 +72,7 @@
 ## Roadmap
 
 - [x] 1.0 · [x] 1.1 · [x] 1.10 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9
-  · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
+  · [x] 1.11 · [x] 1.12 · [x] 1.13 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 
 ## Verification
 
