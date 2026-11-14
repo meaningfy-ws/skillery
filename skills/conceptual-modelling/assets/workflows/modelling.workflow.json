@@ -2,12 +2,16 @@
   "name": "modelling", "title": "Conceptual modelling", "owner": "conceptual-modelling",
   "activate": { "skills": ["conceptual-modelling", "linkml-engineering"], "agents": ["conceptual-modeller"] },
   "phases": [
-    { "id": "elicit", "owner": "conceptual-modelling", "expect": [], "allow": ["modelling-conventions"], "gates": ["schema"], "enter": {} },
+    { "id": "elicit", "owner": "conceptual-modelling", "expect": [], "allow": ["modelling-conventions"], "gates": ["schema"],
+      "criteria": { "succeeds": "the model holds each concept with a definition for a domain reader, and the developer confirmed them", "fails": "a class or property has no definition, or one the developer never confirmed" }, "enter": {} },
     { "id": "model", "owner": "conceptual-modelling", "expect": [], "allow": ["linkml-engineering", "modelling-conventions"],
-      "gates": ["generate"], "enter": {} },
-    { "id": "generate", "owner": "linkml-engineering", "expect": [], "gates": ["examples"], "enter": {} },
+      "gates": ["generate"],
+      "criteria": { "succeeds": "the schema holds the confirmed concepts, the model source choice is recorded and generation from it exits cleanly", "fails": "the source format was defaulted with no recorded decision, or generation from the schema fails" }, "enter": {} },
+    { "id": "generate", "owner": "linkml-engineering", "expect": [], "gates": ["examples"],
+      "criteria": { "succeeds": "the regenerated artefacts are committed with the YAML and the generated diff touches only the expected modules", "fails": "a generated file was edited by hand, or the generated diff touches a module nobody expected" }, "enter": {} },
     { "id": "validate", "owner": "conceptual-modelling", "expect": [{ "skill": "conceptual-modelling", "by": "exit" }],
-      "allow": ["formal-reasoning"], "gates": ["review"], "enter": {} }
+      "allow": ["formal-reasoning"], "gates": ["review"],
+      "criteria": { "succeeds": "example instances and competency questions with expected answers exist, and the domain expert's review is recorded", "fails": "a competency question returns an answer other than the expected one, or no domain expert reviewed the model" }, "enter": {} }
   ],
   "gates": {
     "schema": { "kind": "file", "glob": "model/**" },

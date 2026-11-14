@@ -2,12 +2,19 @@
   "name": "contract", "title": "Contract", "owner": "contract-practice", "provisional": true,
   "activate": { "skills": ["contract-practice"], "agents": ["lawyer"] },
   "phases": [
-    { "id": "intake", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
-    { "id": "draft", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
-    { "id": "align", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
-    { "id": "review", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
-    { "id": "negotiate", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
-    { "id": "sign", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} },
-    { "id": "harvest", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"], "enter": {} }
+    { "id": "intake", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"],
+      "criteria": { "succeeds": "every intake question has the owner's answer or is marked as an open point to confirm", "fails": "a value in the draft has no source in the documents or in the owner's answers" }, "enter": {} },
+    { "id": "draft", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"],
+      "criteria": { "succeeds": "the draft is on a branch and its PR cites the library guidance for the skeleton and variant chosen", "fails": "the variant choice cites no guidance, or an unknown value is filled in instead of marked to be confirmed" }, "enter": {} },
+    { "id": "align", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"],
+      "criteria": { "succeeds": "each difference from the parent or back-to-back contract is an open point naming both documents and both values", "fails": "a number or term was changed to match the other contract without the owner's decision" }, "enter": {} },
+    { "id": "review", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"],
+      "criteria": { "succeeds": "the lawyer-review list exists and holds each departure from the library defaults", "fails": "a departure on liability, indemnity, IP, personal data, non-compete or governing law is not on the lawyer-review list" }, "enter": {} },
+    { "id": "negotiate", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"],
+      "criteria": { "succeeds": "each counterparty change is sorted by legal effect with its clause cited, and the revisions are on the branch", "fails": "a change of legal effect is accepted on the branch with no decision from the owner" }, "enter": {} },
+    { "id": "sign", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"],
+      "criteria": { "succeeds": "the owner's confirmation of the signing and registering is recorded", "fails": "the agent signed, sent or registered the contract itself" }, "enter": {} },
+    { "id": "harvest", "owner": "contract-practice", "expect": [], "allow": ["corpus-repository"],
+      "criteria": { "succeeds": "a library proposal names its source contracts and its reason, or the record says there is none", "fails": "a clause entered the library without the owner's acceptance" }, "enter": {} }
   ]
 }

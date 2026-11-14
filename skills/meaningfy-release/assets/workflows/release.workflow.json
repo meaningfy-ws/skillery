@@ -5,12 +5,12 @@
     "gh release create\\b[^&;|]*\\sv\\d+\\.\\d+",
     "git(?:\\s+-[Cc]\\s+\\S+)*\\s+push\\b(?![^&;|]*\\s(-d|--delete|-n|--dry-run)\\b)[^&;|]*\\sv\\d+\\.\\d+"] },
   "phases": [
-    { "id": "branch", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["cut"], "enter": {} },
-    { "id": "bump", "owner": "meaningfy-release", "expect": [], "gates": ["bumped"], "enter": {} },
-    { "id": "validate", "owner": "meaningfy-release", "expect": [], "gates": ["validated"], "enter": {} },
-    { "id": "merge", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["merged"], "enter": {} },
-    { "id": "publish", "owner": "meaningfy-release", "expect": [], "allow": ["ci-cd-delivery"], "gates": ["published"], "enter": {} },
-    { "id": "back-merge", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["back"], "enter": {} }
+    { "id": "branch", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["cut"], "criteria": { "succeeds": "the `release/X.Y.Z` branch exists, cut from the integration branch (`hotfix/X.Y.Z` from the released tag)", "fails": "the branch is cut from the wrong base, or carries commits that are neither stabilisation nor the fix" }, "enter": {} },
+    { "id": "bump", "owner": "meaningfy-release", "expect": [], "gates": ["bumped"], "criteria": { "succeeds": "the version file(s) hold the new version and the changelog has a section for it, and the two agree", "fails": "the version file(s) and the changelog section name different versions" }, "enter": {} },
+    { "id": "validate", "owner": "meaningfy-release", "expect": [], "gates": ["validated"], "criteria": { "succeeds": "the saved output of the project's full gates on the release branch shows them passing", "fails": "a gate fails on the release branch, or the gates were not run before the merge" }, "enter": {} },
+    { "id": "merge", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["merged"], "criteria": { "succeeds": "the release PR shows a human review and is merged", "fails": "the release PR is merged without a human review, or while the project's gates are red" }, "enter": {} },
+    { "id": "publish", "owner": "meaningfy-release", "expect": [], "allow": ["ci-cd-delivery"], "gates": ["published"], "criteria": { "succeeds": "the tag `vX.Y.Z` and the GitHub release exist, and the publish job ran green after its dry run", "fails": "the tag points at a commit other than the merge, or the publish job failed or skipped its dry run" }, "enter": {} },
+    { "id": "back-merge", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["back"], "criteria": { "succeeds": "the release branch (for a hotfix, the fix) is merged into every long-lived line", "fails": "a long-lived line lacks the version bump or the fixes after the release" }, "enter": {} }
   ],
   "gates": {
     "cut": { "kind": "command", "match": "git(?:\\s+-[Cc]\\s+\\S+)*\\s+(switch\\s+(-c|--create)|checkout\\s+-b)\\s+(release|hotfix)/" },
