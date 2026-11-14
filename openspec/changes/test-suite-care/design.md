@@ -577,6 +577,53 @@ above where they differ.
 - **D-24 Ids.** B, C, D and E each take "the next free" `CHK-` id at their own delivery; no PLAN
   owns a number. `CHK-145` in D-13 is an example.
 
+- **D-25 The whole programme, recorded 2026-11-14 after four audits** (the spec layer; A as
+  delivered; a merge simulation; coherence against the owner's words). D-25 to D-34 come from
+  them. The clarity gate was not run again on these entries.
+- **D-26 `changed.py` takes the base as an argument (corrects D-10).** B's Ruff selection bans
+  reading the environment outside the configuration module (its D-2, `TID251`), and `make lint`
+  covers `tests/`. The script is run as `python -m tests.changed <base>`; the `test-changed`
+  target passes `$(BASE)`, whose default `develop` is set in the Makefile.
+- **D-27 T-9 stays pure Python (corrects D-21).** `make check-quality` needs poetry, Ruff and,
+  after B stage 1, the `quality/` folder at a release tag, none of which CI has. T-9 checks that
+  the scaffold has `tests/changed.py`, the `slow` marker and the three targets, each in
+  `.PHONY`. Running `make check-quality` on the scaffold is a manual step of task 1.8, with
+  `QUALITY_VERSION` set to the branch commit as B's task 1.15 does, and only if B stage 1 has
+  landed.
+- **D-28 Tests that would never run.** T-2 and T-7 need pytest-xdist, coverage and pytest-cov,
+  which are in no requirements file. If B stage 1 has landed, task 1.2 adds the three to B's
+  `requirements-quality.txt`; if not, they are run once by hand as task 1.2 says, and B's task
+  1.4 keeps them (a line there says so).
+- **D-29 Which rows D-22 touches.** `generic-writing.md` (D's row), `documentation.md`,
+  `devops.md` and `ui.md` (C's rows), and only a row that is no longer `gap` when stage 3 lands.
+  The words go at the end of the row's Check cell. D's task 3.1 and C's close steps keep them.
+  In `ui.md`, E stage 2 adds its own `ADQ` row beside the existing one and does not edit it.
+- **D-30 The gap nobody owns.** After B, C, D and E the software matrix still has one gap:
+  `CLR`, "gap → none yet" (`skills/test-strategy/references/software.md`, line 46). No EPIC of
+  the programme takes it. The programme's closing task (D-33) lists it for the owner.
+- **D-31 Distilling is not the audit.** The No-go "no reduction without the owner's decision"
+  is about the audit's proposals on an existing suite. Distilling a stage's adversarial tests is
+  the lead's decision by DEC-3, which the owner approved (Q-3); the deleted tests are listed in
+  the stage PR, which the owner merges. One home for the rule on properties: the tester's brief
+  in `skills/epic-delivery/references/team-and-briefs.md`; B, C and E point to it.
+- **D-32 Releases, rebases and names.** No PLAN assumes a version number. A release follows B
+  stage 1 and C stages 1 and 3, because projects fetch `quality/` at a release tag; E needs none
+  of its own. C, D and E stage 1 may be on branches at the same time: after each rebase the lead
+  reruns `make bundles` and `make skill-inventory` and takes fresh `CHK-` ids. E's record of the
+  first `make validate` is `evidence/validate-baseline.md`, because D uses `evidence/baseline.md`
+  for its runs with and without the profile. In this design "lanes" are the developer's make
+  targets and "tiers" are unit, feature, integration and end to end.
+- **D-33 A closing check of the programme** *(proposed, the owner confirms at scenario
+  sign-off)*. Each EPIC ends in its own demo and only E changes a real repository, so nothing
+  shows the five together did what the owner asked. Proposal: whichever of B stage 3 and E
+  stage 1 lands last runs task 3.7: adopt `make check-quality` in the trial repository and
+  record its wall time and the test time before and after E's reductions; list every row of the
+  nine matrix files that is still `gap`; walk one SMALL EPIC and one offer through the
+  catalogue and count the steps that need the owner. The result goes to the owner as one page.
+- **D-34 Follow-ups.** The fixture sentence added to checklist rule 6 (D-8) overlaps issue #210
+  (DDD, TDD and fixture rules); task 1.6 comments there. The home of UI test rules (D-23, OQ-1)
+  is issue #230.
+
 ## Open Questions
 
 None blocks stage 1. To confirm with the owner at scenario sign-off (task 1.0):

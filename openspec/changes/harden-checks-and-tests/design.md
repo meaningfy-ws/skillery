@@ -888,6 +888,116 @@ README completed and tested (task 1.16, TC-02); the checksum line and platform m
 stale-pull-request case and the script's inputs (D-10); "the default branch" in the mutation
 requirement; what the Gherkin scenarios prove (task 2.4); the new entry in the L1 lens (task 1.7).
 
+## Delivery decisions
+
+Recorded 2026-11-14, when the five changes of the test strategy work were read against each other
+and against A as delivered. These override the decisions above where they differ.
+
+- **D-14 A is delivered (corrects the header note, D-12's first sentence and error-matrix
+  row 1).** EPIC A was merged and archived on 2026-11-14. Its skill is `skills/test-strategy/`
+  and its live spec is `openspec/specs/test-strategy/spec.md`. The note "while A is being
+  delivered" at the top of this file is history. Each stage still opens with its [A] task, since
+  C, D and E also edit A's files.
+- **D-15 The re-check of D-12 against A as delivered (corrects D-12, the Context note on the
+  navigator and the `test-strategy` spec delta).** Read on 2026-11-14:
+  - A-1 holds. The family files have the columns Question, Check, Technique owner, Tool, Moment,
+    Decided by, Status. A gap for this EPIC is written `gap → B`.
+  - A-2. The inventory ends at `CHK-144`. The draft's ids were renumbered: Hypothesis is `CHK-5`
+    (`software.md` line 42, already `exists`), the tester brief is `CHK-17` (line 44, `exists`)
+    and L3 is `CHK-82`. Every new row takes the next free id at delivery. No PLAN owns a number,
+    because C, D and E add rows too.
+  - A-3. Four rows are `gap → B`, all in `skills/test-strategy/references/software.md`:
+
+    | Line | Question | Check as A wrote it | Technique owner | Filled in | Id |
+    |---|---|---|---|---|---|
+    | 33 | `VER` | static rules for every catalogue entry (Ruff, Semgrep, "Checked by") | `cosmic-python` | Stage 1, task 1.14 | next free ids at delivery, one per new row |
+    | 34 | `VER` | the import-contract check on every PR | `project-setup` | Stage 3, task 3.7 | next free id at delivery |
+    | 41 | `ADQ` | whether the tests bite (mutation testing) | `cosmic-python` | Stage 3, task 3.7 | next free id at delivery |
+    | 45 | `ROB` | stateful and contract-driven properties for the tester | `epic-delivery` | Stage 2, task 2.6 | next free id at delivery |
+
+    The mutation row's technique owner is `cosmic-python`, not `project-setup` as D-12 and the
+    spec delta assumed; `project-setup` holds the wiring (D-10) and is named in the Tool cell.
+    The robustness gap is the tester's stateful and contract-driven methods, not Hypothesis
+    itself: the `CHK-5` and `CHK-17` rows keep their ids and get new wording only.
+  - The L3 row is `CHK-82` in `skills/test-strategy/references/architecture.md` (line 12), not
+    in `software.md`. Task 3.7 edits that file for the per-EPIC judgement.
+  - The sentence "`gap → B` rows are filled by the EPIC `harden-checks-and-tests`" in
+    `software.md` (line 3) is removed by task 3.7, when the last such row is gone.
+  - A-4 holds (`tests/test_test_strategy.py`, lines 77 to 79). A-5 holds: item 6 names
+    polyfactory and the checklist has 16 items. A-7 holds: all four phases have `criteria`.
+  - A-6 differs: see D-16.
+  - A-8 holds. The pointer lines already carry the ids these rows need (`cosmic-python`
+    `VER, ADQ, ROB`; `project-setup` `VER, ADQ`; `epic-delivery` and `meaningfy-code-review`
+    with `architecture.md` listed). A pointer line changes only if A's test asks for it.
+  - The navigator's check of `reviews.<appetite>.tester` is at line 197 of
+    `mods/navigator/lib/workflow.ts`, not line 191. The conclusion stands: no mod change.
+  - Spec deltas against the live specs: the two MODIFIED requirements (`catalogue-governance`,
+    `epic-delivery`) start from the live text and only add to it; the names of the ADDED
+    requirements are free; no sibling change modifies the same requirements.
+  - Still open in task 1.1: the stage branch is cut from current `develop`, and these
+    differences are copied into the stage 1 PR.
+- **D-16 The adversary asks `ROB` and `RSK` (corrects D-9's brief, D-12 row A-6 and the proposal's
+  DEC-9 wording).** In A, the adversary stance asks `ROB` and `RSK`; `ADQ` belongs to the checker
+  stance (`skills/test-strategy/SKILL.md`, "The five stances"). The tester's brief reads "in the
+  adversary stance of `test-strategy` (`ROB`, `RSK`)". The mutation report stays an `ADQ` row,
+  decided by the checker. DEC-9's choice (the tester takes the adversary stance) is unchanged.
+- **D-17 TC-12 is switched on by task 3.7 (corrects the test table).** A's file exists, and the
+  mutation and import-contract rows stay `gap → B` until stage 3. TC-12 is therefore written in
+  stage 1 as skipped, with the message "switched on by task 3.7", and task 3.7 removes the skip.
+- **D-18 The property tests live in their own file (corrects D-8, D-13 proof 2 and the
+  error-matrix row on `importorskip`).** A module-level `pytest.importorskip("hypothesis")` skips
+  the whole module, and CI installs only `pyyaml` and `pytest`. The tester's property tests go in
+  `tests/test_quality_properties.py`, which opens with that line. `tests/test_quality.py` never
+  imports Hypothesis, so its Python-only groups always run in CI.
+- **D-19 No version number is assumed (corrects D-4's example and the fetch scenario).**
+  `QUALITY_VERSION = v3.15.0` in D-4 is an example of the form only. The pin is `v` + `VERSION`
+  as `make bundles` writes it. D or E stage 1 may be released before B stage 1, so no PLAN names
+  the number. A release follows B stage 1, because projects fetch `quality/` at a release tag;
+  until then only a hand-set ref works (task 1.15).
+- **D-20 Spec corrections (completes D-1, D-4 and D-11).**
+  - The pin is a fourth file `make bundles` renders. The requirement *Projects fetch the checks
+    at one pin* gains a scenario for it. The live `dual-cli-distribution` spec and step 2 of
+    `docs/development/releasing.md` name three; task 1.13 updates the releasing step.
+  - The requirement *The quality folder holds the shared checks* no longer reads as a closed
+    list: a later change may add a tool's folder (C adds `quality/vale/`).
+  - The per-EPIC contract judgement is made by whoever takes L3 in the review set: the one
+    reviewer at TINY and SMALL, the merged L3 reviewer of a small stage, the L3 reviewer
+    otherwise. The `pr-review-modes` delta says so.
+  - The scenario "A file that is not a check" stood in two deltas; it stays in `quality-checks`
+    only.
+  - The `test-strategy` requirement is a standing rule and is renamed *The software rows name
+    the static, mutation and import-contract checks*; task 1.14 cites the new name.
+- **D-21 Issues (completes D-2 and RISK-4).** Task 1.16 closes issue #215 with a comment naming
+  the Ruff codes and the Semgrep rule that cover its four cases (tasks 1.5 and 1.7). RISK-4,
+  "nobody picks up the mutation results", is the revisit trigger of issue #211 (a tester or
+  critic agent for standalone use); a recurrence is reported there.
+- **D-22 The cost of the new checks is measured (completes IT-04).** Task 1.15 records the wall
+  time of `make check-quality` on the scaffold, with a warm `.quality/`, in the stage PR and in
+  `evidence/`.
+- **D-23 If E stage 1 lands first (completes D-8).** `requirements-quality.txt` may then already
+  hold pytest-xdist, coverage and pytest-cov (`test-suite-care` D-28). Task 1.4 keeps them.
+  Tasks 1.12 and 2.4 already carry E's other two lines.
+- **D-24 A stronger proof for the tester** *(proposed, the owner confirms at scenario
+  sign-off)* **(would correct D-13 proof 2).** Proof 2 only shows that a report lists properties.
+  The owner's complaint was "just an implementer with extra prompts" (`inputs/qa.md`, Q-2).
+  Proposal: on one seeded stage, run the old brief once and the new brief once, and compare what
+  each found in `evidence/tester-report.md`.
+- **D-25 A reader for the weekly results** *(proposed, the owner confirms at scenario
+  sign-off)* **(would narrow RISK-4).** Proposal: in the Prepare step of `epic-delivery`, the
+  lead reads `tests/mutmut-results/` for the files the stage touches and adds the survivors to
+  the builder's brief.
+- **D-26 Vocabulary against A (corrects wording in D-1, D-3 and the proposal).** A's terms are
+  stance, check, technique owner, tool and the status `accepted`. This PLAN uses "checker" for
+  a tool (DEC-2, D-3), where A's checker is a stance; "item" for a checklist rule; and an
+  artifact type named "Check", while every `CHK` row is a check. New text in tasks, specs and
+  skills writes "the tool that checks" and "rule". The requirement name *Every catalogued rule
+  names its checker* and the column name "Checked by" are kept as signed off. The type's name
+  *(proposed, the owner confirms at scenario sign-off)*: rename the sixth type so it does not
+  share the word with A's rows, for example "Quality rule".
+- **D-27 Test ids (completes the test table).** `TC-01` to `TC-13` and `IT-01` to `IT-07` are
+  this PLAN's ids. C's tests in `tests/test_quality.py` (its `TC-9` to `TC-12`, `IT-1` to
+  `IT-4`) are C's own, and C prefixes them where a test name or comment could be confused.
+
 ## Open Questions
 
 None blocking. Answered by the developer on 2026-11-14 (`inputs/qa.md`, round 8):

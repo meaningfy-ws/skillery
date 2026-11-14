@@ -773,3 +773,119 @@ The lead adds further entries here during delivery (D-14, D-16).
   family's `ADQ` gap; the row's status stays this EPIC's to set. UI test rules: E parks six new
   ones in `test-suite-care` until a UI skill exists; this EPIC names no UI owner and does not
   move them.
+
+Recorded 2026-11-14, after four audits read the five changes of the test strategy work against
+each other and against the repository. Each entry names the decision it corrects and overrides it
+where they differ. Three entries change what the owner agreed and are marked proposed; the
+developer confirms them in task 0.2, before stage 1.
+
+- **D-21 Numbering (corrects D-14, D-16 and the error matrix).** D-14 says the lead records with
+  ids "from `D-20`", and D-16 and the error matrix say `D-20+`. D-20 is taken. A new entry takes
+  the next free number after the last entry of this section.
+- **D-22 The live matrix requirement (adds to D-11).** The live requirement *Every activity
+  family has a matrix* allows `gap` in every family, and its UI scenario expects "a check or a
+  `gap` row naming its EPIC". After stage 5 that scenario would be false. The `test-strategy`
+  delta now carries a MODIFIED block of that requirement: a closed family holds no `gap` row, and
+  the scenario is split into one for a family that is not closed and one for the closed UI
+  family. The stage 1 preflight reads the live text again, as for `epic-shape` (error matrix).
+- **D-23 Vale's pin and the two manifests (adds to D-8).** B pins an external Semgrep source by a
+  40-character commit. C pins a Vale package by its release tag, for the reason D-8 gives: Vale
+  fetches a package as the archive its repository publishes per release. The requirement *Vale's
+  styles are pinned, never copied* now states that reason and forbids a branch name or "latest".
+  Task 1.3 confirms a sixth fact with D-8's five: whether `Packages` also accepts an archive
+  address at a commit. If it does, the manifest takes B's `commit` field instead of `tag`, by a
+  new entry here and a rewritten requirement signed off in the round. Both manifests are named
+  `external.json` and have different fields. A reader tells them apart by the tool folder:
+  `quality/semgrep/external.json` is B's, `quality/vale/external.json` is C's. D-8's rename to
+  `packages.json` still applies when B's manifest test reads every `external.json`.
+- **D-24 An invariant where no tester runs (adds to D-1)** *(proposed, the owner confirms at
+  scenario sign-off)*. D-1 is silent on an appetite whose review set names no tester: TINY and
+  SMALL today, and MEDIUM until B's stage 2 lands
+  (`skills/epic-delivery/assets/workflows/epic-delivery.workflow.json`, `reviews`). There the
+  *Test* cell does not start with `tester`: the builder's test or scenario proves the invariant
+  on each write path. The requirement *Invariants reach the tester* holds the sentence and the
+  scenario *An appetite without a tester*; CK-2's reading in stage 2 covers the scenario. If the
+  developer rejects it, the sentence and the scenario are deleted from the delta.
+- **D-25 The spec deltas hold standing rules (corrects the wording of the deltas; D-14 stays).**
+  One-off delivery text moved out of the deltas:
+  - *Each stage's failures come from a recorded survey* is now *A family's failures come from a
+    recorded survey*, about any change that fills or accepts gap rows.
+  - *Each tool runs once on a real tree* is now *A tool is adopted only after a run on a real
+    tree*. Which tools run on which tree is D-7 and tasks 1.3 and 3.3. The unmet fourth proof for
+    checkmake is task 6.1, no longer spec text.
+  - The scenario *Tracing this EPIC's own invariant* is now *A tester dispatched on an invariant
+    left to it*. IT-9 still proves it; the trace file is task 1.9.
+  - "This EPIC SHALL NOT change the tester's brief" became a standing sentence (D-35).
+  - The clauses "Where the … stage adopted it" are gone from `quality-checks`,
+    `operations-practice` and `documentation-workflow`. The condition is delivery's: the header
+    comment of each delta and D-14 say a requirement is deleted when its tool ends `accept`.
+  The table "Which proof covers which scenario" reads with these names.
+- **D-26 A fill in the architecture family (overrides D-14's "in a reference file only" and the
+  error-matrix row on the cap; D-10 holds).** An `exists` row owned by `architecture` makes
+  `pointer_errors` in `tests/test_test_strategy.py` compare the skill's pointer with the row's
+  question. `architecture`'s SKILL.md body is at the 650-line cap, so no line can be added. The
+  skill has no pointer line of its own, but its `**Related:**` line already holds the folded form
+  the test accepts (`FOLDED_POINTER`): "`test-strategy` (answers `VAL, VER, ADQ, CLR, RSK` in its
+  matrix, `references/architecture.md`)". A stage 4 fill adds its question id (`ROB`) inside that
+  existing line and adds no line. The check itself still goes in a reference file.
+- **D-27 The `ADQ` row of `ui.md` and EPIC E (extends D-20).** E's stage 2 adds a second `ADQ`
+  row to `ui.md`, owned by `test-suite-care`, with the status `exists`. E's stage 3 adds the
+  words "assessed on request by `CHK-<m>`" to the `ADQ` rows of `documentation.md`, `devops.md`
+  and `ui.md` that are no longer `gap`. So: the stage 5 survey reads E's `ui.md` row first, if it
+  exists, and may name it in the reason as what covers the gap meanwhile. The close step of
+  stages 1, 3 and 5, and any later edit by this EPIC, keeps the words "assessed on request by"
+  where a row has them.
+- **D-28 The sentence the close step removes (corrects D-10).** D-10 says every family paragraph
+  ends with "… to fill or accept". Five do. `ui.md` ends "… to fill or accept, possibly by a
+  pointer to an external design plugin." The close step removes the whole sentence, from "`gap →
+  C` rows" to its full stop, whatever its tail.
+- **D-29 Ids (corrects D-9 and § Tests and proofs; adds to D-10).** B's tests in
+  `tests/test_quality.py` are TC-09 to TC-12 and IT-01 to IT-04. C's tests in that file carry the
+  prefix `C-` in code and in evidence: `C-TC-9` to `C-TC-12`, `C-IT-1` to `C-IT-4`. The ids in
+  this file's tables read with that prefix. No PLAN owns a `CHK-` number: C takes the next free
+  one at delivery (E's D-24 says the same). After each rebase the lead reruns `make bundles` and
+  `make skill-inventory` and takes fresh ids where another branch took C's.
+- **D-30 Reopening a closed family (corrects D-11 and INV-1)** *(proposed, the owner confirms at
+  scenario sign-off)*. Today a closed family may hold no `gap` row, and nothing reopens an
+  `accepted` row. Proposed: a closed family may hold a `gap` row whose *Check* cell carries an
+  issue number, and an issue reopens an `accepted` row to `gap` in the same way. If confirmed,
+  the requirements *A closed family stays closed* and *Every activity family has a matrix*,
+  INV-1, TC-1 and task 0.3 change by a PLAN revision before task 0.3 is built.
+- **D-31 A stacks check that nothing runs yet (corrects D-10's two stacks rows)** *(proposed,
+  the owner confirms at scenario sign-off)*. D-10 writes `exists` for the stacks ls-lint and
+  checkmake rows, while adoption in the stacks repositories is left to #216. Proposed: such a
+  row is `accepted` with the reason "adoption tracked in #216" until a stacks repository runs
+  the check; then the row becomes `exists`.
+- **D-32 No owner for UI checks (adds to D-14 and D-20).** Issue
+  [#230](https://github.com/meaningfy-ws/skillery/issues/230), "No skill owns UI test rules",
+  records the gap. Stage 5 creates no owner. E parks six UI test rules in `test-suite-care`, and
+  testing checklist rule 2 stays in `cosmic-python`. A stage 5 failure that needs a check is
+  recorded on #230 where it fits, else as a new issue, and the row is `accepted` with that
+  number.
+- **D-33 Release (adds to D-12 and D-16).** The guidance of stages 1 and 3 names
+  `.quality/vale/vale.ini` and the other fetched files, and #216 reads a configuration "at a
+  release tag". Projects fetch `quality/` only from a skillery release (B's D-4). So a skillery
+  release follows stage 1 and stage 3 where they filled; until then the guidance names files no
+  project can fetch. This PLAN assumes no version number. The stage's PR body and the comment on
+  #216 say that the files arrive with the next release.
+- **D-34 Vocabulary against A's terms (corrects wording in D-6, D-7 and D-10; no rule
+  changes).**
+  - *Stage.* In this PLAN a stage is one of C's five. "docs stage" in D-10's two rows is A's
+    wording for the moment (`documentation.md` uses it) and stays in the matrix rows; it means
+    the documentation workflow, whose phase is `verify`.
+  - *Owner and developer.* D-6 treats them as one person. A's SKILL.md keeps two words: the
+    developer in a delivery, the owner for the owner's own writing. C is a delivery, so tasks
+    and specs say "the developer"; "the owner round" stays as the name of D-6's round.
+  - *Accepted.* `accepted` is a row status. D-7 and task 6.1 used it for an unmet proof; that
+    now reads "not met for checkmake, left open by the developer on `<date>`".
+  - *Technique owner* is a skill; the person is never called an owner of a check.
+  - *Profile.* The change id says "profiles" for rows of the matrix. D uses "profile" for a
+    section of a skill. C's texts say "matrix rows"; the id stays.
+- **D-35 The `## Invariants` section is not checked, and older PLANs have none (adds to D-1,
+  D-13 and INV-5).** Nothing mechanical checks the section, and the PLANs of B, D and E have
+  none. The section is required only for a PLAN derived after stage 2 lands. The tester takes one
+  property per row of that section where the PLAN has one, else one per row of the error matrix
+  (E's D-18 and the tester's brief). That rule belongs to `epic-delivery`'s
+  `references/team-and-briefs.md`, which B's stage 2 and E's stage 1 edit; C points to it from
+  `epic-planning` and does not restate it. For a tester-left invariant D-1's rule 2 still asks
+  for the error-matrix row, so either list carries it.

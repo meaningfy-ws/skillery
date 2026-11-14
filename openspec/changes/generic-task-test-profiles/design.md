@@ -689,6 +689,135 @@ checklist items passed. Its four minor recommendations were folded in afterwards
 D-10, the "one read" wording, what the `lawyer` scenario's record may hold (D-11), and this
 record.
 
+## Delivery decisions
+
+Recorded 2026-11-14, when the five changes of the test strategy work were read against each other
+and against A as delivered. These override the decisions above where they differ.
+
+- **D-15 The pointer lines change with the rows, in stage 3 (corrects D-10 and D-13; tasks 2.1
+  to 2.5 and 3.1).** A's test (`tests/test_test_strategy.py`, `pointer_errors`) demands that a
+  skill's pointer line lists exactly the questions and files of the `exists` rows that name it
+  as technique owner. The rows arrive in stage 3. A pointer line changed in stage 2 would turn
+  `make validate` red at task 2.10: four skills would name extra question ids, and
+  `sales-conversations` would point to the matrix with no row. So tasks 2.1 to 2.5 leave the
+  pointer lines alone, and task 3.1 changes the five lines in the commit that adds the rows. The
+  stage-2 assertions of D-11 do not read the pointer line, so they stay as written.
+- **D-16 The reader's brief and report against the live `subagent-dispatch` spec (corrects D-1
+  section 6, D-9 and the spec delta).** The delta said the reader is given "only" five inputs;
+  the brief of § Algorithm passes a sixth, the points open with the owner at a second read. The
+  delta now lists the inputs under the parts the live requirement *A subagent starts fresh from
+  a brief* asks for (goal and why, inputs as paths, what is decided, no-gos, the report), so the
+  brief keeps that requirement and no exception is needed. The dossier, the thread and the
+  author's reasoning still stay out (D-9): what was decided reaches the reader as criteria and
+  open points. The report does differ from the live rule "a report SHALL add the fields of its
+  purpose": the reader leaves out the verdict. The delta therefore carries a MODIFIED block for
+  *Every subagent returns the base report, extended per purpose* that names this one exception.
+- **D-17 Three more lines of `test-strategy` change (corrects D-10, "nothing else", and the
+  No-go "only its rows").** D-10 lets only lines 33–34 of `skills/test-strategy/SKILL.md`
+  change. Two other places quote the rows this change replaces and would be left wrong:
+  - SKILL.md, lines 67–68, the column *Example in a post* of the six questions: "none yet (a
+    gap)" for `ADQ` and for `ROB`. Task 3.1 sets the `ROB` cell to the adversarial reader's read
+    and the `ADQ` cell to say the gap is `accepted`;
+  - `references/generic-writing.md`, line 3: the sentence "`gap → D` rows are for the EPIC
+    `generic-task-test-profiles` to fill." Task 3.1 removes it.
+
+  No question, stance or column changes, so the No-go holds in its sense: the edit corrects
+  quotations of rows. The legend of gap targets in SKILL.md (lines 111–113) stays, since it also
+  serves B and C. If `test-suite-care`'s stage 3 has added the words "assessed on request by
+  `CHK-<m>`" to a row (its D-22), task 3.1 keeps them. The spec delta states this as a standing
+  rule (a quotation of a row agrees with the row) and no longer says what "this change" edits.
+- **D-18 The planted flaw is one that `CHK-91` cannot see (corrects D-11, *Planted flaw*).** The
+  flaw of D-11, a deliverable in scope that the price table leaves out, is what the existing
+  scope-boundary checklist looks for (`CHK-91`: "the price covers only the in-scope list", and
+  every in-scope item maps to a deliverable). Finding it shows nothing the checklist does not
+  already give. Its other lines also cover two of D-3's *Attacks*: exclusions and the stop or
+  extend mechanics. The planted flaw is therefore on the reader's own ground, "a claim with no
+  evidence": `offer-planted.md` says that Meaningfy has done the same mapping for other public
+  registries and names no work, client or year; `offer-clean.md` is the same offer with the
+  claim tied to one named, fabricated engagement (`Example Agency`). Scope, price, exclusions
+  and stop mechanics agree in both files, so the planted offer passes every line of `CHK-91`,
+  which task 1.2 records. Whether a claim names work is a matter of fact, so the check stays
+  fair. The brief adds one criterion to the examples of D-3: *Fails:* a claim about our past
+  work names no work the buyer could check. In D-11's bar, read "a finding quotes the claim" for
+  "a finding quotes the dashboard", and "no finding says a claim lacks evidence" for "no finding
+  claims a scope and price mismatch"; the error-matrix row on the clean offer reads the same
+  way. The dashboard stays as the worked example and in the spec scenario *Scope and price
+  disagree*: a reader may find that too, it is only not the proof.
+- **D-19 One procedure for assessing an agent check (corrects D-11, *Planted flaw*).**
+  `test-suite-care` stage 3 (its D-11) will hold the general procedure in
+  `skills/test-suite-care/references/non-code-checks.md`: five planted flaws, three runs on a
+  seeded and three on a clean copy, the owner's own ten-minute read, and no pass mark. This
+  change keeps its own, smaller proof (one flaw, three and three runs), because it may land
+  first and the proof is evidence made once. It writes no procedure into a skill:
+  `adversarial-reader.md` and the five sections state no way to assess the reader. Once that
+  reference exists, a skill of this change that needs to say how the reader is assessed points
+  to it in plain text and states no second procedure.
+  *(proposed, the owner confirms at scenario sign-off)*: the bar "at least two of three" of
+  D-11 goes. The counts per file are recorded and the owner judges them at the acceptance demo,
+  as in the general procedure and as the No-go "no pass mark" asks. Until the owner answers,
+  D-11's bar stands.
+- **D-20 "Leaves the company" covers four kinds only (corrects D-1, section 1).** The test "Will
+  someone outside Meaningfy read it?" also catches public documentation, a README, a changelog
+  and release notes. The criteria confirmation and the mandatory reader apply only to the four
+  kinds the EPIC names (DEC-1, DEC-3): offers and proposals, contracts, public posts, and client
+  messages, a sales message to a partner included. Section 1 of the reference says so beside the
+  test, and the spec delta carries the sentence and a scenario. The stage-1 pattern `will
+  someone outside Meaningfy read it` is unchanged.
+- **D-21 How many reads a post gets (bears on D-6).** `inputs/qa.md`, Q-15, reads "posts keep
+  criteria and one read"; D-6 allows two reads at most for every kind.
+  *(proposed, the owner confirms at scenario sign-off)*: D-6 stays for posts too, and Q-15's
+  "one read" is taken to mean one reader, not one pass. If the owner says one read, D-1 section
+  7 and the step lines of `linkedin.md` say so for posts, and nothing else changes.
+- **D-22 The follow-up of RISK-11 is an issue (corrects RISK-11 and D-14).** A follow-up that
+  lives only in a PR body is lost when the PR is merged. Task 3.3 files a GitHub issue for
+  `add-content-creation` (a blog explainer written through `explanatory-writing` gets no
+  criteria and no reader) and the PR cites it.
+- **D-23 The description of `guardrails` is 681 characters, not 685 (corrects Context and
+  D-1).** Counted as the lint counts it (`tools/repo_lint/lint.py`, `description_length_report`:
+  the length of the parsed frontmatter value). The edits of D-1 are right as counted there: 24
+  and 35 more, 53 fewer, six more in all. The description ends at 687 characters, not 691. Task
+  1.5 cites 687.
+- **D-24 Names shared with the siblings, and A's terms (bears on D-2, D-4, D-10, D-11).**
+  - `evidence/baseline.md`: `test-suite-care` had a file of that name with another meaning and
+    renames its own. This change keeps the name.
+  - Three readers exist. The *adversarial reader* (this change; brief in `guardrails`; answers
+    `ROB`; tries to break a draft against confirmed criteria). The *cold reader*
+    (`technical-writing`, `CHK-33`; answers `CLR`; follows a page with nothing else). The
+    *recipient-reader* (`sales-operations`, `CHK-95`; answers `CLR`; ten fixed questions). Text
+    of this change never says "the reader" where two of them could be meant. The near-miss probe
+    of D-12 ("have a cold reader test this installation manual", expects `technical-writing`)
+    already separates the first two, so no probe is added.
+  - "Profile": here, a `## Review profile` section of a skill (D-2). The sibling
+    `activity-test-profiles` uses the word in its title for sets of matrix rows. In A's terms a
+    profile of this change is one *check* (a `CHK` id) with two rows, its *technique owner* the
+    skill that holds the section, its *tool* the brief, its *stance* the adversary. Tasks and
+    spec deltas use A's terms for matrix matters and "profile" only for the section.
+  - "Accepted": in A it is a row *status* (a gap left open by a person, with the reason). This
+    design also writes "accepted" for risks the owner took (RISK-2, RISK-3, RISK-8, RISK-11).
+    Those are not statuses and no row follows from them. Only the `ADQ` row of D-10 has the
+    status `accepted`.
+- **D-25 Two pairs of checks that look alike, and how each divides the work (bears on D-3 and
+  D-4).** Neither older check is removed or edited.
+  - `CHK-102` *Governing-thought readiness test* (`executive-communication`, `VAL` and `CLR`,
+    before drafting) and the new criteria step. `CHK-102` is the author's diagnosis: who
+    decides, what they believe, the one sentence. The criteria step comes after it (D-3:
+    "*Start here*, after the three questions") and turns the diagnosis into a success and a
+    failure line that the owner confirms. The first is answered by the author, the second is
+    decided by the owner.
+  - `CHK-95` *Sales recipient-reader* (`sales-operations`, `CLR`) and the busy-recipient
+    adversarial reader (`sales-conversations`, `ROB`). `CHK-95` runs on scheduled and attended
+    runs, with ten fixed questions and no criteria. The adversarial reader runs only in an
+    attended session, at pick-up included, against the criteria the owner confirmed (D-4). A
+    draft picked up from a scheduled run may so be read by both; that is intended, since they
+    answer different questions.
+
+  *(proposed, the owner confirms at scenario sign-off)*: both older checks stay as divided here,
+  and neither is folded into the new step.
+- **D-26 Order and rebase (adds to D-13 and D-10).** This change may land at any time after A,
+  before or after B, C and E. After each rebase on `develop` the lead reruns `make bundles` and
+  `make skill-inventory`, reads R-1..R-12 again (task 1.1), and takes the next five free check
+  ids at task 3.1; `CHK-145` to `CHK-149` hold only if no sibling has taken them.
+
 ## Open Questions
 
 None.

@@ -23,7 +23,7 @@ stays covered and the owner has approved the proposal. The audit SHALL NOT set a
 
 ### Requirement: A check that is not code is assessed for the project and the task
 An assessment of a check that is not code SHALL show whether the check catches a planted flaw,
-whether it gives the same verdict when run again, and what it costs against what it has found. The
+whether it gives the same findings when run again, and what it costs against what it has found. The
 owner SHALL decide what follows; the assessment SHALL NOT retire a check (test-suite-care DEC-11).
 
 #### Scenario: A reader that misses the planted flaw
@@ -93,8 +93,8 @@ of a particular project (test-suite-care DEC-12; design D-2, D-15).
 ### Requirement: A scaffolded project has developer lanes
 A project scaffolded by `project-setup` SHALL have a `slow` marker whose description states the
 project's threshold, a lane that leaves slow tests out, a lane that runs the tests of the changed
-files, and a profiling target. The lanes SHALL NOT remove a test from a CI run, and no scheduled
-run is added (design D-10).
+files, and a profiling target. The lanes SHALL NOT remove a test from a CI run and SHALL add no
+scheduled run (design D-10).
 
 #### Scenario: A change in one layer
 - **WHEN** a developer changes a file under the package's services layer and runs the changed-files lane

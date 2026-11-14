@@ -20,8 +20,8 @@ table with an id `INV-<n>`, the invariant, an example, every write path that can
 test that proves it on each path, or one line "None" with the reason. The section SHALL NOT be
 empty. Where the interview holds no answer to the invariants question, PLAN derivation SHALL
 propose invariants from the EPIC, mark each "proposed, not confirmed" and put them to the developer
-before the gate, and SHALL NOT write "None". PLANs derived before this requirement SHALL NOT be
-migrated (activity-test-profiles DEC-5; design D-1, D-2, D-3).
+before the gate, and SHALL NOT write "None". A PLAN derived before the template held the section
+need not gain it (activity-test-profiles DEC-5; design D-1, D-2, D-3).
 
 #### Scenario: A write path left out
 - **WHEN** `epic-planning` derives the PLAN of an EPIC that keeps one label in two stores and offers create, rename and replace
@@ -38,13 +38,20 @@ migrated (activity-test-profiles DEC-5; design D-1, D-2, D-3).
 ### Requirement: Invariants reach the tester
 An invariant left to the adversarial tester SHALL have a *Test* cell that starts with `tester` and
 a row in the PLAN's error matrix that names the breach and cites the invariant's id, so that the
-tester, which takes its properties from the error matrix, states a property for it. The template
-SHALL name the error matrix as the tester's target list. This EPIC SHALL NOT change the tester's
-brief (activity-test-profiles DEC-5, DEC-7; design D-1, D-2, D-13).
+tester states a property for it. The template SHALL name the error matrix as the tester's target
+list. Which properties the tester takes is the rule of the tester's brief in `epic-delivery`;
+`epic-planning` SHALL point to it and SHALL NOT restate it. Where the appetite's review set names
+no tester, the *Test* cell SHALL NOT start with `tester`: it SHALL name the builder's test or
+scenario that proves the invariant on each write path (activity-test-profiles DEC-5, DEC-7; design
+D-1, D-2, D-13).
 
-#### Scenario: Tracing this EPIC's own invariant
-- **WHEN** the tester is dispatched on the stage of activity-test-profiles that adds the closed-family test, whose PLAN holds `INV-1` with a *Test* cell starting with `tester` and an error-matrix row citing `INV-1`
-- **THEN** the tester's table of properties has a row for the property of that error-matrix row, with a test and a result, and the three rows are recorded together in `evidence/invariants-trace.md`
+#### Scenario: A tester dispatched on an invariant left to it
+- **WHEN** the tester is dispatched on a stage whose PLAN holds `INV-1` with a *Test* cell starting with `tester` and an error-matrix row citing `INV-1`
+- **THEN** the tester's table of properties has a row for the property of that invariant, with a test and a result
+
+#### Scenario: An appetite without a tester
+- **WHEN** `epic-planning` derives the PLAN of a SMALL EPIC, whose review set names no tester, and the PLAN holds an invariant
+- **THEN** the invariant's *Test* cell names the builder's test for each write path and does not start with `tester`
 
 #### Scenario: Deriving a PLAN with an invariant left to the tester
 - **WHEN** `epic-planning` derives a PLAN whose invariant's *Test* cell starts with `tester`
