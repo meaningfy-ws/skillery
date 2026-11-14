@@ -4,7 +4,9 @@
 The loop of a stage SHALL be Prepare, Build, Challenge, Decide and fix, Check, Merge, and the
 Challenge and Check steps SHALL scale with the EPIC's appetite (align-agent-team-delivery DEC-7,
 DEC-10) as the review set of the epic-delivery workflow file in `epic-delivery` states for each
-appetite. The adversarial tester SHALL run from MEDIUM up (harden-checks-and-tests DEC-9). For
+appetite. From LARGE up the adversarial tester SHALL run on every stage; at MEDIUM it SHALL run
+on a stage that changed code and for which the PLAN names an invariant, and on no other stage
+(harden-checks-and-tests DEC-9, revised 2026-11-14). For
 MEDIUM and above, the file SHALL also state a small-stage set: when a stage's added
 lines are at or under its limit and the lead judges the risk low, the lenses MAY run as two merged
 reviewers, provided the lead records the choice as a decision under `## Delivery decisions` in the
@@ -19,8 +21,12 @@ it, and worked examples and tests MAY illustrate it.
 - **THEN** one review pass covering spec and structure runs, and no checker or tester is dispatched
 
 #### Scenario: A MEDIUM EPIC
-- **WHEN** a stage of a MEDIUM EPIC is built
+- **WHEN** a stage of a MEDIUM EPIC is built that changed code for which the PLAN names an invariant
 - **THEN** the adversarial tester and the five lenses run in parallel, followed by one fresh checker
+
+#### Scenario: A MEDIUM stage with nothing for the tester
+- **WHEN** a stage of a MEDIUM EPIC is built that changed only skill text, or code for which the PLAN names no invariant
+- **THEN** the five lenses run in parallel, followed by one fresh checker, and no tester is dispatched
 
 #### Scenario: A LARGE EPIC with screens
 - **WHEN** a stage of a LARGE EPIC that changed screens is built
@@ -32,7 +38,7 @@ it, and worked examples and tests MAY illustrate it.
 
 #### Scenario: The scaling has one source
 - **WHEN** a contributor looks up the review set of a MEDIUM EPIC in `epic-delivery`
-- **THEN** the skill points to the epic-delivery workflow file, which states five lenses, the adversarial tester and a checker, and no table in the skill repeats it
+- **THEN** the skill points to the epic-delivery workflow file, which states five lenses, the adversarial tester with its condition and a checker, and no table in the skill repeats it
 
 ## ADDED Requirements
 
@@ -60,3 +66,25 @@ instead. The tester remains a brief for `implementer` (harden-checks-and-tests D
 #### Scenario: A stage without Python code
 - **WHEN** the tester is dispatched on a stage that changed only skill files
 - **THEN** its report says no property-based method applied and lists the edge cases it tried
+
+### Requirement: A challenge or check result ends in one line
+The report of the adversarial tester, of a reviewer and of the checker SHALL end in one result
+line of a fixed form that a script can read. The line SHALL name the stage and the role, and
+SHALL give the number of findings and the number of them the lead accepted; the tester's line
+SHALL also give the number of tests written and the number that failed on their first run, a
+reviewer's its lenses, and the checker's its verdict. The worker SHALL leave the accepted number
+open, and the lead SHALL write the line again with that number when it decides the findings, in
+the stage's pull request. `epic-delivery` SHALL hold the one definition of the line, and no
+other skill SHALL define it (harden-checks-and-tests DEC-9, revised 2026-11-14; design D-29).
+
+#### Scenario: A tester's result
+- **WHEN** the tester wrote twelve tests on stage 2, three failed on their first run, and it reports three findings
+- **THEN** its report ends in the line `result: stage=2 role=tester tests=12 failed-first=3 findings=3 accepted=-`
+
+#### Scenario: The lead decides the findings
+- **WHEN** the lead accepts two of the tester's three findings in step 4
+- **THEN** the stage's pull request holds the same line with `accepted=2`
+
+#### Scenario: A report without the line
+- **WHEN** a reviewer's report does not end in the result line
+- **THEN** the lead returns it as incomplete

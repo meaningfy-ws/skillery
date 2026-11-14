@@ -7,7 +7,8 @@
      against A's PLAN. No DEC text changed; the owner's round-8 answers (inputs/qa.md) narrow DEC-8
      (ls-lint: banned file names only, required files checked in make) and read DEC-4 strictly
      (scripts live in project-setup's templates, not in quality/). Both are recorded in design.md
-     D-1 and D-5. -->
+     D-1 and D-5. Revised 2026-11-14 by owner decision: DEC-9 (the tester at MEDIUM runs on a
+     condition; one result line), design D-28 and D-29; not gated again. -->
 
 # EPIC: harden checks and tests
 
@@ -51,7 +52,8 @@ selection and misses checks it could make for free.
    upgraded by bumping a pin.
 3. **An adversarial tester with proper methods.** The tester keeps its brief and gains methods:
    Hypothesis properties and stateful tests, and Schemathesis where an OpenAPI contract exists; its
-   report lists the properties it stated. It runs from MEDIUM up. Outcome: "try to break it" becomes
+   report lists the properties it stated. It runs from MEDIUM up, at MEDIUM on a condition
+   (DEC-9). Outcome: "try to break it" becomes
    a repeatable technique with a visible result.
 4. **Tests that are measured.** A weekly mutmut run on `develop` writes the surviving mutants to
    `tests/mutmut-results/` in a bot PR; a person picks them up, plans the fixes and deletes the
@@ -93,11 +95,17 @@ selection and misses checks it could make for free.
   the canonical layout; checkmake checks Makefile hygiene; the required Makefile targets come from
   `project-setup`'s template. Docs folders and stacks repositories are EPIC C's — rejected:
   a custom layout script (Q-4).
-- **DEC-9**: The adversarial tester stays an `implementer` with a brief, gains Hypothesis
-  (properties, stateful), Schemathesis with an OpenAPI contract, and runs from MEDIUM up; the
+- **DEC-9** *(revised 2026-11-14 by owner decision,
+  [`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+  decisions 3 and 4)*: The adversarial tester stays an `implementer` with a brief, gains Hypothesis
+  (properties, stateful), Schemathesis with an OpenAPI contract, and runs from MEDIUM up; at
+  MEDIUM it runs only on a stage that changed code and for which the PLAN names an invariant.
+  Its report, a reviewer's and the checker's end in one fixed line a script can read. The
   review-set data in `epic-delivery.workflow.json` changes accordingly. The brief takes
   `test-strategy`'s adversary stance (`ROB`, `ADQ`) — rejected: a new tester
-  agent; LARGE-only (round 0, Q-2).
+  agent; LARGE-only (round 0, Q-2) — was: from MEDIUM up on every stage, and no result line
+  (the measurements show review and verification as 53% of all subagents, with no outcome
+  recorded).
 - **DEC-10**: mutmut runs weekly on `develop` in scheduled CI and opens or updates one bot PR that
   adds `tests/mutmut-results/`; it never fails a build; whoever picks the results up plans the fixes
   and deletes the folder when empty — rejected: per-PR runs; direct push to `develop` (Q-8, Q-9).
@@ -167,7 +175,9 @@ selection and misses checks it could make for free.
   ls-lint and checkmake; a weekly mutmut workflow in the CI template; the mechanical
   import-contract check; a migration note for existing projects.
 - `epic-delivery`: the tester brief gains its methods and report fields; the review sets name the
-  tester from MEDIUM up (**BREAKING** for MEDIUM EPICs: one more dispatch per stage).
+  tester from MEDIUM up (**BREAKING** for MEDIUM EPICs: one more dispatch on each stage that
+  changed code and has an invariant named for it; DEC-9 as revised); the tester's, a reviewer's
+  and the checker's report end in one result line.
 - `meaningfy-code-review`: L3 judges the import-linter contracts once per EPIC.
 - `make validate` runs `quality/`'s tests locally; CI skips them when a tool is missing.
 
