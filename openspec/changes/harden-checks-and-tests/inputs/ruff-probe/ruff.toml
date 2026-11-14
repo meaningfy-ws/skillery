@@ -1,0 +1,10 @@
+# Probe configuration for issue #215 and the wider selection (design D-2). Not a project template.
+[lint]
+select = ["S113", "DTZ", "E722", "BLE001", "TID251", "PLR2004", "PLR0913", "PLR1702", "PT018", "S608"]
+
+[lint.pylint]
+allow-magic-value-types = ["bytes"]
+
+[lint.flake8-tidy-imports.banned-api]
+"os.getenv".msg = "Read configuration through the typed config class (PR-CONFIG-DECOUPLED)."
+"os.environ".msg = "Read configuration through the typed config class (PR-CONFIG-DECOUPLED)."
