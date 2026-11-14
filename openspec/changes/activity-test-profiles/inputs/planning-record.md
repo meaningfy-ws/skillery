@@ -22,6 +22,11 @@ The rewritten PLAN (commit ebd5784) was attacked and gated again, in parallel:
 | Attack, a fresh subagent | 15 findings | The installed tester brief may be older than B's (dispatch from the working tree); a Hypothesis test would break CI collection; `make quality-tools` fails in a doc-only project; styles synced into `quality/` would fail B's lint; the trace shows less than it claimed (its limit is now stated); edits to `design.md` after the gate would make the gate stale (`## Delivery decisions`); "no Makefile" was counted as a run; C's manifest against B's manifest test; a status in backticks slips past A's test; public text outside `evidence/` |
 | Gate run 6 | 8.93, fail | Tool versions against B's pins; a fixture path collision; a requirement shared by two stages; two wrong counts; fill order stated two ways; Vale's sync command; undefined row forms |
 
+| Gate runs 7, 8, 9 | 8.98, 8.98, 8.97, fail | PLAN derivation with no interview answer; scenarios without a named proof; tests spread over four places; one pin in two files; survey searches without commands; the checker's list in three places |
+| Gate run 10, on commit 1b043fe | **9.15, PASS**, all 13 checklist items pass | Five small clarifications, folded in afterwards: the baseline's agent type; where the naming-form question is asked; the family file's intro sentence; two counts' scope; three pointers |
+
+Every run was by a fresh, independent scorer that had not seen the others.
+
 What the rewrite did with the first version's findings: most of the findings came from guessing at A and B. A's family
 files, its test and B's `quality/` tree, tests, manifest form and tester brief are now facts, and
 the current `design.md` cites them. The ten open gaps of run 5 are closed there (owner round: D-6;

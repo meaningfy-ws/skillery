@@ -1,6 +1,7 @@
 <!-- PLAN (design half). Type: Implementation. First derived 2026-11-13 before A and B existed;
      rewritten 2026-11-14 against A as delivered and archived and against B's gated PLAN (both on
-     develop at 48dfc9c). History is in inputs/planning-record.md. -->
+     develop at 48dfc9c). Clarity gate 9.15/10 PASS on commit 1b043fe by an independent scorer;
+     its five recommendations folded in afterwards. History is in inputs/planning-record.md. -->
 
 > Derives from: EPIC `activity-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-8; the
 > owner's answers Q-8..Q-11 in [`inputs/qa.md`](inputs/qa.md). Parents as delivered or planned:
@@ -67,7 +68,8 @@ What C uses, with the place in [B's design](../harden-checks-and-tests/design.md
   with the section list in `schema.yaml` beside it (line 129); `make bundles` copies both to
   `openspec/schemas/meaningfy/` (`tools/bundle_gen/gen.py:42`).
 - `technical-writing`'s `verify` phase runs the snippets and the project's docs gate, one command,
-  `make build-docs` (`skills/technical-writing/assets/workflows/documentation.workflow.json:13`).
+  `make build-docs` (the `docs-gate` gate of the `verify` phase in
+  `skills/technical-writing/assets/workflows/documentation.workflow.json`).
   The skill has no `references/` folder.
 - `infrastructure-operations`' `references/repo-checks.md` is a list of required checks under a
   MUST. Neither devops skill states a naming rule or a Makefile rule today.
@@ -182,7 +184,7 @@ further call when it needs more than four questions.
 | Kind | Asked | Options | Stages |
 |---|---|---|---|
 | 1 Failures | "Which of these went wrong in `<family>` work?", multi-select, one question per three failures the survey found | up to three failures, and "None of these". A failure not selected stays in the failures table marked "not confirmed" and backs no fill. The free-text answer adds a failure, recorded as "the owner's words, `<date>`". When the survey found nothing: "None seen" and "One I describe in the free text". Stage 3 adds one question, "Has a runbook failed someone who followed it?", with "No" and "Yes, described in the free text" | all |
-| 2 Rules | "Which of these rules would you fix?", multi-select, per tool | up to three rules, each with its count and one example, and "None of these". At most six rules per tool, so two questions per tool: the six with the most findings after the lead drops each rule whose three recorded examples are all house terms or code identifiers (the summary lists the dropped rules with that reason). A rule not selected or not shown is noise; the tool-run summary lists them all. A selected rule counts even if "None of these" is ticked beside it. Where two packages flag the same thing, they are one option, and the rule of the package listed first in D-8 is the one enabled | 1 and 3 |
+| 2 Rules | "Which of these rules would you fix?", multi-select, per tool | up to three rules, each with its count and one example, and "None of these". At most six rules per tool, so two questions per tool: the six with the most findings after the lead drops each rule whose three recorded examples are all house terms or code identifiers (the summary lists the dropped rules with that reason). A rule not selected or not shown is noise; the tool-run summary lists them all. A selected rule counts even if "None of these" is ticked beside it. Where two packages flag the same thing, they are one option, and the rule of the package listed first in D-8 is the one enabled; the summary lists each such merge | 1 and 3 |
 | 3 Decisions | One question per decision table, the table in the question text; one more per scenario rewritten or added (D-14), with its text | "Confirm" and "Change". On "Change" the owner says which lines in the free text, the lead corrects them and asks once more | all |
 
 A tool with no finding gets no question of kind 2 and its decision is `accept`. Stages 4 and 5
@@ -199,7 +201,7 @@ Each run happens in the session's scratch folder with a draft configuration; not
 |---|---|---|---|
 | Vale | 1 | skillery's `docs/` (Q-10) | the four packages of D-8, every rule at its default level |
 | ls-lint, docs | 1 | skillery's `docs/` | kebab-case for directories and for `.md` and `.adoc` files; `README.md`, `CHANGELOG.md` and `docs/rules/` exempt (the rulebook's tooling names those files) |
-| ls-lint, stacks | 3 | a read-only checkout of `infrastructure-stacks` (Q-10) | the naming form with the highest count among ls-lint's kebab-case, snake_case, camelCase and PascalCase. A stack is a directory that holds a compose file; names are counted for stack directories, the directories one level below them and each file extension present in more than half of the stacks; a single-word lowercase name fits every form and is left out of the count. The summary states each form and its count; the findings are the names that depart from the winning form. On a tie, or when no form covers more than half of the counted names, the run is not made on a guess: the summary lists the forms and the owner picks one in the round, after which the run is made |
+| ls-lint, stacks | 3 | a read-only checkout of `infrastructure-stacks` (Q-10) | the naming form with the highest count among ls-lint's kebab-case, snake_case, camelCase and PascalCase. A stack is a directory that holds a compose file; names are counted for stack directories, the directories one level below them, and the files directly in a stack directory whose extension is present in more than half of the stacks; a single-word lowercase name fits every form and is left out of the count. The summary states each form and its count; the findings are the names that depart from the winning form. On a tie, or when no form covers more than half of the counted names, the run is not made on a guess: the lead asks the owner one question before the run, in task 3.3 and outside the round, as for the missing Makefile: which form |
 | checkmake | 3 | the same checkout | its default rule set |
 
 - ls-lint and checkmake are installed at the versions B pins in `Makefile.tmpl`
@@ -323,7 +325,9 @@ In the family files the question and status cells are written bare, as A's rows 
 cell to `exists` exactly. An `accepted` reason is self-contained plain text without a `|`: no path
 and no link into `openspec/` (a skill file may not link there, and the folder moves at archive).
 The middle three cells of an `accepted` row keep what the gap row had, and its *Decided by* cell
-becomes "the developer".
+becomes "the developer". Each family file's opening paragraph ends with the sentence "`gap → C`
+rows are for the EPIC `activity-test-profiles` to fill or accept"; the close step removes that
+sentence, which counts as an edit of the family's rows.
 
 ### D-11 The closed-family test
 
@@ -428,8 +432,9 @@ the row alone carried it.
 ### D-15 Definition of Done items beyond the stage loop
 
 - **Baseline, stage 2 only** (the invariants question is a discipline rule): the four runs IT-5 to
-  IT-8 of § Algorithm, each by a fresh subagent of the same agent type and model, working in a
-  checkout of a named commit and told
+  IT-8 of § Algorithm, each by a fresh `general-purpose` subagent on the session's own model
+  (`epic-planner` is not for delegation), given the same prompt text, kept in
+  `evidence/baseline/prompt.md`, working in a checkout of a named commit and told
   to follow that checkout's `skills/epic-planning/` and PLAN template, not the installed plugin.
   Results go to `evidence/baseline-shaping.md`. If IT-5 already meets its observable, the result
   is recorded as it is, #143 stays the failure evidence and the owner is told in the stage's PR.
@@ -472,7 +477,7 @@ the row alone carried it.
 ### D-17 Public evidence is scrubbed
 
 Nothing in `evidence/` or `inputs/` names a host, an address, a client, a person or a secret path
-from the infra repositories or from client work. Tool findings are quoted with the path reduced to
+from the infra repositories or from client work (the same five things INV-4 lists). Tool findings are quoted with the path reduced to
 its shape (`<stack>/Makefile`), failures with the system named by its kind ("a reverse-proxy
 stack"). The stage checker reads every evidence and input file for this before the PR, and again
 on the final diff before the merge when review added commits. Text that leaves the repository's
@@ -517,8 +522,10 @@ triggers*).
      openspec/changes/archive/*/inputs`, and each file found is read for a finding or a deviation
      about that skill's work;
    - the survey file lists every command as run, with its number of hits;
-   - stage 3 only: the issues and review comments of `infrastructure-stacks`, with `gh` run inside
-     the checkout, and the question "has a runbook failed someone who followed it" in the owner
+   - stage 3 only: the issues and pull requests of `infrastructure-stacks`, with
+     `gh issue list --state all --limit 200` and `gh pr list --state all --limit 200` run inside
+     the checkout; every title is read, and the body of each one that mentions a name, a layout, a
+     Makefile or a runbook; and the question "has a runbook failed someone who followed it" in the owner
      round (a yes is a failure for the `ADQ` row: `CHK-57` did not catch it);
    - stages 1 and 3: the tool runs of D-7.
 4. *Owner round* (D-6).
@@ -621,10 +628,16 @@ in the delivery session; `CK` is a reading by the stage checker. The fixture pat
 | CK-2 | the interview question | `epic-planning` step 2 as changed, and the two sample `inputs/qa.md` files written in the form it asks for | the text asks for each invariant with an example and accepts "none" with a reason; the samples fit it | the same |
 | CK-3 | the skill text of an adopted tool check | the new section of `technical-writing` (stage 1), `stack-standard.md` and `repo-checks.md` (stage 3), read against each scenario of that stage's `documentation-workflow` or `operations-practice` requirements | the text says what each scenario's THEN says: where findings go, that nothing blocks, the skip note, the rename before the PR, *Recommended checks* with the pointer to #216 | the stage 1 and stage 3 checkers' verdicts |
 
-Which proof covers which scenario outside `epic-shape` (task 2.8 lists that capability's):
+Which proof covers which scenario:
 
 | Capability | Scenario | Proof |
 |---|---|---|
+| `epic-shape` | *An EPIC that keeps one fact in two places*; *An EPIC with no invariant* | CK-2 |
+| `epic-shape` | *A write path left out*; *A PLAN whose interview had no invariants answer* | IT-6 |
+| `epic-shape` | *A PLAN with no invariant* | IT-8 |
+| `epic-shape` | *Deriving a PLAN with an invariant left to the tester* | IT-7 |
+| `epic-shape` | *Tracing this EPIC's own invariant* | IT-9 |
+| `epic-shape` | *The design template's one new heading* | CK-1 |
 | `test-strategy` | *A gap with a recorded failure*; *A gap without a failure*; *A stage with no failure at all*; *A check proposed without a failure* | the stage checker's list, step 6 of the stage loop |
 | `test-strategy` | *A candidate tool with only noise* | the answers of kind 2 in `inputs/qa.md` against the stage's diff, by the stage checker |
 | `test-strategy` | *A gap row added later* | TC-1 |
@@ -671,7 +684,7 @@ A stage's PR can be rebuilt from its survey file and decision table.
 | INV-1 | In a family in `CLOSED_FAMILIES` every row's status is exactly `exists` or `accepted`, and each `accepted` row has a reason | holds: `ui.md` with every row `exists` or `accepted` with text; breaks: a later PR adds a `gap → D` row to `documentation.md` | a stage's close step; any later edit of a family file (D's rows, a new check); a status in bold or backticks, a misspelt one, a reason holding a pipe that shifts the columns | tester: a property over generated family tables, that `closed_family_errors` reports exactly the rows whose status is not `exists` or `accepted` and the `accepted` rows with an empty *Check* cell; plus the fixture cases of task 0.3 |
 | INV-2 | Every check C adds names a failure id that exists in its stage's survey file | holds: `CHK-<n>` ← `F-shaping-1` ← #143; breaks: Vale adopted with no rule marked | a stage's fill; a commit added after review | the stage checker reads the decision table against the diff, before the PR and again before the merge when review added commits (no automatic test: the survey moves at archive) |
 | INV-3 | `quality/vale/` holds no style file | holds: `vale.ini` and the manifest; breaks: `styles/Microsoft/Passive.yml` left there by a `vale sync` run in the folder | stage 1's fill; a contributor syncing inside `quality/vale/`; a fixture copied from a style | TC-11, which reads the folder on disk |
-| INV-4 | No evidence or input file names a host, address, client or person from the infra repositories | holds: "`<stack>/Makefile`: 3 findings of rule `minphony`"; breaks: a pasted finding line with a real path | a tool-run summary; a failure row quoting an infra issue; the owner's answers copied to `inputs/qa.md`; a commit added after review | the stage checker (D-17); no automatic test |
+| INV-4 | No evidence or input file names a host, address, client, person or secret path from the infra repositories | holds: "`<stack>/Makefile`: 3 findings of rule `minphony`"; breaks: a pasted finding line with a real path | a tool-run summary; a failure row quoting an infra issue; the owner's answers copied to `inputs/qa.md`; a commit added after review | the stage checker (D-17); no automatic test |
 | INV-6 | The packages named in `vale.ini` and the ids in the Vale manifest are the same set | holds: both name Microsoft and write-good; breaks: a package added to `vale.ini` with no manifest entry, so no licence is on record | stage 1's fill; a tag bump; a package dropped later | TC-12 |
 | INV-5 | A PLAN's `## Invariants` section is never empty | holds: a table, or "None: `<why>`"; breaks: the heading alone | a PLAN derived from the template; a PLAN revised after its gate | none automatic: the rule is in `epic-planning` step 6; the gap is accepted and named in #143 (D-3) |
 

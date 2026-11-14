@@ -18,6 +18,7 @@ subagent that built nothing of the stage.
   each difference in `evidence/preflight.md`, handled as D-16 says. For B, read in particular:
   the ls-lint and checkmake pins and where `make quality-tools` puts the binaries; whether
   `quality_files` reads the disk or tracked files; which manifest files B's manifest test covers;
+  whether `make quality-tools` runs in a doc-only project;
   the Method and Read lines of the tester's brief (D-7, D-8, D-9, D-12, D-13, D-16; RISK-1).
 - [ ] 0.3 Add `CLOSED_FAMILIES` (empty), `closed_family_errors` and its test to
   `tests/test_test_strategy.py`, test-first, with the cases TC-1 to TC-8 (D-11; design § Tests
@@ -37,7 +38,7 @@ subagent that built nothing of the stage.
   tool runs once on a real tree*).
 - [ ] 1.4 Owner round, the three kinds of call of D-6; answers to `inputs/qa.md` (D-6, D-14).
 - [ ] 1.5 *Fill only.* With the tools on `PATH` and network for Vale's sync, so no tool test skips:
-  the fixture pairs and the tests TC-9 to TC-12, IT-1 and IT-2 in `tests/test_quality.py`,
+  the fixture pairs and those of the tests TC-9 to TC-12, IT-1 and IT-2 that belong to an adopted tool, in `tests/test_quality.py`,
   red first; then `quality/vale/vale.ini`, the manifest and `quality/ls-lint/docs.yml` as decided;
   the rows in `quality/README.md`; Vale in `docs/development/quality.md` and its install note in
   `CONTRIBUTING.md`; keep each test's red and passed output (D-9, D-18; design § Tests and
@@ -102,7 +103,8 @@ subagent that built nothing of the stage.
   has none, ask the owner the one question of D-7 (design § Algorithm; D-7).
 - [ ] 3.2 Copy the gap row into `evidence/survey-devops.md`; run the survey searches, including the
   checkout's issues and review comments (design § Algorithm, steps 2 and 3; D-5).
-- [ ] 3.3 Tool runs: install ls-lint and checkmake into scratch; run the stacks ls-lint draft and
+- [ ] 3.3 Tool runs: install ls-lint and checkmake into scratch; count the naming forms and, on a
+  tie or no majority, ask the owner the one question of D-7; run the stacks ls-lint draft and
   checkmake of D-7 on the checkout; confirm with `git status` that the
   checkout is unchanged; write `evidence/toolrun-ls-lint-stacks.md` and
   `evidence/toolrun-checkmake.md`, scrubbed (D-7, D-17; spec *Each tool runs once on a real tree*).

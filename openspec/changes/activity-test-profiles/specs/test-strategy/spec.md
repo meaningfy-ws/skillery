@@ -45,7 +45,7 @@ not exactly `exists` or `accepted`, or an `accepted` row without a reason (desig
 ### Requirement: Each tool runs once on a real tree
 Vale and ls-lint SHALL each be run once on a real docs tree, and ls-lint and checkmake once on a
 checkout of a real stacks repository, read-only, with a summary recorded in `evidence/` that names
-no host, address, client or person. Where the checkout holds no Makefile, checkmake SHALL run on
+no host, address, client, person or secret path. Where the checkout holds no Makefile, checkmake SHALL run on
 the other infrastructure repository if the developer chooses it; otherwise its summary SHALL
 record that it did not run, and the proof SHALL be listed as not met for checkmake and accepted by
 the developer (activity-test-profiles DEC-7; design D-7, D-17).
