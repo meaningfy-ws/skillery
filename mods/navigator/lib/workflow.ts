@@ -128,12 +128,6 @@ function phaseError(p: unknown, at: string): string | null {
   if (!isObj(p)) return `${at}: not an object`
   const extra = Object.keys(p).find(k => !['id', 'owner', 'expect', 'allow', 'gates', 'enter', 'criteria'].includes(k))
   if (extra) return `${at}: unknown key '${extra}'`
-  if ('criteria' in p) {
-    const c = p.criteria
-    if (!isObj(c) || Object.keys(c).length !== 2 || ![c.succeeds, c.fails].every(v => isStr(v) && v.trim())) {
-      return `${at}.criteria must be {succeeds, fails}, each a non-empty string`
-    }
-  }
   if (!isStr(p.id) || !isStr(p.owner)) return `${at}: needs 'id' and 'owner'`
   if (!Array.isArray(p.expect)) return `${at}.expect must be a list`
   for (const x of p.expect) {
@@ -142,6 +136,12 @@ function phaseError(p: unknown, at: string): string | null {
     }
   }
   for (const k of ['allow', 'gates'] as const) if (k in p && !isStrs(p[k])) return `${at}.${k} must be a list of names`
+  if ('criteria' in p) {
+    const c = p.criteria
+    if (!isObj(c) || Object.keys(c).length !== 2 || ![c.succeeds, c.fails].every(v => isStr(v) && v.trim())) {
+      return `${at}.criteria must be {succeeds, fails}, each a non-empty string`
+    }
+  }
   if (!isObj(p.enter)) return `${at}.enter must be an object`
   for (const [k, v] of Object.entries(p.enter)) {
     if (k === 'skills' || k === 'agents') { if (!isStrs(v)) return `${at}.enter.${k} must be a list of names` }

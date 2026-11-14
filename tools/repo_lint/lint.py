@@ -1292,7 +1292,7 @@ def workflow_criteria(repo: Path) -> list[str]:
     for wf in sorted(repo.glob("skills/*/assets/workflows/*.workflow.json")):
         try:
             data = json.loads(wf.read_text(encoding="utf-8"))
-        except ValueError:
+        except (ValueError, RecursionError):
             continue  # navigator's TC-16 reports an unreadable workflow file
         phases = data.get("phases") if isinstance(data, dict) else None
         if not isinstance(phases, list):

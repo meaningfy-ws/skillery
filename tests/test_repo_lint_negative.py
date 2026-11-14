@@ -747,18 +747,24 @@ def test_workflow_criteria_flags_malformed_criteria(tmp_path, criteria):
     assert len(out) == 1 and out[0].startswith(f"{_CRITERIA_WF}: phase 'p' needs criteria")
 
 
-@pytest.mark.parametrize("text", ["[]", "{nope", json.dumps({"phases": "x"}),
-                                  json.dumps({"phases": ["x", None, {"id": "p", "criteria": {}}]})])
-def test_workflow_criteria_survives_a_workflow_of_the_wrong_shape(tmp_path, text):
-    # unreadable or wrong shape: the navigator reports it; the check must not crash the lint run
+@pytest.mark.parametrize("text", ["[]", "{nope", json.dumps({"phases": "x"})])
+def test_workflow_criteria_skips_a_workflow_of_the_wrong_shape(tmp_path, text):
+    # unreadable or wrong shape: the navigator reports it; the check says nothing and does not crash
     _raw_wf(tmp_path, text)
-    lint.workflow_criteria(tmp_path)
+    assert lint.workflow_criteria(tmp_path) == []
 
 
-def test_workflow_criteria_ignores_files_that_are_not_default_workflows(tmp_path):
-    d = tmp_path / ".claude" / "workflows"
-    d.mkdir(parents=True)
-    (d / "x.workflow.json").write_text(json.dumps({"phases": [{"id": "p"}]}), encoding="utf-8")
+def test_workflow_criteria_skips_non_object_phases_and_checks_the_rest(tmp_path):
+    _raw_wf(tmp_path, json.dumps({"phases": ["x", None, {"id": "p", "criteria": {}}]}))
+    out = lint.workflow_criteria(tmp_path)
+    assert len(out) == 1 and out[0].startswith(f"{_CRITERIA_WF}: phase 'p' needs criteria")
+
+
+@pytest.mark.parametrize("rel", ["docs/navigator/x.workflow.json", ".claude/workflows/x.workflow.json"])
+def test_workflow_criteria_ignores_files_that_are_not_default_workflows(tmp_path, rel):
+    p = tmp_path / rel
+    p.parent.mkdir(parents=True)
+    p.write_text(json.dumps({"phases": [{"id": "p"}]}), encoding="utf-8")
     assert lint.workflow_criteria(tmp_path) == []
 
 

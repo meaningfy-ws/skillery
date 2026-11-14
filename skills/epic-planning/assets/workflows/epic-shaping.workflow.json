@@ -23,8 +23,8 @@
                     "fails": "a task has no acceptance, or the PLAN cites no parent EPIC" },
       "enter": { "change": ["plan", "tasks-no-design"] } },
     { "id": "revise", "owner": "epic-planning", "expect": [], "gates": ["clarity"],
-      "criteria": { "succeeds": "the clarity-gate score on the PLAN is 9 or above, or each remaining gap is a DEC- with the developer's answer",
-                    "fails": "the PLAN scored below 9 and a gap is neither fixed nor decided by the developer" },
+      "criteria": { "succeeds": "the PLAN passes the clarity gate, or each remaining gap is a DEC- with the developer's answer",
+                    "fails": "the PLAN fails the clarity gate and a gap is neither fixed nor decided by the developer" },
       "enter": { "skills": ["clarity-gate", "openspec-update-change"] } }
   ],
   "gates": {

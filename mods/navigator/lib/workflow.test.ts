@@ -82,7 +82,8 @@ test('criteria is optional on a phase; valid criteria load (D-5)', () => {
 test('malformed criteria is a schema error naming the file and the phase (D-5)', () => {
   const bad = [{ succeeds: '' }, 'text', ['a'], null, { succeeds: 'a' }, { fails: 'b' },
     { succeeds: 'a', fails: 'b', extra: 'c' }, { succeeds: 'a', fails: '' }, { succeeds: 'a', fails: '   ' },
-    { succeeds: 1, fails: 'b' }]
+    { succeeds: 1, fails: 'b' },
+    { succeeds: 'a', other: 'b' }]
   for (const c of bad) {
     assert.deepEqual(resolveWorkflows([], [withCriteria(c)]).errors,
       ['workflow file docs/navigator/c.workflow.json: phases[0].criteria must be {succeeds, fails}, each a non-empty string'],
