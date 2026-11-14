@@ -47,6 +47,13 @@ Next: shape the two EPICs, each in its own fresh session. This folder becomes th
 tooling EPIC; the process and tools EPIC gets its own change folder and cites these inputs. The
 elicitation still owes, for each: the appetite, the test-scenario interview and the risk question.
 
+Update of 2026-11-15: the process and tools EPIC is shaped as
+[`delivery-process-and-tools`](../../delivery-process-and-tools/proposal.md), and it now carries
+the result line (its DEC-18). The retrospective tooling EPIC, still to shape here, keeps the skill
+for the two scripts and the phase and stage in the traces. It is delivered after that EPIC and
+before `test-suite-care` uses the scripts for costs
+([`reassessment-2026-11-15.md`](../../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)).
+
 ## Inputs in this folder
 
 - [`findings-2026-11-14.md`](findings-2026-11-14.md) — the measurements, the findings and the

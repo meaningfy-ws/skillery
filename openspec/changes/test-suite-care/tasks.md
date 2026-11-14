@@ -1,6 +1,7 @@
 <!-- STATUS: PLAN derived, attacked and gated 2026-11-14 (9.05 on the fourth run). Nothing
      delivered. Revised 2026-11-14 by owner decision (design D-35, D-36: tasks 1.9 and 3.2);
-     not gated again. -->
+     not gated again. Revised 2026-11-15 against the three refactoring EPICs (design D-37 to
+     D-42: tasks 1.0, 1.3, 1.5, 1.9, 1.13, 2.3, 3.2, 3.7 and the Roadmap); not gated again. -->
 
 # PLAN (tasks): test suite care
 
@@ -11,7 +12,7 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
 
 ## 1. Stage 1: the audit for Python suites, the rules, the distilling, the lanes
 
-- [ ] 1.0 Scenario sign-off: the owner reads the scenarios of `specs/` and answers OQ-1 to OQ-3;
+- [ ] 1.0 Scenario sign-off: the owner reads the scenarios of `specs/` and answers OQ-1 to OQ-5;
       the answers are recorded in `evidence/acceptance.md`. *Acceptance:* the file exists with the
       owner's words.
       Also put to the owner: D-33 (the closing check) and the deviations table of the design.
@@ -26,9 +27,14 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       `evidence/scripts.md`.
       *Reconciled:* D-28 (the three packages).
 - [ ] 1.3 Write `SKILL.md` and `references/measuring.md`, `scenario-map.md`, `waste.md`,
-      `report.md` (D-1, D-2, D-4 to D-7), with the frontmatter and facets of D-1. *Acceptance:*
+      and `assets/report-template.md` (D-1, D-2, D-4 to D-7), with the frontmatter and facets of D-1. *Acceptance:*
       T-10 passes, and the `waste.md` part of T-11.
       *Reconciled with B, C and D:* apply D-20 of the design's Delivery decisions.
+      *Revised 2026-11-15 (D-40):* the skill is written lean, by the sort and the sizes of D-40:
+      at most 24 KB of prose with a body near 6 KB, each pointer to a reference saying when to
+      open it and what it adds, no example code copied in; the report format is a template, not
+      a reference. *Acceptance, added:* the sizes by `wc -c` are in the stage's pull request and
+      the budget check of `lean-skills` passes with no recorded exception.
 - [ ] 1.4 Register the skill (D-16): `bundles.yaml`, `use-cases/UC-W18-programming-team-lead.md`,
       the two README rows, `CHANGELOG.md`, `make bundles`, `make skill-inventory`. *Acceptance:*
       `make lint` is clean; `make bundles` leaves no difference; `tests/test_skill_inventory.py`
@@ -40,6 +46,10 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       `test-strategy`. *Acceptance:* each probe is asked three times in a fresh session; the
       positive one loads the skill three times of three and each near-miss at most once of three;
       recorded in `evidence/triggers.md`.
+      *Note, 2026-11-15 (D-41):* if the orchestrator of `orchestrate-external-skills` has landed,
+      add the near-miss "which skill do I use to speed up our tests", which expects the
+      orchestrator, and check that the orchestrator has a row for this skill. If it has not
+      landed, that EPIC adds both; this task does not wait for it.
 - [ ] 1.6 The checklist in `skills/cosmic-python/references/testing-checklist.md`: amend rules 6
       and 14, add rules 17 to 21 and the Sources list; the one Gherkin rule in
       `skills/bdd-gherkin/SKILL.md` (D-8); "rules 1-16" becomes "rules 1-21" in
@@ -72,7 +82,11 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       *Revised 2026-11-14 (D-35):* the `SKILL.md` sentence, the `stage-loop.md` detail, the
       scenario and the Examples row say that a builder sorts and returns the kept list, the
       deleted list and the refactoring opportunities, and that the lead confirms. The tester's
-      result line is B's (its D-29): this task adds none.
+      result line is R3's (`delivery-process-and-tools` DEC-18): this task adds none.
+      *Revised 2026-11-15 (D-38):* this task starts after `delivery-process-and-tools` has
+      merged. It adds the sentence of D-35 to step 4 as that EPIC wrote it and rewrites nothing
+      else there; the texts say the sort happens in the stage's one fix pass, before the gate run
+      that checks the pass (its DEC-4).
 - [ ] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
       T-1 to T-12 and T-15 green (T-7 and T-2 may skip in CI).
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
@@ -84,7 +98,8 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       the report; decisions recorded in the report and in `evidence/acceptance.md`.
       *Acceptance:* every proposal has a decision and a reason.
 - [ ] 1.13 The approved proposals as pull requests in `rdf-persistence`, each with before and
-      after (D-7). What the trial taught goes into the skill as a follow-up PR in skillery.
+      after (D-7). What the trial taught goes into the skill as a follow-up PR in skillery,
+      within the budget of D-40.
       *Acceptance:* each merged pull request names its proposal id; or the report records that
       none was approved.
 
@@ -97,6 +112,8 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       tests; add the `ADQ` row to `skills/test-strategy/references/ui.md` and extend the pointer
       line (D-13). Link the file from `SKILL.md`. *Acceptance:* 2.2 and `tests/test_test_strategy.py` pass.
       *Reconciled with B, C and D:* apply D-23 of the design's Delivery decisions.
+      *Revised 2026-11-15 (D-40):* the file is at most 3 KB, each rule one line with the name of
+      its source; the skill stays within 24 KB and the link says when to open the file.
 - [ ] 2.4 Trigger probe (D-16): "our Cypress run takes forty minutes" expects `test-suite-care`; asked
       three times, recorded as in 1.5.
 - [ ] 2.5 Stage review, a line in `CHANGELOG.md`, `make validate`, PR, merge.
@@ -113,6 +130,10 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       *Reconciled:* D-29 names the four files and the cell.
       *Revised 2026-11-14 (D-36):* step 4 of the procedure names the two scripts as the source
       of the tokens and minutes.
+      *Revised 2026-11-15 (D-40, D-42):* the file is at most 2.5 KB and the skill stays within
+      24 KB; the link says when to open the file. The scripts are named at their path in
+      `openspec/changes/delivery-retrospective/inputs/scripts/` and are neither moved nor
+      changed; no skill is assumed for them.
 - [ ] 3.3 Trigger probe (D-16): "is our cold reader any good, does it catch real problems" expects
       `test-suite-care`; near-miss "have a reader attack this draft" expects the skill that holds
       the adversarial reader's brief (`guardrails`, EPIC D); asked three times, recorded as in 1.5.
@@ -125,11 +146,14 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
 - [ ] 3.7 *(proposed, D-33)* The programme's closing check, run by whichever of this EPIC and
       B stage 3 lands last. *Acceptance:* the one-page result is in `evidence/programme-close.md`
       and the owner has read it.
+      *Note, 2026-11-15 (D-37):* B stage 3 now lands last, so the check is run there.
 
 ## Roadmap
 
 Stage 1 (1.0 → 1.0b → 1.1 → 1.2 ∥ 1.3 → 1.4 → 1.5 to 1.9 in any order → 1.10 → 1.11 → 1.12 → 1.13) →
-stage 2 → stage 3. The order against the other EPICs is D-17. Tasks 1.6, 1.8 and 1.9 may run in parallel: their files are disjoint, except that 1.6 and 1.9
+stage 2 → stage 3. The order against the other EPICs is D-17 as replaced by D-37: stage 1 in wave 3
+of the reassessment of 2026-11-15, after `delivery-process-and-tools` and stage 1 of
+`lean-skills`; stages 2 and 3 in wave 4. Tasks 1.6, 1.8 and 1.9 may run in parallel: their files are disjoint, except that 1.6 and 1.9
 may each add one line to `openspec/changes/harden-checks-and-tests/tasks.md`, which the lead adds. Stage 1
 tasks 1.6 and 1.9 are ordered against EPIC B's stages 1 and 2 by D-8 and D-12. Stages 2 and 3 do not depend on each other.
 

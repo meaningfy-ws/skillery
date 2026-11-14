@@ -3,7 +3,10 @@
      develop at 48dfc9c). Clarity gate 9.15/10 PASS on commit 1b043fe by an independent scorer;
      its five recommendations folded in afterwards. History is in inputs/planning-record.md.
      Revised 2026-11-14 by owner decision after the gate (D-36, under Delivery decisions) and not
-     gated again: ../delivery-retrospective/inputs/cross-check-test-epics.md, decisions 6 and 7. -->
+     gated again: ../delivery-retrospective/inputs/cross-check-test-epics.md, decisions 6 and 7.
+     Revised 2026-11-15 by owner decision after the gate (D-37 to D-41, under Delivery decisions)
+     and not gated again (S-10): ../delivery-process-and-tools/inputs/reassessment-2026-11-15.md.
+     The texts those entries supersede carry a note naming the entry. -->
 
 > Derives from: EPIC `activity-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-8; the
 > owner's answers Q-8..Q-11 in [`inputs/qa.md`](inputs/qa.md). Parents as delivered or planned:
@@ -108,7 +111,9 @@ with one table:
 | *Write paths that can break it* | every path that touches it: create, update, replace, delete, bulk or import, internal |
 | *Test* | the test or scenario that proves it on each path; the cell starts with the word `tester` when the invariant is left to the adversarial tester |
 
-Three rules go with it, stated in `epic-planning` step 6:
+Three rules go with it. *(Revised 2026-11-15, D-40: they are written in the template's comment
+and in `invariants.md`; `epic-planning` step 6 names them in one sentence and points there.)* They
+read:
 
 1. A PLAN with no invariant writes one line under the heading: "None: `<why>`". The section is
    never empty.
@@ -131,7 +136,8 @@ Nothing mechanical checks any of the three rules; that gap is accepted and named
 
 Three edits and one render, all in `skills/project-setup/assets/openspec-schema/meaningfy/`:
 
-1. `templates/design.md`: the heading `## Invariants` with a comment giving the columns and rule 1.
+1. `templates/design.md`: the heading `## Invariants` with a comment giving the columns and the
+   three rules of D-1 (D-40).
 2. The comment under `## Error matrix` gains: "The adversarial tester takes these rows as its
    targets. Give each invariant left to the tester a row that cites its `INV-` id."
 3. `schema.yaml`: one bullet for the section in the list at line 129.
@@ -153,10 +159,11 @@ Impact. Task 2.7 comments on #143 with what was delivered and what is left.
 must hold, each stated so that a property test could check it, each with an example; "none" is a
 valid answer, recorded with its reason. The answers are recorded with the rest of the interview,
 in the change's `inputs/qa.md`, and step 6 reads them from there (the EPIC template gains no
-field). Step 6 gains the three rules of D-1. SKILL.md grows by at
-most seven lines. The detail goes to a new reference,
-`skills/epic-planning/references/invariants.md`: what an invariant is and is not, the write-path
-list, the error-matrix row, and the #143 case replayed (§ Algorithm).
+field). Step 6 gains one sentence that names the three rules of D-1 and points to the template
+and the reference. *(Revised 2026-11-15, D-40: was "the three rules, at most seven lines".)*
+The detail goes to a new reference,
+`skills/epic-planning/references/invariants.md`: the write-path list, the error-matrix row, and
+the #143 case replayed (§ Algorithm); what an invariant is stays out, as general knowledge.
 
 ### D-5 The survey record and its units
 
@@ -229,7 +236,9 @@ Each run happens in the session's scratch folder with a draft configuration; not
 ### D-8 Vale's styles
 
 Candidates, in this order, run report-only (Q-11): Microsoft, Google, write-good, proselint. The
-owner marks rules in the stage's round (D-6, kind 2); a rule not marked "would fix" is not enabled,
+owner marks rules in the stage's round (D-6, kind 2), judging each against Meaningfy's voice
+(`meaningfy-voice`) and never against the external skill `technical-documentation` (D-39); a rule
+not marked "would fix" is not enabled,
 and a package is adopted, with a manifest entry, only when at least one of its rules is marked.
 No style file is committed (No-gos; B's DEC-6): `vale sync` fetches the packages named in
 `vale.ini`.
@@ -349,8 +358,11 @@ which is red, and then edits the rows until it is green.
 
 No `*.workflow.json` file changes, and no `project-setup` file other than the two of D-2: no check
 gains a gate (DEC-8; the proposal's Impact allows a workflow edit "only where a check gains a
-gate"). Each adopted check is written in its owning skill with three facts: when it runs, whether it blocks, its cost
-(the command and its run time on the proof tree).
+gate"). Each adopted check has three facts: when it runs, whether it blocks, its cost
+(the command and its run time on the proof tree). *(Revised 2026-11-15, D-40: the facts and the
+command are written in the check's row of `quality/README.md`, which `make quality-fetch` brings
+to `.quality/`; the owning skill holds one sentence that names the check and points to that row.
+Where the table and bullets below say "written in" a skill, read it so.)*
 
 | Check | Written in | Runs | Blocks |
 |---|---|---|---|
@@ -378,10 +390,11 @@ The trace is taken on C itself, in the stage that carries task 0.3.
 
 - C's own invariant INV-1 is left to the tester and has its error-matrix row (rule 2 of D-1).
 - `closed_family_errors` (D-11) is Python, so the tester has something to state a property about.
-- VERY LARGE carries the adversarial tester on every stage, small or not
-  (`openspec/specs/epic-delivery/spec.md`, requirement *The loop scales with the appetite*: "the
-  adversarial tester and the checker SHALL stay separate"). The trace uses stage 1's regular
-  tester dispatch, whose diff range is the whole stage, section 0 included; no extra dispatch.
+- *(Revised 2026-11-15, D-37.)* The adversarial tester runs on its condition (R3 DEC-3): the stage
+  changed code and the PLAN names an invariant for that code. Stage 1 meets it: section 0 adds
+  `closed_family_errors` and INV-1 names it. The trace uses stage 1's regular tester dispatch,
+  whose diff range is the whole stage, section 0 included; no extra dispatch. Until R3 is
+  delivered this was "the tester on every stage at VERY LARGE"; R3 comes first (D-41).
 - C's first stage starts after B's stage 2 is merged (D-16). The lead dispatches the tester with
   the brief text read from `skills/epic-delivery/references/team-and-briefs.md` in the working
   tree, because the installed skill may still be the release before B's stage 2 (B's D-13 does the
@@ -408,7 +421,8 @@ the row alone carried it.
   in `CLOSED_FAMILIES`, a CHANGELOG line, and the removal of its conditional delta. It adds no
   skill text beyond the family's rows, no `quality/` file and no probe. It may take the small
   review set under the small-stage rule of
-  [`epic-delivery` SKILL.md](../../../skills/epic-delivery/SKILL.md) (lines 106–111); the lead
+  [`epic-delivery` SKILL.md](../../../skills/epic-delivery/SKILL.md) (lines 106–111, which R3
+  rewrites; read the rule as R3 left it, D-37); the lead
   first records that under `## Delivery decisions` in this file, with ids from `D-20`.
 - **The conditional deltas** (`documentation-workflow`, `operations-practice`, `quality-checks`)
   are written now for the agreed candidates and say so in their header. Their scenarios name cases
@@ -475,6 +489,8 @@ the row alone carried it.
   3 may be overtaken by stages 4 and 5 only when no checkout of `infrastructure-stacks` is
   available and the owner agrees; the deviation is recorded in `evidence/preflight.md`.
 - C is archived after B, so its deltas to `quality-checks` land on a spec that exists.
+- *(Added 2026-11-15, D-41.)* C is in wave 4, after R3, after B's stages 1 and 2 and after R1's
+  stage 1; D-41 states the whole position.
 
 ### D-17 Public evidence is scrubbed
 
@@ -801,12 +817,14 @@ developer confirms them in task 0.2, before stage 1.
   `quality/semgrep/external.json` is B's, `quality/vale/external.json` is C's. D-8's rename to
   `packages.json` still applies when B's manifest test reads every `external.json`.
 - **D-24 An invariant where no tester runs (adds to D-1)** *(proposed, the owner confirms at
-  scenario sign-off)*. D-1 is silent on an appetite whose review set names no tester: TINY and
-  SMALL today, and MEDIUM until B's stage 2 lands
-  (`skills/epic-delivery/assets/workflows/epic-delivery.workflow.json`, `reviews`). There the
-  *Test* cell does not start with `tester`: the builder's test or scenario proves the invariant
-  on each write path. The requirement *Invariants reach the tester* holds the sentence and the
-  scenario *An appetite without a tester*; CK-2's reading in stage 2 covers the scenario. If the
+  scenario sign-off)*. D-1 is silent on a stage where no tester runs. *(Revised 2026-11-15,
+  D-37: R3 DEC-3 and DEC-5 replace the old premise, "TINY and SMALL today, and MEDIUM until B's
+  stage 2 lands".)* The tester runs only where the stage changed code and the PLAN names an
+  invariant for it; R3 adds none where its review set has none
+  (`skills/epic-delivery/assets/workflows/epic-delivery.workflow.json`, `reviews`). Where no
+  tester runs, the *Test* cell does not start with `tester`: the builder's test or scenario
+  proves the invariant on each write path. The requirement *Invariants reach the tester* holds the sentence and the
+  scenario *A stage without a tester*; CK-2's reading in stage 2 covers the scenario. If the
   developer rejects it, the sentence and the scenario are deleted from the delta.
 - **D-25 The spec deltas hold standing rules (corrects the wording of the deltas; D-14 stays).**
   One-off delivery text moved out of the deltas:
@@ -910,10 +928,80 @@ decisions 6 and 7). The clarity gate was not run again on this entry.
     limit of the workflow file (600 today) and the lead judges the risk low. An accept-only
     stage is low risk by what it ships (D-14). If its added lines pass the limit, for example
     through a long survey file, the full set applies and the lead records that instead.
-  - The same requirement keeps the adversarial tester and the checker separate, so at VERY
-    LARGE both still run on an accept-only stage (D-13 stays as written). On such a stage the
-    tester has no code to state a property about. Dropping it there would contradict the live
-    requirement and needs a MODIFIED block in an `epic-delivery` delta, which this change does
-    not carry: it is left to the owner (see B's D-28, which makes the tester conditional at
-    MEDIUM only).
+  - *(Revised 2026-11-15, D-37.)* On such a stage the tester has no code to state a property
+    about. The owner settled it: R3 DEC-3 makes the tester run on its condition at every
+    appetite (the stage changed code and the PLAN names an invariant for it), so an accept-only
+    stage gets no tester once R3 is delivered. This entry decides only how this EPIC's own
+    stages are delivered; the rule is R3's. The earlier text here left the case to the owner and
+    cited B's D-28; that is withdrawn.
   - No task changes: the tasks of stages 4 and 5 ship "as D-14 says", read with this entry.
+
+Revised 2026-11-15 by owner decision, after the gate, against the three refactoring EPICs: R1
+`lean-skills`, R2 `orchestrate-external-skills`, R3 `delivery-process-and-tools`. What the owner
+settled is in
+[`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
+(S-4, S-6, S-9, S-10 and the order). The clarity gate was not run again on these entries (S-10).
+Each entry names the text it corrects; ids stay as they were.
+
+- **D-37 The stage loop of `epic-delivery` and the tester are R3's (corrects D-36's last bullet,
+  D-13 and D-24; S-6).** This EPIC carries no edit of `epic-delivery`, its workflow file or its
+  spec: it only cites them, and none is added. Its "stage loop" in § Algorithm is C's own six
+  steps inside the loop `epic-delivery` runs; the stage boundary, the hand-over note, the fix
+  rule, the review set at MEDIUM, the tester's condition and the result line are R3's, and this
+  PLAN restates none of them. What changes here:
+  - D-36 stays as the decision on how an accept-only stage of this EPIC is reviewed (the small
+    set). Its last bullet no longer leaves "a tester on a stage with no code" to the owner: R3
+    DEC-3 runs the tester on its condition at every appetite (the stage changed code and the PLAN
+    names an invariant for it), so an accept-only stage gets none. R3 DEC-5 makes the small set
+    the MEDIUM default; D-36 does not depend on that, and the lead reads the small-stage rule as
+    R3 left it before applying D-36.
+  - D-13 reads "on its condition" for "on every stage". Stage 1 meets the condition, so the
+    invariants trace (task 1.9) holds. Stages 2 to 5 take a tester only where they change code
+    that an invariant names; the trace needs none of them.
+  - D-24's premise is R3's condition, not the appetite. An invariant whose stage has no tester
+    has a *Test* cell that does not start with `tester`.
+  - Every citation of B's D-28 for the tester is withdrawn; R3 absorbed it.
+- **D-38 Two edits of `epic-planning`, at different steps (S-6, R3 DEC-2).** R3 puts the
+  two-run limit of the clarity gate at every appetite in `epic-planning` step 8. This EPIC edits
+  steps 2 and 6 (D-4, D-12). The edits touch different steps and do not conflict. This EPIC's
+  edit is written on top of R3's text: task 0.2 reads the file as R3 left it, and the line
+  numbers quoted in the Context (lines 36 and 59) are not to be relied on. A revision of this
+  PLAN, such as D-30, is gated at most twice, by R3 DEC-2.
+- **D-39 The style source for Vale is Meaningfy's voice (S-4).** R2 routes `technical-writing`
+  to the external skill `technical-documentation` as guidance only. The rules this EPIC enables
+  in Vale are chosen from the external styles of D-8 by the developer's marking in the round
+  (D-6, kind 2), and the standard each rule is marked against is `meaningfy-voice` (British
+  spelling, no em dash, no contractions in binding text, plain prose). No rule is derived from
+  `technical-documentation`, and the skill is not cited in `quality/`, in a manifest or in a
+  fixture. A package rule that contradicts the voice, for example one that asks for
+  contractions or American spelling, is not marked and so not enabled. Meaningfy-own rules stay
+  with #212 (the No-gos).
+- **D-40 New skill prose is sorted by the lean rule before it is written (S-9).** A check
+  becomes a tool configuration or a template; a Meaningfy house rule stays, short; general
+  knowledge is cut. No example code is copied into a skill. Applied to each piece of prose this
+  EPIC adds (the revised tasks 1.6, 2.5, 2.6, 2.7 and 3.6):
+  - `technical-writing`: its body stays near 6 KB (it is about 6.1 KB today; the estimate had
+    this EPIC adding 1 to 1.5 KB). The command, when it runs, whether it blocks, its cost, the
+    install note and the skip note of each check go into that check's row of `quality/README.md`
+    and into `docs/development/quality.md`, which are not skill prose. The skill gains the
+    step of the `verify` row and one sentence for each adopted check, naming it and pointing to
+    the row, plus the naming rule itself in one line, since that is the house rule the check
+    encodes. The delivery measures the body before and after and records both in the stage's
+    evidence.
+  - `epic-planning`: the three rules of D-1 go into the template's comment and into
+    `invariants.md`; step 2 gains its one sentence and step 6 one sentence. Both are house
+    rules and stay short.
+  - `invariants.md`: the write-path list, the error-matrix row and the #143 case. "What an
+    invariant is and is not" is general knowledge and is cut. About 1.5 KB, not 3 to 4.
+  - `stack-operations` and `infrastructure-operations`: the *Recommended checks* subsection is
+    the naming or Makefile rule in one line, the name of the check, the pointer to its row of
+    `quality/README.md` and to #216; the three facts live in that row.
+  - The specs follow: the skill names the check and points to the row, and the row states the
+    facts, so CK-3 reads the skill and the row together.
+- **D-41 Order: wave 4 (replaces the waves of 14 November for this EPIC; S-6 order).** C is
+  delivered after R3, after B's stages 1 and 2 (D-16, unchanged) and after R1's stage 1 (the
+  standard and its lint), so its prose is written to the lean standard and its new files meet
+  the lint. It runs beside `commercial-portfolio`, the retrospective tooling and E's stages 2
+  and 3, and before B's stage 3 and the remaining R1 stages, which rewrite each skill once after
+  C's text has landed. R2 has registered `technical-writing`'s routing by then (wave 3); task
+  0.2 reads the skill as R2 left it. C is archived after B (D-16), so after B's stage 3.

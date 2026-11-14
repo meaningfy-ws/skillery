@@ -10,7 +10,11 @@
      re-shaped the proofs and the reader's output, logged as DEC-11, which narrows DEC-6; the
      PLAN was gated again, 9.1/10 PASS. A was delivered and archived the same day and the PLAN
      was checked against its files. Ready for delivery. Revised 2026-11-14 by owner decision
-     (the reader's tool list), logged as DEC-12, which narrows one no-go; not gated again. -->
+     (the reader's tool list), logged as DEC-12, which narrows one no-go; not gated again.
+     Revised 2026-11-15 after the owner's settlement of the open EPICs
+     (`../delivery-process-and-tools/inputs/reassessment-2026-11-15.md`): the reader's tools come
+     from the one table of `guardrails` (R3 DEC-8), `guardrails` keeps its size budget, and the
+     order is wave 2; design D-28 to D-32; not gated again. -->
 
 # EPIC: generic task test profiles
 
@@ -119,6 +123,9 @@ A failed criterion sends the work back to the draft. Each owning skill says what
   agent with that tool list, because only an agent definition makes a subagent start smaller; a
   line in a brief does not (design D-27) — rejected: the list in the brief only, with the heavy
   start accepted. This replaces "No new agent" for the reader; no other agent is added.
+- **Revised 2026-11-15** (design D-28): DEC-12's list is not defined here. The reader takes the
+  tools the one table of `guardrails` gives for reading prose (R3 DEC-8); the agent file still
+  lists them in its frontmatter. DEC-13 stands.
 
 ## Rabbit-holes
 
@@ -139,8 +146,8 @@ A failed criterion sends the work back to the draft. Each owning skill says what
 - No scored rubric and no pass mark.
 - No pass, fail or verdict from the reader, and no test cases or fixtures for contracts or posts
   (DEC-11).
-- No new agent other than the thin reader, which carries a named tool list and no method (DEC-12,
-  DEC-13; was: "No new agent; the reader is a brief for a fresh general-purpose subagent").
+- No new agent other than the thin reader, which carries the tools the table of `guardrails` gives and no method
+  (DEC-12 as revised, DEC-13; was: "No new agent; the reader is a brief for a fresh general-purpose subagent").
 - No criteria step and no adversarial reader on the sales agent's scheduled runs (narrowed by
   DEC-10, which lets them start the reviewers they already name), and no change to any worker's
   workflow phases.
@@ -182,4 +189,6 @@ A failed criterion sends the work back to the draft. Each owning skill says what
 - Agents that write such pieces (`proposal-writer`, `lawyer`, `sales-agent`) follow the profile
   through their skills, and each gets a scenario. `proposal-writer` and `sales-agent` change
   (DEC-9); `lawyer` does not.
-- Order: after A. Independent of B and C.
+- Order: wave 2 of the order of 2026-11-15: after A, after R3 (the tool table) and after R1 stage
+  1 (the lean standard), before the main part of R2 (design D-32). It lands before B, C and E.
+- Size: `guardrails` may grow by at most 6 KB, to stay within 24 KB of prose (design D-29).

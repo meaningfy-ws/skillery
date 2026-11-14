@@ -2,10 +2,13 @@
      gate 9.0/10 PASS (run 5); re-shaped the same day on DEC-11 (an assessment, not a test)
      and gated again, 9.1/10 PASS (run 7). Reconciled 2026-11-14 with the sibling changes and
      with A as delivered: design § Delivery decisions, D-15 to D-26. Revised 2026-11-14 by
-     owner decision (D-27, the reader's tool list); not gated again. -->
+     owner decision (D-27, the reader's tool list); not gated again. Revised 2026-11-15 after the
+     owner's settlement of the open EPICs (design D-28 to D-32); not gated again. -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)); design in
-> [`design.md`](design.md). EPIC A `test-strategy` is delivered (2026-11-14), so this can start.
+> [`design.md`](design.md). EPIC A `test-strategy` is delivered (2026-11-14). Order (D-32): this
+> EPIC is wave 2 of 2026-11-15, so it starts after R3 (the tool table) and after R1 stage 1 (the
+> lean standard), and lands before the main part of R2 and before B, C and E.
 
 ## 1. Stage 1: the reader
 
@@ -16,14 +19,20 @@
     recorded and the owner judges?
   - D-21: does a post get two reads at most, like the other kinds, or one?
   - D-25: do `CHK-102` and `CHK-95` stay beside the new steps, as D-25 divides the work?
-  - D-27 *(added 2026-11-14 by owner decision)*: is the reader's tool list carried by the brief
-    only in stage 1, with the choice of a reader agent left until its starting context is
-    measured?
+  - D-27 *(added 2026-11-14 by owner decision; superseded 2026-11-15 by D-28, which cites the
+    tool table of `guardrails`: no question is left on it)*: is the reader's tool list carried by
+    the brief only in stage 1, with the choice of a reader agent left until its starting context
+    is measured?
 - [ ] 1.1 Confirm the branch is on current `develop`. Read R-1..R-12 of design § *Checked against
   A as delivered* against `skills/test-strategy/` again; fix this PLAN first where one
   fails. Re-read each spec delta against the live specs (RISK-7). After each later rebase on
   `develop`, the lead reruns `make bundles` and `make skill-inventory` and takes the next free
   check ids (D-26).
+  *Added 2026-11-15 (D-28, D-29, D-32):* confirm that R3 and R1 stage 1 are merged; read the tool
+  table of `guardrails` and check that its row for reading prose is `Read`, `Grep` and `Glob`
+  (the reader agent follows the table if it differs); measure `guardrails` with `wc -c`
+  (`SKILL.md` and `references/`) and record the figure in `evidence/` as the starting size of
+  D-29.
 - [ ] 1.2 Write the two fabricated offers, `offer-planted.md` and `offer-clean.md`, under
   `evidence/planted-flaw/`; nothing under `tests/` (D-11, DEC-11). The planted flaw is the one of
   D-18, a claim about past work that names no work, and not the scope and price mismatch of D-11.
@@ -49,8 +58,14 @@
   *Revised 2026-11-14 (D-27, DEC-13):* add the thin agent `agents/adversarial-reader.md`
   (`tools: [Read, Grep, Glob]`, no method in its body), declare it in `bundles.yaml` beside
   `guardrails`, add `tests/features/agents/adversarial-reader.feature`, and run `make bundles`.
-  *Revised 2026-11-14 (D-27):* section 5 of the reference states the two tool lists, and the
-  brief carries the line "Tools: `<the list>`, and no other."
+  *Revised 2026-11-14 (D-27), changed 2026-11-15 (D-28):* section 5 of the reference states no
+  tool list: it names the table of `guardrails`; the brief carries the line "Tools: `<the tools the
+  table gives for this read>`, and no other."
+  *Added 2026-11-15 (D-29):* the reference is written to the lean shape and is at most 5.5 KB;
+  section 2 is one sentence; the body gains one pointer line (when to open the reference and what
+  it adds) in place of the two-line bullet, at most 0.3 KB; the exception in
+  `subagent-reports.md` is at most 0.2 KB. Measure `guardrails` again and record the growth, which
+  must not pass 6 KB nor take the skill past 24 KB of prose; if it would, cut the reference.
 - [ ] 1.6 Probes for `guardrails` in `tests/trigger_probes.yaml` (D-12); its description before
   and after in `evidence/probes.md`. Run `make skill-inventory`. The near-miss of D-12 ("have a
   cold reader test this installation manual", expects `technical-writing`) is the probe that
@@ -60,8 +75,10 @@
   the example criteria of D-3 quoted in the brief, plus the criterion of D-18; the bullets used,
   the counts and the D-11 bar (or the owner's answer on D-19) in `evidence/planted-flaw.md`. On
   a miss, sharpen and repeat all six, twice at most; then the owner.
-  *Revised 2026-11-14 (D-27):* each run's brief names the tools `Read`, `Grep` and `Glob`; the
-  tokens of each run's first call are recorded in the same file.
+  *Revised 2026-11-14 (D-27), changed 2026-11-15 (D-28, D-31):* each run is a start of the thin
+  reader agent, whose tools are the table's; the *Attacks* bullets used are the cut ones of D-31
+  (the general ones and those of `CHK-91` are not used); the tokens of each run's first call are
+  recorded in the same file.
 - [ ] 1.8 `make validate` green; the stage's PR.
 
 ## 2. Stage 2: the profiles
@@ -72,7 +89,8 @@ that the line matches the skill's `exists` rows, and those rows arrive in 3.1 (D
 - [ ] 2.0 Add the stage-2 assertions of D-11 to the test file (the section in five files, the role
   allow-lists with the hyphen form); red before 2.1–2.5, green after.
 - [ ] 2.1 `proposal-writing`: the `## Review profile` section, its *Attacks* bullets as they were
-  used in 1.7 (`evidence/planted-flaw.md`), the criteria sentence in *Flow* step
+  used in 1.7 (`evidence/planted-flaw.md`; one to three, D-31; the other four skills follow D-31
+  in 2.2 to 2.5, each section at most about 1 KB), the criteria sentence in *Flow* step
   1, the new step 5 (D-2, D-3; spec `sales-method-ownership`, *The offer
   profile has one owner*).
 - [ ] 2.2 `contract-practice`: the section, the fifth intake bullet, the *review* row and the
@@ -87,6 +105,9 @@ that the line matches the skill's `exists` rows, and those rows arrive in 3.1 (D
 - [ ] 2.5 `sales-conversations`: the section, the subsection *In an attended session: criteria and a reader* (pick-up included)
   under *Workflow*; `sales-operations` is not touched (D-2, D-3, D-4; spec
   `sales-method-ownership`, *The sales-message profile has one owner*).
+  *Added 2026-11-15 (D-30, D-31):* add only after the passages R2 later cuts are left alone; the
+  text restates no external sales method; the section is at most about 1 KB, with one to three
+  *Attacks* bullets.
 - [ ] 2.6 Feature files: add the scenarios of design § *Scenarios* to the three files, with the
   `# Traces to:` line and the extra Given line in `proposal-writer.feature`; add `guardrails` to
   the Background skill lists of `proposal-writer.feature` and `sales-agent.feature` (D-5, D-11).
@@ -142,8 +163,8 @@ that the line matches the skill's `exists` rows, and those rows arrive in 3.1 (D
   · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
 
 Tasks 2.1 to 2.5 touch different files and may run in parallel, once 2.9 is done. The pointer
-lines of the five skills change in 3.1, with the rows (D-15). This change may land at any time
-after A; D-26 says what the lead reruns after each rebase.
+lines of the five skills change in 3.1, with the rows (D-15). This change lands in wave 2 (D-32),
+after A, R3 and R1 stage 1; D-26 says what the lead reruns after each rebase.
 
 ## Verification
 

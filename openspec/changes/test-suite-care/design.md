@@ -1,7 +1,8 @@
 <!-- STATUS: PLAN derived 2026-11-14 from proposal.md and inputs/spike.md; attacked the same day
      by a fresh reader, whose findings are folded in (Attack record). Clarity gate, first run:
      8.6, fail; second run: 8.6, fail on other gaps; third run: 8.8, fail on ten small gaps; fourth run: 9.05, PASS. The fourth run's nine gaps
-     are folded in and not scored again (Gate record). -->
+     are folded in and not scored again (Gate record). Revised 2026-11-15 against the three
+     refactoring EPICs (D-37 to D-42, under Delivery decisions); not gated again. -->
 
 # PLAN (design): test suite care
 
@@ -47,11 +48,11 @@ and quicker without losing a specified feature. The spike changed two assumption
 
   | File | Holds |
   |---|---|
-  | `SKILL.md` | Quick Start with one worked example, the five steps, the three classes of proposal, Gotchas, Boundary & Related Skills. Target 150 lines. |
+  | `SKILL.md` | Quick Start with one worked example, the five steps, the three classes of proposal, Gotchas, Boundary & Related Skills. Body near 6 KB (D-40; was a target of 150 lines). |
   | `references/measuring.md` | The commands of step 1, per kind of test; what to do when a tool is missing. |
   | `references/scenario-map.md` | The map's format, levels, confidence and how it is built and sampled. |
-  | `references/waste.md` | The kinds of waste (D-4), each with its evidence, class and source. |
-  | `references/report.md` | The report's format and the decision record. |
+  | `references/waste.md` | The kinds of waste (D-4), each with its evidence and class. |
+  | `assets/report-template.md` | The report's sections and the decision record, as a template to fill in (D-40; was `references/report.md`). |
   | `references/ui-suites.md` | Stage 2: measuring and waste for UI suites, and the UI test rules (D-9). |
   | `references/non-code-checks.md` | Stage 3: the assessment (D-11). |
   | `scripts/phase_times.py` | A pytest plugin: one JSON line per test phase and per fixture set-up. |
@@ -63,7 +64,8 @@ and quicker without losing a specified feature. The spike changed two assumption
   long', 'which tests can we drop', 'our Cypress run takes forty minutes', 'is our cold reader
   any good'. It audits the suite, maps tests to the scenarios they serve and proposes reductions
   the owner decides. Not for writing tests (cosmic-python) or choosing an activity's checks
-  (test-strategy)." Each later stage links its new reference file from `SKILL.md`.
+  (test-strategy)." Each later stage links its new reference file from `SKILL.md`, in a line
+  that says when to open it and what it adds (D-40).
 
   Frontmatter: `license: Apache 2.0`; facets `purpose: quality`, `area: coding`,
   `subject: generic`, `posture: reusable`, `stage: verify`, `maturity: experimental`. Bundle
@@ -325,7 +327,8 @@ and quicker without losing a specified feature. The spike changed two assumption
       PLAN's design names;
     - **deleted:** every other one, including a test whose finding the lead rejected.
     A builder moves the kept tests into files named by feature (checklist rule 21) and deletes the
-    rest in the fix round, before the second run of the full gates, so the coverage floor is
+    rest in the stage's one fix pass, before the gate run that checks the pass
+    (`delivery-process-and-tools` DEC-4; D-38), so the coverage floor is
     checked on what remains. The stage PR lists each deleted test with its reason.
   - In the check ledger of `stage-loop.md`, the last cell of the "Adversarial tester" row
     changes from "—" to "Distilled in step 4".
@@ -341,7 +344,7 @@ and quicker without losing a specified feature. The spike changed two assumption
       And three failed on their first run and the lead accepted their findings
       When the lead decides the findings in step 4
       Then the three, any test that alone covers a scenario and one property per PLAN invariant are kept in files named by feature
-      And a builder deletes the rest before the second run of the full gates
+      And a builder deletes the rest in the stage's one fix pass, before the gate run that checks it
       And the stage PR lists each deleted test with its reason
     ```
   - Order against EPIC B, whose task 2.4 replaces the tester brief and the ledger row. If B's
@@ -400,6 +403,8 @@ and quicker without losing a specified feature. The spike changed two assumption
   2.4, 3.3). The probe check is advisory, so each probe is also asked three times, each time as
   the first message of a new Claude Code session in this repository with the bundles installed
   from the branch, and the skill that loaded is recorded.
+  *Revised 2026-11-15 (D-41):* once the orchestrator of `orchestrate-external-skills` exists,
+  the probes also hold one near-miss against it, and the orchestrator holds a row for this skill.
 
 ## Algorithm / approach
 
@@ -547,6 +552,11 @@ at most two gate runs on any re-gate
 ([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 4, 5 and 7).
 
+Revised after the gate, not gated again (2026-11-15): D-37 to D-42, under Delivery decisions,
+were added after the owner settled how the open EPICs fit the three refactoring EPICs
+([`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+S-2, S-6, S-8, S-9 and the order). No clarity-gate run followed, by S-10 of that record.
+
 ## Delivery decisions
 
 Recorded 2026-11-14, after the five changes of the test strategy work were read against each
@@ -556,7 +566,8 @@ above where they differ.
 - **D-17 Order of the five.** B stage 1 → B stage 2 → C and E stage 1 in either order → B
   stage 3; D at any time after A; E stages 2 and 3 after E stage 1. E stage 1 may also land
   before B: D-8 and D-12 give the rule for each order, and B's tasks 1.12 and 2.4 now carry the
-  matching lines.
+  matching lines. *Revised 2026-11-15:* D-37 sets this EPIC's place against the three
+  refactoring EPICs; the order among the test EPICs stands.
 - **D-18 The tester's ledger row and brief (corrects D-12).** If B stage 2 has landed, the last
   cell of the tester's row is no longer "—": the row gains the words "Distilled in step 4", and
   the two report fields are added to B's brief. The property kept is one per invariant in the
@@ -639,11 +650,12 @@ decisions 4, 5 and 7). The clarity gate was not run again on these entries.
   as revised).** Reason: the lead's session is about half of all cost, and that cost grows with
   what the lead reads (findings F-2, F-3, R-3); sorting forty tests is reading work.
   - *Who does what.* The rule of D-12 (what is kept, what is deleted) is unchanged. After the
-    lead has decided the findings, the builder of the fix round sorts the tester's tests by
+    lead has decided the findings, the builder of the stage's one fix pass
+    (`delivery-process-and-tools` DEC-4; D-38) sorts the tester's tests by
     that rule, moves the kept ones into files named by feature, deletes the rest, and returns
     two lists: kept and deleted, each test with its reason. The lead reads the lists and
-    confirms them before the second run of the full gates; a deletion it does not confirm is
-    restored from the branch. The decision stays the lead's (D-31): it confirms a list and no
+    confirms them before the gate run that checks the pass; a deletion it does not confirm is
+    restored from the branch inside the same pass. The decision stays the lead's (D-31): it confirms a list and no
     longer reads forty tests.
   - *Refactoring opportunities.* While sorting, the builder also notes what it sees that could
     be refactored, in the tests or in the code they exercise (a repeated set-up, a helper
@@ -651,8 +663,9 @@ decisions 4, 5 and 7). The clarity gate was not run again on these entries.
     under *Recommendations* of its report. That is a report: the builder refactors nothing
     beyond moving the kept tests, and the stage's scope does not grow. The lead copies the list
     into the stage's pull request and may open an issue for an item.
-  - *The texts of D-12 read:* the `SKILL.md` sentence, "A builder sorts the tester's tests into
-    kept and deleted and the lead confirms the lists (`references/stage-loop.md`, step 4)."; the
+  - *The texts of D-12 read:* the `SKILL.md` sentence, "In the fix pass a builder sorts the
+    tester's tests into kept and deleted, and the lead confirms the lists before the gate run
+    that checks the pass (`references/stage-loop.md`, step 4)."; the
     Examples row of `team-lead.feature`, does "has a builder sort them by the rule, confirms
     the kept and the deleted list, and lists each deleted test in the PR"; and the scenario:
 
@@ -660,22 +673,101 @@ decisions 4, 5 and 7). The clarity gate was not run again on these entries.
     Scenario: A stage's adversarial tests are distilled
       Given the tester reported forty tests, each with what it attacks and whether it failed on its first run
       And three failed on their first run and the lead accepted their findings
-      When the builder of the fix round sorts the tests by the rule
+      When the builder of the stage's one fix pass sorts the tests by the rule
       Then it keeps the three, any test that alone covers a scenario and one property per PLAN invariant, in files named by feature
       And it deletes the rest and returns the kept list, the deleted list and the refactoring opportunities it saw
-      And the lead confirms the lists before the second run of the full gates
+      And the lead confirms the lists before the gate run that checks the pass
+      And no second fix pass follows
       And the stage PR lists each deleted test with its reason
     ```
   - *The tester's result line* (owner decision 4) is defined once, in
-    `harden-checks-and-tests` (its design D-29). This change defines no line. The two report
+    `delivery-process-and-tools` DEC-18 (moved there from `harden-checks-and-tests` D-29;
+    D-39). This change defines no line. The two report
     fields of D-12 stay: they are per test, and the line's `failed-first` number is their count.
 - **D-36 Where the cost numbers of D-11 come from (adds to D-11, step 4).** "Its cost (tokens
   and minutes)" is read from the session transcripts with the two scripts kept in
   [`inputs/scripts/`](../delivery-retrospective/inputs/scripts/) of `delivery-retrospective`:
   `session_digest.py` writes one row per subagent with its tokens and its duration, and
   `epic_report.py` groups them. The procedure cites the scripts by that path until they have a
-  durable home (finding R-11); it then cites the new one. Tokens and minutes are recorded;
+  durable home (finding R-11); it then cites the new one (D-42 says who gives them that home). Tokens and minutes are recorded;
   an amount of money is not, since a cost per subagent is an estimate.
+
+Revised 2026-11-15, after the gate. The owner settled how every open EPIC fits the three
+refactoring EPICs: `lean-skills` (R1), `orchestrate-external-skills` (R2) and
+`delivery-process-and-tools` (R3). The record is
+[`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md);
+its points are cited as S-n. The clarity gate was not run again on these entries (S-10).
+
+- **D-37 Order against the refactoring EPICs (replaces D-17 for this EPIC's own place).** Stage 1
+  is delivered in wave 3 of the reassessment, after R3 and stage 1 of R1 (the lean standard and
+  its lint) have merged. Stages 2 and 3 are delivered in wave 4. Among the test EPICs the order
+  of D-17 stands: B stage 1, B stage 2, then C and E stage 1, then B stage 3; the rules of D-8,
+  D-12 and D-18 for either order against B still apply. Two consequences:
+  - R1's pilot on `cosmic-python` is in wave 2, so task 1.6 adds its rules to the checklist as
+    the pilot left it, one line per rule.
+  - B stage 3 is in wave 5 and lands after this EPIC's stage 3, so the closing check of D-33
+    falls to B; task 3.7 stays as the pointer to it.
+- **D-38 The sort is part of the stage's one fix pass (corrects D-12 and D-35; S-2, S-6).** R3
+  owns the stage loop of `epic-delivery`, and its DEC-4 gives a stage one fix pass, checked by the
+  stage's gate. The rule of D-12 as corrected by D-35 stays this EPIC's: the builder sorts the
+  tester's tests, the lead confirms the lists. It happens inside that one pass, before the gate
+  run that checks the pass; it is not a second pass and no gate run is added for it. The words
+  "the fix round" and "the second run of the full gates" are replaced in D-12, D-35, the spec
+  delta and the Gherkin scenario. What this EPIC still edits in `epic-delivery`, each checked
+  against R3 DEC-3, DEC-4, DEC-5 and DEC-7:
+
+  | Edit | Kept or dropped | Why it is not R3's |
+  |---|---|---|
+  | The sentence in `SKILL.md` step 4 and the detail in `stage-loop.md` step 4 | Kept, as an addition | R3 rewrites step 4 (the severity floor, the one pass). Task 1.9 adds the sentence of D-35 to R3's text and changes no other word of the step. This EPIC no longer rewrites step 4. |
+  | The two report fields per test in the tester's brief | Kept | DEC-3 sets when a tester runs and DEC-18 the result line; neither names what a test attacks. The sort cannot work without the fields. |
+  | "Distilled in step 4" in the tester's row of the check ledger | Kept | A pointer to this EPIC's rule. It is added to the row as R3 and B leave it, and changes no condition in it. |
+  | The scenario in `epic-delivery.feature` and the Examples row in `team-lead.feature` | Kept, reworded | They prove this EPIC's rule. The lead confirms and has a builder sort, which agrees with DEC-7 (the lead does not build). |
+  | The lead copies the *Recommendations* list into the stage's pull request (D-35) | Kept | Copying a list is not building (DEC-7), and the list is one the builder returns, so the lead reads nothing more. |
+  | The spec delta `specs/epic-delivery` | Kept, reworded | It adds one requirement of its own and modifies none of the requirements R3 changes. |
+
+  Nothing of this EPIC touches the tester condition (DEC-3), the review set at MEDIUM (DEC-5) or
+  the stage boundary (DEC-1). Task 1.9 starts only when R3 has merged (D-37).
+- **D-39 The result line is R3's (corrects D-35, last point; S-6).** The one definition of the
+  line is `delivery-process-and-tools` DEC-18, moved there word for word from
+  `harden-checks-and-tests` D-29. Every place in this PLAN that named B's D-29 as the definition
+  now names DEC-18. This EPIC still defines no line.
+- **D-40 The skill is born lean (corrects D-1; S-9).** `test-suite-care` holds at most 24 KB of
+  prose (the `SKILL.md` body plus `references/`), with a body near 6 KB. Every pointer to a
+  reference says when to open it and what it adds. No example code is copied in. Scripts and
+  templates are outside the budget. The planned content, sorted by the lean rule:
+
+  | Part | Sort | What happens to it | At most |
+  |---|---|---|---|
+  | `SKILL.md`: the five steps, the three classes, the survivor rule, the owner decides, Boundary | House rule | Stays, short. One worked example (the one under "Algorithm / approach"), with no code. Gotchas keep only what a model cannot guess: never share a mock, name the survivor, keep the test against the real adapter, flags through `PYTEST_ADDOPTS`, `--cov-context=test`. | 6 KB |
+  | `phase_times.py`, `overlap.py` | Check (tool) | As planned. What a script does on bad input lives in the script, not in prose. | no context |
+  | The report's sections and the decision record (was `references/report.md`) | Check (template) | Becomes `assets/report-template.md`. | no context |
+  | `measuring.md` | House rule, part general knowledge | Keeps the two runs and what the spike found. Ordinary pytest and coverage usage is cut. | 2 KB |
+  | `scenario-map.md` | House rule | Stays: the format, the levels, the confidence, the sample. | 3 KB |
+  | `waste.md` | House rule, part general knowledge | Keeps the table of D-4 (the evidence required and the class). The description of each smell and its source are cut: the sources stand once, in the checklist's Sources table (D-8, D-19). | 3 KB |
+  | `ui-suites.md` (stage 2) | Part house rule, part general knowledge | Keeps how a UI suite is measured and mapped, and the six rules as one line each with the name of its source. No passage of the Cypress or Playwright documentation is restated. | 3 KB |
+  | `non-code-checks.md` (stage 3) | House rule | Stays: the seven steps and "no pass mark". | 2.5 KB |
+  | The anti-patterns table and the error matrix of this design | Mixed | Not copied into the skill as tables. A row is a line in the file it applies to, a behaviour of a script, or left out. | 0 |
+
+  An earlier reading put the skill at 24 to 30 KB
+  ([touch map](../delivery-process-and-tools/inputs/touchmaps/touchmap-harden-suitecare.md)).
+  The sizes above add to 19.5 KB, which leaves room for what the trials teach (D-14); that
+  text enters within the budget too. To fit, the plan sheds: the 150-line target of the body;
+  `report.md` as prose; the smell descriptions and sources in `waste.md`; any restated tool
+  documentation in `measuring.md` and `ui-suites.md`; and the two design tables as copies.
+  The sizes are counted with `wc -c` and given in each stage's pull request, and R1's budget
+  check passes with no recorded exception. The rules this EPIC adds to other skills (D-8, D-10,
+  D-12, D-13) are written into the lean text those skills have by then, one line per rule.
+- **D-41 The orchestrator (adds to D-16).** R2 gives every Meaningfy skill a row in its
+  orchestrator, so `test-suite-care` gets one, and the probes of this skill include a near-miss
+  against the orchestrator: a prompt that asks which skill serves a goal ("which skill do I use
+  to speed up our tests") expects the orchestrator, not `test-suite-care`. Whichever of R2 and
+  stage 1 lands second adds the row and the probe. No task of this PLAN waits for R2.
+- **D-42 The two scripts stay where they are (adds to D-36; S-8).** `session_digest.py` and
+  `epic_report.py` stay in `openspec/changes/delivery-retrospective/inputs/scripts/` of the
+  skillery repository until the retrospective tooling EPIC gives them a home. This PLAN assumes
+  no skill and no other home for them, moves and changes neither script, and stage 3 does not
+  wait for that EPIC. `non-code-checks.md` names the path of D-36; the EPIC that moves the
+  scripts corrects that one line.
 
 ## Open Questions
 
@@ -685,3 +777,8 @@ None blocks stage 1. To confirm with the owner at scenario sign-off (task 1.0):
 - **OQ-2** Which repository with a Cypress or Playwright suite is the trial ground of stage 2.
 - **OQ-3** The developer lanes change no CI run and no scheduled run is added; slow tests still
   run on every pull request (D-10, a deviation from DEC-6).
+- **OQ-4** *(added 2026-11-15)* A stage whose findings all fall under the severity floor of R3
+  DEC-4 has nothing to fix, yet its tester's tests still need sorting. Proposed: the sort is then
+  the whole of the fix pass, and the gate run checks it.
+- **OQ-5** *(added 2026-11-15)* A deletion the lead does not confirm is restored inside the same
+  pass (D-35, D-38). Proposed: the builder restores it, since the lead does not build (R3 DEC-7).

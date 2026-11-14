@@ -3,7 +3,9 @@
      generic-task-test-profiles. Readiness-checked 2026-11-13, the fixes folded in. PLAN first
      derived 2026-11-13; DEC-5's recording place confirmed then (Q-8), no other DEC changed. PLAN
      rewritten 2026-11-14 against A as delivered and B's gated PLAN (inputs/planning-record.md).
-     Delivery waits for B's stages 1 and 2 (design D-16). -->
+     Delivery waits for B's stages 1 and 2 (design D-16). Revised 2026-11-15 after the gate, not
+     gated again (../delivery-process-and-tools/inputs/reassessment-2026-11-15.md): order and
+     style source only; see design D-37 to D-41. -->
 
 # EPIC: activity test profiles
 
@@ -101,7 +103,9 @@ The candidates already agreed, each still subject to step 1:
 
 - No formal methods (TLA+, Alloy; and CrossHair, as in B's No-gos); parked.
 - No check without a recorded failure behind it.
-- No Meaningfy-own Vale rules at first; no copying of external style text into skillery.
+- No Meaningfy-own Vale rules at first; no copying of external style text into skillery. The
+  rules the developer marks are judged against Meaningfy's voice, never against the external
+  skill `technical-documentation` (design D-39).
 - No change to `test-strategy`'s questions, stances or matrix shape (A); only its rows.
 - No software checks (B) and no profiles for offers, contracts, posts or messages (D).
 - No new agent.
@@ -145,7 +149,9 @@ The candidates already agreed, each still subject to step 1:
   `architecture`, `conceptual-modelling`, `test-strategy`.
 - Repo: `quality/`; the PLAN template; the documentation, DevOps and epic-shaping workflow files,
   only where a check gains a gate.
-- Order: after A and B (the documentation, shaping and DevOps stages need B's `quality/` and
-  tester). Independent of D. Each stage ships alone.
+- Order: wave 4 (design D-41): after A, after R3 `delivery-process-and-tools`, after B's stages 1
+  and 2 (the documentation, shaping and DevOps stages need B's `quality/` and tester) and after
+  R1 `lean-skills` stage 1. Independent of D. Each stage ships alone. R3 owns the stage loop and
+  the tester's condition; this EPIC edits neither (D-37).
 - Follow-ups recorded as issues: #212 (Meaningfy-own Vale rules), #213 (formal methods, parked),
   #216 (adopting the layout checks in the stacks repositories).

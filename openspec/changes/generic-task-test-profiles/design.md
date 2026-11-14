@@ -5,7 +5,8 @@
      assessment, not a test; no contract fixtures or baseline) and gated again: 9.1/10 PASS (run 7, end
      of § Attack record). A was delivered the same day; the PLAN was merged with `develop` and
      checked against A's files (R-1..R-12), which set the check ids, the `ADQ` row and the
-     *Moment* wording of D-10. Ready for delivery. -->
+     *Moment* wording of D-10. Ready for delivery. Revised 2026-11-15 after the owner's settlement of
+     the open EPICs (D-28 to D-32); not gated again. -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-11.
 > Depends on: EPIC A `test-strategy`, its
@@ -397,7 +398,7 @@ under Open questions as a proposed criterion.
 >    but not in the price, or priced but out of scope. The owner: "yes, and it must name the stop
 >    option". The criteria now have three lines.
 > 2. The agent drafts, runs `rulebook check` and the genre self-check as today.
-> 3. A fresh sceptical buyer gets the draft's path, the three criteria, the five
+> 3. A fresh sceptical buyer gets the draft's path, the three criteria, the
 >    *Attacks* bullets of `proposal-writing` and the line "head of data at a public registry; asked for an
 >    offer after one call". It reports one finding, on criterion 2, quoting "a data-quality dashboard"
 >    from the scope and the price table that does not list it; no finding on the other two; one
@@ -693,7 +694,10 @@ record.
 added by owner decision after run 7. No clarity-gate run followed: the owner wants at most two
 gate runs on any re-gate
 ([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
-decisions 2 and 7).
+decisions 2 and 7). **Revised again after the gate, not gated again (2026-11-15):** D-28 to D-32,
+under § Delivery decisions, record the owner's settlement of
+[`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
+(S-5, S-9, S-10 and the order); no clarity-gate run followed (S-10).
 
 ## Delivery decisions
 
@@ -819,8 +823,8 @@ and against A as delivered. These override the decisions above where they differ
 
   *(proposed, the owner confirms at scenario sign-off)*: both older checks stay as divided here,
   and neither is folded into the new step.
-- **D-26 Order and rebase (adds to D-13 and D-10).** This change may land at any time after A,
-  before or after B, C and E. After each rebase on `develop` the lead reruns `make bundles` and
+- **D-26 Order and rebase (adds to D-13 and D-10; the order is replaced by D-32, 2026-11-15).**
+  After each rebase on `develop` the lead reruns `make bundles` and
   `make skill-inventory`, reads R-1..R-12 again (task 1.1), and takes the next five free check
   ids at task 3.1; `CHK-145` to `CHK-149` hold only if no sibling has taken them.
 
@@ -858,6 +862,98 @@ decisions 2 and 7). The clarity gate was not run again on this entry.
     the opencode renderer has no form for a scoped `Agent` and would drop the tool.
   - The spec delta `subagent-dispatch`, requirement *The adversarial reader has one brief*,
     carries the list and one scenario.
+  - *Superseded in part by D-28 (2026-11-15):* the reference and the brief no longer define the
+    two lists; they cite the tool table of `guardrails`. The agent file still lists its tools.
+
+Revised 2026-11-15 by the owner's settlement of the open EPICs
+([`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+S-5, S-9, S-10 and the order). Names there: R1 `lean-skills`, R2 `orchestrate-external-skills`, R3
+`delivery-process-and-tools`. Not gated again (S-10). These entries override the ones above where
+they differ.
+
+- **D-28 The reader's tools come from the one table (S-5; corrects D-1 section 5, D-27 and the
+  brief's tools line; proposal DEC-12).** R3 DEC-8 puts the recommended tools per activity in one
+  table in `guardrails`, cited by agents and briefs. This PLAN defines and justifies no tool set of
+  its own. Section 5 of `adversarial-reader.md` does not state a list: it says that the reader
+  takes the tools the table gives for reading prose (and, for code or a repository, for reading
+  code), and names the table. The brief's line reads "Tools: `<the tools the table gives for this
+  read>`, and no other." The agent file `agents/adversarial-reader.md` still carries `tools:
+  [Read, Grep, Glob]` in its frontmatter, because an agent file must list what it carries, and
+  those three are the table's tools for reading prose; its body cites the table and holds no
+  method (DEC-13 stays). The R3 lint that checks the table against agents' tool lists covers this
+  agent. If the table's row for reading prose differs when this EPIC starts, the agent's list
+  follows the table, and task 1.1 checks it.
+- **D-29 `guardrails` stays within its budget (S-9; corrects D-1 for size and form).** Today
+  `guardrails` is 15,670 bytes of prose: `SKILL.md` 13,347 and `references/` 2,323. R3 adds the tool
+  table and session hygiene first; R1 shrinks the body later, to about 6 KB, in a total of 24 KB at
+  most. This EPIC therefore adds at most **6 KB** to the skill, counted with `wc -c` before and
+  after and recorded in `evidence/`: the new reference at most 5.5 KB (not the 5 to 7 KB estimated
+  before), the body at most 0.3 KB, the exception in `subagent-reports.md` at most 0.2 KB. The
+  reference is written to the lean shape: one line when to open it and what it adds, then house
+  rules only, short. Section 2 (*The three steps*) is one sentence that names `test-strategy` and
+  `rulebook`, and restates neither; section 6 names the base report and its reviewing fields and
+  lists only what the reader leaves out. The body gains **one pointer line** in § 5 (the two-line
+  bullet of D-1 becomes one line) that says when to open the reference (a piece leaves the
+  company) and what it adds (the criteria step, the reader's brief, the report); the body takes no
+  rule. Anything in the reference that is a check goes to a tool or a template, not prose: the
+  ownership test of D-11 is the tool for the copied lines, and the brief is a template that stays
+  in the reference only because the reader is given it whole. If R3 and this EPIC together would
+  pass 24 KB, the reference is cut; the budget is not raised. The description change of D-1 stays
+  and keeps its trigger probes: the positive and the near-miss of D-12 (tasks 1.6) and its
+  before-and-after in `evidence/probes.md`. The count of 687 characters (D-23) is re-read after R3
+  and R1 stage 1, since either may change the description first.
+- **D-30 Shared files with R2 (corrects nothing; orders the edits).** R2 DEC-9 cuts the
+  restatement of two external sales authors (about 3 to 4 KB) from `sales-conversations` and
+  `sales-qualification`, and R2 also modifies the spec `sales-method-ownership`. This EPIC goes
+  first (D-32), so R2 is written on top of it.
+  - `sales-conversations`: this EPIC adds the `## Review profile` section and the subsection *In
+    an attended session: criteria and a reader* under *Workflow* (tasks 2.5, 3.1 for the pointer
+    line). It cuts nothing and does not touch the passages that restate the two authors, so R2's
+    cut and this addition do not meet. No text of this EPIC states an external sales method (a
+    negotiation, offer-building or outreach technique); if a bullet or a criterion would, it is
+    cut and the owning external skill is named by R2 later. The criteria for a piece come from the
+    skill's own *Acceptance criteria* table, which this EPIC leaves unchanged.
+  - Spec `sales-method-ownership`: this EPIC adds two requirements (*The offer profile has one
+    owner*, *The sales-message profile has one owner*) and modifies none. R2's delta modifies
+    other requirements of the same capability; at archive the two apply in the order of delivery.
+  - `executive-communication`, `meaningfy-voice` (and its `company-voice` file): R2 does not edit
+    them and routes `technical-writing` only, which this EPIC does not touch either. The text
+    this EPIC adds there is Meaningfy's house voice and rules and restates no external
+    documentation or writing style. R2's orchestrator rows for offers, messages and posts should
+    name these profiles, since an external skill's draft still needs criteria and a reader; that
+    is R2's task, noted here so that R2 reads this PLAN.
+- **D-31 The prose this EPIC adds, sorted by the lean rule (S-9; corrects D-2 and D-3, which say
+  "three to five" *Attacks* bullets).** A check becomes a tool or a template; a Meaningfy house
+  rule stays, short; general knowledge is cut. The profiles are mostly house rules: the criteria
+  step and who confirms, the "leaves the company" test, two reads at most, the author revises
+  only what is theirs, *unread*, the pick-up of an unattended draft, the role per kind of piece,
+  and one example criterion pair each. Not house rules, and so cut:
+  - general review craft in the *Attacks* bullets: a term that reads two ways, an undefined term, a
+    right given to one side only, a missing cap or exit (`contract-practice`); a reason to wait
+    (`proposal-writing`); an advert tone, jargon unexplained (`meaningfy-voice`); a claim they
+    would doubt, heavier than the artefact deserves (`executive-communication`); the ask unclear,
+    a line any vendor could send (`sales-conversations`). A capable reader brings these.
+  - bullets a tool already checks: scope and price naming different deliverables, what is excluded
+    left unsaid, no way to stop or extend (`proposal-writing`) are lines of `CHK-91`, the
+    scope-boundary checklist, which D-18 already records.
+  - what stays in *Attacks* is what only Meaningfy knows: a claim about past work that names no
+    work (`proposal-writing`); a gap against the parent or back-to-back contract
+    (`contract-practice`); the first two lines of a post, and a claim that names no real work
+    (`meaningfy-voice`); the ask not found in ten seconds, no decision or deadline
+    (`executive-communication`); whose turn it is got wrong, a commitment nobody approved,
+    unreadable on a phone in 20 seconds (`sales-conversations`). *Attacks* has one to three bullets.
+  The cut is made before task 1.7, so the bullets the planted-flaw check proves are the bullets
+  the skills carry. The criteria examples of D-3 stay as the rule of the criteria step; the
+  scenarios of the specs name criteria, not bullets, and stay.
+- **D-32 Order (S-5, S-7; replaces the waves of 2026-11-14 and the sentences "may land at any
+  time after A", D-26 first sentence, and the proposal's Impact line "Order").** This EPIC is
+  **wave 2** of the order of 2026-11-15: after R3 (its tool table, D-28), after R1 stage 1 (the
+  lean standard, D-29 and D-31), and before the main part of R2 (D-30); it runs beside R2 stage 1
+  and the R1 pilot on `cosmic-python`, which touch other files. B, C and E come after it (waves
+  3 and 4), so this EPIC is the first of the test EPICs to land after A and takes
+  `CHK-145` to `CHK-149`; B, C and E rebase on it and take the next free ids. D-26's rule after a
+  rebase (rerun `make bundles` and `make skill-inventory`, read R-1..R-12 again, take the next free
+  ids at 3.1) stays.
 
 ## Open Questions
 

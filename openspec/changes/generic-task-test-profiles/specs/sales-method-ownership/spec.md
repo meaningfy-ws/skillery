@@ -1,3 +1,6 @@
+<!-- 2026-11-15 (design D-30): this change lands first; `orchestrate-external-skills` also modifies
+     this capability and is written on top of these two added requirements. -->
+
 ## ADDED Requirements
 
 ### Requirement: The offer profile has one owner

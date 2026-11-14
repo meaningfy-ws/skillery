@@ -12,7 +12,8 @@ the styles SHALL be fetched at their tag and no style file SHALL be committed. T
 release tag, not the 40-character commit that Semgrep's manifest uses, because Vale fetches a
 package as the archive its repository publishes per release; a branch name or "latest" SHALL NOT be
 a pin. The two manifests are told apart by their tool folder. Only rules the developer marked worth
-fixing, from their findings, SHALL be enabled, and no Meaningfy-own rule or word list SHALL be
+fixing, from their findings, judged against Meaningfy's voice and not against an external
+documentation skill (design D-39), SHALL be enabled, and no Meaningfy-own rule or word list SHALL be
 added. Vale's tool test SHALL run locally where Vale is installed and SHALL skip in CI, as the other
 tool tests of `quality/` do (activity-test-profiles DEC-4, No-gos; harden-checks-and-tests DEC-6,
 DEC-12; design D-8, D-9).

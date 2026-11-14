@@ -1,6 +1,10 @@
 <!-- PLAN (tasks half). Type: Implementation. Rewritten 2026-11-14 against A as delivered and B's
      gated PLAN. Five stages, each its own PR into develop; section 0 rides in stage 1's PR.
-     Delivery starts when B's stages 1 and 2 are merged (design D-16). -->
+     Delivery starts when B's stages 1 and 2 are merged (design D-16).
+     Revised 2026-11-15 after the gate, not gated again
+     (../delivery-process-and-tools/inputs/reassessment-2026-11-15.md): wave 4, after R3, B's
+     stages 1 and 2 and R1's stage 1 (design D-41); tasks 0.2, 1.4, 1.6, 2.5, 2.6, 2.7 and 3.6
+     changed by D-37 to D-40. Ids and counts are unchanged. -->
 
 > Derives from: EPIC `activity-test-profiles` ([`proposal.md`](proposal.md)); design in [`design.md`](design.md).
 
@@ -13,7 +17,10 @@ subagent that built nothing of the stage.
 - [x] 0.1 The developer signs off the spec scenarios of this change (the PLAN gate) and confirms the
   start condition of D-16 and the stated limit of D-13's proof, all recorded in
   `evidence/acceptance.md` (D-13, D-15, D-16).
-- [ ] 0.2 Confirm B's stages 1 and 2 are merged and the branch is on current `develop`; walk the
+- [ ] 0.2 Confirm R3 is delivered, R1's stage 1 is merged, and B's stages 1 and 2 are merged, and
+  the branch is on current `develop` (D-41). Read `epic-planning` as R3 left it (step 8, the gate
+  limit; D-38), `technical-writing` as R2 left it (its routing, D-39), and the small-stage and
+  tester rules of `epic-delivery` as R3 left them (D-37); record each difference. Walk the
   two Context tables of the design against the repository (the ten gap rows; B's facts) and record
   each difference in `evidence/preflight.md`, handled as D-16 says. For B, read in particular:
   the ls-lint and checkmake pins and where `make quality-tools` puts the binaries; whether
@@ -42,7 +49,8 @@ subagent that built nothing of the stage.
   write
   `evidence/toolrun-vale.md` and `evidence/toolrun-ls-lint-docs.md` (D-7, D-8, D-17; spec *A
   tool is adopted only after a run on a real tree*).
-- [ ] 1.4 Owner round, the three kinds of call of D-6; answers to `inputs/qa.md` (D-6, D-14).
+- [ ] 1.4 Owner round, the three kinds of call of D-6; answers to `inputs/qa.md`. Rules are
+  marked against Meaningfy's voice, never against `technical-documentation` (D-6, D-14, D-39).
 - [ ] 1.5 *Fill only.* With the tools on `PATH` and network for Vale's sync, so no tool test skips:
   the fixture pairs and those of the tests `C-TC-9` to `C-TC-12`, `C-IT-1` and `C-IT-2` (D-29)
   that belong to an adopted tool, in `tests/test_quality.py`,
@@ -50,12 +58,14 @@ subagent that built nothing of the stage.
   the rows in `quality/README.md`; Vale in `docs/development/quality.md` and its install note in
   `CONTRIBUTING.md`; keep each test's red and passed output (D-9, D-18; design § Tests and
   proofs; spec *Vale's styles are pinned, never copied*; *A docs naming configuration*).
-- [ ] 1.6 *Fill only.* `technical-writing` SKILL.md: the adopted checks as a step of the `verify`
-  row, and a short section with, for each, the rule it encodes first, then the command, when it
-  runs, whether it blocks, its cost, how to install the tool where `make quality-tools` does not,
-  and the skip note; the pointer line if A's test asks for a change; the Vale entry in
-  `dependencies.yaml`
-  (D-12, D-15; spec *Vale runs in the verify phase and does not block*; *Docs names are checked
+- [ ] 1.6 *Fill only.* The command, when it runs, whether it blocks, its cost, how to install the
+  tool where `make quality-tools` does not, and the skip note of each adopted check, in its row of
+  `quality/README.md` and in `docs/development/quality.md`. `technical-writing` SKILL.md: the
+  adopted checks as a step of the `verify` row, and for each one sentence that names it, states
+  the naming or style rule it encodes in a line and points to its row; measure the body before
+  and after and keep it near 6 KB, recorded in `evidence/catch-documentation.md`; the pointer
+  line if A's test asks for a change; the Vale entry in `dependencies.yaml`
+  (D-12, D-15, D-40; spec *Vale runs in the verify phase and does not block*; *Docs names are checked
   in the verify phase*).
 - [ ] 1.7 *Fill only, for a gap row outside the candidates* (`ADQ`, `ROB` or `RSK` with a
   failure): commit its signed-off requirement in the `documentation-workflow` delta, then the
@@ -88,15 +98,18 @@ subagent that built nothing of the stage.
 - [ ] 2.4 Baseline, before any skill edit: write the two sample EPICs and the two sample
   `inputs/qa.md` files to `evidence/baseline/`; run IT-5 and record its result in
   `evidence/baseline-shaping.md` (D-15; design § Tests and proofs).
-- [ ] 2.5 Write `skills/epic-planning/references/invariants.md`, with the #143 case replayed as in
-  design § Algorithm (D-4, D-18).
-- [ ] 2.6 `epic-planning` SKILL.md: the question in step 2 and the three rules in step 6, within
-  D-4's line budget, linking 2.5; the sentence for an appetite without a tester if D-24 is
+- [ ] 2.5 Write `skills/epic-planning/references/invariants.md`: the write-path list, the
+  error-matrix row and the #143 case replayed as in design § Algorithm; no account of what an
+  invariant is, and no example code (D-4, D-18, D-40).
+- [ ] 2.6 `epic-planning` SKILL.md, on top of R3's text (D-38): the question in step 2 and one
+  sentence in step 6 that names the three rules and points to the template and 2.5, within
+  D-4's line budget; the sentence for a stage without a tester if D-24 is
   confirmed, and a pointer to the tester's brief in `epic-delivery` for which properties the
   tester takes (D-35); the `plan-invariants` entry in `tests/ownership.yaml` (D-1, D-4,
   D-15; spec *The shaping interview asks for invariants*, whose two scenarios CK-2 proves; *The
   PLAN records invariants*; *Invariants reach the tester*).
-- [ ] 2.7 The template: the three edits of D-2, then `make bundles`; `tests/test_bundle_gen.py`
+- [ ] 2.7 The template: the edits of D-2, the comment carrying the three rules of D-1 (D-40),
+  then `make bundles`; `tests/test_bundle_gen.py`
   green. Comment on #143, written to `evidence/comment-143.md` first: the columns delivered, the
   `clarity-gate` item still open (D-2, D-3, D-17; spec
   *The PLAN records invariants*; *Invariants reach the tester*; *The EPIC and PLAN templates
@@ -130,10 +143,11 @@ subagent that built nothing of the stage.
   `quality/ls-lint/stacks.yml` and `quality/checkmake/stacks.ini` as
   decided; the rows in `quality/README.md` (D-9, D-18; spec *A stacks naming
   configuration*; *A stacks Makefile configuration*).
-- [ ] 3.6 *Fill only.* For each adopted check, first the rule it encodes and why, then the check
-  with its three facts and a pointer to #216, under a new subsection *Recommended checks*: ls-lint
+- [ ] 3.6 *Fill only.* For each adopted check, the three facts in its row of `quality/README.md`;
+  then, under a new subsection *Recommended checks*, the rule it encodes in a line, the check's
+  name, and a pointer to that row and to #216: ls-lint
   in `stack-operations`' `references/stack-standard.md`; checkmake in `infrastructure-operations`'
-  `references/repo-checks.md`, outside its MUST (D-12; spec *A naming check for stacks
+  `references/repo-checks.md`, outside its MUST (D-12, D-40; spec *A naming check for stacks
   repositories*; *A Makefile check for infrastructure repositories*).
 - [ ] 3.7 *Fill only, for the `ADQ` row* (a recorded failure the existing checks missed): commit
   its signed-off requirement in the `operations-practice` delta, then the worked example, then the
@@ -195,7 +209,8 @@ subagent that built nothing of the stage.
 - [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 5.4
 - [ ] 6.1 · [ ] 6.2 · [ ] 6.3
 
-This is DEC-1's order. Stages 4 and 5 go before stage 3 only under D-16's rule.
+This is DEC-1's order. Stages 4 and 5 go before stage 3 only under D-16's rule. The EPIC as a
+whole is in wave 4 (D-41); this replaces the waves of 14 November for it.
 
 ## Verification
 

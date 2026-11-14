@@ -59,9 +59,10 @@ finding.
   second run reads only the gaps the first one listed. After the second run the remaining gaps go
   to the developer as one question round, as the rule for TINY and SMALL already says. Rejected: a
   higher limit for larger EPICs.
-- **DEC-3**: The adversarial tester runs on a condition at every appetite. This EPIC defines the
-  condition once, taking it from `harden-checks-and-tests` D-28, which then cites it. Rejected: a
-  tester on every stage from MEDIUM up.
+- **DEC-3**: The adversarial tester runs on a condition at every appetite: the stage changed code,
+  and the PLAN names an invariant for that code. This EPIC defines the condition once, taking it
+  from `harden-checks-and-tests` D-28, which then cites it. Rejected: a tester on every stage from
+  MEDIUM up.
 - **DEC-4**: A review finding becomes a fix only at or above a severity floor, and a stage has one
   fix pass, checked by the stage's gate. Findings under the floor are rejected with a reason and
   stay listed in `design.md`. In the most expensive delivery the fixers used more tokens than the
@@ -99,9 +100,25 @@ finding.
   release. Rejected: a trial in skillery first; two releases.
 - **DEC-16**: The instructions of the other repositories are not edited here. Each has its issue
   (rdf-persistence #111, rdf-fingerprinter #86, mapping-workbench-v2 #85, legal-agreements #17).
-- **DEC-17**: This EPIC is delivered before `lean-skills` and before the four test EPICs. It
-  absorbs the tester condition (DEC-3). It leaves the result line to `harden-checks-and-tests`
-  D-29 and shorter descriptions to `lean-skills`.
+- **DEC-17** *(re-shaped on 2026-11-15)*: This EPIC owns every change to the stage loop of
+  `epic-delivery` and is delivered first, in the same wave as stage 1 of `lean-skills`. The four
+  test EPICs cite it and edit those paragraphs no more. It absorbs the tester condition (DEC-3)
+  and the result line (DEC-18). It leaves shorter descriptions to `lean-skills`. The order of all
+  open EPICs is in [`inputs/reassessment-2026-11-15.md`](inputs/reassessment-2026-11-15.md).
+  Rejected: four EPICs each editing the same paragraphs; as first shaped, leaving the result line
+  to `harden-checks-and-tests`.
+- **DEC-18** *(added on 2026-11-15, moved from `harden-checks-and-tests` D-29)*: The report of a
+  tester, a reviewer and the checker ends in one result line, so that a script can read what a
+  round found. The worker writes it with `accepted=-`; the lead writes it again in the stage's
+  pull request with the number accepted. This is the one definition of the line.
+
+  ```text
+  result: stage=<s> role=tester tests=<n> failed-first=<n> findings=<n> accepted=<n|->
+  result: stage=<s> role=reviewer lens=<L1+L2> findings=<n> accepted=<n|->
+  result: stage=<s> role=checker verdict=<pass|fail> findings=<n> accepted=<n|->
+  ```
+
+  Rejected: outcomes in prose only, which no retrospective can count.
 
 ## Rabbit-holes
 
@@ -112,9 +129,10 @@ finding.
   reports by. Inventing a second scale is the trap. The level is left to the PLAN.
 - **Serena's reach on opencode** is not verified. The table names what each CLI exposes; a gap is
   recorded as a gap, not papered over.
-- **The condition of DEC-3 at SMALL and TINY.** D-28 was written for MEDIUM; the review sets of the
-  smaller sizes may name no tester at all. "On a condition at every size" must not add a tester
-  where there is none.
+- **The condition of DEC-3 at MEDIUM, SMALL and TINY.** The live MEDIUM set names no tester.
+  `harden-checks-and-tests` DEC-9 adds one there, on the condition; since this EPIC now writes the
+  review sets, it writes that MEDIUM cell too. The sets of SMALL and TINY name no tester, and "on a
+  condition at every size" must not add one there.
 - **The owner's own rule on gate scores** (accept a score close to 9 without a new run) is personal
   and stays in the owner's rules; the skill states only the limit.
 - **Navigator** reads the review sets and the session thresholds from the same files. A changed
@@ -128,8 +146,10 @@ finding.
 
 - No runner, no session that starts another session, no stage lead subagent (DEC-1).
 - No new hook or mod, and no change to the `no-poll-loops` mod (DEC-13).
-- No result line for reviews, testers and checkers, and no phase or stage in the traces. Those
-  belong to `harden-checks-and-tests` D-29 and to the retrospective tooling EPIC.
+- No phase or stage in the traces. That belongs to the retrospective tooling EPIC.
+- No change to the tester's brief beyond its condition and the result line; what the tester
+  writes is `harden-checks-and-tests`. No rule for sorting the tester's tests; that is
+  `test-suite-care`, which adds its sentence to the one fix pass of DEC-4.
 - No change to the two retrospective scripts and no new home for them. They are used as they are
   to measure.
 - No description changes to skills or agents, and no shrinking of skill bodies (`lean-skills`).
@@ -144,7 +164,8 @@ finding.
 ## What Changes
 
 - `epic-delivery`: the stage boundary (DEC-1), the fix rule (DEC-4), the MEDIUM default (DEC-5),
-  the tester condition (DEC-3), watch-and-merge (DEC-6), the lead's duties (DEC-7); its workflow
+  the tester condition (DEC-3), the result line (DEC-18), watch-and-merge (DEC-6), the lead's
+  duties (DEC-7); its workflow
   file carries the changed review sets. **BREAKING** for a lead that relied on compacting between
   stages or on the full review set at MEDIUM.
 - `guardrails`: Session hygiene follows DEC-1; a new table of recommended tools per activity
@@ -166,8 +187,8 @@ finding.
 
 ### Modified Capabilities
 
-- `epic-delivery`: stage boundary, fix rule, review default at MEDIUM, tester condition, lead's
-  duties, watch-and-merge.
+- `epic-delivery`: stage boundary, fix rule, review default at MEDIUM, tester condition, result
+  line, lead's duties, watch-and-merge.
 - `epic-shape`: the gate limit at every appetite.
 - `subagent-dispatch`: session hygiene at a stage boundary, and batched reads.
 - `workflow-definitions`: the review sets. To confirm when the PLAN is derived, together with the
@@ -180,5 +201,6 @@ finding.
 - `AGENTS.md`, `CLAUDE.md`, `tools/repo_lint`, `tests/features/`, the navigator mod's inputs.
 - Every repository that installs skillery gets the new delivery rules at the next release; a
   repository scaffolded before it keeps its old instructions until its own issue is done.
-- `harden-checks-and-tests`, `activity-test-profiles`, `generic-task-test-profiles`,
-  `test-suite-care` and `lean-skills` are delivered after this EPIC and rebase on it.
+- `harden-checks-and-tests`, `activity-test-profiles`, `generic-task-test-profiles` and
+  `test-suite-care` are delivered after this EPIC and cite it; they were revised for that on
+  2026-11-15. `lean-skills` stage 1 runs beside it and its later stages after it.

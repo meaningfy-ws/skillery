@@ -98,8 +98,28 @@ or when it names a skill that is not installed and says nothing.
   is not a proof item; until it is tried, it is a recorded gap in the dual-CLI documents.
 - **DEC-15**: The other skills of the second source (product, UX, visual design, consumer growth)
   are not adopted here. They are sorted again under DEC-1 when a role needs them.
-- **DEC-16**: Before the PLAN is derived, the overlap with `lean-skills` is settled by the owner
-  from the side-by-side in the elicitation record. Both EPICs route to the book rule sets today.
+- **DEC-16** *(settled on 2026-11-15)*: The overlap with `lean-skills` is settled by DEC-17.
+- **DEC-17** *(owner, 2026-11-15)*: This EPIC owns what skillery depends on and how it points
+  there: both forks (`agent-rules-books` and `wondelai/skills`), their entries in the register,
+  the install steps, and the routing. `lean-skills` only cuts; which eight book rule sets are
+  relied on stays its DEC-5. The sources are registered in this EPIC's first stage, before the
+  `lean-skills` pilot, which names them. Rejected: routing to the book sets in three agents; two
+  EPICs each registering a source.
+- **DEC-18** *(2026-11-15)*: The overrides are written in the orchestrator, as its own text, and
+  are their one home. They do not cite rule ids: a repository that installs skillery has no rule
+  store of ours, the owner's vault ids are personal, and the rule model has no notion of
+  overriding an external skill. The agent's proposal, from the audit of `rules-first-memory`.
+  Rejected: citing rule ids, looked at again once `rules-first-memory` is delivered.
+- **DEC-19** *(owner, 2026-11-15)*: A commercial offering document sets the price
+  (`commercial-portfolio` DEC-10). `hundred-million-offers`, `monetizing-innovation` and
+  `negotiation` may inform how an offering is designed or a conversation is prepared; they never
+  set or change a price.
+- **DEC-20** *(owner, 2026-11-15)*: For documentation the style source is Meaningfy's voice, with
+  the Vale rules of `activity-test-profiles` as its check; `technical-documentation` is guidance
+  only.
+- **DEC-21** *(2026-11-15)*: Order: stage 1 (the register) in wave 2; the rest in wave 3, after
+  stage 1 of `lean-skills` and after `generic-task-test-profiles`; before `commercial-portfolio`.
+  See [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md).
 
 ## Rabbit-holes
 
@@ -128,7 +148,9 @@ or when it names a skill that is not installed and says nothing.
 - No new skill besides the orchestrator, and no new agent (DEC-10).
 - No shrinking of any skill beyond DEC-9, and no change to the lean standard; both are
   `lean-skills`.
-- No change to which book rule sets are relied on.
+- No change to which book rule sets are relied on (`lean-skills` DEC-5); this EPIC registers and
+  routes to them, it does not choose them.
+- No price, package or term of an offering in the orchestrator or in any skill (DEC-19).
 - No change to what a sales skill owns, and no change to Meaningfy's sales rules.
 - No rule in `AGENTS.md` that makes every session load the orchestrator (DEC-4).
 - No hook, no mod, no change to the navigator.
@@ -141,7 +163,8 @@ or when it names a skill that is not installed and says nothing.
 - A new skill, the orchestrator, in the `meaningfy-core` bundle, with its references by domain,
   trigger probes and Quick Start.
 - `dependencies.yaml` registers the Meaningfy fork of `wondelai/skills` with the sixteen skills of
-  DEC-6, each against a bundle; the setup documents for both CLIs gain the install steps.
+  DEC-6, each against a bundle, and the Meaningfy fork of `agent-rules-books` with its eight sets
+  (DEC-17); the setup documents for both CLIs gain the install steps.
 - The Meaningfy skills and agents that have external help gain a one-line pointer to the
   orchestrator.
 - `sales-conversations` and `sales-qualification` lose their restatement of the two authors
@@ -171,5 +194,6 @@ or when it names a skill that is not installed and says nothing.
   agent that gains the pointer.
 - Every installer gains install steps for the external skills of its bundles, on both CLIs.
 - A new repository to keep: the Meaningfy fork of `wondelai/skills`.
-- `lean-skills` (PR #236, not merged): its routing of agents to the book rule sets overlaps
-  DEC-3.
+- `lean-skills` (PR #236, not merged): its registration of the book rule sets and its routing in
+  three agents move here (DEC-17); it is revised to say so.
+- `commercial-portfolio` follows this EPIC and shares the sales skills and one spec with it.

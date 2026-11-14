@@ -6,8 +6,10 @@
 
 ### Requirement: Vale runs in the verify phase and does not block
 `technical-writing` SHALL name Vale as a step of the `verify` phase, run by the writer beside the
-project's docs gate from the project's fetched `.quality/` folder, and SHALL state the command, when
-it runs, that it does not block and what it costs. Its findings SHALL be reported in the PR
+project's docs gate from the project's fetched `.quality/` folder, naming the check in one sentence
+and pointing to its row of `quality/README.md`, which SHALL state the command, when it runs, that
+it does not block and what it costs (design D-40). The rules enabled SHALL be those the developer
+marked against Meaningfy's voice (design D-39). Its findings SHALL be reported in the PR
 description. The workflow's phases and gates, and the project's docs gate command, SHALL stay as
 they are (activity-test-profiles DEC-4, DEC-8; design D-12).
 
@@ -21,8 +23,9 @@ they are (activity-test-profiles DEC-4, DEC-8; design D-12).
 
 ### Requirement: Docs names are checked in the verify phase
 `technical-writing` SHALL name the docs ls-lint configuration as a step of the `verify` phase, run
-by the writer from the project's fetched `.quality/` folder, and SHALL state the command, when it
-runs, whether it blocks and what it costs. A docs file or folder name that breaks the configuration
+by the writer from the project's fetched `.quality/` folder, naming the check in one sentence and
+pointing to its row of `quality/README.md`, which SHALL state the command, when it runs, whether
+it blocks and what it costs (design D-40). A docs file or folder name that breaks the configuration
 SHALL be fixed before the PR; no gate SHALL be added for it (activity-test-profiles DEC-4, DEC-8;
 design D-12).
 

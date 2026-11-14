@@ -52,3 +52,21 @@ Earlier the same day, on the vocabulary: "stick to the latest", and do not chang
    → DEC-6.
 
 On PR #133 (the vocabulary update), asked whether to merge it: "yes close the pr thank you" → merged.
+
+## 2026-11-15, during the reassessment of the open EPICs
+
+Asked who sets a package's price, now that `orchestrate-external-skills` brings in external
+pricing and offer skills. The owner:
+
+> ok packaging and commercial pricing, i'm thinking to have prepared commercial offerings
+> descriptions somewhere, likely in drive and those will be structured sandrad and be groomed and
+> kept as seed for any discusison and any sales (because each such a commercial offering will
+> describe the whole context), bu just like for teh lawyer bundle we have a repo where we keep all
+> our contarcts terms and templates, and the skills are geeric, and operate on that repo, we will
+> have repos/or drive fodlers with commercial offerings and ththe skills will be operation on thse,
+> and then in reltion to poeple
+
+→ DEC-9 (where offerings live, and that they are the seed of every sale) and DEC-10 (the offering
+sets the price). The last words, "and then in relation to people", were not explained; they are
+not turned into a decision. To ask when the PLAN is derived: whether an offering is tied to the
+people it addresses (accounts and contacts in the sales pipeline).

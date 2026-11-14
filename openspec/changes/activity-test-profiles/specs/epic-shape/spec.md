@@ -40,17 +40,18 @@ An invariant left to the adversarial tester SHALL have a *Test* cell that starts
 a row in the PLAN's error matrix that names the breach and cites the invariant's id, so that the
 tester states a property for it. The template SHALL name the error matrix as the tester's target
 list. Which properties the tester takes is the rule of the tester's brief in `epic-delivery`;
-`epic-planning` SHALL point to it and SHALL NOT restate it. Where the appetite's review set names
-no tester, the *Test* cell SHALL NOT start with `tester`: it SHALL name the builder's test or
-scenario that proves the invariant on each write path (activity-test-profiles DEC-5, DEC-7; design
-D-1, D-2, D-13).
+`epic-planning` SHALL point to it and SHALL NOT restate it. Where no tester runs on the stage (the
+tester runs only where the stage changed code and the PLAN names an invariant for it, a rule of
+`epic-delivery` that this change does not edit), the *Test* cell SHALL NOT start with `tester`:
+it SHALL name the builder's test or scenario that proves the invariant on each write path
+(activity-test-profiles DEC-5, DEC-7; design D-1, D-2, D-13, D-37).
 
 #### Scenario: A tester dispatched on an invariant left to it
 - **WHEN** the tester is dispatched on a stage whose PLAN holds `INV-1` with a *Test* cell starting with `tester` and an error-matrix row citing `INV-1`
 - **THEN** the tester's table of properties has a row for the property of that invariant, with a test and a result
 
-#### Scenario: An appetite without a tester
-- **WHEN** `epic-planning` derives the PLAN of a SMALL EPIC, whose review set names no tester, and the PLAN holds an invariant
+#### Scenario: A stage without a tester
+- **WHEN** `epic-planning` derives the PLAN of an EPIC whose stage changes no code, so no tester runs on it, and the PLAN holds an invariant
 - **THEN** the invariant's *Test* cell names the builder's test for each write path and does not start with `tester`
 
 #### Scenario: Deriving a PLAN with an invariant left to the tester
