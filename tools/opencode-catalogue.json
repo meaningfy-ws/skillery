@@ -128,6 +128,17 @@
       "type": "delegated",
       "model": "opus",
       "color": "yellow",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash",
+        "Skill",
+        "ToolSearch",
+        "mcp__serena__*",
+        "mcp__ast-grep__*",
+        "mcp__gitnexus__*"
+      ],
       "disallowedTools": [
         "Write",
         "Edit",
@@ -244,6 +255,19 @@
       "type": "delegated",
       "model": "sonnet",
       "color": "blue",
+      "tools": [
+        "Read",
+        "Edit",
+        "Write",
+        "Glob",
+        "Grep",
+        "Bash",
+        "Skill",
+        "ToolSearch",
+        "mcp__serena__*",
+        "mcp__ast-grep__*",
+        "mcp__gitnexus__*"
+      ],
       "disallowedTools": [
         "Agent"
       ],

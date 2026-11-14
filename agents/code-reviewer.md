@@ -9,6 +9,7 @@ description: >
 type: delegated
 model: opus
 color: yellow
+tools: [Read, Grep, Glob, Bash, Skill, ToolSearch, "mcp__serena__*", "mcp__ast-grep__*", "mcp__gitnexus__*"]
 disallowedTools: [Write, Edit, NotebookEdit, Agent]
 skills:
   - meaningfy-code-review
