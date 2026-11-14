@@ -52,3 +52,13 @@ Feature: implementer turns one ready task into tested code and reports back
     When the caller asks the implementer to dispatch another agent for part of the task
     Then it has no tool to start one
     And it says so in its report
+
+  # Failure case: delivery-retrospective finding F-5 (a worker carried the session's whole tool catalogue).
+  Scenario: The implementer starts with its own tools, not the session's
+    Given the session has connector tools the task does not need
+    And the project has the code-intelligence servers `serena`, `ast-grep` and `gitnexus`
+    When the caller dispatches the implementer on the task
+    Then it can read, edit, search, run commands and load skills
+    And it can load and call a tool of each code-intelligence server
+    And no other connector tool is offered to it
+    And its report reaches the caller
