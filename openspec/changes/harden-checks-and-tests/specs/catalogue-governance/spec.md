@@ -30,7 +30,3 @@ name six types (harden-checks-and-tests DEC-4).
 #### Scenario: A Semgrep rule that explains its own standard
 - **WHEN** a review finds a rule file under `quality/` whose message restates a catalogue entry's text instead of citing its id
 - **THEN** it is a finding, and the message is cut to the entry id and a one-line pointer
-
-#### Scenario: A file that is not a check
-- **WHEN** a change adds a how-to page under `quality/` other than a `README.md`
-- **THEN** `make validate` fails, naming the file

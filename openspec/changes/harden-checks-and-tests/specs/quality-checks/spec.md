@@ -5,10 +5,11 @@
 ## ADDED Requirements
 
 ### Requirement: The quality folder holds the shared checks
-The repository SHALL hold its executable checks under `quality/`: the Meaningfy Semgrep rules with
+The repository SHALL hold its executable checks under `quality/`, in one folder per tool, with
+one `README.md` that lists them. The folder SHALL hold at least the Meaningfy Semgrep rules with
 their fixtures, the manifest of external Semgrep sources and the ls-lint and checkmake
-configurations, with one `README.md` that lists them. `quality/` SHALL hold no other prose and no
-script; the scripts a project's checks need SHALL be `project-setup` templates
+configurations; a later change MAY add the rule files and configurations of another tool.
+`quality/` SHALL hold no other prose and no script; the scripts a project's checks need SHALL be `project-setup` templates
 (harden-checks-and-tests DEC-4, design D-1).
 
 #### Scenario: Looking for a check
@@ -75,11 +76,13 @@ SHALL be approved by the owner in the pull request that adds it or changes its c
 A project scaffolded by `project-setup` SHALL fetch `quality/` from the skillery release named by
 one variable in its Makefile into a git-ignored folder, through one `make` target. The target SHALL
 do nothing when the folder already holds that version, and SHALL leave no partial folder when the
-download fails (harden-checks-and-tests DEC-5, design D-4).
+download fails. In skillery, `make bundles` SHALL write `v` and the root `VERSION` into that
+variable of the Makefile template, and the version-sync gate SHALL cover it
+(harden-checks-and-tests DEC-5, design D-4).
 
 #### Scenario: First fetch
-- **WHEN** `make quality-fetch` runs in a fresh clone with the pin `v3.15.0`
-- **THEN** `.quality/` holds the `quality/` tree of that release and `.quality/.version` reads `v3.15.0`
+- **WHEN** `make quality-fetch` runs in a fresh clone whose pin names a release that holds `quality/`
+- **THEN** `.quality/` holds the `quality/` tree of that release and `.quality/.version` reads the pin
 
 #### Scenario: Already fetched, no network
 - **WHEN** `make quality-fetch` runs offline and `.quality/.version` equals the pin
@@ -88,6 +91,10 @@ download fails (harden-checks-and-tests DEC-5, design D-4).
 #### Scenario: A pin that does not exist
 - **WHEN** the pin names a release that has no tag
 - **THEN** the target exits non-zero, names the pin, and `.quality/` is absent
+
+#### Scenario: The pin is a rendered file
+- **WHEN** the root `VERSION` changes and `make bundles` has not been run
+- **THEN** `make validate` fails in skillery, naming the stale `QUALITY_VERSION` line of the Makefile template
 
 ### Requirement: Projects run the shared checks through make
 A scaffolded project's `make check-quality` SHALL run, besides Ruff, mypy and import-linter, the
@@ -132,7 +139,7 @@ target. The layout check SHALL fail on a banned module file name and on a missin
 ### Requirement: The Ruff selection flags the hygiene cases
 A scaffolded project's Ruff selection SHALL flag a `requests` call without a timeout, a naive
 `datetime`, a bare `except` and a blind `except Exception`, and SHALL hold every Ruff code that a
-catalogue entry names as its checker. `project-setup` SHALL state how an existing project adopts
+catalogue entry names as the tool that checks it. `project-setup` SHALL state how an existing project adopts
 the wider selection (harden-checks-and-tests DEC-2, DEC-3, issue #215).
 
 #### Scenario: A request without a timeout

@@ -13,14 +13,17 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
 - [ ] 1.0 Scenario sign-off: the owner reads the scenarios of `specs/` and answers OQ-1 to OQ-3;
       the answers are recorded in `evidence/acceptance.md`. *Acceptance:* the file exists with the
       owner's words.
+      Also put to the owner: D-33 (the closing check) and the deviations table of the design.
 - [ ] 1.0b Baseline: `make validate` on the fresh branch, result recorded in
-      `evidence/baseline.md`. *Acceptance:* the record names any check already failing.
+      `evidence/validate-baseline.md` (D-32). *Acceptance:* the record names any check already
+      failing.
 - [ ] 1.1 Write `tests/test_test_suite_care.py` (D-15), T-1 to T-12 and T-15. *Acceptance:* each test
       fails for its own reason (a missing script, a missing file, a checklist of 16 rules, a
       scaffold without `tests/changed.py`), recorded in `evidence/red.md`.
 - [ ] 1.2 Write `skills/test-suite-care/scripts/phase_times.py` and `scripts/overlap.py` (D-3).
       *Acceptance:* T-1 and T-3 to T-6 pass; T-2 and T-7 pass once under `uv run --with pytest-cov --with pytest-xdist`, output in
       `evidence/scripts.md`.
+      *Reconciled:* D-28 (the three packages).
 - [ ] 1.3 Write `SKILL.md` and `references/measuring.md`, `scenario-map.md`, `waste.md`,
       `report.md` (D-1, D-2, D-4 to D-7), with the frontmatter and facets of D-1. *Acceptance:*
       T-10 passes, and the `waste.md` part of T-11.
@@ -42,6 +45,7 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       `skills/test-strategy/references/software.md` and `inventory.md`; the order rule against
       EPIC B's "Checked by" applied. *Acceptance:* T-11 passes, and the rule-count and Gherkin parts of T-15.
       *Reconciled with B, C and D:* apply D-19 of the design's Delivery decisions.
+      *Reconciled:* D-34 (comment on issue #210).
 - [ ] 1.7 `test-strategy` row and pointer (D-13): the next free `CHK-` id in `inventory.md`, the
       `ADQ` row in `references/software.md`, the lanes in the Moment cell of both `CHK-2` rows,
       the pointer line in the new `SKILL.md`.
@@ -53,12 +57,17 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       change to `pytest.ini` exits 3; `scaffold.sh` into a temporary directory produces
       `tests/changed.py` and the three targets.
       *Reconciled with B, C and D:* apply D-21 of the design's Delivery decisions.
+      *Reconciled:* D-26 (the base as an argument), D-27 (T-9 pure Python; the manual
+      `check-quality` run); also update `skills/project-setup/references/config-files.md` (the
+      target list and the template table) and `references/layout.md`.
 - [ ] 1.9 Distilling in `epic-delivery` (D-12): tester brief, `SKILL.md` step 4, `stage-loop.md`
       step 4 and ledger row; the scenario in
       `tests/features/epic-delivery.feature`, the Examples row in
       `tests/features/agents/team-lead.feature`; the order rule against EPIC B applied.
       *Acceptance:* `make lint` is clean (agent features); T-12 passes.
       *Reconciled with B, C and D:* apply D-18 of the design's Delivery decisions.
+      The rule on which properties the tester writes has one home, the tester's brief (D-31).
+      Whichever of this task and B's task 2.4 lands first writes it; the other keeps it.
 - [ ] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
       T-1 to T-12 and T-15 green (T-7 and T-2 may skip in CI).
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
@@ -85,7 +94,7 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       *Reconciled with B, C and D:* apply D-23 of the design's Delivery decisions.
 - [ ] 2.4 Trigger probe (D-16): "our Cypress run takes forty minutes" expects `test-suite-care`; asked
       three times, recorded as in 1.5.
-- [ ] 2.5 Stage review, `make validate`, PR, merge.
+- [ ] 2.5 Stage review, a line in `CHANGELOG.md`, `make validate`, PR, merge.
 - [ ] 2.6 Trial and discussion with the owner on that repository (D-14), as 1.11 to 1.13.
 
 ## 3. Stage 3: checks that are not code
@@ -96,14 +105,19 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       from `SKILL.md`.
       *Acceptance:* 3.1 and `tests/test_test_strategy.py` pass.
       *Reconciled with B, C and D:* apply D-22 of the design's Delivery decisions.
+      *Reconciled:* D-29 names the four files and the cell.
 - [ ] 3.3 Trigger probe (D-16): "is our cold reader any good, does it catch real problems" expects
-      `test-suite-care`; asked three times, recorded as in 1.5.
-- [ ] 3.4 Stage review, `make validate`, PR, merge.
+      `test-suite-care`; near-miss "have a reader attack this draft" expects the skill that holds
+      the adversarial reader's brief (`guardrails`, EPIC D); asked three times, recorded as in 1.5.
+- [ ] 3.4 Stage review, a line in `CHANGELOG.md`, `make validate`, PR, merge.
 - [ ] 3.5 Trial (D-11): assess the cold reader of `technical-writing` on one past document of this
       repository, five planted flaws, three runs on each copy; the owner reads first, then decides.
       Recorded in `evidence/non-code-trial.md`. *Acceptance:* the record has the six run results,
       the owner's own findings and the decision.
 - [ ] 3.6 Archive the change (`spec-stewardship`).
+- [ ] 3.7 *(proposed, D-33)* The programme's closing check, run by whichever of this EPIC and
+      B stage 3 lands last. *Acceptance:* the one-page result is in `evidence/programme-close.md`
+      and the owner has read it.
 
 ## Roadmap
 

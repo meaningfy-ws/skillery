@@ -7,10 +7,13 @@
 ## 1. Stage 1: `quality/`, the Ruff selection, the Semgrep rules and "Checked by"
 
 - [x] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
-  `evidence/acceptance.md` (D-13).
+  `evidence/acceptance.md` (D-13). *Open for the developer:* the three proposals of D-24, D-25
+  and D-26 (the type's name), to confirm or decline.
 - [ ] 1.1 [A] Confirm A is merged and the branch is on current `develop`; walk the D-12 table
   against A as merged and note each difference in the stage PR; re-read every spec delta against
-  the live specs and fix any conflict (error matrix rows 1–2).
+  the live specs and fix any conflict (error matrix rows 1–2). *Done on 2026-11-14 (D-15):* A is
+  merged, the D-12 table is walked and the spec deltas are re-read. *Remains:* cut the stage
+  branch from current `develop` and copy the differences of D-15 into the stage PR.
 - [ ] 1.2 Write `evidence/failure-case.md` (D-13).
 - [ ] 1.3 The Check type: add `quality` to `TOP_LEVEL_FOLDERS` and the `quality_files` lint to
   `ALL_CHECKS`, test-first (TC-01, TC-02 in `tests/test_repo_lint.py` and
@@ -23,7 +26,10 @@
   TC-06, TC-10), with the `skipif` markers for the tool groups; add `requirements-quality.txt`
   (Semgrep, Ruff, Hypothesis) to `make install`; add the install note to `CONTRIBUTING.md`; add
   the six tool entries to `dependencies.yaml` (D-8; spec *The quality folder's tool tests run
-  locally and skip in CI*).
+  locally and skip in CI*). `tests/test_quality.py` never imports Hypothesis (D-18). TC-12 is
+  written as skipped, with the message "switched on by task 3.7" (D-17). *Reconciled with
+  test-suite-care (EPIC E):* if its stage 1 is merged and `requirements-quality.txt` exists, its
+  three packages (pytest-xdist, coverage, pytest-cov) stay in the file (D-23).
 - [ ] 1.5 Ruff: copy the cases of `inputs/ruff-probe/` to `tests/fixtures/quality/ruff/` (the
   inputs stay) and write TC-13; then change `ruff.toml.tmpl`, the Ruff pin in `pyproject.toml.tmpl`
   and the `rev` in `dot-pre-commit-config.yaml` per D-2; update `config-files.md` § Ruff and
@@ -64,18 +70,22 @@
   `ci.yaml.tmpl`; the pin as a fourth file rendered by `tools/bundle_gen`, test-first (TC-11), and
   in `validate.yml`'s diff list. Update `ci-and-infra.md`, `layout.md`, `checklists.md`, the
   template table of `config-files.md`, the section *Adopting the shared checks* of
-  `modernizing-existing-projects.md` and the "three rendered files" sentence of `AGENTS.md` (D-4,
-  D-5, D-13; spec *Projects fetch the checks at one pin*, *Projects run the shared checks through
+  `modernizing-existing-projects.md`, the "three rendered files" sentence of `AGENTS.md` and
+  step 2 of `docs/development/releasing.md`, which lists the rendered files (D-4, D-5, D-13,
+  D-20; spec *Projects fetch the checks at one pin*, *Projects run the shared checks through
   make*).
 - [ ] 1.14 [A] Add the stage's inventory rows and software rows, flip the rows A marked for B that
-  this stage fills, extend the pointer lines (D-12; spec *The software rows name the checks that
-  harden-checks-and-tests adds*).
+  this stage fills, extend the pointer lines (D-12, D-15: `software.md`
+  line 33; spec *The software rows name the static, mutation and import-contract checks*).
 - [ ] 1.15 Scaffold the product and the library archetype from the stage branch with
   `QUALITY_VERSION` set to the branch's commit and run IT-04 and IT-05; paste the output into the
-  stage PR.
+  stage PR. *Acceptance:* the wall time of `make check-quality` on each scaffold, with a warm
+  `.quality/`, is recorded in the stage PR and in `evidence/quality-cost.md` (D-22).
 - [ ] 1.16 Complete `quality/README.md` with every check of the stage (TC-02's last case; spec
   scenario *Looking for a check*); `README.md` row and `CHANGELOG.md` line; `make bundles`, `make skill-inventory`,
-  `make validate`, `openspec validate harden-checks-and-tests --strict`.
+  `make validate`, `openspec validate harden-checks-and-tests --strict`. Close
+  issue #215 with a comment naming the Ruff codes and the Semgrep rule that cover its cases (tasks
+  1.5 and 1.7; D-21). A release follows this stage's merge; no task assumes its number (D-19).
 
 ## 2. Stage 2: the tester's methods and range
 
@@ -88,16 +98,22 @@
 - [ ] 2.4 Replace the tester brief in `team-and-briefs.md`; add the report rule to the tester's
   row of the check ledger in `stage-loop.md`; repoint
   `docs/practice/ai-coding/working-with-agents.md` (D-9; spec *The adversarial tester works by
-  stated methods*). The scenarios of 2.2 are written scenarios, not executed tests: the stage's
+  stated methods*). The brief names the adversary stance with `ROB` and `RSK`, not `ADQ`
+  (D-16). The scenarios of 2.2 are written scenarios, not executed tests: the stage's
   checker reads the brief against each of them.
   *Reconciled with test-suite-care (EPIC E):* if its stage 1 is merged, keep the brief's two
   report fields (what each test attacks; whether it failed on its first run) and the words
   "Distilled in step 4" in the tester's ledger row; its test T-12 stays green.
+  The rule on which properties the tester writes (one per row of the PLAN's `## Invariants`
+  section where it has one, else per error-matrix row) has one home, this brief. Whichever of
+  this task and test-suite-care's task 1.9 lands first writes it; the other keeps it.
 - [ ] 2.5 `cosmic-python`: extend checklist item 10 and add the stateful and the Schemathesis
   example to `example-testing-patterns.md`; pin Hypothesis and Schemathesis in the `test` group of
   `pyproject.toml.tmpl` and confirm `poetry lock` on a scaffold (D-9, D-4).
 - [ ] 2.6 [A] Update the tester and property-test rows of the inventory and the software file
-  (D-12).
+  (`CHK-17`, `CHK-5`), and fill the `ROB` row "stateful and contract-driven properties for the
+  tester" (`software.md` line 45, `gap → B`): it takes the next free id and status `exists`
+  (D-12, D-15).
 - [ ] 2.7 `CHANGELOG.md` line naming the change for MEDIUM EPICs; `make bundles`,
   `make skill-inventory`, `make validate`, `openspec validate harden-checks-and-tests --strict`.
 
@@ -123,13 +139,21 @@
   archetypes); `mutants/` in `dot-gitignore`; update `ci-and-infra.md` (with the setup note),
   `decisions.md` (the D2 exception) and `layout.md` (D-10; spec *Mutation results arrive weekly
   and never fail a build*).
-- [ ] 3.7 [A] Add the mutation and import-contract rows, update the L3 row, flip the last rows A
-  marked for B; switch TC-12 on (D-12).
+- [ ] 3.7 [A] Add the mutation and import-contract rows (`software.md` lines 41 and 34, each with
+  the next free id), update the L3 row `CHK-82` in
+  `skills/test-strategy/references/architecture.md`, flip the last rows A marked for B and remove
+  the sentence about "`gap → B` rows" from line 3 of `software.md`; switch TC-12 on (D-12, D-15,
+  D-17).
+  *Reconciled 2026-11-14:* A's mutation row names `cosmic-python` as technique owner, but this
+  stage writes the mutation rule into `project-setup`. The row's owner becomes `project-setup`,
+  with its pointer line, when the row turns `exists`.
 - [ ] 3.8 Ask the developer which repository is the sample project (Q-22, with D-13's
   recommendation); run IT-06 there: the three manual dispatches of the weekly workflow, and one
   failing and one passing `make check-architecture`; record them in
   `evidence/sample-project.md` (DEC-15, D-13).
 - [ ] 3.9 Save this stage's tester report as `evidence/tester-report.md` (IT-07; DEC-15, D-13).
+  The tester's property tests go in `tests/test_quality_properties.py`, not in
+  `tests/test_quality.py` (D-18).
 - [ ] 3.10 `CHANGELOG.md` line; `make bundles`, `make skill-inventory`, `make validate`,
   `openspec validate harden-checks-and-tests --strict`.
 - [ ] 3.11 Acceptance demo with the developer: the three proofs of DEC-15, verdict in

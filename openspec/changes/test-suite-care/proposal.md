@@ -175,7 +175,8 @@ project.
 ## No-gos
 
 - No time target and no pass mark for a suite.
-- No automatic deletion or rewriting of tests; no reduction without the owner's decision.
+- No automatic deletion or rewriting of tests by the audit; no reduction of an existing suite
+  without the owner's decision. (Distilling a stage's own adversarial tests is DEC-3.)
 - No new agent, and no scheduled audit.
 - Nothing specific to one repository in the skill's text.
 - No scoring of a non-code check by a number, and no automatic retirement of one.

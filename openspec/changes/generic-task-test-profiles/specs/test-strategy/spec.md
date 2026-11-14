@@ -1,7 +1,8 @@
 <!-- This delta adds to the live `test-strategy` capability (`openspec/specs/test-strategy`).
      The shaping-level headline requirement that stood here ("What leaves the company is drafted
      against confirmed criteria and read by an adversary") moved to `subagent-dispatch`, where the
-     rule has its one home (design D-1); `test-strategy` gains rows only. -->
+     rule has its one home (design D-1); `test-strategy` gains rows only. Which files the
+     delivery edits is in tasks.md (3.1) and design D-17, not here: a spec holds standing rules. -->
 
 ## ADDED Requirements
 
@@ -12,13 +13,13 @@ drafting, decided by the owner, and one `ROB` row for the adversarial reader, ea
 `exists`, the profile's check id defined in `references/inventory.md`, and the owning skill as
 technique owner (`proposal-writing`, `contract-practice`, `meaningfy-voice`,
 `executive-communication`, `sales-conversations`, in that order). Every `ROB` row SHALL name, as
-its tool, a fresh subagent briefed per `guardrails`. The `ADQ` row that waited on this change
-SHALL become `accepted`, with the reason that this work is assessed and reviewed, not tested
-(DEC-11), and no row SHALL be left naming this change as the one to fill it. No row SHALL name a
-reader's role. This change
-SHALL edit those two references and, in the skill's SKILL.md, only a status quoted from a changed
-row; it SHALL add no question, stance or column (generic-task-test-profiles DEC-5, DEC-6;
-test-strategy DEC-5, DEC-8).
+its tool, a fresh subagent briefed per `guardrails`. The `ADQ` row of that file on whether the
+writing checks would catch a bad piece SHALL have status `accepted`, with the reason that this
+work is assessed and reviewed, not tested (DEC-11), and no row of the file SHALL have a `gap`
+status that names `generic-task-test-profiles`. No row SHALL name a reader's role. Where
+`test-strategy`'s SKILL.md or the head of `generic-writing.md` quotes one of these rows or its
+status, the quotation SHALL agree with the row. The profiles SHALL add no question, stance or
+column to the matrix (generic-task-test-profiles DEC-5, DEC-6; test-strategy DEC-5, DEC-8).
 
 #### Scenario: Looking up the check for a contract
 - **WHEN** a contributor reads the `ROB` rows of `generic-writing.md`
@@ -31,6 +32,10 @@ test-strategy DEC-5, DEC-8).
 #### Scenario: An owning skill without its rows
 - **WHEN** `generic-writing.md` has no `ROB` row with status `exists` that names `meaningfy-voice`
 - **THEN** `make validate` fails, naming `meaningfy-voice` and `ROB`
+
+#### Scenario: The skill's example for a post
+- **WHEN** a contributor reads the six questions in `test-strategy`'s SKILL.md, column *Example in a post*
+- **THEN** the `ROB` example is the adversarial reader's read and the `ADQ` example says the gap is `accepted`, as the rows of `generic-writing.md` do
 
 #### Scenario: A role written into test-strategy
 - **WHEN** a file under `skills/test-strategy/` names a reader's role ("sceptical buyer", "opposing counsel", "stranger scrolling", "busy recipient")
