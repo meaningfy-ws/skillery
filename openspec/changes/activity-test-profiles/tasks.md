@@ -20,8 +20,8 @@ subagent that built nothing of the stage.
   the Method and Read lines of the tester's brief (D-7, D-8, D-9, D-12, D-13, D-16; RISK-1).
 - [ ] 0.3 Add `CLOSED_FAMILIES` (empty), `closed_family_errors` and its test to
   `tests/test_test_strategy.py`, test-first, with fixture cases for a `gap → C` row, a status in
-  bold, a misspelt status, an `accepted` row with an empty *Check* cell, a clean file (no error)
-  and a listed file that is missing (D-11; spec *A closed family stays
+  bold, one in backticks, a misspelt one, a row shifted by a pipe in its reason, an `accepted` row
+  with an empty *Check* cell, a clean file (no error) and a listed file that is missing (D-11; spec *A closed family stays
   closed*).
 
 ## 1. Stage 1: documentation
@@ -57,10 +57,11 @@ subagent that built nothing of the stage.
   green, the matrix edits, the conditional requirements kept, rewritten or deleted,
   `evidence/catch-documentation.md`, the CHANGELOG line, the four commands (D-10, D-11, D-14, D-15,
   D-18; spec *A family's gaps are filled from recorded failures or accepted*).
-- [ ] 1.9 The invariants trace: dispatch the adversarial tester on this stage with the brief read
-  from the working tree and the error matrix's path named in it; its property test goes in the
-  file D-11 names; from its report write `evidence/invariants-trace.md`; if the report lacks the
-  property D-13 asks for, return it once (D-11, D-13; spec *Invariants reach the tester*).
+- [ ] 1.9 The invariants trace, on the stage's regular tester dispatch: brief read from the working
+  tree, the error matrix's path named in it; its property test goes in the file D-11 names; from
+  its report write `evidence/invariants-trace.md`; if the report lacks the property D-13 asks
+  for, return it once; then run `make validate` again (D-11, D-13; spec *Invariants reach the
+  tester*).
 - [ ] 1.10 Stage checker: the decision table against the diff (INV-2); the evidence scrub,
   including `evidence/pr-documentation.md`, the PR body to be posted (INV-4, D-17); no skipped
   test behind a catch line (D-18); no description changed without probes (D-19); the D-15 items.
@@ -79,17 +80,21 @@ subagent that built nothing of the stage.
   commit; record the observable of D-15 in `evidence/baseline-shaping.md` (D-15).
 - [ ] 2.5 Write `skills/epic-planning/references/invariants.md`, with the #143 case replayed as in
   design § Algorithm (D-4, D-18).
-- [ ] 2.6 `epic-planning` SKILL.md: the question in step 2 and the two rules in step 6, at most
-  five added lines, linking 2.5; the `plan-invariants` entry in `tests/ownership.yaml` (D-1, D-4,
-  D-15; spec *The shaping interview asks for invariants*).
+- [ ] 2.6 `epic-planning` SKILL.md: the question in step 2 and the three rules in step 6, at most
+  seven added lines, linking 2.5; the `plan-invariants` entry in `tests/ownership.yaml` (D-1, D-4,
+  D-15; spec *The shaping interview asks for invariants*; *The PLAN records invariants*;
+  *Invariants reach the tester*).
 - [ ] 2.7 The template: the three edits of D-2, then `make bundles`; `tests/test_bundle_gen.py`
   green. Comment on #143, written to `evidence/comment-143.md` first: the columns delivered, the
   `clarity-gate` item still open (D-2, D-3, D-17; spec
-  *The PLAN records invariants*; *The EPIC and PLAN templates speak plain language*).
+  *The PLAN records invariants*; *Invariants reach the tester*; *The EPIC and PLAN templates
+  speak plain language*, whose scenario *The design template's one new heading* the stage checker
+  proves by listing the template's `##` headings before and after).
 - [ ] 2.8 Baseline, after: the same file, a fresh subagent following the skill as read from the
-  stage's head commit; record the observable; on "no", revise 2.5 and 2.6 and repeat, at most
-  twice (D-15; spec *The PLAN records invariants*, scenario *A write path left out*, of which this
-  run is the proof).
+  stage's head commit; record both observables; on a miss, revise the texts of 2.5, 2.6 and 2.7
+  and repeat, at most twice (D-15; this run is the proof of three scenarios: *A write path left
+  out*, *A PLAN whose interview had no invariants answer* and *Deriving a PLAN with an invariant
+  left to the tester*).
 - [ ] 2.9 Close as 1.8, for `shaping.md` and `evidence/catch-shaping.md` (the worked example of 2.5
   is the catch); then the stage checker and one PR as 1.10, naming #143 (D-10, D-11, D-15, D-18).
 

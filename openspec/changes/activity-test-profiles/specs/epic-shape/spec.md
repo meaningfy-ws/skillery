@@ -18,12 +18,18 @@ where PLAN derivation reads them (activity-test-profiles DEC-5; design D-4).
 A PLAN's `design.md` SHALL hold an `## Invariants` section directly before `## Error matrix`: a
 table with an id `INV-<n>`, the invariant, an example, every write path that can break it and the
 test that proves it on each path, or one line "None" with the reason. The section SHALL NOT be
-empty. PLANs derived before this requirement SHALL NOT be migrated (activity-test-profiles DEC-5;
-design D-1, D-2, D-3).
+empty. Where the interview holds no answer to the invariants question, PLAN derivation SHALL
+propose invariants from the EPIC, mark each "proposed, not confirmed" and put them to the developer
+before the gate, and SHALL NOT write "None". PLANs derived before this requirement SHALL NOT be
+migrated (activity-test-profiles DEC-5; design D-1, D-2, D-3).
 
 #### Scenario: A write path left out
 - **WHEN** `epic-planning` derives the PLAN of an EPIC that keeps one label in two stores and offers create, rename and replace
 - **THEN** the PLAN ties create to both stores, because the write-path column asks for create, update, replace, delete, bulk or import and internal paths
+
+#### Scenario: A PLAN whose interview had no invariants answer
+- **WHEN** `epic-planning` derives the PLAN of an EPIC shaped before the invariants question existed, which keeps one label in two stores
+- **THEN** the section holds the one-label invariant marked "proposed, not confirmed", and it is put to the developer before the gate
 
 #### Scenario: A PLAN with no invariant
 - **WHEN** `epic-planning` derives the PLAN of a change for which the interview recorded "None"
