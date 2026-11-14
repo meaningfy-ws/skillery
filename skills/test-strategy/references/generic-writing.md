@@ -20,6 +20,7 @@ Checks on every non-code piece of work: posts, messages, offers and estimates, c
 | VER | CHK-105 Repository's own check and immutability | `corpus-repository` | the repository's own check | before a pull request | the verifier | exists |
 | VER | CHK-106 Vault promotion check | `vault-promote` | kind and property check | each promotion | the verifier | exists |
 | VER | CHK-107 Vault table check | `vault-conventions` | the table rules | before saving a note | the verifier | exists |
+| VER | CHK-144 Vault move and delete check | `vault-conventions` | link search and name check | before a note is moved or deleted | the verifier | exists |
 | ADQ | whether the writing checks would catch a bad piece | none yet | none yet | none yet | the checker | gap → D |
 | ROB | an adversarial reader who tries to break the draft | none yet | none yet | none yet | the adversary | gap → D |
 | CLR | CHK-33 Cold reader | `technical-writing` | fresh agent given only the page | a how-to or tutorial changed; any page meant to be followed | the cold reader | exists |

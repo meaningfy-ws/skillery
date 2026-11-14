@@ -233,7 +233,9 @@ Taken by the lead during delivery (2026-11-13); the developer may overrule any o
     accepting a miss on any question is a person's decision. Each cell holds the stance the
     stance table gives its question, or the person the owning skill names (the author for the
     infra reviewer's report, the Terraform plan and the four-eyes rule; the person on duty for
-    break-glass). The L2 lens, use-case coverage and plan drift are `VER` rows only.
+    break-glass). The L2 lens, use-case coverage and plan drift have no `VAL` row.
+  - The stage checker found one check missing from the inventory, the vault move and delete
+    check; it enters as CHK-144 (error matrix, first row).
   - The V-model row *EPIC and PLAN* (the developer agrees the why, the appetite and the success
     measure) is held by `test-strategy` itself, in `references/shaping.md`: no other skill states
     it, and this change rewrites no other skill's technique.

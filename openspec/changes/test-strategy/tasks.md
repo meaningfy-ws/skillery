@@ -78,5 +78,6 @@
 
 `make validate` green, which includes the inventory and one-home test, the workflow-criteria lint,
 use-case coverage, bundles and the static probes. Also required: the navigator mod tests green,
-`openspec validate test-strategy --strict`, the behavioural trigger run recorded, and the
-developer's verdict in `evidence/acceptance.md`.
+`openspec validate test-strategy --strict`, and the developer's verdict in
+`evidence/acceptance.md`. The behavioural trigger run is recorded by `evaluate-catalogue` task 6b.1,
+in that change's `inputs/evidence/` (D-13).
