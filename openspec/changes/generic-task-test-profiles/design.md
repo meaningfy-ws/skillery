@@ -86,7 +86,8 @@ New choices made while planning; settled ones are cited.
   existing dispatch parenthesis ("the second check, the adversarial reader", 24 characters more)
   and adds the trigger "have a reader attack this draft" (35 more). To pay for them it drops two
   triggers that no probe uses and that other triggers cover: "is this agent step safe" and "keep
-  the context small" (53 fewer). It ends at 687 characters; 690 is the cap. The reference names no
+  the context small" (53 fewer). It ends at 687 characters, six more than today; the lint's advisory target of 600 is already
+  exceeded and its hard limit is 1024. The reference names no
   role: the role is an input of the brief.
 - **D-2 A profile is one section of fixed shape in its owning skill.** Heading `## Test profile`,
   then one pointer sentence in plain text, with no link (the lint forbids a path into another
@@ -178,10 +179,14 @@ New choices made while planning; settled ones are cited.
 
   | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
   |---|---|---|---|---|---|---|
-  | `VAL` | the profile's `CHK-<n>` | the owning skill | none | before drafting; at pick-up for an unattended draft | the owner | `exists` |
-  | `ROB` | the same `CHK-<n>` | the owning skill | a fresh subagent, briefed per `guardrails` (`references/adversarial-reader.md`) | before hand-over | the adversary stance; the owner after the second read | `exists` |
+  | `VAL` | the profile's `CHK-<n>` | the owning skill | none | see below | the owner | `exists` |
+  | `ROB` | the same `CHK-<n>` | the owning skill | a fresh subagent, briefed per `guardrails` (`references/adversarial-reader.md`) | see below | the adversary stance; the owner after the second read | `exists` |
 
-  No row names a role: roles stay in the owning skills. The internal-message case is the same
+  *Moment* takes A's form, a workflow and phase or "any": for a contract, `contract`, phase
+  `intake` (`VAL`) and phase `review` (`ROB`); for an offer, the sales workflow of
+  `sales-operations`, phase `offer`; for a post, a message and a sales message, "any". When inside
+  that moment the step runs (before drafting, before hand-over, at pick-up) is the owning skill's
+  and the reference's to say, not the row's. No row names a role: roles stay in the owning skills. The internal-message case is the same
   `VAL` row of `executive-communication`: the owner decides by correcting or not. Each of the five
   skills, and `guardrails`, carries A's pointer line with `VAL`, `ROB` added. In `test-strategy`'s
   SKILL.md only a status quoted from a changed row may change (the Quick Start's "`gap` → D");
@@ -217,9 +222,15 @@ New choices made while planning; settled ones are cited.
     - **O-5**, judged by the owner on the kept pair at the acceptance demo: the *with* run's reader
       failed something that the *without* draft still contains.
 
-    The drafts and reports are kept under `evidence/baseline/`. **Proven** means every *with* run
-    shows the expected value on O-1 to O-3, and O-5 is yes for at least two of B-1 to B-4. O-1 to
-    O-3 show that the steps happen; only O-5 shows that they changed the piece (RISK-10).
+    The drafts and reports are kept under `evidence/baseline/`, except B-2's: a contract response
+    may read as clause text, which skillery does not hold, so B-2's drafts stay in the session's
+    scratch directory for the demo and the evidence keeps only its observations and the reader's
+    pass or fail lines. B-2's prompt says "there is no contract repository; work from the table
+    in this prompt". If a B-2 run still stops for lack of one, the stop is its result: O-1 to O-4
+    are recorded as no, and B-2 is left out of the bar. **Proven** means every *with* run shows
+    the expected value on O-1 to O-3, O-4 is yes for the *with* runs of B-1 to B-4, and O-5 is yes
+    for at least two of B-1 to B-4. O-1 to O-4 show that the steps happen; only O-5 shows that
+    they changed the piece (RISK-10).
   - *Planted flaw.* Six fabricated fixtures under `tests/fixtures/readers/`:
 
     | File | What is planted |
@@ -492,7 +503,8 @@ This PLAN was derived from A's design, not from A's files. Task 1.1 checks each 
 | `generic-writing.md` is missing or renamed at stage 3 | The same test fails (stage 3) | Task 1.1 should have caught it: fix R-1 and the test's path |
 | The reader misses a planted flaw in 2 of 3 runs | `evidence/planted-flaw.md` | Sharpen the brief or the skill's *Attacks*; run all fifteen again, twice at most; then the owner |
 | The reader fails a clean twin in 2 of 3 runs | `evidence/planted-flaw.md` | The reader is theatre: tighten the brief's report lines; run again within the same limit |
-| A *with* run misses O-1, O-2 or O-3 | `evidence/baseline.md` | Fix the owning skill's step line (D-3); run that task again |
+| A B-2 run stops because there is no contract repository | The run's output | The stop is recorded as its result; B-2 is left out of the bar (D-11) |
+| A *with* run misses O-1, O-2, O-3 or O-4 | `evidence/baseline.md` | Fix the owning skill's step line (D-3); run that task again |
 | O-5 is yes for fewer than two pairs | The acceptance demo | The profile did not change the pieces: the owner decides whether to ship, sharpen or drop a profile |
 | The owner does not answer the confirmation | The agent is waiting | It does not draft a piece that leaves the company; a delegated agent returns the question |
 | The owner corrects the criteria after the draft exists | The owner's message | The corrected criteria replace the old ones; the draft is revised and read against them; the read count starts again |
@@ -521,8 +533,11 @@ This PLAN was derived from A's design, not from A's files. Task 1.1 checks each 
   scenario, and task 2.7, which runs both paths on both CLIs and records what each allows.
 - **RISK-2** With `Agent`, scheduled sales runs start `sales-operations`' three reviewers: more
   tokens per run, and findings in run notes that said *unverified*. Likelihood high, impact low.
-  Accepted by the owner (Q-14, DEC-10); the CHANGELOG says so, and the first week's run notes are
-  read at the acceptance demo.
+  Accepted by the owner (Q-14, DEC-10); the CHANGELOG says so. Inside this change, the scheduled
+  scenario of § Scenarios is run once by hand from the stage-2 head (task 2.7) and shown at the
+  acceptance demo. Real scheduled runs get the new agent file only with the release that ships
+  this change; the owner reads their first week of run notes then, and a problem becomes an
+  issue. That check is after this change, not a task of it.
 - **RISK-3** The owner sends a draft from a scheduled run straight from the mail client, so it
   leaves unread. Likelihood medium, impact medium. Accepted: the profile binds agents, not the
   owner, and marking such drafts would add the profile to scheduled runs (DEC-4). The acceptance
@@ -593,6 +608,13 @@ items passed; seven gaps, all folded in:
 | G-5 | No signal for a contaminated baseline run → the error-matrix row removed; the isolation steps are the guard |
 | G-6 | The *Attacks* written in stage 2 were never proven → bullets word for word, and one repeat of the runs (D-11, task 2.9) |
 | G-7 | `served_by` key; README paragraphs cited as headings → D-14, D-11 |
+
+**Clarity gate, run 2 (a second independent scorer, on commit 0a8a1a0): 8.8/10, FAIL.** Six gaps,
+all folded in: the description cap had no source (D-1, task 1.5); no task gave `guardrails` its
+pointer line (task 1.5); *Moment* did not take A's form (D-10); the first week of scheduled run
+notes cannot exist before the release (RISK-2, task 3.5); B-2's drafts could be clause text in a
+public repository, and the run has no contract repository (D-11, error matrix); O-4 was in no bar
+(D-11).
 
 ## Open Questions
 

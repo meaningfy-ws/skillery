@@ -16,7 +16,8 @@
 - [ ] 1.3 Write `evidence/baseline/inputs.md` (the five prompts, B-2's with the term table of 1.2
   inline, and the prompt sentence). Get the owner's approval of the estimate for the ten baseline
   runs. Run the five *without* runs, isolated, in an empty scratch directory, with the plugin
-  built from the base commit; record the commit and O-1..O-4 and keep the drafts (D-11). Write
+  built from the base commit; record the commit and O-1..O-4 and keep the drafts, B-2's outside
+  the repository (D-11). Write
   `evidence/failure-case.md` from them and from A's inventory gap line (D-14).
 - [ ] 1.4 Write `tests/test_generic_task_profiles.py` with the fixture checks and the stage-1
   assertions of D-11 (the three lines present in the reference and nowhere else), each with its
@@ -24,7 +25,8 @@
   `adversarial-reader-brief` entry to `tests/ownership.yaml`.
 - [ ] 1.5 Write `skills/guardrails/references/adversarial-reader.md` with the eight sections of D-1
   and the brief of design § *Algorithm*; add the bullet to § 5 of `guardrails`' SKILL.md and
-  change its description as D-1 says, to 690 characters at most (D-1, D-3's rule, D-6..D-9; spec
+  change its description as D-1 says, to 687 characters; add or update its pointer line for
+  `test-strategy` with `VAL`, `ROB`, as R-6 found it (D-1, D-10, D-3's rule, D-6..D-9; spec
   `subagent-dispatch`, both requirements).
 - [ ] 1.6 Probes for `guardrails` in `tests/trigger_probes.yaml` (D-12); its description before
   and after in `evidence/probes.md`. Run `make skill-inventory`.
@@ -84,8 +86,8 @@
   in the PR (D-14, RISK-11).
 - [ ] 3.4 `make bundles`, `make validate`, `openspec validate generic-task-test-profiles --strict`.
 - [ ] 3.5 Acceptance demo with the developer: one offer from request to hand-over, one pick-up of a
-  sales draft, the baseline pairs with the owner's O-5 verdict, and the first week's scheduled run
-  notes (RISK-2, RISK-3); recorded in `evidence/acceptance.md` (D-11, D-14; LARGE makes it
+  sales draft, the baseline pairs with the owner's O-5 verdict, and the scheduled scenario's
+  hand-run result from 2.7 (RISK-2, RISK-3); recorded in `evidence/acceptance.md` (D-11, D-14; LARGE makes it
   mandatory).
 
 ## Roadmap
@@ -105,3 +107,6 @@ planted-flaw bar met (`evidence/planted-flaw.md`); the baseline verdict (`eviden
 the behavioural run of `meaningfy-voice` (`inputs/evidence/triggers-meaningfy-voice.md`); the agent
 scenarios run on both CLIs (`evidence/agent-scenarios.md`); and the developer's verdict in
 `evidence/acceptance.md`.
+
+After the release that ships this change, and not a task of it: the owner reads the first week of
+scheduled sales run notes (RISK-2).
