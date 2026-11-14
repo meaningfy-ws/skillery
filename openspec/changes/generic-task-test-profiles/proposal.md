@@ -9,7 +9,8 @@
      9.0/10 PASS on the fifth run by an independent scorer. After that gate the owner's Q-15
      re-shaped the proofs and the reader's output, logged as DEC-11, which narrows DEC-6; the
      PLAN was gated again, 9.1/10 PASS. A was delivered and archived the same day and the PLAN
-     was checked against its files. Ready for delivery. -->
+     was checked against its files. Ready for delivery. Revised 2026-11-14 by owner decision
+     (the reader's tool list), logged as DEC-12, which narrows one no-go; not gated again. -->
 
 # EPIC: generic task test profiles
 
@@ -107,6 +108,17 @@ A failed criterion sends the work back to the draft. Each owning skill says what
   the first real contract session. Of DEC-6's planted flaws only the offer's stays, as evidence
   made once and kept out of `tests/`; of its baselines, the contract's goes — rejected: the
   planted contract clause, the contract baseline, pass or fail per criterion.
+- **DEC-12** (added 2026-11-14 by owner decision, after the PLAN was gated;
+  [`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+  decision 2): the reader gets a named tool list: `Read`, `Grep` and `Glob` for prose, and also
+  the code tools (Serena, ast-grep, GitNexus) where the piece read is code or a repository —
+  rejected: a general-purpose subagent with every tool of the session, which starts heavier
+  (about 11,500 tokens for the two workers in a test run, PR #234). This replaces "a fresh
+  general-purpose subagent" in the No-gos.
+- **DEC-13** (added 2026-11-14 by owner decision, after the PLAN was gated): the reader is a thin
+  agent with that tool list, because only an agent definition makes a subagent start smaller; a
+  line in a brief does not (design D-27) — rejected: the list in the brief only, with the heavy
+  start accepted. This replaces "No new agent" for the reader; no other agent is added.
 
 ## Rabbit-holes
 
@@ -127,7 +139,8 @@ A failed criterion sends the work back to the draft. Each owning skill says what
 - No scored rubric and no pass mark.
 - No pass, fail or verdict from the reader, and no test cases or fixtures for contracts or posts
   (DEC-11).
-- No new agent; the reader is a brief for a fresh general-purpose subagent.
+- No new agent other than the thin reader, which carries a named tool list and no method (DEC-12,
+  DEC-13; was: "No new agent; the reader is a brief for a fresh general-purpose subagent").
 - No criteria step and no adversarial reader on the sales agent's scheduled runs (narrowed by
   DEC-10, which lets them start the reviewers they already name), and no change to any worker's
   workflow phases.

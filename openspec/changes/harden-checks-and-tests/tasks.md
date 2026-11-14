@@ -1,6 +1,7 @@
 <!-- PLAN (tasks half), derived 2026-11-14; attack and the developer's round-8 answers folded in.
      Three stages, each its own PR into develop. [A] marks a task that reads EPIC A's delivered
-     files (design D-12). -->
+     files (design D-12). Revised 2026-11-14 by owner decision (design D-28, D-29: tasks 2.1
+     to 2.4 and 2.7); not gated again. -->
 
 > Derives from: EPIC `harden-checks-and-tests` ([`proposal.md`](proposal.md)); design in [`design.md`](design.md).
 
@@ -90,11 +91,18 @@
 ## 2. Stage 2: the tester's methods and range
 
 - [ ] 2.1 [A] Walk the D-12 table again (A-4, A-6, A-7).
+  *Revised 2026-11-14 (D-28, D-29):* the scenarios that changed after task 1.0 (the two MEDIUM
+  scenarios, *The scaling has one source*, and the three of *A challenge or check result ends in
+  one line*) and the form of the result line were signed off by the owner on 2026-11-14, through
+  the decisions that changed them; record that in `evidence/acceptance.md`.
 - [ ] 2.2 `tests/features/epic-delivery.feature`: the MEDIUM row names the tester; add the four
   scenarios of D-9, one per scenario of the spec requirement (D-9; spec *The adversarial tester
   works by stated methods*).
+  *Revised 2026-11-14 (D-28, D-29):* the MEDIUM row names the tester with its condition; add
+  the scenario *A MEDIUM stage with nothing for the tester* and the three of the result line.
 - [ ] 2.3 Set `reviews.MEDIUM.tester` in `epic-delivery.workflow.json`; run `make mods` and
   `make bundles` (D-9; spec *The loop scales with the appetite*).
+  *Revised 2026-11-14 (D-28):* the value is the wording with the condition.
 - [ ] 2.4 Replace the tester brief in `team-and-briefs.md`; add the report rule to the tester's
   row of the check ledger in `stage-loop.md`; repoint
   `docs/practice/ai-coding/working-with-agents.md` (D-9; spec *The adversarial tester works by
@@ -107,6 +115,10 @@
   The rule on which properties the tester writes (one per row of the PLAN's `## Invariants`
   section where it has one, else per error-matrix row) has one home, this brief. Whichever of
   this task and test-suite-care's task 1.9 lands first writes it; the other keeps it.
+  *Revised 2026-11-14 (D-29):* define the result line once under *What every brief names* and
+  name it in the Report line of the tester's, the reviewer's and the checker's brief; the
+  ledger rule returns a report without it as incomplete (spec *A challenge or check result ends
+  in one line*).
 - [ ] 2.5 `cosmic-python`: extend checklist item 10 and add the stateful and the Schemathesis
   example to `example-testing-patterns.md`; pin Hypothesis and Schemathesis in the `test` group of
   `pyproject.toml.tmpl` and confirm `poetry lock` on a scaffold (D-9, D-4).
@@ -114,7 +126,8 @@
   (`CHK-17`, `CHK-5`), and fill the `ROB` row "stateful and contract-driven properties for the
   tester" (`software.md` line 45, `gap → B`): it takes the next free id and status `exists`
   (D-12, D-15).
-- [ ] 2.7 `CHANGELOG.md` line naming the change for MEDIUM EPICs; `make bundles`,
+- [ ] 2.7 `CHANGELOG.md` line naming the change for MEDIUM EPICs, with the condition (D-28), and
+  the result line (D-29); `make bundles`,
   `make skill-inventory`, `make validate`, `openspec validate harden-checks-and-tests --strict`.
 
 ## 3. Stage 3: the weekly mutation report and the import-contract check

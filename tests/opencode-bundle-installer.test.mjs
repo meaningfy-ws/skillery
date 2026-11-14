@@ -196,12 +196,24 @@ test("TC-19 every live repo agent renders", () => {
   );
 });
 
-// lean-delivery D-10: no tool list (the session's tools, MCP included, stay at opencode's default), no fan-out.
-test("implementer and code-reviewer render with only the skill tool and no task permission", () => {
+// delivery-retrospective F-5: without a tool list a worker carried the session's whole tool catalogue
+// (26,000 to 38,000 more tokens on every call). The list is closed again; the code tools are named.
+test("implementer and code-reviewer declare a closed tool list with the code tools and cannot fan out", () => {
   const catalogue = loadCatalogue(path.join(REPO, "tools", "opencode-catalogue.json"));
-  for (const stem of ["implementer", "code-reviewer"]) {
+  // ToolSearch keeps the code tools deferred (names only); without it their full schemas load at the
+  // start and the worker is heavier than with no list at all (measured 2026-11-14, Claude Code 2.1.325).
+  const codeTools = ["ToolSearch", "mcp__serena__*", "mcp__ast-grep__*", "mcp__gitnexus__*"];
+  const expected = {
+    implementer: ["Read", "Edit", "Write", "Glob", "Grep", "Bash", "Skill", ...codeTools],
+    "code-reviewer": ["Read", "Grep", "Glob", "Bash", "Skill", ...codeTools],
+  };
+  for (const [stem, tools] of Object.entries(expected)) {
+    assert.deepEqual(catalogue.agents[stem].tools, tools, stem);
     const { content, gaps } = renderAgent(catalogue.agents[stem], agentBody(stem, path.join(REPO, "agents")), MAP);
-    assert.match(content, /^tools: \{"skill":true\}$/m, stem);
+    const rendered = Object.fromEntries(tools.filter((t) => Object.hasOwn(MAP.toolNames, t)).map((t) => [MAP.toolNames[t], true]));
+    assert.ok(content.split("\n").includes(`tools: ${JSON.stringify(rendered)}`), stem);
+    // opencode has no analogue for these: a recorded gap, and its allow-list does not restrict (G-6).
+    for (const tool of codeTools) assert.ok(gaps.includes(`tool '${tool}' has no opencode analogue`), `${stem} ${tool}`);
     assert.match(content, /^permission: .*"task":"deny"/m, stem);
     assert.ok(!gaps.some((g) => g.includes("'Agent'")), stem);
     assert.equal(/^permission: .*"edit":"deny"/m.test(content), stem === "code-reviewer", stem);

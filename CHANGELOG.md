@@ -25,6 +25,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Changed
 
+- `implementer` and `code-reviewer` have a fixed tool list again: the file, search, shell and skill
+  tools, plus the code tools of the `serena`, `ast-grep` and `gitnexus` MCP servers, loaded on
+  demand. Since v3.12.0 they carried every tool of the session, which made each worker start
+  larger. In a test session the start shrank by about 11,500 tokens per worker. If your project's
+  code-intelligence servers have other names, the workers no longer reach them: tell us through
+  `skillery-feedback`. On opencode nothing changes.
 - Verification and validation are now defined in `test-strategy`, not in `epic-delivery`. Its
   `verification-validation.md` keeps the acceptance demo, the validation review and the evidence
   folder.

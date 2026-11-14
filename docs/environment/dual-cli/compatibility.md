@@ -87,11 +87,12 @@ One skill also has a recorded monitoring gap, which comes from a missing plugin 
 |---|---|---|---|
 | `rule-steward` | rule usage is traced by the Langfuse Claude Code plugin | no Langfuse plugin known | opencode sessions can `load`, `cite` and `check` rules, but nothing records them, so rules used only there look unused in the weekly review. |
 
-One agent has a recorded tool gap (`make opencode-report`):
+Three agents have a recorded tool gap (`make opencode-report`):
 
 | Agent | Claude Code | opencode | Gap / degradation |
 |---|---|---|---|
 | `lawyer` | `tools` lists `mcp__overleaf__*`, so Tolic may edit the contract's Overleaf project | a tool glob has no opencode analogue and is left out of the rendered agent | on opencode Tolic works through git only, which his body already names as the fallback. |
+| `implementer`, `code-reviewer` | `tools` is a closed list: the built-in tools, `ToolSearch` and the code tools `mcp__serena__*`, `mcp__ast-grep__*`, `mcp__gitnexus__*`; no other connector tool reaches the worker | `ToolSearch` and a tool glob have no opencode analogue and are left out of the rendered agent; the list does not restrict there (G-6 in [`mapping.md`](mapping.md)) | on opencode the worker still gets every MCP tool of the session, the code tools included; only the context saving is lost. |
 
 One bundle is Claude Code only by design, a deliberate gap rather than a missing capability:
 

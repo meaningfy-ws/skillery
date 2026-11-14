@@ -7,7 +7,8 @@
      Round 2 with the owner the same day (Q-5..Q-10) widened the scope and the appetite.
      Reconciled with the PLAN and with EPICs B, C and D on 2026-11-14: the sentences the PLAN's
      "Deviations from the EPIC" had made false are corrected below, each a logged change, not
-     a new decision. -->
+     a new decision. Revised 2026-11-14 by owner decision: DEC-3 (a builder sorts, the lead
+     confirms), design D-35 and D-36; not gated again. -->
 
 # EPIC: test suite care
 
@@ -86,12 +87,18 @@ project.
   tests already name their scenario (testing checklist rule 15, checked by `bdd-gherkin`'s
   traceability check); the map reads those names and adds the tests that carry none —
   rejected: tagging every test by hand; coverage and mutation score only.
-- **DEC-3**: A stage's adversarial tests are distilled before the stage merges. The tester's
+- **DEC-3** *(revised 2026-11-14 by owner decision,
+  [`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+  decision 5)*: A stage's adversarial tests are distilled before the stage merges. The tester's
   report names the scenario each new test attacks. In step 4 of the stage loop of `epic-delivery`
-  (Decide and fix), where the lead already decides each tester finding, the lead keeps the tests
+  (Decide and fix), where the lead already decides each tester finding, a builder sorts the tests
+  by the rule and the lead confirms its lists. Kept: the tests
   that found a defect, the ones that alone cover a scenario, and one property per invariant the
   PLAN names (B's DEC-9); they go into files named by feature. The rest are deleted and listed
-  in the stage's pull request, each with its reason (Q-3) — rejected: keep all and run them nightly; leave as is.
+  in the stage's pull request, each with its reason (Q-3). The builder also reports the
+  refactoring opportunities it saw while sorting, and implements none — rejected: keep all and
+  run them nightly; leave as is — was: the lead sorts the tests itself (the measurements show
+  the lead's session as about half of all cost).
 - **DEC-4**: There is no time target. Each audit ends with a report and a discussion; the owner
   decides each proposal, and "no reduction is worth it here" is a valid outcome. The owner: "this
   will require a judgement every time, maybe it will not be possible to cut time" (Q-4) —
