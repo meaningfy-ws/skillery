@@ -282,6 +282,11 @@ Taken by the lead during delivery (2026-11-13); the developer may overrule any o
     `architecting` gates look one phase ahead; `meaningfy-release` describes no validate step
     although its workflow has one; the release `back` gate matches only `develop` while the
     runbook says every long-lived line. They are follow-ups for the developer to rule on.
+- **D-17 Stage 2 takes the small review set.** The stage adds 285 lines against `develop`
+  (generated files included), under the 600-line limit of the LARGE set's `small_stage`, and the
+  risk is low: the impact analysis of `phaseError` shows one direct caller and four impacted
+  symbols, the lint is a new function, and the rest is data and prose. Two reviewers (L1 with
+  L2; L3 with L4 and L5), the adversarial tester and the checker.
 
 ## Algorithm / approach
 
