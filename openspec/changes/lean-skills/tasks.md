@@ -14,7 +14,8 @@ list, shape, practices) and the modified `skill-crafting-method`.
   reason; stale per-check `pending` exemption; unknown name; budget-pending and `over_budget` both;
   malformed file gives one error only; an empty exemption list; a check named twice; pointer not
   in the sentence form, as a link, a code span, a bold file name and a table cell; closing heading
-  containing "reference"), asserting the exact messages of D-4, and passing tests on a bare root
+  "References"; a skill pending for `pointers` only that is over 24,576 bytes fails on the
+  budget), asserting the exact messages of D-4, and passing tests on a bare root
   without `skill-budget.yaml`: a pointer in the sentence form wrapped over two list lines, one
   whose sentence holds "e.g." and "3.12", one in a blockquote, two pointers in one sentence, a
   heading "Quick reference", a link into another skill's `references/`, a link inside fenced

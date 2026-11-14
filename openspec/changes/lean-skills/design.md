@@ -1,7 +1,7 @@
 # PLAN (design): Lean skills
 
 > Derives from: the EPIC [`proposal.md`](proposal.md) (`lean-skills`), DEC-1 to DEC-13. Order of all
-> open EPICs: `delivery-process-and-tools/inputs/reassessment-2026-11-15.md`.
+> open EPICs: [the reassessment](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md).
 
 Stage 1 (the standard, its lint, the five practices) is planned in full; it is delivered first, in
 wave 1. Stages 2 to 5 are planned in outline: each is detailed at the start of its own session,
@@ -119,6 +119,8 @@ needs it gone.
 One file at the repository root, read by both checks, optional (absent means empty), so the method
 checks still run on a bare `skills/` tree:
 
+Format example (at delivery `over_budget: {}`, task 1.4):
+
 ```yaml
 # Skills waiting for their lean rewrite (lean-skills stages 2-5), each with the checks it is
 # exempt from. A skill leaves this list in the pull request that rewrites it.
@@ -144,7 +146,9 @@ file, so it cannot rot:
 - a missing key, or a key set to `{}` or null, means empty; an empty exemption list or a check
   named twice in one entry is a malformed file.
 
-The exact messages, which the tests of task 1.1 assert:
+The exact messages, which the tests of task 1.1 assert. They are shown as `main()` prints them;
+a check returns them without its `<check>: ` prefix, and tests assert the returned text. The same
+holds for the D-5 examples.
 
 | Rule | Message |
 |---|---|
@@ -212,7 +216,8 @@ the form; the 11 skills without `references/` pass):
   topic ("the severity table in P decides the channel") fails: it is reworded as a pointer or
   drops the file name.
 - The Boundary section is held to the form like any other part of the body.
-- The error names the line that holds the pointer.
+- The error names the line that holds the pointer. A pointer in a heading and a folder pointer use
+  the pointer message, with the path as written.
 - Errors give the 1-based line in `SKILL.md`, frontmatter lines counted.
 
 ```
@@ -220,14 +225,15 @@ reference_pointers: formal-reasoning: line 44: pointer to references/patterns.md
 reference_pointers: architecture: line 653: heading "References for Deeper Understanding" closes the body with a list of references
 ```
 
-Good and bad, for the standard's worked example:
+Good and bad, for the standard's worked example (here as code spans; a Markdown link to the same
+file is judged the same way):
 
 ```markdown
-- Read [`references/alerting.md`](references/alerting.md) when writing or reviewing an alert
+- Read `references/alerting.md` when writing or reviewing an alert
   rule: it adds the severity table and the routing per channel.        <- passes
-- Read [`references/alerting.md`](references/alerting.md) when needed.  <- fails: no "it adds"
-- [patterns](references/patterns.md): conflict, dead rule, minimal fix  <- fails
-| Open day | [run-types](references/run-types.md) |                    <- fails: a table cell needs the sentence too
+- Read `references/alerting.md` when needed.                           <- fails: no "it adds"
+- `references/patterns.md`: conflict, dead rule, minimal fix           <- fails
+| Open day | `references/run-types.md` |                               <- fails: a table cell needs the sentence too
 ```
 
 The form checks that both halves are present, not that they are good: "when needed" with "it adds
@@ -237,8 +243,8 @@ rewrite (DEC-13), never in stage 1.
 
 ### D-6 Where the standard lives
 
-`docs/development/creating-skills.md` § *Body* is replaced by § *The lean standard*, with four
-parts: the tiers and the budget (D-1, D-3, D-4); the shape (D-2); the sorting of content (D-7); the
+In `docs/development/creating-skills.md`, `### The lean standard` (anchor `#the-lean-standard`)
+replaces `### Body`, with four `####` parts: the tiers and the budget (D-1, D-3, D-4); the shape (D-2); the sorting of content (D-7); the
 five practices (D-8). It is the single home: no skill owns skill authoring, and the method
 (`docs/development/README.md`) points to it. Principle 7 of the method states the tiers in one
 sentence and links there, with no number of its own; the agentskills.io numbers move to the "What
@@ -278,7 +284,8 @@ Second reader: <who or which subagent>, <date>. Verdict: nothing lost | lost: <l
 ### D-8 The five practices of DEC-11, as the standard states them
 
 1. **Pointers say when and what.** Every pointer to a reference is one sentence, "Read `<file>`
-   when `<situation>`: it adds `<what>`.", at the point of need. No list of references closes a
+   when `<situation>`: it adds `<what>`.", at the point of need. Accepted variants: Read or Open;
+   when, if, before, after, while, once, whenever, until or unless; it adds, gives or holds. No list of references closes a
    body. Checked by D-5.
 2. **Two table forms.** Common mistakes (Mistake | Why it fails | Do instead) for rules; Quick
    diagnostic (Question | If not | Action) for the final checklist (D-2).
@@ -300,8 +307,9 @@ Stage 1, in test-first order:
 1. Write the failing tests in `tests/test_repo_lint_negative.py`, on synthetic roots built with the
    existing `_skill` helper: one per row of the error matrix below that is a check outcome, plus a
    passing case for each check on a bare root with no `skill-budget.yaml`.
-2. Add `_skill_budget(repo)` (reads the YAML; returns empty lists when the file is absent; reports
-   a malformed file as one error), `prose_budget`, `reference_pointers`; change
+2. Add `_skill_budget(repo) -> tuple[dict[str, list[str]], dict[str, str], str | None]`
+   (pending, over_budget, the malformed-file error; empty maps and `None` when the file is
+   absent), `_pointer_errors(repo, skill)`, `prose_budget`, `reference_pointers`; change
    `skill_size_report`. Add the two checks to both check tuples.
 3. Run both checks with an empty list on the real tree; write `skill-budget.yaml` with every
    failing skill under `pending`, sorted, each with the checks it fails. Run `make validate`:
@@ -361,7 +369,7 @@ ships with it.
 | A pointer in a table cell or a bare bold file name | the same | The same |
 | A link into another skill's `references/` | not a pointer; no error | none (the matrix line stays as `tests/test_test_strategy.py` fixes it) |
 | A link inside fenced code | skipped | none |
-| A closing heading with "reference", "see also", "resources", "further reading", "supporting material" | `reference_pointers` fails with file line and heading | Put each pointer at its point of need |
+| A closing heading with "References", "See also", "Resources", "Further reading", "Supporting material(s)" (whole words) | `reference_pointers` fails with file line and heading | Put each pointer at its point of need |
 | A new skill from another EPIC adds the matrix line (as `test-suite-care` does) | not a pointer; passes | none |
 | A skill added after stage 1 is listed as pending | review (the lint cannot tell) | Remove the entry; the skill meets the standard |
 | A pointer that names a missing file | the existing `broken_links` | unchanged |
@@ -425,7 +433,9 @@ in the form). Its twelve holes (line wraps, abbreviations, blockquotes, nested l
 code spans, folders, topic mentions, whole-word headings, line numbers, the Boundary section, a
 latent matrix collision) are closed by D-5's parsing rules and RISK-9. Clarity gate run 1 scored
 8.7; its twelve gaps are folded in (D-4 messages and edge cases, the spec wording, practice 5,
-tasks 1.1, 1.3, 1.9, stage 5).
+tasks 1.1, 1.3, 1.9, stage 5). Clarity gate run 2 scored **9.1** (pass); its nine small gaps
+(message prefix, heading word, accepted variants, one test, two messages, a signature, the
+section anchor, a link, the example label) are folded in after the run, with no third run.
 
 ## Decisions taken with the owner (2026-11-15, one round)
 
