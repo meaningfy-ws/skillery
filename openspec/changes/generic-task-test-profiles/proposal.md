@@ -1,5 +1,5 @@
 <!-- STATUS: EPIC shaped 2026-11-13 from the owner's conversation (inputs/seed.md, inputs/qa.md).
-     EPIC D of four: A test-strategy → B harden-checks-and-tests → C activity-test-profiles → D
+     EPIC D of five (E, `test-suite-care`, was added on 2026-11-14): A test-strategy → B harden-checks-and-tests → C activity-test-profiles → D
      (this). Not yet readiness-checked; PLAN not derived. It is derived when its epic session
      starts, after A is delivered; it does not depend on B or C. Readiness-checked 2026-11-13; the
      fixes and the owner's second round (Q-7..Q-9) are folded in. PLAN derived 2026-11-14 from A's

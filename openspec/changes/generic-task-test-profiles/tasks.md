@@ -79,7 +79,9 @@
 ## 3. Stage 3: the rows and the proofs
 
 - [ ] 3.1 Add the stage-3 assertions of D-11 to the test file (red). Then
-  `skills/test-strategy/references/inventory.md`: `CHK-145` to `CHK-149`; `generic-writing.md`:
+  `skills/test-strategy/references/inventory.md`: the next five free ids (`CHK-145` to
+  `CHK-149` only if B, C and E have taken none; where the design names `CHK-147`, read "the id
+  the post's check received"; reconciled 2026-11-14); `generic-writing.md`:
   the ten rows of D-10 and the `ADQ` row set to `accepted` with its reason, no row left naming D;
   the Quick Start's sentence on the `VAL` row; `tests/test_test_strategy.py` still green (D-10;
   spec `test-strategy`).

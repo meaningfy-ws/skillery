@@ -761,4 +761,15 @@ None blocking. Whether stage 4 or 5 fills anything is open by the EPIC's design 
 
 ## Delivery decisions
 
-None yet. The lead adds entries here from `D-20` during delivery (D-14, D-16).
+The lead adds further entries here during delivery (D-14, D-16).
+
+- **D-20 EPIC E (`test-suite-care`), recorded 2026-11-14 when the five changes were read
+  against each other.** E was planned after this PLAN. Where its stage 1 has landed: the tester
+  reports what each test attacks and whether it failed first, and the lead distils the tester's
+  tests in step 4, keeping one property per invariant, so the property of INV-1 stays; the
+  testing checklist has rules 17 to 21. Where its stage 3 has landed, the survey of a family
+  reads E's assessment of a check that is not code
+  (`skills/test-suite-care/references/non-code-checks.md`) before it fills or accepts that
+  family's `ADQ` gap; the row's status stays this EPIC's to set. UI test rules: E parks six new
+  ones in `test-suite-care` until a UI skill exists; this EPIC names no UI owner and does not
+  move them.
