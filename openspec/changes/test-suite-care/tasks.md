@@ -1,4 +1,5 @@
-<!-- STATUS: PLAN derived and attacked 2026-11-14. Nothing delivered. -->
+<!-- STATUS: PLAN derived, attacked and gated 2026-11-14 (9.05 on the fourth run). Nothing
+     delivered. -->
 
 # PLAN (tasks): test suite care
 
@@ -40,13 +41,13 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       `skills/test-strategy/references/software.md` and `inventory.md`; the order rule against
       EPIC B's "Checked by" applied. *Acceptance:* T-11 passes, and the rule-count and Gherkin parts of T-15.
 - [ ] 1.7 `test-strategy` row and pointer (D-13): the next free `CHK-` id in `inventory.md`, the
-      `ADQ` row in `references/software.md`, the lanes in the Moment cell of the checklist's row,
+      `ADQ` row in `references/software.md`, the lanes in the Moment cell of both `CHK-2` rows,
       the pointer line in the new `SKILL.md`.
       *Acceptance:* the matrix parts of T-15 pass and `tests/test_test_strategy.py` stays green.
 - [ ] 1.8 Lanes in `project-setup` (D-10): `pytest.ini`, `Makefile.tmpl`, `tests/changed.py`
       template, its line in `scripts/scaffold.sh`, the "Developer lanes" section of
       `references/testing-setup.md`. *Acceptance:* T-8 and T-9 pass: on a temporary
-      git repository a change under `<package>/services/` prints `tests/unit/services` and a
+      git repository a change under `<package>/services/` prints `tests/unit/services/` and a
       change to `pytest.ini` exits 3; `scaffold.sh` into a temporary directory produces
       `tests/changed.py` and the three targets.
 - [ ] 1.9 Distilling in `epic-delivery` (D-12): tester brief, `SKILL.md` step 4, `stage-loop.md`
@@ -59,8 +60,8 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
       feature and integration lanes; build the map with one subagent per test folder; write the
       report; open the pull request there with both files. *Acceptance:* the report has every
-      section of D-7; the map has one row per collected test function (the count matches
-      `pytest --collect-only`).
+      section of D-7; the map has one row per test function (its rows match the node ids of
+      `pytest --collect-only -q` with the `[...]` suffix removed, each once).
 - [ ] 1.12 Acceptance demo with the owner (D-5, D-7, D-14): the sample check of the map, then the discussion of
       the report; decisions recorded in the report and in `evidence/acceptance.md`.
       *Acceptance:* every proposal has a decision and a reason.
@@ -76,7 +77,7 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
 - [ ] 2.2 Write T-13 (D-15). *Acceptance:* red, because the file and the scope are missing.
 - [ ] 2.3 Write `references/ui-suites.md` (D-9); scope checklist rule 11 to unit and feature
       tests; add the `ADQ` row to `skills/test-strategy/references/ui.md` and extend the pointer
-      line (D-13). *Acceptance:* 2.2 and `tests/test_test_strategy.py` pass.
+      line (D-13). Link the file from `SKILL.md`. *Acceptance:* 2.2 and `tests/test_test_strategy.py` pass.
 - [ ] 2.4 Trigger probe (D-16): "our Cypress run takes forty minutes" expects `test-suite-care`; asked
       three times, recorded as in 1.5.
 - [ ] 2.5 Stage review, `make validate`, PR, merge.
@@ -86,7 +87,8 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
 
 - [ ] 3.1 Write T-14 (D-15). *Acceptance:* red, because the file and the id are missing.
 - [ ] 3.2 Write `references/non-code-checks.md` (D-11); add the second inventory id and its row
-      in `skills/test-strategy/references/cross-cutting.md`, and extend the pointer line (D-13).
+      in `skills/test-strategy/references/cross-cutting.md`, and extend the pointer line (D-13). Link the file
+      from `SKILL.md`.
       *Acceptance:* 3.1 and `tests/test_test_strategy.py` pass.
 - [ ] 3.3 Trigger probe (D-16): "is our cold reader any good, does it catch real problems" expects
       `test-suite-care`; asked three times, recorded as in 1.5.
@@ -100,7 +102,8 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
 ## Roadmap
 
 Stage 1 (1.0 → 1.0b → 1.1 → 1.2 ∥ 1.3 → 1.4 → 1.5 to 1.9 in any order → 1.10 → 1.11 → 1.12 → 1.13) →
-stage 2 → stage 3. Tasks 1.6, 1.8 and 1.9 touch disjoint files and may run in parallel. Stage 1
+stage 2 → stage 3. Tasks 1.6, 1.8 and 1.9 may run in parallel: their files are disjoint, except that 1.6 and 1.9
+may each add one line to `openspec/changes/harden-checks-and-tests/tasks.md`, which the lead adds. Stage 1
 tasks 1.6 and 1.9 are ordered against EPIC B's stages 1 and 2 by D-8 and D-12. Stages 2 and 3 do not depend on each other.
 
 ## Verification

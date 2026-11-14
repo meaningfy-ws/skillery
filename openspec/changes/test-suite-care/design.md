@@ -1,7 +1,7 @@
 <!-- STATUS: PLAN derived 2026-11-14 from proposal.md and inputs/spike.md; attacked the same day
      by a fresh reader, whose findings are folded in (Attack record). Clarity gate, first run:
-     8.6, fail; second run: 8.6, fail on other gaps; third run: 8.8, fail on ten small gaps; all closed
-     (Gate record). -->
+     8.6, fail; second run: 8.6, fail on other gaps; third run: 8.8, fail on ten small gaps; fourth run: 9.05, PASS. The fourth run's nine gaps
+     are folded in and not scored again (Gate record). -->
 
 # PLAN (design): test suite care
 
@@ -56,6 +56,14 @@ and quicker without losing a specified feature. The spike changed two assumption
   | `references/non-code-checks.md` | Stage 3: the assessment (D-11). |
   | `scripts/phase_times.py` | A pytest plugin: one JSON line per test phase and per fixture set-up. |
   | `scripts/overlap.py` | Reads a coverage data file with contexts; prints contained tests and identical parametrised cases. |
+
+  Description (frontmatter): "Use this skill when a test suite has grown slow or large and must
+  be made smaller or quicker without losing a specified feature, or when a check that is not
+  code (a reader, a checklist) must be judged for whether it earns its place: 'our tests take too
+  long', 'which tests can we drop', 'our Cypress run takes forty minutes', 'is our cold reader
+  any good'. It audits the suite, maps tests to the scenarios they serve and proposes reductions
+  the owner decides. Not for writing tests (cosmic-python) or choosing an activity's checks
+  (test-strategy)." Each later stage links its new reference file from `SKILL.md`.
 
   Frontmatter: `license: Apache 2.0`; facets `purpose: quality`, `area: coding`,
   `subject: generic`, `posture: reusable`, `stage: verify`, `maturity: experimental`. Bundle
@@ -139,12 +147,14 @@ and quicker without losing a specified feature. The spike changed two assumption
 
   - `level` is `scenario`, `requirement`, `capability` or `none`; `confidence` is `high`, `medium`
     or `none`. `high` needs two of: the test's name or docstring says it; the code it covers
-    implements it; a feature file or a spec id names it.
+    implements it; a feature file or a spec id names it. `medium` has one of the three; `none`
+    has none and goes with level `none`.
   - A feature test takes its scenario from its `.feature` file (testing checklist rule 15): level
     `scenario`, confidence `high`.
   - The agent builds the map file by file, reading the test, its module docstring, the files it
     covers (run B) and the specs. A repository without a spec spine is mapped to its `.feature`
-    scenarios, or all rows are `none` and the report says reductions are limited to class 1.
+    scenarios, or all rows are `none` and the report says the proposals are limited to class 1,
+    class 2 and W-6, which need no map.
   - Before any proposal is discussed, the owner checks a sample: ten rows of each confidence,
     chosen at random. One wrong `high` row sends the rows of that test file back to be mapped
     again, and a new sample of `high` rows is drawn.
@@ -184,7 +194,7 @@ and quicker without losing a specified feature. The spike changed two assumption
 - **D-7 Step 4 and 5, the report and the decisions.** `tests/audit/report-<yyyy-mm-dd>.md` with
   these sections, in order: *Numbers* (tests, wall time, summed time, share of set-up, the commands
   run); *Where the time goes* (ten costliest files, ten costliest fixtures); *Proposals* (table:
-  `P-<n>`, class, what, evidence, estimated saving, scenarios touched); *Scenarios with no test*;
+  `P-<n>`, class, what, evidence, estimated saving, scenarios touched, survivor); *Scenarios with no test*;
   *Tests that serve no scenario*; *Broken rules*; *Not measured*; *Decisions* (per proposal:
   approved, rejected or later, with the owner's reason, filled in during the discussion).
   The map and the report go to the audited repository in one pull request. Each approved proposal,
@@ -294,7 +304,7 @@ and quicker without losing a specified feature. The spike changed two assumption
   4. Record per run: which planted flaws it reported, what it reported on the clean copy, and its
      cost (tokens and minutes).
   5. Report: planted flaws found in all three runs, in some, in none; findings on the clean copy
-     the owner judges false; the cost of one run. No number is turned into a pass mark.
+     the owner judges false; the cost of one run. There is no pass mark.
   6. The owner reads the same seeded copy for ten minutes first, so the report can say what the
      check found that the owner did not, and the reverse.
   7. The owner decides: keep, change the brief, narrow where it is mandatory, or drop.
@@ -377,7 +387,7 @@ and quicker without losing a specified feature. The spike changed two assumption
   | T-11 | 1 | `references/waste.md` has eight `W-` rows, each with a class; the checklist has rules 1 to 21 in order and a Sources entry for 6, 14 and 17 to 21; every rule number cited under `skills/test-suite-care/` exists |
   | T-12 | 1 | The tester brief names the two report fields; the ledger row reads "Distilled in step 4"; `epic-delivery.feature` has the scenario of D-12 |
   | T-13 | 2 | `references/ui-suites.md` has the four sections of D-9 and six rules, each with a source; checklist rule 11 names its scope |
-  | T-15 | 1 | `software.md` has an `ADQ` row whose owner is `test-suite-care`; both `CHK-2` rows name the lanes in their Moment cell; "rules 1-21" stands in `software.md` (twice) and `inventory.md`, and "rules 1-16" nowhere; the "Quality checks" of `bdd-gherkin` hold the new box |
+  | T-15 | 1 | `software.md` has an `ADQ` row whose owner is `test-suite-care`; both `CHK-2` rows name the lanes in their Moment cell; "rules 1-21" stands in `software.md` (twice) and `inventory.md`, and "rules 1-16" nowhere under `skills/`; the "Quality checks" of `bdd-gherkin` hold the new box |
   | T-14 | 3 | `references/non-code-checks.md` has the seven steps of D-11 and the words "no pass mark"; `cross-cutting.md` cites the second id |
 
 - **D-16 Registration and triggers.** The new skill is registered as the repository requires for
@@ -387,8 +397,9 @@ and quicker without losing a specified feature. The spike changed two assumption
   under `## [Unreleased]` / `### Added` in `CHANGELOG.md` naming the EPIC and the bundle; then
   `make bundles` and `make skill-inventory`. Trigger probes go to `tests/trigger_probes.yaml`,
   one positive and two near-misses in stage 1 and one positive in each later stage (tasks 1.5,
-  2.4, 3.3). The probe check is advisory, so each probe is also asked three times in a fresh
-  session and the result recorded.
+  2.4, 3.3). The probe check is advisory, so each probe is also asked three times, each time as
+  the first message of a new Claude Code session in this repository with the bundles installed
+  from the branch, and the skill that loaded is recorded.
 
 ## Algorithm / approach
 
@@ -435,7 +446,7 @@ The audit, as the skill's Quick Start will show it on a small project:
 | The coverage file has no context ending in `\|run` | `overlap.py` exits 2: "no per-test contexts: run with --cov-context=test" |
 | A test fails or is flaky during a run | The run continues; the test is listed under *Not measured* and takes part in no proposal |
 | The machine is loaded during run A | The report gives shares, not seconds; the before and after of a pull request are measured again |
-| The repository has no specs and no feature files | Every map row is `none`; proposals are limited to class 1 |
+| The repository has no specs and no feature files | Every map row is `none`; proposals are limited to class 1, class 2 and W-6 |
 | A spec scenario belongs to a change not yet archived | The map uses the change's delta spec and marks the row `evidence: open change` |
 | A test in the map no longer exists | The row is removed at the next audit; a renamed test is mapped again |
 | The owner's sample finds a wrong `high` row | The rows of that test file are mapped again and a new sample is drawn, before any class 3 proposal |
@@ -477,6 +488,7 @@ recorded reason.
 | Modified capabilities: lanes placed "when the PLAN is derived" | The lane requirement sits in the `test-suite-care` spec | No capability exists for `project-setup` |
 | DEC-8: the PLAN names the trial repositories of stages 2 and 3 | Stage 3 is named (this repository's cold reader); stage 2 is open question OQ-2 | Only the owner knows which repository has a UI suite worth auditing |
 | DEC-2: a test that serves no scenario is listed for the owner, never proposed for dropping | One exception: a test that runs no measured line may be proposed under W-6 (D-6) | It guards nothing; the owner still decides |
+| DEC-9: one row in the software matrix | Also a row in the UI matrix, a second inventory id and a row in the cross-cutting matrix (D-13) | The scope was widened after DEC-9 (Q-6): UI suites and checks that are not code need their own rows |
 | Impact: `bdd-gherkin` not listed | It gains one check box (D-8) | DEC-10's survey found the rule in Cucumber's anti-patterns, and Gherkin rules belong to that skill |
 
 ## Attack record
@@ -521,6 +533,13 @@ Third run, a third independent scorer: 8.8, fail, all thirteen items passing. Cl
 exception in the spec delta and under Deviations; the reach of T-15 in tasks 1.7 and 1.10; T-10's
 pattern; run B under a coverage floor (D-2); which container `contained` prints (D-3); a project
 without a `slow` marker (Error matrix); the second inventory id in task 3.2; D-13 as a table.
+
+Fourth run, a fourth independent scorer: 9.05, PASS, all thirteen items passing, "with no
+margin". Its nine gaps were folded in afterwards and not scored again: the skill's description
+and the links from `SKILL.md` in stages 2 and 3 (D-1); the survivor column (D-7); the count check
+of task 1.11; what a repository without specs is limited to (D-5); how a probe is asked (D-16);
+`medium` defined (D-5); one more row under Deviations; the shared file of tasks 1.6 and 1.9; three
+wording mismatches.
 
 ## Open Questions
 

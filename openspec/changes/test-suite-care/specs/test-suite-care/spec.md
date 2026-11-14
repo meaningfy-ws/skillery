@@ -79,7 +79,7 @@ that test file's rows back to be mapped again (design D-5).
 
 #### Scenario: A repository without specs
 - **WHEN** the audited repository has no spec spine and no feature files
-- **THEN** every row is "none" and the report says the proposals are limited to class 1
+- **THEN** every row is "none" and the report says the proposals are limited to those that need no map: class 1, class 2 and a test that runs no measured line
 
 ### Requirement: The audit is read-only and the skill is neutral to the repository
 The audit's runs SHALL NOT edit a file of the audited repository; the map and the report SHALL
