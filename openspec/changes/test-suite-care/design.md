@@ -430,7 +430,7 @@ The audit, as the skill's Quick Start will show it on a small project:
   3.3 times one normal run in total. Accepted.
 - **RISK-3** (distilling drops a useful attack test; possible, moderate): accepted in the EPIC; the
   dropped tests stay in the branch history and are listed in the stage PR.
-- **RISK-4** (one repository's pattern does not fit others; possible, moderate): D-15's test keeps
+- **RISK-4** (one repository's pattern does not fit others; possible, moderate): test T-10 keeps
   the name out; thresholds live in the project's marker text.
 - **RISK-5** (assessing a non-code check is costly and noisy; likely, minor): six runs, fixed by D-11.
 - **RISK-6** (a shared fixture lets a test pass on another's work; likely where tried carelessly,
