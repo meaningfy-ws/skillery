@@ -26,14 +26,22 @@ session. No EPIC is shaped yet.
 | 4 | Phase, stage and review outcome need the skills to declare them. | Yes, shape a new EPIC. It also carries proper setup instructions and traces every important parameter. |
 | 5 | Commit the Langfuse setup doc change? | Yes (PR #232). |
 | 6 | `epic-planning` limits the clarity gate to two runs for TINY and SMALL EPICs only; larger ones have no limit. | At most two gate runs hold on any re-gate. The new EPIC extends the limit to all sizes; the skill is not edited before that. Meanwhile the four test EPICs were revised on 2026-11-14 without a new gate run ([`cross-check-test-epics.md`](cross-check-test-epics.md), decision 7). |
+| 7 | Restoring a tool list for the two workers reverses lean-delivery DEC-11 and names three products in agent files. | Accepted (PR #234, merged 2026-11-14). |
+| 8 | The instructions call Serena and ast-grep mandatory, but they are almost never used and the named Serena tools do not exist. | Fix it by context and activity: the owner wants a recommended set of tools for each activity. |
+| 9 | One EPIC in skillery for skills, agents and the project template, and one issue in each other repository for its own instructions? | Agreed. |
+| 10 | Model prices in Langfuse (revisits row 2). | Not needed: the owner pays by subscription, not per token. Cost stays a relative measure from the transcripts. |
 
 ## What the owner wants next
 
 Compare these findings with the open test-improvement EPICs, then discuss both together before
-anything is shaped.
+anything is shaped. Done on 2026-11-14; see the cross-check and the second pass.
 
 ## Inputs in this folder
 
 - [`findings-2026-11-14.md`](findings-2026-11-14.md) — the measurements, the findings and the
   recommendations, written before the test EPICs were read.
+- [`second-pass-2026-11-14.md`](second-pass-2026-11-14.md) — what drives the cost, with corrections
+  to the first pass and the ranked changes to skills and to repository instructions.
+- [`cross-check-test-epics.md`](cross-check-test-epics.md) — the findings against the test EPICs,
+  and the owner's decisions on them.
 - [`scripts/`](scripts/) — the two scripts that produced the numbers.
