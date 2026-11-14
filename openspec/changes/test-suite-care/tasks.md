@@ -4,7 +4,7 @@
 
 **Derives from:** [`proposal.md`](proposal.md) and [`design.md`](design.md). Three stages, one pull
 request each in skillery; the trial pull requests live in the trial repositories. Every task names
-the design decision it carries out. After any skill edit: `make bundles`, `make skill-inventory`,
+the design decision it carries out; test ids (`T-n`) are those of D-15. After any skill edit: `make bundles`, `make skill-inventory`,
 `make lint`. Before each stage PR: `make validate`.
 
 ## 1. Stage 1: the audit for Python suites, the rules, the distilling, the lanes
@@ -24,10 +24,11 @@ the design decision it carries out. After any skill edit: `make bundles`, `make 
 - [ ] 1.3 Write `SKILL.md` and `references/measuring.md`, `scenario-map.md`, `waste.md`,
       `report.md` (D-1, D-2, D-4 to D-7), with the frontmatter and facets of D-1. *Acceptance:*
       the text groups of 1.1 pass; `make lint` is clean.
-- [ ] 1.4 Register the skill: `bundles.yaml` (`meaningfy-building`), `use-cases/UC-W18`
-      `served_by.skills`, README bundle cell and one "I want to…" row, `CHANGELOG.md` under
-      Unreleased, `make bundles`, `make skill-inventory`. *Acceptance:* `make validate` passes.
-- [ ] 1.5 Trigger probes in `tests/trigger_probes.yaml`: positive "our test suite takes too long,
+- [ ] 1.4 Register the skill (D-16): `bundles.yaml`, `use-cases/UC-W18-programming-team-lead.md`,
+      the two README rows, `CHANGELOG.md`, `make bundles`, `make skill-inventory`. *Acceptance:*
+      `make lint` and `make bundles` leave no difference; `tests/test_skill_inventory.py` passes.
+      (`make validate` is the acceptance of 1.10.)
+- [ ] 1.5 Trigger probes in `tests/trigger_probes.yaml` (D-16): positive "our test suite takes too long,
       find what to cut" expects `test-suite-care`; near-miss "write tests for this function"
       expects `cosmic-python`; near-miss "which checks does this activity need" expects
       `test-strategy`. *Acceptance:* each probe is asked three times in a fresh session; the
@@ -55,13 +56,14 @@ the design decision it carries out. After any skill edit: `make bundles`, `make 
       `tests/features/agents/team-lead.feature`; the order rule against EPIC B applied.
       *Acceptance:* `make lint` passes (agent features); a test of 1.1 finds the two report
       fields in the brief and "distilled in step 4" in the ledger row.
-- [ ] 1.10 Stage review, fixes, `make validate`, PR, merge on green CI.
+- [ ] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
+      T-1 to T-12 green (T-7 and T-2 may skip in CI).
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
       feature and integration lanes; build the map with one subagent per test folder; write the
       report; open the pull request there with both files. *Acceptance:* the report has every
       section of D-7; the map has one row per collected test function (the count matches
       `pytest --collect-only`).
-- [ ] 1.12 Acceptance demo with the owner: the sample check of the map, then the discussion of
+- [ ] 1.12 Acceptance demo with the owner (D-5, D-7, D-14): the sample check of the map, then the discussion of
       the report; decisions recorded in the report and in `evidence/acceptance.md`.
       *Acceptance:* every proposal has a decision and a reason.
 - [ ] 1.13 The approved proposals as pull requests in `rdf-persistence`, each with before and
@@ -71,31 +73,27 @@ the design decision it carries out. After any skill edit: `make bundles`, `make 
 
 ## 2. Stage 2: UI suites
 
-- [ ] 2.1 Spike on the trial repository named in OQ-2: the runner's JSON report, how specs name
+- [ ] 2.1 Spike (D-9) on the trial repository named in OQ-2: the runner's JSON report, how specs name
       their scenario, where the time goes. Recorded in `inputs/spike-ui.md`.
-- [ ] 2.2 Extend `tests/test_test_suite_care.py`: `references/ui-suites.md` has the four sections
-      of D-9 and six rules, each with a source; checklist rule 11 names its scope. *Acceptance:*
-      red, for those reasons.
+- [ ] 2.2 Write T-13 (D-15). *Acceptance:* red, because the file and the scope are missing.
 - [ ] 2.3 Write `references/ui-suites.md` (D-9); scope checklist rule 11 to unit and feature
       tests; add the `ADQ` row to `skills/test-strategy/references/ui.md` and extend the pointer
       line (D-13). *Acceptance:* 2.2 and `tests/test_test_strategy.py` pass.
-- [ ] 2.4 Trigger probe: "our Cypress run takes forty minutes" expects `test-suite-care`; asked
+- [ ] 2.4 Trigger probe (D-16): "our Cypress run takes forty minutes" expects `test-suite-care`; asked
       three times, recorded as in 1.5.
 - [ ] 2.5 Stage review, `make validate`, PR, merge.
-- [ ] 2.6 Trial and discussion with the owner on that repository, as 1.11 to 1.13.
+- [ ] 2.6 Trial and discussion with the owner on that repository (D-14), as 1.11 to 1.13.
 
 ## 3. Stage 3: checks that are not code
 
-- [ ] 3.1 Extend `tests/test_test_suite_care.py`: `references/non-code-checks.md` has the seven
-      steps of D-11 and the words "no pass mark"; `cross-cutting.md` has the second id.
-      *Acceptance:* red, for those reasons.
+- [ ] 3.1 Write T-14 (D-15). *Acceptance:* red, because the file and the id are missing.
 - [ ] 3.2 Write `references/non-code-checks.md` (D-11); add the row to
       `skills/test-strategy/references/cross-cutting.md` and extend the pointer line.
       *Acceptance:* 3.1 and `tests/test_test_strategy.py` pass.
-- [ ] 3.3 Trigger probe: "is our cold reader any good, does it catch real problems" expects
+- [ ] 3.3 Trigger probe (D-16): "is our cold reader any good, does it catch real problems" expects
       `test-suite-care`; asked three times, recorded as in 1.5.
 - [ ] 3.4 Stage review, `make validate`, PR, merge.
-- [ ] 3.5 Trial: assess the cold reader of `technical-writing` on one past document of this
+- [ ] 3.5 Trial (D-11): assess the cold reader of `technical-writing` on one past document of this
       repository, five planted flaws, three runs on each copy; the owner reads first, then decides.
       Recorded in `evidence/non-code-trial.md`. *Acceptance:* the record has the six run results,
       the owner's own findings and the decision.
@@ -103,7 +101,7 @@ the design decision it carries out. After any skill edit: `make bundles`, `make 
 
 ## Roadmap
 
-Stage 1 (1.0 → 1.0b → 1.1 → 1.2 ∥ 1.3 → 1.4 to 1.9 in any order → 1.10 → 1.11 → 1.12 → 1.13) →
+Stage 1 (1.0 → 1.0b → 1.1 → 1.2 ∥ 1.3 → 1.5 to 1.9 in any order → 1.4 → 1.10 → 1.11 → 1.12 → 1.13) →
 stage 2 → stage 3. Tasks 1.6, 1.8 and 1.9 touch disjoint files and may run in parallel. Stage 1
 tasks 1.6 and 1.9 are ordered against EPIC B's stages 1 and 2 by D-8 and D-12. Stages 2 and 3 do not depend on each other.
 

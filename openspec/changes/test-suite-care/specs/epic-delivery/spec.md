@@ -1,4 +1,4 @@
-<!-- Shaping-level delta. The PLAN adds the rest when it is derived. -->
+<!-- Delta of the PLAN (design.md D-12). -->
 
 ## ADDED Requirements
 
