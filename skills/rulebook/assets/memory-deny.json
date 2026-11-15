@@ -1,0 +1,4 @@
+{
+  "types": ["feedback", "user"],
+  "message": "rules-first: a preference or correction goes to the rulebook, not the CLI's memory. Do not save it as a note of another type and do not add it to the memory index. Draft it as a rule-learner candidate and show it in the rule approval card before your final summary."
+}

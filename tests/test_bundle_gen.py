@@ -350,6 +350,11 @@ def test_two_modules_mods_in_one_bundle_are_rejected(tmp_path):
         gen.load(_mod_repo(tmp_path, mods=("nav", "other")))
 
 
+def test_the_error_for_several_modules_mods_names_all_of_them(tmp_path):
+    with pytest.raises(ValueError, match=r"'nav', 'other' and 'third'"):
+        gen.load(_mod_repo(tmp_path, mods=("nav", "other", "third")))
+
+
 def test_mod_in_two_bundles_is_rejected(tmp_path):
     repo = _mod_repo(tmp_path)
     doc = yaml.safe_load((repo / "bundles.yaml").read_text())
@@ -451,6 +456,22 @@ def test_a_modules_mod_beside_plain_mods_keeps_types_and_user_config(tmp_path):
     manifest = json.loads(gen.plugin_manifests(repo)["bundles/b-mod/.claude-plugin/plugin.json"])
     assert manifest["hooks"] == ["./mods/plain/hooks.json", "./mods/nav/hooks.json"]
     assert manifest["types"] == "./mods/nav/types.d.ts" and manifest["userConfig"]
+
+
+def test_a_plain_mod_with_a_config_json_does_not_override_the_modules_mods_settings(tmp_path):
+    repo = _plain_repo(tmp_path, mods=("plain",))
+    (repo / "mods/plain/config.json").write_text('{"other": {"type": "string"}}\n', encoding="utf-8")
+    (repo / "mods/plain/types.d.ts").write_text("{}\n", encoding="utf-8")
+    nav = repo / "mods/nav"
+    nav.mkdir()
+    for f in gen.MOD_FILES:
+        (nav / f).write_text("{}\n", encoding="utf-8")
+    (nav / "hooks.json").write_text('{"hooks": {}, "modules": ["./register.tsx"]}\n', encoding="utf-8")
+    (nav / "config.json").write_text('{"band": {"type": "boolean", "default": true}}\n', encoding="utf-8")
+    _set_mods(repo, ["nav", "plain"])
+    manifest = json.loads(gen.plugin_manifests(repo)["bundles/b-mod/.claude-plugin/plugin.json"])
+    assert manifest["userConfig"] == {"band": {"type": "boolean", "default": True}}
+    assert manifest["types"] == "./mods/nav/types.d.ts"
 
 
 def test_hooks_only_mod_needs_only_hooks_json(tmp_path):
