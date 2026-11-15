@@ -20,7 +20,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   whatever the case (`Feedback`), wherever its `type:` sits in the frontmatter, when written as a
   block value, a quoted key, a tagged value or an indented plain value, in a sub-folder of the
   memory folder, through a symlinked `~/.claude` or a symlinked memory folder, and on macOS
-  whatever the case of the path. An edit that only changes the value (`project` to `feedback`) is
+  whatever the case of the path, on Windows paths with backslashes, and with YAML tags or anchors
+  (`!!str feedback`, `&a feedback`) or padding before the value. An edit that only changes the value (`project` to `feedback`) is
   refused too, because the edit is applied to the note before its type is read. The denied
   types and the message now live in the rulebook skill (`assets/memory-deny.json`). The session
   block waits up to 15 s for `rules.py where` instead of 5 s, so a busy machine no longer drops

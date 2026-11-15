@@ -4,13 +4,15 @@
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { homedir } from "node:os";
-import { basename, dirname, join, resolve } from "node:path";
+import { dirname, join, posix, resolve, win32 } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // The marker is the constant DENY_MARKER of skills/rulebook/scripts/rules.py; `stats` counts it.
 // The denied types and the message text are data in skills/rulebook/assets/memory-deny.json.
 const DENY_MARKER = "[rules-first: memory write denied]";
-const TYPE_LINE = /^([ \t]*)["']?type["']?[ \t]*:[ \t]*(.*)$/;
+const TYPE_LINE = /^["']?type["']?[ \t]*:[ \t]*(.*)$/;
+// CR LF, CR, LF, NEL and the Unicode line and paragraph separators (U+2028, U+2029)
+const LINE_END = new RegExp(`\\r\\n|\\r|\\n|\\x85|${String.fromCharCode(0x2028)}|${String.fromCharCode(0x2029)}`);
 const BLOCK_SCALAR = /^[|>](?:[1-9][+-]?|[+-][1-9]?)?$/;
 const MAX_LINE = 1000; // a longer line is cut before it is scanned
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -55,39 +57,45 @@ export function loadDeny(root = ROOT) {
 
 /** The first non-blank line after `i`, trimmed, when it is indented deeper than `indent`; else "". */
 function nextIndented(lines, i, indent) {
-  const next = lines.slice(i + 1).find((l) => l.trim());
-  return next !== undefined && next.length - next.trimStart().length > indent ? next.trim() : "";
+  let j = i + 1;
+  while (j < lines.length && !lines[j].trim()) j++;
+  return j < lines.length && lines[j].length - lines[j].trimStart().length > indent ? lines[j].trim() : "";
 }
 
-// shortcut: YAML flow mappings ({type: x}), aliases, escapes and explicit keys (? type) are not handled;
-// upgrade to a YAML parser if a note in those forms ever matters.
+// shortcut: this guard stops a cooperating agent from saving a preference as a memory note; it is not a
+// sandbox. Not handled: YAML flow mappings ({type: x}), aliases, escapes, explicit keys (? type), a write
+// through the real path of a symlinked memory folder's target, a memory path that is a symlink to a
+// FIFO or device (the hook times out and fails open), and writes made through Bash. Upgrade to a YAML
+// parser and a real-path check if a note in those forms ever matters.
 /** Every `type:` value of a note's frontmatter (top level and nested), lower-cased; of loose text when it has none. */
 function typesOf(text) {
   if (typeof text !== "string") return [];
   const m = /^---\r?\n([\s\S]*?)\r?\n---/.exec(text);
-  const lines = (m ? m[1] : text).split(/\r?\n/);
+  const lines = (m ? m[1] : text).split(LINE_END);
   const found = [];
   lines.forEach((line, i) => {
-    const t = TYPE_LINE.exec(line.slice(0, MAX_LINE));
+    const body = line.trimStart();
+    // whitespace runs collapse before the cap, so padding cannot push the type out of the window
+    const t = TYPE_LINE.exec(body.replace(/[ \t]+/g, " ").slice(0, MAX_LINE));
     if (!t) return;
-    let value = (" " + t[2]).split(/\s#/)[0].trim().replace(/^!!\S*\s*/, "");
-    if (value === "" || BLOCK_SCALAR.test(value)) value = nextIndented(lines, i, t[1].length);
+    let value = (" " + t[1]).split(/\s#/)[0].trim().replace(/^(?:(?:!\S*|&\S+)\s+)+/, "");
+    if (value === "" || BLOCK_SCALAR.test(value)) value = nextIndented(lines, i, line.length - body.length);
     found.push(value.replace(/^["']|["']$/g, "").trim().toLowerCase());
   });
   return found;
 }
 
-const expandTilde = (p, home) => (p === "~" || p.startsWith("~/") ? join(home, p.slice(1)) : p);
+const expandTilde = (p, home, pm) => (p === "~" || p.startsWith("~/") || p.startsWith("~\\") ? pm.join(home, p.slice(1)) : p);
 
 /** The real path of `path`, or of its nearest existing ancestor with the missing tail put back. */
-function realish(path) {
+function realish(path, pm) {
   const tail = [];
-  for (let cur = path; ; cur = dirname(cur)) {
+  for (let cur = path; ; cur = pm.dirname(cur)) {
     try {
-      return join(realpathSync(cur), ...tail);
+      return pm.join(realpathSync(cur), ...tail);
     } catch {
-      if (dirname(cur) === cur) return path;
-      tail.unshift(basename(cur));
+      if (pm.dirname(cur) === cur) return path;
+      tail.unshift(pm.basename(cur));
     }
   }
 }
@@ -97,15 +105,18 @@ function realish(path) {
  * the path as written or its real path matches, against the config root as written or its real path
  * (a symlinked memory/ or projects/ folder points outside the root). macOS and Windows compare without case.
  */
-export function memoryPath(path, env, platform = process.platform) {
+export function memoryPath(path, env, platform = process.platform, pm = platform === "win32" ? win32 : posix) {
   const home = env.HOME || homedir();
-  const fold = platform === "darwin" || platform === "win32" ? (s) => s.toLowerCase() : (s) => s;
-  const written = resolve(expandTilde(env.CLAUDE_CONFIG_DIR || join(home, ".claude"), home));
-  const roots = [written, realish(written)];
-  const target = resolve(expandTilde(path, home));
-  for (const candidate of [target, realish(target)]) {
+  const win = platform === "win32";
+  // node:path returns "\" on win32; both sides are compared with "/" (on posix a backslash is a name character)
+  const norm = (s) => (win ? s.replaceAll("\\", "/") : s);
+  const fold = platform === "darwin" || win ? (s) => norm(s).toLowerCase() : norm;
+  const written = pm.resolve(expandTilde(env.CLAUDE_CONFIG_DIR || pm.join(home, ".claude"), home, pm));
+  const roots = [written, realish(written, pm)];
+  const target = pm.resolve(expandTilde(path, home, pm));
+  for (const candidate of [target, realish(target, pm)]) {
     for (const root of roots) {
-      const rel = candidate.slice(root.length + 1);
+      const rel = norm(candidate).slice(root.length + 1);
       if (fold(candidate).startsWith(fold(root) + "/") && /^projects\/[^/]+\/memory\/.+\.md$/i.test(rel)) return candidate;
     }
   }
@@ -121,17 +132,20 @@ const applyEdit = (text, edit, all) => {
 
 /** Pure: true when the note on disk, or the text the tool call writes or leaves behind, has a denied type. */
 export function denies(toolName, toolInput, diskText, types) {
-  const found = typesOf(diskText);
-  if (toolName === "Write") found.push(...typesOf(toolInput?.content));
-  else if (toolName === "Edit") {
-    found.push(...typesOf(toolInput?.new_string)); // D-10: disk type or new_string type
-    if (typeof diskText === "string") found.push(...typesOf(applyEdit(diskText, toolInput, toolInput?.replace_all === true)));
-  } else if (toolName === "MultiEdit") {
-    const edits = Array.isArray(toolInput?.edits) ? toolInput.edits : [];
-    for (const edit of edits) found.push(...typesOf(edit?.new_string));
-    if (typeof diskText === "string") found.push(...typesOf(edits.reduce((text, e) => applyEdit(text, e, e?.replace_all === true), diskText)));
+  const has = (text) => typesOf(text).some((t) => types.has(t));
+  const onDisk = typeof diskText === "string";
+  if (has(diskText)) return true;
+  if (toolName === "Write") return has(toolInput?.content);
+  if (toolName === "Edit") {
+    // the applied result decides when the disk text is known; new_string alone only when it is not
+    return has(onDisk ? applyEdit(diskText, toolInput, toolInput?.replace_all === true) : toolInput?.new_string);
   }
-  return found.some((t) => types.has(t));
+  if (toolName === "MultiEdit") {
+    const edits = Array.isArray(toolInput?.edits) ? toolInput.edits : [];
+    if (onDisk) return has(edits.reduce((text, e) => applyEdit(text, e, e?.replace_all === true), diskText));
+    return edits.some((e) => has(e?.new_string));
+  }
+  return false;
 }
 
 /** The I/O shell of the decision: the path check, the disk read, then `denies`. No `deny` data, no deny. */

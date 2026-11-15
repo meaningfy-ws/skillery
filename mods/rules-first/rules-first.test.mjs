@@ -100,7 +100,7 @@ test("T-3 and T-4 rows of the tool-call table", () => {
     ["Edit", { file_path: mem("MEMORY.md"), old_string: "a", new_string: "b" }, false],
     ["Write", { file_path: join(home, "acme/docs/feedback.md"), content: note("feedback") }, false],
     ["Write", { file_path: join(home, ".claude/projects/a/b/memory/x.md"), content: note("feedback") }, false],
-    ["Edit", { file_path: mem("project_release.md"), old_string: "a", new_string: "type: feedback" }, true],
+    ["Edit", { file_path: mem("project_release.md"), old_string: "name: x", new_string: "type: feedback" }, true],
     ["Edit", { file_path: mem("feedback_git.md"), old_string: "body", new_string: "other" }, true],
     ["Edit", { file_path: mem("feedback_git.md"), old_string: "feedback", new_string: "type: project" }, true],
     ["Write", { file_path: mem("user_role.md"), content: note("user", true) }, true],
@@ -110,8 +110,8 @@ test("T-3 and T-4 rows of the tool-call table", () => {
       {
         file_path: mem("project_release.md"),
         edits: [
-          { old_string: "a", new_string: "b" },
-          { old_string: "c", new_string: "type: feedback" },
+          { old_string: "body", new_string: "b" },
+          { old_string: "name: x", new_string: "type: feedback" },
         ],
       },
       true,
@@ -155,7 +155,7 @@ test("type rows: every type counts, whole token, any case, block scalar", () => 
   const p = join(memory, "project_x.md");
   writeFileSync(p, note("project"));
   const write = (content) => shouldDeny("Write", { file_path: join(memory, "n.md"), content }, env, DENY);
-  const edit = (new_string) => shouldDeny("Edit", { file_path: p, old_string: "body", new_string }, env, DENY);
+  const edit = (new_string) => shouldDeny("Edit", { file_path: p, old_string: "name: x", new_string }, env, DENY);
   assert.equal(write("---\nmeta:\n  type: project\ntype: feedback\n---\nb\n"), true);
   assert.equal(write("---\ntype: Feedback\n---\nb\n"), true);
   assert.equal(write("---\ntype: |\n  feedback\n---\nb\n"), true);
@@ -290,4 +290,66 @@ test("everything set: vault, repository rules and the routing policy present", (
   assert.match(r.stdout, /routing policy: present/);
   assert.ok(r.stdout.includes(`vault: ${vault}`));
   assert.match(r.stdout, /docs\/rules\/ present/);
+});
+
+// ---- the final fix pass: Windows paths, YAML tags, padding, scale, CR line ends, edit on a missing note
+
+test("Windows paths: backslashes and drive letters are compared as written by node:path on win32", () => {
+  const env = { HOME: "C:\\Users\\u", CLAUDE_CONFIG_DIR: "C:\\Users\\u\\.claude" };
+  const content = note("feedback");
+  const at = (file_path) => shouldDeny("Write", { file_path, content }, env, DENY, "win32");
+  assert.equal(at("C:\\Users\\u\\.claude\\projects\\-w-acme\\memory\\a.md"), true);
+  assert.equal(at("c:\\users\\U\\.CLAUDE\\projects\\-w-acme\\memory\\sub\\a.md"), true);
+  assert.equal(at("C:/Users/u/.claude/projects/-w-acme/memory/a.md"), true);
+  assert.equal(at("C:\\Users\\u\\.claude\\projects\\-w-acme\\other\\a.md"), false);
+  assert.equal(at("D:\\Users\\u\\.claude\\projects\\-w-acme\\memory\\a.md"), false);
+});
+
+test("YAML tags and anchors before a value are dropped", () => {
+  for (const v of ["! feedback", "!<tag:yaml.org,2002:str> feedback", "&a feedback", "!!str feedback", "&a !!str feedback", "!!str |\n  feedback"]) {
+    assert.equal(denies("Write", { content: `---\ntype: ${v}\n---\nb\n` }, null, DENY.types), true, v);
+  }
+  assert.equal(denies("Write", { content: "---\ntype: &a project\n---\nb\n" }, null, DENY.types), false);
+});
+
+test("padding before or after the colon does not hide the type", () => {
+  const pad = " ".repeat(1000);
+  for (const l of [`type:${pad}feedback`, `type${pad}: feedback`, `${pad}type: feedback`, `type:\t${pad}\tfeedback`]) {
+    assert.equal(denies("Write", { content: `---\n${l}\n---\nb\n` }, null, DENY.types), true, l.slice(0, 20));
+  }
+  const t0 = performance.now();
+  denies("Write", { content: `---\ntype:${" ".repeat(2_000_000)}x\n---\nb\n` }, null, DENY.types);
+  assert.ok(performance.now() - t0 < 500, "too slow");
+});
+
+test("scale: 60k empty type lines are scanned fast, 300k type values do not throw", () => {
+  const t0 = performance.now();
+  assert.equal(denies("Write", { content: `---\n${"type:\n".repeat(60000)}---\nb\n` }, null, DENY.types), false);
+  assert.ok(performance.now() - t0 < 500, "too slow");
+  assert.equal(denies("Write", { content: `---\n${"type: project\n".repeat(300000)}type: user\n---\nb\n` }, null, DENY.types), true);
+  assert.equal(denies("Write", { content: `---\n${"type: project\n".repeat(300000)}---\nb\n` }, note("project"), DENY.types), false);
+});
+
+test("CR-only, CR CR LF and Unicode line separators end a line", () => {
+  for (const nl of ["\r", "\r\r\n", "\u2028", "\u2029"]) {
+    assert.equal(denies("Write", { content: `---${nl}type: feedback${nl}---${nl}b${nl}` }, null, DENY.types), true, JSON.stringify(nl));
+    assert.equal(denies("Write", { content: `---${nl}name: x${nl}type: project${nl}---${nl}b${nl}` }, null, DENY.types), false, JSON.stringify(nl));
+  }
+});
+
+test("new_string alone counts only when the disk text cannot be read", () => {
+  const { memory, env } = fabricate();
+  const p = join(memory, "ref.md");
+  writeFileSync(p, note("reference") + "body\n");
+  const into = (file_path, new_string) => shouldDeny("Edit", { file_path, old_string: "body", new_string }, env, DENY);
+  assert.equal(into(p, "body\n  type: user"), false);
+  assert.equal(into(join(memory, "missing.md"), "---\ntype: feedback\n---\n"), true);
+  assert.equal(
+    shouldDeny("MultiEdit", { file_path: p, edits: [{ old_string: "body", new_string: "body\n  type: user" }] }, env, DENY),
+    false,
+  );
+  assert.equal(
+    shouldDeny("MultiEdit", { file_path: join(memory, "missing.md"), edits: [{ old_string: "a", new_string: "type: user" }] }, env, DENY),
+    true,
+  );
 });
