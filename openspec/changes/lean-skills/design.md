@@ -434,6 +434,57 @@ are a judgement call; the docs page drops the generic-repository sentence until 
 writes that override. Under the floor, pre-existing: `architecture-guardrails.md` and two
 templates still say `domain` for `models/`; the description still names ADRs and CI (D-14).
 
+### Stages 3 to 5, detailed (revised after the gate, 2026-11-15, S-10; no new gate run)
+
+**D-17 Task 2.3 decided by the lead.** The owner asked the lead to finish the EPIC alone
+(2026-11-15), so the lead decides the checkpoint, as when the developer says "choose what is
+best". Accepted as merged in #271: the house numbers of D-11 and D-16 (functions under 25 lines
+as a target, at most three levels of nesting, two or three similar lines stay, five or more are
+extracted, four is a judgement call); `BP-INJECT-ADAPTERS` with its production default; the
+entrypoint as composition root. The description stays as it is (D-14). The owner may overrule
+any of them; a change is a catalogue edit, with no id renamed.
+
+**D-18 The start conditions of stages 3 and 4 are waived.** The outline made stage 3 wait for
+B's prose side and E stage 1, and stage 4 for `commercial-portfolio` and the rest of R2, so that
+their text would be cut once. The owner's instruction to finish now overrides that order. Those
+EPICs then write into lean skills and meet the standard on arrival, as a new skill does (S-9).
+Where a rewrite moves a section their PLAN names, their own stage re-points the task; a link of
+theirs the rewrite breaks is fixed in the rewrite's pull request (`broken_links`), as D-14 did.
+
+**D-19 The per-skill loop at scale.** One builder per batch of skills, batches disjoint and run in
+parallel. A builder writes, per skill, the assessment record (D-7 format; a skill pending for
+`pointers` only may sort by section, not by paragraph), the rewrite to D-2, the pointers in the
+sentence form, and the citers it breaks. The lead alone edits `skill-budget.yaml`, the CHANGELOG
+and the PLAN. A fresh second reader per batch compares `develop` with the rewrite and the records
+(D-15) and writes its verdict into each record; lost rules are restored before the pull request.
+No description is touched. The check of each stage is the full gates and CI (D-15).
+
+**D-20 The three large engineering skills.** `architecture`, `project-setup` and `test-strategy`
+are assessed like any other. A file that is filled in by copying (a use-case template, a
+scaffold template) is material and moves to `assets/` (D-1); prose explaining it is sorted, never
+moved. If, after the cut, a skill still holds more than 24 KB of keep, it gets an `over_budget`
+entry whose reason names what the kept prose is; its assessment record shows the sorting.
+
+**D-21 The cut of the stages.** Stage 3: the pending skills of `meaningfy-building` and
+`meaningfy-architecture`, plus `test-strategy` (the outline names it there): `architecture`,
+`ci-cd-delivery`, `clarity-gate`, `conceptual-modelling`, `epic-delivery`, `epic-planning`,
+`formal-reasoning`, `linkml-engineering`, `meaningfy-release`, `modelling-conventions`,
+`project-setup`, `test-strategy`. Stage 4: the seven pending skills of `meaningfy-sales`. Stage 5:
+every other pending skill. One pull request per stage.
+
+**D-22 Stage 3 decided by the lead (2026-11-15).** Two exceptions, recorded in
+`skill-budget.yaml`: `test-strategy` (87 KB: the matrix, cited by 41 skills and fixed by
+`tests/test_test_strategy.py`, and the 144-row check inventory other EPICs edit) and
+`epic-delivery` (33 KB: the delivery method itself, cited by about 25 checks). Second readers
+found losses in three skills, all restored: the mark line at Prepare (`epic-delivery`); the
+secondary notations and "an ADR is never deleted, only superseded" (`architecture`); the scaffold's
+`domain/` name kept on purpose, the library archetype's layers and the Antora search setting
+(`project-setup`). The lead also kept `conceptual-modelling`'s provisional banner (doubt goes to
+keep) and chose sequential ADR numbers (`ADR-0001`, as `project-setup`'s docs template writes
+them) over the old per-level scheme of the deleted `architecture-project-structure.md`. Under the
+floor: `project-setup` sits one byte under budget, so the next addition there pays for itself;
+`architecture`'s ADR template is MADR-shaped while `project-setup` names the Nygard format.
+
 ### Anti-patterns
 
 | Don't | Do instead | Why |

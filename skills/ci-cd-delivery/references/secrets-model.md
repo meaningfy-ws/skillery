@@ -19,12 +19,6 @@ Vaultwarden                GitHub Secrets               deploy workflow         
   repo**, **no git-pull on the VM**, and the assembly step is explicit and auditable in the Action
   log.
 
-## Why this shape
-
-- One auditable boundary: if you want to know what a VM received, you read one workflow run.
-- No drift between "what's in the repo" and "what's deployed" — the repo carries *no* secrets.
-- Rotation is mechanical and traceable (below).
-
 ## Rotation procedure
 
 1. **Rotate in Vaultwarden** — change the value at the source of truth.

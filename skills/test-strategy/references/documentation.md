@@ -1,6 +1,6 @@
 # Documentation: the matrix
 
-Checks on docs, how-tos, tutorials and references. `technical-writing` owns the cold reader and the documentation workflow; `clarity-gate` owns the lightweight gate. This file names them and does not restate their steps. A check that answers two questions has two rows. `gap → C` rows are for the EPIC `activity-test-profiles` to fill or accept.
+Checks on docs, how-tos, tutorials and references.
 
 | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
 |---|---|---|---|---|---|---|

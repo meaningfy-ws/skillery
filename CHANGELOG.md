@@ -12,22 +12,32 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Changed
+
+- **The engineering skills are lean** (EPIC `lean-skills`, stage 3). `architecture` drops from
+  141 KB to 24 KB and `project-setup` from 137 KB to 24 KB; `linkml-engineering`,
+  `conceptual-modelling`, `modelling-conventions`, `formal-reasoning`, `epic-planning`,
+  `clarity-gate`, `ci-cd-delivery` and `meaningfy-release` take the lean shape. Templates you
+  copy now sit in each skill's `assets/` (the ADR and use-case templates of `architecture`, the
+  settings resolver of `project-setup`). `epic-delivery` and `test-strategy` keep their method
+  tables under a recorded exception. Every check id and every cited file name is unchanged.
+
 ### Fixed
 
 - **`rules-first` no longer blocks an ordinary memory edit, and is harder to get past** (#272).
   An edit that adds a line such as `type: user-facing docs` to a project note was refused as a
   `user` note; the type is now read as a whole word. A `feedback` or `user` note is now refused
   whatever the case (`Feedback`), wherever its `type:` sits in the frontmatter, when written as a
-  block value, a quoted key, a tagged value or an indented plain value, in a sub-folder of the
-  memory folder, through a symlinked `~/.claude` or a symlinked memory folder, and on macOS
-  whatever the case of the path, on Windows paths with backslashes, and with YAML tags or anchors
-  (`!!str feedback`, `&a feedback`) or padding before the value. An edit that only changes the value (`project` to `feedback`) is
-  refused too, because the edit is applied to the note before its type is read. The denied
-  types and the message now live in the rulebook skill (`assets/memory-deny.json`). The session
-  block waits up to 15 s for `rules.py where` instead of 5 s, so a busy machine no longer drops
-  the store lines. `rules.py where` now says "add or replace" the rules line, and `rules.py stats`
-  counts every `rules.py` call in a command, each write and each usage call on its own. A plain mod with a `config.json` no longer replaces a
-  modules mod's settings in the generated plugin. The `project-setup` template says
+  block value, a quoted key, a tagged or anchored value (`!!str feedback`, `&a feedback`), an
+  indented plain value or after padding; in a sub-folder of the memory folder; through a
+  symlinked `~/.claude` or memory folder; on macOS whatever the case of the path; and on Windows
+  paths with backslashes. An edit that only changes the value (`project` to `feedback`) is refused
+  too, because the edit is applied to the note before its type is read. The denied types and the
+  message now live in the rulebook skill (`assets/memory-deny.json`). The session block waits up
+  to 15 s for `rules.py where` instead of 5 s, so a busy machine no longer drops the store lines.
+  `rules.py where` now says "add or replace" the rules line, and `rules.py stats` counts each
+  `rules.py` call of a command, writes and usage alike. A plain mod with a `config.json` no longer
+  replaces a modules mod's settings in the generated plugin. The `project-setup` template says
   `.claude/memory/MEMORY.md` is a repository file, not the CLI's memory.
 - The `no-poll-loops` timing tests take the best of three runs, so a loaded machine no longer
   fails them (#268).

@@ -19,11 +19,10 @@ References: [Sigstore/SLSA/SBOM in CI](https://nathanberg.io/posts/supply-chain-
 4. **SBOM** — generate a Software Bill of Materials (e.g. Syft) and attach it to the GitHub Release, so
    consumers get a parts list (dependencies, versions, licences) for vulnerability and licence scanning.
 
-## Why opt-in, not mandatory
+## Which rung
 
-Mandating all four across every repo on day one is a heavy lift with low early payoff for internal-only
-libraries. Make it a graduated target: a public, widely-depended-on library should reach SLSA L2; an
-internal tool can stop at attestations. The skill states the target; each repo's maintainer decides the
+A graduated target: a public, widely-depended-on library should reach SLSA L2; an internal tool can
+stop at attestations. The skill states the target; each repo's maintainer decides the
 rung — and `project-setup` can scaffold the chosen rung.
 
 ## Anti-patterns

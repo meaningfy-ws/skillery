@@ -1,6 +1,6 @@
 # UI: the matrix
 
-Checks on screens and front ends. Few exist: the accessibility rule sits in the `cosmic-python` testing checklist and the UX lens in `meaningfy-code-review`; the design skills are external plugins and are not in the catalogue. This file names what exists and marks the rest as gaps; it adds no technique. A check that answers two questions has two rows. `gap → C` rows are for the EPIC `activity-test-profiles` to fill or accept, possibly by a pointer to an external design plugin.
+Checks on screens and front ends. Few exist: the design skills are external plugins, not in the catalogue, so a `gap → C` row may be filled by a pointer to one.
 
 | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
 |---|---|---|---|---|---|---|

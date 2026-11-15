@@ -13,128 +13,50 @@ metadata:
 
 # Project Setup
 
-## Overview
+Left alone, an agent scaffolds a generic repo (`src/`, every tool in `pyproject.toml`, a lone
+`CLAUDE.md`, no spine) and guesses the project's shape. This skill interviews first, scaffolds with
+`scripts/scaffold.sh`, projects the `openspec/` spine, and modernises an existing repo as a shaped
+change, never in place.
 
-Interview the developer, then scaffold a complete Meaningfy-standard repository **and project the
-Meaningfy spine into it**: a **top-level package** (never `/src`), all tool config in the
-**repository root**, cosmic-python layering enforced by **import-linter**, a **TDD+BDD** test
-layout, an **AGENTS.md-canonical** agentic setup (`AGENTS.md` is the source; `CLAUDE.md` is a
-thin pointer that imports it, never a symlink), the **`openspec/` spine** (config + pinned
-`meaningfy` schema + `/opsx:*` commands + the golden thread), an **Antora** documentation site, optional **Docker/infra**, and **GitHub Actions
-CI** that calls `make` targets.
+## Quick Start
 
-This skill provides the *concrete scaffolding artifacts* (templates, checklists, precise file
-specs). For the *knowledge* behind them it routes to the installed Meaningfy skills and the spine
-rather than restating them:
+"A REST API for order processing, on PostgreSQL, that we deploy." The interview resolves product,
+service, FastAPI, LinkML, PostgreSQL, deployable, package `orders`; the developer confirms. Then
+`scripts/scaffold.sh -p orders -n "Order Processing" -a product --deployable` writes a top-level
+`orders/`, root tool files, `tests/` by tier, `AGENTS.md` with its `CLAUDE.md` pointer,
+`openspec/`, `model/`, `docs/`, `infra/`, CI and a `deploy.yaml` stub; `make check-all` is green.
 
-| For… | Use skill / source |
-|------|--------------------|
-| Layering, SOLID, what to test per layer | `cosmic-python` |
-| Minimal code — YAGNI, avoid over-engineering | `ponytail` (third-party) |
-| System design, C4, ADRs, contracts | `architecture` |
-| The domain `model/` (product) | `conceptual-modelling` |
-| LinkML gates, `make generate-models` automation, per-module output (if the project uses LinkML) | `linkml-engineering` |
-| Deploy / versioned image (CD seam) | `ci-cd-delivery` |
-| Release lifecycle — versioning, release notes, PyPI publish, `SECURITY.md` | `meaningfy-release` |
-| EPIC (work shape) + PLAN, the spine workflow | `epic-planning` + the `/opsx:*` commands |
-| Delivering an EPIC with the agent team (the `develop/` runbook routes here) | `epic-delivery` |
-| Docs writing, AsciiDoc/Antora prose | `technical-writing` |
-| Commits, branches, PRs | `meaningfy-git-workflow` |
-| TDD discipline while implementing | `superpowers:test-driven-development` |
+## Workflow
 
-The spine it lays down is OpenSpec with the `meaningfy` schema (the golden thread is owned by
-`epic-planning`); the projection mechanics are in
-[`references/spine-projection.md`](references/spine-projection.md).
+Confirm the plan before writing; commit only on explicit consent. Read
+`references/modernizing-existing-projects.md` when the repo already exists, instead of steps 1 to 3:
+it adds the `--dry-run` audit and its rubric, the upgrade as an EPIC and PLAN, the safe order of
+slices and the adoption of the shared checks.
 
-## Modes
-
-- **Greenfield** — scaffold a clean repo from nothing (the default procedure below) and project the
-  spine into it.
-- **Minimal** (`--minimal`) — write *only* the agentic files (`AGENTS.md` + the `CLAUDE.md`
-  pointer), the `.claude/` index, and print the install commands. Absorbs the old init-script bootstrap as one
-  mode of the single scaffolder — no second bootstrap path.
-- **Brownfield (modernization)** — bring an *existing* repo up to standard. **Audit → imagine the
-  ideal target → propose the upgrade as a shaped EPIC + PLAN (an OpenSpec change) → human approves →
-  apply in safe slices.** Not in-place big-bang. `scaffold.sh --dry-run` prints a gap report
-  (`+ create` / `= keep`) that writes nothing; full workflow:
-  [`references/modernizing-existing-projects.md`](references/modernizing-existing-projects.md).
-
-## Archetypes (the pivotal choice)
-
-Three explicit archetypes, each with a **fixed gate profile**. **Regardless of archetype, the basics
-hold: "automate almost everything" + TDD.** The archetype decides the *conditional* layers and gates.
-
-| Archetype | `model/`? | Deploy | CI-automatable gates (as `make` targets) |
-|-----------|-----------|--------|-------------------------------------------|
-| **product** (any built software — service/pipeline/cli) | yes (LinkML) | conditional | `openspec validate --strict` + codegen-in-sync + `check-architecture` + cov ≥80% + code-review |
-| **library** | no | no | `openspec validate --strict` + `check-architecture` + cov ≥80% + code-review |
-| **doc-only** (non-code) | no | no | `openspec validate --strict` + docs build + lightweight link/structure checks |
-
-- **doc-only** is non-code: the interview MUST run a real **intention-elicitation** step (purpose,
-  needed elements, what "good" means) before scaffolding gates — never assume. See
-  [`references/interview.md`](references/interview.md) Q2.2.
-- **Conditional `model/`** (product): scaffolds `model/` (LinkML default) — the model itself owned by
-  `conceptual-modelling`. **When the project uses
-  LinkML**, also scaffold the LinkML layer owned by
-  `linkml-engineering`: the `make generate-models`
-  automation (incl. diagrams), custom generator templates, **per-module dedicated-artefact output** (one
-  artefact set per module, not unified), and the **quality gates chosen with the user** (lint-no-mute,
-  codegen-freshness, example round-trip). **When the project does not use LinkML**, skip this layer
-  entirely — do not scaffold LinkML gates or automation.
-- **CD seam** (deployable product): renders the `ci-cd-delivery` CD templates **only after DevOps
-  ratifies §6**; until then a clearly-marked `deploy.yaml` TODO stub + boundary docs (`--deployable`).
-- **Release seam** (per archetype — content owned by `meaningfy-release`):
-  **library** projects a `release.yml` stub (release-please + PyPI Trusted Publishing) + `SECURITY.md`;
-  **product** points at the `ci-cd-delivery` GHCR image path + gets `SECURITY.md`; **doc-only** gets
-  neither. This skill owns *when/into what repo*; the release content/intent lives in `meaningfy-release`.
-- **`clarity-gate` is NOT a CI step** — it is a human/agent semantic gate (the automation boundary, in
-  `references/ci-and-infra.md`).
-
-> **Non-negotiables** (hardest to reverse, most-violated by default): no `/src`, all tool config in
-> the root, **canonical `AGENTS.md` with a thin `CLAUDE.md` pointer, never a symlink** (D8), a
-> minimal `pyproject.toml`, and the `openspec/` spine projected. See [`references/decisions.md`](references/decisions.md).
-
-## Procedure
-
-Work in phases. Confirm the plan before writing files; commit only on explicit consent.
-**For an existing repo, follow [`references/modernizing-existing-projects.md`](references/modernizing-existing-projects.md)**
-(audit → shape the change → approve → apply in slices) instead of steps 1–3 below; the pillar
-references in step 4 still govern each piece.
-
-1. **Interview** — ask the grouped questions in [`references/interview.md`](references/interview.md)
-   (use `AskUserQuestion`). Resolve project name, package name(s), **archetype** (product/library/
-   doc-only), product flavour + frameworks, model source, datastores, deployable?, and which optional
-   pillars to include (docs, infra, CI). Make no silent assumptions; echo back the resolved profile.
-2. **Plan** — present the resolved profile + the file tree you will create (from
-   [`references/layout.md`](references/layout.md)). Get a go-ahead.
-3. **Scaffold the skeleton** — run the scaffolder (flags, not positional args):
-   ```
-   scripts/scaffold.sh -p <package> -n "<Project Name>" -a <product|library|doc-only> \
-       [--deployable] [--minimal] [--python 3.12] [--slug my-project] [--org meaningfy-ws] \
-       [--branch develop] [--no-docs] [--no-infra] [--no-ci] \
-       [--neo4j --linkml-generators <linkml-engineering skill folder>/scripts/linkml_neo4j]
-   ```
-   With `--neo4j`, pass the installed `linkml-engineering` skill's folder: each skill is installed on
-   its own, so the scaffolder cannot find a sibling skill by itself.
-   It renders every template, creates the package/tests/`.claude`/**`openspec/`** trees, renders
-   **`AGENTS.md`** (canonical) and the **`CLAUDE.md`** pointer as regular files, copies the
-   **pinned** `meaningfy` schema, and runs `uv lock`.
-   Idempotent; never clobbers without asking (`--force` / `--skip-existing`). `--minimal` writes only
-   the agentic files + `.claude/` layout. Or create files by hand from `assets/templates/` using
-   [`references/layout.md`](references/layout.md) + [`references/config-files.md`](references/config-files.md).
-4. **Fill the pillars**, each governed by a reference:
-   - Code & architecture → [`references/layout.md`](references/layout.md) + [`references/architecture-guardrails.md`](references/architecture-guardrails.md)
-   - Tooling & config files → [`references/config-files.md`](references/config-files.md);
-     application settings (the mandated `PR-CONFIG-DECOUPLED` pattern) → [`references/settings-pattern.md`](references/settings-pattern.md)
-   - Tests (TDD+BDD) → [`references/testing-setup.md`](references/testing-setup.md)
-   - Agentic setup (AGENTS.md canonical, CLAUDE.md pointer, memory index) → [`references/agentic-setup.md`](references/agentic-setup.md)
-   - The spine (openspec/, pinned schema, /opsx:*, golden thread) → [`references/spine-projection.md`](references/spine-projection.md)
-   - Documentation (Antora) → [`references/antora-docs.md`](references/antora-docs.md)
-   - CI & infra & the CD seam → [`references/ci-and-infra.md`](references/ci-and-infra.md)
-5. **Verify** — run the Definition-of-Done checklist in [`references/checklists.md`](references/checklists.md)
-   (`make install && make check-all` must pass on the empty skeleton).
-6. **Hand off** — install the spine commands + the Meaningfy skillery so `AGENTS.md`'s routing and
-   the `/opsx:*` workflow resolve, then summarise what was created, what is stubbed, and next steps:
+1. **Interview.** Read `references/interview.md` before the first question: it adds the seven
+   groups with their defaults, the archetype filter, the doc-only elicitation and the echo-back.
+2. **Plan.** Show the resolved profile and the file tree; wait for a yes. An empty folder gets
+   `git init` on the chosen default branch.
+3. **Scaffold.** `scripts/scaffold.sh -p <package> -n "<Name>" -a <product|library|doc-only>`, with
+   `--deployable`, `--minimal` (agentic files and `.claude/` only), `--python`, `--slug`, `--org`,
+   `--branch`, `--no-docs|--no-infra|--no-ci`, `--dry-run`, `--force|--skip-existing`. With
+   `--neo4j`, pass `--linkml-generators <linkml-engineering folder>/scripts/linkml_neo4j`: skills
+   install apart, so the scaffolder cannot find a sibling. Idempotent; never clobbers unasked.
+4. **Fill the pillars.**
+   - Read `references/config-files.md` when you edit or migrate a root tool file: it adds the rules
+     the templates cannot show, the suppression rule and the `pyproject.toml` and `/src` migration.
+   - Read `references/testing-setup.md` when you wire or move tests: it adds the tiers, the marker
+     hook and its gotcha, the lanes and the coverage gate.
+   - Read `references/architecture-guardrails.md` when you write or groom `.importlinter`: it adds
+     the tiers, the two-step method and the peer-import gotcha.
+   - Read `references/agentic-setup.md` when you write `AGENTS.md`, `CLAUDE.md` or `.claude/`: it
+     adds the pointer rule, the global vs repo split and the index rules.
+   - Read `references/spine-projection.md` when you project or refresh `openspec/`: it adds the
+     config rules, the pins and the refresh path.
+   - Read `references/ci-and-infra.md` when you wire CI, the CD stub or `infra/`: it adds the gates
+     per archetype, the CD seam and the infra gotchas.
+5. **Verify** with *Before you hand over*.
+6. **Hand off.** Install what `AGENTS.md` routes to; summarise what is made, stubbed and next:
    ```
    npx -y @fission-ai/openspec@1.4.1 init --tools claude --profile core
    /plugin marketplace add meaningfy-ws/skillery#releases
@@ -143,52 +65,79 @@ references in step 4 still govern each piece.
    /plugin install superpowers@claude-plugins-official
    /plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail
    ```
-   Then shape the first EPIC with `/opsx:propose` (→ `openspec/changes/<id>/proposal.md` = EPIC,
-   `design.md` + `tasks.md` = PLAN); gate the PLAN with `clarity-gate` (≥9/10) before `/opsx:apply`.
+   If the person declines one, say that you work without it and that its routes will not resolve.
+   The first EPIC is `/opsx:propose`; its PLAN passes `clarity-gate` before `/opsx:apply`.
 
-## Canonical stack (recommended defaults)
+## Rules
 
-These are the defaults the templates implement. Deviate only with a stated reason.
+**Archetypes.** The archetype fixes CI gates:
 
-| Concern | Choice | Rejected (why) |
-|---------|--------|----------------|
-| Packaging / deps | **uv** + `[dependency-groups]` + `uv.lock` | Poetry (the previous standard), requirements.txt (no lock/groups), setup.py (legacy) |
-| Format + lint | **Ruff** (`ruff.toml`) | black+isort+flake8+pylint (4 tools, slow) |
-| Types | **mypy** (`mypy.ini`) | — |
-| Tests | **pytest** + **pytest-bdd** (`pytest.ini`) | behave (separate runner), nose (dead) |
-| Coverage | **coverage.py** (`.coveragerc`, ≥80%) | — |
-| Architecture | **import-linter** (`.importlinter`) | manual review (erodes silently) |
-| Shared checks | skillery's **`quality/`** at `QUALITY_VERSION`: Semgrep, ls-lint, checkmake (`make check-quality`) | per-project copies (drift) |
-| Spine | **OpenSpec** (`openspec/`, pinned `meaningfy` schema, `/opsx:*`) | bespoke `.claude/memory/epics/` (drifts; dies at impl) |
-| Domain model (product) | **LinkML** `model/` + `make generate-models` | hand-maintained models (spec-drift) |
-| Agent file | **`AGENTS.md` canonical** + thin `CLAUDE.md` pointer (D8) | a symlink either way; two divergent files; CLAUDE-only |
-| Docs | **Antora** (AsciiDoc) | Sphinx (weaker cross-refs), bare MD |
-| Task runner | **Makefile** (the dev UX) | tox (env-matrix only; not needed) |
+| Archetype | `model/` | Deploy | Gates |
+|---|---|---|---|
+| product | yes | conditional | `openspec validate --strict`, codegen in sync, `check-architecture`, coverage ≥ 80 %, code review |
+| library | no | no | `openspec validate --strict`, `check-architecture` (domain, adapters), coverage ≥ 80 %, code review |
+| doc-only | no | no | `openspec validate --strict`, docs build, link and structure checks |
 
-See [`references/decisions.md`](references/decisions.md) for the rationale behind each choice.
+- `model/` holds `conceptual-modelling`'s model. Only with LinkML, scaffold `linkml-engineering`'s
+  layer (`make generate-models` with diagrams, custom templates, one artefact set per module, gates
+  chosen with the user); otherwise no LinkML gates.
+- Release seam (`meaningfy-release`'s content): a library gets a `release.yml` stub and
+  `SECURITY.md`; a product gets `SECURITY.md` and `ci-cd-delivery`'s image path; doc-only, neither.
+- `clarity-gate` is never a CI step.
 
-## Definition of Done
+**Decisions.** Deviate only with a stated reason; ✱ marks the non-negotiables.
 
-The scaffold is done when every box in [`references/checklists.md`](references/checklists.md) is
-ticked — chiefly: `make install` succeeds; `make check-all` is green on the empty skeleton (lint,
-types, architecture, `openspec validate --strict`, a placeholder test); **`AGENTS.md` exists and
-`CLAUDE.md` imports it (both regular files)**; `openspec/` is projected (config + pinned schema +
-`specs/` + `changes/`); `docs/` builds (`make build-docs`) if docs were selected; CI workflow is present.
+| Id | Default |
+|---|---|
+| D1 ✱ | a top-level package per deployable unit, never `src/` (a published library needing src import isolation may) |
+| D2 ✱ | each tool config in its own root file; `pyproject.toml` minimal |
+| D3 | uv, PEP 735 groups, `uv.lock`, `uv_build`; not Poetry or `requirements.txt` |
+| D4 | Ruff replaces black, isort, flake8, pylint; mypy; radon and xenon for trends |
+| D5 | pytest + pytest-bdd, tests split by folder, marker stamped by path, coverage ≥ 80 % |
+| D6 | TDD (`superpowers:test-driven-development`), BDD (`bdd-gherkin`) features before code |
+| D7 | `cosmic-python` layers enforced by import-linter |
+| D8 ✱ | canonical `AGENTS.md`, thin `CLAUDE.md` pointer, both regular files, never a symlink |
+| D9 | `.claude/` a regenerable index; the spine holds work memory |
+| D10 | Antora: Diátaxis plus requirements, ADR, user guide, develop; search needs `SITE_SEARCH_PROVIDER=lunr` at build |
+| D11 | root `infra/`, multistage non-root image, layered env |
+| D12 | CI calls `make` targets; the Makefile is the dev UX, no tox |
+| D13 ✱ | the `openspec/` spine projected, schema pinned |
+
+Shared checks: skillery's `quality/` at `QUALITY_VERSION`, never copied. `ponytail` keeps code
+minimal.
+
+**Settings.** With settings, `cosmic-python:PR-CONFIG-DECOUPLED` is the only way; start from the
+settings pattern in `assets/settings/config_resolver.py`.
+
+**Docs.** Drop a bucket that does not fit the archetype with its `nav.adoc` entry. `develop/`
+pages point to the skills and keep only the project's slots. API reference is generated from
+OpenAPI (`make openapi`, then `make api-docs` with the openapi-generator `asciidoc` generator; a
+separate docs repo pulls it with `make update-api-docs`), never hand-written: ignored and
+regenerated in CI, or committed with a codegen check. Prose is `technical-writing`'s.
+
+## Before you hand over
+
+| Question | If not | Action |
+|---|---|---|
+| `make install && make check-all` green on the skeleton, `check-quality` included? | broken scaffold | fix first |
+| `test ! -L AGENTS.md && test ! -L CLAUDE.md && grep -qx '@AGENTS.md' CLAUDE.md`? | D8 broken | regular files; `AGENTS.md` routes, never restates the standard |
+| `MEMORY.md` an index of ≤ 200 lines? | a second source | cut to pointers |
+| `openspec/` complete, `openspec validate --strict` green, commands installed? | no spine | re-project |
+| No `src/`, minimal `pyproject.toml`, one `VERSION` source? | D1, D2 broken | lift, strip `[tool.*]` |
+| Selected pillars work (`make build-docs`, `docker compose … config`, `ci.yaml` on `make`)? | half a pillar | finish or remove it |
+| `README.md` points to `AGENTS.md`; `.gitignore` covers `infra/.env` and secrets? | lost newcomer, leaked secret | fix |
 
 ## Boundary & Related Skills
 
-**Owns:** the repository scaffold + the spine projection — directory layout, root tool configs, test
-harness, the AGENTS.md-canonical agentic files, the `openspec/` spine (config + pinned schema + golden
-thread), Antora skeleton, CI/infra templates, the conditional `model/` home and the CD TODO stub, and
-the setup checklists.
-**Delegates:** layering rationale → `cosmic-python`; system design/ADRs → `architecture`; the domain
-model + generation → `conceptual-modelling`; CD/release
-content → `ci-cd-delivery`; EPIC/PLAN content + spec
-stewardship → `epic-planning` and the spine; doc prose → `technical-writing`; git mechanics →
-`meaningfy-git-workflow`. This skill creates the *containers*; those skills fill them.
-**Related:** the delegation targets above, plus `ci-cd-delivery` (the CD side of the CI this skill
-scaffolds), `meaningfy-release` (the release workflow a scaffolded repo adopts), `linkml-engineering`
-(its gates and per-module layout, when the project uses LinkML), and the external `superpowers` and
-`stream-coding` skills.
+**Owns:** the scaffold and the spine projection: layout, root configs, test harness, agentic
+files, `openspec/`, docs, CI and infra templates, the `model/` home, the CD stub. It makes the
+containers; other skills fill them.
+**Delegates:** layering and the code catalogue → `cosmic-python`; ADRs → `architecture`; the model
+→ `conceptual-modelling`; LinkML gates → `linkml-engineering`; deploy → `ci-cd-delivery`; release
+→ `meaningfy-release`; EPIC and PLAN → `epic-planning`; the spine lifecycle → `spec-stewardship`;
+delivery → `epic-delivery`; prose → `technical-writing`; git → `meaningfy-git-workflow`; test
+policy → `test-strategy`.
+**Related:** `ci-cd-delivery`, `meaningfy-release`, `linkml-engineering`; external `superpowers`,
+`ponytail`, `stream-coding`.
 
 Answers `VER, ADQ` in `test-strategy`'s matrix (`references/software.md`).

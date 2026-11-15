@@ -1,15 +1,13 @@
-# Generation, custom templates, and automation
+# Generation, custom templates and automation
 
-Generation is **deterministic and outside the LLM path**: the LLM authors the *source* (YAML), a fixed
-`make`-driven toolchain renders the *targets*. Treat it exactly like other schema-based codegen —
-regenerate in CI, fail the build on drift (see [`quality-gates.md`](quality-gates.md)). Never hand-edit a
-generated file; a needed change goes to the schema or the template.
+The LLM authors the source (YAML); a fixed `make` toolchain renders the targets, outside the LLM
+path. Never hand-edit a generated file: a needed change goes to the schema or the template. CI
+regenerates and fails on drift (`quality-gates.md`).
 
 ## The `make generate-models` bridge
 
-One target regenerates everything from the source; nothing downstream edits generated files by hand. Fail
-loudly — write to a temp file and `mv` into place only on success, so a failed run leaves no partial
-output.
+One target regenerates everything. Fail loudly: write to a temp file and `mv` it into place only on
+success, so a failed run leaves no partial output.
 
 ```makefile
 generate-models:                ## Regenerate all model targets from the LinkML source
@@ -17,21 +15,19 @@ generate-models:                ## Regenerate all model targets from the LinkML 
 	gen-json-schema $(SCHEMA) > $(GEN_JSON)
 	gen-owl   $(SCHEMA) > $(GEN_OWL)
 	gen-shacl $(SCHEMA) > $(GEN_SHACL)
-	ruff check --select F401 --select I --fix $(GEN_PY) && ruff format $(GEN_PY)   # match house style
+	ruff check --select F401 --select I --fix $(GEN_PY) && ruff format $(GEN_PY)   # house style
 ```
 
-Pin the LinkML version deliberately (it is a codegen dependency, not a runtime one) and note *why* —
-generators can change output between minor versions; an unrelated dependency bump must not silently
-regenerate different code. Bump, regenerate, diff, then accept.
+Pin the LinkML version deliberately (a codegen dependency, not a runtime one) and note why:
+generators change output between minor versions, and an unrelated bump must not silently regenerate
+different code. Bump, regenerate, diff, then accept.
 
-## Custom generator templates (the highest-leverage customization)
+## Custom generator templates
 
-LinkML's Pydantic generator supports `--template-dir` with Jinja overrides. Use it to make every generated
-model inherit the project's **own strict base class** instead of LinkML's generic `ConfiguredBaseModel` —
-so the whole generated set obeys house conventions, defined once in hand-written code. This turns
-"generated code" into "generated code that already obeys our conventions."
-
-Worked example (from `mapping-suite-sdk`) — the class template swaps the base:
+The highest-leverage customisation: `gen-pydantic --template-dir` with a Jinja override makes every
+generated model inherit the project's own strict base instead of LinkML's `ConfiguredBaseModel`, so
+the generated set obeys house conventions defined once in hand-written code (from
+`mapping-suite-sdk`):
 
 ```jinja
 {# templates/class.py.jinja #}
@@ -42,8 +38,6 @@ class {{ name }}({{ bases }}):
 {% endif %}
 ```
 
-The strict base (hand-written, one place) sets the cross-cutting Pydantic config:
-
 ```python
 class PydanticModel(BaseModel):
     model_config = ConfigDict(
@@ -52,28 +46,21 @@ class PydanticModel(BaseModel):
     )
 ```
 
-Keep override templates minimal — they only swap the base class and strip LinkML meta noise. The same
-technique authors a **custom generator for any language**: subclass LinkML's `Generator` (or walk the
-schema with `SchemaView`) so the generator is a pure function of the schema — deterministic, no side
-inputs — and add it to `make generate-models` and the freshness check.
+Keep override templates minimal: swap the base, strip LinkML meta noise. The same technique gives a
+custom generator for any language: subclass LinkML's `Generator` (or walk the schema with
+`SchemaView`) so the generator is a pure function of the schema, and add it to `make generate-models`
+and the freshness check.
 
-## Automation of transformations, including diagrams
+## Automation, diagrams included
 
-Everything is a `make` target, not an ad-hoc command — models, secondary artefacts, and **diagrams**:
+Every transformation is a `make` target, never an ad hoc command: models, secondary artefacts and
+diagrams (`generate-model-view`: `gen-plantuml` to `diagrams/`, `gen-json-schema` to `schemas/`).
+Generate only what something consumes.
 
-```makefile
-generate-model-view:            ## Diagrams + inspectable schemas from the LinkML source
-	gen-plantuml    $(SCHEMA) > diagrams/$(NAME).puml
-	gen-json-schema $(SCHEMA) > schemas/$(NAME).schema.json
-```
+## Per-module artefacts, not one merged output
 
-Generate only what is actually consumed somewhere — do not gold-plate artefacts nobody reads.
-
-## Per-module artefact generation (not unified)
-
-A multi-module project generates **dedicated artefacts per module**, mirroring each schema's path into the
-output package — not one merged mega-artefact. The pattern (from `mapping-suite-sdk`): walk the schema
-tree and mirror the relative path.
+A multi-module project generates one artefact per schema, mirroring its path: walk the schema tree
+and run the generator per file, same temp-file-then-`mv` rule.
 
 ```makefile
 generate-models-recursive:
@@ -84,80 +71,45 @@ generate-models-recursive:
 	done
 ```
 
-`schema/<domain>/<name>.yaml` → `<pkg>/<domain>/<name>.py`, same relative path and basename — trivial to
-automate, trivial for a human to locate. Split schemas by bounded concept, one schema file per aggregate;
-don't put unrelated domains in one giant file. **Scaffolding this layout into a repo is `project-setup`'s
-job** (conditional on the project using LinkML).
+`schema/<domain>/<name>.yaml` → `<pkg>/<domain>/<name>.py`. One schema file per aggregate, split by
+bounded concept. Scaffolding this layout into a repo is `project-setup`'s job.
 
-## Enable-on-demand target matrix
+## Enable-on-demand targets
 
-First-class (wired and tested): **Pydantic, JSON Schema, OWL, SHACL** — the semantic core. Add the rest
-only when a project consumes the target: **TypeScript** (`gen-typescript`), **SQL DDL / SQLAlchemy**
-(`gen-sqlddl`/`gen-sqla` — keep the repository around the ORM hand-written, in `adapters/`),
-**Markdown/HTML docs** (`gen-doc`), **JSON-LD context** (`gen-jsonld-context`), **Neo4j constraints +
-neomodel OGM** (below), and further **custom generators** as a project needs them.
+First-class, wired and tested: Pydantic, JSON Schema, OWL, SHACL. The rest only when a project
+consumes them: TypeScript (`gen-typescript`), SQL DDL or SQLAlchemy (`gen-sqlddl`/`gen-sqla`; the
+repository around the ORM stays hand-written in `adapters/`), docs (`gen-doc`), JSON-LD context
+(`gen-jsonld-context`), Neo4j (below), and further custom generators.
 
-### Neo4j constraints + neomodel OGM
+### Neo4j constraints and neomodel OGM
 
-Two custom generators, both subclassing LinkML's `Generator` per the mechanism above. They ship with
-this skill in `scripts/linkml_neo4j/`, so an installed skill has them; skillery's own tests cover
-them, and `project-setup` projects a pinned copy into a consuming repo.
-Enable when a project targets Neo4j:
+Two custom generators ship with this skill in `scripts/linkml_neo4j/`, tested by
+`tests/test_linkml_neo4j_generators.py`. Enable them when a project targets Neo4j.
 
-- **`gen-neo4j-constraints`** emits Cypher DDL (uniqueness, existence, property-type constraints, and
-  `CREATE INDEX` for any slot annotated `annotations: {neo4j_index: true}`). Targets **Neo4j Community
-  Edition only** — `--profile community` (uniqueness + indexes, the subset this generator can
-  currently prove runs on Community) vs `--profile full` (also existence/type, carried over from an
-  assumption not yet re-verified against a real Community instance; see the generator's own module
-  docstring for the current state of that verification). It emits no relationship-level constraints
-  and no application-layer validation (patterns, enum membership, numeric bounds, relationship
-  cardinality) — that's `gen-neomodel`'s job, on the Python side, not a second Cypher-side mechanism.
-- **`gen-neomodel`** emits neomodel `StructuredNode` classes, mirroring the schema's `is_a` hierarchy as
-  real Python inheritance (abstract LinkML classes become `__abstract_node__ = True` bases) so that a
-  relationship whose range is an abstract class resolves correctly instead of pointing at an undefined
-  name. A slot's `any_of` range restriction is documented as a trailing comment on the generated
-  relationship, not mechanically enforced. Also note: neomodel reserves the Python attribute names
-  `id`, `deleted`, `element_id` — a schema whose identifier slot is (conventionally) named `id` gets a
-  `_`-suffixed Python attribute (`id_`) with `db_property=...` preserving the real Neo4j property key.
-
-#### Installing
-
-Pick your role:
-
-| You are… | Do this |
-|---|---|
-| **Scaffolding a new project** with `project-setup` | Answer LinkML (Q4.5) + Neo4j (Q5.1) in the interview, or pass `--neo4j` directly to `scaffold.sh` (product archetype only). This copies both generators into your repo's `scripts/`, pinned. |
-| **Adding it to an existing project** | Re-run `project-setup` (`scaffold.sh ... --neo4j --skip-existing`) — additive, never touches unrelated files. |
-| **Working inside skillery itself** | No install needed — run them directly from this skill's `scripts/linkml_neo4j/`. |
-
-The pinned copy in your repo is a **snapshot**, not a live link back to skillery — refresh it by
-re-running `project-setup` with `--force` (shows what changed; never silently overwritten), same
-discipline as the `meaningfy` OpenSpec schema pin (`spine-projection.md`).
-
-#### Using
+- `gen_neo4j_constraints.py` emits Cypher DDL: uniqueness, existence and property-type constraints,
+  and `CREATE INDEX` for a slot annotated `neo4j_index: true`. It targets Neo4j Community Edition:
+  `--profile community` emits only uniqueness and indexes, the subset proven to run there; `--profile
+  full` (the default) adds existence and type constraints, not yet re-verified on Community (the
+  module docstring holds the current state). It emits no relationship constraints and no
+  application-layer validation: that is `gen-neomodel`'s job, in Python.
+- `gen_neomodel.py` emits neomodel `StructuredNode` classes mirroring the `is_a` hierarchy as Python
+  inheritance (abstract classes become `__abstract_node__ = True` bases, so a relationship whose range
+  is abstract resolves). An `any_of` range is a trailing comment, not enforced. neomodel reserves
+  `id`, `deleted` and `element_id`: an `id` slot becomes `id_` with `db_property` keeping the Neo4j key.
 
 ```bash
-# From your project root, once scripts/gen_neo4j_constraints.py + gen_neomodel.py exist:
-pip install linkml click jinja2 neomodel   # generator dependencies (not runtime deps of your project)
-
+pip install linkml click jinja2 neomodel   # generator dependencies, not runtime ones
 python scripts/gen_neo4j_constraints.py model/schema.yaml --profile community > model/generated/neo4j/constraints.cypher
 python scripts/gen_neomodel.py model/schema.yaml > model/generated/neomodel/ogm.py
 ```
 
-Wire both into your project's `make generate-models` (or an equivalent `make neo4j-constraints` /
-`make neomodel` target) the same way `gen-pydantic`/`gen-owl`/`gen-shacl` already are — see "The
-`make generate-models` bridge" above. `--profile` defaults to `full`; pass `community` explicitly if
-you're deploying to Neo4j Community and want only the constraint types this generator can currently
-prove run there (see its module docstring for the current verification state).
+Wire both into `make generate-models` like the other generators. A consuming repo gets a pinned copy
+from `project-setup` (`--neo4j`); the copy is a snapshot, refreshed by re-running `project-setup`
+with `--force` and reviewing the diff, never silently overwritten. Inside skillery, run them from
+this skill's `scripts/linkml_neo4j/`.
 
-Both generators ship with a synthetic fixture schema and a vendored real-world fixture as their test
-suite (`tests/test_linkml_neo4j_generators.py`); `project-setup` projects a pinned copy into a
-consuming repo, refreshed the same way as the `meaningfy` OpenSpec schema (re-run, review the diff,
-never silently overwritten).
+## Generated modules stay in the architecture
 
-## Architectural boundary for generated modules
-
-Generated models still live inside the layered architecture (see `cosmic-python`): `models` (generated or
-not) must not import `services`/`adapters`/`entrypoints`. If parallel versioned/variant model packages
-exist (v1/v2/v3, per tenant), enforce their independence with `import-linter` the same as hand-written
-code — codegen is not an exemption from the architecture.
+Generated `models` must not import `services`, `adapters` or `entrypoints` (`cosmic-python`).
+Parallel versioned or variant model packages (v1/v2, per tenant) are kept independent with
+`import-linter`, like hand-written code: codegen is no exemption.
