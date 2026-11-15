@@ -12,6 +12,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.16.0] - 2026-11-15
+
 ### Changed
 
 - **`cosmic-python` is lean** (EPIC `lean-skills`, the pilot). The skill drops from 126 KB to
