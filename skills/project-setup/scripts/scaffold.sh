@@ -276,6 +276,7 @@ render "$TPL/root/pytest.ini"                     "$TARGET/pytest.ini"
 render "$TPL/root/dot-coveragerc"                 "$TARGET/.coveragerc"
 render "$TPL/root/dot-pre-commit-config.yaml"     "$TARGET/.pre-commit-config.yaml"
 render "$TPL/root/dot-gitignore"                  "$TARGET/.gitignore"
+render "$TPL/root/dot-semgrepignore"              "$TARGET/.semgrepignore"
 render "$TPL/root/dot-importlinter.tmpl"          "$TARGET/.importlinter"
 render "$TPL/root/Makefile.tmpl"                  "$TARGET/Makefile"
 render "$TPL/root/sonar-project.properties.tmpl"  "$TARGET/sonar-project.properties"
@@ -290,6 +291,9 @@ render "$TPL/project/CODE_OF_CONDUCT.md.tmpl" "$TARGET/CODE_OF_CONDUCT.md"
 render "$TPL/project/CHANGELOG.md.tmpl"       "$TARGET/CHANGELOG.md"
 # SECURITY.md (coordinated disclosure) for code archetypes — content owned by meaningfy-release.
 [[ "$CODE" -eq 1 ]] && render "$TPL/root/SECURITY.md.tmpl" "$TARGET/SECURITY.md"
+# Shared-check scripts and tool checksums (D-1): code archetypes only; `make quality-tools` reads them.
+[[ "$CODE" -eq 1 ]] && render "$TPL/quality/tools.sha256"        "$TARGET/scripts/quality/tools.sha256"
+[[ "$CODE" -eq 1 ]] && render "$TPL/quality/external_sources.py" "$TARGET/scripts/quality/external_sources.py"
 
 # ---- 3. top-level package skeleton (NO src/) ------------------------------
 # doc-only repos carry no Python package, no tests, no model.

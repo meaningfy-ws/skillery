@@ -1,0 +1,6 @@
+rules:
+  - id: mfy-suppression-without-reason
+    languages: [generic]
+    severity: ERROR
+    message: "Suppression without a reason (project-setup:config-files#suppressions). Add ' -- <reason>'."
+    pattern-regex: '#\s*(nosemgrep|noqa)\b(?![^\n]* -- \S)[^\n]*'

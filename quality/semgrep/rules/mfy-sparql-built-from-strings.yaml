@@ -1,0 +1,14 @@
+rules:
+  - id: mfy-sparql-built-from-strings
+    languages: [python]
+    severity: ERROR
+    message: "SPARQL built from strings (cosmic-python:AP-SPARQL-FROM-STRINGS). Bind values through the store's query API."
+    patterns:
+      - pattern-either:
+          - pattern: f"...{$X}..."
+          - pattern: $A + $B
+          - pattern: $A % $B
+          - pattern: $A.format(...)
+      # A query form followed by a graph pattern, or an update form, and a variable or an IRI.
+      - pattern-regex: '(?is)(\b(select|construct|describe|ask)\b.*\bwhere\s*\{|\bask\s*\{|\b(insert|delete)\s+(data|where)\s*\{)'
+      - pattern-regex: '(?s)[?$]\w|<https?:'

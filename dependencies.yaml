@@ -258,3 +258,53 @@
   opencode_status: unsupported (no opencode plugin known; opencode sessions are not traced)
   claude_install: install the plugin and point it at the Langfuse server with the same keys
   opencode_install: '**gap**: none; rule usage from opencode sessions is not monitored'
+- name: Semgrep
+  kind: cli-tool
+  summary: 'the static-rule engine that runs the Meaningfy rules of `quality/semgrep/`; LGPL-2.1, [semgrep/semgrep](https://github.com/semgrep/semgrep)'
+  source: PyPI semgrep
+  pin: '1.185.0'
+  provenance: not reviewed
+  used_by: project-setup templates (`make check-semgrep`), `quality/semgrep/`, `tests/test_quality.py`
+  opencode_status: native
+  claude_install: pip, from `requirements-quality.txt` (skillery) or `make quality-tools` (a project)
+  opencode_install: same pip package; the tool is CLI-independent.
+- name: ls-lint
+  kind: cli-tool
+  summary: 'the file-name linter behind `quality/ls-lint/`; MIT, [loeffel-io/ls-lint](https://github.com/loeffel-io/ls-lint)'
+  source: GitHub release binaries of loeffel-io/ls-lint
+  pin: '2.3.2'
+  provenance: not reviewed
+  used_by: project-setup templates (`make check-layout`), `quality/ls-lint/`, `tests/test_quality.py`
+  opencode_status: native
+  claude_install: the release binary on PATH (skillery, by hand) or `make quality-tools` (a project, checked against `scripts/quality/tools.sha256`)
+  opencode_install: same binary; the tool is CLI-independent.
+- name: checkmake
+  kind: cli-tool
+  summary: 'the Makefile linter behind `quality/checkmake/`; MIT, [checkmake/checkmake](https://github.com/checkmake/checkmake)'
+  source: GitHub release binaries of checkmake/checkmake
+  pin: '0.3.2'
+  provenance: not reviewed
+  used_by: project-setup templates (`make check-makefile`), `quality/checkmake/`, `tests/test_quality.py`
+  opencode_status: native
+  claude_install: the release binary on PATH (skillery, by hand) or `make quality-tools` (a project, checked against `scripts/quality/tools.sha256`)
+  opencode_install: same binary; the tool is CLI-independent.
+- name: Hypothesis
+  kind: framework
+  summary: 'the property-based testing library of the tester and of `tests/test_quality_properties.py`; MPL-2.0, [HypothesisWorks/hypothesis](https://github.com/HypothesisWorks/hypothesis)'
+  source: PyPI hypothesis
+  pin: '6.170.15 (skillery); a project pins its own in the `test` group'
+  provenance: not reviewed
+  used_by: project-setup templates (the `test` group), `tests/test_quality_properties.py`
+  opencode_status: native
+  claude_install: pip, from `requirements-quality.txt` (skillery) or the project's `test` group
+  opencode_install: same pip package; the library is CLI-independent.
+- name: Schemathesis
+  kind: framework
+  summary: 'contract-driven API tests from an OpenAPI schema, used by the tester; MIT, [schemathesis/schemathesis](https://github.com/schemathesis/schemathesis)'
+  source: PyPI schemathesis
+  pin: '4.33.4'
+  provenance: not reviewed
+  used_by: project-setup templates (the `test` group of a project with an API)
+  opencode_status: native
+  claude_install: pip, in the project's `test` group
+  opencode_install: same pip package; the library is CLI-independent.

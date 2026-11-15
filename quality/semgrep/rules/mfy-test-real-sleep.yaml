@@ -1,0 +1,15 @@
+rules:
+  - id: mfy-test-real-sleep
+    languages: [python]
+    severity: ERROR
+    message: "Real sleep in a test (cosmic-python:testing-checklist#12). Inject the clock."
+    patterns:
+      - pattern-either:
+          - pattern: time.sleep($N)
+          - pattern: asyncio.sleep($N)
+      - pattern-not: time.sleep(0)
+      - pattern-not: asyncio.sleep(0)
+    paths:
+      include:
+        - "**/tests/**"
+        - "**/mfy-test-real-sleep.py"

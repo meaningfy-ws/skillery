@@ -613,3 +613,33 @@ def test_a_mod_copy_never_takes_dotfiles_and_a_symlink_fails(tmp_path):
     (repo / "mods/nav/secret.json").symlink_to(repo / "VERSION")
     with pytest.raises(ValueError, match="mods/nav/secret.json is a symlink"):
         gen.load(repo)
+
+
+# ------------------------------------------------------------------ project Makefile pin (TC-11)
+def _pin_repo(tmp_path: Path, pin: str = "v0.0.0") -> Path:
+    repo = _repo(tmp_path)
+    mk = repo / gen.PROJECT_MAKEFILE
+    mk.parent.mkdir(parents=True)
+    mk.write_text(f"SHELL = /bin/bash\nQUALITY_VERSION   = {pin}\nQUALITY_DIR = x\n", encoding="utf-8")
+    return repo
+
+
+def test_tc11_write_sets_the_makefile_pin_from_version(tmp_path):
+    repo = _pin_repo(tmp_path)
+    gen.write(repo)
+    assert "QUALITY_VERSION   = v1.2.3\n" in (repo / gen.PROJECT_MAKEFILE).read_text()
+    assert gen.gate_errors(repo) == []
+
+
+def test_tc11_stale_makefile_pin_fails_the_gate(tmp_path):
+    repo = _pin_repo(tmp_path)
+    gen.write(repo)
+    (repo / "VERSION").write_text("1.2.4\n")
+    errs = gen.gate_errors(repo)
+    assert any("Makefile.tmpl" in e and "QUALITY_VERSION" in e for e in errs)
+
+
+def test_tc11_makefile_without_the_pin_line_fails_the_gate(tmp_path):
+    repo = _pin_repo(tmp_path)
+    (repo / gen.PROJECT_MAKEFILE).write_text("SHELL = /bin/bash\n")
+    assert any("QUALITY_VERSION" in e for e in gen.gate_errors(repo))

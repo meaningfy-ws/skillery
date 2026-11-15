@@ -24,6 +24,12 @@ Thank you for contributing. This page is the entry point; the detail lives in th
 When every line of the [Definition of Done](docs/development/README.md#9-definition-of-done) is true
 and `make validate` is green. That is the only checklist; this page has none of its own.
 
+## Tools for the tests of `quality/`
+
+`make install` brings Semgrep, Ruff and Hypothesis (from `requirements-quality.txt`). ls-lint 2.3.2
+and checkmake 0.3.2 are release binaries from their GitHub releases; put them on `PATH` by hand.
+A test whose tool is missing skips, so the suite stays green without them; CI runs none of these.
+
 ## Licence
 
 By contributing you agree that your contribution is licensed under the repository's licence

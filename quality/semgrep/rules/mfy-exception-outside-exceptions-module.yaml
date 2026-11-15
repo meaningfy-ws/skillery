@@ -1,0 +1,16 @@
+rules:
+  - id: mfy-exception-outside-exceptions-module
+    languages: [python]
+    severity: ERROR
+    message: "Exception class outside an exceptions module (cosmic-python:AP-EXCEPTIONS-EMBEDDED). Move it to exceptions.py."
+    patterns:
+      - pattern: |
+          class $C(..., $BASE, ...):
+              ...
+      - metavariable-regex:
+          metavariable: $BASE
+          regex: (.*\.)?(Base)?(Exception|[A-Za-z]*Error|[A-Za-z]*Timeout|[A-Za-z]*Warning)$
+    paths:
+      exclude:
+        - "**/exceptions.py"
+        - "**/tests/**"

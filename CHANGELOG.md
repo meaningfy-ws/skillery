@@ -3,7 +3,8 @@
 All notable changes to the Meaningfy Skillery catalogue are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/), and the
 catalogue version is the root [`VERSION`](VERSION) file (`make bundles` writes it into
-`.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json` and `package.json`). The version
+`.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json`, `package.json` and the
+`QUALITY_VERSION` line of `project-setup`'s `Makefile.tmpl`). The version
 of record for a release is the git tag `vX.Y.Z`.
 
 Versions at or below `2.4.0` predate this changelog; see the git history and the
@@ -13,6 +14,15 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
+- Shared quality checks for new projects (EPIC `harden-checks-and-tests`, stage 1, tool side): a
+  new `quality/` folder, a sixth artifact type called a *quality check*, holds Semgrep rules,
+  an ls-lint and a checkmake file. A project scaffolded by `project-setup` fetches them at the
+  skillery release it pins and runs them with `make check-quality`, which now also fails on
+  SPARQL built from strings, network calls and real sleeps in unit tests, banned file names
+  such as `utils.py`, and a suppression without a reason. Its Ruff selection is wider: it now
+  flags requests without a timeout, naive `datetime`, blind `except` and environment reads
+  outside the config module (issue #215). An existing project adopts the checks one target per
+  pull request; how to do so follows with the prose side.
 - `test-strategy` (EPIC `test-strategy`, stage 1; bundle `meaningfy-core`): a new skill that says,
   for any activity (code, a doc, a post, an offer, a contract clause, a model), how the work
   succeeds or fails before you start, and carries the matrix of which check answers which question

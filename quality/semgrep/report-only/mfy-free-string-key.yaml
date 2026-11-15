@@ -1,0 +1,13 @@
+rules:
+  - id: mfy-free-string-key
+    languages: [python]
+    severity: WARNING
+    message: "Free string used as a key (cosmic-python:AP-FREESTR-ANYLAYER). Use a constant or an enum."
+    pattern-either:
+      - pattern: $X["..."]
+      - pattern: hasattr($X, "...")
+      - pattern: getattr($X, "...", ...)
+    paths:
+      exclude:
+        - "**/adapters/**"
+        - "**/tests/**"

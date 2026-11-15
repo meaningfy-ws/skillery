@@ -1,0 +1,14 @@
+rules:
+  - id: mfy-test-network-call
+    languages: [python]
+    severity: ERROR
+    message: "Network call in a unit test (cosmic-python:testing-checklist#3). Use a fake."
+    pattern-either:
+      - pattern: requests.$METHOD(...)
+      - pattern: httpx.$METHOD(...)
+      - pattern: urllib.request.urlopen(...)
+    paths:
+      include:
+        - "**/tests/unit/**"
+        - "**/tests/feature/**"
+        - "**/mfy-test-network-call.py"
