@@ -39,6 +39,12 @@ def test_no_skill_exceeds_max_lines():
     assert lint.skill_too_long(REPO) == []
 
 
+def test_every_skill_meets_the_lean_standard_or_is_listed():
+    # lean-skills D-3..D-5: within budget and pointers in the sentence form, or in skill-budget.yaml.
+    assert lint.prose_budget(REPO) == []
+    assert lint.reference_pointers(REPO) == []
+
+
 def test_no_orphan_agent_references():
     assert lint.orphan_agent_references(REPO) == []
 
