@@ -4,12 +4,18 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { isMarkLine, hasMark } from './mark.ts'
-import { EMPTY, reduce, type Change, type NavState, type Signal } from './state.ts'
+import { isMarkLine, hasMark, MISSING_MARK } from './mark.ts'
+import { isOpen } from './process-drift.ts'
+import { EMPTY, reduce, revive, type Change, type NavState, type Signal } from './state.ts'
+import { decideSpawn } from './strict.ts'
+import { resolveWorkflows } from './workflow.ts'
 
-const FIXTURE = join(import.meta.dirname, '..', '..', '..', 'tests', 'fixtures', 'session-retrospective', 'mark-lines.json')
+const REPO = join(import.meta.dirname, '..', '..', '..')
+const FIXTURE = join(REPO, 'tests', 'fixtures', 'session-retrospective', 'mark-lines.json')
+const WORKFLOW = 'skills/epic-delivery/assets/workflows/epic-delivery.workflow.json'
+const { workflows } = resolveWorkflows([{ path: WORKFLOW, text: readFileSync(join(REPO, WORKFLOW), 'utf8') }], [])
 const MARK = 'mark: change=x phase=deliver stage=2'
-const WARNING = 'No mark line in this session: write the mark line (epic-delivery)'
+const KEY = 'mark:missing'
 
 let n = 0
 const id = () => `mk-${++n}`
@@ -22,7 +28,7 @@ const spawn = (type: string, agentId?: string): Signal =>
   ({ kind: 'SpawnAsked', id: id(), type, description: 'd', ...(agentId ? { agentId } : {}) })
 const answer = (text: string): Signal => ({ kind: 'AnswerShown', id: id(), text, at: 3 })
 const end = (): Signal => ({ kind: 'TurnEnded', id: id(), turnId: id(), contextPercent: 10, cleanTree: true, at: 4 })
-const marks = (s: NavState) => s.warnings.filter(w => w.message === WARNING)
+const marks = (s: NavState) => s.warnings.filter(w => w.key === KEY)
 
 test('a mark and an implementer spawn in one turn: no warning', () => {
   assert.equal(marks(run(read, spawn('implementer'), answer(`done\n${MARK}`), end())).length, 0)
@@ -62,8 +68,22 @@ test('no open change: no warning', () => {
   assert.equal(marks(run(readNone, spawn('implementer'), end())).length, 0)
 })
 
+test('the warning carries the exported message, the owning skill and no remedy', () => {
+  assert.deepEqual(marks(run(read, spawn('implementer'), end())),
+    [{ key: KEY, message: MISSING_MARK, remedy: null, owner: 'epic-delivery' }])
+})
+
+test('strict mode: a held mark:missing warning never blocks a spawn', () => {
+  const s = run(read, { kind: 'WorkflowsRead', id: id(), workflows, errors: [], mode: 'strict', at: 1 },
+    spawn('implementer'), end())
+  const [w] = marks(s)
+  assert.ok(w)
+  assert.equal(isOpen(s, w), false) // not drift, so no commit or archive gate holds it either
+  assert.deepEqual(decideSpawn(s, null, null), { allow: true })
+})
+
 test('a state stored before the fields existed revives with them false', () => {
-  const s = run(read)
+  const s = revive({ sessionId: 's' })
   assert.deepEqual([s.marked, s.markWarned, s.workerThisTurn], [false, false, false])
 })
 

@@ -6,7 +6,7 @@ import { creditLoad } from './attribution.ts'
 import { groupDone } from './change.ts'
 import { MAIN, inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
   type Role } from './dispatch.ts'
-import { hasMark, isWorkerSpawn } from './mark.ts'
+import { hasMark, isWorkerSpawn, missingMark } from './mark.ts'
 import { offer, onCompact, thresholdsFrom, type HygieneEvent } from './hygiene.ts'
 import { addWarnings } from './process-drift.ts'
 import type { Change, NavState, Signal, Warning } from './state.ts'
@@ -57,7 +57,9 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
     }
     case 'SpawnAsked': { // before the spawn runs: parallel spawns each see the ones before (DD-41)
       const role = roleIn(n, s.type, s.description)
-      n = { ...n, workerThisTurn: n.workerThisTurn || isWorkerSpawn(s.type, s.agentId), turnRoles: [...n.turnRoles, role], shipLog: [...n.shipLog, { kind: 'spawn', role }],
+      const worker = isWorkerSpawn(s.type, s.agentId)
+      n = { ...n, workerThisTurn: n.workerThisTurn || worker, turnRoles: [...n.turnRoles, role],
+        shipLog: [...n.shipLog, { kind: 'spawn', role }],
         turnEvents: [...n.turnEvents, { kind: 'spawn', agent: s.agentId ?? MAIN }] }
       if (reviews) add(overspawn(reviews, appetite, n.turnId || 'start', n.turnRoles))
       return n
@@ -77,11 +79,9 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
     case 'AnswerShown':
       return hasMark(s.text) ? { ...n, marked: true } : n
     case 'TurnEnded': {
-      if (n.workerThisTurn && n.change && !n.marked && !n.markWarned) { // D-9: never at the spawn, the answer comes after it
-        add([{ key: 'mark:missing', message: 'No mark line in this session: write the mark line (epic-delivery)', remedy: null, owner: 'navigator' }])
-        n = { ...n, markWarned: true }
-      }
-      n = { ...n, workerThisTurn: false }
+      const missing = missingMark(n) // D-9: never at the spawn, the answer comes after it
+      add(missing)
+      n = { ...n, markWarned: n.markWarned || missing.length > 0, workerThisTurn: false }
       add(unusedSkills(n.turnEvents, MAIN)) // only the lead's; a background subagent's events wait for its finish (D-9)
       // shortcut: idle resets are not offered; the gap is only known once the person has typed (DD-40).
       const r = offer(t, { events: n.hygieneEvents, contextPercent: s.contextPercent, idleMinutes: 0,

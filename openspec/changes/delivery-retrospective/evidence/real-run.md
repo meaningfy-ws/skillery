@@ -16,13 +16,15 @@ outside any git tree; the new run was timed as digest plus report.
 | Subagents (session field) | 1002 | 1002 | yes |
 | Subagent stream rows (agents.jsonl, nested included) | 1336 | 1336 | yes |
 | Model calls, lead + subagent rows | 18453 + 31594 = 50047 | 18453 + 31594 = 50047 | yes |
-| Input tokens | 42872 + 63994 = 106866 | 42872 + 63994 = 106866 | yes |
-| Output tokens | 15181684 + 29523452 = 44705136 | 15181684 + 29523452 = 44705136 | yes |
-| Cache read tokens | 4728295670 + 3834065543 = 8562361213 | 4728295670 + 3834065543 = 8562361213 | yes |
-| Cache write tokens | 69416439 + 177214997 = 246631436 | 69416439 + 177214997 = 246631436 | yes |
-| Total recorded cost (USD) | 3047.43 | 3047.43 | yes |
+| Input tokens | not shown | not shown | yes |
+| Output tokens | not shown | not shown | yes |
+| Cache read tokens | not shown | not shown | yes |
+| Cache write tokens | not shown | not shown | yes |
+| Total recorded cost | not shown | not shown | yes |
 | Epic rows (epics.tsv) | 179 | 179 | yes |
 | Estimated cost per phase (USD, rounded) | same 25 rows | same 25 rows, labelled `guessed:` | yes |
+
+Absolute cost and token sums are kept out of this public file (RISK-1); they were equal.
 
 Only the `repo` label of the rows differs (31 sessions, 12 subagent rows, 3 epic rows): the new
 digest derives the repo name differently. No number differs.

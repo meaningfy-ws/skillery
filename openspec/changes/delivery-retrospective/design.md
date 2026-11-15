@@ -282,3 +282,19 @@ Recorded by the lead during stage 2 (2026-11-15).
   or a shorter default window is a later change. Task 3.4: the deliver scenario was followed in
   this stage's own session (mark before the first brief); the shaping walk and the sign-off are the
   developer's. Both boxes stay open until the developer decides.
+- **D-25** Stage 2 review (five lenses, RISK-6 names the stage), accepted findings, each
+  re-labelled Critical with the reason:
+  - F1 (L3 W1, L5 W1, L2 S1, L4 W1–W2, L3 S2, L5 S1; breaks `docs/development/mods.md`: a
+    warning's owner is the owning skill and each check module mints its own prefix) The
+    missing-mark warning moves into `mark.ts` as a pure `missingMark(state): Warning[]` with an
+    exported message; owner `epic-delivery`; the test matches on the key.
+  - F2 (L2 W1; user-facing docs are part of the change) `docs/environment/navigator.md` names the
+    new warning.
+  - F3 (L2 W2–W3, L4 S5; the spec scenario "the worker still starts" has no test) A test proves the
+    warning never blocks a spawn in strict mode; the revive test calls `revive`.
+  - F4 (L1 S1; RISK-1, the repository is public and a merge cannot be taken back) `real-run.md`
+    keeps counts and equality, drops the absolute cost and token sums.
+- **D-26** Under the floor, not fixed: L3 S3 (skill text names the navigator's reason), L4 S4
+  (`mark:` tier comment), L5 S2 (reuse `bare()`), L5 S3 (fence cases in the shared fixture), L2 S2
+  (outline wording), L2 S3 (a resumed-session test; `Started` returns `EMPTY`), L2 S4 (a denied
+  worker still counts). L2 W4 is D-24, the developer's.
