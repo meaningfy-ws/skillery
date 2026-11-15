@@ -52,7 +52,7 @@ ids (T-n) are in design.md *Test cases*.
   `docs/environment/dual-cli/compatibility.md`: the block as an opencode gap, the deny as not
   applicable (DEC-12, T-12). Satisfies `rules-first-routing` *opencode is handled by the policy and a
   recorded gap*.
-- [ ] 1.7 The replay (acceptance, T-11). In a fresh scratch git repository, a Claude Code session
+- [x] 1.7 The replay (acceptance, T-11). In a fresh scratch git repository, a Claude Code session
   with an empty `CLAUDE_CONFIG_DIR` (no global instructions, no memory, no marketplace plugins,
   `autoMemoryEnabled: true` set in its settings), `MEANINGFY_VAULT` unset, and `--plugin-dir` on this
   branch's `bundles/meaningfy-core`: the block shows; the agent's first reply names the missing vault
@@ -80,7 +80,7 @@ Starts only when `delivery-process-and-tools` task 3.4 (its stage 3 PR) is merge
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [ ] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [ ] 2.1 · [ ] 2.2
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [ ] 2.1 · [ ] 2.2
 
 1.3 and 1.4 touch separate code and may run in parallel with 1.2 once its spike is recorded; 1.5
 needs 1.2 (two mods), 1.3 (`routing.md`) and 1.4 (`DENY_MARKER`); 1.7 needs 1.5.
