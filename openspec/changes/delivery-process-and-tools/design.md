@@ -446,6 +446,9 @@ invariants, the error matrix and the risks.
   rule that the reviewer never edits through a code tool, and the table recommends Serena to it).
   `code-reviewer.md` *Side effects*: of the code tools only read-only operations, no `s.edit` call
   and no rename.
+- **D-30 Stage 3 takes the small review set, with the tester.** About 155 added lines (under
+  LARGE's 600), instruction text and one lint check of about 30 lines: two reviewers (L1+L2;
+  L3+L4+L5) and the checker. Tester: yes, `binding_size` is under INV-2 (D-5).
 - Under the floor (stage 2): L1+L2 W4 the binding's "impact before every edit" (task 3.2 rewrites
   it before any release); W5 result-line Given; W6 opencode MCP names unseen; S1–S4 (string
   `tools:`, column order, multi-agent fixture, the outline's placement). L3–L5 S1–S6 (parser reuse,
