@@ -38,6 +38,18 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Changed
 
+- **BREAKING for a team lead that compacted between stages or relied on five lenses at MEDIUM**
+  (EPIC `delivery-process-and-tools`, stage 1). In `epic-delivery`, a stage now ends with a
+  hand-over note (`assets/templates/handover.md`), committed as its pull request's last commit.
+  One background command then watches the checks and merges, and the next stage starts in a
+  fresh session from the note's prompt, with no compaction between stages. Only Critical
+  findings are fixed: the rest are listed as "under the floor", and a stage has one fix pass.
+  Anything the checker finds unmet afterwards goes to you. MEDIUM takes two reviewers by default
+  and five when a risk is recorded; the small-stage allowance starts at LARGE. The adversarial
+  tester runs on a stated condition. The lead runs the impact and change checks once per task.
+  In `epic-planning`, the clarity gate runs at most twice at any appetite, each verdict goes to
+  `evidence/clarity-gate.md`, and a shaping session ends with each PLAN gated. A delivery
+  session no longer warns that the clarity gate has not run.
 - `implementer` and `code-reviewer` have a fixed tool list again: the file, search, shell and skill
   tools, plus the code tools of the `serena`, `ast-grep` and `gitnexus` MCP servers, loaded on
   demand. Since v3.12.0 they carried every tool of the session, which made each worker start

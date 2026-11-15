@@ -11,7 +11,7 @@ pull request, before delivery (D-17).
 
 ## 1. Stage 1: the process rules
 
-- [ ] 1.1 `epic-delivery` stage loop (`references/stage-loop.md`, the six steps in `SKILL.md`):
+- [x] 1.1 `epic-delivery` stage loop (`references/stage-loop.md`, the six steps in `SKILL.md`):
   the floor, re-labels judged by the checker, and the one fix pass with unmet items and late
   findings going to the developer (D-2, D-3); the tester condition in Prepare, with the rule for a
   PLAN without `## Invariants` (D-5); impact per task in Build and the change check before the task
@@ -21,7 +21,7 @@ pull request, before delivery (D-17).
   ends with a hand-over note and a fresh session*, *Findings pass a severity floor and a stage has
   one fix pass*, *The adversarial tester runs on its condition*, *A pull request is watched and
   merged by one command*, *Each check runs once, at its moment, with one owner*.
-- [ ] 1.2 `epic-delivery` workflow file: `reviews.MEDIUM` per D-4; `tester` from MEDIUM up per D-5;
+- [x] 1.2 `epic-delivery` workflow file: `reviews.MEDIUM` per D-4; `tester` from MEDIUM up per D-5;
   TINY and SMALL unchanged; `clarity` dropped from `apply.gates` and `ready`'s `criteria` naming
   `evidence/clarity-gate.md` (D-17). Two navigator tests follow the data, no navigator code: the
   expected data of "D-12 epic-delivery" in `mods/navigator/lib/workflow.test.ts` (the new MEDIUM
@@ -29,30 +29,30 @@ pull request, before delivery (D-17).
   synthetic workflow with a skill gate and to assert that the default `apply` no longer warns.
   `make mods` green. Satisfies *The loop scales with the appetite* and *An epic session starts
   from a gated PLAN*.
-- [ ] 1.3 `epic-delivery` team and sessions: the result line in `references/team-and-briefs.md` and
+- [x] 1.3 `epic-delivery` team and sessions: the result line in `references/team-and-briefs.md` and
   the three briefs' Report lines (D-6); the Lead row and the lead-stays-small sentence (D-8); the
   Sessions table and the Planner row per DEC-19 (D-17); the "MUST actively use" paragraph cut to a
   one-line pointer to `guardrails` (D-19); the review-set paragraph of `SKILL.md` rewritten for
   MEDIUM by default and the small-stage rule from LARGE up. Satisfies *A challenge or check result
   ends in one line*, *The lead stays small*, *An epic session starts from a gated PLAN*.
-- [ ] 1.4 `epic-planning`: step 8 holds the two-run limit at every appetite and on any re-gate, the
+- [x] 1.4 `epic-planning`: step 8 holds the two-run limit at every appetite and on any re-gate, the
   second run reading only the listed gaps (DEC-2), each run's verdict written to
   `evidence/clarity-gate.md` (D-17); *The shaping session* ends with each PLAN gated
   and its scenarios signed off, with the note of D-1 allowed between an EPIC and its PLAN (D-17).
   Satisfies `epic-shape` *Planning effort follows the appetite* and *The PLAN is derived and gated
   while shaping*.
-- [ ] 1.5 `guardrails` §6: the stage boundary is a fresh session from the hand-over note, not a
+- [x] 1.5 `guardrails` §6: the stage boundary is a fresh session from the hand-over note, not a
   compaction (DEC-1); the "batch the reads" bullet (D-8). `agents/team-lead.md` body: questions
   between stages follow the note (no description change). Satisfies `subagent-dispatch` *A stage
   boundary is a fresh session* and *The coordinator batches its reads*.
-- [ ] 1.6 Agent scenarios, rewriting what goes stale and adding what is new:
+- [x] 1.6 Agent scenarios, rewriting what goes stale and adding what is new:
   `tests/features/epic-delivery.feature` (the MEDIUM and LARGE rows of the appetite outline; the
   floor and a re-label; the one fix pass and an unmet item; the tester with and without an
   invariant, and with no `## Invariants` section; the result line; watch-and-merge; the note and
   the fresh session); `tests/features/agents/team-lead.feature` (one EPIC per session; no builder
   task; the note before the merge); `tests/features/agents/epic-planner.feature` (no third gate run
   at MEDIUM; the session ends with the PLAN gated). Each traces to its DEC- and requirement.
-- [ ] 1.7 Pages that describe the MEDIUM allowance or compaction between stages:
+- [x] 1.7 Pages that describe the MEDIUM allowance or compaction between stages:
   `docs/development/workflows.md`, `docs/environment/navigator.md`, the small-stage lines of
   `skills/meaningfy-code-review/SKILL.md` (D-4).
 - [ ] 1.8 Close stage 1: CHANGELOG line (BREAKING for a lead that compacted between stages or relied
@@ -118,7 +118,7 @@ that record exists.
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8
 - [ ] 2.0 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
 - [ ] 3.0 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
 
