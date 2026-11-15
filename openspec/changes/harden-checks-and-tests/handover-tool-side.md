@@ -30,7 +30,8 @@ Tasks ticked: 1.1, 1.2, 1.3, 1.4, 1.6, 1.9, 1.10, 1.11, 1.15.
     first-assignment row holds backticks (`exhaustive`); settle the form before writing it.
   - A report-only rule's value carries `(partial: report-only)`; no test enforces it.
 - **1.5** `config-files.md` § Ruff (a pointer to the template's comments, D-33) and
-  `decisions.md` D4; comment the probe table and the accepted `Session` gap on issue #215.
+  `decisions.md` D4. The probe table and the accepted `Session` gap are already commented on
+  issue #215 (tool side).
 - **1.7** the catalogue entry `AP-SPARQL-FROM-STRINGS` and its id in the L1 lens. The rule's
   message already cites `cosmic-python:AP-SPARQL-FROM-STRINGS`.
 - **1.8** the *Suppressions* heading in `config-files.md`. The rule's message already cites

@@ -463,7 +463,7 @@ def test_makefile_variable_assignment_is_not_a_target():
 
 def test_makefile_target_with_prerequisites_and_a_double_colon_rule():
     assert "a" in tq.makefile_targets("a: b c\n")
-    assert "a" not in tq.makefile_targets("a::\n\techo\n") or True  # double-colon: no stance, must not crash
+    tq.makefile_targets("a::\n\techo\n")  # double-colon: no stance on the result, it must not crash
 
 
 def test_makefile_recipe_line_is_not_a_target():
@@ -471,7 +471,7 @@ def test_makefile_recipe_line_is_not_a_target():
 
 
 def test_makefile_target_with_a_variable_in_its_name():
-    assert tq.makefile_targets("$(NAME):\n") == set() or True  # must not crash
+    tq.makefile_targets("$(NAME):\n")  # no stance on the result, it must not crash
 
 
 # --- manifest_problems --------------------------------------------------------------------------

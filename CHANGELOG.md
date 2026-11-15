@@ -17,8 +17,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - Shared quality checks for new projects (EPIC `harden-checks-and-tests`, stage 1): a project
   scaffolded by `project-setup` fetches skillery's `quality/` folder at the release it pins and
   runs it with `make check-quality`. That target now also fails on: SPARQL built from strings;
-  an exception class defined outside `exceptions.py`; a network call, a real sleep or an RDF
-  string comparison in a unit test; a file named `utils.py`, `helpers.py`, `port.py`,
+  an exception class defined outside `exceptions.py`; a real sleep or an RDF string comparison
+  in any test; a network call in a unit or feature test; a file named `utils.py`, `helpers.py`, `port.py`,
   `factory.py`, `manager.py` or `errors.py`; a `# noqa` or `# nosemgrep` without a reason; a
   missing required file or `make` target; and an I/O package (such as `requests` or
   `SPARQLWrapper`) imported in the `domain` layer. Ruff now also flags requests without a
