@@ -472,6 +472,19 @@ entry whose reason names what the kept prose is; its assessment record shows the
 `project-setup`, `test-strategy`. Stage 4: the seven pending skills of `meaningfy-sales`. Stage 5:
 every other pending skill. One pull request per stage.
 
+**D-22 Stage 3 decided by the lead (2026-11-15).** Two exceptions, recorded in
+`skill-budget.yaml`: `test-strategy` (87 KB: the matrix, cited by 41 skills and fixed by
+`tests/test_test_strategy.py`, and the 144-row check inventory other EPICs edit) and
+`epic-delivery` (33 KB: the delivery method itself, cited by about 25 checks). Second readers
+found losses in three skills, all restored: the mark line at Prepare (`epic-delivery`); the
+secondary notations and "an ADR is never deleted, only superseded" (`architecture`); the scaffold's
+`domain/` name kept on purpose, the library archetype's layers and the Antora search setting
+(`project-setup`). The lead also kept `conceptual-modelling`'s provisional banner (doubt goes to
+keep) and chose sequential ADR numbers (`ADR-0001`, as `project-setup`'s docs template writes
+them) over the old per-level scheme of the deleted `architecture-project-structure.md`. Under the
+floor: `project-setup` sits one byte under budget, so the next addition there pays for itself;
+`architecture`'s ADR template is MADR-shaped while `project-setup` names the Nygard format.
+
 ### Anti-patterns
 
 | Don't | Do instead | Why |

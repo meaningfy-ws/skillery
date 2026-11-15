@@ -1,6 +1,6 @@
 # Software: the matrix
 
-Checks on code, tests, projects and their delivery. The technique stays with its owner (the Python testing checklist in `cosmic-python`, Gherkin in `bdd-gherkin`, the briefs in `epic-delivery`); this file only says which check answers which question, with what tool, when, and who decides. A check that answers two questions has two rows. `gap → B` rows are filled by the EPIC `harden-checks-and-tests`.
+Checks on code, tests, projects and their delivery.
 
 | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
 |---|---|---|---|---|---|---|

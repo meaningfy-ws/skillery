@@ -1,6 +1,6 @@
 # Generic writing: the matrix
 
-Checks on every non-code piece of work: posts, messages, offers and estimates, contracts, sales runs, decision packages, vault notes and customer outcome reviews. The owning skills (`writing-antipatterns`, `explanatory-writing`, `meaningfy-voice`, `executive-communication`, `proposal-writing`, `estimation`, `contract-practice`, the sales skills, the vault skills) hold the techniques; the cold reader belongs to `technical-writing` and the house-rule check to `rulebook` (`cross-cutting.md`). This file names them and does not restate their steps. A check that answers two questions has two rows. `gap → D` rows are for the EPIC `generic-task-test-profiles` to fill.
+Checks on every non-code piece of work: posts, messages, offers and estimates, contracts, sales runs, decision packages, vault notes and customer outcome reviews. The house-rule check (`rulebook`) is in `cross-cutting.md`.
 
 | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
 |---|---|---|---|---|---|---|

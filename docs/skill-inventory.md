@@ -338,7 +338,7 @@ flowchart LR
 
 ## Relations
 
-Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (87 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (218 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 305 relation edges plus 52 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
+Same bundle containers as the Map, but skill boxes are now colour-coded by **purpose** (one dark shade per value) instead of uniform dark — at this many edges, colour is what makes the grouping legible without tracing every line. Two line types, not one: a **thick solid** arrow is *depends on* (92 edges, mechanically parsed from each skill's own "Delegates" text — a skill explicitly handing something off to another); a **thin dashed** arrow is *related* (216 edges, everything else in the "Related" list — weaker, a "see also" rather than a hand-off). Kept separate from the Map's classification edges — 308 relation edges plus 52 classification edges in one diagram was tried and was a long-crossing-line mess, confirmed by actually rendering it.
 
 ```mermaid
 %%{init: {'flowchart': {'nodeSpacing': 12, 'rankSpacing': 45, 'curve': 'basis'}}}%%
@@ -455,10 +455,15 @@ flowchart LR
   s_project_setup ==> s_cosmic_python
   s_project_setup ==> s_architecture
   s_project_setup ==> s_conceptual_modelling
+  s_project_setup ==> s_linkml_engineering
   s_project_setup ==> s_ci_cd_delivery
+  s_project_setup ==> s_meaningfy_release
   s_project_setup ==> s_epic_planning
+  s_project_setup ==> s_spec_stewardship
+  s_project_setup ==> s_epic_delivery
   s_project_setup ==> s_technical_writing
   s_project_setup ==> s_meaningfy_git_workflow
+  s_project_setup ==> s_test_strategy
   s_proposal_writing ==> s_estimation
   s_proposal_writing ==> s_executive_communication
   s_proposal_writing ==> s_decision_package
@@ -603,8 +608,6 @@ flowchart LR
   s_meaningfy_voice -.-> s_writing_antipatterns
   s_meaningfy_voice -.-> s_vault_daily
   s_meaningfy_voice -.-> s_sales_conversations
-  s_project_setup -.-> s_meaningfy_release
-  s_project_setup -.-> s_linkml_engineering
   s_proposal_writing -.-> s_sales_qualification
   s_proposal_writing -.-> s_sales_conversations
   s_proposal_writing -.-> s_writing_antipatterns
@@ -859,8 +862,8 @@ The delivery / developer role: the spine build loop (epic-planning, spec-steward
 | [`bdd-gherkin`](../skills/bdd-gherkin/SKILL.md) | Write BDD Gherkin feature files and fabricate test data from a specification. | `software-development` | `coding` | `generic` | `reusable` | `verify` | `stable` | — | `architecture`, `epic-planning`, `epic-delivery`, `clarity-gate`, `spec-stewardship`, `cosmic-python` |
 | [`meaningfy-code-review`](../skills/meaningfy-code-review/SKILL.md) | The Meaningfy pre-PR review — two modes (standalone = five lens subagents fanned out in parallel, one lens each; interactive main-thread), a methodical catalogue-complete review procedure (traverse the whole `cosmic-python` region a lens owns, not a fixed subset), and a fit-and-refactoring investigation, reported by priority. | `software-development` | `coding` | `python` | `precise` | `verify` | `stable` | — | `cosmic-python`, `guardrails`, `meaningfy-git-workflow`, `epic-delivery`, `code-review` |
 | [`cosmic-python`](../skills/cosmic-python/SKILL.md) | Clean Architecture and Cosmic Python guidance for well-tested, layered Python systems. | `software-development` | `coding` | `python` | `precise` | `build` | `stable` | `architecture`, `conceptual-modelling`, `linkml-engineering`, `project-setup`, `bdd-gherkin`, `meaningfy-git-workflow`, `guardrails` | `architecture`, `meaningfy-code-review`, `bdd-gherkin`, `guardrails`, `conceptual-modelling`, `linkml-engineering`, `ci-cd-delivery`, `meaningfy-git-workflow`, `epic-delivery` |
-| [`project-setup`](../skills/project-setup/SKILL.md) | Scaffold or modernise a Meaningfy-standard repo and PROJECT the Meaningfy spine into it — a top-level package (no src/), uv + dedicated root tool configs, cosmic-python layering with import-linter guardrails, TDD+BDD tests, an AGENTS.md-canonical agentic setup (AGENTS.md is canonical; CLAUDE.md is a thin pointer that imports it, never a symlink), the openspec/ spine (config + pinned meaningfy schema + /opsx:* commands + golden thread), three archetypes (product/library/doc-only) with fixed gate profiles, conditional model/ and CD seam, Antora docs, infra, and CI. | `software-development` | `coding` | `python` | `precise` | `build` | `stable` | `cosmic-python`, `architecture`, `conceptual-modelling`, `ci-cd-delivery`, `epic-planning`, `technical-writing`, `meaningfy-git-workflow` | `ci-cd-delivery`, `meaningfy-release`, `linkml-engineering`, `superpowers`, `stream-coding` |
-| [`ci-cd-delivery`](../skills/ci-cd-delivery/SKILL.md) | Standardise the application-repo Continuous Delivery side of Meaningfy systems — the deploy request and the release/image standard. | `devops` | `coding` | `delivery-infra` | `precise` | `release` | `stable` | `project-setup`, `cosmic-python` | `stack-operations`, `infrastructure-stacks`, `infrastructure-security`, `project-setup`, `cosmic-python`, `meaningfy-release` |
+| [`project-setup`](../skills/project-setup/SKILL.md) | Scaffold or modernise a Meaningfy-standard repo and PROJECT the Meaningfy spine into it — a top-level package (no src/), uv + dedicated root tool configs, cosmic-python layering with import-linter guardrails, TDD+BDD tests, an AGENTS.md-canonical agentic setup (AGENTS.md is canonical; CLAUDE.md is a thin pointer that imports it, never a symlink), the openspec/ spine (config + pinned meaningfy schema + /opsx:* commands + golden thread), three archetypes (product/library/doc-only) with fixed gate profiles, conditional model/ and CD seam, Antora docs, infra, and CI. | `software-development` | `coding` | `python` | `precise` | `build` | `stable` | `cosmic-python`, `architecture`, `conceptual-modelling`, `linkml-engineering`, `ci-cd-delivery`, `meaningfy-release`, `epic-planning`, `spec-stewardship`, `epic-delivery`, `technical-writing`, `meaningfy-git-workflow`, `test-strategy` | `ci-cd-delivery`, `meaningfy-release`, `linkml-engineering`, `superpowers`, `ponytail`, `stream-coding` |
+| [`ci-cd-delivery`](../skills/ci-cd-delivery/SKILL.md) | Standardise the application-repo Continuous Delivery side of Meaningfy systems — the deploy request and the release/image standard. | `devops` | `coding` | `delivery-infra` | `precise` | `release` | `stable` | `project-setup`, `cosmic-python` | `stack-operations`, `infrastructure-security`, `meaningfy-release`, `project-setup`, `cosmic-python` |
 | [`meaningfy-release`](../skills/meaningfy-release/SKILL.md) | The Meaningfy release lifecycle — semantic versioning policy (MAJOR/MINOR/PATCH + -rc.N pre-releases), GitFlow release/hotfix branches, changelog + GitHub release notes, semi-automated releases via release-please, publishing Python libraries to PyPI with Trusted Publishing (OIDC, no tokens), opt-in supply-chain hardening (signing/provenance/SBOM), and release governance (SECURITY.md, yanking, deprecation). | `devops` | `coding` | `git-release` | `precise` | `release` | `stable` | — | `meaningfy-git-workflow`, `ci-cd-delivery`, `project-setup` |
 | [`epic-planner`](../agents/epic-planner.md) *(agent)* | Vasile the planner shapes an EPIC from the person's seeds and derives its clarity-gated PLAN (≥9/10) as an OpenSpec change, asking the open questions directly, one round at a time. | `software-development` | `coding` | `spec-driven` | `precise` | `shape` | `stable` | `epic-planning`, `clarity-gate`, `bdd-gherkin`, `stream-coding` | — |
 | [`team-lead`](../agents/team-lead.md) *(agent)* | Radu the team lead delivers a gated PLAN with a lean agent team: runs the epic session, briefs the workers, checks each stage and keeps the person's decisions in view. | `software-development` | `coding` | `spec-driven` | `precise` | `build` | `experimental` | `epic-delivery`, `guardrails`, `meaningfy-code-review`, `spec-stewardship`, `meaningfy-git-workflow` | — |

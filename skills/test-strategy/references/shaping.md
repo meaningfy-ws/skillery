@@ -1,6 +1,6 @@
 # Shaping: the matrix
 
-Checks on EPICs, PLANs, scenarios and the iteration that closes them. `epic-planning` owns the interview, the attack and the gate step; `clarity-gate` owns the score; `bdd-gherkin` owns scenario sign-off; `epic-delivery` owns the validation review. This file also holds the V-model rows for the EPIC and PLAN, the scenarios (sign-off) and the iteration. A check that answers two questions has two rows. `gap → C` rows are for the EPIC `activity-test-profiles` to fill or accept.
+Checks on EPICs, PLANs, scenarios and the iteration that closes them, with the V-model rows for the EPIC and PLAN, the scenarios (sign-off) and the iteration.
 
 | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
 |---|---|---|---|---|---|---|

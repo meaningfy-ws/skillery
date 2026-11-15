@@ -72,13 +72,13 @@ list, shape, practices) and the modified `skill-crafting-method`.
 
 ## 3. Stage 3: the other engineering skills (wave 5)
 
-- [ ] 3.1 Detail the stage and its skill order; then the per-skill loop for each skill of
+- [x] 3.1 Detail the stage and its skill order; then the per-skill loop for each skill of
   `meaningfy-building` and `meaningfy-architecture`. Detailed as design D-17 to D-21:
   - [x] 3.1.1 Stages 3 to 5 detailed (D-17 to D-21); start conditions waived (D-18).
-  - [ ] 3.1.2 Builders, one per batch (D-19): the twelve skills of D-21, each with its assessment
+  - [x] 3.1.2 Builders, one per batch (D-19): the twelve skills of D-21, each with its assessment
     record, its rewrite, its pointers in the form and its citers.
-  - [ ] 3.1.3 Second readers (D-15, D-19); lost rules restored; verdicts in the records.
-  - [ ] 3.1.4 The twelve skills off `pending`, or an `over_budget` reason (D-20); `make bundles`,
+  - [x] 3.1.3 Second readers (D-15, D-19); lost rules restored; verdicts in the records.
+  - [x] 3.1.4 The twelve skills off `pending`, or an `over_budget` reason (D-20); `make bundles`,
     `make skill-inventory`, `make validate`, `make validate-spine`, `openspec validate lean-skills
     --strict`; CHANGELOG line; pull request.
 
@@ -95,7 +95,7 @@ list, shape, practices) and the modified `skill-crafting-method`.
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9 · [x] 1.10
-- [x] 2.1 · [x] 2.2 · [ ] 2.3 · [ ] 3.1 · [ ] 4.1 · [ ] 5.1 · [ ] 5.2
+- [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 3.1 · [ ] 4.1 · [ ] 5.1 · [ ] 5.2
 
 ## Verification
 

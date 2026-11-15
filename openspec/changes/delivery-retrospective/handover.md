@@ -18,7 +18,7 @@ D-12 to D-26 (design.md, Delivery decisions).
 
 ## Next
 The developer's ruling on D-24, then the acceptance demo (MEDIUM), the docs stage and the archive
-(`epic-delivery`, *After the last build stage*). No build stage is left.
+(`epic-delivery` `references/stage-loop.md`, *After the last build stage*). No build stage is left.
 
 ## Prompt
 Act as the team lead. Close openspec/changes/delivery-retrospective in skillery from its

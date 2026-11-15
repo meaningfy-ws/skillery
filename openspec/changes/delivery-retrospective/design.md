@@ -111,8 +111,8 @@ Settled in the EPIC: DEC-1 to DEC-11. New here:
 - **D-10** Where the mark sentence sits: `epic-delivery` defines the form in
   [`references/team-and-briefs.md`](../../../skills/epic-delivery/references/team-and-briefs.md),
   section *What every brief names*, item 6, directly under the three result-line forms, and its
-  `## The loop of a stage` names the duty in one sentence; `epic-planning`
-  ([`SKILL.md`](../../../skills/epic-planning/SKILL.md), section *Procedure*) adds one sentence to
+  *The loop of a stage* names the duty in one sentence; `epic-planning`
+  ([`SKILL.md`](../../../skills/epic-planning/SKILL.md), section *Workflow*) adds one sentence to
   step 4 (`phase=shape`) and one to step 6 (`phase=plan`).
 - **D-11** Skill shape. `skills/session-retrospective/SKILL.md`, body target 6 KB, no references
   unless the body passes it: title and the bias it corrects (guessing where the time went), Quick

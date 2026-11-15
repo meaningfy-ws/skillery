@@ -1,15 +1,15 @@
 # The team and its briefs
 
-Who plays each role, when it is used, and the brief each member gets. The brief and report
-mechanics (fresh not a copy, inputs as paths, the base report, the four-eyes rule) are owned by
-`guardrails` §5; this page adds only what delivery puts into them.
+Who plays each role and the brief each member gets. The brief and report mechanics (fresh not a
+copy, inputs as paths, the base report, the four-eyes rule) are owned by `guardrails` §5; this page
+adds only what delivery puts into them.
 
 ## Who plays each role, and when
 
+The developer and the domain expert are people (`SKILL.md`, *The team*).
+
 | Role | Played by | Model | Used when |
 |---|---|---|---|
-| Developer | A person | — | Always: decides, signs off scenarios, accepts the EPIC |
-| Domain expert | A person | — | The model changes |
 | Lead | The main session, which may be started as the `team-lead` agent | The session's | Always. Never a subagent: it is the only one that talks to the developer |
 | Architect | `system-architect` agent | Declared (opus) | Shaping session |
 | Planner | `epic-planner` agent | Declared (opus) | Shaping only (an `epic-planner` session) |
@@ -20,13 +20,12 @@ mechanics (fresh not a copy, inputs as paths, the base report, the four-eyes rul
 | UX designer | A general-purpose subagent with the design skills | opus | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
 
 No role has its own catalogue agent beyond these. The checker and the tester differ from the others
-by their brief, not by their tools. The lead sets the model only for the general-purpose roles; both
-are judgement work, so opus, per the model rule in `guardrails` §5.
+by their brief, not by their tools. The lead sets the model only for the general-purpose roles: opus,
+since both are judgement work (the model rule of `guardrails` §5).
 
-The tester and the checker both look for problems, differently. The tester tries to break the
-behaviour and leaves tests in the suite. The checker reads the stage against the briefs and the
-decisions and leaves only a verdict. A checker never writes the tests it judges, and never built or
-tested the stage it checks.
+The tester tries to break the behaviour and leaves tests in the suite. The checker reads the stage
+against the briefs and the decisions and leaves only a verdict. A checker never writes the tests it
+judges, and never built or tested the stage it checks.
 
 ## What every brief names
 
@@ -37,7 +36,9 @@ tested the stage it checks.
 5. **Standing rules**: the project's own list and its narrow checks, task gate, full gates, docs
    gate and code-intelligence tools, all from the *Checks* block in its `AGENTS.md`; the testing
    checklist (`cosmic-python` `references/testing-checklist.md`); and the dependency rule
-   ([`dependencies.md`](dependencies.md)): never work around our library.
+   ([`dependencies.md`](dependencies.md)): never work around our library. A project that names no
+   task gate or full gates leaves this item unwritable: the lead asks the developer, and the answer
+   goes into the project's `AGENTS.md`.
 6. **The report expected**: the base report and the *implementing* fields of `guardrails`
    `references/subagent-reports.md`, plus
    **Upstream findings**: every bug, gap or awkwardness met in any library, each marked *ours* or
