@@ -130,8 +130,9 @@ quality/
 
 The artifact type is named **Quality check** (D-36; the PLAN first called it Check). `quality/` holds rule files and configurations only (DEC-4,
 confirmed by the developer, Q-23). A repo lint `quality_files` (added to `ALL_CHECKS`) allows under
-`quality/` only `README.md` at its root and files ending `.yaml`, `.yml`, `.json`, `.ini` and, as
-Semgrep fixtures only, `.py` beside a rule of the same name; it skips `__pycache__`.
+`quality/` only `README.md` at its root and files ending `.yaml`, `.yml`, `.json`, `.ini` (under
+`quality/semgrep/` a `.yml` file is refused: Semgrep rules are `.yaml`, D-40) and, as Semgrep
+fixtures only, `.py` beside a rule of the same name; it skips `__pycache__`.
 `TOP_LEVEL_FOLDERS` gains `quality`. EPIC C adds `quality/vale/` beside these (DEC-7); nothing here
 blocks it.
 
@@ -408,7 +409,8 @@ check-makefile`; `check-semgrep`, `check-layout` and `check-makefile` depend on 
 ### D-6 Suppressions carry a reason
 
 `quality/semgrep/suppressions/mfy-suppression-without-reason.yaml` (`languages: [generic]`) flags a
-`# nosemgrep` comment that has no ` -- <reason>` and a `# noqa` comment that has no ` -- <reason>`.
+`# nosemgrep` comment that has no ` -- <reason>` and a `# noqa` comment that has no ` -- <reason>`
+(in any letter case, and `# ruff: noqa` and `# flake8: noqa` too, D-40).
 It runs in its own pass with `--disable-nosem`, because a bare `# nosemgrep` would otherwise
 suppress the rule that looks for it. The convention is stated once, in
 `project-setup/references/config-files.md` under a new heading *Suppressions*, which the rule's
@@ -599,7 +601,7 @@ into the section *Adopting the shared checks*):
 
 | Stage | Delivers | Proof |
 |---|---|---|
-| 1 | `quality/` and the Check type; the Ruff selection; the eight Semgrep rules; "Checked by"; fetch, tools and the three new `make` targets; ls-lint and checkmake | DEC-15 (1) |
+| 1 | `quality/` and the Quality check type; the Ruff selection; the eight Semgrep rules; "Checked by"; fetch, tools and the three new `make` targets; ls-lint and checkmake | DEC-15 (1) |
 | 2 | The tester's brief and report; checklist item 10 (the range is R3's, D-30) | DEC-15 (2), recorded in stage 3 |
 | 3 | The import-contract check; the L3 judgement | DEC-15 (3) |
 
@@ -710,7 +712,7 @@ All checks are pure reads.
 | Put a script or a prose page under `quality/` | Scripts are `project-setup` templates; prose is `docs/development/quality.md` | DEC-4 and Q-23 |
 | Force a brittle rule to give an entry a tool | `review only, because <reason>` | The proposal's rabbit-hole "ALL of them" |
 | Promote a new rule or source straight to gating | Start it in `report-only` | DEC-13: noise makes teams ignore checks |
-| Add Semgrep to the project's Poetry groups | Its own environment under `.quality/venv` | Semgrep pins many dependencies |
+| Add Semgrep to the project's dependency groups | Its own environment under `.quality/venv` | Semgrep pins many dependencies |
 | Use ls-lint for snake case, folder names or required files | Ruff `N999`; `test -f` lines | It cannot combine rules, and it fails on `.github` and kebab-case folders |
 | Put an inline comment after an `ignore_imports` entry | A comment line directly above it | The INI parser makes an inline comment part of the entry |
 | Verify a template change on a toy fixture only | Scaffold a project and run the target | Four attack findings were of this kind |
@@ -1117,7 +1119,7 @@ is in [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reasse
   waves of 14 November; corrects D-12's first sentence, D-23, the stage table, D-8 and the
   proposal's *Order*).** The order the owner settled on 2026-11-15 replaces the order of
   14 November (B1, B2, then C and E1, then B3), which now holds only inside the test EPICs.
-  - *The tool side of stage 1* adds no skill prose: the Check type and `quality/` with its
+  - *The tool side of stage 1* adds no skill prose: the Quality check type and `quality/` with its
     README, the lint and its tests, the Ruff selection and its fixtures, the contract of task
     1.6, the eight Semgrep rules, ls-lint, checkmake, the manifest, the templates, `scaffold.sh`,
     the pin, the documents outside `skills/`, and the scaffold runs. It needs nothing from R1,
@@ -1237,7 +1239,7 @@ epic session.
     `Makefile.tmpl`, `tools.sha256`, `requirements-quality.txt`, `pyproject.toml.tmpl`, the
     pre-commit `rev` and `dependencies.yaml`; forward references to
     `tests/test_quality_properties.py` say "from stage 3".
-  - *Repo lint.* `quality_files` takes only `.yaml` rules under `quality/semgrep/`; a file counts
+  - *Repo lint.* `quality_files` refuses a `.yml` file under `quality/semgrep/`; a file counts
     as named in `quality/README.md` only by its exact path under `quality/` in backticks; an
     unreadable README is a finding, not a crash.
   - *The pin.* The version-sync gate compares the pin exactly, not by suffix.
@@ -1278,4 +1280,4 @@ None blocking. Answered by the developer on 2026-11-14 (`inputs/qa.md`, round 8)
 | Q-23 | Do the scripts and the tool checksums live in `quality/` | No: in `project-setup`'s templates (D-1) |
 | Q-24 | How far does the ls-lint check go | Banned names, plus required files as `test -f` lines in the make target (D-5) |
 
-The type name **Check** (D-1) is a planning choice the developer may rename.
+The type name was settled by the developer as **Quality check** (D-36).
