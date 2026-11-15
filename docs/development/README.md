@@ -264,6 +264,7 @@ at any depth below it.
 | `docs/practice/philosophy/**` | hand-written | Essays on working with an LLM | — |
 | `docs/development/governance.md` | hand-written | Artifact types and placement rules | — |
 | `docs/development/mods.md` | hand-written | The Mod type for developers: structure, state contract, bundling, checks | — |
+| `docs/development/quality.md` | hand-written | The Quality check type for developers: add a Semgrep rule, an external source or a tool, and how skillery tests them | — |
 | `docs/environment/navigator.md` | hand-written | Using the navigator mod (CLI and desktop): install, line, band, settings | — |
 | `docs/development/agent-skills-spec.md` | hand-written | The skill file format and metadata | — |
 | `docs/development/skill-template.md` | hand-written | The skill file template | — |
