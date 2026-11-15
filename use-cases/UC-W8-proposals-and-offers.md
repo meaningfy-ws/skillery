@@ -13,6 +13,7 @@ served_by:
   - estimation
   - decision-package
   - executive-communication
+  - test-strategy
 status: partial
 change: add-commercial-chain
 ---

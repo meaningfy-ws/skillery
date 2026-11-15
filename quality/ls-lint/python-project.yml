@@ -1,0 +1,7 @@
+ls:
+  .py: "regex:!^(utils|helpers|port|factory|manager|errors)$"
+
+ignore:
+  - .quality
+  - .venv
+  - node_modules

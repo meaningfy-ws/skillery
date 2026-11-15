@@ -11,6 +11,7 @@ served_by:
   skills:
   - contract-practice
   - corpus-repository
+  - test-strategy
 status: partial
 change: named-workers-and-legal
 ---

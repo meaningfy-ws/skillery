@@ -20,7 +20,7 @@ web-framework, and `model/` questions; a `doc-only` runs a mandatory **intention
 
 **Q1.2 Distribution slug / repo name.**
 - Free text; default = kebab-case of the name (e.g. `My Project` → `my-project`).
-- Drives `<<PROJECT_SLUG>>` (Poetry `name`, sonar key, repo URL).
+- Drives `<<PROJECT_SLUG>>` (`[project] name`, sonar key, repo URL).
 
 **Q1.3 Import package name.**
 - Free text; default = snake_case of the slug (`my-project` → `my_project`).

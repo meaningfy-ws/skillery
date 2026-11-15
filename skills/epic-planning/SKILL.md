@@ -53,9 +53,8 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    altitude — leave implementation room.
 5. **EPIC readiness check** (lightweight). Before deriving the PLAN, run the **lightweight variant**
    of `clarity-gate` over the EPIC — a quick readiness pass that catches
-   bet-level ambiguity (vague problem, missing no-gos, undecided key decisions). This is *not* the
-   full ≥9/10 gate (the Shape-Up bet stays deliberately looser); it just stops a vague EPIC producing
-   a vague PLAN.
+   bet-level ambiguity (vague problem, missing no-gos, undecided key decisions). Not the full
+   ≥9/10 gate; it stops a vague EPIC producing a vague PLAN.
 6. **Derive the PLAN** (`design.md` + `tasks.md`). From the shaped EPIC, produce the design half
    (algorithm, concrete examples, anti-patterns, error matrix, decisions, and the elicited risks in
    Risks / Trade-offs as `RISK-<n>`: likelihood, impact, mitigation or acceptance) and the tasks half (ordered
@@ -68,12 +67,12 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    a `RISK-` entry or a PLAN fix. The gate checks the PLAN is clear; this checks it holds.
 8. **Gate the PLAN** (full `clarity-gate`, ≥9/10). Score the `design.md`+`tasks.md` pair. Block
    progression to BDD/implementation until it passes. Below 9: list the specific gaps and **revise
-   the PLAN** — never patch code to dodge a gap (Rule of Divergence). For a TINY or SMALL EPIC,
-   run the gate at most twice. If the second run is still below 9, bring the remaining gaps to
-   the developer as one question round, each with a recommendation (fix it, accept it, or
-   re-shape), instead of a third revision. The developer decides each gap. An accepted gap is
-   recorded in `design.md` as a `DEC-` naming the gap and the developer's answer. Only then may
-   the PLAN proceed below 9.
+   the PLAN** — never patch code to dodge a gap (Rule of Divergence). At every appetite and on any
+   re-gate, the gate runs at most twice, the second run reading only the gaps the first listed.
+   Still below 9: the gaps go to the developer as one question round, each with a recommendation
+   (fix, accept, re-shape). An accepted gap is a `DEC-` in `design.md`; only then may the PLAN
+   proceed below 9. Each run adds a line to `evidence/clarity-gate.md` (`run <n>, <date>,
+   <score>/10, pass|fail`), accepted `DEC-` ids below. The developer signs off the scenarios here.
 
 The PLAN cuts its tasks into stages; delivery after the gate is `epic-delivery`'s.
 
@@ -98,9 +97,9 @@ this is how an initiative becomes several, in order:
 6. **Order** the EPICs: dependencies first (library work before the EPIC that needs it), then
    value. The order goes into each EPIC's Rabbit-holes or Why, not into a separate plan file.
 
-The session ends with the EPICs shaped, not planned: each PLAN is derived at the start of its
-epic session (`epic-delivery`). That boundary is a reset point: compact, or start the epic session
-fresh from the written EPICs (`guardrails`, *Session hygiene*).
+The session ends with each EPIC's PLAN gated and its scenarios signed off; an EPIC shaped without
+a PLAN gets one here. Between EPIC and PLAN the session may reset with the hand-over note
+(`epic-delivery`'s `assets/templates/handover.md`).
 
 ## Appetite — how deep and extensive the solution may be
 
@@ -150,3 +149,5 @@ prose (the proposal "why" and "solution outline" are Explanation-quadrant), the 
 **Not an EPIC:** a team's Shape Up work shape kept in a personal vault is a `work-shape` note
 (`vault-conventions`); it may feed an EPIC but is not one.
 **Related:** `clarity-gate`, `epic-delivery`, `spec-stewardship`, `bdd-gherkin`, `architecture`, `technical-writing`, `stream-coding` (external).
+
+Answers `VAL, VER, ADQ, ROB, CLR, RSK` in `test-strategy`'s matrix (`references/shaping.md`).

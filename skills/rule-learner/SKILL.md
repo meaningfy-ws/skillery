@@ -148,3 +148,5 @@ review of candidates and usage → `rule-steward`.
 **Related:** `rulebook`, `rule-steward`, and, when the vault-assistant bundle is installed,
 `vault-capture` (filing the session's facts into a project) and `vault-conventions` (staging and the
 inbox).
+
+Answers `VAL, RSK` in `test-strategy`'s matrix (`references/cross-cutting.md`).

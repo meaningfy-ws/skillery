@@ -89,13 +89,15 @@ Full description: `docs/modules/ROOT/pages/develop/agents.adoc`; the method is t
 - The innermost layer is **`domain`** (the book's `models/`). Direction:
   `entrypoints → services → domain`, `adapters → domain`. `domain` imports nothing upward.
   Enforced by `.importlinter`; checked via `make check-architecture`.
-- Run Python tooling through Poetry (`poetry run pytest`, `poetry run ruff`, …). Never invoke
+- Run Python tooling through uv (`uv run pytest`, `uv run ruff`, …). Never invoke
   bare `python`/`pytest` — prefer the `make` targets below.
 - **Subagents** — before spawning one, follow *Subagent dispatch* in the `guardrails` skill: spawn
   only when it pays, brief it fresh, take the base report back, and have finished work checked by a
   second subagent.
 - **Context** — follow *Session hygiene* in the `guardrails` skill: a fresh session at a task
   boundary, compact at a phase boundary right after a commit, never mid-step.
+- **Success and failure first** — for every activity, state how the work succeeds and how it fails
+  before you start it. The method is the **test-strategy** skill.
 - Default branch is **`<<DEFAULT_BRANCH>>`** (the PR target). Branch off it; never commit to it
   directly.
 

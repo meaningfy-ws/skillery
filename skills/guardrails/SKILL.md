@@ -117,22 +117,23 @@ already exists; this skill is the map.
     that make a task boundary are `task_boundary`. Below `fresh_offer_min_context_percent` the
     context is still small; carry on, a re-read costs more.
   - **Compact at a phase boundary inside one task**, with a focus line naming what must survive
-    (decisions, open questions, file paths). Typical points: the end of a shaping session before
-    delivery starts, and between stages of a long epic session. Right after a commit, never in the
-    middle of a step. That moment is a safe point: a commit, and a phase left or a task group done
+    (decisions, open questions, file paths). Right after a commit, never in the middle of a step. That moment is a safe point: a commit, and a phase left or a task group done
     since the last one, as `safe_point` states. Compact there once context use reaches
     `compact_offer_context_percent`.
   - **Never leave it to the automatic compaction** near the context limit: it lands mid-step and
-    drops detail. Watch the context size and compact earlier. Mid-step, past
+    drops detail. Mid-step, past
     `context_warn_percent`, finish the step, commit, then compact.
-  - **Not before a quick follow-up.** A reset is paid back only over many turns; one more question
-    on the same thread is cheaper in the current context.
+  - **Not before a quick follow-up.** A reset pays back only over many turns; one more question
+    on the same thread is cheaper here.
   - **A long idle gap is a free reset point**: the prompt cache has expired anyway. The gap is
     `idle_reset_minutes`; `idle_reset` asks for a clean working tree first.
   - **Keep the session's setup stable.** Changing the tools or connected servers, the model or the
     reasoning effort mid-session invalidates the cache; change them between sessions. A binding
     file edited mid-session takes effect only after the next reset.
-  - **Read wide in a subagent** (rule 5), not in the main context, so there is less to compact.
+  - **Between stages, a fresh session, not a compaction**, started from the hand-over note
+    (`epic-delivery`'s `assets/templates/handover.md`).
+  - **Batch the reads**: several known files in one call; reading beyond a few goes to an
+    exploring subagent (rule 5).
   - **Resume an old session only when its history is still needed**; otherwise start fresh from
     the spine and memory.
 - **Enforced by:** the lead's own judgement, with navigator as a signal beside it: it reads the keys
@@ -195,3 +196,5 @@ rules here are the rules they should follow.
 
 **Related:** `clarity-gate` (content quality), `cosmic-python` (structural validation with
 import-linter, alongside the spine's `openspec validate --strict`), `meaningfy-code-review` (review), `epic-delivery` (the delivery loop whose briefs, checker and upstream rule build on these dispatch rules), `sales-pipeline-custody` and `sales-operations` (a concrete instance: the sales agent's write rules and auditor).
+
+Answers `VER, RSK` in `test-strategy`'s matrix (`references/cross-cutting.md`).

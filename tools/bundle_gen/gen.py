@@ -21,6 +21,9 @@ CATALOGUE = "tools/opencode-catalogue.json"
 AGENT_MAP = "tools/opencode-agent-map.json"
 PACKAGE_JSON = "package.json"
 VERSION_FILE = "VERSION"
+# The fourth rendered file: the project Makefile template pins the shared checks at this release.
+PROJECT_MAKEFILE = "skills/project-setup/assets/templates/root/Makefile.tmpl"
+_QUALITY_PIN = re.compile(r"^(QUALITY_VERSION\s*=\s*)\S*$", re.MULTILINE)
 SKILLS_DIR = "skills"
 AGENTS_DIR = "agents"
 MODS_DIR = "mods"
@@ -255,6 +258,13 @@ def _sync_package_version(repo: Path, ver: str) -> None:
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def _sync_makefile_pin(repo: Path, ver: str) -> None:
+    path = repo / PROJECT_MAKEFILE
+    if path.exists():
+        text = path.read_text(encoding="utf-8")
+        path.write_text(_QUALITY_PIN.sub(lambda m: f"{m.group(1)}v{ver}", text), encoding="utf-8")
+
+
 def write(repo: Path) -> list[str]:
     """Write both JSON renderings, recreate bundles/ (links + plugin.json), refresh the schema copy
     and sync package.json (idempotent)."""
@@ -281,6 +291,7 @@ def write(repo: Path) -> list[str]:
         else:
             shutil.copy2(src, dst)
     _sync_package_version(repo, version(repo))
+    _sync_makefile_pin(repo, version(repo))
     return [MARKETPLACE, CATALOGUE, *manifests, *links, *copies]
 
 
@@ -368,6 +379,11 @@ def _version_errors(repo: Path, ver: str) -> list[str]:
         found = read(json.loads(path.read_text(encoding="utf-8")))
         if found != ver:
             out.append(f"version-sync: {rel} version '{found}' != VERSION '{ver}' — run make bundles")
+    mk = repo / PROJECT_MAKEFILE
+    if mk.exists():
+        pin = _QUALITY_PIN.search(mk.read_text(encoding="utf-8"))
+        if not pin or pin.group(0)[len(pin.group(1)):] != f"v{ver}":
+            out.append(f"version-sync: {PROJECT_MAKEFILE} QUALITY_VERSION is not 'v{ver}' — run make bundles")
     return out
 
 

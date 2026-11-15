@@ -1,10 +1,10 @@
 # Minimal pyproject.toml — Meaningfy standard (no-src, config-in-root).
-# Only [project], [tool.poetry], [dependency-groups], [build-system] live here.
+# Only [project], [dependency-groups], [build-system], [tool.uv.build-backend] live here.
 # Every TOOL is configured in its own dedicated root file:
 #   ruff.toml · mypy.ini · pytest.ini · .coveragerc · .importlinter
 #   .pre-commit-config.yaml · sonar-project.properties
 # The single source of truth for the version is the root VERSION file; keep the
-# `version` field below in sync (or wire a poetry version plugin if desired).
+# `version` field below in sync.
 
 [project]
 name = "<<PROJECT_SLUG>>"
@@ -35,7 +35,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-# PEP 735 dependency groups, installed via `poetry install --with dev,test,lint`.
+# PEP 735 dependency groups, installed via `uv sync --all-groups`.
 dev = [
     "pre-commit==4.6.0",
     "linkml==1.10.0",
@@ -50,22 +50,21 @@ test = [
     "httpx==0.28.1",
 ]
 lint = [
-    "ruff==0.15.11",
+    "ruff==0.17.5",
     "mypy==1.20.2",
     "import-linter==2.11",
     "radon==6.0.1",
     "xenon==0.9.3",
 ]
 
-[tool.poetry]
-# No-src layout: include the top-level package directly, NO `from = "src"`.
-packages = [
-    { include = "<<PACKAGE>>" }
-]
-
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.13.5,<0.14"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+# No-src layout: the top-level package sits at the repo root, NOT under src/.
+module-name = "<<PACKAGE>>"
+module-root = ""
 
 # NOTE: intentionally no [tool.ruff], [tool.mypy], [tool.pytest], [tool.coverage]
 # sections here — all tool config lives in dedicated root files (see header).

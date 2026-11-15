@@ -3,7 +3,7 @@
 How to organise **any** Meaningfy prompt/skill/agent repository as a governed catalog. This is
 the reusable method behind this repository — apply it when reorganising other repos.
 
-## The five artifact types
+## The six artifact types
 
 Every artifact is exactly one of these, and that decides its home:
 
@@ -14,6 +14,7 @@ Every artifact is exactly one of these, and that decides its home:
 | **Doc** | Humans | Never auto-loaded | `docs/` | Written for people; narrates & points, never restates skill rules |
 | **Binding** | Harness (every session) | Always | root agentic files (`AGENTS.md`, `CLAUDE.md`) + `project-setup`'s agentic templates | Mandates & routes to skills; never carries the standard |
 | **Mod** | People, in the session (Claude Code; opencode reuses a plain mod's check through its plugin) | Every session it is installed in | `mods/` | Observes session events, displays state, runs commands a person could type or denies a command; carries no method — reads rules, thresholds and phases from skill assets |
+| **Quality check** | Tools, in a project's `make` targets and in skillery's tests | Run by `make`, never loaded | `quality/` | An executable check (a rule file or a configuration) and no rule text; the rule lives in the owning skill and the check's message cites it — see [`quality.md`](quality.md) |
 
 Authoring governance (`docs/development/`, incl. `docs/development/skill-template.md`) and distribution
 (`bundles.yaml`, rendered to `.claude-plugin/`, `bundles/` and

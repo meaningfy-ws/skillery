@@ -59,6 +59,7 @@ data/
 .import_linter_cache
 
 # Tooling
+.quality/
 .tox/
 .nox/
 

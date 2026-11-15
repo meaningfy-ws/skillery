@@ -1,0 +1,38 @@
+[
+  {
+    "id": "semgrep-rules-python-requests",
+    "repo": "https://github.com/semgrep/semgrep-rules",
+    "commit": "a5ad1714f00c9f7fde980cab0ea1d6dc6d414fd2",
+    "paths": ["python/requests"],
+    "licence": "Semgrep Rules License v1.0",
+    "why": "Disabled certificate checks and auth over plain http in HTTP adapter clients.",
+    "mode": "report-only"
+  },
+  {
+    "id": "semgrep-rules-python-sqlalchemy",
+    "repo": "https://github.com/semgrep/semgrep-rules",
+    "commit": "a5ad1714f00c9f7fde980cab0ea1d6dc6d414fd2",
+    "paths": ["python/sqlalchemy"],
+    "licence": "Semgrep Rules License v1.0",
+    "why": "SQL built from strings, the relational twin of mfy-sparql-built-from-strings.",
+    "mode": "report-only"
+  },
+  {
+    "id": "semgrep-rules-python-lang-correctness",
+    "repo": "https://github.com/semgrep/semgrep-rules",
+    "commit": "a5ad1714f00c9f7fde980cab0ea1d6dc6d414fd2",
+    "paths": ["python/lang/correctness"],
+    "licence": "Semgrep Rules License v1.0",
+    "why": "Likely bugs such as mutable defaults and comparison mistakes, little overlap with Ruff.",
+    "mode": "report-only"
+  },
+  {
+    "id": "semgrep-rules-python-lang-security",
+    "repo": "https://github.com/semgrep/semgrep-rules",
+    "commit": "a5ad1714f00c9f7fde980cab0ea1d6dc6d414fd2",
+    "paths": ["python/lang/security"],
+    "licence": "Semgrep Rules License v1.0",
+    "why": "eval and exec, unsafe deserialisation and weak hashing, beyond Ruff's S rules.",
+    "mode": "report-only"
+  }
+]

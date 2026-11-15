@@ -80,18 +80,34 @@ test('PD-2 leaving a phase without its exit skill; PD-3 command gate not passed 
   assert.deepEqual(keys(passed).filter(k => k.startsWith('process:') && k.includes(':apply:')), [])
 })
 
-test('PD-3 skill gate: a delivery session entering apply with no clarity-gate run warns; the first placement is not checked', () => {
-  assert.ok(!keys(run(workflows(), read(change(3, 9)))).length)
-  const placed = run(workflows(), read(change(0, 9)))
+// A synthetic workflow: the default epic-delivery with the skill gate `clarity` put back on apply.
+const withClarityGate = () => {
+  const f = file('epic-delivery', 'epic-delivery')
+  const w = JSON.parse(f.text)
+  w.phases.find((p: { id: string }) => p.id === 'apply').gates.unshift('clarity')
+  return resolveWorkflows([{ path: f.path, text: JSON.stringify(w) }], [])
+}
+const gatedWorkflows = (): Signal => ({ kind: 'WorkflowsRead', id: id(), workflows: withClarityGate().workflows, errors: [], mode: 'loose', at: 1 })
+
+test('PD-3 skill gate: a workflow with a skill gate warns on entering apply; the first placement is not checked; running the skill clears it', () => {
+  assert.deepEqual(withClarityGate().errors, [])
+  assert.ok(!keys(run(gatedWorkflows(), read(change(3, 9)))).length)
+  const placed = run(gatedWorkflows(), read(change(0, 9)))
   assert.equal(placed.phase, 'ready')
   assert.ok(!keys(placed).length)
   const s = reduce(placed, skill('epic-delivery', 5))
   assert.equal(s.phase, 'apply')
   assert.ok(keys(s).includes('process:gate:apply:clarity'), keys(s).join())
-  // The gate runs in epic-shaping's revise; epic-delivery then places apply without a check.
   const gated = [skill('clarity-gate', 4), skill('epic-delivery', 5)].reduce(reduce, placed)
   assert.equal(gated.phase, 'apply')
   assert.ok(!keys(gated).includes('process:gate:apply:clarity'))
+})
+
+test('PD-3 skill gate: the default apply no longer warns about clarity (the PLAN arrives gated)', () => {
+  const placed = run(workflows(), read(change(0, 9)))
+  const s = reduce(placed, skill('epic-delivery', 5))
+  assert.equal(s.phase, 'apply')
+  assert.ok(!keys(s).includes('process:gate:apply:clarity'), keys(s).join())
 })
 
 test('the full-gates gate: ok after make check-all, stale after an edit, fail on a failed run (D-9)', () => {
@@ -259,13 +275,12 @@ test('Shaping: reloading epic-planning keeps the phase (D-3)', () => {
 
 const delivery = (...signals: Signal[]) => run(workflows(), read(fresh()), ...signals)
 
-test('Delivery, next session: epic-delivery warns clarity; clarity-gate revises; epic-delivery returns to apply clean', () => {
+test('Delivery, next session: epic-delivery enters apply clean (the PLAN arrives gated); clarity-gate revises; epic-delivery returns to apply clean', () => {
   const placed = delivery()
   assert.deepEqual(where(placed), ['epic-delivery', null, 'ready'])
   const entered = reduce(placed, skill('epic-delivery', 3))
   assert.deepEqual(where(entered), ['epic-delivery', null, 'apply'])
-  assert.deepEqual(keys(entered), ['process:gate:apply:clarity'])
-  assert.equal(backOnTrack(entered), 'clarity-gate')
+  assert.deepEqual(keys(entered), [])
   const revised = reduce(entered, skill('clarity-gate', 4))
   assert.deepEqual(where(revised), ['epic-shaping', null, 'revise'])
   assert.deepEqual(keys(revised), [])

@@ -202,3 +202,5 @@ profile and write rules → the vault's `AGENTS.md`; creating a vault → `vault
 
 **Related:** `vault-setup`, `vault-project`, `vault-resume`, `vault-capture`, `vault-promote`,
 `vault-tidy`, `vault-planning`, `vault-daily`, `rulebook`, `rule-learner`, `rule-steward`; `sales-operations` (its run notes follow the table check and memory etiquette).
+
+Answers `VER` in `test-strategy`'s matrix (`references/generic-writing.md`).

@@ -1,0 +1,22 @@
+[
+  {"query": "which checks does this LinkedIn post need before I publish it", "should_trigger": true},
+  {"query": "how do we know this contract review succeeded or failed", "should_trigger": true},
+  {"query": "what is the difference between verification and validation", "should_trigger": true},
+  {"query": "before I start this offer, what would make it fail and how will we check that", "should_trigger": true},
+  {"query": "which check answers 'are we building the right thing' for a data model", "should_trigger": true},
+  {"query": "what counts as a test for a blog post", "should_trigger": true},
+  {"query": "the reviewer says this section feels weak, is that a failed test or an opinion", "should_trigger": true},
+  {"query": "which questions should a review of this runbook ask, and who decides each", "should_trigger": true},
+  {"query": "we have no check for robustness of our docs, how do I record that gap", "should_trigger": true},
+  {"query": "state the success and failure criteria for this client message before I draft it", "should_trigger": true},
+  {"query": "write Gherkin scenarios for this acceptance criterion", "should_trigger": false},
+  {"query": "score this spec before implementation", "should_trigger": false},
+  {"query": "run a cold reader on this how-to page", "should_trigger": false},
+  {"query": "review this change against the cosmic-python layers", "should_trigger": false},
+  {"query": "run the acceptance demo for this EPIC", "should_trigger": false},
+  {"query": "write the failing unit test first for this parser function, then make it pass", "should_trigger": false},
+  {"query": "I think the fix is done, run the tests and confirm before I claim it works", "should_trigger": false},
+  {"query": "add a pytest fixture that builds an Order object for these tests", "should_trigger": false},
+  {"query": "how many reviewers does a SMALL EPIC get in the stage loop", "should_trigger": false},
+  {"query": "check this draft against my house rules before I send it", "should_trigger": false}
+]

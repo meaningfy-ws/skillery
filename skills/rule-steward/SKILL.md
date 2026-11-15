@@ -134,3 +134,5 @@ grooming and forgetting procedure, and the promotion proposal.
 **Related:** `rulebook`, `rule-learner`, and, when the vault-assistant bundle is installed,
 `vault-planning` (the weekly review that calls this step) and `vault-conventions` (the skill-change
 note and staging).
+
+Answers `VAL, ADQ` in `test-strategy`'s matrix (`references/cross-cutting.md`).

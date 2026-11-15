@@ -1,0 +1,52 @@
+# Q&A record: generic task test profiles (EPIC D)
+
+**Secondary input, never groomed.** The owner's answers of 2026-11-13.
+
+| # | Question | Answer |
+|---|---|---|
+| Q-1 | Which kinds of work get a profile first? | All four: offers and proposals; contracts; posts and public writing; client and internal messages. |
+| Q-2 | What form does a profile take? | Criteria plus an adversarial reader: success and failure stated before drafting, then one reader with a role tries to break the draft and reports against the criteria; plus the existing rule checks. Not a scored rubric. |
+| Q-3 | When is the adversarial reader mandatory? | For anything that leaves the company (offers, contracts, public posts, client messages); internal messages only on request. |
+| Q-4 | Who confirms the criteria before drafting something that leaves the company? | The owner, in one line: the agent proposes, the owner says yes or corrects. Unattended runs use the criteria recorded for that kind of task. |
+| Q-5 | What must D prove? | A baseline with and without the profile for each kind; the reader finds a planted flaw; the profiles live with their owning skills. Not chosen: a Gherkin scenario for unattended runs. |
+| Q-6 | Risks (shared with C): which do we mitigate? | Mitigate: checks slow daily work; external styles and tools change; the adversarial reader is theatre. **Accepted:** client-confidential text passes through reader subagents. |
+
+## Round 2: after the readiness check
+
+| # | Question | Answer |
+|---|---|---|
+| Q-7 | What happens on the sales agent's unattended runs? | The profile applies at pick-up: unattended runs are unchanged, and their drafts get criteria and a reader when the owner picks them up to send. |
+| Q-8 | Gherkin for the agents whose behaviour changes? | A scenario per agent (`proposal-writer`, `lawyer`, `sales-agent`). |
+| Q-9 | Where does the adversarial reader's brief live? | `guardrails`. |
+
+## Round 3: while the PLAN was derived (2026-11-14)
+
+| # | Question | Answer |
+|---|---|---|
+| Q-10 | Posts have no capability spec. Where does their requirement go? | A new capability, `company-voice`. Not chosen (the planner's recommendation): a second requirement in the `test-strategy` delta. |
+| Q-11 | `proposal-writer` and `sales-agent` have no `Agent` tool and cannot start a reader. How does the profile work for them? | Grant `Agent` to both. Not chosen (the planner's recommendation): no agent file change, the reader run by the calling session; `Agent` for `sales-agent` only. |
+| Q-12 | Where do the rules all four profiles share live (the "leaves the company" test, the confirmation, mandatory or on request, pick-up)? | `guardrails`, with the brief. Not chosen: `test-strategy`'s `generic-writing` file. |
+| Q-13 | Should `meaningfy-voice`'s description fire on "write a LinkedIn post" or "a blog article"? | Yes, with a positive probe and a near-miss against `explanatory-writing`. Not chosen: no description change. |
+
+Q-10 and Q-11 change two statements of the shaped EPIC ("New Capabilities: none"; "no agent file
+changes"). They are recorded in the EPIC as DEC-8 and DEC-9; the bet itself is unchanged.
+
+## Round 4: after the attack on the PLAN (2026-11-14)
+
+| # | Question | Answer |
+|---|---|---|
+| Q-14 | With `Agent`, the sales agent's scheduled runs can start `sales-operations`' three reviewers, where they recorded "unverified" until now. What should the PLAN do? | Accept the change: scheduled runs may start them. Not chosen (the planner's recommendation): subagents in human sessions only; no `Agent` for `sales-agent`. Recorded as DEC-10. |
+
+The attack's other three questions were settled in the PLAN without the owner, each from a rule
+already in force: a failed contract term is an open point (`contract-practice`); the post's two
+step lines sit in the channel file (design D-2); a blog explainer written through
+`explanatory-writing` is an accepted risk and a follow-up for `add-content-creation` (RISK-11).
+
+## Round 5: after the PLAN was gated (2026-11-14)
+
+| # | Question | Answer |
+|---|---|---|
+| Q-15 | The owner, on reading the summary: "why do we need contract fixtures? … we will have to assess them, not establish test units. the legal work is mostly qualitative, no need to create test cases for contracts, and neither blogs need to be tested, only assessed and revised/reviewed". The planner proposed four changes: the reader's output becomes an assessment for all four kinds (findings with quotations, no pass or fail); the contract fixtures, the contract planted-flaw proof and the contract baseline go; one planted-flaw check stays, for the offer only, as evidence and not under `tests/`; posts keep criteria and one read. | "go ahead". Recorded as DEC-11. |
+
+The shaper added `sales-conversations` as the owner of sales client messages (it was in the seed);
+the owner has not objected.

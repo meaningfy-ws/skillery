@@ -69,6 +69,28 @@ test('the schema rejects what it does not know', () => {
   assert.match((parseWorkflow(src('f', '{'), 'repo') as { error: string }).error, /^workflow file f: not JSON/)
 })
 
+const withCriteria = (criteria?: unknown) =>
+  src('docs/navigator/c.workflow.json', minimal({ phases: [{ id: 'apply', owner: 'o', expect: [], enter: {},
+    ...(criteria === undefined ? {} : { criteria }) }] }))
+
+test('criteria is optional on a phase; valid criteria load (D-5)', () => {
+  for (const c of [undefined, { succeeds: 'tests pass', fails: 'a test is red' }]) {
+    assert.deepEqual(resolveWorkflows([], [withCriteria(c)]).errors, [], JSON.stringify(c))
+  }
+})
+
+test('malformed criteria is a schema error naming the file and the phase (D-5)', () => {
+  const bad = [{ succeeds: '' }, 'text', ['a'], null, { succeeds: 'a' }, { fails: 'b' },
+    { succeeds: 'a', fails: 'b', extra: 'c' }, { succeeds: 'a', fails: '' }, { succeeds: 'a', fails: '   ' },
+    { succeeds: 1, fails: 'b' },
+    { succeeds: 'a', other: 'b' }]
+  for (const c of bad) {
+    assert.deepEqual(resolveWorkflows([], [withCriteria(c)]).errors,
+      ['workflow file docs/navigator/c.workflow.json: phases[0].criteria must be {succeeds, fails}, each a non-empty string'],
+      JSON.stringify(c))
+  }
+})
+
 // ---------------------------------------------------------------- TC-16: the shipped defaults
 const defaults = readdirSync(join(REPO, 'skills')).flatMap(skill => {
   const dir = join(REPO, 'skills', skill, 'assets', 'workflows')
@@ -107,14 +129,18 @@ test('TC-16 epic-delivery has a review set for each of the six appetites', () =>
 })
 
 const DEFAULT_SMALL_STAGE = { max_added_lines: 600, reviewers: 2, lenses: [['L1', 'L2'], ['L3', 'L4', 'L5']] }
+const TESTER = 'Adversarial tester, on its condition (stage loop, Prepare)'
 
-test('D-12 epic-delivery: MEDIUM and above carry the small_stage set, TINY and SMALL do not', () => {
+test('D-12 epic-delivery: LARGE and above carry the small_stage set; TINY, SMALL and MEDIUM do not; MEDIUM defaults to two reviewers', () => {
   const r = parseWorkflow(defaults.find(d => d.path.endsWith('epic-delivery.workflow.json'))!, 'default')
   const reviews = (r as { workflow: Workflow }).workflow.reviews ?? {}
   for (const [name, set] of Object.entries(reviews)) {
-    const sized = !['TINY', 'SMALL'].includes(name)
+    const sized = !['TINY', 'SMALL', 'MEDIUM'].includes(name)
     assert.deepEqual(set.small_stage, sized ? DEFAULT_SMALL_STAGE : undefined, name)
+    assert.equal(set.tester, ['TINY', 'SMALL'].includes(name) ? null : TESTER, name)
   }
+  assert.equal(reviews.MEDIUM?.reviewers, 5)
+  assert.match(reviews.MEDIUM?.challenge ?? '', /^Two reviewers \(L1 with L2; L3 with L4 and L5\) by default; the five lenses when a risk is recorded/)
 })
 
 test('a misspelt skill in a workflow is caught', () => {

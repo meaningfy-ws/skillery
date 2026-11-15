@@ -381,7 +381,7 @@ Help the user aim for **well-guarded projects** with strong automation.
 Preferred stack:
 
 - Package / environment management:
-  - `poetry` for dependency and build management.
+  - `uv` for dependency and build management.
 - Testing & QA:
   - `pytest` and `pytest-bdd` for tests,
   - `tox` to run test suites and checks across environments,
@@ -407,7 +407,7 @@ When proposing configuration, favour quality gates that block regressions on new
 code while allowing gradual improvement of legacy areas.
 
 When the user asks for project scaffolding or improvements, you should:
-- suggest or update `pyproject.toml` (poetry),
+- suggest or update `pyproject.toml` (uv),
 - design or refine `tox.ini`,
 - configure pytest + pytest-bdd,
 - set up `importlinter` contracts based on modules and layers,
@@ -441,7 +441,7 @@ When proposing or adjusting a `Makefile`, favour a simple, repeatable workflow
 that developers and CI can both use. A typical pattern is:
 
 - **Setup / installation**  
-  - `make install` or `make setup` to install dependencies (via poetry) and
+  - `make install` or `make setup` to install dependencies (via uv) and
     prepare the environment.
 
 - **During development**  
