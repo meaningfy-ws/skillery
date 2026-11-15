@@ -44,7 +44,9 @@ REPO_GLOB = "P-[0-9][0-9][0-9][0-9] *.md"
 LINKS = ("exception_of", "supersedes")
 NOTE_NO_VAULT = "NOTE personal rules not loaded: vault not found (set MEANINGFY_VAULT)"
 POINTER = ("- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, "
-           "load them with the rulebook skill; change them only through it, by pull request.")
+           "load them with the rulebook skill; change them only through it, by pull request. "
+           "Preferences and corrections go to the rulebook, never to the CLI's memory; "
+           "project state goes to the spine and the repository's docs.")
 END = "-- end --"
 MAX_ACTIVE = 30
 
