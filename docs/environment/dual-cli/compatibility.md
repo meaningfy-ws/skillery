@@ -97,6 +97,13 @@ The mark line (`epic-delivery`) has one recorded gap:
 |---|---|---|---|
 | warn when a worker is dispatched without a mark | the `navigator` mod warns once at the end of the turn | no navigator on opencode | the warning is Claude Code only; on opencode the `guessed` label in the `session-retrospective` report is the only signal. |
 
+The `rules-first` mod in `meaningfy-core` has two behaviours, with different outcomes on opencode:
+
+| Behaviour | Claude Code | opencode | Gap / degradation |
+|---|---|---|---|
+| Session-start block (stores and routing policy) | `SessionStart` hook prints it | **gap**: no hook prints it | the global policy still routes preferences to `rulebook` ([`global-prompt.md`](../global-prompt.md)); `rules.py where` shows the stores on request. |
+| Deny of `feedback` and `user` memory notes | `PreToolUse` hook on `Write`, `Edit` and `MultiEdit` | not applicable: opencode has no auto-memory | nothing to deny; no degradation. |
+
 One skill also has a recorded monitoring gap, which comes from a missing plugin rather than a hook:
 
 | Skill | Claude Code | opencode | Gap / degradation |

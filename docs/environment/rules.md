@@ -173,6 +173,45 @@ Repository rules are the team's: the weekly review (`rule-steward`) never grooms
 repository has no candidates, so a row for it cannot be deferred. Two branches can each add the same
 `P-` id; the lint reports the duplicate and the fix is to retire one copy and add it again.
 
+## Rules first, before the CLI's memory
+
+Claude Code keeps its own auto-memory, and an agent may save "I prefer British English" there instead
+of in your rules. The `rules-first` mod in `meaningfy-core` stops that. It does two things.
+
+**At session start it shows a block.** The block names your stores and the routing policy. For
+example:
+
+```text
+Rules (rules-first):
+vault: /home/you/vault
+repository: /home/you/work/app (docs/rules/ not yet created)
+default store: repository
+routing policy: present (/home/you/.claude/CLAUDE.md)
+Rules: when an activity starts, load your rules with `rulebook`.
+...
+```
+
+The first four lines come from `rules.py where`, which reports the stores and the routing policy at
+any time. The policy text is [`routing.md`](../../skills/rulebook/assets/routing.md); this page does
+not copy it. If a store is missing, the block says so, and the agent tells you once.
+
+**It denies a preference saved as a memory note.** A write of a `feedback` or `user` note into the
+auto-memory folder is refused. The message tells the agent to draft the preference as a `rule-learner`
+candidate and show it in the approval card before its final summary. It forbids saving the note under
+another type or adding it to the memory index.
+
+What the mod leaves alone:
+
+- `project` and `reference` notes, and the `MEMORY.md` index, still save. Project state belongs in the
+  spine and the repository's docs, as the routing policy says.
+- Existing `feedback` and `user` notes stay where they are and keep loading, but the agent can no
+  longer edit them. Move them into rules, or delete them, by hand. A later migration may do it for
+  you.
+- The mod fails open: if it cannot read its input, the session and the write go on.
+
+On opencode the block is a recorded gap and the deny does not apply
+([`dual-cli/compatibility.md`](dual-cli/compatibility.md)).
+
 ## Where to read more
 
 - [`rule-model.md`](../../skills/rulebook/references/rule-model.md): the twelve types, strength,

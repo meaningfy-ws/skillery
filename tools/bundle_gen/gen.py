@@ -99,20 +99,26 @@ def _bundle(raw, index: int, seen: set[str]) -> dict:
         out["requires"] = _str_list(raw["requires"], "requires", where)
     if "mods" in raw:
         out["mods"] = _str_list(raw["mods"], "mods", where)
-        if len(out["mods"]) > 1:
-            raise ValueError(f"{BUNDLES_FILE}: {where} lists {len(out['mods'])} mods; a bundle holds at most one")
     return out
 
 
 def _check_mods(repo: Path, bundles: list[dict]) -> None:
-    """A mod is in exactly one bundle and its folder holds the four files (navigator DD-5)."""
+    """A mod is in exactly one bundle and its folder holds the four files (navigator DD-5);
+    a bundle holds several plain mods but at most one modules mod (rules-first-memory D-7)."""
     owner: dict[str, str] = {}
     for b in bundles:
+        modules_mods: list[str] = []
         for m in b.get("mods", []):
             if m in owner:
                 raise ValueError(f"{BUNDLES_FILE}: mod '{m}' is in bundles '{owner[m]}' and '{b['name']}'")
             owner[m] = b["name"]
-            required = MOD_FILES if _is_modules_mod(repo, m) else (MOD_HOOKS,)
+            is_modules = _is_modules_mod(repo, m)
+            if is_modules:
+                modules_mods.append(m)
+                if len(modules_mods) > 1:
+                    raise ValueError(f"{BUNDLES_FILE}: bundle '{b['name']}' lists modules mods "
+                                     f"'{modules_mods[0]}' and '{m}'; a bundle holds at most one modules mod")
+            required = MOD_FILES if is_modules else (MOD_HOOKS,)
             missing = [f for f in required if not (repo / MODS_DIR / m / f).is_file()]
             if missing:
                 raise ValueError(f"{BUNDLES_FILE}: mod '{m}' of bundle '{b['name']}' is missing "
@@ -240,7 +246,7 @@ def plugin_manifests(repo: Path) -> dict[str, bytes]:
         manifest = {"name": b["name"], "version": ver, "description": b["description"],
                     "author": PLUGIN_AUTHOR}
         for m in b.get("mods", []):
-            manifest["hooks"] = [f"./mods/{m}/{MOD_HOOKS}"]
+            manifest.setdefault("hooks", []).append(f"./mods/{m}/{MOD_HOOKS}")
             if (repo / MODS_DIR / m / MOD_TYPES).is_file():
                 manifest["types"] = f"./mods/{m}/{MOD_TYPES}"
             if (repo / MODS_DIR / m / MOD_CONFIG).is_file():

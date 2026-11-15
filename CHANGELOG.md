@@ -39,6 +39,15 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - The lead of an EPIC now writes a mark line (`mark: change=<id> phase=<phase> stage=<n>`) at the
   start of each stage; on Claude Code the navigator warns once when a worker is dispatched without
   one, and `session-retrospective` reads the marks instead of guessing the phase.
+- **Preferences go to your rulebook, not Claude Code's memory** (EPIC `rules-first-memory`, stage
+  1). `meaningfy-core` now ships a second hook mod, `rules-first`. At session start it tells the
+  agent where your rules are stored (vault, repository) and that a preference or correction you
+  state goes to `rule-learner`'s approval card, never to the CLI's memory. It also denies a write of
+  a `feedback` or `user` note into Claude Code's auto-memory folder and tells the agent to draft a
+  rule instead; project notes and references are still allowed. Notes already in your memory are
+  left for you to move. `rules.py where` now reports whether your global instructions carry the
+  routing policy, and `rules.py stats` counts rules written and memory writes denied. opencode gets
+  neither hook (recorded as a gap in `docs/environment/dual-cli/compatibility.md`).
 
 ### Changed
 
