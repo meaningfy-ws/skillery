@@ -28,13 +28,13 @@
   and D-7 in `tools/skill_inventory.py` (the two tables in `_DEP_TABLES`, the first-column and
   list-cell change in `render_dependencies`, both setup docs in `DEPENDENCY_DOCS`). The tests of 1.2
   pass and the existing tables render unchanged.
-- [ ] 1.4 Dispatch reader A (D-5) on the 8 book sets at `893a88a6fce3a80c565bf39ac65021b43a8b2990`.
+- [x] 1.4 Dispatch reader A (D-5) on the 8 book sets at `893a88a6fce3a80c565bf39ac65021b43a8b2990`.
   Done when `evidence/reading/` holds 8 records. Spec: `external-dependency-register`, "read in
   full".
-- [ ] 1.5 Check the 8 records: each file table against `find <folder> -type f` and `wc -c` in the
+- [x] 1.5 Check the 8 records: each file table against `find <folder> -type f` and `wc -c` in the
   fork; the 12-word overlap script (scratchpad, not committed); no links to fork files. Done when
   every record passes.
-- [ ] 1.6 If any record marks a conflict "not named", ask the owner in one question round, each
+- [x] 1.6 If any record marks a conflict "not named", ask the owner in one question round, each
   with a recommendation (override with its wording, drop, or accept). Record the answers in
   `inputs/stage-1a-conflicts-<date>.md`; a drop is a new DEC in `proposal.md` (D-6). Done when
   every such conflict has an answer, or none was found.
@@ -134,7 +134,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
 - [ ] 1.10 · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
