@@ -12,6 +12,15 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- **The book rule sets are registered per bundle** (EPIC `orchestrate-external-skills`, stage 1a).
+  Eight sets from Meaningfy's fork of `agent-rules-books` are now in `dependencies.yaml`: four for
+  `meaningfy-building`, four for `meaningfy-architecture`, each read in full before it was
+  registered. If you install either bundle, run its command from the new section "External skills
+  of your bundles (per role)" in your CLI's setup guide; it pins the commit Meaningfy read and
+  turns the installer's telemetry off. On opencode the install is not yet verified.
+
 ### Changed
 
 - **BREAKING for a caller that relied on the implementer checking impact itself** (EPIC
