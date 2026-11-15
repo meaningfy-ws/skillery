@@ -30,7 +30,7 @@ list, shape, practices) and the modified `skill-crafting-method`.
   `ADVISORY_SKILL_TOKENS` (D-3). Message: `<skill>: SKILL.md body is <n> bytes (lean body target
   6144)`. Test first: a body of 6,145 bytes gives a note, one of 6,144 none. `skill_too_long` is
   unchanged.
-- [ ] 1.4 Run both checks on the real tree with no list; write `skill-budget.yaml` with every
+- [x] 1.4 Run both checks on the real tree with no list; write `skill-budget.yaml` with every
   failing skill under `pending`, sorted, each with the checks it fails, and `over_budget: {}`;
   header comment as in D-4. Record the list and its count in the PR description. Repeat after the
   last rebase, right before merge.
@@ -47,7 +47,7 @@ list, shape, practices) and the modified `skill-crafting-method`.
   someone authoring a skill. In `skills/test-strategy/references/inventory.md`, add
   `prose_budget` and `reference_pointers` to the check cell of CHK-125 and change "skill size" to
   "lean body target" in CHK-130; no new CHK id (RISK-8).
-- [ ] 1.10 `make lint`, `make validate`, `make validate-spine` green; `detect_changes` against
+- [x] 1.10 `make lint`, `make validate`, `make validate-spine` green; `detect_changes` against
   `develop` shows only the lint symbols named above. Pull request into `develop`.
 
 ## 2. Stage 2: the pilot on `cosmic-python` (wave 2, after R2 stage 1)
@@ -76,7 +76,7 @@ list, shape, practices) and the modified `skill-crafting-method`.
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9 · [ ] 1.10
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9 · [x] 1.10
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 3.1 · [ ] 4.1 · [ ] 5.1 · [ ] 5.2
 
 ## Verification
