@@ -13,134 +13,124 @@ metadata:
 
 # CI/CD Delivery
 
-## Overview
+An application repo at Meaningfy does not deploy itself: it releases a pinned image and asks
+`infrastructure-stacks` to deploy it. The usual mistake is to copy an SSH, bastion, rsync and `.env`
+block into the app repo's workflow and build on the VM from source.
 
-Meaningfy's deploy architecture is **decoupled across three repos**. This skill standardises the
-**application-repo side** of Continuous Delivery — the only side teams own day to day — and
-documents the *contract* to the two infrastructure repos without restating their runbooks.
+> **C1: review with DevOps before adoption.** The §6 decisions are DevOps's to ratify. Never
+> contradict the `cloud-infrastructure` or `infrastructure-stacks` runbooks, Vaultwarden, or the
+> bastion procedure; they are the authoritative boundary.
+> **C2: never put secrets in the repo or this skill.** Every template carries placeholders only.
 
-It carries the **delivery contract** (how an app repo asks for a deploy and ships a release), a
-**deploy request** to the stacks repository with an illustrative template, and a **release/image standard**. It owns
-**CD only**. Everything CI — build, unit/integration tests, lint, coverage, architecture
-guardrails, docs publish — is owned by `project-setup`. The two never
-overlap.
+## Quick Start
 
-> **C1 — review with DevOps before adoption.** The §6 decisions below are DevOps's to ratify. Do
-> not contradict `cloud-infrastructure` / `infrastructure-stacks` runbooks, Vaultwarden, or the
-> bastion procedure — treat them as the authoritative boundary.
-> **C2 — never put secrets in the repo or this skill.** Every template carries placeholders only.
+`ted-rdf-conversion-pipeline` deploys today with an inline rsync-over-bastion job and builds on the
+VM. After the standard:
 
-## The three-repo model
+1. Merging release `v2.3.0` runs the release job: it builds the image on a GitHub-hosted runner and
+   pushes `ghcr.io/meaningfy-ws/ted-rdf-conversion-pipeline:2.3.0` and `:sha-4f1c2ab`.
+2. The request job opens a PR in `infrastructure-stacks` that changes the stack's image line to
+   `…:2.3.0@sha256:<digest>`. Merging that PR deploys; reverting it rolls back.
+3. The inline deploy block and its SSH secrets are gone from the app repo.
 
-Full detail in [`references/delivery-model.md`](references/delivery-model.md). The mental model:
+## Workflow
 
-| Repo | What it does | Automation | This skill |
-|------|--------------|-----------|------------|
-| **`cloud-infrastructure`** | Terraform (Hetzner fleet, AWS sandbox) + Ansible (VM config, bastion users). Provisions/configures VMs **once**. | DevOps-manual (`terraform apply`, `ansible-playbook`) | **Documents the boundary only** — out of automation scope |
-| **`infrastructure-stacks`** | Docker Compose stacks (one dir per stack), deployed to VMs by GitHub Actions: assemble `.env` from Secrets, **rsync** to the VM, `docker compose up -d`. | GitHub Actions | **Documents the contract** the app repo calls into; owned by `stack-operations` |
-| **Application repos** (e.g. `ted-rdf-conversion-pipeline`, `entity-resolution-service`) | Build/test the app **and trigger its deployment**. | GitHub Actions | **OWNS and standardises this side** |
+1. Place the change. Read `references/delivery-model.md` when deciding which repo a change
+   belongs to: it adds the three repos, the three gaps on the app side, and the contract direction.
+2. Release the image. Read `references/release-image-template.md` when writing a repo's release
+   job: it adds the illustrative GHCR job and the outputs the deploy request pins.
+3. Request the deploy. Read `references/deploy-workflow-template.md` when writing the request job:
+   it adds the two request shapes and an illustrative job.
+4. Migrate an existing repo. Read `references/migration-runbook.md` when a repo still carries an
+   inline deploy block: it adds the per-repo PR recipe and how to verify it.
 
-Routine deploys use **rsync, not git-pull and not interactive SSH**. The deploy workflow is the
-single auditable place where `.env` is assembled and the stack is brought up.
+## Rules
 
-## The secrets model
+### The three repos
 
-Full flow, rotation, and break-glass in [`references/secrets-model.md`](references/secrets-model.md).
-The invariants:
+| Repo | Does | Here |
+|---|---|---|
+| `cloud-infrastructure` | Terraform and Ansible; provisions and configures VMs once, by DevOps by hand | boundary only, never automated |
+| `infrastructure-stacks` | one Compose stack per directory, deployed by GitHub Actions: `.env` from Secrets, rsync, `docker compose up -d` | the contract the app repo calls into; owned by `stack-operations` |
+| application repos | build, test, release the image, request the deploy | owned and standardised here |
 
-- **Secrets never live in the repo** (C2) — not in code, not in this skill, not in committed files.
-- **Vaultwarden is the source of truth.** **GitHub Secrets are the deployment copy** of those
-  values, scoped to the repo/environment that deploys.
-- The **deploy workflow is the only place** `.env` is assembled (from GitHub Secrets) and rsync'd to
-  the VM. Explicit, auditable, no git-pull, no secret-bearing files in the repo.
-- **Rotation:** rotate in Vaultwarden → update the matching GitHub Secret → re-trigger the deploy.
-- **Break-glass** (bastion / SSH) is owned by the DevOps runbook — referenced, never duplicated here.
+Routine deploys use rsync from the stacks repository's workflow: no git-pull on the VM, no
+interactive SSH.
 
-## The application-repo CD standard
+### Secrets
 
-This is what the skill prescribes for the app-repo side. Three parts: the trigger contract, the
-deploy request, and the release/image standard.
+Vaultwarden is the source of truth; GitHub Secrets are the deployment copy, scoped to the repo or
+environment that deploys; the deploy workflow is the only place `.env` is assembled. Read
+`references/secrets-model.md` when rotating a secret or tracing where a value comes from: it adds
+the flow, the rotation steps and where break-glass lives.
 
-### 1. Deploy-trigger contract (R3)
+### Deploy trigger
 
-Today three divergent patterns exist across repos (push-on-path to shared stacks; an in-repo
-self-hosted runner; cross-repo `workflow_dispatch`). **One standard, the rest are legacy-to-migrate.**
+One standard: the app repo requests a deploy from `infrastructure-stacks`, by a PR that bumps the
+stack's pinned `tag@sha256` (preferred) or by a dispatch the stacks repository defines. It carries no
+deploy glue of its own. Push-on-path against shared stacks and the in-repo self-hosted runner are
+legacy to migrate. How the stacks repository deploys, rolls back and health-gates is
+`stack-operations`'s.
 
-- **Recommended default (pending DevOps §6 ratification):** an app repo triggers a deploy by a
-  deploy request into `infrastructure-stacks` (section 2). It does **not** carry its own bespoke
-  deploy glue.
-- **Legacy to migrate:** push-on-path against shared stacks, and the in-repo self-hosted runner.
-  Both are named in [`references/delivery-model.md`](references/delivery-model.md) with their
-  migration target.
+### Release and image
 
-### 2. Deploy request (R4)
+Build a Docker image on a GitHub-hosted runner, tag it by semver and git sha, push it to a registry
+(recommended GHCR). The git tag or GitHub release is the version source (`meaningfy-release` owns the
+versioning). Stacks pull the pinned image, never `latest` and never a build on the VM.
 
-The SSH/bastion/rsync/`.env` block is copy-pasted across app repos today. The deploy mechanism
-belongs **once, in `infrastructure-stacks`**; how it deploys, rolls back and is health-gated is owned
-by `stack-operations`. The app repo only **requests** a deploy:
+### §6: DevOps decisions to confirm (not yet ratified)
 
-- **a PR in the stacks repository that bumps the stack's pinned `tag@sha256`** (preferred: merging it
-  deploys, reverting it rolls back), or
-- **a dispatch** the stacks repository defines, passing the stack and the pinned image.
+Recommendations to present to DevOps, not settled policy; mark them as such wherever you act on them.
 
-The template in [`references/deploy-workflow-template.md`](references/deploy-workflow-template.md)
-is **illustrative / teaching only**: the shape of the request job, names of secrets only.
+1. **Deploy-request shape:** a PR in `infrastructure-stacks` that bumps the pinned image; a dispatch
+   where the stacks repository defines one.
+2. **Registry-pushed versioned images:** GHCR with semver and sha. The biggest current gap: it is
+   what makes deploys rollback-able.
 
-### 3. Release + image standard (R5)
+Until DevOps ratifies them, a deployable repo gets a clearly marked TODO stub plus the boundary docs,
+never a rendered, runnable deploy workflow. This skill owns the content of the CD templates;
+`project-setup` owns when and into which repo they are projected.
 
-Today no repo pushes a versioned image to a registry — all build on the VM from source, so there is
-no pinned, rollback-able artifact. The standard (template in
-[`references/release-image-template.md`](references/release-image-template.md)):
+### Common mistakes
 
-- Build a **Docker image**, **tag by semver + git sha**, **push to a registry (recommended GHCR)**.
-- **Version source** = git tag / GitHub release → **image tag** → optional changelog.
-- Stacks then **pull a pinned versioned image** instead of building on the VM — giving repeatable,
-  rollback-able deploys.
+| Mistake | Why it fails | Do instead |
+|---|---|---|
+| Copy the SSH, bastion, rsync and `.env` block into the app repo | the mechanism drifts across repos and secrets spread | request a deploy from `infrastructure-stacks` |
+| Build the image on the VM from source | no pinned, rollback-able artifact | push a semver and sha tagged image to GHCR |
+| Pin a stack to `latest` | a deploy is not repeatable | pin `tag@sha256` |
+| Edit `.env` on the VM | the next deploy overwrites it | change Vaultwarden, then the GitHub Secret, then redeploy |
+| Render a runnable deploy workflow before §6 is ratified | DevOps has not agreed the shape | a marked TODO stub |
 
-## §6 — DevOps decisions to confirm (NOT yet ratified)
+## Triggers
 
-These are recommendations to present to DevOps, **not settled policy**. Mark them as such wherever
-you act on them.
+- When a workflow in an app repo holds `ssh`, a bastion host or `rsync`, propose the migration runbook.
+- When someone asks to deploy a repo, check the stack exists in `infrastructure-stacks` before
+  writing a request job.
+- When a fact is about VMs, Terraform or Ansible, stop at the boundary and point to DevOps.
 
-1. **Deploy-request shape** — recommended: a PR in `infrastructure-stacks` that bumps the pinned
-   image; a dispatch where the stacks repository defines one.
-2. **Registry-pushed versioned images** — recommended: adopt **GHCR + semver/sha**. Biggest current
-   gap; it is what makes deploys rollback-able.
+## Before you hand over
 
-Until DevOps ratifies these, treat the recommendations as proposals: a deployable repo gets a
-clearly-marked TODO stub plus the boundary docs, not a rendered runnable deploy workflow.
-
-## Migration runbook
-
-A concrete per-repo PR recipe lives in
-[`references/migration-runbook.md`](references/migration-runbook.md): delete the inline
-rsync/bastion block, adopt a pinned image, add the deploy request, verify. A team can
-execute it without re-deriving the pattern.
-
-## Projection seam (→ project-setup, EPIC-09)
-
-`project-setup` scaffolds these CD/release templates **only for a
-deployable project**, and **only renders the chosen template after DevOps ratifies §6**. Until then
-a deployable repo receives a clearly-marked **TODO stub** plus the boundary docs — never a
-half-guessed runnable deploy workflow. This skill owns the *content* of those templates;
-`project-setup` owns *when and into what repo* they are projected.
+| Question | If not | Action |
+|---|---|---|
+| Does every template carry placeholders only (C2)? | a secret is in the repo | remove it, rotate it in Vaultwarden |
+| Does the app repo carry no deploy glue? | the duplication remains | replace it with a request job |
+| Does the request pin `tag@sha256`? | rollback is guesswork | pin the digest the release job outputs |
+| Is each §6 recommendation marked as not ratified? | a proposal reads as policy | mark it |
 
 ## Boundary & Related Skills
 
-**Owns:** the **application-repo CD side** — the deploy-trigger contract, the deploy request and
-its illustrative template, the release/image standard (semver + git sha → GHCR), and the
-per-repo migration runbook.
-**Delegates:** CI (build, test, lint, coverage, architecture guardrails, docs publish) →
-`project-setup`; code layering / structure →
+**Owns:** the application-repo CD side: the deploy-trigger contract, the deploy request and its
+illustrative template, the release and image standard (semver and git sha, GHCR), and the per-repo
+migration runbook.
+**Delegates:** CI (build, test, lint, coverage, architecture guardrails, docs publish) to
+`project-setup`; code layering to `cosmic-python`.
+**Documents only (authoritative boundary, never automated or duplicated here):**
+`cloud-infrastructure` (Terraform, Ansible), `infrastructure-stacks` (Compose stacks and deploy
+Actions), Vaultwarden (secret source of truth), and the bastion and SSH break-glass procedure.
+**Related:** `stack-operations` (everything from the deploy request onward: deploy workflow,
+rollback, per-stack minimum); `infrastructure-security` (access and secrets on the infrastructure
+side); `meaningfy-release` (the release lifecycle: versioning, release notes, PyPI publish, the
+release and hotfix runbook; it cites this skill for the GHCR image path); `project-setup`,
 `cosmic-python`.
-**Documents-only (authoritative boundary, never automated or duplicated here):**
-`cloud-infrastructure` (Terraform/Ansible), `infrastructure-stacks` (Compose stacks + deploy
-Actions), **Vaultwarden** (secret source of truth), and the **bastion/SSH** break-glass procedure.
-**Related:** `stack-operations` — everything from the deploy request onward in `infrastructure-stacks`
-(deploy workflow, rollback, per-stack minimum); `infrastructure-security` — access and secrets on the
-infrastructure side; `project-setup`, `cosmic-python`,
-`meaningfy-release` — the release *lifecycle* (versioning, release
-notes, PyPI publish, the release/hotfix runbook); it cites this skill for the GHCR image path and does
-not restate it.
 
 Answers `VER, RSK` in `test-strategy`'s matrix (`references/devops.md`).

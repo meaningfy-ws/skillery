@@ -1,6 +1,6 @@
 # ADR: Architectural Guardrails for Python (Tooling)
 
-Format follows the `architecture` skill's `references/ADR_TEMPLATE.md` (single source for the ADR
+Format follows the `architecture` skill's `assets/ADR_TEMPLATE.md` (single source for the ADR
 shape). This document is written for people; the operational layering rules live in the `cosmic-python` skill.
 
 ## Context and Problem Statement

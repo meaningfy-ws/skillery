@@ -21,6 +21,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -43,12 +44,16 @@ def _module():
     return sys.modules["rulebook_rules"]
 
 
-def run(*args, vault=VAULT, env=None, cwd=None):
+_NO_CONFIG = tempfile.mkdtemp(prefix="rulebook-home-")  # empty, so no developer file leaks into a test
+
+
+def run(*args, vault=VAULT, env=None, cwd=None, script=SCRIPT):
     e = {k: v for k, v in os.environ.items() if not k.startswith(("LANGFUSE_", "MEANINGFY_VAULT"))}
+    e.update(HOME=_NO_CONFIG, CLAUDE_CONFIG_DIR=_NO_CONFIG, XDG_CONFIG_HOME=_NO_CONFIG)
     if vault is not None:
         e["MEANINGFY_VAULT"] = str(vault)
     e.update(env or {})
-    return subprocess.run([sys.executable, str(SCRIPT), *args], capture_output=True, text=True,
+    return subprocess.run([sys.executable, str(script), *args], capture_output=True, text=True,
                           encoding="utf-8", env=e, cwd=cwd or ROOT, timeout=60)
 
 
@@ -448,6 +453,72 @@ def test_stats_warns_when_the_format_changed(tmp_path):
     assert "never-loaded" not in out
 
 
+def test_stats_counts_rules_written_and_memory_writes_denied(tmp_path):
+    marker = "[rules-first: memory write denied] use rules.py instead"
+    cmd = lambda c: {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+                     "input": {"command": f'python3 "<skills>/rulebook/scripts/rules.py" {c}'}, "output": {"stdout": ""}}
+    other = {"type": "SPAN", "name": "Write", "startTime": "2026-10-20T09:00:00.000Z",
+             "input": {"file_path": "MEMORY.md"}, "output": {"stdout": marker}}
+    data = [cmd("add --type tone"), cmd("add --type spelling"), cmd("approve R-0050"), cmd("add --dry-run"),
+            cmd("update R-0010 --dry-run"), cmd("add --candidate"), cmd("cite R-0001"), other, dict(other),
+            {**other, "type": "GENERATION"}]
+    path = tmp_path / "written.json"
+    path.write_text(json.dumps({"data": data, "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    lines = _stats(path=path).stdout.splitlines()
+    assert lines[1:3] == ["rules written: 3", "memory writes denied: 2"]
+
+
+def test_stats_counts_every_call_in_a_command_and_reads_flags_as_tokens(tmp_path):
+    cmd = lambda c: {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+                     "input": {"command": c}, "output": {"stdout": ""}}
+    rp = 'python3 "<skills>/rulebook/scripts/rules.py"'
+    data = [cmd(f"{rp} add --dry-run && {rp} add --type tone"),  # one written
+            cmd(f"{rp} add --dry-run; {rp} add --candidate\n{rp} add --type x"),  # one written
+            cmd(f"{rp} add --do 'never write --candidate in a note' --type tone"),  # a write: the flag is inside a value
+            cmd(f"{rp} add --dry-run | cat"),  # none
+            cmd(f"{rp} add --candidate && {rp} update R-0010 --dry-run")]  # none
+    path = tmp_path / "calls.json"
+    path.write_text(json.dumps({"data": data, "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    assert _stats(path=path).stdout.splitlines()[1] == "rules written: 3"
+
+
+@pytest.mark.parametrize("command, written", [
+    ("{rp} add --type a && {rp} add --type b", 2),
+    ("{rp} add --type a; {rp} confirm R-0001; {rp} cite R-0001", 2),
+    ("{rp} add --dry-run && {rp} add --type b", 1),
+    ("{rp} load --for x | cat", 0),
+    ("echo nothing to see", 0),
+])
+def test_stats_counts_each_write_call_of_a_command(tmp_path, command, written):
+    rp = 'python3 "<skills>/rulebook/scripts/rules.py"'
+    obs = {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+           "input": {"command": command.format(rp=rp)}, "output": {"stdout": ""}}
+    path = tmp_path / "one.json"
+    path.write_text(json.dumps({"data": [obs], "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    assert _stats(path=path).stdout.splitlines()[1] == f"rules written: {written}"
+
+
+def test_stats_usage_counts_follow_every_call_in_a_command(tmp_path):
+    rp = 'python3 "<skills>/rulebook/scripts/rules.py"'
+    obs = {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+           "input": {"command": f"{rp} load --for x && {rp} cite R-0001 && {rp} override R-0002 --reason why"},
+           "output": {"stdout": ""}}
+    path = tmp_path / "usage.json"
+    path.write_text(json.dumps({"data": [obs], "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    out = _stats(path=path).stdout
+    assert _row(out, "R-0001") == [0, 1, 0, 0]
+    assert _row(out, "R-0002") == [0, 0, 1, 0]
+
+
+def test_rules_calls_skips_lines_without_rules_py_before_tokenising(monkeypatch):
+    seen = []
+    mod = _module()
+    real = mod._tokens
+    monkeypatch.setattr(mod, "_tokens", lambda line: seen.append(line) or real(line))
+    assert mod._rules_calls("echo hi\nls -la\npython3 rules.py add x") == [("add", ["x"])]
+    assert seen == ["python3 rules.py add x"]
+
+
 def test_langfuse_not_configured():
     r = run("stats", "--today", TODAY)
     assert r.returncode == 3
@@ -698,7 +769,9 @@ def test_skills_never_tell_the_agent_to_run_a_dotdot_path(skill):
 
 REPO_FIX = FIX / "repo"
 POINTER = ("- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, "
-           "load them with the rulebook skill; change them only through it, by pull request.")
+           "load them with the rulebook skill; change them only through it, by pull request. "
+           "Preferences and corrections go to the rulebook, never to the CLI's memory; "
+           "project state goes to the spine and the repository's docs.")
 ADD_REPO = ("add", "--store", "repo", "--type", "constraint", "--strength", "hard", "--scope", "activity:coding",
             "--when", "committing", "--do", "never force push", "--because", "history is shared",
             "--source", "2026-10-29 owner: 'never force push'", "--today", TODAY)
@@ -856,13 +929,82 @@ def test_t20_where_describes_each_case(tmp_path, vault):
     r = run("where", vault=vault, cwd=full)
     assert r.returncode == 0
     assert r.stdout == (f"vault: {vault}\nrepository: {full} (docs/rules/ present)\n"
-                        "default store: repository\n-- end --\n")
+                        f"default store: repository\n{MISSING_POLICY}\n-- end --\n")
     bare = _repo(tmp_path, rules=False, name="bare")
     assert "(docs/rules/ not yet created)" in run("where", vault=vault, cwd=bare).stdout
     r = run("where", vault=None, cwd=tmp_path, env=_home(tmp_path))
     assert r.returncode == 0
     assert r.stdout == ("vault: none (MEANINGFY_VAULT not set and no '08 How to/' here)\n"
-                        "repository: none (no .git found)\ndefault store: vault\n-- end --\n")
+                        f"repository: none (no .git found)\ndefault store: vault\n{MISSING_POLICY}\n-- end --\n")
+
+
+MISSING_POLICY = ("routing policy: missing (add or replace the rules line of docs/environment/global-prompt.md "
+                  "in your global instructions)")
+ROUTING = ROOT / "skills/rulebook/assets/routing.md"
+
+
+def _sentence():
+    return _module().routing_sentence()
+
+
+def test_the_three_policy_statuses_share_one_label():
+    m = _module()
+    assert m.POLICY_LABEL == "routing policy:"
+    assert m.POLICY_MISSING == MISSING_POLICY and m.POLICY_MISSING.startswith(m.POLICY_LABEL)
+    assert m.routing_sentence() == ROUTING.read_text(encoding="utf-8").splitlines()[2]
+
+
+def _policy(tmp_path, env, script=SCRIPT):
+    r = run("where", vault=None, cwd=tmp_path, env={**_home(tmp_path), **env}, script=script)
+    assert r.returncode == 0, r.stderr
+    return _lines(r.stdout, "routing policy:")
+
+
+def test_t2_routing_file_has_the_five_lines():
+    lines = ROUTING.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 5 and lines[0].startswith("Rules: when an activity starts")
+    assert lines[2].startswith("Preferences and corrections go to the rulebook")
+
+
+def test_t2_policy_present_via_claude_config_dir(tmp_path):
+    cfg = tmp_path / "cc"
+    cfg.mkdir()
+    (cfg / "CLAUDE.md").write_text(f"# mine\n{_sentence()}\n", encoding="utf-8")
+    assert _policy(tmp_path, {"CLAUDE_CONFIG_DIR": str(cfg)}) == [
+        f"routing policy: present ({cfg / 'CLAUDE.md'})"]
+
+
+def test_t2_policy_present_via_xdg_config_home(tmp_path):
+    xdg = tmp_path / "xdg"
+    (xdg / "opencode").mkdir(parents=True)
+    (xdg / "opencode/AGENTS.md").write_text(_sentence(), encoding="utf-8")
+    assert _policy(tmp_path, {"XDG_CONFIG_HOME": str(xdg)}) == [
+        f"routing policy: present ({xdg / 'opencode/AGENTS.md'})"]
+
+
+def test_t2_policy_present_when_wrapped_and_with_a_curly_apostrophe(tmp_path):
+    cfg = tmp_path / "cc"
+    cfg.mkdir()
+    words = _sentence().replace("'", "’").split(" ")
+    (cfg / "CLAUDE.md").write_text("- " + "\n  ".join(" ".join(words[i:i + 6]) for i in range(0, len(words), 6)),
+                                   encoding="utf-8")
+    assert _policy(tmp_path, {"CLAUDE_CONFIG_DIR": str(cfg)})[0].startswith("routing policy: present")
+
+
+def test_t2_policy_missing_when_the_sentence_is_absent_or_the_file_unreadable(tmp_path):
+    cfg = tmp_path / "cc"
+    cfg.mkdir()
+    (cfg / "CLAUDE.md").write_text("nothing about rules\n", encoding="utf-8")
+    assert _policy(tmp_path, {"CLAUDE_CONFIG_DIR": str(cfg)}) == [MISSING_POLICY]
+    (cfg / "CLAUDE.md").write_bytes(b"\xff\xfe\x00bad")
+    assert _policy(tmp_path, {"CLAUDE_CONFIG_DIR": str(cfg)}) == [MISSING_POLICY]
+
+
+def test_t2_policy_unknown_when_routing_md_is_missing(tmp_path):
+    (tmp_path / "scripts").mkdir()
+    script = tmp_path / "scripts/rules.py"
+    shutil.copy(SCRIPT, script)
+    assert _policy(tmp_path, {}, script=script) == ["routing policy: unknown (routing.md not found)"]
 
 
 def test_t21_a_cross_store_link_is_cut_in_memory_only(repo):
