@@ -305,3 +305,10 @@ Recorded after stage 2 (2026-11-15).
   old scripts on the same snapshot": 262 s against 268 s, met; task 4.2 is done. Task 3.4 is walked
   by the developer in a throwaway sandbox, one fresh session per scenario, on the release that holds
   PR #269 (`evidence/walk-3.4.md`, its `walk-3.4/setup.sh`); the box is ticked on their sign-off.
+- **D-28** Reconcile with the delivery. The proposal's success line takes D-27, and DEC-2 takes D-22
+  (a whole line, repeated in the last message of a turn that dispatches a worker). The spec deltas
+  gain what delivery fixed. `epic-delivery` and `session-navigation` get the last-message rule
+  (D-22), and `session-navigation` adds the once-only warning that never blocks in strict mode.
+  `session-retrospective` adds the spawn-time mark (D-15), the edited PR body (D-17), the 1%
+  threshold, malformed records (D-20 F5) and the default folder with no override (D-5, D-20 F4).
+  No code change; nothing built contradicts the EPIC's no-gos.

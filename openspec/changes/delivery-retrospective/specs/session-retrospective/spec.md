@@ -14,7 +14,12 @@ The report SHALL take the phase and stage of each event from the latest mark lin
 session. Events with no earlier mark SHALL keep the skill-based guess, each such row SHALL be
 labelled `guessed`, and the report SHALL print the share of cost that is guessed. A mark SHALL NOT
 be applied to events before it, and its span SHALL end when the lead loads an archive or release
-skill (proposal DEC-4, DEC-5).
+skill (proposal DEC-4, DEC-5). A subagent SHALL take the mark in force when it was spawned, and keep
+its own guess when none was (design D-15).
+
+#### Scenario: A subagent spans a new mark
+- **WHEN** a subagent spawned under `stage=1` is still running when the lead writes `stage=2`
+- **THEN** its cost stays under stage 1
 
 #### Scenario: Archive after the last stage
 - **WHEN** the lead loads the archive skill after `mark: change=x phase=deliver stage=3`
@@ -45,8 +50,14 @@ once (proposal DEC-5).
 - **WHEN** a second reviewer line of the same stage, role and lens follows in the session
 - **THEN** the report counts it as a second round
 
+#### Scenario: A pull request body is edited
+- **WHEN** the lead's line appears again, unchanged, in an edited pull request body
+- **THEN** the report adds no round (design D-17, D-20 F1)
+
 ### Requirement: Private text stays out of repositories
-The digest script SHALL refuse an output folder inside a git working tree. Test fixtures SHALL be
+The digest script SHALL write to `~/.cache/session-retrospective/<date>` by default and SHALL refuse
+an output folder inside a git working tree or a `.git` folder, the default included, with no
+override (design D-5, D-20 F4). Test fixtures SHALL be
 synthetic. The evidence of a real run SHALL hold numbers only, never prompts, reports or commands
 (proposal DEC-7).
 
@@ -56,11 +67,16 @@ synthetic. The evidence of a real run SHALL hold numbers only, never prompts, re
 
 ### Requirement: Unknown record types are counted and warned about
 The digest SHALL count every transcript record type it does not know and SHALL warn when that count
-passes a threshold (proposal DEC-8).
+passes a threshold of 1% of the lines read (proposal DEC-8, design D-6). A record of the wrong shape
+SHALL be counted as `(malformed)` and skipped, never stop the run (design D-20 F5).
 
 #### Scenario: The transcript format changes
 - **WHEN** the unknown records of a run pass the threshold
 - **THEN** the digest prints a warning with their count and types
+
+#### Scenario: A malformed record
+- **WHEN** a record has the wrong shape or no timestamp
+- **THEN** the digest counts it as `(malformed)`, skips it and finishes the run
 
 ### Requirement: The repository is the git root
 The scripts SHALL take a session's repository from the git root of its working directory, and the
