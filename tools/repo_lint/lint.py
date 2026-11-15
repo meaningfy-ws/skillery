@@ -763,13 +763,14 @@ def skill_too_long(repo: Path, limit: int = MAX_SKILL_LINES) -> list[str]:
 
 # ------------------------------------------------- the lean standard (lean-skills D-3 to D-5)
 _EXEMPTIONS = ("budget", "pointers")
-_FENCE = re.compile(r"^\s*(```|~~~)")
+_FENCE = re.compile(r"^\s*(`{3,}|~{3,})")
 _QUOTE = re.compile(r"^\s*>\s?")
 _HEADING = re.compile(r"^\s{0,3}#{1,6}\s+(.*?)\s*#*\s*$")
 _LIST_ITEM = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
 _TABLE_SEP = re.compile(r"^\s*\|?\s*:?-{3,}")
-_CODE_SPAN = re.compile(r"(`+)(.+?)\1")
-_PATHLIKE = re.compile(r"[\w./-]+")
+# One pass in reading order: a link, else a code span, else a path-like word.
+_MENTION = re.compile(r"\[[^\]]*\]\((?P<link><[^>]*>|(?:[^()]|\([^()]*\))+)\)"
+                      r"|(?P<tick>`+)(?P<code>.+?)(?P=tick)|(?P<bare>[\w./-]+)")
 _SENTENCE_END = re.compile(r"[.!?](?=\s|$)")
 _CLOSING_LIST = re.compile(r"\b(references|see also|further reading|resources|supporting materials?)\b", re.I)
 _PTR, _OTHER = "\x01", "\x02"  # placeholders: a pointer; any other link or code span
@@ -830,12 +831,12 @@ def _body_blocks(text: str) -> list[tuple[str, list[tuple[int, str]]]]:
     fence = None
     for i, raw in enumerate(body.split("\n")):
         n = base + i
-        if fence:
-            fence = None if raw.strip().startswith(fence) else fence
-            continue
         line = raw
         while q := _QUOTE.match(line):
             line = line[q.end():]
+        if fence:  # closed only by a run of the same character, at least as long
+            fence = None if re.fullmatch(rf"\s*{re.escape(fence[0])}{{{len(fence)},}}\s*", line) else fence
+            continue
         f, h, li = _FENCE.match(line), _HEADING.match(line), _LIST_ITEM.match(line)
         if f or h or li or not line.strip() or line.lstrip().startswith("|"):
             if cur:
@@ -888,20 +889,19 @@ def _pointer_errors(repo: Path, skill: str) -> list[str]:
                 found.append((n, path))
                 return _PTR
 
-            def link(m: re.Match) -> str:
-                target = (m.group(1).split() or [""])[0]
-                return ptr(target.split("#")[0]) if is_own(target) else _OTHER
-
-            def code(m: re.Match) -> str:
-                c = m.group(2).strip()
-                return ptr(c) if c in names or is_own(c) else _OTHER
-
-            def bare(m: re.Match) -> str:
-                tok = m.group(0)
+            def mention(m: re.Match) -> str:
+                if m["link"] is not None:
+                    raw = m["link"]
+                    target = raw[1:-1] if raw.startswith("<") else (raw.split() or [""])[0]
+                    return ptr(target.split("#")[0]) if is_own(target) else _OTHER
+                if m["code"] is not None:
+                    c = m["code"].strip()
+                    return ptr(c) if c in names or is_own(c) else _OTHER
+                tok = m["bare"]
                 core = tok.rstrip(".")
                 return ptr(core) + tok[len(core):] if core in names or is_own(core) else tok
 
-            marked.append(_PATHLIKE.sub(bare, _CODE_SPAN.sub(code, _MD_LINK.sub(link, line))))
+            marked.append(_MENTION.sub(mention, line))
         if kind == "heading":
             heading = lines[0][1]
             out += [f"{skill}: line {n}: pointer to {p} is not {_POINTER_RULE}" for n, p in found]

@@ -1541,6 +1541,16 @@ def test_reference_pointers_flags_a_pointer_not_in_the_sentence_form(tmp_path, b
     assert _ptr(tmp_path, body, ("x.md", "channels/a.md")) == [_bad(line, path)]
 
 
+@pytest.mark.parametrize("body, line, path", [
+    ("> ```\n> code\n> ```\n\nSee `x.md` here.", 9, "x.md"),
+    ("````\n```\n````\n\nSee `x.md` here.", 9, "x.md"),
+    ("See `x.md` now. Read [y](references/y.md) when x: it adds y.", 5, "x.md"),
+    ("- [a](<references/x.md>): topics", 5, "references/x.md"),
+])
+def test_reference_pointers_reads_fences_order_and_angle_links_right(tmp_path, body, line, path):
+    assert _ptr(tmp_path, body, ("x.md", "y.md")) == [_bad(line, path)]
+
+
 def test_reference_pointers_flags_a_closing_list_heading(tmp_path):
     assert _ptr(tmp_path, "Body.\n\n## References for Deeper Understanding\n\n- [Fowler](https://x.org)") == [
         's: line 7: heading "References for Deeper Understanding" closes the body with a list of references']
