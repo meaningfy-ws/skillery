@@ -12,6 +12,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.17.0] - 2026-11-16
+
 ### Changed
 
 - **The engineering skills are lean** (EPIC `lean-skills`, stage 3). `architecture` drops from
