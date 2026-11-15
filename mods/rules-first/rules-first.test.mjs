@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
-import { denies, sessionBlock } from "./rules-first.mjs";
+import { denies, loadDeny, sessionBlock, shouldDeny } from "./rules-first.mjs";
 
 const SCRIPT = fileURLToPath(new URL("./rules-first.mjs", import.meta.url));
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
@@ -83,6 +83,8 @@ test("routing.md exists next to the script's skill path", () => {
 
 // ---- the deny (T-3, T-4)
 
+const DENY = loadDeny();
+
 function note(type, nested = false) {
   return nested ? `---\nname: x\nmetadata:\n  type: ${type}\n---\nbody\n` : `---\nname: x\ntype: ${type}\n---\nbody\n`;
 }
@@ -118,7 +120,7 @@ test("T-3 and T-4 rows of the tool-call table", () => {
     ["Write", { file_path: "~/.claude/projects/-w-acme/memory/tilde.md", content: note("feedback") }, true],
   ];
   for (const [tool, input, expected] of rows) {
-    assert.equal(denies(tool, input, env), expected, `${tool} ${input.file_path}`);
+    assert.equal(shouldDeny(tool, input, env, DENY), expected, `${tool} ${input.file_path}`);
   }
 });
 
@@ -128,7 +130,7 @@ test("a denied write exits 2 with the marker on stderr", () => {
   const r = run(JSON.stringify({ hook_event_name: "PreToolUse", tool_name: "Write", tool_input: input }), env);
   assert.equal(r.status, 2);
   assert.ok(r.stderr.includes(MARKER));
-  assert.ok(r.stderr.includes("a preference or correction goes to the rulebook"));
+  assert.ok(r.stderr.includes("rule-learner") && r.stderr.includes("approval card"));
   assert.equal(r.stdout, "");
 });
 
@@ -138,4 +140,87 @@ test("an allowed write exits 0 with no output", () => {
   const r = run(JSON.stringify({ hook_event_name: "PreToolUse", tool_name: "Write", tool_input: input }), env);
   assert.equal(r.status, 0);
   assert.equal(r.stdout + r.stderr, "");
+});
+
+// ---- the type match, the path match and the pure decision (#272)
+
+test("the deny data lives in the rulebook asset and the message carries the marker", () => {
+  assert.deepEqual([...DENY.types].sort(), ["feedback", "user"]);
+  for (const word of ["rule-learner", "approval card", MARKER]) assert.ok(DENY.message.includes(word), word);
+  assert.equal(loadDeny(join(tmpdir(), "no-such-root")), null);
+});
+
+test("type rows: every type counts, whole token, any case, block scalar", () => {
+  const { memory, env } = fabricate();
+  const p = join(memory, "project_x.md");
+  writeFileSync(p, note("project"));
+  const write = (content) => shouldDeny("Write", { file_path: join(memory, "n.md"), content }, env, DENY);
+  const edit = (new_string) => shouldDeny("Edit", { file_path: p, old_string: "body", new_string }, env, DENY);
+  assert.equal(write("---\nmeta:\n  type: project\ntype: feedback\n---\nb\n"), true);
+  assert.equal(write("---\ntype: Feedback\n---\nb\n"), true);
+  assert.equal(write("---\ntype: |\n  feedback\n---\nb\n"), true);
+  assert.equal(write("---\ntype: >-\n  user\n---\nb\n"), true);
+  assert.equal(write("---\ntype: user-facing docs\n---\nb\n"), false);
+  assert.equal(edit("type: user-facing docs are next"), false);
+  assert.equal(edit("type: USER"), true);
+});
+
+test("pure decision: no I/O, unknown tool still counts the disk type, edits not an array", () => {
+  const types = DENY.types;
+  assert.equal(denies("Write", { content: note("feedback") }, null, types), true);
+  assert.equal(denies("Write", { content: note("project") }, note("feedback"), types), true);
+  assert.equal(denies("Other", {}, note("feedback"), types), true);
+  assert.equal(denies("Other", {}, note("project"), types), false);
+  assert.equal(denies("MultiEdit", { edits: "nope" }, note("project"), types), false);
+});
+
+test("path rows: symlinked config root, upper-case extension, deeper folder, new file", () => {
+  const { home, env } = fabricate();
+  const real = join(home, "real-claude");
+  mkdirSync(join(real, "projects/-w-acme/memory/sub"), { recursive: true });
+  const link = join(home, "link-claude");
+  symlinkSync(real, link);
+  const content = note("feedback");
+  const via = { ...env, CLAUDE_CONFIG_DIR: link };
+  const into = (root, rel) => ({ file_path: join(root, rel), content });
+  assert.equal(shouldDeny("Write", into(real, "projects/-w-acme/memory/a.md"), via, DENY), true);
+  assert.equal(shouldDeny("Write", into(link, "projects/-w-acme/memory/a.md"), via, DENY), true);
+  assert.equal(shouldDeny("Write", into(link, "projects/-w-acme/memory/a.md"), { ...env, CLAUDE_CONFIG_DIR: real }, DENY), true);
+  assert.equal(shouldDeny("Write", into(real, "projects/-w-acme/memory/a.MD"), via, DENY), true);
+  assert.equal(shouldDeny("Write", into(real, "projects/-w-acme/memory/sub/a.md"), via, DENY), true);
+  assert.equal(shouldDeny("Write", into(real, "projects/-w-acme/memory/new/deeper/a.md"), via, DENY), true);
+  assert.equal(shouldDeny("Write", into(real, "projects/-w-acme/other/a.md"), via, DENY), false);
+});
+
+test("asset unreadable: fail open, no deny, exit 0", () => {
+  const { memory, env } = fabricate();
+  assert.equal(shouldDeny("Write", { file_path: join(memory, "f.md"), content: note("feedback") }, env, null), false);
+  const root = join(env.HOME, "root");
+  mkdirSync(join(root, "mods/rules-first"), { recursive: true });
+  const script = join(root, "mods/rules-first/rules-first.mjs");
+  writeFileSync(script, readFileSync(SCRIPT, "utf8"));
+  const input = { file_path: join(memory, "f.md"), content: note("feedback") };
+  const r = spawnSync(process.execPath, [script], {
+    input: JSON.stringify({ hook_event_name: "PreToolUse", tool_name: "Write", tool_input: input }),
+    env,
+    encoding: "utf8",
+  });
+  assert.equal(r.status, 0);
+  assert.equal(r.stderr, "");
+});
+
+// ---- the block with everything set (#272)
+
+test("everything set: vault, repository rules and the routing policy present", () => {
+  const { home, repo, env } = fabricate();
+  const vault = join(home, "vault");
+  mkdirSync(join(vault, "08 How to"), { recursive: true });
+  mkdirSync(join(repo, "docs/rules"), { recursive: true });
+  const sentence = readFileSync(ROUTING, "utf8").split("\n")[2];
+  writeFileSync(join(home, ".claude/CLAUDE.md"), `# mine\n${sentence}\n`);
+  const r = run(JSON.stringify({ hook_event_name: "SessionStart", cwd: repo }), { ...env, MEANINGFY_VAULT: vault }, { cwd: repo });
+  assert.equal(r.status, 0);
+  assert.match(r.stdout, /routing policy: present/);
+  assert.ok(r.stdout.includes(`vault: ${vault}`));
+  assert.match(r.stdout, /docs\/rules\/ present/);
 });

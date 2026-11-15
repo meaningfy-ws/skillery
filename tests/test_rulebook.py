@@ -468,6 +468,20 @@ def test_stats_counts_rules_written_and_memory_writes_denied(tmp_path):
     assert lines[1:3] == ["rules written: 3", "memory writes denied: 2"]
 
 
+def test_stats_counts_every_call_in_a_command_and_reads_flags_as_tokens(tmp_path):
+    cmd = lambda c: {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+                     "input": {"command": c}, "output": {"stdout": ""}}
+    rp = 'python3 "<skills>/rulebook/scripts/rules.py"'
+    data = [cmd(f"{rp} add --dry-run && {rp} add --type tone"),  # one written
+            cmd(f"{rp} add --dry-run; {rp} add --candidate\n{rp} add --type x"),  # one written
+            cmd(f"{rp} add --do 'never write --candidate in a note' --type tone"),  # a write: the flag is inside a value
+            cmd(f"{rp} add --dry-run | cat"),  # none
+            cmd(f"{rp} add --candidate && {rp} update R-0010 --dry-run")]  # none
+    path = tmp_path / "calls.json"
+    path.write_text(json.dumps({"data": data, "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    assert _stats(path=path).stdout.splitlines()[1] == "rules written: 3"
+
+
 def test_langfuse_not_configured():
     r = run("stats", "--today", TODAY)
     assert r.returncode == 3
@@ -887,13 +901,20 @@ def test_t20_where_describes_each_case(tmp_path, vault):
                         f"repository: none (no .git found)\ndefault store: vault\n{MISSING_POLICY}\n-- end --\n")
 
 
-MISSING_POLICY = ("routing policy: missing (add the rules line of docs/environment/global-prompt.md "
-                  "to your global instructions)")
+MISSING_POLICY = ("routing policy: missing (add or replace the rules line of docs/environment/global-prompt.md "
+                  "in your global instructions)")
 ROUTING = ROOT / "skills/rulebook/assets/routing.md"
 
 
 def _sentence():
-    return ROUTING.read_text(encoding="utf-8").splitlines()[2]
+    return _module().routing_sentence()
+
+
+def test_the_three_policy_statuses_share_one_label():
+    m = _module()
+    assert m.POLICY_LABEL == "routing policy:"
+    assert m.POLICY_MISSING == MISSING_POLICY and m.POLICY_MISSING.startswith(m.POLICY_LABEL)
+    assert m.routing_sentence() == ROUTING.read_text(encoding="utf-8").splitlines()[2]
 
 
 def _policy(tmp_path, env, script=SCRIPT):

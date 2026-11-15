@@ -115,9 +115,6 @@ def _check_mods(repo: Path, bundles: list[dict]) -> None:
             is_modules = _is_modules_mod(repo, m)
             if is_modules:
                 modules_mods.append(m)
-                if len(modules_mods) > 1:
-                    raise ValueError(f"{BUNDLES_FILE}: bundle '{b['name']}' lists modules mods "
-                                     f"'{modules_mods[0]}' and '{m}'; a bundle holds at most one modules mod")
             required = MOD_FILES if is_modules else (MOD_HOOKS,)
             missing = [f for f in required if not (repo / MODS_DIR / m / f).is_file()]
             if missing:
@@ -128,6 +125,10 @@ def _check_mods(repo: Path, bundles: list[dict]) -> None:
                 raise ValueError(f"mod '{m}': {links[0].relative_to(repo)} is a symlink; a mod holds only real files")
             if (repo / MODS_DIR / m / MOD_CONFIG).is_file():
                 _mod_config(repo, m)
+        if len(modules_mods) > 1:
+            names = ", ".join(f"'{n}'" for n in modules_mods[:-1]) + f" and '{modules_mods[-1]}'"
+            raise ValueError(f"{BUNDLES_FILE}: bundle '{b['name']}' lists modules mods {names}; "
+                             "a bundle holds at most one modules mod")
 
 
 def _is_modules_mod(repo: Path, mod: str) -> bool:
@@ -247,6 +248,8 @@ def plugin_manifests(repo: Path) -> dict[str, bytes]:
                     "author": PLUGIN_AUTHOR}
         for m in b.get("mods", []):
             manifest.setdefault("hooks", []).append(f"./mods/{m}/{MOD_HOOKS}")
+            if not _is_modules_mod(repo, m):  # types and userConfig are the modules mod's alone
+                continue
             if (repo / MODS_DIR / m / MOD_TYPES).is_file():
                 manifest["types"] = f"./mods/{m}/{MOD_TYPES}"
             if (repo / MODS_DIR / m / MOD_CONFIG).is_file():

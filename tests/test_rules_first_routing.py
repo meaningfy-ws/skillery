@@ -13,7 +13,6 @@ rules = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = rules  # dataclasses look the module up
 spec.loader.exec_module(rules)
 
-ROUTING = (ROOT / "skills/rulebook/assets/routing.md").read_text(encoding="utf-8").splitlines()[2]
 BINDINGS = ["docs/environment/global-prompt.md", "skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl", "AGENTS.md"]
 
 
@@ -24,15 +23,17 @@ def test_mod_source_contains_deny_marker():
 
 @pytest.mark.parametrize("name", BINDINGS)
 def test_binding_carries_routing_sentence(name):
-    text = rules.normalise((ROOT / name).read_text(encoding="utf-8"))
-    assert rules.normalise(ROUTING) in text, f"{name} lacks the routing sentence of routing.md line 3"
+    text = rules._normalise_sentence((ROOT / name).read_text(encoding="utf-8"))
+    assert rules._normalise_sentence(rules.routing_sentence()) in text, f"{name} lacks the routing sentence of routing.md"
 
 
 def test_pointer_carries_routing_sentence():
-    assert rules.normalise(ROUTING) in rules.normalise(rules.POINTER), "rules.POINTER lacks the routing sentence"
+    assert rules._normalise_sentence(rules.routing_sentence()) in rules._normalise_sentence(rules.POINTER), \
+        "rules.POINTER lacks the routing sentence"
 
 
 def test_wrapped_copy_with_curly_apostrophe_matches():
-    copy = "\n  ".join(textwrap.wrap(ROUTING.replace("'", "’"), 100))
+    sentence = rules.routing_sentence()
+    copy = "\n  ".join(textwrap.wrap(sentence.replace("'", "’"), 100))
     assert "\n" in copy and "’" in copy
-    assert rules.normalise(ROUTING) in rules.normalise(copy)
+    assert rules._normalise_sentence(sentence) in rules._normalise_sentence(copy)

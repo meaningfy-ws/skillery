@@ -4,19 +4,14 @@
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // The marker is the constant DENY_MARKER of skills/rulebook/scripts/rules.py; `stats` counts it.
+// The denied types and the message text are data in skills/rulebook/assets/memory-deny.json.
 const DENY_MARKER = "[rules-first: memory write denied]";
-export const MESSAGE =
-  "rules-first: a preference or correction goes to the rulebook, not the CLI's memory. " +
-  "Do not save it as a note of another type and do not add it to the memory index. " +
-  "Draft it as a rule-learner candidate and show it in the rule approval card before your final summary. " +
-  DENY_MARKER;
-
-const DENIED_TYPES = new Set(["feedback", "user"]);
-const TYPE_LINE = /^[ \t]*type:[ \t]*["']?(\w+)/m;
+const TYPE_LINE = /^[ \t]*type:[ \t]*(.*)$/;
+const BLOCK_SCALAR = /^[|>][+-]?$/;
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "../..");
 const END_LINE = "-- end --";
@@ -36,7 +31,7 @@ export function sessionBlock(cwd, root = ROOT, env = process.env) {
     cwd,
     env,
     encoding: "utf8",
-    timeout: 5000,
+    timeout: 15000, // 5000 ran out under load and dropped the where lines
   });
   if (!where.error && where.status === 0 && where.stdout) {
     parts.push(...where.stdout.split("\n").filter((l) => l && l.trim() !== END_LINE));
@@ -46,36 +41,73 @@ export function sessionBlock(cwd, root = ROOT, env = process.env) {
   return parts.length ? `Rules (rules-first):\n${parts.join("\n")}\n` : "";
 }
 
-/** The `type:` of a note's frontmatter (top level or nested), or of loose text when it has none. */
-function typeOf(text) {
-  if (typeof text !== "string") return null;
+/** The denied types and the message (with the marker) from the rulebook asset; null when unreadable. */
+export function loadDeny(root = ROOT) {
+  try {
+    const { types, message } = JSON.parse(readFileSync(join(root, "skills/rulebook/assets/memory-deny.json"), "utf8"));
+    if (!Array.isArray(types) || typeof message !== "string") return null;
+    return { types: new Set(types), message: `${message} ${DENY_MARKER}` };
+  } catch {
+    return null;
+  }
+}
+
+/** Every `type:` value of a note's frontmatter (top level and nested), lower-cased; of loose text when it has none. */
+function typesOf(text) {
+  if (typeof text !== "string") return [];
   const m = /^---\r?\n([\s\S]*?)\r?\n---/.exec(text);
-  return TYPE_LINE.exec(m ? m[1] : text)?.[1] ?? null;
+  const lines = (m ? m[1] : text).split(/\r?\n/);
+  const found = [];
+  lines.forEach((line, i) => {
+    const t = TYPE_LINE.exec(line);
+    if (!t) return;
+    let value = t[1].replace(/\s+#.*$/, "").trim();
+    if (BLOCK_SCALAR.test(value)) value = (lines.slice(i + 1).find((l) => l.trim()) ?? "").trim();
+    found.push(value.replace(/^["']|["']$/g, "").trim().toLowerCase());
+  });
+  return found;
 }
 
-/** True when `path` is `<config root>/projects/<one segment>/memory/<name>.md`. */
-function inMemoryFolder(path, env) {
-  const home = env.HOME || homedir();
-  const expand = (p) => (p === "~" || p.startsWith("~/") ? join(home, p.slice(1)) : p);
-  const config = resolve(expand(env.CLAUDE_CONFIG_DIR || join(home, ".claude")));
-  const rel = resolve(expand(path)).slice(config.length + 1);
-  return resolve(expand(path)).startsWith(config + "/") && /^projects\/[^/]+\/memory\/[^/]+\.md$/.test(rel);
+const expandTilde = (p, home) => (p === "~" || p.startsWith("~/") ? join(home, p.slice(1)) : p);
+
+/** The real path of `path`, or of its nearest existing ancestor with the missing tail put back. */
+function realish(path) {
+  const tail = [];
+  for (let cur = path; ; cur = dirname(cur)) {
+    try {
+      return join(realpathSync(cur), ...tail);
+    } catch {
+      if (dirname(cur) === cur) return path;
+      tail.unshift(basename(cur));
+    }
+  }
 }
 
-/** True when the tool call writes a `feedback` or `user` note into the auto-memory folder. */
-export function denies(toolName, toolInput, env = process.env) {
-  const path = toolInput?.file_path;
-  if (typeof path !== "string" || !inMemoryFolder(path, env)) return false;
+/** The real absolute path when `path` is `<config root>/projects/<slug>/memory/**.md`, else null. */
+export function memoryPath(path, env) {
   const home = env.HOME || homedir();
-  const onDisk = readText(path.startsWith("~") ? join(home, path.slice(1)) : path);
-  const diskType = onDisk === null ? null : typeOf(onDisk);
-  const types = [diskType];
-  if (toolName === "Write") types.push(typeOf(toolInput.content));
-  else if (toolName === "Edit") types.push(typeOf(toolInput.new_string)); // D-10: disk type or new_string type
+  const config = realish(resolve(expandTilde(env.CLAUDE_CONFIG_DIR || join(home, ".claude"), home)));
+  const target = realish(resolve(expandTilde(path, home)));
+  const inside = target.startsWith(config + "/") && /^projects\/[^/]+\/memory\/.+\.md$/i.test(target.slice(config.length + 1));
+  return inside ? target : null;
+}
+
+/** Pure: true when the note on disk, or the text the tool call writes, has a denied type. */
+export function denies(toolName, toolInput, diskText, types) {
+  const found = typesOf(diskText);
+  if (toolName === "Write") found.push(...typesOf(toolInput?.content));
+  else if (toolName === "Edit") found.push(...typesOf(toolInput?.new_string)); // D-10: disk type or new_string type
   else if (toolName === "MultiEdit") {
-    for (const edit of toolInput.edits ?? []) types.push(typeOf(edit?.new_string));
-  } else return false;
-  return types.some((t) => DENIED_TYPES.has(t));
+    for (const edit of Array.isArray(toolInput?.edits) ? toolInput.edits : []) found.push(...typesOf(edit?.new_string));
+  }
+  return found.some((t) => types.has(t));
+}
+
+/** The I/O shell of the decision: the path check, the disk read, then `denies`. No `deny` data, no deny. */
+export function shouldDeny(toolName, toolInput, env, deny) {
+  if (!deny || typeof toolInput?.file_path !== "string") return false;
+  const path = memoryPath(toolInput.file_path, env);
+  return path !== null && denies(toolName, toolInput, readText(path), deny.types);
 }
 
 function main() {
@@ -84,9 +116,12 @@ function main() {
     if (event?.hook_event_name === "SessionStart") {
       const block = sessionBlock(event.cwd || process.cwd());
       if (block) process.stdout.write(block);
-    } else if (event?.hook_event_name === "PreToolUse" && denies(event.tool_name, event.tool_input)) {
-      process.stderr.write(`${MESSAGE}\n`);
-      process.exit(2);
+    } else if (event?.hook_event_name === "PreToolUse") {
+      const deny = loadDeny();
+      if (shouldDeny(event.tool_name, event.tool_input, process.env, deny)) {
+        process.stderr.write(`${deny.message}\n`);
+        process.exit(2);
+      }
     }
   } catch {
     // fail open: any error lets the session and the write go on
