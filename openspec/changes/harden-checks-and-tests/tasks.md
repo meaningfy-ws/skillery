@@ -7,7 +7,8 @@
      example code in a skill, stage 1 in a tool side and a prose side; not gated again.
      Revised again 2026-11-15 by owner decision (design D-35): the weekly mutation runs are
      dropped, tasks 3.5 and 3.6 removed; not gated again. Reconciled 2026-11-15 with the
-     delivered tool side (D-36 to D-40) and with project-setup's move to uv (PR #248). -->
+     delivered tool side (D-36 to D-40) and with project-setup's move to uv (PR #248). Revised
+     2026-11-15 by owner decision (D-41): the project-setup part of the prose side goes first. -->
 
 
 > Derives from: EPIC `harden-checks-and-tests` ([`proposal.md`](proposal.md)); design in [`design.md`](design.md).
@@ -22,7 +23,8 @@ in D-33. Each side ends with the checks of task 1.16.
 | Side | Tasks |
 |---|---|
 | Tool side | 1.1, 1.2, 1.3, 1.4, 1.6, 1.9, 1.10, 1.11, 1.15; of 1.5 the fixtures, TC-13, the templates and the comment on #215; of 1.7 and 1.8 the rules and their fixtures; of 1.13 everything but the `project-setup` references; of 1.16 the README, the `README.md` row, the CHANGELOG line and issue #215 |
-| Prose side | 1.12, 1.14; of 1.5 `config-files.md` § Ruff and `decisions.md` D4; of 1.7 the catalogue entry and the L1 lens; of 1.8 the *Suppressions* heading; of 1.13 the five `project-setup` references; of 1.16 a CHANGELOG line |
+| Prose side, `project-setup` part (D-41, done first) | of 1.5 `config-files.md` § Ruff and `decisions.md` D4; of 1.8 the *Suppressions* heading; of 1.13 the five `project-setup` references; a CHANGELOG line |
+| Prose side, after the pilot | 1.12, 1.14; of 1.7 the catalogue entry and the L1 lens; of 1.16 a CHANGELOG line |
 
 - [x] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
   `evidence/acceptance.md` (D-13). *Open for the developer:* the two proposals of D-24
@@ -51,7 +53,7 @@ in D-33. Each side ends with the checks of task 1.16.
   *Revised 2026-11-15 (D-34):* the cases of TC-04 and TC-05 that read the live catalogue are
   written as skipped, with the message "switched on by task 1.12"; the parser's cases run on
   fixtures.
-- [ ] 1.5 Ruff: copy the cases of `inputs/ruff-probe/` to `tests/fixtures/quality/ruff/` (the
+- [x] 1.5 Ruff: copy the cases of `inputs/ruff-probe/` to `tests/fixtures/quality/ruff/` (the
   inputs stay) and write TC-13; then change `ruff.toml.tmpl`, the Ruff pin in `pyproject.toml.tmpl`
   and the `rev` in `dot-pre-commit-config.yaml` per D-2; update `config-files.md` § Ruff and
   `decisions.md` D4; comment the probe table and the accepted `Session` gap on issue #215 (D-2;
@@ -65,7 +67,7 @@ in D-33. Each side ends with the checks of task 1.16.
   `AP-SPARQL-FROM-STRINGS` and name it in the L1 lens of `meaningfy-code-review` (D-3, the rule
   table and the worked example; spec *Every Meaningfy Semgrep rule has a fixture
   test*, *SPARQL is not built from strings*; IT-01).
-- [ ] 1.8 The two report-only rules (`dict-as-model`, `free-string-key`) in
+- [x] 1.8 The two report-only rules (`dict-as-model`, `free-string-key`) in
   `quality/semgrep/report-only/`, and `mfy-suppression-without-reason` in
   `quality/semgrep/suppressions/` with the *Suppressions* heading in `config-files.md` (D-3, D-6;
   IT-01).
@@ -86,7 +88,7 @@ in D-33. Each side ends with the checks of task 1.16.
   *Revised 2026-11-15 (D-31, D-34):* prose side. The ten bullets stay and each keeps its value,
   in the place and form the `lean-skills` pilot left them; this task switches on the skipped
   cases of TC-04 and TC-05.
-- [ ] 1.13 Project wiring. In `Makefile.tmpl`: the pin and the three tool versions,
+- [x] 1.13 Project wiring. In `Makefile.tmpl`: the pin and the three tool versions,
   `quality-fetch`, `quality-tools`, `check-semgrep` (three passes), `check-layout` (ls-lint and the
   four `test -f` lines), `check-makefile`, the new `check-quality`. The template
   `quality/tools.sha256`; the `render` lines in `scaffold.sh` for the templates of D-1 that exist
@@ -210,10 +212,10 @@ are dropped (D-35).
 
 ## Roadmap
 
-- [x] 1.0 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [ ] 1.5 · [x] 1.6 · [ ] 1.7 · [ ] 1.8 · [x] 1.9
-  · [x] 1.10 · [x] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14 · [x] 1.15 · [ ] 1.16
-  *(1.5, 1.7, 1.8, 1.13 and 1.16 are done on the tool side and stay open for their prose-side
-  parts; see `handover-tool-side.md`.)* · [ ] 2.1 · [ ] 2.2
+- [x] 1.0 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [ ] 1.7 · [x] 1.8 · [x] 1.9
+  · [x] 1.10 · [x] 1.11 · [ ] 1.12 · [x] 1.13 · [ ] 1.14 · [x] 1.15 · [ ] 1.16
+  *(1.7 and 1.16 are done on the tool side and in the `project-setup` part of the prose side
+  (D-41); they stay open for their parts after the pilot; see `handover-tool-side.md`.)* · [ ] 2.1 · [ ] 2.2
   · 2.3 removed (D-30) · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · 3.5 dropped
   · 3.6 dropped (D-35) · [ ] 3.7 · [ ] 3.8 · [ ] 3.9 · [ ] 3.10 · [ ] 3.11
 

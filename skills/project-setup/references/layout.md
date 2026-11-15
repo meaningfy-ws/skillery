@@ -31,6 +31,8 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 ├── sonar-project.properties      # SonarQube key/sources
 ├── Makefile                      # the dev UX — install / check-all / test / build-docs / up…
 ├── .gitignore
+├── .semgrepignore                # replaces Semgrep's built-in list, so tests/ is scanned
+├── .quality/                     # git-ignored: skillery's quality/ at QUALITY_VERSION + the tools
 │
 ├── <<PACKAGE>>/                   # ── the deployable top-level package (NO src/) ──
 │   ├── __init__.py
@@ -54,9 +56,10 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 ├── model/                        # conceptual model (LinkML) — PRODUCT archetype only (R5)
 │   └── schema.yaml               #   the domain source; make generate-models renders the targets
 │
-├── scripts/                      # PINNED, projected generators — only if LinkML + Neo4j (Q4.5+Q5.1)
-│   ├── gen_neo4j_constraints.py  #   copied from linkml-engineering's scripts/linkml_neo4j/; refresh
-│   └── gen_neomodel.py           #   = re-run project-setup, review the diff (never silent)
+├── scripts/
+│   ├── quality/                  # tools.sha256 + external_sources.py — code archetypes
+│   ├── gen_neo4j_constraints.py  # PINNED generators, only if LinkML + Neo4j (Q4.5+Q5.1): copied
+│   └── gen_neomodel.py           #   from linkml-engineering; refresh = re-run project-setup, review the diff
 │
 ├── openspec/                     # the SPINE (see spine-projection.md) — projected into every repo
 │   ├── config.yaml               # schema: meaningfy ; context: ; the 3 thin per-artifact rules
@@ -89,14 +92,14 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 │   └── scripts/entrypoint.sh
 │
 └── .github/workflows/            # CI (D12) — workflows call make targets, never inline commands
-    ├── ci.yaml                   # openspec-validate → lint → typecheck → check-architecture → test → cov → Sonar
+    ├── ci.yaml                   # lint → typecheck → check-architecture → shared checks → test → cov → Sonar
     ├── docs.yaml                 # build + deploy to Pages (if docs selected)
     └── deploy.yaml               # CD TODO stub — DEPLOYABLE PRODUCT only, pending DevOps (ci-cd-delivery, R10)
 ```
 
 ### Annotations that matter
 
-- **No `/src`.** `pyproject.toml` uses `packages = [{include = "<<PACKAGE>>"}]` with no `from`;
+- **No `/src`.** `pyproject.toml` sets `module-root = ""` under `[tool.uv.build-backend]`;
   `pytest.ini` sets `pythonpath = .`.
 - **`tests/` is a sibling**, not nested — `tests/unit/` mirrors the code tree, `tests/feature/`
   the business capabilities. For the full test-tree layout, marker-by-path mechanics, and the

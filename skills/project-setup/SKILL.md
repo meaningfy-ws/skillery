@@ -158,6 +158,7 @@ These are the defaults the templates implement. Deviate only with a stated reaso
 | Tests | **pytest** + **pytest-bdd** (`pytest.ini`) | behave (separate runner), nose (dead) |
 | Coverage | **coverage.py** (`.coveragerc`, ≥80%) | — |
 | Architecture | **import-linter** (`.importlinter`) | manual review (erodes silently) |
+| Shared checks | skillery's **`quality/`** at `QUALITY_VERSION`: Semgrep, ls-lint, checkmake (`make check-quality`) | per-project copies (drift) |
 | Spine | **OpenSpec** (`openspec/`, pinned `meaningfy` schema, `/opsx:*`) | bespoke `.claude/memory/epics/` (drifts; dies at impl) |
 | Domain model (product) | **LinkML** `model/` + `make generate-models` | hand-maintained models (spec-drift) |
 | Agent file | **`AGENTS.md` canonical** + thin `CLAUDE.md` pointer (D8) | a symlink either way; two divergent files; CLAUDE-only |
