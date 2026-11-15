@@ -21,6 +21,27 @@
 
 [importlinter]
 root_package = <<PACKAGE>>
+include_external_packages = True
+
+; The domain layer does no I/O (cosmic-python:AP-IO-IN-MODELS): no HTTP, database or cloud client.
+[importlinter:contract:domain-no-io]
+name = The domain layer does no I/O (cosmic-python:AP-IO-IN-MODELS)
+type = forbidden
+source_modules =
+    <<PACKAGE>>.domain
+forbidden_modules =
+    requests
+    httpx
+    urllib3
+    aiohttp
+    sqlalchemy
+    psycopg
+    pymongo
+    redis
+    boto3
+    SPARQLWrapper
+    fastapi
+    flask
 
 ; -----------------------------------------------------------------------------
 ; SINGLE-COMPONENT layout (default — works out of the box)

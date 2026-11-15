@@ -1,0 +1,15 @@
+rules:
+  - id: mfy-dict-as-model
+    languages: [python]
+    severity: WARNING
+    message: "Dict returned as a model (cosmic-python:AP-DICT-AS-MODEL). Return a model."
+    pattern-either:
+      - pattern: |
+          return {"...": $X, ...}
+      - pattern: |
+          return {"...": $X, ...}, $STATUS
+    paths:
+      include:
+        - "**/entrypoints/**"
+        - "**/services/**"
+        - "**/mfy-dict-as-model.py"

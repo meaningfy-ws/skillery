@@ -111,6 +111,21 @@ jobs:
       - name: Architecture check (import-linter)
         run: make check-architecture
 
+      - name: Cache shared checks
+        uses: actions/cache@v4
+        with:
+          path: .quality
+          key: quality-${{ runner.os }}-${{ hashFiles('Makefile', 'scripts/quality/tools.sha256') }}
+
+      - name: Static rules (Semgrep)
+        run: make check-semgrep
+
+      - name: File layout (ls-lint)
+        run: make check-layout
+
+      - name: Makefile hygiene (checkmake)
+        run: make check-makefile
+
       - name: Run tests with coverage
         run: make test
 

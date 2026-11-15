@@ -99,5 +99,10 @@ def test_ownership_tripwire_runs():
     assert isinstance(lint.ownership_claim_report(REPO), list)
 
 
+def test_quality_folder_holds_only_checks():
+    assert lint.top_level_folders(REPO) == []
+    assert lint.quality_files(REPO) == []
+
+
 def test_cli_returns_zero():
     assert lint.main([str(REPO)]) == 0

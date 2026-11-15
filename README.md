@@ -130,6 +130,7 @@ Pin one exact release with `#vX.Y.Z` instead of `#releases` (from the release af
 | Model a domain | `conceptual-modelling` (the living model + source decision) · `modelling-conventions` (shared craft) |
 | Author LinkML / generate typed artefacts | `linkml-engineering` (LinkML → Pydantic/OWL/SHACL, custom templates, gates) |
 | Design a system | `architecture` (C4, ADRs, contracts) |
+| Find or add an executable check (Semgrep rule, ls-lint, checkmake) | [`quality/README.md`](quality/README.md) lists every check and its owning skill; [`docs/development/quality.md`](docs/development/quality.md) says how to add one |
 | Write a board paper / client note | `executive-communication` |
 | Write docs / a README, or the manuals and architecture pages a change owes (cold-read checked) | `technical-writing` (the documentation workflow; its Quick Start has a worked example) |
 | Write a clear explainer / blog-style explanation | `explanatory-writing` |

@@ -3,7 +3,8 @@
 All notable changes to the Meaningfy Skillery catalogue are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/), and the
 catalogue version is the root [`VERSION`](VERSION) file (`make bundles` writes it into
-`.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json` and `package.json`). The version
+`.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json`, `package.json` and the
+`QUALITY_VERSION` line of `project-setup`'s `Makefile.tmpl`). The version
 of record for a release is the git tag `vX.Y.Z`.
 
 Versions at or below `2.4.0` predate this changelog; see the git history and the
@@ -13,6 +14,18 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
+- Shared quality checks for new projects (EPIC `harden-checks-and-tests`, stage 1): a project
+  scaffolded by `project-setup` fetches skillery's `quality/` folder at the release it pins and
+  runs it with `make check-quality`. That target now also fails on: SPARQL built from strings;
+  an exception class defined outside `exceptions.py`; a real sleep or an RDF string comparison
+  in any test; a network call in a unit or feature test; a file named `utils.py`, `helpers.py`, `port.py`,
+  `factory.py`, `manager.py` or `errors.py`; a `# noqa` or `# nosemgrep` without a reason; a
+  missing required file or `make` target; and an I/O package (such as `requests` or
+  `SPARQLWrapper`) imported in the `domain` layer. Ruff now also flags requests without a
+  timeout, naive `datetime`, a blind `except`, environment reads outside the config module, magic
+  values in comparisons, functions with too many arguments, branches or statements, and
+  composite assertions (issue #215). Two Semgrep rules and four pinned external rule sets only
+  print their findings. How an existing project adopts the checks follows in a later release.
 - `test-strategy` (EPIC `test-strategy`, stage 1; bundle `meaningfy-core`): a new skill that says,
   for any activity (code, a doc, a post, an offer, a contract clause, a model), how the work
   succeeds or fails before you start, and carries the matrix of which check answers which question

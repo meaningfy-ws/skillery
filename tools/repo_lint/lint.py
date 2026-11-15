@@ -459,8 +459,8 @@ def use_case_changes_registered(repo: Path) -> list[str]:
     return out
 
 
-TOP_LEVEL_FOLDERS = ("skills", "agents", "mods", "use-cases", "openspec", "docs", "tools", "tests", ".github",
-                     ".claude-plugin")
+TOP_LEVEL_FOLDERS = ("skills", "agents", "mods", "use-cases", "openspec", "docs", "tools", "tests", "quality",
+                     ".github", ".claude-plugin")
 _GENERATED_FOLDERS = ("bundles",)  # make bundles, committed symlinks; never hand-edit
 _INSTALLED_FOLDERS = ("node_modules",)  # npm ci (make install), git-ignored like .venv
 
@@ -472,6 +472,43 @@ def top_level_folders(repo: Path) -> list[str]:
             for d in sorted(repo.iterdir())
             if d.is_dir() and not d.name.startswith(".") and d.name not in TOP_LEVEL_FOLDERS
             and d.name not in _GENERATED_FOLDERS and d.name not in _INSTALLED_FOLDERS]
+
+
+_QUALITY_DIR = "quality"
+_QUALITY_RULE_SUFFIXES = (".yaml", ".yml", ".json", ".ini")
+
+
+def quality_files(repo: Path) -> list[str]:
+    """A Quality check is an executable rule or configuration and carries no prose
+    (harden-checks-and-tests D-1): under quality/ only the root README.md, rule and configuration
+    files, and a `.py` Semgrep fixture beside a rule `.yaml` of the same stem. Semgrep rules are
+    `.yaml` only (the fixture check reads that suffix). The README names every rule and
+    configuration file by its exact path under quality/ in backticks."""
+    root = repo / _QUALITY_DIR
+    if not root.is_dir():
+        return []
+    readme, out = root / "README.md", []
+    try:
+        readme_text = readme.read_text(encoding="utf-8") if readme.exists() else ""
+    except (OSError, UnicodeDecodeError) as error:
+        out.append(f"{_QUALITY_DIR}/README.md: cannot be read ({type(error).__name__})")
+        readme_text = None  # one finding for the README; the named check cannot run
+    for p in sorted(f for f in root.rglob("*") if f.is_file() and "__pycache__" not in f.parts):
+        rel, shown = p.relative_to(root).as_posix(), f"{_QUALITY_DIR}/{p.relative_to(root).as_posix()}"
+        if p.name == "README.md":
+            if rel != "README.md":
+                out.append(f"{shown}: a nested README.md is prose; only quality/README.md is allowed")
+        elif p.suffix == ".py":
+            if not p.with_suffix(".yaml").exists():
+                out.append(f"{shown}: a .py is allowed only as the fixture of a rule .yaml of the same name")
+        elif p.suffix not in _QUALITY_RULE_SUFFIXES:
+            out.append(f"{shown}: not a check; allowed are {', '.join(_QUALITY_RULE_SUFFIXES)}, "
+                       "a Semgrep fixture .py and the root README.md")
+        elif p.suffix == ".yml" and rel.startswith("semgrep/"):
+            out.append(f"{shown}: a Semgrep rule is a .yaml file")
+        elif readme_text is not None and f"`{rel}`" not in readme_text:
+            out.append(f"{shown}: not named in quality/README.md (write `{rel}` in backticks)")
+    return out
 
 
 def cross_skill_paths(repo: Path) -> list[str]:
@@ -1320,7 +1357,7 @@ ALL_CHECKS = (
     agents_canonical_invariant, hooks_inventory_shape, mod_bindings_match, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
-    top_level_folders,
+    top_level_folders, quality_files,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

@@ -1,0 +1,12 @@
+rules:
+  - id: mfy-test-rdf-string-compare
+    languages: [python]
+    severity: ERROR
+    message: "RDF compared as a string (cosmic-python:testing-checklist#7). Compare graphs."
+    pattern-either:
+      - pattern: $G.serialize(...) == $E
+      - pattern: $E == $G.serialize(...)
+    paths:
+      include:
+        - "**/tests/**"
+        - "**/mfy-test-rdf-string-compare.py"

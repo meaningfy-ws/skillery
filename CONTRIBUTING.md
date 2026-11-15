@@ -24,6 +24,11 @@ Thank you for contributing. This page is the entry point; the detail lives in th
 When every line of the [Definition of Done](docs/development/README.md#9-definition-of-done) is true
 and `make validate` is green. That is the only checklist; this page has none of its own.
 
+## Tools for the tests of `quality/`
+
+See [`docs/development/quality.md`](docs/development/quality.md#how-skillery-tests-the-checks):
+without the tools, their tests skip.
+
 ## Licence
 
 By contributing you agree that your contribution is licensed under the repository's licence

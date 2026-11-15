@@ -1,7 +1,7 @@
 .PHONY: install validate lint test mods validate-spine fix-spec-links bundles opencode-report skill-inventory
 
 install:
-	python3 -m venv .venv && . .venv/bin/activate && pip install -q -r requirements-dev.txt
+	python3 -m venv .venv && . .venv/bin/activate && pip install -q -r requirements-dev.txt -r requirements-quality.txt
 	npm ci --no-audit --no-fund
 
 # validate = the guardrail (CLI report) + the test suite (incl. negative tests)
