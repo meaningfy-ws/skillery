@@ -510,6 +510,50 @@ and the multi-skill form (D-10, D-2, task 1.1), the missing-skill configuration 
 gap was declined: the inline `skills:` form is enforceable, by the line check in
 `dependencies_register`.
 
+## Delivery decisions
+
+Stage 1a, PR #266. Five lenses and the tester; no reviewer labelled a finding Critical. The lead
+re-labelled four, each with its reason, and fixes only those (the floor).
+
+- **D-17** *(Critical, re-labelled; L3 W1, L4 W1 W2 W3, L5 W1, L1 S2, L2 S1, tester finding 1)*.
+  `_dep_bundle` reads `bundles.yaml` itself and crashes on a non-string `bundle` or a wrongly
+  shaped file. Reason for Critical: an exception there stops every lint check, so the guardrail
+  goes down on one bad value. Fix: `dependencies_register` reads the names once through
+  `_bundle_list` (the one validator); when it returns `None` the membership rule is skipped,
+  because `bundle_gates` already reports the invalid file; a `bundle` that is not a string is
+  reported as `'bundle' must be a bundle name`. The tester's bad-shape tests expect no crash and
+  the `bundle_gates` message, not the membership message.
+- **D-18** *(Critical, re-labelled; L1 W2, L5 W2)*. Nothing checks that the pin, the install
+  commands and the skill list agree. Reason: the spec requirement "the pin is the commit that was
+  read" is otherwise unenforced, and an edit to one copy installs unread text (RISK-10). Fix: for
+  an entry with `bundle`, the lint requires a `pin` that starts with a 40-character commit, both
+  install fields to carry `#<that commit>`, the names after `--skill` to equal `skills`, and the
+  `skills@<version>` of each command to equal the `skills-cli` pin.
+- **D-19** *(Critical, re-labelled; L1 W1, L2 W3)*. The setup docs offer the book sets before any
+  override exists (stage 2), and the sets call themselves binding; and they tell a builder to skip
+  the architecture row it needs. Reason: what an installer does by the doc today would make agents
+  follow the books against `cosmic-python`. Fix: both setup sections and the CHANGELOG line say
+  that until `skill-orchestration` ships the sets inform reasoning only and `cosmic-python` wins on
+  a conflict, and that a bundle's rows include the bundles it requires.
+- **D-20** *(Critical, re-labelled; L1 S1)*. `evidence/install-check.md` names a local scratch path
+  with a user name and a session id, in a public repository. Reason: private details published.
+  Fix: replace it with "a session scratch folder".
+
+Under the floor (not fixed in this stage): the table-name prefix test and the cell expression in
+`render_dependencies` (L4 W4, S1; L5 S1); the stale docstring (L4 S2); the test fixtures (L4 S3,
+L5 S2); loading per entry (L4 S4, answered by D-17); the `agent-rules-books` opencode command not
+run (L2 W2; opencode stays unverified, DEC-14); the telemetry check read from source, not the
+network (L2 S2); the installer's floating transitive dependencies (L1 S3; accepted with RISK-6);
+unescaped pipes in free-text cells (tester finding 2; the tables render Markdown as written);
+empty cells for an invalid entry (tester finding 3; the lint already reports it). The tester's
+file is kept and committed (L2 W1).
+
+The checker passed the stage and agreed with all four re-labels. Its two suggestions are left for
+stage 1b, under the floor: D-18 rejects a pin of the form `unpinned: …`, the fallback D-4 and the
+spec still allow (moot while the full commit installs; align the lint if the fallback is ever
+used); and a command with no `--skill` part passes `_dep_commands` (stage 2's
+`external-skills-install` render rejects it).
+
 ## Open Questions
 
 None left open. The owner answered the four planning questions on 2026-11-15

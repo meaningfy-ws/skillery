@@ -6,7 +6,7 @@
 
 ## 1. Stage 1a: the book sets (wave 2; unblocks the `lean-skills` pilot)
 
-- [ ] 1.1 Check the installer (design, Algorithm step 1): with `DO_NOT_TRACK=1` and `HOME`,
+- [x] 1.1 Check the installer (design, Algorithm step 1): with `DO_NOT_TRACK=1` and `HOME`,
   `CLAUDE_CONFIG_DIR` and `XDG_CONFIG_HOME` set to scratch folders, run
   `npx skills@1.8.1 add meaningfy-ws/agent-rules-books --list` and the same for
   `meaningfy-ws/wondel-ai-skills`; confirm the 24 names of D-3; install one skill per fork with the
@@ -15,7 +15,7 @@
   several skills in one command (space-separated after one `--skill`, or `--skill` repeated). Write
   `evidence/install-check.md` with each command and its result. Done when every error-matrix row
   that task 1.1 detects has an answer there.
-- [ ] 1.2 Write the failing tests. In `tests/test_repo_lint_negative.py`: TC-1 an entry whose
+- [x] 1.2 Write the failing tests. In `tests/test_repo_lint_negative.py`: TC-1 an entry whose
   `bundle` names no bundle (message `dependencies.yaml: '<name>' bundle '<b>' is not a bundle of
   bundles.yaml`); TC-2 a `bundle` on a non-`skill` entry (`… 'bundle' needs kind 'skill'`); TC-3 a
   `bundle` with an empty `skills:` list (`… 'bundle' needs a non-empty 'skills' list`). In
@@ -24,29 +24,29 @@
   text, for example ``| meaningfy-core | technical-documentation | `DO_NOT_TRACK=1 npx skills@1.8.1
   add … --agent claude-code --global --yes` |``, one two-skill row (`a, b`), and a register with no
   `bundle` entries (the header line only). Run them: they fail for the right reason.
-- [ ] 1.3 Implement D-8 in `tools/repo_lint/lint.py` (`bundle` in `_DEP_OPTIONAL`, its three rules)
+- [x] 1.3 Implement D-8 in `tools/repo_lint/lint.py` (`bundle` in `_DEP_OPTIONAL`, its three rules)
   and D-7 in `tools/skill_inventory.py` (the two tables in `_DEP_TABLES`, the first-column and
   list-cell change in `render_dependencies`, both setup docs in `DEPENDENCY_DOCS`). The tests of 1.2
   pass and the existing tables render unchanged.
-- [ ] 1.4 Dispatch reader A (D-5) on the 8 book sets at `893a88a6fce3a80c565bf39ac65021b43a8b2990`.
+- [x] 1.4 Dispatch reader A (D-5) on the 8 book sets at `893a88a6fce3a80c565bf39ac65021b43a8b2990`.
   Done when `evidence/reading/` holds 8 records. Spec: `external-dependency-register`, "read in
   full".
-- [ ] 1.5 Check the 8 records: each file table against `find <folder> -type f` and `wc -c` in the
+- [x] 1.5 Check the 8 records: each file table against `find <folder> -type f` and `wc -c` in the
   fork; the 12-word overlap script (scratchpad, not committed); no links to fork files. Done when
   every record passes.
-- [ ] 1.6 If any record marks a conflict "not named", ask the owner in one question round, each
+- [x] 1.6 If any record marks a conflict "not named", ask the owner in one question round, each
   with a recommendation (override with its wording, drop, or accept). Record the answers in
   `inputs/stage-1a-conflicts-<date>.md`; a drop is a new DEC in `proposal.md` (D-6). Done when
   every such conflict has an answer, or none was found.
-- [ ] 1.7 Add to `dependencies.yaml` the entries `agent-rules-books/meaningfy-building`,
+- [x] 1.7 Add to `dependencies.yaml` the entries `agent-rules-books/meaningfy-building`,
   `agent-rules-books/meaningfy-architecture` (D-2, D-3) and `skills-cli`, with the commands and pin
   that task 1.1 proved, for the sets read and not dropped. Spec: `external-dependency-register`, "a
   skill source per fork and bundle".
-- [ ] 1.8 Add the heading "External skills of your bundles (per role)" with its generated marker
+- [x] 1.8 Add the heading "External skills of your bundles (per role)" with its generated marker
   after Step 4 of `docs/environment/dual-cli/setup-claude.md` and `setup-opencode.md`, with the
   POSIX-shell note and the "run only the claude-code command if you use both" note; add the sync
   paragraph of D-4 to `docs/environment/dual-cli/compatibility.md`; run `make skill-inventory`.
-- [ ] 1.9 Run `make lint` and `make validate` (which runs `make mods`, the navigator's TC-16 that
+- [x] 1.9 Run `make lint` and `make validate` (which runs `make mods`, the navigator's TC-16 that
   reads the new `skills:` lists, and `pytest tests/test_dep_skills_adversarial.py`); CHANGELOG line
   under `[Unreleased]` for the installer; open the pull request, merge on green CI, tick 1.1 to
   1.9; tell the `lean-skills` pilot it can start
@@ -134,7 +134,7 @@
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9
 - [ ] 1.10 · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
