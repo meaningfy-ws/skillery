@@ -275,3 +275,9 @@ probes:
   - probe: "what is the difference between verification and validation"
     expect: test-strategy
     near_miss_of: epic-delivery
+  - probe: "the EPIC is archived; review where the agent sessions spent their time and cost"
+    expect: session-retrospective
+    near_miss_of: epic-delivery
+  - probe: "which of my rules were never loaded in Langfuse this week"
+    expect: rule-steward
+    near_miss_of: session-retrospective
