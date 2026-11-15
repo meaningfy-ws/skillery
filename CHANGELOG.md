@@ -33,6 +33,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   the template is over the budget; a scaffolded project inherits the comment. This repository's
   `AGENTS.md` drops from about 14,800 to 11,200 characters and `CLAUDE.md` to under 600, so every
   session starts lighter.
+- `code-reviewer` now always ends its report with the result line
+  (`result: stage=… role=reviewer lens=… findings=… accepted=-`), even when the brief does not
+  spell it; `implementer` loads `cosmic-python` before its first edit in a Python repository. Both
+  were found by hand runs of their scenarios. `hooks.yaml`'s GitNexus intents now say once per
+  task, as `AGENTS.md` does (#261).
 
 ### Fixed
 
