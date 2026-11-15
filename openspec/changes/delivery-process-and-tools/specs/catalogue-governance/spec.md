@@ -23,8 +23,8 @@ only what is Claude-only and point to the table (DEC-8, DEC-12, D-13, D-14).
 - **THEN** it holds a pointer to the table in `guardrails` and no tool list of its own
 
 ### Requirement: Code checks run once per task
-The instruction template and this repository's `AGENTS.md` (its GitNexus block, between its
-markers) SHALL say that the impact check runs once per task, before the brief, on the task's
+The instruction template and this repository's `AGENTS.md` SHALL say, the latter in its GitNexus
+block between its markers, that the impact check runs once per task, before the brief, on the task's
 symbols, and the change check once before the task's commit, both by the lead, and SHALL NOT say
 "before every edit" or "before every commit". The implementer SHALL run neither; a HIGH or
 CRITICAL impact result SHALL reach the developer through the lead before the brief. The
