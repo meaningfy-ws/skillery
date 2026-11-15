@@ -12,3 +12,9 @@
   that task 1.0 needed the sign-off of these scenarios.
 
 Delivery had not started when this was recorded; it starts at task 1.1.
+
+## The two open proposals of task 1.0
+
+- **When:** 2026-11-15, at the start of the stage 1 tool side.
+- **D-26:** confirmed, with the type named "Quality check" (design D-36).
+- **D-24:** confirmed: stage 3 runs the old and the new tester brief once each and compares them.

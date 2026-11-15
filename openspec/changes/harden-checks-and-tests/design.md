@@ -1177,6 +1177,36 @@ is in [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reasse
     repository has them" (its design, D-4 and D-20). That EPIC is not edited here; with the runs
     dropped, no repository has them.
 
+Recorded 2026-11-15 at the start of the stage 1 tool side, on the developer's answers in the
+epic session.
+
+- **D-36 The open proposals of task 1.0 are settled (completes D-24 and D-26; corrects D-1's
+  type name).** The sixth artifact type is named **Quality check** (D-26 confirmed with that
+  name), so it shares no bare word with A's `CHK` rows. `governance.md`, `AGENTS.md`, `CLAUDE.md`,
+  `quality/README.md` and `docs/development/quality.md` use it; the folder stays `quality/`. D-24
+  is confirmed: in stage 3 the old and the new tester brief each run once on one seeded stage, and
+  `evidence/tester-report.md` compares what each found.
+- **D-37 The tools for the local runs (the stage 1 tool side).** The builders and the lead run
+  Semgrep 1.185.0, Ruff 0.17.5, ls-lint 2.3.2, checkmake 0.3.2, import-linter and Hypothesis from
+  one tool folder outside the repository, the versions D-4 pins. Nothing is installed system-wide.
+- **D-38 A project ships its own `.semgrepignore` (completes D-4 and D-5; found by the builder of
+  the rules).** Semgrep's built-in ignore list skips `tests/` and `test/`, so without a project
+  file the three test rules (`mfy-test-network-call`, `mfy-test-rdf-string-compare`,
+  `mfy-test-real-sleep`) never fire. A project file replaces the built-in list. `project-setup`
+  gains the template `root/dot-semgrepignore`, rendered as `.semgrepignore` for every archetype
+  (like the Makefile that runs `check-semgrep`); it ignores `.quality/`, `.venv/` and
+  `node_modules/` and nothing else. IT-04's case "`requests.get(url)` in a unit test is red" proves
+  it.
+- **D-39 What a fixture cannot show (completes D-3's rule table and D-6; tool facts).** A bare
+  `# nosemgrep` cannot be a `ruleid:` case: `semgrep scan --test` honours it even with
+  `--disable-nosem`. The suppression fixture tests `# nosemgrep: <other-id>`, a bare `# noqa` and
+  `# noqa: <code>` without a reason; the bare `# nosemgrep` is shown red by IT-04 only, through
+  pass 2. A path near miss (the same call under `tests/integration/`, the class in
+  `exceptions.py`) cannot sit in a one-file fixture either; it is shown by IT-04, and each fixture
+  holds a near miss of code shape instead. The exception rule matches a base named `Exception`,
+  `BaseException` or ending `Error`, `Timeout` or `Warning`; its "Checked by" value on the prose
+  side is written `(partial: a base with another name is reviewed)`.
+
 ## Open Questions
 
 None blocking. Answered by the developer on 2026-11-14 (`inputs/qa.md`, round 8):
