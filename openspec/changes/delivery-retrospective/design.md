@@ -214,3 +214,26 @@ folder's files and gives the same result for the same input.
 ## Open Questions
 
 None blocking. Task 3.1 settles the only unknown (what `result.text` holds) before stage 3 codes it.
+
+## Delivery decisions
+
+Recorded by the lead during stage 1 (2026-11-15).
+
+- **D-12** Stage 1 started before wave 4 on the developer's word ("proceed to next stage here"):
+  it touches only the scripts, the new skill and its tests. Stage 2 edits `epic-delivery` and
+  checks its order against `delivery-process-and-tools` first.
+- **D-13** Builders grouped by file: one for 1.1 and 1.3 (scripts and tests), one for 1.2 (the
+  skill) in parallel, one for 2.1 to 2.4 in order, since all four edit the same two scripts.
+- **D-14** `rounds.tsv` is written by `epic_report.py`, not the digest: a round needs the report's
+  epic attribution (refines D-3).
+- **D-15** A subagent takes the lead's mark only when one was in force at its spawn; with none,
+  its own path guess stays, so unmarked totals and grouping do not change (refines D-2).
+- **D-16** The mark is read before the model call of the same record, so the call that writes the
+  mark is filed under it; a mark in a later block of the same message leaves that one call guessed.
+- **D-17** A lead line identical to the last lead-made round of its key (a PR body created, then
+  edited) adds no round (refines D-3).
+- **D-18** `session_digest.py` gets `main(argv)`; `phases.tsv` is `repo, epic, phase, stage,
+  est_usd`; `signals.txt` adds the guessed share, the malformed-mark count and review rounds by
+  role.
+- **D-19** The D-6 known list comes from one type count over the owner's real transcripts
+  (692,696 lines, none unparseable); only type names are in the code.

@@ -7,6 +7,8 @@ The scripts are loaded by path, as tests/test_rulebook.py loads its script.
 import importlib.util
 import json
 import shutil
+import subprocess
+import time
 from pathlib import Path
 
 import pytest
@@ -61,6 +63,264 @@ def test_digest_then_report_writes_the_three_outputs(digest_dir):
         assert (digest_dir / name).is_file()
     row = (digest_dir / "epics.tsv").read_text().splitlines()[1].split("\t")
     assert row[:2] == ["demo", "demo-epic"] and row[4] == "1"
+
+
+def test_repo_of_is_the_git_root_of_the_cwd(tmp_path):
+    (tmp_path / "myrepo/.git").mkdir(parents=True)
+    deep = tmp_path / "myrepo/pkg/sub"
+    deep.mkdir(parents=True)
+    assert digest_mod.repo_of(str(deep), "fb") == "myrepo"
+
+
+def test_repo_of_a_worktree_is_the_main_repository(tmp_path):
+    main = tmp_path / "mainrepo"
+    (main / ".git/worktrees/wt").mkdir(parents=True)
+    wt = tmp_path / "elsewhere/wt"
+    wt.mkdir(parents=True)
+    (wt / ".git").write_text(f"gitdir: {main}/.git/worktrees/wt\n")
+    assert digest_mod.repo_of(str(wt), "fb") == "mainrepo"
+
+
+def test_repo_of_a_removed_worktree_uses_the_part_before_claude_worktrees(tmp_path):
+    cwd = str(tmp_path / "gone/.claude/worktrees/feat")  # does not exist
+    assert digest_mod.repo_of(cwd, "fb") == "gone"
+    assert digest_mod.repo_of(str(tmp_path / "removed/lastdir"), "fb") == "lastdir"
+    assert digest_mod.repo_of("", "fb") == "fb"
+
+
+def _jsonl(records):
+    return "\n".join(r if isinstance(r, str) else json.dumps(r) for r in records) + "\n"
+
+
+def _write_session(root, records, name="s1", agents=None):
+    """A one-session projects tree from record dicts (or raw strings); `agents` maps a name to its records."""
+    folder = root / "projects/-x"
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / f"{name}.jsonl").write_text(_jsonl(records))
+    for agent, recs in (agents or {}).items():
+        sub = folder / name / "subagents"
+        sub.mkdir(parents=True, exist_ok=True)
+        (sub / f"agent-{agent}.jsonl").write_text(_jsonl(recs))
+        (sub / f"agent-{agent}.meta.json").write_text(json.dumps({"agentType": "implementer", "description": "d", "spawnDepth": 1}))
+    return root / "projects"
+
+
+USER = {"type": "user", "timestamp": "2026-11-01T10:00:00Z", "cwd": "/x/demo", "message": {"content": "hello"}}
+USAGE = {"input_tokens": 1, "output_tokens": 1}
+ASSISTANT = {"type": "assistant", "timestamp": "2026-11-01T10:00:05Z",
+             "message": {"id": "m1", "model": "m", "usage": USAGE, "content": [{"type": "text", "text": "hi"}]}}
+COST = {"type": "cost-state", "startTime": "s0", "totalCostUSD": 1.0, "timestamp": "2026-11-01T10:00:09Z"}
+
+
+def _run(root, tmp_path):
+    return digest_mod.digest(root, tmp_path / "out", 36500)
+
+
+def test_two_percent_unknown_records_warn_with_counts_and_types(tmp_path, capsys):
+    filler = [{"type": "mode"}] * 95
+    root = _write_session(tmp_path, [USER, ASSISTANT, COST, *filler, {"type": "mystery"}, "{not json"])
+    _run(root, tmp_path)
+    err = capsys.readouterr().err
+    assert "warning: unknown records 2 of 100 lines (2.0%, threshold 1%): " in err
+    assert "mystery=1" in err and "(unparseable)=1" in err
+
+
+def test_known_records_and_skipped_blobs_do_not_warn(tmp_path, capsys):
+    filler = ['{"type":"api-request","x":1}', '{"type":"attachment"}', *[{"type": "mode"}] * 50]
+    root = _write_session(tmp_path, [USER, ASSISTANT, COST, *filler])
+    _run(root, tmp_path)
+    assert capsys.readouterr().err == ""
+
+
+def test_assistant_records_with_no_usage_warn(tmp_path, capsys):
+    bare = {**ASSISTANT, "message": {"id": "m1", "content": [{"type": "text", "text": "hi"}]}}
+    root = _write_session(tmp_path, [USER, bare, COST])
+    _run(root, tmp_path)
+    assert "warning: session s1 has assistant records and no usage" in capsys.readouterr().err
+
+
+def test_a_run_without_cost_state_warns(tmp_path, capsys):
+    root = _write_session(tmp_path, [USER, ASSISTANT])
+    assert _run(root, tmp_path) == 1  # output is still written
+    assert "warning: no session has a cost-state record" in capsys.readouterr().err
+
+
+def _git_init(folder):
+    folder.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["git", "init", "-q", str(folder)], check=True)
+
+
+def _args(root, *extra):
+    return ["--root", str(root), "--days", "36500", *extra]
+
+
+def test_output_inside_a_git_tree_is_refused_and_nothing_is_written(tmp_path, capsys):
+    root = _write_session(tmp_path, [USER, ASSISTANT, COST])
+    repo = tmp_path / "repo"
+    _git_init(repo)
+    with pytest.raises(SystemExit) as exc:
+        digest_mod.main(_args(root, "--out", str(repo / "deep/out")))
+    assert exc.value.code == 2
+    assert f"output folder is inside a git working tree: {repo.resolve()}; pass --out outside it" in capsys.readouterr().err
+    assert not (repo / "deep").exists()
+
+
+def test_the_default_under_a_home_kept_in_git_is_refused(tmp_path, monkeypatch):
+    root = _write_session(tmp_path / "t", [USER, ASSISTANT, COST])
+    home = tmp_path / "home"
+    _git_init(home)
+    monkeypatch.setenv("HOME", str(home))
+    with pytest.raises(SystemExit) as exc:
+        digest_mod.main(_args(root))
+    assert exc.value.code == 2
+    assert not (home / ".cache").exists()
+
+
+def test_the_default_output_is_under_the_home_cache(tmp_path, monkeypatch):
+    root = _write_session(tmp_path / "t", [USER, ASSISTANT, COST])
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+    digest_mod.main(_args(root))
+    assert (tmp_path / "home/.cache/session-retrospective" / time.strftime("%Y-%m-%d") / "sessions.jsonl").is_file()
+
+
+def test_an_output_folder_outside_any_tree_is_written(tmp_path):
+    root = _write_session(tmp_path / "t", [USER, ASSISTANT, COST])
+    digest_mod.main(_args(root, "--out", str(tmp_path / "free/out")))
+    assert (tmp_path / "free/out/sessions.jsonl").is_file()
+
+
+# --- task 2.4: marks, result lines, rounds -------------------------------------------------------
+
+MARK_LINES = json.loads((ROOT / "tests/fixtures/session-retrospective/mark-lines.json").read_text())
+COST10 = {**COST, "totalCostUSD": 10.0}
+MARK_X2 = "mark: change=x phase=deliver stage=2"
+WORKER_LINE = "result: stage=2 role=reviewer lens=L1+L2 findings=3 accepted=-"
+LEAD_LINE = "result: stage=2 role=reviewer lens=L1+L2 findings=3 accepted=1"
+
+
+def _t(n):
+    return f"2026-11-01T10:{n // 60:02d}:{n % 60:02d}Z"
+
+
+def _a(n, *blocks):
+    """An assistant record at second n holding the given content blocks."""
+    return {"type": "assistant", "timestamp": _t(n),
+            "message": {"id": f"m{n}", "model": "m", "usage": USAGE, "content": list(blocks)}}
+
+
+def _text(s):
+    return {"type": "text", "text": s}
+
+
+def _tool(i, name, **inp):
+    return {"type": "tool_use", "id": i, "name": name, "input": inp}
+
+
+def _done(n, i):
+    return {"type": "user", "timestamp": _t(n), "message": {"content": [{"type": "tool_result", "tool_use_id": i}]}}
+
+
+def _brief(n):
+    return {"type": "user", "timestamp": _t(n), "message": {"content": "brief"}}
+
+
+def _review(tmp_path, records, agents=None):
+    """Digest then report a synthetic session; returns (phases rows, rounds rows, signals text, events)."""
+    root = _write_session(tmp_path, [USER, *records, COST10], agents=agents)
+    out = tmp_path / "out"
+    digest_mod.digest(root, out, 36500)
+    report_mod.main(out)
+    table = lambda name: [l.split("\t") for l in (out / name).read_text().splitlines()[1:]]
+    events = [json.loads(l) for l in (out / "events.jsonl").open()]
+    return table("phases.tsv"), table("rounds.tsv"), (out / "signals.txt").read_text(), events
+
+
+@pytest.mark.parametrize("case", MARK_LINES, ids=[c["line"] or "(empty)" for c in MARK_LINES])
+def test_the_shared_mark_lines_fixture(case):
+    assert bool(digest_mod.MARK_RE.match(case["line"])) is case["mark"]
+
+
+def test_a_session_with_marks_has_no_guessed_row(tmp_path):
+    phases, _, signals, events = _review(tmp_path, [_a(1, _text(MARK_X2)), _a(3, _text("work")), _a(5, _text("more"))])
+    assert [e["name"] for e in events if e["kind"] == "mark"] == ["x"]
+    assert [(p[1], p[2], p[3]) for p in phases] == [("x", "deliver", "2")]
+    assert "guessed share of cost: 0%" in signals
+
+
+def test_a_late_mark_leaves_the_earlier_events_guessed(tmp_path):
+    phases, _, signals, _ = _review(tmp_path, [_a(1, _text("early")), _a(3, _text(MARK_X2)), _a(5, _text("late"))])
+    by_phase = {p[2]: p[3] for p in phases}
+    assert by_phase == {"guessed:unmarked": "-", "deliver": "2"}
+    assert "guessed share of cost: 33%" in signals
+
+
+def test_a_malformed_mark_is_counted_and_ignored(tmp_path):
+    phases, _, signals, events = _review(tmp_path, [_a(1, _text("mark: change=x phase=ship stage=2"))])
+    assert [e["kind"] for e in events if e["kind"].startswith("mark")] == ["mark-bad"]
+    assert [p[2] for p in phases] == ["guessed:unmarked"]
+    assert "malformed mark lines: 1" in signals
+
+
+def test_a_mark_inside_a_fence_is_ignored(tmp_path):
+    phases, _, _, events = _review(tmp_path, [_a(1, _text(f"Example:\n```\n{MARK_X2}\n```\ndone"))])
+    assert not [e for e in events if e["kind"].startswith("mark")]
+    assert [p[2] for p in phases] == ["guessed:unmarked"]
+
+
+def test_a_subagent_keeps_the_epic_phase_and_stage_of_its_spawn(tmp_path):
+    lead = [_a(1, _text(MARK_X2)), _a(5, _text("mark: change=y phase=deliver stage=3")), _a(9, _text("end"))]
+    sub = [_brief(2), _a(3, _text("a")), _a(7, _text("b"))]
+    phases, _, _, _ = _review(tmp_path, lead, agents={"w": sub})
+    assert ("x", "deliver/build", "2") in {(p[1], p[2], p[3]) for p in phases}
+    assert not [p for p in phases if p[1] == "y" and p[2] == "deliver/build"]
+
+
+def test_an_archive_skill_after_a_deliver_mark_is_guessed_from_there(tmp_path):
+    lead = [_a(1, _text("mark: change=x phase=deliver stage=3")), _a(3, _tool("k", "Skill", skill="spec-stewardship")),
+            _done(4, "k"), _a(6, _text("archiving"))]
+    phases, _, _, _ = _review(tmp_path, lead)
+    assert {(p[2], p[3]) for p in phases} == {("deliver", "3"), ("guessed:archive", "-")}
+
+
+def test_a_session_with_no_mark_files_its_events_as_guessed(digest_dir):
+    report_mod.main(digest_dir)  # the demo fixture has a Skill call and no mark
+    signals = (digest_dir / "signals.txt").read_text()
+    assert "guessed share of cost: 100%" in signals and "guessed:deliver" in signals
+
+
+def test_worker_line_and_lead_line_in_a_body_file_make_one_round(tmp_path):
+    lead = [_a(1, _text(MARK_X2)), _a(5, _tool("w", "Write", file_path="/b.md", content=f"body\n{LEAD_LINE}\n")), _done(6, "w")]
+    sub = [_brief(2), _a(3, _text(f"findings:\n{WORKER_LINE}"))]
+    _, rounds, signals, _ = _review(tmp_path, lead, agents={"r": sub})
+    assert rounds == [["demo", "x", "s1", "2", "reviewer", "L1+L2", "1", "3", "1", "-"]]
+    assert "reviewer" in signals
+
+
+def test_a_lead_quoting_an_unaccepted_line_adds_no_round(tmp_path):
+    lead = [_a(1, _text(MARK_X2)), _a(5, _text(f"The worker wrote:\n{WORKER_LINE}"))]
+    _, rounds, _, _ = _review(tmp_path, lead, agents={"r": [_brief(2), _a(3, _text(WORKER_LINE))]})
+    assert [(r[6], r[8]) for r in rounds] == [("1", "-")]
+
+
+def test_a_re_review_is_a_second_round(tmp_path):
+    lead = [_a(1, _text(MARK_X2)), _a(5, _text(LEAD_LINE)), _a(9, _text(LEAD_LINE.replace("accepted=1", "accepted=0")))]
+    sub = [_brief(2), _a(3, _text(WORKER_LINE)), _a(7, _text(WORKER_LINE))]
+    _, rounds, _, _ = _review(tmp_path, lead, agents={"r": sub})
+    assert [(r[6], r[8]) for r in rounds] == [("1", "1"), ("2", "0")]
+
+
+def test_a_lead_line_with_no_worker_line_is_one_round_and_a_repeat_adds_none(tmp_path):
+    body = f"gh pr create --title t --body \"$(cat <<'EOF'\nsummary\n- {LEAD_LINE}\nEOF\n)\""
+    lead = [_a(1, _text(MARK_X2)), _a(3, _tool("p", "Bash", command=body)), _done(4, "p"),
+            _a(5, _tool("q", "Bash", command=body.replace("create", "edit"))), _done(6, "q")]
+    _, rounds, _, _ = _review(tmp_path, lead)
+    assert [(r[4], r[6], r[8]) for r in rounds] == [("reviewer", "1", "1")]
+
+
+def test_a_fenced_result_line_is_ignored(tmp_path):
+    lead = [_a(1, _text(MARK_X2)), _a(3, _text(f"```\n{LEAD_LINE}\n```"))]
+    _, rounds, _, _ = _review(tmp_path, lead)
+    assert rounds == []
 
 
 @pytest.mark.parametrize("missing", ["sessions.jsonl", "agents.jsonl", "events.jsonl"])

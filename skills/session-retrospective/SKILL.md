@@ -23,15 +23,16 @@ Worked example: review the last two weeks. Write the digest outside every reposi
 lives in it), then report on it.
 
 ```bash
-python3 skills/session-retrospective/scripts/session_digest.py --days 14 --out ~/retro/2026-11-15
-python3 skills/session-retrospective/scripts/epic_report.py ~/retro/2026-11-15
+python3 <this skill's folder>/scripts/session_digest.py --days 14 --out ~/retro/2026-11-15
+python3 <this skill's folder>/scripts/epic_report.py ~/retro/2026-11-15
 ```
 
 1. `session_digest.py` reads the CLI's local transcripts (read-only) and writes `sessions.jsonl`,
-   `agents.jsonl`, `events.jsonl` and `rounds.tsv`. Without `--out` it writes to the script's default
+   `agents.jsonl` and `events.jsonl`. Without `--out` it writes to the script's default
    folder, `~/.cache/session-retrospective/<date>`. It refuses any folder inside a git working tree
    (exit 2, nothing written), the default included when the home folder is kept in git.
-2. `epic_report.py` reads that folder and writes the tables and `signals.txt`.
+2. `epic_report.py` reads that folder and writes `epics.tsv`, `phases.tsv`, `rounds.tsv` and
+   `signals.txt`.
 3. Read `signals.txt` first: cost and time per epic, per phase and stage, the share of cost that is
    guessed, and review rounds by role. Then open `rounds.tsv`, one row per review round
    (`repo, epic, session, stage, role, lens, round, findings, accepted, verdict`), to see which
@@ -44,8 +45,9 @@ python3 skills/session-retrospective/scripts/epic_report.py ~/retro/2026-11-15
 - **Phase and stage come from the lead's mark line**, whose form `epic-delivery` defines. Before the
   first mark, and for archive and release, the script guesses from the skills loaded; those rows
   are labelled `guessed:` and their share is printed. Treat a guessed row as a hint.
-- **Cost per epic is an estimate.** It sums the CLI's own cost records over sessions that touched
-  the epic; a session that worked on two epics is split by its marks, or by path when unmarked.
+- **Cost per epic is an estimate.** Each session's recorded cost is shared out over its
+  calls by weighted tokens (model prices are ignored), and a call is filed under the epic it served:
+  by the lead's marks, or by path when unmarked.
 - **Rounds come from result lines** (`result:` forms in `epic-delivery`). No line, no round: a
   stage with no lines is unmeasured, not free.
 - **Count Langfuse by `tool_id`, never by spans.** It holds about a third fewer events than the
