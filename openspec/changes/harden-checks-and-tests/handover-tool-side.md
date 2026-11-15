@@ -52,9 +52,11 @@ Tasks ticked: 1.1, 1.2, 1.3, 1.4, 1.6, 1.9, 1.10, 1.11, 1.15.
   tools their tests skip.
 - **A release is owed** before a project can fetch `quality/` at a tag (D-19). Until then a
   scaffold sets `QUALITY_VERSION` to a commit by hand.
-- **Template issue found, not fixed (outside this change):** `install-poetry` in `Makefile.tmpl`
-  calls a bare `pip`, which fails on a machine with only `pip3` or `pipx`. The scaffold runs
-  called `poetry install` directly. Worth an issue on `project-setup`.
+- **`project-setup` moved from Poetry to uv** (PR #248, after this side merged). The scaffold
+  runs here used Poetry; stage 2's task 2.5 now confirms `uv lock`. The bare-`pip` problem of
+  `install-poetry` found here is gone with it.
+- **Open for the owner:** a fresh skeleton fails its own 80 % coverage gate (`.coveragerc` omits
+  `__init__.py` and the skeleton has no other measured code), under Poetry and uv alike.
 - **Semgrep traps** (D-38, D-39): its built-in ignore list skips `tests/`, which is why a project
   ships `.semgrepignore`; a bare `# nosemgrep` cannot be tested in a fixture.
 - **Stage 3** runs the old and the new tester brief on one seeded stage (D-24, confirmed in D-36).

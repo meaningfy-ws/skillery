@@ -6,7 +6,9 @@
      condition and the result line moved to delivery-process-and-tools, task 2.3 removed, no
      example code in a skill, stage 1 in a tool side and a prose side; not gated again.
      Revised again 2026-11-15 by owner decision (design D-35): the weekly mutation runs are
-     dropped, tasks 3.5 and 3.6 removed; not gated again. -->
+     dropped, tasks 3.5 and 3.6 removed; not gated again. Reconciled 2026-11-15 with the
+     delivered tool side (D-36 to D-40) and with project-setup's move to uv (PR #248). -->
+
 
 > Derives from: EPIC `harden-checks-and-tests` ([`proposal.md`](proposal.md)); design in [`design.md`](design.md).
 
@@ -31,7 +33,7 @@ in D-33. Each side ends with the checks of task 1.16.
   merged, the D-12 table is walked and the spec deltas are re-read. *Remains:* cut the stage
   branch from current `develop` and copy the differences of D-15 into the stage PR.
 - [x] 1.2 Write `evidence/failure-case.md` (D-13).
-- [x] 1.3 The Check type: add `quality` to `TOP_LEVEL_FOLDERS` and the `quality_files` lint to
+- [x] 1.3 The Quality check type (D-36): add `quality` to `TOP_LEVEL_FOLDERS` and the `quality_files` lint to
   `ALL_CHECKS`, test-first (TC-01, TC-02 in `tests/test_repo_lint.py` and
   `tests/test_repo_lint_negative.py`); create `quality/README.md`; update `governance.md`,
   `AGENTS.md` (line 11 and the type table) and `CLAUDE.md` (line 4); write
@@ -142,7 +144,8 @@ in D-33. Each side ends with the checks of task 1.16.
   the properties rule is added to the tester's ledger row as that EPIC left it. Repoint
   `working-with-agents.md` only if its sentence on the tester's range is still untrue.
 - [ ] 2.5 `cosmic-python`: extend checklist item 10; pin Hypothesis and Schemathesis in the `test` group of
-  `pyproject.toml.tmpl` and confirm `poetry lock` on a scaffold (D-9, D-4).
+  `pyproject.toml.tmpl` and confirm `uv lock` on a scaffold (D-9, D-4; `project-setup` moved
+  from Poetry to uv in PR #248).
   *Revised 2026-11-15 (D-32, D-33):* no example is added to `example-testing-patterns.md`;
   item 10 gains about three lines, which method fits when.
 - [ ] 2.6 [A] Update the tester and property-test rows of the inventory and the software file

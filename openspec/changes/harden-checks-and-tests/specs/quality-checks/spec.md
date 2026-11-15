@@ -1,7 +1,10 @@
 <!-- Full delta, derived with the PLAN on 2026-11-14. The shaping-level requirement "Every catalogued
      rule names its checker" was split: its catalogue half moved to the code-principles-governance
      delta, its fixture half is the second requirement below. Revised 2026-11-15 (design D-35): the
-     requirement on weekly mutation results was removed with the weekly runs. -->
+     requirement on weekly mutation results was removed with the weekly runs. Reconciled 2026-11-15
+     with the delivered tool side (design D-38, D-40): `.yaml` rules only, the project-side
+     manifest check, the wider suppression forms and the test rules' reach into `tests/`. -->
+
 
 ## ADDED Requirements
 
@@ -29,8 +32,13 @@ configurations; a later change MAY add the rule files and configurations of anot
 A Meaningfy Semgrep rule SHALL have the id prefix `mfy-`, SHALL cite in its message the owner of
 what it checks (a catalogue entry id, a testing checklist item, or for the suppression rule the
 suppression convention of `project-setup`), and SHALL ship with a fixture file beside it that marks
-at least one bad case (`ruleid:`) and one good case (`ok:`). The fixture check SHALL need no
-Semgrep installation (harden-checks-and-tests DEC-15, design D-3, D-8).
+at least one bad case (`ruleid:`) and one good case (`ok:`). A rule file SHALL end in `.yaml`.
+The fixture check SHALL need no Semgrep installation (harden-checks-and-tests DEC-15, design D-3,
+D-8, D-40).
+
+#### Scenario: A rule file with another extension
+- **WHEN** a change adds `quality/semgrep/rules/mfy-x.yml`
+- **THEN** `make validate` fails, naming the file
 
 #### Scenario: A Semgrep rule without a fixture
 - **WHEN** a rule file under `quality/semgrep/` has no fixture file beside it
@@ -58,8 +66,10 @@ skillery's CI SHALL install none of them, and skillery SHALL NOT run the checks 
 Every external Semgrep source SHALL be one entry of `quality/semgrep/external.json` with its id,
 repository, commit, rule paths, licence, the reason it was picked and its mode; a new entry SHALL
 start in mode `report-only`. No external rule text SHALL be stored in the repository. Each entry
-SHALL be approved by the owner in the pull request that adds it or changes its commit
-(harden-checks-and-tests DEC-6, DEC-13).
+SHALL be approved by the owner in the pull request that adds it or changes its commit. A project
+SHALL check every entry again before it fetches or uses it, and SHALL refuse an entry whose
+repository is not `https`, whose id or rule path is not a plain name, or whose commit is not a
+commit id (harden-checks-and-tests DEC-6, DEC-13, design D-40).
 
 #### Scenario: A source without a licence
 - **WHEN** an entry of `external.json` has an empty `licence`
@@ -68,6 +78,10 @@ SHALL be approved by the owner in the pull request that adds it or changes its c
 #### Scenario: A source pinned to a branch
 - **WHEN** an entry's `commit` is `main`
 - **THEN** `make validate` fails, naming the entry and asking for a 40-character commit id
+
+#### Scenario: An entry that would write outside its folder
+- **WHEN** a project's fetched `external.json` has an entry whose id or rule path holds `..`
+- **THEN** `make quality-tools` fails, naming the entry and the field, and fetches nothing for it
 
 #### Scenario: A new source gates at once
 - **WHEN** a pull request adds an entry with mode `gate` that the base branch does not have
@@ -102,8 +116,11 @@ A scaffolded project's `make check-quality` SHALL run, besides Ruff, mypy and im
 Meaningfy Semgrep rules, ls-lint and checkmake from the fetched folder, and its CI SHALL run the
 same targets. A finding of a gating rule SHALL fail the target; a finding of a report-only rule
 SHALL be printed and SHALL NOT fail it. A suppression comment without a reason SHALL fail the
-target. The layout check SHALL fail on a banned module file name and on a missing required file
-(harden-checks-and-tests DEC-2, DEC-8 as narrowed by design D-5, DEC-13).
+target, whether it is a `nosemgrep` or a `noqa` comment, file-wide or not, in any letter case.
+The test rules SHALL reach the project's `tests/` folder, so the project SHALL carry its own
+`.semgrepignore`. The layout check SHALL fail on a banned module file name and on a missing
+required file (harden-checks-and-tests DEC-2, DEC-8 as narrowed by design D-5, DEC-13, design D-38,
+D-40).
 
 #### Scenario: A gating rule fires
 - **WHEN** the package builds a SPARQL query with an f-string
@@ -112,6 +129,14 @@ target. The layout check SHALL fail on a banned module file name and on a missin
 #### Scenario: A report-only rule fires
 - **WHEN** only a report-only rule has findings
 - **THEN** `make check-quality` prints them and exits 0
+
+#### Scenario: A network call in a unit test
+- **WHEN** a test under `tests/unit/` calls `requests.get(url)`
+- **THEN** `make check-quality` fails, naming the rule and the testing checklist item
+
+#### Scenario: A network call in an integration test
+- **WHEN** a test under `tests/integration/` calls `requests.get(url)`
+- **THEN** `make check-quality` passes
 
 #### Scenario: A generic module name
 - **WHEN** the package holds a file named `utils.py`
@@ -135,6 +160,10 @@ target. The layout check SHALL fail on a banned module file name and on a missin
 
 #### Scenario: A bare suppression
 - **WHEN** a line carries `# nosemgrep` with no rule id and no reason
+- **THEN** `make check-quality` fails, naming the line
+
+#### Scenario: A file-wide noqa without a reason
+- **WHEN** a module carries `# ruff: noqa` with no reason after it
 - **THEN** `make check-quality` fails, naming the line
 
 ### Requirement: The Ruff selection flags the hygiene cases
