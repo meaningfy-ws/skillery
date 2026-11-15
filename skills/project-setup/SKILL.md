@@ -29,7 +29,7 @@ rather than restating them:
 
 | For… | Use skill / source |
 |------|--------------------|
-| Layering, SOLID, the four patterns, CI tools | `cosmic-python` |
+| Layering, SOLID, what to test per layer | `cosmic-python` |
 | Minimal code — YAGNI, avoid over-engineering | `ponytail` (third-party) |
 | System design, C4, ADRs, contracts | `architecture` |
 | The domain `model/` (product) | `conceptual-modelling` |

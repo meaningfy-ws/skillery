@@ -47,7 +47,7 @@ tester's new range needs no mod change.
 | `layout.md`, `checklists.md` | [`layout.md`](../../../skills/project-setup/references/layout.md), [`checklists.md`](../../../skills/project-setup/references/checklists.md) |
 | `modernizing-existing-projects.md` | [`project-setup/references/modernizing-existing-projects.md`](../../../skills/project-setup/references/modernizing-existing-projects.md) |
 | `stage-loop.md` | [`epic-delivery/references/stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md) (the check ledger, line 136) |
-| `example-testing-patterns.md` | [`cosmic-python/references/example-testing-patterns.md`](../../../skills/cosmic-python/references/example-testing-patterns.md) (no longer edited, D-32) |
+| `example-testing-patterns.md` | `cosmic-python/references/example-testing-patterns.md` (no longer edited, D-32; deleted by `lean-skills` stage 2) |
 | The L3 lens | [`meaningfy-code-review/SKILL.md`](../../../skills/meaningfy-code-review/SKILL.md) (the lens table, line 74) |
 | `working-with-agents.md` | [`docs/practice/ai-coding/working-with-agents.md`](../../../docs/practice/ai-coding/working-with-agents.md) (line 44) |
 | The reviewer's scenarios | [`tests/features/agents/code-reviewer.feature`](../../../tests/features/agents/code-reviewer.feature) |

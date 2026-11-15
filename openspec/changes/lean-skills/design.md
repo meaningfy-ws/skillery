@@ -341,6 +341,99 @@ ships with it.
 | 4 | sales (`meaningfy-sales`) | `commercial-portfolio` and the rest of R2 have landed | |
 | 5 | every skill not rewritten in stages 2 to 4 (devops, core, consulting, legal, vault-assistant, navigator) | after stage 4 | the 1 MB total measured as in the Context and recorded; `pending` key removed when empty |
 
+### Stage 2, detailed (revised after the gate, 2026-11-15, S-10; no new gate run)
+
+Measured on `develop` `6638eeb`: `SKILL.md` body 20,702 bytes; `references/` 105,475 bytes in nine
+files: seven `example-*.md` (100,840), the catalogue `principles-and-anti-patterns.md` (8,426) and
+`testing-checklist.md` (3,237). Appetite of the stage: MEDIUM (one skill, but the catalogue that
+every code skill, agent and Semgrep message cites by id).
+
+**D-9 What the body keeps, and its shape.** The body follows D-2, with a `## Workflow` (it is an
+activity skill): the bias it corrects (code structure inside a service, not system design), a Quick
+Start (one function placed in its layer), the workflow "implement from a spec" (layer order,
+`make check-architecture`), then `## Rules`: the layer contract (the four layers, what each may
+import, abstract interfaces in `adapters/` that services import, the dependency law), component
+organisation (the tree; the rule is `PR-COMPONENT-FIRST`), the folder vocabulary with the book's
+synonyms (`/domain` = `models/`, `/service_layer` = `services/`) and no `src/`, what to test per
+layer (the table), observability placement (logging in `services/` and `entrypoints/`, structured,
+no `print`), when not to layer (spikes, single-file scripts); `## Before you hand over`: the
+one-minute structure check as a Quick diagnostic (CHK-6); `## Boundary & Related Skills`. Each
+pointer to the catalogue or the testing checklist is in the sentence form (D-5). Target: body near
+6 KB, skill under 24 KB; the skill leaves `pending` with no `over_budget` entry.
+
+**D-10 The ten clean-code and SOLID bullets become catalogue entries (DEC-12; harden-checks
+D-31).** They move from the body into a fourth table of the catalogue, `## Clean code and SOLID`,
+one short line each, with new ids of the existing two-letter form: `CC-NAMES`,
+`CC-SMALL-FUNCTIONS`, `CC-NO-MAGIC-STRINGS`, `CC-SHALLOW-NESTING`, `CC-EXTRACT-THRESHOLD`,
+`CC-SRP`, `CC-OCP`, `CC-LSP`, `CC-ISP`, `CC-DIP`. Where an entry overlaps an older id it cites it
+(`CC-NO-MAGIC-STRINGS` → `BP-CONSTANTS-ENUMS`; `CC-DIP` → the layer contract). The table has no
+"Checked by" column yet: `harden-checks-and-tests` task 1.12 adds it to all four tables, so its
+values land in the layout this stage leaves. Every existing id keeps its spelling and meaning.
+
+**D-11 The extraction threshold and the nesting depth, fixed once (the defect).** The body gave
+two thresholds ("three similar lines don't warrant a helper; ten do" and "2-3 similar lines are OK;
+5+ warrant extraction") and two depths ("3+ levels" and ">3 levels"). `CC-EXTRACT-THRESHOLD`:
+two or three similar lines stay; five or more are extracted (the stricter, nearer
+`PR-REUSE-COMPACT`). `CC-SHALLOW-NESTING`: at most three levels of nesting in a function. Both
+are the house numbers that win over the book sets (orchestrate-external-skills stage 1a, conflict
+2). The owner confirms or changes them at task 2.3.
+
+**D-12 The example files leave; a docs page links the real code (DEC-7).** The seven
+`example-*.md` files are deleted after the assessment has sorted every passage; a passage sorted
+**keep** goes to the catalogue or the body, never to a new reference. A page for people,
+`docs/practice/engineering-standards/worked-examples.md`, links per layer (models, adapters,
+services, entrypoints, tests, configuration, exceptions, quality gates) to files of the public
+`meaningfy-ws/mapping-suite-sdk` on its `develop` branch, each path checked to exist. The
+generic-repository example goes with its file; the override that allows a generic repository
+base is the orchestrator's to write (orchestrate-external-skills stage 2, conflict 4).
+
+**D-13 Where the cut text goes.**
+
+| Cut | Class (D-7) | Now |
+|---|---|---|
+| Tool list, Makefile pattern, CI/CD workflow, `example-project-quality-ci.md` | owner | `project-setup` (templates, `config-files.md`, `ci-and-infra.md`); the list named pylint, flake8, tox and SonarCloud, which the scaffold no longer uses |
+| Workflow 2 (review questions), Workflow 4 (drift table), "Principles & best practices" | owner, drop | `meaningfy-code-review` lenses over the catalogue; duplicates of catalogue entries dropped |
+| ADR advice, contract-first | owner | `architecture` |
+| Stream Coding phases and integration | dependency | named once (DEC-6) |
+| TDD ritual, BDD for use cases | owner | `superpowers:test-driven-development`, `bdd-gherkin` |
+| FIRST, test pyramid, fixtures and parametrize, the quote | drop | general knowledge |
+| "Mock external dependencies" | owner | the testing checklist (items 4 and 5: fakes over mocks) |
+| SOLID and clean-architecture reasoning in depth | dependency | the book sets `clean-architecture`, `refactoring`, `a-philosophy-of-software-design` (`agent-rules-books/meaningfy-building`), named once with the fallback sentence of practice 5 |
+| Closing list of references, "Skill relationships" | drop | pointers at the point of need; Boundary |
+
+**D-14 Citers kept true.** The rewrite changes the section names other files cite. In the same
+pull request: the L2 and L3 rows of `meaningfy-code-review` name the new sections and the `CC-`
+region; `test-strategy`'s `inventory.md` rows CHK-1, CHK-4, CHK-6, CHK-7, CHK-8, CHK-9 and
+`software.md` row CHK-6 point to files that still hold the check (no id changes, no new row);
+`docs/practice/engineering-standards/testing-standard.md` links the docs page;
+`testing-checklist.md` drops its line to the example file. Records under `openspec/changes/` that
+quote the old files are history and stay. The description is not touched (No-go), though it still
+names ADRs and CI tools; a description change with its probe is a follow-up for the owner.
+
+**D-15 Review and check of a prose stage.** No code changes, so the code lenses have nothing to
+judge. The challenge is the second reader (spec `lean-skill-standard`): a fresh subagent that did
+not write the rewrite compares the skill at `develop` with the rewrite and the assessment record,
+lists every Meaningfy rule lost, every pointer with an empty situation or "adds" (RISK-1), every
+passage moved instead of cut (RISK-2), and every citer left untrue (D-14). Lost rules are restored
+before the pull request; the rest is decided by the lead as in the stage loop. The check is the
+full gates (`make validate`, `make validate-spine`) and CI. Then the owner's checkpoint (task 2.3).
+
+**D-16 The second reader's findings, decided by the lead (2026-11-15).** Verdict "lost: three
+rules"; all restored. (1) An interface may be an `abc.ABC` named `<Thing>ABC` or a
+`typing.Protocol` where structural typing fits (the old "interfaces/protocols"; the SDK uses
+both). (2) The composition root: an entrypoint may construct adapters and pass them to the
+service, and never calls them; a service may default an adapter parameter to the production
+implementation, its only concrete import (old DI example). (3) Adapter tests use a double of the
+external system in a unit test, or the real system in an integration test (`project-setup`'s
+tiers). Also fixed: the Quick Start no longer claims `make check-architecture` checks the CLI rule;
+the citers that still sent CI to `cosmic-python` (`project-setup` defaults table, the `AGENTS.md`
+template, `architectural-guardrails.md`); the lens rows cover the three new `BP-` ids, `CC-DIP` sits
+with L3; OpenTelemetry and JSON logging restored (doubt goes to keep); the `fields()` convention for
+field names joins `BP-STRICT-BASE-MODEL`; `CC-SMALL-FUNCTIONS` keeps "a target", four similar lines
+are a judgement call; the docs page drops the generic-repository sentence until the orchestrator
+writes that override. Under the floor, pre-existing: `architecture-guardrails.md` and two
+templates still say `domain` for `models/`; the description still names ADRs and CI (D-14).
+
 ### Anti-patterns
 
 | Don't | Do instead | Why |
