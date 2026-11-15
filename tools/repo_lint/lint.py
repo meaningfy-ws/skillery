@@ -1571,6 +1571,37 @@ def activity_tools_table(repo: Path) -> list[str]:
     return out
 
 
+BINDING_TEMPLATE = "skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl"
+_BUDGET_LINE = re.compile(r"<!-- size budget: (\d+) characters -->")
+
+
+def binding_size(repo: Path) -> list[str]:
+    """The binding stays small (delivery-process-and-tools D-13, INV-2): AGENTS.md and its template,
+    each measured in characters without a leading budget-comment line, must not exceed the figure in
+    that comment on the template's first line. A template without a well-formed comment fails.
+    Silent when the template is absent."""
+    tmpl = repo / BINDING_TEMPLATE
+    if not tmpl.exists():
+        return []
+    text = tmpl.read_text(encoding="utf-8")
+    m = _BUDGET_LINE.fullmatch(text.split("\n", 1)[0].rstrip("\r"))
+    if not m:
+        return [f"{BINDING_TEMPLATE}: first line must be the comment '<!-- size budget: N characters -->'"]
+    budget = int(m.group(1))
+    out: list[str] = []
+    for path in (repo / "AGENTS.md", tmpl):
+        if not path.exists():
+            continue
+        body = path.read_text(encoding="utf-8")
+        first, _, rest = body.partition("\n")
+        if _BUDGET_LINE.fullmatch(first.rstrip("\r")):
+            body = rest
+        if len(body) > budget:
+            out.append(f"{path.relative_to(repo).as_posix()}: {len(body)} characters, over the budget of {budget}; "
+                       f"cut prose, do not raise the figure")
+    return out
+
+
 ALL_CHECKS = (
     missing_skill_dirs, wip_isolation, frontmatter_present_errors,
     frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long, description_angle_brackets,
@@ -1583,6 +1614,7 @@ ALL_CHECKS = (
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
     top_level_folders, quality_files, prose_budget, reference_pointers, activity_tools_table,
+    binding_size,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

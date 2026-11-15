@@ -1773,3 +1773,77 @@ def test_activity_tools_agent_cell_with_and_between_names_is_unknown(tmp_path):
     _tools_repo(tmp_path, ["| Code | implementer and code-reviewer | `Read` | x | y |"],
                 {"implementer": ["Read"], "code-reviewer": ["Read"]})
     assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+# ---- binding_size (delivery-process-and-tools D-13, INV-2)
+_TMPL_REL = "skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl"
+
+
+def _binding_repo(root: Path, body: str, budget_line: str | None = "<!-- size budget: 12000 characters -->",
+                  agents: str | None = None):
+    tmpl = root / _TMPL_REL
+    tmpl.parent.mkdir(parents=True)
+    tmpl.write_text((budget_line + "\n" if budget_line is not None else "") + body, encoding="utf-8")
+    (root / "AGENTS.md").write_text(body if agents is None else agents, encoding="utf-8")
+    return root
+
+
+def test_binding_size_silent_without_the_template(tmp_path):
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_at_the_budget_passes(tmp_path):
+    _binding_repo(tmp_path, "a" * 12000)
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_under_the_budget_passes(tmp_path):
+    _binding_repo(tmp_path, "a" * 11999)
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_one_over_fails_for_both_files(tmp_path):
+    _binding_repo(tmp_path, "a" * 12001)
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 2
+    assert all("12001" in e and "12000" in e for e in errs)
+    assert any("AGENTS.md.tmpl" in e for e in errs) and any(e.startswith("AGENTS.md") for e in errs)
+
+
+def test_binding_size_only_agents_over_fails_once(tmp_path):
+    _binding_repo(tmp_path, "a" * 100, agents="a" * 12001)
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and errs[0].startswith("AGENTS.md")
+
+
+def test_binding_size_counts_characters_not_bytes(tmp_path):
+    _binding_repo(tmp_path, "é" * 12000)  # 24000 bytes, 12000 characters
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_reads_the_figure_from_the_comment(tmp_path):
+    _binding_repo(tmp_path, "a" * 51, "<!-- size budget: 50 characters -->")
+    assert len(lint.binding_size(tmp_path)) == 2
+    (tmp_path / _TMPL_REL).write_text("<!-- size budget: 50 characters -->\n" + "a" * 50, encoding="utf-8")
+    (tmp_path / "AGENTS.md").write_text("a" * 50, encoding="utf-8")
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_excludes_a_budget_comment_in_agents_md(tmp_path):
+    _binding_repo(tmp_path, "a" * 50, "<!-- size budget: 50 characters -->",
+                  agents="<!-- size budget: 50 characters -->\n" + "a" * 50)
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_fails_when_the_comment_is_missing(tmp_path):
+    _binding_repo(tmp_path, "a" * 10, None)
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and "AGENTS.md.tmpl" in errs[0] and "size budget" in errs[0]
+
+
+@pytest.mark.parametrize("line", ["<!-- size budget: twelve characters -->", "<!-- size budget: 12000 -->",
+                                  "<!-- size budget: -5 characters -->", "<!-- budget: 12000 characters -->"])
+def test_binding_size_fails_when_the_comment_is_malformed(tmp_path, line):
+    _binding_repo(tmp_path, "a" * 10, line)
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and "size budget" in errs[0]
