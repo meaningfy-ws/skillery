@@ -2,7 +2,7 @@
 
 Per-file spec for every tool-config file the scaffold drops at the **repository root**. This
 implements decisions **D1** (no `/src`), **D2** (config in dedicated root files; minimal
-`pyproject.toml`), **D3** (Poetry + dependency groups), **D4** (Ruff), **D5** (test pyramid,
+`pyproject.toml`), **D3** (uv + dependency groups), **D4** (Ruff), **D5** (test pyramid,
 coverage out of `pytest.ini`).
 
 The golden rule: **`pyproject.toml` stays minimal; each tool owns one root file.** A new
@@ -59,16 +59,16 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
 - **Responsibilities:** `[project]` (name=`<<PROJECT_SLUG>>`, version, description,
   `requires-python = ">=<<PYTHON_VERSION>>,<4.0"`, Apache-2.0 licence, classifiers, authors,
   maintainers); `[project.dependencies]` (runtime, pinned `==`); `[dependency-groups]`
-  (`dev`/`test`/`lint`, PEP 735); `[tool.poetry]` packages; `[build-system]` poetry-core.
+  (`dev`/`test`/`lint`, PEP 735); `[build-system]` `uv_build`; `[tool.uv.build-backend]` with `module-root = ""`.
 - **Key settings & why:**
-  - `packages = [{ include = "<<PACKAGE>>" }]` — **no-src adaptation**: NO `from = "src"`. The
-    package sits at the repo root, so Poetry discovers it directly.
+  - `module-root = ""` — **no-src adaptation**: `uv_build` looks for `<<PACKAGE>>/` at the repo
+    root instead of under `src/`.
   - Three dependency groups mirror D3. `lint` = ruff, mypy, import-linter, radon, xenon. `test` =
     pytest, pytest-bdd, pytest-cov, pytest-asyncio, testcontainers, polyfactory, httpx. `dev` =
     pre-commit, linkml.
   - **No `[tool.ruff]`/`[tool.mypy]`/`[tool.pytest]`/`[tool.coverage]`** — every tool is configured
-    in its own root file (D2). `[tool.poetry]` stays because it is packaging metadata, not tool config.
-- **No-src adaptation:** drop `from = "src"`; the version lives in `VERSION` and is mirrored here.
+    in its own root file (D2). `[tool.uv.build-backend]` stays because it is packaging metadata, not tool config.
+- **No-src adaptation:** `module-root = ""`; the version lives in `VERSION` and is mirrored here.
 
 ### `ruff.toml` (from `ruff.toml.tmpl`)
 
@@ -150,19 +150,19 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
 
 - **Purpose:** the central developer UX; CI calls these targets verbatim (D12).
 - **Responsibilities (sections):**
-  - **Install/build:** `install-poetry`, `install` (all groups, does **not** lock), `lock`, `build`.
+  - **Install/build:** `install` (`uv sync --all-groups`; needs `uv` on PATH, else prints the install link and fails; does **not** lock), `lock` (`uv lock`), `build` (`uv build`).
   - **Mutating quality:** `format`, `lint-fix`, `pre-commit`.
   - **Validation:** `lint`, `typecheck`, `check-architecture`, `test`, `test-unit`,
     `test-feature`, `test-e2e`, `test-integration`.
   - **Aggregates:** `check-quality` (lint+typecheck+architecture), `check-all` (+test),
     `ci-quick` (quality+unit), `ci-full` (check-all+clean-code).
-  - **Run:** `run` (`poetry run python -m <<PACKAGE>>`; tailor per archetype).
+  - **Run:** `run` (`uv run python -m <<PACKAGE>>`; tailor per archetype).
   - **Reports (opt-in):** `coverage-report`, `quality-report`.
   - **Clean code (separate):** `complexity`, `maintainability`, `clean-code`.
   - **Docs (live):** `install-antora`, `build-docs`, `preview-docs`, `clean-docs`.
   - **Docker (live):** `up`, `down`, `rebuild`, `logs`, `watch`, `check-env`.
   - **Utilities:** `clean`.
-- **Key settings & why:** every Python tool runs through `poetry run`. `COV_FLAGS` is appended only
+- **Key settings & why:** every Python tool runs through `uv run`. `COV_FLAGS` is appended only
   in coverage-aware targets (mirrors D5). `help` is **auto-generated** from `## ` comments via a
   `grep`/`awk` one-liner — adding a documented target needs no edit to a manual help block.
 - **No-src adaptation:** no `cd src` anywhere; `PACKAGE_NAME = <<PACKAGE>>` at the root,
@@ -173,7 +173,7 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
 
 - **Purpose:** single source of truth for the project version (seed `0.1.0`).
 - **Why a file:** decouples the version from `pyproject.toml` and lets tooling/CI read it
-  trivially. Keep `pyproject.toml`'s `version` in sync (or add a poetry version plugin).
+  trivially. Keep `pyproject.toml`'s `version` in sync (`uv_build` has no version plugin).
 
 ### `LICENSE`
 
@@ -200,9 +200,9 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
    - `[tool.pytest.ini_options]` → `pytest.ini` (`[pytest]`).
    - `[tool.coverage.run]` / `[tool.coverage.report]` → `.coveragerc` (`[run]`, `[report]`).
 2. **Delete the moved `[tool.*]` blocks** from `pyproject.toml`, leaving only `[project]`,
-   `[tool.poetry]`, `[dependency-groups]`, `[build-system]`.
-3. **Drop the `/src` layout:** move `src/<pkg>/` → `<pkg>/`; in `pyproject.toml` change
-   `packages = [{ include = "<pkg>", from = "src" }]` to `{ include = "<pkg>" }`; set
+   `[dependency-groups]`, `[build-system]`, `[tool.uv.build-backend]`.
+3. **Drop the `/src` layout:** move `src/<pkg>/` → `<pkg>/`; in `pyproject.toml` set
+   `module-root = ""` under `[tool.uv.build-backend]`; set
    `pythonpath = .` in `pytest.ini`, `source = <pkg>` in `.coveragerc`, `sonar.sources = <pkg>/`.
 4. **Re-point the Makefile:** remove every `cd src`; reference config by root filename.
 5. **Verify:** `make install && make check-all` must pass green on the migrated tree.

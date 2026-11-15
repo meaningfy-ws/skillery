@@ -25,12 +25,12 @@ This repository follows the Meaningfy standard layout:
 
 ## Installation
 
-Requires Python >= <<PYTHON_VERSION>>, [Poetry](https://python-poetry.org), and `make`.
+Requires Python >= <<PYTHON_VERSION>>, [uv](https://docs.astral.sh/uv/), and `make`.
 
 ```bash
 git clone https://github.com/<<GITHUB_ORG>>/<<PROJECT_SLUG>>.git
 cd <<PROJECT_SLUG>>
-make install        # poetry install with all dependency groups
+make install        # uv sync with all dependency groups
 ```
 
 See [INSTALL.md](INSTALL.md) for the full development environment setup (pre-commit, Docker).
@@ -38,7 +38,7 @@ See [INSTALL.md](INSTALL.md) for the full development environment setup (pre-com
 ## Running
 
 ```bash
-make run            # or: poetry run python -m <<PACKAGE>>
+make run            # or: uv run python -m <<PACKAGE>>
 ```
 
 ## Development

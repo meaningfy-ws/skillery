@@ -38,6 +38,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Changed
 
+- `project-setup` now scaffolds projects with **uv** instead of Poetry: `pyproject.toml` builds
+  with `uv_build`, `make install` runs `uv sync --all-groups` (and says how to install uv when it
+  is missing, instead of calling `pip`), every tool runs through `uv run`, the lockfile is
+  `uv.lock`, and CI and the Dockerfile use uv. An existing project migrates by the short steps in
+  the skill's modernisation guide.
 - `implementer` and `code-reviewer` have a fixed tool list again: the file, search, shell and skill
   tools, plus the code tools of the `serena`, `ast-grep` and `gitnexus` MCP servers, loaded on
   demand. Since v3.12.0 they carried every tool of the session, which made each worker start

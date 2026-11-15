@@ -109,7 +109,7 @@ Map each prose rule to a contract type:
 
 ```make
 check-architecture:
-	poetry run lint-imports --config .importlinter
+	uv run lint-imports --config .importlinter
 ```
 
 CI (`ci.yaml`) calls the same target between typecheck and test, so a forbidden

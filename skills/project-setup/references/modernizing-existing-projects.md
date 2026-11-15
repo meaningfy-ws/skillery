@@ -62,8 +62,8 @@ Then assess the dimensions a file-presence check **cannot** see, using this rubr
 
 | Dimension | What to check | Owner reference |
 |-----------|---------------|-----------------|
-| **Layout** | `/src` present? package at top level? `from = "src"` in pyproject? | `layout.md`, `config-files.md` |
-| **pyproject** | `[tool.*]` sprawl vs minimal? Poetry + `[dependency-groups]`? | `config-files.md` |
+| **Layout** | `/src` present? package at top level? `src` module root in pyproject? | `layout.md`, `config-files.md` |
+| **pyproject** | `[tool.*]` sprawl vs minimal? uv + `[dependency-groups]` + `uv.lock` (not Poetry)? | `config-files.md` |
 | **Tool configs** | dedicated `ruff.toml`/`mypy.ini`/`pytest.ini`/`.coveragerc` at root? | `config-files.md` |
 | **Lint/format** | Ruff, or legacy black/isort/flake8/pylint? | `decisions.md` D4 |
 | **Tests** | type-split dirs + marker hook? pytest-bdd? coverage gate ≥80%? | `testing-setup.md` |
@@ -109,6 +109,9 @@ The recommended order (skip steps already conformant):
 4. **pyproject normalization** — strip `[tool.*]` blocks into the dedicated files now present,
    leaving pyproject minimal. Recipe: `config-files.md` §"Migrating an existing repo's
    `pyproject.toml`". Commit.
+   A Poetry project also moves to uv here: `uv` reads `[project]` and `[dependency-groups]`, so drop
+   `[tool.poetry]` and `poetry.lock`, set `[build-system]` to `uv_build` (with `module-root = ""`)
+   and run `uv lock`. Move any Poetry-only dependency table into `[project]` or `[dependency-groups]` first.
 5. **Tooling swap** — replace black/isort/flake8/pylint with Ruff; fix the lint debt it surfaces
    in its own commit(s). Add mypy if absent. Commit.
 6. **Test reorganization** — introduce the type-split `tests/` tree + the marker-injection

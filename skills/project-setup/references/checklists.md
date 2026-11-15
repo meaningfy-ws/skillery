@@ -64,7 +64,7 @@ multi-component) apply only if the interview selected them.
 
 ## (b) Definition of Done (the scaffold is complete when…)
 
-- [ ] `make install` succeeds (all dependency groups; does **not** run `poetry lock`).
+- [ ] `make install` succeeds (all dependency groups; does **not** run `uv lock`; `uv` on PATH, else it prints the install link and fails).
 - [ ] `make check-all` is **green** on the empty skeleton (lint + types + architecture +
       `openspec validate --strict` + placeholder test).
 - [ ] `make lint` (ruff) and `make typecheck` (mypy) pass with no errors.
@@ -81,9 +81,9 @@ multi-component) apply only if the interview selected them.
 - [ ] **Skillery + ponytail installed** — the Meaningfy plugins and `ponytail` are present so the
       skill routing in `AGENTS.md` resolves (no unresolved skill references).
 - [ ] **No `/src`** — the package is top-level; `pytest.ini` has `pythonpath = .`;
-      `pyproject.toml` `packages` include has no `from`.
-- [ ] `pyproject.toml` is **minimal** — only `[project]`, `[tool.poetry]`,
-      `[dependency-groups]`, `[build-system]`; every other tool config is in its own root file.
+      `pyproject.toml` sets `module-root = ""`.
+- [ ] `pyproject.toml` is **minimal** — only `[project]`,
+      `[dependency-groups]`, `[build-system]`, `[tool.uv.build-backend]`; every other tool config is in its own root file.
 - [ ] **Version has a single source of truth** (`cosmic-python:PR-SSOT-DRY`) — one source (a root
       `VERSION` file or `__init__.__version__`); `pyproject.toml` derives from it. No second hard-coded literal.
 - [ ] **Docs** (if selected): `make build-docs` produces a site under `docs/build/`.
@@ -106,7 +106,7 @@ make check-all                     # lint + typecheck + check-architecture + tes
 # individual gates (if check-all is not yet defined or you want to isolate a failure)
 make lint                          # ruff format --check + ruff check
 make typecheck                     # mypy
-make check-architecture            # poetry run lint-imports --config .importlinter
+make check-architecture            # uv run lint-imports --config .importlinter
 make test                          # pytest (markers stamped by tests/conftest.py)
 
 # agentic + spine + layout sanity

@@ -89,9 +89,8 @@ One `quality` job, on push and PR to `<<DEFAULT_BRANCH>>`:
 |------|-------------|---------|
 | Checkout (`fetch-depth: 0`) | — | full history for Sonar blame |
 | Set up Python `<<PYTHON_VERSION>>` | — | pinned interpreter |
-| Install Poetry (`pipx install poetry`) | — | dependency manager |
-| Cache `~/.cache/pypoetry` | — | keyed on `poetry.lock` |
-| Install | `make install` | all groups (dev, test, lint) |
+| Install uv (`astral-sh/setup-uv`, cache on) | — | dependency manager; cache keyed on `uv.lock` |
+| Install | `uv sync --all-groups --locked` | all groups (dev, test, lint); fails if `uv.lock` is stale |
 | Lint | `make lint` | Ruff |
 | Type check | `make typecheck` | mypy |
 | Architecture | `make check-architecture` | import-linter |
@@ -226,10 +225,10 @@ a flat `src/infra/`).
 
 | Choice | Why |
 |--------|-----|
-| **Builder stage** installs deps into an in-project `.venv` | dependency layer is cached unless `poetry.lock` changes; build tools (poetry) never reach the runtime image |
+| **Builder stage** installs deps into an in-project `.venv` | dependency layer is cached unless `uv.lock` changes (`uv` is copied in from `ghcr.io/astral-sh/uv` and runs `uv sync --locked`); build tools (uv) never reach the runtime image |
 | **Runtime stage** is `python:<<PYTHON_VERSION>>-slim` | small attack surface; only the venv + package + entrypoint are copied in |
 | **Non-root `appuser` (uid 1000)** | containers must not run as root (security baseline); writable `$HOME` for caches |
-| **`PATH=/app/.venv/bin:...`** | the venv is active without `poetry run` at runtime |
+| **`PATH=/app/.venv/bin:...`** | the venv is active without `uv run` at runtime |
 | **No-src copy** (`COPY <<PACKAGE>> <<PACKAGE>>/`) | the package is at the repo root; build context is `../..` from `infra/` |
 | **`ENTRYPOINT entrypoint.sh`** | one place for the optional seed step + `exec`-ing the app as PID 1 (clean signals) |
 
@@ -239,7 +238,7 @@ all groups (for in-container tests/tooling), production installs `--only main`.
 ### Live development (`develop: watch:`)
 
 `compose.yaml`'s `watch` block syncs `<<PACKAGE>>/` into the running container
-(`make watch`) and triggers a rebuild when `pyproject.toml`/`poetry.lock` change,
+(`make watch`) and triggers a rebuild when `pyproject.toml`/`uv.lock` change,
 so edits hot-reload without a manual rebuild.
 
 ## Layered env + secrets hygiene

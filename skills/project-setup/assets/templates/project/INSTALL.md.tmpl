@@ -8,7 +8,7 @@ see the [README](README.md#installation).
 | Tool | Version | Why |
 |------|---------|-----|
 | Python | >= <<PYTHON_VERSION>> | Runtime |
-| [Poetry](https://python-poetry.org) | 1.7+ | Dependency & environment management |
+| [uv](https://docs.astral.sh/uv/) | recent | Dependency & environment management |
 | `make` | any | Task runner / dev UX |
 | Node.js | 18+ | Building the Antora docs site (optional) |
 | Docker + Compose | recent | Running the local stack (optional) |
@@ -18,10 +18,10 @@ see the [README](README.md#installation).
 ```bash
 git clone https://github.com/<<GITHUB_ORG>>/<<PROJECT_SLUG>>.git
 cd <<PROJECT_SLUG>>
-make install        # poetry install with dev, test, and lint groups
+make install        # uv sync with all dependency groups
 ```
 
-`make install` does **not** run `poetry lock`. Lock dependencies explicitly with `make lock` when
+`make install` does **not** run `uv lock`. Lock dependencies explicitly with `make lock` when
 you change them.
 
 ## 2. Enable pre-commit hooks
@@ -30,8 +30,8 @@ The repo ships a pre-commit config (Ruff format + lint) so style issues are caug
 reach CI:
 
 ```bash
-poetry run pre-commit install
-poetry run pre-commit run --all-files   # optional: check the whole tree once
+uv run pre-commit install
+uv run pre-commit run --all-files   # optional: check the whole tree once
 ```
 
 ## 3. Verify the environment
@@ -65,7 +65,7 @@ make preview-docs   # serve at http://localhost:8080
 
 ## Troubleshooting
 
-- **Wrong Python interpreter** — always invoke tools through Poetry (`poetry run …`) or `make`,
+- **Wrong Python interpreter** — always invoke tools through uv (`uv run …`) or `make`,
   never a global `python`/`pytest`.
 - **`CLAUDE.md` looks almost empty** — it is a thin pointer that imports `AGENTS.md` (`@AGENTS.md`).
   Edit `AGENTS.md`; keep both as regular files, never a symlink.
