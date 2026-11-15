@@ -3,7 +3,7 @@
 Date: 2026-11-15. CLI: `skills` 1.8.1 (`npx -y skills@1.8.1`), Node v22.23.5, run from a Claude Code
 session (the CLI printed "Agent detected, installing non-interactively").
 
-Scratch folder: `$S` = `/tmp/claude-1000/-home-lps-work-repos-skillery/ce2a5d27-9855-4040-8716-69b51bead992/scratchpad/spike-install`.
+Scratch folder: `$S` = a session scratch folder.
 Every command ran from `$S` with this prefix (shown once, then written as `$E`):
 
 ```

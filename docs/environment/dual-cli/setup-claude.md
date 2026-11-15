@@ -75,7 +75,7 @@ cp /tmp/stream-coding/SKILL.md ~/.claude/skills/stream-coding/SKILL.md   # adjus
 
 ## External skills of your bundles (per role)
 
-These skills come from Meaningfy's forks of public skill sources. Install only the rows of the bundles you installed in Step 3. Each command pins the commit Meaningfy read and turns the installer's telemetry off with `DO_NOT_TRACK=1`; that is POSIX-shell syntax, so in PowerShell set the variable first. If you use both Claude Code and opencode, run only the claude-code command, because both CLIs read the folder it installs to.
+These skills come from Meaningfy's forks of public skill sources. Install only the rows of the bundles you installed in Step 3 and the bundles they require (for example `meaningfy-building` brings `meaningfy-architecture`). Until the `skill-orchestration` skill ships, these sets inform reasoning only, and `cosmic-python` wins on any conflict. Each command pins the commit Meaningfy read and turns the installer's telemetry off with `DO_NOT_TRACK=1`; that is POSIX-shell syntax, so in PowerShell set the variable first. If you use both Claude Code and opencode, run only the claude-code command, because both CLIs read the folder it installs to.
 
 <!-- GENERATED:dependencies:external-skills-claude -->
 | Bundle | Skills | Install |

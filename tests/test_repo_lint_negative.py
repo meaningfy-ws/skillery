@@ -1776,15 +1776,26 @@ def test_activity_tools_agent_cell_with_and_between_names_is_unknown(tmp_path):
 
 
 # --- the optional `bundle:` key (orchestrate-external-skills D-8)
-_BUNDLE_DEP = {**_DEP, "kind": "skill", "bundle": "meaningfy-core", "skills": ["technical-documentation"]}
+_SHA = "893a88a6fce3a80c565bf39ac65021b43a8b2990"
 
 
-def _bundle_repo(tmp_path, entry):
-    (tmp_path / "bundles.yaml").write_text(yaml.safe_dump({"bundles": [{"name": "meaningfy-core"}]}),
-                                           encoding="utf-8")
+def _cmd(agent, skills="technical-documentation", sha=_SHA, cli="1.8.1"):
+    return f"`DO_NOT_TRACK=1 npx skills@{cli} add o/r#{sha} --skill {skills} --agent {agent} --global --yes`"
+
+
+_BUNDLE_DEP = {**_DEP, "kind": "skill", "bundle": "meaningfy-core", "skills": ["technical-documentation"],
+               "pin": f"{_SHA} (the commit read in full)", "claude_install": _cmd("claude-code"),
+               "opencode_install": _cmd("opencode")}
+_SKILLS_CLI = {**_DEP, "kind": "cli-tool", "pin": "1.8.1"}
+
+
+def _bundle_repo(tmp_path, entry, bundles=True):
+    if bundles:
+        _bundles(tmp_path, [{"name": "meaningfy-core"}])
     skills = entry["skills"]  # the register keeps `skills:` inline, which safe_dump does not write
     fields = "".join(f"  {k}: {v!r}\n" for k, v in entry.items() if k != "skills")
-    return _deps_text(tmp_path, f"- {fields.lstrip()}  skills: [{', '.join(skills)}]\n")
+    cli = "".join(f"  {k}: {v!r}\n" for k, v in _SKILLS_CLI.items() if k != "name")
+    return _deps_text(tmp_path, f"- {fields.lstrip()}  skills: [{', '.join(skills)}]\n- name: skills-cli\n{cli}")
 
 
 def test_dependency_bundle_valid_passes(tmp_path):
@@ -1804,6 +1815,38 @@ def test_tc2_dependency_bundle_on_non_skill_kind_is_flagged(tmp_path):
 def test_tc3_dependency_bundle_with_empty_skills_is_flagged(tmp_path):
     assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "skills": []}) == [
         "dependencies.yaml: 'obsidian-skills' 'bundle' needs a non-empty 'skills' list"]
+
+
+def test_tc15_dependency_bundle_that_is_not_a_string_is_flagged(tmp_path):
+    assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "bundle": ["meaningfy-core"]}) == [
+        "dependencies.yaml: 'obsidian-skills' 'bundle' must be a bundle name"]
+
+
+def test_tc15_invalid_bundles_yaml_skips_membership_without_crashing(tmp_path):
+    (tmp_path / "bundles.yaml").write_text("- meaningfy-core\n", encoding="utf-8")
+    assert _bundle_repo(tmp_path, _BUNDLE_DEP, bundles=False) == []
+
+
+def test_tc16_dependency_pin_not_a_commit_is_flagged(tmp_path):
+    assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "pin": "main"}) == [
+        "dependencies.yaml: 'obsidian-skills' 'pin' must start with a 40-character commit"]
+
+
+def test_tc17_install_command_without_the_pin_is_flagged(tmp_path):
+    out = _bundle_repo(tmp_path, {**_BUNDLE_DEP, "opencode_install": _cmd("opencode", sha="a" * 40)})
+    assert out == [f"dependencies.yaml: 'obsidian-skills' 'opencode_install' must carry '#{_SHA}'"]
+
+
+def test_tc18_install_skill_names_differing_from_skills_are_flagged(tmp_path):
+    out = _bundle_repo(tmp_path, {**_BUNDLE_DEP, "claude_install": _cmd("claude-code", skills="other")})
+    assert out == ["dependencies.yaml: 'obsidian-skills' 'claude_install' names skills 'other', "
+                   "not 'technical-documentation'"]
+
+
+def test_tc19_install_cli_version_differing_from_skills_cli_pin_is_flagged(tmp_path):
+    out = _bundle_repo(tmp_path, {**_BUNDLE_DEP, "claude_install": _cmd("claude-code", cli="1.9.0")})
+    assert out == ["dependencies.yaml: 'obsidian-skills' 'claude_install' uses skills@1.9.0, "
+                   "not the skills-cli pin 1.8.1"]
 
 
 # ---- binding_size (delivery-process-and-tools D-13, INV-2)

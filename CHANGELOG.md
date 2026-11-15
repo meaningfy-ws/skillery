@@ -18,8 +18,10 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   Eight sets from Meaningfy's fork of `agent-rules-books` are now in `dependencies.yaml`: four for
   `meaningfy-building`, four for `meaningfy-architecture`, each read in full before it was
   registered. If you install either bundle, run its command from the new section "External skills
-  of your bundles (per role)" in your CLI's setup guide; it pins the commit Meaningfy read and
-  turns the installer's telemetry off. On opencode the install is not yet verified.
+  of your bundles (per role)" in your CLI's setup guide, together with the rows of the bundles it
+  requires; it pins the commit Meaningfy read and turns the installer's telemetry off. Until the
+  `skill-orchestration` skill ships, these sets inform reasoning only and `cosmic-python` wins on
+  any conflict. On opencode the install is not yet verified.
 
 ### Changed
 

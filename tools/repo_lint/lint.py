@@ -391,6 +391,9 @@ def dependencies_register(repo: Path) -> list[str]:
     keywords = list(skill_inventory.DEPENDENCY_STATUSES)
     out: list[str] = []
     owners: dict[str, str] = {}
+    listed = _bundle_list(repo)  # None: invalid file, `bundle_gates` reports it and membership skips
+    bundle_names = None if listed is None else {b["name"] for b in listed}
+    cli_pin = next((str(d.get("pin")) for d in entries if isinstance(d, dict) and d.get("name") == "skills-cli"), None)
     for d in entries:
         if not isinstance(d, dict):
             out.append(f"{path.name}: entry {d!r} is not a mapping")
@@ -406,7 +409,7 @@ def dependencies_register(repo: Path) -> list[str]:
         if status and status.split(" ")[0] not in keywords:
             out.append(f"{who} opencode_status must start with {', '.join(keywords[:-1])} or {keywords[-1]}")
         out += _dep_skills(repo, d, who, owners)
-        out += _dep_bundle(repo, d, who)
+        out += _dep_bundle(d, who, bundle_names, cli_pin)
     # The navigator's TC-16 reads `skills:` with a line reader: only the inline `[a, b]` form, bare
     # names, at entry level (DD-28, DD-38); text inside a block string is deeper and never matches.
     out += [f"{path.name}: line {i}: 'skills:' must be an inline list of bare names, `skills: [a, b]`"
@@ -416,19 +419,44 @@ def dependencies_register(repo: Path) -> list[str]:
     return out
 
 
-def _dep_bundle(repo: Path, d: dict, who: str) -> list[str]:
-    """The optional `bundle:` key (orchestrate-external-skills D-8): a bundle of bundles.yaml, on a
-    `skill` entry that lists its skills."""
+_COMMIT = re.compile(r"[0-9a-f]{40}(?![0-9a-f])")
+
+
+def _dep_bundle(d: dict, who: str, bundle_names: set[str] | None, cli_pin: str | None) -> list[str]:
+    """The optional `bundle:` key (orchestrate-external-skills D-8, D-17, D-18): a bundle of
+    bundles.yaml (skipped when that file is invalid), on a `skill` entry that lists its skills,
+    whose pin, install commands and skill list agree."""
     if "bundle" not in d:
         return []
-    path = repo / "bundles.yaml"
-    listed = (yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("bundles", []) if path.exists() else []
-    out = [] if d["bundle"] in {b.get("name") for b in listed} else [
-        f"{who} bundle '{d['bundle']}' is not a bundle of bundles.yaml"]
+    out: list[str] = []
+    if not isinstance(d["bundle"], str):
+        out.append(f"{who} 'bundle' must be a bundle name")
+    elif bundle_names is not None and d["bundle"] not in bundle_names:
+        out.append(f"{who} bundle '{d['bundle']}' is not a bundle of bundles.yaml")
     if d.get("kind") != "skill":
         out.append(f"{who} 'bundle' needs kind 'skill'")
-    if not (isinstance(d.get("skills"), list) and d["skills"]):
+    skills = d.get("skills")
+    if not (isinstance(skills, list) and skills):
         out.append(f"{who} 'bundle' needs a non-empty 'skills' list")
+        skills = None
+    return out + _dep_commands(d, who, skills, cli_pin)
+
+
+def _dep_commands(d: dict, who: str, skills: list | None, cli_pin: str | None) -> list[str]:
+    """D-18: the pin starts with a 40-character commit, and each install command carries it,
+    names exactly `skills` after `--skill`, and runs the `skills-cli` pin."""
+    commit = _COMMIT.match(str(d.get("pin") or ""))
+    out = [] if commit else [f"{who} 'pin' must start with a 40-character commit"]
+    for field in ("claude_install", "opencode_install"):
+        cmd = str(d.get(field) or "")
+        if commit and f"#{commit.group(0)}" not in cmd:
+            out.append(f"{who} '{field}' must carry '#{commit.group(0)}'")
+        named = re.search(r"--skill (.*?) --", cmd)
+        if skills and named and named.group(1).split() != skills:
+            out.append(f"{who} '{field}' names skills '{named.group(1)}', not '{' '.join(map(str, skills))}'")
+        version = re.search(r"skills@(\S+)", cmd)
+        if cli_pin and version and version.group(1) != cli_pin:
+            out.append(f"{who} '{field}' uses skills@{version.group(1)}, not the skills-cli pin {cli_pin}")
     return out
 
 
