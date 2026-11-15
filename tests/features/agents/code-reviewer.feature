@@ -41,6 +41,14 @@ Feature: code-reviewer reviews one change through one lens, or several where a d
     And every finding reported is tagged with its own lens "L2" or "L3"
     And no file in the change is modified
 
+  # Traces to: DEC-5; D-4, D-22.
+  Scenario: Several lenses are accepted for a MEDIUM appetite with a default group
+    Given the change's proposal.md records "MEDIUM" under "## Appetite"
+    When the caller dispatches the code-reviewer with lenses "L1" and "L2" and names the appetite "MEDIUM"
+    Then it reads the appetite in proposal.md to confirm it
+    And every finding reported is tagged with its own lens "L1" or "L2"
+    And no file in the change is modified
+
   Scenario: Several lenses are refused when the brief's appetite disagrees with the proposal
     Given the change's proposal.md records "LARGE" under "## Appetite"
     When the caller dispatches the code-reviewer with lenses "L2" and "L3" and names the appetite "SMALL"

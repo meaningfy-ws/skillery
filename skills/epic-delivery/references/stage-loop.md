@@ -64,8 +64,10 @@ and one owner. The summary is in the skill, and the review set of each appetite 
    tutorial page the stage changed. An unmet item, a disputed re-label or a late tester finding
    goes to the developer as a question: fix it now as a `D-n` (one fixer, one full-gates run,
    nothing else) or a follow-up issue. No second fix pass.
-6. **Merge.** The note ([template](../assets/templates/handover.md)) is committed as
-   `openspec/changes/<id>/handover.md`, the PR's last commit. Once the PR lists a check run, one
+6. **Merge.** Within the lead's authority (`SKILL.md`, *Authority*); without a grant the developer
+   approves the merge first. The note ([template](../assets/templates/handover.md)) is committed as
+   `openspec/changes/<id>/handover.md`, the PR's last commit; a fix after a red check goes before
+   it, the note re-committed last, then the command runs again. Once the PR lists a check run, one
    background command: `gh pr checks <n> --watch --fail-fast && gh pr merge <n> --merge
    --delete-branch` (the repository's merge method); its notice is the only wait. On a non-zero
    exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing check, a refused
