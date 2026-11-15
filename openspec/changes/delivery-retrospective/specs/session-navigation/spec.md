@@ -3,7 +3,9 @@
 ### Requirement: The navigator warns of a worker without a mark
 On Claude Code, the navigator SHALL warn, once per session and at the end of the turn, when the lead
 has dispatched a worker (an `implementer` or `code-reviewer` it spawned itself) in a session that
-has an open change and has shown no mark line. The warning SHALL NOT block the dispatch. On
+has an open change and has shown no mark line. A mark counts when it stands as a whole line, outside
+a code block, in a turn's last message, the only text the navigator receives (design D-22). The
+warning SHALL NOT block the dispatch, also in strict mode. On
 opencode there is no warning; the `guessed` label is the only signal, recorded as a parity gap
 (proposal DEC-10).
 
@@ -18,3 +20,7 @@ opencode there is no warning; the `guessed` label is the only signal, recorded a
 #### Scenario: A reader is not a worker
 - **WHEN** the lead dispatches an `Explore` reader in a session with no mark line
 - **THEN** the navigator shows no warning
+
+#### Scenario: A second unmarked turn
+- **WHEN** the lead dispatches a worker in a later turn, still with no mark line
+- **THEN** the navigator shows no second warning
