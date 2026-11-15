@@ -1633,3 +1633,143 @@ def test_activity_tools_opencode_and_fallback_cells_are_not_checked(tmp_path):
     _tools_repo(tmp_path, ["| Code | `implementer` | `Read` | `serena_find_symbol` | `mcp__nope__x` |"],
                 {"implementer": ["Read"]})
     assert lint.activity_tools_table(tmp_path) == []
+
+
+# ---- activity_tools_table: adversarial cases (INV-1)
+def _tools_raw(root: Path, text: str, agents: dict[str, object]):
+    """Like _tools_repo but with the table text verbatim and any `tools:` value."""
+    for name, tools in agents.items():
+        fm = {"name": name, "description": "x"}
+        if tools is not None:
+            fm["tools"] = tools
+        _agent(root, name, fm)
+    table = root / _TABLE_REL
+    table.parent.mkdir(parents=True)
+    table.write_text(text, encoding="utf-8")
+
+
+_HDR = "| Activity | Agents | Claude Code | opencode | Fallback |\n|---|---|---|---|---|\n"
+
+
+def test_activity_tools_extra_spaces_still_checked(tmp_path):
+    _tools_repo(tmp_path, ["|   Code   |   implementer  |   `Read`  ,  `Bash`   | x | y |"], {"implementer": ["Read"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "Bash" in errs[0]
+
+
+def test_activity_tools_agents_cell_trailing_comma_and_backticks(tmp_path):
+    _tools_repo(tmp_path, ["| Code | `implementer`, `code-reviewer`, | `Read` | x | y |"],
+                {"implementer": ["Read"], "code-reviewer": ["Grep"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "code-reviewer" in errs[0]
+
+
+def test_activity_tools_both_agents_lacking_gives_two_errors(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer, code-reviewer | `Edit` | x | y |"],
+                {"implementer": ["Read"], "code-reviewer": ["Grep"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 2
+
+
+def test_activity_tools_tool_matching_only_as_prefix_fails(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `Read` | x | y |"], {"implementer": ["ReadFile"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_tool_matching_only_as_substring_fails(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `Bash` | x | y |"], {"implementer": ["NotBash"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_agent_entry_is_prefix_of_tool_fails(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `mcp__serena__serena_repl` | x | y |"],
+                {"implementer": ["mcp__serena__serena"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_tool_case_differs_fails(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `read` | x | y |"], {"implementer": ["Read"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_agent_name_case_differs_is_unknown(tmp_path):
+    _tools_repo(tmp_path, ["| Code | Implementer | `Read` | x | y |"], {"implementer": ["Read"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "Implementer" in errs[0]
+
+
+def test_activity_tools_uppercase_lead_is_not_the_lead_mapping(tmp_path):
+    _tools_repo(tmp_path, ["| Plan | Lead | `Bash` | x | y |"], {"team-lead": ["Bash"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_lead_without_team_lead_agent_is_named(tmp_path):
+    _tools_repo(tmp_path, ["| Plan | lead | `Bash` | x | y |"], {"implementer": ["Bash"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "lead" in errs[0]
+
+
+def test_activity_tools_agent_named_lead_is_not_used_for_lead(tmp_path):
+    _tools_repo(tmp_path, ["| Plan | lead | `Bash` | x | y |"], {"lead": ["Bash"], "team-lead": ["Read"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "team-lead" in errs[0]
+
+
+def test_activity_tools_agent_without_tools_key_carries_nothing(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `Read` | x | y |"], {})
+    _tools_raw_agent = {"implementer": None}
+    for name, t in _tools_raw_agent.items():
+        _agent(tmp_path, name, {"name": name, "description": "x"})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_tools_null_does_not_crash(tmp_path):
+    _tools_raw(tmp_path, _HDR + "| Code | implementer | `Read` | x | y |\n", {"implementer": None})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_empty_claude_code_cell_passes(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer |  | x | y |"], {"implementer": ["Read"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_empty_agents_cell_with_tools_passes_silently(tmp_path):
+    _tools_repo(tmp_path, ["| Code |  | `Nope` | x | y |"], {"implementer": ["Read"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_plain_text_tool_names_are_not_checked(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | Edit, flag run_in_background | x | y |"], {"implementer": ["Read"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_backticked_tool_with_inner_space_fails(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `Read ` | x | y |"], {"implementer": ["Read"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_alignment_row_with_colons_and_spaces_is_skipped(tmp_path):
+    _tools_raw(tmp_path, "| Activity | Agents | Claude Code |\n| :--- | :-: | ---: |\n"
+               "| Code | implementer | `Read` |\n", {"implementer": ["Read"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_glob_in_cell_is_not_matched_by_a_narrower_entry(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `mcp__serena__*` | x | y |"],
+                {"implementer": ["mcp__serena__serena_repl"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_glob_does_not_cross_server_prefix(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `mcp__serena2__x` | x | y |"], {"implementer": ["mcp__serena__*"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_unknown_agent_in_a_mixed_cell_still_checks_the_known_one(tmp_path):
+    _tools_repo(tmp_path, ["| Code | ghost, implementer | `Edit` | x | y |"], {"implementer": ["Read"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 2
+
+
+def test_activity_tools_agent_cell_with_and_between_names_is_unknown(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer and code-reviewer | `Read` | x | y |"],
+                {"implementer": ["Read"], "code-reviewer": ["Read"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1

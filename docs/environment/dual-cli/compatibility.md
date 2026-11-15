@@ -92,13 +92,14 @@ One skill also has a recorded monitoring gap, which comes from a missing plugin 
 |---|---|---|---|
 | `rule-steward` | rule usage is traced by the Langfuse Claude Code plugin | no Langfuse plugin known | opencode sessions can `load`, `cite` and `check` rules, but nothing records them, so rules used only there look unused in the weekly review. |
 
-Three agents have a recorded tool gap (`make opencode-report`):
+Four agents have a recorded tool gap (`make opencode-report`):
 
 | Agent | Claude Code | opencode | Gap / degradation |
 |---|---|---|---|
 | `lawyer` | `tools` lists `mcp__overleaf__*`, so Tolic may edit the contract's Overleaf project | a tool glob has no opencode analogue and is left out of the rendered agent | on opencode Tolic works through git only, which his body already names as the fallback. |
 | `implementer`, `code-reviewer` (Serena's REPL, row of the tool table in `guardrails` `references/activity-tools.md`) | `mcp__serena__initial_instructions` and `mcp__serena__serena_repl` | **unverified, gap**: probed 2026-11-15 on opencode 2.1.4, `opencode mcp list` shows "No MCP servers configured", and `~/.config/opencode/` and the repository hold no Serena entry; the reachable name (`serena_serena_repl` by the `<server>_<tool>` rule) is not confirmed | until a Serena server is configured and seen, an opencode session uses the table's Fallback column. |
 | `implementer`, `code-reviewer` | `tools` is a closed list: the built-in tools, `ToolSearch` and the code tools `mcp__serena__*`, `mcp__ast-grep__*`, `mcp__gitnexus__*`; no other connector tool reaches the worker | `ToolSearch` and a tool glob have no opencode analogue and are left out of the rendered agent; the list does not restrict there (G-6 in [`mapping.md`](mapping.md)) | on opencode the worker still gets every MCP tool of the session, the code tools included; only the context saving is lost. |
+| `team-lead` | `tools` adds `ToolSearch` and `mcp__gitnexus__*` for the per-task impact check | `ToolSearch` and the glob have no opencode analogue and are left out of the rendered agent (G-6 in [`mapping.md`](mapping.md)) | on opencode the lead still gets every MCP tool of the session, GitNexus included; only the context saving is lost. |
 
 One bundle is Claude Code only by design, a deliberate gap rather than a missing capability:
 
