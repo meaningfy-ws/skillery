@@ -7,8 +7,8 @@ Authorities:
 
 - [`project-setup`](../../../skills/project-setup/SKILL.md) — wires the test layout,
   markers, CI lanes, and the coverage gate ([`references/testing-setup.md`](../../../skills/project-setup/references/testing-setup.md)).
-- [`cosmic-python`](../../../skills/cosmic-python/SKILL.md) — per-layer test patterns
-  ([`references/example-testing-patterns.md`](../../../skills/cosmic-python/references/example-testing-patterns.md)).
+- [`cosmic-python`](../../../skills/cosmic-python/SKILL.md) — what each layer's tests check
+  (real tests per layer are linked from [worked examples](worked-examples.md)).
 - [`bdd-gherkin`](../../../skills/bdd-gherkin/SKILL.md) — `.feature` authoring and test data.
 
 ## The test taxonomy

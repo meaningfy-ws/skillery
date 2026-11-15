@@ -2,7 +2,7 @@
 
 The rules every test follows, written by a person or an agent. A builder's or tester's brief points
 to this file as one of its standing rules. A project adds its own rules beside it; it does not
-copy these. Worked code is in [`example-testing-patterns.md`](example-testing-patterns.md).
+copy these.
 
 ## Where tests live
 

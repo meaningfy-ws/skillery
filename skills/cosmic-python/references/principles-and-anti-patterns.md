@@ -30,6 +30,9 @@ Each entry has a stable slug id. Cite as e.g. `cosmic-python:AP-DICT-AS-MODEL`.
 | `BP-DOMAIN-REVEALING-NAMES` | Name modules/classes/functions for the **domain/product thing** they hold, self-explanatory at a glance. Pattern *allusions* are fine (`graph_store` as a repository, `…_unit_of_work`), but never bare abstractions you must open to understand (`port.py`, `factory.py`, `utils.py`, `helpers.py`). A bit longer is fine; cryptic is not. |
 | `BP-EXCEPTIONS-MODULE` | Exceptions live in a module named **`exceptions.py`** (never `errors.py`, never buried inside a logic module — they must stay maintainable). Place per layer by *kind*: domain/invariant errors in the models layer, I/O/operational in adapters, use-case/business in services; or one shared module for a small component. **Check `core`/`commons` first** — reuse an existing exception before minting a local one. |
 | `BP-CONSTANTS-HOME` | A couple of small reusable constants can live in the package `__init__.py` — don't manufacture a `constants.py` for them. Shared **domain vocabulary** (e.g. namespace prefix→IRI bindings) is a *maintained, reusable resource* in `core`/`commons`, not an inline dict embedded in an adapter (KISS, but one home — `PR-SSOT-DRY`). |
+| `BP-ABC-INTERFACES` | An abstract interface is an `abc.ABC` named `<Thing>ABC` and lives in `adapters/`; each implementation is named for what it wraps (`RepositoryABC` → `MongoDBRepository`, `ExtractorABC` → `ArchiveExtractor`). |
+| `BP-INJECT-ADAPTERS` | A service takes each adapter it uses as a parameter typed by the adapter's `<Thing>ABC`, so a test passes a fake; it never builds a concrete adapter inside its logic. A library's public service function may default the parameter to the production implementation (`loader = loader or PackageLoader()`). |
+| `BP-STRICT-BASE-MODEL` | Domain models inherit one shared Pydantic base in `core`/`commons` that rejects unknown fields and validates on assignment (`extra="forbid"`, `validate_assignment=True`). |
 
 ## Anti-patterns (the ❌ "don't" — smell → fix)
 
@@ -48,6 +51,23 @@ Each entry has a stable slug id. Cite as e.g. `cosmic-python:AP-DICT-AS-MODEL`.
 | `AP-OVER-FRAGMENTATION` | Many tiny single-purpose files (a 21-line `factory.py`, a 45-line `port.py`, …) splintering one cohesive concern | Consolidate into fewer dense, cohesive modules (`PR-REUSE-COMPACT`) | Navigation tax; "why so many files?"; hides the unit |
 | `AP-PARALLEL-LAYOUTS` | One package mixing component-first (`loader/services/`) **and** layer-first (`services/loader/`) organisations | Pick one — component-first for larger projects (`PR-COMPONENT-FIRST`); finish the migration | "Too many modules", unclear where things live |
 | `AP-EXCEPTIONS-EMBEDDED` | Exceptions defined inside a logic module (`class GraphStoreError` in `port.py`) or a file named `errors.py` | Move to `exceptions.py` per `BP-EXCEPTIONS-MODULE` | Exceptions get lost; hard to maintain/reuse |
+
+## Clean code and SOLID
+
+These numbers are Meaningfy's and win over the book rule sets' (function size, extraction, nesting).
+
+| id | Rule |
+|----|------|
+| `CC-NAMES` | Names reveal intent: `calculate_customer_tier()`, not `calc_tier()`. For modules and classes see `BP-DOMAIN-REVEALING-NAMES`. |
+| `CC-SMALL-FUNCTIONS` | A function does one thing and stays under 25 lines; if describing it needs "and", split it. |
+| `CC-NO-MAGIC-STRINGS` | No raw literal for a symbolic value; use a constant or an enum (`BP-CONSTANTS-ENUMS`, `AP-FREESTR-ANYLAYER`). |
+| `CC-SHALLOW-NESTING` | At most three levels of nesting in a function; deeper, extract a function or return early. |
+| `CC-EXTRACT-THRESHOLD` | Two or three similar lines stay; five or more are extracted into one parameterised form (`PR-REUSE-COMPACT`). |
+| `CC-SRP` | One reason to change per class or function; a second reason means a split. |
+| `CC-OCP` | Extend with a new class or strategy, not with a new branch in existing code. |
+| `CC-LSP` | A subclass keeps its base's contract; an override that breaks expected behaviour is a defect. |
+| `CC-ISP` | Interfaces are small and cut to what each client uses; no "fat" abstract base. |
+| `CC-DIP` | Depend on the abstract interface and inject the implementation: the layer contract of this skill's body (`BP-ABC-INTERFACES`, `BP-INJECT-ADAPTERS`). |
 
 ## Cross-links (owned elsewhere — cite, don't restate)
 
