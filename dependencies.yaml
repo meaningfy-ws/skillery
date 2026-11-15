@@ -290,11 +290,11 @@
   opencode_install: same binary; the tool is CLI-independent.
 - name: Hypothesis
   kind: framework
-  summary: 'the property-based testing library of the tester and of `tests/test_quality_properties.py`; MPL-2.0, [HypothesisWorks/hypothesis](https://github.com/HypothesisWorks/hypothesis)'
+  summary: 'the property-based testing library of the tester and, from stage 3 of `harden-checks-and-tests`, of `tests/test_quality_properties.py`; MPL-2.0, [HypothesisWorks/hypothesis](https://github.com/HypothesisWorks/hypothesis)'
   source: PyPI hypothesis
   pin: '6.170.15 (skillery); a project pins its own in the `test` group'
   provenance: not reviewed
-  used_by: project-setup templates (the `test` group), `tests/test_quality_properties.py`
+  used_by: project-setup templates (the `test` group, from stage 2 of `harden-checks-and-tests`); `tests/test_quality_properties.py` (from stage 3)
   opencode_status: native
   claude_install: pip, from `requirements-quality.txt` (skillery) or the project's `test` group
   opencode_install: same pip package; the library is CLI-independent.
@@ -304,7 +304,7 @@
   source: PyPI schemathesis
   pin: '4.33.4'
   provenance: not reviewed
-  used_by: project-setup templates (the `test` group of a project with an API)
+  used_by: project-setup templates (the `test` group of a project with an API, from stage 2 of `harden-checks-and-tests`)
   opencode_status: native
   claude_install: pip, in the project's `test` group
   opencode_install: same pip package; the library is CLI-independent.

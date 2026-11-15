@@ -21,8 +21,7 @@ To add a check, a source or a tool, see [`docs/development/quality.md`](../docs/
 | No `utils`, `helpers`, `port`, `factory`, `manager` or `errors` file names | ls-lint | `ls-lint/python-project.yml` | `project-setup` (checks `cosmic-python` names) |
 | Makefile hygiene and required targets | checkmake | `checkmake/python-project.ini` | `project-setup` |
 
-Report-only rules print their findings and never fail the build. A gating rule fails it. A
-report-only rule moves to `semgrep/rules/` by a pull request the owner approves.
+Report-only rules print their findings and never fail the build. A gating rule fails it.
 
 The suppression rule runs in its own pass with `--disable-nosem`, because a bare `# nosemgrep`
 would otherwise hide the rule that looks for it. For the same reason its fixture cannot test a

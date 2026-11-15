@@ -382,7 +382,7 @@ def _version_errors(repo: Path, ver: str) -> list[str]:
     mk = repo / PROJECT_MAKEFILE
     if mk.exists():
         pin = _QUALITY_PIN.search(mk.read_text(encoding="utf-8"))
-        if not pin or not pin.group(0).endswith(f"v{ver}"):
+        if not pin or pin.group(0)[len(pin.group(1)):] != f"v{ver}":
             out.append(f"version-sync: {PROJECT_MAKEFILE} QUALITY_VERSION is not 'v{ver}' — run make bundles")
     return out
 

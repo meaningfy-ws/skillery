@@ -639,6 +639,12 @@ def test_tc11_stale_makefile_pin_fails_the_gate(tmp_path):
     assert any("Makefile.tmpl" in e and "QUALITY_VERSION" in e for e in errs)
 
 
+@pytest.mark.parametrize("pin", ["xv1.2.3", "release-v1.2.3", "v1.2.3-rc.1"])
+def test_tc11_pin_must_equal_v_plus_version_exactly(tmp_path, pin):
+    repo = _pin_repo(tmp_path, pin)
+    assert any("QUALITY_VERSION" in e for e in gen.gate_errors(repo))
+
+
 def test_tc11_makefile_without_the_pin_line_fails_the_gate(tmp_path):
     repo = _pin_repo(tmp_path)
     (repo / gen.PROJECT_MAKEFILE).write_text("SHELL = /bin/bash\n")

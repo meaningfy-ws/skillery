@@ -1347,12 +1347,12 @@ def test_quality_files_flags_a_markdown_note_and_names_it(tmp_path):
 
 
 def test_quality_files_passes_the_root_readme_and_named_rules(tmp_path):
-    _quality(tmp_path, {"README.md": "| semgrep/rules/mfy-a.yaml |", "semgrep/rules/mfy-a.yaml": "",
+    _quality(tmp_path, {"README.md": "| `semgrep/rules/mfy-a.yaml` |", "semgrep/rules/mfy-a.yaml": "",
                         "semgrep/rules/mfy-a.py": "", "semgrep/external.json": "{}",
                         "ls-lint/python-project.yml": "", "checkmake/python-project.ini": ""})
     (tmp_path / "quality" / "README.md").write_text(
-        "semgrep/external.json ls-lint/python-project.yml checkmake/python-project.ini "
-        "semgrep/rules/mfy-a.yaml", encoding="utf-8")
+        "`semgrep/external.json` `ls-lint/python-project.yml` `checkmake/python-project.ini` "
+        "`semgrep/rules/mfy-a.yaml`", encoding="utf-8")
     assert lint.quality_files(tmp_path) == []
 
 
@@ -1362,7 +1362,7 @@ def test_quality_files_flags_a_nested_readme(tmp_path):
 
 
 def test_quality_files_flags_a_py_with_no_rule_of_its_name(tmp_path):
-    _quality(tmp_path, {"README.md": "semgrep/rules/mfy-a.yaml", "semgrep/rules/mfy-a.yaml": "",
+    _quality(tmp_path, {"README.md": "`semgrep/rules/mfy-a.yaml`", "semgrep/rules/mfy-a.yaml": "",
                         "semgrep/rules/mfy-b.py": ""})
     assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/rules/mfy-b.py"]
 
@@ -1377,9 +1377,25 @@ def test_quality_files_flags_a_rule_the_readme_does_not_name(tmp_path):
     assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/rules/mfy-a.yaml"]
 
 
-def test_quality_files_accepts_a_rule_named_by_file_name_only(tmp_path):
-    _quality(tmp_path, {"README.md": "`mfy-a.yaml`", "semgrep/rules/mfy-a.yaml": ""})
-    assert lint.quality_files(tmp_path) == []
+def test_quality_files_does_not_take_a_bare_file_name_as_naming_the_path(tmp_path):
+    _quality(tmp_path, {"README.md": "`mfy-a.yaml` and semgrep/rules/mfy-a.yaml", "semgrep/rules/mfy-a.yaml": ""})
+    assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/rules/mfy-a.yaml"]
+
+
+def test_quality_files_flags_a_yml_rule_under_semgrep(tmp_path):
+    _quality(tmp_path, {"README.md": "`semgrep/rules/mfy-a.yml`", "semgrep/rules/mfy-a.yml": ""})
+    assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/rules/mfy-a.yml"]
+
+
+def test_quality_files_flags_an_unreadable_readme_instead_of_crashing(tmp_path):
+    _quality(tmp_path, {"semgrep/rules/mfy-a.yaml": ""})
+    (tmp_path / "quality" / "README.md").write_bytes(b"\xff\xfe\x00")
+    assert any("README.md" in m and "cannot be read" in m for m in lint.quality_files(tmp_path))
+
+
+def test_quality_files_flags_a_readme_that_is_a_directory(tmp_path):
+    (tmp_path / "quality" / "README.md").mkdir(parents=True)
+    assert any("README.md" in m and "cannot be read" in m for m in lint.quality_files(tmp_path))
 
 
 def test_quality_files_flags_a_missing_readme_with_rules(tmp_path):

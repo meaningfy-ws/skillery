@@ -13,4 +13,5 @@ The warm figure is the one a developer pays on each run: Ruff, mypy, import-lint
 passes, ls-lint and checkmake on the empty skeleton. The first-run figure adds the download of the
 shared checks, the Semgrep virtual environment and the two binaries, once per pin.
 
-The script that measured it, with the IT-04 and IT-05 cases, is quoted in the stage pull request.
+The output of the run that measured it, with the IT-04 and IT-05 cases, is in the stage pull
+request (#246); the figures above are from the run on the stage's final commit.

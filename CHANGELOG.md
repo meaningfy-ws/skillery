@@ -14,15 +14,18 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
-- Shared quality checks for new projects (EPIC `harden-checks-and-tests`, stage 1, tool side): a
-  new `quality/` folder, a sixth artifact type called a *quality check*, holds Semgrep rules,
-  an ls-lint and a checkmake file. A project scaffolded by `project-setup` fetches them at the
-  skillery release it pins and runs them with `make check-quality`, which now also fails on
-  SPARQL built from strings, network calls and real sleeps in unit tests, banned file names
-  such as `utils.py`, and a suppression without a reason. Its Ruff selection is wider: it now
-  flags requests without a timeout, naive `datetime`, blind `except` and environment reads
-  outside the config module (issue #215). An existing project adopts the checks one target per
-  pull request; how to do so follows with the prose side.
+- Shared quality checks for new projects (EPIC `harden-checks-and-tests`, stage 1): a project
+  scaffolded by `project-setup` fetches skillery's `quality/` folder at the release it pins and
+  runs it with `make check-quality`. That target now also fails on: SPARQL built from strings;
+  an exception class defined outside `exceptions.py`; a network call, a real sleep or an RDF
+  string comparison in a unit test; a file named `utils.py`, `helpers.py`, `port.py`,
+  `factory.py`, `manager.py` or `errors.py`; a `# noqa` or `# nosemgrep` without a reason; a
+  missing required file or `make` target; and an I/O package (such as `requests` or
+  `SPARQLWrapper`) imported in the `domain` layer. Ruff now also flags requests without a
+  timeout, naive `datetime`, a blind `except`, environment reads outside the config module, magic
+  values in comparisons, functions with too many arguments, branches or statements, and
+  composite assertions (issue #215). Two Semgrep rules and four pinned external rule sets only
+  print their findings. How an existing project adopts the checks follows in a later release.
 - `test-strategy` (EPIC `test-strategy`, stage 1; bundle `meaningfy-core`): a new skill that says,
   for any activity (code, a doc, a post, an offer, a contract clause, a model), how the work
   succeeds or fails before you start, and carries the matrix of which check answers which question

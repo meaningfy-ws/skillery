@@ -481,27 +481,33 @@ _QUALITY_RULE_SUFFIXES = (".yaml", ".yml", ".json", ".ini")
 def quality_files(repo: Path) -> list[str]:
     """A Quality check is an executable rule or configuration and carries no prose
     (harden-checks-and-tests D-1): under quality/ only the root README.md, rule and configuration
-    files, and a `.py` Semgrep fixture beside a rule `.yaml` of the same stem. The README names
-    every rule and configuration file, by path under quality/ or by file name."""
+    files, and a `.py` Semgrep fixture beside a rule `.yaml` of the same stem. Semgrep rules are
+    `.yaml` only (the fixture check reads that suffix). The README names every rule and
+    configuration file by its exact path under quality/ in backticks."""
     root = repo / _QUALITY_DIR
     if not root.is_dir():
         return []
-    readme = root / "README.md"
-    readme_text = readme.read_text(encoding="utf-8") if readme.exists() else ""
-    out: list[str] = []
+    readme, out = root / "README.md", []
+    try:
+        readme_text = readme.read_text(encoding="utf-8") if readme.exists() else ""
+    except (OSError, UnicodeDecodeError) as error:
+        out.append(f"{_QUALITY_DIR}/README.md: cannot be read ({type(error).__name__})")
+        readme_text = None  # one finding for the README; the named check cannot run
     for p in sorted(f for f in root.rglob("*") if f.is_file() and "__pycache__" not in f.parts):
         rel, shown = p.relative_to(root).as_posix(), f"{_QUALITY_DIR}/{p.relative_to(root).as_posix()}"
         if p.name == "README.md":
             if rel != "README.md":
                 out.append(f"{shown}: a nested README.md is prose; only quality/README.md is allowed")
         elif p.suffix == ".py":
-            if not any(p.with_suffix(s).exists() for s in (".yaml", ".yml")):
+            if not p.with_suffix(".yaml").exists():
                 out.append(f"{shown}: a .py is allowed only as the fixture of a rule .yaml of the same name")
         elif p.suffix not in _QUALITY_RULE_SUFFIXES:
             out.append(f"{shown}: not a check; allowed are {', '.join(_QUALITY_RULE_SUFFIXES)}, "
                        "a Semgrep fixture .py and the root README.md")
-        elif rel not in readme_text and p.name not in readme_text:
-            out.append(f"{shown}: not named in quality/README.md")
+        elif p.suffix == ".yml" and rel.startswith("semgrep/"):
+            out.append(f"{shown}: a Semgrep rule is a .yaml file")
+        elif readme_text is not None and f"`{rel}`" not in readme_text:
+            out.append(f"{shown}: not named in quality/README.md (write `{rel}` in backticks)")
     return out
 
 

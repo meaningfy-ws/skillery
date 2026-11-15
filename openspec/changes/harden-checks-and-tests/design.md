@@ -128,7 +128,7 @@ quality/
   checkmake/python-project.ini      Makefile hygiene and required targets (D-5)
 ```
 
-The artifact type is named **Check**. `quality/` holds rule files and configurations only (DEC-4,
+The artifact type is named **Quality check** (D-36; the PLAN first called it Check). `quality/` holds rule files and configurations only (DEC-4,
 confirmed by the developer, Q-23). A repo lint `quality_files` (added to `ALL_CHECKS`) allows under
 `quality/` only `README.md` at its root and files ending `.yaml`, `.yml`, `.json`, `.ini` and, as
 Semgrep fixtures only, `.py` beside a rule of the same name; it skips `__pycache__`.
@@ -395,8 +395,8 @@ check-makefile`; `check-semgrep`, `check-layout` and `check-makefile` depend on 
 | `check-architecture` | `lint-imports`, then `python3 scripts/quality/check_contracts.py .importlinter` (D-11) | A contract; an uncovered package; an undecided ignore |
 
 - **DEC-8 as narrowed by the developer (Q-24).** ls-lint does one thing: no `.py` file is named
-  `utils`, `helpers`, `port`, `factory`, `manager` or `errors`, anywhere but in `.quality`, `.venv`,
-  `mutants` and `node_modules`. Snake-case names stay with Ruff `N999` (selected through `N`).
+  `utils`, `helpers`, `port`, `factory`, `manager` or `errors`, anywhere but in `.quality`, `.venv`
+  and `node_modules` (`mutants` dropped with D-35, D-40). Snake-case names stay with Ruff `N999` (selected through `N`).
   Folder names are not checked.
 - **Required files** are four `test -f` lines in the `check-layout` recipe, each printing the
   missing path: `$(PACKAGE_NAME)/__init__.py`, `tests/conftest.py`, `ruff.toml`, `.importlinter`.
@@ -690,7 +690,7 @@ Integration tests:
 | IT-01 | Semgrep rule tests | Semgrep on PATH | `semgrep scan --test` exits 0 for the three rule folders; skipped otherwise |
 | IT-02 | ls-lint on trees | ls-lint on PATH; a good tree and one with `pkg/utils.py` and `tests/helpers.py` | exit 0; exit 1 naming both |
 | IT-03 | checkmake on the template | checkmake on PATH; `Makefile.tmpl` rendered with a package name | exit 0; exit 1 with `test` removed |
-| IT-04 | Scaffold run | The product and the library archetype scaffolded from the stage's branch, `QUALITY_VERSION` set to the branch's commit | `make check-quality` green on each skeleton, and still green after adding the folders `openspec/changes/add-billing-component/` and after adding only a `dict-as-model` case (printed, exit 0). Red after each of: `utils.py`; an f-string SPARQL query; `requests.get(url)`; `import requests` in `domain`; a bare `# nosemgrep`; `# nosemgrep: mfy-test-real-sleep` without a reason; deleting `ruff.toml`. Recorded in the stage PR |
+| IT-04 | Scaffold run | The product and the library archetype scaffolded from the stage's branch, `QUALITY_VERSION` set to the branch's commit | `make check-quality` green on each skeleton, and still green after adding the folders `openspec/changes/add-billing-component/` and after adding only a `dict-as-model` case (printed, exit 0), and after the two path near misses of D-39 (`requests.get(url)` under `tests/integration/`; an exception class in `<pkg>/exceptions.py`). Red after each of: `utils.py`; an f-string SPARQL query; `requests.get(url)`; `import requests` in `domain`; a bare `# nosemgrep`; `# nosemgrep: mfy-test-real-sleep` without a reason; deleting `ruff.toml`. Recorded in the stage PR |
 | IT-05 | Fetch | The same project, after its first fetch | a second `make quality-fetch` offline exits 0; with the pin `v0.0.0` it exits non-zero and `.quality/` is unchanged; in a fresh clone with that pin `.quality/` is absent |
 | IT-06 | Contract check | The sample project (D-13) | A failing and a passing `make check-architecture`, in `evidence/sample-project.md` (the three dispatches of the weekly workflow are dropped, D-35) |
 | IT-07 | Tester report | Stage 3 of this EPIC | `evidence/tester-report.md` |
@@ -1206,6 +1206,66 @@ epic session.
   holds a near miss of code shape instead. The exception rule matches a base named `Exception`,
   `BaseException` or ending `Error`, `Timeout` or `Warning`; its "Checked by" value on the prose
   side is written `(partial: a base with another name is reviewed)`.
+- **D-40 The review round of the tool side (five lenses and the tester on PR #246, one round,
+  no P1).** Accepted, fixed in one pass:
+  - *Import contract.* `domain-no-io` lists all twelve packages of D-3 (`SPARQLWrapper`,
+    `fastapi`, `flask` were missing).
+  - *The manifest at the project boundary.* `external_sources.py` validates every entry before use
+    and exits 2 naming it: `repo` starts `https://`; `id` matches `[a-z0-9-]+`; `commit` is a
+    40-hex string; each path matches `[A-Za-z0-9_./-]+` with no `..` segment and no leading `/`;
+    `mode` is known. Invalid JSON or a wrong shape exits 2 with a message. A truncated or cut
+    download (`EOFError`, `http.client.HTTPException`) exits 1 like any failed download. A source
+    folder that exists but is empty is fetched again. One archive is downloaded once per
+    `repo`+`commit`. A trailing `/` on `repo` is dropped. `manifest_problems` in the tests reports
+    odd shapes instead of crashing and refuses a non-string commit.
+  - *Rules.* The SPARQL rule also matches the modify form (`INSERT {…} WHERE {…}`,
+    `DELETE {…} WHERE {…}`) and the graph management forms (`DROP`, `CLEAR`, `LOAD`, `CREATE`,
+    `COPY`, `MOVE`, `ADD`); `+=` and `"".join(...)` stay unchecked (partial, recorded for the
+    prose side). The suppression rule is case-insensitive and also catches `# ruff: noqa` and
+    `# flake8: noqa` without a reason. ls-lint no longer ignores `mutants` (D-35; D-5's text is
+    corrected in place).
+  - *Makefile template.* `QUALITY_DIR` is the fixed relative `.quality`, the folder the script
+    assumes, and every new recipe quotes its paths. `quality-tools` checks Semgrep's version, not
+    only its presence, and rebuilds the virtual environment when it differs or does not run (this
+    also covers a cached environment whose Python moved, so the CI cache key is unchanged).
+    `quality-fetch` names a failed download apart from a ref without `quality/`; a checksum
+    mismatch names tool, version and platform; `check-layout` loops over the four files and uses
+    `$(TEST_PATH)`; `check-semgrep` stops when the manifest script fails.
+  - *Tests.* Fixtures for `PLR0912` and `PLR0915`; IT-03 asserts the missing target is named; a
+    letters-only Ruff selector covers every code it prefixes, and `ALL` covers all; the test
+    reuses the script's `MODES`; one test checks that each tool version agrees across
+    `Makefile.tmpl`, `tools.sha256`, `requirements-quality.txt`, `pyproject.toml.tmpl`, the
+    pre-commit `rev` and `dependencies.yaml`; forward references to
+    `tests/test_quality_properties.py` say "from stage 3".
+  - *Repo lint.* `quality_files` takes only `.yaml` rules under `quality/semgrep/`; a file counts
+    as named in `quality/README.md` only by its exact path under `quality/` in backticks; an
+    unreadable README is a finding, not a crash.
+  - *The pin.* The version-sync gate compares the pin exactly, not by suffix.
+  - *IT-04.* Two green path cases: `requests.get(url)` under `tests/integration/` and an exception
+    class in `<pkg>/exceptions.py` (D-39 moved them there; the test table's IT-04 row now names
+    them).
+  - *Docs.* The CHANGELOG line names every new gating check in the installer's words; each fact
+    about `quality/` has one home (the README says what the checks are, `quality.md` how to add
+    one, `CONTRIBUTING.md` points to it); `quality.md`'s "add a tool" names
+    `requirements-quality.txt` and `make skill-inventory`; D-1's type name is corrected in place.
+
+  Rejected, with the reason:
+  - Moving the `quality/` validators from `tests/test_quality.py` into `tools/` (L5): D-8 gives
+    them that home; the lint and the test check different things about the same files.
+  - The catalogue collector that finds an entry with no value at all (L2): it reads the catalogue
+    layout that `lean-skills`' pilot will leave, which is not known yet; task 1.12 writes it when
+    it switches the live cases on.
+  - Enforcing `(partial: report-only)` on a report-only rule's value (L2): a review point on the
+    prose side, where the values are written.
+  - A table of rendered files in `bundle_gen` (L5): it works, the risk is LOW, and a fifth file is
+    not planned.
+  - A checksum on the skillery archive, hashed Semgrep requirements, actions pinned by commit
+    (L1): D-4 lets the pin be any ref and the fetched content is rule data; the template pins its
+    actions by tag throughout.
+  - The pin written with `?=`, `:=` or a trailing comment, CRLF Makefiles, `.PHONY` with a comment
+    (tester): the template is ours, LF and uses `=`; the tests that asked for them are removed.
+  - The import-linter grammar of D-3 versus its own first-assignment row (L2): recorded for task
+    1.12.
 
 ## Open Questions
 

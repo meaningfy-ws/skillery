@@ -9,6 +9,7 @@ rules:
           - pattern: $A + $B
           - pattern: $A % $B
           - pattern: $A.format(...)
-      # A query form followed by a graph pattern, or an update form, and a variable or an IRI.
-      - pattern-regex: '(?is)(\b(select|construct|describe|ask)\b.*\bwhere\s*\{|\bask\s*\{|\b(insert|delete)\s+(data|where)\s*\{)'
-      - pattern-regex: '(?s)[?$]\w|<https?:'
+      # A query form followed by a graph pattern, an update form (data, where, or the modify form
+      # `INSERT {..} WHERE {..}`), or a graph management command, and a variable or an IRI.
+      - pattern-regex: '(?is)(\b(select|construct|describe|ask)\b.*\bwhere\s*\{|\bask\s*\{|\b(insert|delete)\s+(data|where)\s*\{|\b(insert|delete)\s*\{.*\bwhere\s*\{|\b(drop|clear|load|create|copy|move|add)\s+(silent|graph|default|named|all|<).{0,120})'
+      - pattern-regex: '(?s)[?$]\w|<(https?:|[{%])'

@@ -26,9 +26,8 @@ and `make validate` is green. That is the only checklist; this page has none of 
 
 ## Tools for the tests of `quality/`
 
-`make install` brings Semgrep, Ruff and Hypothesis (from `requirements-quality.txt`). ls-lint 2.3.2
-and checkmake 0.3.2 are release binaries from their GitHub releases; put them on `PATH` by hand.
-A test whose tool is missing skips, so the suite stays green without them; CI runs none of these.
+See [`docs/development/quality.md`](docs/development/quality.md#how-skillery-tests-the-checks):
+without the tools, their tests skip.
 
 ## Licence
 

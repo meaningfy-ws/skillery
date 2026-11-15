@@ -2,8 +2,9 @@
 
 Python-only groups always run, CI included (CI installs only pyyaml and pytest). Tool groups skip when
 their tool is not on PATH, as tests/test_formal_reasoning.py does. Hypothesis is never imported here
-(D-18); the property tests live in tests/test_quality_properties.py.
+(D-18); the property tests live in tests/test_quality_properties.py, from stage 3.
 """
+import http.client
 import importlib.util
 import json
 import re
@@ -146,9 +147,12 @@ def ruff_select(toml_text):
 
 
 def ruff_covers(select, code):
-    """A letters-only selector is a linter prefix (`DTZ`, `E`); one with digits is a code prefix."""
+    """A letters-only selector is a linter (`DTZ`, `E`), `PL` is the umbrella of the four Pylint
+    linters (`PLC`, `PLE`, `PLR`, `PLW`) and `ALL` is everything; one with digits is a code prefix."""
     letters = code.rstrip("0123456789")
-    return any(code.startswith(s) if s != s.rstrip("0123456789") else letters == s for s in select)
+    return any(code.startswith(s) if s != s.rstrip("0123456789")
+               else s == "ALL" or letters == s or (s == "PL" and letters.startswith("PL"))
+               for s in select)
 
 
 def cross_check_problems(values, semgrep_dir, select, make_targets):
@@ -194,29 +198,40 @@ def missing_required_targets(required, makefile_text):
 
 
 MANIFEST_FIELDS = ("id", "repo", "commit", "paths", "licence", "why", "mode")
-MANIFEST_MODES = ("gate", "report-only")
+PLAIN_PATH = re.compile(r"[A-Za-z0-9_./-]+")
 
 
 def manifest_problems(entries):
     if not isinstance(entries, list):
         return ["manifest: must be a list of entries"]
+    modes = load_script().MODES  # one list of modes: the script's
     problems, seen = [], set()
     for i, e in enumerate(entries):
-        who = f"entry {i}" if not e.get("id") else e["id"]
+        if not isinstance(e, dict):
+            problems.append(f"entry {i}: must be an object")
+            continue
+        who = e["id"] if isinstance(e.get("id"), str) and e["id"] else f"entry {i}"
         problems += [f"{who}: missing field {f}" for f in MANIFEST_FIELDS if f not in e]
         problems += [f"{who}: unknown field {f}" for f in e if f not in MANIFEST_FIELDS]
         problems += [f"{who}: {f} must be a non-empty string"
                      for f in ("id", "repo", "licence", "why") if f in e and not (e[f] and isinstance(e[f], str))]
-        if "commit" in e and not re.fullmatch(r"[0-9a-f]{40}", str(e["commit"])):
+        if isinstance(e.get("id"), str) and e["id"] and not re.fullmatch(r"[a-z0-9-]+", e["id"]):
+            problems.append(f"{who}: id must match [a-z0-9-]+")
+        if isinstance(e.get("repo"), str) and e["repo"] and not e["repo"].startswith("https://"):
+            problems.append(f"{who}: repo must start with https://")
+        if "commit" in e and not (isinstance(e["commit"], str) and re.fullmatch(r"[0-9a-f]{40}", e["commit"])):
             problems.append(f"{who}: commit must be 40 lower-case hex characters")
-        if "mode" in e and e["mode"] not in MANIFEST_MODES:
-            problems.append(f"{who}: mode must be one of {', '.join(MANIFEST_MODES)}")
+        if "mode" in e and e["mode"] not in modes:
+            problems.append(f"{who}: mode must be one of {', '.join(modes)}")
         paths = e.get("paths", [])
-        if "paths" in e and not (isinstance(paths, list) and paths and all(p and isinstance(p, str) for p in paths)):
-            problems.append(f"{who}: paths must be a non-empty list of strings")
-        if e.get("id") in seen:
-            problems.append(f"{who}: duplicate id")
-        seen.add(e.get("id"))
+        if "paths" in e and not (isinstance(paths, list) and paths and all(
+                isinstance(p, str) and PLAIN_PATH.fullmatch(p) and not p.startswith("/")
+                and ".." not in p.split("/") for p in paths)):
+            problems.append(f"{who}: paths must be a non-empty list of plain relative paths")
+        if isinstance(e.get("id"), str):
+            if e["id"] in seen:
+                problems.append(f"{who}: duplicate id")
+            seen.add(e["id"])
     return problems
 
 
@@ -638,6 +653,7 @@ def test_checkmake_rejects_the_template_without_test(tmp_path):
     text = re.sub(r"(?<![\w-])test(?![\w-])", "test-all", text)
     result = run_checkmake(tmp_path, text)
     assert result.returncode != 0, result.stdout + result.stderr
+    assert "test" in result.stdout + result.stderr  # the missing target is named
 
 
 # --- TC-09 external_sources.py (the template, loaded by path) ----------------------------------
@@ -693,16 +709,18 @@ def test_fetch_downloads_the_archive_of_the_pinned_commit_and_unpacks_it_whole(t
 def test_fetch_takes_only_the_absent_source(tmp_path, monkeypatch, capsys):
     project(tmp_path, monkeypatch, [entry(id="there"), entry(id="absent")])
     (tmp_path / ".quality/external/there").mkdir(parents=True)
+    (tmp_path / ".quality/external/there/fetched.txt").write_text("x")
     download = FakeDownload()
     assert load_script().main(["fetch"], download=download) == 0
     assert len(download.urls) == 1
     assert capsys.readouterr().out.splitlines() == ["fetched absent"]
-    assert not any((tmp_path / ".quality/external/there").iterdir())
+    assert [p.name for p in (tmp_path / ".quality/external/there").iterdir()] == ["fetched.txt"]
 
 
 def test_fetch_with_everything_present_downloads_nothing(tmp_path, monkeypatch, capsys):
     project(tmp_path, monkeypatch, [entry(id="there")])
     (tmp_path / ".quality/external/there").mkdir(parents=True)
+    (tmp_path / ".quality/external/there/fetched.txt").write_text("x")
     download = FakeDownload()
     assert load_script().main(["fetch"], download=download) == 0
     assert download.urls == [] and capsys.readouterr().out == ""
@@ -765,3 +783,118 @@ def test_a_missing_manifest_exits_2_with_a_message(tmp_path, monkeypatch, capsys
     monkeypatch.chdir(tmp_path)
     assert load_script().main(["paths", "gate"]) == 2
     assert "external.json" in capsys.readouterr().err
+
+
+# --- TC-09 the manifest at the project boundary and the failure paths (design D-40) -------------
+
+def run_main(tmp_path, monkeypatch, entries=None, raw=None, argv=("fetch",), download=None):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / ".quality/semgrep").mkdir(parents=True)
+    (tmp_path / ".quality/semgrep/external.json").write_text(raw if raw is not None else json.dumps(entries))
+    return load_script().main(list(argv), download=download or FakeDownload())
+
+
+@pytest.mark.parametrize("raw", ["{not json", '{"id": "x"}', '["x"]', "[null]", '"text"'])
+def test_a_manifest_of_the_wrong_shape_exits_2_with_a_message(tmp_path, monkeypatch, capsys, raw):
+    assert run_main(tmp_path, monkeypatch, raw=raw) == 2
+    err = capsys.readouterr().err
+    assert "external.json" in err and "Traceback" not in err
+
+
+@pytest.mark.parametrize("changes, field", [
+    ({"repo": "http://github.com/o/r"}, "repo"),
+    ({"repo": "git@github.com:o/r"}, "repo"),
+    ({"id": "Up"}, "id"),
+    ({"id": "../x"}, "id"),
+    ({"id": "a/b"}, "id"),
+    ({"id": ""}, "id"),
+    ({"commit": "a" * 39}, "commit"),
+    ({"commit": "A" * 40}, "commit"),
+    ({"commit": 12}, "commit"),
+    ({"paths": ["../etc"]}, "paths"),
+    ({"paths": ["a/../b"]}, "paths"),
+    ({"paths": ["/etc"]}, "paths"),
+    ({"paths": ["a b"]}, "paths"),
+    ({"paths": ["a;b"]}, "paths"),
+    ({"paths": "p"}, "paths"),
+    ({"paths": []}, "paths"),
+    ({"mode": "block"}, "mode"),
+])
+@pytest.mark.parametrize("command", [("fetch",), ("paths", "gate")])
+def test_an_invalid_entry_exits_2_naming_the_entry_and_the_field(tmp_path, monkeypatch, capsys, command,
+                                                                   changes, field):
+    download = FakeDownload()
+    assert run_main(tmp_path, monkeypatch, [entry(**changes)], argv=command, download=download) == 2
+    captured = capsys.readouterr()
+    assert field in captured.err and "src" in captured.err or field == "id", captured.err
+    assert download.urls == [] and captured.out == ""
+
+
+def test_an_entry_missing_a_field_exits_2_naming_it(tmp_path, monkeypatch, capsys):
+    e = entry()
+    del e["mode"]
+    assert run_main(tmp_path, monkeypatch, [e]) == 2
+    assert "mode" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("error", [EOFError("cut"), http.client.IncompleteRead(b"x"),
+                                   http.client.RemoteDisconnected("gone")])
+def test_a_cut_download_exits_1_and_leaves_nothing_behind(tmp_path, monkeypatch, capsys, error):
+    def download(url):
+        raise error
+    assert run_main(tmp_path, monkeypatch, [entry(id="one")], download=download) == 1
+    assert "one" in capsys.readouterr().err
+    assert list((tmp_path / ".quality/external").iterdir()) == []
+
+
+def test_a_source_folder_that_is_empty_is_fetched_again(tmp_path, monkeypatch, capsys):
+    project(tmp_path, monkeypatch, [entry(id="one")])
+    (tmp_path / ".quality/external/one").mkdir(parents=True)
+    assert load_script().main(["fetch"], download=FakeDownload()) == 0
+    assert (tmp_path / ".quality/external/one/README.md").is_file()
+    assert capsys.readouterr().out.splitlines() == ["fetched one"]
+
+
+def test_entries_sharing_a_repo_and_commit_download_once(tmp_path, monkeypatch):
+    download = FakeDownload()
+    assert run_main(tmp_path, monkeypatch, [entry(id="a"), entry(id="b"), entry(id="c", commit="b" * 40)],
+                    download=download) == 0
+    assert len(download.urls) == 2
+    assert (tmp_path / ".quality/external/a/README.md").is_file()
+    assert (tmp_path / ".quality/external/b/README.md").is_file()
+
+
+def test_a_trailing_slash_on_the_repo_is_dropped(tmp_path, monkeypatch):
+    download = FakeDownload()
+    assert run_main(tmp_path, monkeypatch, [entry(repo="https://github.com/o/r/")], download=download) == 0
+    assert download.urls == [f"https://github.com/o/r/archive/{COMMIT}.tar.gz"]
+
+
+# --- TC-14 each tool version agrees across the files that name it (design D-40) -----------------
+
+def _one(pattern, text):
+    found = set(re.findall(pattern, text, re.M))
+    assert len(found) == 1, (pattern, found)
+    return found.pop()
+
+
+def test_each_tool_version_agrees_across_files():
+    make = MAKEFILE_TMPL.read_text(encoding="utf-8")
+    shas = (TEMPLATES / "quality/tools.sha256").read_text(encoding="utf-8")
+    requirements = (ROOT / "requirements-quality.txt").read_text(encoding="utf-8")
+    ruff_pin = _one(r"^\s*\"ruff==([^\"]+)\"", (TEMPLATES / "root/pyproject.toml.tmpl").read_text(encoding="utf-8"))
+    versions = {  # tool -> every version the files name
+        "semgrep": {_one(r"^SEMGREP_VERSION\s*=\s*(\S+)", make), _one(r"^semgrep==(\S+)", requirements)},
+        "ls-lint": {_one(r"^LS_LINT_VERSION\s*=\s*(\S+)", make),
+                    *re.findall(r"  ls-lint-([\d.]+)-", shas)},
+        "checkmake": {_one(r"^CHECKMAKE_VERSION\s*=\s*(\S+)", make),
+                      *re.findall(r"  checkmake-([\d.]+)-", shas)},
+        "ruff": {ruff_pin, _one(r"^ruff==(\S+)", requirements),
+                 _one(r"rev:\s*v(\S+)", (TEMPLATES / "root/dot-pre-commit-config.yaml").read_text(encoding="utf-8"))},
+    }
+    registered = {d["name"].lower(): str(d["pin"]) for d in yaml.safe_load(
+        (ROOT / "dependencies.yaml").read_text(encoding="utf-8"))
+        if d["name"].lower() in versions and "pin" in d}
+    for tool, pin in registered.items():
+        versions[tool].add(pin)
+    assert {t: v for t, v in versions.items() if len(v) != 1} == {}

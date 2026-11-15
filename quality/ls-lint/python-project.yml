@@ -4,5 +4,4 @@ ls:
 ignore:
   - .quality
   - .venv
-  - mutants
   - node_modules
