@@ -449,6 +449,24 @@ invariants, the error matrix and the risks.
 - **D-30 Stage 3 takes the small review set, with the tester.** About 155 added lines (under
   LARGE's 600), instruction text and one lint check of about 30 lines: two reviewers (L1+L2;
   L3+L4+L5) and the checker. Tester: yes, `binding_size` is under INV-2 (D-5).
+- **D-31 The cut keeps the pipe and generator rules** (stage 3, L1+L2 W2 = L3–L5 W2, re-labelled
+  Critical: the cut of "code tools are mandatory" lost two rules, as in D-29). The habit line on
+  editing, in the template and in this `AGENTS.md`, adds: a pipe may filter command output;
+  generated files are written only by their generator.
+- **D-32 A session without a lead still runs the checks** (stage 3, L3–L5 W1, re-labelled
+  Critical: "by the lead" left a direct-PR or single-session fix with no impact or change check).
+  The template and the GitNexus block add: without a lead, the session runs impact once before its
+  first edit and the change check once before its commit, and brings a HIGH or CRITICAL result to
+  the developer; still never "before every edit". The template's re-index line, rewritten with it,
+  names the full command `npx gitnexus analyze --skip-agents-md` (L1+L2 S2, L3–L5 S1).
+- Under the floor (stage 3): L1+L2 W1 `hooks.yaml`'s GitNexus intents still say "before editing a
+  symbol" and cite the cut CLAUDE.md rules (an inventory, not this stage's text; a follow-up
+  issue); W3 no content test of the habit lines or the block's wording; S1 security-review row in
+  the table; S3 template version stamp. L3–L5 S2 re-index line twice; S3 "versions" pointer;
+  S4 test path constant; S5 helper; S6 no project-side budget check; S7 two lists under *Working
+  conventions*; S8 `.claude/skills/gitnexus/` absent in a fresh clone. The tester's two
+  first-run failures (a non-UTF-8 `AGENTS.md` or template raises instead of reporting; INV-2
+  holds) are deleted; its 16 passing tests stay.
 - Under the floor (stage 2): L1+L2 W4 the binding's "impact before every edit" (task 3.2 rewrites
   it before any release); W5 result-line Given; W6 opencode MCP names unseen; S1–S4 (string
   `tools:`, column order, multi-agent fixture, the outline's placement). L3–L5 S1–S6 (parser reuse,

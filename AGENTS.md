@@ -106,7 +106,8 @@ and agent renderer). See
 ## Working conventions
 
 - Never poll: run one background command and wait for its notice.
-- Edit files with the edit tool, never a shell or script (`sed`, a `python` heredoc).
+- Edit files with the edit tool, never a shell or script (`sed`, a `python` heredoc). A pipe may
+  filter command output; generated files are written only by their generator.
 - Read a range, not the whole file, when the range is known.
 - Read several known files in one call.
 - Tools for each activity: the table in `guardrails` (`references/activity-tools.md`).
@@ -139,6 +140,7 @@ This project is indexed by GitNexus as **skillery**. The lead runs it once per t
 
 - `impact({target, direction: "upstream"})` before the brief, on the task's symbols; a HIGH or CRITICAL result goes to the developer before the brief.
 - `detect_changes()` once before the task's commit.
+- Without a lead, the session runs impact once before its first edit and the change check once before its commit, and brings a HIGH or CRITICAL result to the developer.
 - Re-index with `npx gitnexus analyze --skip-agents-md`; it leaves this block untouched.
 - Never rename with find-and-replace; use `rename`.
 
