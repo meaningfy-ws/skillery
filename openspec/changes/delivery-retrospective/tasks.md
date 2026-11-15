@@ -4,14 +4,14 @@
 
 ## 1. The skill and its home (stage 1)
 
-- [ ] 1.1 `git mv` the two scripts from `inputs/scripts/` to `skills/session-retrospective/scripts/`
+- [x] 1.1 `git mv` the two scripts from `inputs/scripts/` to `skills/session-retrospective/scripts/`
   (moved, not rewritten). Spec: *A skill holds the review scripts*.
-- [ ] 1.2 Write `skills/session-retrospective/SKILL.md` per D-11, lean on arrival (not in
+- [x] 1.2 Write `skills/session-retrospective/SKILL.md` per D-11, lean on arrival (not in
   `skill-budget.yaml`). Declare it in `meaningfy-building` in `bundles.yaml`; run `make bundles` and
   `make skill-inventory`. Add one positive and one near-miss trigger probe to
   `tests/trigger_probes.yaml`. Re-index GitNexus for the new `scripts/` (`npx gitnexus analyze --skip-agents-md`). Acceptance:
   `make lint` green (`body_agnosticism` included: no `.claude/` path in the body), body ≤ 6 KB.
-- [ ] 1.3 D-8: give `epic_report.py` a `main(digest_dir)` and a `__main__` guard; exit 2 on a
+- [x] 1.3 D-8: give `epic_report.py` a `main(digest_dir)` and a `__main__` guard; exit 2 on a
   missing input file. Replace `--selftest` with `tests/test_session_retrospective.py`, carrying its
   asserts, on synthetic fixtures under `tests/fixtures/session-retrospective/`.
 

@@ -16,6 +16,7 @@ served_by:
   skills:
   - epic-planning
   - epic-delivery
+  - session-retrospective
   - spec-stewardship
   - clarity-gate
   - bdd-gherkin

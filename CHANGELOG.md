@@ -12,6 +12,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- New skill `session-retrospective` in `meaningfy-building`: after an EPIC, run two scripts over
+  your local agent transcripts and read where the time and cost went, per phase, stage and review
+  round. The digest is written outside any repository and the script refuses a folder inside one.
+
 ### Changed
 
 - **BREAKING for a caller that relied on the implementer checking impact itself** (EPIC
