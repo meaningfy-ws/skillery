@@ -17,4 +17,5 @@
   D-15, `## Invariants` INV-2, delivery decisions) and `specs/catalogue-governance`; it did not
   open `inputs/` or an archived change.
 - Questions asked of the developer before the first brief: none.
-- Verdict: pending the developer.
+- Verdict: **pass**, recorded by the developer in the session (2026-11-15). No fix of the note
+  template owed.

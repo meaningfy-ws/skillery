@@ -31,7 +31,7 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   mandatory", and says the lead runs impact and the change check once per task, re-indexing with
   `--skip-agents-md`. A new lint check, `binding_size`, fails when this repository's `AGENTS.md` or
   the template is over the budget; a scaffolded project inherits the comment. This repository's
-  `AGENTS.md` drops from about 14,800 to 11,000 characters and `CLAUDE.md` to under 600, so every
+  `AGENTS.md` drops from about 14,800 to 11,200 characters and `CLAUDE.md` to under 600, so every
   session starts lighter.
 
 ## [3.15.0] - 2026-11-15
