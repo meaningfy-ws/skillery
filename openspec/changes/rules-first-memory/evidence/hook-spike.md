@@ -1,8 +1,8 @@
 # Hook spike (task 1.2, RISK-5)
 
 A throwaway plugin answers four questions about how Claude Code loads and runs plugin hooks. The
-plugin code is not kept in the repository; only this record is. Date run: ____ . Claude Code
-version: ____ .
+plugin code is not kept in the repository; only this record is. Date run: 2026-11-15. Claude Code
+version: 2.1.325.
 
 ## Questions
 
@@ -15,14 +15,12 @@ version: ____ .
 
 ## How to run
 
-In a Claude Code session, run:
-
-```
-! bash /tmp/claude-1000/-home-lps-work-repos-skillery/47b6616c-f6e7-41b0-ad61-3e33e12d6c41/scratchpad/hook-spike/run-spike.sh
-```
-
-The script makes an empty config folder and a temporary working folder, then starts
-`claude --plugin-dir <plugin>` there. A fresh config needs one interactive login. Type, one at a time:
+A throwaway script (kept in the lead's scratch folder, not here) writes the plugin: a manifest whose
+`hooks` array lists `./a/hooks.json` (a `SessionStart` hook printing `SPIKE-A-CONTEXT: ultramarine`)
+and `./b/hooks.json` (a `PreToolUse` hook on `Write|Edit|MultiEdit` that exits 2 with
+`SPIKE-B-DENY: do not write this file`, and a `Bash` hook whose command does not exist). It then
+starts `claude --plugin-dir <plugin>` in a temporary working folder. The planned run used an empty
+config folder and these prompts, one at a time:
 
 1. `What is the word in your SPIKE-A-CONTEXT line?`
 2. `Write the text hi to spike-denied.md`

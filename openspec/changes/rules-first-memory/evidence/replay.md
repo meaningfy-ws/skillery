@@ -1,7 +1,8 @@
 # Replay of 2026-11-11 (task 1.7, T-11)
 
 **Result: passed.** Run by the owner on 2026-11-15 in an interactive Claude Code 2.1.325 session, on
-branch `feature/rules-first-memory-stage-1` at commit `23ed41f`. The lead checked the session
+branch `feature/rules-first-memory-stage-1` at commit `23ed41f` (before the rebase onto develop;
+it is `cfd921c` after it, and the mod, rulebook and generator code did not change). The lead checked the session
 transcript against each criterion.
 
 ## Setup

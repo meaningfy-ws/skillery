@@ -107,7 +107,9 @@ opencode plugin hooks and any change to where a rule is stored.
   denies, so a preference cannot be renamed by overwriting its note. For
   `Edit`, the type on disk and a type set in `new_string` both count (D-10). `MultiEdit` is denied
   when the type on disk, or the type set in any of its edits, is `feedback` or `user`. Denied when
-  the type is `feedback` or `user`. `MEMORY.md` has no frontmatter and passes.
+  the type is `feedback` or `user`. Text with no frontmatter (an `Edit` fragment) is searched for a
+  `type:` line anywhere. `MEMORY.md` has no frontmatter and passes unless an edit adds a `type:` line
+  of a denied type.
 - **D-7 Several plain mods** (DEC-3). `gen.py`: the count check leaves `_parse` (which has no repo
   path, lines 100-103) and becomes "at most one modules mod" in `_check_mods`, using
   `_is_modules_mod`; the manifest gets one `hooks` entry per mod, in `bundles.yaml` order; `types`
@@ -195,11 +197,11 @@ disk, so a retried write gets the same answer.
 | `python3` or `rules.py` missing, or `where` times out | spawn error or timeout | block without the `where` lines; exit 0 |
 | `routing.md` missing in the installed bundle | read error; mod test asserts the path in the rendered bundle | block without routing text; exit 0 |
 | Hook stdin is not JSON or has no event | parse error | exit 0, no output (fail open) |
-| `node` is missing, so the hook command itself fails (exit 127) | Claude Code shows a hook error; only exit 2 denies | the session and the write go on (fail open by the CLI); the spike in task 1.2 confirms a non-2 exit does not deny |
+| `node` is missing, so the hook command itself fails (exit 127) | Claude Code may show a hook error (the spike's agent saw none); only exit 2 denies | the session and the write go on (fail open by the CLI); the spike in task 1.2 confirms a non-2 exit does not deny |
 | Memory note written by a shell command | not seen | accepted (EPIC rabbit-hole) |
 | Claude Code moves the memory folder or changes the note type field | the deny unit tests still pass but the replay shows a new `feedback` note | RISK-1: replay in the release check; fix D-6 |
 | The agent retries the denied write or drops the statement | replay: no card row | RISK-2: the message names the next step; replay fails the stage |
-| A traced observation quotes the mod's source (development of skillery) | `memory writes denied` higher than the denials seen | accepted: over-count only in sessions that read the mod |
+| A traced observation quotes the mod's source (development of skillery) | `memory writes denied` higher than the denials seen | accepted: over-count only in sessions that read a file holding the marker (the mod, `rules.py`, this design) |
 | The Langfuse plugin sends a turn twice (`docs/environment/langfuse-setup.md`) | both counts double for that turn | accepted: the counts show a trend, not an audit; the same duplication already affects `load` and `cite` |
 | After a deny, the agent saves the preference as a `project` or `reference` note | the replay (task 1.7): any new memory note fails it | RISK-2: the message forbids it; the replay checks every type |
 | The approval card's `--dry-run` calls, or a deferred `--candidate`, counted as rules written | T-9 fixture holds both | D-4 skips them |
@@ -253,3 +255,11 @@ Recorded by the lead during stage 1 (after the PLAN gate; not re-gated).
   now follows the same rule as `Write` and `MultiEdit`: denied when the type on disk **or** a type
   set in `new_string` is `feedback` or `user`. The tool-call table row "Edit `feedback_git.md`,
   `new_string` sets `type: project`" (denied) is added to the tests.
+- **D-11 Evidence as run** *(2026-11-15)*. The hook spike (task 1.2) ran headless in the owner's
+  logged-in config, not an empty one, because no API key was available; `/hooks` was not run, and
+  Q1 rests on both files' hooks firing in one session. The replay (task 1.7) ran in an empty config
+  and passed, but the agent never tried a memory write, so the live deny path (exit 2, the message)
+  is exercised only by the spike's dummy plugin and the unit tests, and whether a hook's stderr
+  reaches Langfuse (which `memory writes denied` counts) is unverified. Both stay open under RISK-1
+  and RISK-2 for the release check. The replay also showed that `rules.py add` creates `AGENTS.md`
+  with `POINTER` in a repository that has none, which stage 2 relies on when it extends `POINTER`.

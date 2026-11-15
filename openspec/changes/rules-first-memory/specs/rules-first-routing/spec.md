@@ -24,7 +24,7 @@ statement as a candidate for the rule approval card, and SHALL carry a fixed mar
 `project` or `reference`, `MEMORY.md`, and files elsewhere SHALL pass (DEC-5, DEC-6, DEC-10).
 
 #### Scenario: A feedback note is denied
-- **WHEN** the agent writes a `feedback` note into the auto-memory folder
+- **WHEN** the agent writes a `feedback` note into the auto-memory folder with `Write`, `Edit` or `MultiEdit`
 - **THEN** the write is denied with the message that names `rule-learner` and carries the marker
 
 #### Scenario: A project note is allowed

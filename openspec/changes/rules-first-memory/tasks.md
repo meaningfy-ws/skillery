@@ -16,7 +16,7 @@ ids (T-n) are in design.md *Test cases*.
   two plain hooks files, loaded with `claude --plugin-dir` and an empty `CLAUDE_CONFIG_DIR`: both
   fire; a `SessionStart` hook's stdout reaches the context (the agent can quote it); a `PreToolUse`
   exit 2 on `Write` denies it and the agent sees the stderr. Recorded in `evidence/hook-spike.md`; a
-  failure applies the matching error-matrix row before 1.5. Then `tools/bundle_gen/gen.py` per D-7.
+  failure applies the matching error-matrix row before 1.5 (as run: D-11). Then `tools/bundle_gen/gen.py` per D-7.
   `tests/test_bundle_gen.py`: replace `test_two_mods_in_one_bundle_are_rejected` with "two plain
   mods render both hooks files" and "two modules mods are rejected" (T-10); update
   `test_real_core_plugin_names_the_hooks_file_and_no_types_and_navigator_keeps_its_own` to the two

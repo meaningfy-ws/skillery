@@ -75,7 +75,7 @@ renders, for that bundle:
   behind a symlink), compared byte for byte by the gate, so edit `mods/`, never the copy;
 - `data/` — symlinks to the skill assets the mod reads (workflow files, session thresholds);
 - `.claude-plugin/plugin.json` — with one `hooks` entry per mod, in `bundles.yaml` order, and
-  `types` and `userConfig` when the bundle's mod has a `types.d.ts` and a `config.json`.
+  `types` and `userConfig` when the bundle's modules mod has a `types.d.ts` and a `config.json`.
 
 The generator requires `hooks.json` of every mod, and `config.json`, `types.d.ts` and
 `register.tsx` only when `hooks.json` names `modules`. Only a modules mod gets `data/`. A mod's
