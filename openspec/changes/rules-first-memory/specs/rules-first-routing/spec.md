@@ -17,9 +17,9 @@ DEC-11).
 - **THEN** the block lists the vault and the repository store and says "routing policy: present"
 
 ### Requirement: Memory writes of preferences are denied
-A Write or Edit of a note whose frontmatter `type` is `feedback` or `user`, inside Claude Code's
-auto-memory folder (`<config root>/projects/<slug>/memory/*.md`, config root `CLAUDE_CONFIG_DIR` or
-`~/.claude`), SHALL be denied. The deny message SHALL name `rule-learner`, SHALL say to draft the
+The mod SHALL deny a Write or Edit of a note whose frontmatter `type` is `feedback` or `user`,
+inside Claude Code's auto-memory folder (`<config root>/projects/<slug>/memory/*.md`, config root
+`CLAUDE_CONFIG_DIR` or `~/.claude`). The deny message SHALL name `rule-learner`, SHALL say to draft the
 statement as a candidate for the rule approval card, and SHALL carry a fixed marker. Notes of type
 `project` or `reference`, `MEMORY.md`, and files elsewhere SHALL pass (DEC-5, DEC-6, DEC-10).
 
@@ -63,8 +63,8 @@ curly quotes folded, and a test SHALL fail when any of them drifts (DEC-4, DEC-9
 - **THEN** the test fails and names the file
 
 ### Requirement: The 2026-11-11 failure no longer reproduces
-In a fresh Claude Code session with `meaningfy-core` installed and no global instructions, a stated
-preference SHALL reach the rulebook and not the CLI's memory (DEC-5, DEC-7).
+A stated preference SHALL reach the rulebook and not the CLI's memory, in a fresh Claude Code
+session with `meaningfy-core` installed and no global instructions (DEC-5, DEC-7).
 
 #### Scenario: Acceptance replay
 - **WHEN** the owner, in a session with an empty Claude Code config folder and only this branch's `meaningfy-core`, says "in this repo never ask for commit, pr, or merge, just do these actions"
