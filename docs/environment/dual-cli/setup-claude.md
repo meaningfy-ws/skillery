@@ -73,6 +73,17 @@ mkdir -p ~/.claude/skills/stream-coding
 cp /tmp/stream-coding/SKILL.md ~/.claude/skills/stream-coding/SKILL.md   # adjust the source path if the repo's layout differs
 ```
 
+## External skills of your bundles (per role)
+
+These skills come from Meaningfy's forks of public skill sources. Install only the rows of the bundles you installed in Step 3. Each command pins the commit Meaningfy read and turns the installer's telemetry off with `DO_NOT_TRACK=1`; that is POSIX-shell syntax, so in PowerShell set the variable first. If you use both Claude Code and opencode, run only the claude-code command, because both CLIs read the folder it installs to.
+
+<!-- GENERATED:dependencies:external-skills-claude -->
+| Bundle | Skills | Install |
+|---|---|---|
+| meaningfy-building | refactoring, working-effectively-with-legacy-code, a-philosophy-of-software-design, clean-architecture | `DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill refactoring working-effectively-with-legacy-code a-philosophy-of-software-design clean-architecture --agent claude-code --global --yes` |
+| meaningfy-architecture | domain-driven-design, designing-data-intensive-applications, patterns-of-enterprise-application-architecture, release-it | `DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill domain-driven-design designing-data-intensive-applications patterns-of-enterprise-application-architecture release-it --agent claude-code --global --yes` |
+<!-- /GENERATED -->
+
 ## Step 5 — Confirm the root binding
 
 Nothing to install — both files already ship in the repo you're working in. Just confirm:

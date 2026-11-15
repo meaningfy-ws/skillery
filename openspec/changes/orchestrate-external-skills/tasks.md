@@ -38,11 +38,11 @@
   with a recommendation (override with its wording, drop, or accept). Record the answers in
   `inputs/stage-1a-conflicts-<date>.md`; a drop is a new DEC in `proposal.md` (D-6). Done when
   every such conflict has an answer, or none was found.
-- [ ] 1.7 Add to `dependencies.yaml` the entries `agent-rules-books/meaningfy-building`,
+- [x] 1.7 Add to `dependencies.yaml` the entries `agent-rules-books/meaningfy-building`,
   `agent-rules-books/meaningfy-architecture` (D-2, D-3) and `skills-cli`, with the commands and pin
   that task 1.1 proved, for the sets read and not dropped. Spec: `external-dependency-register`, "a
   skill source per fork and bundle".
-- [ ] 1.8 Add the heading "External skills of your bundles (per role)" with its generated marker
+- [x] 1.8 Add the heading "External skills of your bundles (per role)" with its generated marker
   after Step 4 of `docs/environment/dual-cli/setup-claude.md` and `setup-opencode.md`, with the
   POSIX-shell note and the "run only the claude-code command if you use both" note; add the sync
   paragraph of D-4 to `docs/environment/dual-cli/compatibility.md`; run `make skill-inventory`.
@@ -134,7 +134,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [ ] 1.9
 - [ ] 1.10 · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
