@@ -129,8 +129,8 @@ Feature: The lead delivers a gated PLAN with a team scaled to the appetite
   # DEC-1; D-1. Spec: A stage ends with a hand-over note and a fresh session.
   Scenario: A note that copies the design is cut
     Given a hand-over note that restates decisions of the design
-    When the checker reads it
-    Then it records a finding and the note is cut to decision ids and pointers
+    When a new session is started from it for the cold-start check
+    Then the cold-start record notes it and the note template is cut to decision ids and pointers
 
   Scenario: A member never asks the developer
     Given a builder meets an open decision

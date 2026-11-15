@@ -8,6 +8,7 @@ trivially.
 """
 from __future__ import annotations
 
+import fnmatch
 import json
 import os
 import re
@@ -699,7 +700,9 @@ def agent_bundle_membership(repo: Path) -> list[str]:
 def _primary_skill_errors(repo: Path, agent: str, bundle: str, skills: set[str]) -> list[str]:
     """agent-authoring-standard D-4: the agent's one bundle lists its primary skill — the first
     `skills:` entry that is neither namespaced nor external. A missing or non-list `skills:` is
-    agent_conformance's to report; unparsable frontmatter is bundle_gates'."""
+    agent_conformance's to report; unparsable frontmatter is bundle_gates'. An agent whose
+    `skills:` holds no local skill has no primary skill to place and passes
+    (delivery-process-and-tools D-25)."""
     try:
         fm = bundle_gen.agent_frontmatter(repo, agent)[0]
     except ValueError:
@@ -707,9 +710,7 @@ def _primary_skill_errors(repo: Path, agent: str, bundle: str, skills: set[str])
     if not isinstance(fm.get("skills"), list):
         return []
     primary = _primary_skill(fm)
-    if primary is None:
-        return [f"agent '{agent}' has no local primary skill"]
-    if primary not in skills:
+    if primary is not None and primary not in skills:
         return [f"agent '{agent}' is in bundle '{bundle}' but its primary skill '{primary}' is not"]
     return []
 
@@ -1540,6 +1541,36 @@ def bundle_gates(repo: Path) -> list[str]:
     return bundle_gen.gate_errors(repo)
 
 
+ACTIVITY_TOOLS_TABLE = "skills/guardrails/references/activity-tools.md"
+_LEAD_AGENT = "team-lead"  # the table's `lead` is the lead's agent
+
+
+def activity_tools_table(repo: Path) -> list[str]:
+    """The activity-tools table must never name a tool an agent cannot call: every backticked token
+    in a row's Claude Code cell must match (fnmatch, globs included) a `tools:` entry of each agent
+    in its Agents cell, and every such agent must exist. The opencode and Fallback cells are not
+    checked (G-6). Silent when the table is absent."""
+    table = repo / ACTIVITY_TOOLS_TABLE
+    if not table.exists():
+        return []
+    tools = {p.stem: [str(t) for t in (_frontmatter(p.read_text(encoding="utf-8")) or {}).get("tools") or []]
+             for p in sorted((repo / "agents").glob("*.md"))}
+    out: list[str] = []
+    for line in table.read_text(encoding="utf-8").splitlines():
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 3 or not line.lstrip().startswith("|") or cells[0] in ("Activity",) or set(cells[0]) <= {"-", ":"}:
+            continue
+        for name in (a.strip("` ") for a in cells[1].split(",") if a.strip("` ")):
+            agent = _LEAD_AGENT if name == "lead" else name
+            if agent not in tools:
+                out.append(f"activity-tools row '{cells[0]}': unknown agent '{name}'")
+                continue
+            out += [f"activity-tools row '{cells[0]}': agent '{agent}' does not carry tool '{t}'"
+                    for t in re.findall(r"`([^`]+)`", cells[2])
+                    if not any(fnmatch.fnmatchcase(t, e) for e in tools[agent])]
+    return out
+
+
 ALL_CHECKS = (
     missing_skill_dirs, wip_isolation, frontmatter_present_errors,
     frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long, description_angle_brackets,
@@ -1551,7 +1582,7 @@ ALL_CHECKS = (
     agents_canonical_invariant, hooks_inventory_shape, mod_bindings_match, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
-    top_level_folders, quality_files, prose_budget, reference_pointers,
+    top_level_folders, quality_files, prose_budget, reference_pointers, activity_tools_table,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

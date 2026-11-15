@@ -82,8 +82,8 @@ the stage loop, `epic-planning` and `guardrails` SHALL point to it (DEC-1, D-1).
 - **THEN** it reaches its first brief without asking what was decided and without reading `inputs/` or archived changes
 
 #### Scenario: A note that copies the design
-- **WHEN** the checker reads a note that restates decisions of `design.md`
-- **THEN** it records a finding and the note is cut to `D-n` ids and pointers
+- **WHEN** a new session is started from a note that restates decisions of `design.md`
+- **THEN** the cold-start record notes it and the note template is cut to `D-n` ids and pointers
 
 ### Requirement: Findings pass a severity floor and a stage has one fix pass
 A review finding SHALL become a fix only when it is Critical on the scale of `meaningfy-code-review`.

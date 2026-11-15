@@ -95,7 +95,7 @@
   opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
   transport: local (stdio)
   notes: '`command[]` in `opencode.json` mcp; identical capability.'
-  why: code intelligence, impact analysis (`implementer`/`code-reviewer` agents)
+  why: code intelligence; the `team-lead` runs the impact check once per task, the `implementer`/`code-reviewer` agents keep the tools
   hosting: local (npm)
 - name: Atlassian / Rovo
   kind: mcp-server

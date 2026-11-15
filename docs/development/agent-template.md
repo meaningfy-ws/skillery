@@ -18,8 +18,8 @@ A closed allowlist. Any other field fails the validator.
 | `description` | yes | starts with the persona phrase `<Persona> the <role>` (see *Workers*); one job in one sentence, then `Use when …`; may add `Not for …`; no `<example>` blocks; a `lead` or `scheduled` agent also says `Not for delegation` |
 | `type` | yes | a key of `agentModes` in `tools/opencode-agent-map.json`: `delegated`, `lead` or `scheduled` (see *Types*) |
 | `model` | yes | a family alias, a key of `modelAliases` in the same file (`opus`, `sonnet`, `haiku`); never a pinned model name |
-| `skills` | yes | non-empty YAML list; the first local skill (no `:`, not external) is the agent's **primary skill** |
-| `tools` | no | YAML list (`[Read, Grep]`); the comma-string form is rejected so every renderer sees one shape. Omitted, the agent uses the session's tools, MCP included; allowed only when `disallowedTools` contains `Agent`, so inheriting is always a written choice and the agent cannot fan out. No agent omits it today: an agent without a list carries the session's whole tool catalogue on every call. `implementer` and `code-reviewer` name the code tools as quoted server globs (`"mcp__gitnexus__*"`) and add `ToolSearch`, which keeps those tools as names until one is used; without `ToolSearch` their full definitions load at the start |
+| `skills` | yes | non-empty YAML list; the first local skill (no `:`, not external) is the agent's **primary skill**; an agent that preloads no local skill (`implementer` preloads only `superpowers:test-driven-development`) has none |
+| `tools` | no | YAML list (`[Read, Grep]`); the comma-string form is rejected so every renderer sees one shape. Omitted, the agent uses the session's tools, MCP included; allowed only when `disallowedTools` contains `Agent`, so inheriting is always a written choice and the agent cannot fan out. No agent omits it today: an agent without a list carries the session's whole tool catalogue on every call. `implementer` and `code-reviewer` name the code tools as quoted server globs (`"mcp__gitnexus__*"`) and add `ToolSearch`; `team-lead` carries `mcp__gitnexus__*` and `ToolSearch` for the per-task impact check. `ToolSearch` keeps those tools as names until one is used; without `ToolSearch` their full definitions load at the start |
 | `disallowedTools` | no | YAML list |
 | `color` | no | one of `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan` |
 | `metadata` | in practice yes | the six catalogue facets, as for skills (vocabulary in [`../facets.yaml`](../../facets.yaml)); not rendered for opencode. A change to `metadata` only is not behavioural and needs no new Gherkin scenario |
@@ -47,7 +47,7 @@ Agent teams are composed at run time from `delegated` and `lead` agents; no team
 
 ## Workers
 
-A **worker** is an agent of this catalogue with a persona name, a primary skill and, when its work
+A **worker** is an agent of this catalogue with a persona name, usually a primary skill and, when its work
 needs one, material kept in a repository outside skillery. There is no separate worker layer: the
 agent file under this standard is the worker.
 
@@ -95,7 +95,8 @@ and an open question is **returned** in the Output, never asked mid-run.
 Sections in this order:
 
 1. Role line: `You are **<Persona> the <role>**. <the job>.`
-2. `## Skills` — one line per `skills:` entry saying what it is followed for. Never restate a skill:
+2. `## Skills` — one line per `skills:` entry saying what it is followed for, plus a line, with
+   "load when", for each skill loaded on demand rather than preloaded. Never restate a skill:
    on one CLI it is preloaded, on the other loaded on demand; a copy is a second owner.
 3. `## Dispatch contract` — the four labels above.
 4. `## Report` — how the agent reports back: the base report of the `guardrails` skill plus the
@@ -110,9 +111,9 @@ CLI config-directory paths (the same guard as skill bodies).
 ## Which bundle
 
 `bundles.yaml` is the only declaration of an agent's bundle; the agent file carries no `bundle:`
-field. An agent lives in exactly one bundle — the bundle that lists its **primary skill**. The
-validator fails an agent in zero or several bundles, in a bundle without its primary skill, or with
-no local skill at all.
+field. An agent lives in exactly one bundle — the bundle that lists its **primary skill**; an agent
+with no primary skill is placed by `bundles.yaml` alone. The validator fails an agent in zero or
+several bundles, or in a bundle without its primary skill when it has one.
 
 ## Deterministic before prose
 

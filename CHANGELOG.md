@@ -12,6 +12,19 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING for a caller that relied on the implementer checking impact itself** (EPIC
+  `delivery-process-and-tools`, stage 2). `implementer` now preloads only
+  `superpowers:test-driven-development` and loads its other four skills when the task needs them
+  (`cosmic-python` in a Python repository), so each worker starts smaller. It no longer runs the
+  impact check or refuses a HIGH or CRITICAL edit: the lead checks impact once per task, before the
+  brief, and `team-lead` now carries the GitNexus tools for it. One table in `guardrails`
+  (`references/activity-tools.md`) names the recommended tool for each activity on each CLI, with
+  a fallback; agents point to it (v3.15.0 already pointed to it before it existed), and a lint
+  check fails when the table names a tool an agent cannot call. Serena on opencode is still
+  unverified (a recorded gap).
+
 ## [3.15.0] - 2026-11-15
 
 ### Added

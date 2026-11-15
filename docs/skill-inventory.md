@@ -204,7 +204,6 @@ flowchart LR
   a_team_lead -.-> s_meaningfy_code_review
   a_team_lead -.-> s_spec_stewardship
   a_team_lead -.-> s_meaningfy_git_workflow
-  a_implementer -.-> s_cosmic_python
   a_code_reviewer -.-> s_meaningfy_code_review
   a_code_reviewer -.-> s_cosmic_python
   a_release_manager -.-> s_meaningfy_release
@@ -853,7 +852,7 @@ The delivery / developer role: the spine build loop (epic-planning, spec-steward
 | [`meaningfy-release`](../skills/meaningfy-release/SKILL.md) | The Meaningfy release lifecycle — semantic versioning policy (MAJOR/MINOR/PATCH + -rc.N pre-releases), GitFlow release/hotfix branches, changelog + GitHub release notes, semi-automated releases via release-please, publishing Python libraries to PyPI with Trusted Publishing (OIDC, no tokens), opt-in supply-chain hardening (signing/provenance/SBOM), and release governance (SECURITY.md, yanking, deprecation). | `devops` | `coding` | `git-release` | `precise` | `release` | `stable` | — | `meaningfy-git-workflow`, `ci-cd-delivery`, `project-setup` |
 | [`epic-planner`](../agents/epic-planner.md) *(agent)* | Vasile the planner shapes an EPIC from the person's seeds and derives its clarity-gated PLAN (≥9/10) as an OpenSpec change, asking the open questions directly, one round at a time. | `software-development` | `coding` | `spec-driven` | `precise` | `shape` | `stable` | `epic-planning`, `clarity-gate`, `bdd-gherkin`, `stream-coding` | — |
 | [`team-lead`](../agents/team-lead.md) *(agent)* | Radu the team lead delivers a gated PLAN with a lean agent team: runs the epic session, briefs the workers, checks each stage and keeps the person's decisions in view. | `software-development` | `coding` | `spec-driven` | `precise` | `build` | `experimental` | `epic-delivery`, `guardrails`, `meaningfy-code-review`, `spec-stewardship`, `meaningfy-git-workflow` | — |
-| [`implementer`](../agents/implementer.md) *(agent)* | Ionut the implementer implements one ready task of an OpenSpec change as tested production code, test-first. | `software-development` | `coding` | `python` | `precise` | `build` | `stable` | `cosmic-python`, `stream-coding`, `superpowers:test-driven-development`, `superpowers:systematic-debugging`, `superpowers:verification-before-completion` | — |
+| [`implementer`](../agents/implementer.md) *(agent)* | Ionut the implementer implements one ready task of an OpenSpec change as tested production code, test-first. | `software-development` | `coding` | `python` | `precise` | `build` | `stable` | `superpowers:test-driven-development` | — |
 | [`code-reviewer`](../agents/code-reviewer.md) *(agent)* | Mircea the reviewer reviews a change through one review lens (L1–L5), or through several only where the review set or a recorded decision authorises it, and reports prioritised findings; read-only. | `software-development` | `coding` | `python` | `precise` | `verify` | `stable` | `meaningfy-code-review`, `cosmic-python` | — |
 | [`release-manager`](../agents/release-manager.md) *(agent)* | Nelu the release manager cuts a release: chooses the version, prepares the changelog and release notes, runs the release or hotfix branch and the publish steps. | `devops` | `coding` | `git-release` | `precise` | `release` | `experimental` | `meaningfy-release`, `meaningfy-git-workflow`, `guardrails` | — |
 

@@ -272,11 +272,7 @@
         "Agent"
       ],
       "skills": [
-        "cosmic-python",
-        "stream-coding",
-        "superpowers:test-driven-development",
-        "superpowers:systematic-debugging",
-        "superpowers:verification-before-completion"
+        "superpowers:test-driven-development"
       ],
       "metadata": {
         "purpose": "software-development",
@@ -520,7 +516,9 @@
         "Write",
         "Bash",
         "Skill",
-        "Agent"
+        "Agent",
+        "ToolSearch",
+        "mcp__gitnexus__*"
       ],
       "skills": [
         "epic-delivery",
