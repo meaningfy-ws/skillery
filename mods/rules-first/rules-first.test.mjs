@@ -209,6 +209,73 @@ test("asset unreadable: fail open, no deny, exit 0", () => {
   assert.equal(r.stderr, "");
 });
 
+// ---- the fix pass: value-only edits, symlinked folders, case, comment cost, asset case, YAML forms
+
+test("value-only Edit and MultiEdit: the edit is applied to the disk text", () => {
+  const { memory, env } = fabricate();
+  const p = join(memory, "project_v.md");
+  writeFileSync(p, note("project"));
+  const edit = (old_string, new_string, extra = {}) =>
+    shouldDeny("Edit", { file_path: p, old_string, new_string, ...extra }, env, DENY);
+  assert.equal(edit("project", "feedback"), true);
+  assert.equal(edit("project", "feedback", { replace_all: true }), true);
+  assert.equal(
+    shouldDeny("MultiEdit", { file_path: p, edits: [{ old_string: "proj", new_string: "feedb" }, { old_string: "ect", new_string: "ack" }] }, env, DENY),
+    true,
+  );
+  assert.equal(shouldDeny("MultiEdit", { file_path: p, edits: [{ old_string: "project", new_string: "feedback" }] }, env, DENY), true);
+  assert.equal(edit("x", "y"), false);
+  assert.equal(edit("project", "project"), false);
+});
+
+test("a symlinked memory folder pointing outside the config root is still denied", () => {
+  const { home, env } = fabricate();
+  const outside = mkdtempSync(join(tmpdir(), "rf-out-"));
+  mkdirSync(join(home, ".claude/projects/-w-link"), { recursive: true });
+  symlinkSync(outside, join(home, ".claude/projects/-w-link/memory"));
+  const input = { file_path: join(home, ".claude/projects/-w-link/memory/a.md"), content: note("feedback") };
+  assert.equal(shouldDeny("Write", input, env, DENY), true);
+});
+
+test("case-insensitive file systems: the prefix matches without case on darwin and win32 only", () => {
+  const { home, env } = fabricate();
+  const input = { file_path: join(home, ".CLAUDE/projects/-w-acme/memory/a.md"), content: note("feedback") };
+  assert.equal(shouldDeny("Write", input, env, DENY, "darwin"), true);
+  assert.equal(shouldDeny("Write", input, env, DENY, "win32"), true);
+  assert.equal(shouldDeny("Write", input, env, DENY, "linux"), false);
+});
+
+test("a long run of spaces after the comment mark costs little", () => {
+  const content = `---\ntype: a${" ".repeat(30000)}x\n---\nb\n`;
+  const t0 = performance.now();
+  denies("Write", { content }, null, DENY.types);
+  assert.ok(performance.now() - t0 < 50, "too slow");
+});
+
+test("the asset's type names are lower-cased when loaded", () => {
+  const root = mkdtempSync(join(tmpdir(), "rf-asset-"));
+  mkdirSync(join(root, "skills/rulebook/assets"), { recursive: true });
+  writeFileSync(join(root, "skills/rulebook/assets/memory-deny.json"), JSON.stringify({ types: ["Feedback"], message: "m" }));
+  const deny = loadDeny(root);
+  assert.equal(denies("Write", { content: note("feedback") }, null, deny.types), true);
+});
+
+test("YAML forms: quoted key, tag, empty value, block scalar with indentation indicator", () => {
+  const forms = [
+    '"type": feedback',
+    "'type' : feedback",
+    "type : feedback",
+    "type: !!str feedback",
+    "type:\n  feedback",
+    "type: |2\n  feedback",
+    "type: >-1\n  feedback",
+    "type: |+2\n  feedback",
+  ];
+  for (const f of forms) assert.equal(denies("Write", { content: `---\n${f}\n---\nb\n` }, null, DENY.types), true, f);
+  assert.equal(denies("Write", { content: "---\ntype:\nname: project\n---\nb\n" }, null, DENY.types), false);
+  assert.equal(denies("Write", { content: "---\ntype: !!str project\n---\nb\n" }, null, DENY.types), false);
+});
+
 // ---- the block with everything set (#272)
 
 test("everything set: vault, repository rules and the routing policy present", () => {

@@ -858,6 +858,8 @@ def _rules_calls(text: str) -> list[tuple[str, list[str]]]:
     """Every `rules.py <sub> <args>` call in a command text: (sub, its args up to the next operator)."""
     calls = []
     for line in text.split("\n"):
+        if "rules.py" not in line:
+            continue
         words = _tokens(line)
         for i, word in enumerate(words):
             if word.strip("'\"").rsplit("/", 1)[-1] == "rules.py" and i + 1 < len(words) and re.fullmatch(r"[a-z]+", words[i + 1]):
@@ -948,24 +950,24 @@ def cmd_stats(args) -> int:
             continue
         events += 1
         inp, calls = found
-        written += any(_is_write(*c) for c in calls)
-        sub, args = calls[0]  # the usage counts follow the first call
+        written += sum(_is_write(*c) for c in calls)
         output = "\n".join(s for s in strings if s is not inp)
-        if sub in ("load", "check") and END not in output:
-            truncated += 1
-        elif sub == "load":
-            for rid in re.findall(r"^(R-\d{4}) ", output, re.MULTILINE):
-                bump(rid, "loaded")
-        elif sub == "check":
-            for rid in re.findall(r"^VIOLATION (R-\d{4})", output, re.MULTILINE):
-                bump(rid, "violated")
-        elif sub in ("cite", "override"):
-            cut = args.index("--reason") if "--reason" in args else len(args)
-            reason = args[cut + 1] if cut + 1 < len(args) else None
-            for rid in ID.findall(" ".join(args[:cut])):
-                bump(rid, "cited" if sub == "cite" else "overridden")
-                if sub == "override" and reason is not None:
-                    reasons.setdefault(rid, []).append(reason.strip("'\""))
+        for sub, args in calls:
+            if sub in ("load", "check") and END not in output:
+                truncated += 1
+            elif sub == "load":
+                for rid in re.findall(r"^(R-\d{4}) ", output, re.MULTILINE):
+                    bump(rid, "loaded")
+            elif sub == "check":
+                for rid in re.findall(r"^VIOLATION (R-\d{4})", output, re.MULTILINE):
+                    bump(rid, "violated")
+            elif sub in ("cite", "override"):
+                cut = args.index("--reason") if "--reason" in args else len(args)
+                reason = args[cut + 1] if cut + 1 < len(args) else None
+                for rid in ID.findall(" ".join(args[:cut])):
+                    bump(rid, "cited" if sub == "cite" else "overridden")
+                    if sub == "override" and reason is not None:
+                        reasons.setdefault(rid, []).append(reason.strip("'\""))
     out = [f"window {since.isoformat()}..{today.isoformat()}: {scanned} observations, {events} rules.py events",
            f"rules written: {written}", f"memory writes denied: {denied}"]
     out.append("id      loaded cited overridden violated")

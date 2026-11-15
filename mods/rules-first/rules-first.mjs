@@ -10,8 +10,9 @@ import { fileURLToPath } from "node:url";
 // The marker is the constant DENY_MARKER of skills/rulebook/scripts/rules.py; `stats` counts it.
 // The denied types and the message text are data in skills/rulebook/assets/memory-deny.json.
 const DENY_MARKER = "[rules-first: memory write denied]";
-const TYPE_LINE = /^[ \t]*type:[ \t]*(.*)$/;
-const BLOCK_SCALAR = /^[|>][+-]?$/;
+const TYPE_LINE = /^([ \t]*)["']?type["']?[ \t]*:[ \t]*(.*)$/;
+const BLOCK_SCALAR = /^[|>](?:[1-9][+-]?|[+-][1-9]?)?$/;
+const MAX_LINE = 1000; // a longer line is cut before it is scanned
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "../..");
 const END_LINE = "-- end --";
@@ -46,12 +47,20 @@ export function loadDeny(root = ROOT) {
   try {
     const { types, message } = JSON.parse(readFileSync(join(root, "skills/rulebook/assets/memory-deny.json"), "utf8"));
     if (!Array.isArray(types) || typeof message !== "string") return null;
-    return { types: new Set(types), message: `${message} ${DENY_MARKER}` };
+    return { types: new Set(types.map((t) => String(t).toLowerCase())), message: `${message} ${DENY_MARKER}` };
   } catch {
     return null;
   }
 }
 
+/** The first non-blank line after `i`, trimmed, when it is indented deeper than `indent`; else "". */
+function nextIndented(lines, i, indent) {
+  const next = lines.slice(i + 1).find((l) => l.trim());
+  return next !== undefined && next.length - next.trimStart().length > indent ? next.trim() : "";
+}
+
+// shortcut: YAML flow mappings ({type: x}), aliases, escapes and explicit keys (? type) are not handled;
+// upgrade to a YAML parser if a note in those forms ever matters.
 /** Every `type:` value of a note's frontmatter (top level and nested), lower-cased; of loose text when it has none. */
 function typesOf(text) {
   if (typeof text !== "string") return [];
@@ -59,10 +68,10 @@ function typesOf(text) {
   const lines = (m ? m[1] : text).split(/\r?\n/);
   const found = [];
   lines.forEach((line, i) => {
-    const t = TYPE_LINE.exec(line);
+    const t = TYPE_LINE.exec(line.slice(0, MAX_LINE));
     if (!t) return;
-    let value = t[1].replace(/\s+#.*$/, "").trim();
-    if (BLOCK_SCALAR.test(value)) value = (lines.slice(i + 1).find((l) => l.trim()) ?? "").trim();
+    let value = (" " + t[2]).split(/\s#/)[0].trim().replace(/^!!\S*\s*/, "");
+    if (value === "" || BLOCK_SCALAR.test(value)) value = nextIndented(lines, i, t[1].length);
     found.push(value.replace(/^["']|["']$/g, "").trim().toLowerCase());
   });
   return found;
@@ -83,30 +92,52 @@ function realish(path) {
   }
 }
 
-/** The real absolute path when `path` is `<config root>/projects/<slug>/memory/**.md`, else null. */
-export function memoryPath(path, env) {
+/**
+ * The path when `path` is `<config root>/projects/<slug>/memory/**.md`, else null. It counts as inside when
+ * the path as written or its real path matches, against the config root as written or its real path
+ * (a symlinked memory/ or projects/ folder points outside the root). macOS and Windows compare without case.
+ */
+export function memoryPath(path, env, platform = process.platform) {
   const home = env.HOME || homedir();
-  const config = realish(resolve(expandTilde(env.CLAUDE_CONFIG_DIR || join(home, ".claude"), home)));
-  const target = realish(resolve(expandTilde(path, home)));
-  const inside = target.startsWith(config + "/") && /^projects\/[^/]+\/memory\/.+\.md$/i.test(target.slice(config.length + 1));
-  return inside ? target : null;
+  const fold = platform === "darwin" || platform === "win32" ? (s) => s.toLowerCase() : (s) => s;
+  const written = resolve(expandTilde(env.CLAUDE_CONFIG_DIR || join(home, ".claude"), home));
+  const roots = [written, realish(written)];
+  const target = resolve(expandTilde(path, home));
+  for (const candidate of [target, realish(target)]) {
+    for (const root of roots) {
+      const rel = candidate.slice(root.length + 1);
+      if (fold(candidate).startsWith(fold(root) + "/") && /^projects\/[^/]+\/memory\/.+\.md$/i.test(rel)) return candidate;
+    }
+  }
+  return null;
 }
 
-/** Pure: true when the note on disk, or the text the tool call writes, has a denied type. */
+/** `text` with the edit applied (every match when `all`); unchanged when the old string is not a non-empty string. */
+const applyEdit = (text, edit, all) => {
+  if (typeof edit?.old_string !== "string" || edit.old_string === "" || typeof edit?.new_string !== "string") return text;
+  const put = () => edit.new_string; // a function, so `$&` in the text is not a pattern
+  return all ? text.replaceAll(edit.old_string, put) : text.replace(edit.old_string, put);
+};
+
+/** Pure: true when the note on disk, or the text the tool call writes or leaves behind, has a denied type. */
 export function denies(toolName, toolInput, diskText, types) {
   const found = typesOf(diskText);
   if (toolName === "Write") found.push(...typesOf(toolInput?.content));
-  else if (toolName === "Edit") found.push(...typesOf(toolInput?.new_string)); // D-10: disk type or new_string type
-  else if (toolName === "MultiEdit") {
-    for (const edit of Array.isArray(toolInput?.edits) ? toolInput.edits : []) found.push(...typesOf(edit?.new_string));
+  else if (toolName === "Edit") {
+    found.push(...typesOf(toolInput?.new_string)); // D-10: disk type or new_string type
+    if (typeof diskText === "string") found.push(...typesOf(applyEdit(diskText, toolInput, toolInput?.replace_all === true)));
+  } else if (toolName === "MultiEdit") {
+    const edits = Array.isArray(toolInput?.edits) ? toolInput.edits : [];
+    for (const edit of edits) found.push(...typesOf(edit?.new_string));
+    if (typeof diskText === "string") found.push(...typesOf(edits.reduce((text, e) => applyEdit(text, e, e?.replace_all === true), diskText)));
   }
   return found.some((t) => types.has(t));
 }
 
 /** The I/O shell of the decision: the path check, the disk read, then `denies`. No `deny` data, no deny. */
-export function shouldDeny(toolName, toolInput, env, deny) {
+export function shouldDeny(toolName, toolInput, env, deny, platform = process.platform) {
   if (!deny || typeof toolInput?.file_path !== "string") return false;
-  const path = memoryPath(toolInput.file_path, env);
+  const path = memoryPath(toolInput.file_path, env, platform);
   return path !== null && denies(toolName, toolInput, readText(path), deny.types);
 }
 

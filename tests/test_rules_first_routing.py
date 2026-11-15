@@ -13,7 +13,46 @@ rules = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = rules  # dataclasses look the module up
 spec.loader.exec_module(rules)
 
-BINDINGS = ["docs/environment/global-prompt.md", "skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl", "AGENTS.md"]
+def _line_starting(prefix):
+    def place(text):
+        return next((ln for ln in text.splitlines() if ln.startswith(prefix)), "")
+    return place
+
+
+def _section_after(heading_start):
+    def place(text):
+        out, inside = [], False
+        for ln in text.splitlines():
+            if inside and ln.startswith("## "):
+                break
+            if ln.startswith(heading_start):
+                inside = True
+            elif inside:
+                out.append(ln)
+        return "\n".join(out)
+    return place
+
+
+def _bullet(prefix):
+    def place(text):
+        out, inside = [], False
+        for ln in text.splitlines():
+            if inside and (ln.startswith("- ") or not ln.strip()):
+                break
+            if ln.startswith(prefix):
+                inside = True
+            if inside:
+                out.append(ln)
+        return "\n".join(out)
+    return place
+
+
+# file, the place in it, how to cut the place out
+BINDINGS = [
+    ("docs/environment/global-prompt.md", "the bullet '- Your own rules'", _bullet("- Your own rules")),
+    ("skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl", "the '.claude/' section", _section_after("## `.claude/`")),
+    ("AGENTS.md", "the '- **Rules:**' line", _line_starting("- **Rules:**")),
+]
 
 
 def test_mod_source_contains_deny_marker():
@@ -21,10 +60,12 @@ def test_mod_source_contains_deny_marker():
     assert rules.DENY_MARKER in source
 
 
-@pytest.mark.parametrize("name", BINDINGS)
-def test_binding_carries_routing_sentence(name):
-    text = rules._normalise_sentence((ROOT / name).read_text(encoding="utf-8"))
-    assert rules._normalise_sentence(rules.routing_sentence()) in text, f"{name} lacks the routing sentence of routing.md"
+@pytest.mark.parametrize("name, where, cut", BINDINGS, ids=[b[0] for b in BINDINGS])
+def test_binding_carries_routing_sentence(name, where, cut):
+    place = cut((ROOT / name).read_text(encoding="utf-8"))
+    assert place, f"{name}: {where} not found"
+    assert rules._normalise_sentence(rules.routing_sentence()) in rules._normalise_sentence(place), \
+        f"{name}: {where} lacks the routing sentence of routing.md"
 
 
 def test_pointer_carries_routing_sentence():

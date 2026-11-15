@@ -18,11 +18,14 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   An edit that adds a line such as `type: user-facing docs` to a project note was refused as a
   `user` note; the type is now read as a whole word. A `feedback` or `user` note is now refused
   whatever the case (`Feedback`), wherever its `type:` sits in the frontmatter, when written as a
-  block value, in a sub-folder of the memory folder, or through a symlinked `~/.claude`. The denied
+  block value, a quoted key, a tagged value or an indented plain value, in a sub-folder of the
+  memory folder, through a symlinked `~/.claude` or a symlinked memory folder, and on macOS
+  whatever the case of the path. An edit that only changes the value (`project` to `feedback`) is
+  refused too, because the edit is applied to the note before its type is read. The denied
   types and the message now live in the rulebook skill (`assets/memory-deny.json`). The session
   block waits up to 15 s for `rules.py where` instead of 5 s, so a busy machine no longer drops
   the store lines. `rules.py where` now says "add or replace" the rules line, and `rules.py stats`
-  counts every `rules.py` call in a command. A plain mod with a `config.json` no longer replaces a
+  counts every `rules.py` call in a command, each write and each usage call on its own. A plain mod with a `config.json` no longer replaces a
   modules mod's settings in the generated plugin. The `project-setup` template says
   `.claude/memory/MEMORY.md` is a repository file, not the CLI's memory.
 - The `no-poll-loops` timing tests take the best of three runs, so a loaded machine no longer

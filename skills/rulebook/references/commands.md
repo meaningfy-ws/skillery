@@ -85,7 +85,7 @@ the write retried.
 was loaded, cited, overridden and violated, then the usage flags. Under the `window` line it prints
 `rules written: <n>` (calls of `add`, `confirm`, `update` or `approve`, not the ones carrying
 `--dry-run` or `--candidate`) and `memory writes denied: <n>` (observations carrying the
-rules-first mod's deny marker). Both are trends, not an audit: a turn the plugin sends twice counts twice. `--from-file` reads a saved
+rules-first mod's deny marker). Both are trends, not an audit: a turn the plugin sends twice counts twice, and any text with `rules.py add` in it counts (an `echo rules.py add` too). `--from-file` reads a saved
 response of the observations API instead; an unreadable file exits 3. With no `rules.py` event in
 the window it warns and raises no usage flag; the stale flag still applies. A missing setting or an unreachable server exits 3 and
 names the problem. How the counts are derived is in the `rule-steward` skill.

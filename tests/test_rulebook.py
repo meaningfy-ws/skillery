@@ -482,6 +482,43 @@ def test_stats_counts_every_call_in_a_command_and_reads_flags_as_tokens(tmp_path
     assert _stats(path=path).stdout.splitlines()[1] == "rules written: 3"
 
 
+@pytest.mark.parametrize("command, written", [
+    ("{rp} add --type a && {rp} add --type b", 2),
+    ("{rp} add --type a; {rp} confirm R-0001; {rp} cite R-0001", 2),
+    ("{rp} add --dry-run && {rp} add --type b", 1),
+    ("{rp} load --for x | cat", 0),
+    ("echo nothing to see", 0),
+])
+def test_stats_counts_each_write_call_of_a_command(tmp_path, command, written):
+    rp = 'python3 "<skills>/rulebook/scripts/rules.py"'
+    obs = {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+           "input": {"command": command.format(rp=rp)}, "output": {"stdout": ""}}
+    path = tmp_path / "one.json"
+    path.write_text(json.dumps({"data": [obs], "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    assert _stats(path=path).stdout.splitlines()[1] == f"rules written: {written}"
+
+
+def test_stats_usage_counts_follow_every_call_in_a_command(tmp_path):
+    rp = 'python3 "<skills>/rulebook/scripts/rules.py"'
+    obs = {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+           "input": {"command": f"{rp} load --for x && {rp} cite R-0001 && {rp} override R-0002 --reason why"},
+           "output": {"stdout": ""}}
+    path = tmp_path / "usage.json"
+    path.write_text(json.dumps({"data": [obs], "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    out = _stats(path=path).stdout
+    assert _row(out, "R-0001") == [0, 1, 0, 0]
+    assert _row(out, "R-0002") == [0, 0, 1, 0]
+
+
+def test_rules_calls_skips_lines_without_rules_py_before_tokenising(monkeypatch):
+    seen = []
+    mod = _module()
+    real = mod._tokens
+    monkeypatch.setattr(mod, "_tokens", lambda line: seen.append(line) or real(line))
+    assert mod._rules_calls("echo hi\nls -la\npython3 rules.py add x") == [("add", ["x"])]
+    assert seen == ["python3 rules.py add x"]
+
+
 def test_langfuse_not_configured():
     r = run("stats", "--today", TODAY)
     assert r.returncode == 3
