@@ -53,9 +53,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   `AGENTS.md` template of `project-setup` and the rules pointer `rules.py` writes into a new
   repository now say: "Preferences and corrections go to the rulebook, never to the CLI's memory;
   project state goes to the spine and the repository's docs." To make `rules.py where` report
-  `routing policy: present`, paste the updated rules line into your global instructions
-  (`~/.claude/CLAUDE.md`, `~/.config/opencode/AGENTS.md`). An existing repository's pointer line is
-  not changed.
+  `routing policy: present`, replace the rules bullet in your global instructions
+  (`~/.claude/CLAUDE.md`, `~/.config/opencode/AGENTS.md`) with the updated one. An existing
+  repository's pointer line is not changed.
 
 ### Changed
 

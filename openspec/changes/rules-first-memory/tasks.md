@@ -62,7 +62,7 @@ ids (T-n) are in design.md *Test cases*.
   note of any type. Recorded in `evidence/replay.md` with the date and the commit. A failed replay
   blocks the stage and goes back to D-6 or the deny message. Satisfies `rules-first-routing` *The
   2026-11-11 failure no longer reproduces*.
-- [ ] 1.8 Close stage 1. `CHANGELOG.md` *Unreleased* line for installers; `make validate` green; PR;
+- [x] 1.8 Close stage 1. `CHANGELOG.md` *Unreleased* line for installers; `make validate` green; PR;
   merge on green CI.
 
 ## 2. Stage 2: the routing sentence
@@ -76,11 +76,11 @@ Starts only when `delivery-process-and-tools` task 3.4 (its stage 3 PR) is merge
   either binding changes. `tests/test_rules_first_routing.py`: each of the four contains the routing
   sentence read from `routing.md`, normalised, and a failure names the file (T-8). `binding_size` stays green, else the error-matrix
   row applies. Satisfies `rules-first-routing` *The routing text has one home*.
-- [ ] 2.2 Close stage 2. `CHANGELOG.md` line; `make validate` green; PR; merge on green CI.
+- [x] 2.2 Close stage 2. `CHANGELOG.md` line; `make validate` green; PR; merge on green CI.
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [x] 2.1 · [ ] 2.2
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [x] 2.1 · [x] 2.2
 
 1.3 and 1.4 touch separate code and may run in parallel with 1.2 once its spike is recorded; 1.5
 needs 1.2 (two mods), 1.3 (`routing.md`) and 1.4 (`DENY_MARKER`); 1.7 needs 1.5.
