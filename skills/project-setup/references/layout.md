@@ -20,8 +20,8 @@ first: `domain` (the book's `models/`) → `adapters` → `services` → `entryp
 ├── LICENSE
 ├── VERSION                       # single source of the version string
 │
-├── pyproject.toml                # MINIMAL: [project] [tool.poetry] [dependency-groups] [build-system]
-├── poetry.lock
+├── pyproject.toml                # MINIMAL: [project] [dependency-groups] [build-system] [tool.uv.build-backend]
+├── uv.lock
 ├── ruff.toml                     # format + lint (replaces black/isort/flake8/pylint)
 ├── mypy.ini                      # type checking
 ├── pytest.ini                    # pythonpath=. ; markers ; NO coverage flags here (D5)

@@ -24,7 +24,7 @@ Triggered by the tag/release the release engine produces (SKILL §4). Key invari
 
 - `permissions: id-token: write` on the publishing job — **without it GitHub will not mint the OIDC
   token** and the publish fails.
-- Build with `python -m build` (or `poetry build`) into `dist/`.
+- Build with `uv build` into `dist/`.
 - **TestPyPI dry-run job first**, gating the real publish: upload to TestPyPI via
   `pypa/gh-action-pypi-publish` with `repository-url: https://test.pypi.org/legacy/`; only on success
   does the production job run.

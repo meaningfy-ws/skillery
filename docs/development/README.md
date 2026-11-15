@@ -64,10 +64,10 @@ If a change helps the agent but confuses the user, it is not done.
    when…"), in at most 1,024 characters (a gate) and ideally 600 (advisory); add `Not for…` only where
    a near-miss probe needs it. Prove it with probes; the method is agentskills.io
    [*Optimizing descriptions*](https://agentskills.io/skill-creation/optimizing-descriptions).
-7. **Progressive disclosure.** SKILL.md holds the method; details, tables and templates go to
-   `references/`, `assets/`, `scripts/`, within the budget of the
-   [agentskills.io specification](https://agentskills.io/specification) (body under 500 lines and
-   5,000 tokens; references one level deep). Context is the scarcest resource.
+7. **Progressive disclosure.** A skill has three tiers: a body read whenever it fires, references
+   read when a pointer says so, and material (templates, scripts) never read as instructions, each
+   within the budget of [the lean standard](creating-skills.md#the-lean-standard). Context is the
+   scarcest resource.
 8. **CLI-agnostic bodies.** Skills and agents run on Claude Code and opencode from one source; the
    body names no CLI command forms or paths (the `body_agnosticism` gate checks).
 9. **Nothing secret, nothing local.** No hosts, credentials, ports, personal paths or client names in
@@ -90,7 +90,7 @@ reads each builder's reported `make validate` run. Builders run and report their
 lead re-runs only on a named trigger. The lead runs `make validate` once before the stage's PR and
 once after the fix round, and runs the loop scaled by the EPIC's appetite.
 
-**Verification and validation.** As in any project ([`epic-delivery`](../../skills/epic-delivery/references/verification-validation.md)),
+**Verification and validation.** As in any project ([`test-strategy`](../../skills/test-strategy/SKILL.md)),
 agents verify and the owner validates. For skillery the two look like this:
 
 | | Verification (built right?) | Validation (the right thing?) |
@@ -264,6 +264,7 @@ at any depth below it.
 | `docs/practice/philosophy/**` | hand-written | Essays on working with an LLM | — |
 | `docs/development/governance.md` | hand-written | Artifact types and placement rules | — |
 | `docs/development/mods.md` | hand-written | The Mod type for developers: structure, state contract, bundling, checks | — |
+| `docs/development/quality.md` | hand-written | The Quality check type for developers: add a Semgrep rule, an external source or a tool, and how skillery tests them | — |
 | `docs/environment/navigator.md` | hand-written | Using the navigator mod (CLI and desktop): install, line, band, settings | — |
 | `docs/development/agent-skills-spec.md` | hand-written | The skill file format and metadata | — |
 | `docs/development/skill-template.md` | hand-written | The skill file template | — |

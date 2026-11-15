@@ -17,6 +17,7 @@ facets:
     knowledge: the owner's personal notes, plans and rhythm
     contracts: draft, revise and align contracts and other legal agreements
     house-material: work from a repository of house material by its own rules
+    quality: "state and check how work succeeds and fails, in any activity"
   area:
     coding: building software with AI agents
     consulting: advising clients

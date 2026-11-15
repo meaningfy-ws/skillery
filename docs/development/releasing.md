@@ -35,8 +35,9 @@ convention on top of it.
 1. From an up-to-date `develop`, branch `release/X.Y.Z` (MINOR for additions, MAJOR when users must
    act, PATCH for fixes).
 2. Set `VERSION` to `X.Y.Z`, set `version:` in `hooks.yaml` to match, run `make bundles` (it writes
-   the version into `.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json` and
-   `package.json`), and turn `## [Unreleased]` into `## [X.Y.Z] - <date>` under a fresh empty
+   the version into `.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json`,
+   `package.json` and the `QUALITY_VERSION` pin of
+   `skills/project-setup/assets/templates/root/Makefile.tmpl`), and turn `## [Unreleased]` into `## [X.Y.Z] - <date>` under a fresh empty
    `## [Unreleased]`.
 3. `make validate`; open the PR `release/X.Y.Z` → `main`; merge it when CI is green.
 4. The merge runs `releases.yml`: it appends the release commit to `releases`, tags it `vX.Y.Z` and

@@ -142,3 +142,5 @@ infrastructure side; `project-setup`, `cosmic-python`,
 `meaningfy-release` — the release *lifecycle* (versioning, release
 notes, PyPI publish, the release/hotfix runbook); it cites this skill for the GHCR image path and does
 not restate it.
+
+Answers `VER, RSK` in `test-strategy`'s matrix (`references/devops.md`).

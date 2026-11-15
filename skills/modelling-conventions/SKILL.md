@@ -81,3 +81,5 @@ See also `architecture` for the system-level notations (C4, UML, ArchiMate) that
 model, and `cosmic-python` for the same reuse-layer pattern applied to code.
 
 **Related:** `conceptual-modelling`, `linkml-engineering`.
+
+Answers `VER` in `test-strategy`'s matrix (`references/modelling.md`).

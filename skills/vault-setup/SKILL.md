@@ -83,3 +83,5 @@ repository and its private runbook.
 A vault is not a code repository: see also `project-setup` for scaffolding a software project.
 
 **Related:** `vault-conventions`, `vault-daily`, `rulebook`.
+
+Answers `VER` in `test-strategy`'s matrix (`references/generic-writing.md`).

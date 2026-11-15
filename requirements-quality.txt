@@ -1,0 +1,5 @@
+# Local tools for the shared checks (quality/) and their tests (tests/test_quality*.py).
+# `make install` reads this file; no CI workflow does (CI installs only pyyaml and pytest).
+semgrep==1.185.0
+ruff==0.17.5
+hypothesis==6.170.15

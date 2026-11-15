@@ -30,8 +30,8 @@ and checking a stage gets depends on the EPIC's size. The review set of each app
 
 **Validation points, per EPIC.** The gates above verify. People validate at a few fixed points: the
 scenario sign-off once at the PLAN gate, the model review when the model changes, the acceptance
-demo after the last stage when the EPIC delivers or changes a use case, and the validation review at the end of an iteration. Who owns each, and
-where its evidence goes, is in
+demo after the last stage when the EPIC delivers or changes a use case, and the validation review at the end of an iteration. Who owns each is in
+the matrix of [`test-strategy`](../../../skills/test-strategy/SKILL.md); where its evidence goes is in
 [`verification-validation.md`](../../../skills/epic-delivery/references/verification-validation.md).
 
 ## The automation boundary (single source: other docs reference this)

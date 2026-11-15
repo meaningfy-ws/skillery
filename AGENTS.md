@@ -8,7 +8,7 @@ CLI-specific guidance lives in that CLI's binding, never here.
 ## What this repo is
 
 A company-wide skills/agents/docs catalogue for **Claude Code and opencode**. Every artifact is
-exactly one of five types (defined in [`docs/development/governance.md`](docs/development/governance.md)):
+exactly one of six types (defined in [`docs/development/governance.md`](docs/development/governance.md)):
 
 | Type | Home | Rule |
 |------|------|------|
@@ -17,6 +17,7 @@ exactly one of five types (defined in [`docs/development/governance.md`](docs/de
 | **Doc** | `docs/` | Written for people; narrates and points, never restates skill rules |
 | **Binding** | root agentic files (`AGENTS.md`, `CLAUDE.md`) + `project-setup`'s agentic templates | Mandates and routes; never carries the standard |
 | **Mod** | `mods/` | Claude Code hooks module; observes, displays, runs commands or denies a command; carries no method |
+| **Quality check** | `quality/` | Executable checks (rule files, configurations) that projects and skillery run; no rule text, the owning skill holds it |
 
 **Single-source-of-authority rule:** if a fact belongs to a skill, it lives there and nowhere else.
 See [`docs/development/governance.md`](docs/development/governance.md) for placement rules.
@@ -102,8 +103,9 @@ update an artifact, keep both CLIs working — the gates in `make validate` enfo
   [`docs/environment/dual-cli/body-agnosticism-audit.md`](docs/environment/dual-cli/body-agnosticism-audit.md).
 - **Commands** — only *content/templates* are shared; registration is **tool-native** (`/opsx:<id>`
   on Claude, `opsx-<id>` on opencode). Don't try to generate one registration form for both.
-- **Specs & versions** — `make bundles` writes the root `VERSION` into its three rendered files:
-  `.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json` and `package.json`; the
+- **Specs & versions** — `make bundles` writes the root `VERSION` into its four rendered files:
+  `.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json`, `package.json` and
+  `skills/project-setup/assets/templates/root/Makefile.tmpl` (its `QUALITY_VERSION` line); the
   version-sync gate fails on any mismatch. Hook *intent* is single-sourced in
   [`hooks.yaml`](hooks.yaml) and rendered per CLI (see
   [`docs/development/hook-bindings.md`](docs/development/hook-bindings.md)).
@@ -136,6 +138,8 @@ and agent renderer). See
   second subagent.
 - **Context** — follow *Session hygiene* in the `guardrails` skill: a fresh session at a task
   boundary, compact at a phase boundary right after a commit, never mid-step.
+- **Success and failure first** — for every activity, state how the work succeeds and how it fails
+  before you start it. The method is the [`test-strategy`](skills/test-strategy) skill.
 - **Hooks** — hook *intent* is single-sourced in [`hooks.yaml`](hooks.yaml) (see [`docs/development/hooks.md`](docs/development/hooks.md)); git-mechanism hooks are shared across CLIs, agent-mechanism hooks are rendered per CLI.
 
 GitNexus scope in this repo: the code in `tools/`, `tests/` and skills' `scripts/`. This block lives here only (not in

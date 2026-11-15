@@ -85,3 +85,5 @@ and does NOT plan (`epic-planning`) or score specs (`clarity-gate`).
 **Related:** `architecture` (the White/Blue use case catalogue Gherkin projects from), `epic-planning`,
 `epic-delivery` (when sign-off and the traceability check run),
 `clarity-gate`, `spec-stewardship`, `cosmic-python`.
+
+Answers `VAL, VER, ADQ` in `test-strategy`'s matrix (`references/software.md`, `references/shaping.md`, `references/architecture.md`, `references/cross-cutting.md`).

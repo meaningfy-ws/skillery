@@ -128,3 +128,5 @@ table check and memory etiquette (`vault-conventions`); generic agent safety (`g
 **Related:** `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`,
 `sales-conversations`, `executive-communication`, `vault-conventions`, `guardrails`. The generic
 `sales:*` plugin skills are not for Meaningfy's Odoo pipeline.
+
+Answers `VAL, VER, CLR, RSK` in `test-strategy`'s matrix (`references/generic-writing.md`).

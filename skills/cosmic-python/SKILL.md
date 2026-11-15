@@ -253,7 +253,7 @@ Common anti-patterns and how to fix them:
 
 ### Essential Tools for Well-Guarded Projects
 
-- **Poetry** – Dependency management, lockfiles, reproducible builds
+- **uv** – Dependency management, lockfiles, reproducible builds
 - **pytest + pytest-bdd** – Unit tests (TDD) and behavior specs (BDD/Gherkin)
 - **tox** – Test multiple Python versions in isolated environments
 - **importlinter** – Enforce architectural boundaries (block forbidden imports)
@@ -264,7 +264,7 @@ Common anti-patterns and how to fix them:
 ### Typical Makefile Pattern
 
 ```bash
-make install                # Set up environment (poetry install)
+make install                # Set up environment (uv sync --all-groups)
 make test                   # Run unit tests with coverage
 make test-bdd               # Run BDD feature tests
 make check-architecture     # Validate import contracts (importlinter)
@@ -393,6 +393,8 @@ service: the four layers, SOLID, what to test per layer, and CI guardrails.
 → `guardrails`.
 **Related:** `architecture`, `meaningfy-code-review`, `bdd-gherkin`, `guardrails`,
 `conceptual-modelling`, `linkml-engineering`, `ci-cd-delivery`, `meaningfy-git-workflow`, `epic-delivery`.
+
+Answers `VER, ADQ, ROB` in `test-strategy`'s matrix (`references/software.md`, `references/ui.md`).
 
 ### Canonical vocabulary
 

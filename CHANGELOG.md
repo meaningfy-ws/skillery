@@ -3,13 +3,82 @@
 All notable changes to the Meaningfy Skillery catalogue are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/), and the
 catalogue version is the root [`VERSION`](VERSION) file (`make bundles` writes it into
-`.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json` and `package.json`). The version
+`.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json`, `package.json` and the
+`QUALITY_VERSION` line of `project-setup`'s `Makefile.tmpl`). The version
 of record for a release is the git tag `vX.Y.Z`.
 
 Versions at or below `2.4.0` predate this changelog; see the git history and the
 `v2.3.0` tag for earlier detail.
 
 ## [Unreleased]
+
+## [3.15.0] - 2026-11-15
+
+### Added
+
+- The lean skill standard (EPIC `lean-skills`, stage 1), for anyone writing or changing a skill:
+  [`creating-skills.md` § *The lean standard*](docs/development/creating-skills.md#the-lean-standard)
+  sets three tiers (body, references, material), a budget of 24 KB of prose per skill (body plus
+  `references/`) with a 6 KB body target, the body's shape, how content is sorted, and five
+  practices. `make validate` now fails a skill over budget (`prose_budget`) and a pointer to a
+  reference that is not one sentence "Read `<file>` when `<situation>`: it adds `<what>`."
+  (`reference_pointers`). Skills that predate the standard are listed in `skill-budget.yaml`
+  under `pending` until their rewrite; a new skill must meet the standard on arrival. The
+  advisory body note now reports bodies over 6 KB.
+
+- Shared quality checks for new projects (EPIC `harden-checks-and-tests`, stage 1): a project
+  scaffolded by `project-setup` fetches skillery's `quality/` folder at the release it pins and
+  runs it with `make check-quality`. That target now also fails on: SPARQL built from strings;
+  an exception class defined outside `exceptions.py`; a real sleep or an RDF string comparison
+  in any test; a network call in a unit or feature test; a file named `utils.py`, `helpers.py`, `port.py`,
+  `factory.py`, `manager.py` or `errors.py`; a `# noqa` or `# nosemgrep` without a reason; a
+  missing required file or `make` target; and an I/O package (such as `requests` or
+  `SPARQLWrapper`) imported in the `domain` layer. Ruff now also flags requests without a
+  timeout, naive `datetime`, a blind `except`, environment reads outside the config module, magic
+  values in comparisons, functions with too many arguments, branches or statements, and
+  composite assertions (issue #215). Two Semgrep rules and four pinned external rule sets only
+  print their findings. How an existing project adopts the checks follows in a later release.
+- `test-strategy` (EPIC `test-strategy`, stage 1; bundle `meaningfy-core`): a new skill that says,
+  for any activity (code, a doc, a post, an offer, a contract clause, a model), how the work
+  succeeds or fails before you start, and carries the matrix of which check answers which question
+  per activity family. Use it when you need to choose the checks for a piece of work.
+- Every phase of the nine default workflows now declares how it succeeds and how it fails
+  (`criteria`; EPIC `test-strategy`, stage 2). A repository's own workflow file may add them, and
+  nothing breaks if it does not.
+- `AGENTS.md`, and the `AGENTS.md` of a new project, now mandate stating how work succeeds and
+  fails before starting it, and point to `test-strategy`.
+
+### Changed
+
+- `project-setup` now scaffolds projects with **uv** instead of Poetry: `pyproject.toml` builds
+  with `uv_build`, `make install` runs `uv sync --all-groups --locked` (it never rewrites
+  `uv.lock`; run `make lock` after changing a dependency, and it says how to install uv when it is
+  missing, instead of calling `pip`), every tool runs through `uv run`, and CI, the release build
+  and the Dockerfile use uv. An existing project migrates by the short steps in the skill's
+  modernisation guide.
+- **BREAKING for a team lead that compacted between stages or relied on five lenses at MEDIUM**
+  (EPIC `delivery-process-and-tools`, stage 1). In `epic-delivery`, a stage now ends with a
+  hand-over note (`assets/templates/handover.md`), committed as its pull request's last commit.
+  One background command then watches the checks and merges, and the next stage starts in a
+  fresh session from the note's prompt, with no compaction between stages. Only Critical
+  findings are fixed: the rest are listed as "under the floor", and a stage has one fix pass.
+  Anything the checker finds unmet afterwards goes to you. MEDIUM takes two reviewers by default
+  and five when a risk is recorded; the small-stage allowance starts at LARGE. The adversarial
+  tester runs on a stated condition. The lead runs the impact and change checks once per task.
+  In `epic-planning`, the clarity gate runs at most twice at any appetite, each verdict goes to
+  `evidence/clarity-gate.md`, and a shaping session ends with each PLAN gated. A delivery
+  session no longer warns that the clarity gate has not run.
+- `implementer` and `code-reviewer` have a fixed tool list again: the file, search, shell and skill
+  tools, plus the code tools of the `serena`, `ast-grep` and `gitnexus` MCP servers, loaded on
+  demand. Since v3.12.0 they carried every tool of the session, which made each worker start
+  larger. In a test session the start shrank by about 11,500 tokens per worker. If your project's
+  code-intelligence servers have other names, the workers no longer reach them: tell us through
+  `skillery-feedback`. On opencode nothing changes.
+- Verification and validation are now defined in `test-strategy`, not in `epic-delivery`. Its
+  `verification-validation.md` keeps the acceptance demo, the validation review and the evidence
+  folder.
+- The test-data rule (build test data with polyfactory factories) is now stated once, in the
+  `cosmic-python` testing checklist.
 
 ## [3.14.0] - 2026-11-13
 

@@ -7,6 +7,7 @@ description: >
 type: delegated
 model: sonnet
 color: blue
+tools: [Read, Edit, Write, Glob, Grep, Bash, Skill, ToolSearch, "mcp__serena__*", "mcp__ast-grep__*", "mcp__gitnexus__*"]
 disallowedTools: [Agent]
 skills:
   - cosmic-python

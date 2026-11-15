@@ -88,10 +88,8 @@ One `quality` job, on push and PR to `<<DEFAULT_BRANCH>>`:
 | Step | Make target | Purpose |
 |------|-------------|---------|
 | Checkout (`fetch-depth: 0`) | — | full history for Sonar blame |
-| Set up Python `<<PYTHON_VERSION>>` | — | pinned interpreter |
-| Install Poetry (`pipx install poetry`) | — | dependency manager |
-| Cache `~/.cache/pypoetry` | — | keyed on `poetry.lock` |
-| Install | `make install` | all groups (dev, test, lint) |
+| Set up uv + Python `<<PYTHON_VERSION>>` (`astral-sh/setup-uv`, cache on) | — | pinned interpreter and dependency manager; cache keyed on `uv.lock` |
+| Install | `make install` | all groups (dev, test, lint); fails if `uv.lock` is stale |
 | Lint | `make lint` | Ruff |
 | Type check | `make typecheck` | mypy |
 | Architecture | `make check-architecture` | import-linter |
@@ -179,7 +177,7 @@ Read the Docs hosting instead, ship a `.readthedocs.yaml` that runs Antora to
 CI (this pillar) covers build/test/lint/coverage/architecture/docs. **Continuous Delivery — the
 deploy trigger, the reusable deploy mechanism, the release/image standard — is owned by the
 `ci-cd-delivery` skill**, and `project-setup` only *renders* its
-templates. The two never overlap.
+templates. The two never overlap. The release workflow's build job sets up uv and runs `make build`.
 
 - **Deployable `product` →** the interview's deployable question (Q6.4) is **yes**. Per
   `ci-cd-delivery` §6, the §6 decisions (deploy-trigger standard, GHCR semver/sha images, the
@@ -226,20 +224,20 @@ a flat `src/infra/`).
 
 | Choice | Why |
 |--------|-----|
-| **Builder stage** installs deps into an in-project `.venv` | dependency layer is cached unless `poetry.lock` changes; build tools (poetry) never reach the runtime image |
+| **Builder stage** installs deps into an in-project `.venv` | dependency layer is cached unless `uv.lock` changes (`uv` is copied in from `ghcr.io/astral-sh/uv` and runs `uv sync --locked`); build tools (uv) never reach the runtime image |
 | **Runtime stage** is `python:<<PYTHON_VERSION>>-slim` | small attack surface; only the venv + package + entrypoint are copied in |
 | **Non-root `appuser` (uid 1000)** | containers must not run as root (security baseline); writable `$HOME` for caches |
-| **`PATH=/app/.venv/bin:...`** | the venv is active without `poetry run` at runtime |
+| **`PATH=/app/.venv/bin:...`** | the venv is active without `uv run` at runtime |
 | **No-src copy** (`COPY <<PACKAGE>> <<PACKAGE>>/`) | the package is at the repo root; build context is `../..` from `infra/` |
 | **`ENTRYPOINT entrypoint.sh`** | one place for the optional seed step + `exec`-ing the app as PID 1 (clean signals) |
 
 `ENVIRONMENT` build arg switches dependency installation: `development` pulls
-all groups (for in-container tests/tooling), production installs `--only main`.
+all groups (for in-container tests/tooling), production installs `--no-dev` (runtime dependencies only).
 
 ### Live development (`develop: watch:`)
 
 `compose.yaml`'s `watch` block syncs `<<PACKAGE>>/` into the running container
-(`make watch`) and triggers a rebuild when `pyproject.toml`/`poetry.lock` change,
+(`make watch`) and triggers a rebuild when `pyproject.toml`/`uv.lock` change,
 so edits hot-reload without a manual rebuild.
 
 ## Layered env + secrets hygiene

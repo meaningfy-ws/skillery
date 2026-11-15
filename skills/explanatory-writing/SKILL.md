@@ -100,3 +100,5 @@ beneath it.
 | `executive-communication` | structure | *not invoked here* (no decision). If it were a recommendation, its answer-first pyramid would win by precedence |
 
 **Related:** `meaningfy-voice`, `technical-writing`, `executive-communication`, `writing-antipatterns` (genre-conditional failure modes, including where this skill's own craft moves invert).
+
+Answers `CLR` in `test-strategy`'s matrix (`references/generic-writing.md`).

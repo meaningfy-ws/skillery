@@ -83,3 +83,5 @@ what it declares immutable, and reporting unclear instructions.
 **Related:** `rulebook` (the person's own rules for agents, not a repository's), `project-setup`
 (scaffolding a repository's agentic files, such as its `AGENTS.md`), `technical-writing` (writing
 the docs a repository needs).
+
+Answers `VER` in `test-strategy`'s matrix (`references/generic-writing.md`).

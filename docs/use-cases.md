@@ -25,9 +25,9 @@ Building software with AI agents.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W18](../use-cases/UC-W18-programming-team-lead.md) Programming partner and team lead | a Meaningfy developer | `covered` | `epic-planner` *(agent)*, `team-lead` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `release-manager` *(agent)*, `technical-writer` *(agent)*, `epic-planning`, `epic-delivery`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `meaningfy-git-workflow`, `guardrails`, `technical-writing`, `rulebook`, `rule-learner` | — | high |
-| [UC-W19](../use-cases/UC-W19-system-architect.md) System architect | a Meaningfy architect | `covered` | `system-architect` *(agent)*, `architecture` | — | high |
-| [UC-W20](../use-cases/UC-W20-conceptual-modeller.md) Conceptual modeller and ontology engineer | a Meaningfy modeller | `covered` | `conceptual-modeller` *(agent)*, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `formal-reasoning` | — | high |
+| [UC-W18](../use-cases/UC-W18-programming-team-lead.md) Programming partner and team lead | a Meaningfy developer | `covered` | `epic-planner` *(agent)*, `team-lead` *(agent)*, `implementer` *(agent)*, `code-reviewer` *(agent)*, `release-manager` *(agent)*, `technical-writer` *(agent)*, `epic-planning`, `epic-delivery`, `spec-stewardship`, `clarity-gate`, `bdd-gherkin`, `meaningfy-code-review`, `cosmic-python`, `project-setup`, `ci-cd-delivery`, `meaningfy-release`, `meaningfy-git-workflow`, `guardrails`, `technical-writing`, `rulebook`, `rule-learner`, `test-strategy` | — | high |
+| [UC-W19](../use-cases/UC-W19-system-architect.md) System architect | a Meaningfy architect | `covered` | `system-architect` *(agent)*, `architecture`, `test-strategy` | — | high |
+| [UC-W20](../use-cases/UC-W20-conceptual-modeller.md) Conceptual modeller and ontology engineer | a Meaningfy modeller | `covered` | `conceptual-modeller` *(agent)*, `conceptual-modelling`, `modelling-conventions`, `linkml-engineering`, `formal-reasoning`, `test-strategy` | — | high |
 
 ## consulting
 
@@ -45,7 +45,7 @@ Winning and pricing work.
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
 | [UC-W7](../use-cases/UC-W7-sales-assistant.md) Sales assistant | a Meaningfy salesperson | `covered` | `sales-agent` *(agent)*, `sales-operations`, `sales-pipeline-custody`, `sales-accounts`, `sales-qualification`, `sales-conversations` | `add-sales-bundle` | high |
-| [UC-W8](../use-cases/UC-W8-proposals-and-offers.md) Proposals and formal offers | a Meaningfy salesperson or consultant | `partial` | `proposal-writer` *(agent)*, `proposal-writing`, `estimation`, `decision-package`, `executive-communication` | `add-commercial-chain` | high / medium |
+| [UC-W8](../use-cases/UC-W8-proposals-and-offers.md) Proposals and formal offers | a Meaningfy salesperson or consultant | `partial` | `proposal-writer` *(agent)*, `proposal-writing`, `estimation`, `decision-package`, `executive-communication`, `test-strategy` | `add-commercial-chain` | high / medium |
 | [UC-W9](../use-cases/UC-W9-qualify-leads-and-partnerships.md) Qualify leads and partnerships | a Meaningfy salesperson | `partial` | `sales-qualification` | `add-commercial-chain` | medium |
 | [UC-W10](../use-cases/UC-W10-qualify-prospect.md) Qualify a prospect in a sales conversation | a Meaningfy salesperson | `partial` | `sales-qualification` | `add-commercial-chain` | medium |
 | [UC-W11](../use-cases/UC-W11-market-research.md) Market research | the owner | `missing` | — | `add-commercial-chain` | low |
@@ -70,7 +70,7 @@ Running infrastructure, CI/CD and monitoring.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W6](../use-cases/UC-W6-devops-engineer.md) DevOps engineer | a Meaningfy engineer responsible for infrastructure | `partial` | `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)*, `ci-cd-delivery`, `meaningfy-release`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `skillery-feedback` | `add-devops-bundle` | high |
+| [UC-W6](../use-cases/UC-W6-devops-engineer.md) DevOps engineer | a Meaningfy engineer responsible for infrastructure | `partial` | `devops-engineer` *(agent)*, `ops-watch` *(agent)*, `infra-reviewer` *(agent)*, `ci-cd-delivery`, `meaningfy-release`, `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`, `skillery-feedback`, `test-strategy` | `add-devops-bundle` | high |
 
 ## business
 
@@ -81,7 +81,7 @@ Running and growing the company, negotiation and internal communication.
 | [UC-W13](../use-cases/UC-W13-negotiation-partner.md) Negotiation thinking partner | the owner | `missing` | — | `add-commercial-chain` | low |
 | [UC-W14](../use-cases/UC-W14-business-coach.md) Business coach and strategic partner | the owner | `partial` | `semantic-consulting-coach` | `add-business-partners` | medium |
 | [UC-W15](../use-cases/UC-W15-internal-communication.md) Internal communication | the owner | `missing` | — | `add-business-partners` | low |
-| [UC-W24](../use-cases/UC-W24-content-creation.md) Content creation for LinkedIn and blogs | the owner | `partial` | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice` | `add-content-creation` | low |
+| [UC-W24](../use-cases/UC-W24-content-creation.md) Content creation for LinkedIn and blogs | the owner | `partial` | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `test-strategy` | `add-content-creation` | low |
 
 ## legal
 
@@ -89,7 +89,7 @@ Contracts, NDAs and other legal documents.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W16](../use-cases/UC-W16-contracts-and-ndas.md) Contracts and NDAs | the owner | `partial` | `lawyer` *(agent)*, `contract-practice`, `corpus-repository` | `named-workers-and-legal` | medium |
+| [UC-W16](../use-cases/UC-W16-contracts-and-ndas.md) Contracts and NDAs | the owner | `partial` | `lawyer` *(agent)*, `contract-practice`, `corpus-repository`, `test-strategy` | `named-workers-and-legal` | medium |
 
 ## design
 
@@ -97,7 +97,7 @@ Graphics, visuals and diagrams in company style.
 
 | Use case | Primary actor | Status | Served by | Change | Confidence |
 |---|---|---|---|---|---|
-| [UC-W17](../use-cases/UC-W17-graphic-designer.md) Graphic designer | a Meaningfy colleague who needs a visual | `missing` | — | `add-visual-design` | low |
+| [UC-W17](../use-cases/UC-W17-graphic-designer.md) Graphic designer | a Meaningfy colleague who needs a visual | `missing` | `test-strategy` | `add-visual-design` | low |
 
 ## What needs the owner
 

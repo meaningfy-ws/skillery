@@ -53,10 +53,10 @@ context budget and the passes overlap in wall-clock.
   default for a full review.
 - **Size hook.** Inside an EPIC's delivery the fan-out scales with the appetite: the review set of
   each appetite is the `reviews` of `epic-delivery`'s workflow file. Its one-pass entries
-  (`lenses`) are the allowed combined pass for TINY and SMALL. A small stage of a larger appetite
-  may also combine lenses, in the groups of the entry's `small_stage.lenses`; the rule is in
-  `epic-delivery` (the review sets). No lens
-  changes what it checks, combined or not. Where an entry has `ux`, an optional UX lens runs
+  (`lenses`) are the allowed combined pass for TINY and SMALL. MEDIUM combines lenses in two
+  groups by default; a small stage from LARGE up, in `small_stage.lenses`; the rule is in
+  `epic-delivery` (the review sets). No lens changes what it checks, combined or not. Where an
+  entry has `ux`, an optional UX lens runs
   when screens changed: usability and accessibility of the changed screens. The UX lens is review
   only; designing screens is the UX designer's job at any size, per `epic-delivery`.
 
@@ -130,3 +130,5 @@ boundaries, the L2 doc-agreement criterion, the **methodical per-lens procedure*
 restate), perform the run (external `code-review` / `code-reviewer` wrapper), or fix code (the
 `implementer` applies accepted fixes). The fit & refactoring investigation is **recommendations-only**.
 **Related:** `cosmic-python`, `guardrails`, `meaningfy-git-workflow`, `epic-delivery` (scales the review to the EPIC's size), external `code-review`, `superpowers:requesting-code-review`, `superpowers:receiving-code-review`.
+
+Answers `VAL, VER, ADQ, ROB, CLR, RSK` in `test-strategy`'s matrix (`references/software.md`, `references/documentation.md`, `references/ui.md`, `references/architecture.md`).

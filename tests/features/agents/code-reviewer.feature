@@ -41,6 +41,14 @@ Feature: code-reviewer reviews one change through one lens, or several where a d
     And every finding reported is tagged with its own lens "L2" or "L3"
     And no file in the change is modified
 
+  # Traces to: DEC-5; D-4, D-22.
+  Scenario: Several lenses are accepted for a MEDIUM appetite with a default group
+    Given the change's proposal.md records "MEDIUM" under "## Appetite"
+    When the caller dispatches the code-reviewer with lenses "L1" and "L2" and names the appetite "MEDIUM"
+    Then it reads the appetite in proposal.md to confirm it
+    And every finding reported is tagged with its own lens "L1" or "L2"
+    And no file in the change is modified
+
   Scenario: Several lenses are refused when the brief's appetite disagrees with the proposal
     Given the change's proposal.md records "LARGE" under "## Appetite"
     When the caller dispatches the code-reviewer with lenses "L2" and "L3" and names the appetite "SMALL"
@@ -80,3 +88,13 @@ Feature: code-reviewer reviews one change through one lens, or several where a d
     When the caller asks the code-reviewer to dispatch another agent for part of the review
     Then it has no tool to start one
     And it says so in its report
+
+  # Failure case: delivery-retrospective finding F-5 (a worker carried the session's whole tool catalogue).
+  Scenario: The reviewer starts with its own tools, not the session's
+    Given the session has connector tools the review does not need
+    And the project has the code-intelligence servers `serena`, `ast-grep` and `gitnexus`
+    When the caller dispatches the code-reviewer with lens "L1"
+    Then it can read, search, run commands and load skills
+    And it can load and call a tool of each code-intelligence server
+    And no other connector tool and no file-editing tool is offered to it
+    And its report reaches the caller

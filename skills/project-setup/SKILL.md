@@ -1,6 +1,6 @@
 ---
 name: project-setup
-description: Scaffold or modernise a Meaningfy-standard repo and PROJECT the Meaningfy spine into it — a top-level package (no src/), Poetry + dedicated root tool configs, cosmic-python layering with import-linter guardrails, TDD+BDD tests, an AGENTS.md-canonical agentic setup (AGENTS.md is canonical; CLAUDE.md is a thin pointer that imports it, never a symlink), the openspec/ spine (config + pinned meaningfy schema + /opsx:* commands + golden thread), three archetypes (product/library/doc-only) with fixed gate profiles, conditional model/ and CD seam, Antora docs, infra, and CI. Use when starting a new repo or bringing an existing one up to standard. Trigger on "set up a new project", "scaffold a repo", "bootstrap a Python project", "new Meaningfy project", "initialise project structure", "add the standard tooling/docs/CI", "project the spine / set up openspec", "modernise/revamp an existing repo", "bring this project up to standard", "gap analysis against Meaningfy standards".
+description: Scaffold or modernise a Meaningfy-standard repo and PROJECT the Meaningfy spine into it — a top-level package (no src/), uv + dedicated root tool configs, cosmic-python layering with import-linter guardrails, TDD+BDD tests, an AGENTS.md-canonical agentic setup (AGENTS.md is canonical; CLAUDE.md is a thin pointer that imports it, never a symlink), the openspec/ spine (config + pinned meaningfy schema + /opsx:* commands + golden thread), three archetypes (product/library/doc-only) with fixed gate profiles, conditional model/ and CD seam, Antora docs, infra, and CI. Use when starting a new repo or bringing an existing one up to standard. Trigger on "set up a new project", "scaffold a repo", "bootstrap a Python project", "new Meaningfy project", "initialise project structure", "add the standard tooling/docs/CI", "project the spine / set up openspec", "modernise/revamp an existing repo", "bring this project up to standard", "gap analysis against Meaningfy standards".
 license: Apache 2.0
 metadata:
   purpose: software-development
@@ -118,7 +118,7 @@ references in step 4 still govern each piece.
    its own, so the scaffolder cannot find a sibling skill by itself.
    It renders every template, creates the package/tests/`.claude`/**`openspec/`** trees, renders
    **`AGENTS.md`** (canonical) and the **`CLAUDE.md`** pointer as regular files, copies the
-   **pinned** `meaningfy` schema, and runs `poetry lock`.
+   **pinned** `meaningfy` schema, and runs `uv lock`.
    Idempotent; never clobbers without asking (`--force` / `--skip-existing`). `--minimal` writes only
    the agentic files + `.claude/` layout. Or create files by hand from `assets/templates/` using
    [`references/layout.md`](references/layout.md) + [`references/config-files.md`](references/config-files.md).
@@ -152,7 +152,7 @@ These are the defaults the templates implement. Deviate only with a stated reaso
 
 | Concern | Choice | Rejected (why) |
 |---------|--------|----------------|
-| Packaging / deps | **Poetry** + `[dependency-groups]` | requirements.txt (no lock/groups), setup.py (legacy) |
+| Packaging / deps | **uv** + `[dependency-groups]` + `uv.lock` | Poetry (the previous standard), requirements.txt (no lock/groups), setup.py (legacy) |
 | Format + lint | **Ruff** (`ruff.toml`) | black+isort+flake8+pylint (4 tools, slow) |
 | Types | **mypy** (`mypy.ini`) | — |
 | Tests | **pytest** + **pytest-bdd** (`pytest.ini`) | behave (separate runner), nose (dead) |
@@ -189,3 +189,5 @@ stewardship → `epic-planning` and the spine; doc prose → `technical-writing`
 scaffolds), `meaningfy-release` (the release workflow a scaffolded repo adopts), `linkml-engineering`
 (its gates and per-module layout, when the project uses LinkML), and the external `superpowers` and
 `stream-coding` skills.
+
+Answers `VER, ADQ` in `test-strategy`'s matrix (`references/software.md`).

@@ -1,6 +1,8 @@
 <!-- STATUS: EPIC shaped 2026-10-29 from the owner's request and answers of the same day
      (inputs/qa.md). Where the packages live is decided later, outside git. Next: the PLAN; the
-     owner's Luxembourg SME package is the first real input. -->
+     owner's Luxembourg SME package is the first real input.
+     Revised 2026-11-15 by owner decision (DEC-9 to DEC-11): where offerings live, who sets a
+     price, and this EPIC's place after orchestrate-external-skills. -->
 
 # EPIC: A commercial portfolio of packages
 
@@ -96,6 +98,20 @@ Enough to write a proposal from, no more. Each is one short entry in the package
   could not tell a missing price from a free stage).
 - **DEC-8** (proposed): Building blocks stay one shared services catalogue in skillery; a package
   names the blocks it sells instead of describing them.
+- **DEC-9** (owner, 2026-11-15; refines DEC-3): Commercial offerings are prepared, structured and
+  groomed descriptions, each holding its whole context, and are the seed of any discussion and any
+  sale. They live in their own repository or in Drive folders, as contracts live in their own
+  repository for the legal skills; the skills stay generic and operate on that place. "Not in git"
+  in DEC-3 now reads "not in skillery". Rejected: offerings kept only as loose documents.
+- **DEC-10** (owner, 2026-11-15): The offering document sets the price. An external pricing or
+  offer skill may inform how an offering is designed; it never sets or changes a price, and no
+  skill discounts one. The orchestrator states this as an override
+  (`orchestrate-external-skills` DEC-7 and DEC-19).
+- **DEC-11** (2026-11-15): This EPIC is delivered after `orchestrate-external-skills`, with which
+  it shares `sales-conversations`, `sales-qualification`, the coach and the spec
+  `sales-method-ownership`, and before the sales stage of `lean-skills`. The order of all open
+  EPICs is in
+  [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md).
 
 ## Rabbit-holes
 

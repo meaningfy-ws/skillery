@@ -173,3 +173,5 @@ antipatterns (`modelling-conventions`,
 
 **Related:** `meaningfy-voice`, `technical-writing`, `explanatory-writing`, `executive-communication`,
 `proposal-writing`, `decision-package`, `architecture`, `semantic-consulting-coach`.
+
+Answers `CLR` in `test-strategy`'s matrix (`references/generic-writing.md`).

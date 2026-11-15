@@ -39,6 +39,12 @@ def test_no_skill_exceeds_max_lines():
     assert lint.skill_too_long(REPO) == []
 
 
+def test_every_skill_meets_the_lean_standard_or_is_listed():
+    # lean-skills D-3..D-5: within budget and pointers in the sentence form, or in skill-budget.yaml.
+    assert lint.prose_budget(REPO) == []
+    assert lint.reference_pointers(REPO) == []
+
+
 def test_no_orphan_agent_references():
     assert lint.orphan_agent_references(REPO) == []
 
@@ -53,6 +59,10 @@ def test_agents_carry_a_persona():
 
 def test_every_workflow_has_one_lead():
     assert lint.workflow_lead(REPO) == []
+
+
+def test_every_default_phase_has_criteria():
+    assert lint.workflow_criteria(REPO) == []
 
 
 def test_readme_lists_every_skill():
@@ -93,6 +103,11 @@ def test_trigger_probes_reference_real_skills():
 def test_ownership_tripwire_runs():
     # Non-blocking (Q5.2=B): it returns advisory strings, never raises.
     assert isinstance(lint.ownership_claim_report(REPO), list)
+
+
+def test_quality_folder_holds_only_checks():
+    assert lint.top_level_folders(REPO) == []
+    assert lint.quality_files(REPO) == []
 
 
 def test_cli_returns_zero():

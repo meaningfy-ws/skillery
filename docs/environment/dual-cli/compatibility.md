@@ -43,6 +43,11 @@ to add or change a row, edit its entry there and run `make skill-inventory`.
 | **SWI-Prolog** (the Prolog engine (`swipl`, with tabling) run by formal-reasoning for closure and competency questions; BSD-2-Clause, [swi-prolog.org](https://www.swi-prolog.org); its scripts need Python >= 3.11) | formal-reasoning (`scripts/run_rules.py`, `scripts/check_env.py`) | native | a system package per OS, as [`setup.md`](../setup.md#reasoning-engines-for-formal-reasoning-optional) says | same system package; the engine is CLI-independent. |
 | **Langfuse** (session traces, read by `rule-steward` for rule usage) | rule-steward (`rules.py stats`) | native (an HTTP API; the CLI does not matter) | set `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` on the machine (see `docs/environment/setup.md`) | the same environment variables |
 | **Langfuse Claude Code plugin** (records every tool call and turn of a Claude Code session in Langfuse) | rule-steward (the only capture of rule usage; the catalogue ships no hook) | unsupported (no opencode plugin known; opencode sessions are not traced) | install the plugin and point it at the Langfuse server with the same keys | **gap**: none; rule usage from opencode sessions is not monitored |
+| **Semgrep** (the static-rule engine that runs the Meaningfy rules of `quality/semgrep/`; LGPL-2.1, [semgrep/semgrep](https://github.com/semgrep/semgrep)) | project-setup templates (`make check-semgrep`), `quality/semgrep/`, `tests/test_quality.py` | native | pip, from `requirements-quality.txt` (skillery) or `make quality-tools` (a project) | same pip package; the tool is CLI-independent. |
+| **ls-lint** (the file-name linter behind `quality/ls-lint/`; MIT, [loeffel-io/ls-lint](https://github.com/loeffel-io/ls-lint)) | project-setup templates (`make check-layout`), `quality/ls-lint/`, `tests/test_quality.py` | native | the release binary on PATH (skillery, by hand) or `make quality-tools` (a project, checked against `scripts/quality/tools.sha256`) | same binary; the tool is CLI-independent. |
+| **checkmake** (the Makefile linter behind `quality/checkmake/`; MIT, [checkmake/checkmake](https://github.com/checkmake/checkmake)) | project-setup templates (`make check-makefile`), `quality/checkmake/`, `tests/test_quality.py` | native | the release binary on PATH (skillery, by hand) or `make quality-tools` (a project, checked against `scripts/quality/tools.sha256`) | same binary; the tool is CLI-independent. |
+| **Hypothesis** (the property-based testing library of the tester and, from stage 3 of `harden-checks-and-tests`, of `tests/test_quality_properties.py`; MPL-2.0, [HypothesisWorks/hypothesis](https://github.com/HypothesisWorks/hypothesis)) | project-setup templates (the `test` group, from stage 2 of `harden-checks-and-tests`); `tests/test_quality_properties.py` (from stage 3) | native | pip, from `requirements-quality.txt` (skillery) or the project's `test` group | same pip package; the library is CLI-independent. |
+| **Schemathesis** (contract-driven API tests from an OpenAPI schema, used by the tester; MIT, [schemathesis/schemathesis](https://github.com/schemathesis/schemathesis)) | project-setup templates (the `test` group of a project with an API, from stage 2 of `harden-checks-and-tests`) | native | pip, in the project's `test` group | same pip package; the library is CLI-independent. |
 <!-- /GENERATED -->
 
 > **gitnexus** and **context7** are MCP servers, not skill-packs — both **native** on opencode; see the
@@ -87,11 +92,12 @@ One skill also has a recorded monitoring gap, which comes from a missing plugin 
 |---|---|---|---|
 | `rule-steward` | rule usage is traced by the Langfuse Claude Code plugin | no Langfuse plugin known | opencode sessions can `load`, `cite` and `check` rules, but nothing records them, so rules used only there look unused in the weekly review. |
 
-One agent has a recorded tool gap (`make opencode-report`):
+Three agents have a recorded tool gap (`make opencode-report`):
 
 | Agent | Claude Code | opencode | Gap / degradation |
 |---|---|---|---|
 | `lawyer` | `tools` lists `mcp__overleaf__*`, so Tolic may edit the contract's Overleaf project | a tool glob has no opencode analogue and is left out of the rendered agent | on opencode Tolic works through git only, which his body already names as the fallback. |
+| `implementer`, `code-reviewer` | `tools` is a closed list: the built-in tools, `ToolSearch` and the code tools `mcp__serena__*`, `mcp__ast-grep__*`, `mcp__gitnexus__*`; no other connector tool reaches the worker | `ToolSearch` and a tool glob have no opencode analogue and are left out of the rendered agent; the list does not restrict there (G-6 in [`mapping.md`](mapping.md)) | on opencode the worker still gets every MCP tool of the session, the code tools included; only the context saving is lost. |
 
 One bundle is Claude Code only by design, a deliberate gap rather than a missing capability:
 

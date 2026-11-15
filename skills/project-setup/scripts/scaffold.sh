@@ -47,7 +47,7 @@ Options:
       --no-docs          skip the Antora docs pillar
       --no-infra         skip the Docker/infra pillar
       --no-ci            skip the GitHub Actions pillar
-      --no-lock          do not run `poetry lock` after scaffolding
+      --no-lock          do not run `uv lock` after scaffolding
       --dry-run          report a gap analysis (+ create / = keep) and write NOTHING
       --force            overwrite existing files without asking
       --skip-existing    keep existing files, no prompt (non-interactive)
@@ -276,6 +276,7 @@ render "$TPL/root/pytest.ini"                     "$TARGET/pytest.ini"
 render "$TPL/root/dot-coveragerc"                 "$TARGET/.coveragerc"
 render "$TPL/root/dot-pre-commit-config.yaml"     "$TARGET/.pre-commit-config.yaml"
 render "$TPL/root/dot-gitignore"                  "$TARGET/.gitignore"
+render "$TPL/root/dot-semgrepignore"              "$TARGET/.semgrepignore"
 render "$TPL/root/dot-importlinter.tmpl"          "$TARGET/.importlinter"
 render "$TPL/root/Makefile.tmpl"                  "$TARGET/Makefile"
 render "$TPL/root/sonar-project.properties.tmpl"  "$TARGET/sonar-project.properties"
@@ -290,6 +291,9 @@ render "$TPL/project/CODE_OF_CONDUCT.md.tmpl" "$TARGET/CODE_OF_CONDUCT.md"
 render "$TPL/project/CHANGELOG.md.tmpl"       "$TARGET/CHANGELOG.md"
 # SECURITY.md (coordinated disclosure) for code archetypes — content owned by meaningfy-release.
 [[ "$CODE" -eq 1 ]] && render "$TPL/root/SECURITY.md.tmpl" "$TARGET/SECURITY.md"
+# Shared-check scripts and tool checksums (D-1): code archetypes only; `make quality-tools` reads them.
+[[ "$CODE" -eq 1 ]] && render "$TPL/quality/tools.sha256"        "$TARGET/scripts/quality/tools.sha256"
+[[ "$CODE" -eq 1 ]] && render "$TPL/quality/external_sources.py" "$TARGET/scripts/quality/external_sources.py"
 
 # ---- 3. top-level package skeleton (NO src/) ------------------------------
 # doc-only repos carry no Python package, no tests, no model.
@@ -433,7 +437,7 @@ if [[ "$WITH_CI" -eq 1 && "$ARCHETYPE" == "library" ]]; then
 fi
 
 # ---- 9. lockfile ----------------------------------------------------------
-# Generate poetry.lock so `make install`, the Docker COPY, and CI caching all work.
+# Generate uv.lock so `make install`, the Docker COPY, and CI caching all work.
 if [[ "$DRY_RUN" -eq 1 ]]; then
   cat <<EOF
 
@@ -446,19 +450,21 @@ references/modernizing-existing-projects.md; for the spine projection, reference
 EOF
   exit 0
 fi
-if [[ "$NO_LOCK" -eq 0 ]] && command -v poetry >/dev/null 2>&1; then
-  echo "  running poetry lock ..."
-  ( cd "$TARGET" && poetry lock >/dev/null 2>&1 ) && echo "  wrote poetry.lock" \
-    || echo "  NOTE: poetry lock failed — run 'make lock' manually before 'make install'"
+if [[ "$NO_LOCK" -eq 1 ]]; then
+  echo "  NOTE: skipped uv lock (--no-lock); run 'make lock' before 'make install'"
+elif ! command -v uv >/dev/null 2>&1; then
+  echo "  NOTE: uv is not installed (https://docs.astral.sh/uv/getting-started/installation/); install it, then run 'make lock' before 'make install'"
 else
-  echo "  NOTE: skipped poetry lock — run 'make lock' before 'make install'"
+  echo "  running uv lock ..."
+  ( cd "$TARGET" && uv lock >/dev/null ) && echo "  wrote uv.lock" \
+    || echo "  NOTE: uv lock failed — run 'make lock' manually before 'make install'"
 fi
 
 cat <<EOF
 
 Done. Next steps:
-  1. cd "$TARGET" && make lock      # if poetry.lock was not generated above
-  2. make install                   # installs dev,test,lint groups
+  1. cd "$TARGET" && make lock      # if uv.lock was not generated above
+  2. make install                   # installs all dependency groups
   3. make check-all                 # lint + types + architecture + tests should be green
   4. Install the OpenSpec /opsx:* commands (core profile) so the spine is drivable:
        npx -y @fission-ai/openspec@$OPENSPEC_PIN init --tools claude --profile core

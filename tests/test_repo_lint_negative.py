@@ -709,6 +709,65 @@ def test_scheduled_human_session_agent_without_a_workflow_is_not_flagged(tmp_pat
     assert lint.workflow_lead(tmp_path) == []
 
 
+_CRITERIA_WF = "skills/act/assets/workflows/act.workflow.json"
+_GOOD_CRITERIA = {"succeeds": "the evidence is there", "fails": "the evidence is missing"}
+
+
+def _criteria_wf(root: Path, *phases: dict):
+    _raw_wf(root, json.dumps({"owner": "act", "phases": list(phases)}))
+
+
+def test_workflow_criteria_flags_a_phase_without_criteria(tmp_path):
+    # test-strategy D-5; scenario "A default phase without criteria"
+    _criteria_wf(tmp_path, {"id": "one", "criteria": _GOOD_CRITERIA}, {"id": "two"})
+    assert lint.workflow_criteria(tmp_path) == [
+        f"{_CRITERIA_WF}: phase 'two' needs criteria, an object with exactly the keys "
+        f"'succeeds' and 'fails', each a non-empty string"]
+
+
+def test_workflow_criteria_accepts_well_formed_criteria(tmp_path):
+    _criteria_wf(tmp_path, {"id": "one", "criteria": _GOOD_CRITERIA})
+    assert lint.workflow_criteria(tmp_path) == []
+
+
+@pytest.mark.parametrize("criteria", [
+    {"succeeds": "", "fails": "x"},
+    {"succeeds": "x", "fails": "   "},
+    {"succeeds": "x", "fails": 3},
+    {"succeeds": "x"},
+    {"succeeds": "x", "fails": "y", "extra": "z"},
+    {"succeeds": "x", "other": "y"},
+    "succeeds and fails",
+    ["succeeds", "fails"],
+    None,
+])
+def test_workflow_criteria_flags_malformed_criteria(tmp_path, criteria):
+    _criteria_wf(tmp_path, {"id": "p", "criteria": criteria})
+    out = lint.workflow_criteria(tmp_path)
+    assert len(out) == 1 and out[0].startswith(f"{_CRITERIA_WF}: phase 'p' needs criteria")
+
+
+@pytest.mark.parametrize("text", ["[]", "{nope", json.dumps({"phases": "x"})])
+def test_workflow_criteria_skips_a_workflow_of_the_wrong_shape(tmp_path, text):
+    # unreadable or wrong shape: the navigator reports it; the check says nothing and does not crash
+    _raw_wf(tmp_path, text)
+    assert lint.workflow_criteria(tmp_path) == []
+
+
+def test_workflow_criteria_skips_non_object_phases_and_checks_the_rest(tmp_path):
+    _raw_wf(tmp_path, json.dumps({"phases": ["x", None, {"id": "p", "criteria": {}}]}))
+    out = lint.workflow_criteria(tmp_path)
+    assert len(out) == 1 and out[0].startswith(f"{_CRITERIA_WF}: phase 'p' needs criteria")
+
+
+@pytest.mark.parametrize("rel", ["docs/navigator/x.workflow.json", ".claude/workflows/x.workflow.json"])
+def test_workflow_criteria_ignores_files_that_are_not_default_workflows(tmp_path, rel):
+    p = tmp_path / rel
+    p.parent.mkdir(parents=True)
+    p.write_text(json.dumps({"phases": [{"id": "p"}]}), encoding="utf-8")
+    assert lint.workflow_criteria(tmp_path) == []
+
+
 def test_agent_without_feature_is_flagged(tmp_path):
     assert _conforming(tmp_path, feature=False) == ["agents/x.md: no tests/features/agents/x.feature"]
 
@@ -1100,7 +1159,7 @@ def test_unknown_top_level_folder_is_flagged(tmp_path):
         (tmp_path / d).mkdir()
     assert lint.top_level_folders(tmp_path) == [
         "spine/: not an allowed top-level folder (allowed: skills, agents, mods, use-cases, openspec, "
-        "docs, tools, tests, .github, .claude-plugin)"]
+        "docs, tools, tests, quality, .github, .claude-plugin)"]
 
 
 def test_mods_top_level_folder_is_allowed(tmp_path):
@@ -1253,3 +1312,267 @@ def test_lawyer_with_corpus_repository_first_loses_the_contract_lead(tmp_path):
 def test_shipped_lawyer_passes_persona_and_conformance():
     assert [e for e in lint.agent_persona(_REAL) if "lawyer" in e] == []
     assert [e for e in lint.agent_conformance(_REAL) if "lawyer" in e] == []
+
+
+# ------------------------------------------- the Quality check type (harden-checks-and-tests D-1, TC-01, TC-02)
+def _quality(root: Path, files: dict[str, str]):
+    for rel, text in files.items():
+        p = root / "quality" / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(text, encoding="utf-8")
+
+
+def test_quality_top_level_folder_is_allowed(tmp_path):
+    (tmp_path / "quality").mkdir()
+    assert lint.top_level_folders(tmp_path) == []
+
+
+def test_quality_as_a_file_is_not_a_folder(tmp_path):
+    (tmp_path / "quality").write_text("x", encoding="utf-8")
+    assert lint.top_level_folders(tmp_path) == []
+
+
+def test_capitalised_quality_folder_is_flagged(tmp_path):
+    (tmp_path / "Quality").mkdir()
+    assert [m.split("/:")[0] for m in lint.top_level_folders(tmp_path)] == ["Quality"]
+
+
+def test_quality_files_are_silent_without_the_folder(tmp_path):
+    assert lint.quality_files(tmp_path) == []
+
+
+def test_quality_files_flags_a_markdown_note_and_names_it(tmp_path):
+    _quality(tmp_path, {"README.md": "", "semgrep/notes.md": "x"})
+    assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/notes.md"]
+
+
+def test_quality_files_passes_the_root_readme_and_named_rules(tmp_path):
+    _quality(tmp_path, {"README.md": "| `semgrep/rules/mfy-a.yaml` |", "semgrep/rules/mfy-a.yaml": "",
+                        "semgrep/rules/mfy-a.py": "", "semgrep/external.json": "{}",
+                        "ls-lint/python-project.yml": "", "checkmake/python-project.ini": ""})
+    (tmp_path / "quality" / "README.md").write_text(
+        "`semgrep/external.json` `ls-lint/python-project.yml` `checkmake/python-project.ini` "
+        "`semgrep/rules/mfy-a.yaml`", encoding="utf-8")
+    assert lint.quality_files(tmp_path) == []
+
+
+def test_quality_files_flags_a_nested_readme(tmp_path):
+    _quality(tmp_path, {"README.md": "", "semgrep/README.md": ""})
+    assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/README.md"]
+
+
+def test_quality_files_flags_a_py_with_no_rule_of_its_name(tmp_path):
+    _quality(tmp_path, {"README.md": "`semgrep/rules/mfy-a.yaml`", "semgrep/rules/mfy-a.yaml": "",
+                        "semgrep/rules/mfy-b.py": ""})
+    assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/rules/mfy-b.py"]
+
+
+def test_quality_files_skips_pycache(tmp_path):
+    _quality(tmp_path, {"README.md": "", "semgrep/rules/__pycache__/x.pyc": "", "semgrep/rules/__pycache__/x.py": ""})
+    assert lint.quality_files(tmp_path) == []
+
+
+def test_quality_files_flags_a_rule_the_readme_does_not_name(tmp_path):
+    _quality(tmp_path, {"README.md": "nothing here", "semgrep/rules/mfy-a.yaml": ""})
+    assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/rules/mfy-a.yaml"]
+
+
+def test_quality_files_does_not_take_a_bare_file_name_as_naming_the_path(tmp_path):
+    _quality(tmp_path, {"README.md": "`mfy-a.yaml` and semgrep/rules/mfy-a.yaml", "semgrep/rules/mfy-a.yaml": ""})
+    assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/rules/mfy-a.yaml"]
+
+
+def test_quality_files_flags_a_yml_rule_under_semgrep(tmp_path):
+    _quality(tmp_path, {"README.md": "`semgrep/rules/mfy-a.yml`", "semgrep/rules/mfy-a.yml": ""})
+    assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/rules/mfy-a.yml"]
+
+
+def test_quality_files_flags_an_unreadable_readme_instead_of_crashing(tmp_path):
+    _quality(tmp_path, {"semgrep/rules/mfy-a.yaml": ""})
+    (tmp_path / "quality" / "README.md").write_bytes(b"\xff\xfe\x00")
+    assert any("README.md" in m and "cannot be read" in m for m in lint.quality_files(tmp_path))
+
+
+def test_quality_files_flags_a_readme_that_is_a_directory(tmp_path):
+    (tmp_path / "quality" / "README.md").mkdir(parents=True)
+    assert any("README.md" in m and "cannot be read" in m for m in lint.quality_files(tmp_path))
+
+
+def test_quality_files_flags_a_missing_readme_with_rules(tmp_path):
+    _quality(tmp_path, {"semgrep/rules/mfy-a.yaml": ""})
+    assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/rules/mfy-a.yaml"]
+
+
+def test_quality_files_flags_an_unknown_extension(tmp_path):
+    _quality(tmp_path, {"README.md": "", "semgrep/run.sh": ""})
+    assert [m.split(":")[0] for m in lint.quality_files(tmp_path)] == ["quality/semgrep/run.sh"]
+
+
+# --------------------------------------------------- lean skill standard (lean-skills D-3..D-5)
+_GOOD = "Read `references/x.md` when writing an alert rule: it adds the severity table."
+
+
+def _lean(root: Path, name: str, body: str = "", refs: dict[str, str] | None = None):
+    """A skill whose body is exactly `body` (the bytes after the closing `---`), with reference files."""
+    d = root / "skills" / name
+    d.mkdir(parents=True)
+    (d / "SKILL.md").write_text(f"---\nname: {name}\ndescription: x\n---{body}", encoding="utf-8")
+    for rel, text in (refs or {}).items():
+        (d / "references" / rel).parent.mkdir(parents=True, exist_ok=True)
+        (d / "references" / rel).write_text(text, encoding="utf-8")
+
+
+def _budget_file(root: Path, text: str):
+    (root / "skill-budget.yaml").write_text(text, encoding="utf-8")
+
+
+def _ptr(root: Path, body: str, refs: tuple[str, ...] = ("x.md",)) -> list[str]:
+    """reference_pointers on one skill `s` whose body starts on SKILL.md line 5."""
+    _lean(root, "s", "\n" + body + "\n", {r: "r" for r in refs})
+    return lint.reference_pointers(root)
+
+
+def _bad(line: int, path: str) -> str:
+    return f's: line {line}: pointer to {path} is not "Read <file> when <situation>: it adds <what>."'
+
+
+def test_prose_budget_flags_an_unlisted_skill_over_budget(tmp_path):
+    _lean(tmp_path, "s", "b" * 100, {"r.md": "r" * 24477})
+    assert lint.prose_budget(tmp_path) == ["s: prose is 24577 bytes (body 100, references 24477); budget 24576"]
+
+
+def test_prose_budget_counts_every_reference_file_but_no_material(tmp_path):
+    _lean(tmp_path, "s", "b" * 100, {"r.md": "r" * 24000, "deep/t.adoc": "t" * 476})
+    (tmp_path / "skills" / "s" / "assets").mkdir()
+    (tmp_path / "skills" / "s" / "assets" / "big.md").write_text("a" * 99999, encoding="utf-8")
+    assert lint.prose_budget(tmp_path) == []
+    (tmp_path / "skills" / "s" / "references" / "one-more.md").write_text("!", encoding="utf-8")
+    assert lint.prose_budget(tmp_path) == ["s: prose is 24577 bytes (body 100, references 24477); budget 24576"]
+
+
+def test_prose_budget_flags_a_stale_over_budget_exception(tmp_path):
+    _lean(tmp_path, "s", "b" * 100)
+    _budget_file(tmp_path, "over_budget:\n  s: needs the full table\n")
+    assert lint.prose_budget(tmp_path) == ["skill-budget.yaml: s is within budget (100 bytes); remove its exception"]
+
+
+def test_prose_budget_accepts_a_recorded_exception(tmp_path):
+    _lean(tmp_path, "s", "b" * 30000)
+    _budget_file(tmp_path, "over_budget:\n  s: needs the full table\n")
+    assert lint.prose_budget(tmp_path) == []
+
+
+def test_prose_budget_flags_an_exception_with_an_empty_reason(tmp_path):
+    _lean(tmp_path, "s", "b" * 30000)
+    _budget_file(tmp_path, "over_budget:\n  s: ''\n")
+    assert lint.prose_budget(tmp_path) == ["skill-budget.yaml: s has no reason for its exception"]
+
+
+def test_prose_budget_flags_pending_exemptions_no_longer_needed(tmp_path):
+    _lean(tmp_path, "s", "\n" + _GOOD + "\n", {"x.md": "r"})
+    _budget_file(tmp_path, "pending:\n  s: [budget, pointers]\n")
+    assert lint.prose_budget(tmp_path) == ["skill-budget.yaml: s passes budget, pointers; remove it from pending"]
+
+
+def test_prose_budget_names_only_the_stale_exemption(tmp_path):
+    _lean(tmp_path, "s", "\n- `references/x.md`: topics\n", {"x.md": "r"})
+    _budget_file(tmp_path, "pending:\n  s: [budget, pointers]\n")
+    assert lint.prose_budget(tmp_path) == ["skill-budget.yaml: s passes budget; remove it from pending"]
+    assert lint.reference_pointers(tmp_path) == []
+
+
+def test_prose_budget_flags_an_unknown_name(tmp_path):
+    _lean(tmp_path, "s", "b")
+    _budget_file(tmp_path, "pending:\n  ghost: [budget]\n")
+    assert lint.prose_budget(tmp_path) == ["skill-budget.yaml: ghost is not a skill"]
+
+
+def test_prose_budget_flags_a_double_budget_exemption(tmp_path):
+    _lean(tmp_path, "s", "b" * 30000)
+    _budget_file(tmp_path, "pending:\n  s: [budget]\nover_budget:\n  s: needs it\n")
+    assert lint.prose_budget(tmp_path) == [
+        "skill-budget.yaml: s is exempt from the budget twice (pending and over_budget)"]
+
+
+@pytest.mark.parametrize("text", [
+    "pending: [unclosed\n",
+    "pending: {}\nextra: {}\n",
+    "pending:\n  s: [budget, style]\n",
+    "pending:\n  s: []\n",
+    "pending:\n  s: [budget, budget]\n",
+    "- just a list\n",
+])
+def test_a_malformed_budget_file_gives_one_error_and_silences_both_checks(tmp_path, text):
+    _lean(tmp_path, "s", "b" * 30000 + "\n- `references/x.md`\n", {"x.md": "r"})
+    _budget_file(tmp_path, text)
+    errors = lint.prose_budget(tmp_path)
+    assert len(errors) == 1 and errors[0].startswith("skill-budget.yaml: ")
+    assert lint.reference_pointers(tmp_path) == []
+
+
+def test_a_skill_pending_for_pointers_only_is_held_to_the_budget(tmp_path):
+    _lean(tmp_path, "s", "\n- `references/x.md`: topics\n", {"x.md": "r" * 24576})
+    _budget_file(tmp_path, "pending:\n  s: [pointers]\n")
+    body = len("\n- `references/x.md`: topics\n")
+    assert lint.prose_budget(tmp_path) == [
+        f"s: prose is {body + 24576} bytes (body {body}, references 24576); budget 24576"]
+
+
+def test_budget_keys_set_to_empty_or_null_mean_empty(tmp_path):
+    _lean(tmp_path, "s", "\n" + _GOOD + "\n", {"x.md": "r"})
+    for text in ("pending: {}\nover_budget: {}\n", "pending:\nover_budget:\n", ""):
+        _budget_file(tmp_path, text)
+        assert lint.prose_budget(tmp_path) == [] and lint.reference_pointers(tmp_path) == []
+
+
+@pytest.mark.parametrize("body, line, path", [
+    ("- [patterns](references/x.md): conflict, dead rule", 5, "references/x.md"),
+    ("Intro.\n\n- `references/x.md`: conflict, dead rule", 7, "references/x.md"),
+    ("See **x.md** for the details.", 5, "x.md"),
+    ("| Open day | `references/x.md` |\n|---|---|", 5, "references/x.md"),
+    ("Read `references/x.md` when needed.", 5, "references/x.md"),
+    ("Keep `x.md` short.", 5, "x.md"),
+    ("Read `references/channels/` when routing: it adds\nthe channels.\n\nUse `references/channels/`.", 8,
+     "references/channels/"),
+    ("Choose the channel. The severity table in `references/x.md` decides it.", 5, "references/x.md"),
+    ("## Using `references/x.md`", 5, "references/x.md"),
+])
+def test_reference_pointers_flags_a_pointer_not_in_the_sentence_form(tmp_path, body, line, path):
+    assert _ptr(tmp_path, body, ("x.md", "channels/a.md")) == [_bad(line, path)]
+
+
+@pytest.mark.parametrize("body, line, path", [
+    ("> ```\n> code\n> ```\n\nSee `x.md` here.", 9, "x.md"),
+    ("````\n```\n````\n\nSee `x.md` here.", 9, "x.md"),
+    ("See `x.md` now. Read [y](references/y.md) when x: it adds y.", 5, "x.md"),
+    ("- [a](<references/x.md>): topics", 5, "references/x.md"),
+])
+def test_reference_pointers_reads_fences_order_and_angle_links_right(tmp_path, body, line, path):
+    assert _ptr(tmp_path, body, ("x.md", "y.md")) == [_bad(line, path)]
+
+
+def test_reference_pointers_flags_a_closing_list_heading(tmp_path):
+    assert _ptr(tmp_path, "Body.\n\n## References for Deeper Understanding\n\n- [Fowler](https://x.org)") == [
+        's: line 7: heading "References for Deeper Understanding" closes the body with a list of references']
+
+
+@pytest.mark.parametrize("body", [
+    "- Read `references/x.md` when writing or reviewing an alert\n  rule: it adds the severity table.",
+    "Read [x.md](references/x.md#top) when you pick a tool, e.g. ruff 3.12: it gives the table.",
+    "> Open `references/x.md` if the alert fires: it holds the runbook.",
+    "Read `references/x.md` and `references/y.md` before you write: it adds both tables.",
+    "## Quick reference\n\n" + _GOOD,
+    "Answers `CHK` in `test-strategy`'s matrix (`references/software.md`), see [m](../t/references/x.md).",
+    "```\n- `references/x.md`\n[x](references/x.md)\n```",
+    "**Read `references/x.md` while reviewing:** it adds the checklist.",
+])
+def test_reference_pointers_accepts_the_sentence_form_and_non_pointers(tmp_path, body):
+    (tmp_path / "skills" / "t" / "references").mkdir(parents=True)
+    (tmp_path / "skills" / "t" / "references" / "x.md").write_text("r", encoding="utf-8")
+    assert _ptr(tmp_path, body, ("x.md", "y.md")) == []
+
+
+def test_skill_size_report_uses_the_lean_body_target(tmp_path):
+    _lean(tmp_path, "big", "b" * 6145)
+    _lean(tmp_path, "fits", "b" * 6144)
+    assert lint.skill_size_report(tmp_path) == ["big: SKILL.md body is 6145 bytes (lean body target 6144)"]

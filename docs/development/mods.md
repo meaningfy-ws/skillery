@@ -97,6 +97,20 @@ per appetite. The schema is the `Workflow` type in
 may be a `skills/` folder, an `agents/` file, or an external skill listed in the `skills: [a, b]`
 list of its entry in [`dependencies.yaml`](../../dependencies.yaml).
 
+A phase may carry a `criteria` key: `{"succeeds": "...", "fails": "..."}`, two non-empty strings that
+name the evidence of success and of failure. The validator accepts it, checks its shape when it is
+present and never requires it, so a repository's own file need not have it. The band does not show
+it. The default files all have it
+([`workflows.md`](workflows.md#workflow-files) names the lint that holds that). For example, the
+`decide` phase of epic shaping:
+
+```json
+"criteria": {
+  "succeeds": "every open question has the developer's answer in inputs/qa.md",
+  "fails": "a DEC- or a no-go rests on an assumption nobody answered"
+}
+```
+
 Repository overrides live in `<repo>/docs/navigator/*.workflow.json` and are resolved over the
 defaults at session start (see [`workflows.md`](workflows.md#workflow-files)). A malformed one is
 shown as a warning naming the file, and the default stays in force. Only a repository file may say

@@ -76,3 +76,10 @@ capabilities:
   - tag: rule-model
     owner: rulebook
     claim_patterns: ["hard beats default beats soft"]
+  # test-strategy (D-7): the verification/validation definition and the question-to-check matrix.
+  - tag: vv-definition
+    owner: test-strategy
+    claim_patterns: ["(verification|validation) asks"]
+  - tag: test-matrix
+    owner: test-strategy
+    claim_patterns: ["which check answers which question"]
