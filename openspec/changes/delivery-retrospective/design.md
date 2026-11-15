@@ -298,3 +298,10 @@ Recorded by the lead during stage 2 (2026-11-15).
   (`mark:` tier comment), L5 S2 (reuse `bare()`), L5 S3 (fence cases in the shared fixture), L2 S2
   (outline wording), L2 S3 (a resumed-session test; `Started` returns `EMPTY`), L2 S4 (a denied
   worker still counts). L2 W4 is D-24, the developer's.
+
+Recorded after stage 2 (2026-11-15).
+
+- **D-27** The developer's ruling on D-24. Task 4.2's speed acceptance becomes "no slower than the
+  old scripts on the same snapshot": 262 s against 268 s, met; task 4.2 is done. Task 3.4 is walked
+  by the developer in a throwaway sandbox, one fresh session per scenario, on the release that holds
+  PR #269 (`evidence/walk-3.4.md`, its `walk-3.4/setup.sh`); the box is ticked on their sign-off.

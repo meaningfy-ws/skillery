@@ -61,18 +61,19 @@
 
 - [x] 4.1 `docs/environment/langfuse-setup.md`: the "Phase, stage or task, review outcome" row
   points to the mark and the result line. CHANGELOG line for the installer.
-- [ ] 4.2 Real run, DEC-11: copy the transcripts of the last 14 days to a snapshot under
+- [x] 4.2 Real run, DEC-11: copy the transcripts of the last 14 days to a snapshot under
   `~/.cache/session-retrospective/` first, so the running session cannot change them; run the old
   scripts (from git history) and the new ones on that snapshot (`--root`), each with an explicit
   `--out` outside any git tree. Record in `evidence/real-run.md` only: run time, and sessions, subagents, calls, token sums and
   cost for both (equal), the guessed share, the unknown-record count. No prompt, path, title or
   command text. Acceptance: the invariant of the first row of design *Invariants* holds; the new digest
-  plus the new report take under 60 s of wall clock together.
+  plus the new report take under 60 s of wall clock together (amended by D-27: no slower than the
+  old scripts on the same snapshot).
 
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 — stage 1, one PR
-- [x] 3.1 · [x] 3.2 · [x] 3.3 · [ ] 3.4 · [x] 4.1 · [ ] 4.2 — stage 2, one PR
+- [x] 3.1 · [x] 3.2 · [x] 3.3 · [ ] 3.4 · [x] 4.1 · [x] 4.2 — stage 2, one PR
 
 ## Verification
 
