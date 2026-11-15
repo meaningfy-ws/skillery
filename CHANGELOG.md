@@ -22,6 +22,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   requires; it pins the commit Meaningfy read and turns the installer's telemetry off. Until the
   `skill-orchestration` skill ships, these sets inform reasoning only and `cosmic-python` wins on
   any conflict. On opencode the install is not yet verified.
+- New skill `session-retrospective` in `meaningfy-building`: after an EPIC, run two scripts over
+  your local agent transcripts and read where the time and cost went, per phase, stage and review
+  round. The digest is written outside any repository and the script refuses a folder inside one.
 
 ### Changed
 
@@ -44,12 +47,25 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   the template is over the budget; a scaffolded project inherits the comment. This repository's
   `AGENTS.md` drops from about 14,800 to 11,200 characters and `CLAUDE.md` to under 600, so every
   session starts lighter.
+- `code-reviewer` now always ends its report with the result line
+  (`result: stage=… role=reviewer lens=… findings=… accepted=-`), even when the brief does not
+  spell it; `implementer` loads `cosmic-python` before its first edit in a Python repository. Both
+  were found by hand runs of their scenarios. `hooks.yaml`'s GitNexus intents now say once per
+  task, as `AGENTS.md` does (#261).
 
 ### Fixed
 
 - **A fresh `project-setup` skeleton passes its own `make test`.** Its only measured module, the
   `__main__.py` entry stub, failed the 80 % coverage gate at 0 %. The stub now carries
   `# pragma: no cover`; remove it when you replace the stub. The gate itself is unchanged.
+- **`project-setup` now explains the shared checks it scaffolds** (EPIC `harden-checks-and-tests`,
+  stage 1, prose side, `project-setup` part). `config-files.md` gains § *Suppressions* (a `# noqa`
+  or `# nosemgrep` names its code and ends with ` -- <reason>`), the page the Semgrep rule
+  `mfy-suppression-without-reason` already cites. `modernizing-existing-projects.md` gains
+  *Adopting the shared checks*: one target per pull request, Ruff's new codes in three steps, never
+  `ruff check --add-noqa`. The layout, CI walkthrough, checklist and template table name
+  `.quality/`, `.semgrepignore`, `scripts/quality/` and the three new targets; a leftover Poetry
+  line in `layout.md` is gone.
 
 ## [3.15.0] - 2026-11-15
 

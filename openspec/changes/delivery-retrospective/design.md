@@ -2,7 +2,8 @@
 
 ## Context
 
-The two scripts in [`inputs/scripts/`](inputs/scripts/) produced the 2026-11-14 findings.
+The two scripts, first in `inputs/scripts/` and moved by task 1.1 to
+[`skills/session-retrospective/scripts/`](../../../skills/session-retrospective/scripts/), produced the 2026-11-14 findings.
 `session_digest.py` (stdlib, read-only) turns the Claude Code transcripts under
 `~/.claude/projects/` into `sessions.jsonl`, `agents.jsonl` and `events.jsonl`; `epic_report.py`
 turns those into `epics.tsv`, `phases.tsv` and `signals.txt`. Today:
@@ -213,3 +214,52 @@ folder's files and gives the same result for the same input.
 ## Open Questions
 
 None blocking. Task 3.1 settles the only unknown (what `result.text` holds) before stage 3 codes it.
+
+## Delivery decisions
+
+Recorded by the lead during stage 1 (2026-11-15).
+
+- **D-12** Stage 1 started before wave 4 on the developer's word ("proceed to next stage here"):
+  it touches only the scripts, the new skill and its tests. Stage 2 edits `epic-delivery` and
+  checks its order against `delivery-process-and-tools` first.
+- **D-13** Builders grouped by file: one for 1.1 and 1.3 (scripts and tests), one for 1.2 (the
+  skill) in parallel, one for 2.1 to 2.4 in order, since all four edit the same two scripts.
+- **D-14** `rounds.tsv` is written by `epic_report.py`, not the digest: a round needs the report's
+  epic attribution (refines D-3).
+- **D-15** A subagent takes the lead's mark only when one was in force at its spawn; with none,
+  its own path guess stays, so unmarked totals and grouping do not change (refines D-2).
+- **D-16** The mark is read before the model call of the same record, so the call that writes the
+  mark is filed under it; a mark in a later block of the same message leaves that one call guessed.
+- **D-17** A lead line identical to the last lead-made round of its key (a PR body created, then
+  edited) adds no round (refines D-3).
+- **D-18** `session_digest.py` gets `main(argv)`; `phases.tsv` is `repo, epic, phase, stage,
+  est_usd`; `signals.txt` adds the guessed share, the malformed-mark count and review rounds by
+  role.
+- **D-19** The D-6 known list comes from one type count over the owner's real transcripts
+  (692,696 lines, none unparseable); only type names are in the code.
+- **D-20** Stage 1 review, accepted findings (Critical, or re-labelled Critical with the reason):
+  - F1 (L1+L2 C1) A lead line already used for an earlier round of its key is dropped, not used
+    to fill a later open round; a test with both rounds' lines in one edited PR body.
+  - F2 (L1+L2 W1, re-labelled: every delivery loads a commit skill, so D-4 would misfile every
+    stage) The span ends only on an archive or release skill (`spec-stewardship`, an archive
+    command or skill, `meaningfy-release`), by its own pattern, not `SKILL_PHASE`'s `release`.
+  - F3 (L1+L2 W2, re-labelled: files the next change's cost under the archived one) The digest no
+    longer overrides the event epic with the mark; the report alone applies it (D-2).
+  - F4 (L1+L2 W3, L3-5 W5, re-labelled: breaks the invariant "never writes inside a git tree",
+    RISK-1) Refuse when `rev-parse` succeeds or the `.git` walk finds an entry, the walk always
+    run; `git` runs without `GIT_*` variables; a folder inside `.git/` is refused.
+  - F5 (L3-5 W1–W3, L1+L2 S4, re-labelled: DEC-8 says count and carry on, the run aborts) A
+    record of the wrong shape, a missing timestamp or a corrupt `meta.json` is counted as
+    `(malformed)` and skipped.
+  - F6 (L1+L2 W5, L3-5 W4, re-labelled: the error-matrix row promises output) No cost: the
+    report prints `-` for shares, no division by zero.
+  - F7 (L3-5 W6, re-labelled: D-3 loses the lead's count) Quotes are stripped from a value.
+  - F8 (L1+L2 W4, re-labelled: the skill's instructions name figures that are not there) SKILL.md
+    says which file holds what.
+  - Accepted limit of F1: a genuine second round whose lead line has exactly the figures of the
+    first keeps `accepted` unknown; the round itself still counts.
+- **D-21** Under the floor, not fixed: L3-5 S7–S15 (split `parse_stream`, a `Round` dataclass,
+  shared constants, symlinked output files, `~~~` fences, untimed event order, `sys.exit` in a
+  helper, a dead branch, explicit encoding); L1+L2 S1 (assert `rounds.tsv`), S2 (folder mode
+  0700), S3 (refusal in the report), S5 (gate run names its commit; the merge waits for CI on the
+  head).

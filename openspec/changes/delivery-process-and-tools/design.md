@@ -82,7 +82,8 @@ New choices made while planning. Settled ones are cited by DEC-n.
   lives once, as a file, `skills/epic-delivery/assets/templates/handover.md` (P-0003: a template,
   not prose); `stage-loop.md`, `epic-planning` and `guardrails` §6 point to it. A fresh session
   runs whatever skills are installed; the note's prompt carries what it needs, so the note works
-  under both the old and the new release.
+  under both the old and the new release. Merge stays within the lead's authority, and a fix after
+  a red check goes before the re-committed note (D-23, D-24).
 - **D-2 The severity floor is Critical** (DEC-4) *(owner, Q-1)*. A
   finding becomes a fix only when it is Critical on the scale of `meaningfy-code-review`.
   Warnings and Suggestions are rejected with the reason "under the floor" and listed under
@@ -142,7 +143,8 @@ New choices made while planning. Settled ones are cited by DEC-n.
   worktree). The command is started only after the PR has registered its first
   check run (`gh pr checks <n>` lists one); before that `--watch` exits at once with "no checks
   reported". The merge method follows the repository's own (`--merge` here; the brief names it
-  where a repository squashes).
+  where a repository squashes). Merge stays within the lead's authority, and a fix after a red
+  check goes before the re-committed note (D-23, D-24).
 - **D-8 The lead stays small** (DEC-7). Stated once in `epic-delivery` *The team* (the Lead row
   and one sentence under it): one EPIC per session; the lead never takes a builder's task, even a
   one-line one (a one-line fix is a fixer brief); several known files are read in one call, and
@@ -209,10 +211,12 @@ New choices made while planning. Settled ones are cited by DEC-n.
   the resource table and the CLI table kept as one pointer to `.claude/skills/gitnexus/`); the
   *Dual-CLI authoring rules* subsection, 2,137 to about 400, a pointer to
   `docs/environment/dual-cli/` and the `dual-cli-distribution` spec, which already hold them; the
-  habits block adds about 550. Result about 11,150. Other sections are not touched.
+  habits block adds about 550. Result about 11,150 (measured after stage 3: 11,241; `CLAUDE.md`
+  571). Other sections are not touched.
 - **D-14 The habits block** (DEC-12). Four lines in the template and in this `AGENTS.md`, under
   *Working conventions*: never poll (one background command and its notice); edit files with the
-  edit tool, never a shell or script; read a range, not the whole file, when the range is known;
+  edit tool, never a shell or script; a pipe may filter command output; generated files only by
+  their generator (D-31); read a range, not the whole file, when the range is known;
   read several known files in one call. Then one line: "Tools for each activity: the table in
   `guardrails`." `CLAUDE.md`'s *Tool habits* shrinks to what is Claude-only (the tool names that
   realise the four lines), pointing to the table.
@@ -228,13 +232,15 @@ New choices made while planning. Settled ones are cited by DEC-n.
   *Output* and its *Report* stop asking for "the impact summary per modified symbol"; they read
   "none; impact is the lead's, per task". Re-indexing must keep `--skip-agents-md`,
   which leaves the edited block untouched; the block's own re-index line, which today names
-  `analyze` without the flag, is rewritten to carry it, here and in the template.
+  `analyze` without the flag, is rewritten to carry it, here and in the template. A session
+  without a lead runs each check once, before its first edit and before its commit (D-32).
 - **D-16 The implementer's preload** (DEC-10). `skills:` keeps only
   `superpowers:test-driven-development`. The body's *Skills* list keeps all five, each with "load
   when": `cosmic-python` in a Python repository; `systematic-debugging` on a failing test it cannot
   explain; `verification-before-completion` before reporting done; `stream-coding` when the brief
   names the Rule of Divergence in play. The lint `agent_skill_alignment` checks only that a
-  listed skill exists, so the shorter list passes it unchanged.
+  listed skill exists, so the shorter list passes it; `agent_bundle_membership` needed a change too
+  (D-25).
 - **D-17 DEC-19 in text.** `epic-planning`'s shaping session ends with each EPIC's PLAN gated
   (step 6 of *The shaping session* rewritten); the reset between EPIC and PLAN uses the note of
   D-1. `epic-delivery`'s Sessions table: the epic session leaves no PLAN behind and starts from a
@@ -251,8 +257,8 @@ New choices made while planning. Settled ones are cited by DEC-n.
   `ready`'s criteria and to the shaping workflow's `revise`. The `epic-shaping` phases are
   unchanged (they already run to `revise`). A change shaped under the old split and half-way
   through is read by the same phases (rabbit-hole "Navigator").
-- **D-18 The specs touched.** Modified: `epic-delivery`, `epic-shape`, `subagent-dispatch`, and
-  `catalogue-governance` (it owns the bindings' content, *The bindings mandate the founding
+- **D-18 The specs touched.** Modified: `epic-delivery`, `epic-shape`, `subagent-dispatch`,
+  `catalogue-governance`, and `pr-review-modes` (added in delivery, D-22) (it owns the bindings' content, *The bindings mandate the founding
   principle*), which is the spec that owns the instruction template the EPIC asked the PLAN to
   name. **`workflow-definitions` is not modified**: its phases and requirements stay true, and the
   review set per appetite is owned by `epic-delivery`'s *The loop scales with the appetite*. New:
@@ -354,9 +360,9 @@ stages get the tester.
 | Someone runs `gitnexus analyze` without `--skip-agents-md` | `binding_size` fails (the block grows by about 2.9 KB) | Restore the file from git and re-run with the flag |
 | `--plugin-dir` cannot replace the installed plugins | The fixture session's skills listing shows the installed version | The after-run moves to just after the release (D-12), said in the record |
 | The fresh session asks what was decided, or reads `inputs/` | The developer's record in `evidence/cold-start.md` (D-11) | Fix the note's template (D-1) before the next boundary; the check runs again there |
-| A note grows into a copy of `design.md` | The checker of the stage reads it against D-1 (pointers only) | A finding; the note is cut to pointers |
+| A note grows into a copy of `design.md` | The cold-start record (D-11); the checker runs before the note exists (D-27) | The note template is cut to `D-n` ids and pointers (D-1) |
 | `gh pr checks --watch` exits "no checks reported" | Non-zero exit with that text in the notice | Start the command again once one check is listed (D-7); this is the one allowed repeat |
-| A check is red | Non-zero exit; no merge happened | The lead reads the failing check; only that failure is fixed, then full gates once and the command again; never a merge on red (D-3) |
+| A check is red | Non-zero exit; no merge happened | The lead reads the failing check; only that failure is fixed, then full gates once, the note re-committed last (D-24), and the command again; never a merge on red (D-3) |
 | The merge is refused (conflict, branch protection) | `gh pr merge` exits non-zero after green checks | Rebase on `develop`, full gates once, run the command again; no finding is accepted on the way (D-3) |
 | A Warning hides a real defect | It reaches `develop`; the retrospective traces it to a "under the floor" line | RISK-1: the line exists, so it is traceable; a recurring class is raised to the developer as a candidate re-label rule |
 | A lead re-labels Warnings as Critical to fix them | The checker judges each re-label (D-2) | A re-label it does not agree with goes to the developer; the floor stands |
@@ -365,7 +371,7 @@ stages get the tester.
 | A PLAN has no `## Invariants` section (`activity-test-profiles` not delivered) | The lead reads the PLAN in Prepare | Today's rule: the tester on every stage from LARGE up, none below (D-5) |
 | The tool table names a tool an agent lacks | `activity_tools_table` fails, naming the row and agent | Fix the row or the agent's list in the same PR |
 | Serena is not connected in a session | The tool is absent from the session | The table's *Fallback* column; the report says so |
-| The agent-skill lint rejects the shorter preload | `make lint` fails on task 2.4 | Use the "load on demand" form the lint accepts (D-16); the lint itself is not loosened without a `D-n` |
+| `agent_bundle_membership` rejects the shorter preload | `make lint` fails on task 2.4 | Recorded as D-25: an agent with no local skill has no primary skill |
 | `AGENTS.md` over budget after the edits | `binding_size` fails | Cut prose in the binding, never raise the figure in the same PR |
 | `lean-skills` stage 1 edits `lint.py` at the same time | A merge conflict on rebase | RISK-6: rebase, keep both functions; the lint's check list is append-only |
 | The baseline cannot be re-measured (no transcripts of the fixture run) | `session_digest.py` finds no session for it | Use the second pass's figures (80,000; 69,000) as baseline and say so in `evidence/start-weight.md` |
@@ -459,6 +465,14 @@ invariants, the error matrix and the risks.
   first edit and the change check once before its commit, and brings a HIGH or CRITICAL result to
   the developer; still never "before every edit". The template's re-index line, rewritten with it,
   names the full command `npx gitnexus analyze --skip-agents-md` (L1+L2 S2, L3–L5 S1).
+- **D-33 Reconciliation after stage 3.** The delivery decisions D-21 to D-32 are folded into the proposal, the design's planning decisions and the spec deltas; `pr-review-modes` gains a delta for D-22. `hooks.yaml`'s GitNexus intents follow D-15 and D-32 (issue #261). A project-side budget check is issue #263, outside this EPIC. Measuring with `--plugin-dir` from a checkout: Claude Code does not follow the symlinked agent files of `bundles/`, so a plugin loaded that way has no agents; task 3.5 and any hand-run of an agent scenario load a dereferenced copy (`cp -rL bundles/<bundle> <dir>`).
+- **D-34 Two agent scenarios failed their first hand run** (`evidence/scenarios.md`). The
+  reviewer ended without the result line when the brief did not spell it, and the implementer
+  loaded no `cosmic-python` in a Python repository: both rules sat where the agent did not act on
+  them. `code-reviewer.md` *Report* now ends with the result line's shape and a pointer to its
+  definition (D-6); `implementer.md` loads `cosmic-python` before the first edit in a Python
+  repository. Both scenarios pass on the re-run. The `apply` phase's `cosmic-python` expectation
+  in a repository that is not Python is issue #265.
 - Under the floor (stage 3): L1+L2 W1 `hooks.yaml`'s GitNexus intents still say "before editing a
   symbol" and cite the cut CLAUDE.md rules (an inventory, not this stage's text; a follow-up
   issue); W3 no content test of the habit lines or the block's wording; S1 security-review row in

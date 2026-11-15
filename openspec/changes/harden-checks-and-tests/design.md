@@ -1268,6 +1268,13 @@ epic session.
     (tester): the template is ours, LF and uses `=`; the tests that asked for them are removed.
   - The import-linter grammar of D-3 versus its own first-assignment row (L2): recorded for task
     1.12.
+- **D-41 The prose side is split; its `project-setup` part comes first (owner decision,
+  2026-11-15; narrows D-34).** The `project-setup` references of tasks 1.5, 1.8 and 1.13 need
+  nothing from the `lean-skills` pilot on `cosmic-python`, and v3.15.0 already ships a rule message
+  that cites `project-setup:config-files#suppressions`. They are written now, sorted by D-33, in
+  their own pull request. Task 1.12, the catalogue entry and the L1 lens line of task 1.7, task
+  1.14 and the rest of 1.16 still wait for the pilot, as D-34 says. Found while writing them and
+  fixed in the same pull request: `layout.md` still described a Poetry `packages` table.
 
 ## Open Questions
 

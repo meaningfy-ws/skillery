@@ -70,6 +70,7 @@ multi-component) apply only if the interview selected them.
 - [ ] `make lint` (ruff) and `make typecheck` (mypy) pass with no errors.
 - [ ] `make check-architecture` passes — `.importlinter` contracts hold (optional layer names
       keep the empty skeleton green).
+- [ ] `make check-quality` passes, including the shared checks (Semgrep, ls-lint, checkmake).
 - [ ] `make test` runs and the placeholder unit test + example feature pass; coverage gate
       configured (≥80%).
 - [ ] `AGENTS.md` is canonical and `CLAUDE.md` is a thin pointer that imports it (`@AGENTS.md`);

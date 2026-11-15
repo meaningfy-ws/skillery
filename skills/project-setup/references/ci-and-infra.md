@@ -43,7 +43,8 @@ the *logic*.
 archetype:
 
 ```
-check-quality  (lint + typecheck + check-architecture/import-linter)
+check-quality  (lint + typecheck + check-architecture/import-linter
+                + check-semgrep + check-layout + check-makefile)
 + test         (all markers + coverage ≥80%)
 + clean-code   (Xenon thresholds)
 ```
@@ -93,6 +94,8 @@ One `quality` job, on push and PR to `<<DEFAULT_BRANCH>>`:
 | Lint | `make lint` | Ruff |
 | Type check | `make typecheck` | mypy |
 | Architecture | `make check-architecture` | import-linter |
+| Cache shared checks | — | `.quality/`, keyed on `Makefile` and `scripts/quality/tools.sha256` |
+| Shared checks | `make check-semgrep`, `check-layout`, `check-makefile` | one step each; see `ci.yaml.tmpl` |
 | Test | `make test` | pytest + coverage → `coverage.xml` |
 | Clean code | `make clean-code` | Xenon |
 | Upload coverage | — | `coverage.xml`, `test-results.xml` artifacts |

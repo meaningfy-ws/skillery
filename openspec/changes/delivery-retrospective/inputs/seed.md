@@ -62,4 +62,5 @@ before `test-suite-care` uses the scripts for costs
   to the first pass and the ranked changes to skills and to repository instructions.
 - [`cross-check-test-epics.md`](cross-check-test-epics.md) — the findings against the test EPICs,
   and the owner's decisions on them.
-- [`scripts/`](scripts/) — the two scripts that produced the numbers.
+- [`scripts/`](../../../../skills/session-retrospective/scripts/) — the two scripts that produced
+  the numbers, moved into the `session-retrospective` skill on 2026-11-15.

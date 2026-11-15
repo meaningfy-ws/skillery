@@ -4,30 +4,30 @@
 
 ## 1. The skill and its home (stage 1)
 
-- [ ] 1.1 `git mv` the two scripts from `inputs/scripts/` to `skills/session-retrospective/scripts/`
+- [x] 1.1 `git mv` the two scripts from `inputs/scripts/` to `skills/session-retrospective/scripts/`
   (moved, not rewritten). Spec: *A skill holds the review scripts*.
-- [ ] 1.2 Write `skills/session-retrospective/SKILL.md` per D-11, lean on arrival (not in
+- [x] 1.2 Write `skills/session-retrospective/SKILL.md` per D-11, lean on arrival (not in
   `skill-budget.yaml`). Declare it in `meaningfy-building` in `bundles.yaml`; run `make bundles` and
   `make skill-inventory`. Add one positive and one near-miss trigger probe to
   `tests/trigger_probes.yaml`. Re-index GitNexus for the new `scripts/` (`npx gitnexus analyze --skip-agents-md`). Acceptance:
   `make lint` green (`body_agnosticism` included: no `.claude/` path in the body), body ≤ 6 KB.
-- [ ] 1.3 D-8: give `epic_report.py` a `main(digest_dir)` and a `__main__` guard; exit 2 on a
+- [x] 1.3 D-8: give `epic_report.py` a `main(digest_dir)` and a `__main__` guard; exit 2 on a
   missing input file. Replace `--selftest` with `tests/test_session_retrospective.py`, carrying its
   asserts, on synthetic fixtures under `tests/fixtures/session-retrospective/`.
 
 ## 2. What the scripts read (stage 1)
 
-- [ ] 2.1 D-7: `repo_of` from the git root, worktree and removed-`cwd` cases. Test each case with
+- [x] 2.1 D-7: `repo_of` from the git root, worktree and removed-`cwd` cases. Test each case with
   temporary folders. Spec: *The repository is the git root*.
-- [ ] 2.2 D-6: unknown record count and warning. Read the record types of one real run (types and
+- [x] 2.2 D-6: unknown record count and warning. Read the record types of one real run (types and
   counts only, not committed) to fill the known list. Tests: a fixture with 2% unknown records
   warns, one with none does not; a session with assistant records and no usage warns; a run with no
   `cost-state` warns. Spec: *Unknown record types are counted and warned about*.
-- [ ] 2.3 D-5: default output folder and the refusal inside a git tree. Tests, with `HOME`
+- [x] 2.3 D-5: default output folder and the refusal inside a git tree. Tests, with `HOME`
   monkeypatched to `tmp_path`: an output folder inside a `git init` folder exits 2 and writes
   nothing; the default under a home kept in git is refused; an output folder outside any tree is
   written. Spec: *Private text stays out of repositories*.
-- [ ] 2.4 D-1 to D-4: `mark`, `mark-bad` and `result` events in the digest; marks set phase, stage
+- [x] 2.4 D-1 to D-4: `mark`, `mark-bad` and `result` events in the digest; marks set phase, stage
   and epic (lead and its later subagents) in the report; `guessed:` label and guessed share; rounds
   keyed per D-3 and written to `rounds.tsv`; the shared `mark-lines.json` fixture (D-1). Tests: the
   fixture's lines; a subagent spanning a new mark (keeps its spawn-time epic and phase); a session
@@ -71,7 +71,7 @@
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 — stage 1, one PR
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 — stage 1, one PR
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 4.1 · [ ] 4.2 — stage 2, one PR
 
 ## Verification

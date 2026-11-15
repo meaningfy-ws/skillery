@@ -152,6 +152,20 @@ After each commit: `make check-all` (lint + types + architecture + tests). The p
 is that a regression is attributable to one change and trivially reverted. Don't proceed to the next
 step on red.
 
+## Adopting the shared checks
+
+One target per pull request, in this order; a target joins `check-quality` in the pull request
+that makes it green.
+
+1. **Ruff's wider selection**, in three pull requests, quietest first: `S113`, `DTZ`, `BLE001`;
+   then `PT018`, `TID251`; then `PLR0912`, `PLR0913`, `PLR0915`, `PLR2004`. Where one code has more
+   than 50 findings, list the files that still fail in `[lint.per-file-ignores]` with a comment
+   naming the issue that tracks them, and drop each file when it is clean. Never run
+   `ruff check --add-noqa`: its comments carry no reason (see `config-files.md` § Suppressions).
+2. `check-makefile`, then `check-layout` (rename the banned files first), then `check-semgrep`.
+
+To upgrade, raise `QUALITY_VERSION` and copy the newer `scripts/quality/` templates in one commit.
+
 ## Safety rules
 
 - **Branch + reviewable slices.** One concern per commit/PR; never mix the `/src` lift with a tooling
