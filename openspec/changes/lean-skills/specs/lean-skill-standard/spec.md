@@ -20,10 +20,11 @@ the budget without one.
 - **THEN** `make validate` fails and asks for the exception to be removed
 
 ### Requirement: Skills waiting for their rewrite are listed, and the list cannot rot
-Until every skill is rewritten, a skill that existed when the standard was introduced MAY be
-listed as pending in `skill-budget.yaml`, with the checks it is exempt from. A skill added later
-SHALL NOT be listed (enforced by review; the lint does not know when a skill was added). The check SHALL fail for an exemption no longer needed, a name that is not a
-skill, or a malformed file. A missing file SHALL mean no skill is listed.
+The catalogue check SHALL exempt a skill listed as pending in `skill-budget.yaml` from the checks
+its entry names, until the skill is rewritten. Only a skill that existed when the standard was
+introduced SHALL be listed (enforced by review; the lint does not know when a skill was added).
+The check SHALL fail for an exemption no longer needed, a name that is not a skill, or a
+malformed file. A missing file SHALL mean no skill is listed.
 
 #### Scenario: A rewritten skill left on the list
 - **WHEN** a skill pending for its pointers now passes the pointer check
@@ -59,9 +60,9 @@ either. Another skill's references and fenced code SHALL NOT count.
 - **THEN** the pointer check ignores it
 
 ### Requirement: The lean standard is written once
-The shape of a skill (its three tiers, the body sections, the sorting of content and the five
-practices of DEC-11) SHALL be stated in `docs/development/creating-skills.md` only; the method,
-the template and any skill SHALL link to it.
+`docs/development/creating-skills.md` SHALL be the only statement of the shape of a skill (its
+three tiers, the body sections, the sorting of content and the five practices of DEC-11); the
+method, the template and any skill SHALL link to it.
 
 #### Scenario: Looking up the budget
 - **WHEN** a skill author looks for how large a skill may be
