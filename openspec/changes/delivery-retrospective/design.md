@@ -312,3 +312,16 @@ Recorded after stage 2 (2026-11-15).
   `session-retrospective` adds the spawn-time mark (D-15), the edited PR body (D-17), the 1%
   threshold, malformed records (D-20 F5) and the default folder with no override (D-5, D-20 F4).
   No code change; nothing built contradicts the EPIC's no-gos.
+
+Recorded at the close (2026-11-15), on the developer's word "do everything in this session,
+proceed independently towards completion".
+
+- **D-29** First walk of 3.4 on 3.16.0 (headless sessions in the sandbox, `claude -p`): failed.
+  S1 and S2 loaded `epic-delivery`, read `references/team-and-briefs.md` and briefed a worker with
+  no mark; S3 and S4 wrote the mark into the change's files as an HTML comment, not in a reply. The
+  rule sat one clause deep in a reference, and the planning steps did not say where to write it.
+  Three fixes, each walked again with the bundle loaded by `--plugin-dir` (`evidence/walk-3.4.md`):
+  the literal line and "in your reply, not in a file" in each step; then, since a duty deep in a
+  numbered step was still missed, `epic-planning` opens its procedure with *Mark first* and
+  `epic-delivery` step 1 says "your first reply of the stage, before any read, brief or question".
+  Run 4 passes S1–S4. A patch release (3.16.1) ships it; the developer signs off on that evidence.

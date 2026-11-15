@@ -36,6 +36,24 @@ python3 skills/session-retrospective/scripts/session_digest.py --days 1 --root "
 python3 skills/session-retrospective/scripts/epic_report.py "$d" && cat "$d/phases.tsv"
 ```
 
+## Lead's runs, before the sign-off (2026-11-15)
+
+Headless sessions (`claude -p`, one per scenario, `--max-turns` 15–20) in the sandbox, on the
+developer's word to proceed. Read from the stream: where the lead's text holds a mark line,
+against its first `Agent` call. "Block" is the position among the lead's content blocks.
+
+| Run | Skills | S1 | S2 | S3 | S4 |
+|---|---|---|---|---|---|
+| 1 | 3.16.0 installed | fail: worker briefed, no mark | fail: no mark | fail: mark written into `proposal.md` as an HTML comment | fail: same, in `design.md` |
+| 2 | fix 1 (D-29), by `--plugin-dir` | mark only in the final message, after a reader agent | same | fail: stopped for questions before step 4, no mark | fail: PLAN written, no mark |
+| 3 | fix 2: *Mark first* at the head of `epic-planning` | | | pass: block 5 of 12, in the reply | pass: block 5 of 24 |
+| 4 | fix 3: delivery step 1 "first reply, before any read" | pass: block 5, agent at 14, again in the last message | pass: block 5, again in the last message (no worker by turn 20) | | |
+
+The report on run 3 and 4 sessions takes their phases from the marks (`shape`, `plan`,
+`deliver`); events before block 5 stay guessed, as the late-mark rule says. S5 is not run
+headless: the navigator band does not show in `claude -p`; its warning is covered by
+`mods/navigator/lib/mark.test.ts`.
+
 ## Result (filled by the developer)
 
 | # | Pass / fail | Note |

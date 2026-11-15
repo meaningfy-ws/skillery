@@ -86,7 +86,9 @@ the lead cannot write a member's brief, the task is not ready: fix the PLAN firs
 
 A stage is a group of tasks that ends in one PR. The PLAN cuts the tasks into stages.
 
-1. **Prepare.** Write the mark line (form in `references/team-and-briefs.md`). Library changes
+1. **Prepare.** Your first reply of the stage, before any read, brief or question, holds on its
+   own line `mark: change=<id> phase=deliver stage=<n>`, in the reply, never in a file; repeat it
+   in the last message of a turn that briefs a worker (`references/team-and-briefs.md`). Library changes
    merged, lock refreshed; the tester condition judged and recorded.
    A scenario changed since the PLAN gate is re-signed alone.
 2. **Build.** Per task: the lead runs impact, briefs one builder (test-first; parallel only on
