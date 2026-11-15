@@ -48,7 +48,8 @@ regenerating the orientation index — belongs to `spec-stewardship`.
 4. **Shape the EPIC** (`/opsx:propose` → `proposal.md`). Use the `meaningfy` schema's
    `proposal.md` template (`openspec/schemas/meaningfy/templates/proposal.md` in a spine-wired repo):
    appetite, why, solution outline, **key decisions** (each with a citeable `DEC-` id), rabbit-holes,
-   **no-gos** (mandatory). Cite the EPIC's **golden-thread parents** (the requirement/architecture it
+   **no-gos** (mandatory). At the start of shaping, write the mark line with `phase=shape stage=-`
+   (form: `epic-delivery`, `references/team-and-briefs.md`). Cite the EPIC's **golden-thread parents** (the requirement/architecture it
    derives from — see [`references/golden-thread.md`](references/golden-thread.md)). Keep it at shaping
    altitude — leave implementation room.
 5. **EPIC readiness check** (lightweight). Before deriving the PLAN, run the **lightweight variant**
@@ -60,7 +61,8 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    Risks / Trade-offs as `RISK-<n>`: likelihood, impact, mitigation or acceptance) and the tasks half (ordered
    breakdown with layers/dependencies/acceptance, roadmap). Each PLAN cites its parent EPIC id
    (golden thread). The PLAN's depth follows the appetite: a TINY or SMALL PLAN keeps the sections
-   the gate scores and stays short in each.
+   the gate scores and stays short in each. At the start of this step, write the mark line with
+   `phase=plan stage=-` (form: `epic-delivery`, `references/team-and-briefs.md`).
 7. **Attack the PLAN.** Before the gate, try to break it, in a fresh subagent when one pays
    (`guardrails`, *Subagent dispatch*): the input, state or order of events under which it fails,
    and the assumption which, if false, sinks it. Each counterexample becomes an error-matrix row,

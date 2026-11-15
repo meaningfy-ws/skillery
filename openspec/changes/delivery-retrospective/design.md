@@ -263,3 +263,38 @@ Recorded by the lead during stage 1 (2026-11-15).
   helper, a dead branch, explicit encoding); L1+L2 S1 (assert `rounds.tsv`), S2 (folder mode
   0700), S3 (refusal in the report), S5 (gate run names its commit; the merge waits for CI on the
   head).
+
+Recorded by the lead during stage 2 (2026-11-15).
+
+- **D-22** Task 3.1 answered from the mod API contract, not an observed turn: `turn.complete`
+  carries the turn's final message only (`evidence/answer-text.md`). So D-9's fallback holds: the
+  rule asks for the mark in the turn's last message too.
+- **D-23** GitNexus impact on the navigator reducer `lean` is CRITICAL (91 direct callers, mostly
+  tests). Expected by D-9, which changes that reducer; the change is additive (three booleans, one
+  warning), so the lead proceeds without stopping, with every existing navigator test kept green
+  and `make mods` as the check. Builders grouped by file: one for docs and skills (3.1, 3.2, 3.4,
+  4.1), one for the navigator (3.3), one for the real run (4.2), in parallel.
+- **D-24** Task 4.2: the invariant holds (all counts, tokens and cost equal; only the `repo` label
+  differs, by D-7). The 60 s acceptance is not met: 262 s for digest plus report on a 14-day,
+  2.8 GB snapshot, mostly I/O; the old digest took 268 s, so stage 1 did not slow it
+  (`evidence/real-run.md`). Unmet item for the developer, no fix pass. Recommended: amend the
+  acceptance to "no slower than the old scripts on the same snapshot"; a cache of parsed sessions
+  or a shorter default window is a later change. Task 3.4: the deliver scenario was followed in
+  this stage's own session (mark before the first brief); the shaping walk and the sign-off are the
+  developer's. Both boxes stay open until the developer decides.
+- **D-25** Stage 2 review (five lenses, RISK-6 names the stage), accepted findings, each
+  re-labelled Critical with the reason:
+  - F1 (L3 W1, L5 W1, L2 S1, L4 W1–W2, L3 S2, L5 S1; breaks `docs/development/mods.md`: a
+    warning's owner is the owning skill and each check module mints its own prefix) The
+    missing-mark warning moves into `mark.ts` as a pure `missingMark(state): Warning[]` with an
+    exported message; owner `epic-delivery`; the test matches on the key.
+  - F2 (L2 W1; user-facing docs are part of the change) `docs/environment/navigator.md` names the
+    new warning.
+  - F3 (L2 W2–W3, L4 S5; the spec scenario "the worker still starts" has no test) A test proves the
+    warning never blocks a spawn in strict mode; the revive test calls `revive`.
+  - F4 (L1 S1; RISK-1, the repository is public and a merge cannot be taken back) `real-run.md`
+    keeps counts and equality, drops the absolute cost and token sums.
+- **D-26** Under the floor, not fixed: L3 S3 (skill text names the navigator's reason), L4 S4
+  (`mark:` tier comment), L5 S2 (reuse `bare()`), L5 S3 (fence cases in the shared fixture), L2 S2
+  (outline wording), L2 S3 (a resumed-session test; `Started` returns `EMPTY`), L2 S4 (a denied
+  worker still counts). L2 W4 is D-24, the developer's.

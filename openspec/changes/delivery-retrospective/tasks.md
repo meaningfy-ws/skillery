@@ -40,14 +40,14 @@
 
 ## 3. The mark in the skills and the navigator (stage 2)
 
-- [ ] 3.1 Spike: check whether the navigator's `AnswerShown` text holds every text block of a turn
+- [x] 3.1 Spike: check whether the navigator's `AnswerShown` text holds every text block of a turn
   or only the last (one real turn with a text block before a tool call). Record the answer in
   `evidence/answer-text.md` and pick the form of D-9.
-- [ ] 3.2 D-10: the mark's form under the result line in `epic-delivery`
+- [x] 3.2 D-10: the mark's form under the result line in `epic-delivery`
   `references/team-and-briefs.md`, the duty in its loop; one sentence each at steps 4 and 6 of
   `epic-planning`. Run `make bundles`. Specs: *The lead marks phase and stage*, *The lead marks
   shaping and the PLAN*.
-- [ ] 3.3 D-9: the navigator warning at `TurnEnded`, with unit tests in `mods/navigator/lib/`: mark
+- [x] 3.3 D-9: the navigator warning at `TurnEnded`, with unit tests in `mods/navigator/lib/`: mark
   and implementer spawn in one turn, no warning; implementer spawn with no mark, one warning, the
   worker starts; a hand-over session's first turn (change read at the turn end), warning; a second
   unmarked turn, no second warning; an `Explore` spawn or a nested spawn, no warning; a
@@ -59,7 +59,7 @@
 
 ## 4. Docs and proof (stage 2)
 
-- [ ] 4.1 `docs/environment/langfuse-setup.md`: the "Phase, stage or task, review outcome" row
+- [x] 4.1 `docs/environment/langfuse-setup.md`: the "Phase, stage or task, review outcome" row
   points to the mark and the result line. CHANGELOG line for the installer.
 - [ ] 4.2 Real run, DEC-11: copy the transcripts of the last 14 days to a snapshot under
   `~/.cache/session-retrospective/` first, so the running session cannot change them; run the old
@@ -72,7 +72,7 @@
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 — stage 1, one PR
-- [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 4.1 · [ ] 4.2 — stage 2, one PR
+- [x] 3.1 · [x] 3.2 · [x] 3.3 · [ ] 3.4 · [x] 4.1 · [ ] 4.2 — stage 2, one PR
 
 ## Verification
 

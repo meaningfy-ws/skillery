@@ -25,6 +25,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - New skill `session-retrospective` in `meaningfy-building`: after an EPIC, run two scripts over
   your local agent transcripts and read where the time and cost went, per phase, stage and review
   round. The digest is written outside any repository and the script refuses a folder inside one.
+- The lead of an EPIC now writes a mark line (`mark: change=<id> phase=<phase> stage=<n>`) at the
+  start of each stage; on Claude Code the navigator warns once when a worker is dispatched without
+  one, and `session-retrospective` reads the marks instead of guessing the phase.
 
 ### Changed
 

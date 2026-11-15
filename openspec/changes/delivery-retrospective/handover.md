@@ -1,23 +1,25 @@
-# Hand-over: delivery-retrospective, after stage 1
+# Hand-over: delivery-retrospective, after stage 2
 
 ## Done
-Stage 1 (tasks 1.1 to 2.4), PR #262 (merged by the watch-and-merge command after this note).
+Stage 1, PR #262. Stage 2 (tasks 3.1–3.3, 4.1), PR #269 (merged by the watch-and-merge command
+after this note): the mark line in `epic-delivery` and `epic-planning`, the navigator warning, the
+real run.
 
 ## Decided since the PLAN
-D-12 to D-21 (design.md, Delivery decisions).
+D-12 to D-26 (design.md, Delivery decisions).
 
-## Open
-- D-12: stage 2 edits `epic-delivery` and `epic-planning`. `delivery-process-and-tools` merged
-  all three stages on develop (PR #258), so the order concern of D-12 is gone; read the current
-  `skills/epic-delivery/references/team-and-briefs.md` before task 3.2, not the PLAN's quote.
-- Under-the-floor items D-21 stay open for a later change; none blocks stage 2.
-- The worktree `../skillery-retro` links `.venv` and `node_modules` from the main checkout;
-  `make validate` needs both.
+## Open, for the developer
+- D-24, task 4.2: the invariant holds; the 60 s acceptance is not met (262 s, I/O bound, old
+  scripts 268 s). Recommended: amend it to "no slower than the old scripts on the same snapshot".
+- D-24, task 3.4: walk the mark scenarios by hand on Claude Code (stage start, hand-over session,
+  shaping, PLAN) and sign them off.
+- D-21 and D-26 under the floor stay for a later change.
+- The worktree `../skillery-retro` links `.venv` and `node_modules` from the main checkout.
 
 ## Next
-Stage 2, task 3.1 (the spike on what `AnswerShown` holds). Read first: tasks.md §3–4, design.md
-D-9, D-10 and D-20, specs/epic-delivery, specs/epic-shape, specs/session-navigation.
+The developer's ruling on D-24, then the acceptance demo (MEDIUM), the docs stage and the archive
+(`epic-delivery`, *After the last build stage*). No build stage is left.
 
 ## Prompt
-Act as the team lead. Deliver stage 2 of openspec/changes/delivery-retrospective in skillery from
-its handover.md. Commit, push and merge without asking; merge only on green CI.
+Act as the team lead. Close openspec/changes/delivery-retrospective in skillery from its
+handover.md: record the developer's D-24 ruling, run the acceptance, the docs stage and the archive.

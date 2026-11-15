@@ -87,7 +87,7 @@ trace's tags.
 | Epic id | no field | Read it from `git_branch` when the branch is named after the change, or from the file paths in the tool inputs (`openspec/changes/<id>/`). |
 | Waiting on the person | no flag | A `Tool: AskUserQuestion` span lasts as long as the person took to answer. Time spent on a permission prompt is inside the tool span it belongs to and cannot be told apart. |
 | Skills loaded | yes | Tags `skill:<name>` for the turn and `subagent-skill:<name>` for its subagents, on every observation. The option is `CC_LANGFUSE_SKILL_TAGS`, on by default. |
-| Phase, stage or task, review outcome | not yet | Nothing in a session states them in a form a tool can read. The skills would have to declare them first. |
+| Phase, stage or task, review outcome | no field | The lead states them in the session's text: the mark line (`epic-delivery`, `references/team-and-briefs.md`) and the result line. `session-retrospective`'s scripts read them from the transcripts; Langfuse does not. |
 | Cost | not yet | See *Known limits*: the server needs a price for each model. |
 
 ### Add your own tags

@@ -91,6 +91,12 @@ The only recorded *capability* gap is on the agent-hook surface, owned by
 | `persist-before-compaction` | `PreCompact` hook | no `PreCompact` equivalent | degrades to `Stop`/`session.idle` binding on opencode. |
 | `no-poll-loops` | `PreToolUse` command hook on `Bash` (the `no-poll-loops` mod in `meaningfy-core`) | `tool.execute.before` handler for `bash` in `tools/opencode-plugin.mjs`, the same `check` | parity: both deny the same sleep loops with the same message and fail open. |
 
+The mark line (`epic-delivery`) has one recorded gap:
+
+| Intent | Claude binding | opencode | Gap / degradation |
+|---|---|---|---|
+| warn when a worker is dispatched without a mark | the `navigator` mod warns once at the end of the turn | no navigator on opencode | the warning is Claude Code only; on opencode the `guessed` label in the `session-retrospective` report is the only signal. |
+
 One skill also has a recorded monitoring gap, which comes from a missing plugin rather than a hook:
 
 | Skill | Claude Code | opencode | Gap / degradation |
