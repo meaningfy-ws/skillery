@@ -25,20 +25,20 @@ in D-33. Each side ends with the checks of task 1.16.
 - [x] 1.0 The developer signs off the spec scenarios of this change (the PLAN gate), recorded in
   `evidence/acceptance.md` (D-13). *Open for the developer:* the two proposals of D-24
   and D-26 (the type's name), to confirm or decline (D-25 is withdrawn, D-35).
-- [ ] 1.1 [A] Confirm A is merged and the branch is on current `develop`; walk the D-12 table
+- [x] 1.1 [A] Confirm A is merged and the branch is on current `develop`; walk the D-12 table
   against A as merged and note each difference in the stage PR; re-read every spec delta against
   the live specs and fix any conflict (error matrix rows 1–2). *Done on 2026-11-14 (D-15):* A is
   merged, the D-12 table is walked and the spec deltas are re-read. *Remains:* cut the stage
   branch from current `develop` and copy the differences of D-15 into the stage PR.
-- [ ] 1.2 Write `evidence/failure-case.md` (D-13).
-- [ ] 1.3 The Check type: add `quality` to `TOP_LEVEL_FOLDERS` and the `quality_files` lint to
+- [x] 1.2 Write `evidence/failure-case.md` (D-13).
+- [x] 1.3 The Check type: add `quality` to `TOP_LEVEL_FOLDERS` and the `quality_files` lint to
   `ALL_CHECKS`, test-first (TC-01, TC-02 in `tests/test_repo_lint.py` and
   `tests/test_repo_lint_negative.py`); create `quality/README.md`; update `governance.md`,
   `AGENTS.md` (line 11 and the type table) and `CLAUDE.md` (line 4); write
   `docs/development/quality.md` and register it (D-1, D-13; spec *A check is an executable rule
   and carries no rule text*, *Only the agreed top-level folders exist*, *The quality folder holds
   the shared checks*).
-- [ ] 1.4 Write the Python-only group of `tests/test_quality.py`, red first (TC-03, TC-04, TC-05,
+- [x] 1.4 Write the Python-only group of `tests/test_quality.py`, red first (TC-03, TC-04, TC-05,
   TC-06, TC-10), with the `skipif` markers for the tool groups; add `requirements-quality.txt`
   (Semgrep, Ruff, Hypothesis) to `make install`; add the install note to `CONTRIBUTING.md`; add
   the five tool entries to `dependencies.yaml` (D-8, D-35; spec *The quality folder's tool tests run
@@ -54,7 +54,7 @@ in D-33. Each side ends with the checks of task 1.16.
   and the `rev` in `dot-pre-commit-config.yaml` per D-2; update `config-files.md` § Ruff and
   `decisions.md` D4; comment the probe table and the accepted `Session` gap on issue #215 (D-2;
   spec *The Ruff selection flags the hygiene cases*).
-- [ ] 1.6 `AP-IO-IN-MODELS`: add the `domain-no-io` contract of D-3 to `dot-importlinter.tmpl`;
+- [x] 1.6 `AP-IO-IN-MODELS`: add the `domain-no-io` contract of D-3 to `dot-importlinter.tmpl`;
   its proof is IT-04's case "`import requests` in `domain`" (D-3; spec *Every catalogued rule
   names its checker*).
 - [ ] 1.7 The five gating rules in `quality/semgrep/rules/`, each fixture first (with a near
@@ -67,11 +67,11 @@ in D-33. Each side ends with the checks of task 1.16.
   `quality/semgrep/report-only/`, and `mfy-suppression-without-reason` in
   `quality/semgrep/suppressions/` with the *Suppressions* heading in `config-files.md` (D-3, D-6;
   IT-01).
-- [ ] 1.9 ls-lint: write `quality/ls-lint/python-project.yml` (the banned names and the four
+- [x] 1.9 ls-lint: write `quality/ls-lint/python-project.yml` (the banned names and the four
   ignored folders) and the two fixture trees (D-5; IT-02).
-- [ ] 1.10 checkmake: write `quality/checkmake/python-project.ini` with the required targets and
+- [x] 1.10 checkmake: write `quality/checkmake/python-project.ini` with the required targets and
   the body limit (D-5; TC-10, IT-03).
-- [ ] 1.11 External sources: `quality/semgrep/external.json` and the template
+- [x] 1.11 External sources: `quality/semgrep/external.json` and the template
   `external_sources.py`, test-first (TC-06, TC-09); list at most five candidate sources in the
   stage PR for the owner's approval (D-7; spec *External rule sources are recorded, pinned and
   never copied*).
@@ -99,7 +99,7 @@ in D-33. Each side ends with the checks of task 1.16.
 - [ ] 1.14 [A] Add the stage's inventory rows and software rows, flip the rows A marked for B that
   this stage fills, extend the pointer lines (D-12, D-15: `software.md`
   line 33; spec *The software rows name the static and import-contract checks*).
-- [ ] 1.15 Scaffold the product and the library archetype from the stage branch with
+- [x] 1.15 Scaffold the product and the library archetype from the stage branch with
   `QUALITY_VERSION` set to the branch's commit and run IT-04 and IT-05; paste the output into the
   stage PR. *Acceptance:* the wall time of `make check-quality` on each scaffold, with a warm
   `.quality/`, is recorded in the stage PR and in `evidence/quality-cost.md` (D-22).
@@ -207,8 +207,10 @@ are dropped (D-35).
 
 ## Roadmap
 
-- [x] 1.0 · [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
-  · [ ] 1.10 · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14 · [ ] 1.15 · [ ] 1.16 · [ ] 2.1 · [ ] 2.2
+- [x] 1.0 · [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [ ] 1.5 · [x] 1.6 · [ ] 1.7 · [ ] 1.8 · [x] 1.9
+  · [x] 1.10 · [x] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14 · [x] 1.15 · [ ] 1.16
+  *(1.5, 1.7, 1.8, 1.13 and 1.16 are done on the tool side and stay open for their prose-side
+  parts; see `handover-tool-side.md`.)* · [ ] 2.1 · [ ] 2.2
   · 2.3 removed (D-30) · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · 3.5 dropped
   · 3.6 dropped (D-35) · [ ] 3.7 · [ ] 3.8 · [ ] 3.9 · [ ] 3.10 · [ ] 3.11
 
