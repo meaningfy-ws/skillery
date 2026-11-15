@@ -53,6 +53,7 @@ what merged, and the decisions still open.
 
 ## Glue
 1. Load `epic-delivery` with the Skill tool before anything else, so the session's workflow is shown.
-2. Ask open questions in the format `epic-delivery` sets, between stages; mid-stage only when the
-   stage is blocked.
+2. Ask open questions in the format `epic-delivery` sets; mid-stage only when the stage is blocked.
+   Between stages they go in the hand-over note: the stage ends with the note, and the next
+   session starts from its prompt.
 3. Stop when the change is archived or the person stops.

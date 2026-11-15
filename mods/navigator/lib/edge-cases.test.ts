@@ -224,11 +224,10 @@ test('switching workflow is not a PhaseLeft (DD-36, DD-38 rejected): no PD-2 for
   assert.ok(!keys(s).includes('process:missing:apply:cosmic-python'), keys(s).join())
 })
 
-test('PD-3 skill gate: design → apply by files warns clarity; running clarity-gate clears it', () => {
+test('PD-3 skill gate: design → apply by files no longer warns clarity (the PLAN arrives gated, D-17)', () => {
   const s = run(workflows(), read(change(0, 9)), read(change(3, 9), 3))
   assert.equal(s.phase, 'apply')
-  assert.ok(keys(s).includes('process:gate:apply:clarity'), keys(s).join())
-  assert.ok(!keys(reduce(s, skill('meaningfy-building:clarity-gate', 4))).includes('process:gate:apply:clarity'))
+  assert.ok(!keys(s).includes('process:gate:apply:clarity'), keys(s).join())
 })
 
 // ================================================================ consent (§4.1, PD-3)
