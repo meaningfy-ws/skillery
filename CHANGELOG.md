@@ -14,6 +14,18 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Changed
 
+- **The engineering skills are lean** (EPIC `lean-skills`, stage 3). `architecture` drops from
+  141 KB to 24 KB and `project-setup` from 137 KB to 24 KB; `linkml-engineering`,
+  `conceptual-modelling`, `modelling-conventions`, `formal-reasoning`, `epic-planning`,
+  `clarity-gate`, `ci-cd-delivery` and `meaningfy-release` take the lean shape. Templates you
+  copy now sit in each skill's `assets/` (the ADR and use-case templates of `architecture`, the
+  settings resolver of `project-setup`). `epic-delivery` and `test-strategy` keep their method
+  tables under a recorded exception. Every check id and every cited file name is unchanged.
+
+## [3.16.0] - 2026-11-15
+
+### Changed
+
 - **`cosmic-python` is lean** (EPIC `lean-skills`, the pilot). The skill drops from 126 KB to
   about 20 KB: it keeps the layer contract, component organisation, what to test per layer and the
   code-principles catalogue. The catalogue gains a clean-code and SOLID table (`CC-NAMES` to
@@ -22,13 +34,6 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   example files are gone: the new page `docs/practice/engineering-standards/worked-examples.md`
   links the same patterns in the public `mapping-suite-sdk`. Tooling and CI advice now lives only
   in `project-setup`. If you cite a `cosmic-python` id, nothing changes for you.
-- **The engineering skills are lean** (EPIC `lean-skills`, stage 3). `architecture` drops from
-  141 KB to 24 KB and `project-setup` from 137 KB to 24 KB; `linkml-engineering`,
-  `conceptual-modelling`, `modelling-conventions`, `formal-reasoning`, `epic-planning`,
-  `clarity-gate`, `ci-cd-delivery` and `meaningfy-release` take the lean shape. Templates you
-  copy now sit in each skill's `assets/` (the ADR and use-case templates of `architecture`, the
-  settings resolver of `project-setup`). `epic-delivery` and `test-strategy` keep their method
-  tables under a recorded exception. Every check id and every cited file name is unchanged.
 
 ### Added
 
@@ -46,6 +51,23 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - The lead of an EPIC now writes a mark line (`mark: change=<id> phase=<phase> stage=<n>`) at the
   start of each stage; on Claude Code the navigator warns once when a worker is dispatched without
   one, and `session-retrospective` reads the marks instead of guessing the phase.
+- **Preferences go to your rulebook, not Claude Code's memory** (EPIC `rules-first-memory`, stage
+  1). `meaningfy-core` now ships a second hook mod, `rules-first`. At session start it tells the
+  agent where your rules are stored (vault, repository) and that a preference or correction you
+  state goes to `rule-learner`'s approval card, never to the CLI's memory. It also denies a write of
+  a `feedback` or `user` note into Claude Code's auto-memory folder and tells the agent to draft a
+  rule instead; project notes and references are still allowed. Notes already in your memory are
+  left for you to move. `rules.py where` now reports whether your global instructions carry the
+  routing policy, and `rules.py stats` counts rules written and memory writes denied. opencode gets
+  neither hook (recorded as a gap in `docs/environment/dual-cli/compatibility.md`).
+- **The routing sentence is in the global policy and the project template** (EPIC
+  `rules-first-memory`, stage 2). The rules line of `docs/environment/global-prompt.md`, the
+  `AGENTS.md` template of `project-setup` and the rules pointer `rules.py` writes into a new
+  repository now say: "Preferences and corrections go to the rulebook, never to the CLI's memory;
+  project state goes to the spine and the repository's docs." To make `rules.py where` report
+  `routing policy: present`, replace the rules bullet in your global instructions
+  (`~/.claude/CLAUDE.md`, `~/.config/opencode/AGENTS.md`) with the updated one. An existing
+  repository's pointer line is not changed.
 
 ### Changed
 

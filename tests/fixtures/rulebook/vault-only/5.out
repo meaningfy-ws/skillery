@@ -1,4 +1,6 @@
 window 2026-09-29..2026-10-29: 8 observations, 6 rules.py events
+rules written: 0
+memory writes denied: 0
 id      loaded cited overridden violated
 R-0001  1 1 0 0
 R-0010  1 1 0 1

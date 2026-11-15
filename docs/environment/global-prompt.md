@@ -17,7 +17,8 @@ what a skill already knows.
   work should be done, **meaningfy-core:rule-learner** shows its approval card when I wrap up or
   ask for it, or before your final summary of the task.
   Interactive sessions only: a scheduled or unattended run skips both. If `load` finds no rule
-  store, say so once and carry on.
+  store, say so once and carry on. Preferences and corrections go to the rulebook, never to the
+  CLI's memory; project state goes to the spine and the repository's docs.
 
 In a **spine repo**, `superpowers` artifacts land in the spine, never a `docs/superpowers/` tree:
 brainstorming → the EPIC (`openspec/changes/<id>/proposal.md`); writing-plans is **superseded** by the

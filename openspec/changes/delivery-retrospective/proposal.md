@@ -36,10 +36,11 @@ this EPIC reads. The question round is in
 
 **It succeeds when** the scripts' tests pass in `make validate` on synthetic transcripts; a session
 with marks is reported by phase and stage with no "guessed" row, and one without is labelled and its
-guessed share printed; one run over the owner's last 14 days finishes in under a minute with totals
-equal to those of the old scripts on the same transcripts, recorded without transcript text; the
-agent scenario for the mark is walked; and the navigator warns when a stage's first worker starts
-without a mark.
+guessed share printed; one run over the owner's last 14 days is no slower than the old scripts and
+gives totals equal to theirs on the same transcripts, recorded without transcript text (the first
+target, under a minute, was set aside by the owner in D-27: the run is I/O-bound, 262 s against
+268 s); the agent scenario for the mark is walked by the owner on the released plugins; and the
+navigator warns when a stage's first worker starts without a mark.
 
 **It fails when** a digest or its text lands in this public repository; when a format change in the
 transcripts makes the numbers fall silently instead of warning; when leads skip the mark and the
@@ -59,7 +60,9 @@ findings instead of pointing to the run.
   ```
 
   It is written at the start of shaping, of the PLAN, and of each delivery stage; a session that
-  carries on from a hand-over note writes it before its first brief. Owner's choice. Rejected: a
+  carries on from a hand-over note writes it before its first brief. It stands as a whole line,
+  never inside a code block or a tool input, and a turn that dispatches a worker repeats it in its
+  last message, the only text the navigator sees (D-22). Owner's choice. Rejected: a
   script command (a tool call and a permission rule per machine); deriving it from the hand-over
   prompt and the branch only (shaping and stage 1 stay guesses); the navigator writing it (Claude
   Code only).

@@ -807,6 +807,7 @@ Cross-cutting basics everyone installs: clear technical writing, explanatory-wri
 | [`test-strategy`](../skills/test-strategy/SKILL.md) | Use this skill to decide which check answers which question, and how work in any activity (code, docs, a post, an offer, a contract, a model) succeeds or fails — "how do we know this succeeded or failed", "which checks does this need before I publish it", "difference between verification and validation". | `quality` | `cross-cutting` | `generic` | `profiled` | `any` | `experimental` | — | `epic-delivery`, `guardrails`, `clarity-gate`, `bdd-gherkin`, `technical-writing`, `writing-antipatterns`, `rulebook`, `cosmic-python`, `meaningfy-code-review` |
 | [`technical-writer`](../agents/technical-writer.md) *(agent)* | Viorica the technical writer writes and improves documentation with the person: reads the code and existing docs, drafts clearly in the right genre and has a cold reader test it. | `content` | `cross-cutting` | `generic` | `reusable` | `any` | `experimental` | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails` | — |
 | [`no-poll-loops`](../mods/no-poll-loops/) *(mod)* | Claude Code mod | — | — | — | — | — | — | — | — |
+| [`rules-first`](../mods/rules-first/) *(mod)* | Claude Code mod | — | — | — | — | — | — | — | — |
 
 ## meaningfy-consulting
 
