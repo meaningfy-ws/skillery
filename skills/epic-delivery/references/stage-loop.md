@@ -12,11 +12,15 @@ and one owner. The summary is in the skill, and the review set of each appetite 
    - Every external-library decision the stage needs is recorded in `design.md`.
    - The lead refreshes the project's code index in the background, where the project has one. A
      failed refresh warns, and the step reads the code instead.
-   - The lead checks the blast radius of the symbols the stage touches, with the project's impact
-     tool where it has one. A high or critical risk goes to the developer before any build.
+   - **Tester condition** (defined here only): from MEDIUM up, the stage changed code and a PLAN
+     `## Invariants` row for it has a *Test* cell starting `tester`; with no such section, every
+     stage from LARGE up. The PR body gets `tester: yes, <INV-n>` or `tester: no, <reason>`.
+   - A stage risk not in the PLAN's `RISK-` rows is recorded as a `D-n`.
    - Scenarios: signed off once per EPIC at the PLAN gate *(provisional)*, per `bdd-gherkin`. A
      scenario changed since is re-signed alone. Nothing is built on an unsigned scenario.
 2. **Build.**
+   - Per task the lead runs impact on its symbols before the brief (high or critical: to the
+     developer) and the change check before the commit; builders run neither.
    - Builders take the tasks one at a time, test-first. Parallel builders only on disjoint files;
      otherwise one after another, or in separate worktrees.
    - The builder also updates the docs its task changed. There is no separate writer.
@@ -34,33 +38,39 @@ and one owner. The summary is in the skill, and the review set of each appetite 
      - **T2** parallel builders touched a shared file. The lead re-runs the task gate.
      - **T3** the lead's full-gates run after a fix round (step 4).
 3. **Challenge.**
-   - The lead refreshes the code index if the project has one (background; a failure warns).
    - The lead runs the full gates once, unless the last task's report ran them on the commit that
      is the PR's head (same check, same code). It records the report, the *implementing* fields,
      in the PR body and opens the PR.
-   - Then, in parallel and scaled by appetite: the reviewers, and the adversarial tester where
-     the appetite's review set names it ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)).
-   - A small stage may take the small review set: the rule is in `SKILL.md` (the review sets).
+   - Then, in parallel: the appetite's review set (the workflow file; `SKILL.md` for MEDIUM and
+     the small stage) and the tester on its condition.
    - Reviewers are read-only. They read the gate report in the PR body and never re-run the suite;
-     a missing or red run is a finding.
+     a missing or red run is a finding. Each report ends with its result line.
 4. **Decide and fix.**
    - Before the fix round the lead checks that `git status` is clean; an edit made by a reviewer
      is discarded and reported.
-   - The lead sorts the findings. Each accepted one becomes a decision in `design.md` before any
-     code changes (the Rule of Divergence: the spec first, then the code). The rest are rejected
-     with a reason.
-   - A finding that belongs to one of our libraries becomes an upstream issue, not a fix here.
-   - Fixers apply the decisions in batches: security first, then structure. After a red run they
-     re-run only the failing tests until green. Then the lead runs the full gates once (T3), then
-     CI.
+   - **The floor:** only a Critical finding (`meaningfy-code-review`'s scale) is fixed. The rest
+     are rejected "under the floor", one line each under `## Delivery decisions`, and a tester
+     test that failed first for one is deleted. A re-label to Critical needs a reason; the label,
+     not the lens, decides, and the checker judges it.
+   - Each accepted finding is a decision in `design.md` before any code (the Rule of Divergence),
+     or an upstream issue when it is our library's. The PR body gets the result lines again.
+   - **One fix pass:** fixers in one batch, security first, then structure; after a red run only
+     the failing tests re-run until green; then the full gates once (T3) and CI. A red CI run or a
+     refused merge is no review round: only that failure is fixed.
    - A flaky test is handled per the testing checklist (`cosmic-python`
      `references/testing-checklist.md`).
-5. **Check.** Where the appetite's review set has a checker ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)), one fresh checker over the
-   whole stage. Where it has none, the stage's full gates and CI are the check, and the single
-   review pass is the four-eyes pass. A
-   cold reader runs on any how-to or tutorial page the stage changed, at any appetite. An unmet item
-   goes back to step 4.
-6. **Merge.** The lead merges the PR on green CI, within its authority.
+5. **Check.** One fresh checker where the appetite's set has one; otherwise the full gates and
+   CI, with the single review pass as the four-eyes pass. A cold reader reads any how-to or
+   tutorial page the stage changed. An unmet item, a disputed re-label or a late tester finding
+   goes to the developer as a question: fix it now as a `D-n` (one fixer, one full-gates run,
+   nothing else) or a follow-up issue. No second fix pass.
+6. **Merge.** The note ([template](../assets/templates/handover.md)) is committed as
+   `openspec/changes/<id>/handover.md`, the PR's last commit. Once the PR lists a check run, one
+   background command: `gh pr checks <n> --watch --fail-fast && gh pr merge <n> --merge
+   --delete-branch` (the repository's merge method); its notice is the only wait. On a non-zero
+   exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing check, a refused
+   merge, or only the local branch left. Then the session ends, no compaction; the next stage
+   starts fresh from the note's prompt.
 
 ## After the last build stage
 
@@ -90,28 +100,24 @@ navigator band shows `accept` once every build box is ticked.
 | A brief cannot be written | The task is not ready; fix the PLAN |
 | Our library falls short | Stop the task; upstream issue; `blocked by`; other tasks go on |
 | An external library falls short | A decision recorded in `design.md` before any code |
-| The checker finds a brief item unmet | Back to Decide and fix |
 | The developer rejects at acceptance | A decision in `design.md`; a fix stage before the docs stage |
-| A builder's report lacks a field | T1: the lead re-runs the task gate; fix the brief if its report line was unclear |
 | The project names no task gate or full gates | The lead cannot write brief rule 5: ask the developer; the answer goes into the project's `AGENTS.md` |
 | The project has no marker for quarantining a test | The framework's skip-with-reason plus the issue link |
-| The code-index refresh fails | Warn; read the code instead |
 | As-built contradicts an ADR (docs stage) | A finding to the lead; the developer decides; the page is not edited to match |
 | The lead loads `technical-writing` mid-build | The navigator band shows *documentation*; loading `epic-delivery` or `openspec-apply-change` switches back |
-| A scenario changes after sign-off | Re-sign that scenario only |
-| A member needs a decision | It reports to the lead; the lead asks the developer |
 
 ## Two examples
 
 - **SMALL EPIC**, one stage, three tasks: three task-gate runs, no lead re-run, one full-gates run
-  before the PR, one review pass (L2 + L3), one fix with its failing test re-run alone, one
-  full-gates run (T3), CI. Two local full-gates runs in the stage. No checker, no tester. No
+  before the PR, one review pass (L2 + L3), one Critical fix with its failing test re-run alone,
+  one full-gates run (T3), CI. Two local full-gates runs in the stage. No checker, no tester. No
   scenario sign-off if the EPIC adds no scenario. The demo is offered and skipped
   (`evidence/acceptance.md`: "skipped by `<developer>`, `<reason>`, `<date>`"); `evidence/docs-owed.md`
   says "no docs owed"; archive.
 - **LARGE EPIC** with screens, three stages: all scenarios signed off at the gate. Per stage:
-  builder tasks, full gates, the PR, then the tester, five lenses and the UX lens in parallel, then
-  decide and fix, full gates, then the checker, then merge. After stage 3: the acceptance demo
+  builder tasks, full gates, the PR, then five lenses, the UX lens and the tester on its condition
+  in parallel, then the one fix pass, full gates, the checker, the note, watch-and-merge, a fresh
+  session. After stage 3: the acceptance demo
   (mandatory), `evidence/acceptance.md`; then the docs stage when docs are owed (the lead loads
   `technical-writing`; one PR with the LARGE review set); then archive.
 - **Inconsistent report.** A builder reports `exit 0, 41 passed`; the diff adds two tests and the
@@ -125,23 +131,20 @@ a row.
 
 | Check | Moment | Owner | Re-run only when |
 |---|---|---|---|
-| Clarity gate (at most 2 runs at TINY and SMALL) | Before the first task | Planner; the developer decides gaps | — |
+| Clarity gate (at most 2 runs, any appetite) | In shaping, before the epic session | Planner; the developer decides gaps | — |
 | Scenario sign-off | At the PLAN gate; a changed scenario alone | Developer | The scenario changed |
-| Impact (code index refreshed) | Prepare | Lead | — |
+| Impact (index refreshed in Prepare) | Once per task, before the brief | Lead | — |
 | Narrow checks | While a task is in progress | Builder | Each edit |
 | Task gate | Once per task, before the report | Builder | T1, T2 (lead) |
-| Diff reading | Each task | Lead | — |
-| Full gates | Once per stage before the PR (skipped only if the last report ran them on the PR's head commit); once after the fix round | Lead | T3 is the second |
+| Diff reading; change check | Each task, before its commit | Lead | — |
+| Full gates | Once per stage before the PR (skipped only if the last report ran them on the PR's head commit); once after the fix pass | Lead | T3 is the second |
 | Review set of the appetite (incl. L2 doc agreement, `meaningfy-code-review`) | Once per stage, on the PR | Reviewers | — |
-| Adversarial tester | Once per stage, where the set names it | Tester | — |
-| Failing tests | After a red run, until green | Fixer | — |
-| Checker | Once per stage, after the fixes | Checker | Unmet item → step 4 |
+| Adversarial tester | Once per stage, on its condition (Prepare) | Tester | — |
+| Floor and fix pass; failing tests | Once per stage; failing tests after a red run, until green | Lead (floor), fixer | — |
+| Checker | Once per stage, after the fix pass | Checker | — (unmet → developer) |
 | Evidence before a claim (`verification-before-completion`) | Before the lead reports a stage done | Lead | — |
 | Cold reader | A how-to or tutorial changed in a stage; every task-oriented page of the docs stage | Cold reader | The page changed again |
 | CI | Each push | CI | — |
 | Acceptance demo or skip record | After the last build stage | Developer | Rejection → fix stage |
 | Docs-stage verify (snippets, docs gate) | Docs stage | Builder | — |
 | `openspec validate --strict` | Archive | Lead | — |
-
-The loop replaced an older thirteen-step loop that ran every check on every stage. It now runs
-each check once, at the moment and by the owner in this table.

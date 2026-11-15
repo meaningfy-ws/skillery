@@ -12,11 +12,11 @@ mechanics (fresh not a copy, inputs as paths, the base report, the four-eyes rul
 | Domain expert | A person | — | The model changes |
 | Lead | The main session, which may be started as the `team-lead` agent | The session's | Always. Never a subagent: it is the only one that talks to the developer |
 | Architect | `system-architect` agent | Declared (opus) | Shaping session |
-| Planner | The lead loads `epic-planning`, or dispatches a general-purpose subagent with it | The session's, or opus | Finishing the PLAN at the start of an epic session (shaping itself is an `epic-planner` session) |
+| Planner | `epic-planner` agent | Declared (opus) | Shaping only (an `epic-planner` session) |
 | Builder | `implementer` agent | Declared (sonnet) | Every task, every accepted fix, every spike |
 | Reviewer | `code-reviewer` agent, one per lens | Declared (opus) | Every stage, scaled by appetite |
 | Checker | A fresh general-purpose subagent | opus | Once per stage, where the appetite's review set has one ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)) |
-| Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | Where the appetite's review set names one |
+| Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | On its condition ([`stage-loop.md`](stage-loop.md), Prepare) |
 | UX designer | A general-purpose subagent with the design skills | opus | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
 
 No role has its own catalogue agent beyond these. The checker and the tester differ from the others
@@ -42,16 +42,19 @@ tested the stage it checks.
    `references/subagent-reports.md`, plus
    **Upstream findings**: every bug, gap or awkwardness met in any library, each marked *ours* or
    *external*, with a reproduction, or "none". The lead routes them per the dependency rule.
+   For the tester, a reviewer and the checker, the report ends in **the result line** (its one
+   definition), written with `accepted=-`:
 
-Builders and reviewers MUST actively use the code-intelligence tools on every programming task,
-and no other MCP tool: **Serena** for symbol-level reading and editing (find a symbol, its
-references, replace a symbol body), **ast-grep** for structural search and rewrite across files,
-and the project's index for impact analysis (GitNexus). Grep and whole-file reads are the fallback
-only when the tool is unavailable, and the report says so. Files are read and edited with the
-CLI's own file read and edit tools, never with shell or script operations (`cat`, `sed`, `head`,
-a `python` heredoc); shell text tools may filter command output in a pipe, never a file, and
-generated files are written only by their generator. Builders use them for reading and
-editing, reviewers for reading only. Those tools are for code only; the truth stays in the spine.
+   ```text
+   result: stage=<s> role=tester tests=<n> failed-first=<n> findings=<n> accepted=<n|->
+   result: stage=<s> role=reviewer lens=<L1+L2> findings=<n> accepted=<n|->
+   result: stage=<s> role=checker verdict=<pass|fail> findings=<n> accepted=<n|->
+   ```
+
+   The lead writes each line again with `accepted=<n>` under `Results` in the PR body. A report
+   without it is incomplete: the lead returns it and re-runs nothing.
+
+Tools for each activity, and their fallbacks: the table in `guardrails` (`references/activity-tools.md`).
 
 ## Builder
 
@@ -70,9 +73,9 @@ evidence in `evidence/spike-<topic>.md`, and its code is not kept.
 > **Goal:** break the behaviour of stage `<s>` of `<id>`: edge cases, bad input, failures, limits.
 > Write tests only, never production code. **Read:** the stage's tasks, scenarios and diff range.
 > **Standing rules:** as for the builder. **Report:** base report + the tests added + each failing
-> test with what it shows + Upstream findings.
+> test with what it shows + Upstream findings and the result line.
 
-A failing test is a bug: the lead decides it in step 4. A failure in our library becomes an
+A failing test is a finding: the lead decides it in step 4, under the floor. A failure in our library becomes an
 upstream issue, not a fix here.
 
 ## Reviewer
@@ -80,19 +83,19 @@ upstream issue, not a fix here.
 > **Goal:** review stage `<s>` of `<id>` through lens `<Ln>`. Read-only. **Read:** the diff range,
 > `design.md`, the ADRs the stage touches, the stage's gate report. Do not re-run the suite: a
 > missing or red gate run is a finding. **Report:** findings by priority per
-> `meaningfy-code-review`, and any workaround of our library as a finding.
+> `meaningfy-code-review`, any workaround of our library as a finding, and the result line.
 
-Where the appetite's review set is one pass ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)), one reviewer covers its lenses together; the brief names the appetite. For a small stage
-the brief cites the recorded `D-n` and the lenses that reviewer covers; the rule is in `SKILL.md`
-(the review sets). The lenses themselves are owned by `meaningfy-code-review`.
+Where the appetite's set is one pass or two merged reviewers (the MEDIUM default, a recorded small
+stage; `SKILL.md`, the review sets), the brief names the appetite and the lenses each reviewer
+covers. The lenses are owned by `meaningfy-code-review`.
 
 ## Checker
 
 > **Goal:** check stage `<s>` of `<id>`. Read-only. You did not build, test or review it. **Read:**
 > the briefs of the stage, `design.md` (decisions incl. accepted findings), the spec scenarios, the
 > diff range. **Check:** every brief item and every accepted finding is met (yes or no, with
-> evidence); the traceability check per `bdd-gherkin`. **Report:** base report + the verdict per
-> item.
+> evidence); each re-label of a finding as Critical (agree or not, one line); the traceability
+> check per `bdd-gherkin`. **Report:** base report + the verdict per item and the result line.
 
 The checker is the stage's four-eyes pass. When the stage changed a how-to or tutorial page, the
 lead also dispatches a cold reader per `technical-writing`: a separate fresh agent given only the
