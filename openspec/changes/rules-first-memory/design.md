@@ -105,7 +105,7 @@ opencode plugin hooks and any change to where a rule is stored.
   frontmatter: `type:` at top level or under `metadata:`. For `Write` it is read from `content`, and
   when the file already exists, the type on disk counts too: either one being `feedback` or `user`
   denies, so a preference cannot be renamed by overwriting its note. For
-  `Edit`, a type set in `new_string` wins, else the type in the file on disk. `MultiEdit` is denied
+  `Edit`, the type on disk and a type set in `new_string` both count (D-10). `MultiEdit` is denied
   when the type on disk, or the type set in any of its edits, is `feedback` or `user`. Denied when
   the type is `feedback` or `user`. `MEMORY.md` has no frontmatter and passes.
 - **D-7 Several plain mods** (DEC-3). `gen.py`: the count check leaves `_parse` (which has no repo
@@ -240,3 +240,16 @@ disk, so a retried write gets the same answer.
 
 None. Q-1 to Q-6 are answered (`inputs/answers-2026-11-15.md`); M-1 to M-3 go with the deferred
 migration (DEC-8).
+
+## Delivery decisions
+
+Recorded by the lead during stage 1 (after the PLAN gate; not re-gated).
+
+- **D-9 Prepare, stage 1** *(2026-11-15)*. `tester: no`: the PLAN has no `## Invariants` section
+  and the EPIC is MEDIUM. Review set: the five lenses, because RISK-1 and RISK-5 name this stage.
+- **D-10 Edit cannot rename a preference** *(2026-11-15)*. Reading the task 1.5 code showed that
+  D-6's "a type set in `new_string` wins" lets an `Edit` of an existing `feedback` note, whose
+  `new_string` holds `type: project`, pass: the preference renamed, which RISK-2 forbids. `Edit`
+  now follows the same rule as `Write` and `MultiEdit`: denied when the type on disk **or** a type
+  set in `new_string` is `feedback` or `user`. The tool-call table row "Edit `feedback_git.md`,
+  `new_string` sets `type: project`" (denied) is added to the tests.
