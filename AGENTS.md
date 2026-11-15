@@ -85,32 +85,10 @@ improvement loop and the Definition of Done. This binding mandates it; it does n
 
 ### Dual-CLI authoring rules
 
-The catalogue ships to Claude Code **and** opencode from one set of sources (the
-[`dual-cli-distribution`](openspec/specs/dual-cli-distribution/spec.md) contract). When you add or
-update an artifact, keep both CLIs working — the gates in `make validate` enforce it:
-
-- **Skills, agents, bundles** — author `skills/`, `agents/` and [`bundles.yaml`](bundles.yaml); they
-  are the only sources. Both CLIs install skills straight from `skills/`; opencode agents are
-  rendered at install time. Every skill or agent edit, a membership change or an
-  agent-frontmatter change needs `make bundles` (the `bundle_gates` check names it when stale). The
-  frontmatter map is the contract in [`docs/environment/dual-cli/mapping.md`](docs/environment/dual-cli/mapping.md)
-  and its tables live only in `tools/opencode-agent-map.json`; an unmappable field becomes a
-  recorded gap (`make opencode-report`), not a silent drop. Frontmatter must be strict YAML — quote a
-  `description` that contains `: `.
-- **Skill/agent bodies stay CLI-agnostic** — no `/opsx:`-style command forms or `.claude/` paths in a
-  body unless it is on the recorded allow-list (the `body_agnosticism` check fails otherwise). Phrase
-  operationally-neutral; record an unavoidable CLI-ism as a cosmetic gap in
-  [`docs/environment/dual-cli/body-agnosticism-audit.md`](docs/environment/dual-cli/body-agnosticism-audit.md).
-- **Commands** — only *content/templates* are shared; registration is **tool-native** (`/opsx:<id>`
-  on Claude, `opsx-<id>` on opencode). Don't try to generate one registration form for both.
-- **Specs & versions** — `make bundles` writes the root `VERSION` into its four rendered files:
-  `.claude-plugin/marketplace.json`, `tools/opencode-catalogue.json`, `package.json` and
-  `skills/project-setup/assets/templates/root/Makefile.tmpl` (its `QUALITY_VERSION` line); the
-  version-sync gate fails on any mismatch. Hook *intent* is single-sourced in
-  [`hooks.yaml`](hooks.yaml) and rendered per CLI (see
-  [`docs/development/hook-bindings.md`](docs/development/hook-bindings.md)).
-
-Full per-CLI setup and the compatibility matrix: [`docs/environment/dual-cli/`](docs/environment/dual-cli/README.md).
+Skills and agents, bodies, commands, versions and hooks must work on both CLIs. The rules are in
+[`docs/environment/dual-cli/`](docs/environment/dual-cli/README.md) and the
+[`dual-cli-distribution`](openspec/specs/dual-cli-distribution/spec.md) spec; `make validate` gates
+enforce them.
 
 ## How to validate
 
@@ -124,6 +102,15 @@ engines and the LinkML toolchain, whose tests run only locally), plus the
 `validate-spine` job (`make validate-spine`) and the `opencode-installer` job (`npm run test:opencode-installer`, the node tests of the opencode installer
 and agent renderer). See
 [`docs/development/governance.md`](docs/development/governance.md) for what the validator enforces.
+
+## Working conventions
+
+- Never poll: run one background command and wait for its notice.
+- Edit files with the edit tool, never a shell or script (`sed`, a `python` heredoc). A pipe may
+  filter command output; generated files are written only by their generator.
+- Read a range, not the whole file, when the range is known.
+- Read several known files in one call.
+- Tools for each activity: the table in `guardrails` (`references/activity-tools.md`).
 
 ## Common Meaningfy practices
 
@@ -149,45 +136,15 @@ leaves both files untouched.
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **skillery** (4607 symbols, 5842 relationships, 76 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **skillery**. The lead runs it once per task:
 
-> Index stale? Run `node .gitnexus/run.cjs analyze` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? `npx gitnexus analyze` (npm 11 crash → `npm i -g gitnexus`; #1939).
+- `impact({target, direction: "upstream"})` before the brief, on the task's symbols; a HIGH or CRITICAL result goes to the developer before the brief.
+- `detect_changes()` once before the task's commit.
+- Without a lead, the session runs impact once before its first edit and the change check once before its commit, and brings a HIGH or CRITICAL result to the developer.
+- Re-index with `npx gitnexus analyze --skip-agents-md`; it leaves this block untouched.
+- Never rename with find-and-replace; use `rename`.
 
-## Always Do
-
-- **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
-- **MUST run `detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows. For regression review, compare against the default branch: `detect_changes({scope: "compare", base_ref: "develop"})`.
-- **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
-- When exploring unfamiliar code, use `query({search_query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
-- When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `context({name: "symbolName"})`.
-- For security review, `explain({target: "fileOrSymbol"})` lists taint findings (source→sink flows; needs `analyze --pdg`).
-
-## Never Do
-
-- NEVER edit a function, class, or method without first running `impact` on it.
-- NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
-- NEVER rename symbols with find-and-replace — use `rename` which understands the call graph.
-- NEVER commit changes without running `detect_changes()` to check affected scope.
-
-## Resources
-
-| Resource | Use for |
-|----------|---------|
-| `gitnexus://repo/skillery/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/skillery/clusters` | All functional areas |
-| `gitnexus://repo/skillery/processes` | All execution flows |
-| `gitnexus://repo/skillery/process/{name}` | Step-by-step execution trace |
-
-## CLI
-
-| Task | Read this skill file |
-|------|---------------------|
-| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
-| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
-| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
-| Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
-| Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
-| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
+Resources, tools and CLI guides: `.claude/skills/gitnexus/`.
 
 <!-- gitnexus:end -->
 
