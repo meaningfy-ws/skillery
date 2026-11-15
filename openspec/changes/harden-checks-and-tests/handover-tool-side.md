@@ -29,18 +29,15 @@ Tasks ticked: 1.1, 1.2, 1.3, 1.4, 1.6, 1.9, 1.10, 1.11, 1.15.
   - D-3's grammar says import-linter is followed by the contract kind "in words", but its own
     first-assignment row holds backticks (`exhaustive`); settle the form before writing it.
   - A report-only rule's value carries `(partial: report-only)`; no test enforces it.
-- **1.5** `config-files.md` § Ruff (a pointer to the template's comments, D-33) and
-  `decisions.md` D4. The probe table and the accepted `Session` gap are already commented on
-  issue #215 (tool side).
+*Update, same day (D-41):* the `project-setup` part is done: 1.5, 1.8 and 1.13 below are written
+and ticked, with the `dot-semgrepignore` row. What remains waits for the `lean-skills` pilot:
+1.12, the 1.7 entry and lens line, 1.14 and the last CHANGELOG line of 1.16.
+
+- ~~**1.5** `config-files.md` § Ruff and `decisions.md` D4.~~ Done (D-41).
 - **1.7** the catalogue entry `AP-SPARQL-FROM-STRINGS` and its id in the L1 lens. The rule's
   message already cites `cosmic-python:AP-SPARQL-FROM-STRINGS`.
-- **1.8** the *Suppressions* heading in `config-files.md`. The rule's message already cites
-  `project-setup:config-files#suppressions`; the convention now covers `# NOQA`, `# ruff: noqa`
-  and `# flake8: noqa` too (D-40).
-- **1.13** the five `project-setup` references (`ci-and-infra.md`, `layout.md`, `checklists.md`,
-  the template table of `config-files.md`, *Adopting the shared checks* in
-  `modernizing-existing-projects.md`), sorted by D-33. The new template `dot-semgrepignore`
-  (D-38) needs its row in the template table.
+- ~~**1.8** the *Suppressions* heading in `config-files.md`.~~ Done (D-41).
+- ~~**1.13** the five `project-setup` references and the `dot-semgrepignore` row.~~ Done (D-41).
 - **1.14** the `test-strategy` rows (D-12, D-15).
 - **1.16** a CHANGELOG line for the prose side. Issue #215 is closed by this session after the
   merge, with the codes and the rule that cover its cases.
@@ -55,8 +52,8 @@ Tasks ticked: 1.1, 1.2, 1.3, 1.4, 1.6, 1.9, 1.10, 1.11, 1.15.
 - **`project-setup` moved from Poetry to uv** (PR #248, after this side merged). The scaffold
   runs here used Poetry; stage 2's task 2.5 now confirms `uv lock`. The bare-`pip` problem of
   `install-poetry` found here is gone with it.
-- **Open for the owner:** a fresh skeleton fails its own 80 % coverage gate (`.coveragerc` omits
-  `__init__.py` and the skeleton has no other measured code), under Poetry and uv alike.
+- **Coverage gate of a fresh skeleton:** fixed in PR #257 (owner: relax the gate); the
+  `__main__.py` stub carries `# pragma: no cover` until it is replaced.
 - **Semgrep traps** (D-38, D-39): its built-in ignore list skips `tests/`, which is why a project
   ships `.semgrepignore`; a bare `# nosemgrep` cannot be tested in a fixture.
 - **Stage 3** runs the old and the new tester brief on one seeded stage (D-24, confirmed in D-36).

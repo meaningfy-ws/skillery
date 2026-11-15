@@ -50,6 +50,14 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **A fresh `project-setup` skeleton passes its own `make test`.** Its only measured module, the
   `__main__.py` entry stub, failed the 80 % coverage gate at 0 %. The stub now carries
   `# pragma: no cover`; remove it when you replace the stub. The gate itself is unchanged.
+- **`project-setup` now explains the shared checks it scaffolds** (EPIC `harden-checks-and-tests`,
+  stage 1, prose side, `project-setup` part). `config-files.md` gains § *Suppressions* (a `# noqa`
+  or `# nosemgrep` names its code and ends with ` -- <reason>`), the page the Semgrep rule
+  `mfy-suppression-without-reason` already cites. `modernizing-existing-projects.md` gains
+  *Adopting the shared checks*: one target per pull request, Ruff's new codes in three steps, never
+  `ruff check --add-noqa`. The layout, CI walkthrough, checklist and template table name
+  `.quality/`, `.semgrepignore`, `scripts/quality/` and the three new targets; a leftover Poetry
+  line in `layout.md` is gone.
 
 ## [3.15.0] - 2026-11-15
 
