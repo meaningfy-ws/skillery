@@ -408,3 +408,7 @@ invariants, the error matrix and the risks.
 
 <!-- The lead records here, during delivery, each D-n it takes: accepted findings, rejected
      findings under the floor (one line each), a risk that restores the full review set. -->
+
+- **D-21 Stage 1 takes the small review set.** About 380 added lines (under the 600 of LARGE's
+  `small_stage`), text and data only, no `RISK-` row naming its files: two reviewers (L1+L2;
+  L3+L4+L5) and the checker. Tester: no, stage 1 changes no code under an `## Invariants` row.
