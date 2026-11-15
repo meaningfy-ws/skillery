@@ -408,3 +408,28 @@ invariants, the error matrix and the risks.
 
 <!-- The lead records here, during delivery, each D-n it takes: accepted findings, rejected
      findings under the floor (one line each), a risk that restores the full review set. -->
+
+- **D-21 Stage 1 takes the small review set.** About 380 added lines (under the 600 of LARGE's
+  `small_stage`), text and data only, no `RISK-` row naming its files: two reviewers (L1+L2;
+  L3+L4+L5) and the checker. Tester: no, stage 1 changes no code under an `## Invariants` row.
+- **D-22 `code-reviewer` accepts the MEDIUM default groups** (stage 1, L1+L2 Critical 1). Its
+  Dispatch contract accepted several lenses only on a cited `D-n` or at TINY/SMALL, so the MEDIUM
+  default of D-4 would be refused. The agent body (not its description) also accepts a MEDIUM
+  appetite with the groups L1+L2 and L3+L4+L5; `code-reviewer.feature` gains an accepting row.
+- **D-23 The Merge step keeps the lead's authority** (stage 1, L3–L5 W1, re-labelled Critical:
+  the step read as an unconditional merge, a safety rule lost). Merge runs within the lead's
+  authority grant; without one, the developer approves the merge.
+- **D-24 The note stays the last commit after a CI fix** (stage 1, L3–L5 W2, re-labelled
+  Critical: the step contradicted itself on every red CI run). A fix after a red check goes
+  before the note: the note is re-committed last, then the command runs again. D-23 and D-24 add
+  214 bytes to `stage-loop.md`, so `epic-delivery`'s prose ends 131 bytes above its start
+  (29,088 → 29,219); accepted for two safety fixes, and `lean-skills` cuts it (D-19).
+- Under the floor (stage 1): L3–L5 W3 dangling `activity-tools.md` pointer and agents citing the
+  cut tool paragraph (stage 2 lands the table; no release between stages); W4 structured MEDIUM
+  default (D-4 chose wording, no key); W5 deleting a below-floor tester test (DEC-4, decided);
+  W6 index refresh per task; S1 duplicate no-clarity assertions; S2 unused `clarity` gate and
+  the sample band in `navigator.md`; S3 "batch the reads" restated; S4 CHK-17 wording; S5
+  late-registering checks; S6 `team-lead` restates the question moment. L1+L2 W2 Shaping row
+  of the Sessions table; W3 CHK-65 two-run wording; S4 MEDIUM set restated; S5 floor restated
+  in `SKILL.md`; S6 the template's H1 title; S7 the stage-2 pointer; S8 gates on the head commit
+  (the PR body names the SHA).
