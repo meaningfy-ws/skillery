@@ -718,7 +718,9 @@ def test_skills_never_tell_the_agent_to_run_a_dotdot_path(skill):
 
 REPO_FIX = FIX / "repo"
 POINTER = ("- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, "
-           "load them with the rulebook skill; change them only through it, by pull request.")
+           "load them with the rulebook skill; change them only through it, by pull request. "
+           "Preferences and corrections go to the rulebook, never to the CLI's memory; "
+           "project state goes to the spine and the repository's docs.")
 ADD_REPO = ("add", "--store", "repo", "--type", "constraint", "--strength", "hard", "--scope", "activity:coding",
             "--when", "committing", "--do", "never force push", "--because", "history is shared",
             "--source", "2026-10-29 owner: 'never force push'", "--today", TODAY)

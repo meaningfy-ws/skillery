@@ -69,7 +69,7 @@ ids (T-n) are in design.md *Test cases*.
 
 Starts only when `delivery-process-and-tools` task 3.4 (its stage 3 PR) is merged into `develop`.
 
-- [ ] 2.1 The routing sentence (D-1, D-2): appended to the rules bullet of
+- [x] 2.1 The routing sentence (D-1, D-2): appended to the rules bullet of
   `docs/environment/global-prompt.md`; one new last paragraph of the `.claude/` section of
   `skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl`; `POINTER` in `rules.py` extended
   with it, and this repository's `- **Rules:**` line set to the new `POINTER`. No other line of
@@ -80,7 +80,7 @@ Starts only when `delivery-process-and-tools` task 3.4 (its stage 3 PR) is merge
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [ ] 2.1 · [ ] 2.2
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [x] 2.1 · [ ] 2.2
 
 1.3 and 1.4 touch separate code and may run in parallel with 1.2 once its spike is recorded; 1.5
 needs 1.2 (two mods), 1.3 (`routing.md`) and 1.4 (`DENY_MARKER`); 1.7 needs 1.5.

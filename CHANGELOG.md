@@ -48,6 +48,14 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   left for you to move. `rules.py where` now reports whether your global instructions carry the
   routing policy, and `rules.py stats` counts rules written and memory writes denied. opencode gets
   neither hook (recorded as a gap in `docs/environment/dual-cli/compatibility.md`).
+- **The routing sentence is in the global policy and the project template** (EPIC
+  `rules-first-memory`, stage 2). The rules line of `docs/environment/global-prompt.md`, the
+  `AGENTS.md` template of `project-setup` and the rules pointer `rules.py` writes into a new
+  repository now say: "Preferences and corrections go to the rulebook, never to the CLI's memory;
+  project state goes to the spine and the repository's docs." To make `rules.py where` report
+  `routing policy: present`, paste the updated rules line into your global instructions
+  (`~/.claude/CLAUDE.md`, `~/.config/opencode/AGENTS.md`). An existing repository's pointer line is
+  not changed.
 
 ### Changed
 
