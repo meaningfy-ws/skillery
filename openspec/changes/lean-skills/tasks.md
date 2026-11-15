@@ -9,7 +9,7 @@
 Appetite of the stage: MEDIUM. Requirements: `lean-skill-standard` (budget, pointers, transition
 list, shape, practices) and the modified `skill-crafting-method`.
 
-- [ ] 1.1 Failing tests first, in `tests/test_repo_lint_negative.py` on synthetic roots: one test
+- [x] 1.1 Failing tests first, in `tests/test_repo_lint_negative.py` on synthetic roots: one test
   per check outcome of the design's error matrix (over budget unlisted; stale `over_budget`; empty
   reason; stale per-check `pending` exemption; unknown name; budget-pending and `over_budget` both;
   malformed file gives one error only; an empty exemption list; a check named twice; pointer not
@@ -22,32 +22,32 @@ list, shape, practices) and the modified `skill-crafting-method`.
   code, keys set to `{}`. Failing cases also include a code span holding only an own file name, a
   folder path, and a topic mention in its own sentence. All fail
   before 1.2. (D-3, D-4, D-5)
-- [ ] 1.2 In `tools/repo_lint/lint.py`: `_skill_budget`, `_pointer_errors`, `prose_budget`,
+- [x] 1.2 In `tools/repo_lint/lint.py`: `_skill_budget`, `_pointer_errors`, `prose_budget`,
   `reference_pointers` (D-3, D-4, D-5); both in `ALL_CHECKS` and `METHOD_CHECKS`. Run impact analysis on
   `skill_size_report` first. The tests of 1.1 pass.
-- [ ] 1.3 Change `skill_size_report` to the 6 KB body target and its label in
+- [x] 1.3 Change `skill_size_report` to the 6 KB body target and its label in
   `_print_trigger_notes` to "lean body target"; remove `ADVISORY_SKILL_LINES` and
   `ADVISORY_SKILL_TOKENS` (D-3). Message: `<skill>: SKILL.md body is <n> bytes (lean body target
   6144)`. Test first: a body of 6,145 bytes gives a note, one of 6,144 none. `skill_too_long` is
   unchanged.
-- [ ] 1.4 Run both checks on the real tree with no list; write `skill-budget.yaml` with every
+- [x] 1.4 Run both checks on the real tree with no list; write `skill-budget.yaml` with every
   failing skill under `pending`, sorted, each with the checks it fails, and `over_budget: {}`;
   header comment as in D-4. Record the list and its count in the PR description. Repeat after the
   last rebase, right before merge.
-- [ ] 1.5 In `tests/test_repo_lint.py`: both checks return `[]` on the real tree.
-- [ ] 1.6 Write `docs/development/creating-skills.md` § *The lean standard*, replacing § *Body*:
+- [x] 1.5 In `tests/test_repo_lint.py`: both checks return `[]` on the real tree.
+- [x] 1.6 Write `docs/development/creating-skills.md` § *The lean standard*, replacing § *Body*:
   tiers and budget, `skill-budget.yaml`, the shape, the sorting classes, the five practices, the
   good and bad pointer example (D-1, D-2, D-4, D-6, D-7, D-8). Under 8 KB. Move the agentskills.io
   numbers into the "What we adopt" row as the specification's outer limit.
-- [ ] 1.7 `docs/development/skill-template.md` takes the shape of D-2, with the two table forms and
+- [x] 1.7 `docs/development/skill-template.md` takes the shape of D-2, with the two table forms and
   a pointer that says when and what.
-- [ ] 1.8 `docs/development/README.md` principle 7: one sentence on the three tiers, linking to
+- [x] 1.8 `docs/development/README.md` principle 7: one sentence on the three tiers, linking to
   § *The lean standard*, with no number of its own.
-- [ ] 1.9 CHANGELOG `[Unreleased]` › Added: the lean standard and its two checks, written for
+- [x] 1.9 CHANGELOG `[Unreleased]` › Added: the lean standard and its two checks, written for
   someone authoring a skill. In `skills/test-strategy/references/inventory.md`, add
   `prose_budget` and `reference_pointers` to the check cell of CHK-125 and change "skill size" to
   "lean body target" in CHK-130; no new CHK id (RISK-8).
-- [ ] 1.10 `make lint`, `make validate`, `make validate-spine` green; `detect_changes` against
+- [x] 1.10 `make lint`, `make validate`, `make validate-spine` green; `detect_changes` against
   `develop` shows only the lint symbols named above. Pull request into `develop`.
 
 ## 2. Stage 2: the pilot on `cosmic-python` (wave 2, after R2 stage 1)
@@ -76,7 +76,7 @@ list, shape, practices) and the modified `skill-crafting-method`.
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9 · [ ] 1.10
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9 · [x] 1.10
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 3.1 · [ ] 4.1 · [ ] 5.1 · [ ] 5.2
 
 ## Verification

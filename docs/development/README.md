@@ -64,10 +64,10 @@ If a change helps the agent but confuses the user, it is not done.
    when…"), in at most 1,024 characters (a gate) and ideally 600 (advisory); add `Not for…` only where
    a near-miss probe needs it. Prove it with probes; the method is agentskills.io
    [*Optimizing descriptions*](https://agentskills.io/skill-creation/optimizing-descriptions).
-7. **Progressive disclosure.** SKILL.md holds the method; details, tables and templates go to
-   `references/`, `assets/`, `scripts/`, within the budget of the
-   [agentskills.io specification](https://agentskills.io/specification) (body under 500 lines and
-   5,000 tokens; references one level deep). Context is the scarcest resource.
+7. **Progressive disclosure.** A skill has three tiers: a body read whenever it fires, references
+   read when a pointer says so, and material (templates, scripts) never read as instructions, each
+   within the budget of [the lean standard](creating-skills.md#the-lean-standard). Context is the
+   scarcest resource.
 8. **CLI-agnostic bodies.** Skills and agents run on Claude Code and opencode from one source; the
    body names no CLI command forms or paths (the `body_agnosticism` gate checks).
 9. **Nothing secret, nothing local.** No hosts, credentials, ports, personal paths or client names in

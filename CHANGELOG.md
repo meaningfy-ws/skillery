@@ -14,6 +14,16 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
+- The lean skill standard (EPIC `lean-skills`, stage 1), for anyone writing or changing a skill:
+  [`creating-skills.md` § *The lean standard*](docs/development/creating-skills.md#the-lean-standard)
+  sets three tiers (body, references, material), a budget of 24 KB of prose per skill (body plus
+  `references/`) with a 6 KB body target, the body's shape, how content is sorted, and five
+  practices. `make validate` now fails a skill over budget (`prose_budget`) and a pointer to a
+  reference that is not one sentence "Read `<file>` when `<situation>`: it adds `<what>`."
+  (`reference_pointers`). Skills that predate the standard are listed in `skill-budget.yaml`
+  under `pending` until their rewrite; a new skill must meet the standard on arrival. The
+  advisory body note now reports bodies over 6 KB.
+
 - Shared quality checks for new projects (EPIC `harden-checks-and-tests`, stage 1): a project
   scaffolded by `project-setup` fetches skillery's `quality/` folder at the release it pins and
   runs it with `make check-quality`. That target now also fails on: SPARQL built from strings;

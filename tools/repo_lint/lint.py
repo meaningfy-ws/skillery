@@ -30,11 +30,13 @@ MAX_SKILL_LINES = 650
 SPEC_SKILL_KEYS = ("name", "description", "license", "compatibility", "metadata", "allowed-tools")
 CLAUDE_ONLY_SKILL_KEYS = ("argument-hint", "disable-model-invocation")
 MAX_DESCRIPTION_CHARS = 1024  # the specification's hard limit
-# Advisory review thresholds (reported, never failing): the method's description target and the
-# specification's body budget (characters / 4 approximates tokens).
+# Advisory review threshold (reported, never failing): the method's description target.
 ADVISORY_DESCRIPTION_CHARS = 600
-ADVISORY_SKILL_LINES = 500
-ADVISORY_SKILL_TOKENS = 5000
+# The lean standard (docs/development/creating-skills.md#the-lean-standard): body plus references at
+# most 24 KB (failing), body target 6 KB (advisory).
+PROSE_BUDGET = 24576
+LEAN_BODY_TARGET = 6144
+SKILL_BUDGET_FILE = "skill-budget.yaml"
 
 # gherkin-writer: a DEC-7 backlog candidate (docs/development/agent-template.md), not a retired name
 ALL_AGENT_NAMES = {"implementer", "code-reviewer", "epic-planner", "system-architect",
@@ -255,14 +257,12 @@ def description_length_report(repo: Path) -> list[str]:
 
 
 def skill_size_report(repo: Path) -> list[str]:
-    """Advisory: SKILL.md bodies above the specification's budget."""
+    """Advisory: SKILL.md bodies above the lean body target."""
     out: list[str] = []
     for name in _skill_dirs(repo):
-        text = _body(_skill_md(repo, name))
-        lines, tokens = len(text.splitlines()), len(text) // 4
-        if lines > ADVISORY_SKILL_LINES or tokens > ADVISORY_SKILL_TOKENS:
-            out.append(f"{name}: SKILL.md body is {lines} lines, ~{tokens} tokens "
-                       f"(body budget {ADVISORY_SKILL_LINES} lines / {ADVISORY_SKILL_TOKENS} tokens)")
+        n = len(_body(_skill_md(repo, name)).encode())
+        if n > LEAN_BODY_TARGET:
+            out.append(f"{name}: SKILL.md body is {n} bytes (lean body target {LEAN_BODY_TARGET})")
     return out
 
 
@@ -759,6 +759,200 @@ def skill_too_long(repo: Path, limit: int = MAX_SKILL_LINES) -> list[str]:
         if n > limit:
             out.append(f"{name}: SKILL.md body is {n} lines (> {limit})")
     return out
+
+
+# ------------------------------------------------- the lean standard (lean-skills D-3 to D-5)
+_EXEMPTIONS = ("budget", "pointers")
+_FENCE = re.compile(r"^\s*(`{3,}|~{3,})")
+_QUOTE = re.compile(r"^\s*>\s?")
+_HEADING = re.compile(r"^\s{0,3}#{1,6}\s+(.*?)\s*#*\s*$")
+_LIST_ITEM = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
+_TABLE_SEP = re.compile(r"^\s*\|?\s*:?-{3,}")
+# One pass in reading order: a link, else a code span, else a path-like word.
+_MENTION = re.compile(r"\[[^\]]*\]\((?P<link><[^>]*>|(?:[^()]|\([^()]*\))+)\)"
+                      r"|(?P<tick>`+)(?P<code>.+?)(?P=tick)|(?P<bare>[\w./-]+)")
+_SENTENCE_END = re.compile(r"[.!?](?=\s|$)")
+_CLOSING_LIST = re.compile(r"\b(references|see also|further reading|resources|supporting materials?)\b", re.I)
+_PTR, _OTHER = "\x01", "\x02"  # placeholders: a pointer; any other link or code span
+_POINTER_FORM = re.compile(
+    rf"^(read|open) {_PTR}(, {_PTR})*( and {_PTR})? (when|if|before|after|while|once|whenever|until|unless) "
+    r".+?: it (adds|gives|holds) .+$", re.I)
+_POINTER_RULE = '"Read <file> when <situation>: it adds <what>."'
+
+
+def _skill_budget(repo: Path) -> tuple[dict[str, list[str]], dict[str, str], str | None]:
+    """skill-budget.yaml as (pending, over_budget, the malformed-file error); empty when absent."""
+    path = repo / SKILL_BUDGET_FILE
+    if not path.exists():
+        return {}, {}, None
+    try:
+        doc = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except (yaml.YAMLError, UnicodeDecodeError) as e:
+        return {}, {}, f"not valid YAML ({str(e).splitlines()[0]})"
+    doc = {} if doc is None else doc
+    if not isinstance(doc, dict):
+        return {}, {}, "the top level is not a mapping of pending and over_budget"
+    extra = sorted(str(k) for k in doc if k not in ("pending", "over_budget"))
+    if extra:
+        return {}, {}, f"unknown top-level key {extra[0]}"
+    pending, over = doc.get("pending") or {}, doc.get("over_budget") or {}
+    if not isinstance(pending, dict) or not isinstance(over, dict):
+        return {}, {}, "pending and over_budget must be mappings"
+    for name, checks in pending.items():
+        if not isinstance(checks, list) or not checks:
+            return {}, {}, f"{name}: pending needs a non-empty list of checks"
+        unknown = [c for c in checks if c not in _EXEMPTIONS]
+        if unknown:
+            return {}, {}, f"{name}: {unknown[0]} is not a check (budget, pointers)"
+        if len(set(checks)) != len(checks):
+            return {}, {}, f"{name}: a check is named twice"
+    for name, reason in over.items():
+        if reason is not None and not isinstance(reason, str):
+            return {}, {}, f"{name}: the reason for its exception is not text"
+    return ({str(k): v for k, v in pending.items()},
+            {str(k): (v or "").strip() for k, v in over.items()}, None)
+
+
+def _prose_size(skill_md: Path) -> tuple[int, int]:
+    """(body bytes, bytes of every file under references/): D-1, sized by bytes, never decoded."""
+    refs = skill_md.parent / "references"
+    ref_bytes = sum(p.stat().st_size for p in refs.rglob("*") if p.is_file()) if refs.is_dir() else 0
+    return len(_body(skill_md.read_text(encoding="utf-8")).encode()), ref_bytes
+
+
+def _body_blocks(text: str) -> list[tuple[str, list[tuple[int, str]]]]:
+    """The body's blocks (D-5) as (kind, [(file line, text)]): a heading, a paragraph, a list item with
+    its continuation lines, or a table cell. Fenced code is skipped, blockquote markers stripped."""
+    m = _FRONTMATTER.match(text)
+    base = text[:m.end()].count("\n") + 1 if m else 1  # file line of the body's first line
+    body = text[m.end():] if m else text
+    blocks: list[tuple[str, list[tuple[int, str]]]] = []
+    cur: list[tuple[int, str]] = []
+    fence = None
+    for i, raw in enumerate(body.split("\n")):
+        n = base + i
+        line = raw
+        while q := _QUOTE.match(line):
+            line = line[q.end():]
+        if fence:  # closed only by a run of the same character, at least as long
+            fence = None if re.fullmatch(rf"\s*{re.escape(fence[0])}{{{len(fence)},}}\s*", line) else fence
+            continue
+        f, h, li = _FENCE.match(line), _HEADING.match(line), _LIST_ITEM.match(line)
+        if f or h or li or not line.strip() or line.lstrip().startswith("|"):
+            if cur:
+                blocks.append(("text", cur))
+            cur = []
+        if f:
+            fence = f.group(1)
+        elif h:
+            blocks.append(("heading", [(n, h.group(1))]))
+        elif line.lstrip().startswith("|"):
+            if not _TABLE_SEP.match(line):
+                blocks += [("text", [(n, cell)]) for cell in re.split(r"(?<!\\)\|", line.strip().strip("|"))]
+        elif li:
+            cur = [(n, line[li.end():])]
+        elif line.strip():
+            cur.append((n, line))
+    if cur:
+        blocks.append(("text", cur))
+    return blocks
+
+
+def _sentences(text: str) -> list[str]:
+    """Split on `.`, `!`, `?` followed by whitespace or the end, never after `e.g` or `i.e`."""
+    out, pos = [], 0
+    for m in _SENTENCE_END.finditer(text):
+        if not re.search(r"\b(e\.g|i\.e)$", text[:m.start()], re.I):
+            out.append(text[pos:m.end()])
+            pos = m.end()
+    return out + [text[pos:]]
+
+
+def _pointer_errors(repo: Path, skill: str) -> list[str]:
+    """D-5: every mention of a file in the skill's own references/ sits in a sentence "Read P when
+    <situation>: it adds <what>."; no heading closes the body with a list of references."""
+    skill_md = _skill_paths(repo)[skill]
+    skill_dir, refs = skill_md.parent, skill_md.parent / "references"
+    own = {p.resolve() for p in refs.rglob("*")} if refs.is_dir() else set()
+    names = {p.name for p in own if p.is_file()}
+
+    def is_own(target: str) -> bool:
+        rel = unquote(target.split("#")[0]).strip()
+        return bool(rel) and "://" not in rel and (skill_dir / rel).resolve() in own
+
+    out: list[str] = []
+    for kind, lines in _body_blocks(skill_md.read_text(encoding="utf-8")):
+        found: list[tuple[int, str]] = []  # (line, path as written), in reading order
+        marked = []
+        for n, line in lines:
+            def ptr(path: str, n: int = n) -> str:
+                found.append((n, path))
+                return _PTR
+
+            def mention(m: re.Match) -> str:
+                if m["link"] is not None:
+                    raw = m["link"]
+                    target = raw[1:-1] if raw.startswith("<") else (raw.split() or [""])[0]
+                    return ptr(target.split("#")[0]) if is_own(target) else _OTHER
+                if m["code"] is not None:
+                    c = m["code"].strip()
+                    return ptr(c) if c in names or is_own(c) else _OTHER
+                tok = m["bare"]
+                core = tok.rstrip(".")
+                return ptr(core) + tok[len(core):] if core in names or is_own(core) else tok
+
+            marked.append(_MENTION.sub(mention, line))
+        if kind == "heading":
+            heading = lines[0][1]
+            out += [f"{skill}: line {n}: pointer to {p} is not {_POINTER_RULE}" for n, p in found]
+            if _CLOSING_LIST.search(marked[0]):  # its words, not a path it names
+                out.append(f'{skill}: line {lines[0][0]}: heading "{heading}" closes the body with a list '
+                           "of references")
+            continue
+        text = re.sub(r"\s+", " ", re.sub(r"\*+|(?<!\w)_+|_+(?!\w)", "", " ".join(marked))).strip()
+        for sentence in _sentences(text):
+            k = sentence.count(_PTR)
+            here, found = found[:k], found[k:]
+            if k and not _POINTER_FORM.match(sentence.strip()):
+                out += [f"{skill}: line {n}: pointer to {p} is not {_POINTER_RULE}" for n, p in here]
+    return out
+
+
+def prose_budget(repo: Path) -> list[str]:
+    """D-3/D-4: body plus references within PROSE_BUDGET unless exempt in skill-budget.yaml; this
+    check owns every error about that file, so a stale or unknown entry cannot stay."""
+    pending, over, bad = _skill_budget(repo)
+    if bad:
+        return [f"{SKILL_BUDGET_FILE}: {bad}"]
+    paths = _skill_paths(repo)
+    out = [f"{SKILL_BUDGET_FILE}: {n} is not a skill" for n in sorted({*pending, *over} - set(paths))]
+    out += [f"{SKILL_BUDGET_FILE}: {n} is exempt from the budget twice (pending and over_budget)"
+            for n in sorted(set(pending) & set(over)) if "budget" in pending[n]]
+    for name, md in paths.items():
+        body, refs = _prose_size(md)
+        total, exempt = body + refs, pending.get(name, [])
+        if name in over:
+            if not over[name]:
+                out.append(f"{SKILL_BUDGET_FILE}: {name} has no reason for its exception")
+            elif total <= PROSE_BUDGET:
+                out.append(f"{SKILL_BUDGET_FILE}: {name} is within budget ({total} bytes); remove its exception")
+        stale = [c for c in _EXEMPTIONS if c in exempt and
+                 (total <= PROSE_BUDGET if c == "budget" else not _pointer_errors(repo, name))]
+        if stale:
+            out.append(f"{SKILL_BUDGET_FILE}: {name} passes {', '.join(stale)}; remove it from pending")
+        if total > PROSE_BUDGET and "budget" not in exempt and name not in over:
+            out.append(f"{name}: prose is {total} bytes (body {body}, references {refs}); budget {PROSE_BUDGET}")
+    return out
+
+
+def reference_pointers(repo: Path) -> list[str]:
+    """D-5 on every skill not pending for `pointers`; silent while skill-budget.yaml is malformed
+    (prose_budget reports that once)."""
+    pending, _, bad = _skill_budget(repo)
+    if bad:
+        return []
+    return [e for name in _skill_dirs(repo) if "pointers" not in pending.get(name, [])
+            for e in _pointer_errors(repo, name)]
 
 
 def orphan_agent_references(repo: Path) -> list[str]:
@@ -1357,7 +1551,7 @@ ALL_CHECKS = (
     agents_canonical_invariant, hooks_inventory_shape, mod_bindings_match, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
-    top_level_folders, quality_files,
+    top_level_folders, quality_files, prose_budget, reference_pointers,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a
@@ -1365,7 +1559,7 @@ ALL_CHECKS = (
 METHOD_CHECKS = (
     frontmatter_present_errors, frontmatter_errors, frontmatter_strict_yaml, name_mismatch,
     skill_too_long, boundary_section_present, frontmatter_keys, description_too_long, description_angle_brackets,
-    body_agnosticism,
+    body_agnosticism, prose_budget, reference_pointers,
 )
 
 
@@ -1375,7 +1569,7 @@ def _print_trigger_notes(repo: Path) -> None:
         ("ownership-tripwire (Q5.2=B)", ownership_claim_report(repo)),
         ("reciprocal-Related (DEC-12 advisory)", reciprocal_related_report(repo)),
         ("description-length (method target)", description_length_report(repo)),
-        ("skill-size (specification budget)", skill_size_report(repo)),
+        ("lean body target", skill_size_report(repo)),
     ):
         if notes:
             print(f"\n(assist) {len(notes)} {label} note(s) — non-blocking:")
