@@ -55,7 +55,7 @@ list, shape, practices) and the modified `skill-crafting-method`.
 - [x] 2.1 Detail this stage in the PLAN (after-gate revision, S-10), including the
   `code-principles-governance` delta: ids survive; the ten clean-code and SOLID entries short and
   tied to their checks (DEC-12). Done as design D-9 to D-15 and the spec delta.
-- [ ] 2.2 Assess, rewrite, second reader, docs page for `mapping-suite-sdk`, extraction-threshold
+- [x] 2.2 Assess, rewrite, second reader, docs page for `mapping-suite-sdk`, extraction-threshold
   defect, remove from `pending` (design § outline). Detailed (D-9 to D-15):
   - [x] 2.2.1 Assessment record `evidence/assessment-cosmic-python.md` (D-7 format): every passage
     of the body and of the nine references, its class and where it went.
@@ -65,7 +65,7 @@ list, shape, practices) and the modified `skill-crafting-method`.
     form; `cosmic-python` removed from `skill-budget.yaml`.
   - [x] 2.2.4 `docs/practice/engineering-standards/worked-examples.md` (D-12); the citers of D-14.
   - [x] 2.2.5 Second reader (D-15); lost rules restored; verdict in the assessment record (D-16).
-  - [ ] 2.2.6 `make bundles`, `make skill-inventory`, `make validate`, `make validate-spine`,
+  - [x] 2.2.6 `make bundles`, `make skill-inventory`, `make validate`, `make validate-spine`,
     `openspec validate lean-skills --strict`; CHANGELOG `[Unreleased]` line; pull request.
 - [ ] 2.3 Owner checkpoint: the owner reviews the rewritten skill and its assessment before stage 3.
 
@@ -87,7 +87,7 @@ list, shape, practices) and the modified `skill-crafting-method`.
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9 · [x] 1.10
-- [x] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 3.1 · [ ] 4.1 · [ ] 5.1 · [ ] 5.2
+- [x] 2.1 · [x] 2.2 · [ ] 2.3 · [ ] 3.1 · [ ] 4.1 · [ ] 5.1 · [ ] 5.2
 
 ## Verification
 
