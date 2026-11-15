@@ -18,11 +18,11 @@ see the [README](README.md#installation).
 ```bash
 git clone https://github.com/<<GITHUB_ORG>>/<<PROJECT_SLUG>>.git
 cd <<PROJECT_SLUG>>
-make install        # uv sync with all dependency groups
+make install        # uv sync --locked with all dependency groups
 ```
 
-`make install` does **not** run `uv lock`. Lock dependencies explicitly with `make lock` when
-you change them.
+`make install` never writes `uv.lock`; a stale lock fails. After you change dependencies, run
+`make lock`.
 
 ## 2. Enable pre-commit hooks
 

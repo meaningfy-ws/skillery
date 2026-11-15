@@ -213,12 +213,13 @@ probes:
   - probe: "stop the agent from running destructive commands without asking"
     expect: guardrails
     near_miss_of: infrastructure-security
-  # add-devops-bundle DEC-18: reporting a skill or agent problem to skillery.
+  # project-setup-uv: new projects start on uv; building and publishing stays with the release skill.
   - probe: "set up a new Python project with uv"
     expect: project-setup
   - probe: "build the wheel with uv build and publish it to PyPI"
     expect: meaningfy-release
     near_miss_of: project-setup
+  # add-devops-bundle DEC-18: reporting a skill or agent problem to skillery.
   - probe: "the stack-operations skill gave a wrong command, report it to skillery"
     expect: skillery-feedback
   - probe: "open a PR with my fix and follow the branch naming convention"

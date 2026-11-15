@@ -18,8 +18,7 @@ ARG ENVIRONMENT
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    UV_COMPILE_BYTECODE=1 \
-    UV_LINK_MODE=copy
+    UV_COMPILE_BYTECODE=1
 
 COPY --from=ghcr.io/astral-sh/uv:0.13.5 /uv /uvx /bin/
 
@@ -39,9 +38,9 @@ RUN if [ "$ENVIRONMENT" = "development" ]; then \
 COPY <<PACKAGE>> <<PACKAGE>>/
 
 RUN if [ "$ENVIRONMENT" = "development" ]; then \
-      uv sync --locked --all-groups; \
+      uv sync --locked --no-editable --all-groups; \
     else \
-      uv sync --locked --no-dev; \
+      uv sync --locked --no-editable --no-dev; \
     fi
 
 # -----------------------------------------------------------------------------

@@ -450,12 +450,14 @@ references/modernizing-existing-projects.md; for the spine projection, reference
 EOF
   exit 0
 fi
-if [[ "$NO_LOCK" -eq 0 ]] && command -v uv >/dev/null 2>&1; then
-  echo "  running uv lock ..."
-  ( cd "$TARGET" && uv lock >/dev/null 2>&1 ) && echo "  wrote uv.lock" \
-    || echo "  NOTE: uv lock failed — run 'make lock' manually before 'make install'"
+if [[ "$NO_LOCK" -eq 1 ]]; then
+  echo "  NOTE: skipped uv lock (--no-lock); run 'make lock' before 'make install'"
+elif ! command -v uv >/dev/null 2>&1; then
+  echo "  NOTE: uv is not installed (https://docs.astral.sh/uv/getting-started/installation/); install it, then run 'make lock' before 'make install'"
 else
-  echo "  NOTE: skipped uv lock — run 'make lock' before 'make install'"
+  echo "  running uv lock ..."
+  ( cd "$TARGET" && uv lock >/dev/null ) && echo "  wrote uv.lock" \
+    || echo "  NOTE: uv lock failed — run 'make lock' manually before 'make install'"
 fi
 
 cat <<EOF

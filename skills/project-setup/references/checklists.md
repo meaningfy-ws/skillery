@@ -64,7 +64,7 @@ multi-component) apply only if the interview selected them.
 
 ## (b) Definition of Done (the scaffold is complete when…)
 
-- [ ] `make install` succeeds (all dependency groups; does **not** run `uv lock`; `uv` on PATH, else it prints the install link and fails).
+- [ ] `make install` succeeds (all dependency groups, `--locked`; never writes `uv.lock`, a stale lock fails until `make lock`; `uv` on PATH, else it prints the install link and fails).
 - [ ] `make check-all` is **green** on the empty skeleton (lint + types + architecture +
       `openspec validate --strict` + placeholder test).
 - [ ] `make lint` (ruff) and `make typecheck` (mypy) pass with no errors.

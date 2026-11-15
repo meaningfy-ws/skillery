@@ -38,10 +38,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: "<<PYTHON_VERSION>>"
-      - run: pipx run build
+          enable-cache: true
+      - run: make build
       - uses: actions/upload-artifact@v4
         with:
           name: dist

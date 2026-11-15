@@ -59,10 +59,10 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
 - **Responsibilities:** `[project]` (name=`<<PROJECT_SLUG>>`, version, description,
   `requires-python = ">=<<PYTHON_VERSION>>,<4.0"`, Apache-2.0 licence, classifiers, authors,
   maintainers); `[project.dependencies]` (runtime, pinned `==`); `[dependency-groups]`
-  (`dev`/`test`/`lint`, PEP 735); `[build-system]` `uv_build`; `[tool.uv.build-backend]` with `module-root = ""`.
+  (`dev`/`test`/`lint`, PEP 735); `[build-system]` `uv_build`; `[tool.uv.build-backend]` with `module-name` and `module-root = ""`.
 - **Key settings & why:**
-  - `module-root = ""` — **no-src adaptation**: `uv_build` looks for `<<PACKAGE>>/` at the repo
-    root instead of under `src/`.
+  - `module-name` names the package; `module-root = ""` is the **no-src adaptation**: `uv_build`
+    looks for `<<PACKAGE>>/` at the repo root instead of under `src/`.
   - Three dependency groups mirror D3. `lint` = ruff, mypy, import-linter, radon, xenon. `test` =
     pytest, pytest-bdd, pytest-cov, pytest-asyncio, testcontainers, polyfactory, httpx. `dev` =
     pre-commit, linkml.
@@ -150,7 +150,7 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
 
 - **Purpose:** the central developer UX; CI calls these targets verbatim (D12).
 - **Responsibilities (sections):**
-  - **Install/build:** `install` (`uv sync --all-groups`; needs `uv` on PATH, else prints the install link and fails; does **not** lock), `lock` (`uv lock`), `build` (`uv build`).
+  - **Install/build:** `install` (see `decisions.md` D3), `lock` (`uv lock`), `build` (`uv build`).
   - **Mutating quality:** `format`, `lint-fix`, `pre-commit`.
   - **Validation:** `lint`, `typecheck`, `check-architecture`, `test`, `test-unit`,
     `test-feature`, `test-e2e`, `test-integration`.
@@ -202,7 +202,7 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
 2. **Delete the moved `[tool.*]` blocks** from `pyproject.toml`, leaving only `[project]`,
    `[dependency-groups]`, `[build-system]`, `[tool.uv.build-backend]`.
 3. **Drop the `/src` layout:** move `src/<pkg>/` → `<pkg>/`; in `pyproject.toml` set
-   `module-root = ""` under `[tool.uv.build-backend]`; set
+   `module-name` and `module-root = ""` under `[tool.uv.build-backend]`; set
    `pythonpath = .` in `pytest.ini`, `source = <pkg>` in `.coveragerc`, `sonar.sources = <pkg>/`.
 4. **Re-point the Makefile:** remove every `cd src`; reference config by root filename.
 5. **Verify:** `make install && make check-all` must pass green on the migrated tree.

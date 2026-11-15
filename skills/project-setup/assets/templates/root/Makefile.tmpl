@@ -69,11 +69,11 @@ help: ## Display available targets
 .PHONY: install-uv install lock build
 
 install-uv: ## Check that uv is installed (never installs it)
-	@ command -v uv >/dev/null 2>&1 || { echo "uv is not installed: see https://docs.astral.sh/uv/getting-started/installation/"; exit 1; }
+	@ command -v uv >/dev/null 2>&1 || { echo "$(ICON_ERROR) uv is not installed: see https://docs.astral.sh/uv/getting-started/installation/" >&2; exit 1; }
 
 install: install-uv ## Install project dependencies (all groups; does NOT lock)
 	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Installing dependencies$(END_BUILD_PRINT)"
-	@ uv sync --all-groups
+	@ uv sync --all-groups --locked
 	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Dependencies installed$(END_BUILD_PRINT)"
 
 lock: ## Update uv.lock

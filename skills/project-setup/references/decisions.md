@@ -48,9 +48,9 @@ backend is `uv_build`). Group dependencies semantically:
 | `lint` | ruff, mypy, import-linter, radon, xenon | `--group lint` |
 
 **Why not requirements.txt** (the requirements.txt approach): no lockfile, no semantic groups, no extras. Pin in
-one place with a resolver. `make install` runs `uv sync --all-groups`; it needs `uv` on PATH and, when missing, prints the
-install link and fails (it never installs uv). It must **not** run `uv lock` (locking is the
-explicit `make lock` target).
+one place with a resolver. `make install` runs `uv sync --all-groups --locked`; it needs `uv` on PATH and, when missing, prints
+the install link to stderr and fails (it never installs uv). It never writes the lock: a stale or
+missing `uv.lock` fails with uv's message, and `make lock` is the only writer.
 
 ## D4 — Ruff replaces black + isort + flake8 + pylint
 

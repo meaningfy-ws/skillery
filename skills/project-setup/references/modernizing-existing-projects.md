@@ -109,9 +109,10 @@ The recommended order (skip steps already conformant):
 4. **pyproject normalization** — strip `[tool.*]` blocks into the dedicated files now present,
    leaving pyproject minimal. Recipe: `config-files.md` §"Migrating an existing repo's
    `pyproject.toml`". Commit.
-   A Poetry project also moves to uv here: `uv` reads `[project]` and `[dependency-groups]`, so drop
-   `[tool.poetry]` and `poetry.lock`, set `[build-system]` to `uv_build` (with `module-root = ""`)
-   and run `uv lock`. Move any Poetry-only dependency table into `[project]` or `[dependency-groups]` first.
+   A Poetry project also moves to uv here: `uv` reads `[project]` and `[dependency-groups]`. Move any
+   Poetry-only dependency table into them first, then add `[tool.uv.build-backend]` with
+   `module-name = "<pkg>"` and `module-root = ""`; set `[build-system]` to `uv_build`; drop
+   `[tool.poetry]` and `poetry.lock`; run `uv lock`.
 5. **Tooling swap** — replace black/isort/flake8/pylint with Ruff; fix the lint debt it surfaces
    in its own commit(s). Add mypy if absent. Commit.
 6. **Test reorganization** — introduce the type-split `tests/` tree + the marker-injection
