@@ -1847,3 +1847,118 @@ def test_binding_size_fails_when_the_comment_is_malformed(tmp_path, line):
     _binding_repo(tmp_path, "a" * 10, line)
     errs = lint.binding_size(tmp_path)
     assert len(errs) == 1 and "size budget" in errs[0]
+
+
+# ---- binding_size adversarial (stage 3 tester)
+_BUDGET = "<!-- size budget: 50 characters -->"
+
+
+def _write(root: Path, rel: str, data: bytes):
+    p = root / rel
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_bytes(data)
+
+
+def test_binding_size_crlf_files_are_measured_with_single_newlines(tmp_path):
+    body = ("a" * 24 + "\n") * 2  # 50 characters with LF
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + body).replace("\n", "\r\n").encode())
+    _write(tmp_path, "AGENTS.md", (_BUDGET + "\n" + body).replace("\n", "\r\n").encode())
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_crlf_one_over_still_fails(tmp_path):
+    body = "a" * 51
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\r\n" + body).encode())
+    _write(tmp_path, "AGENTS.md", (_BUDGET + "\r\n" + body).encode())
+    assert len(lint.binding_size(tmp_path)) == 2
+
+
+def test_binding_size_bom_on_the_template_comment_does_not_pass_silently(tmp_path):
+    _write(tmp_path, _TMPL_REL, b"\xef\xbb\xbf" + _BUDGET.encode() + b"\n" + b"a" * 500)
+    _write(tmp_path, "AGENTS.md", b"a" * 500)
+    assert lint.binding_size(tmp_path) != []
+
+
+def test_binding_size_trailing_space_on_template_comment_does_not_pass_silently(tmp_path):
+    _write(tmp_path, _TMPL_REL, (_BUDGET + " \n" + "a" * 500).encode())
+    _write(tmp_path, "AGENTS.md", b"a" * 500)
+    assert lint.binding_size(tmp_path) != []
+
+
+def test_binding_size_comment_on_the_second_line_fails_loudly(tmp_path):
+    _write(tmp_path, _TMPL_REL, ("<!-- x -->\n" + _BUDGET + "\n" + "a" * 10).encode())
+    assert len(lint.binding_size(tmp_path)) == 1
+
+
+def test_binding_size_empty_template_fails_loudly(tmp_path):
+    _write(tmp_path, _TMPL_REL, b"")
+    assert len(lint.binding_size(tmp_path)) == 1
+
+
+def test_binding_size_leading_zeros_read_as_the_decimal_figure(tmp_path):
+    line = "<!-- size budget: 0050 characters -->"
+    _write(tmp_path, _TMPL_REL, (line + "\n" + "a" * 51).encode())
+    _write(tmp_path, "AGENTS.md", b"a" * 50)
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and "AGENTS.md.tmpl" in errs[0]
+
+
+def test_binding_size_huge_figure_passes_without_overflow(tmp_path):
+    line = "<!-- size budget: " + "9" * 400 + " characters -->"
+    _write(tmp_path, _TMPL_REL, (line + "\n" + "a" * 10).encode())
+    _write(tmp_path, "AGENTS.md", b"a" * 10)
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_zero_budget_fails_any_content_and_passes_empty(tmp_path):
+    line = "<!-- size budget: 0 characters -->"
+    _write(tmp_path, _TMPL_REL, (line + "\n" + "a").encode())
+    _write(tmp_path, "AGENTS.md", b"")
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and "AGENTS.md.tmpl" in errs[0]
+
+
+def test_binding_size_repeated_comment_in_agents_md_counts_the_second(tmp_path):
+    # only the leading comment is excluded; a second copy is content (36+15 chars here)
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + "a").encode())
+    _write(tmp_path, "AGENTS.md", (_BUDGET + "\n" + _BUDGET + "\n" + "a" * 15).encode())
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and errs[0].startswith("AGENTS.md")
+
+
+def test_binding_size_agents_comment_with_other_figure_is_still_excluded(tmp_path):
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + "a").encode())
+    _write(tmp_path, "AGENTS.md", ("<!-- size budget: 99999 characters -->\n" + "a" * 50).encode())
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_template_other_first_comment_is_counted_in_the_body(tmp_path):
+    ver = "<!-- meaningfy-template-version: 3.0.0 -->"  # 42 chars
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + ver + "\n" + "a" * 8).encode())  # body 51
+    _write(tmp_path, "AGENTS.md", b"a")
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and "AGENTS.md.tmpl" in errs[0]
+
+
+def test_binding_size_template_with_version_comment_first_has_no_budget(tmp_path):
+    _write(tmp_path, _TMPL_REL, b"<!-- meaningfy-template-version: 3.0.0 -->\n" + _BUDGET.encode() + b"\n")
+    assert len(lint.binding_size(tmp_path)) == 1
+
+
+def test_binding_size_symlinked_agents_md_is_measured(tmp_path):
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + "a").encode())
+    _write(tmp_path, "real.md", b"a" * 51)
+    (tmp_path / "AGENTS.md").symlink_to(tmp_path / "real.md")
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and errs[0].startswith("AGENTS.md")
+
+
+def test_binding_size_missing_agents_md_with_template_is_reported_or_tolerated(tmp_path):
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + "a").encode())
+    assert lint.binding_size(tmp_path) == []  # documents the silent skip; INV-2 speaks of AGENTS.md "longer"
+
+
+def test_binding_size_astral_characters_count_once(tmp_path):
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + "\U0001F600" * 50).encode())
+    _write(tmp_path, "AGENTS.md", ("\U0001F600" * 50).encode())
+    assert lint.binding_size(tmp_path) == []
