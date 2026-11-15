@@ -131,8 +131,8 @@ quality/
 The artifact type is named **Quality check** (D-36; the PLAN first called it Check). `quality/` holds rule files and configurations only (DEC-4,
 confirmed by the developer, Q-23). A repo lint `quality_files` (added to `ALL_CHECKS`) allows under
 `quality/` only `README.md` at its root and files ending `.yaml`, `.yml`, `.json`, `.ini` (under
-`quality/semgrep/` only `.yaml`, D-40) and, as Semgrep fixtures only, `.py` beside a rule of the
-same name; it skips `__pycache__`.
+`quality/semgrep/` a `.yml` file is refused: Semgrep rules are `.yaml`, D-40) and, as Semgrep
+fixtures only, `.py` beside a rule of the same name; it skips `__pycache__`.
 `TOP_LEVEL_FOLDERS` gains `quality`. EPIC C adds `quality/vale/` beside these (DEC-7); nothing here
 blocks it.
 
@@ -409,7 +409,8 @@ check-makefile`; `check-semgrep`, `check-layout` and `check-makefile` depend on 
 ### D-6 Suppressions carry a reason
 
 `quality/semgrep/suppressions/mfy-suppression-without-reason.yaml` (`languages: [generic]`) flags a
-`# nosemgrep` comment that has no ` -- <reason>` and a `# noqa` comment that has no ` -- <reason>`.
+`# nosemgrep` comment that has no ` -- <reason>` and a `# noqa` comment that has no ` -- <reason>`
+(in any letter case, and `# ruff: noqa` and `# flake8: noqa` too, D-40).
 It runs in its own pass with `--disable-nosem`, because a bare `# nosemgrep` would otherwise
 suppress the rule that looks for it. The convention is stated once, in
 `project-setup/references/config-files.md` under a new heading *Suppressions*, which the rule's
@@ -1238,7 +1239,7 @@ epic session.
     `Makefile.tmpl`, `tools.sha256`, `requirements-quality.txt`, `pyproject.toml.tmpl`, the
     pre-commit `rev` and `dependencies.yaml`; forward references to
     `tests/test_quality_properties.py` say "from stage 3".
-  - *Repo lint.* `quality_files` takes only `.yaml` rules under `quality/semgrep/`; a file counts
+  - *Repo lint.* `quality_files` refuses a `.yml` file under `quality/semgrep/`; a file counts
     as named in `quality/README.md` only by its exact path under `quality/` in backticks; an
     unreadable README is a finding, not a crash.
   - *The pin.* The version-sync gate compares the pin exactly, not by suffix.

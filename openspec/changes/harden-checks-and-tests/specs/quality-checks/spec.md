@@ -32,7 +32,8 @@ configurations; a later change MAY add the rule files and configurations of anot
 A Meaningfy Semgrep rule SHALL have the id prefix `mfy-`, SHALL cite in its message the owner of
 what it checks (a catalogue entry id, a testing checklist item, or for the suppression rule the
 suppression convention of `project-setup`), and SHALL ship with a fixture file beside it that marks
-at least one bad case (`ruleid:`) and one good case (`ok:`). A rule file SHALL end in `.yaml`.
+at least one bad case (`ruleid:`) and one good case (`ok:`). A rule file SHALL end in `.yaml`; a
+`.yml` file under `quality/semgrep/` SHALL be refused.
 The fixture check SHALL need no Semgrep installation (harden-checks-and-tests DEC-15, design D-3,
 D-8, D-40).
 
@@ -68,8 +69,8 @@ repository, commit, rule paths, licence, the reason it was picked and its mode; 
 start in mode `report-only`. No external rule text SHALL be stored in the repository. Each entry
 SHALL be approved by the owner in the pull request that adds it or changes its commit. A project
 SHALL check every entry again before it fetches or uses it, and SHALL refuse an entry whose
-repository is not `https`, whose id or rule path is not a plain name, or whose commit is not a
-commit id (harden-checks-and-tests DEC-6, DEC-13, design D-40).
+repository is not `https`, whose id is not a plain name, whose rule path is not a plain relative
+path, or whose commit is not a commit id (harden-checks-and-tests DEC-6, DEC-13, design D-40).
 
 #### Scenario: A source without a licence
 - **WHEN** an entry of `external.json` has an empty `licence`
@@ -81,7 +82,7 @@ commit id (harden-checks-and-tests DEC-6, DEC-13, design D-40).
 
 #### Scenario: An entry that would write outside its folder
 - **WHEN** a project's fetched `external.json` has an entry whose id or rule path holds `..`
-- **THEN** `make quality-tools` fails, naming the entry and the field, and fetches nothing for it
+- **THEN** `make quality-tools` fails, naming the entry and the field, and fetches no source
 
 #### Scenario: A new source gates at once
 - **WHEN** a pull request adds an entry with mode `gate` that the base branch does not have
