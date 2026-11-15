@@ -55,7 +55,7 @@ pull request, before delivery (D-17).
 - [x] 1.7 Pages that describe the MEDIUM allowance or compaction between stages:
   `docs/development/workflows.md`, `docs/environment/navigator.md`, the small-stage lines of
   `skills/meaningfy-code-review/SKILL.md` (D-4).
-- [ ] 1.8 Close stage 1: CHANGELOG line (BREAKING for a lead that compacted between stages or relied
+- [x] 1.8 Close stage 1: CHANGELOG line (BREAKING for a lead that compacted between stages or relied
   on five lenses at MEDIUM); `make validate` green; the PR; the note committed; watch-and-merge; the
   session ends.
 
@@ -118,7 +118,7 @@ that record exists.
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [ ] 1.8
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
 - [ ] 2.0 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
 - [ ] 3.0 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
 
