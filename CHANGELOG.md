@@ -12,6 +12,17 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Changed
+
+- **`cosmic-python` is lean** (EPIC `lean-skills`, the pilot). The skill drops from 126 KB to
+  about 20 KB: it keeps the layer contract, component organisation, what to test per layer and the
+  code-principles catalogue. The catalogue gains a clean-code and SOLID table (`CC-NAMES` to
+  `CC-DIP`) and three house rules found in the old examples (`BP-ABC-INTERFACES`,
+  `BP-INJECT-ADAPTERS`, `BP-STRICT-BASE-MODEL`); every existing id is unchanged. The seven copied
+  example files are gone: the new page `docs/practice/engineering-standards/worked-examples.md`
+  links the same patterns in the public `mapping-suite-sdk`. Tooling and CI advice now lives only
+  in `project-setup`. If you cite a `cosmic-python` id, nothing changes for you.
+
 ### Added
 
 - **The book rule sets are registered per bundle** (EPIC `orchestrate-external-skills`, stage 1a).

@@ -30,9 +30,9 @@ Each entry has a stable slug id. Cite as e.g. `cosmic-python:AP-DICT-AS-MODEL`.
 | `BP-DOMAIN-REVEALING-NAMES` | Name modules/classes/functions for the **domain/product thing** they hold, self-explanatory at a glance. Pattern *allusions* are fine (`graph_store` as a repository, `…_unit_of_work`), but never bare abstractions you must open to understand (`port.py`, `factory.py`, `utils.py`, `helpers.py`). A bit longer is fine; cryptic is not. |
 | `BP-EXCEPTIONS-MODULE` | Exceptions live in a module named **`exceptions.py`** (never `errors.py`, never buried inside a logic module — they must stay maintainable). Place per layer by *kind*: domain/invariant errors in the models layer, I/O/operational in adapters, use-case/business in services; or one shared module for a small component. **Check `core`/`commons` first** — reuse an existing exception before minting a local one. |
 | `BP-CONSTANTS-HOME` | A couple of small reusable constants can live in the package `__init__.py` — don't manufacture a `constants.py` for them. Shared **domain vocabulary** (e.g. namespace prefix→IRI bindings) is a *maintained, reusable resource* in `core`/`commons`, not an inline dict embedded in an adapter (KISS, but one home — `PR-SSOT-DRY`). |
-| `BP-ABC-INTERFACES` | An abstract interface is an `abc.ABC` named `<Thing>ABC` and lives in `adapters/`; each implementation is named for what it wraps (`RepositoryABC` → `MongoDBRepository`, `ExtractorABC` → `ArchiveExtractor`). |
-| `BP-INJECT-ADAPTERS` | A service takes each adapter it uses as a parameter typed by the adapter's `<Thing>ABC`, so a test passes a fake; it never builds a concrete adapter inside its logic. A library's public service function may default the parameter to the production implementation (`loader = loader or PackageLoader()`). |
-| `BP-STRICT-BASE-MODEL` | Domain models inherit one shared Pydantic base in `core`/`commons` that rejects unknown fields and validates on assignment (`extra="forbid"`, `validate_assignment=True`). |
+| `BP-ABC-INTERFACES` | An abstract interface is an `abc.ABC` named `<Thing>ABC`, or a `typing.Protocol` where structural typing fits, and lives in `adapters/`; each implementation is named for what it wraps (`RepositoryABC` → `MongoDBRepository`, `ExtractorABC` → `ArchiveExtractor`). |
+| `BP-INJECT-ADAPTERS` | A service takes each adapter it uses as a parameter typed by the adapter's `<Thing>ABC`, so a test passes a fake; it never builds a concrete adapter inside its logic. A service may default the parameter to the production implementation (`loader = loader or PackageLoader()`); that default is its only concrete import. |
+| `BP-STRICT-BASE-MODEL` | Domain models inherit one shared Pydantic base in `core`/`commons` that rejects unknown fields and validates on assignment (`extra="forbid"`, `validate_assignment=True`). Code reads field names through the model (`fields(Model).x`), not as free strings. |
 
 ## Anti-patterns (the ❌ "don't" — smell → fix)
 
@@ -59,10 +59,10 @@ These numbers are Meaningfy's and win over the book rule sets' (function size, e
 | id | Rule |
 |----|------|
 | `CC-NAMES` | Names reveal intent: `calculate_customer_tier()`, not `calc_tier()`. For modules and classes see `BP-DOMAIN-REVEALING-NAMES`. |
-| `CC-SMALL-FUNCTIONS` | A function does one thing and stays under 25 lines; if describing it needs "and", split it. |
+| `CC-SMALL-FUNCTIONS` | A function does one thing and aims to stay under 25 lines (a target); if describing it needs "and", split it. |
 | `CC-NO-MAGIC-STRINGS` | No raw literal for a symbolic value; use a constant or an enum (`BP-CONSTANTS-ENUMS`, `AP-FREESTR-ANYLAYER`). |
 | `CC-SHALLOW-NESTING` | At most three levels of nesting in a function; deeper, extract a function or return early. |
-| `CC-EXTRACT-THRESHOLD` | Two or three similar lines stay; five or more are extracted into one parameterised form (`PR-REUSE-COMPACT`). |
+| `CC-EXTRACT-THRESHOLD` | Two or three similar lines stay; five or more are extracted into one parameterised form; four is a judgement call (`PR-REUSE-COMPACT`). |
 | `CC-SRP` | One reason to change per class or function; a second reason means a split. |
 | `CC-OCP` | Extend with a new class or strategy, not with a new branch in existing code. |
 | `CC-LSP` | A subclass keeps its base's contract; an override that breaks expected behaviour is a defect. |

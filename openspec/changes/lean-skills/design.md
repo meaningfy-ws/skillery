@@ -418,6 +418,22 @@ passage moved instead of cut (RISK-2), and every citer left untrue (D-14). Lost 
 before the pull request; the rest is decided by the lead as in the stage loop. The check is the
 full gates (`make validate`, `make validate-spine`) and CI. Then the owner's checkpoint (task 2.3).
 
+**D-16 The second reader's findings, decided by the lead (2026-11-15).** Verdict "lost: three
+rules"; all restored. (1) An interface may be an `abc.ABC` named `<Thing>ABC` or a
+`typing.Protocol` where structural typing fits (the old "interfaces/protocols"; the SDK uses
+both). (2) The composition root: an entrypoint may construct adapters and pass them to the
+service, and never calls them; a service may default an adapter parameter to the production
+implementation, its only concrete import (old DI example). (3) Adapter tests use a double of the
+external system in a unit test, or the real system in an integration test (`project-setup`'s
+tiers). Also fixed: the Quick Start no longer claims `make check-architecture` checks the CLI rule;
+the citers that still sent CI to `cosmic-python` (`project-setup` defaults table, the `AGENTS.md`
+template, `architectural-guardrails.md`); the lens rows cover the three new `BP-` ids, `CC-DIP` sits
+with L3; OpenTelemetry and JSON logging restored (doubt goes to keep); the `fields()` convention for
+field names joins `BP-STRICT-BASE-MODEL`; `CC-SMALL-FUNCTIONS` keeps "a target", four similar lines
+are a judgement call; the docs page drops the generic-repository sentence until the orchestrator
+writes that override. Under the floor, pre-existing: `architecture-guardrails.md` and two
+templates still say `domain` for `models/`; the description still names ADRs and CI (D-14).
+
 ### Anti-patterns
 
 | Don't | Do instead | Why |

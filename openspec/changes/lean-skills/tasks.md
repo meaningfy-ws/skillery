@@ -57,14 +57,14 @@ list, shape, practices) and the modified `skill-crafting-method`.
   tied to their checks (DEC-12). Done as design D-9 to D-15 and the spec delta.
 - [ ] 2.2 Assess, rewrite, second reader, docs page for `mapping-suite-sdk`, extraction-threshold
   defect, remove from `pending` (design § outline). Detailed (D-9 to D-15):
-  - [ ] 2.2.1 Assessment record `evidence/assessment-cosmic-python.md` (D-7 format): every passage
+  - [x] 2.2.1 Assessment record `evidence/assessment-cosmic-python.md` (D-7 format): every passage
     of the body and of the nine references, its class and where it went.
-  - [ ] 2.2.2 Catalogue: the `## Clean code and SOLID` table with the ten `CC-` ids (D-10), the two
+  - [x] 2.2.2 Catalogue: the `## Clean code and SOLID` table with the ten `CC-` ids (D-10), the two
     numbers of D-11, any passage sorted keep from the example files (D-12).
-  - [ ] 2.2.3 Body rewritten to D-9; the seven example files deleted; pointers in the sentence
+  - [x] 2.2.3 Body rewritten to D-9; the seven example files deleted; pointers in the sentence
     form; `cosmic-python` removed from `skill-budget.yaml`.
-  - [ ] 2.2.4 `docs/practice/engineering-standards/worked-examples.md` (D-12); the citers of D-14.
-  - [ ] 2.2.5 Second reader (D-15); lost rules restored; verdict in the assessment record.
+  - [x] 2.2.4 `docs/practice/engineering-standards/worked-examples.md` (D-12); the citers of D-14.
+  - [x] 2.2.5 Second reader (D-15); lost rules restored; verdict in the assessment record (D-16).
   - [ ] 2.2.6 `make bundles`, `make skill-inventory`, `make validate`, `make validate-spine`,
     `openspec validate lean-skills --strict`; CHANGELOG `[Unreleased]` line; pull request.
 - [ ] 2.3 Owner checkpoint: the owner reviews the rewritten skill and its assessment before stage 3.

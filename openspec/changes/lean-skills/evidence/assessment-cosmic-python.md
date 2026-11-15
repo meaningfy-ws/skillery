@@ -1,8 +1,8 @@
 # Assessment: cosmic-python
-Before: body 20705 bytes, references 105475 bytes. After: body 6638, references 13712.
+Before: body 20705 bytes, references 105475 bytes. After: body 6767, references 13909.
 
 Measured with the lint's own `_body` on `develop` `ad0518c` (before) and on the rewrite (after).
-Total prose 126180 → 20350 bytes, under the 24576 budget; the skill leaves `pending` with no
+Total prose 126180 → 20676 bytes, under the 24576 budget; the skill leaves `pending` with no
 `over_budget` entry. Line numbers are those of the file before the rewrite.
 
 ## SKILL.md body
@@ -32,7 +32,7 @@ Total prose 126180 → 20350 bytes, under the 24576 budget; the skill leaves `pe
 | 21 | § Workflow 2, code review questions, l. 198-222 | owner, drop | `meaningfy-code-review` lenses over the catalogue | duplicates of catalogue entries dropped (D-13) |
 | 22 | § Workflow 3, test organisation per layer, l. 224-235 | keep | body Rules, layer test table | rewritten for fakes over mocks (testing checklist 4-5) |
 | 23 | § Workflow 4, drift table, l. 237-248 | owner, drop | catalogue `AP-IO-IN-MODELS`, `AP-LOGIC-IN-EDGES`, `AP-CROSS-VARIANT-IMPORT`, `AP-FREESTR-ANYLAYER`, `BP-COVERAGE-PER-LAYER`; review → `meaningfy-code-review` | "clever one-liners" row: drop, general clean-code knowledge in the book sets |
-| 24 | § Quality assurance and tooling: tool list, l. 254-262 | owner | `project-setup` (templates, `config-files.md`) | named pylint, flake8, tox, SonarCloud, which the scaffold no longer uses (D-13) |
+| 24 | § Quality assurance and tooling: tool list, l. 254-262 | owner | `project-setup` (templates, `config-files.md`, `ci-and-infra.md`) | named pylint, flake8 and tox, which the scaffold no longer uses; SonarCloud stays, wired by `project-setup` (`ci-and-infra.md`, SonarCloud + coverage wiring) |
 | 25 | § Typical Makefile pattern, l. 264-273 | owner | `project-setup` (Makefile template, `ci-and-infra.md`) | |
 | 26 | § CI/CD workflow, l. 275-281 | owner | `project-setup` (`ci-and-infra.md`); spec freshness → `clarity-gate` | |
 | 27 | § Principles: on code structure, l. 287-293 | drop | | repeats rows 15, 18 (the second, looser thresholds were the D-11 defect) |
@@ -97,7 +97,7 @@ Total prose 126180 → 20350 bytes, under the 24576 budget; the skill leaves `pe
 | # | Passage | Class | Where it went | Note |
 |---|---|---|---|---|
 | 63 | Load services, one function per use case | example | docs page, Services | |
-| 64 | Same, the house convention: adapters as parameters with a production default | keep | catalogue `BP-INJECT-ADAPTERS` (new) | reconciles the old body's "never import concrete implementations in services" with the real code |
+| 64 | Same, the house convention: adapters as parameters with a production default | keep | catalogue `BP-INJECT-ADAPTERS` (new) | any service may default to the production adapter, its only concrete import (D-16) |
 | 65 | Precondition checks in services | owner | `BP-VALIDATE-AT-BOUNDARY` | |
 | 66 | Log and skip in a batch (graceful degradation) | drop | | general knowledge |
 | 67 | Serialisation and validation services | example | not linked | nothing house-specific |
@@ -112,7 +112,7 @@ Total prose 126180 → 20350 bytes, under the 24576 budget; the skill leaves `pe
 | 71 | Typer app with subcommands per module | example | docs page, Entrypoints (`mssdk.py`) | |
 | 72 | Validate subcommands, exit codes, error messages | example | docs page, Entrypoints (`validate.py`) | exit-code mapping is general knowledge |
 | 73 | FastAPI pattern | example | docs page says there is no API entrypoint | the code was invented, not from the project |
-| 74 | Anti-patterns, "don't call adapters directly" | keep | body layer contract (every entrypoint goes through a service) | stage 1a structure override |
+| 74 | Anti-patterns, "don't call adapters directly" | keep | body layer contract (the entrypoint is the composition root: it may construct adapters, never calls them) | stage 1a structure override; composition root restored (D-16) |
 | 75 | Other anti-patterns (swallowed exceptions, mixed response types) | drop | | general knowledge |
 | 76 | Testing entrypoints with patched services | example | docs page, Tests | rule in body layer test table |
 | 77 | Summary | drop | | repetition |
@@ -146,10 +146,10 @@ Total prose 126180 → 20350 bytes, under the 24576 budget; the skill leaves `pe
 | 90 | Configuration with `env_property` and the resolver | owner | `PR-CONFIG-DECOUPLED`; `project-setup` `settings-pattern.md`; docs page, Configuration | |
 | 91 | Exception hierarchy (base plus subclasses) | example | docs page, Exceptions | placement is `BP-EXCEPTIONS-MODULE`; a hierarchy is general knowledge |
 | 92 | Chain of responsibility with a decorator | drop | | general pattern |
-| 93 | Protocol instead of ABC | drop | | general knowledge; the house form is `BP-ABC-INTERFACES` |
+| 93 | Protocol instead of ABC | keep | catalogue `BP-ABC-INTERFACES` (a `typing.Protocol` where structural typing fits) | restored after the second reader (D-16) |
 | 94 | Version detection with matcher rules | drop | | project-specific |
 | 95 | Cross-version dispatch service | drop | | project-specific; its if-chain contradicts `CC-OCP` |
 | 96 | Hasher with line-ending normalisation | drop | | project-specific |
 | 97 | Summary | drop | | repetition |
 
-Second reader: pending
+Second reader: general-purpose subagent (fresh), 2026-11-15. Verdict: lost: Protocol as an interface form, the composition root, adapter tests against a double; restored in the fix pass (design D-16).

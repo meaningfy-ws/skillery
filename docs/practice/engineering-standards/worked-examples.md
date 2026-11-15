@@ -24,8 +24,7 @@ layers. Where the code differs from the skill, the skill wins; the differences a
   an abstract interface, `ExtractorABC`, and an implementation named for what it wraps,
   `ArchiveExtractor` (`cosmic-python:BP-ABC-INTERFACES`).
 - [`core/adapters/repository.py`](https://github.com/meaningfy-ws/mapping-suite-sdk/blob/develop/mapping_suite_sdk/core/adapters/repository.py):
-  a generic `RepositoryABC` and its `MongoDBRepository`. A generic repository base is allowed in
-  Meaningfy code. Its exceptions sit in the same file, which `BP-EXCEPTIONS-MODULE` would move.
+  a generic `RepositoryABC` and its `MongoDBRepository`. Its exceptions sit in the same file, which `BP-EXCEPTIONS-MODULE` would move.
 - [`core/adapters/tracer.py`](https://github.com/meaningfy-ws/mapping-suite-sdk/blob/develop/mapping_suite_sdk/core/adapters/tracer.py):
   tracing as decorators (`traced_routine`, `traced_class`), so services and adapters carry no
   inline spans.
@@ -42,8 +41,8 @@ layers. Where the code differs from the skill, the skill wins; the differences a
 - [`tools/entrypoints/cli/mssdk.py`](https://github.com/meaningfy-ws/mapping-suite-sdk/blob/develop/mapping_suite_sdk/tools/entrypoints/cli/mssdk.py):
   the Typer application, with one subcommand per module.
 - [`tools/entrypoints/cli/validate.py`](https://github.com/meaningfy-ws/mapping-suite-sdk/blob/develop/mapping_suite_sdk/tools/entrypoints/cli/validate.py):
-  a subcommand that parses its arguments and calls the validation services. It also builds loaders,
-  which are adapters; the skill sends every entrypoint through a service instead.
+  a subcommand that parses its arguments, builds the loaders (adapters) and passes them to the
+  validation services. The entrypoint is the composition root: it wires adapters, it never calls them.
 - API: the project has no HTTP entrypoint, so there is no API example here.
 
 ## Tests per layer and test doubles

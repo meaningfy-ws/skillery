@@ -30,7 +30,7 @@ Spec line: "a customer's tier follows from their yearly spend; the CLI shows it"
 | a Typer command that parses the id, calls the service and prints the tier | `billing/entrypoints/cli.py` |
 | a models test with no fake; a services test with an in-memory fake repository | `tests/unit/billing/models/`, `tests/unit/billing/services/` |
 
-`make check-architecture` passes: no model imports an adapter, the CLI never touches the repository.
+`make check-architecture` passes: no model imports an adapter.
 
 ## Workflow
 
@@ -61,8 +61,9 @@ entrypoints → services → models
   interfaces live here too (`BP-ABC-INTERFACES`). Imports `models/` only.
 - `services/`: one function or class per use case; orchestrates models and adapters, owns
   transactions and the error policy. Receives adapters by injection (`BP-INJECT-ADAPTERS`).
-- `entrypoints/`: CLI, API, schedulers, workers. Parse, call a service, format the answer. Every
-  entrypoint goes through a service, never straight to an adapter.
+- `entrypoints/`: CLI, API, schedulers, workers. Parse, call a service, format the answer. An
+  entrypoint is the composition root: it may construct adapters and pass them to the service, but
+  never calls an adapter itself.
 - Input is validated once, at the boundary (`BP-VALIDATE-AT-BOUNDARY`).
 
 **Component organisation** (`PR-COMPONENT-FIRST`). A small service stays one level: the four
@@ -87,15 +88,16 @@ No semantic label exists only as a free string.
 | Layer | Tests check | With |
 |---|---|---|
 | `models/` | rules, invariants, transformations | no I/O, no fake |
-| `adapters/` | the translation to and from the external system | the real system in an integration test |
+| `adapters/` | the translation to and from the external system | a double of the external system (e.g. `mongomock`) in a unit test, or the real system in an integration test |
 | `services/` | the use case, every branch | fakes of the adapters |
 | `entrypoints/` | parsing, status or exit codes, response shape | the service replaced |
 
 Read `references/testing-checklist.md` when you write a test or brief someone to write one: it
 holds the rules every test follows, from where it lives to fakes, assertions and time.
 
-**Observability.** Logging lives in `services/` and `entrypoints/`, structured, never `print`.
-Tracing is a decorator on service functions and adapter classes, not spans written inline.
+**Observability.** Logging lives in `services/` and `entrypoints/`, structured (JSON with
+context), never `print`. Tracing (OpenTelemetry) is a decorator on service functions and adapter
+classes, not spans written inline.
 
 **Configuration.** Code reads settings without knowing their source (`PR-CONFIG-DECOUPLED`); the
 resolver pattern is `project-setup`'s.
