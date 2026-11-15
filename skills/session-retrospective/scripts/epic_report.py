@@ -27,6 +27,7 @@ SKILL_PHASE = [("shape", r"brainstorm|epic-planning|opsx:propose|opsx:explore|op
                ("review", r"code-review|requesting-code-review|receiving-code-review|verification"),
                ("release", r"release|git-workflow|commit|finishing"),
                ("archive", r"archive|spec-stewardship|opsx:sync|sync-specs")]
+SPAN_END = r"spec-stewardship|opsx:archive|openspec-archive|meaningfy-release"  # only these end a mark's span (a commit skill does not)
 
 
 def role_of(a):
@@ -75,7 +76,7 @@ def aggregate(sessions, agents, events):
             elif k in ("skill", "slash"):
                 g = next((p for p, pat in SKILL_PHASE if re.search(pat, e["name"], re.I)), None)
                 guess[sid] = g or guess.get(sid, "unmarked")
-                if g in ("archive", "release"):  # the mark's span ends; back to the guess (DEC-4)
+                if re.search(SPAN_END, e["name"], re.I):  # the mark's span ends; back to the guess (DEC-4)
                     lead[sid] = None
             mark = lead.get(sid)
         epic = mark[0] if mark else e["epic"] or "(no epic)"
@@ -128,10 +129,12 @@ def add_round(rounds, by_key, e, epic):
         same.append(r)
         rounds.append(r)
     elif not e["agent"] and acc.isdigit():
+        if any(r["lead"] and all(r[k] == v for k, v in fields.items()) for r in same):  # a repeat in a PR edit
+            return
         open_round = next((r for r in reversed(same) if r["accepted"] == "-"), None)
         if open_round:
             open_round.update({k: v for k, v in fields.items() if v != "-"}, lead=True)
-        elif not (same and same[-1]["lead"] and all(same[-1][k] == v for k, v in fields.items())):  # a repeat in a PR edit
+        else:
             r = {"repo": e["repo"], "epic": epic, "session": e["session"], "stage": e["stage"], "role": e["name"],
                  "lens": key[3], "round": len(same) + 1, **fields, "lead": True}
             same.append(r)
@@ -174,9 +177,9 @@ def write_signals(D, sessions, agents, events, rows, cost, cmd_repeat, read_path
                 ph[name] += usd
         p("\nEST. COST BY PHASE/ROLE (all repos)")
         for k, v in ph.most_common(25):
-            p(f"  {v:7.0f}  {100 * v / tot:4.1f}%  {k}")
-        guessed = sum(v for k, v in ph.items() if k.startswith("guessed:"))
-        p(f"guessed share of cost: {100 * guessed / sum(ph.values()) if ph else 0:.0f}%")
+            p(f"  {v:7.0f}  {f'{100 * v / tot:4.1f}%' if tot else '   -'}  {k}")
+        guessed, spent = sum(v for k, v in ph.items() if k.startswith("guessed:")), sum(ph.values())
+        p(f"guessed share of cost: {f'{100 * guessed / spent:.0f}%' if spent else '-'}")
         p(f"malformed mark lines: {bad_marks}")
         p("\nREVIEW ROUNDS BY ROLE: rounds, findings, accepted (rounds with a lead count)")
         for role in sorted({r["role"] for r in rounds}):

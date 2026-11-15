@@ -23,6 +23,7 @@ Known glitches this script is built around:
 """
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -85,6 +86,21 @@ def lines_outside_fences(text):
             yield line
 
 
+def well_formed(r, typ, unknown):
+    """F5/DEC-8: an assistant or user record of the wrong shape is counted as (malformed) and skipped.
+    Non-dict blocks of a list are dropped and counted; the rest of the record is kept."""
+    m = r.get("message")
+    content = m.get("content") if isinstance(m, dict) else None
+    ok_content = content is None or isinstance(content, list) or (typ == "user" and isinstance(content, str))
+    if not (isinstance(m, dict) and ok_content and r.get("timestamp") and isinstance(m.get("usage") or {}, dict)):
+        unknown["(malformed)"] += 1
+        return False
+    if isinstance(content, list):
+        m["content"] = [b for b in content if isinstance(b, dict)]
+        unknown["(malformed)"] += len(content) - len(m["content"])
+    return True
+
+
 def parse_stream(path, session, agent=""):
     """One transcript file -> (stats dict, list of events)."""
     st = {"calls": 0, "in": 0, "cache_write": 0, "cache_read": 0, "out": 0, "first_ctx": 0, "max_ctx": 0,
@@ -92,26 +108,23 @@ def parse_stream(path, session, agent=""):
           "title": "", "prs": set(), "cost": {}, "api_s": {}, "tool_s": {}, "prompt": "", "report": "",
           "epics": Counter(), "branches": Counter(), "lines": 0, "unknown": Counter(), "assistants": 0}
     events, pending, seen_msgs, epic, llm_event, llm_start = [], {}, set(), "", None, None
-    marked = False  # once the lead has marked, its own statement beats the path guess (D-2)
 
-    def guess_epics(blob):
+    def guess_epics(blob):  # the path guess only; the report applies the lead's mark (D-2)
         nonlocal epic
         for e in EPIC_RE.findall(blob):
             if e not in NOT_EPICS:
-                epic = epic if marked else e
+                epic = e
                 st["epics"][e] += 1
 
     def read_lines(t, text, marks):
         """Mark lines (lead text only) and result lines of one text; the full text, before any truncation."""
-        nonlocal epic, marked
         for line in lines_outside_fences(text):
             if marks and (m := MARK_RE.match(line)):
-                epic, marked = m.group(1), True
                 emit(t, "mark", m.group(1), line.strip(), phase=m.group(2), stage=m.group(3))
             elif marks and MARK_BAD_RE.match(line):
                 emit(t, "mark-bad", text=line.strip())
             elif RESULT_RE.match(line):
-                kv = {k: v.strip("`") for k, v in KV_RE.findall(line)}
+                kv = {k: v.strip("`\"'") for k, v in KV_RE.findall(line)}
                 emit(t, "result", kv["role"], line.strip(), stage=kv["stage"], kv=kv)
 
     def emit(t, kind, name="", text="", dur=None, err=False, limit=300, **extra):
@@ -135,6 +148,8 @@ def parse_stream(path, session, agent=""):
             typ, t, branch = r.get("type"), r.get("timestamp"), r.get("gitBranch", "")
             if typ not in KNOWN_TYPES:
                 st["unknown"][typ or "(no type)"] += 1
+            if typ in ("assistant", "user") and not well_formed(r, typ, st["unknown"]):
+                continue
             before = st["last"]  # timestamp of the previous record: start of an LLM call or of an idle gap
             if t:
                 st["first"] = st["first"] or t
@@ -284,7 +299,14 @@ def digest(root, out, days):
                 aid = sf.stem.removeprefix("agent-")
                 a, aev = parse_stream(sf, sid, aid)
                 meta_f = sf.with_suffix(".meta.json")
-                meta = json.loads(meta_f.read_text()) if meta_f.exists() else {}
+                try:
+                    meta = json.loads(meta_f.read_text()) if meta_f.exists() else {}
+                except ValueError:
+                    meta = {}
+                if not isinstance(meta, dict):
+                    meta = {}
+                if not meta and meta_f.exists():  # corrupt (an empty valid file is not worth a warning)
+                    a["unknown"]["(malformed)"] += 1
                 events += aev
                 streams.append(a)
                 st["epics"].update(a["epics"])
@@ -339,11 +361,14 @@ def git_root_of(folder):
     here = folder.resolve()
     while not here.exists():
         here = here.parent
+    env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}  # GIT_DIR and friends would hide a tree
     try:
-        r = subprocess.run(["git", "-C", str(here), "rev-parse", "--show-toplevel"], capture_output=True, text=True)
-        return Path(r.stdout.strip()) if r.returncode == 0 else None
-    except FileNotFoundError:  # no git on the path: look for a .git entry in the parents
-        return next((d for d in (here, *here.parents) if (d / ".git").exists()), None)
+        r = subprocess.run(["git", "-C", str(here), "rev-parse", "--show-toplevel"], capture_output=True, text=True, env=env)
+        top = Path(r.stdout.strip()) if r.returncode == 0 else None
+    except FileNotFoundError:  # no git on the path
+        top = None
+    # the walk always runs: a folder inside .git/ makes rev-parse fail, but its parent holds the .git entry
+    return top or next((d for d in (here, *here.parents) if (d / ".git").exists()), None)
 
 
 def main(argv=None):

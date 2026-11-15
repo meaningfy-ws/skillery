@@ -143,6 +143,9 @@ def test_a_run_without_cost_state_warns(tmp_path, capsys):
     root = _write_session(tmp_path, [USER, ASSISTANT])
     assert _run(root, tmp_path) == 1  # output is still written
     assert "warning: no session has a cost-state record" in capsys.readouterr().err
+    report_mod.main(tmp_path / "out")  # F6: no cost, no division by zero
+    signals = (tmp_path / "out/signals.txt").read_text()
+    assert "guessed share of cost: -" in signals
 
 
 def _git_init(folder):
@@ -163,6 +166,25 @@ def test_output_inside_a_git_tree_is_refused_and_nothing_is_written(tmp_path, ca
     assert exc.value.code == 2
     assert f"output folder is inside a git working tree: {repo.resolve()}; pass --out outside it" in capsys.readouterr().err
     assert not (repo / "deep").exists()
+
+
+def test_git_variables_in_the_environment_do_not_hide_a_tree(tmp_path, monkeypatch):
+    root = _write_session(tmp_path, [USER, ASSISTANT, COST])
+    repo = tmp_path / "repo"
+    _git_init(repo)
+    monkeypatch.setenv("GIT_DIR", str(tmp_path / "nowhere"))
+    with pytest.raises(SystemExit) as exc:
+        digest_mod.main(_args(root, "--out", str(repo / "out")))
+    assert exc.value.code == 2 and not (repo / "out").exists()
+
+
+def test_a_folder_inside_the_git_directory_is_refused(tmp_path):
+    root = _write_session(tmp_path, [USER, ASSISTANT, COST])
+    repo = tmp_path / "repo"
+    _git_init(repo)
+    with pytest.raises(SystemExit) as exc:
+        digest_mod.main(_args(root, "--out", str(repo / ".git/retro")))
+    assert exc.value.code == 2 and not (repo / ".git/retro").exists()
 
 
 def test_the_default_under_a_home_kept_in_git_is_refused(tmp_path, monkeypatch):
@@ -276,10 +298,23 @@ def test_a_subagent_keeps_the_epic_phase_and_stage_of_its_spawn(tmp_path):
 
 
 def test_an_archive_skill_after_a_deliver_mark_is_guessed_from_there(tmp_path):
+    after = {"type": "user", "timestamp": _t(5), "message": {"content": "see openspec/changes/next-one/tasks.md"}}
     lead = [_a(1, _text("mark: change=x phase=deliver stage=3")), _a(3, _tool("k", "Skill", skill="spec-stewardship")),
-            _done(4, "k"), _a(6, _text("archiving"))]
+            _done(4, "k"), after, _a(6, _text("archiving"))]
     phases, _, _, _ = _review(tmp_path, lead)
-    assert {(p[2], p[3]) for p in phases} == {("deliver", "3"), ("guessed:archive", "-")}
+    # F3: after the span ends the epic falls back to the path guess, not the archived change
+    assert {(p[1], p[2], p[3]) for p in phases} == {("x", "deliver", "3"), ("next-one", "guessed:archive", "-")}
+
+
+def test_a_commit_skill_keeps_the_mark_and_a_release_skill_ends_it(tmp_path):
+    lead = [_a(1, _text("mark: change=x phase=deliver stage=3")), _a(3, _tool("k", "Skill", skill="meaningfy-core:meaningfy-git-workflow")),
+            _done(4, "k"), _a(6, _text("committed")), _a(8, _tool("r", "Skill", skill="meaningfy-building:meaningfy-release")),
+            _done(9, "r"), _a(11, _text("released"))]
+    phases, _, _, _ = _review(tmp_path, lead)
+    assert {(p[2], p[3]) for p in phases} == {("deliver", "3"), ("guessed:release", "-")}
+    lead = lead[:4]
+    phases, _, _, _ = _review(tmp_path / "b", lead)
+    assert {(p[2], p[3]) for p in phases} == {("deliver", "3")}
 
 
 def test_a_session_with_no_mark_files_its_events_as_guessed(digest_dir):
@@ -315,6 +350,46 @@ def test_a_lead_line_with_no_worker_line_is_one_round_and_a_repeat_adds_none(tmp
             _a(5, _tool("q", "Bash", command=body.replace("create", "edit"))), _done(6, "q")]
     _, rounds, _, _ = _review(tmp_path, lead)
     assert [(r[4], r[6], r[8]) for r in rounds] == [("reviewer", "1", "1")]
+
+
+def test_an_edited_pr_body_repeating_an_earlier_round_does_not_fill_a_later_one(tmp_path):
+    w3, w1 = WORKER_LINE, WORKER_LINE.replace("findings=3", "findings=1")
+    l3, l1 = LEAD_LINE, LEAD_LINE.replace("findings=3 accepted=1", "findings=1 accepted=0")
+    body = f"gh pr edit 7 --body \"$(cat <<'EOF'\n- {l3}\n- {l1}\nEOF\n)\""
+    lead = [_a(1, _text(MARK_X2)), _a(5, _text(l3)), _a(9, _tool("p", "Bash", command=body)), _done(10, "p")]
+    sub = [_brief(2), _a(3, _text(w3)), _a(7, _text(w1))]
+    _, rounds, _, _ = _review(tmp_path, lead, agents={"r": sub})
+    assert [(r[6], r[7], r[8]) for r in rounds] == [("1", "3", "1"), ("2", "1", "0")]
+
+
+def test_a_quoted_lead_line_in_a_pr_body_keeps_its_count(tmp_path):
+    body = f'gh pr create --title t --body "summary\n{LEAD_LINE}"'
+    lead = [_a(1, _text(MARK_X2)), _a(3, _tool("p", "Bash", command=body)), _done(4, "p")]
+    _, rounds, _, _ = _review(tmp_path, lead)
+    assert [(r[6], r[8]) for r in rounds] == [("1", "1")]
+
+
+# --- stage-1 review fixes: malformed records ------------------------------------------------------
+
+@pytest.mark.parametrize("bad", [
+    {**ASSISTANT, "message": "x"},
+    {**USER, "message": {"content": 5}},
+    {**ASSISTANT, "message": {"id": "m9", "usage": USAGE, "content": ["str", {"type": "text", "text": "ok"}]}},
+    {**ASSISTANT, "timestamp": None},
+    {**ASSISTANT, "message": {"id": "m9", "usage": "x", "content": []}},
+], ids=["message", "content", "block", "no-timestamp", "usage"])
+def test_a_wrong_shape_record_is_counted_malformed_and_skipped(tmp_path, bad):
+    path = tmp_path / "s.jsonl"
+    path.write_text(_jsonl([USER, bad, ASSISTANT]))
+    st, _ = digest_mod.parse_stream(path, "s")
+    assert st["unknown"]["(malformed)"] == 1  # a bad block drops the block only, the other kinds the whole record
+
+
+def test_a_corrupt_agent_meta_is_counted_malformed(tmp_path, capsys):
+    root = _write_session(tmp_path, [USER, ASSISTANT, COST], agents={"a": [_brief(2), _a(3, _text("x"))]})
+    (tmp_path / "projects/-x/s1/subagents/agent-a.meta.json").write_text("{not json")
+    assert _run(root, tmp_path) == 1
+    assert "(malformed)=1" in capsys.readouterr().err
 
 
 def test_a_fenced_result_line_is_ignored(tmp_path):

@@ -33,8 +33,8 @@ python3 <this skill's folder>/scripts/epic_report.py ~/retro/2026-11-15
    (exit 2, nothing written), the default included when the home folder is kept in git.
 2. `epic_report.py` reads that folder and writes `epics.tsv`, `phases.tsv`, `rounds.tsv` and
    `signals.txt`.
-3. Read `signals.txt` first: cost and time per epic, per phase and stage, the share of cost that is
-   guessed, and review rounds by role. Then open `rounds.tsv`, one row per review round
+3. Read `signals.txt` first: the totals, cost by phase, the guessed share of cost and review rounds
+   by role. `epics.tsv` is per epic; `phases.tsv` is per phase and stage. Then open `rounds.tsv`, one row per review round
    (`repo, epic, session, stage, role, lens, round, findings, accepted, verdict`), to see which
    stage took three rounds and whether the findings were accepted.
 4. Warnings on stderr (`unknown records`, `no usage`, `no cost-state`) mean the transcript format
