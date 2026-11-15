@@ -829,6 +829,9 @@ def cmd_where(args) -> int:
 # ---------------------------------------------------------------- stats (D-7, D-10)
 
 _CALL = re.compile(r"rules\.py\S*\s+([a-z]+)")
+DENY_MARKER = "[rules-first: memory write denied]"  # the rules-first mod puts it in its deny message
+WRITE_SUBS = ("add", "confirm", "update", "approve")
+NOT_A_WRITE = re.compile(r"--(?:dry-run|candidate)\b")
 _REASON = re.compile(r"""--reason\s+(?:"([^"]*)"|'([^']*)'|(\S+))""")
 
 
@@ -891,7 +894,7 @@ def cmd_stats(args) -> int:
     rules, active = _index(read_dir(root, RULES_DIR))
     count = {}
     reasons: dict[str, list[str]] = {}
-    events = truncated = scanned = 0
+    events = truncated = scanned = written = denied = 0
     bump = lambda rid, k: count.setdefault(rid, {"loaded": 0, "cited": 0, "overridden": 0, "violated": 0}).__setitem__(
         k, count[rid][k] + 1)
     for obs in observations:
@@ -899,12 +902,15 @@ def cmd_stats(args) -> int:
             continue
         scanned += 1
         strings = list(_strings(obs.get("input"))) + list(_strings({k: v for k, v in obs.items() if k != "input"}))
+        denied += any(DENY_MARKER in s for s in strings)
         call = next(((s, m) for s in strings if (m := _CALL.search(s))), None)
         if not call:
             continue
         events += 1
         inp, sub = call[0], call[1].group(1)
         args_text = inp[call[1].end():]
+        if sub in WRITE_SUBS and not NOT_A_WRITE.search(args_text):
+            written += 1
         output = "\n".join(s for s in strings if s is not inp)
         if sub in ("load", "check") and END not in output:
             truncated += 1
@@ -919,7 +925,8 @@ def cmd_stats(args) -> int:
                 bump(rid, "cited" if sub == "cite" else "overridden")
                 if sub == "override" and (r := _REASON.search(args_text)):
                     reasons.setdefault(rid, []).append(next(g for g in r.groups() if g is not None))
-    out = [f"window {since.isoformat()}..{today.isoformat()}: {scanned} observations, {events} rules.py events"]
+    out = [f"window {since.isoformat()}..{today.isoformat()}: {scanned} observations, {events} rules.py events",
+           f"rules written: {written}", f"memory writes denied: {denied}"]
     out.append("id      loaded cited overridden violated")
     out += [f"{rid}  {c['loaded']} {c['cited']} {c['overridden']} {c['violated']}" for rid, c in sorted(count.items())]
     if truncated:

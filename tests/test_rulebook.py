@@ -453,6 +453,21 @@ def test_stats_warns_when_the_format_changed(tmp_path):
     assert "never-loaded" not in out
 
 
+def test_stats_counts_rules_written_and_memory_writes_denied(tmp_path):
+    marker = "[rules-first: memory write denied] use rules.py instead"
+    cmd = lambda c: {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+                     "input": {"command": f'python3 "<skills>/rulebook/scripts/rules.py" {c}'}, "output": {"stdout": ""}}
+    other = {"type": "SPAN", "name": "Write", "startTime": "2026-10-20T09:00:00.000Z",
+             "input": {"file_path": "MEMORY.md"}, "output": {"stdout": marker}}
+    data = [cmd("add --type tone"), cmd("add --type spelling"), cmd("approve R-0050"), cmd("add --dry-run"),
+            cmd("update R-0010 --dry-run"), cmd("add --candidate"), cmd("cite R-0001"), other, dict(other),
+            {**other, "type": "GENERATION"}]
+    path = tmp_path / "written.json"
+    path.write_text(json.dumps({"data": data, "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    lines = _stats(path=path).stdout.splitlines()
+    assert lines[1:3] == ["rules written: 3", "memory writes denied: 2"]
+
+
 def test_langfuse_not_configured():
     r = run("stats", "--today", TODAY)
     assert r.returncode == 3

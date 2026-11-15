@@ -30,7 +30,7 @@ ids (T-n) are in design.md *Test cases*.
   unreadable global file, missing `routing.md` (`unknown`), exit 0 in all (T-2).
   `skills/rulebook/references/commands.md` (*where* row). Satisfies `rules-first-routing` *Every
   Claude Code session starts with a rules block*.
-- [ ] 1.4 The `stats` counts (D-4). `DENY_MARKER` and the two lines in `cmd_stats`; a `--from-file`
+- [x] 1.4 The `stats` counts (D-4). `DENY_MARKER` and the two lines in `cmd_stats`; a `--from-file`
   fixture with two `add`, one `approve`, one `add --dry-run`, one `update --dry-run`, one
   `add --candidate`, one `cite`, two non-`rules.py` observations carrying the marker and one
   `GENERATION` observation carrying it (expect
@@ -80,7 +80,7 @@ Starts only when `delivery-process-and-tools` task 3.4 (its stage 3 PR) is merge
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [ ] 2.1 · [ ] 2.2
+- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [x] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [ ] 2.1 · [ ] 2.2
 
 1.3 and 1.4 touch separate code and may run in parallel with 1.2 once its spike is recorded; 1.5
 needs 1.2 (two mods), 1.3 (`routing.md`) and 1.4 (`DENY_MARKER`); 1.7 needs 1.5.
