@@ -12,6 +12,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.15.0] - 2026-11-15
+
 ### Added
 
 - The lean skill standard (EPIC `lean-skills`, stage 1), for anyone writing or changing a skill:
