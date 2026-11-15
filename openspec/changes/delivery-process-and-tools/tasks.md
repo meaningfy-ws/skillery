@@ -87,18 +87,18 @@ pull request, before delivery (D-17).
 
 ## 3. Stage 3: the instructions
 
-- [ ] 3.0 Cold-start check of stage 2's note, recorded in `evidence/cold-start.md`.
-- [ ] 3.1 `skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl`: the budget comment
+- [x] 3.0 Cold-start check of stage 2's note, recorded in `evidence/cold-start.md`.
+- [x] 3.1 `skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl`: the budget comment
   (D-13), the habits block and the table pointer (D-14), "Code tools are mandatory" replaced by the
   pointer, impact and change check once per task by the lead with the re-index line carrying
   `--skip-agents-md` (D-15). Satisfies `catalogue-governance` *The instruction template carries the
   habits and a size budget* and *Code checks run once per task*.
-- [ ] 3.2 This repository's `AGENTS.md`, cut per the list under D-13: the GitNexus block rewritten
+- [x] 3.2 This repository's `AGENTS.md`, cut per the list under D-13: the GitNexus block rewritten
   between its markers per D-15 (its re-index line included, about 700 characters), the *Dual-CLI
   authoring rules* as a pointer (about 400), the habits block added; at most 12,000 characters.
   `CLAUDE.md`: *Tool habits* cut to the Claude-only names, at most 1,000 characters.
-- [ ] 3.3 `tools/repo_lint`: the `binding_size` check (D-13, INV-2), with both fixtures.
-- [ ] 3.4 Close stage 3: CHANGELOG line; `make validate` green; the PR; the note committed (its
+- [x] 3.3 `tools/repo_lint`: the `binding_size` check (D-13, INV-2), with both fixtures.
+- [x] 3.4 Close stage 3: CHANGELOG line; `make validate` green; the PR; the note committed (its
   *Next* is the measurement, the acceptance demo and the release); watch-and-merge; the session
   ends.
 - [ ] 3.5 Start-weight measurement after the merge, on one day, from the base and the new checkout
@@ -120,7 +120,7 @@ that record exists.
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
 - [x] 2.0 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6
-- [ ] 3.0 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
+- [x] 3.0 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [ ] 3.5
 
 ## Verification
 

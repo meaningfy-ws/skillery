@@ -33,6 +33,21 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   a fallback; agents point to it (v3.15.0 already pointed to it before it existed), and a lint
   check fails when the table names a tool an agent cannot call. Serena on opencode is still
   unverified (a recorded gap).
+- **BREAKING for a project whose `AGENTS.md` is over 12,000 characters** (EPIC
+  `delivery-process-and-tools`, stage 3). The `AGENTS.md` template now opens with
+  `<!-- size budget: 12000 characters -->`, carries four habit lines (never poll, edit with the edit
+  tool, read a range, batch known reads) and a pointer to the tool table instead of "code tools are
+  mandatory", and says the lead runs impact and the change check once per task, re-indexing with
+  `--skip-agents-md`. A new lint check, `binding_size`, fails when this repository's `AGENTS.md` or
+  the template is over the budget; a scaffolded project inherits the comment. This repository's
+  `AGENTS.md` drops from about 14,800 to 11,200 characters and `CLAUDE.md` to under 600, so every
+  session starts lighter.
+
+### Fixed
+
+- **A fresh `project-setup` skeleton passes its own `make test`.** Its only measured module, the
+  `__main__.py` entry stub, failed the 80 % coverage gate at 0 %. The stub now carries
+  `# pragma: no cover`; remove it when you replace the stub. The gate itself is unchanged.
 
 ## [3.15.0] - 2026-11-15
 
