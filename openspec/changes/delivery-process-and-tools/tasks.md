@@ -82,7 +82,7 @@ pull request, before delivery (D-17).
   by the lead's per-task check; its report carries no impact summary; it loads `cosmic-python` in
   a Python repository);
   `tests/features/agents/code-reviewer.feature` (ends with the result line).
-- [ ] 2.6 Close stage 2: CHANGELOG line; `make validate` green; the PR; the note committed;
+- [x] 2.6 Close stage 2: CHANGELOG line; `make validate` green; the PR; the note committed;
   watch-and-merge; the session ends.
 
 ## 3. Stage 3: the instructions
@@ -119,7 +119,7 @@ that record exists.
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
-- [x] 2.0 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [ ] 2.6
+- [x] 2.0 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6
 - [ ] 3.0 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
 
 ## Verification
