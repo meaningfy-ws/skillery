@@ -12,7 +12,7 @@ ids (T-n) are in design.md *Test cases*.
   visible* and *The 2026-11-11 failure no longer reproduces*, in business language. Satisfies
   `rules-first-routing` *Every Claude Code session starts with a rules block* and *The 2026-11-11
   failure no longer reproduces*.
-- [ ] 1.2 Hook spike, then two plain mods per bundle (D-7, RISK-5). Spike: a throwaway plugin with
+- [x] 1.2 Hook spike, then two plain mods per bundle (D-7, RISK-5). Spike: a throwaway plugin with
   two plain hooks files, loaded with `claude --plugin-dir` and an empty `CLAUDE_CONFIG_DIR`: both
   fire; a `SessionStart` hook's stdout reaches the context (the agent can quote it); a `PreToolUse`
   exit 2 on `Write` denies it and the agent sees the stderr. Recorded in `evidence/hook-spike.md`; a
@@ -37,7 +37,7 @@ ids (T-n) are in design.md *Test cases*.
   `rules written: 3`, `memory writes denied: 2`, T-9). `commands.md` (*Monitoring*);
   `skills/rule-steward/SKILL.md`: the weekly report shows the two counts. Satisfies `rule-learning`
   *Weekly stewardship reads usage from Langfuse*.
-- [ ] 1.5 The mod (D-5, D-6). `mods/rules-first/hooks.json`, `rules-first.mjs`,
+- [x] 1.5 The mod (D-5, D-6). `mods/rules-first/hooks.json`, `rules-first.mjs`,
   `rules-first.test.mjs` with a fabricated `HOME`, `CLAUDE_CONFIG_DIR` and `XDG_CONFIG_HOME`: each
   row of the design's tool-call table; the block for the worked example; fail open for a missing
   `python3`, a missing `routing.md` and non-JSON stdin; `routing.md` resolves from
@@ -80,7 +80,7 @@ Starts only when `delivery-process-and-tools` task 3.4 (its stage 3 PR) is merge
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [x] 1.4 · [ ] 1.5 · [x] 1.6 · [ ] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [ ] 2.1 · [ ] 2.2
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [ ] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [ ] 2.1 · [ ] 2.2
 
 1.3 and 1.4 touch separate code and may run in parallel with 1.2 once its spike is recorded; 1.5
 needs 1.2 (two mods), 1.3 (`routing.md`) and 1.4 (`DENY_MARKER`); 1.7 needs 1.5.

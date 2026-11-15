@@ -5,6 +5,7 @@ TC ids refer to design.md "Test case specifications".
 import json
 import os
 import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -469,11 +470,23 @@ def test_hooks_only_mod_needs_only_hooks_json(tmp_path):
 def test_real_core_plugin_names_the_hooks_file_and_no_types_and_navigator_keeps_its_own():
     manifests = gen.plugin_manifests(REPO)
     core = json.loads(manifests["bundles/meaningfy-core/.claude-plugin/plugin.json"])
-    assert core["hooks"] == ["./mods/no-poll-loops/hooks.json"]
+    assert core["hooks"] == ["./mods/no-poll-loops/hooks.json", "./mods/rules-first/hooks.json"]
     assert "types" not in core and "userConfig" not in core
     nav = json.loads(manifests["bundles/meaningfy-navigator/.claude-plugin/plugin.json"])
     assert nav["hooks"] == ["./mods/navigator/hooks.json"]
     assert nav["types"] == "./mods/navigator/types.d.ts" and nav["userConfig"]
+
+
+def test_rules_first_routing_file_resolves_from_the_rendered_core_bundle(tmp_path):
+    # Node resolves import.meta.url through symlinks; the mod is a real file in the bundle, so ROOT is
+    # the bundle and skills/rulebook is a symlink into the repo's skills/.
+    mod = REPO / "bundles/meaningfy-core/mods/rules-first/rules-first.mjs"
+    assert mod.is_file()
+    assert (REPO / "bundles/meaningfy-core/skills/rulebook/assets/routing.md").is_file()
+    script = f'import("{mod}").then(m => process.stdout.write(m.sessionBlock(process.argv[1], undefined, {{}})))'
+    out = subprocess.run(["node", "-e", script, str(tmp_path)], capture_output=True, text=True, check=True).stdout
+    routing = (REPO / "skills/rulebook/assets/routing.md").read_text(encoding="utf-8").strip().splitlines()[0]
+    assert routing in out
 
 
 def test_hooks_only_mod_missing_hooks_json_is_rejected(tmp_path):
