@@ -838,7 +838,7 @@ decisions 2 and 7). The clarity gate was not run again on this entry.
   - *An acceptance observation.* Task 1.7 records, for each of its six reader runs, the tokens of
     the run's first call (its starting context), read from the session transcript with
     `session_digest.py`
-    ([`inputs/scripts/`](../delivery-retrospective/inputs/scripts/) of `delivery-retrospective`),
+    ([`scripts/`](../../../skills/session-retrospective/scripts/) of the `session-retrospective` skill),
     in `evidence/planted-flaw.md`. It is a number the owner reads at the acceptance demo, not a
     bar.
   - *How the list is enforced* *(decided by the owner on 2026-11-14; proposal DEC-13)*. A line in

@@ -6,7 +6,7 @@ Reads ~/.claude/projects/*/<session>.jsonl and their subagents/agent-*.jsonl, wr
   agents.jsonl    one row per subagent: type, description, full prompt, time, tokens, report
   events.jsonl    the timeline: prompts, skills, dispatches, commands, questions, file edits
 
-Usage: session_digest.py [--days 14] [--out DIR] [--root ~/.claude/projects] | --selftest
+Usage: session_digest.py [--days 14] [--out DIR] [--root ~/.claude/projects]
 Stdlib only. Read-only on the transcripts.
 
 Time is split three ways. LLM time: from the record before a response to its last content block.
@@ -23,7 +23,6 @@ Known glitches this script is built around:
 import argparse
 import json
 import re
-import sys
 import time
 from collections import Counter
 from datetime import datetime
@@ -245,38 +244,11 @@ def digest(root, out, days):
     return n
 
 
-def selftest():
-    assert command_head("cd /x && FOO=1 uv run pytest -q tests") == "pytest"
-    assert command_head("git commit -m 'x'") == "git commit"
-    assert command_head("make validate 2>&1 | tail -5") == "make validate"
-    assert EPIC_RE.findall("openspec/changes/archive/2026-10-29-reasoning/x openspec/changes/lean-delivery/tasks.md") == ["reasoning", "lean-delivery"]
-    import tempfile
-    rows = [
-        {"type": "user", "timestamp": "2026-11-01T10:00:00Z", "cwd": "/home/u/work/repos/demo", "message": {"content": "do openspec/changes/my-epic/tasks.md"}},
-        {"type": "assistant", "timestamp": "2026-11-01T10:00:05Z", "message": {"id": "m1", "model": "x", "usage": {"input_tokens": 10, "cache_read_input_tokens": 90, "output_tokens": 5}, "content": [{"type": "tool_use", "id": "t1", "name": "Bash", "input": {"command": "make validate"}}]}},
-        {"type": "assistant", "timestamp": "2026-11-01T10:00:05Z", "message": {"id": "m1", "model": "x", "usage": {"input_tokens": 10, "cache_read_input_tokens": 90, "output_tokens": 5}, "content": [{"type": "text", "text": "hi"}]}},
-        {"type": "user", "timestamp": "2026-11-01T10:00:45Z", "message": {"content": [{"type": "tool_result", "tool_use_id": "t1", "is_error": True}]}},
-    ]
-    with tempfile.NamedTemporaryFile("w", suffix=".jsonl") as f:
-        f.write("\n".join(json.dumps(r) for r in rows))
-        f.flush()
-        st, ev = parse_stream(f.name, "s")
-    assert st["calls"] == 1 and st["first_ctx"] == 100, st  # duplicate block rows counted once
-    bash = [e for e in ev if e["kind"] == "bash"][0]
-    assert (bash["name"], bash["dur_s"], bash["err"], bash["epic"]) == ("make validate", 40.0, True, "my-epic"), bash
-    assert repo_of(st["cwd"], "") == "demo"
-    print("selftest ok")
-
-
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--days", type=float, default=14)
     ap.add_argument("--root", type=Path, default=Path.home() / ".claude/projects")
     ap.add_argument("--out", type=Path, default=Path("session-digest"))
-    ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args()
-    if a.selftest:
-        selftest()
-        sys.exit(0)
     t0 = time.time()
     print(f"{digest(a.root, a.out, a.days)} sessions -> {a.out} in {time.time() - t0:.0f}s")

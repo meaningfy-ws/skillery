@@ -2,7 +2,8 @@
 
 ## Context
 
-The two scripts in [`inputs/scripts/`](inputs/scripts/) produced the 2026-11-14 findings.
+The two scripts, first in `inputs/scripts/` and moved by task 1.1 to
+[`skills/session-retrospective/scripts/`](../../../skills/session-retrospective/scripts/), produced the 2026-11-14 findings.
 `session_digest.py` (stdlib, read-only) turns the Claude Code transcripts under
 `~/.claude/projects/` into `sessions.jsonl`, `agents.jsonl` and `events.jsonl`; `epic_report.py`
 turns those into `epics.tsv`, `phases.tsv` and `signals.txt`. Today:
