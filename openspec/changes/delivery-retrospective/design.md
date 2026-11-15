@@ -263,3 +263,14 @@ Recorded by the lead during stage 1 (2026-11-15).
   helper, a dead branch, explicit encoding); L1+L2 S1 (assert `rounds.tsv`), S2 (folder mode
   0700), S3 (refusal in the report), S5 (gate run names its commit; the merge waits for CI on the
   head).
+
+Recorded by the lead during stage 2 (2026-11-15).
+
+- **D-22** Task 3.1 answered from the mod API contract, not an observed turn: `turn.complete`
+  carries the turn's final message only (`evidence/answer-text.md`). So D-9's fallback holds: the
+  rule asks for the mark in the turn's last message too.
+- **D-23** GitNexus impact on the navigator reducer `lean` is CRITICAL (91 direct callers, mostly
+  tests). Expected by D-9, which changes that reducer; the change is additive (three booleans, one
+  warning), so the lead proceeds without stopping, with every existing navigator test kept green
+  and `make mods` as the check. Builders grouped by file: one for docs and skills (3.1, 3.2, 3.4,
+  4.1), one for the navigator (3.3), one for the real run (4.2), in parallel.
