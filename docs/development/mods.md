@@ -68,13 +68,14 @@ carried. `root` changes only through `RootFollowed` (a lead edit in another work
 ## Bundling
 
 A mod is declared in exactly one bundle of [`bundles.yaml`](../../bundles.yaml) under `mods:`,
-at most one per bundle. `make bundles` then renders, for that bundle:
+several plain (hooks-only) mods and at most one modules mod per bundle. `make bundles` then
+renders, for that bundle:
 
 - `mods/<name>` — a copy of the mod's folder (the engine refuses a hooks module or a types file
   behind a symlink), compared byte for byte by the gate, so edit `mods/`, never the copy;
 - `data/` — symlinks to the skill assets the mod reads (workflow files, session thresholds);
-- `.claude-plugin/plugin.json` — with `hooks` taken from the mod, and `types` and `userConfig`
-  when the mod has a `types.d.ts` and a `config.json`.
+- `.claude-plugin/plugin.json` — with one `hooks` entry per mod, in `bundles.yaml` order, and
+  `types` and `userConfig` when the bundle's mod has a `types.d.ts` and a `config.json`.
 
 The generator requires `hooks.json` of every mod, and `config.json`, `types.d.ts` and
 `register.tsx` only when `hooks.json` names `modules`. Only a modules mod gets `data/`. A mod's
