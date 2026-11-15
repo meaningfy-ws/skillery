@@ -784,6 +784,36 @@ def cmd_approve(args) -> int:
     return 0
 
 
+ROUTING_FILE = Path(__file__).resolve().parents[1] / "assets/routing.md"
+POLICY_MISSING = ("routing policy: missing (add the rules line of docs/environment/global-prompt.md "
+                  "to your global instructions)")
+
+
+def normalise(text: str) -> str:
+    """Whitespace runs (line breaks too) become one space and a curly apostrophe becomes a plain one (D-2)."""
+    return " ".join(text.replace("’", "'").split())
+
+
+def _global_files() -> list[Path]:
+    claude = Path(os.environ.get("CLAUDE_CONFIG_DIR") or Path.home() / ".claude")
+    xdg = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config")
+    return [claude / "CLAUDE.md", xdg / "opencode/AGENTS.md"]
+
+
+def _routing_policy() -> str:
+    try:
+        sentence = normalise(ROUTING_FILE.read_text(encoding="utf-8").splitlines()[2])
+    except (OSError, UnicodeDecodeError, IndexError):
+        return "routing policy: unknown (routing.md not found)"
+    for path in _global_files():
+        try:
+            if sentence in normalise(path.read_text(encoding="utf-8")):
+                return f"routing policy: present ({path})"
+        except (OSError, UnicodeDecodeError):
+            continue
+    return POLICY_MISSING
+
+
 def cmd_where(args) -> int:
     vault = _vault_or_none()
     env = os.environ.get("MEANINGFY_VAULT")
@@ -792,7 +822,7 @@ def cmd_where(args) -> int:
           if not env else f"vault: none (MEANINGFY_VAULT={env} has no '08 How to/' folder)")
     state = "present" if repo and (repo / REPO_DIR).is_dir() else "not yet created"
     print(f"repository: {repo} (docs/rules/ {state})" if repo else f"repository: none ({why})")
-    print(f"default store: {'repository' if repo else 'vault'}\n{END}")
+    print(f"default store: {'repository' if repo else 'vault'}\n{_routing_policy()}\n{END}")
     return 0
 
 

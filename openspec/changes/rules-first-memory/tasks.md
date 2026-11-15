@@ -8,7 +8,7 @@ ids (T-n) are in design.md *Test cases*.
 
 ## 1. Stage 1: the mod, the bundle, `where`, `stats` and the replay
 
-- [ ] 1.1 `tests/features/rules-first-memory.feature` (with `bdd-gherkin`): the scenarios *Setup
+- [x] 1.1 `tests/features/rules-first-memory.feature` (with `bdd-gherkin`): the scenarios *Setup
   visible* and *The 2026-11-11 failure no longer reproduces*, in business language. Satisfies
   `rules-first-routing` *Every Claude Code session starts with a rules block* and *The 2026-11-11
   failure no longer reproduces*.
@@ -22,7 +22,7 @@ ids (T-n) are in design.md *Test cases*.
   `test_real_core_plugin_names_the_hooks_file_and_no_types_and_navigator_keeps_its_own` to the two
   core hooks files. `docs/development/mods.md` (*Bundling*). Satisfies `catalogue-governance`
   *Skills are organised into role bundles with single ownership*.
-- [ ] 1.3 The routing file and `where` (D-2, D-3). `skills/rulebook/assets/routing.md` with the five
+- [x] 1.3 The routing file and `where` (D-2, D-3). `skills/rulebook/assets/routing.md` with the five
   lines of D-2; the normalising compare as one function in `rules.py`; `cmd_where` prints the
   `routing policy:` line. `tests/test_rulebook.py`: `run()` sets `HOME`, `CLAUDE_CONFIG_DIR` and
   `XDG_CONFIG_HOME` to a temporary folder; `test_t20` updated for the new line; cases present via
