@@ -424,6 +424,18 @@ invariants, the error matrix and the risks.
   before the note: the note is re-committed last, then the command runs again. D-23 and D-24 add
   214 bytes to `stage-loop.md`, so `epic-delivery`'s prose ends 131 bytes above its start
   (29,088 → 29,219); accepted for two safety fixes, and `lean-skills` cuts it (D-19).
+- **D-25 An agent may preload no local skill** (stage 2, builder report on 2.4). D-16 assumed
+  `agent_skill_alignment` was the only check on `skills:`; `agent_bundle_membership` also needs a
+  local primary skill (agent-authoring-standard D-4), which a preload of only
+  `superpowers:test-driven-development` lacks. The lead's choice: an agent whose `skills:` holds no
+  local skill has no primary skill to place, so the check passes it; one bundle per agent and its
+  existence are still checked. Keeping `cosmic-python` preloaded would undo DEC-10's saving.
+- **D-26 Stage 2 takes the small review set, with the tester.** About 230 added lines with the
+  table (under LARGE's 600), one new lint check of about 30 lines and agent text: two reviewers
+  (L1+L2; L3+L4+L5) and the checker. Tester: yes, `activity_tools_table` is under INV-1 (D-5).
+- **D-27 Scenario re-signed.** "A note that copies the design" now has the cold-start check judge
+  the note (the checker runs before the note exists, D-1); the developer re-signed it in the
+  session on 2026-11-15.
 - Under the floor (stage 1): L3–L5 W3 dangling `activity-tools.md` pointer and agents citing the
   cut tool paragraph (stage 2 lands the table; no release between stages); W4 structured MEDIUM
   default (D-4 chose wording, no key); W5 deleting a below-floor tester test (DEC-4, decided);

@@ -800,11 +800,19 @@ def test_agent_primary_skill_in_other_bundle_is_flagged(tmp_path):
         "agent 'code-reviewer' is in bundle 'b1' but its primary skill 'meaningfy-code-review' is not"]
 
 
-def test_agent_without_local_skill_is_flagged(tmp_path):
+def test_agent_preloading_no_local_skill_passes(tmp_path):
+    # delivery-process-and-tools D-25: no local skill, no primary skill to place
+    _agent_map(tmp_path)
+    _agent(tmp_path, "x", {**_good_fm(), "skills": ["superpowers:test-driven-development"]})
+    _bundles(tmp_path, [{"name": "b1", "agents": ["x"]}])
+    assert lint.agent_bundle_membership(tmp_path) == []
+
+
+def test_agent_with_external_and_namespaced_skills_only_passes(tmp_path):
     _agent_map(tmp_path)
     _agent(tmp_path, "x", {**_good_fm(), "skills": ["stream-coding", "superpowers:x"]})
     _bundles(tmp_path, [{"name": "b1", "agents": ["x"]}])
-    assert lint.agent_bundle_membership(tmp_path) == ["agent 'x' has no local primary skill"]
+    assert lint.agent_bundle_membership(tmp_path) == []
 
 
 # ------------------------------------------------ review-implementation fixes (F-2…F-4)
@@ -1576,3 +1584,52 @@ def test_skill_size_report_uses_the_lean_body_target(tmp_path):
     _lean(tmp_path, "big", "b" * 6145)
     _lean(tmp_path, "fits", "b" * 6144)
     assert lint.skill_size_report(tmp_path) == ["big: SKILL.md body is 6145 bytes (lean body target 6144)"]
+
+
+# ---- activity_tools_table (delivery-process-and-tools D-10, INV-1)
+_TABLE_REL = "skills/guardrails/references/activity-tools.md"
+
+
+def _tools_repo(root: Path, rows: list[str], agents: dict[str, list[str]]):
+    for name, tools in agents.items():
+        _agent(root, name, {"name": name, "description": "x", "tools": tools})
+    table = root / _TABLE_REL
+    table.parent.mkdir(parents=True)
+    table.write_text("| Activity | Agents | Claude Code | opencode | Fallback |\n|---|---|---|---|---|\n"
+                     + "\n".join(rows) + "\n", encoding="utf-8")
+    return root
+
+
+def test_activity_tools_silent_without_the_table(tmp_path):
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_fails_on_a_tool_the_agent_lacks(tmp_path):
+    _tools_repo(tmp_path, ["| Code search | `implementer` | `mcp__context7__query` | x | y |"],
+                {"implementer": ["Read", "mcp__serena__*"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and all(s in errs[0] for s in ("Code search", "implementer", "mcp__context7__query"))
+
+
+def test_activity_tools_glob_entry_matches(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `mcp__serena__serena_repl`, `Read` | x | y |"],
+                {"implementer": ["Read", "mcp__serena__*"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_unknown_agent_is_named(tmp_path):
+    _tools_repo(tmp_path, ["| Code | `ghost` | `Read` | x | y |"], {"implementer": ["Read"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "ghost" in errs[0] and "Code" in errs[0]
+
+
+def test_activity_tools_lead_is_team_lead(tmp_path):
+    _tools_repo(tmp_path, ["| Plan | lead | `Agent`, `Bash` | x | y |"], {"team-lead": ["Read", "Bash"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "team-lead" in errs[0] and "Agent" in errs[0]
+
+
+def test_activity_tools_opencode_and_fallback_cells_are_not_checked(tmp_path):
+    _tools_repo(tmp_path, ["| Code | `implementer` | `Read` | `serena_find_symbol` | `mcp__nope__x` |"],
+                {"implementer": ["Read"]})
+    assert lint.activity_tools_table(tmp_path) == []

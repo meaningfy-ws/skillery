@@ -66,6 +66,15 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   In `epic-planning`, the clarity gate runs at most twice at any appetite, each verdict goes to
   `evidence/clarity-gate.md`, and a shaping session ends with each PLAN gated. A delivery
   session no longer warns that the clarity gate has not run.
+- **BREAKING for a caller that relied on the implementer checking impact itself** (EPIC
+  `delivery-process-and-tools`, stage 2). `implementer` now preloads only
+  `superpowers:test-driven-development` and loads its other four skills when the task needs them
+  (`cosmic-python` in a Python repository), so each worker starts smaller. It no longer runs the
+  impact check or refuses a HIGH or CRITICAL edit: the lead checks impact once per task, before the
+  brief, and `team-lead` now carries the GitNexus tools for it. One table in `guardrails`
+  (`references/activity-tools.md`) names the recommended tool for each activity on each CLI, with
+  a fallback; agents point to it, and a lint check fails when the table names a tool an agent
+  cannot call. Serena on opencode is still unverified (a recorded gap).
 - `implementer` and `code-reviewer` have a fixed tool list again: the file, search, shell and skill
   tools, plus the code tools of the `serena`, `ast-grep` and `gitnexus` MCP servers, loaded on
   demand. Since v3.12.0 they carried every tool of the session, which made each worker start

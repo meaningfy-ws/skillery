@@ -97,6 +97,7 @@ already exists; this skill is the map.
   - **Waiting.** A command that fits the tool's timeout runs in the foreground; a longer one runs
     in the background and is awaited by one completion notice or one blocking wait. Never a sleep
     loop.
+  - **Tools for each activity.** The recommended tool, its name on each CLI and its fallback are in `references/activity-tools.md`.
   - **Four eyes on the work.** The report steers the coordinator's next step; it is not proof. When
     a coherent unit of work is complete — not after every step — a fresh subagent that did not do it
     checks it against the task's spec and intention, good practice, known anti-patterns and the

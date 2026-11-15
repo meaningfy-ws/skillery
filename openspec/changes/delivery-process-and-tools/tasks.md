@@ -61,23 +61,23 @@ pull request, before delivery (D-17).
 
 ## 2. Stage 2: the tool table and the agents
 
-- [ ] 2.0 Cold-start check of stage 1's note: the developer starts this session with the note's
+- [x] 2.0 Cold-start check of stage 1's note: the developer starts this session with the note's
   prompt and records the result in `evidence/cold-start.md` (D-11).
-- [ ] 2.1 `skills/guardrails/references/activity-tools.md`: the table of D-9 and the Serena
+- [x] 2.1 `skills/guardrails/references/activity-tools.md`: the table of D-9 and the Serena
   paragraph; the one-line pointer in §5. Satisfies `activity-tools` *One table recommends the tools
   for each activity* and *Serena is encouraged for everything it supports*.
-- [ ] 2.2 `tools/repo_lint`: the `activity_tools_table` check (D-10, INV-1), with passing and
+- [x] 2.2 `tools/repo_lint`: the `activity_tools_table` check (D-10, INV-1), with passing and
   failing fixtures in `tests/test_repo_lint.py` and `tests/test_repo_lint_negative.py`. Satisfies
   `activity-tools` scenario *The table names a tool an agent cannot call*.
-- [ ] 2.3 opencode: one probe of whether Serena's REPL is reachable and under which name; the
+- [x] 2.3 opencode: one probe of whether Serena's REPL is reachable and under which name; the
   *opencode* cells give the name, or "unverified, gap" with the gap recorded in
   `docs/environment/dual-cli/compatibility.md`.
-- [ ] 2.4 Agents: `agents/implementer.md` preload and the *Skills* "load when" list (D-16), Glue
+- [x] 2.4 Agents: `agents/implementer.md` preload and the *Skills* "load when" list (D-16), Glue
   step 1 and the HIGH/CRITICAL refusal removed, and its Dispatch contract *Output* and *Report*
   no longer ask for an impact summary (D-15), a pointer to the table;
   `agents/code-reviewer.md` points to the table; `agents/team-lead.md` gains `mcp__gitnexus__*` and
   `ToolSearch` and a pointer to the table (D-15). No description changes. `make bundles`.
-- [ ] 2.5 Agent scenarios, rewriting what goes stale: `tests/features/agents/implementer.feature`
+- [x] 2.5 Agent scenarios, rewriting what goes stale: `tests/features/agents/implementer.feature`
   (the Background's five skills become one; "Impact decides whether editing proceeds" is replaced
   by the lead's per-task check; its report carries no impact summary; it loads `cosmic-python` in
   a Python repository);
@@ -119,7 +119,7 @@ that record exists.
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
-- [ ] 2.0 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
+- [x] 2.0 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [ ] 2.6
 - [ ] 3.0 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
 
 ## Verification

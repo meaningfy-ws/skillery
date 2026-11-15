@@ -67,6 +67,11 @@ Feature: code-reviewer reviews one change through one lens, or several where a d
     Then it returns "one lens required (L1–L5), or cite the recorded decision that merges them"
     And it reviews nothing
 
+  # Traces to: DEC-18; D-6.
+  Scenario: The review ends with the result line
+    When the caller dispatches the code-reviewer with lens "L1"
+    Then the report ends with a line "result: stage=<s> role=reviewer lens=L1 findings=<n> accepted=-"
+
   Scenario: L2 reads the gate report instead of running the suite
     Given the stage's gate report shows one failing test
     When the caller dispatches the code-reviewer with lens "L2"
