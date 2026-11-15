@@ -65,8 +65,8 @@ updated.
 - **THEN** the entry's `pin` reads `unpinned:` with the reason
 
 ### Requirement: The per-bundle install table is generated from the register
-A table of external skills per bundle, with their install commands for Claude Code and opencode,
-SHALL be generated from the register entries that have a `bundle` key, between generated-section
+The register SHALL generate a table of external skills per bundle, with their install commands for
+Claude Code and opencode, from the entries that have a `bundle` key, between generated-section
 markers, in both `setup-claude.md` and `setup-opencode.md`. Drift between the register and either
 document SHALL fail validation. Nothing SHALL install these skills automatically (D-7).
 
