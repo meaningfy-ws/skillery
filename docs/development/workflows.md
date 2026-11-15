@@ -50,7 +50,9 @@ propose            → author the EPIC (proposal.md, Shape-Up shape)
 ```
 During `apply`, the lead runs the PLAN stage by stage with a small agent team (prepare, build,
 challenge, decide and fix, check, merge), scaled by the EPIC's appetite; when the EPIC delivers or
-changes a use case, the acceptance demo comes before `archive`. The loop is owned by [`epic-delivery`](../../skills/epic-delivery/SKILL.md).
+changes a use case, the acceptance demo comes before `archive`. A stage ends with a hand-over note
+committed as its pull request's last commit, and the next stage starts in a fresh session from that
+note instead of compacting. The loop is owned by [`epic-delivery`](../../skills/epic-delivery/SKILL.md).
 The phases navigator shows are in [`navigator.md`](../environment/navigator.md); their order is owned by `epic-delivery`.
 
 ### Work shaping (seed → gated PLAN)
@@ -148,8 +150,11 @@ skill. A repository changes the patterns through `extends`, giving the whole `ac
 #### Review sets
 
 The `reviews` of [`epic-delivery.workflow.json`](../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json)
-give, per appetite, the reviewers, lenses, check and tester of a stage. From MEDIUM up each entry
-also has a `small_stage`:
+give, per appetite, the reviewers, lenses, check and tester of a stage. From MEDIUM up the tester
+runs on its condition, stated once in `epic-delivery`'s stage loop (Prepare). At MEDIUM the
+`challenge` reads two reviewers (L1 with L2; L3 with L4 and L5) by default and the five lenses when
+a risk is recorded for the stage; `reviewers` stays 5, the ceiling a turn may spawn. From LARGE up
+each entry also has a `small_stage`:
 
 ```json
 "small_stage": { "max_added_lines": 600, "reviewers": 2, "lenses": [["L1", "L2"], ["L3", "L4", "L5"]] }
@@ -158,7 +163,8 @@ also has a `small_stage`:
 It is an allowance for a stage whose added lines are at or under the limit: two reviewers, each
 covering one group of lenses. When the lead may use it, and what it records, are owned by
 [`epic-delivery`](../../skills/epic-delivery/SKILL.md) (*The loop of a stage*); navigator shows the
-small figure beside the full set and checks the over-spawn against the full set. A repository can
+small figure beside the full set and checks the over-spawn against the full set; at MEDIUM there is
+no small figure to show. A repository can
 change the limit or the groups in its own `docs/navigator/epic-delivery.workflow.json`; as with
 `gates`, it then gives the whole `reviews` object.
 

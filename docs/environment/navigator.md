@@ -70,7 +70,7 @@ warning, the warnings line shows only its buttons. **Details** unfolds the band:
 reading ~/r/.claude/worktrees/tdr · feature/tenant-dump-restore
 stages    ✓ 1 Dump 4/4 · ✓ 2 Restore 2/2 · ● 3 Dump and restore 0/2 · ○ Close 0/2
 phases    EPIC delivery · ✓ ready · ● apply · ○ accept · ○ archive · clarity · 9.1 · full-gates ✓
-appetite  MEDIUM · tasks 6/10 · reviewers 0/5 this turn · small stage: 2 reviewers allowed · 1.2M tokens
+appetite  LARGE · tasks 6/10 · reviewers 0/5 this turn · small stage: 2 reviewers allowed · 1.2M tokens
 skills    ready: epic-delivery · apply: test-driven-development, cosmic-python
 subagents implementer ×2 done · 3.1M tokens · 1 running · code-reviewer ×2 done · sonnet · 410.0k tokens
 [Accept: apply: clarity-gate has not run since its inputs ch…]
@@ -84,8 +84,9 @@ mode      ○ loose
   changed, with the clarity score when there is one. The stale `·` sits where `✓` or `✗` would, so
   `clarity · 9.1` reads "clarity not run since its inputs changed, last score 9.1", not a separator.
 - **appetite** shows the reviewers the review set allows this turn, and `small stage: 2 reviewers
-  allowed` when the stage is small enough for the smaller review (see
-  [`workflows.md`](../development/workflows.md#review-sets)). The figure is the branch's added lines
+  allowed` from LARGE up when the stage is small enough for the smaller review (see
+  [`workflows.md`](../development/workflows.md#review-sets)); MEDIUM shows no small figure, since
+  its review set takes two reviewers by default. The figure is the branch's added lines
   against its base (`git diff <base>...HEAD`), not the current stage's alone, so a branch that
   carries several stages adds them up. `diff truncated` shows when the branch's diff was too long to
   read whole.
@@ -244,6 +245,9 @@ Navigator reads the thresholds in `guardrails` and, at the end of each turn:
   archived change);
 - mid-step, with a large context, warns `context N% mid-step` without a button: finish the step,
   commit, then compact (`guardrails`).
+
+Between delivery stages you do not compact: the stage ends with a hand-over note committed as its
+pull request's last commit, and the next stage starts in a fresh session from it (`epic-delivery`).
 
 It also flags a subagent that only did a lookup, a subagent report longer than the limit, more
 reviewers in one turn than the appetite's review set, a missing second check before a push, PR or
