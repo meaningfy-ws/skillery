@@ -263,3 +263,20 @@ Recorded by the lead during stage 1 (after the PLAN gate; not re-gated).
   reaches Langfuse (which `memory writes denied` counts) is unverified. Both stay open under RISK-1
   and RISK-2 for the release check. The replay also showed that `rules.py add` creates `AGENTS.md`
   with `POINTER` in a repository that has none, which stage 2 relies on when it extends `POINTER`.
+- **D-12 Stage 1 review, under the floor** *(2026-11-15)*. The five lenses found no Critical
+  finding, so no fix pass ran. Open for a follow-up (issue filed with the PR):
+  - the type match (L1, L2, L4): `(\w+)` stops at a hyphen, so a `project` note line
+    `type: user-facing …` in an `Edit` is denied; only the first frontmatter `type:` counts; the
+    compare is case-sensitive. Fix: all `type:` lines, whole token, lower case, new table rows.
+  - the path match (L1): a symlinked config root or a case-insensitive file system passes; compare
+    real paths.
+  - `plugin_manifests` takes `types` and `userConfig` from any mod with the file, not only the
+    modules mod (L4, L5).
+  - the mod holds the denied types and the message instead of a rulebook asset, and `denies` reads
+    the disk (L3); the mod reads `../../skills/rulebook/`, a seam `mods.md` does not name (L3, L5).
+  - the 5 s `where` timeout can drop the `where` lines under load (one T-1 failure seen while the
+    gates ran).
+  - `rules written` reads only the first `rules.py` call of a command (L2).
+  **Release hold** (L2): until stage 2 puts the routing sentence in `global-prompt.md`, `where`
+  reports `routing policy: missing` to everyone and points at a line that does not hold the
+  sentence, so stage 1 is not released without stage 2.
