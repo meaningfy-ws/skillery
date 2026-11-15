@@ -8,9 +8,6 @@ What to do when a library falls short. The rule depends on who owns the library.
 
 ## Our library: report it there, never work around it here
 
-Every workaround in the consumer hides a shortcoming the next consumer will meet again, and makes
-the library look better than it is.
-
 **Never**, to get past a problem in our library:
 
 - patch, monkeypatch or subclass its internals, or import a non-public module;
@@ -40,41 +37,11 @@ around the gap.
 
 ### The shape of the issue
 
-The issue lets a library developer act without asking the consumer anything. The title says what is
-wrong or missing in the library's words, not the consumer's. Label: `bug`, `enhancement` or
+The issue lets a library developer act without asking the consumer anything. Its body is the
+template [`upstream-issue.md`](../assets/templates/upstream-issue.md). The title says what is wrong
+or missing in the library's words, not the consumer's. Label: `bug`, `enhancement` or
 `documentation`. Everything a library change would copy from it is written in generic terms, so it
 can be lifted straight into the library's own EPIC.
-
-```markdown
-## Summary
-One or two sentences: what fails, or what capability is missing.
-
-## Context
-- Consumer: <repo>, change `<change-id>`, task `<n>`; use case `<UC-…>`.
-- What the consumer is trying to do, in one paragraph.
-- Library commit: `<sha from the consumer's lock>`.
-
-## Current behaviour            (for a bug)
-A minimal reproduction with the library alone: the input, the code, the actual output or error.
-
-## What is missing              (for a feature)
-The gap, and what a consumer cannot do today because of it.
-
-## Expected behaviour / proposed capability
-In generic terms (no consumer vocabulary):
-- the API sketch: function, class, annotation, route or setting;
-- a code example of the intended use, as a consumer would write it;
-- the error raised when it is used wrongly.
-
-## Why it belongs in the library
-Why any consumer would need it, and why a workaround in the consumer is not acceptable.
-
-## Acceptance
-Given/When/Then scenarios that would close the issue.
-
-## Impact on the consumer
-What is blocked, what goes on meanwhile.
-```
 
 ### Working on both at once
 
@@ -102,7 +69,3 @@ with a recommendation. The developer decides. Speed is a legitimate reason.
 The `design.md` record holds: the gap, the options considered, the recommendation and its reason,
 the developer's choice, and for a workaround the issue that tracks its removal. A workaround's code
 carries a `shortcut: <the limit>, <when to remove it>` comment pointing to that issue.
-
-Example: an external RDF library lacks a needed capability. The lead writes the three options with
-a recommendation; the developer picks "work around"; a builder isolates it in one adapter with a
-`shortcut:` comment; an issue tracks its removal.

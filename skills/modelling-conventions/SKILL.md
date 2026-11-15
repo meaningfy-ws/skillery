@@ -13,72 +13,73 @@ metadata:
 
 # Modelling Conventions
 
-## Overview
+A model drifts when attributes are copied per class, identity is added late and meaning leaks into
+strings and code. This skill holds the conventions true of a good model in any representation
+(conceptual, UML, LinkML, OWL), stated once for every modelling skill to cite. It carries principles;
+the syntax that realises them belongs to the skill that owns the representation.
 
-This is the **shared modelling-craft layer**: the conventions, anti-patterns, and guardrails that are
-true of a *good model* whatever representation renders it — a conceptual model, a UML class diagram, a
-LinkML schema, or an OWL ontology. It exists for the same reason `cosmic-python` exists: one home for
-the craft that many skills reuse, so the rules are stated once and cited everywhere.
+## Quick Start
 
-It carries **principles, not mechanics**. The concrete syntax that realises a principle in a given
-representation (LinkML `slots:`, UML association classes, OWL `owl:ObjectProperty`) belongs to the
-skill that owns that representation — this skill states *what good looks like* and *why*, and delegates
-*how* to the consuming skill.
+**Input:** review a draft where `Invoice.issueDate` and `CreditNote.issue_date` are both strings,
+`status` is a free string ("draft", "Issued") and `Invoice` also carries street, city and postcode.
 
-Two principles here are load-bearing across every downstream skill; the rest of the craft supports them.
+**Output, as findings:**
+- one reusable property `issued_at` (a moment in time, defined once, referenced by both classes);
+- `status` becomes an enumeration with a definition per value;
+- street, city and postcode become an `Address` value object, referenced;
+- every class and property gets a conceptual definition and an implicit URI from the model's
+  namespace.
 
-## The two load-bearing principles
+## Rules
 
-### 1. Decouple attributes from classes — model them as reusable, first-class properties
+**1. Decouple attributes from classes.** An attribute is a concept in its own right, with its own
+meaning, definition and identity, that classes reference. Define it once; the moment the same
+meaning appears on a second class, an inline copy is duplication that will drift. Reuse is by
+meaning, not by spelling. This is what lets an OWL/SHACL target treat properties as first-class.
 
-An attribute is not owned by a class. It is a **concept in its own right** — a property with its own
-meaning, definition, and identity — that classes *reference*. Define it once; reference it from every
-class that needs it. The moment the same attribute (same meaning) appears on a second class, redefining
-it inline is duplication that will drift.
+**2. Identify everything by a stable URI, implicit by default.** Every class, property and
+enumeration value has a URI minted once at authoring time and kept when the element is renamed or
+moved. It derives from the model's namespace plus the element's name; write it explicitly only when
+a specific value is required, chiefly when reusing a published vocabulary term. A model identified
+this way renders to OWL and SHACL completely, with no identity retrofitted; identity is a modelling
+decision, not a serialisation detail.
 
-Why it matters: reuse keeps meaning single-sourced, makes the model smaller and more consistent, and is
-exactly what lets a formal/semantic target (OWL/SHACL) treat properties as the first-class citizens they
-already are. See [`references/naming-and-identity.md`](references/naming-and-identity.md).
+Read `references/naming-and-identity.md` when naming an element, writing a definition or minting
+identity: it holds the property rules, the naming discipline, the conceptual-definition rule and the
+identity rules (opaque, permanent, reuse before minting).
 
-### 2. Identify everything by a stable URI — implicit by default
+Read `references/anti-patterns.md` when reviewing a model for smells: it holds each modelling
+anti-pattern (free strings for closed sets, god-class, validation in code, redefined attributes,
+late identity, missing definitions, flattened value objects) with its fix.
 
-Every modelled element — class, property, enumeration value — is identifiable by a **stable URI**,
-minted once at authoring time and never changed when the element is renamed or moved. Keep it
-**implicit**: derive it from a minted namespace + the element's name rather than writing an explicit URI
-literal, and make it explicit only when a specific value is required (reusing a published vocabulary
-term, for instance).
+## Before you hand over
 
-Why it matters: a model where everything is identified can be rendered to OWL and SHACL **naturally and
-completely** — no retrofitting identity later. Identity is a modelling decision, not a serialization
-detail.
+Read `references/editor-guardrails.md` while adding or changing any modelled element: it holds the
+per-edit checklist and how each check graduates into a linter, a review finding or a CI gate.
 
-## The craft around them
-
-- **Naming** — intention-revealing, consistent, singular-noun classes; the model's names become the
-  project's ubiquitous language. Details and the per-representation casing table:
-  [`references/naming-and-identity.md`](references/naming-and-identity.md).
-- **Anti-patterns** — free strings where a controlled set belongs, god-classes, validation buried in
-  code instead of the model, flattening everything onto one class. See
-  [`references/anti-patterns.md`](references/anti-patterns.md).
-- **Editor guardrails** — the checks a modeller applies *while working*, before generating anything:
-  [`references/editor-guardrails.md`](references/editor-guardrails.md).
+| Question | If not | Action |
+|---|---|---|
+| Is every recurring attribute one reusable property? | meaning drifts between copies | promote it now |
+| Does every element resolve to a stable URI, explicit only for a reused term? | semantic targets cannot be generated cleanly | mint the namespace; derive identity |
+| Is every closed set an enumeration? | the set lives in code | model the set |
+| Does every class and property have a conceptual definition? | the model is no ubiquitous language | write it |
+| Is every constraint declared in the model? | the contract scatters into code | move it into the model |
 
 ## Boundary & Related Skills
 
-**This skill OWNS:** representation-agnostic modelling conventions, modelling anti-patterns, the
-editor-guiding guardrails, and the two principles above (reusable properties; URI-everywhere) stated as
-principles.
+**Owns:** the representation-agnostic modelling conventions, the modelling anti-patterns, the editor
+guardrails, and the two principles above stated as principles.
 
-**This skill DELEGATES:**
-- The living conceptual model, UML conceptual data modelling, terminology, and the model-source
-  decision → `conceptual-modelling`.
-- LinkML mechanics that realise these principles (top-level `slots:`, the URI-as-datatype artifice,
-  generation) → `linkml-engineering`.
-- Representation-specific mechanics generally (UML profiles, OWL axioms) → the skill owning that
-  representation. Nothing representation-specific belongs here.
+**Delegates:**
+- the living conceptual model, UML conceptual modelling, terminology and the model-source decision
+  → `conceptual-modelling`;
+- the LinkML mechanics that realise these principles (top-level `slots:`, the URI-as-datatype
+  artifice, generation) → `linkml-engineering`;
+- any other representation-specific mechanics (UML profiles, OWL axioms) → the skill owning that
+  representation.
 
-See also `architecture` for the system-level notations (C4, UML, ArchiMate) that sit above a domain
-model, and `cosmic-python` for the same reuse-layer pattern applied to code.
+See also `architecture` for the system notations above a domain model, and `cosmic-python` for the
+same reuse-layer pattern applied to code.
 
 **Related:** `conceptual-modelling`, `linkml-engineering`.
 

@@ -12,6 +12,16 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Changed
+
+- **The engineering skills are lean** (EPIC `lean-skills`, stage 3). `architecture` drops from
+  141 KB to 24 KB and `project-setup` from 137 KB to 24 KB; `linkml-engineering`,
+  `conceptual-modelling`, `modelling-conventions`, `formal-reasoning`, `epic-planning`,
+  `clarity-gate`, `ci-cd-delivery` and `meaningfy-release` take the lean shape. Templates you
+  copy now sit in each skill's `assets/` (the ADR and use-case templates of `architecture`, the
+  settings resolver of `project-setup`). `epic-delivery` and `test-strategy` keep their method
+  tables under a recorded exception. Every check id and every cited file name is unchanged.
+
 ## [3.16.0] - 2026-11-15
 
 ### Changed

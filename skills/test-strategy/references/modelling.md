@@ -1,6 +1,6 @@
 # Modelling: the matrix
 
-Checks on conceptual models, LinkML schemas and rule sets. `conceptual-modelling` owns model validation, `formal-reasoning` the engine-checked rules, `linkml-engineering` the schema gates and `modelling-conventions` the per-edit review. This file also holds the V-model row for the model. A check that answers two questions has two rows. `gap → C` rows are for the EPIC `activity-test-profiles` to fill or accept.
+Checks on conceptual models, LinkML schemas and rule sets, with the V-model row for the model.
 
 | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
 |---|---|---|---|---|---|---|

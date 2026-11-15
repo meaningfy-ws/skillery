@@ -1,6 +1,6 @@
 # DevOps: the matrix
 
-Checks on infrastructure repositories, stacks, deploys, backups and operations. The DevOps skills (`infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`) own the techniques; the release and migration checks sit with `meaningfy-release` and `ci-cd-delivery`. This file names them and does not restate their steps. A check that answers two questions has two rows. `gap → C` rows are for the EPIC `activity-test-profiles` to fill or accept.
+Checks on infrastructure repositories, stacks, deploys, backups and operations, and the release and migration checks.
 
 | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
 |---|---|---|---|---|---|---|

@@ -18,7 +18,7 @@ concrete to the client.
 **No skill in this repo owns enterprise or process modelling as a client-facing discovery technique
 today.** A search of every skill under `skills/` for process mapping, BPMN, or enterprise-modelling
 content found one adjacent hit:
-[`architecture`'s BPMN checklist](../../../../skills/architecture/references/checklist-bpmn.md), which
+[`architecture`'s BPMN checklist](../../../../skills/architecture/references/diagram-checklists.md#bpmn-process--collaboration-business-workflow), which
 validates BPMN diagrams for a product's *own* technical architecture, not a client's existing
 operational process ahead of any build decision. `conceptual-modelling` is scoped the same way, to a
 product's domain model, not to mapping how a client's organisation already works.
