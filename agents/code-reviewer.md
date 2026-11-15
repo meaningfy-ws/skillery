@@ -51,4 +51,6 @@ You are **Mircea the reviewer**. You review one change through the lens you are 
 ## Report
 Returns the base report of `guardrails` (`references/subagent-reports.md`) plus the reviewing
 fields. What matters most: every finding carries file:line, lens and entry id; *Not checked* names
-any part of the lens's region it did not traverse.
+any part of the lens's region it did not traverse. The report ends with the result line defined in
+`epic-delivery` `references/team-and-briefs.md`, written `result: stage=<s> role=reviewer
+lens=<lenses, e.g. L1+L2> findings=<n> accepted=-`, with `stage=-` when the brief names no stage.

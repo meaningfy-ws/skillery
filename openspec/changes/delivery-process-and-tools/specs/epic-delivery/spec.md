@@ -126,7 +126,7 @@ failure is fixed and no new finding is accepted on the way (DEC-4, D-2, D-3).
 
 #### Scenario: A red CI run
 - **WHEN** CI is red after the fix pass or the merge is refused
-- **THEN** only that failure is fixed, the full gates run once, and no new review finding is accepted
+- **THEN** only that failure is fixed, the full gates run once, the hand-over note is re-committed last, and no new review finding is accepted
 
 ### Requirement: The adversarial tester runs on its condition
 The adversarial tester SHALL NOT run at TINY or SMALL. At MEDIUM and above, when the PLAN has an
@@ -201,7 +201,11 @@ its completion notice SHALL be the only wait: `gh pr checks <n> --watch --fail-f
 <n> --merge --delete-branch`. The lead SHALL start it only after the pull request lists its first
 check run. On a non-zero exit the lead SHALL first run `gh pr view <n> --json
 state,mergeStateStatus` to tell a red or missing check, a refused merge, and a merge done with
-only the local branch left. The merge method SHALL follow the repository's own (DEC-6, D-7).
+only the local branch left. The merge method SHALL follow the repository's own. The Merge step SHALL
+run within the lead's authority: without the developer's grant for the EPIC, the developer SHALL
+approve the merge before the command runs (D-23). A fix after a red check SHALL be committed before
+the hand-over note, the note SHALL be re-committed as the last commit, and the command SHALL run
+again (D-24) (DEC-6, D-7).
 
 #### Scenario: Green checks
 - **WHEN** the pull request's checks pass
@@ -214,6 +218,14 @@ only the local branch left. The merge method SHALL follow the repository's own (
 #### Scenario: No check registered yet
 - **WHEN** the pull request lists no check run
 - **THEN** the lead does not start the command until one is listed
+
+#### Scenario: No merge authority granted
+- **WHEN** the developer has granted no merge authority for the EPIC
+- **THEN** the lead asks the developer to approve the merge before starting the command
+
+#### Scenario: A fix after a red check
+- **WHEN** a check fails and that failure is fixed
+- **THEN** the fix is committed, the hand-over note is re-committed as the pull request's last commit, and the command runs again
 
 ### Requirement: An epic session starts from a gated PLAN
 An epic session SHALL start from a PLAN that is already gated and SHALL plan nothing. The Sessions

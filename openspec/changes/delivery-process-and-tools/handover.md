@@ -8,11 +8,13 @@ are merged; cold-start check of stage 2's note: pass (`evidence/cold-start.md`).
 D-21 to D-32 (design.md, Delivery decisions); the stage-3 items under the floor are listed there.
 
 ## Open
-- Issue #261: `hooks.yaml`'s GitNexus intents still say "before editing a symbol" and cite the
-  cut `CLAUDE.md` rules (stage 3, L1+L2 W1, under the floor).
-- The agent scenarios of stage 2 (`implementer.feature`, `code-reviewer.feature`) are run by hand
-  per CLI; not yet recorded.
-- The GitNexus index is stale; re-index only with `npx gitnexus analyze --skip-agents-md`.
+- Reconciled after stage 3 (D-33, D-34): the proposal, design and spec deltas carry D-21 to D-32;
+  #261 fixed; the stage-2 agent scenarios run by hand on Claude Code (`evidence/scenarios.md`),
+  two failures fixed and re-run green. opencode runs are still owed.
+- Issues outside this EPIC: #263 (project-side budget check), #265 (`apply` expects
+  `cosmic-python` in a repository that is not Python).
+- Loading a bundle with `--plugin-dir` from a checkout loads no agents (symlinks): use a
+  dereferenced copy, `cp -rL bundles/<bundle> <dir>` (D-33).
 
 ## Next
 1. Task 3.5: the start-weight measurement, on one day, from the base and the new checkout with

@@ -7,7 +7,8 @@ this PLAN has an `## Invariants` section, so the tester runs on the stages that 
 `make skill-inventory` after a skill edit, `make lint` while editing and `make validate` as its full
 gates, and reports the byte size of each skill it changed, before and after (D-19). Each stage's
 CHANGELOG line is written for the installer. The scenarios of `specs/` are signed off on the PLAN's
-pull request, before delivery (D-17).
+pull request, before delivery (D-17); a scenario rewritten during delivery is re-signed alone
+(D-27).
 
 ## 1. Stage 1: the process rules
 
@@ -76,7 +77,9 @@ pull request, before delivery (D-17).
   step 1 and the HIGH/CRITICAL refusal removed, and its Dispatch contract *Output* and *Report*
   no longer ask for an impact summary (D-15), a pointer to the table;
   `agents/code-reviewer.md` points to the table; `agents/team-lead.md` gains `mcp__gitnexus__*` and
-  `ToolSearch` and a pointer to the table (D-15). No description changes. `make bundles`.
+  `ToolSearch` and a pointer to the table (D-15). No description changes. `make bundles`;
+  code-reviewer accepts the MEDIUM groups and stays read-only (D-22, D-29);
+  `agent_bundle_membership` passes an agent with no local skill (D-25); the docs follow (D-28).
 - [x] 2.5 Agent scenarios, rewriting what goes stale: `tests/features/agents/implementer.feature`
   (the Background's five skills become one; "Impact decides whether editing proceeds" is replaced
   by the lead's per-task check; its report carries no impact summary; it loads `cosmic-python` in
@@ -91,7 +94,8 @@ pull request, before delivery (D-17).
 - [x] 3.1 `skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl`: the budget comment
   (D-13), the habits block and the table pointer (D-14), "Code tools are mandatory" replaced by the
   pointer, impact and change check once per task by the lead with the re-index line carrying
-  `--skip-agents-md` (D-15). Satisfies `catalogue-governance` *The instruction template carries the
+  `--skip-agents-md` (D-15); the pipe and generator rules (D-31); the checks for a session
+  without a lead (D-32). Satisfies `catalogue-governance` *The instruction template carries the
   habits and a size budget* and *Code checks run once per task*.
 - [x] 3.2 This repository's `AGENTS.md`, cut per the list under D-13: the GitNexus block rewritten
   between its markers per D-15 (its re-index line included, about 700 characters), the *Dual-CLI
@@ -108,7 +112,9 @@ pull request, before delivery (D-17).
 
 Acceptance demo (LARGE, mandatory): the developer is shown the cold-start record, the start-weight
 record, both lint checks failing on a planted row and a planted oversize, and one stage loop walked
-through on the new text; the verdict goes to `evidence/acceptance.md`. Docs stage: pages under
+through on the new text; the verdict goes to `evidence/acceptance.md`. Agent scenarios (DEC-14, check 1): the hand-run result of every new or
+rewritten scenario of tasks 1.6 and 2.5, per CLI, in `evidence/scenarios.md`; D-23, D-24 and D-32
+have no scenario yet, so they get one or a written reason. Docs stage: pages under
 `docs/development/` that describe the stage loop or the tool habits beyond those of task 1.7, per
 `technical-writing`; else "no docs owed". Release per `meaningfy-release` (DEC-15). Proof on the
 next EPIC (DEC-14, check 4): the lead of the first EPIC delivered after the release records in
@@ -125,5 +131,5 @@ that record exists.
 ## Verification
 
 `make validate` green on each stage's head commit, `openspec validate delivery-process-and-tools
---strict`, the agent scenarios run by hand and recorded, and the four checks of DEC-14 in
+--strict`, the agent scenarios run by hand and recorded in `evidence/scenarios.md`, and the four checks of DEC-14 in
 `evidence/`.

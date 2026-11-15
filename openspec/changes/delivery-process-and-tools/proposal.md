@@ -91,6 +91,7 @@ finding.
 - **DEC-11**: The impact check and the change check run once per task, by the lead, in place of
   "before every edit" and "before every commit", in the template and in this repository's
   `AGENTS.md`. They are followed for about 7% and 5% of edits today. Rejected: removing them.
+  A session without a lead: design D-32.
 - **DEC-12**: The instruction template gains one short habits block (no polling, Edit not a script,
   Read with a range, batched reads) and a size budget for `AGENTS.md`, checked by lint in this
   repository and stated in the template. Rejected: a longer rule list; no budget.
@@ -185,11 +186,14 @@ finding.
 - `epic-planning`: the two-run gate limit at every appetite (DEC-2); the shaping workflow runs
   through the PLAN and its gate (DEC-19), and its workflow file follows. `epic-delivery`: the
   Sessions table and the start of an epic session no longer hold the PLAN (DEC-19).
-- `agents/implementer.md`: a shorter preload (DEC-10). Both workers point to the tool table.
+- `agents/implementer.md`: a shorter preload (DEC-10). Both workers and team-lead point to the tool
+  table; team-lead gains the GitNexus tools (D-15); the reviewer accepts the MEDIUM groups and
+  stays read-only (D-22, D-29).
 - `project-setup`'s agentic templates, and this repository's `AGENTS.md` and `CLAUDE.md`: the
   habits block, the code-navigation text for tools that exist, one impact check per task, the size
   budget (DEC-11, DEC-12).
-- `tools/repo_lint`: the budget check, and the check of the table against the agents' tool lists.
+- `tools/repo_lint`: the budget check, and the check of the table against the agents' tool lists;
+  `agent_bundle_membership` passes an agent with no local skill (D-25).
 - Agent scenarios under `tests/features/` for each new rule.
 
 ## Capabilities
@@ -206,13 +210,15 @@ finding.
 - `epic-shape`: the gate limit at every appetite; the PLAN and its gate inside the shaping
   workflow.
 - `subagent-dispatch`: session hygiene at a stage boundary, and batched reads.
-- `workflow-definitions`: the review sets. To confirm when the PLAN is derived, together with the
-  spec that owns the instruction template.
+- `catalogue-governance`: the instruction template's habits block, size budget and once-per-task
+  code checks; an agent without a local skill has no primary skill (D-25).
+- `pr-review-modes`: the code-reviewer accepts the MEDIUM default groups (D-22).
 
 ## Impact
 
-- Skills `epic-delivery`, `guardrails`, `epic-planning`, `project-setup`; agents `implementer` and
-  `code-reviewer`; the generated `bundles/` tree and the inventory that follow them.
+- Skills `epic-delivery`, `guardrails`, `epic-planning`, `project-setup`; agents `implementer`,
+  `code-reviewer` and `team-lead`; the generated `bundles/` tree and the inventory that follow them;
+  the docs D-28 corrected (`agent-template.md`, `mcp-setup.md`, `setup.md`, `compatibility.md`).
 - `AGENTS.md`, `CLAUDE.md`, `tools/repo_lint`, `tests/features/`, the navigator mod's inputs.
 - Every repository that installs skillery gets the new delivery rules at the next release; a
   repository scaffolded before it keeps its old instructions until its own issue is done.
