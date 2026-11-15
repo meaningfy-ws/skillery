@@ -129,14 +129,18 @@ test('TC-16 epic-delivery has a review set for each of the six appetites', () =>
 })
 
 const DEFAULT_SMALL_STAGE = { max_added_lines: 600, reviewers: 2, lenses: [['L1', 'L2'], ['L3', 'L4', 'L5']] }
+const TESTER = 'Adversarial tester, on its condition (stage loop, Prepare)'
 
-test('D-12 epic-delivery: MEDIUM and above carry the small_stage set, TINY and SMALL do not', () => {
+test('D-12 epic-delivery: LARGE and above carry the small_stage set; TINY, SMALL and MEDIUM do not; MEDIUM defaults to two reviewers', () => {
   const r = parseWorkflow(defaults.find(d => d.path.endsWith('epic-delivery.workflow.json'))!, 'default')
   const reviews = (r as { workflow: Workflow }).workflow.reviews ?? {}
   for (const [name, set] of Object.entries(reviews)) {
-    const sized = !['TINY', 'SMALL'].includes(name)
+    const sized = !['TINY', 'SMALL', 'MEDIUM'].includes(name)
     assert.deepEqual(set.small_stage, sized ? DEFAULT_SMALL_STAGE : undefined, name)
+    assert.equal(set.tester, ['TINY', 'SMALL'].includes(name) ? null : TESTER, name)
   }
+  assert.equal(reviews.MEDIUM?.reviewers, 5)
+  assert.match(reviews.MEDIUM?.challenge ?? '', /^Two reviewers \(L1 with L2; L3 with L4 and L5\) by default; the five lenses when a risk is recorded/)
 })
 
 test('a misspelt skill in a workflow is caught', () => {
