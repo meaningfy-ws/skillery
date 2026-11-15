@@ -44,7 +44,8 @@ USE_CASES_DIR = "use-cases"
 USE_CASES_OUTPUT = "docs/use-cases.md"
 DEPENDENCIES_FILE = "dependencies.yaml"
 # The docs whose tables render from the register, between GENERATED:dependencies:<table> markers.
-DEPENDENCY_DOCS = ("docs/environment/dual-cli/compatibility.md", "docs/environment/dual-cli/mcp-setup.md")
+DEPENDENCY_DOCS = ("docs/environment/dual-cli/compatibility.md", "docs/environment/dual-cli/mcp-setup.md",
+                   "docs/environment/dual-cli/setup-claude.md", "docs/environment/dual-cli/setup-opencode.md")
 DEPENDENCY_KINDS = ("plugin", "skill", "cli-tool", "mcp-server", "service", "framework")
 # opencode_status keyword -> how the matrix shows it; the qualifier after the keyword is kept.
 DEPENDENCY_STATUSES = {"native": "native", "claude-compat": "`.claude/`-compat",
@@ -554,6 +555,11 @@ _DEP_TABLES = {
             ("transport", "opencode_status", "notes")),
     "mcp-setup": (lambda d: d["kind"] == "mcp-server" and "why" in d,
                   ("Server", "Why", "Local package or hosted?"), ("why", "hosting")),
+    # First cell is the bundle, not the bold name (orchestrate-external-skills D-7).
+    "external-skills-claude": (lambda d: "bundle" in d, ("Bundle", "Skills", "Install"),
+                               ("bundle", "skills", "claude_install")),
+    "external-skills-opencode": (lambda d: "bundle" in d, ("Bundle", "Skills", "Install"),
+                                 ("bundle", "skills", "opencode_install")),
 }
 _DEP_BLOCK = re.compile(r"(<!-- GENERATED:dependencies:([a-z-]+) -->\n).*?(<!-- /GENERATED -->)", re.DOTALL)
 
@@ -569,9 +575,11 @@ def render_dependencies(entries: list[dict], table: str) -> str:
     keep, heads, fields = _DEP_TABLES[table]
     lines = ["| " + " | ".join(heads) + " |", "|" + "---|" * len(heads)]
     for d in filter(keep, entries):
-        name = f"**{d['name']}**" + (f" ({d['summary']})" if d.get("summary") else "")
-        cells = [_dep_status(d[f]) if f == "opencode_status" else str(d.get(f, "")) for f in fields]
-        lines.append("| " + " | ".join([name] + cells) + " |")
+        cells = [_dep_status(d[f]) if f == "opencode_status"
+                 else ", ".join(d[f]) if isinstance(d.get(f), list) else str(d.get(f, "")) for f in fields]
+        if not table.startswith("external-skills-"):
+            cells.insert(0, f"**{d['name']}**" + (f" ({d['summary']})" if d.get("summary") else ""))
+        lines.append("| " + " | ".join(cells) + " |")
     return "\n".join(lines) + "\n"
 
 

@@ -375,7 +375,7 @@ def use_case_coverage(repo: Path) -> list[str]:
 
 _DEP_REQUIRED = ("name", "kind", "source", "pin", "provenance", "used_by", "opencode_status",
                  "claude_install", "opencode_install")
-_DEP_OPTIONAL = ("summary", "transport", "notes", "why", "hosting", "skills")
+_DEP_OPTIONAL = ("summary", "transport", "notes", "why", "hosting", "skills", "bundle")
 _KEBAB = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 
@@ -406,12 +406,29 @@ def dependencies_register(repo: Path) -> list[str]:
         if status and status.split(" ")[0] not in keywords:
             out.append(f"{who} opencode_status must start with {', '.join(keywords[:-1])} or {keywords[-1]}")
         out += _dep_skills(repo, d, who, owners)
+        out += _dep_bundle(repo, d, who)
     # The navigator's TC-16 reads `skills:` with a line reader: only the inline `[a, b]` form, bare
     # names, at entry level (DD-28, DD-38); text inside a block string is deeper and never matches.
     out += [f"{path.name}: line {i}: 'skills:' must be an inline list of bare names, `skills: [a, b]`"
             for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
             if re.match(r"^(- |  )skills:", line)
             and not re.match(r"^(- |  )skills:\s*\[[^\]'\"]*\]\s*(#.*)?$", line)]
+    return out
+
+
+def _dep_bundle(repo: Path, d: dict, who: str) -> list[str]:
+    """The optional `bundle:` key (orchestrate-external-skills D-8): a bundle of bundles.yaml, on a
+    `skill` entry that lists its skills."""
+    if "bundle" not in d:
+        return []
+    path = repo / "bundles.yaml"
+    listed = (yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("bundles", []) if path.exists() else []
+    out = [] if d["bundle"] in {b.get("name") for b in listed} else [
+        f"{who} bundle '{d['bundle']}' is not a bundle of bundles.yaml"]
+    if d.get("kind") != "skill":
+        out.append(f"{who} 'bundle' needs kind 'skill'")
+    if not (isinstance(d.get("skills"), list) and d["skills"]):
+        out.append(f"{who} 'bundle' needs a non-empty 'skills' list")
     return out
 
 

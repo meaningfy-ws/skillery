@@ -1773,3 +1773,34 @@ def test_activity_tools_agent_cell_with_and_between_names_is_unknown(tmp_path):
     _tools_repo(tmp_path, ["| Code | implementer and code-reviewer | `Read` | x | y |"],
                 {"implementer": ["Read"], "code-reviewer": ["Read"]})
     assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+# --- the optional `bundle:` key (orchestrate-external-skills D-8)
+_BUNDLE_DEP = {**_DEP, "kind": "skill", "bundle": "meaningfy-core", "skills": ["technical-documentation"]}
+
+
+def _bundle_repo(tmp_path, entry):
+    (tmp_path / "bundles.yaml").write_text(yaml.safe_dump({"bundles": [{"name": "meaningfy-core"}]}),
+                                           encoding="utf-8")
+    skills = entry["skills"]  # the register keeps `skills:` inline, which safe_dump does not write
+    fields = "".join(f"  {k}: {v!r}\n" for k, v in entry.items() if k != "skills")
+    return _deps_text(tmp_path, f"- {fields.lstrip()}  skills: [{', '.join(skills)}]\n")
+
+
+def test_dependency_bundle_valid_passes(tmp_path):
+    assert _bundle_repo(tmp_path, _BUNDLE_DEP) == []
+
+
+def test_tc1_dependency_bundle_not_in_bundles_yaml_is_flagged(tmp_path):
+    assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "bundle": "nope"}) == [
+        "dependencies.yaml: 'obsidian-skills' bundle 'nope' is not a bundle of bundles.yaml"]
+
+
+def test_tc2_dependency_bundle_on_non_skill_kind_is_flagged(tmp_path):
+    assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "kind": "cli-tool"}) == [
+        "dependencies.yaml: 'obsidian-skills' 'bundle' needs kind 'skill'"]
+
+
+def test_tc3_dependency_bundle_with_empty_skills_is_flagged(tmp_path):
+    assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "skills": []}) == [
+        "dependencies.yaml: 'obsidian-skills' 'bundle' needs a non-empty 'skills' list"]

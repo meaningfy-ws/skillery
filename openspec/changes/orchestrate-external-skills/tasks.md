@@ -6,7 +6,7 @@
 
 ## 1. Stage 1a: the book sets (wave 2; unblocks the `lean-skills` pilot)
 
-- [ ] 1.1 Check the installer (design, Algorithm step 1): with `DO_NOT_TRACK=1` and `HOME`,
+- [x] 1.1 Check the installer (design, Algorithm step 1): with `DO_NOT_TRACK=1` and `HOME`,
   `CLAUDE_CONFIG_DIR` and `XDG_CONFIG_HOME` set to scratch folders, run
   `npx skills@1.8.1 add meaningfy-ws/agent-rules-books --list` and the same for
   `meaningfy-ws/wondel-ai-skills`; confirm the 24 names of D-3; install one skill per fork with the
@@ -15,7 +15,7 @@
   several skills in one command (space-separated after one `--skill`, or `--skill` repeated). Write
   `evidence/install-check.md` with each command and its result. Done when every error-matrix row
   that task 1.1 detects has an answer there.
-- [ ] 1.2 Write the failing tests. In `tests/test_repo_lint_negative.py`: TC-1 an entry whose
+- [x] 1.2 Write the failing tests. In `tests/test_repo_lint_negative.py`: TC-1 an entry whose
   `bundle` names no bundle (message `dependencies.yaml: '<name>' bundle '<b>' is not a bundle of
   bundles.yaml`); TC-2 a `bundle` on a non-`skill` entry (`… 'bundle' needs kind 'skill'`); TC-3 a
   `bundle` with an empty `skills:` list (`… 'bundle' needs a non-empty 'skills' list`). In
@@ -24,7 +24,7 @@
   text, for example ``| meaningfy-core | technical-documentation | `DO_NOT_TRACK=1 npx skills@1.8.1
   add … --agent claude-code --global --yes` |``, one two-skill row (`a, b`), and a register with no
   `bundle` entries (the header line only). Run them: they fail for the right reason.
-- [ ] 1.3 Implement D-8 in `tools/repo_lint/lint.py` (`bundle` in `_DEP_OPTIONAL`, its three rules)
+- [x] 1.3 Implement D-8 in `tools/repo_lint/lint.py` (`bundle` in `_DEP_OPTIONAL`, its three rules)
   and D-7 in `tools/skill_inventory.py` (the two tables in `_DEP_TABLES`, the first-column and
   list-cell change in `render_dependencies`, both setup docs in `DEPENDENCY_DOCS`). The tests of 1.2
   pass and the existing tables render unchanged.
@@ -134,7 +134,7 @@
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · [ ] 1.9
 - [ ] 1.10 · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
