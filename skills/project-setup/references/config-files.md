@@ -24,9 +24,14 @@ substitution end in `.tmpl`. Plain-named templates are copied verbatim.
 | `dot-importlinter.tmpl`                    | `.importlinter`        | yes (`.tmpl`) |
 | `sonar-project.properties.tmpl`            | `sonar-project.properties` | yes (`.tmpl`) |
 | `dot-gitignore`                            | `.gitignore`           | verbatim      |
+| `dot-semgrepignore`                        | `.semgrepignore`       | verbatim; replaces Semgrep's built-in list, which skips `tests/` |
 | `Makefile.tmpl`                            | `Makefile`             | yes (`.tmpl`) |
 | `VERSION`                                  | `VERSION`              | verbatim      |
 | `LICENSE`                                  | `LICENSE`              | verbatim      |
+
+Code archetypes also get `assets/templates/quality/tools.sha256` and `external_sources.py`,
+rendered verbatim to `scripts/quality/`: the checksums of the check tools and the script that
+fetches the external Semgrep sources.
 
 > `.importlinter` **is** rendered here, as part of the root config block (scaffold step 1).
 > Only its *content* rationale — the layer/tier contracts — lives in
@@ -76,8 +81,8 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
   pylint, D4).
 - **Key settings & why:** `line-length = 100` (house style);
   `target-version = "py<<PYTHON_VERSION_NODOT>>"` (rendered from `--python`, so it tracks the
-  project interpreter automatically — no more hardcoded `py312`); `lint.select` = the D4 set
-  `["E","F","I","B","UP","SIM","C90","N","RUF100"]`; `lint.mccabe.max-complexity = 10` (per-function
+  project interpreter automatically — no more hardcoded `py312`); `lint.select` = the D4 set,
+  each code with its reason as a comment in the template; `lint.mccabe.max-complexity = 10` (per-function
   gate; radon/xenon cover trends); `ignore = ["E501"]` (formatter owns line length — avoid
   double-flagging); `[format]` double quotes, space indent. A commented `[lint.per-file-ignores]`
   example shows the justified-exception pattern (e.g. `N802` on a config module).
@@ -137,7 +142,7 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
 - **Purpose:** keep generated artifacts **and secrets** out of git.
 - **Key settings & why:** standard Python ignores **plus** the hard-won set: `.venv`, `data/`,
   `reports/`, `.coverage`, `coverage.xml`, `test-results.xml`, `.import_linter_cache`,
-  `.mypy_cache`, `.ruff_cache`, `.pytest_cache`, plus `.gitnexus`, `docs/build/`,
+  `.mypy_cache`, `.ruff_cache`, `.pytest_cache`, `.quality/`, plus `.gitnexus`, `docs/build/`,
   `node_modules/`, and local agent overrides.
 - **Secrets / layered-env hygiene:** ignores `.env`, `.env.*`, `.secrets`, `*.secrets`, and the
   infra-local `infra/.env` / `infra/.secrets`, while **re-including** the committed templates via
@@ -154,7 +159,9 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
   - **Mutating quality:** `format`, `lint-fix`, `pre-commit`.
   - **Validation:** `lint`, `typecheck`, `check-architecture`, `test`, `test-unit`,
     `test-feature`, `test-e2e`, `test-integration`.
-  - **Aggregates:** `check-quality` (lint+typecheck+architecture), `check-all` (+test),
+  - **Shared checks:** `quality-fetch` (skillery's `quality/` at `QUALITY_VERSION` into
+    `.quality/`), `quality-tools`, `check-semgrep`, `check-layout`, `check-makefile`.
+  - **Aggregates:** `check-quality` (lint+typecheck+architecture+the three shared checks), `check-all` (+test),
     `ci-quick` (quality+unit), `ci-full` (check-all+clean-code).
   - **Run:** `run` (`uv run python -m <<PACKAGE>>`; tailor per archetype).
   - **Reports (opt-in):** `coverage-report`, `quality-report`.
@@ -188,6 +195,12 @@ A simple `sed` swap of these placeholders must yield an immediately-working file
 - **Rendered here**, in the root config block — but its **content rationale** (layer contracts per
   component, tier `forbidden`/`independence` contracts) lives in `architecture-guardrails.md`.
   Optional layer names keep an empty skeleton green.
+
+## Suppressions
+
+A `# noqa` or `# nosemgrep` comment (also `# ruff: noqa` and `# flake8: noqa`) names the code or
+rule it silences and ends with ` -- <reason>`: `# noqa: PLR2004 -- status code from the spec`.
+`make check-semgrep` fails one without a reason (`mfy-suppression-without-reason`).
 
 ## Migrating an existing repo's `pyproject.toml`
 

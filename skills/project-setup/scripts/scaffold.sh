@@ -352,7 +352,7 @@ if [[ "$ARCHETYPE" == "product" ]]; then
 """Console entry point for $PROJECT_NAME — \`python -m $PACKAGE\`."""
 
 
-def main() -> None:
+def main() -> None:  # pragma: no cover - stub; drop the pragma when you replace it
     """Replace this stub with the real entry point.
 
     service  -> start the web app (e.g. uvicorn) from entrypoints/
@@ -362,7 +362,7 @@ def main() -> None:
     print("$PROJECT_NAME — replace this entry point (see $PACKAGE/entrypoints/).")
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()
 EOF
   echo "  wrote $PACKAGE/__main__.py"

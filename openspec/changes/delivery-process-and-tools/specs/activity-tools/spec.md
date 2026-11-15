@@ -5,7 +5,8 @@
 The catalogue SHALL hold one table, in `guardrails`, that names the recommended tools for each
 activity and a fallback for each. It SHALL name a tool only by a name the CLI exposes to the agent.
 Agents, delivery briefs and the instruction template SHALL point to the table and SHALL NOT carry
-their own tool rules (proposal DEC-8).
+their own tool rules (proposal DEC-8). A worker's side-effect limit, such as the reviewer's
+read-only use of a code tool, is not a tool rule and stays in the agent (D-29).
 
 #### Scenario: An agent looks up the tools for code work
 - **WHEN** an agent starts a task that reads or changes code

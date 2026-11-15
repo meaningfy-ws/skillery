@@ -97,6 +97,17 @@ Pinned version: [`../../../spine/openspec-version.txt`](../../../openspec/opensp
 npm i -g @fission-ai/openspec
 ```
 
+## External skills of your bundles (per role)
+
+These skills come from Meaningfy's forks of public skill sources. Install only the rows of the bundles you installed in Step 3 and the bundles they require (for example `meaningfy-building` brings `meaningfy-architecture`). Until the `skill-orchestration` skill ships, these sets inform reasoning only, and `cosmic-python` wins on any conflict. Each command pins the commit Meaningfy read and turns the installer's telemetry off with `DO_NOT_TRACK=1`; that is POSIX-shell syntax, so in PowerShell set the variable first. If you use both opencode and Claude Code, run only the claude-code command from the Claude Code guide, because both CLIs read the folder it installs to.
+
+<!-- GENERATED:dependencies:external-skills-opencode -->
+| Bundle | Skills | Install |
+|---|---|---|
+| meaningfy-building | refactoring, working-effectively-with-legacy-code, a-philosophy-of-software-design, clean-architecture | `DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill refactoring working-effectively-with-legacy-code a-philosophy-of-software-design clean-architecture --agent opencode --global --yes` |
+| meaningfy-architecture | domain-driven-design, designing-data-intensive-applications, patterns-of-enterprise-application-architecture, release-it | `DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill domain-driven-design designing-data-intensive-applications patterns-of-enterprise-application-architecture release-it --agent opencode --global --yes` |
+<!-- /GENERATED -->
+
 ## Step 5 — Scope global skills per project (optional)
 
 opencode has no per-project UI toggle for globally installed skills — configure

@@ -7,7 +7,8 @@ this PLAN has an `## Invariants` section, so the tester runs on the stages that 
 `make skill-inventory` after a skill edit, `make lint` while editing and `make validate` as its full
 gates, and reports the byte size of each skill it changed, before and after (D-19). Each stage's
 CHANGELOG line is written for the installer. The scenarios of `specs/` are signed off on the PLAN's
-pull request, before delivery (D-17).
+pull request, before delivery (D-17); a scenario rewritten during delivery is re-signed alone
+(D-27).
 
 ## 1. Stage 1: the process rules
 
@@ -61,44 +62,47 @@ pull request, before delivery (D-17).
 
 ## 2. Stage 2: the tool table and the agents
 
-- [ ] 2.0 Cold-start check of stage 1's note: the developer starts this session with the note's
+- [x] 2.0 Cold-start check of stage 1's note: the developer starts this session with the note's
   prompt and records the result in `evidence/cold-start.md` (D-11).
-- [ ] 2.1 `skills/guardrails/references/activity-tools.md`: the table of D-9 and the Serena
+- [x] 2.1 `skills/guardrails/references/activity-tools.md`: the table of D-9 and the Serena
   paragraph; the one-line pointer in §5. Satisfies `activity-tools` *One table recommends the tools
   for each activity* and *Serena is encouraged for everything it supports*.
-- [ ] 2.2 `tools/repo_lint`: the `activity_tools_table` check (D-10, INV-1), with passing and
+- [x] 2.2 `tools/repo_lint`: the `activity_tools_table` check (D-10, INV-1), with passing and
   failing fixtures in `tests/test_repo_lint.py` and `tests/test_repo_lint_negative.py`. Satisfies
   `activity-tools` scenario *The table names a tool an agent cannot call*.
-- [ ] 2.3 opencode: one probe of whether Serena's REPL is reachable and under which name; the
+- [x] 2.3 opencode: one probe of whether Serena's REPL is reachable and under which name; the
   *opencode* cells give the name, or "unverified, gap" with the gap recorded in
   `docs/environment/dual-cli/compatibility.md`.
-- [ ] 2.4 Agents: `agents/implementer.md` preload and the *Skills* "load when" list (D-16), Glue
+- [x] 2.4 Agents: `agents/implementer.md` preload and the *Skills* "load when" list (D-16), Glue
   step 1 and the HIGH/CRITICAL refusal removed, and its Dispatch contract *Output* and *Report*
   no longer ask for an impact summary (D-15), a pointer to the table;
   `agents/code-reviewer.md` points to the table; `agents/team-lead.md` gains `mcp__gitnexus__*` and
-  `ToolSearch` and a pointer to the table (D-15). No description changes. `make bundles`.
-- [ ] 2.5 Agent scenarios, rewriting what goes stale: `tests/features/agents/implementer.feature`
+  `ToolSearch` and a pointer to the table (D-15). No description changes. `make bundles`;
+  code-reviewer accepts the MEDIUM groups and stays read-only (D-22, D-29);
+  `agent_bundle_membership` passes an agent with no local skill (D-25); the docs follow (D-28).
+- [x] 2.5 Agent scenarios, rewriting what goes stale: `tests/features/agents/implementer.feature`
   (the Background's five skills become one; "Impact decides whether editing proceeds" is replaced
   by the lead's per-task check; its report carries no impact summary; it loads `cosmic-python` in
   a Python repository);
   `tests/features/agents/code-reviewer.feature` (ends with the result line).
-- [ ] 2.6 Close stage 2: CHANGELOG line; `make validate` green; the PR; the note committed;
+- [x] 2.6 Close stage 2: CHANGELOG line; `make validate` green; the PR; the note committed;
   watch-and-merge; the session ends.
 
 ## 3. Stage 3: the instructions
 
-- [ ] 3.0 Cold-start check of stage 2's note, recorded in `evidence/cold-start.md`.
-- [ ] 3.1 `skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl`: the budget comment
+- [x] 3.0 Cold-start check of stage 2's note, recorded in `evidence/cold-start.md`.
+- [x] 3.1 `skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl`: the budget comment
   (D-13), the habits block and the table pointer (D-14), "Code tools are mandatory" replaced by the
   pointer, impact and change check once per task by the lead with the re-index line carrying
-  `--skip-agents-md` (D-15). Satisfies `catalogue-governance` *The instruction template carries the
+  `--skip-agents-md` (D-15); the pipe and generator rules (D-31); the checks for a session
+  without a lead (D-32). Satisfies `catalogue-governance` *The instruction template carries the
   habits and a size budget* and *Code checks run once per task*.
-- [ ] 3.2 This repository's `AGENTS.md`, cut per the list under D-13: the GitNexus block rewritten
+- [x] 3.2 This repository's `AGENTS.md`, cut per the list under D-13: the GitNexus block rewritten
   between its markers per D-15 (its re-index line included, about 700 characters), the *Dual-CLI
   authoring rules* as a pointer (about 400), the habits block added; at most 12,000 characters.
   `CLAUDE.md`: *Tool habits* cut to the Claude-only names, at most 1,000 characters.
-- [ ] 3.3 `tools/repo_lint`: the `binding_size` check (D-13, INV-2), with both fixtures.
-- [ ] 3.4 Close stage 3: CHANGELOG line; `make validate` green; the PR; the note committed (its
+- [x] 3.3 `tools/repo_lint`: the `binding_size` check (D-13, INV-2), with both fixtures.
+- [x] 3.4 Close stage 3: CHANGELOG line; `make validate` green; the PR; the note committed (its
   *Next* is the measurement, the acceptance demo and the release); watch-and-merge; the session
   ends.
 - [ ] 3.5 Start-weight measurement after the merge, on one day, from the base and the new checkout
@@ -108,7 +112,9 @@ pull request, before delivery (D-17).
 
 Acceptance demo (LARGE, mandatory): the developer is shown the cold-start record, the start-weight
 record, both lint checks failing on a planted row and a planted oversize, and one stage loop walked
-through on the new text; the verdict goes to `evidence/acceptance.md`. Docs stage: pages under
+through on the new text; the verdict goes to `evidence/acceptance.md`. Agent scenarios (DEC-14, check 1): the hand-run result of every new or
+rewritten scenario of tasks 1.6 and 2.5, per CLI, in `evidence/scenarios.md`; D-23, D-24 and D-32
+have no scenario yet, so they get one or a written reason. Docs stage: pages under
 `docs/development/` that describe the stage loop or the tool habits beyond those of task 1.7, per
 `technical-writing`; else "no docs owed". Release per `meaningfy-release` (DEC-15). Proof on the
 next EPIC (DEC-14, check 4): the lead of the first EPIC delivered after the release records in
@@ -119,11 +125,11 @@ that record exists.
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
-- [ ] 2.0 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6
-- [ ] 3.0 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
+- [x] 2.0 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6
+- [x] 3.0 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [ ] 3.5
 
 ## Verification
 
 `make validate` green on each stage's head commit, `openspec validate delivery-process-and-tools
---strict`, the agent scenarios run by hand and recorded, and the four checks of DEC-14 in
+--strict`, the agent scenarios run by hand and recorded in `evidence/scenarios.md`, and the four checks of DEC-14 in
 `evidence/`.

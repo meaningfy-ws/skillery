@@ -102,3 +102,26 @@ def test_confidence_and_first_question_are_read_from_open_points():
             "- What shape does the life plan take?\n- Another?\n")
     assert skill_inventory._open_points(body) == ("high / low", "What shape does the life plan take?")
     assert skill_inventory._open_points("no section") == ("—", "")
+
+
+_EXT = {"name": "x", "kind": "skill", "bundle": "meaningfy-core", "skills": ["technical-documentation"],
+        "claude_install": "`claude cmd`", "opencode_install": "`opencode cmd`"}
+
+
+def test_tc4_external_skills_claude_table_renders_bundle_skills_install():
+    entries = [_EXT, {**_EXT, "bundle": "meaningfy-devops", "skills": ["a", "b"], "claude_install": "`c2`"},
+               {**_EXT, "name": "plain", "bundle": None}]
+    entries[2].pop("bundle")
+    assert skill_inventory.render_dependencies(entries, "external-skills-claude") == (
+        "| Bundle | Skills | Install |\n|---|---|---|\n"
+        "| meaningfy-core | technical-documentation | `claude cmd` |\n"
+        "| meaningfy-devops | a, b | `c2` |\n")
+
+
+def test_tc5_external_skills_opencode_table_renders_and_is_header_only_without_bundles():
+    entries = [{**_EXT, "skills": ["a", "b"]}]
+    assert skill_inventory.render_dependencies(entries, "external-skills-opencode") == (
+        "| Bundle | Skills | Install |\n|---|---|---|\n| meaningfy-core | a, b | `opencode cmd` |\n")
+    plain = {k: v for k, v in _EXT.items() if k != "bundle"}
+    assert skill_inventory.render_dependencies([plain], "external-skills-opencode") == (
+        "| Bundle | Skills | Install |\n|---|---|---|\n")

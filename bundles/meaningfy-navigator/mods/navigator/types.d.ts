@@ -138,6 +138,9 @@ export type NavState = {
   parentModel: string
   turnId: string // the current main turn; PD-8 counts reviewer spawns per turn
   turnRoles: Role[]
+  marked: boolean // a mark line was shown in this session (D-9)
+  markWarned: boolean // the missing-mark warning was given once
+  workerThisTurn: boolean // the lead spawned an implementer or code-reviewer in this turn
   turnEvents: ({ kind: 'skill'; name: string; agent: string } | { kind: 'tool' | 'spawn'; agent: string })[]
   agentCalls: Record<string, number> // tool calls per subagent (PD-6)
   shipLog: ({ kind: 'spawn'; role: Role } | { kind: 'ship' })[] // per change (PD-9)

@@ -8,7 +8,7 @@ description: >
 type: lead
 model: opus
 color: green
-tools: [Read, Grep, Glob, Edit, Write, Bash, Skill, Agent]
+tools: [Read, Grep, Glob, Edit, Write, Bash, Skill, Agent, ToolSearch, "mcp__gitnexus__*"]
 skills:
   - epic-delivery
   - guardrails
@@ -33,6 +33,8 @@ person decides, you brief, check and integrate.
 - `meaningfy-code-review` — the review of each stage before it merges.
 - `spec-stewardship` — archiving the change and keeping the specs current.
 - `meaningfy-git-workflow` — branches, commits and pull requests.
+
+Tools for each activity: the table in `guardrails` `references/activity-tools.md`.
 
 ## Dispatch contract
 - **Input:** the person, in a session in the repository, naming a change whose PLAN is gated.

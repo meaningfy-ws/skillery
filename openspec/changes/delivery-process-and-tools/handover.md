@@ -1,25 +1,31 @@
-# Hand-over: delivery-process-and-tools, after stage 1
+# Hand-over: delivery-process-and-tools, after stage 3
 
 ## Done
-Stage 1, PR #247 (merged by the watch-and-merge command after this note).
+Stage 3, PR #258 (merged by the watch-and-merge command after this note). All three build stages
+are merged; cold-start check of stage 2's note: pass (`evidence/cold-start.md`).
 
 ## Decided since the PLAN
-D-21, D-22, D-23, D-24, and the findings under the floor (design.md, Delivery decisions).
+D-21 to D-32 (design.md, Delivery decisions); the stage-3 items under the floor are listed there.
 
 ## Open
-- For the developer: the scenario "A note that copies the design" (spec `epic-delivery`,
-  `tests/features/epic-delivery.feature`) has the checker read the note, but the note is written
-  after the check (D-1). Recommended: the cold-start check (D-11) judges the note; drop the
-  checker clause from the scenario in stage 2.
-- `team-and-briefs.md` points to `guardrails` `references/activity-tools.md`, which stage 2
-  creates (task 2.1); no release before stage 2 merges.
-- Under-the-floor items for `lean-skills` or later: the CHK-17 and CHK-65 wording in
-  `test-strategy`, the sample band in `docs/environment/navigator.md`, the unused `clarity` gate.
+- Reconciled after stage 3 (D-33, D-34): the proposal, design and spec deltas carry D-21 to D-32;
+  #261 fixed; the stage-2 agent scenarios run by hand on Claude Code (`evidence/scenarios.md`),
+  two failures fixed and re-run green. opencode runs are still owed.
+- Issues outside this EPIC: #263 (project-side budget check), #265 (`apply` expects
+  `cosmic-python` in a repository that is not Python).
+- Loading a bundle with `--plugin-dir` from a checkout loads no agents (symlinks): use a
+  dereferenced copy, `cp -rL bundles/<bundle> <dir>` (D-33).
 
 ## Next
-Stage 2, task 2.0 (cold-start check of this note into `evidence/cold-start.md`), then 2.1.
-Read first: tasks.md §2, design.md D-9, D-10, D-15, D-16, specs/activity-tools.
+1. Task 3.5: the start-weight measurement, on one day, from the base and the new checkout with
+   `--plugin-dir` (D-12), into `evidence/start-weight.md`.
+2. The acceptance demo (LARGE, mandatory; *After the last build stage* in tasks.md), verdict in
+   `evidence/acceptance.md`; then the docs stage.
+3. The release per `meaningfy-release` (DEC-15). The release block of stage 2 is lifted: 3.2 has
+   merged.
+Read first: tasks.md §3.5 and *After the last build stage*, design.md D-11, D-12.
 
 ## Prompt
-Act as the team lead. Deliver stage 2 of openspec/changes/delivery-process-and-tools in skillery
-from its handover.md. Commit, push and merge without asking; merge only on green CI.
+Act as the team lead. Continue openspec/changes/delivery-process-and-tools in skillery from its
+handover.md: task 3.5, then the acceptance demo with me. Commit, push and merge without asking;
+merge only on green CI.

@@ -688,7 +688,7 @@ decisions 4, 5 and 7). The clarity gate was not run again on these entries.
     fields of D-12 stay: they are per test, and the line's `failed-first` number is their count.
 - **D-36 Where the cost numbers of D-11 come from (adds to D-11, step 4).** "Its cost (tokens
   and minutes)" is read from the session transcripts with the two scripts kept in
-  [`inputs/scripts/`](../delivery-retrospective/inputs/scripts/) of `delivery-retrospective`:
+  [`scripts/`](../../../skills/session-retrospective/scripts/) of the `session-retrospective` skill:
   `session_digest.py` writes one row per subagent with its tokens and its duration, and
   `epic_report.py` groups them. The procedure cites the scripts by that path until they have a
   durable home (finding R-11); it then cites the new one (D-42 says who gives them that home). Tokens and minutes are recorded;

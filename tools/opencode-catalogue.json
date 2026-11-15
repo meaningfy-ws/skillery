@@ -1,5 +1,5 @@
 {
-  "version": "3.15.0",
+  "version": "3.16.0",
   "bundles": [
     {
       "name": "meaningfy-core",
@@ -65,6 +65,7 @@
       "skills": [
         "epic-planning",
         "epic-delivery",
+        "session-retrospective",
         "spec-stewardship",
         "clarity-gate",
         "bdd-gherkin",
@@ -272,11 +273,7 @@
         "Agent"
       ],
       "skills": [
-        "cosmic-python",
-        "stream-coding",
-        "superpowers:test-driven-development",
-        "superpowers:systematic-debugging",
-        "superpowers:verification-before-completion"
+        "superpowers:test-driven-development"
       ],
       "metadata": {
         "purpose": "software-development",
@@ -520,7 +517,9 @@
         "Write",
         "Bash",
         "Skill",
-        "Agent"
+        "Agent",
+        "ToolSearch",
+        "mcp__gitnexus__*"
       ],
       "skills": [
         "epic-delivery",

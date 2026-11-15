@@ -20,12 +20,12 @@ otherwise (harden-checks-and-tests DEC-4).
 
 ## ADDED Requirements
 
-### Requirement: A check is an executable rule and carries no rule text
-The catalogue SHALL have a sixth artifact type, **Check**, home `quality/`: an executable rule file
-or a tool configuration that projects fetch and run. A check SHALL carry no rule text of its own:
-what it enforces and why SHALL stay with the skill that owns the rule, and the check SHALL name
-that owner. `docs/development/governance.md`, the `AGENTS.md` type table and `CLAUDE.md` SHALL
-name six types (harden-checks-and-tests DEC-4).
+### Requirement: A quality check is an executable rule and carries no rule text
+The catalogue SHALL have a sixth artifact type, **Quality check**, home `quality/`: an executable
+rule file or a tool configuration that projects fetch and run. A quality check SHALL carry no rule
+text of its own: what it enforces and why SHALL stay with the skill that owns the rule, and the
+check SHALL name that owner. `docs/development/governance.md`, the `AGENTS.md` type table and
+`CLAUDE.md` SHALL name six types (harden-checks-and-tests DEC-4, design D-36).
 
 #### Scenario: A Semgrep rule that explains its own standard
 - **WHEN** a review finds a rule file under `quality/` whose message restates a catalogue entry's text instead of citing its id

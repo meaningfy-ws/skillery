@@ -826,7 +826,7 @@ def test_an_invalid_entry_exits_2_naming_the_entry_and_the_field(tmp_path, monke
     download = FakeDownload()
     assert run_main(tmp_path, monkeypatch, [entry(**changes)], argv=command, download=download) == 2
     captured = capsys.readouterr()
-    assert field in captured.err and "src" in captured.err or field == "id", captured.err
+    assert "entry 0" in captured.err and f"{field}:" in captured.err, captured.err
     assert download.urls == [] and captured.out == ""
 
 

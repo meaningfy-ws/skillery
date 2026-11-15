@@ -21,6 +21,10 @@ v = os.environ["I"]  # ruff: noqa
 # ruleid: mfy-suppression-without-reason
 t = os.environ["J"]  # flake8: noqa
 
+# A file-wide suppression on its own line.
+# ruleid: mfy-suppression-without-reason
+# ruff: noqa
+
 # ok: mfy-suppression-without-reason
 s = os.environ["K"]  # ruff: noqa -- generated file
 
