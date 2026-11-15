@@ -46,7 +46,7 @@
   after Step 4 of `docs/environment/dual-cli/setup-claude.md` and `setup-opencode.md`, with the
   POSIX-shell note and the "run only the claude-code command if you use both" note; add the sync
   paragraph of D-4 to `docs/environment/dual-cli/compatibility.md`; run `make skill-inventory`.
-- [ ] 1.9 Run `make lint` and `make validate` (which runs `make mods`, the navigator's TC-16 that
+- [x] 1.9 Run `make lint` and `make validate` (which runs `make mods`, the navigator's TC-16 that
   reads the new `skills:` lists, and `pytest tests/test_dep_skills_adversarial.py`); CHANGELOG line
   under `[Unreleased]` for the installer; open the pull request, merge on green CI, tick 1.1 to
   1.9; tell the `lean-skills` pilot it can start
@@ -134,7 +134,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [ ] 1.9
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9
 - [ ] 1.10 · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5

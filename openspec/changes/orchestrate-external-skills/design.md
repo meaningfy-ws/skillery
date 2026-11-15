@@ -548,6 +548,12 @@ unescaped pipes in free-text cells (tester finding 2; the tables render Markdown
 empty cells for an invalid entry (tester finding 3; the lint already reports it). The tester's
 file is kept and committed (L2 W1).
 
+The checker passed the stage and agreed with all four re-labels. Its two suggestions are left for
+stage 1b, under the floor: D-18 rejects a pin of the form `unpinned: …`, the fallback D-4 and the
+spec still allow (moot while the full commit installs; align the lint if the fallback is ever
+used); and a command with no `--skill` part passes `_dep_commands` (stage 2's
+`external-skills-install` render rejects it).
+
 ## Open Questions
 
 None left open. The owner answered the four planning questions on 2026-11-15
