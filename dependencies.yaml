@@ -95,7 +95,7 @@
   opencode_install: a block under `mcp` in `opencode.json` ([`mcp-setup.md`](mcp-setup.md) Step 3)
   transport: local (stdio)
   notes: '`command[]` in `opencode.json` mcp; identical capability.'
-  why: code intelligence, impact analysis (`implementer`/`code-reviewer` agents)
+  why: code intelligence; the `team-lead` runs the impact check once per task, the `implementer`/`code-reviewer` agents keep the tools
   hosting: local (npm)
 - name: Atlassian / Rovo
   kind: mcp-server
@@ -308,3 +308,37 @@
   opencode_status: native
   claude_install: pip, in the project's `test` group
   opencode_install: same pip package; the library is CLI-independent.
+- name: agent-rules-books/meaningfy-building
+  kind: skill
+  bundle: meaningfy-building
+  skills: [refactoring, working-effectively-with-legacy-code, a-philosophy-of-software-design, clean-architecture]
+  summary: book rule sets from Meaningfy's fork of ciembor/agent-rules-books, routed by skill-orchestration with Meaningfy's overrides
+  source: meaningfy-ws/agent-rules-books (Meaningfy fork of ciembor/agent-rules-books)
+  pin: 893a88a6fce3a80c565bf39ac65021b43a8b2990 (the commit read in full)
+  provenance: 'MIT; distils third-party books (accepted risk); read in full at 893a88a6 on 2026-11-15; reading records in the evidence/reading/ folder of the change orchestrate-external-skills (active or archived)'
+  used_by: lean-skills (cosmic-python and the engineering skills name them); skill-orchestration (from stage 2)
+  opencode_status: unverified (installs to ~/.agents/skills; opencode not run)
+  claude_install: '`DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill refactoring working-effectively-with-legacy-code a-philosophy-of-software-design clean-architecture --agent claude-code --global --yes`'
+  opencode_install: '`DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill refactoring working-effectively-with-legacy-code a-philosophy-of-software-design clean-architecture --agent opencode --global --yes`'
+- name: agent-rules-books/meaningfy-architecture
+  kind: skill
+  bundle: meaningfy-architecture
+  skills: [domain-driven-design, designing-data-intensive-applications, patterns-of-enterprise-application-architecture, release-it]
+  summary: book rule sets from Meaningfy's fork of ciembor/agent-rules-books, routed by skill-orchestration with Meaningfy's overrides
+  source: meaningfy-ws/agent-rules-books (Meaningfy fork of ciembor/agent-rules-books)
+  pin: 893a88a6fce3a80c565bf39ac65021b43a8b2990 (the commit read in full)
+  provenance: 'MIT; distils third-party books (accepted risk); read in full at 893a88a6 on 2026-11-15; reading records in the evidence/reading/ folder of the change orchestrate-external-skills (active or archived)'
+  used_by: lean-skills (cosmic-python and the engineering skills name them); skill-orchestration (from stage 2)
+  opencode_status: unverified (installs to ~/.agents/skills; opencode not run)
+  claude_install: '`DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill domain-driven-design designing-data-intensive-applications patterns-of-enterprise-application-architecture release-it --agent claude-code --global --yes`'
+  opencode_install: '`DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill domain-driven-design designing-data-intensive-applications patterns-of-enterprise-application-architecture release-it --agent opencode --global --yes`'
+- name: skills-cli
+  kind: cli-tool
+  summary: the open Agent Skills CLI that installs the external skill sources
+  source: npm skills
+  pin: '1.8.1'
+  provenance: not reviewed
+  used_by: the install commands of every entry with a bundle (setup docs)
+  opencode_status: native
+  claude_install: run through npx, as each entry's command shows; set DO_NOT_TRACK=1 to turn its telemetry off
+  opencode_install: same

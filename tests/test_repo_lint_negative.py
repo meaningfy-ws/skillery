@@ -800,11 +800,19 @@ def test_agent_primary_skill_in_other_bundle_is_flagged(tmp_path):
         "agent 'code-reviewer' is in bundle 'b1' but its primary skill 'meaningfy-code-review' is not"]
 
 
-def test_agent_without_local_skill_is_flagged(tmp_path):
+def test_agent_preloading_no_local_skill_passes(tmp_path):
+    # delivery-process-and-tools D-25: no local skill, no primary skill to place
+    _agent_map(tmp_path)
+    _agent(tmp_path, "x", {**_good_fm(), "skills": ["superpowers:test-driven-development"]})
+    _bundles(tmp_path, [{"name": "b1", "agents": ["x"]}])
+    assert lint.agent_bundle_membership(tmp_path) == []
+
+
+def test_agent_with_external_and_namespaced_skills_only_passes(tmp_path):
     _agent_map(tmp_path)
     _agent(tmp_path, "x", {**_good_fm(), "skills": ["stream-coding", "superpowers:x"]})
     _bundles(tmp_path, [{"name": "b1", "agents": ["x"]}])
-    assert lint.agent_bundle_membership(tmp_path) == ["agent 'x' has no local primary skill"]
+    assert lint.agent_bundle_membership(tmp_path) == []
 
 
 # ------------------------------------------------ review-implementation fixes (F-2…F-4)
@@ -1576,3 +1584,455 @@ def test_skill_size_report_uses_the_lean_body_target(tmp_path):
     _lean(tmp_path, "big", "b" * 6145)
     _lean(tmp_path, "fits", "b" * 6144)
     assert lint.skill_size_report(tmp_path) == ["big: SKILL.md body is 6145 bytes (lean body target 6144)"]
+
+
+# ---- activity_tools_table (delivery-process-and-tools D-10, INV-1)
+_TABLE_REL = "skills/guardrails/references/activity-tools.md"
+
+
+def _tools_repo(root: Path, rows: list[str], agents: dict[str, list[str]]):
+    for name, tools in agents.items():
+        _agent(root, name, {"name": name, "description": "x", "tools": tools})
+    table = root / _TABLE_REL
+    table.parent.mkdir(parents=True)
+    table.write_text("| Activity | Agents | Claude Code | opencode | Fallback |\n|---|---|---|---|---|\n"
+                     + "\n".join(rows) + "\n", encoding="utf-8")
+    return root
+
+
+def test_activity_tools_silent_without_the_table(tmp_path):
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_fails_on_a_tool_the_agent_lacks(tmp_path):
+    _tools_repo(tmp_path, ["| Code search | `implementer` | `mcp__context7__query` | x | y |"],
+                {"implementer": ["Read", "mcp__serena__*"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and all(s in errs[0] for s in ("Code search", "implementer", "mcp__context7__query"))
+
+
+def test_activity_tools_glob_entry_matches(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `mcp__serena__serena_repl`, `Read` | x | y |"],
+                {"implementer": ["Read", "mcp__serena__*"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_unknown_agent_is_named(tmp_path):
+    _tools_repo(tmp_path, ["| Code | `ghost` | `Read` | x | y |"], {"implementer": ["Read"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "ghost" in errs[0] and "Code" in errs[0]
+
+
+def test_activity_tools_lead_is_team_lead(tmp_path):
+    _tools_repo(tmp_path, ["| Plan | lead | `Agent`, `Bash` | x | y |"], {"team-lead": ["Read", "Bash"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "team-lead" in errs[0] and "Agent" in errs[0]
+
+
+def test_activity_tools_opencode_and_fallback_cells_are_not_checked(tmp_path):
+    _tools_repo(tmp_path, ["| Code | `implementer` | `Read` | `serena_find_symbol` | `mcp__nope__x` |"],
+                {"implementer": ["Read"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+# ---- activity_tools_table: adversarial cases (INV-1)
+def _tools_raw(root: Path, text: str, agents: dict[str, object]):
+    """Like _tools_repo but with the table text verbatim and any `tools:` value."""
+    for name, tools in agents.items():
+        fm = {"name": name, "description": "x"}
+        if tools is not None:
+            fm["tools"] = tools
+        _agent(root, name, fm)
+    table = root / _TABLE_REL
+    table.parent.mkdir(parents=True)
+    table.write_text(text, encoding="utf-8")
+
+
+_HDR = "| Activity | Agents | Claude Code | opencode | Fallback |\n|---|---|---|---|---|\n"
+
+
+def test_activity_tools_extra_spaces_still_checked(tmp_path):
+    _tools_repo(tmp_path, ["|   Code   |   implementer  |   `Read`  ,  `Bash`   | x | y |"], {"implementer": ["Read"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "Bash" in errs[0]
+
+
+def test_activity_tools_agents_cell_trailing_comma_and_backticks(tmp_path):
+    _tools_repo(tmp_path, ["| Code | `implementer`, `code-reviewer`, | `Read` | x | y |"],
+                {"implementer": ["Read"], "code-reviewer": ["Grep"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "code-reviewer" in errs[0]
+
+
+def test_activity_tools_both_agents_lacking_gives_two_errors(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer, code-reviewer | `Edit` | x | y |"],
+                {"implementer": ["Read"], "code-reviewer": ["Grep"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 2
+
+
+def test_activity_tools_tool_matching_only_as_prefix_fails(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `Read` | x | y |"], {"implementer": ["ReadFile"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_tool_matching_only_as_substring_fails(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `Bash` | x | y |"], {"implementer": ["NotBash"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_agent_entry_is_prefix_of_tool_fails(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `mcp__serena__serena_repl` | x | y |"],
+                {"implementer": ["mcp__serena__serena"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_tool_case_differs_fails(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `read` | x | y |"], {"implementer": ["Read"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_agent_name_case_differs_is_unknown(tmp_path):
+    _tools_repo(tmp_path, ["| Code | Implementer | `Read` | x | y |"], {"implementer": ["Read"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "Implementer" in errs[0]
+
+
+def test_activity_tools_uppercase_lead_is_not_the_lead_mapping(tmp_path):
+    _tools_repo(tmp_path, ["| Plan | Lead | `Bash` | x | y |"], {"team-lead": ["Bash"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_lead_without_team_lead_agent_is_named(tmp_path):
+    _tools_repo(tmp_path, ["| Plan | lead | `Bash` | x | y |"], {"implementer": ["Bash"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "lead" in errs[0]
+
+
+def test_activity_tools_agent_named_lead_is_not_used_for_lead(tmp_path):
+    _tools_repo(tmp_path, ["| Plan | lead | `Bash` | x | y |"], {"lead": ["Bash"], "team-lead": ["Read"]})
+    errs = lint.activity_tools_table(tmp_path)
+    assert len(errs) == 1 and "team-lead" in errs[0]
+
+
+def test_activity_tools_agent_without_tools_key_carries_nothing(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `Read` | x | y |"], {})
+    _tools_raw_agent = {"implementer": None}
+    for name, t in _tools_raw_agent.items():
+        _agent(tmp_path, name, {"name": name, "description": "x"})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_tools_null_does_not_crash(tmp_path):
+    _tools_raw(tmp_path, _HDR + "| Code | implementer | `Read` | x | y |\n", {"implementer": None})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_empty_claude_code_cell_passes(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer |  | x | y |"], {"implementer": ["Read"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_empty_agents_cell_with_tools_passes_silently(tmp_path):
+    _tools_repo(tmp_path, ["| Code |  | `Nope` | x | y |"], {"implementer": ["Read"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_plain_text_tool_names_are_not_checked(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | Edit, flag run_in_background | x | y |"], {"implementer": ["Read"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_backticked_tool_with_inner_space_fails(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `Read ` | x | y |"], {"implementer": ["Read"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_alignment_row_with_colons_and_spaces_is_skipped(tmp_path):
+    _tools_raw(tmp_path, "| Activity | Agents | Claude Code |\n| :--- | :-: | ---: |\n"
+               "| Code | implementer | `Read` |\n", {"implementer": ["Read"]})
+    assert lint.activity_tools_table(tmp_path) == []
+
+
+def test_activity_tools_glob_in_cell_is_not_matched_by_a_narrower_entry(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `mcp__serena__*` | x | y |"],
+                {"implementer": ["mcp__serena__serena_repl"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_glob_does_not_cross_server_prefix(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer | `mcp__serena2__x` | x | y |"], {"implementer": ["mcp__serena__*"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+def test_activity_tools_unknown_agent_in_a_mixed_cell_still_checks_the_known_one(tmp_path):
+    _tools_repo(tmp_path, ["| Code | ghost, implementer | `Edit` | x | y |"], {"implementer": ["Read"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 2
+
+
+def test_activity_tools_agent_cell_with_and_between_names_is_unknown(tmp_path):
+    _tools_repo(tmp_path, ["| Code | implementer and code-reviewer | `Read` | x | y |"],
+                {"implementer": ["Read"], "code-reviewer": ["Read"]})
+    assert len(lint.activity_tools_table(tmp_path)) == 1
+
+
+# --- the optional `bundle:` key (orchestrate-external-skills D-8)
+_SHA = "893a88a6fce3a80c565bf39ac65021b43a8b2990"
+
+
+def _cmd(agent, skills="technical-documentation", sha=_SHA, cli="1.8.1"):
+    return f"`DO_NOT_TRACK=1 npx skills@{cli} add o/r#{sha} --skill {skills} --agent {agent} --global --yes`"
+
+
+_BUNDLE_DEP = {**_DEP, "kind": "skill", "bundle": "meaningfy-core", "skills": ["technical-documentation"],
+               "pin": f"{_SHA} (the commit read in full)", "claude_install": _cmd("claude-code"),
+               "opencode_install": _cmd("opencode")}
+_SKILLS_CLI = {**_DEP, "kind": "cli-tool", "pin": "1.8.1"}
+
+
+def _bundle_repo(tmp_path, entry, bundles=True):
+    if bundles:
+        _bundles(tmp_path, [{"name": "meaningfy-core"}])
+    skills = entry["skills"]  # the register keeps `skills:` inline, which safe_dump does not write
+    fields = "".join(f"  {k}: {v!r}\n" for k, v in entry.items() if k != "skills")
+    cli = "".join(f"  {k}: {v!r}\n" for k, v in _SKILLS_CLI.items() if k != "name")
+    return _deps_text(tmp_path, f"- {fields.lstrip()}  skills: [{', '.join(skills)}]\n- name: skills-cli\n{cli}")
+
+
+def test_dependency_bundle_valid_passes(tmp_path):
+    assert _bundle_repo(tmp_path, _BUNDLE_DEP) == []
+
+
+def test_tc1_dependency_bundle_not_in_bundles_yaml_is_flagged(tmp_path):
+    assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "bundle": "nope"}) == [
+        "dependencies.yaml: 'obsidian-skills' bundle 'nope' is not a bundle of bundles.yaml"]
+
+
+def test_tc2_dependency_bundle_on_non_skill_kind_is_flagged(tmp_path):
+    assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "kind": "cli-tool"}) == [
+        "dependencies.yaml: 'obsidian-skills' 'bundle' needs kind 'skill'"]
+
+
+def test_tc3_dependency_bundle_with_empty_skills_is_flagged(tmp_path):
+    assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "skills": []}) == [
+        "dependencies.yaml: 'obsidian-skills' 'bundle' needs a non-empty 'skills' list"]
+
+
+def test_tc15_dependency_bundle_that_is_not_a_string_is_flagged(tmp_path):
+    assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "bundle": ["meaningfy-core"]}) == [
+        "dependencies.yaml: 'obsidian-skills' 'bundle' must be a bundle name"]
+
+
+def test_tc15_invalid_bundles_yaml_skips_membership_without_crashing(tmp_path):
+    (tmp_path / "bundles.yaml").write_text("- meaningfy-core\n", encoding="utf-8")
+    assert _bundle_repo(tmp_path, _BUNDLE_DEP, bundles=False) == []
+
+
+def test_tc16_dependency_pin_not_a_commit_is_flagged(tmp_path):
+    assert _bundle_repo(tmp_path, {**_BUNDLE_DEP, "pin": "main"}) == [
+        "dependencies.yaml: 'obsidian-skills' 'pin' must start with a 40-character commit"]
+
+
+def test_tc17_install_command_without_the_pin_is_flagged(tmp_path):
+    out = _bundle_repo(tmp_path, {**_BUNDLE_DEP, "opencode_install": _cmd("opencode", sha="a" * 40)})
+    assert out == [f"dependencies.yaml: 'obsidian-skills' 'opencode_install' must carry '#{_SHA}'"]
+
+
+def test_tc18_install_skill_names_differing_from_skills_are_flagged(tmp_path):
+    out = _bundle_repo(tmp_path, {**_BUNDLE_DEP, "claude_install": _cmd("claude-code", skills="other")})
+    assert out == ["dependencies.yaml: 'obsidian-skills' 'claude_install' names skills 'other', "
+                   "not 'technical-documentation'"]
+
+
+def test_tc19_install_cli_version_differing_from_skills_cli_pin_is_flagged(tmp_path):
+    out = _bundle_repo(tmp_path, {**_BUNDLE_DEP, "claude_install": _cmd("claude-code", cli="1.9.0")})
+    assert out == ["dependencies.yaml: 'obsidian-skills' 'claude_install' uses skills@1.9.0, "
+                   "not the skills-cli pin 1.8.1"]
+
+
+# ---- binding_size (delivery-process-and-tools D-13, INV-2)
+_TMPL_REL = "skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl"
+
+
+def _binding_repo(root: Path, body: str, budget_line: str | None = "<!-- size budget: 12000 characters -->",
+                  agents: str | None = None):
+    tmpl = root / _TMPL_REL
+    tmpl.parent.mkdir(parents=True)
+    tmpl.write_text((budget_line + "\n" if budget_line is not None else "") + body, encoding="utf-8")
+    (root / "AGENTS.md").write_text(body if agents is None else agents, encoding="utf-8")
+    return root
+
+
+def test_binding_size_silent_without_the_template(tmp_path):
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_at_the_budget_passes(tmp_path):
+    _binding_repo(tmp_path, "a" * 12000)
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_under_the_budget_passes(tmp_path):
+    _binding_repo(tmp_path, "a" * 11999)
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_one_over_fails_for_both_files(tmp_path):
+    _binding_repo(tmp_path, "a" * 12001)
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 2
+    assert all("12001" in e and "12000" in e for e in errs)
+    assert any("AGENTS.md.tmpl" in e for e in errs) and any(e.startswith("AGENTS.md") for e in errs)
+
+
+def test_binding_size_only_agents_over_fails_once(tmp_path):
+    _binding_repo(tmp_path, "a" * 100, agents="a" * 12001)
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and errs[0].startswith("AGENTS.md")
+
+
+def test_binding_size_counts_characters_not_bytes(tmp_path):
+    _binding_repo(tmp_path, "é" * 12000)  # 24000 bytes, 12000 characters
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_reads_the_figure_from_the_comment(tmp_path):
+    _binding_repo(tmp_path, "a" * 51, "<!-- size budget: 50 characters -->")
+    assert len(lint.binding_size(tmp_path)) == 2
+    (tmp_path / _TMPL_REL).write_text("<!-- size budget: 50 characters -->\n" + "a" * 50, encoding="utf-8")
+    (tmp_path / "AGENTS.md").write_text("a" * 50, encoding="utf-8")
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_excludes_a_budget_comment_in_agents_md(tmp_path):
+    _binding_repo(tmp_path, "a" * 50, "<!-- size budget: 50 characters -->",
+                  agents="<!-- size budget: 50 characters -->\n" + "a" * 50)
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_fails_when_the_comment_is_missing(tmp_path):
+    _binding_repo(tmp_path, "a" * 10, None)
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and "AGENTS.md.tmpl" in errs[0] and "size budget" in errs[0]
+
+
+@pytest.mark.parametrize("line", ["<!-- size budget: twelve characters -->", "<!-- size budget: 12000 -->",
+                                  "<!-- size budget: -5 characters -->", "<!-- budget: 12000 characters -->"])
+def test_binding_size_fails_when_the_comment_is_malformed(tmp_path, line):
+    _binding_repo(tmp_path, "a" * 10, line)
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and "size budget" in errs[0]
+
+
+# ---- binding_size adversarial (stage 3 tester)
+_BUDGET = "<!-- size budget: 50 characters -->"
+
+
+def _write(root: Path, rel: str, data: bytes):
+    p = root / rel
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_bytes(data)
+
+
+def test_binding_size_crlf_files_are_measured_with_single_newlines(tmp_path):
+    body = ("a" * 24 + "\n") * 2  # 50 characters with LF
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + body).replace("\n", "\r\n").encode())
+    _write(tmp_path, "AGENTS.md", (_BUDGET + "\n" + body).replace("\n", "\r\n").encode())
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_crlf_one_over_still_fails(tmp_path):
+    body = "a" * 51
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\r\n" + body).encode())
+    _write(tmp_path, "AGENTS.md", (_BUDGET + "\r\n" + body).encode())
+    assert len(lint.binding_size(tmp_path)) == 2
+
+
+def test_binding_size_bom_on_the_template_comment_does_not_pass_silently(tmp_path):
+    _write(tmp_path, _TMPL_REL, b"\xef\xbb\xbf" + _BUDGET.encode() + b"\n" + b"a" * 500)
+    _write(tmp_path, "AGENTS.md", b"a" * 500)
+    assert lint.binding_size(tmp_path) != []
+
+
+def test_binding_size_trailing_space_on_template_comment_does_not_pass_silently(tmp_path):
+    _write(tmp_path, _TMPL_REL, (_BUDGET + " \n" + "a" * 500).encode())
+    _write(tmp_path, "AGENTS.md", b"a" * 500)
+    assert lint.binding_size(tmp_path) != []
+
+
+def test_binding_size_comment_on_the_second_line_fails_loudly(tmp_path):
+    _write(tmp_path, _TMPL_REL, ("<!-- x -->\n" + _BUDGET + "\n" + "a" * 10).encode())
+    assert len(lint.binding_size(tmp_path)) == 1
+
+
+def test_binding_size_empty_template_fails_loudly(tmp_path):
+    _write(tmp_path, _TMPL_REL, b"")
+    assert len(lint.binding_size(tmp_path)) == 1
+
+
+def test_binding_size_leading_zeros_read_as_the_decimal_figure(tmp_path):
+    line = "<!-- size budget: 0050 characters -->"
+    _write(tmp_path, _TMPL_REL, (line + "\n" + "a" * 51).encode())
+    _write(tmp_path, "AGENTS.md", b"a" * 50)
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and "AGENTS.md.tmpl" in errs[0]
+
+
+def test_binding_size_huge_figure_passes_without_overflow(tmp_path):
+    line = "<!-- size budget: " + "9" * 400 + " characters -->"
+    _write(tmp_path, _TMPL_REL, (line + "\n" + "a" * 10).encode())
+    _write(tmp_path, "AGENTS.md", b"a" * 10)
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_zero_budget_fails_any_content_and_passes_empty(tmp_path):
+    line = "<!-- size budget: 0 characters -->"
+    _write(tmp_path, _TMPL_REL, (line + "\n" + "a").encode())
+    _write(tmp_path, "AGENTS.md", b"")
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and "AGENTS.md.tmpl" in errs[0]
+
+
+def test_binding_size_repeated_comment_in_agents_md_counts_the_second(tmp_path):
+    # only the leading comment is excluded; a second copy is content (36+15 chars here)
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + "a").encode())
+    _write(tmp_path, "AGENTS.md", (_BUDGET + "\n" + _BUDGET + "\n" + "a" * 15).encode())
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and errs[0].startswith("AGENTS.md")
+
+
+def test_binding_size_agents_comment_with_other_figure_is_still_excluded(tmp_path):
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + "a").encode())
+    _write(tmp_path, "AGENTS.md", ("<!-- size budget: 99999 characters -->\n" + "a" * 50).encode())
+    assert lint.binding_size(tmp_path) == []
+
+
+def test_binding_size_template_other_first_comment_is_counted_in_the_body(tmp_path):
+    ver = "<!-- meaningfy-template-version: 3.0.0 -->"  # 42 chars
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + ver + "\n" + "a" * 8).encode())  # body 51
+    _write(tmp_path, "AGENTS.md", b"a")
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and "AGENTS.md.tmpl" in errs[0]
+
+
+def test_binding_size_template_with_version_comment_first_has_no_budget(tmp_path):
+    _write(tmp_path, _TMPL_REL, b"<!-- meaningfy-template-version: 3.0.0 -->\n" + _BUDGET.encode() + b"\n")
+    assert len(lint.binding_size(tmp_path)) == 1
+
+
+def test_binding_size_symlinked_agents_md_is_measured(tmp_path):
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + "a").encode())
+    _write(tmp_path, "real.md", b"a" * 51)
+    (tmp_path / "AGENTS.md").symlink_to(tmp_path / "real.md")
+    errs = lint.binding_size(tmp_path)
+    assert len(errs) == 1 and errs[0].startswith("AGENTS.md")
+
+
+def test_binding_size_missing_agents_md_with_template_is_reported_or_tolerated(tmp_path):
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + "a").encode())
+    assert lint.binding_size(tmp_path) == []  # documents the silent skip; INV-2 speaks of AGENTS.md "longer"
+
+
+def test_binding_size_astral_characters_count_once(tmp_path):
+    _write(tmp_path, _TMPL_REL, (_BUDGET + "\n" + "\U0001F600" * 50).encode())
+    _write(tmp_path, "AGENTS.md", ("\U0001F600" * 50).encode())
+    assert lint.binding_size(tmp_path) == []

@@ -112,3 +112,11 @@ def test_quality_folder_holds_only_checks():
 
 def test_cli_returns_zero():
     assert lint.main([str(REPO)]) == 0
+
+
+def test_activity_tools_table_names_only_callable_tools():
+    assert lint.activity_tools_table(REPO) == []
+
+
+def test_binding_stays_within_its_size_budget():
+    assert lint.binding_size(REPO) == []

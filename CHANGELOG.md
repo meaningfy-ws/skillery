@@ -12,6 +12,77 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.16.0] - 2026-11-15
+
+### Changed
+
+- **`cosmic-python` is lean** (EPIC `lean-skills`, the pilot). The skill drops from 126 KB to
+  about 20 KB: it keeps the layer contract, component organisation, what to test per layer and the
+  code-principles catalogue. The catalogue gains a clean-code and SOLID table (`CC-NAMES` to
+  `CC-DIP`) and three house rules found in the old examples (`BP-ABC-INTERFACES`,
+  `BP-INJECT-ADAPTERS`, `BP-STRICT-BASE-MODEL`); every existing id is unchanged. The seven copied
+  example files are gone: the new page `docs/practice/engineering-standards/worked-examples.md`
+  links the same patterns in the public `mapping-suite-sdk`. Tooling and CI advice now lives only
+  in `project-setup`. If you cite a `cosmic-python` id, nothing changes for you.
+
+### Added
+
+- **The book rule sets are registered per bundle** (EPIC `orchestrate-external-skills`, stage 1a).
+  Eight sets from Meaningfy's fork of `agent-rules-books` are now in `dependencies.yaml`: four for
+  `meaningfy-building`, four for `meaningfy-architecture`, each read in full before it was
+  registered. If you install either bundle, run its command from the new section "External skills
+  of your bundles (per role)" in your CLI's setup guide, together with the rows of the bundles it
+  requires; it pins the commit Meaningfy read and turns the installer's telemetry off. Until the
+  `skill-orchestration` skill ships, these sets inform reasoning only and `cosmic-python` wins on
+  any conflict. On opencode the install is not yet verified.
+- New skill `session-retrospective` in `meaningfy-building`: after an EPIC, run two scripts over
+  your local agent transcripts and read where the time and cost went, per phase, stage and review
+  round. The digest is written outside any repository and the script refuses a folder inside one.
+- The lead of an EPIC now writes a mark line (`mark: change=<id> phase=<phase> stage=<n>`) at the
+  start of each stage; on Claude Code the navigator warns once when a worker is dispatched without
+  one, and `session-retrospective` reads the marks instead of guessing the phase.
+
+### Changed
+
+- **BREAKING for a caller that relied on the implementer checking impact itself** (EPIC
+  `delivery-process-and-tools`, stage 2). `implementer` now preloads only
+  `superpowers:test-driven-development` and loads its other four skills when the task needs them
+  (`cosmic-python` in a Python repository), so each worker starts smaller. It no longer runs the
+  impact check or refuses a HIGH or CRITICAL edit: the lead checks impact once per task, before the
+  brief, and `team-lead` now carries the GitNexus tools for it. One table in `guardrails`
+  (`references/activity-tools.md`) names the recommended tool for each activity on each CLI, with
+  a fallback; agents point to it (v3.15.0 already pointed to it before it existed), and a lint
+  check fails when the table names a tool an agent cannot call. Serena on opencode is still
+  unverified (a recorded gap).
+- **BREAKING for a project whose `AGENTS.md` is over 12,000 characters** (EPIC
+  `delivery-process-and-tools`, stage 3). The `AGENTS.md` template now opens with
+  `<!-- size budget: 12000 characters -->`, carries four habit lines (never poll, edit with the edit
+  tool, read a range, batch known reads) and a pointer to the tool table instead of "code tools are
+  mandatory", and says the lead runs impact and the change check once per task, re-indexing with
+  `--skip-agents-md`. A new lint check, `binding_size`, fails when this repository's `AGENTS.md` or
+  the template is over the budget; a scaffolded project inherits the comment. This repository's
+  `AGENTS.md` drops from about 14,800 to 11,200 characters and `CLAUDE.md` to under 600, so every
+  session starts lighter.
+- `code-reviewer` now always ends its report with the result line
+  (`result: stage=… role=reviewer lens=… findings=… accepted=-`), even when the brief does not
+  spell it; `implementer` loads `cosmic-python` before its first edit in a Python repository. Both
+  were found by hand runs of their scenarios. `hooks.yaml`'s GitNexus intents now say once per
+  task, as `AGENTS.md` does (#261).
+
+### Fixed
+
+- **A fresh `project-setup` skeleton passes its own `make test`.** Its only measured module, the
+  `__main__.py` entry stub, failed the 80 % coverage gate at 0 %. The stub now carries
+  `# pragma: no cover`; remove it when you replace the stub. The gate itself is unchanged.
+- **`project-setup` now explains the shared checks it scaffolds** (EPIC `harden-checks-and-tests`,
+  stage 1, prose side, `project-setup` part). `config-files.md` gains § *Suppressions* (a `# noqa`
+  or `# nosemgrep` names its code and ends with ` -- <reason>`), the page the Semgrep rule
+  `mfy-suppression-without-reason` already cites. `modernizing-existing-projects.md` gains
+  *Adopting the shared checks*: one target per pull request, Ruff's new codes in three steps, never
+  `ruff check --add-noqa`. The layout, CI walkthrough, checklist and template table name
+  `.quality/`, `.semgrepignore`, `scripts/quality/` and the three new targets; a leftover Poetry
+  line in `layout.md` is gone.
+
 ## [3.15.0] - 2026-11-15
 
 ### Added

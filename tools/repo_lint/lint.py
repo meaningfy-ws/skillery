@@ -8,6 +8,7 @@ trivially.
 """
 from __future__ import annotations
 
+import fnmatch
 import json
 import os
 import re
@@ -374,7 +375,7 @@ def use_case_coverage(repo: Path) -> list[str]:
 
 _DEP_REQUIRED = ("name", "kind", "source", "pin", "provenance", "used_by", "opencode_status",
                  "claude_install", "opencode_install")
-_DEP_OPTIONAL = ("summary", "transport", "notes", "why", "hosting", "skills")
+_DEP_OPTIONAL = ("summary", "transport", "notes", "why", "hosting", "skills", "bundle")
 _KEBAB = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 
@@ -390,6 +391,9 @@ def dependencies_register(repo: Path) -> list[str]:
     keywords = list(skill_inventory.DEPENDENCY_STATUSES)
     out: list[str] = []
     owners: dict[str, str] = {}
+    listed = _bundle_list(repo)  # None: invalid file, `bundle_gates` reports it and membership skips
+    bundle_names = None if listed is None else {b["name"] for b in listed}
+    cli_pin = next((str(d.get("pin")) for d in entries if isinstance(d, dict) and d.get("name") == "skills-cli"), None)
     for d in entries:
         if not isinstance(d, dict):
             out.append(f"{path.name}: entry {d!r} is not a mapping")
@@ -405,12 +409,54 @@ def dependencies_register(repo: Path) -> list[str]:
         if status and status.split(" ")[0] not in keywords:
             out.append(f"{who} opencode_status must start with {', '.join(keywords[:-1])} or {keywords[-1]}")
         out += _dep_skills(repo, d, who, owners)
+        out += _dep_bundle(d, who, bundle_names, cli_pin)
     # The navigator's TC-16 reads `skills:` with a line reader: only the inline `[a, b]` form, bare
     # names, at entry level (DD-28, DD-38); text inside a block string is deeper and never matches.
     out += [f"{path.name}: line {i}: 'skills:' must be an inline list of bare names, `skills: [a, b]`"
             for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
             if re.match(r"^(- |  )skills:", line)
             and not re.match(r"^(- |  )skills:\s*\[[^\]'\"]*\]\s*(#.*)?$", line)]
+    return out
+
+
+_COMMIT = re.compile(r"[0-9a-f]{40}(?![0-9a-f])")
+
+
+def _dep_bundle(d: dict, who: str, bundle_names: set[str] | None, cli_pin: str | None) -> list[str]:
+    """The optional `bundle:` key (orchestrate-external-skills D-8, D-17, D-18): a bundle of
+    bundles.yaml (skipped when that file is invalid), on a `skill` entry that lists its skills,
+    whose pin, install commands and skill list agree."""
+    if "bundle" not in d:
+        return []
+    out: list[str] = []
+    if not isinstance(d["bundle"], str):
+        out.append(f"{who} 'bundle' must be a bundle name")
+    elif bundle_names is not None and d["bundle"] not in bundle_names:
+        out.append(f"{who} bundle '{d['bundle']}' is not a bundle of bundles.yaml")
+    if d.get("kind") != "skill":
+        out.append(f"{who} 'bundle' needs kind 'skill'")
+    skills = d.get("skills")
+    if not (isinstance(skills, list) and skills):
+        out.append(f"{who} 'bundle' needs a non-empty 'skills' list")
+        skills = None
+    return out + _dep_commands(d, who, skills, cli_pin)
+
+
+def _dep_commands(d: dict, who: str, skills: list | None, cli_pin: str | None) -> list[str]:
+    """D-18: the pin starts with a 40-character commit, and each install command carries it,
+    names exactly `skills` after `--skill`, and runs the `skills-cli` pin."""
+    commit = _COMMIT.match(str(d.get("pin") or ""))
+    out = [] if commit else [f"{who} 'pin' must start with a 40-character commit"]
+    for field in ("claude_install", "opencode_install"):
+        cmd = str(d.get(field) or "")
+        if commit and f"#{commit.group(0)}" not in cmd:
+            out.append(f"{who} '{field}' must carry '#{commit.group(0)}'")
+        named = re.search(r"--skill (.*?) --", cmd)
+        if skills and named and named.group(1).split() != skills:
+            out.append(f"{who} '{field}' names skills '{named.group(1)}', not '{' '.join(map(str, skills))}'")
+        version = re.search(r"skills@(\S+)", cmd)
+        if cli_pin and version and version.group(1) != cli_pin:
+            out.append(f"{who} '{field}' uses skills@{version.group(1)}, not the skills-cli pin {cli_pin}")
     return out
 
 
@@ -699,7 +745,9 @@ def agent_bundle_membership(repo: Path) -> list[str]:
 def _primary_skill_errors(repo: Path, agent: str, bundle: str, skills: set[str]) -> list[str]:
     """agent-authoring-standard D-4: the agent's one bundle lists its primary skill — the first
     `skills:` entry that is neither namespaced nor external. A missing or non-list `skills:` is
-    agent_conformance's to report; unparsable frontmatter is bundle_gates'."""
+    agent_conformance's to report; unparsable frontmatter is bundle_gates'. An agent whose
+    `skills:` holds no local skill has no primary skill to place and passes
+    (delivery-process-and-tools D-25)."""
     try:
         fm = bundle_gen.agent_frontmatter(repo, agent)[0]
     except ValueError:
@@ -707,9 +755,7 @@ def _primary_skill_errors(repo: Path, agent: str, bundle: str, skills: set[str])
     if not isinstance(fm.get("skills"), list):
         return []
     primary = _primary_skill(fm)
-    if primary is None:
-        return [f"agent '{agent}' has no local primary skill"]
-    if primary not in skills:
+    if primary is not None and primary not in skills:
         return [f"agent '{agent}' is in bundle '{bundle}' but its primary skill '{primary}' is not"]
     return []
 
@@ -1540,6 +1586,67 @@ def bundle_gates(repo: Path) -> list[str]:
     return bundle_gen.gate_errors(repo)
 
 
+ACTIVITY_TOOLS_TABLE = "skills/guardrails/references/activity-tools.md"
+_LEAD_AGENT = "team-lead"  # the table's `lead` is the lead's agent
+
+
+def activity_tools_table(repo: Path) -> list[str]:
+    """The activity-tools table must never name a tool an agent cannot call: every backticked token
+    in a row's Claude Code cell must match (fnmatch, globs included) a `tools:` entry of each agent
+    in its Agents cell, and every such agent must exist. The opencode and Fallback cells are not
+    checked (G-6). Silent when the table is absent."""
+    table = repo / ACTIVITY_TOOLS_TABLE
+    if not table.exists():
+        return []
+    tools = {p.stem: [str(t) for t in (_frontmatter(p.read_text(encoding="utf-8")) or {}).get("tools") or []]
+             for p in sorted((repo / "agents").glob("*.md"))}
+    out: list[str] = []
+    for line in table.read_text(encoding="utf-8").splitlines():
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 3 or not line.lstrip().startswith("|") or cells[0] in ("Activity",) or set(cells[0]) <= {"-", ":"}:
+            continue
+        for name in (a.strip("` ") for a in cells[1].split(",") if a.strip("` ")):
+            agent = _LEAD_AGENT if name == "lead" else name
+            if agent not in tools:
+                out.append(f"activity-tools row '{cells[0]}': unknown agent '{name}'")
+                continue
+            out += [f"activity-tools row '{cells[0]}': agent '{agent}' does not carry tool '{t}'"
+                    for t in re.findall(r"`([^`]+)`", cells[2])
+                    if not any(fnmatch.fnmatchcase(t, e) for e in tools[agent])]
+    return out
+
+
+BINDING_TEMPLATE = "skills/project-setup/assets/templates/agentic/AGENTS.md.tmpl"
+_BUDGET_LINE = re.compile(r"<!-- size budget: (\d+) characters -->")
+
+
+def binding_size(repo: Path) -> list[str]:
+    """The binding stays small (delivery-process-and-tools D-13, INV-2): AGENTS.md and its template,
+    each measured in characters without a leading budget-comment line, must not exceed the figure in
+    that comment on the template's first line. A template without a well-formed comment fails.
+    Silent when the template is absent."""
+    tmpl = repo / BINDING_TEMPLATE
+    if not tmpl.exists():
+        return []
+    text = tmpl.read_text(encoding="utf-8")
+    m = _BUDGET_LINE.fullmatch(text.split("\n", 1)[0].rstrip("\r"))
+    if not m:
+        return [f"{BINDING_TEMPLATE}: first line must be the comment '<!-- size budget: N characters -->'"]
+    budget = int(m.group(1))
+    out: list[str] = []
+    for path in (repo / "AGENTS.md", tmpl):
+        if not path.exists():
+            continue
+        body = path.read_text(encoding="utf-8")
+        first, _, rest = body.partition("\n")
+        if _BUDGET_LINE.fullmatch(first.rstrip("\r")):
+            body = rest
+        if len(body) > budget:
+            out.append(f"{path.relative_to(repo).as_posix()}: {len(body)} characters, over the budget of {budget}; "
+                       f"cut prose, do not raise the figure")
+    return out
+
+
 ALL_CHECKS = (
     missing_skill_dirs, wip_isolation, frontmatter_present_errors,
     frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long, description_angle_brackets,
@@ -1551,7 +1658,8 @@ ALL_CHECKS = (
     agents_canonical_invariant, hooks_inventory_shape, mod_bindings_match, body_agnosticism,
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
-    top_level_folders, quality_files, prose_budget, reference_pointers,
+    top_level_folders, quality_files, prose_budget, reference_pointers, activity_tools_table,
+    binding_size,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a

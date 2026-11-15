@@ -54,6 +54,17 @@ tested the stage it checks.
    The lead writes each line again with `accepted=<n>` under `Results` in the PR body. A report
    without it is incomplete: the lead returns it and re-runs nothing.
 
+   **The mark** (its one definition) says which change, phase and stage the session is in:
+
+   ```text
+   mark: change=<id> phase=<shape|plan|deliver> stage=<n|->
+   ```
+
+   The lead writes it as a whole line in its own message (not in a fence, not in a tool input) at the
+   start of each stage and, in a session carried on from a hand-over note, before its first brief. It
+   repeats the line in the turn's last message when that turn dispatches a worker, because the
+   navigator reads only the last message. Archive and release write none.
+
 Tools for each activity, and their fallbacks: the table in `guardrails` (`references/activity-tools.md`).
 
 ## Builder

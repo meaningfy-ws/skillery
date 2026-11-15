@@ -55,8 +55,9 @@ missing `uv.lock` fails with uv's message, and `make lock` is the only writer.
 ## D4 — Ruff replaces black + isort + flake8 + pylint
 
 One fast Rust tool for formatting and linting. Config in `ruff.toml`: `line-length = 100`,
-`target-version` matching the project, `lint.select = ["E","F","I","B","UP","SIM","C90","N","RUF100"]`,
-`lint.mccabe.max-complexity = 10`. Use `[lint.per-file-ignores]` for justified exceptions (e.g.
+`target-version` matching the project, `lint.select` = the style base
+`["E","F","I","B","UP","SIM","C90","N","RUF100"]` plus the codes that check a hygiene case or a
+catalogued rule, each commented with its reason in `ruff.toml.tmpl`; `lint.mccabe.max-complexity = 10`. Use `[lint.per-file-ignores]` for justified exceptions (e.g.
 `N802` on a config module that uses UPPER_CASE method names).
 
 **Why.** Four tools → one; seconds → milliseconds; a single config surface. mypy still covers types

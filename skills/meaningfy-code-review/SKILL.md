@@ -70,9 +70,9 @@ subagent must traverse in full**. Together the five regions cover the whole stan
 | Lens | Catalogue/SKILL region it owns — **review every entry in the region**, the examples are not a limit |
 |------|----------------------------------------------------------------------------------------------------|
 | **L1 · Security & safety** | the security/safety surface: secrets & credentials, injection (command/SQL/XSS), the OWASP top-10, `BP-VALIDATE-AT-BOUNDARY`, `AP-DUP-VALIDATION`, and sensitive-data handling per `guardrails`. |
-| **L2 · Spec correctness & tests** | conformance to the EPIC **requirements/specs** (not the plan) — acceptance criteria, edge/error scenarios, no undocumented divergence — **and** the whole `cosmic-python` testing contract (§"No Clean Code Without Tests", `BP-COVERAGE-PER-LAYER`, FIRST, test-per-layer Workflow 3, Gherkin step defs) — **and** doc agreement: pages the diff changed, or that name a changed symbol, command, phase or file, agree with the code. |
-| **L3 · Architecture conformance** | the `cosmic-python` structural contract in full: the four layers, the dependency law (§1–2), component organisation (`PR-COMPONENT-FIRST`), observability placement, **and every structural anti-pattern** (`AP-IO-IN-MODELS`, `AP-LOGIC-IN-EDGES`, `AP-CROSS-VARIANT-IMPORT`, `AP-PARALLEL-LAYOUTS`, cycles); **plus** each touched ADR's Confirmation — by its tool where one exists, by reading where not; an automatable Confirmation that is not automated is a finding — and any workaround of one of our own libraries (a finding: `epic-delivery`'s dependency rule forbids them). |
-| **L4 · Principles & clean code** | the Clean Code + SOLID standard in full (§"Core Principles") **and every within-unit best-practice/anti-pattern** (`BP-DOMAIN-REVEALING-NAMES`, `BP-CONSTANTS-ENUMS`/`-HOME`, `BP-EXCEPTIONS-MODULE`, `BP-IDIOMATIC-SMALL`; `AP-FREESTR-ANYLAYER`, `AP-DICT-AS-MODEL`, `AP-GENERIC-MODULE-NAMES`, `AP-EXCEPTIONS-EMBEDDED`). |
+| **L2 · Spec correctness & tests** | conformance to the EPIC **requirements/specs** (not the plan) — acceptance criteria, edge/error scenarios, no undocumented divergence — **and** the whole `cosmic-python` testing contract (the per-layer test table in §"Rules", `BP-COVERAGE-PER-LAYER`, the testing checklist, Gherkin step defs) — **and** doc agreement: pages the diff changed, or that name a changed symbol, command, phase or file, agree with the code. |
+| **L3 · Architecture conformance** | the `cosmic-python` structural contract in full: the four layers and the dependency law (§"Rules", the layer contract), component organisation (`PR-COMPONENT-FIRST`), interfaces and injection (`BP-ABC-INTERFACES`, `BP-INJECT-ADAPTERS`, `CC-DIP`), observability placement, **and every structural anti-pattern** (`AP-IO-IN-MODELS`, `AP-LOGIC-IN-EDGES`, `AP-CROSS-VARIANT-IMPORT`, `AP-PARALLEL-LAYOUTS`, cycles); **plus** each touched ADR's Confirmation — by its tool where one exists, by reading where not; an automatable Confirmation that is not automated is a finding — and any workaround of one of our own libraries (a finding: `epic-delivery`'s dependency rule forbids them). |
+| **L4 · Principles & clean code** | the Clean Code + SOLID standard in full (the `CC-*` table of the catalogue except `CC-DIP`) **and every within-unit best-practice/anti-pattern** (`BP-DOMAIN-REVEALING-NAMES`, `BP-STRICT-BASE-MODEL`, `BP-CONSTANTS-ENUMS`/`-HOME`, `BP-EXCEPTIONS-MODULE`, `BP-IDIOMATIC-SMALL`; `AP-FREESTR-ANYLAYER`, `AP-DICT-AS-MODEL`, `AP-GENERIC-MODULE-NAMES`, `AP-EXCEPTIONS-EMBEDDED`). |
 | **L5 · Fit, elegance & refactoring** | the reuse/compactness principles in full (`PR-SURVEY-FIRST`, `PR-REUSE-COMPACT`, `PR-SSOT-DRY`, `PR-CONFIG-DECOUPLED`) and the duplication/fragmentation anti-patterns (`AP-DUP-CONST`, `AP-MISPLACED-SHARED-INFRA`, `AP-OVER-FRAGMENTATION`, `AP-VERBATIM-EXTERNAL`), **plus** the forward-looking fit & refactoring investigation (new + touched code) with gitnexus blast radius. |
 
 **Lens MECE boundaries** (so a finding lands under exactly one lens):
@@ -81,6 +81,7 @@ subagent must traverse in full**. Together the five regions cover the whole stan
   constants). A misplaced import is L3; a magic string is L4.
 - **L4 vs L5** — L4 flags a *local* quality defect as-is; L5 owns *cross-file reuse/fit* and the
   *forward-looking refactoring*. "This name is unclear" is L4; "this duplicates the sibling, lift it" is L5.
+  `CC-EXTRACT-THRESHOLD` is L4 within a unit and L5 across files.
 - **L2 vs all** — L2 is the only lens that judges against the **requirements/specs** (correctness + the
   tests proving it); the others judge the code against principles regardless of requirements.
 
@@ -101,8 +102,8 @@ scoped to its region:
    supplies the gate report, or L2 runs the project's full gates. L2 checks doc agreement: every page the diff changed, and every page naming a
    symbol, command, phase or file the diff changed, agrees with the code.
 3. **Traverse exhaustively.** Walk **every** principle (`PR-*`), best-practice (`BP-*`), and
-   anti-pattern (`AP-*`) in the region against the changed code; also apply the cosmic-python SKILL
-   review questions (Workflow 2) and the ONE-MINUTE CODE STRUCTURE CHECK where the lens owns them. Do
+   anti-pattern (`AP-*`) in the region against the changed code, and the clean-code entries (`CC-*`)
+   where the lens owns them; also apply the cosmic-python SKILL's "Before you hand over" check. Do
    not stop at "found one" — the standard is checked in full.
 4. **Blast radius.** For each modified symbol run `gitnexus_impact(… direction: "upstream")` and flag
    HIGH/CRITICAL. *(L5 also runs this on each refactor candidate.)* If gitnexus is unavailable, warn

@@ -48,7 +48,12 @@ to add or change a row, edit its entry there and run `make skill-inventory`.
 | **checkmake** (the Makefile linter behind `quality/checkmake/`; MIT, [checkmake/checkmake](https://github.com/checkmake/checkmake)) | project-setup templates (`make check-makefile`), `quality/checkmake/`, `tests/test_quality.py` | native | the release binary on PATH (skillery, by hand) or `make quality-tools` (a project, checked against `scripts/quality/tools.sha256`) | same binary; the tool is CLI-independent. |
 | **Hypothesis** (the property-based testing library of the tester and, from stage 3 of `harden-checks-and-tests`, of `tests/test_quality_properties.py`; MPL-2.0, [HypothesisWorks/hypothesis](https://github.com/HypothesisWorks/hypothesis)) | project-setup templates (the `test` group, from stage 2 of `harden-checks-and-tests`); `tests/test_quality_properties.py` (from stage 3) | native | pip, from `requirements-quality.txt` (skillery) or the project's `test` group | same pip package; the library is CLI-independent. |
 | **Schemathesis** (contract-driven API tests from an OpenAPI schema, used by the tester; MIT, [schemathesis/schemathesis](https://github.com/schemathesis/schemathesis)) | project-setup templates (the `test` group of a project with an API, from stage 2 of `harden-checks-and-tests`) | native | pip, in the project's `test` group | same pip package; the library is CLI-independent. |
+| **agent-rules-books/meaningfy-building** (book rule sets from Meaningfy's fork of ciembor/agent-rules-books, routed by skill-orchestration with Meaningfy's overrides) | lean-skills (cosmic-python and the engineering skills name them); skill-orchestration (from stage 2) | **UNVERIFIED** (installs to ~/.agents/skills; opencode not run) | `DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill refactoring working-effectively-with-legacy-code a-philosophy-of-software-design clean-architecture --agent claude-code --global --yes` | `DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill refactoring working-effectively-with-legacy-code a-philosophy-of-software-design clean-architecture --agent opencode --global --yes` |
+| **agent-rules-books/meaningfy-architecture** (book rule sets from Meaningfy's fork of ciembor/agent-rules-books, routed by skill-orchestration with Meaningfy's overrides) | lean-skills (cosmic-python and the engineering skills name them); skill-orchestration (from stage 2) | **UNVERIFIED** (installs to ~/.agents/skills; opencode not run) | `DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill domain-driven-design designing-data-intensive-applications patterns-of-enterprise-application-architecture release-it --agent claude-code --global --yes` | `DO_NOT_TRACK=1 npx skills@1.8.1 add meaningfy-ws/agent-rules-books#893a88a6fce3a80c565bf39ac65021b43a8b2990 --skill domain-driven-design designing-data-intensive-applications patterns-of-enterprise-application-architecture release-it --agent opencode --global --yes` |
+| **skills-cli** (the open Agent Skills CLI that installs the external skill sources) | the install commands of every entry with a bundle (setup docs) | native | run through npx, as each entry's command shows; set DO_NOT_TRACK=1 to turn its telemetry off | same |
 <!-- /GENERATED -->
+
+**Keeping the forks in step.** The forks are synced with upstream by hand and only on demand. Before a pin moves, every changed file of a registered skill is read in full again, its reading record is updated and any new conflict goes to the owner. Only the top-level skill folders are read and installed; the `plugins/*/skills/` copies in the wondel fork are not.
 
 > **gitnexus** and **context7** are MCP servers, not skill-packs — both **native** on opencode; see the
 > *MCP servers* table below.
@@ -86,18 +91,26 @@ The only recorded *capability* gap is on the agent-hook surface, owned by
 | `persist-before-compaction` | `PreCompact` hook | no `PreCompact` equivalent | degrades to `Stop`/`session.idle` binding on opencode. |
 | `no-poll-loops` | `PreToolUse` command hook on `Bash` (the `no-poll-loops` mod in `meaningfy-core`) | `tool.execute.before` handler for `bash` in `tools/opencode-plugin.mjs`, the same `check` | parity: both deny the same sleep loops with the same message and fail open. |
 
+The mark line (`epic-delivery`) has one recorded gap:
+
+| Intent | Claude binding | opencode | Gap / degradation |
+|---|---|---|---|
+| warn when a worker is dispatched without a mark | the `navigator` mod warns once at the end of the turn | no navigator on opencode | the warning is Claude Code only; on opencode the `guessed` label in the `session-retrospective` report is the only signal. |
+
 One skill also has a recorded monitoring gap, which comes from a missing plugin rather than a hook:
 
 | Skill | Claude Code | opencode | Gap / degradation |
 |---|---|---|---|
 | `rule-steward` | rule usage is traced by the Langfuse Claude Code plugin | no Langfuse plugin known | opencode sessions can `load`, `cite` and `check` rules, but nothing records them, so rules used only there look unused in the weekly review. |
 
-Three agents have a recorded tool gap (`make opencode-report`):
+Four agents have a recorded tool gap (`make opencode-report`):
 
 | Agent | Claude Code | opencode | Gap / degradation |
 |---|---|---|---|
 | `lawyer` | `tools` lists `mcp__overleaf__*`, so Tolic may edit the contract's Overleaf project | a tool glob has no opencode analogue and is left out of the rendered agent | on opencode Tolic works through git only, which his body already names as the fallback. |
+| `implementer`, `code-reviewer` (Serena's REPL, row of the tool table in `guardrails` `references/activity-tools.md`) | `mcp__serena__initial_instructions` and `mcp__serena__serena_repl` | **unverified, gap**: probed 2026-11-15 on opencode 2.1.4, `opencode mcp list` shows "No MCP servers configured", and `~/.config/opencode/` and the repository hold no Serena entry; the reachable name (`serena_serena_repl` by the `<server>_<tool>` rule) is not confirmed | until a Serena server is configured and seen, an opencode session uses the table's Fallback column. |
 | `implementer`, `code-reviewer` | `tools` is a closed list: the built-in tools, `ToolSearch` and the code tools `mcp__serena__*`, `mcp__ast-grep__*`, `mcp__gitnexus__*`; no other connector tool reaches the worker | `ToolSearch` and a tool glob have no opencode analogue and are left out of the rendered agent; the list does not restrict there (G-6 in [`mapping.md`](mapping.md)) | on opencode the worker still gets every MCP tool of the session, the code tools included; only the context saving is lost. |
+| `team-lead` | `tools` adds `ToolSearch` and `mcp__gitnexus__*` for the per-task impact check | `ToolSearch` and the glob have no opencode analogue and are left out of the rendered agent (G-6 in [`mapping.md`](mapping.md)) | on opencode the lead still gets every MCP tool of the session, GitNexus included; only the context saving is lost. |
 
 One bundle is Claude Code only by design, a deliberate gap rather than a missing capability:
 

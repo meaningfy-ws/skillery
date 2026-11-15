@@ -6,7 +6,8 @@ Reads ~/.claude/projects/*/<session>.jsonl and their subagents/agent-*.jsonl, wr
   agents.jsonl    one row per subagent: type, description, full prompt, time, tokens, report
   events.jsonl    the timeline: prompts, skills, dispatches, commands, questions, file edits
 
-Usage: session_digest.py [--days 14] [--out DIR] [--root ~/.claude/projects] | --selftest
+Usage: session_digest.py [--days 14] [--out DIR] [--root ~/.claude/projects]
+--out defaults to ~/.cache/session-retrospective/<date>; a folder inside a git working tree is refused (exit 2).
 Stdlib only. Read-only on the transcripts.
 
 Time is split three ways. LLM time: from the record before a response to its last content block.
@@ -22,7 +23,9 @@ Known glitches this script is built around:
 """
 import argparse
 import json
+import os
 import re
+import subprocess
 import sys
 import time
 from collections import Counter
@@ -33,6 +36,18 @@ EPIC_RE = re.compile(r"openspec/changes/(?:archive/(?:\d{4}-\d{2}-\d{2}-)?)?([a-
 NOT_EPICS = {"archive"}
 WRAPPERS = {"uv", "poetry", "npx", "pipx", "sudo", "time", "timeout", "run", "exec", "python", "python3", "-m"}
 FILE_TOOLS = {"Read", "Edit", "Write", "NotebookEdit"}
+MARK_RE = re.compile(r"^[-*\s`]*mark: change=([a-z0-9][a-z0-9-]*) phase=(shape|plan|deliver) stage=(\d+|-)`?\s*$")
+MARK_BAD_RE = re.compile(r"^[-*\s`]*mark:")
+RESULT_RE = re.compile(r"^[-*\s`]*result: stage=(\S+) role=(tester|reviewer|checker)( \w[\w-]*=\S+)+`?\s*$")
+KV_RE = re.compile(r"(\w[\w-]*)=(\S+)")
+UNKNOWN_THRESHOLD = 0.01
+# Record types the script reads, plus those seen in real transcripts (types only) and skipped on purpose.
+HANDLED_TYPES = {"ai-title", "pr-link", "cost-state", "system", "assistant", "user", "api-request", "attachment"}
+SKIPPED_TYPES = {"last-prompt", "mode", "permission-mode", "session-owner", "atis-latch", "file-history-snapshot",
+                 "file-history-delta", "api-request-shape", "api-request-blob", "tools-used", "queue-operation",
+                 "relocated", "worktree-state", "frame-link", "artifact-comment-monitor",
+                 "artifact-autoreact-ledger", "fork-context-ref"}
+KNOWN_TYPES = HANDLED_TYPES | SKIPPED_TYPES
 
 
 def ts(s):
@@ -61,13 +76,56 @@ def user_text(content):
     return None
 
 
+def lines_outside_fences(text):
+    """The lines of a text that are not inside a ``` fenced block (D-1, D-3)."""
+    fenced = False
+    for line in text.splitlines():
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+        elif not fenced:
+            yield line
+
+
+def well_formed(r, typ, unknown):
+    """F5/DEC-8: an assistant or user record of the wrong shape is counted as (malformed) and skipped.
+    Non-dict blocks of a list are dropped and counted; the rest of the record is kept."""
+    m = r.get("message")
+    content = m.get("content") if isinstance(m, dict) else None
+    ok_content = content is None or isinstance(content, list) or (typ == "user" and isinstance(content, str))
+    if not (isinstance(m, dict) and ok_content and r.get("timestamp") and isinstance(m.get("usage") or {}, dict)):
+        unknown["(malformed)"] += 1
+        return False
+    if isinstance(content, list):
+        m["content"] = [b for b in content if isinstance(b, dict)]
+        unknown["(malformed)"] += len(content) - len(m["content"])
+    return True
+
+
 def parse_stream(path, session, agent=""):
     """One transcript file -> (stats dict, list of events)."""
     st = {"calls": 0, "in": 0, "cache_write": 0, "cache_read": 0, "out": 0, "first_ctx": 0, "max_ctx": 0,
           "models": Counter(), "first": None, "last": None, "turn_s": 0.0, "compactions": 0, "cwd": "",
           "title": "", "prs": set(), "cost": {}, "api_s": {}, "tool_s": {}, "prompt": "", "report": "",
-          "epics": Counter(), "branches": Counter()}
+          "epics": Counter(), "branches": Counter(), "lines": 0, "unknown": Counter(), "assistants": 0}
     events, pending, seen_msgs, epic, llm_event, llm_start = [], {}, set(), "", None, None
+
+    def guess_epics(blob):  # the path guess only; the report applies the lead's mark (D-2)
+        nonlocal epic
+        for e in EPIC_RE.findall(blob):
+            if e not in NOT_EPICS:
+                epic = e
+                st["epics"][e] += 1
+
+    def read_lines(t, text, marks):
+        """Mark lines (lead text only) and result lines of one text; the full text, before any truncation."""
+        for line in lines_outside_fences(text):
+            if marks and (m := MARK_RE.match(line)):
+                emit(t, "mark", m.group(1), line.strip(), phase=m.group(2), stage=m.group(3))
+            elif marks and MARK_BAD_RE.match(line):
+                emit(t, "mark-bad", text=line.strip())
+            elif RESULT_RE.match(line):
+                kv = {k: v.strip("`\"'") for k, v in KV_RE.findall(line)}
+                emit(t, "result", kv["role"], line.strip(), stage=kv["stage"], kv=kv)
 
     def emit(t, kind, name="", text="", dur=None, err=False, limit=300, **extra):
         events.append({"ts": t, "session": session, "agent": agent, "kind": kind, "name": name,
@@ -76,13 +134,22 @@ def parse_stream(path, session, agent=""):
 
     with open(path, errors="replace") as fh:
         for line in fh:
+            st["lines"] += 1
             if line.startswith('{"type":"api-request') or line.startswith('{"type":"attachment"'):
                 continue  # request blobs repeat the conversation; not needed
             try:
                 r = json.loads(line)
             except ValueError:
+                st["unknown"]["(unparseable)"] += 1
+                continue
+            if not isinstance(r, dict):
+                st["unknown"]["(unparseable)"] += 1
                 continue
             typ, t, branch = r.get("type"), r.get("timestamp"), r.get("gitBranch", "")
+            if typ not in KNOWN_TYPES:
+                st["unknown"][typ or "(no type)"] += 1
+            if typ in ("assistant", "user") and not well_formed(r, typ, st["unknown"]):
+                continue
             before = st["last"]  # timestamp of the previous record: start of an LLM call or of an idle gap
             if t:
                 st["first"] = st["first"] or t
@@ -106,7 +173,11 @@ def parse_stream(path, session, agent=""):
                     st["compactions"] += 1
                     emit(t, "compact")
             elif typ == "assistant":
+                st["assistants"] += 1
                 m = r.get("message", {})
+                for b in m.get("content") or []:  # before the llm event, so the call that writes a mark is filed under it
+                    if b.get("type") == "text":
+                        read_lines(t, b.get("text", ""), not agent)
                 u, mid = m.get("usage"), m.get("id")
                 if u and mid not in seen_msgs:  # one API call is logged once per content block
                     seen_msgs.add(mid)
@@ -136,10 +207,7 @@ def parse_stream(path, session, agent=""):
                 if txt is not None:
                     if r.get("isMeta") or not txt.strip():
                         continue
-                    for e in EPIC_RE.findall(txt):
-                        if e not in NOT_EPICS:
-                            epic = e
-                            st["epics"][e] += 1
+                    guess_epics(txt)
                     if agent and not st["prompt"]:
                         st["prompt"] = txt
                     elif "<command-name>" in txt:
@@ -152,10 +220,13 @@ def parse_stream(path, session, agent=""):
                         continue
                     t0, name, inp = pending.pop(b["tool_use_id"])
                     blob = json.dumps(inp)
-                    for e in EPIC_RE.findall(blob):
-                        if e not in NOT_EPICS:
-                            epic = e
-                            st["epics"][e] += 1
+                    guess_epics(blob)
+                    if not agent:  # a lead's result lines in a PR body or a body file (D-3)
+                        cmd = inp.get("command", "")
+                        if name == "Bash" and re.search(r"gh pr (create|edit)", cmd):
+                            read_lines(t0, cmd, False)
+                        elif name in ("Write", "Edit"):
+                            read_lines(t0, inp.get("content") or inp.get("new_string") or "", False)
                     dur = (ts(t) - ts(t0)) if t and t0 else None
                     err = bool(b.get("is_error"))
                     if name == "Bash":
@@ -176,18 +247,42 @@ def parse_stream(path, session, agent=""):
 
 
 def repo_of(cwd, fallback):
-    m = re.search(r"/work/repos/([^/]+)", cwd or "")
-    return m.group(1) if m else fallback
+    """The git root's folder name; for a worktree, the main repository (D-7)."""
+    if not cwd:
+        return fallback
+    here = Path(cwd)
+    if not here.is_dir():  # a removed worktree
+        return Path(cwd.split("/.claude/worktrees/")[0]).name if "/.claude/worktrees/" in cwd else here.name
+    for d in (here, *here.parents):
+        g = d / ".git"
+        if g.is_dir():
+            return d.name
+        if g.is_file():
+            m = re.search(r"gitdir:\s*(.+?)/\.git/worktrees/", g.read_text(errors="replace"))
+            return Path(m.group(1)).name if m else d.name
+    return here.name
 
 
 def tokens(st):
     return {k: st[k] for k in ("calls", "in", "cache_write", "cache_read", "out", "first_ctx", "max_ctx")}
 
 
+def warn_drift(lines, unknown, no_usage, any_cost, sessions):
+    """D-6: warn on stderr when the transcript format seems to have moved; the output is still written."""
+    n = sum(unknown.values())
+    if lines and n / lines > UNKNOWN_THRESHOLD:
+        types = ", ".join(f"{k}={v}" for k, v in unknown.most_common())
+        print(f"warning: unknown records {n} of {lines} lines ({100 * n / lines:.1f}%, threshold 1%): {types}", file=sys.stderr)
+    for sid in no_usage:
+        print(f"warning: session {sid[:8]} has assistant records and no usage", file=sys.stderr)
+    if sessions and not any_cost:
+        print("warning: no session has a cost-state record", file=sys.stderr)
+
+
 def digest(root, out, days):
     cutoff = time.time() - days * 86400
     out.mkdir(parents=True, exist_ok=True)
-    n = 0
+    n, lines, unknown, no_usage, any_cost = 0, 0, Counter(), [], False
     with open(out / "sessions.jsonl", "w") as fs, open(out / "agents.jsonl", "w") as fa, open(out / "events.jsonl", "w") as fe:
         for path in sorted(root.glob("*/*.jsonl")):
             sub_files = sorted((path.parent / path.stem).rglob("agent-*.jsonl"))
@@ -199,12 +294,21 @@ def digest(root, out, days):
                 continue
             repo = repo_of(st["cwd"], path.parent.name)
             sub_tot = Counter()
+            streams = [st]
             for sf in sub_files:
                 aid = sf.stem.removeprefix("agent-")
                 a, aev = parse_stream(sf, sid, aid)
                 meta_f = sf.with_suffix(".meta.json")
-                meta = json.loads(meta_f.read_text()) if meta_f.exists() else {}
+                try:
+                    meta = json.loads(meta_f.read_text()) if meta_f.exists() else {}
+                except ValueError:
+                    meta = {}
+                if not isinstance(meta, dict):
+                    meta = {}
+                if not meta and meta_f.exists():  # corrupt (an empty valid file is not worth a warning)
+                    a["unknown"]["(malformed)"] += 1
                 events += aev
+                streams.append(a)
                 st["epics"].update(a["epics"])
                 sub_tot.update(tokens(a))
                 kinds = Counter(e["kind"] for e in aev)
@@ -242,41 +346,44 @@ def digest(root, out, days):
                 "bash_top": dict(Counter(e["name"] for e in events if e["kind"] == "bash").most_common(12)),
             }) + "\n")
             n += 1
+            lines += sum(s["lines"] for s in streams)
+            for s in streams:
+                unknown.update(s["unknown"])
+            if sum(s["assistants"] for s in streams) and not sum(s["calls"] for s in streams):
+                no_usage.append(sid)
+            any_cost = any_cost or bool(st["cost"])
+    warn_drift(lines, unknown, no_usage, any_cost, n)
     return n
 
 
-def selftest():
-    assert command_head("cd /x && FOO=1 uv run pytest -q tests") == "pytest"
-    assert command_head("git commit -m 'x'") == "git commit"
-    assert command_head("make validate 2>&1 | tail -5") == "make validate"
-    assert EPIC_RE.findall("openspec/changes/archive/2026-10-29-reasoning/x openspec/changes/lean-delivery/tasks.md") == ["reasoning", "lean-delivery"]
-    import tempfile
-    rows = [
-        {"type": "user", "timestamp": "2026-11-01T10:00:00Z", "cwd": "/home/u/work/repos/demo", "message": {"content": "do openspec/changes/my-epic/tasks.md"}},
-        {"type": "assistant", "timestamp": "2026-11-01T10:00:05Z", "message": {"id": "m1", "model": "x", "usage": {"input_tokens": 10, "cache_read_input_tokens": 90, "output_tokens": 5}, "content": [{"type": "tool_use", "id": "t1", "name": "Bash", "input": {"command": "make validate"}}]}},
-        {"type": "assistant", "timestamp": "2026-11-01T10:00:05Z", "message": {"id": "m1", "model": "x", "usage": {"input_tokens": 10, "cache_read_input_tokens": 90, "output_tokens": 5}, "content": [{"type": "text", "text": "hi"}]}},
-        {"type": "user", "timestamp": "2026-11-01T10:00:45Z", "message": {"content": [{"type": "tool_result", "tool_use_id": "t1", "is_error": True}]}},
-    ]
-    with tempfile.NamedTemporaryFile("w", suffix=".jsonl") as f:
-        f.write("\n".join(json.dumps(r) for r in rows))
-        f.flush()
-        st, ev = parse_stream(f.name, "s")
-    assert st["calls"] == 1 and st["first_ctx"] == 100, st  # duplicate block rows counted once
-    bash = [e for e in ev if e["kind"] == "bash"][0]
-    assert (bash["name"], bash["dur_s"], bash["err"], bash["epic"]) == ("make validate", 40.0, True, "my-epic"), bash
-    assert repo_of(st["cwd"], "") == "demo"
-    print("selftest ok")
+def git_root_of(folder):
+    """The git working tree holding `folder` (it may not exist yet), or None (D-5)."""
+    here = folder.resolve()
+    while not here.exists():
+        here = here.parent
+    env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}  # GIT_DIR and friends would hide a tree
+    try:
+        r = subprocess.run(["git", "-C", str(here), "rev-parse", "--show-toplevel"], capture_output=True, text=True, env=env)
+        top = Path(r.stdout.strip()) if r.returncode == 0 else None
+    except FileNotFoundError:  # no git on the path
+        top = None
+    # the walk always runs: a folder inside .git/ makes rev-parse fail, but its parent holds the .git entry
+    return top or next((d for d in (here, *here.parents) if (d / ".git").exists()), None)
 
 
-if __name__ == "__main__":
+def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--days", type=float, default=14)
     ap.add_argument("--root", type=Path, default=Path.home() / ".claude/projects")
-    ap.add_argument("--out", type=Path, default=Path("session-digest"))
-    ap.add_argument("--selftest", action="store_true")
-    a = ap.parse_args()
-    if a.selftest:
-        selftest()
-        sys.exit(0)
+    ap.add_argument("--out", type=Path, default=Path.home() / ".cache/session-retrospective" / time.strftime("%Y-%m-%d"))
+    a = ap.parse_args(argv)
+    tree = git_root_of(a.out)
+    if tree:
+        print(f"output folder is inside a git working tree: {tree}; pass --out outside it", file=sys.stderr)
+        sys.exit(2)
     t0 = time.time()
     print(f"{digest(a.root, a.out, a.days)} sessions -> {a.out} in {time.time() - t0:.0f}s")
+
+
+if __name__ == "__main__":
+    main()

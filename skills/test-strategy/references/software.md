@@ -9,9 +9,9 @@ Checks on code, tests, projects and their delivery. The technique stays with its
 | VER | CHK-2 Testing checklist (rules 1-16) | `cosmic-python` | pytest | writing and reviewing tests | the verifier | exists |
 | VER | CHK-3 Test tiers, markers and the marker-injection hook | `project-setup` | `--strict-markers`, marker hook | each test | the verifier | exists |
 | VER | CHK-6 One-minute code structure check | `cosmic-python` | reading | per function or class | the verifier | exists |
-| VER | CHK-7 Code review against standards | `cosmic-python` | reading | before PR approval | the verifier | exists |
+| VER | CHK-7 Code review against standards | `meaningfy-code-review` | reading | before PR approval | the verifier | exists |
 | VER | CHK-8 Import-linter architecture guardrails | `project-setup` | `make check-architecture` | commit; CI | the verifier | exists |
-| VER | CHK-9 Quality pyramid and Makefile gates | `cosmic-python` | `make` targets | commit; CI; after scaffolding | the verifier | exists |
+| VER | CHK-9 Quality pyramid and Makefile gates | `project-setup` | `make` targets | commit; CI; after scaffolding | the verifier | exists |
 | VER | CHK-10 Traceability check | `bdd-gherkin` | scenario-to-test comparison | before each PR | the verifier | exists |
 | VER | CHK-11 Gherkin quality checks and use-case traceability | `bdd-gherkin` | checklist | after writing features | the verifier | exists |
 | VER | CHK-13 Review lens L2, spec correctness and tests, spec conformance and docs agree | `meaningfy-code-review` | reviewer subagent | per stage, on the PR | the verifier | exists |

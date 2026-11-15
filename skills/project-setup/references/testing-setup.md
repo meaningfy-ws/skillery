@@ -187,3 +187,7 @@ show_missing = true
 CI fails when coverage on the package drops below 80%. New or critical code
 should aim higher. Keep coverage flags in the `test`/`coverage-report` Make
 targets so a plain `pytest` (and the TDD inner loop) stays fast.
+
+A fresh skeleton holds no measured code: its only module, the `__main__.py` entry stub, carries
+`# pragma: no cover`, so `make test` passes at 100 % of nothing. Remove the pragma when you
+replace the stub; from then on the 80 % gate applies to the real entry point too.

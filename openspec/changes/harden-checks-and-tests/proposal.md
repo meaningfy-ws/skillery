@@ -14,7 +14,11 @@
      delivered by delivery-process-and-tools, no example code goes into a skill, stage 1 has a
      tool side and a prose side; not gated again. Revised again 2026-11-15 by owner decision
      (reassessment-2026-11-15.md; design D-35): the weekly mutation runs are dropped (DEC-10,
-     the fourth outcome, stage 3's mutation half); not gated again. -->
+     the fourth outcome, stage 3's mutation half); not gated again. Reconciled 2026-11-15 with the
+     delivered tool side of stage 1 (PR #246; design D-36 to D-40) and with project-setup's move
+     to uv (PR #248): the sixth type is named "Quality check", and the quality-checks and
+     catalogue-governance deltas state what was built. No DEC text changed. -->
+
 
 # EPIC: harden checks and tests
 

@@ -129,8 +129,42 @@ Feature: The lead delivers a gated PLAN with a team scaled to the appetite
   # DEC-1; D-1. Spec: A stage ends with a hand-over note and a fresh session.
   Scenario: A note that copies the design is cut
     Given a hand-over note that restates decisions of the design
-    When the checker reads it
-    Then it records a finding and the note is cut to decision ids and pointers
+    When a new session is started from it for the cold-start check
+    Then the cold-start record notes it and the note template is cut to decision ids and pointers
+
+  # D-10. Spec: The lead marks phase and stage.
+  Scenario: The lead marks the stage before its first brief
+    Given the lead starts stage 2 of change x
+    When it prepares the stage
+    Then it writes the line "mark: change=x phase=deliver stage=2" in its own message before its first brief
+
+  # D-10. Spec: The lead marks phase and stage.
+  Scenario: A session from a hand-over note marks before its first brief
+    Given a new session started from a hand-over note for stage 3 of change x
+    When it prepares the stage
+    Then it writes the line "mark: change=x phase=deliver stage=3" before its first brief
+
+  # D-10. Spec: The lead marks shaping and the PLAN.
+  Scenario Outline: Shaping and the PLAN carry a mark with no stage
+    Given the planner starts <step> of change x
+    When it begins the step
+    Then it writes the line "mark: change=x phase=<phase> stage=-"
+
+    Examples:
+      | step                  | phase |
+      | shaping the EPIC      | shape |
+      | deriving the PLAN     | plan  |
+
+  # D-10. Spec: The lead marks phase and stage.
+  Scenario Outline: Archive and release write no mark
+    Given the lead archives change x or releases it
+    When it does the <work>
+    Then it writes no mark line
+
+    Examples:
+      | work    |
+      | archive |
+      | release |
 
   Scenario: A member never asks the developer
     Given a builder meets an open decision

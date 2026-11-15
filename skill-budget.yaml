@@ -6,7 +6,6 @@ pending:
   ci-cd-delivery: [pointers]
   clarity-gate: [pointers]
   conceptual-modelling: [pointers]
-  cosmic-python: [budget, pointers]
   decision-package: [pointers]
   epic-delivery: [budget, pointers]
   epic-planning: [pointers]

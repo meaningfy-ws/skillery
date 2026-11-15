@@ -51,5 +51,5 @@ Aggregate score (/45): **CodeQL 39 · import-linter 31 · Ruff 21 · MyPy 21 · 
 
 ## Confirmation
 
-`cosmic-python`'s CI guidance recommends the right tool per concern; `importlinter` contracts are
+`project-setup`'s CI guidance (`references/ci-and-infra.md`) recommends the right tool per concern; `importlinter` contracts are
 part of the standard project setup; CodeQL is wired into CI for designated repos.
