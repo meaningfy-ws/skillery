@@ -49,21 +49,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python <<PYTHON_VERSION>>
-        uses: actions/setup-python@v5
+      - name: Set up uv (Python <<PYTHON_VERSION>>)
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: "<<PYTHON_VERSION>>"
-
-      - name: Install Poetry
-        run: pipx install poetry
-
-      - name: Cache Poetry dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pypoetry
-          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            poetry-${{ runner.os }}-
+          enable-cache: true
 
       - name: Install dependencies
         run: make install

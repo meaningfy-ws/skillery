@@ -48,6 +48,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Changed
 
+- `project-setup` now scaffolds projects with **uv** instead of Poetry: `pyproject.toml` builds
+  with `uv_build`, `make install` runs `uv sync --all-groups --locked` (it never rewrites
+  `uv.lock`; run `make lock` after changing a dependency, and it says how to install uv when it is
+  missing, instead of calling `pip`), every tool runs through `uv run`, and CI, the release build
+  and the Dockerfile use uv. An existing project migrates by the short steps in the skill's
+  modernisation guide.
 - **BREAKING for a team lead that compacted between stages or relied on five lenses at MEDIUM**
   (EPIC `delivery-process-and-tools`, stage 1). In `epic-delivery`, a stage now ends with a
   hand-over note (`assets/templates/handover.md`), committed as its pull request's last commit.

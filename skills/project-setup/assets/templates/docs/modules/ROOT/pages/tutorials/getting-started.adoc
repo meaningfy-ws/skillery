@@ -8,7 +8,7 @@ It is a _learning_ exercise: follow every step in order, even if you think you c
 
 Before you begin, make sure you have:
 
-* Python >= <<PYTHON_VERSION>> and https://python-poetry.org[Poetry] installed.
+* Python >= <<PYTHON_VERSION>> and https://docs.astral.sh/uv/[uv] installed.
 * Node.js 18+ (only needed to build this documentation site).
 * `make` available on your `PATH`.
 
@@ -18,7 +18,7 @@ Before you begin, make sure you have:
 ----
 git clone https://github.com/<<GITHUB_ORG>>/<<PROJECT_SLUG>>.git
 cd <<PROJECT_SLUG>>
-make install        # poetry install with all dependency groups
+make install        # uv sync with all dependency groups
 ----
 
 == Step 2 — Run the quality gate
@@ -36,7 +36,7 @@ A green run means your environment matches CI.
 
 [source,bash]
 ----
-make run            # or: poetry run python -m <<PACKAGE>>
+make run            # or: uv run python -m <<PACKAGE>>
 ----
 
 == Step 4 — Build the docs you are reading

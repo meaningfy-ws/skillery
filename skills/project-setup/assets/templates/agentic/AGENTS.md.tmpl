@@ -89,7 +89,7 @@ Full description: `docs/modules/ROOT/pages/develop/agents.adoc`; the method is t
 - The innermost layer is **`domain`** (the book's `models/`). Direction:
   `entrypoints → services → domain`, `adapters → domain`. `domain` imports nothing upward.
   Enforced by `.importlinter`; checked via `make check-architecture`.
-- Run Python tooling through Poetry (`poetry run pytest`, `poetry run ruff`, …). Never invoke
+- Run Python tooling through uv (`uv run pytest`, `uv run ruff`, …). Never invoke
   bare `python`/`pytest` — prefer the `make` targets below.
 - **Subagents** — before spawning one, follow *Subagent dispatch* in the `guardrails` skill: spawn
   only when it pays, brief it fresh, take the base report back, and have finished work checked by a

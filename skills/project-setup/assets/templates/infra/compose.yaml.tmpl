@@ -37,7 +37,7 @@ x-app-common: &app-common
       - action: rebuild
         path: ../../pyproject.toml
       - action: rebuild
-        path: ../../poetry.lock
+        path: ../../uv.lock
   networks:
     - <<PROJECT_SLUG>>-local
 

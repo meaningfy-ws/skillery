@@ -20,35 +20,37 @@ in every path, tool config (`from = "src"`), and mental model. Meaningfy's engin
 is explicit: "A repo contains one or more
 **root modules** (top-level packages, one per deployable unit) rather than a single `/src`."
 
-**Consequence.** `pytest.ini` sets `pythonpath = .`; Poetry uses `packages = [{include="myproject"}]`
-with no `from`. Tests live in a **sibling** `tests/` directory.
+**Consequence.** `pytest.ini` sets `pythonpath = .`; `uv_build` uses `module-root = ""`
+(no `src/`). Tests live in a **sibling** `tests/` directory.
 
 **Override.** Only if a published library genuinely needs the src-layout import guarantee — rare.
 
 ## D2 — All tool config in dedicated root files; minimal `pyproject.toml`
 
-`pyproject.toml` holds only `[project]`, `[tool.poetry]`, `[dependency-groups]`, `[build-system]`.
+`pyproject.toml` holds only `[project]`, `[dependency-groups]`, `[build-system]` and `[tool.uv.build-backend]`.
 Everything else gets its own root file: `ruff.toml`, `mypy.ini`, `pytest.ini`, `.coveragerc`,
 `.importlinter`, `.pre-commit-config.yaml`, `sonar-project.properties`, `Makefile`.
 
 **Why.** One purpose per file → "minimum confusion" (a new contributor finds each tool's config by
-name). Avoids the `[tool.*]` sprawl that makes `pyproject.toml` unreadable. `[tool.poetry]` stays
-because Poetry needs it for package discovery — that is packaging metadata, not tool config.
+name). Avoids the `[tool.*]` sprawl that makes `pyproject.toml` unreadable. `[tool.uv.build-backend]` stays
+because `uv_build` needs it to find the package — that is packaging metadata, not tool config.
 
-## D3 — Poetry + PEP 735 dependency groups
+## D3 — uv + PEP 735 dependency groups
 
-Use Poetry for dependency management and packaging. Group dependencies semantically:
+Use uv for dependency management and packaging (it replaces Poetry, the previous standard; the build
+backend is `uv_build`). Group dependencies semantically:
 
 | Group | Contents | Installed by |
 |-------|----------|--------------|
-| runtime (`[project.dependencies]`) | pydantic, fastapi, the actual deps | `poetry install` |
-| `dev` | pre-commit, linkml, local helpers | `--with dev` |
-| `test` | pytest, pytest-bdd, pytest-cov, pytest-asyncio, testcontainers, polyfactory, httpx | `--with test` |
-| `lint` | ruff, mypy, import-linter, radon, xenon | `--with lint` |
+| runtime (`[project.dependencies]`) | pydantic, fastapi, the actual deps | `uv sync` |
+| `dev` | pre-commit, linkml, local helpers | `--group dev` |
+| `test` | pytest, pytest-bdd, pytest-cov, pytest-asyncio, testcontainers, polyfactory, httpx | `--group test` |
+| `lint` | ruff, mypy, import-linter, radon, xenon | `--group lint` |
 
 **Why not requirements.txt** (the requirements.txt approach): no lockfile, no semantic groups, no extras. Pin in
-one place with a resolver. `make install` installs all groups; `make install` must **not** run
-`poetry lock` (locking is the explicit `make lock` target).
+one place with a resolver. `make install` runs `uv sync --all-groups --locked`; it needs `uv` on PATH and, when missing, prints
+the install link to stderr and fails (it never installs uv). It never writes the lock: a stale or
+missing `uv.lock` fails with uv's message, and `make lock` is the only writer.
 
 ## D4 — Ruff replaces black + isort + flake8 + pylint
 
