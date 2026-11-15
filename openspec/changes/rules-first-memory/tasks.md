@@ -47,7 +47,7 @@ ids (T-n) are in design.md *Test cases*.
   `{ mechanism: mod, phase: quality, trigger: PreToolUse(Write|Edit|MultiEdit) }`). `bundles.yaml`:
   `meaningfy-core` `mods: [no-poll-loops, rules-first]`. `make bundles`, `make mods`. Satisfies
   `rules-first-routing` *Memory writes of preferences are denied* and *The hook fails open*.
-- [ ] 1.6 Docs. `docs/environment/rules.md`: what the block says, what the deny does, and that
+- [x] 1.6 Docs. `docs/environment/rules.md`: what the block says, what the deny does, and that
   existing `feedback` and `user` notes are left for the owner to move (RISK-6);
   `docs/environment/dual-cli/compatibility.md`: the block as an opencode gap, the deny as not
   applicable (DEC-12, T-12). Satisfies `rules-first-routing` *opencode is handled by the policy and a
@@ -80,7 +80,7 @@ Starts only when `delivery-process-and-tools` task 3.4 (its stage 3 PR) is merge
 
 ## Roadmap
 
-- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [x] 1.4 · [ ] 1.5 · [ ] 1.6 · [ ] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [ ] 2.1 · [ ] 2.2
+- [ ] 1.1 · [ ] 1.2 · [ ] 1.3 · [x] 1.4 · [ ] 1.5 · [x] 1.6 · [ ] 1.7 · [ ] 1.8 · (wait: `delivery-process-and-tools` 3.4 merged) · [ ] 2.1 · [ ] 2.2
 
 1.3 and 1.4 touch separate code and may run in parallel with 1.2 once its spike is recorded; 1.5
 needs 1.2 (two mods), 1.3 (`routing.md`) and 1.4 (`DENY_MARKER`); 1.7 needs 1.5.
