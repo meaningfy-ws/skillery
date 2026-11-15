@@ -274,3 +274,11 @@ Recorded by the lead during stage 2 (2026-11-15).
   warning), so the lead proceeds without stopping, with every existing navigator test kept green
   and `make mods` as the check. Builders grouped by file: one for docs and skills (3.1, 3.2, 3.4,
   4.1), one for the navigator (3.3), one for the real run (4.2), in parallel.
+- **D-24** Task 4.2: the invariant holds (all counts, tokens and cost equal; only the `repo` label
+  differs, by D-7). The 60 s acceptance is not met: 262 s for digest plus report on a 14-day,
+  2.8 GB snapshot, mostly I/O; the old digest took 268 s, so stage 1 did not slow it
+  (`evidence/real-run.md`). Unmet item for the developer, no fix pass. Recommended: amend the
+  acceptance to "no slower than the old scripts on the same snapshot"; a cache of parsed sessions
+  or a shorter default window is a later change. Task 3.4: the deliver scenario was followed in
+  this stage's own session (mark before the first brief); the shaping walk and the sign-off are the
+  developer's. Both boxes stay open until the developer decides.
