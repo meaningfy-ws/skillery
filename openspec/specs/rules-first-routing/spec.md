@@ -1,5 +1,14 @@
-## ADDED Requirements
+# rules-first-routing Specification
 
+## Purpose
+Where an agent puts what the user states about how work should be done. Preferences and
+corrections go to the rulebook (`rule-learner`'s approval card, then `rules.py add`), never to the
+CLI's own memory; project state goes to the spine and the repository's docs. On Claude Code the
+`rules-first` mod in `meaningfy-core` prints the stores and the routing text at session start and
+denies `feedback` and `user` notes in the auto-memory folder; on opencode the routing text in the
+global policy and `AGENTS.md` carries it alone.
+
+## Requirements
 ### Requirement: Every Claude Code session starts with a rules block
 In Claude Code with `meaningfy-core` installed, every session start SHALL receive a block of a few
 lines. The block SHALL hold the output of `rules.py where` (the stores the session sees, the default
@@ -18,13 +27,13 @@ DEC-11).
 
 ### Requirement: Memory writes of preferences are denied
 The mod SHALL deny a Write or Edit of a note whose frontmatter `type` is `feedback` or `user`,
-inside Claude Code's auto-memory folder (`<config root>/projects/<slug>/memory/*.md`, config root
+inside Claude Code's auto-memory folder (`<config root>/projects/<slug>/memory/**/*.md`, any depth, config root
 `CLAUDE_CONFIG_DIR` or `~/.claude`). The deny message SHALL name `rule-learner`, SHALL say to draft the
 statement as a candidate for the rule approval card, and SHALL carry a fixed marker. Notes of type
 `project` or `reference`, `MEMORY.md`, and files elsewhere SHALL pass (DEC-5, DEC-6, DEC-10).
 
 #### Scenario: A feedback note is denied
-- **WHEN** the agent writes a `feedback` note into the auto-memory folder
+- **WHEN** the agent writes a `feedback` note into the auto-memory folder with `Write`, `Edit` or `MultiEdit`
 - **THEN** the write is denied with the message that names `rule-learner` and carries the marker
 
 #### Scenario: A project note is allowed
@@ -81,3 +90,4 @@ SHALL route there (DEC-12).
 - **WHEN** a session runs on opencode
 - **THEN** no block is injected and no write is denied
 - **AND** the global policy carries the routing, and the gap is listed in `compatibility.md`
+

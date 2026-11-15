@@ -41,10 +41,10 @@ tester's new range needs no mod change.
 | Short name | File |
 |---|---|
 | `Makefile.tmpl`, `dot-gitignore`, `dot-pre-commit-config.yaml` | [`Makefile.tmpl`](../../../skills/project-setup/assets/templates/root/Makefile.tmpl), [`dot-gitignore`](../../../skills/project-setup/assets/templates/root/dot-gitignore), [`dot-pre-commit-config.yaml`](../../../skills/project-setup/assets/templates/root/dot-pre-commit-config.yaml) |
-| `config-files.md` | [`project-setup/references/config-files.md`](../../../skills/project-setup/references/config-files.md) (§ `ruff.toml`; the template table at the top) |
-| `decisions.md` | [`project-setup/references/decisions.md`](../../../skills/project-setup/references/decisions.md) (sections D2, D4, D12) |
+| `config-files.md` | [`project-setup/references/config-files.md`](../../../skills/project-setup/references/config-files.md) (§ `ruff.toml` and the template table, both folded into the templates by `lean-skills` stage 3) |
+| `decisions.md` | [`project-setup/SKILL.md`](../../../skills/project-setup/SKILL.md) (rows D2, D4, D12 of *Decisions*; `decisions.md` was folded in by `lean-skills` stage 3) |
 | `ci-and-infra.md` | [`project-setup/references/ci-and-infra.md`](../../../skills/project-setup/references/ci-and-infra.md) |
-| `layout.md`, `checklists.md` | [`layout.md`](../../../skills/project-setup/references/layout.md), [`checklists.md`](../../../skills/project-setup/references/checklists.md) |
+| `layout.md`, `checklists.md` | [`project-setup/SKILL.md`](../../../skills/project-setup/SKILL.md) (*Before you hand over*; both files were cut by `lean-skills` stage 3, the tree is `scripts/scaffold.sh`'s) |
 | `modernizing-existing-projects.md` | [`project-setup/references/modernizing-existing-projects.md`](../../../skills/project-setup/references/modernizing-existing-projects.md) |
 | `stage-loop.md` | [`epic-delivery/references/stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md) (the check ledger, line 136) |
 | `example-testing-patterns.md` | `cosmic-python/references/example-testing-patterns.md` (no longer edited, D-32; deleted by `lean-skills` stage 2) |

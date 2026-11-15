@@ -32,6 +32,8 @@ the grooming procedure.
 
    ```
    window 2026-09-29..2026-10-29: 412 observations, 57 rules.py events
+   rules written: 6
+   memory writes denied: 2
    id      loaded cited overridden violated
    R-0012  9 3 2 0
    FLAG R-0012 overridden 2: propose revise, supersede or retire; reasons: "US client prefers a surname"; "internal memo"

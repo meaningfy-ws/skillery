@@ -13,115 +13,135 @@ metadata:
 
 # Meaningfy Release Lifecycle
 
-## Overview
+A release is not a hand-edited version number and a tag pushed from a laptop: at Meaningfy a human
+approves a release PR that the engine proposes from Conventional Commits, the tag is the version of
+record, and a library reaches PyPI with no token stored anywhere.
 
-How a Meaningfy artifact goes from merged commits to a versioned, published, documented release.
-This skill owns the **release lifecycle**; it cites the neighbours that already own their slice and
-never restates them.
+## Quick Start
 
-| Concern | Authority | Here |
-|---------|-----------|------|
-| Commit/branch/PR conventions | `meaningfy-git-workflow` | cite; add only the release/hotfix branch *lifecycle* |
-| GHCR image build/tag/push, deploy, secrets/Vaultwarden | `ci-cd-delivery` | cite for deployable repos; never restate the image flow |
-| CI + scaffolding/projection | `project-setup` | cite; it projects the release workflow + `SECURITY.md` |
-| **Versioning, changelog, release notes, PyPI publish, supply-chain, yank/deprecation** | **this skill** | **own** |
+A library at `v1.4.2` has two merged commits on `develop`: `feat: add RML validation` and
+`fix: handle an empty mapping`.
 
-## 1. Versioning policy
+1. Cut `release/1.5.0` from `develop` (a `feat:` makes a MINOR).
+2. release-please opens the release PR: `pyproject.toml` goes to `1.5.0`, `CHANGELOG.md` gets a
+   `## [1.5.0]` section drafted from the two commits. A human adds what the commits do not say
+   (here: "validation now rejects mappings without a subject map") and reviews.
+3. The project's full gates pass on the release branch; the PR is merged after the review.
+4. The merge tags `v1.5.0` and drafts the GitHub Release, whose body announces the release and links
+   the `1.5.0` CHANGELOG section. The publish job uploads to TestPyPI, then to PyPI through Trusted
+   Publishing.
+5. `release/1.5.0` is merged back into `main` and `develop`.
 
-- **SemVer is a contract**, not a vibe: **MAJOR** = backward-incompatible change to the public API;
-  **MINOR** = backward-compatible addition; **PATCH** = backward-compatible fix. See [semver.org](https://semver.org/).
-- **Public API** = what a consumer can import/call without reaching into a private name (leading `_`)
-  or an undocumented internal module. If it's public, changing it incompatibly is a MAJOR. Decide and
-  document a module's public surface so "breaking" is decidable, not arguable.
-- **Pre-releases** use dotted identifiers: `1.5.0-rc.1`, `1.5.0-rc.2`, `1.5.0` (final). Use `-rc.N` for
-  release candidates, `-beta.N`/`-alpha.N` earlier. A pre-release sorts *below* its final.
-- **Version of record = the git tag** (`vX.Y.Z`), mirrored into `pyproject.toml`. One bumper keeps them
-  in sync (§5) — never hand-edit both.
+## Workflow
 
-## 2. Release & hotfix branches
+The navigator mod tracks these phases and their gates from
+[`assets/workflows/release.workflow.json`](assets/workflows/release.workflow.json).
 
-GitFlow for public/client repos (a simpler flow internally — that policy lives in
-`meaningfy-git-workflow`). The branch *mechanics* (rebase/merge,
-force-push etiquette) are owned there; the *release-specific lifecycle* is owned here and detailed in
-[`references/gitflow-release-runbook.md`](references/gitflow-release-runbook.md):
+1. **Branch** (gate `cut`). Read `references/gitflow-release-runbook.md` when cutting a release or
+   hotfix branch: it adds the stabilisation-only rule, the hotfix base, the back-merge, pre-release
+   promotion and tag protection.
+2. **Bump** (`bumped`). The engine bumps the version file(s) and writes the CHANGELOG section; both
+   name the same version.
+3. **Validate** (`validated`). The project's full gates run on the release branch before the merge,
+   and their saved output shows them passing.
+4. **Merge** (`merged`). A human reviews the release PR (four-eyes); it is never merged with red gates.
+5. **Publish** (`published`). The tag `vX.Y.Z` points at the merge commit and the publish job runs
+   green.
+6. **Back-merge** (`back`) into every long-lived line.
 
-- `release/X.Y.Z` — cut from the integration branch; **stabilisation-only** commits; tag on merge.
-- `hotfix/X.Y.Z` — cut **from the released tag**, patch, tag, then back-merge to all long-lived lines.
+## Rules
 
-The navigator mod tracks these steps from [`assets/workflows/release.workflow.json`](assets/workflows/release.workflow.json).
+### Versioning
 
-## 3. Changelog & release notes
+- **Public API** is what a consumer can import or call without reaching into a private name (leading
+  `_`) or an undocumented internal module. Changing it incompatibly is a MAJOR. Decide and document a
+  module's public surface so "breaking" is decidable, not arguable.
+- **Pre-releases** use dotted identifiers: `1.5.0-rc.1`, `1.5.0-rc.2`, then `1.5.0`; `-beta.N` and
+  `-alpha.N` earlier.
+- **The version of record is the git tag** `vX.Y.Z`, mirrored into `pyproject.toml` by one bumper,
+  the release engine. Never hand-edit both.
 
-- Maintain `CHANGELOG.md` in **[Keep a Changelog](https://keepachangelog.com/)** format with an
-  `Unreleased` section that fills as commits land (`project-setup` ships the stub).
-- **Auto-generation is the starting point, not the product.** The release engine drafts the entry from
-  Conventional Commits; a human adds breaking-change callouts and migration steps.
-- **CHANGELOG vs GitHub Release body:** the CHANGELOG is the durable in-repo history; the GitHub Release
-  body is the published announcement for that tag (link back to the CHANGELOG section).
+### Branches
 
-## 4. The release engine — release-please (semi-automated)
+GitFlow `release/X.Y.Z` and `hotfix/X.Y.Z` branches for public and client repos; the simpler
+internal flow and the branch mechanics (naming, rebase or merge, force-push) are
+`meaningfy-git-workflow`'s.
 
-We **don't release by hand and we don't auto-release on every merge.** Conventional Commits drive a
-release *proposal* that a human approves:
+### Changelog and release notes
 
-```
-feat:/fix: commits land on the release line
-        │
-        ▼
-release-please opens a "release PR"  →  version bump + CHANGELOG generated
-        │  (human reviews — four-eyes; free-tier needs no draft PR)
-        ▼  merge the release PR
-tag vX.Y.Z  →  GitHub Release drafted  →  publish job runs (§5)
-```
+- `CHANGELOG.md` in [Keep a Changelog](https://keepachangelog.com/) format, with an `Unreleased`
+  section that fills as commits land (`project-setup` ships the stub).
+- The generated entry is the starting point, not the product: a human adds breaking-change callouts
+  and migration steps.
+- The CHANGELOG is the durable in-repo history; the GitHub Release body is the announcement for that
+  tag and links back to its CHANGELOG section.
 
-This honours GitFlow + four-eyes and is free-tier-safe (no draft PRs needed — see the GitHub
+### The release engine: release-please
+
+No release by hand, no automatic release on every merge. Conventional Commits drive a release PR
+(version bump and CHANGELOG) that a human reviews and merges; the merge tags `vX.Y.Z`, drafts the
+GitHub Release and runs the publish job. It needs no draft PR, so it works on the free tier (GitHub
 constraints in `meaningfy-git-workflow`).
 
-## 5. Publishing
+### Publishing
 
-- **Library → PyPI** via **Trusted Publishing (OIDC), no API tokens.** Full setup in
-  [`references/pypi-publishing.md`](references/pypi-publishing.md): a `release` GitHub environment,
-  `id-token: write`, `pypa/gh-action-pypi-publish`, and a **TestPyPI dry-run gate** before the real
-  upload.
-- **Deployable service → GHCR image** — owned by `ci-cd-delivery`
-  (semver + git sha → registry). This skill does not restate it; the tag from §4 is its version source.
+- **Library → PyPI** through Trusted Publishing (OIDC), no API token, behind a TestPyPI dry run.
+  Read `references/pypi-publishing.md` when setting up or changing a library's publish job: it adds
+  the one-time PyPI and GitHub setup, the job's invariants and its mistakes.
+- **Deployable service → a GHCR image**, owned by `ci-cd-delivery`; the tag from the release engine
+  is its version source.
 
-## 6. Supply-chain hardening (recommended, not required)
+### Supply-chain hardening (recommended, not required)
 
-Documented target, adopted per-repo and incrementally — **no repo is blocked from releasing without it.**
-Detail in [`references/supply-chain.md`](references/supply-chain.md): PyPI **attestations**,
-**Sigstore/cosign** keyless signing, **SLSA Level 2** provenance, and an **SBOM** (Syft) attached to the
-GitHub Release.
+Adopted per repo and incrementally; no repo is blocked from releasing without it. Read
+`references/supply-chain.md` when a repo adopts signing, provenance or an SBOM: it adds the four
+layers in adoption order and the rung each kind of repo should reach.
 
-## 7. Governance
+### Governance
 
-- **`SECURITY.md` + coordinated disclosure** via GitHub Security Advisories (private report → fix → CVE
-  → publish). Required for public repos; projected by `project-setup`.
-- **Yank, don't delete.** A broken release already on PyPI is **yanked** (stays installable for existing
-  pins, hidden from new resolves) and superseded by a PATCH. Deleting breaks downstream pinned installs.
-- **Deprecate before you break.** A MAJOR bump that removes public API is preceded by a deprecation
-  cycle (warn in a MINOR, remove in the next MAJOR), recorded in the CHANGELOG.
+- **`SECURITY.md` and coordinated disclosure** through GitHub Security Advisories (private report →
+  fix → CVE → publish). Required for public repos; projected by `project-setup`.
+- **Yank, don't delete.** A broken release on PyPI is yanked (still installable for existing pins,
+  hidden from new resolves) and superseded by a PATCH.
+- **Deprecate before you break.** Public API is deprecated with a warning in a MINOR and removed in
+  the next MAJOR, both recorded in the CHANGELOG.
 
-## Error / decision matrix
+### Common mistakes
 
-| Situation | ❌ Wrong move | ✅ Right move |
-|-----------|--------------|-------------|
-| Backward-incompatible change | ship it in a MINOR/PATCH | bump MAJOR; run a deprecation cycle first (§7) |
-| Bad release already on PyPI | delete the release | **yank** + ship a PATCH (delete breaks pinned installs) |
-| Authenticating the PyPI upload | store an API token in GitHub Secrets | Trusted Publishing OIDC, **no token** (§5) |
-| Tag and `pyproject.toml` disagree | hand-edit both to match | let release-please be the single bumper (§1, §4) |
-| Releasing a deployable service | publish a PyPI package | GHCR image via `ci-cd-delivery` (§5) |
-| Pre-release going to production | ship `-rc.N` as the final | promote: drop the pre-release identifier to `X.Y.Z` (§1) |
+| Mistake | Why it fails | Do instead |
+|---|---|---|
+| Ship a backward-incompatible change in a MINOR or PATCH | consumers break without warning | bump MAJOR after a deprecation cycle |
+| Delete a bad release from PyPI | pinned installs downstream break | yank it and ship a PATCH |
+| Store a PyPI API token in GitHub Secrets | a standing secret to leak | Trusted Publishing, no token |
+| Hand-edit the tag and `pyproject.toml` to match | two bumpers drift | release-please is the single bumper |
+| Publish a deployable service as a PyPI package | wrong artifact | GHCR image via `ci-cd-delivery` |
+| Ship `-rc.N` as the final | a pre-release sorts below its final | promote: drop the identifier to `X.Y.Z` |
+
+## Triggers
+
+- When someone asks to "bump the version" by editing files, route the bump through the release PR.
+- When a released version needs a fix while `develop` holds unreleased work, cut a hotfix from the tag.
+- When a library release is about to go to PyPI, check the Trusted Publisher binding and the
+  `release` environment before the tag.
+
+## Before you hand over
+
+| Question | If not | Action |
+|---|---|---|
+| Do the tag, the version file(s) and the CHANGELOG section name one version? | the release is ambiguous | fix it in the release PR, never by hand on the tag |
+| Did a human review the release PR, with the gates green? | four-eyes is broken | hold the merge |
+| Does the GitHub Release body link its CHANGELOG section and carry the breaking-change callouts? | readers miss the migration steps | edit the release notes |
+| Did TestPyPI succeed before PyPI? | a bad upload can only be yanked | run the dry-run job first |
+| Is the release merged back into every long-lived line? | the next release regresses | back-merge now |
 
 ## Boundary & Related Skills
 
-**Owns:** the release lifecycle — versioning policy, the release/hotfix branch lifecycle, changelog +
-GitHub release notes, the release-please engine, PyPI Trusted Publishing, opt-in supply-chain, and
-release governance (`SECURITY.md`, yank, deprecation).
-**Does NOT own:** commit/branch/PR mechanics (`meaningfy-git-workflow`),
-the GHCR image + deploy + secrets flow (`ci-cd-delivery`), or CI +
-scaffolding/projection (`project-setup`).
-**Related:** `meaningfy-git-workflow`,
-`ci-cd-delivery`, `project-setup`.
+**Owns:** the release lifecycle: versioning policy, the release and hotfix branch lifecycle,
+changelog and GitHub release notes, the release-please engine, PyPI Trusted Publishing, opt-in
+supply-chain hardening, and release governance (`SECURITY.md`, yank, deprecation).
+**Does not own:** commit, branch and PR mechanics (`meaningfy-git-workflow`); the GHCR image,
+deploy and secrets flow (`ci-cd-delivery`); CI, scaffolding and the projection of the release
+workflow and `SECURITY.md` (`project-setup`).
+**Related:** `meaningfy-git-workflow`, `ci-cd-delivery`, `project-setup`.
 
 Answers `VER, RSK` in `test-strategy`'s matrix (`references/devops.md`).

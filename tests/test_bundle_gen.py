@@ -5,6 +5,7 @@ TC ids refer to design.md "Test case specifications".
 import json
 import os
 import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -344,9 +345,14 @@ def test_mod_missing_files_is_rejected(tmp_path):
         gen.load(repo)
 
 
-def test_two_mods_in_one_bundle_are_rejected(tmp_path):
-    with pytest.raises(ValueError, match="at most one"):
+def test_two_modules_mods_in_one_bundle_are_rejected(tmp_path):
+    with pytest.raises(ValueError, match=r"bundle 'b-mod'.*'nav'.*'other'|bundle 'b-mod'.*'other'.*'nav'"):
         gen.load(_mod_repo(tmp_path, mods=("nav", "other")))
+
+
+def test_the_error_for_several_modules_mods_names_all_of_them(tmp_path):
+    with pytest.raises(ValueError, match=r"'nav', 'other' and 'third'"):
+        gen.load(_mod_repo(tmp_path, mods=("nav", "other", "third")))
 
 
 def test_mod_in_two_bundles_is_rejected(tmp_path):
@@ -416,16 +422,56 @@ def test_mod_folder_absent_is_rejected_naming_hooks_json(tmp_path):
 
 
 # ------------------------------------------------------------------ hooks-only mods (lean-delivery D-5)
-def _plain_repo(tmp_path: Path) -> Path:
-    """A bundle with one hooks-only mod: hooks.json, a script and its test, nothing else."""
-    repo = _mod_repo(tmp_path, mods=("plain",))
-    d = repo / "mods/plain"
-    for f in ("types.d.ts", "config.json", "register.tsx"):
-        (d / f).unlink()
-    (d / "hooks.json").write_text('{"hooks": {}}\n', encoding="utf-8")
-    (d / "plain.mjs").write_text("export {};\n", encoding="utf-8")
-    (d / "plain.test.mjs").write_text("// test\n", encoding="utf-8")
+def _plain_repo(tmp_path: Path, mods=("plain",)) -> Path:
+    """A bundle with hooks-only mods: hooks.json, a script and its test, nothing else."""
+    repo = _mod_repo(tmp_path, mods=mods)
+    for m in mods:
+        d = repo / "mods" / m
+        for f in ("types.d.ts", "config.json", "register.tsx"):
+            (d / f).unlink()
+        (d / "hooks.json").write_text('{"hooks": {}}\n', encoding="utf-8")
+        (d / f"{m}.mjs").write_text("export {};\n", encoding="utf-8")
+        (d / f"{m}.test.mjs").write_text("// test\n", encoding="utf-8")
     return repo
+
+
+def test_two_plain_mods_in_one_bundle_render_both_hooks_files_in_bundles_yaml_order(tmp_path):
+    repo = _plain_repo(tmp_path, mods=("zeta", "alpha"))
+    gen.write(repo)
+    manifest = json.loads((repo / "bundles/b-mod/.claude-plugin/plugin.json").read_text())
+    assert manifest["hooks"] == ["./mods/zeta/hooks.json", "./mods/alpha/hooks.json"]
+    assert "types" not in manifest and "userConfig" not in manifest
+    assert gen.gate_errors(repo) == []
+
+
+def test_a_modules_mod_beside_plain_mods_keeps_types_and_user_config(tmp_path):
+    repo = _plain_repo(tmp_path, mods=("plain",))
+    nav = repo / "mods/nav"
+    nav.mkdir()
+    for f in gen.MOD_FILES:
+        (nav / f).write_text("{}\n", encoding="utf-8")
+    (nav / "hooks.json").write_text('{"hooks": {}, "modules": ["./register.tsx"]}\n', encoding="utf-8")
+    (nav / "config.json").write_text('{"band": {"type": "boolean", "default": true}}\n', encoding="utf-8")
+    _set_mods(repo, ["plain", "nav"])
+    manifest = json.loads(gen.plugin_manifests(repo)["bundles/b-mod/.claude-plugin/plugin.json"])
+    assert manifest["hooks"] == ["./mods/plain/hooks.json", "./mods/nav/hooks.json"]
+    assert manifest["types"] == "./mods/nav/types.d.ts" and manifest["userConfig"]
+
+
+def test_a_plain_mod_with_a_config_json_does_not_override_the_modules_mods_settings(tmp_path):
+    repo = _plain_repo(tmp_path, mods=("plain",))
+    (repo / "mods/plain/config.json").write_text('{"other": {"type": "string"}}\n', encoding="utf-8")
+    (repo / "mods/plain/types.d.ts").write_text("{}\n", encoding="utf-8")
+    nav = repo / "mods/nav"
+    nav.mkdir()
+    for f in gen.MOD_FILES:
+        (nav / f).write_text("{}\n", encoding="utf-8")
+    (nav / "hooks.json").write_text('{"hooks": {}, "modules": ["./register.tsx"]}\n', encoding="utf-8")
+    (nav / "config.json").write_text('{"band": {"type": "boolean", "default": true}}\n', encoding="utf-8")
+    _set_mods(repo, ["nav", "plain"])
+    manifest = json.loads(gen.plugin_manifests(repo)["bundles/b-mod/.claude-plugin/plugin.json"])
+    assert manifest["userConfig"] == {"band": {"type": "boolean", "default": True}}
+    assert manifest["types"] == "./mods/nav/types.d.ts"
 
 
 def test_hooks_only_mod_needs_only_hooks_json(tmp_path):
@@ -445,11 +491,23 @@ def test_hooks_only_mod_needs_only_hooks_json(tmp_path):
 def test_real_core_plugin_names_the_hooks_file_and_no_types_and_navigator_keeps_its_own():
     manifests = gen.plugin_manifests(REPO)
     core = json.loads(manifests["bundles/meaningfy-core/.claude-plugin/plugin.json"])
-    assert core["hooks"] == ["./mods/no-poll-loops/hooks.json"]
+    assert core["hooks"] == ["./mods/no-poll-loops/hooks.json", "./mods/rules-first/hooks.json"]
     assert "types" not in core and "userConfig" not in core
     nav = json.loads(manifests["bundles/meaningfy-navigator/.claude-plugin/plugin.json"])
     assert nav["hooks"] == ["./mods/navigator/hooks.json"]
     assert nav["types"] == "./mods/navigator/types.d.ts" and nav["userConfig"]
+
+
+def test_rules_first_routing_file_resolves_from_the_rendered_core_bundle(tmp_path):
+    # Node resolves import.meta.url through symlinks; the mod is a real file in the bundle, so ROOT is
+    # the bundle and skills/rulebook is a symlink into the repo's skills/.
+    mod = REPO / "bundles/meaningfy-core/mods/rules-first/rules-first.mjs"
+    assert mod.is_file()
+    assert (REPO / "bundles/meaningfy-core/skills/rulebook/assets/routing.md").is_file()
+    script = f'import("{mod}").then(m => process.stdout.write(m.sessionBlock(process.argv[1], undefined, {{}})))'
+    out = subprocess.run(["node", "-e", script, str(tmp_path)], capture_output=True, text=True, check=True).stdout
+    routing = (REPO / "skills/rulebook/assets/routing.md").read_text(encoding="utf-8").strip().splitlines()[0]
+    assert routing in out
 
 
 def test_hooks_only_mod_missing_hooks_json_is_rejected(tmp_path):

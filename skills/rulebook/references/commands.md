@@ -29,7 +29,7 @@ candidates.
 | `load --activity A [--context k=v ...]` | the rules in force for the activity and context | the playbook procedure (`PLAYBOOK <name>` then its body), one line per winning rule (`R-0042 [default] spelling=british: <do> (because: ...)`), the rules without a slot, a `CHECK` line naming the rules with a check pattern, `CONFLICT ...: ask the owner` lines, `SKIPPED` for unreadable notes, then `-- end --` |
 | `check --activity A [--context k=v ...] FILE` | runs the check patterns of the rules in force on FILE | `VIOLATION R-NNNN line N: <line>` per hit (exit 1), or `OK`, then `-- end --` |
 | `check --golden [--activity A]` | runs each playbook's golden examples through `check`, in the playbook's activity plus the tags written after `\|` in the `golden:` item | `GOLDEN <path>: ok`, `FAIL` (with its violations) or `missing`; exit 1 on any failure |
-| `where` | the stores this session sees, and the default store for a new rule | `vault: <path>` or `none (<why>)`, `repository: <root> (docs/rules/ present \| not yet created)` or `none (<why>)`, `default store: repository \| vault`, `-- end --`; always exit 0 |
+| `where` | the stores this session sees, and the default store for a new rule | `vault: <path>` or `none (<why>)`, `repository: <root> (docs/rules/ present \| not yet created)` or `none (<why>)`, `default store: repository \| vault`, `routing policy: present (<file>) \| missing (<fix>) \| unknown (routing.md not found)` (the routing sentence of `assets/routing.md` found in the global instructions), `-- end --`; always exit 0 |
 | `lint [--store all\|vault\|repo]` | the whole rule set: errors per store, warnings over both | `ERROR <code>: ...` and `WARNING <code>: ...` lines and a count; exit 1 on any error |
 | `search WORD ...` | rules and candidates whose id, `when`, `do`, slot, value, reason or source hold every word | `R-NNNN [status] [strength] <do> (when: ...)` |
 
@@ -82,7 +82,10 @@ the write retried.
 
 `stats [--since 30d] [--from-file FILE]` reads the session traces of the window from Langfuse
 (`LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`) and prints, per rule, the times it
-was loaded, cited, overridden and violated, then the usage flags. `--from-file` reads a saved
+was loaded, cited, overridden and violated, then the usage flags. Under the `window` line it prints
+`rules written: <n>` (calls of `add`, `confirm`, `update` or `approve`, not the ones carrying
+`--dry-run` or `--candidate`) and `memory writes denied: <n>` (observations carrying the
+rules-first mod's deny marker). Both are trends, not an audit: a turn the plugin sends twice counts twice, and any text with `rules.py add` in it counts (an `echo rules.py add` too). `--from-file` reads a saved
 response of the observations API instead; an unreadable file exits 3. With no `rules.py` event in
 the window it warns and raises no usage flag; the stale flag still applies. A missing setting or an unreachable server exits 3 and
 names the problem. How the counts are derived is in the `rule-steward` skill.

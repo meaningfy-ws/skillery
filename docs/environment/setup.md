@@ -112,6 +112,12 @@ settings the steward stops and says so; loading and checking rules still work. T
 deployment is specified for the infrastructure stacks repository in
 [`langfuse-deployment-spec.md`](langfuse-deployment-spec.md).
 
+When a session says the **routing policy is missing**, your global instructions
+(`~/.claude/CLAUDE.md`, `~/.config/opencode/AGENTS.md`) lack the routing sentence. Replace their rules
+bullet with the one in [`global-prompt.md`](global-prompt.md) (the bullet starting "Your own rules");
+`rules.py where` then reports `routing policy: present`. What the session block and the memory deny
+do is in [`rules.md`](rules.md).
+
 ### MCP servers (optional)
 
 Neither table above is the full MCP list — GitNexus and context7 are also MCP servers, but so are

@@ -1,6 +1,6 @@
 # Cross-cutting: the matrix
 
-Checks that apply to every family: how agents report and check each other (`guardrails`, `epic-delivery`), the house rules (`rulebook`, `rule-learner`, `rule-steward`), the archive step (`spec-stewardship`) and the repository's own gates (`make validate`, `make mods`, the CI jobs, the mods that deny a command). The table uses the same columns as a family file but is exempt from the six-question rule: it need not hold a row for every question, and its citations count as coverage of an inventory id. A check that answers two questions has two rows.
+Checks that apply to every family: how agents report and check each other, the house rules, the archive step and the repository's own gates (`make validate`, `make mods`, the CI jobs, the mods that deny a command). The columns are a family file's, without the six-question rule; its citations count as coverage of an inventory id.
 
 | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
 |---|---|---|---|---|---|---|

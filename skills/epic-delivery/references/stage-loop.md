@@ -1,8 +1,8 @@
 # The stage loop in detail
 
-The six steps of a stage, what each scales with, and the table that gives every check one moment
-and one owner. The summary is in the skill, and the review set of each appetite is in
-[`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json); this page adds the detail.
+The six steps of a stage and the ledger that gives every check one moment and one owner. The
+review set of each appetite is in
+[`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json).
 
 ## The steps
 
@@ -34,7 +34,9 @@ and one owner. The summary is in the skill, and the review set of each appetite 
      commit body (`Re-run: T1, <reason>`):
      - **T1** the report lacks a field, or contradicts the diff: tests added but the count
        unchanged; exit 0 with failures listed; no gate for a file type the diff touches. The lead
-       re-runs the task gate.
+       re-runs the task gate. Example: a builder reports `exit 0, 41 passed`, the diff adds two
+       tests and the previous count was 41; the commit body reads
+       `Re-run: T1, count unchanged after two added tests`.
      - **T2** parallel builders touched a shared file. The lead re-runs the task gate.
      - **T3** the lead's full-gates run after a fix round (step 4).
 3. **Challenge.**
@@ -57,8 +59,9 @@ and one owner. The summary is in the skill, and the review set of each appetite 
    - **One fix pass:** fixers in one batch, security first, then structure; after a red run only
      the failing tests re-run until green; then the full gates once (T3) and CI. A red CI run or a
      refused merge is no review round: only that failure is fixed.
-   - A flaky test is handled per the testing checklist (`cosmic-python`
-     `references/testing-checklist.md`).
+   - A flaky test is quarantined per the testing checklist (`cosmic-python`
+     `references/testing-checklist.md`), not chased with re-runs. A project with no quarantine
+     marker uses the framework's skip-with-reason plus the issue link.
 5. **Check.** One fresh checker where the appetite's set has one; otherwise the full gates and
    CI, with the single review pass as the four-eyes pass. A cold reader reads any how-to or
    tutorial page the stage changed. An unmet item, a disputed re-label or a late tester finding
@@ -69,62 +72,40 @@ and one owner. The summary is in the skill, and the review set of each appetite 
    `openspec/changes/<id>/handover.md`, the PR's last commit; a fix after a red check goes before
    it, the note re-committed last, then the command runs again. Once the PR lists a check run, one
    background command: `gh pr checks <n> --watch --fail-fast && gh pr merge <n> --merge
-   --delete-branch` (the repository's merge method); its notice is the only wait. On a non-zero
-   exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing check, a refused
-   merge, or only the local branch left. Then the session ends, no compaction; the next stage
-   starts fresh from the note's prompt.
+   --delete-branch` (the repository's merge method); its notice is the only wait, never a sleep
+   loop. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing
+   check, a refused merge, or only the local branch left. Then the session ends, no compaction;
+   the next stage starts fresh from the note's prompt.
+
+A LARGE EPIC with screens, three stages, runs this way: all scenarios signed off at the gate; per
+stage, builder tasks, full gates, the PR, then five lenses, the UX lens and the tester on its
+condition in parallel, the one fix pass, full gates, the checker, the note, watch-and-merge, a
+fresh session. After stage 3 the mandatory demo, then the docs stage when docs are owed (one PR
+with the LARGE review set), then archive.
 
 ## After the last build stage
 
 In this order: accept, docs stage, archive.
 
-- **Acceptance demo**, offered whenever the EPIC delivers or changes a use case:
-  the lead runs the use case in the running system (or through the API) against the EPIC's success
-  measure. The developer accepts it or names what is wrong. Whether it may be skipped is set by the
-  appetite table in [`verification-validation.md`](verification-validation.md). The verdict, what
-  was shown and the date, or the skip (who, why, date), go to `evidence/acceptance.md`. A rejection
-  is a decision in `design.md` and a fix stage (steps 4–6) before any docs are written.
+- **Acceptance demo**, offered whenever the EPIC delivers or changes a use case: the lead runs the
+  use case in the running system (or through the API) against the EPIC's success measure. The
+  developer accepts it or names what is wrong. Whether it may be skipped is set by the appetite
+  table in [`verification-validation.md`](verification-validation.md). The verdict, what was shown
+  and the date, or the skip (who, why, date), go to `evidence/acceptance.md`. A rejection is a
+  decision in `design.md` and a fix stage (steps 4–6) before any docs are written.
 - **Docs stage.** The lead decides at accept. If the EPIC changed a use case, the architecture,
   installation or user-facing behaviour, it loads `technical-writing` first, then writes
   `evidence/docs-owed.md` (the pages owed) during the workflow's *inventory* phase, so the
   documentation workflow sees it. Otherwise it writes "no docs owed" in `evidence/docs-owed.md`
-  and archives.
+  and archives. As-built that contradicts an ADR is a finding to the lead and the developer
+  decides; the page is not edited to match.
 - **Archive.** The lead archives the change per `spec-stewardship`.
 
 In `tasks.md` only the build stages carry checkboxes. The docs stage and the close are plain lines
 under their own headings, with no checkbox; the documentation workflow tracks the docs stage. The
-navigator band shows `accept` once every build box is ticked.
-
-## When a situation goes wrong
-
-| Situation | Response |
-|---|---|
-| A brief cannot be written | The task is not ready; fix the PLAN |
-| Our library falls short | Stop the task; upstream issue; `blocked by`; other tasks go on |
-| An external library falls short | A decision recorded in `design.md` before any code |
-| The developer rejects at acceptance | A decision in `design.md`; a fix stage before the docs stage |
-| The project names no task gate or full gates | The lead cannot write brief rule 5: ask the developer; the answer goes into the project's `AGENTS.md` |
-| The project has no marker for quarantining a test | The framework's skip-with-reason plus the issue link |
-| As-built contradicts an ADR (docs stage) | A finding to the lead; the developer decides; the page is not edited to match |
-| The lead loads `technical-writing` mid-build | The navigator band shows *documentation*; loading `epic-delivery` or `openspec-apply-change` switches back |
-
-## Two examples
-
-- **SMALL EPIC**, one stage, three tasks: three task-gate runs, no lead re-run, one full-gates run
-  before the PR, one review pass (L2 + L3), one Critical fix with its failing test re-run alone,
-  one full-gates run (T3), CI. Two local full-gates runs in the stage. No checker, no tester. No
-  scenario sign-off if the EPIC adds no scenario. The demo is offered and skipped
-  (`evidence/acceptance.md`: "skipped by `<developer>`, `<reason>`, `<date>`"); `evidence/docs-owed.md`
-  says "no docs owed"; archive.
-- **LARGE EPIC** with screens, three stages: all scenarios signed off at the gate. Per stage:
-  builder tasks, full gates, the PR, then five lenses, the UX lens and the tester on its condition
-  in parallel, then the one fix pass, full gates, the checker, the note, watch-and-merge, a fresh
-  session. After stage 3: the acceptance demo
-  (mandatory), `evidence/acceptance.md`; then the docs stage when docs are owed (the lead loads
-  `technical-writing`; one PR with the LARGE review set); then archive.
-- **Inconsistent report.** A builder reports `exit 0, 41 passed`; the diff adds two tests and the
-  previous count was 41. T1: the lead re-runs the task gate and the commit body reads
-  `Re-run: T1, count unchanged after two added tests`.
+navigator band shows `accept` once every build box is ticked; while the lead has `technical-writing`
+loaded mid-build it shows *documentation*, and loading `epic-delivery` or `openspec-apply-change`
+switches back.
 
 ## The check ledger
 

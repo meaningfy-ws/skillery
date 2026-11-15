@@ -24,9 +24,9 @@ Input: "write a LinkedIn post announcing our new SHACL service."
 
 1. **State success and failure first.** Succeeds: a cold reader given only the post says in one
    sentence what the service does. Fails: the reader cannot, or the antipattern check flags an advert.
-2. **Take the checks from the matrix.** Open
-   [`references/generic-writing.md`](references/generic-writing.md) and
-   [`references/cross-cutting.md`](references/cross-cutting.md):
+2. **Take the checks from the matrix.** Read `references/generic-writing.md` and
+   `references/cross-cutting.md` when the work is a post, an offer, a contract, a sales run or a
+   note: it gives the rows below, each with its check, owner and who decides.
    - `CLR`, can a stranger act on it: the cold reader, CHK-33 (`technical-writing`).
    - `CLR`, genre defects: the writing antipatterns, CHK-86 and CHK-103 (`writing-antipatterns`).
    - `VER`, house rules: `rulebook check`, CHK-112 (`rulebook`).
@@ -35,7 +35,7 @@ Input: "write a LinkedIn post announcing our new SHACL service."
 3. **Draft, run the checks.** A failed criterion goes back to the draft, never to the post as a
    patch. Repeat until every criterion passes, or the owner accepts the miss.
 
-## The loop
+## Workflow: the loop
 
 1. **State** how the work succeeds and how it fails, before doing it.
 2. **Do** the work.
@@ -44,21 +44,23 @@ Input: "write a LinkedIn post announcing our new SHACL service."
    miss, on any question, is a person's decision.
 5. **Revise** the work, not the criteria. Change a criterion only by going back to step 1.
 
-## What a test is
+## Rules
+
+### What a test is
 
 A test is a criterion agreed before the work, a pass or fail result, and its evidence. "The cold
 reader finishes the how-to without asking a question" is a test. "This section feels weak" is not:
 turn it into a criterion ("a reader cannot find the install step in under a minute") or record it as
 an opinion. A finding without a criterion is never a failed test.
 
-## Verification and validation
+### Verification and validation
 
 Verification asks "did we build it right?": each artefact against its own specification, mostly by
 agents. Validation asks "did we build the right thing?": each artefact against the need one level up;
 it always ends with a person, and an agent never marks it done. Green gates prove verification only.
 Who runs each, and when, in an epic delivery is owned by `epic-delivery`.
 
-## The six questions
+### The six questions
 
 | Id | Question | Example in a code change | Example in a post |
 |---|---|---|---|
@@ -69,9 +71,10 @@ Who runs each, and when, in an epic delivery is owned by `epic-delivery`.
 | `CLR` | Can its reader act on it? | the docs page works for a cold reader | a stranger understands the post |
 | `RSK` | What outside the work can go wrong? | a dependency or secret is exposed | a claim a client could hold against us |
 
-## The five stances
+### The five stances
 
-A stance is the point of view a reviewer or a brief takes. Each asks its own questions:
+A stance is the point of view a reviewer or a brief takes; a review lens or a brief takes one. The
+stance does not own the brief (`epic-delivery`) or the dispatch (`guardrails`).
 
 | Stance | Asks | Note |
 |---|---|---|
@@ -81,32 +84,38 @@ A stance is the point of view a reviewer or a brief takes. Each asks its own que
 | cold reader | `CLR` | has only the page |
 | checker | `ADQ` | a fresh agent that did not build or test the work |
 
-A review lens or a brief takes a stance. The stance does not own the brief (`epic-delivery`) or the
-dispatch (`guardrails`).
+### Reading the matrix
 
-## Reading the matrix
+One file per activity family, each a table with the columns question, check, technique owner, tool,
+moment, decided by, status. Start from the family of the work, then the question; the cross-cutting
+file always applies besides it. A check that answers two questions has two rows. A family file names
+the owner of each technique and never restates its steps.
 
-One file per activity family, each a table. Start from the family of the work, then the question.
+- Read `references/software.md` when the work is code, tests, a project or its delivery: it adds
+  the test-first, checklist, gate, review-lens and brief rows.
+- Read `references/documentation.md` when the work is project or user documentation: it adds the
+  cold reader and lightweight gate rows.
+- Read `references/devops.md` when the work touches an environment, CI/CD, a stack or operations:
+  it adds the repository-check, deploy, backup, release and migration rows.
+- Read `references/ui.md` when the work is a user interface: it adds the few UI rows and their gaps.
+- Read `references/shaping.md` when the work is an EPIC, a PLAN or its scenarios: it adds the gate,
+  interview, attack, sign-off and validation-review rows.
+- Read `references/modelling.md` when the work is a domain model, a schema or a rule set: it adds
+  the model-validation, schema-gate and engine-checked rule rows.
+- Read `references/architecture.md` when the work is system design, an ADR or a diagram: it adds
+  the walkthrough, diagram and conformance rows.
+- Read `references/generic-writing.md` when the work is a post, an offer, a contract, a sales run
+  or a note: it adds the writing, voice, estimate, contract, sales and vault rows.
+- Read `references/cross-cutting.md` whenever a family file is read: it adds the checks every
+  family shares (agent reports, house rules, archive, the repository's gates), with no six-question
+  rule.
+- Read `references/inventory.md` when a `CHK-<n>` needs its definition or a check is added: it holds
+  each check once with its owner path and moment; ids are stable, a new one takes the next number.
 
-| File | Family |
-|---|---|
-| [`software.md`](references/software.md) | code, tests, projects, delivery |
-| [`documentation.md`](references/documentation.md) | project and user documentation |
-| [`devops.md`](references/devops.md) | environments, CI/CD, operations |
-| [`ui.md`](references/ui.md) | user interfaces |
-| [`shaping.md`](references/shaping.md) | EPICs, plans, specifications |
-| [`modelling.md`](references/modelling.md) | domain and data models |
-| [`architecture.md`](references/architecture.md) | system design and its records |
-| [`generic-writing.md`](references/generic-writing.md) | posts, offers, contracts, sales, notes |
-| [`cross-cutting.md`](references/cross-cutting.md) | checks that apply to every family |
-
-[`cross-cutting.md`](references/cross-cutting.md) always applies besides the family file.
-[`inventory.md`](references/inventory.md) defines every check once, as `CHK-<n>`; the family files
-cite it. Columns: question, check, technique owner, tool, moment, decided by, status.
 *Decided by* names who judges pass or fail on that row: a stance or a person. Accepting a miss, on
 any question, is a person's decision. "The developer" and "the owner" are the person the work is for:
 the developer in a delivery, the owner for the owner's own writing, sales and vault. A *technique
-owner* in `cross-cutting.md` may be a repository tool or doc, not a skill.
+owner* in the cross-cutting file may be a repository tool or doc, not a skill.
 Status is `exists`, `gap` (no check yet; it names the EPIC expected to fill it, or "none yet") or
 `accepted` (a gap the developer chose to leave open, with the reason). Gap targets: `gap → B` is the
 EPIC `harden-checks-and-tests`, `C` is `activity-test-profiles`, `D` is `generic-task-test-profiles`;
@@ -115,13 +124,24 @@ EPIC `harden-checks-and-tests`, `C` is `activity-test-profiles`, `D` is `generic
 On a gap, say so, state the criterion anyway, and let a person judge it. Never invent a technique to
 fill a row.
 
-## Gotchas
+### Common mistakes
 
-- Criteria written after the work. They then describe what was built, not what was needed.
-- A passing check taken as a pass on the question. CHK-112 passing says `VER` holds, not `VAL`.
-- A `VAL` row marked done by an agent. A person decides it.
-- Copying a technique's steps into a brief or a family file. Cite the owning skill instead.
-- Revising the criterion to fit the draft. Revise the draft.
+| Mistake | Why it fails | Do instead |
+|---|---|---|
+| Criteria written after the work | they describe what was built, not what was needed | state them at step 1 |
+| A passing check taken as a pass on the question | CHK-112 passing says `VER` holds, not `VAL` | answer each question on its own row |
+| A `VAL` row marked done by an agent | validation ends with a person | prepare the evidence; a person decides |
+| Copying a technique's steps into a brief or a family file | two homes drift apart | cite the owning skill |
+| Revising the criterion to fit the draft | the test no longer tests | revise the draft |
+
+## Before you hand over
+
+| Question | If not | Action |
+|---|---|---|
+| Were success and failure stated before the work? | the criteria are hindsight | restate them, then re-run the checks |
+| Has each question of the family a check or a named gap? | a question goes unanswered | add the gap, state the criterion, let a person judge |
+| Did every failed criterion go back to the work? | a patch hides the miss | revise the work and run the check again |
+| Is each `VAL` result and each accepted miss a person's decision? | an agent closed it | hand it to the developer or the owner |
 
 ## Boundary & Related Skills
 

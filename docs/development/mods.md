@@ -68,20 +68,24 @@ carried. `root` changes only through `RootFollowed` (a lead edit in another work
 ## Bundling
 
 A mod is declared in exactly one bundle of [`bundles.yaml`](../../bundles.yaml) under `mods:`,
-at most one per bundle. `make bundles` then renders, for that bundle:
+several plain (hooks-only) mods and at most one modules mod per bundle. `make bundles` then
+renders, for that bundle:
 
 - `mods/<name>` — a copy of the mod's folder (the engine refuses a hooks module or a types file
   behind a symlink), compared byte for byte by the gate, so edit `mods/`, never the copy;
 - `data/` — symlinks to the skill assets the mod reads (workflow files, session thresholds);
-- `.claude-plugin/plugin.json` — with `hooks` taken from the mod, and `types` and `userConfig`
-  when the mod has a `types.d.ts` and a `config.json`.
+- `.claude-plugin/plugin.json` — with one `hooks` entry per mod, in `bundles.yaml` order, and
+  `types` and `userConfig` when the bundle's modules mod has a `types.d.ts` and a `config.json`.
 
 The generator requires `hooks.json` of every mod, and `config.json`, `types.d.ts` and
 `register.tsx` only when `hooks.json` names `modules`. Only a modules mod gets `data/`. A mod's
 `*.test.mjs` and `*.test.ts` do not ship.
 
 The mod reads its data only under `${plugin root}/data/`, which is the same path in development and
-after install. A bundle that holds only mods is left out of the opencode catalogue: mods are
+after install. That is the modules mod's seam. A plain mod has a second one: it may read
+`${plugin root}/skills/<owner>/` when the owner skill is in the same bundle (`rules-first` reads
+`skills/rulebook/assets/` and `scripts/`, and `meaningfy-core` carries `rulebook`). It reads no skill of
+another bundle, which may not be installed. Nothing checks this yet; a reviewer does. A bundle that holds only mods is left out of the opencode catalogue: mods are
 Claude Code only, a recorded gap in
 [`docs/environment/dual-cli/compatibility.md`](../environment/dual-cli/compatibility.md).
 

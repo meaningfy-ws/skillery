@@ -14,6 +14,7 @@ import base64
 import json
 import os
 import re
+import shlex
 import sys
 import urllib.error
 import urllib.parse
@@ -44,7 +45,9 @@ REPO_GLOB = "P-[0-9][0-9][0-9][0-9] *.md"
 LINKS = ("exception_of", "supersedes")
 NOTE_NO_VAULT = "NOTE personal rules not loaded: vault not found (set MEANINGFY_VAULT)"
 POINTER = ("- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, "
-           "load them with the rulebook skill; change them only through it, by pull request.")
+           "load them with the rulebook skill; change them only through it, by pull request. "
+           "Preferences and corrections go to the rulebook, never to the CLI's memory; "
+           "project state goes to the spine and the repository's docs.")
 END = "-- end --"
 MAX_ACTIVE = 30
 
@@ -784,6 +787,43 @@ def cmd_approve(args) -> int:
     return 0
 
 
+ROUTING_FILE = Path(__file__).resolve().parents[1] / "assets/routing.md"
+ROUTING_LINE = 2  # the routing sentence is line 3 of routing.md
+POLICY_LABEL = "routing policy:"
+POLICY_MISSING = (f"{POLICY_LABEL} missing (add or replace the rules line of docs/environment/global-prompt.md "
+                  "in your global instructions)")
+
+
+def routing_sentence() -> str:
+    """The routing sentence, line 3 of routing.md; raises OSError, UnicodeDecodeError or IndexError."""
+    return ROUTING_FILE.read_text(encoding="utf-8").splitlines()[ROUTING_LINE]
+
+
+def _normalise_sentence(text: str) -> str:
+    """Whitespace runs (line breaks too) become one space and a curly apostrophe becomes a plain one (D-2)."""
+    return " ".join(text.replace("’", "'").split())
+
+
+def _global_files() -> list[Path]:
+    claude = Path(os.environ.get("CLAUDE_CONFIG_DIR") or Path.home() / ".claude")
+    xdg = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config")
+    return [claude / "CLAUDE.md", xdg / "opencode/AGENTS.md"]
+
+
+def _routing_policy() -> str:
+    try:
+        sentence = _normalise_sentence(routing_sentence())
+    except (OSError, UnicodeDecodeError, IndexError):
+        return f"{POLICY_LABEL} unknown (routing.md not found)"
+    for path in _global_files():
+        try:
+            if sentence in _normalise_sentence(path.read_text(encoding="utf-8")):
+                return f"{POLICY_LABEL} present ({path})"
+        except (OSError, UnicodeDecodeError):
+            continue
+    return POLICY_MISSING
+
+
 def cmd_where(args) -> int:
     vault = _vault_or_none()
     env = os.environ.get("MEANINGFY_VAULT")
@@ -792,14 +832,49 @@ def cmd_where(args) -> int:
           if not env else f"vault: none (MEANINGFY_VAULT={env} has no '08 How to/' folder)")
     state = "present" if repo and (repo / REPO_DIR).is_dir() else "not yet created"
     print(f"repository: {repo} (docs/rules/ {state})" if repo else f"repository: none ({why})")
-    print(f"default store: {'repository' if repo else 'vault'}\n{END}")
+    print(f"default store: {'repository' if repo else 'vault'}\n{_routing_policy()}\n{END}")
     return 0
 
 
 # ---------------------------------------------------------------- stats (D-7, D-10)
 
-_CALL = re.compile(r"rules\.py\S*\s+([a-z]+)")
-_REASON = re.compile(r"""--reason\s+(?:"([^"]*)"|'([^']*)'|(\S+))""")
+DENY_MARKER = "[rules-first: memory write denied]"  # the rules-first mod puts it in its deny message
+WRITE_SUBS = ("add", "confirm", "update", "approve")
+NOT_A_WRITE = ("--dry-run", "--candidate")  # whole tokens: the same words inside a quoted value do not count
+_OPERATOR = re.compile(r"[;&|]+")
+
+
+def _tokens(line: str) -> list[str]:
+    """Shell words of one command line, operators (&&, ;, |) as their own tokens; plain split if quotes are unbalanced."""
+    try:
+        lex = shlex.shlex(line, posix=True, punctuation_chars=True)
+        lex.whitespace_split = True
+        return list(lex)
+    except ValueError:
+        return re.findall(r"[;&|]+|[^\s;&|]+", line)
+
+
+def _rules_calls(text: str) -> list[tuple[str, list[str]]]:
+    """Every `rules.py <sub> <args>` call in a command text: (sub, its args up to the next operator)."""
+    calls = []
+    for line in text.split("\n"):
+        if "rules.py" not in line:
+            continue
+        words = _tokens(line)
+        for i, word in enumerate(words):
+            if word.strip("'\"").rsplit("/", 1)[-1] == "rules.py" and i + 1 < len(words) and re.fullmatch(r"[a-z]+", words[i + 1]):
+                end = next((j for j in range(i + 2, len(words)) if _OPERATOR.fullmatch(words[j])), len(words))
+                calls.append((words[i + 1], words[i + 2:end]))
+    return calls
+
+
+def _is_write(sub: str, args: list[str]) -> bool:
+    return sub in WRITE_SUBS and not any(a in NOT_A_WRITE for a in args)
+
+
+def _was_denied(strings: list[str]) -> bool:
+    """Counted for every observation, before the rules.py-call filter that skips most of them."""
+    return any(DENY_MARKER in s for s in strings)
 
 
 def _strings(obj):
@@ -861,7 +936,7 @@ def cmd_stats(args) -> int:
     rules, active = _index(read_dir(root, RULES_DIR))
     count = {}
     reasons: dict[str, list[str]] = {}
-    events = truncated = scanned = 0
+    events = truncated = scanned = written = denied = 0
     bump = lambda rid, k: count.setdefault(rid, {"loaded": 0, "cited": 0, "overridden": 0, "violated": 0}).__setitem__(
         k, count[rid][k] + 1)
     for obs in observations:
@@ -869,27 +944,32 @@ def cmd_stats(args) -> int:
             continue
         scanned += 1
         strings = list(_strings(obs.get("input"))) + list(_strings({k: v for k, v in obs.items() if k != "input"}))
-        call = next(((s, m) for s in strings if (m := _CALL.search(s))), None)
-        if not call:
+        denied += _was_denied(strings)  # before the `continue` below: a denied write has no rules.py call
+        found = next(((s, c) for s in strings if (c := _rules_calls(s))), None)
+        if not found:
             continue
         events += 1
-        inp, sub = call[0], call[1].group(1)
-        args_text = inp[call[1].end():]
+        inp, calls = found
+        written += sum(_is_write(*c) for c in calls)
         output = "\n".join(s for s in strings if s is not inp)
-        if sub in ("load", "check") and END not in output:
-            truncated += 1
-        elif sub == "load":
-            for rid in re.findall(r"^(R-\d{4}) ", output, re.MULTILINE):
-                bump(rid, "loaded")
-        elif sub == "check":
-            for rid in re.findall(r"^VIOLATION (R-\d{4})", output, re.MULTILINE):
-                bump(rid, "violated")
-        elif sub in ("cite", "override"):
-            for rid in ID.findall(args_text.split("--reason")[0]):
-                bump(rid, "cited" if sub == "cite" else "overridden")
-                if sub == "override" and (r := _REASON.search(args_text)):
-                    reasons.setdefault(rid, []).append(next(g for g in r.groups() if g is not None))
-    out = [f"window {since.isoformat()}..{today.isoformat()}: {scanned} observations, {events} rules.py events"]
+        for sub, args in calls:
+            if sub in ("load", "check") and END not in output:
+                truncated += 1
+            elif sub == "load":
+                for rid in re.findall(r"^(R-\d{4}) ", output, re.MULTILINE):
+                    bump(rid, "loaded")
+            elif sub == "check":
+                for rid in re.findall(r"^VIOLATION (R-\d{4})", output, re.MULTILINE):
+                    bump(rid, "violated")
+            elif sub in ("cite", "override"):
+                cut = args.index("--reason") if "--reason" in args else len(args)
+                reason = args[cut + 1] if cut + 1 < len(args) else None
+                for rid in ID.findall(" ".join(args[:cut])):
+                    bump(rid, "cited" if sub == "cite" else "overridden")
+                    if sub == "override" and reason is not None:
+                        reasons.setdefault(rid, []).append(reason.strip("'\""))
+    out = [f"window {since.isoformat()}..{today.isoformat()}: {scanned} observations, {events} rules.py events",
+           f"rules written: {written}", f"memory writes denied: {denied}"]
     out.append("id      loaded cited overridden violated")
     out += [f"{rid}  {c['loaded']} {c['cited']} {c['overridden']} {c['violated']}" for rid, c in sorted(count.items())]
     if truncated:

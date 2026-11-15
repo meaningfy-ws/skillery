@@ -20,7 +20,7 @@ References: [PyPI Trusted Publishers](https://docs.pypi.org/trusted-publishers/)
 
 ## The publish workflow (shape, not a runnable copy)
 
-Triggered by the tag/release the release engine produces (SKILL §4). Key invariants:
+Triggered by the tag/release the release engine produces (`SKILL.md`, the release engine). Key invariants:
 
 - `permissions: id-token: write` on the publishing job — **without it GitHub will not mint the OIDC
   token** and the publish fails.
@@ -40,7 +40,7 @@ publish:
   permissions:
     id-token: write        # REQUIRED for the OIDC exchange
   steps:
-    - run: python -m build
+    - run: uv build
     - uses: pypa/gh-action-pypi-publish@release/v1   # no token; OIDC
 ```
 
