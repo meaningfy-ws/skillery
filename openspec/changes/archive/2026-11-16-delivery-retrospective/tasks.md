@@ -54,7 +54,7 @@
   `meaningfy-building:implementer` spawn, warning; no open change, no warning; the shared
   `mark-lines.json` fixture asserted against the navigator's pattern. Record the opencode gap in `docs/environment/dual-cli/compatibility.md`.
   Spec: *The navigator warns of a worker without a mark*. Acceptance: `make mods` green.
-- [ ] 3.4 Agent scenario in `tests/features/epic-delivery.feature`: the lead starting stage 2 writes
+- [x] 3.4 Agent scenario in `tests/features/epic-delivery.feature`: the lead starting stage 2 writes
   the mark before its first brief; shaping writes `phase=shape`. Walked by hand on Claude Code.
 
 ## 4. Docs and proof (stage 2)
@@ -73,7 +73,7 @@
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 — stage 1, one PR
-- [x] 3.1 · [x] 3.2 · [x] 3.3 · [ ] 3.4 · [x] 4.1 · [x] 4.2 — stage 2, one PR
+- [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 4.1 · [x] 4.2 — stage 2, one PR
 
 ## Verification
 

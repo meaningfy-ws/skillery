@@ -45,3 +45,20 @@ proceeds below 9/10. Elicitation SHALL ask its questions in rounds (lean-deliver
 - **WHEN** a SMALL PLAN scores 8.6 on its second clarity-gate run
 - **THEN** the remaining gaps go to the developer in one round, and no third revision runs
 
+### Requirement: The lead marks shaping and the PLAN
+`epic-planning` SHALL cite the mark line defined in `epic-delivery`. The lead SHALL write it with
+`phase=shape` at the start of shaping and with `phase=plan` at the start of the PLAN (proposal
+DEC-3). Archive and release SHALL write no mark (proposal DEC-4).
+
+#### Scenario: Shaping starts
+- **WHEN** the lead starts shaping change `x`
+- **THEN** it writes `mark: change=x phase=shape stage=-`
+
+#### Scenario: The PLAN starts
+- **WHEN** the lead starts deriving the PLAN of change `x`
+- **THEN** it writes `mark: change=x phase=plan stage=-`
+
+#### Scenario: A change is archived
+- **WHEN** a change is archived or released
+- **THEN** no mark line is written and the report labels that work `guessed`
+

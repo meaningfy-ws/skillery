@@ -912,7 +912,7 @@ developer confirms them in task 0.2, before stage 1.
 
 Revised 2026-11-14 by owner decision, after the gate. The session measurements were compared with
 this EPIC and the owner decided on the result
-([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 6 and 7). The clarity gate was not run again on this entry.
 
 - **D-36 An accept-only stage takes the small review set (corrects D-14, "It may take"; bears

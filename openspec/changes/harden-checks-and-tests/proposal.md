@@ -105,7 +105,7 @@ selection and misses checks it could make for free.
   `project-setup`'s template. Docs folders and stacks repositories are EPIC C's — rejected:
   a custom layout script (Q-4).
 - **DEC-9** *(revised 2026-11-14 by owner decision,
-  [`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+  [`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
   decisions 3 and 4)*: The adversarial tester stays an `implementer` with a brief, gains Hypothesis
   (properties, stateful), Schemathesis with an OpenAPI contract, and runs from MEDIUM up; at
   MEDIUM it runs only on a stage that changed code and for which the PLAN names an invariant.

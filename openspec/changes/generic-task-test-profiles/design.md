@@ -685,7 +685,7 @@ record.
 **Revised after the gate, not gated again (2026-11-14).** D-27, under § Delivery decisions, was
 added by owner decision after run 7. No clarity-gate run followed: the owner wants at most two
 gate runs on any re-gate
-([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 2 and 7). **Revised again after the gate, not gated again (2026-11-15):** D-28 to D-32,
 under § Delivery decisions, record the owner's settlement of
 [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
@@ -822,7 +822,7 @@ and against A as delivered. These override the decisions above where they differ
 
 Revised 2026-11-14 by owner decision, after the gate. The session measurements were compared with
 this EPIC and the owner decided on the result
-([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 2 and 7). The clarity gate was not run again on this entry.
 
 - **D-27 The reader has a named tool list (corrects D-9, "a fresh general-purpose subagent", the
