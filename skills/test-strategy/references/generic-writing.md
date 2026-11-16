@@ -24,7 +24,7 @@ Checks on every non-code piece of work: posts, messages, offers and estimates, c
 | ADQ | whether the writing checks would catch a bad piece | none yet | none yet | none yet | the checker | gap → D |
 | ROB | an adversarial reader who tries to break the draft | none yet | none yet | none yet | the adversary | gap → D |
 | CLR | CHK-33 Cold reader | `technical-writing` | fresh agent given only the page | a how-to or tutorial changed; any page meant to be followed | the cold reader | exists |
-| CLR | CHK-86 Writing antipatterns self-check and genre map | `writing-antipatterns` | the genre's antipattern file | any prose | the cold reader | exists |
+| CLR | CHK-86 Writing antipatterns self-check and genre map | `writing-antipatterns` | the genre's matrix column | any prose | the cold reader | exists |
 | CLR | CHK-87 Explanatory writing quick check | `explanatory-writing` | the self-check | after drafting | the cold reader | exists |
 | CLR | CHK-88 Company voice quick checklist | `meaningfy-voice` | the checklist | after drafting | the cold reader | exists |
 | CLR | CHK-89 Executive communication logic checks | `executive-communication` | vertical and horizontal checks | before delivering | the cold reader | exists |

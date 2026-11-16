@@ -98,10 +98,10 @@ that the line matches the skill's `exists` rows, and those rows arrive in 3.1 (D
   sentence under *Lawyer-review flag* (a finding on a number, or on a term that changes what a party can claim or must do, is an open
   point); the workflow file is not touched (D-2, D-3, D-6; spec `legal-contract-practice`).
 - [ ] 2.3 `meaningfy-voice`: the section with its two step lines in
-  `references/channels/linkedin.md`, the pointer and differences in `blog.md`, lines 23–24 of
-  SKILL.md, the description's post trigger (D-2, D-3, D-14; spec
+  `references/channels/linkedin.md`, the pointer and differences in `blog.md`, the channel-profile
+  pointer of SKILL.md, the description's post trigger (D-2, D-3, D-14; spec
   `company-voice`, both requirements).
-- [ ] 2.4 `executive-communication`: the section, the criteria and reader lines in *Start here*,
+- [ ] 2.4 `executive-communication`: the section, the criteria and reader lines in *Workflow* step 1 (diagnose before you structure),
   (D-2, D-3; spec `executive-communication`).
 - [ ] 2.5 `sales-conversations`: the section, the subsection *In an attended session: criteria and a reader* (pick-up included)
   under *Workflow*; `sales-operations` is not touched (D-2, D-3, D-4; spec

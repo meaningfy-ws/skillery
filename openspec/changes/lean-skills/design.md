@@ -494,6 +494,20 @@ The other six fit the budget; the templates of `proposal-writing` and the PERT w
 `estimation` moved to `assets/`. Under the floor: `sales-operations` and `sales-conversations`
 sit within 12 bytes of the budget.
 
+**D-24 Stage 5 decided by the lead (2026-11-16).** Twenty skills, every one off `pending`, so the
+`pending` key is removed (task 5.2). Two exceptions: `infrastructure-operations` (32 KB: the change
+procedure, the reviewer's grading, the lifecycle traps and the records the devops agents and the
+`operations-practice` spec rely on) and `semantic-consulting-coach` (32 KB: the commercial
+engagement model about 20 docs, 6 sales skills and 4 specs cite); its next cut comes when
+`commercial-portfolio` moves the package facts out. Second readers found three losses, all
+restored: the reason for `keep_disk = true` (`infrastructure-operations`), "silence is an
+acceptable outcome" (`semantic-consulting-coach`), and a wrong firewall row
+(`infrastructure-security`); they also fixed citers in `generic-task-test-profiles` and
+`proposal-writing`. Total prose of `skills/` is 0.89 MiB, under DEC-9's 1 MB
+([`evidence/size-after-stage-5.md`](evidence/size-after-stage-5.md)). Under the floor:
+`rulebook` sits 3 bytes under budget, `service-reliability` 36; the five exceptions are the
+owner's to revisit.
+
 ### Anti-patterns
 
 | Don't | Do instead | Why |

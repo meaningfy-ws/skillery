@@ -156,7 +156,7 @@ flowchart TD
     Q2 -->|no| Q3{"Is it about <b>how the document<br/>is built</b>?"}
     Q3 -->|yes| STR["<b>A structure</b><br/>the owning structure skill, or a new skill<br/>(the quotation skeleton is one)"]
     Q3 -->|no| Q4{"Is it a <b>new reader's job</b>,<br/>not a new topic?"}
-    Q4 -->|yes| GEN["<b>A genre</b><br/>writing-antipatterns: a genre-map row,<br/>references/GENRE.md, entries in<br/>inversion-matrix.md"]
+    Q4 -->|yes| GEN["<b>A genre</b><br/>writing-antipatterns: a genre-map row,<br/>a column of the matrix in<br/>inversion-matrix.md"]
     Q4 -->|"no, it is a topic"| DOM["<b>Not a genre</b><br/>a pitch is decision, a quotation is contract:<br/>add an example to the existing owner"]
 
     classDef leaf fill:#eef4ff,stroke:#3b6fd8,color:#111

@@ -23,9 +23,3 @@ A "flip" is the single explicit exception that turns a default off to reproduce 
 faithfully (for example, a captured external corpus that uses US spelling and big round numbers). A
 flip is always named and scoped to that one job. The defaults are the Meaningfy baseline; the flips are
 the exception, never the other way round.
-
-## Why positive, not banned
-
-Models follow "do this" better than "never do that". Framing each knob as a default the writer reaches
-for keeps the prose in-voice without a wall of prohibitions, and the link keeps a single source of
-authority for every rule.

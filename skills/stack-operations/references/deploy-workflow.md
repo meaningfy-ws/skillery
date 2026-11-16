@@ -1,8 +1,7 @@
 # The deploy workflow
 
-A stack is deployed only by its workflow in the stacks repository, from `main`. The shape is the
-template [`assets/templates/deploy-workflow.yml`](../assets/templates/deploy-workflow.yml); this file
-says why each part is there.
+A stack is deployed only by its workflow in the stacks repository, from `main`; the shape is the
+template [`assets/templates/deploy-workflow.yml`](../assets/templates/deploy-workflow.yml).
 
 ## Health-gated deploy
 
@@ -26,7 +25,7 @@ filtered out. It never prints `.env`.
 | A guard step | An instance with no host yet is skipped with a warning; an empty value or a value containing `$` fails before anything touches the VM. |
 | Sparse checkout of the stack only, no persisted credentials | The job sees only what it deploys. |
 | `rsync --delete --exclude .env` | The VM holds exactly the repo's files; `.env` is written separately. |
-| `.env` written from step `env:` under `umask 077`, mode 600 | Secrets never appear in the script text or in a remote command line. |
+| `.env` written from step `env:` under `umask 077`, mode 600 | Secrets never appear in the script text or in a remote command line; a `.env` edited on the VM is overwritten by every deploy. |
 | `docker compose config -q` before `up` | A broken file fails the job before any container stops. |
 | Remove images beyond the last 3 | Rollback stays possible ([rollback.md](rollback.md)). |
 | Actions pinned by SHA, `permissions: contents: read` | The supply-chain rule is owned by `infrastructure-security`; the template already meets it. |
@@ -37,10 +36,9 @@ The workflow never builds an image on the VM: it pulls the pins in `compose.yml`
 ## One reusable workflow
 
 **Level: SHOULD.** The stacks repository keeps **one** reusable deploy workflow (`workflow_call`)
-with the steps above, and each stack's workflow calls it with its stack name and instance list. Why:
-copied workflows drift, and a safety step fixed in one copy stays missing in the others. Until the
-reusable workflow exists, each stack's workflow starts from the template, never from another stack's
-workflow.
+with the steps above, each stack's workflow calling it with its stack name and instance list. Why: a
+safety step fixed in one copy stays missing in the others. Until it exists, each stack's workflow
+starts from the template.
 
 ## Triggers
 

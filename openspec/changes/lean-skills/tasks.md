@@ -89,14 +89,15 @@ list, shape, practices) and the modified `skill-crafting-method`.
 
 ## 5. Stage 5: devops and the rest (wave 5)
 
-- [ ] 5.1 Detail the stage; the per-skill loop for every remaining skill.
-- [ ] 5.2 `pending` empty and removed; measure total prose of `skills/` (D-1 measure) and record it
-  against 1 MB (DEC-9) in `evidence/`.
+- [x] 5.1 Detail the stage; the per-skill loop for every remaining skill. Detailed by D-19 and
+  D-21; decided as D-24.
+- [x] 5.2 `pending` empty and removed; measure total prose of `skills/` (D-1 measure) and record it
+  against 1 MB (DEC-9) in `evidence/`. 0.89 MiB (`evidence/size-after-stage-5.md`).
 
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9 · [x] 1.10
-- [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 3.1 · [x] 4.1 · [ ] 5.1 · [ ] 5.2
+- [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 3.1 · [x] 4.1 · [x] 5.1 · [x] 5.2
 
 ## Verification
 

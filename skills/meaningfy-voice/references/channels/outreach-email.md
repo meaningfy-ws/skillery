@@ -32,7 +32,7 @@ The sender's standard signature (name, title, phone, meeting link), as in their 
 > Dear Ms Weber,
 >
 > At the Luxembourg data summit you said your team re-keys the same supplier codes into three
-> systems. We fixed exactly that for a public registry last year by mapping the codes once to a
+> systems. We solved the same problem for a public registry last year by mapping the codes once to a
 > shared vocabulary.
 >
 > Would a 20-minute call next week be useful to see whether it fits your case?

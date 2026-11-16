@@ -1,7 +1,7 @@
 # Daily check-up
 
-The answer to "is everything ok?": the same nine checks, in the same order, every day. `ops-watch` runs
-it on a schedule; a person can ask for it in a session. It reads and reports; it changes nothing.
+The answer to "is everything ok?": the same nine checks, in the same order, every day. `ops-watch`
+runs it on a schedule; a person can ask for it in a session. It reads and reports; it changes nothing.
 
 ## The checks, in this order
 
@@ -18,23 +18,20 @@ it on a schedule; a person can ask for it in a session. It reads and reports; it
    report what changed since the previous report. The first report is the **baseline**: missing
    counts by rule, with every S7 (exposure) and S9 (secret) row named; each stack with S7 or S9 rows
    gets one `ops-parked` issue. Later reports list only the changes.
-9. **On Mondays only**: drift between Confluence and the repositories; infrastructure PRs merged in
-   the last 7 days without a comment headed `## infra-reviewer report`; stacks without a backup
-   decision. Drift: compare the repositories' inventory (stacks, VMs, backups) with the Confluence
-   inventory pages the repositories' `AGENTS.md` names; without Confluence access, say *not checked*.
+9. **On Mondays only**: drift between Confluence and the repositories (the repositories' inventory of
+   stacks, VMs and backups against the Confluence inventory pages their `AGENTS.md` names; without
+   Confluence access, *not checked*); infrastructure PRs merged in the last 7 days without a comment
+   headed `## infra-reviewer report`; stacks without a backup decision.
 
 **Sleeping stacks** are checked for conformance (their code still deploys on wake) and skipped for
-targets, backups and disks.
-
-**Missing allow-listed operations** (an `act` entry whose workflow the stacks repository lacks) are
-reported every day under problems, as one line.
+targets, backups and disks. **Missing allow-listed operations** (an `act` entry whose workflow the
+stacks repository lacks) are reported every day under problems, one line.
 
 **Monitoring unreadable.** If the Prometheus API cannot be read, checks 1 to 5 are reported as
-"monitoring unreadable", and that is itself the first finding. No unattended action is taken on state
-that cannot be verified ([unattended-operations.md](unattended-operations.md)).
+"monitoring unreadable", and that is itself the first finding; no unattended action is taken on state
+that cannot be verified.
 
-"Since the previous report" means the previous comment on the pinned `Daily check-up log` issue
-([incident-response.md](incident-response.md), *Records*).
+"Since the previous report" means the previous comment on the pinned `Daily check-up log` issue.
 
 ## The output
 
@@ -50,7 +47,6 @@ NOT CHECKED
 - <check>: <why> (monitoring unreadable, no Confluence access, sibling repository missing)
 ```
 
-- Problems first, each with the issue that tracks it. A finding that needs a human and has no alert
-  becomes an issue labelled `ops-parked`.
-- Then "checked and fine" as one line per area, so a quiet day still shows what was looked at.
-- A summary goes to `#operations` only when work was done.
+Problems come first, each with the issue that tracks it; a finding that needs a human and has no
+alert becomes an issue labelled `ops-parked`. "Checked and fine" is always posted, so a quiet day
+still shows what was looked at. A summary goes to `#operations` only when work was done.

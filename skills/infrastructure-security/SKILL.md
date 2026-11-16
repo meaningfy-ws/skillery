@@ -13,11 +13,11 @@ metadata:
 
 # Infrastructure Security
 
-Four areas keep Meaningfy's infrastructure safe at the size of a small company: who has access,
-where secrets live and how they are used, what the CI pipelines trust, and what the servers expose.
-Each rule has a level. **MUST** is the standard now. **SHOULD** is the next tier: the daily check-up
-reports it, but it does not block a change. A MUST the repositories do not meet yet is a target, not a
-claim; the gap is fixed by that repository's own change.
+An agent handed a credential tends to print it "to check it", and trusts the firewall files to say
+what is exposed. Here a credential is used without being seen, and exposure is read from the facts.
+Four areas: access, secrets, the CI supply chain, exposure. **MUST** is the standard now; **SHOULD**
+is the next tier, reported by the daily check-up, never blocking. A MUST a repository does not meet
+yet is a target, fixed by that repository's own change.
 
 ## Quick Start
 
@@ -41,24 +41,27 @@ password."
 3. Report the result (`count = 1234`), and nothing about the password.
 
 **Output:** the answer. The password never appeared on screen, in a file, in the shell history or in
-the chat. The safe and unsafe command shapes are in [secrets](references/secrets.md#using-a-secret-in-a-command).
+the chat.
 
 ## Workflow
 
-- Read [access](references/access.md) when someone joins or leaves, when an account or SSH key is
-  added or removed, for the access review every six months, or when a shared login is found.
-- Read [secrets](references/secrets.md) before any command that needs a credential, when a secret is
-  created, rotated or found outside Vaultwarden, and when a secret may have been exposed.
-- Read [supply-chain](references/supply-chain.md) when writing or reviewing a GitHub Actions
-  workflow, a Dependabot file or an image scan.
-- Read [exposure](references/exposure.md) when a port is published, a firewall rule changes, or
-  someone asks "is this port reachable?", and when reviewing defaults that could leave a service open.
-- Start from a template in [`assets/templates/`](assets/templates/), never from another stack's copy:
-  - [`secret-flow.md`](assets/templates/secret-flow.md): create, copy, verify and rotate a secret;
-  - [`offboarding-checklist.md`](assets/templates/offboarding-checklist.md): the same-day leaver run;
-  - [`bastion-users.yml`](assets/templates/bastion-users.yml): one person's SSH access, groups explicit.
+- Read `references/access.md` when someone joins or leaves, an account or SSH key is added or
+  removed, the six-monthly access review is due, or a shared login is found: it adds the access
+  rules, the joiner and leaver steps and the review.
+- Read `references/secrets.md` before any command that needs a credential, or when a secret is
+  created, rotated, found outside Vaultwarden or possibly exposed: it adds the secret flow, the safe
+  and unsafe command shapes, comparing a value without seeing it, and rotation.
+- Read `references/supply-chain.md` when writing or reviewing a GitHub Actions workflow, a Dependabot
+  file or an image scan: it adds the pinning, token, Environment and scan rules.
+- Read `references/exposure.md` when a port is published, a firewall rule changes, someone asks "is
+  this port reachable?", or defaults could leave a service open: it adds the port rule as it really
+  works, the exposure check and the fail-closed replacements.
+- Start from a template in [`assets/templates/`](assets/templates/) (secret flow, offboarding,
+  bastion users), never from another stack's copy.
 
-## Four-eyes and break-glass
+## Rules
+
+### Four-eyes and break-glass
 
 **MUST, practised (not enforced).** Every change to either infrastructure repository gets a second
 reading. GitHub's free plan cannot enforce reviews on private repositories, so the second reader is
@@ -68,10 +71,8 @@ the `infra-reviewer` subagent, and the rule holds by discipline.
   of these. At least once before merge.
 - **What it reads.** The plan, conformance to the devops skills, the blast radius and the undo path.
 - **Where the report goes.** The caller (the `devops-engineer` agent or the person) posts it on the PR
-  as a comment (or a review body) headed `## infra-reviewer report`. The review is a check, not an approval: the author
-  still decides.
-- **Why.** The author is the only approver; one person reading their own Terraform plan misses what
-  a second reading catches.
+  as a comment (or a review body) headed `## infra-reviewer report`. The review is a check, not an
+  approval: the author still decides.
 
 **Break-glass.** In an incident, waiting for a review can prolong the outage. Then the person on duty
 may merge and apply without one, under three conditions:
@@ -84,28 +85,17 @@ may merge and apply without one, under three conditions:
 The weekly part of the daily check-up (`service-reliability`) lists infrastructure PRs merged without
 the report.
 
-## Gotchas
+### Common mistakes
 
-- **Printing a secret "to check it".** `bw get password <item>` on its own, `echo`, `cat .env`,
-  `docker inspect`, `docker compose config` and `set -x` all put the value on screen and in the
-  transcript. That counts as an exposure and forces a rotation. Compare values without showing them
-  ([secrets](references/secrets.md#checking-a-value-without-seeing-it)).
-- **Insecure fallbacks.** A default password in a role, a `${VAR:-changeme}` in a compose file, a
-  user role that grants `sudo` when no group is given, an allow-list that defaults to the whole
-  internet. Each one leaves a service open the day a value is forgotten. Fail instead
-  ([exposure](references/exposure.md#no-insecure-fallbacks)).
-- **Docker bypasses the host firewall.** A port published as `"8080:8080"` listens on every
-  interface, and Docker's own rules let traffic in before the host firewall sees it. Name the bind
-  address ([exposure](references/exposure.md#the-port-rule-as-it-really-works)).
-- **Trusting the cloud firewall for private traffic.** The cloud firewall filters traffic from the
-  internet only. Traffic over the private network reaches every port that listens on the private
-  address.
-- **Shared accounts.** A shared admin login, a shared cloud console user or one root key on every
-  server makes offboarding impossible: you cannot remove one person without changing it for all.
-- **Credentials on wiki pages.** A page keeps its history, so deleting the value is not enough:
-  move it to Vaultwarden and rotate it.
-- **Asking for the value.** When `bw` is locked or an item is missing, ask the person to unlock it or
-  to name the item. Never ask them to paste the value.
+| Mistake | Why it fails | Do instead |
+|---|---|---|
+| Printing a secret "to check it" (`bw get` alone, `echo`, `cat .env`, `docker inspect`, `docker compose config`, `set -x`) | The value lands on screen and in the transcript: an exposure that forces a rotation | Compare values without showing them |
+| Insecure fallbacks (`${VAR:-changeme}`, a default `sudo`, a world-open allow-list) | The day a value is forgotten, the service is open | Fail instead |
+| `"8080:8080"` with no bind address | Docker's rules let traffic in before the host firewall sees it | Name the bind address |
+| Trusting the cloud firewall for private traffic | It filters internet traffic only | A private bind address for a Docker port; the host firewall for a host service |
+| A shared admin login, console user or root key | One person cannot be removed without changing it for all | Named accounts |
+| Deleting a credential from a wiki page | The page keeps its history | Move it to Vaultwarden and rotate |
+| Asking the person to paste a value | The value enters the chat | Ask them to unlock `bw` or name the item |
 
 ## Boundary & Related Skills
 

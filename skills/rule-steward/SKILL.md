@@ -13,16 +13,10 @@ metadata:
 
 # Rule Steward
 
-## Overview
-
-Rules rot. One stops matching how the owner works, another is never loaded, two start to disagree.
-Once a week this skill looks at how each rule was actually used, from the session traces in
-Langfuse, and puts a short list of proposals to the owner: retire this, revise that, confirm the
-other. It forgets nothing on its own: every change is the owner's decision, and a retired rule stays
-readable.
-
-The rule model and the script belong to `rulebook`; this skill holds the monitoring, the flags and
-the grooming procedure.
+Rules rot: one stops matching how the owner works, another is never loaded, two start to disagree.
+Once a week this skill reads how each rule was actually used, from the session traces in Langfuse,
+and proposes retire, revise or confirm. It forgets nothing on its own: every change is the owner's
+decision, and a retired rule stays readable. The rule model and the script are `rulebook`'s.
 
 ## Quick Start
 
@@ -55,7 +49,7 @@ the grooming procedure.
    `rules.py update R-0012 --scope activity:writing --scope audience:internal`, then
    `rules.py approve R-0050`. R-0031 stays.
 
-## The script
+## Workflow: the weekly procedure
 
 Every read and write goes through the rulebook script. The rulebook skill ships in the same bundle,
 so its folder is a sibling of this one on both CLIs: take the parent of this skill's base directory
@@ -63,18 +57,19 @@ and add `rulebook/scripts/rules.py`. Run it by that full path, written out with 
 unquoted, the way the rulebook skill says, so your permission settings match it. If no file
 is there, stop and say in one line: "The rulebook skill is not installed; the rules cannot be reviewed."
 
-## Weekly procedure
-
 1. **Usage.** Run `stats` (default window 30 days). Exit 3 has two causes, and its message names
    which. **Langfuse** not configured or not reachable: **stop**, tell the owner "rule monitoring is
    unavailable:" followed by the message, and never guess usage from memory or from the vault.
    **The vault** not found (`MEANINGFY_VAULT` unset outside the vault root): say so and ask the owner
    to start the review at the vault root or set the variable. The owner may ask to go on with
-   the lint, the golden examples and the candidates without usage.
+   the lint, the golden examples and the candidates without usage. Read `references/langfuse.md`
+   when `stats` cannot reach Langfuse or its counts look wrong: it adds the settings, how events are
+   found and counted, and the opencode gap.
 2. **Format check.** If `stats` warns that it found no `rules.py` events, the trace format may have
    changed; if it warns of no usage data, no session was traced in the window. Report either, and
    raise no usage flag this week. If it reports truncated outputs, say how
-   many: those loads counted without ids.
+   many: those loads counted without ids. If the owner also works in opencode, say that rules used
+   only there look unused.
 3. **Lint.** Run `lint --store vault`. Every error and warning is a flag.
 4. **Golden examples.** Run `check --golden`. A failing example is a flag.
 5. **Candidates.** List the `kind: rule` notes in `00 Inbox/proposed/` (`status: idea`).
@@ -85,9 +80,9 @@ is there, stop and say in one line: "The rulebook skill is not installed; the ru
 8. **Apply** in the same session, through the script: `retire R-NNNN --reason "..."`, `update`,
    `confirm`, `approve`, `add --supersedes`. Then run `lint` once more and report what changed.
 
-## Flags and proposals
+## Rules
 
-Fixed conventions over the window; `stats` computes the first five.
+**Flags and proposals.** Fixed conventions over the window; `stats` computes the first five.
 
 | Flag | Threshold | Proposal |
 |---|---|---|
@@ -100,10 +95,9 @@ Fixed conventions over the window; `stats` computes the first five.
 | Golden | a golden example fails `check` | fix the rule, or update the example |
 | Promote | the owner marks a rule as relevant to the company | draft a `kind: skill-change` note in `00 Inbox/proposed/` naming the skill it belongs in (needs the vault-assistant bundle: without it, give the owner the note's text to file by hand) |
 
-"Cited" is self-reported by the agent, so it is weaker than "loaded" and "overridden". Use it to
-revise, never as the only reason to retire.
+"Cited" is self-reported by the agent, so it is weaker than "loaded" and "overridden".
 
-## Proposals the owner can choose
+**Proposals the owner can choose.**
 
 - **Retire:** `retire` with the owner's reason. Never delete a rule note.
 - **Revise:** `update` the wording, scope, strength or check pattern; the id stays.
@@ -113,15 +107,13 @@ revise, never as the only reason to retire.
 - **Promote:** a `skill-change` note; a person opens the skillery change. Never edit a skill, and
   never set `memory: common` on a rule.
 
-## Gotchas
+**Common mistakes**
 
-- **Guessing usage when Langfuse is down.** A rule that looks unused may be used every day. Stop at
-  step 1.
-- **Retiring for silence alone in the first month.** A rule added less than 30 days ago is never
-  flagged as unused.
-- **Applying a proposal the owner did not answer.** Silence is "leave it".
-- **Sessions on opencode are not traced.** Rules used there look unused; see
-  [`references/langfuse.md`](references/langfuse.md).
+| Mistake | Why it fails | Do instead |
+|---|---|---|
+| Guessing usage when Langfuse is down | a rule that looks unused may be used every day | stop at step 1 |
+| Flagging a rule younger than 30 days as unused | it has not had a full window | never flag it as unused |
+| Applying a proposal the owner did not answer | silence is "leave it" | carry the row to next week |
 
 ## Boundary & Related Skills
 

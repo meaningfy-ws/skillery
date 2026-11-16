@@ -1,9 +1,8 @@
 # Change shapes
 
 Infrastructure changes are specified in the `openspec/` spine of `infrastructure-stacks`, including a
-change to `../cloud-infrastructure`, which is edited in the same change. How to write and gate an
-EPIC is owned by `epic-planning`; archiving by `spec-stewardship`. This file only says which shape an
-infrastructure change takes.
+change to `../cloud-infrastructure`, edited in the same change. Writing and gating an EPIC is
+`epic-planning`'s; archiving is `spec-stewardship`'s.
 
 ## Does it need an OpenSpec change?
 
@@ -22,8 +21,6 @@ When the stacks repo's own rules ask for a change, they win. When unsure, open o
 | **B. Operation or migration** | moving data, a cutover, a resize or rebuild with downtime, a retirement | everything in A, plus an append-only `execution-log.md` ([template](../assets/templates/execution-log.md)) and `scripts/` (cutover, rollback, copy check, counts) |
 | **C. Bug sweep** | several defects found together | `proposal.md`, one hypothesis file per bug with a "How to verify" section, a triage table, a small spec delta |
 
-Every shape follows the [safe-change protocol](safe-change-protocol.md), including the baseline
-acceptance run and the reviewer's rescoring before execution.
-
-The cutover and rollback scripts of shape B, and the acceptance features, follow `stack-operations`
-(cutover, acceptance tests).
+Every shape follows the safe-change protocol, with the baseline acceptance run and the reviewer's
+rescoring before execution. Shape B's cutover and rollback scripts and the acceptance features follow
+`stack-operations`.

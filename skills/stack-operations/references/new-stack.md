@@ -1,9 +1,8 @@
 # A new stack
 
-Start from the skill's templates, never by copying another stack. Another stack carries its own
-history: values of another service, missing safety steps, workarounds that no longer apply. When the
-template and an existing stack disagree, the template wins for new work, and the existing stack's
-difference is a conformance gap to report, not a pattern to copy.
+Start from the skill's templates, never by copying another stack (it carries another service's
+values, missing safety steps and stale workarounds). Where they disagree, the template wins for new
+work and the existing stack's difference is a conformance gap to report.
 
 ## Anatomy
 
@@ -41,5 +40,3 @@ infrastructure repository, so one name joins the VM, its configuration, the stac
 6. Write the acceptance feature ([acceptance-tests.md](acceptance-tests.md)) and run it after the
    first deploy.
 7. Register monitoring for the new VM or stack (`service-reliability`).
-
-A README section left as "TBD" is a finding, not a placeholder.

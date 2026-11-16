@@ -67,8 +67,8 @@ and pre-empts scope creep on a fixed-frame price.
   `estimation` (PERT-weighted effort + contingency); this skill wraps it with the **stop/extend
   mechanics** so the frame stays honest: if agreed outcomes cannot be reached for reasons outside
   our control, the SoW already names the option to reduce scope, take a short extension, or stop
-  cleanly with partial delivery — never silent overwork (the boundary safeguard of the engagement
-  model in `semantic-consulting-coach`).
+  cleanly with partial delivery — never silent overwork (the safeguards of the engagement
+  lifecycle in `semantic-consulting-coach`).
 - **Voice.** British English. The proposal is an executive artefact: answer-first, concise, every
   claim load-bearing; scope boundaries and trade-offs explicit, never hedged; the engagement's
   executive voice (`executive-communication`), not consultancy-bland. The SoW is its contractual

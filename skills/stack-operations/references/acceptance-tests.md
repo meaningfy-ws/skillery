@@ -1,11 +1,8 @@
 # Acceptance tests for a stack
 
-Each stack has acceptance features that run against the live stack, no mocks. They answer "does this
-stack still do its job" before and after a change. When to run the baseline before a change is part
-of the safe-change protocol (`infrastructure-operations`); this file says how the tests are shaped.
-How to write Gherkin itself is owned by `bdd-gherkin`.
-
-Start from [`assets/templates/acceptance.feature`](../assets/templates/acceptance.feature).
+Each stack has acceptance features that run against the live stack, no mocks: "does this stack still
+do its job". The baseline run is part of the safe-change protocol (`infrastructure-operations`);
+Gherkin itself is `bdd-gherkin`'s. Start from [`assets/templates/acceptance.feature`](../assets/templates/acceptance.feature).
 
 ## Shape
 
@@ -23,5 +20,4 @@ Start from [`assets/templates/acceptance.feature`](../assets/templates/acceptanc
 
 - Before a non-trivial change (failures are expected and recorded as the baseline) and after it.
 - After every deploy: the smoke scenarios.
-- In CI where the runner can reach the stack. A test suite that never runs in CI decays; wire it
-  in, even if only the smoke scenarios.
+- In CI where the runner can reach the stack, even if only the smoke scenarios.

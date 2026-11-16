@@ -20,6 +20,13 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   and its lead sources sit in `odoo-crm-conventions.md`; the skill keeps its pipeline rules under a
   recorded exception. The proposal and SoW templates and the PERT worksheet you copy now sit in
   `assets/`. Every check id is unchanged.
+- **Every skill is lean** (EPIC `lean-skills`, stage 5). The consulting, core, devops, rules and
+  vault skills take the lean shape; `writing-antipatterns` drops from 48 KB to 23 KB,
+  `semantic-consulting-coach` from 56 KB to 32 KB, `rulebook`, `service-reliability` and
+  `stack-operations` to 24 KB. The prose of all skills is now 0.89 MB, from 1.30 MB. No skill is
+  waiting for its rewrite any more: `skill-budget.yaml` lists only the five recorded exceptions,
+  and a new or changed skill must meet the standard. Templates you copy (the Decision Package,
+  the vault permission files) now sit in `assets/`; every check id is unchanged.
 
 ## [3.17.1] - 2026-11-16
 

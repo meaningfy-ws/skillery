@@ -1,29 +1,8 @@
-# Skills waiting for their lean rewrite (lean-skills stages 2-5), each with the checks it is
-# exempt from. A skill leaves this list in the pull request that rewrites it.
-# The standard: docs/development/creating-skills.md#the-lean-standard
-pending:
-  decision-package: [pointers]
-  executive-communication: [pointers]
-  explanatory-writing: [pointers]
-  guardrails: [pointers]
-  infrastructure-operations: [budget, pointers]
-  infrastructure-security: [pointers]
-  meaningfy-git-workflow: [pointers]
-  meaningfy-voice: [pointers]
-  rule-learner: [pointers]
-  rule-steward: [pointers]
-  rulebook: [budget, pointers]
-  semantic-consulting-coach: [budget, pointers]
-  service-reliability: [budget, pointers]
-  skillery-feedback: [pointers]
-  stack-operations: [budget, pointers]
-  vault-conventions: [pointers]
-  vault-daily: [pointers]
-  vault-planning: [pointers]
-  vault-setup: [pointers]
-  writing-antipatterns: [budget, pointers]
 # Skills over the 24 KB prose budget for a recorded reason (DEC-2). Exempt from the budget only.
+# Every other skill meets the lean standard: docs/development/creating-skills.md#the-lean-standard
 over_budget:
   epic-delivery: "the delivery method itself (brief templates, stage steps with triggers T1-T3, check ledger, library rule), cited by about 25 test-strategy checks; assessment-epic-delivery.md"
+  infrastructure-operations: "the seven-step change procedure, the reviewer's severity grading, the lifecycle traps and the records the three devops agents and the operations-practice spec rely on; assessment-infrastructure-operations.md"
   sales-pipeline-custody: "the five pipelines and their placement, the lead lifecycle, three star rubrics, the next-action and closing-date rules and the write tiers every sales skill cites; assessment-sales-pipeline-custody.md"
+  semantic-consulting-coach: "the commercial engagement model cited by about 20 docs, 6 sales skills and 4 specs, plus the coaching frame, posture rules, domain map and question bank; assessment-semantic-consulting-coach.md"
   test-strategy: "the matrix (nine family files, cited by 41 skills and fixed by tests/test_test_strategy.py) and the 144-row check inventory other EPICs edit; assessment-test-strategy.md"

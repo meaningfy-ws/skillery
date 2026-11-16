@@ -13,27 +13,38 @@ metadata:
 
 # Writing Antipatterns
 
-## Overview
+Writing advice is usually stated as universal, and it is not: "lead with a concrete example" is
+craft in an explainer and a defect in an API reference, where the example is mistaken for the rule.
+The unit that decides whether a move is craft or a defect is the **genre**. A competent writer's
+unreadable document almost always applies a move that is right in the genre they know to a genre
+that inverts it. This skill is the negative space: what not to do, per genre.
 
-Most writing advice is stated as if it were universal. Almost none of it is. "Lead with a concrete
-example" is excellent advice in an explainer and actively harmful in an API reference, where a
-worked example gets mistaken for the general rule. "Name the actor in every sentence" is right in a
-plan and wrong in a specification, where the subject is a system. The unit that decides whether a
-move is craft or a defect is not "good writing" — it is **genre**.
+## Quick Start
 
-This skill owns the catalogue of how writing fails, tagged by genre: a short list of defects that
-hold everywhere (no lookup needed), and a longer list whose correctness inverts depending on which
-of eight genres the prose belongs to. It does not own the positive craft each genre practises —
-that stays with the skill that owns the genre (`technical-writing`, `explanatory-writing`,
-`executive-communication`, `architecture`, `semantic-consulting-coach`). This skill is the
-negative space: what not to do, and why the same move is sometimes exactly what to do one genre
-over.
+Draft ADR: "**We adopt PostgreSQL.** Studies show relational stores scale better. The decision
+should probably be revisited."
 
-## The genre map
+1. Genre: a Decision record (reader: a future engineer reconstructing why).
+2. Unguarded: "Studies show" is U5, a weasel word; name the source and the figure or drop it.
+3. Guarded, Decision record column: opening with the outcome is A9, **harmful**; no rejected option
+   fails A12, **required** here; "probably" is A6, **harmful** in a record.
+4. Rewrite: context, the options considered (PostgreSQL, MongoDB) with why MongoDB lost, the
+   outcome, the consequences, all stated declaratively.
 
-Diátaxis gives four genres, all documentation. It has nothing to say about a board paper, because a
-board paper documents nothing — its reader is choosing, not learning, doing, or looking up. The map
-below is Diátaxis plus the four genres the rest of the Meaningfy skill suite implies.
+## Workflow
+
+1. Name the single genre and its reader's job (genre map below). No one-word answer means the
+   artefact may already be fused (U1).
+2. Apply U1–U8 without further judgement: they hold in every genre.
+3. Read `references/inversion-matrix.md` when a move's verdict depends on the genre: it holds the
+   compact matrix (one column per genre) and entries A1–A14, each with where the move fails, where
+   it is required, the guard question, the cue and the fix. Use the genre's column; open an entry
+   only for a move you flag.
+4. When a rule from another genre seems to apply, ask the entry's guard question before acting on it.
+
+## Rules
+
+**The genre map.** Diátaxis gives the first four; the other four are those the Meaningfy skills imply.
 
 | Genre | Reader's job | Owning skill | Register signature |
 |-------|--------------|---------------|--------------------|
@@ -46,130 +57,57 @@ below is Diátaxis plus the four genres the rest of the Meaningfy skill suite im
 | Contract / specification | be held to it | `proposal-writing` (SoW), `architecture` (OpenAPI/LinkML/use cases) | enumerated, precise, no persuasion, no metaphor |
 | Coaching dialogue | think before committing | `semantic-consulting-coach` | questions over statements, no structure until asked |
 
-Two consequences worth acting on:
+- **Decision is two genres that invert each other.** Persuasive decision writing leads with the
+  answer and suppresses rejected options; a decision record gives context, options, outcome,
+  consequences. An ADR that opens with the outcome has lost its only reason to exist.
+- **Coaching inverts the executive method.** In `semantic-consulting-coach`'s Exploration mode a
+  governing thought, pyramid or canvas before alignment is a defection, not craft.
+- **Domain is not genre.** A sales pitch is Decision; a BI memo is Explanation or Decision by its
+  job. Check the eight before adding a ninth. The one known gap is the team's **internal working
+  plan**: no skill owns it, it defaults to Reference and reads as inventory (a future
+  `plan-writing` skill is the fix).
+- **Prose, not model structure.** Free strings where a controlled vocabulary belongs, god-classes,
+  unlabelled duplication in a C4 diagram belong to `modelling-conventions` and `architecture`.
+- **A new antipattern** is one entry in the inversion matrix, with a status for all eight genres;
+  never prose copied per genre.
 
-- **Decision splits into two genres that invert each other.** Persuasive decision writing leads
-  with the answer and suppresses rejected options (the reader has ten seconds). A decision record
-  does the opposite: context, considered options, outcome, consequences. An ADR that opens with the
-  outcome has destroyed its only reason to exist.
-- **Coaching inverts the whole executive method.** In `semantic-consulting-coach`'s Exploration
-  mode, producing a governing thought, a pyramid, or a canvas before alignment is confirmed is
-  explicitly a *defection*, not craft — the strongest technique in the suite becomes an antipattern
-  one skill away.
+**Unguarded defects (U1–U8): every genre.**
 
-**Domain is not genre.** A sales pitch, a PM status update, or a BI insight memo is a domain
-flavour of one of the eight genres above, not a ninth genre — a sales pitch is Decision; a BI memo
-is Explanation or Decision depending on its job. The one genuine gap is the **internal working
-plan** (no current skill owns a team's own working plan; it defaults to Reference by default and
-reads as inventory) — noted here, not solved here; a future `plan-writing` skill is the fix.
-Model- and diagram-structure antipatterns (free strings where a controlled vocabulary belongs,
-god-classes, unlabelled duplication in a C4 diagram) are a **different axis** — prose vs model
-structure — owned by `modelling-conventions` and
-`architecture` respectively, cited here, never duplicated.
+| Id | Defect | Cue | Fix |
+|---|---|---|---|
+| U1 | Genre fusion: two genres in one artefact, one register | name the single reader and job; "and also" means fused | split, then link. Paired artefacts (proposal + SoW, a White use case and its Blue realisation) are separate documents with single-sourced shared content and a named reader each: pairing is not fusion |
+| U2 | The bland sentence | swap in a competitor's name; if nothing breaks, cut it | Reference may be dry (precision without ornament), never bland (ornament without content) |
+| U3 | Non-parallel enumeration | first word of every item: same part of speech? | one grammatical form per list |
+| U4 | Prose compensating for missing structure (a comma-spliced sentence doing three table rows' work) | meaning carried by a label or sentence the artefact has no element for | create the element: one relationship per modality, one row per decision, one sentence per claim |
+| U5 | Weasel words: "studies show", "significant", a claim laundered through nobody | for "X shows Y", can you name X? | name the source and the figure, or drop the claim. Distinct from guarded Hedging (A6), which qualifies the author's own claim |
+| U6 | Terminology drift (feature/tool/functionality; capitalisation) | near-synonyms for one referent | one term, defined once (when to define it is A5) |
+| U7 | Claim exceeds the mechanism: an outcome, intensifier ("exactly"), vague evaluative word ("defensible", "seamless") or category the method cannot deliver or an outsider cannot check ("our mapping shows where meaning breaks down"; "a seamless AI assistant") | can an outsider check it, and does the method deliver it? | name the mechanism or checkable property ("shows where meaning conflicts or is poorly specified"; "answers from your own documents and cites them") |
+| U8 | Impossible predicate ("the data disagrees"; "the assistant understands your business") | could this subject literally do this verb? | the literal verb or the real actor ("the two datasets give conflicting values"; "retrieves answers from your documents") |
 
-## Unguarded defects — apply in every genre, no lookup needed
+## Before you hand over
 
-**U1. Genre fusion.** Two or more genres bound into one artefact, one register.
-*Cue:* name the single reader and the single job; either answer needing "and also" means fused.
-*Fix:* split, then link. *Licensed exception:* paired artefacts (proposal + SoW, a White use case
-and its Blue realisation) — separate documents, single-sourced shared content, each with a named
-reader. Pairing is not fusion.
+Quick diagnostic for prose you checked, and for a writing review you deliver:
 
-**U2. The bland sentence.** Stays true if you swap in a competitor's name.
-*Cue:* substitute the org name; if nothing breaks, cut it. Reference is allowed to be dry
-(precision without ornament) — that is not the same as bland (ornament without content).
-
-**U3. Non-parallel enumeration.** List items switch grammatical form (a noun, a nominalisation, a
-participle, chained by semicolons).
-*Cue:* read the first word of every list item — same part of speech, or not.
-
-**U4. Prose compensating for missing structure.** Meaning smuggled into a label or sentence because
-the artefact lacks an element to carry it — a comma-spliced sentence doing the work of three table
-rows, a paragraph doing the work of a decision register.
-*Fix:* create the missing element — one relationship per modality, one row per decision, one
-sentence per claim.
-
-**U5. Weasel words / unattributed authority.** "Studies show," "some experts believe," vague
-quantifiers ("significant," "many") — a claim asserted while dodging accountability for it by
-attributing it to nobody in particular. Distinct from the guarded **Hedging** entry: hedging
-qualifies the *author's own* claim; a weasel word launders a claim through an unnamed source.
-*Cue:* for every claim shaped "X shows/suggests/believes Y," can you name X? If not, it's a weasel
-word.
-*Fix:* name the source and the figure, or drop the claim — the same discipline as
-`company-voice.md`'s "grounded; name the figure and its source."
-
-**U6. Terminology drift.** The same referent named three different ways across one document
-(feature/tool/functionality; capitalisation drift).
-*Cue:* grep for near-synonyms pointing at the same referent; if a reader must infer they're the
-same thing, it's drift.
-*Fix:* one term, defined once — see the guarded **Deferred definitions** entry, which is about
-*when* a term is defined; this is about whether it *stays* the same term.
-
-**U7. Claim exceeds the mechanism.** A claim promises an outcome, an intensifier ("exactly"), a
-vague evaluative word ("defensible", "seamless") or a category the method cannot guarantee or an
-outsider cannot check. Semantic consulting: "our mapping shows where meaning breaks down". SME/AI:
-"a seamless AI assistant for your team".
-*Cue:* can an outsider check the claim, and does the method actually deliver it? If not, it exceeds
-the mechanism.
-*Fix:* name the mechanism or the checkable property — "shows where meaning conflicts or is poorly
-specified"; "an assistant that answers from your own documents and cites them".
-
-**U8. Impossible predicate.** A verb that is not physically or logically possible for its subject.
-Semantic consulting: "the data disagrees". SME/AI: "the assistant understands your business".
-*Cue:* could this subject literally do this verb? An abstract subject with a human or physical verb
-fails.
-*Fix:* use the literal verb, or name the real actor — "the two datasets give conflicting values";
-"the assistant retrieves answers from your documents".
-
-## Guarded (genre-conditional) antipatterns
-
-Fourteen entries, each stating where a move fails, where the same move is required, the guard
-question that tells them apart, and the fix — full text in
-[`references/inversion-matrix.md`](references/inversion-matrix.md). Load only the genre you need:
-
-| Genre | Reference file |
-|-------|-----------------|
-| Tutorial | [`references/tutorial.md`](references/tutorial.md) |
-| How-to | [`references/how-to.md`](references/how-to.md) |
-| Reference | [`references/reference.md`](references/reference.md) |
-| Explanation | [`references/explanation.md`](references/explanation.md) |
-| Decision (persuasive) | [`references/decision.md`](references/decision.md) |
-| Decision record | [`references/decision-record.md`](references/decision-record.md) |
-| Contract / specification | [`references/contract.md`](references/contract.md) |
-| Coaching dialogue | [`references/coaching.md`](references/coaching.md) |
-
-Each per-genre file is a **pointer table only** (move, status, link to the canonical entry) — it
-does not restate an entry's smell/fix/cue text. That restraint is deliberate: this catalogue would
-otherwise commit its own **Duplication & cardinality** antipattern (`inversion-matrix.md`, entry
-A1).
-
-For the teaching version of this frame — why the rules invert, worked examples, and a
-self-application check against the catalogue's own output — see
-[`references/explainer.md`](references/explainer.md).
-
-## Self-check
-
-- Have you named the single genre this prose belongs to, before applying any rule from this
-  catalogue?
-- Does the fix you're about to apply come from the guarded entry's *guard question*, or are you
-  pattern-matching from a different genre you're more fluent in?
-- If you're adding a new antipattern: is it one row in `inversion-matrix.md`, with pointer-table
-  rows added to the affected per-genre files — not prose copied into each?
-- If you're tempted to add a new genre: does it already map onto one of the eight (see "Domain is
-  not genre" above)?
+| Question | If not | Action |
+|---|---|---|
+| Is the single genre named before any rule was applied? | rules from the wrong genre | name it (Workflow 1) |
+| Does each fix come from the guard question, not from a genre you are more fluent in? | a correct move flagged as a defect | re-read the entry's guard |
+| Does the review rewrite at least one page beside the original? | diagnosis without a specimen (A3) | add the worked specimen |
+| Are the numbers counted ("25 tables"), not estimated? | an estimate presented as a measurement | count, or mark it as an estimate |
+| Does it name the cause (accretion, unseparated readers, author is not the decider), not only the symptom? | the next version has the same shape | name the cause |
+| Does each recommendation carry a cost and a triage ("two hours before Friday")? | nothing gets acted on | add cost and order |
+| Is there an observable acceptance test ("a new reader states the next decision in five minutes")? | "it reads better" | state one |
+| Was any reader asked where they stopped reading? | the cheapest signal is missing | ask one, or say it was not done |
+| With several variants for different audiences, is exactly one marked the source of record? | the fan-out is A1 | mark one |
 
 ## Boundary & Related Skills
 
-**Owns:** the genre map (the cross-cutting synthesis no other skill states), the unguarded defect
-list, and the canonical inversion matrix of genre-conditional antipatterns.
+**Owns:** the genre map, the unguarded defects U1–U8 and the inversion matrix A1–A14.
 
-**Does NOT own:** the voice profile (`meaningfy-voice`),
-the Diátaxis quadrant definitions or the craft moves that realise them
-(`explanatory-writing`), doc placement/form
-(`technical-writing`), the persuasive structure method
-(`executive-communication`), or model/diagram-structure
-antipatterns (`modelling-conventions`,
-`architecture`).
+**Does NOT own:** the voice profile (`meaningfy-voice`), the Diátaxis quadrant definitions or the
+craft moves that realise them (`explanatory-writing`), doc placement and form (`technical-writing`),
+the persuasive structure method and the decision card (`executive-communication`), or
+model/diagram-structure antipatterns (`modelling-conventions`, `architecture`).
 
 **Related:** `meaningfy-voice`, `technical-writing`, `explanatory-writing`, `executive-communication`,
 `proposal-writing`, `decision-package`, `architecture`, `semantic-consulting-coach`.
