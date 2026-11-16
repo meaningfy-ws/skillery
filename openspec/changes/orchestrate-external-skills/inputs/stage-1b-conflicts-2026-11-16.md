@@ -44,5 +44,9 @@ In the orchestrator's own words (DEC-18), for the wondel rows:
    (AsciiDoc/Antora or GitHub-flavoured Markdown); the CHANGELOG comes from Conventional Commits
    through release-please (`meaningfy-release`).
 
+One more conflict, found in review (design D-27): `scorecard-marketing` sends a visitor's email and
+partial answers before they submit or consent. Asked: widen override 5, drop the skill, or accept;
+recommended: widen override 5. **Answer: accept**, no override.
+
 Group G has no override: `good-strategy-bad-strategy`, `high-output-management` and
 `made-to-stick` may shape executive writing and strategy reasoning as guidance.

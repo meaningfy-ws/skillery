@@ -17,8 +17,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **The wondel skills are registered per bundle** (EPIC `orchestrate-external-skills`, stage 1b).
   The setup guides now list the wondel skills for `meaningfy-sales`, `meaningfy-consulting` and
   `meaningfy-core`, pinned to the commit Meaningfy read in full, with telemetry off. Until
-  `skill-orchestration` ships, they inform reasoning only, and Meaningfy's own skills win on a
-  conflict.
+  `skill-orchestration` ships, they inform reasoning only; on a conflict the Meaningfy skill that
+  owns the subject wins, and two strategy and management skills may also guide executive writing.
 
 ## [3.19.0] - 2026-11-16
 
