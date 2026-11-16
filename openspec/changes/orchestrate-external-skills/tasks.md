@@ -54,19 +54,19 @@
 
 ## 2. Stage 1b: the wondel skills (wave 2, after 1a)
 
-- [ ] 1.10 Dispatch readers B to G (D-5) in parallel on the 16 skills at
+- [x] 1.10 Dispatch readers B to G (D-5) in parallel on the 16 skills at
   `c5265583b1a9740f06831e1d3e89b35bba3eb430`, top-level folders only. Done when
   `evidence/reading/` holds 16 more records.
-- [ ] 1.11 Check the 16 records as in 1.5; a second reader re-reads `negotiation`,
+- [x] 1.11 Check the 16 records as in 1.5; a second reader re-reads `negotiation`,
   `hundred-million-offers` and `monetizing-innovation` and adds any missed conflict. Done when every
   record passes and the additions are in.
-- [ ] 1.12 Ask the owner, in one question round, every conflict marked "not named", grouped by
+- [x] 1.12 Ask the owner, in one question round, every conflict marked "not named", grouped by
   kind, as in 1.6; record `inputs/stage-1b-conflicts-<date>.md`. Done when every such conflict has
   an answer.
-- [ ] 1.13 Add the entries `wondel-ai-skills/meaningfy-sales`, `wondel-ai-skills/meaningfy-consulting`
+- [x] 1.13 Add the entries `wondel-ai-skills/meaningfy-sales`, `wondel-ai-skills/meaningfy-consulting`
   and `wondel-ai-skills/meaningfy-core` (D-2, D-3), for the skills read and not dropped; run
   `make skill-inventory`.
-- [ ] 1.14 `make lint`, `make validate` (with `make mods`); CHANGELOG line; open the pull
+- [x] 1.14 `make lint`, `make validate` (with `make mods`); CHANGELOG line; open the pull
   request, merge on green CI, tick 1.10 to 1.14.
 
 ## 3. Stage 2: the orchestrator skill (wave 3, after `lean-skills` stage 1 and `generic-task-test-profiles`)
@@ -139,7 +139,7 @@
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9
-- [ ] 1.10 · [ ] 1.11 · [ ] 1.12 · [ ] 1.13 · [ ] 1.14
+- [x] 1.10 · [x] 1.11 · [x] 1.12 · [x] 1.13 · [x] 1.14
 - [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 2.6 · [ ] 2.7
 - [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5
 - [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5
