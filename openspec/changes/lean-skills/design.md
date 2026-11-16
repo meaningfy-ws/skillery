@@ -508,6 +508,19 @@ acceptable outcome" (`semantic-consulting-coach`), and a wrong firewall row
 `rulebook` sits 3 bytes under budget, `service-reliability` 36; the five exceptions are the
 owner's to revisit.
 
+**D-25 Reconciliation with the EPIC (2026-11-16).** The EPIC's text gains an "As delivered"
+section naming each departure and the decision behind it (DEC-13 waived by D-18, the checkpoint by
+D-17, five exceptions, the re-measured baseline, 52 skills); its capability list names the three
+modified specs. One gap was found and closed: practice 5 (D-8), which the lint does not check, had
+been applied in only four skills. A sweep of all 52 bodies added the fallback sentence where a body
+tells the agent to use an external skill or plugin: `epic-planning` (`superpowers`),
+`meaningfy-code-review` (`code-review`), `meaningfy-git-workflow` (`commit-commands`),
+`vault-conventions` (the obsidian plugin, covering the vault bundle). A mention in Boundary or
+Related is not a use and gets none. `creating-skills.md` no longer describes `pending` as live.
+Under the floor: `project-setup`'s hand-off step lists Claude-only install commands where
+practice 5 asks for the register; it already has the fallback, and with one byte of room the
+change is left to its next edit.
+
 ### Anti-patterns
 
 | Don't | Do instead | Why |

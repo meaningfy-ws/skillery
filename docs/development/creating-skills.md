@@ -84,8 +84,9 @@ counted. Less is the default. `make validate` fails a skill over budget (`prose_
 [`skill-budget.yaml`](../../skill-budget.yaml), at the root, lists two kinds of entry:
 
 - `pending`: a skill that existed when this standard came in and waits for its lean rewrite, with
-  the checks it is exempt from (`budget`, `pointers`). It leaves the list in the pull request that
-  rewrites it. A new skill is never listed: it meets the standard on arrival.
+  the checks it is exempt from (`budget`, `pointers`). Every skill was rewritten by EPIC
+  `lean-skills` (2026-11-16) and the key is gone; a new or changed skill is never listed: it meets
+  the standard on arrival.
 - `over_budget`: a skill over 24 KB for a reason recorded after its assessment. Exempt from the
   budget only.
 
