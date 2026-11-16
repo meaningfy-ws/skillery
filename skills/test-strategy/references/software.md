@@ -6,7 +6,7 @@ Checks on code, tests, projects and their delivery.
 |---|---|---|---|---|---|---|
 | VAL | CHK-26 Acceptance demo *(provisional)* | `epic-delivery` | the use case, run live | after the last build stage | the developer | exists |
 | VER | CHK-1 Test-first loop | `superpowers:test-driven-development` (external) | the test runner | each task | the verifier | exists |
-| VER | CHK-2 Testing checklist (rules 1-16) | `cosmic-python` | pytest | writing and reviewing tests | the verifier | exists |
+| VER | CHK-2 Testing checklist (rules 1-21) | `cosmic-python` | pytest | writing and reviewing tests; the developer's lanes (`make test-fast`, `make test-changed`) | the verifier | exists |
 | VER | CHK-3 Test tiers, markers and the marker-injection hook | `project-setup` | `--strict-markers`, marker hook | each test | the verifier | exists |
 | VER | CHK-6 One-minute code structure check | `cosmic-python` | reading | per function or class | the verifier | exists |
 | VER | CHK-7 Code review against standards | `meaningfy-code-review` | reading | before PR approval | the verifier | exists |
@@ -32,12 +32,13 @@ Checks on code, tests, projects and their delivery.
 | VER | CHK-31 Modernisation gap assessment | `project-setup` | `scaffold.sh --dry-run`, rubric | modernising a repository | the verifier | exists |
 | VER | static rules for every catalogue entry (Ruff, Semgrep, "Checked by" column) | `cosmic-python` | none yet | none yet | the verifier | gap → B |
 | VER | the import-contract check on every PR | `project-setup` | none yet | none yet | the verifier | gap → B |
-| ADQ | CHK-2 Testing checklist (rules 1-16) | `cosmic-python` | pytest | writing and reviewing tests | the checker | exists |
+| ADQ | CHK-2 Testing checklist (rules 1-21) | `cosmic-python` | pytest | writing and reviewing tests; the developer's lanes (`make test-fast`, `make test-changed`) | the checker | exists |
 | ADQ | CHK-4 Coverage gate | `project-setup` | `fail_under = 80` | CI | the checker | exists |
 | ADQ | CHK-11 Gherkin quality checks and use-case traceability | `bdd-gherkin` | checklist | after writing features | the checker | exists |
 | ADQ | CHK-13 Review lens L2, spec correctness and tests, testing contract | `meaningfy-code-review` | reviewer subagent | per stage, on the PR | the checker | exists |
 | ADQ | CHK-18 Checker brief (four-eyes pass) | `epic-delivery` | fresh checker subagent | once per stage, after fixes | the checker | exists |
 | ADQ | CHK-31 Modernisation gap assessment | `project-setup` | 13-dimension rubric | modernising a repository | the checker | exists |
+| ADQ | CHK-145 Test suite audit | `test-suite-care` | `phase_times.py`, `overlap.py` | on request | the developer | exists |
 | ADQ | whether the tests bite (mutation testing) | `cosmic-python` | none yet | none yet | the checker | gap → B |
 | ROB | CHK-5 Property-based tests (Hypothesis) | `cosmic-python` | Hypothesis | writing tests | the adversary | exists |
 | ROB | CHK-12 Review lens L1, security and safety | `meaningfy-code-review` | reviewer subagent | per stage, on the PR | the developer, on the findings | exists |

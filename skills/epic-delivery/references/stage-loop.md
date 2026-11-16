@@ -54,6 +54,15 @@ review set of each appetite is in
      are rejected "under the floor", one line each under `## Delivery decisions`, and a tester
      test that failed first for one is deleted. A re-label to Critical needs a reason; the label,
      not the lens, decides, and the checker judges it.
+   - **The sort of the tester's tests**, in the one fix pass, before the gate run that checks it
+     (with no finding above the floor, the sort is the whole pass). Its builder keeps a test that
+     failed first for an accepted finding, a test that alone covers a scenario or an error-matrix
+     row, and one property per invariant the tester brief names; it deletes every other one (a test
+     under the floor goes as the floor bullet says), moves the kept into files named by feature
+     (testing checklist rule 21), and returns the kept list, the deleted list, each with its
+     reason, and the refactoring opportunities it saw. The lead confirms the lists; the builder
+     restores a deletion the lead does not confirm, in the same pass. The PR lists each deleted
+     test with its reason, and the opportunities.
    - Each accepted finding is a decision in `design.md` before any code (the Rule of Divergence),
      or an upstream issue when it is our library's. The PR body gets the result lines again.
    - **One fix pass:** fixers in one batch, security first, then structure; after a red run only
@@ -122,7 +131,7 @@ a row.
 | Diff reading; change check | Each task, before its commit | Lead | — |
 | Full gates | Once per stage before the PR (skipped only if the last report ran them on the PR's head commit); once after the fix pass | Lead | T3 is the second |
 | Review set of the appetite (incl. L2 doc agreement, `meaningfy-code-review`) | Once per stage, on the PR | Reviewers | — |
-| Adversarial tester | Once per stage, on its condition (Prepare) | Tester | — |
+| Adversarial tester | Once per stage, on its condition (Prepare) | Tester | Distilled in step 4 |
 | Floor and fix pass; failing tests | Once per stage; failing tests after a red run, until green | Lead (floor), fixer | — |
 | Checker | Once per stage, after the fix pass | Checker | — (unmet → developer) |
 | Evidence before a claim (`verification-before-completion`) | Before the lead reports a stage done | Lead | — |

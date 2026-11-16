@@ -281,3 +281,12 @@ probes:
   - probe: "which of my rules were never loaded in Langfuse this week"
     expect: rule-steward
     near_miss_of: session-retrospective
+  # test-suite-care D-16 (task 1.5): the skill and its two neighbours.
+  - probe: "our test suite takes too long, find what to cut"
+    expect: test-suite-care
+  - probe: "write tests for this function"
+    expect: cosmic-python
+    near_miss_of: test-suite-care
+  - probe: "which checks does this activity need"
+    expect: test-strategy
+    near_miss_of: test-suite-care

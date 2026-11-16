@@ -1,5 +1,5 @@
 {
-  "version": "3.18.0",
+  "version": "3.19.0",
   "bundles": [
     {
       "name": "meaningfy-core",
@@ -71,6 +71,7 @@
         "bdd-gherkin",
         "meaningfy-code-review",
         "cosmic-python",
+        "test-suite-care",
         "project-setup",
         "ci-cd-delivery",
         "meaningfy-release"

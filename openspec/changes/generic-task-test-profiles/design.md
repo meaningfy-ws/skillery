@@ -688,7 +688,7 @@ gate runs on any re-gate
 ([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 2 and 7). **Revised again after the gate, not gated again (2026-11-15):** D-28 to D-32,
 under § Delivery decisions, record the owner's settlement of
-[`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
+[`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
 (S-5, S-9, S-10 and the order); no clarity-gate run followed (S-10). **Revised 2026-11-16, after
 the gate, not gated again (S-10):** D-34 to D-37 record the reading of this PLAN against the lean
 skills of EPIC `lean-skills`.
@@ -861,7 +861,7 @@ decisions 2 and 7). The clarity gate was not run again on this entry.
     two lists; they cite the tool table of `guardrails`. The agent file still lists its tools.
 
 Revised 2026-11-15 by the owner's settlement of the open EPICs
-([`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+([`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
 S-5, S-9, S-10 and the order). Names there: R1 `lean-skills`, R2 `orchestrate-external-skills`, R3
 `delivery-process-and-tools`. Not gated again (S-10). These entries override the ones above where
 they differ.
@@ -954,7 +954,7 @@ they differ.
 - **D-33 The baseline tallies O-1 to O-4 and their cost sign-off are dropped (2026-11-15; corrects
   D-11, RISK-10 and tasks 1.3 and 3.2).** Agreed by the owner on 2026-11-15, from the candidate
   drops in
-  [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md):
+  [`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md):
   the tallies show that the steps happened, not that they helped (RISK-10). Gone with them: the
   calibration call, the approved amount, the stop when it is spent, the reruns of a *with* run and
   the two error-matrix rows that guarded them. Kept: the eight runs and the kept pairs, because

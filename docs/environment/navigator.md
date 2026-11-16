@@ -251,8 +251,10 @@ pull request's last commit, and the next stage starts in a fresh session from it
 
 It also flags a subagent that only did a lookup, a subagent report longer than the limit, more
 reviewers in one turn than the appetite's review set, a missing second check before a push, PR or
-archive, a worker (implementer or code-reviewer) dispatched in a session with an open change and no
-mark line (`epic-delivery`; once per session, never blocking), and a skill loaded and left unused
+archive, a worker (implementer or code-reviewer) dispatched in a session that follows an open change
+(the branch names it) and has shown no mark line (`epic-delivery`; once per session, at the end of
+the turn, never blocking; on `develop` no change is followed, so it stays silent), and a skill
+loaded and left unused
 (if it should not have fired, run `skillery-feedback`).
 The unused check judges each agent apart: a skill preloaded into a subagent counts as that
 subagent's, and is used when that subagent acts after loading it. It shows these; it never decides

@@ -856,7 +856,7 @@ decisions 3, 4 and 7).
 **Revised after the gate, not gated again (2026-11-15).** D-30 to D-34, under § Delivery
 decisions, were added when the open EPICs were read against the three refactoring EPICs and the
 owner settled the result
-([`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+([`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
 S-1, S-6, S-9, S-10 and its order). No clarity-gate run followed (S-10). The texts they supersede
 above are corrected in place and name the decision. *Extended the same day:* D-35 drops the weekly
 mutation runs (tasks 3.5 and 3.6) and withdraws D-25, and settles that the tool entries of
@@ -1043,8 +1043,8 @@ decisions 3, 4 and 7). The clarity gate was not run again on these entries.
 
 Revised 2026-11-15 by owner decision, after the gate. The open EPICs were read against the three
 refactoring EPICs: R1 `lean-skills`, R2 `orchestrate-external-skills` and R3
-[`delivery-process-and-tools`](../delivery-process-and-tools/proposal.md). What the owner settled
-is in [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
+[`delivery-process-and-tools`](../archive/2026-11-16-delivery-process-and-tools/proposal.md). What the owner settled
+is in [`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
 (S-1 to S-10 and the order). The clarity gate was not run again on these entries (S-10).
 
 - **D-30 The tester's condition and the result line are delivered by R3 (S-6; corrects D-9
@@ -1164,7 +1164,7 @@ is in [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reasse
     still waits for this EPIC's `quality/` and tester.
 - **D-35 The weekly mutation runs are dropped; the tool entries stay here (agreed by the owner
   on 2026-11-15, from "Candidate drops" and "Questions the revisions left open" in
-  [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md);
+  [`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md);
   drops D-10, tasks 3.5 and 3.6, TC-08 and D-25; corrects D-8, D-13, D-15, D-17, D-20, RISK-4,
   proposal DEC-10 and DEC-15).** The reason: nobody is named to read the results (RISK-4 was
   accepted for that reason) and the lock conflict of mutmut with `linkml` was unresolved.
