@@ -22,8 +22,10 @@ library. Agents verify; people validate.
 
 A SMALL EPIC, "add a trigger probe and sharpen one rule", gated and ready.
 
-1. **Prepare.** No library change is pending. The sharpened rule changes a use case but adds no
-   scenario, so there is nothing to sign off.
+1. **Prepare.** The lead's first reply, before any read, brief or question, holds on its own line
+   `mark: change=add-probe phase=deliver stage=1`, in the reply, never in a file; it repeats the
+   line in the last message of each turn that briefs a builder. No library change is pending. The
+   sharpened rule changes a use case but adds no scenario, so there is nothing to sign off.
 2. **Build.** Three tasks. Per task the lead runs impact, briefs one builder, reads the diff and the
    report (the *implementing* fields of `guardrails`), runs the change check and commits. All three
    reports agree with their diffs, so the lead re-runs nothing.
@@ -60,7 +62,7 @@ fresh from the note, and after the archive the next task does too (`guardrails`,
 ### The loop of a stage
 
 A stage is a group of tasks that ends in one PR; the PLAN cuts the tasks into stages. Its six
-steps are those of the Quick Start: **Prepare** (the mark line first), **Build** (one builder per task, a gate re-run
+steps are those of the Quick Start: **Prepare** (the mark line in the stage's first reply, never in a file), **Build** (one builder per task, a gate re-run
 only on a trigger), **Challenge** (the full gates once, then the review set), **Decide and fix**
 (only Critical findings, one fix pass), **Check** (one fresh checker or the full gates and CI; an
 unmet item goes to the developer, no second fix pass), **Merge** (the hand-over note last, one
