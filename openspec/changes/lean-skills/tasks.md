@@ -84,7 +84,8 @@ list, shape, practices) and the modified `skill-crafting-method`.
 
 ## 4. Stage 4: sales (wave 5)
 
-- [ ] 4.1 Detail the stage; the per-skill loop for each skill of `meaningfy-sales`.
+- [x] 4.1 Detail the stage; the per-skill loop for each skill of `meaningfy-sales`. Detailed by
+  D-19 and D-21; decided as D-23.
 
 ## 5. Stage 5: devops and the rest (wave 5)
 
@@ -95,7 +96,7 @@ list, shape, practices) and the modified `skill-crafting-method`.
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8 · [x] 1.9 · [x] 1.10
-- [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 3.1 · [ ] 4.1 · [ ] 5.1 · [ ] 5.2
+- [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 3.1 · [x] 4.1 · [ ] 5.1 · [ ] 5.2
 
 ## Verification
 

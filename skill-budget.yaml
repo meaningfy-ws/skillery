@@ -3,7 +3,6 @@
 # The standard: docs/development/creating-skills.md#the-lean-standard
 pending:
   decision-package: [pointers]
-  estimation: [pointers]
   executive-communication: [pointers]
   explanatory-writing: [pointers]
   guardrails: [pointers]
@@ -11,15 +10,9 @@ pending:
   infrastructure-security: [pointers]
   meaningfy-git-workflow: [pointers]
   meaningfy-voice: [pointers]
-  proposal-writing: [pointers]
   rule-learner: [pointers]
   rule-steward: [pointers]
   rulebook: [budget, pointers]
-  sales-accounts: [pointers]
-  sales-conversations: [budget, pointers]
-  sales-operations: [budget, pointers]
-  sales-pipeline-custody: [budget, pointers]
-  sales-qualification: [pointers]
   semantic-consulting-coach: [budget, pointers]
   service-reliability: [budget, pointers]
   skillery-feedback: [pointers]
@@ -32,4 +25,5 @@ pending:
 # Skills over the 24 KB prose budget for a recorded reason (DEC-2). Exempt from the budget only.
 over_budget:
   epic-delivery: "the delivery method itself (brief templates, stage steps with triggers T1-T3, check ledger, library rule), cited by about 25 test-strategy checks; assessment-epic-delivery.md"
+  sales-pipeline-custody: "the five pipelines and their placement, the lead lifecycle, three star rubrics, the next-action and closing-date rules and the write tiers every sales skill cites; assessment-sales-pipeline-custody.md"
   test-strategy: "the matrix (nine family files, cited by 41 skills and fixed by tests/test_test_strategy.py) and the 144-row check inventory other EPICs edit; assessment-test-strategy.md"
