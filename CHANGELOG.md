@@ -12,6 +12,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.18.0] - 2026-11-16
+
 ### Fixed
 
 - `session-retrospective` keeps its private output safer: the digest folder is made readable by you
