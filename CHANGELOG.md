@@ -12,6 +12,16 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.17.1] - 2026-11-16
+
+### Fixed
+
+- **The lead now writes the mark line.** In 3.16.0 and 3.17.0 the rule sat too deep: in walked
+  sessions the delivery lead briefed workers with no mark, and planning wrote it into a file.
+  `epic-planning` now opens its workflow with *Mark first*, and `epic-delivery` asks for the line in
+  the first reply of a stage, so `session-retrospective` reads phase and stage instead of guessing
+  them.
+
 ## [3.17.0] - 2026-11-16
 
 ### Changed
