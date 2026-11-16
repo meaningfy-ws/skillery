@@ -1,8 +1,7 @@
 # Incident response
 
-An incident is anything that hurts, or is about to hurt, a service people rely on: an outage, a
-degradation, lost data, a security event. Every one, security ones included, is a GitHub issue in the
-stacks repository (`infrastructure-stacks`), so there is one register and one history.
+Every incident, security ones included, is a GitHub issue in the stacks repository
+(`infrastructure-stacks`): one register, one history.
 
 ## The rule
 
@@ -26,16 +25,16 @@ processor) tells the client (the controller) without undue delay, so the client 
 **72-hour** GDPR clock to notify its authority. Count the hours from when we became aware, and write
 that time in the issue.
 
-**Security incidents** follow this procedure for the record and the clocks; how to contain them
-(revoke, rotate, preserve evidence) is owned by `infrastructure-security`.
+**Security incidents** follow this procedure for the record and the clocks; containing them (revoke,
+rotate, preserve evidence) is owned by `infrastructure-security`.
 
 ## Duty
 
 One named person is on duty each week, the owner or the colleague. The name is written at the top of
 the pinned `Daily check-up log` issue and changed there each week. The person on duty receives the
 page tier ([alerting.md](alerting.md)) and leads any incident that week. Out of working hours the
-response is best effort; contracts must not promise more. At `critical` a second person takes the client
-communication if one is available.
+response is best effort; contracts must not promise more. At `critical` a second person takes the
+client communication if one is available.
 
 ## Records
 
@@ -46,8 +45,7 @@ person on duty. One rule per kind:
 
 | Kind | Record |
 |---|---|
-| **Incident** (every alert handled, every incident a person opens) | One issue labelled `incident` and `critical`, `serious` or `warning` (from the alert's `severity`; `warning` when absent; `info` opens no issue), titled `<symptom> — <service>`, where the symptom is the alert's `alertname` and the service is the
-first of its labels `service`, `name` (the container), `instance`. If an open issue has that title, it is reused, never duplicated. An alert with no service, or that cannot be read, opens `<alertname or 'malformed alert'> — unknown` with the raw payload. |
+| **Incident** (every alert handled, every incident a person opens) | One issue labelled `incident` and `critical`, `serious` or `warning` (from the alert's `severity`; `warning` when absent; `info` opens no issue), titled `<symptom> — <service>`, where the symptom is the alert's `alertname` and the service is the first of its labels `service`, `name` (the container), `instance`. If an open issue has that title, it is reused, never duplicated. An alert with no service, or that cannot be read, opens `<alertname or 'malformed alert'> — unknown` with the raw payload. |
 | **Each unattended action** | One comment on the incident: `attempt <n>: <operation> → <result>`. The number of these comments is the `attempts` fact ([unattended-operations.md](unattended-operations.md)). |
 | **Resolved** | Verified → the issue is closed with the result. |
 | **Parked** | The label `ops-parked` is added and the decision card (owned by `executive-communication`) is a comment. |
@@ -58,19 +56,16 @@ first of its labels `service`, `name` (the container), `instance`. If an open is
 Interactive interventions (a PR, or an `ops-intervention` issue) are recorded as
 `infrastructure-operations` says.
 
-**Notify.** Every incident opened and every finding is notified in `#infra-alerts`. Once work has been
-done on it, by an agent or a person, a short summary of what was done goes to `#operations`. A
-notable change also adds a line to the Confluence change log page.
+**Notify.** Every incident and finding goes to `#infra-alerts`; once work is done on it (agent or
+person), a short summary to `#operations`; a notable change, a line on the Confluence change log.
 
 ## Working an incident
 
-1. Open or reuse the issue; notify `#infra-alerts`.
-2. Set the severity; start the client clock if `critical`, or `serious` and the client noticed.
-3. Follow the alert's runbook. Write what you try as comments, with times.
-4. Fix through the safe-change protocol (`infrastructure-operations`), or, unattended, only within the
-   policy ([unattended-operations.md](unattended-operations.md)).
-5. Verify against monitoring; close the issue; summary to `#operations`.
-6. `critical`, or `serious` and a client noticed: write the postmortem.
+Open or reuse the issue and notify; set the severity and start the client clock if `critical`, or
+`serious` and the client noticed; follow the alert's runbook, writing what you try as timed comments;
+fix through the safe-change protocol (`infrastructure-operations`) or, unattended, only within the
+policy ([unattended-operations.md](unattended-operations.md)); verify against monitoring, close,
+summarise; then the postmortem where the rule asks for one.
 
 ## Postmortem
 
@@ -78,10 +73,7 @@ Blameless: it explains how the system let the mistake happen, never who made it.
 [`assets/postmortem.md`](../assets/postmortem.md), one or two pages, linked from the incident issue,
 within five working days. Each action item becomes its own issue with an owner and a due date; the
 postmortem is finished only when every action is an issue, and the actions are reviewed in the
-monthly look at incidents until closed. A report that still says "remediation in progress" months
-later is a postmortem that was never finished.
+monthly look at incidents until closed.
 
-## Not now
-
-An incident commander rotation, a 24/7 rota without a contract that pays for it, status-page
+Not now: an incident commander rotation, a 24/7 rota without a contract that pays for it, status-page
 automation, formal problem management.

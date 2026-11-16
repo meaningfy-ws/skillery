@@ -13,11 +13,30 @@ metadata:
 
 # Meaningfy Git Workflow
 
-## Overview
+Without a house rule, commits drift into past-tense one-liners, branches carry commit-type prefixes
+and PRs assume paid GitHub features. This skill owns the **conventions and policy**; the mechanical
+*act* of committing, pushing and opening PRs is the external `commit-commands` skill's.
 
-How we use Git and GitHub at Meaningfy so history stays readable and reviews stay cheap.
-This skill owns the **conventions and policy**; it delegates the mechanical *act* of
-committing/pushing/opening PRs to the external `commit-commands` skill.
+## Quick Start
+
+Task: add credit-note support, OpenSpec change `add-export`, task 2.3.
+
+- Branch: `feature/credit-notes` off `develop` (not `feat/credit-notes`, not `feature/Credit_Notes`).
+- Commit:
+
+  ```text
+  feat(billing): add credit-note support
+
+  Clients asked to correct an issued invoice without voiding it.
+
+  - add the CreditNote model and its totals rule
+  - expose credit notes in the invoice export
+
+  Refs: add-export 2.3
+  ```
+
+- PR: title "Add credit-note support", one reviewer, `[WIP]` prefix until ready (private repo, free
+  tier: no drafts).
 
 ## Commits
 
@@ -93,8 +112,8 @@ automation must assume this, not the paid-tier feature set.
 
 ## Dev-environment hygiene
 
-See `references/dev-environment.md` (WSL filesystem trap, RDF auto-format warning, editor
-plugins, notification routing).
+Read `references/dev-environment.md` when setting up or debugging a development machine: it adds
+the WSL filesystem trap, the RDF auto-format warning, editor plugins and notification routing.
 
 ## Boundary & Related Skills
 

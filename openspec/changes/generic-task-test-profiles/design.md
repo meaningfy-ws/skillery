@@ -125,7 +125,7 @@ New choices made while planning; settled ones are cited.
   | `proposal-writing` | a sceptical buyer who must defend the spend | scope and price that name different deliverables; a claim with no evidence; what is excluded left unsaid; no way to stop or extend; a reason to wait | *Flow* step 1, last sentence | a new step 5, *Have it read* |
   | `contract-practice` | opposing counsel | a right or risk given to one side only; a term that reads two ways; an undefined term; a gap against the parent or back-to-back contract; a missing cap or exit | *Intake interview*, a fifth bullet | *The contract workflow* table, row *review*, and one sentence under *Lawyer-review flag* |
   | `meaningfy-voice` (`linkedin.md`) | a stranger scrolling | the first two lines do not say what this is or why to care; it reads as an advert; jargon unexplained; a claim that names no real work; no next step | the section's first step line (D-2) | the section's second step line (D-2) |
-  | `executive-communication` | a busy recipient | the ask not found in ten seconds; no decision or deadline; an answer that needs another document; a claim they would doubt; heavier than the artefact deserves | *Start here*, after the three questions | a new closing line of *Start here* |
+  | `executive-communication` | a busy recipient | the ask not found in ten seconds; no decision or deadline; an answer that needs another document; a claim they would doubt; heavier than the artefact deserves | *Workflow* step 1, after the three questions | a new closing line of *Workflow* step 1 |
   | `sales-conversations` | a busy recipient | the ask unclear or hard to say yes to; whose turn got wrong; a commitment nobody approved; a line any vendor could send; not readable on a phone in 20 seconds | a new subsection *In an attended session: criteria and a reader*, under *Workflow*; it covers a fresh draft and a draft picked up from a scheduled run | the same subsection |
 
   Example criteria (offer): *Succeeds:* the budget holder can say in two minutes what they get,
@@ -352,7 +352,7 @@ New choices made while planning; settled ones are cited.
   - `README.md`: no new row (no new skill; the `meaningfy-core` row already lists both skills);
   - `docs/future-features.md`, the row *Content creation and voice channel profiles*: the LinkedIn
     and blog channels now hold the post profile; their tone is still to write;
-  - `skills/meaningfy-voice/SKILL.md`, lines 23–24: LinkedIn and blog are no longer plain
+  - `skills/meaningfy-voice/SKILL.md`, the channel-profile pointer: LinkedIn and blog are no longer plain
     placeholders;
   - `use-cases/`: `guardrails` is added under `served_by.skills` of UC-W7, UC-W8, UC-W16 and
     UC-W24;
@@ -803,7 +803,7 @@ and against A as delivered. These override the decisions above where they differ
   - `CHK-102` *Governing-thought readiness test* (`executive-communication`, `VAL` and `CLR`,
     before drafting) and the new criteria step. `CHK-102` is the author's diagnosis: who
     decides, what they believe, the one sentence. The criteria step comes after it (D-3:
-    "*Start here*, after the three questions") and turns the diagnosis into a success and a
+    "*Workflow* step 1, after the three questions") and turns the diagnosis into a success and a
     failure line that the owner confirms. The first is answered by the author, the second is
     decided by the owner.
   - `CHK-95` *Sales recipient-reader* (`sales-operations`, `CLR`) and the busy-recipient

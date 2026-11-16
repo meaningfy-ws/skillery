@@ -7,10 +7,9 @@ previous pin. No command on the VM, no hand edit of `compose.yml` there.
 
 **Level: MUST.** Each VM keeps the newest 3 images of every repository; an image in use is never
 removed. Never run `docker system prune -a`, `docker image prune -a` or any prune with `-a`
-after a deploy. Why: `-a` removes every image no container uses at that moment, which is exactly the
-previous version you would roll back to, and the images of a co-hosted stack that is stopped. A
-revert then has to pull again, and if the registry no longer has the image, there is no way back.
-The deploy template's last step does the keep-3 cleanup.
+after a deploy. Why: `-a` removes the previous version you would roll back to, and a stopped
+co-hosted stack's images; if the registry no longer has them, there is no way back. The deploy
+template's last step does the keep-3 cleanup.
 
 ## Steps
 
@@ -28,4 +27,4 @@ revert alone. Such a change carries its own undo, written before it runs:
 backward-compatible across one release (expand, then contract) so that the previous image still
 runs on the new schema.
 
-Rehearse a rollback once per stack, on a quiet day, so the first one is not during an incident.
+Rehearse a rollback once per stack, on a quiet day, not first during an incident.

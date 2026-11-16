@@ -83,7 +83,7 @@ A **fixed frame** is a bounded commitment, not an open day-rate. The price comes
 (PERT-weighted effort + contingency); this skill wraps it with the **stop/extend mechanics** so the
 frame stays honest: if agreed outcomes cannot be reached for reasons outside our control, the SoW
 already names the option to reduce scope, take a short extension, or stop cleanly with partial
-delivery — never silent overwork (the boundary safeguard from `engagement-model.md`).
+delivery — never silent overwork (the safeguards of `semantic-consulting-coach`'s `engagement-lifecycle.md`).
 
 ## Boundary & Related Skills
 

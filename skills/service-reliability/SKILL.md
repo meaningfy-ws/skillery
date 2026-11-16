@@ -13,21 +13,18 @@ metadata:
 
 # Service Reliability
 
-Observe and respond. This skill says what Meaningfy's services must be watched for, how an alert
-reaches a person, what the daily check-up looks at, how an incident is run and recorded, how backups
-are decided and proven, and what an agent may do alone when nobody is watching. It states each rule
-with its level (MUST now, SHOULD next), its reason and its minimum version. The facts of one
-installation (which stacks, which hosts, which runbook) live in the infrastructure repositories; the
-agents read them there.
+Left alone, an agent judges for itself whether a night-time fix is safe. Here the policy decides and
+every action leaves a record. Each rule has a level (MUST now, SHOULD next), a reason and a minimum
+version; one installation's facts (stacks, hosts, runbooks) live in the infrastructure repositories.
 
 ## Quick Start
 
 **Input:** at 03:10 an alert says a container of `<stack>` keeps restarting. `ops-watch` is started
 with the alert's payload; nobody is awake.
 
-1. Open the incident issue `<symptom> — <service>`, labelled `incident` and the alert's severity
-   (or reuse the open one with that title), and notify `#infra-alerts`.
-2. Count the `attempt <n>:` comments on the issue: none yet, so `attempts` is 0.
+1. Open (or reuse) the issue `<symptom> — <service>`, labelled `incident` and the alert's severity;
+   notify `#infra-alerts`.
+2. Count the `attempt <n>:` comments on it: none, so `attempts` is 0.
 3. Ask the policy, never your own judgement:
 
    ```
@@ -37,59 +34,53 @@ with the alert's payload; nobody is awake.
 
 4. `act`: start the named operation `ops-restart-container` (a workflow in the stacks repository),
    then comment on the issue: `attempt 1: ops-restart-container → container healthy after 40 s`.
-5. Verify against monitoring that the alert cleared. It did: post the result to `#infra-alerts`,
-   close the issue.
-6. Post a two-line summary of what was done to `#operations`.
+5. Verify against monitoring that the alert cleared; post the result to `#infra-alerts`, close the
+   issue, post a two-line summary to `#operations`.
 
-**Output:** a closed incident issue holding one attempt comment, the alert and its result in
-`#infra-alerts`, a summary in `#operations`. Had the decider said `park`, the agent would have
-labelled the issue `ops-parked`, commented a decision card and changed nothing.
+**Output:** a closed issue with one attempt comment, the result in `#infra-alerts`, a summary in
+`#operations`. Had the decider said `park`: label `ops-parked`, comment a decision card, change
+nothing.
 
 ## Workflow
 
-- Read [`references/monitoring-standard.md`](references/monitoring-standard.md) when deciding what a
-  service must be watched for, adding probes or targets, or asking whether logs are central.
-- Read [`references/alerting.md`](references/alerting.md) when writing or reviewing an alert rule;
-  start from [`assets/templates/alert-rule.yml`](assets/templates/alert-rule.yml).
-- Read [`references/daily-checkup.md`](references/daily-checkup.md) when asked "is everything ok?" or
-  when running the scheduled check-up. Run the nine checks in its order.
-- Read [`references/incident-response.md`](references/incident-response.md) when an alert fired,
-  something is down, a security event is reported, or a client must be told. It holds the
-  severities, the clocks, the duty rule and every record (issue titles, labels, the pinned log).
-  Write the postmortem from [`assets/postmortem.md`](assets/postmortem.md).
-- Read [`references/backup-restore.md`](references/backup-restore.md) when a stack needs a backup
-  decision, a backup is added, or a restore drill is due; start from
-  [`assets/templates/backup-role/`](assets/templates/backup-role/).
-- Read [`references/unattended-operations.md`](references/unattended-operations.md) before **any**
-  action with nobody watching, and when asked "may the agent do this at night?". The policy is
-  [`assets/unattended-actions.yaml`](assets/unattended-actions.yaml); the decision is always
-  [`scripts/decide_action.py`](scripts/decide_action.py).
+- Read `references/monitoring-standard.md` when deciding what a service must be watched for or adding
+  probes or scrape targets: it adds the probe and log rules and how targets change.
+- Read `references/alerting.md` when writing or reviewing an alert rule: it adds the tiers, the
+  required labels and annotations, and the rule template.
+- Read `references/daily-checkup.md` when asked "is everything ok?" or when the scheduled check-up
+  runs: it adds the nine checks in their order and the report's shape.
+- Read `references/incident-response.md` when an alert fired, something is down, a security event is
+  reported or a client must be told: it adds severities, clocks, duty, every record and the postmortem.
+- Read `references/backup-restore.md` when a stack needs a backup decision, a backup is added or a
+  restore drill is due: it adds the decision rule, RPO and RTO, the backup role and the drill.
+- Read `references/unattended-operations.md` before **any** action with nobody watching, or when asked
+  "may the agent do this at night?": it adds the tiers, how to state the facts, and what each
+  decision obliges.
 
-Each rule is stated once, in the *The rule* table of its reference. A MUST is the target, not a claim about today. The check-up reports what is not met yet; each fix is
-a change in the repository that has the gap.
+## Rules
 
-## Gotchas
+Each rule is stated once, in the rule table of its reference. A MUST is the target, not a claim about
+today: the check-up reports the gap, and the fix is a change in the repository that has it.
 
-- **A backup that never succeeded raises no alert.** The freshness alert compares against the last
-  success; a backup that never ran writes no metric at all. Check every new backup's first run by
-  hand before calling the service backed up.
-- **"The agent decides if it is safe" is not a policy.** Unattended, every action goes through
-  `decide_action.py`; an action it does not return `act` for is not taken, however obvious it looks.
-- **No unattended action through SSH.** With nobody watching, the agent's only hands are the named,
-  allow-listed workflows. A missing workflow means park and report, never a shell instead.
-- **No third attempt.** After two failed attempts on one incident the decider says `escalate`; the
-  attempt count is the comments on the issue, so never act without writing the comment.
-- **One incident, one issue.** Reuse the open issue with the same title; a duplicate splits the
-  history and resets the attempt count.
-- **Copying another service's backup role** spreads its paths and its one shared credential. Use the
-  one generic role with this service's parameters.
-- **An alert with no runbook** leaves a non-specialist at 3 a.m. with nothing to do. No runbook, no
-  alert.
-- **A quiet check-up still posts.** "Nothing wrong" without the list of what was checked cannot be
-  told apart from a check-up that did not run.
-- **A postmortem whose actions are not issues** stays "in progress" forever.
-- **Unreadable monitoring is a finding**, not a reason to skip: report it, and take no unattended
-  action on state you cannot verify.
+**Common mistakes**
+
+| Mistake | Why it fails | Do instead |
+|---|---|---|
+| A new backup called done after setup | One that never succeeded writes no metric, so no alert fires | Check its first run by hand |
+| "The agent decides if it is safe" | That is not a policy | Unattended, act only on the decider's `act` |
+| SSH when no workflow exists | Unattended hands are the allow-listed workflows only | Park and report the missing operation |
+| Acting without the attempt comment | The comments are the attempt count; no third attempt | Comment `attempt <n>:` every time |
+| A second issue for one incident | It splits the history and resets the count | Reuse the open issue with that title |
+
+## Before you hand over
+
+**Quick diagnostic**
+
+| Question | If not | Action |
+|---|---|---|
+| Every action has its incident issue and attempt comment? | The next run miscounts | Add it now |
+| The report lists problems, checked and fine, not checked? | A quiet day looks like a failed run | Rewrite it in that shape |
+| The result verified against monitoring before closing? | The incident may be live | Reopen and verify |
 
 ## Boundary & Related Skills
 

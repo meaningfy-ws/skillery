@@ -30,8 +30,8 @@ on a fixed-frame price. Run this before the proposal + SoW ship.
 - [ ] The price covers only the in-scope list — nothing implied beyond it.
 - [ ] **Stop/extend mechanics** are present: scope reduction, short extension, or clean stop with
       partial delivery if outcomes can't be reached for reasons outside our control. Never silent
-      overwork (the boundary safeguard from
-      `semantic-consulting-coach`: engagement model).
+      overwork (the safeguards of
+      `semantic-consulting-coach`: engagement lifecycle).
 
 ## Handover check
 

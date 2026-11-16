@@ -1,0 +1,23 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "bash": { "*": "ask", "obsidian *": "allow", "mv *": "ask", "rm *": "ask", "curl *": "deny", "wget *": "deny" },
+    "webfetch": "deny",
+    "websearch": "deny",
+    "edit": "ask",
+    "<mail-server>_send*": "deny",
+    "<mail-server>_reply*": "deny",
+    "<mail-server>_forward*": "deny",
+    "<mail-server>_trash*": "deny",
+    "<mail-server>_*spam*": "deny",
+    "<mail-server>_*label*": "deny",
+    "<calendar-server>_create_event": "deny",
+    "<calendar-server>_update_event": "deny",
+    "<calendar-server>_delete_event": "deny",
+    "<calendar-server>_respond_to_event": "deny",
+    "<drive-server>_*": "deny",
+    "<chat-server>_*": "deny",
+    "<memory-server>_remember": "deny",
+    "<memory-server>_forget": "deny"
+  }
+}
