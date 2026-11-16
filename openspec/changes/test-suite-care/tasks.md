@@ -49,7 +49,7 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       `make lint` is clean; `make bundles` leaves no difference; `tests/test_skill_inventory.py`
       passes.
       (`make validate` is the acceptance of 1.10.)
-- [ ] 1.5 Trigger probes in `tests/trigger_probes.yaml` (D-16): positive "our test suite takes too long,
+- [x] 1.5 Trigger probes in `tests/trigger_probes.yaml` (D-16): positive "our test suite takes too long,
       find what to cut" expects `test-suite-care`; near-miss "write tests for this function"
       expects `cosmic-python`; near-miss "which checks does this activity need" expects
       `test-strategy`. *Acceptance:* each probe is asked three times in a fresh session; the
