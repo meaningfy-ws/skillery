@@ -115,7 +115,7 @@ A failed criterion sends the work back to the draft. Each owning skill says what
   made once and kept out of `tests/`; of its baselines, the contract's goes — rejected: the
   planted contract clause, the contract baseline, pass or fail per criterion.
 - **DEC-12** (added 2026-11-14 by owner decision, after the PLAN was gated;
-  [`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+  [`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
   decision 2): the reader gets a named tool list: `Read`, `Grep` and `Glob` for prose, and also
   the code tools (Serena, ast-grep, GitNexus) where the piece read is code or a repository —
   rejected: a general-purpose subagent with every tool of the session, which starts heavier
@@ -194,3 +194,6 @@ A failed criterion sends the work back to the draft. Each owning skill says what
 - Order: wave 2 of the order of 2026-11-15: after A, after R3 (the tool table) and after R1 stage
   1 (the lean standard), before the main part of R2 (design D-32). It lands before B, C and E.
 - Size: `guardrails` may grow by at most 6 KB, to stay within 24 KB of prose (design D-29).
+  *Revised 2026-11-16 (design D-34):* at most 5.5 KB, since it has 6,140 bytes of room.
+  `sales-conversations` has 12 bytes of room; the owner folded the sales profile into
+  `executive-communication` (design D-38), so it gains no text.

@@ -47,7 +47,8 @@ the installed Docker Compose does not have; the person says "report this to skil
 ## Workflow
 
 1. **Decide the kind.** Something that exists misbehaved → **Defect**. Something is missing → a
-   **Request**. Read [`references/issue-forms.md`](references/issue-forms.md) for the fields of each.
+   **Request**. Read [`references/issue-forms.md`](references/issue-forms.md) when drafting the
+   issue: it adds each form's title pattern, label and fields, and what happens after filing.
 2. **Collect the context** while it is fresh: the session is the evidence.
 3. **Sanitize.** Apply *Never in an issue* below to every field, the excerpt included.
 4. **Draft, show, then file.** An issue is public: the person approves the text before it is filed.

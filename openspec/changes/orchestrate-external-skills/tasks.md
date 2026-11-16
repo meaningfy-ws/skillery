@@ -50,7 +50,7 @@
   reads the new `skills:` lists, and `pytest tests/test_dep_skills_adversarial.py`); CHANGELOG line
   under `[Unreleased]` for the installer; open the pull request, merge on green CI, tick 1.1 to
   1.9; tell the `lean-skills` pilot it can start
-  ([its stage table](../lean-skills/design.md#stages-2-to-5-outline), row "2 pilot").
+  ([its stage table](../archive/2026-11-16-lean-skills/design.md#stages-2-to-5-outline), row "2 pilot").
 
 ## 2. Stage 1b: the wondel skills (wave 2, after 1a)
 
@@ -103,11 +103,15 @@
 
 - [ ] 3.1 Add the pointer line of D-13 to each Meaningfy skill and agent named as owner in a row
   with external help (list from the stage 2 rows). Spec: `skill-orchestration`, "reached from a
-  pointer line".
+  pointer line". *Revised 2026-11-16 (D-22):* `architecture` (24,576) and `sales-conversations`
+  (24,564) have no room for the line; offset its bytes in the same pull request, or ask the owner (D-25).
 - [ ] 3.2 First write the list of headings cut and kept per file (D-14); then cut the restatement
   of Voss and Hormozi in the three files, keeping every
   Meaningfy restriction; a second reader compares before and after and confirms nothing of ours
   was lost; update `skill-budget.yaml` if `prose_budget` asks. Spec: `sales-method-ownership`.
+  *Revised 2026-11-16 (D-23, D-24):* no `skill-budget.yaml` step, nothing is pending; the cut is
+  only the lines D-24 lists (owner's answer (b)), one pointer per file, and it pays for the 3.1
+  line in `sales-conversations`.
 - [ ] 3.3 Add a Gherkin scenario to the feature file of each agent that gained a line
   (`tests/features/agents/`), and write `tests/features/skill-orchestration.feature` with the
   routing, override and missing-skill scenarios of D-16.

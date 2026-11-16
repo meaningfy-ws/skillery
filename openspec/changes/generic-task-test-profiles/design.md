@@ -40,7 +40,7 @@ break them (`test-strategy`'s `generic-writing` matrix marks both as `gap → D`
   [`recipient-reader`](../../../skills/sales-operations/assets/prompts/recipient-reader.md), which
   answers ten fixed questions as the recipient (`CLR`), is given no criteria and does not attack.
   The sales agent has no `Agent` tool today, so where it cannot start them the run is recorded
-  *unverified* (`sales-operations`, *Independent reviewers*; `references/goal-loop.md`, lines 68–70).
+  *unverified* (`sales-operations`, *Independent reviewers*; `references/goal-loop.md`, *4. Verify*).
 - **The three agents.** `lawyer` is a lead with `Agent` and `guardrails`. `proposal-writer` is
   `delegated` (it cannot ask mid-run; questions go back in its output) with
   `tools: [Read, Grep, Glob, Write, Skill]`. `sales-agent` is `scheduled` and may lead a human
@@ -122,10 +122,10 @@ New choices made while planning; settled ones are cited.
 
   | Skill | Reader | Attacks (the bullets) | Criteria step goes | Reader step goes |
   |---|---|---|---|---|
-  | `proposal-writing` | a sceptical buyer who must defend the spend | scope and price that name different deliverables; a claim with no evidence; what is excluded left unsaid; no way to stop or extend; a reason to wait | *Flow* step 1, last sentence | a new step 5, *Have it read* |
+  | `proposal-writing` | a sceptical buyer who must defend the spend | scope and price that name different deliverables; a claim with no evidence; what is excluded left unsaid; no way to stop or extend; a reason to wait | *Flow* step 1, last sentence (*Revised 2026-11-16 (D-37):* *Workflow* step 1) | a new step 5, *Have it read* |
   | `contract-practice` | opposing counsel | a right or risk given to one side only; a term that reads two ways; an undefined term; a gap against the parent or back-to-back contract; a missing cap or exit | *Intake interview*, a fifth bullet | *The contract workflow* table, row *review*, and one sentence under *Lawyer-review flag* |
   | `meaningfy-voice` (`linkedin.md`) | a stranger scrolling | the first two lines do not say what this is or why to care; it reads as an advert; jargon unexplained; a claim that names no real work; no next step | the section's first step line (D-2) | the section's second step line (D-2) |
-  | `executive-communication` | a busy recipient | the ask not found in ten seconds; no decision or deadline; an answer that needs another document; a claim they would doubt; heavier than the artefact deserves | *Start here*, after the three questions | a new closing line of *Start here* |
+  | `executive-communication` | a busy recipient | the ask not found in ten seconds; no decision or deadline; an answer that needs another document; a claim they would doubt; heavier than the artefact deserves | *Workflow* step 1, after the three questions | a new closing line of *Workflow* step 1 |
   | `sales-conversations` | a busy recipient | the ask unclear or hard to say yes to; whose turn got wrong; a commitment nobody approved; a line any vendor could send; not readable on a phone in 20 seconds | a new subsection *In an attended session: criteria and a reader*, under *Workflow*; it covers a fresh draft and a draft picked up from a scheduled run | the same subsection |
 
   Example criteria (offer): *Succeeds:* the budget holder can say in two minutes what they get,
@@ -352,7 +352,7 @@ New choices made while planning; settled ones are cited.
   - `README.md`: no new row (no new skill; the `meaningfy-core` row already lists both skills);
   - `docs/future-features.md`, the row *Content creation and voice channel profiles*: the LinkedIn
     and blog channels now hold the post profile; their tone is still to write;
-  - `skills/meaningfy-voice/SKILL.md`, lines 23–24: LinkedIn and blog are no longer plain
+  - `skills/meaningfy-voice/SKILL.md`, the channel-profile pointer: LinkedIn and blog are no longer plain
     placeholders;
   - `use-cases/`: `guardrails` is added under `served_by.skills` of UC-W7, UC-W8, UC-W16 and
     UC-W24;
@@ -685,11 +685,13 @@ record.
 **Revised after the gate, not gated again (2026-11-14).** D-27, under § Delivery decisions, was
 added by owner decision after run 7. No clarity-gate run followed: the owner wants at most two
 gate runs on any re-gate
-([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 2 and 7). **Revised again after the gate, not gated again (2026-11-15):** D-28 to D-32,
 under § Delivery decisions, record the owner's settlement of
 [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
-(S-5, S-9, S-10 and the order); no clarity-gate run followed (S-10).
+(S-5, S-9, S-10 and the order); no clarity-gate run followed (S-10). **Revised 2026-11-16, after
+the gate, not gated again (S-10):** D-34 to D-37 record the reading of this PLAN against the lean
+skills of EPIC `lean-skills`.
 
 ## Delivery decisions
 
@@ -717,11 +719,12 @@ and against A as delivered. These override the decisions above where they differ
 - **D-17 Three more lines of `test-strategy` change (corrects D-10, "nothing else", and the
   No-go "only its rows").** D-10 lets only lines 33–34 of `skills/test-strategy/SKILL.md`
   change. Two other places quote the rows this change replaces and would be left wrong:
-  - SKILL.md, lines 67–68, the column *Example in a post* of the six questions: "none yet (a
+  - SKILL.md, lines 67–68 (*Revised 2026-11-16 (D-37):* now 69–70), the column *Example in a post* of the six questions: "none yet (a
     gap)" for `ADQ` and for `ROB`. Task 3.1 sets the `ROB` cell to the adversarial reader's read
     and the `ADQ` cell to say the gap is `accepted`;
   - `references/generic-writing.md`, line 3: the sentence "`gap → D` rows are for the EPIC
-    `generic-task-test-profiles` to fill." Task 3.1 removes it.
+    `generic-task-test-profiles` to fill." Task 3.1 removes it. *Revised 2026-11-16 (D-37):* the
+    lean rewrite removed it already; nothing to do.
 
   No question, stance or column changes, so the No-go holds in its sense: the edit corrects
   quotations of rows. The legend of gap targets in SKILL.md (lines 111–113) stays, since it also
@@ -803,7 +806,7 @@ and against A as delivered. These override the decisions above where they differ
   - `CHK-102` *Governing-thought readiness test* (`executive-communication`, `VAL` and `CLR`,
     before drafting) and the new criteria step. `CHK-102` is the author's diagnosis: who
     decides, what they believe, the one sentence. The criteria step comes after it (D-3:
-    "*Start here*, after the three questions") and turns the diagnosis into a success and a
+    "*Workflow* step 1, after the three questions") and turns the diagnosis into a success and a
     failure line that the owner confirms. The first is answered by the author, the second is
     decided by the owner.
   - `CHK-95` *Sales recipient-reader* (`sales-operations`, `CLR`) and the busy-recipient
@@ -822,7 +825,7 @@ and against A as delivered. These override the decisions above where they differ
 
 Revised 2026-11-14 by owner decision, after the gate. The session measurements were compared with
 this EPIC and the owner decided on the result
-([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 2 and 7). The clarity gate was not run again on this entry.
 
 - **D-27 The reader has a named tool list (corrects D-9, "a fresh general-purpose subagent", the
@@ -873,12 +876,14 @@ they differ.
   [Read, Grep, Glob]` in its frontmatter, because an agent file must list what it carries, and
   those three are the table's tools for reading prose; its body cites the table and holds no
   method (DEC-13 stays). The R3 lint that checks the table against agents' tool lists covers this
-  agent. If the table's row for reading prose differs when this EPIC starts, the agent's list
+  agent. *Revised 2026-11-16 (D-35):* the table has no row for reading prose; the rows are "Read a
+  file or a range" and "Search text". If the table's row for reading prose differs when this EPIC starts, the agent's list
   follows the table, and task 1.1 checks it.
 - **D-29 `guardrails` stays within its budget (S-9; corrects D-1 for size and form).** Today
   `guardrails` is 15,670 bytes of prose: `SKILL.md` 13,347 and `references/` 2,323. R3 adds the tool
   table and session hygiene first; R1 shrinks the body later, to about 6 KB, in a total of 24 KB at
-  most. This EPIC therefore adds at most **6 KB** to the skill, counted with `wc -c` before and
+  most. *Revised 2026-11-16 (D-34): the room is 6,140 bytes; the ceilings are 5 KB for the
+  reference and 5.5 KB in all.* This EPIC therefore adds at most **6 KB** to the skill, counted with `wc -c` before and
   after and recorded in `evidence/`: the new reference at most 5.5 KB (not the 5 to 7 KB estimated
   before), the body at most 0.3 KB, the exception in `subagent-reports.md` at most 0.2 KB. The
   reference is written to the lean shape: one line when to open it and what it adds, then house
@@ -958,6 +963,81 @@ they differ.
   the allow-lists, which were not dropped. The proof of done for the baseline is O-5 yes for at
   least two of the pairs of B-1, B-3 and B-4. Ids are not renumbered: O-1 to O-4 stay unused.
 
+Revised 2026-11-16, after the gate. EPIC `lean-skills` rewrote every skill to the lean standard
+([`archive/2026-11-16-lean-skills`](../archive/2026-11-16-lean-skills/),
+[`creating-skills.md`](../../../docs/development/creating-skills.md), *The lean standard*). Every
+open task that edits a skill or an agent was read against the files on `develop` (7d85edd) and
+their `prose_budget` sizes. Not gated again (S-10). These entries override the ones above where
+they differ.
+
+- **D-34 `guardrails` has 6,140 bytes of room, not 6 KB (corrects D-29's figures and ceiling;
+  task 1.5).** Today the body is 12,818 bytes and `references/` 5,618 (the tool table and
+  `subagent-reports.md`): 18,436 in all. R1 did not take the body to about 6 KB, so the room to
+  24,576 bytes is 6,140. D-29's three ceilings add to 6,144 and would breach the budget. New
+  ceilings: the reference at most **5 KB** (5,120 bytes), the body pointer line at most 0.3 KB,
+  the exception in `subagent-reports.md` at most 0.2 KB, the two table cells of D-35 included;
+  growth at most **5.5 KB**, so the skill ends near 24,070 bytes. The body stays far past the
+  6 KB target (advisory); this EPIC adds only the pointer line to it. The rest of D-29 stands.
+- **D-35 The tool table has no row for reading prose (corrects D-28 and task 1.1).** The table
+  in `references/activity-tools.md` names activities, not kinds of reading. `Read` is the row
+  *Read a file or a range*; `Grep` and `Glob` are the row *Search text*. Those two rows are the
+  reader's tools for a draft, and for code or a repository the code rows add to them. The table's
+  lint checks an agent only where the *Agents* column names it, so task 1.5 adds
+  `adversarial-reader` to that column in those two rows; without it D-28's "the R3 lint covers
+  this agent" would be false. The spec delta `subagent-dispatch` names the two rows.
+- **D-36 `sales-conversations` has no room for its profile (owner decision needed before task
+  2.5).** It is 24,564 bytes (body 5,814, `references/` 18,750), 12 bytes under the budget, and
+  not listed as `over_budget`. The section and the subsection of task 2.5 (about 1.3 KB) would
+  fail `make validate`. D-29's rule holds here too: the budget is not raised. Options for the
+  owner: (a) R2's cut of the two external sales authors (DEC-9, mostly
+  `references/selling-method.md`, 7,767 bytes) lands before task 2.5, which reverses D-30's
+  order for this one skill; (b) this EPIC cuts, in 2.5, at least what it adds from that same
+  restatement, and R2 takes the rest; (c) the profile moves to another file, which changes the
+  spec `sales-method-ownership`. Recommended: (a); stage 1 and tasks 2.1 to 2.4 do not wait for
+  it. The lead measures the skill before 2.5 either way.
+- **D-37 Stale anchors after the lean rewrite (corrects D-3, D-17 and tasks 2.1, 3.1).**
+  - `proposal-writing` has no *Flow*: the steps are under *Workflow* (four steps), so the
+    criteria sentence goes at the end of *Workflow* step 1 and the reader step is a new step 5.
+  - `test-strategy` SKILL.md: the two "none yet (a gap)" cells are now lines 69–70, not 67–68.
+    The Quick Start sentence on `VAL` is still lines 33–34.
+  - `references/generic-writing.md` no longer has the line 3 sentence on `gap → D` rows; there is
+    nothing to remove. The three `gap → D` rows (`VAL`, `ADQ`, `ROB`) and the column order are as
+    D-10 assumes.
+  - `skill-budget.yaml` exempts `test-strategy` with a reason that names "the 144-row check
+    inventory other EPICs edit". The five rows of D-10 are covered by that reason; task 3.1 brings
+    the count to the new total in the same commit.
+  - Held as written, checked: `guardrails` § 5 and its description (681 characters, D-23); the
+    reviewing row with its verdict in `subagent-reports.md`; `contract-practice`'s four intake
+    bullets, its *review* row and *Lawyer-review flag*; `meaningfy-voice`'s channel-profile
+    pointer and the placeholders `linkedin.md` and `blog.md`; `executive-communication`'s
+    *Workflow* step 1; the *Workflow* of `sales-conversations`; the five pointer lines of D-10;
+    the fields of both agent files that D-5 edits, each body under 30 lines.
+  - Body target (advisory): the profiles take `proposal-writing` (5,909) and
+    `executive-communication` (7,815) to about 7 KB and 9 KB, and `contract-practice` (7,866) to
+    about 9 KB. All stay far under 24 KB. Each section keeps D-31's limit of about 1 KB; nothing
+    in it is a check (S-9).
+
+- **D-38 The sales profile folds into the message profile (owner, 2026-11-16; settles D-36).**
+  Asked in one question round, the owner chose to fold the sales profile into the
+  `executive-communication` profile, the drop the reassessment already listed ("the weakest of the
+  profiles; overlaps the recipient reader"). D-36's options (a) to (c) fall away. Consequences:
+  - `sales-conversations` gains no text; task 2.5 is dropped.
+  - Task 2.4's section covers sales emails and follow-ups too: the busy-recipient reader, the
+    attended-session rule with pick-up, and the scheduled-run rule (no confirmation, no adversarial
+    reader, the reviewers of `sales-operations` stay). About 1.3 KB; `executive-communication` is
+    11,246 bytes, so it stays far under 24 KB.
+  - Four profiles, not five: D-10's rows become eight and its ids four; task 3.1 adds no pointer
+    line to `sales-conversations`. Where D-2, D-3, D-4 or D-10 name the sales profile or
+    `sales-conversations` as its owner, read the message profile of `executive-communication`.
+  - The spec deltas `sales-method-ownership`, `executive-communication`, `test-strategy` and
+    `subagent-dispatch` are amended to match.
+  - The sales agent's edits of D-5 (task 2.7) and its scenarios (task 2.6) stay; they cite
+    `executive-communication`'s profile instead of `sales-conversations`'.
+- **D-39 A skill with no room (owner, 2026-11-16).** Standing rule: a planned addition to a skill
+  at or near 24 KB is paid for in the same pull request by an equal cut from that skill, or the
+  prose moves to a tool or a template (S-9). Only when neither works does the builder ask the
+  owner for an `over_budget` entry. It applies to D-34's cap on `guardrails`.
+
 ## Open Questions
 
-None.
+None left open. D-36 was settled by D-38.

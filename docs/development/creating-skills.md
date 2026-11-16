@@ -84,8 +84,9 @@ counted. Less is the default. `make validate` fails a skill over budget (`prose_
 [`skill-budget.yaml`](../../skill-budget.yaml), at the root, lists two kinds of entry:
 
 - `pending`: a skill that existed when this standard came in and waits for its lean rewrite, with
-  the checks it is exempt from (`budget`, `pointers`). It leaves the list in the pull request that
-  rewrites it. A new skill is never listed: it meets the standard on arrival.
+  the checks it is exempt from (`budget`, `pointers`). Every skill was rewritten by EPIC
+  `lean-skills` (2026-11-16) and the key is gone; a new or changed skill is never listed: it meets
+  the standard on arrival.
 - `over_budget`: a skill over 24 KB for a reason recorded after its assessment. Exempt from the
   budget only.
 
@@ -124,7 +125,9 @@ When a skill is assessed, every passage goes to one class. Doubt goes to **keep*
 | material | really a template or a script | moved to `assets/` or `scripts/` |
 | drop | generic knowledge a model already has; a "why it works" that restates the rule; repetition | cut |
 
-The record of one skill's sorting is `openspec/changes/lean-skills/evidence/assessment-<skill>.md`:
+The record of one skill's sorting is an `assessment-<skill>.md` in the `evidence/` folder of the
+change that rewrites it (every skill's first record is in
+`openspec/changes/archive/2026-11-16-lean-skills/evidence/`):
 sizes before and after, one row per passage (passage, class, where it went), and the verdict of a
 second reader who did not make the cuts.
 

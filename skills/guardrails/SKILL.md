@@ -91,13 +91,16 @@ already exists; this skill is the map.
     is costly. When unsure, take the next model up. When a cheaper model's report fails the check,
     re-run the task one model up rather than patch its output. `model_rank` orders the models
     from cheapest.
-  - **The base report back**, plus the fields of its purpose, as defined in
-    `references/subagent-reports.md`. Long material goes to a file; the report carries the path.
+  - **The base report back**, plus the fields of its purpose. Read `references/subagent-reports.md`
+    when you name the report in a brief or judge one that came back: it gives the base report, the
+    fields per purpose and the upstream findings. Long material goes to a file; the report carries the path.
     A report longer than `subagent_report_max_lines` is oversized.
   - **Waiting.** A command that fits the tool's timeout runs in the foreground; a longer one runs
     in the background and is awaited by one completion notice or one blocking wait. Never a sleep
     loop.
-  - **Tools for each activity.** The recommended tool, its name on each CLI and its fallback are in `references/activity-tools.md`.
+  - **Tools for each activity.** Read `references/activity-tools.md` when you pick a tool for a
+    step or write one into a brief: it gives the recommended tool per activity, its name on each CLI
+    and its fallback.
   - **Four eyes on the work.** The report steers the coordinator's next step; it is not proof. When
     a coherent unit of work is complete — not after every step — a fresh subagent that did not do it
     checks it against the task's spec and intention, good practice, known anti-patterns and the

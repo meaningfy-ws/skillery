@@ -12,6 +12,33 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.18.0] - 2026-11-16
+
+### Fixed
+
+- `session-retrospective` keeps its private output safer: the digest folder is made readable by you
+  only, a symlink left in it is replaced instead of written through, and the report refuses a
+  digest folder inside a git working tree as the digest does. A mark line inside a `~~~` code block
+  is now ignored, by the scripts and by the navigator, like one inside a backtick block.
+
+### Changed
+
+- **The sales skills are lean** (EPIC `lean-skills`, stage 4). All seven `meaningfy-sales` skills
+  take the lean shape; `sales-operations` drops from 30 KB to 24 KB and `sales-conversations` from
+  28 KB to 24 KB. The five route files of `sales-pipeline-custody` are one `references/routes.md`,
+  and its lead sources sit in `odoo-crm-conventions.md`; the skill keeps its pipeline rules under a
+  recorded exception. The proposal and SoW templates and the PERT worksheet you copy now sit in
+  `assets/`. Every check id is unchanged.
+- **Every skill is lean** (EPIC `lean-skills`, stage 5). The consulting, core, devops, rules and
+  vault skills take the lean shape; `writing-antipatterns` drops from 48 KB to 23 KB,
+  `semantic-consulting-coach` from 56 KB to 32 KB, `rulebook`, `service-reliability` and
+  `stack-operations` to 24 KB. The prose of all skills is now 0.89 MB, from 1.30 MB. No skill is
+  waiting for its rewrite any more: `skill-budget.yaml` lists only the five recorded exceptions,
+  and a new or changed skill must meet the standard. Templates you copy (the Decision Package,
+  the vault permission files) now sit in `assets/`; every check id is unchanged. A skill that
+  tells the agent to use an external plugin (`superpowers`, `code-review`, `commit-commands`, the
+  obsidian plugin) now says what to do when it is not installed.
+
 ## [3.17.1] - 2026-11-16
 
 ### Fixed

@@ -30,7 +30,8 @@ python3 <this skill's folder>/scripts/epic_report.py ~/retro/2026-11-15
 1. `session_digest.py` reads the CLI's local transcripts (read-only) and writes `sessions.jsonl`,
    `agents.jsonl` and `events.jsonl`. Without `--out` it writes to the script's default
    folder, `~/.cache/session-retrospective/<date>`. It refuses any folder inside a git working tree
-   (exit 2, nothing written), the default included when the home folder is kept in git.
+   (exit 2, nothing written), the default included when the home folder is kept in git; the
+   report refuses such a folder too. The folder is made readable by you only.
 2. `epic_report.py` reads that folder and writes `epics.tsv`, `phases.tsv`, `rounds.tsv` and
    `signals.txt`.
 3. Read `signals.txt` first: the totals, cost by phase, the guessed share of cost and review rounds

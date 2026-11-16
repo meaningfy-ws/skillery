@@ -13,20 +13,18 @@ metadata:
 
 # Stack Operations
 
-A stack is one folder of the stacks repository: a `compose.yml` (or `docker-compose.yml`), its
-`.env.example` (SHOULD, when the stack reads variables), a README and a
-deploy workflow, run on one VM per instance. This skill is the standard for that folder and
-everything that happens to it after a deploy is requested: what every service must have, how it is
-deployed, where its version lives, how it is promoted and rolled back, and how a stack is created,
-upgraded or moved.
+A Compose stack that "starts" can still crash-loop, fill the disk or change version without a commit;
+this skill holds the minimum every stack meets and how it is deployed, pinned, promoted, rolled back,
+created, upgraded or moved. A stack is one folder of the stacks repository: a `compose.yml` (or
+`docker-compose.yml`), its `.env.example` (SHOULD, when the stack reads variables), a README and a
+deploy workflow, run on one VM per instance.
 
 ## Quick Start
 
 **Input:** "Is `<stack>/compose.yml` ok?"
 
-1. Run the conformance check from the skill folder:
-   `python scripts/check_stack.py <stack>/compose.yml`
-2. Read the table. One row per service and rule:
+1. Run the conformance check from the skill folder: `python scripts/check_stack.py <stack>/compose.yml`
+2. Read the table, one row per service and rule:
 
    ```
    stack     service     rule  status     detail
@@ -35,66 +33,57 @@ upgraded or moved.
    <stack>   <service>   S2    excepted
    ```
 
-   The command exits 1 because two rules are `missing`. `excepted` still counts as a known gap.
-3. Fix each `missing` row as [stack-standard](references/stack-standard.md) says. Here: add
-   `logging:` with `max-size` and `max-file`, and change the port to `"127.0.0.1:8080:80"`.
-4. Where a rule truly does not apply, add a comment inside the service's block,
-   `# conformance-exception: S<n> <reason>`, and say why in the PR.
-5. Run the check again until it exits 0.
+   The command exits 1 because two rules are `missing`; `excepted` still counts as a known gap.
+3. Fix each `missing` row: add `logging:` with `max-size` and `max-file`, and change the port to
+   `"127.0.0.1:8080:80"`. Read `references/stack-standard.md` when a row is unclear or an exception
+   is needed: it adds each rule S1-S9 with its reason, the exception syntax and the S4 daemon trap.
+4. Where a rule truly does not apply, comment inside the service's block,
+   `# conformance-exception: S<n> <reason>`, and say why in the PR. Run the check until it exits 0.
 
-**Output:** a PR on the stacks repository whose compose file passes the check, with every exception
+**Output:** a PR on the stacks repository whose compose file passes the check, every exception
 written and reasoned. Merging it deploys the stack health-gated.
 
 ## Workflow
 
 1. Work in the stacks repository, on a branch, through the safe-change protocol
-   (`infrastructure-operations`).
-2. Read the stack's README and `compose.yml` first, then pick the reference:
-   - Checking or fixing a compose file, or an exception: [stack-standard](references/stack-standard.md).
-   - Writing or fixing a deploy workflow, or a deploy that "succeeded" while broken:
-     [deploy-workflow](references/deploy-workflow.md).
-   - Changing an image version, or promoting from staging: [versions-and-promotion](references/versions-and-promotion.md).
-   - A deploy went wrong: [rollback](references/rollback.md).
-   - Creating a stack or adding a service: [new-stack](references/new-stack.md).
-   - A database major version or a migration that rewrites data: [upgrades-with-data](references/upgrades-with-data.md).
-   - Moving a running stack's data to a new layout or VM: [cutover](references/cutover.md).
-   - A stack that other stacks use: [shared-services](references/shared-services.md).
-   - Proving a stack still works before and after a change: [acceptance-tests](references/acceptance-tests.md).
-3. Start new files from [`assets/templates/`](assets/templates/), never from another stack:
-   `stack/` (compose, `.env.example`, README), `deploy-workflow.yml`, `cutover.sh`, `acceptance.feature`.
-4. Before the PR: `check_stack.py` passes and `docker compose config -q` is clean.
-5. After the merge: the workflow's `up --wait` passed, the smoke scenarios pass, the consumers in the
-   README still work. Record the change (`infrastructure-operations`).
+   (`infrastructure-operations`). Read the stack's README and `compose.yml` first.
+2. Read `references/deploy-workflow.md` when writing a deploy workflow, or when a deploy
+   "succeeded" while broken: it adds the health gate, the template's parts and the triggers.
+3. Read `references/versions-and-promotion.md` when changing an image version or promoting: it adds
+   the pin-by-digest rule and promotion as a PR.
+4. Read `references/rollback.md` when a deploy went wrong: it adds the revert steps and keep-3-images.
+5. Read `references/new-stack.md` when creating a stack or adding a service: it adds the anatomy,
+   the steps and the README's required sections.
+6. Read `references/upgrades-with-data.md` before a database major version or a data-rewriting
+   migration: it adds the steps and the PostgreSQL paths.
+7. Read `references/cutover.md` when moving a running stack's data to a new layout or VM: it adds
+   the steps and why each is there.
+8. Read `references/shared-services.md` when other stacks use a stack: it adds the provider's
+   contract.
+9. Read `references/acceptance-tests.md` when proving a stack works before and after a change: it
+   adds their shape and when they run.
+10. Start new files from [`assets/templates/`](assets/templates/), never from another stack:
+    `stack/` (compose, `.env.example`, README), `deploy-workflow.yml`, `cutover.sh`, `acceptance.feature`.
 
-## Gotchas
+## Rules
 
-- **Copying another stack or the old single-instance workflow.** It brings a missing guard, a
-  non-failing verify and another service's values. Start from the templates.
-- **Publishing a port on all interfaces and trusting the host firewall.** Docker bypasses it. Bind a
-  private address or `127.0.0.1` (S7).
-- **`docker system prune -af` after a deploy.** It deletes the image you would roll back to. Keep the
-  last 3 ([rollback](references/rollback.md)).
-- **The version held in a CI variable, a dispatch input or `.env`.** None of them is in git. A tag
-  read from `.env` (`image: <image>:${TAG}`) fails S1; the pin belongs in `compose.yml`.
-- **Addresses and secret tables kept by hand in several files.** They drift. Name each fact once;
-  `.env.example` lists secret names, never values.
-- **Secrets pasted into a script or a remote command line, or `.env` edited on the VM.** Values pass
-  through step `env:`; `.env` is rewritten by every deploy.
-- **The same status written in several places** (stack README, root README, wiki). They contradict;
-  the stack README holds it, others point there.
-- **Skeleton docs never completed**, a spec purpose left "TBD". An empty section is a finding.
-- **Each change inventing its own log format.** Use the execution-log template of
-  `infrastructure-operations`.
-- **Leftovers from experiments:** a deploy triggered by a feature branch, a `${VAR:-changeme}`
-  default. Deploy from `main` only; S9 fails the default.
-- **A backup set up by copying another stack's backup role.** Backups use the one parameterised role
-  of `service-reliability`.
-- **Tests and config checks that do not run in CI.** `check_stack.py`, `docker compose config` and
-  the smoke scenarios belong in the stacks repo's PR checks.
-- **Marking S4 excepted when the VM's Docker daemon has no default log rotation.** The disk still
-  fills; check the configuration code first.
-- **Changing only the image tag for a database major version.** The new server refuses the old data
-  ([upgrades-with-data](references/upgrades-with-data.md)).
+**Common mistakes**
+
+| Mistake | Why it fails | Do instead |
+|---|---|---|
+| Copying another stack or the old single-instance workflow | it brings a missing guard, a non-failing verify and another service's values | start from the templates; the template wins, the difference is a gap to report |
+| Addresses and secret tables kept by hand in several files | they drift | name each fact once; `.env.example` lists secret names, never values |
+| The same status in the stack README, the root README and a wiki | they contradict | the stack README holds it; the others point there |
+| `check_stack.py`, `docker compose config` or the smoke scenarios run only by hand | unrun checks decay | wire them into the stacks repo's PR checks |
+| Leftovers from experiments: a feature-branch deploy, a `${VAR:-changeme}` | an untested deploy, a known password | deploy from `main` only; S9 fails the default |
+
+## Before you hand over
+
+| Question | If not | Action |
+|---|---|---|
+| Does `check_stack.py` pass and is `docker compose config -q` clean? | the PR breaks the minimum | fix, or write a reasoned exception |
+| After the merge, did `up --wait` and the smoke scenarios pass, and do the README's consumers still work? | the deploy is unverified | roll back by revert |
+| Is the change recorded (`infrastructure-operations`)? | no one can see what was done | record it |
 
 ## Boundary & Related Skills
 
@@ -106,9 +95,9 @@ shared-service consumers and stack acceptance tests; the stack templates.
 **Does NOT own:**
 - building, tagging and publishing an application image, and requesting a deploy → `ci-cd-delivery`;
 - VMs, Terraform, Ansible (including the Docker daemon defaults), the safe-change protocol, the
-  consent card, change shapes and records → `infrastructure-operations`;
-- monitoring, alerts, backups and restore tests, incidents and the unattended-action policy →
-  `service-reliability`;
+  consent card, change shapes, records and the execution-log template → `infrastructure-operations`;
+- monitoring, alerts, backups (the one parameterised backup role) and restore tests, incidents and
+  the unattended-action policy → `service-reliability`;
 - secrets, exposure (the two-layer port rule behind S7), action pinning and token scope, image
   scanning → `infrastructure-security`;
 - version numbers, release notes and SBOMs → `meaningfy-release`.

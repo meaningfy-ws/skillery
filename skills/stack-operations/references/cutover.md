@@ -1,12 +1,9 @@
 # Cutover: moving a running stack's data
 
-A cutover moves a running stack to a new layout or a new VM: named volumes to `/opt/data/`, one
-project name to another, an old VM to a new one. It is an operation change: its execution log and
-scripts live in the change (the change shape and the log schema are owned by
-`infrastructure-operations`).
-
-Start from [`assets/templates/cutover.sh`](../assets/templates/cutover.sh) and write `rollback.sh`
-beside it before the day.
+A cutover moves a running stack to a new layout or VM (named volumes to `/opt/data/`, one project
+name to another, an old VM to a new one). It is an operation change; its shape and log schema are
+`infrastructure-operations`'. Start from [`assets/templates/cutover.sh`](../assets/templates/cutover.sh)
+and write `rollback.sh` beside it before the day.
 
 ## The steps, and why
 

@@ -12,8 +12,8 @@ on every call, a stage boundary is not a reset an unattended lead can perform, g
 have no limit above SMALL, and the instructions ask for tools under names the sessions do not have.
 The owner wants the same results for less time and fewer tokens. The measurements are in the
 retrospective's inputs:
-[`findings`](../delivery-retrospective/inputs/findings-2026-11-14.md) and
-[`second pass`](../delivery-retrospective/inputs/second-pass-2026-11-14.md). The questions and
+[`findings`](../archive/2026-11-16-delivery-retrospective/inputs/findings-2026-11-14.md) and
+[`second pass`](../archive/2026-11-16-delivery-retrospective/inputs/second-pass-2026-11-14.md). The questions and
 answers of the shaping session are in
 [`inputs/elicitation-2026-11-14.md`](inputs/elicitation-2026-11-14.md).
 

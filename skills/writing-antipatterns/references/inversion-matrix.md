@@ -1,13 +1,17 @@
 # The inversion matrix
 
-The canonical, single-sourced list of genre-conditional antipatterns. Per-genre files
-(`tutorial.md`, `how-to.md`, `reference.md`, `explanation.md`, `decision.md`,
-`decision-record.md`, `contract.md`, `coaching.md`) link to entries here; they do not restate them.
-See [`../SKILL.md`](../SKILL.md) for the genre map and the unguarded defects (U1–U8).
+The single list of genre-conditional antipatterns. The genre map and the unguarded defects
+(U1–U8) are in `SKILL.md`.
 
 ## Compact form
 
-Required · welcome · avoid · harmful · n/a. Bold marks the reversals worth memorising.
+Required · welcome · avoid · harmful · n/a. Bold marks the reversals worth memorising. Read a
+genre's column for a review in that genre.
+
+**Asynchronous approval request.** A Decision the reader takes later and alone (an approval in an
+agent's run note, a choose-one email) reverses A12 and A13: options must be on the page
+(**required**) and assumed shared context is **harmful**. Its shape is the decision card owned by
+`executive-communication`.
 
 | Move | Tutorial | How-to | Reference | Explanation | Decision | Decision record | Contract | Coaching |
 |------|----------|--------|-----------|-------------|----------|-----------------|----------|----------|
@@ -38,8 +42,7 @@ re-cut of the previous one; a set meant to be MECE (ADRs, priorities, scope excl
 many members signals conflated decisions.
 
 **Required in** Reference, entered at random, where every entry must stand alone — and the
-proposal/SoW pair, where the exclusions list is **one list in two documents** (licensed exception,
-`SKILL.md` U1).
+proposal/SoW pair, where the exclusions list is **one list in two documents** (licensed exception, U1).
 
 **Guard:** is the artefact entered at one point or many? Are repeated views generated from one
 source, or hand-maintained? Is this set a decomposition (has a natural size) or a catalogue (does
@@ -58,8 +61,7 @@ natural size.
 
 **Smell:** nominalised verb forms and reflexive passives opening a sentence, deleting the actor
 ("Publication and controlled distribution of the questionnaire"; Romanian *se confirmă, se
-evaluează*). Independently named "zombie nouns" (Helen Sword, popularised in Steven Pinker's *The
-Sense of Style*) — the same defect documented well outside this catalogue's own source material.
+evaluează*).
 
 **Fails in** Decision, How-to, Contract — an obligation must attach to a named party and a date.
 
@@ -150,7 +152,7 @@ top, then write declaratively beneath it.
 **Cue:** count hedging adjectives per hundred words; recurrence of the same three words everywhere,
 not frequency, is the tell.
 
-**Distinct from** `SKILL.md` U5 (weasel words): hedging qualifies the *author's own* claim; a
+**Distinct from** U5 (weasel words): hedging qualifies the *author's own* claim; a
 weasel word launders a claim through an unnamed source.
 
 ## A7. Direct address ("you")
@@ -199,9 +201,6 @@ Decision here, because structure outranks texture —
 `explanatory-writing`'s own precedence rule: lead with the
 answer, apply slow-burn texture beneath it.
 
-Independently corroborated outside this catalogue's source material: "burying the lede" names the
-same failure in journalism and business-writing craft.
-
 ## A10. Controlling metaphor / figurative material
 
 **Smell:** no organising image where one is needed, or three competing half-metaphors where none
@@ -238,8 +237,8 @@ not tested) and in Decision when the governing thought cannot yet be written
 **Smell:** only the chosen option appears; rejected alternatives, and why they lost, are invisible.
 
 **Fails in** Decision persuasive — showing your working wastes the reader's ten seconds. The
-exception is the asynchronous approval request (see [`decision.md`](decision.md)): its reader
-chooses later and alone, so the options must be on the page.
+exception is the asynchronous approval request (above): its reader chooses later and alone, so
+the options must be on the page.
 
 **Required in** Decision record — an ADR's whole reason to exist, years later, is letting a future
 engineer see what was rejected and why. Required, more lightly, in Coaching dialogue, where the
@@ -255,8 +254,7 @@ in Decision.
 ## A13. Curse of knowledge
 
 **Smell:** the writer cannot reconstruct not already knowing the material, so necessary scaffolding
-is skipped and jargon lands unglossed. Named by Steven Pinker (*The Sense of Style*) — not present
-in this catalogue's original source drafts, added after independent verification.
+is skipped and jargon lands unglossed.
 
 **Fails in** Tutorial (must assume zero prior knowledge) and Explanation (must build understanding
 from an accessible starting point — ties to
@@ -264,7 +262,7 @@ from an accessible starting point — ties to
 
 **Required/acceptable in** Reference and Contract, where assuming domain fluency *is* the explicit
 contract with that reader — that assumption is what makes Reference fast to use. Welcome in a live
-Decision, but **harmful** in an asynchronous approval request (see [`decision.md`](decision.md)): a
+Decision, but **harmful** in an asynchronous approval request (above): a
 reader who decides days later does not share the writer's context, so a bare record id or link
 leaves them unable to decide.
 

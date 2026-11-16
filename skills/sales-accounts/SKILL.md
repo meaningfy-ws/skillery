@@ -16,11 +16,11 @@ metadata:
 Deals come and go; companies and people stay. This skill keeps the **accounts**: every company and every person Meaningfy deals with, as Odoo contacts with a profile that outlives any single deal. The deal dossier says what is happening in one deal; the profiles say who these people and organisations are, so every deal, meeting and message starts from a person, not a record.
 
 It owns:
-- entity resolution: people, companies, leads and deals to their Odoo ids before any decision, evidence to its own ids, search before create, duplicate and merge proposals ([identity](references/identity.md));
+- entity resolution: people, companies, leads and deals to their Odoo ids before any decision, evidence to its own ids, search before create, duplicate and merge proposals;
 - the company profile and the person profile ([templates](assets/templates/));
-- the rules for personal details ([personal-details](references/personal-details.md));
+- the rules for personal details;
 - notes and tasks on companies and people;
-- the account after the deal: customer success ([customer-success](references/customer-success.md)).
+- the account after the deal: customer success.
 
 **Called by**:
 - `sales-operations`, in intake sessions and runs that meet a new name;
@@ -34,8 +34,7 @@ It owns:
 
 **Input:** "Add Anna Schmidt, head of data at Acme Pharma, whom we met at the data summit."
 
-1. Search Odoo contacts and leads, archived included, by email, web domain and name
-   ([identity](references/identity.md)): one contact "Anna Schmidt" at Acme Pharma Diagnostics,
+1. Search Odoo contacts and leads, archived included, by email, web domain and name: one contact "Anna Schmidt" at Acme Pharma Diagnostics,
    email domain differs. Two keys disagree, so this is not a match yet.
 2. The diagnostics firm is a subsidiary of Acme Pharma with its own domain; her badge says
    Acme Pharma. Not clearly the same person: raise a decision card with both candidates in words.
@@ -48,10 +47,10 @@ add the summit to *How we know them*).
 ## Write rules
 
 Before any write, read the write rules of `sales-pipeline-custody`. In short, for this skill:
-- **Never create a contact without searching first** ([identity](references/identity.md)). An ambiguous match is a decision card, never a guess.
+- **Never create a contact without searching first.** An ambiguous match is a decision card, never a guess.
 - **Never merge, archive or delete a contact.** Duplicates are decision cards for the owner, who merges in Odoo.
 - Writing a profile into the contact's *Notes* (`comment`), keeping the earlier text, is *do and log* (`odoo-profile`). So are internal notes and activities on contacts.
-- Personal details follow the three rules in [personal-details](references/personal-details.md); breaking them is *never*.
+- Personal details follow three rules; breaking them is *never*. Read `references/personal-details.md` before recording or using a personal detail: it adds the three rules (shared, published, never researched), where details live, and how a person is forgotten.
 
 ## Odoo shape
 
@@ -70,7 +69,7 @@ One company can have many people and many deals; one person can be in several de
 ## Workflow
 
 1. **Objective.** "Company X and person Y exist once in Odoo, linked, with current profiles", or narrower ("the profile of Y has how they decide").
-2. **Resolve** with [identity](references/identity.md): search, then use or enrich the match, create when nothing matches, or ask when it is ambiguous. Read and extend the *Keys* line.
+2. **Resolve**: search, then use or enrich the match, create when nothing matches, or ask when it is ambiguous. Read and extend the *Keys* line. Read `references/identity.md` before any search, create, match or merge proposal, and before tying a mail or event to a deal: it adds the three kinds of things resolved, the keys per entity, the decision table, the merge-proposal card and how resolutions are logged.
 3. **Read what exists**: the contact and its chatter, its deals, mail and calendar with the person, the vault (event projects, meeting notes), the Meaningfy memory (recall by name), Drive and Confluence.
 4. **Research the gaps**: the company first, then the person, with `sales-qualification`'s research checklist and the personal-details rules.
 5. **Write the profile** from the template into `comment`. Text the agent did not write goes under *Previous notes*, unchanged; the agent's own sections from an earlier run are updated in place, never nested. Fill empty fields (website, function, email, phone, VAT) only from a source. Log every write.
@@ -88,9 +87,9 @@ One company can have many people and many deals; one person can be in several de
 
 ## The account after the deal
 
-A won client stays an account; the method (desired outcome, success plan, account health, outcome
-reviews, expansion, advocacy) is in [customer-success](references/customer-success.md). Two habits
-outside it:
+A won client stays an account. Read `references/customer-success.md` when a deal is won or a client
+account needs care: it adds the desired outcome, the success plan, the account-health score and
+colours, outcome reviews, and the rules for expansion and advocacy. Two habits outside it:
 - each won client's champion gets a relationship activity, set at the win and due one dormancy
   period later (`sales-operations`, *Terms*), renewed each time it is done;
 - an occasion a person shared (a birthday, a promotion, a launch) becomes an activity for the owner
@@ -112,7 +111,7 @@ outside it:
 **Profiles:**
 - Every section the depth requires is present; unknowns are OPEN with the question that would close them.
 - Every fact has a source and a date; inferences are marked.
-- Every personal detail meets [personal-details](references/personal-details.md): shared by the person or published by them, dated, with where it was said.
+- Every personal detail meets the personal-details rules: shared by the person or published by them, dated, with where it was said.
 - Earlier text is kept; the write is logged.
 
 ## Gotchas
