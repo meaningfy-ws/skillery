@@ -12,6 +12,13 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Fixed
+
+- `session-retrospective` keeps its private output safer: the digest folder is made readable by you
+  only, a symlink left in it is replaced instead of written through, and the report refuses a
+  digest folder inside a git working tree as the digest does. A mark line inside a `~~~` code block
+  is now ignored, by the scripts and by the navigator, like one inside a backtick block.
+
 ### Changed
 
 - **The sales skills are lean** (EPIC `lean-skills`, stage 4). All seven `meaningfy-sales` skills
