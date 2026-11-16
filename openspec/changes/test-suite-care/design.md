@@ -550,7 +550,7 @@ wording mismatches.
 Revised after the gate, not gated again (2026-11-14): D-35 and D-36, under Delivery decisions,
 were added by owner decision after the fourth run. No clarity-gate run followed: the owner wants
 at most two gate runs on any re-gate
-([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 4, 5 and 7).
 
 Revised after the gate, not gated again (2026-11-15): D-37 to D-42, under Delivery decisions,
@@ -645,7 +645,7 @@ above where they differ.
 
 Revised 2026-11-14 by owner decision, after the gate. The session measurements were compared with
 this EPIC and the owner decided on the result
-([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 4, 5 and 7). The clarity gate was not run again on these entries.
 
 - **D-35 The builder sorts and the lead confirms (corrects D-12; bears on D-31; proposal DEC-3

@@ -59,10 +59,11 @@ headless: the navigator band does not show in `claude -p`; its warning is covere
 
 | # | Pass / fail | Note |
 |---|---|---|
-| S1 | | |
-| S2 | | |
-| S3 | | |
-| S4 | | |
-| S5 | | |
+| S1 | pass | the lead's run 5 |
+| S2 | pass | the lead's run 5 |
+| S3 | pass | the lead's run 5 |
+| S4 | pass | the lead's run 5 |
+| S5 | not walked | covered by unit tests; the band does not show headless |
 
-Signed off by: ______ on ______. Then tick task 3.4 and remove `~/sandbox/walk-3.4`.
+Signed off by: the developer, Eugeniu Costetchi, on 2026-11-16, on the lead's run 5: "go ahead
+with task 3.4, and skip the demo, just go ahead". Task 3.4 ticked; `~/sandbox/walk-3.4` removed.

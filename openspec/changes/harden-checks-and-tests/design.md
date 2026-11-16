@@ -843,7 +843,7 @@ weekly runs and went with them (D-35).
 **Revised after the gate, not gated again (2026-11-14).** D-28 and D-29, under § Delivery
 decisions, were added by owner decision after run 2. No clarity-gate run followed: the owner
 wants at most two gate runs on any re-gate
-([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 3, 4 and 7).
 
 **Revised after the gate, not gated again (2026-11-15).** D-30 to D-34, under § Delivery
@@ -969,7 +969,7 @@ and against A as delivered. These override the decisions above where they differ
 
 Revised 2026-11-14 by owner decision, after the gate. The session measurements were compared with
 this EPIC and the owner decided on the result
-([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 3, 4 and 7). The clarity gate was not run again on these entries.
 
 - **D-28 At MEDIUM the tester runs on a condition** *(moved on 2026-11-15 to

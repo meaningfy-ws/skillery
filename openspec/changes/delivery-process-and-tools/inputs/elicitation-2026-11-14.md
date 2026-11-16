@@ -7,12 +7,12 @@
 
 This change has no seed of its own. Its seeds are the inputs of the retrospective, read in full:
 
-- [`seed.md`](../../delivery-retrospective/inputs/seed.md): the owner's asks and 17 decisions.
-- [`findings-2026-11-14.md`](../../delivery-retrospective/inputs/findings-2026-11-14.md): the
+- [`seed.md`](../../archive/2026-11-16-delivery-retrospective/inputs/seed.md): the owner's asks and 17 decisions.
+- [`findings-2026-11-14.md`](../../archive/2026-11-16-delivery-retrospective/inputs/findings-2026-11-14.md): the
   measurements (F-1 to F-15) and recommendations (R-1 to R-11).
-- [`second-pass-2026-11-14.md`](../../delivery-retrospective/inputs/second-pass-2026-11-14.md):
+- [`second-pass-2026-11-14.md`](../../archive/2026-11-16-delivery-retrospective/inputs/second-pass-2026-11-14.md):
   what drives the cost, and the ranked changes to skills and to repository instructions.
-- [`cross-check-test-epics.md`](../../delivery-retrospective/inputs/cross-check-test-epics.md): the
+- [`cross-check-test-epics.md`](../../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md): the
   findings against the test EPICs, with seven owner decisions.
 
 Also read: `skills/epic-delivery/SKILL.md`, `skills/guardrails/SKILL.md` (rules 5 and 6),
