@@ -1,6 +1,6 @@
 # Objections
 
-This file owns the objection taxonomy, the one classification of objections in the catalogue, and the rules of the library. `sales-qualification` (value equation, *Risk and blame*) maps its objection drivers onto these five types and supplies the cover the answers use.
+The one classification of objections in the catalogue, and the library rules. `sales-qualification` (value equation, *Risk and blame*) maps its objection drivers onto these types and supplies the cover.
 
 ## Five types
 

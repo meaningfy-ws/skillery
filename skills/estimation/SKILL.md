@@ -13,25 +13,27 @@ metadata:
 
 # Estimation
 
-> **Provisional pending the first-engagement gate.** This wiring is the floor, not the finished standard;
-> refine it after the first real paid engagement is estimated and delivered against.
+A fixed-cost bid goes wrong when it rests on a round point figure and a flat percentage buffer;
+this skill turns an engagement into a defensible number (a work breakdown, PERT-weighted effort
+with ranges, assumptions and exclusions, contingency from the spread) with a checklist and a
+method, not a heavy model. It is provisional until the first paid engagement is estimated and
+delivered against: refine it then.
 
-## Overview
+## Quick Start
 
-A **fixed-cost scoping / estimation discipline** that de-risks fixed-cost bids. It is deliberately
-**light — a checklist plus a method, not a model**. The job is to turn an engagement into a
-defensible number: a **work breakdown**, **PERT-weighted effort** with **uncertainty ranges**,
-explicit **assumptions & exclusions**, and **contingency** — then hand those to the SoW so the price
-and the scope boundary rest on the same evidence.
+Input: a Proof of Value with two leaves, in person-days.
 
-It is independently triggerable (any "estimate this" / "PERT estimate" request) and is also the
-**pricing step** of the `proposal-writing` flow.
+| Leaf | O | M | P | TE = (O+4M+P)/6 | SD = (P−O)/6 | Variance |
+|---|---|---|---|---|---|---|
+| landscape reading | 3 | 5 | 11 | 5.67 | 1.33 | 1.78 |
+| option framing | 2 | 3 | 7 | 3.50 | 0.83 | 0.69 |
 
-It composes by reference: the estimate decomposes against the build breakdown owned by
-`epic-planning`, and its sequencing/roadmap framing comes
-from `decision-package`. It restates neither.
+Output: engagement TE 9.17; engagement SD √2.47 = 1.57; contingency 1 × SD = 1.57 (about 84%
+confidence); fixed frame 10.7 ≈ 11 person-days, with the assumptions and the exclusions that go
+to `proposal-writing` as the SoW's out-of-scope list. Open
+[`assets/pert-worksheet.md`](assets/pert-worksheet.md) to fill the same table for a real bid.
 
-## What it covers (R4)
+## Workflow
 
 1. **Decomposition (work breakdown).** Break the engagement into estimable leaf items — small enough
    that each can carry a three-point estimate. For build-tier work, decompose against the EPIC/PLAN
@@ -43,64 +45,36 @@ from `decision-package`. It restates neither.
    availability) and what it explicitly excludes. **The exclusions are the SoW out-of-scope list** —
    one list, two documents (see `proposal-writing`).
 4. **Contingency.** A buffer sized from the rolled-up variance and the assumption risk — not a flat
-   guess. The [worksheet](references/pert-worksheet.md) shows the roll-up.
+   guess.
 5. **Link to the SoW scope boundary.** The breakdown's leaves are the in-scope items; the exclusions
    are the out-of-scope items; the PERT total + contingency is the fixed-frame price.
 
-## Techniques: PERT is the default
+## Rules
 
-Multiple estimation techniques exist; **PERT is the favoured system** here because three-point
-estimates make fixed-cost uncertainty explicit and roll up into a defensible contingency.
+- **PERT is the default.** For each leaf, O = optimistic, M = most-likely, P = pessimistic
+  (plausible worst case — not catastrophe); TE = (O + 4·M + P) / 6, SD = (P − O) / 6. Roll up:
+  engagement TE = Σ leaf TE, engagement SD = √(Σ leaf variances). One unit throughout
+  (person-days or hours).
+- **Contingency = k × engagement SD**, k ≈ 1 for about 84% confidence, ≈ 2 for about 98%; choose k
+  for the confidence the fixed frame needs and state it. Fixed frame = engagement TE + contingency.
+- **Alternatives triangulate.** Analogous (top-down from a similar past engagement; early, little
+  detail), parametric (units × rate, e.g. per source system or per ontology module, when the work
+  scales with a countable driver), bottom-up (sum of leaves; pairs with PERT). On a large bid,
+  cross-check against at least one; a disagreement is a signal to re-examine the breakdown, not to
+  average.
+- **Gantt and scheduling are external.** This skill produces the work breakdown and the estimates,
+  never a Gantt or a calendar: dependencies, calendar, resource levelling and the Gantt itself are
+  rendered in **Smartsheet or MS Project** by importing the breakdown, so export it clean.
+  Sequencing *intent* (pilot → scale order) comes from `decision-package`.
+- **Voice.** British English. Terse and numeric. Every number traces to a leaf, an assumption, and
+  a technique; no unexplained round figures. A point estimate without a range is a smell — show the
+  range and the contingency that covers it.
 
-**PERT (three-point) — the default.** For each leaf, capture three estimates and weight them:
+## Before you hand over
 
-```
-Expected (TE) = (O + 4·M + P) / 6        SD = (P − O) / 6        Variance = SD²
-```
-
-- **O** = optimistic (everything goes right), **M** = most-likely, **P** = pessimistic (plausible
-  worst case — not catastrophe).
-- Roll up: **engagement TE = Σ leaf TE**; **engagement SD = √(Σ leaf variances)**.
-- Size **contingency** from the rolled-up SD (e.g. a one- or two-SD buffer for the confidence level
-  the fixed frame needs). The [worksheet](references/pert-worksheet.md) does the arithmetic.
-
-**Alternatives (use when they fit better, or to triangulate):**
-
-| Technique | Use when |
-|-----------|----------|
-| **Analogous** (top-down, from a similar past engagement) | Early, little detail; a quick sanity anchor |
-| **Parametric** (units × rate, e.g. per source system / per ontology module) | The work scales with a countable driver |
-| **Bottom-up** (sum of leaf estimates) | Detail exists; pairs naturally with PERT per leaf |
-
-Triangulate when the stakes are high: a PERT bottom-up that disagrees with an analogous top-down is a
-signal to re-examine the breakdown.
-
-## Gantt / scheduling is EXTERNAL
-
-This skill produces the **work breakdown + estimates**. It does **not** draw Gantt charts or
-schedules. Scheduling (dependencies, calendar, resource levelling, the Gantt itself) is rendered in
-**external tools — Smartsheet or MS Project** — by importing the work breakdown. Do not attempt to
-draw Gantts in-repo; produce a clean breakdown that those tools can consume. Sequencing *intent*
-(pilot → scale order) comes from `decision-package`; the calendar
-rendering of it is the external tool's job.
-
-## The checklist
-
-Run before any number leaves the room:
-
-- [ ] Work broken into leaves small enough for a three-point estimate (decomposed against the
-      `epic-planning` breakdown where build work is involved).
-- [ ] Each leaf has O / M / P and a PERT expected value.
-- [ ] Variances rolled up; engagement SD computed.
-- [ ] Contingency sized from the rolled-up SD + assumption risk (not a flat percentage guess).
-- [ ] Assumptions listed; each risky assumption has an exclusion or a stop/extend trigger.
-- [ ] **Exclusions = the SoW out-of-scope list** (the invariant in `proposal-writing`).
-- [ ] Triangulated against at least one alternative technique when the bid is large.
-- [ ] Work breakdown exported clean enough for Smartsheet / MS Project to schedule.
-
-The fillable worksheet (PERT table + roll-up + contingency) is in
-[`references/pert-worksheet.md`](references/pert-worksheet.md); the full checklist is in
-[`references/estimation-checklist.md`](references/estimation-checklist.md).
+Read `references/estimation-checklist.md` before any number leaves the room: it holds the full
+checklist (decomposition, PERT, uncertainty and contingency, assumptions and exclusions,
+triangulation, hand-off).
 
 ## Boundary & Related Skills
 
@@ -120,9 +94,3 @@ one-way, since shaping an EPIC needs no estimate.
 **Related:** `proposal-writing`, `decision-package`, `sales-qualification`, `sales-conversations` (cite this skill for any price in a draft).
 
 Answers `VER, RSK` in `test-strategy`'s matrix (`references/generic-writing.md`).
-
-## Tone & style
-
-British English. Terse and numeric. Every number traces to a leaf, an assumption, and a technique; no
-unexplained round figures. A point estimate without a range is a smell — show the range and the
-contingency that covers it.

@@ -15,7 +15,7 @@ trace to a leaf, an assumption, and a technique.
 - [ ] Each leaf has **O / M / P** (optimistic / most-likely / pessimistic-but-plausible).
 - [ ] **TE** computed per leaf: `(O + 4M + P) / 6`.
 - [ ] **Variance** computed per leaf: `((P − O)/6)²`.
-- [ ] Engagement **TE** and **SD** rolled up (see the [worksheet](pert-worksheet.md)).
+- [ ] Engagement **TE** and **SD** rolled up (see the [worksheet](../assets/pert-worksheet.md)).
 
 ## Uncertainty & contingency
 

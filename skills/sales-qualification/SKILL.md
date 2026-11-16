@@ -18,11 +18,8 @@ before talking to them. This skill does that homework and keeps it in one place,
 dossier** in the Odoo opportunity's description, and gives the verdict: is this deal worth pursuing
 now? Every brief, meeting plan and email is drawn from the dossier.
 
-It owns the dossier template; MEDDPICC and the one prospect question bank
-([meddpicc](references/meddpicc.md)); the five-P verdict and its bands
-([five-ps](references/five-ps.md)); the value equation, risk and blame
-([value-equation](references/value-equation.md)); and the research rules
-([research-checklist](references/research-checklist.md)). `sales-accounts` keeps the company and
+It owns the dossier template; MEDDPICC and the one prospect question bank; the five-P verdict and
+its bands; the value equation, risk and blame; and the research rules. `sales-accounts` keeps the company and
 the people; `sales-pipeline-custody` does every Odoo write.
 
 ## Quick Start
@@ -61,14 +58,14 @@ Before any write, read the write rules of `sales-pipeline-custody`. Writing the 
    - Mail threads with the contacts, and calendar events.
    - The vault project that is the deal's lead source (the event project, for events).
    - The company memory: recall only, by company or person name.
-3. **Research the gaps** in this order: the company and the people through `sales-accounts` (their profiles), then the deal itself, then the partner if any. Rules: [research-checklist](references/research-checklist.md). No LinkedIn scraping; list what the owner should check there.
-4. **Fill MEDDPICC** ([meddpicc](references/meddpicc.md)). Each element is either known, with its source, or OPEN, with the question that would close it.
-5. **Score the attention block.** For client deals, the five Ps from MEDDPICC ([five-ps](references/five-ps.md)): every P sourced or OPEN, the OPEN count, the band, any explicit ask, any disqualifier. For partnerships and tenders, the rubric of the route in `sales-pipeline-custody`. Hand the score to `sales-pipeline-custody` for the stars.
-6. **Risk and blame.** Write down what could go wrong *for the champion* if they choose us, and the cover we give. See [value-equation](references/value-equation.md#risk-and-blame).
+3. **Research the gaps** in this order: the company and the people through `sales-accounts` (their profiles), then the deal itself, then the partner if any. No LinkedIn scraping; list what the owner should check there. Read `references/research-checklist.md` before researching a deal: it adds where to look in order, what to capture, and the research rules.
+4. **Fill MEDDPICC.** Each element is either known, with its source, or OPEN, with the question that would close it. Read `references/meddpicc.md` when filling MEDDPICC or choosing what to ask a prospect: it adds the elements, the prospect question bank, and which questions fit first encounters.
+5. **Score the attention block.** For client deals, the five Ps from MEDDPICC: every P sourced or OPEN, the OPEN count, the band, any explicit ask, any disqualifier. Read `references/five-ps.md` when scoring a client deal: it adds the rubric, the scoring rules, the disqualifiers and the bands. For partnerships and tenders, the rubric of the route in `sales-pipeline-custody`. Hand the score to `sales-pipeline-custody` for the stars.
+6. **Risk and blame.** Write down what could go wrong *for the champion* if they choose us, and the cover we give.
 7. **The offer.**
    - Pick the lead offer on the ladder (owned by `semantic-consulting-coach`, `engagement-lifecycle`), with at most one fallback.
    - Name the step in the client's words.
-   - Write the value-equation line, *why us vs. the alternative* (including doing nothing or doing it in-house), and the objection drivers ([value-equation](references/value-equation.md)).
+   - Write the value-equation line, *why us vs. the alternative* (including doing nothing or doing it in-house), and the objection drivers. Read `references/value-equation.md` when writing risk and blame or the offer: it adds the value equation, the champion's risks and our cover, the limits on guarantees and commercial terms, and the objection drivers.
    - Offers come from the services catalogue and the offer projects; never invent an offer.
 8. **Write the dossier** with the template [`assets/templates/dossier.md`](assets/templates/dossier.md) into the opportunity's description. Keep any earlier text under *Previous notes*. Log the write.
 9. **Hand back** to the verifier: the dossier, its sources, and what is still OPEN.
