@@ -49,9 +49,11 @@ aggregation of returned findings and the interactive discussion of them occur in
 lens SHALL bundle its aspects and anchor them to existing `cosmic-python` catalogue ids; the skill
 SHALL NOT mint new catalogue entries for the lenses (DEC-6, DEC-7). A run MAY carry several lenses
 only when the review set authorises it: for TINY and SMALL by the epic-delivery workflow file's own
-lenses, named by the brief's appetite; for a small stage by a decision the brief cites and the
-change's `design.md` records under `## Delivery decisions`. The `code-reviewer` agent SHALL refuse
-any other several-lens brief (navigator-follows-the-work DEC-12, DEC-13, #148).
+lenses, named by the brief's appetite; for MEDIUM by one of its default groups (L1 with L2; L3 with
+L4 and L5), named by the brief's appetite (delivery-process-and-tools D-22); for a small stage by a
+decision the brief cites and the change's `design.md` records under `## Delivery decisions`. The
+`code-reviewer` agent SHALL refuse any other several-lens brief (navigator-follows-the-work DEC-12,
+DEC-13, #148).
 
 #### Scenario: A full standalone review
 
@@ -77,6 +79,11 @@ any other several-lens brief (navigator-follows-the-work DEC-12, DEC-13, #148).
 
 - **WHEN** the `code-reviewer` agent is briefed with lenses L2 and L3 for a SMALL EPIC
 - **THEN** it reviews through both lenses, as the SMALL review set states
+
+#### Scenario: Merged lenses for a MEDIUM EPIC
+
+- **WHEN** the `code-reviewer` agent is briefed with lenses L1 and L2 for a MEDIUM EPIC with no recorded risk
+- **THEN** it reviews through both lenses, as the MEDIUM default group states
 
 #### Scenario: Spec-correctness lens checks requirements, not the plan
 

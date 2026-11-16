@@ -557,7 +557,7 @@ decisions 4, 5 and 7).
 
 Revised after the gate, not gated again (2026-11-15): D-37 to D-42, under Delivery decisions,
 were added after the owner settled how the open EPICs fit the three refactoring EPICs
-([`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+([`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
 S-2, S-6, S-8, S-9 and the order). No clarity-gate run followed, by S-10 of that record.
 
 Revised after the gate, not gated again (2026-11-16): D-47 to D-52, under Delivery decisions,
@@ -703,7 +703,7 @@ decisions 4, 5 and 7). The clarity gate was not run again on these entries.
 Revised 2026-11-15, after the gate. The owner settled how every open EPIC fits the three
 refactoring EPICs: `lean-skills` (R1), `orchestrate-external-skills` (R2) and
 `delivery-process-and-tools` (R3). The record is
-[`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md);
+[`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md);
 its points are cited as S-n. The clarity gate was not run again on these entries (S-10).
 
 - **D-37 Order against the refactoring EPICs (replaces D-17 for this EPIC's own place).** Stage 1
@@ -758,7 +758,7 @@ its points are cited as S-n. The clarity gate was not run again on these entries
   | The anti-patterns table and the error matrix of this design | Mixed | Not copied into the skill as tables. A row is a line in the file it applies to, a behaviour of a script, or left out. | 0 |
 
   An earlier reading put the skill at 24 to 30 KB
-  ([touch map](../delivery-process-and-tools/inputs/touchmaps/touchmap-harden-suitecare.md)).
+  ([touch map](../archive/2026-11-16-delivery-process-and-tools/inputs/touchmaps/touchmap-harden-suitecare.md)).
   The sizes above add to 16.5 KB, which leaves room for what the trials teach (D-14); that
   text enters within the budget too. To fit, the plan sheds: the 150-line target of the body;
   `report.md` as prose; the smell descriptions and sources in `waste.md`; any restated tool
@@ -782,7 +782,7 @@ its points are cited as S-n. The clarity gate was not run again on these entries
 
 Revised 2026-11-15, after the gate, agreed by the owner on 2026-11-15 (the sections "Order",
 "Candidate drops" and "Questions the revisions left open" of
-[`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)).
+[`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md)).
 The clarity gate was not run again on these entries.
 
 - **D-43 Stage 2 (UI suites) is deferred.** It is not delivered with this EPIC. It waits until a

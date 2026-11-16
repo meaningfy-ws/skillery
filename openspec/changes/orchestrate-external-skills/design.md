@@ -1,7 +1,7 @@
 # PLAN (design): One orchestrator, pointing to skills kept elsewhere
 
 > Derives from: the EPIC [`proposal.md`](proposal.md) (`orchestrate-external-skills`), DEC-1 to
-> DEC-21. Order of all open EPICs: [the reassessment](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md).
+> DEC-21. Order of all open EPICs: [the reassessment](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md).
 > The owner's answers while planning: [`inputs/planning-2026-11-15.md`](inputs/planning-2026-11-15.md).
 
 Stage 1 (the register of both forks) is planned in full: it runs in wave 2, and the `lean-skills`
@@ -565,7 +565,7 @@ stages 2 to 4 was checked against the text and the sizes on `develop` `7d85edd`.
 neighbours of D-12 and `use-cases/UC-W13-negotiation-partner.md` exist), 3.3 (the five agents of
 D-13 have 23 to 32 body lines of 40, and a feature file each), 3.4 (still only two trigger sets),
 3.5 and 4.1 to 4.5. Revised: 3.1 and 3.2, below. The clarity gate was not run again on these
-entries (S-10 of [the reassessment](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)).
+entries (S-10 of [the reassessment](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md)).
 
 - **D-21 The lean standard is complete.** `skill-budget.yaml` has no `pending` key any more; only
   `over_budget` remains (`semantic-consulting-coach` is one of its five entries). The Context row is

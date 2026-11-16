@@ -105,7 +105,7 @@ pull request, before delivery (D-17); a scenario rewritten during delivery is re
 - [x] 3.4 Close stage 3: CHANGELOG line; `make validate` green; the PR; the note committed (its
   *Next* is the measurement, the acceptance demo and the release); watch-and-merge; the session
   ends.
-- [ ] 3.5 Start-weight measurement after the merge, on one day, from the base and the new checkout
+- [x] 3.5 Start-weight measurement after the merge, on one day, from the base and the new checkout
   with `--plugin-dir` (D-12), into `evidence/start-weight.md`.
 
 ## After the last build stage
@@ -120,13 +120,13 @@ have no scenario yet, so they get one or a written reason. Docs stage: pages und
 next EPIC (DEC-14, check 4): the lead of the first EPIC delivered after the release records in
 `evidence/measured-epic.md` the stages per session, the gate runs per PLAN, and the lead's peak
 context against the old runs (`session_digest.py` `max_ctx`). Archive per `spec-stewardship` once
-that record exists.
+that record exists. *(2026-11-16: the owner chose to archive at acceptance; check 4 is issue #296.)*
 
 ## Roadmap
 
 - [x] 1.1 · [x] 1.2 · [x] 1.3 · [x] 1.4 · [x] 1.5 · [x] 1.6 · [x] 1.7 · [x] 1.8
 - [x] 2.0 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [x] 2.5 · [x] 2.6
-- [x] 3.0 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [ ] 3.5
+- [x] 3.0 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [x] 3.5
 
 ## Verification
 
