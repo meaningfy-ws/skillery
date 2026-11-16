@@ -125,7 +125,9 @@ When a skill is assessed, every passage goes to one class. Doubt goes to **keep*
 | material | really a template or a script | moved to `assets/` or `scripts/` |
 | drop | generic knowledge a model already has; a "why it works" that restates the rule; repetition | cut |
 
-The record of one skill's sorting is `openspec/changes/lean-skills/evidence/assessment-<skill>.md`:
+The record of one skill's sorting is an `assessment-<skill>.md` in the `evidence/` folder of the
+change that rewrites it (every skill's first record is in
+`openspec/changes/archive/2026-11-16-lean-skills/evidence/`):
 sizes before and after, one row per passage (passage, class, where it went), and the verdict of a
 second reader who did not make the cuts.
 
