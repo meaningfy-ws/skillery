@@ -9,8 +9,8 @@ capabilities, which hint at the import-linter components), `tests/e2e/`, `tests/
   test's marker from its folder. Never a per-file `pytestmark`: in a `conftest.py` it is silently
   ignored (a conftest is a plugin, not a test module). Register every marker (`--strict-markers`).
 - **Lanes**: `make test-unit`, `test-feature`, `test-integration`, `test-e2e` filter with `-m`;
-  `make test` runs all with coverage. `ci-quick` (quality and unit) on every push, `ci-full`
-  (`check-all` and `clean-code`) on merge.
+  `make test` runs all with coverage. The developer's `make test-fast` and `test-changed` skip
+  slow tests, which CI still runs. `ci-quick` on every push, `ci-full` on merge.
 - **Test data**: `test_data/` only for fixtures awkward to build in code, loaded with the root
   conftest's `load_text_file`; model objects follow rule 6 of `cosmic-python`'s testing-checklist.md.
   A fixture used by one tree lives in its nearest `conftest.py`.

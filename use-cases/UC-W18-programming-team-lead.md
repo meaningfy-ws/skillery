@@ -22,6 +22,7 @@ served_by:
   - bdd-gherkin
   - meaningfy-code-review
   - cosmic-python
+  - test-suite-care
   - project-setup
   - ci-cd-delivery
   - meaningfy-release

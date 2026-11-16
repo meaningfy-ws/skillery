@@ -83,9 +83,12 @@ evidence in `evidence/spike-<topic>.md`, and its code is not kept.
 ## Adversarial tester
 
 > **Goal:** break the behaviour of stage `<s>` of `<id>`: edge cases, bad input, failures, limits.
-> Write tests only, never production code. **Read:** the stage's tasks, scenarios and diff range.
-> **Standing rules:** as for the builder. **Report:** base report + the tests added + each failing
-> test with what it shows + Upstream findings and the result line.
+> Write tests only, never production code; write one property per invariant in the PLAN's
+> `## Invariants` section, or per error-matrix row where it has none. **Read:** the stage's tasks,
+> scenarios and diff range. **Standing rules:** as for the builder. **Report:** base report + the
+> tests added, each with what it attacks (a scenario or error-matrix row, or "none" and why) and
+> whether it failed on its first run + each failing test with what it shows + Upstream findings
+> and the result line.
 
 A failing test is a finding: the lead decides it in step 4, under the floor. A failure in our library becomes an
 upstream issue, not a fix here.

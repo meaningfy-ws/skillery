@@ -867,6 +867,35 @@ gate was not run again on these entries (S-10). Sizes are bytes; the budget is 2
   template already has `check-quality` and `check-semgrep`), so the "if B stage 1 has landed"
   branches of D-21, D-27 and D-28 apply.
 
+Recorded 2026-11-16 by the lead while delivering stage 1 (owner's standing rule: the delivery
+decisions are taken, recorded here and shown for validation at the end).
+
+- **D-55 Run B sets `COVERAGE_CORE=ctrace` (adds to D-2).** T-7's first real run failed: on Python
+  3.14 coverage 7.17 defaults to the `sysmon` core, which records a line once, under the first test
+  that runs it, so a later test silently loses lines and nothing looks contained. With `ctrace`
+  the per-test lines are complete (checked on 3.13 and 3.14; `evidence/scripts.md`). The command
+  in `measuring.md` sets it and says why; T-7 sets it.
+- **D-56 The order against B, as found.** B's tasks 1.12 ("Checked by") and 2.4 (tester brief)
+  have not landed, and both already carry the matching lines (D-17), so tasks 1.6 and 1.9 add no
+  line to B's tasks. Rules 17 to 21 carry no `*Checked by:*` suffix; B's 1.12 adds it. This EPIC
+  lands first, so it writes the properties rule into the tester's brief (D-31): one property per
+  invariant of the PLAN's `## Invariants`, else per error-matrix row (D-18).
+- **D-57 The orchestrator has not landed (D-41).** No orchestrator skill is on `develop`, so the
+  orchestrator near-miss probe and the orchestrator's row are left to `orchestrate-external-skills`.
+- **D-58 Where the lanes' words were paid for (D-49, D-53).** The **Lanes** bullet of
+  `testing-setup.md` names `make test-fast` and `test-changed` and that CI still runs slow tests;
+  it drops the parenthesised contents of `ci-quick` and `ci-full`, which their `##` help comments
+  in the Makefile template state. `project-setup` is 24,537 bytes, no `skill-budget.yaml` entry.
+  The `changed.py` exception is `FallbackError` (the scaffold's Ruff, N818); T-8's temporary
+  repository has a `.gitignore` for `__pycache__`, as a scaffolded one does.
+- **D-59 Small wording choices.** Rule 6 keeps its sentence and gains D-8's after it. The
+  inventory owner cell names `SKILL.md (Workflow)`, the heading D-48 gives the five steps. The
+  checklist ends with a one-line pointer to `test-suite-care` under the new section. The Gherkin
+  check box reads "No step joins two actions with 'and'." as D-8 gives it.
+- **D-60 The three test packages (D-28).** `coverage`, `pytest-cov` and `pytest-xdist` are pinned
+  in `requirements-quality.txt` (read by `make install`); CI still installs only pyyaml and
+  pytest, so T-2 and T-7 skip there and run locally.
+
 ## Open Questions
 
 None blocks stage 1. To confirm with the owner at scenario sign-off (task 1.0):
