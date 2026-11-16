@@ -4,7 +4,9 @@
      D-42: tasks 1.0, 1.3, 1.5, 1.9, 1.13, 2.3, 3.2, 3.7 and the Roadmap); not gated again.
      Revised 2026-11-15 again by owner agreement (D-43 to D-46): stage 2 deferred (2.1 to 2.6, id
      kept), stage 3 after the retrospective tooling EPIC, 3.7 handed over, tasks 1.0 and 3.2
-     and the Roadmap corrected; not gated again. -->
+     and the Roadmap corrected; not gated again. Revised 2026-11-16 against the lean skills on
+     develop (D-47 to D-52: tasks 1.3, 1.6, 1.8, 1.9, 3.2 and the stage 3 line); not gated
+     again. -->
 
 # PLAN (tasks): test suite care
 
@@ -40,6 +42,8 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       open it and what it adds, no example code copied in; the report format is a template, not
       a reference. *Acceptance, added:* the sizes by `wc -c` are in the stage's pull request and
       the budget check of `lean-skills` passes with no recorded exception.
+      *Revised 2026-11-16 (D-48):* the body has the sections of the lean standard; the Gotchas
+      are a Common mistakes table under `## Rules`.
 - [ ] 1.4 Register the skill (D-16): `bundles.yaml`, `use-cases/UC-W18-programming-team-lead.md`,
       the two README rows, `CHANGELOG.md`, `make bundles`, `make skill-inventory`. *Acceptance:*
       `make lint` is clean; `make bundles` leaves no difference; `tests/test_skill_inventory.py`
@@ -62,6 +66,8 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       EPIC B's "Checked by" applied. *Acceptance:* T-11 passes, and the rule-count and Gherkin parts of T-15.
       *Reconciled with B, C and D:* apply D-19 of the design's Delivery decisions.
       *Reconciled:* D-34 (comment on issue #210).
+      *Revised 2026-11-16 (D-50):* the checklist additions are at most 2.5 KB, so
+      `cosmic-python` stays under 24 KB; the size is in the stage's pull request.
 - [ ] 1.7 `test-strategy` row and pointer (D-13): the next free `CHK-` id in `inventory.md`, the
       `ADQ` row in `references/software.md`, the lanes in the Moment cell of both `CHK-2` rows,
       the pointer line in the new `SKILL.md`.
@@ -76,6 +82,12 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       *Reconciled:* D-26 (the base as an argument), D-27 (T-9 pure Python; the manual
       `check-quality` run); also update `skills/project-setup/references/config-files.md` (the
       target list and the template table) and `references/layout.md`.
+      *Revised 2026-11-16 (D-49):* `layout.md` is gone and `config-files.md` holds no target
+      list or template table, so neither is edited. `project-setup` is 79 bytes under budget:
+      the `changed.py` contract is the template's docstring, the target texts their `##` help
+      comments, and `testing-setup.md` gets no new section, only its **Lanes** bullet names the
+      two targets. *Acceptance, added:* `prose_budget` passes for `project-setup` with no
+      `skill-budget.yaml` entry; if it cannot, the owner decides.
 - [ ] 1.9 Distilling in `epic-delivery` (D-12): tester brief, `SKILL.md` step 4, `stage-loop.md`
       step 4 and ledger row; the scenario in
       `tests/features/epic-delivery.feature`, the Examples row in
@@ -96,6 +108,9 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       tester's findings ("under the floor" is the reason for such a deletion), that with no
       finding above the floor the sort is the whole pass, and that the builder restores a
       deletion the lead does not confirm in the same pass.
+      *Revised 2026-11-16 (D-51):* `SKILL.md` gets a clause in the **Decide and fix** item of
+      "The loop of a stage", not a sentence; the detail goes into `stage-loop.md` step 4 beside
+      the floor bullet, which already deletes a test under the floor and is cited, not restated.
 - [ ] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
       T-1 to T-12 and T-15 green (T-7 and T-2 may skip in CI).
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
@@ -127,7 +142,8 @@ owner (issue #230). The ids are kept; the tasks are not part of this delivery.
 ## 3. Stage 3: checks that are not code
 
 Starts after the retrospective tooling EPIC (`openspec/changes/delivery-retrospective`) is
-delivered, no earlier than wave 4 (D-44).
+delivered, no earlier than wave 4 (D-44). *Revised 2026-11-16 (D-52):* that EPIC was archived
+on 2026-11-16, so only the wave remains.
 
 - [ ] 3.1 Write T-14 (D-15). *Acceptance:* red, because the file and the id are missing.
 - [ ] 3.2 Write `references/non-code-checks.md` (D-11); add the second inventory id and its row
@@ -145,6 +161,8 @@ delivered, no earlier than wave 4 (D-44).
       *Revised 2026-11-15 (D-44, D-46):* this task starts after the retrospective tooling EPIC
       is delivered; the file may still cite the scripts' present path until that EPIC corrects
       the line.
+      *Revised 2026-11-16 (D-52):* that EPIC is delivered; the file cites the scripts in
+      `skills/session-retrospective/scripts/`.
 - [ ] 3.3 Trigger probe (D-16): "is our cold reader any good, does it catch real problems" expects
       `test-suite-care`; near-miss "have a reader attack this draft" expects the skill that holds
       the adversarial reader's brief (`guardrails`, EPIC D); asked three times, recorded as in 1.5.

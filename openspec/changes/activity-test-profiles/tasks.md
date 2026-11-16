@@ -4,7 +4,10 @@
      Revised 2026-11-15 after the gate, not gated again
      (../delivery-process-and-tools/inputs/reassessment-2026-11-15.md): wave 4, after R3, B's
      stages 1 and 2 and R1's stage 1 (design D-41); tasks 0.2, 1.4, 1.6, 2.5, 2.6, 2.7 and 3.6
-     changed by D-37 to D-40. Ids and counts are unchanged. -->
+     changed by D-37 to D-40. Ids and counts are unchanged.
+     Revised 2026-11-16 after the gate, not gated again (S-10), against the lean skills
+     (../archive/2026-11-16-lean-skills/): tasks 1.7, 1.8, 2.6, 3.6 and 4.4 changed by D-42 to
+     D-45. Ids and counts are unchanged. -->
 
 > Derives from: EPIC `activity-test-profiles` ([`proposal.md`](proposal.md)); design in [`design.md`](design.md).
 
@@ -69,12 +72,14 @@ subagent that built nothing of the stage.
   in the verify phase*).
 - [ ] 1.7 *Fill only, for a gap row outside the candidates* (`ADQ`, `ROB` or `RSK` with a
   failure): commit its signed-off requirement in the `documentation-workflow` delta, then the
-  worked example, then the check in `skills/technical-writing/references/` (D-14, D-18).
+  worked example, then the check in `skills/technical-writing/references/`, with a pointer
+  sentence in the body (D-14, D-18, D-43).
 - [ ] 1.8 Close, step 6 of the stage loop, for `documentation.md`: `CLOSED_FAMILIES` red then
   green, the matrix edits, the conditional requirements kept, rewritten or deleted,
   `evidence/catch-documentation.md`, the CHANGELOG line, the four commands (D-10, D-11, D-14, D-15,
   D-18; spec *A family's gaps are filled from recorded failures or accepted*). The matrix edits
-  remove the whole sentence that starts "`gap → C` rows", whatever its tail (D-28), and keep the
+  remove any mention of `gap → C` left in the family's opening paragraph; only `ui.md` has one
+  (D-28, D-42), and keep the
   words "assessed on request by" where a row has them (D-27). After each rebase rerun
   `make bundles` and `make skill-inventory` and take fresh `CHK-` ids where needed (D-29).
 - [ ] 1.9 The invariants trace, on the stage's regular tester dispatch: brief read from the working
@@ -103,7 +108,8 @@ subagent that built nothing of the stage.
   invariant is, and no example code (D-4, D-18, D-40).
 - [ ] 2.6 `epic-planning` SKILL.md, on top of R3's text (D-38): the question in step 2 and one
   sentence in step 6 that names the three rules and points to the template and 2.5, within
-  D-4's line budget; the sentence for a stage without a tester if D-24 is
+  D-4's line budget, the pointer in the lean form; the body measured before and after, in
+  `evidence/catch-shaping.md` (D-43); the sentence for a stage without a tester if D-24 is
   confirmed, and a pointer to the tester's brief in `epic-delivery` for which properties the
   tester takes (D-35); the `plan-invariants` entry in `tests/ownership.yaml` (D-1, D-4,
   D-15; spec *The shaping interview asks for invariants*, whose two scenarios CK-2 proves; *The
@@ -147,7 +153,9 @@ subagent that built nothing of the stage.
   then, under a new subsection *Recommended checks*, the rule it encodes in a line, the check's
   name, and a pointer to that row and to #216: ls-lint
   in `stack-operations`' `references/stack-standard.md`; checkmake in `infrastructure-operations`'
-  `references/repo-checks.md`, outside its MUST (D-12, D-40; spec *A naming check for stacks
+  `references/repo-checks.md`, each outside its file's MUST. `stack-operations` is 29 bytes under
+  the budget: cut at least as many bytes from it in the same commit, sizes in
+  `evidence/catch-devops.md`, or ask the developer (D-44) (D-12, D-40; spec *A naming check for stacks
   repositories*; *A Makefile check for infrastructure repositories*).
 - [ ] 3.7 *Fill only, for the `ADQ` row* (a recorded failure the existing checks missed): commit
   its signed-off requirement in the `operations-practice` delta, then the worked example, then the
@@ -169,7 +177,8 @@ subagent that built nothing of the stage.
 - [ ] 4.4 *Fill only.* The worked example, then the check in a reference file of the developer D-14
   names; a delta only in the case D-14's table gives one (D-14, D-18). For `architecture`, the
   question id goes inside the folded pointer of the existing `**Related:**` line of its SKILL.md;
-  no line is added (D-26).
+  no line is added (D-26). `architecture` is exactly at its 24 KB budget: every byte added is cut
+  in the same commit, or the developer decides in the round of kind 3 (D-45).
 - [ ] 4.5 Close as 1.8, for both family files and `evidence/catch-architecture-modelling.md`; then
   the stage checker and one PR as 1.10, naming the EPIC (D-10, D-11, D-14, D-15).
 

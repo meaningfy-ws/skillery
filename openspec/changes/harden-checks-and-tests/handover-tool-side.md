@@ -29,6 +29,8 @@ Tasks ticked: 1.1, 1.2, 1.3, 1.4, 1.6, 1.9, 1.10, 1.11, 1.15.
   - D-3's grammar says import-linter is followed by the contract kind "in words", but its own
     first-assignment row holds backticks (`exhaustive`); settle the form before writing it.
   - A report-only rule's value carries `(partial: report-only)`; no test enforces it.
+  - *Update, 2026-11-16 (D-42, D-43):* the pilot left four tables (the bullets are the `CC-`
+    table) and `cosmic-python` has about 3.9 KB free; write the values in D-43's short form.
 *Update, same day (D-41):* the `project-setup` part is done: 1.5, 1.8 and 1.13 below are written
 and ticked, with the `dot-semgrepignore` row. What remains waits for the `lean-skills` pilot:
 1.12, the 1.7 entry and lens line, 1.14 and the last CHANGELOG line of 1.16.
