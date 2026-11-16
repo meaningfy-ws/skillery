@@ -50,7 +50,7 @@
   reads the new `skills:` lists, and `pytest tests/test_dep_skills_adversarial.py`); CHANGELOG line
   under `[Unreleased]` for the installer; open the pull request, merge on green CI, tick 1.1 to
   1.9; tell the `lean-skills` pilot it can start
-  ([its stage table](../lean-skills/design.md#stages-2-to-5-outline), row "2 pilot").
+  ([its stage table](../archive/2026-11-16-lean-skills/design.md#stages-2-to-5-outline), row "2 pilot").
 
 ## 2. Stage 1b: the wondel skills (wave 2, after 1a)
 
