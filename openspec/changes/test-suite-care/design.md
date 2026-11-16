@@ -896,6 +896,28 @@ decisions are taken, recorded here and shown for validation at the end).
   in `requirements-quality.txt` (read by `make install`); CI still installs only pyyaml and
   pytest, so T-2 and T-7 skip there and run locally.
 
+Stage 1 review (PR #298): five lenses and the adversarial tester (VERY LARGE; no `## Invariants`,
+so the tester ran). No finding was labelled Critical; the lead re-labelled three, each with its
+reason. Every other finding is rejected "under the floor" (one line each below).
+
+- **D-61 Critical: `changed.py` drops a non-ASCII path (tester 6 and 7, L1 W1).** git quotes such a
+  path (`core.quotePath`), so `"pkg/...` matches "anything else" and the lane exits 0 having run
+  nothing: a false green. Re-labelled because it fails silently in the unsafe direction. Fix: run
+  git with `-c core.quotePath=false`; the tester's two tests are kept.
+- **D-62 Critical: `testing-setup.md` says `test-changed` skips slow tests (L2 W1).** It runs them
+  (D-10); the sentence contradicts D-10 and the owner's OQ-3 answer and ships to every project.
+- **D-63 Critical: the survivor rule lost its precision (L2 W2).** D-6 names the survivor per
+  waste: the containing test under W-4, the lower-tier test under W-5. Without it a drop can leave
+  only a same-tier or non-containing test (RISK-1). The skill states it again.
+- **Under the floor:** L1 W2 (the audited command's own report files, such as `coverage.xml`,
+  land in the repository), S1 to S3; L2 W3 (the `code-principles-governance` delta sentence on
+  rule 11 belongs to deferred stage 2; settle it at archive), W4 (exact `contained` asserts), S5 to
+  S9; L3 W1 (the fixture bullet restates rule 6), S1 to S3; L4 W1 to W5, S6 to S13; L5 W1, W2 (the
+  description names stage 3's trigger, fixed by D-1), S3 to S8; the tester's findings 1 to 4
+  (tracebacks on a missing or malformed data or phases file; the script still exits non-zero) and
+  5 (`--compare` lists a test present in one file with an empty line set; it errs towards
+  rejecting a change). Their tests are deleted with the reason "under the floor".
+
 ## Open Questions
 
 None blocks stage 1. To confirm with the owner at scenario sign-off (task 1.0):

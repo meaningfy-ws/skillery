@@ -45,7 +45,8 @@ class FallbackError(Exception):
 
 
 def _git(*args: str) -> list[str]:
-    run = subprocess.run(["git", *args], capture_output=True, text=True, check=True)
+    cmd = ["git", "-c", "core.quotePath=false", *args]
+    run = subprocess.run(cmd, capture_output=True, text=True, check=True)
     return [line for line in run.stdout.splitlines() if line]
 
 

@@ -14,9 +14,9 @@ metadata:
 # Test suite care
 
 Asked to shrink a slow suite, an agent drops tests whose covered lines another test also covers.
-That is the wrong first move: most of the time is usually set-up, not tests, and shared lines are a
+Wrong first move: most of the time is set-up, and shared lines are a
 hint, never proof that a behaviour keeps a guard. This skill measures first, cheapens set-up
-before it removes anything, and proposes; the owner decides.
+before removing anything, and proposes; the owner decides.
 
 ## Quick Start
 
@@ -36,7 +36,7 @@ A project's `make test` takes 310 s.
 ## Workflow
 
 The audit covers pytest suites; for any other runner, say so and stop. Output goes outside the
-repository, except the map and the report, which go to it in one pull request.
+repository, except the map and the report, which go in one pull request.
 
 1. **Measure.** Two runs of the project's own test command for each tier it has: run A for time
    per phase and per fixture, run B for the lines each test covers. Read `references/measuring.md`
@@ -44,13 +44,13 @@ repository, except the map and the report, which go to it in one pull request.
 2. **Map.** One row per test function: the scenario, requirement or capability it serves, with a
    confidence. Read `references/scenario-map.md` when you build or update the map: it holds the
    format, the levels, the evidence each confidence needs and the owner's sample check. With
-   many test folders, give each folder to one fresh subagent and merge their rows.
+   many test folders, give each folder to a fresh subagent and merge the rows.
 3. **Find the waste.** Read `references/waste.md` when you read the evidence for proposals: it
    holds the eight kinds of waste, the evidence each requires and its class.
 4. **Report.** Fill `assets/report-template.md` as `tests/audit/report-<yyyy-mm-dd>.md`, class 1
    first.
 5. **Decide and land.** The owner decides each proposal: approved, rejected or later, with a
-   reason, written in the report. Each approved proposal, or group of one class, lands as its own
+   reason, in the report. Each approved proposal, or group of one class, lands as its own
    pull request with the wall time of the same command before and after (each run twice on one
    machine), the map rows it touches, the check of a fixture change, and the coverage floor's
    result. "No proposal approved" completes the audit.
@@ -65,15 +65,15 @@ repository, except the map and the report, which go to it in one pull request.
 
 - **Share only the unchanging part of a fixture.** What a test changes (a store it writes to, a
   mock whose calls it asserts) keeps function scope; what none changes may widen, with a cheap
-  reset where needed. Never share a mock. Widen an async fixture only as far as the event-loop
+  reset. Never share a mock. Widen an async fixture only as far as the event-loop
   setting allows.
 - **Check a fixture change:** run B before and after; `overlap.py <after> --compare <before>` lists
   no test that uses the fixture; the suite passes twice, the second time with the test files in
   reverse order.
 - **Name the survivor** of every class 2 proposal and every class 3 one except W-6: the case that
-  stays, or another test at `high` for the same scenario as the dropped test, itself at `high`. A
-  survivor is in no other class 2 or 3 proposal of the audit, so two tests that contain each
-  other cannot both go.
+  stays, or another test at `high` for the same scenario as the dropped test, itself at `high`; under W-4 it is
+  the containing test, under W-5 the lower-tier test. A survivor is in no other class 2 or 3
+  proposal, so two tests that contain each other cannot both go.
 - A test below `high`, or at level `none`, is never proposed for class 3; it is listed under
   "Tests that serve no scenario". W-6, a test that runs no measured line, is the one exception.
 - No proposal removes the last `high` test of a scenario, and none leaves a test breaking a rule

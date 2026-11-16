@@ -48,14 +48,14 @@ def _jsonl(paths):
     return [json.loads(line) for p in paths for line in p.read_text().splitlines() if line.strip()]
 
 
-def _run_phase_times(pytester, monkeypatch, *extra):
+def _run_phase_times(pytester, monkeypatch, *extra, source=SLOW_MODULE, **outcomes):
     monkeypatch.setenv("PYTHONPATH", str(SCRIPTS))
     monkeypatch.setenv("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
-    pytester.makepyfile(test_slow=SLOW_MODULE)
+    pytester.makepyfile(test_slow=source)
     out = pytester.path / "out" / "phases.jsonl"
     out.parent.mkdir()
     result = pytester.runpytest_subprocess("-p", "phase_times", f"--phase-times-out={out}", *extra)
-    result.assert_outcomes(passed=2)
+    result.assert_outcomes(**(outcomes or {"passed": 2}))
     return _jsonl(sorted(out.parent.glob("phases.jsonl*")))
 
 
@@ -76,6 +76,14 @@ def _check_phase_lines(lines):
 # T-1
 def test_phase_times_writes_fixture_and_phase_lines(pytester, monkeypatch):
     _check_phase_lines(_run_phase_times(pytester, monkeypatch))
+
+
+# Error matrix: a test fails during a run
+def test_phase_times_failing_test_is_recorded_and_the_run_continues(pytester, monkeypatch):
+    source = "def test_bad():\n    assert 0\n\ndef test_good():\n    pass\n"
+    lines = _run_phase_times(pytester, monkeypatch, source=source, passed=1, failed=1)
+    calls = {r["test"].rsplit("::", 1)[1]: r["outcome"] for r in lines if r.get("phase") == "call"}
+    assert calls == {"test_bad": "failed", "test_good": "passed"}
 
 
 # T-2
@@ -276,6 +284,13 @@ def test_changed_lane_drops_a_deleted_path(lane_repo):
     (lane_repo / "tests/unit/test_top.py").unlink()
     result = _changed(lane_repo)
     assert (result.returncode, result.stdout) == (0, "")
+
+
+@pytest.mark.parametrize("path", ["pkg/services/café.py", "tests/unit/services/test_é.py"])
+def test_changed_lane_non_ascii_path_is_not_dropped(lane_repo, path):  # git quotes it by default
+    (lane_repo / path).write_text("y = 2\n")
+    result = _changed(lane_repo)
+    assert (result.returncode, result.stdout) == (0, "tests/unit/services/\n"), result.stderr
 
 
 def test_changed_lane_unknown_base_exits_2(lane_repo):
