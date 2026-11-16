@@ -12,6 +12,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.17.1] - 2026-11-16
+
 ### Fixed
 
 - **The lead now writes the mark line.** In 3.16.0 and 3.17.0 the rule sat too deep: in walked
