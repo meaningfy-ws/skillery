@@ -6,7 +6,8 @@
      kept), stage 3 after the retrospective tooling EPIC, 3.7 handed over, tasks 1.0 and 3.2
      and the Roadmap corrected; not gated again. Revised 2026-11-16 against the lean skills on
      develop (D-47 to D-52: tasks 1.3, 1.6, 1.8, 1.9, 3.2 and the stage 3 line); not gated
-     again. -->
+     again. Stage 1 build (1.0 to 1.10) delivered 2026-11-16 in PR #298 (D-55 to D-63); the
+     trial tasks 1.11 to 1.13 are next (handover.md). -->
 
 # PLAN (tasks): test suite care
 
@@ -111,7 +112,7 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       *Revised 2026-11-16 (D-51):* `SKILL.md` gets a clause in the **Decide and fix** item of
       "The loop of a stage", not a sentence; the detail goes into `stage-loop.md` step 4 beside
       the floor bullet, which already deletes a test under the floor and is cited, not restated.
-- [ ] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
+- [x] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
       T-1 to T-12 and T-15 green (T-7 and T-2 may skip in CI).
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
       feature and integration lanes; build the map with one subagent per test folder; write the

@@ -885,7 +885,7 @@ decisions are taken, recorded here and shown for validation at the end).
 - **D-58 Where the lanes' words were paid for (D-49, D-53).** The **Lanes** bullet of
   `testing-setup.md` names `make test-fast` and `test-changed` and that CI still runs slow tests;
   it drops the parenthesised contents of `ci-quick` and `ci-full`, which their `##` help comments
-  in the Makefile template state. `project-setup` is 24,537 bytes, no `skill-budget.yaml` entry.
+  in the Makefile template state. `project-setup` is 24,575 bytes after the fix pass (D-62), no `skill-budget.yaml` entry.
   The `changed.py` exception is `FallbackError` (the scaffold's Ruff, N818); T-8's temporary
   repository has a `.gitignore` for `__pycache__`, as a scaffolded one does.
 - **D-59 Small wording choices.** Rule 6 keeps its sentence and gains D-8's after it. The
