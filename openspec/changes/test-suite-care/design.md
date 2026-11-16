@@ -557,7 +557,7 @@ decisions 4, 5 and 7).
 
 Revised after the gate, not gated again (2026-11-15): D-37 to D-42, under Delivery decisions,
 were added after the owner settled how the open EPICs fit the three refactoring EPICs
-([`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+([`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
 S-2, S-6, S-8, S-9 and the order). No clarity-gate run followed, by S-10 of that record.
 
 Revised after the gate, not gated again (2026-11-16): D-47 to D-52, under Delivery decisions,
@@ -703,7 +703,7 @@ decisions 4, 5 and 7). The clarity gate was not run again on these entries.
 Revised 2026-11-15, after the gate. The owner settled how every open EPIC fits the three
 refactoring EPICs: `lean-skills` (R1), `orchestrate-external-skills` (R2) and
 `delivery-process-and-tools` (R3). The record is
-[`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md);
+[`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md);
 its points are cited as S-n. The clarity gate was not run again on these entries (S-10).
 
 - **D-37 Order against the refactoring EPICs (replaces D-17 for this EPIC's own place).** Stage 1
@@ -758,7 +758,7 @@ its points are cited as S-n. The clarity gate was not run again on these entries
   | The anti-patterns table and the error matrix of this design | Mixed | Not copied into the skill as tables. A row is a line in the file it applies to, a behaviour of a script, or left out. | 0 |
 
   An earlier reading put the skill at 24 to 30 KB
-  ([touch map](../delivery-process-and-tools/inputs/touchmaps/touchmap-harden-suitecare.md)).
+  ([touch map](../archive/2026-11-16-delivery-process-and-tools/inputs/touchmaps/touchmap-harden-suitecare.md)).
   The sizes above add to 16.5 KB, which leaves room for what the trials teach (D-14); that
   text enters within the budget too. To fit, the plan sheds: the 150-line target of the body;
   `report.md` as prose; the smell descriptions and sources in `waste.md`; any restated tool
@@ -782,7 +782,7 @@ its points are cited as S-n. The clarity gate was not run again on these entries
 
 Revised 2026-11-15, after the gate, agreed by the owner on 2026-11-15 (the sections "Order",
 "Candidate drops" and "Questions the revisions left open" of
-[`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)).
+[`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md)).
 The clarity gate was not run again on these entries.
 
 - **D-43 Stage 2 (UI suites) is deferred.** It is not delivered with this EPIC. It waits until a
@@ -866,6 +866,57 @@ gate was not run again on these entries (S-10). Sizes are bytes; the budget is 2
 - **D-54 B stage 1's tool side has landed.** PR #246 merged it on 2026-11-15 (the Makefile
   template already has `check-quality` and `check-semgrep`), so the "if B stage 1 has landed"
   branches of D-21, D-27 and D-28 apply.
+
+Recorded 2026-11-16 by the lead while delivering stage 1 (owner's standing rule: the delivery
+decisions are taken, recorded here and shown for validation at the end).
+
+- **D-55 Run B sets `COVERAGE_CORE=ctrace` (adds to D-2).** T-7's first real run failed: on Python
+  3.14 coverage 7.17 defaults to the `sysmon` core, which records a line once, under the first test
+  that runs it, so a later test silently loses lines and nothing looks contained. With `ctrace`
+  the per-test lines are complete (checked on 3.13 and 3.14; `evidence/scripts.md`). The command
+  in `measuring.md` sets it and says why; T-7 sets it.
+- **D-56 The order against B, as found.** B's tasks 1.12 ("Checked by") and 2.4 (tester brief)
+  have not landed, and both already carry the matching lines (D-17), so tasks 1.6 and 1.9 add no
+  line to B's tasks. Rules 17 to 21 carry no `*Checked by:*` suffix; B's 1.12 adds it. This EPIC
+  lands first, so it writes the properties rule into the tester's brief (D-31): one property per
+  invariant of the PLAN's `## Invariants`, else per error-matrix row (D-18).
+- **D-57 The orchestrator has not landed (D-41).** No orchestrator skill is on `develop`, so the
+  orchestrator near-miss probe and the orchestrator's row are left to `orchestrate-external-skills`.
+- **D-58 Where the lanes' words were paid for (D-49, D-53).** The **Lanes** bullet of
+  `testing-setup.md` names `make test-fast` and `test-changed` and that CI still runs slow tests;
+  it drops the parenthesised contents of `ci-quick` and `ci-full`, which their `##` help comments
+  in the Makefile template state. `project-setup` is 24,575 bytes after the fix pass (D-62), no `skill-budget.yaml` entry.
+  The `changed.py` exception is `FallbackError` (the scaffold's Ruff, N818); T-8's temporary
+  repository has a `.gitignore` for `__pycache__`, as a scaffolded one does.
+- **D-59 Small wording choices.** Rule 6 keeps its sentence and gains D-8's after it. The
+  inventory owner cell names `SKILL.md (Workflow)`, the heading D-48 gives the five steps. The
+  checklist ends with a one-line pointer to `test-suite-care` under the new section. The Gherkin
+  check box reads "No step joins two actions with 'and'." as D-8 gives it.
+- **D-60 The three test packages (D-28).** `coverage`, `pytest-cov` and `pytest-xdist` are pinned
+  in `requirements-quality.txt` (read by `make install`); CI still installs only pyyaml and
+  pytest, so T-2 and T-7 skip there and run locally.
+
+Stage 1 review (PR #298): five lenses and the adversarial tester (VERY LARGE; no `## Invariants`,
+so the tester ran). No finding was labelled Critical; the lead re-labelled three, each with its
+reason. Every other finding is rejected "under the floor" (one line each below).
+
+- **D-61 Critical: `changed.py` drops a non-ASCII path (tester 6 and 7, L1 W1).** git quotes such a
+  path (`core.quotePath`), so `"pkg/...` matches "anything else" and the lane exits 0 having run
+  nothing: a false green. Re-labelled because it fails silently in the unsafe direction. Fix: run
+  git with `-c core.quotePath=false`; the tester's two tests are kept.
+- **D-62 Critical: `testing-setup.md` says `test-changed` skips slow tests (L2 W1).** It runs them
+  (D-10); the sentence contradicts D-10 and the owner's OQ-3 answer and ships to every project.
+- **D-63 Critical: the survivor rule lost its precision (L2 W2).** D-6 names the survivor per
+  waste: the containing test under W-4, the lower-tier test under W-5. Without it a drop can leave
+  only a same-tier or non-containing test (RISK-1). The skill states it again.
+- **Under the floor:** L1 W2 (the audited command's own report files, such as `coverage.xml`,
+  land in the repository), S1 to S3; L2 W3 (the `code-principles-governance` delta sentence on
+  rule 11 belongs to deferred stage 2; settle it at archive), W4 (exact `contained` asserts), S5 to
+  S9; L3 W1 (the fixture bullet restates rule 6), S1 to S3; L4 W1 to W5, S6 to S13; L5 W1, W2 (the
+  description names stage 3's trigger, fixed by D-1), S3 to S8; the tester's findings 1 to 4
+  (tracebacks on a missing or malformed data or phases file; the script still exits non-zero) and
+  5 (`--compare` lists a test present in one file with an empty line set; it errs towards
+  rejecting a change). Their tests are deleted with the reason "under the floor".
 
 ## Open Questions
 

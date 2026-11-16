@@ -111,7 +111,7 @@ Enough to write a proposal from, no more. Each is one short entry in the package
   it shares `sales-conversations`, `sales-qualification`, the coach and the spec
   `sales-method-ownership`, and before the sales stage of `lean-skills`. The order of all open
   EPICs is in
-  [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md).
+  [`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md).
 
 ## Rabbit-holes
 

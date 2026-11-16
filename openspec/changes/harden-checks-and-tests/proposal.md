@@ -115,9 +115,9 @@ selection and misses checks it could make for free.
   agent; LARGE-only (round 0, Q-2) — was: from MEDIUM up on every stage, and no result line
   (the measurements show review and verification as 53% of all subagents, with no outcome
   recorded). *Revised again on 2026-11-15 by owner decision
-  ([`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+  ([`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
   S-6):* the condition and the result line are defined and delivered by
-  [`delivery-process-and-tools`](../delivery-process-and-tools/proposal.md) (its DEC-3 and
+  [`delivery-process-and-tools`](../archive/2026-11-16-delivery-process-and-tools/proposal.md) (its DEC-3 and
   DEC-18), which owns the stage loop and the review sets; this EPIC changes no review-set data
   and delivers the tester's methods and what its report holds (design D-30).
 - **DEC-10** *(dropped 2026-11-15 by owner decision, design D-35)*: was: mutmut runs weekly on

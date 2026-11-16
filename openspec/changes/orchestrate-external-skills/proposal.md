@@ -120,7 +120,7 @@ or when it names a skill that is not installed and says nothing.
   only.
 - **DEC-21** *(2026-11-15)*: Order: stage 1 (the register) in wave 2; the rest in wave 3, after
   stage 1 of `lean-skills` and after `generic-task-test-profiles`; before `commercial-portfolio`.
-  See [`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md).
+  See [`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md).
 
 ## Rabbit-holes
 

@@ -373,6 +373,7 @@ fi  # CODE
 # ---- 4. tests -------------------------------------------------------------
 if [[ "$CODE" -eq 1 ]]; then
 render "$TPL/tests/conftest.py"             "$TARGET/tests/conftest.py"
+render "$TPL/tests/changed.py"              "$TARGET/tests/changed.py"
 render "$TPL/tests/unit/test_smoke.py"      "$TARGET/tests/unit/test_smoke.py"
 render "$TPL/tests/feature/example.feature" "$TARGET/tests/feature/example.feature"
 render "$TPL/tests/feature/test_example.py" "$TARGET/tests/feature/test_example.py"

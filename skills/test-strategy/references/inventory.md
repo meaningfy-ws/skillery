@@ -12,7 +12,7 @@ can be checked against its source.
 | Id | Check | What it checks | Owner | Moment |
 |---|---|---|---|---|
 | CHK-1 | Test-first loop | A failing test exists before the code | `skills/cosmic-python/SKILL.md` (Workflow); `skills/epic-delivery/references/team-and-briefs.md` (Builder); external `superpowers:test-driven-development` | each task |
-| CHK-2 | Testing checklist (rules 1-16) | Test tier, doubles, fixtures, assertions, time, containers, quarantine, traceability, validated examples kept as tests | `skills/cosmic-python/references/testing-checklist.md` | writing or reviewing tests |
+| CHK-2 | Testing checklist (rules 1-21) | Test tier, doubles, fixtures, assertions, time, containers, quarantine, traceability, validated examples kept as tests | `skills/cosmic-python/references/testing-checklist.md` | writing or reviewing tests |
 | CHK-3 | Test tiers, markers and the marker-injection hook | A test lives in its tier folder and carries its marker (`--strict-markers`) | `skills/project-setup/references/testing-setup.md` (tiers; markers by path); `skills/project-setup/SKILL.md` (Decisions, D5) | project setup; each test |
 | CHK-4 | Coverage gate | `fail_under = 80` on the package | `skills/project-setup/references/testing-setup.md` (Coverage); `skills/project-setup/references/ci-and-infra.md` (CI philosophy) | CI |
 | CHK-5 | Property-based tests (Hypothesis) | Invariants hold: round trip, order, bounds; CI runs derandomised | `skills/cosmic-python/references/testing-checklist.md` (item 10) | writing tests |
@@ -155,3 +155,4 @@ can be checked against its source.
 | CHK-142 | Workflow phase gates of the other eight workflows | Each phase declares the `expect` skills and the `gates` the navigator checks (sales, DevOps, epic-shaping, architecting, modelling, contract, documentation, release) | `skills/*/assets/workflows/*.workflow.json`; `mods/navigator/lib/workflow.ts` | during each workflow's phases |
 | CHK-143 | skillery-feedback sanitise-then-approve | Every issue field is sanitised against "Never in an issue" and the person approves the text before it is filed, since the repository is public | `skills/skillery-feedback/SKILL.md` (Workflow steps 3-4; Never in an issue) | before filing an issue |
 | CHK-144 | Vault move and delete check | Before a delete, the inbound links are searched and the notes that would break are named; before a move, no other note has the same name, and on a collision nothing moves | `skills/vault-conventions/SKILL.md` (Moving and deleting) | before a note is moved or deleted |
+| CHK-145 | Test suite audit | Whether the suite's tests earn their cost | `skills/test-suite-care/SKILL.md` (Workflow) | on request |

@@ -21,7 +21,8 @@ copy these.
    Prefer it over mock stubs.
 6. Build model objects with polyfactory factories, through the models, never bare dicts; write a
    small builder function only where a factory cannot express the object. Shared read-only data is
-   session-scoped; mutable state is function-scoped.
+   session-scoped; mutable state is function-scoped. Costly set-up is shared at the widest scope
+   whose tests do not change what it builds; a mock is never shared.
 
 ## Assertions
 
@@ -44,7 +45,8 @@ copy these.
 
 14. A test that both passes and fails on unchanged code is quarantined with the project's marker
     and an issue link, gets its own task or issue, and is never retried with new seeds inside a
-    stage; the stage PR names it.
+    stage; the stage PR names it. A `skip` or `xfail` that is not a quarantine carries an issue
+    link, unless it skips for a tool the machine lacks.
 
 ## Traceability and validated examples
 
@@ -54,6 +56,30 @@ copy these.
     `conceptual-modelling`). Compare answers as sets or graphs, never as text. Change one only with
     the model change that needs it, and say why in the commit.
 
+## Suite size and cost
+
+17. Every test asserts something.
+18. No two parametrised cases fall in the same equivalence class, beyond the cases rule 8 requires.
+19. A behaviour proven at a lower tier is not proven again at a higher one, unless the higher test
+    runs something real that the lower one fakes.
+20. A test whose set-up and call take longer than the project's threshold carries the `slow`
+    marker; the threshold is written in the marker's description.
+21. A file of adversarial tests is named by the feature it attacks, never by the stage that wrote it.
+
+`test-suite-care` audits a suite against these rules.
+
 ## The report
 
 What a test run reports (each gate with its time and test count) is in `epic-delivery`'s brief template.
+
+## Sources
+
+| Rule | Smell it prevents | Source |
+|---|---|---|
+| 6 | General Fixture | Meszaros, *xUnit Test Patterns* |
+| 14 | Ignored Test | Fowler, "Eradicating Non-Determinism in Tests" |
+| 17 | Empty Test | testsmells.org |
+| 18 | Lazy Test | testsmells.org |
+| 19 | Duplication across tiers | Vocke, "The Practical Test Pyramid" |
+| 20 | Slow Tests | *Software Engineering at Google*, ch. 11 |
+| 21 | Tests filed by history | a recorded failure (EPIC `test-suite-care`) |

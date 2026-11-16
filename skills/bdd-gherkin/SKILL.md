@@ -65,6 +65,7 @@ Scenario Outline: <description>
 - [ ] Every test-case-spec row and every error-matrix row has a scenario.
 - [ ] `Scenario Outline` used wherever multiple data variations apply.
 - [ ] No implementation details leak in (no SQL / API paths / class names).
+- [ ] No step joins two actions with 'and'.
 - [ ] Files are syntactically valid Gherkin.
 
 ## Scenario sign-off and the traceability check

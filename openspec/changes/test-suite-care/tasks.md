@@ -6,7 +6,8 @@
      kept), stage 3 after the retrospective tooling EPIC, 3.7 handed over, tasks 1.0 and 3.2
      and the Roadmap corrected; not gated again. Revised 2026-11-16 against the lean skills on
      develop (D-47 to D-52: tasks 1.3, 1.6, 1.8, 1.9, 3.2 and the stage 3 line); not gated
-     again. -->
+     again. Stage 1 build (1.0 to 1.10) delivered 2026-11-16 in PR #298 (D-55 to D-63); the
+     trial tasks 1.11 to 1.13 are next (handover.md). -->
 
 # PLAN (tasks): test suite care
 
@@ -17,23 +18,23 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
 
 ## 1. Stage 1: the audit for Python suites, the rules, the distilling, the lanes
 
-- [ ] 1.0 Scenario sign-off: the owner reads the scenarios of `specs/` and answers OQ-1 to OQ-5;
+- [x] 1.0 Scenario sign-off: the owner reads the scenarios of `specs/` and answers OQ-1 to OQ-5;
       the answers are recorded in `evidence/acceptance.md`. *Acceptance:* the file exists with the
       owner's words.
       Also put to the owner: the deviations table of the design.
       *Revised 2026-11-15 (D-43, D-45, D-46):* OQ-1 and OQ-2 wait with stage 2, OQ-4 and OQ-5
       are answered, and D-33 (the closing check) is handed over; so only OQ-3 is asked.
-- [ ] 1.0b Baseline: `make validate` on the fresh branch, result recorded in
+- [x] 1.0b Baseline: `make validate` on the fresh branch, result recorded in
       `evidence/validate-baseline.md` (D-32). *Acceptance:* the record names any check already
       failing.
-- [ ] 1.1 Write `tests/test_test_suite_care.py` (D-15), T-1 to T-12 and T-15. *Acceptance:* each test
+- [x] 1.1 Write `tests/test_test_suite_care.py` (D-15), T-1 to T-12 and T-15. *Acceptance:* each test
       fails for its own reason (a missing script, a missing file, a checklist of 16 rules, a
       scaffold without `tests/changed.py`), recorded in `evidence/red.md`.
-- [ ] 1.2 Write `skills/test-suite-care/scripts/phase_times.py` and `scripts/overlap.py` (D-3).
+- [x] 1.2 Write `skills/test-suite-care/scripts/phase_times.py` and `scripts/overlap.py` (D-3).
       *Acceptance:* T-1 and T-3 to T-6 pass; T-2 and T-7 pass once under `uv run --with pytest-cov --with pytest-xdist`, output in
       `evidence/scripts.md`.
       *Reconciled:* D-28 (the three packages).
-- [ ] 1.3 Write `SKILL.md` and `references/measuring.md`, `scenario-map.md`, `waste.md`,
+- [x] 1.3 Write `SKILL.md` and `references/measuring.md`, `scenario-map.md`, `waste.md`,
       and `assets/report-template.md` (D-1, D-2, D-4 to D-7), with the frontmatter and facets of D-1. *Acceptance:*
       T-10 passes, and the `waste.md` part of T-11.
       *Reconciled with B, C and D:* apply D-20 of the design's Delivery decisions.
@@ -44,12 +45,12 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       the budget check of `lean-skills` passes with no recorded exception.
       *Revised 2026-11-16 (D-48):* the body has the sections of the lean standard; the Gotchas
       are a Common mistakes table under `## Rules`.
-- [ ] 1.4 Register the skill (D-16): `bundles.yaml`, `use-cases/UC-W18-programming-team-lead.md`,
+- [x] 1.4 Register the skill (D-16): `bundles.yaml`, `use-cases/UC-W18-programming-team-lead.md`,
       the two README rows, `CHANGELOG.md`, `make bundles`, `make skill-inventory`. *Acceptance:*
       `make lint` is clean; `make bundles` leaves no difference; `tests/test_skill_inventory.py`
       passes.
       (`make validate` is the acceptance of 1.10.)
-- [ ] 1.5 Trigger probes in `tests/trigger_probes.yaml` (D-16): positive "our test suite takes too long,
+- [x] 1.5 Trigger probes in `tests/trigger_probes.yaml` (D-16): positive "our test suite takes too long,
       find what to cut" expects `test-suite-care`; near-miss "write tests for this function"
       expects `cosmic-python`; near-miss "which checks does this activity need" expects
       `test-strategy`. *Acceptance:* each probe is asked three times in a fresh session; the
@@ -59,7 +60,7 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       add the near-miss "which skill do I use to speed up our tests", which expects the
       orchestrator, and check that the orchestrator has a row for this skill. If it has not
       landed, that EPIC adds both; this task does not wait for it.
-- [ ] 1.6 The checklist in `skills/cosmic-python/references/testing-checklist.md`: amend rules 6
+- [x] 1.6 The checklist in `skills/cosmic-python/references/testing-checklist.md`: amend rules 6
       and 14, add rules 17 to 21 and the Sources list; the one Gherkin rule in
       `skills/bdd-gherkin/SKILL.md` (D-8); "rules 1-16" becomes "rules 1-21" in
       `skills/test-strategy/references/software.md` and `inventory.md`; the order rule against
@@ -68,11 +69,11 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       *Reconciled:* D-34 (comment on issue #210).
       *Revised 2026-11-16 (D-50):* the checklist additions are at most 2.5 KB, so
       `cosmic-python` stays under 24 KB; the size is in the stage's pull request.
-- [ ] 1.7 `test-strategy` row and pointer (D-13): the next free `CHK-` id in `inventory.md`, the
+- [x] 1.7 `test-strategy` row and pointer (D-13): the next free `CHK-` id in `inventory.md`, the
       `ADQ` row in `references/software.md`, the lanes in the Moment cell of both `CHK-2` rows,
       the pointer line in the new `SKILL.md`.
       *Acceptance:* the matrix parts of T-15 pass and `tests/test_test_strategy.py` stays green.
-- [ ] 1.8 Lanes in `project-setup` (D-10): `pytest.ini`, `Makefile.tmpl`, `tests/changed.py`
+- [x] 1.8 Lanes in `project-setup` (D-10): `pytest.ini`, `Makefile.tmpl`, `tests/changed.py`
       template, its line in `scripts/scaffold.sh`, the "Developer lanes" section of
       `references/testing-setup.md`. *Acceptance:* T-8 and T-9 pass: on a temporary
       git repository a change under `<package>/services/` prints `tests/unit/services/` and a
@@ -88,7 +89,7 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       comments, and `testing-setup.md` gets no new section, only its **Lanes** bullet names the
       two targets. *Acceptance, added:* `prose_budget` passes for `project-setup` with no
       `skill-budget.yaml` entry; if it cannot, the owner decides.
-- [ ] 1.9 Distilling in `epic-delivery` (D-12): tester brief, `SKILL.md` step 4, `stage-loop.md`
+- [x] 1.9 Distilling in `epic-delivery` (D-12): tester brief, `SKILL.md` step 4, `stage-loop.md`
       step 4 and ledger row; the scenario in
       `tests/features/epic-delivery.feature`, the Examples row in
       `tests/features/agents/team-lead.feature`; the order rule against EPIC B applied.
@@ -111,7 +112,7 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       *Revised 2026-11-16 (D-51):* `SKILL.md` gets a clause in the **Decide and fix** item of
       "The loop of a stage", not a sentence; the detail goes into `stage-loop.md` step 4 beside
       the floor bullet, which already deletes a test under the floor and is cited, not restated.
-- [ ] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
+- [x] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
       T-1 to T-12 and T-15 green (T-7 and T-2 may skip in CI).
 - [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
       feature and integration lanes; build the map with one subagent per test folder; write the

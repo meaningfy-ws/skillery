@@ -116,7 +116,7 @@ Read on 2026-11-14 from PR #236 as it stood (proposal with DEC-1 to DEC-9, one s
 
 **Settled on 2026-11-15.** The owner agreed to all four suggestions below, in the reassessment of
 the open EPICs
-([`reassessment-2026-11-15.md`](../../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
+([`reassessment-2026-11-15.md`](../../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
 S-3, S-4, S-7). The EPIC was re-shaped for it on purpose: DEC-16 closed, DEC-17 to DEC-21 added.
 
 **What the owner had to settle (DEC-16):**
