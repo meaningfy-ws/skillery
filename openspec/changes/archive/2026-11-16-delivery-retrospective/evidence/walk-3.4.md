@@ -67,3 +67,13 @@ headless: the navigator band does not show in `claude -p`; its warning is covere
 
 Signed off by: the developer, Eugeniu Costetchi, on 2026-11-16, on the lead's run 5: "go ahead
 with task 3.4, and skip the demo, just go ahead". Task 3.4 ticked; `~/sandbox/walk-3.4` removed.
+
+## Addendum, after the archive (2026-11-16): S5 walked live
+
+On the developer's word "go ahead just do it", the lead drove one interactive session on 3.17.1
+through a pseudo-terminal, read the screen through a terminal emulator, and unfolded the band after
+the turn. **S5 passes** once the sandbox is on a branch that names the change
+(`git checkout -b feature/walk-stage`): the band shows "No mark line in this session: write the mark
+line (epic-delivery)" once, and the implementer still starts and finishes. On `develop` the
+navigator follows no change ("no change for branch develop"), so the warning stays silent, as the
+spec says ("a session that has an open change"). `docs/environment/navigator.md` now says so.
