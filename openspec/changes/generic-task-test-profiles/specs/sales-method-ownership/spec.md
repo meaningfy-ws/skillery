@@ -25,10 +25,12 @@ reader's report with the draft (generic-task-test-profiles DEC-1, DEC-5, DEC-9).
 - **WHEN** the statement of work lists a deliverable that the price excludes, and a criterion says scope and price name the same deliverables
 - **THEN** the reader raises a finding on that criterion and quotes both passages
 
-### Requirement: The sales-message profile has one owner
-`sales-conversations` SHALL own the profile of sales emails and follow-ups to clients and partners
-in a `## Review profile` section: the reader's role (a busy recipient) and what that reader attacks,
-with the criteria of a piece proposed from the skill's acceptance criteria. In an attended session
+### Requirement: Sales messages take the message profile
+Sales emails and follow-ups to clients and partners SHALL take the message profile of
+`executive-communication` (its `## Review profile` section): the reader's role (a busy recipient)
+and what that reader attacks, with the criteria of a piece proposed from `sales-conversations`'
+acceptance criteria; `sales-conversations` SHALL hold no review profile of its own (design D-38,
+the owner, 2026-11-16). In an attended session
 the owner SHALL confirm the criteria and the reader SHALL run by the brief of `guardrails` before a
 draft is presented as ready to send; this applies to a draft the owner picks up from a scheduled
 run. A scheduled run SHALL ask for no confirmation of criteria and SHALL start no adversarial

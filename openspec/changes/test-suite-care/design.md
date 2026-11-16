@@ -4,7 +4,8 @@
      are folded in and not scored again (Gate record). Revised 2026-11-15 against the three
      refactoring EPICs (D-37 to D-42, under Delivery decisions); not gated again. Revised
      2026-11-15 again by owner agreement (D-43 to D-46): stage 2 deferred, stage 3 after the
-     retrospective tooling EPIC, closing check handed over, OQ-4 and OQ-5 answered. -->
+     retrospective tooling EPIC, closing check handed over, OQ-4 and OQ-5 answered. Revised
+     2026-11-16 against the lean skills on develop (D-47 to D-52); not gated again. -->
 
 # PLAN (design): test suite care
 
@@ -50,7 +51,7 @@ and quicker without losing a specified feature. The spike changed two assumption
 
   | File | Holds |
   |---|---|
-  | `SKILL.md` | Quick Start with one worked example, the five steps, the three classes of proposal, Gotchas, Boundary & Related Skills. Body near 6 KB (D-40; was a target of 150 lines). |
+  | `SKILL.md` | Quick Start with one worked example, the five steps, the three classes of proposal, Gotchas, Boundary & Related Skills. Body near 6 KB (D-40; was a target of 150 lines). *Revised 2026-11-16 (D-48):* the sections of the lean body; Gotchas become a Common mistakes table under Rules. |
   | `references/measuring.md` | The commands of step 1, per kind of test; what to do when a tool is missing. |
   | `references/scenario-map.md` | The map's format, levels, confidence and how it is built and sampled. |
   | `references/waste.md` | The kinds of waste (D-4), each with its evidence and class. |
@@ -295,7 +296,8 @@ and quicker without losing a specified feature. The spike changed two assumption
     - The 2 s of the `slow` marker is the scaffold's starting value, taken from the trial
       repository; a project changes it in its own `pytest.ini`.
   - `references/testing-setup.md`: a "Developer lanes" section. `ci-quick` and `ci-full` are
-    unchanged.
+    unchanged. *Revised 2026-11-16 (D-49):* no new section; the existing **Lanes** bullet names
+    the two targets, and the contract above lives in the template's docstring.
 
 - **D-11 Checks that are not code (stage 3).** `references/non-code-checks.md`:
   1. Name the check, the project and the kind of task, and take one real past item the check
@@ -558,6 +560,10 @@ were added after the owner settled how the open EPICs fit the three refactoring 
 ([`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md),
 S-2, S-6, S-8, S-9 and the order). No clarity-gate run followed, by S-10 of that record.
 
+Revised after the gate, not gated again (2026-11-16): D-47 to D-52, under Delivery decisions,
+check every open skill-editing task against the lean skills now on `develop`
+([`lean-skills` archive](../archive/2026-11-16-lean-skills/)). No clarity-gate run followed (S-10).
+
 ## Delivery decisions
 
 Recorded 2026-11-14, after the five changes of the test strategy work were read against each
@@ -771,7 +777,8 @@ its points are cited as S-n. The clarity gate was not run again on these entries
   no skill and no other home for them, and moves and changes neither script. *Revised
   2026-11-15 (D-44):* stage 3 now waits for that EPIC to be delivered. `non-code-checks.md` may
   cite the scripts' present path until it lands (D-46); the EPIC that moves the scripts corrects
-  that one line.
+  that one line. *Revised 2026-11-16 (D-52):* that EPIC has landed; the scripts are in
+  `skills/session-retrospective/scripts/`.
 
 Revised 2026-11-15, after the gate, agreed by the owner on 2026-11-15 (the sections "Order",
 "Candidate drops" and "Questions the revisions left open" of
@@ -799,6 +806,66 @@ The clarity gate was not run again on these entries.
   floor". `non-code-checks.md` may cite the scripts' present path until the tooling EPIC lands.
   Everything else in the reassessment's "Candidate drops" table for this EPIC (the sources table
   and rules 17 to 21 of task 1.6) is kept.
+
+Revised 2026-11-16, after the gate. EPIC `lean-skills` rewrote every skill to the lean standard
+and was archived on 2026-11-16 ([archive](../archive/2026-11-16-lean-skills/); the standard is
+"The lean standard" in `docs/development/creating-skills.md`). Each open task that edits a skill
+was read against the files on `develop` (7d85edd) and their `prose_budget` sizes. The clarity
+gate was not run again on these entries (S-10). Sizes are bytes; the budget is 24,576.
+
+- **D-47 What holds unchanged.** Task 1.7: `CHK-144` is the last id, so `CHK-145` is still the
+  next; both `CHK-2` rows and the `ADQ` rows of `software.md` and `cross-cutting.md` stand as D-13
+  names them. `test-strategy` is listed `over_budget` in `skill-budget.yaml`, so its rows add no
+  budget breach. Task 1.13 already writes within D-40. The `bdd-gherkin` box of task 1.6 goes into
+  "Quality checks (before finishing)", which stands (body 4,157). The `pending` key of
+  `skill-budget.yaml` is gone: the new skill meets the standard on arrival and is never listed.
+- **D-48 The body's shape (corrects D-1; task 1.3).** The lean standard fixes the body's
+  sections: `## Quick Start`, `## Workflow` (the five steps), `## Rules` (the three classes, the
+  survivor rule, the owner decides), `## Before you hand over` if needed, `## Boundary & Related
+  Skills`. There is no Gotchas section: the Gotchas of D-40 become a **Common mistakes** table
+  under `## Rules` (Mistake | Why it fails | Do instead). The caps of D-40 stand: 16.5 KB planned,
+  24 KB failing, body near 6 KB.
+- **D-49 Lanes go into the templates (corrects D-10 and task 1.8; S-9).** `project-setup` is at
+  24,497 bytes (body 8,315, references 16,182), 79 under the budget. `references/layout.md` was
+  deleted, and `references/config-files.md` no longer holds a target list or a template table
+  (the Makefile template is their source). So:
+  - The contract of `changed.py` (D-10, D-26) is the module docstring of
+    `assets/templates/tests/changed.py`; each target's text is its `##` help comment in
+    `Makefile.tmpl`; the threshold is the `slow` marker's description in `pytest.ini`. These are
+    material, outside the budget.
+  - `references/testing-setup.md` gains no section. Its existing **Lanes** bullet names
+    `make test-fast` and `make test-changed` and says slow tests still run in CI, with a cut in
+    the same file if needed, so that `project-setup` stays within 24,576 bytes. `config-files.md`
+    and `layout.md` are not edited.
+  - If it cannot fit, the builder stops and the owner decides; no `over_budget` entry is added
+    without the owner.
+- **D-50 The checklist additions are sized (adds to D-8; task 1.6).** `cosmic-python` is at
+  20,676 bytes; `testing-checklist.md` is 3,157. Rules 17 to 21, the sentences added to rules 6
+  and 14 and the Sources table add at most 2.5 KB, one line per rule and one table row per source,
+  so the skill stays under 24 KB.
+- **D-51 `epic-delivery` takes a clause, not a sentence (corrects D-35's `SKILL.md` text; task
+  1.9).** `epic-delivery` is `over_budget` (body 9,852, references 23,150), and its body is well
+  past 6 KB. "The loop of a stage" is now one paragraph that lists the six steps. The `SKILL.md`
+  edit is a clause in its **Decide and fix** item: "the pass's builder sorts the tester's tests
+  and the lead confirms the lists". The detail goes into step 4 of `references/stage-loop.md`,
+  beside the floor bullet, which already deletes a test under the floor: task 1.9 cites that
+  bullet and does not restate it. The tester brief (`team-and-briefs.md`, "Adversarial tester"),
+  the ledger row (last cell "—") and the scenario "Each check runs once in a stage" stand as D-12
+  names them.
+- **D-52 The scripts have their home (corrects D-42, D-44 and D-46; task 3.2).** The
+  retrospective tooling EPIC was delivered and archived on 2026-11-16
+  (`archive/2026-11-16-delivery-retrospective`). `session_digest.py` and `epic_report.py` are in
+  `skills/session-retrospective/scripts/`, as D-36 already says. `non-code-checks.md` cites them
+  there, and the condition of D-44 is met: stage 3 waits only for its wave. The 2.5 KB of D-40
+  for the file stands.
+- **D-53 A skill with no room (owner, 2026-11-16).** Standing rule, asked in one question round:
+  a planned addition to a skill at or near 24 KB is paid for in the same pull request by an equal
+  cut from that skill, or the prose moves to a tool or a template (S-9). Only when neither works
+  does the builder ask the owner for an `over_budget` entry. It governs D-49 (`project-setup`)
+  and D-50 (`cosmic-python`).
+- **D-54 B stage 1's tool side has landed.** PR #246 merged it on 2026-11-15 (the Makefile
+  template already has `check-quality` and `check-semgrep`), so the "if B stage 1 has landed"
+  branches of D-21, D-27 and D-28 apply.
 
 ## Open Questions
 

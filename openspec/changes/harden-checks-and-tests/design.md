@@ -46,9 +46,9 @@ tester's new range needs no mod change.
 | `ci-and-infra.md` | [`project-setup/references/ci-and-infra.md`](../../../skills/project-setup/references/ci-and-infra.md) |
 | `layout.md`, `checklists.md` | [`project-setup/SKILL.md`](../../../skills/project-setup/SKILL.md) (*Before you hand over*; both files were cut by `lean-skills` stage 3, the tree is `scripts/scaffold.sh`'s) |
 | `modernizing-existing-projects.md` | [`project-setup/references/modernizing-existing-projects.md`](../../../skills/project-setup/references/modernizing-existing-projects.md) |
-| `stage-loop.md` | [`epic-delivery/references/stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md) (the check ledger, line 136) |
+| `stage-loop.md` | [`epic-delivery/references/stage-loop.md`](../../../skills/epic-delivery/references/stage-loop.md) (the check ledger, line 136; *revised 2026-11-16 (D-46):* line 110, the tester's row line 125) |
 | `example-testing-patterns.md` | `cosmic-python/references/example-testing-patterns.md` (no longer edited, D-32; deleted by `lean-skills` stage 2) |
-| The L3 lens | [`meaningfy-code-review/SKILL.md`](../../../skills/meaningfy-code-review/SKILL.md) (the lens table, line 74) |
+| The L3 lens | [`meaningfy-code-review/SKILL.md`](../../../skills/meaningfy-code-review/SKILL.md) (the lens table, line 74; *revised 2026-11-16 (D-46):* line 75) |
 | `working-with-agents.md` | [`docs/practice/ai-coding/working-with-agents.md`](../../../docs/practice/ai-coding/working-with-agents.md) (line 44) |
 | The reviewer's scenarios | [`tests/features/agents/code-reviewer.feature`](../../../tests/features/agents/code-reviewer.feature) |
 | `CONTRIBUTING.md`, `dependencies.yaml` | [`CONTRIBUTING.md`](../../../CONTRIBUTING.md), [`dependencies.yaml`](../../../dependencies.yaml) |
@@ -192,6 +192,10 @@ rule is added (DEC-3: no further catalogue entry); the gap is recorded on issue 
 | Testing checklist items 1–16 | The item ends with `*Checked by:* <value>` |
 | Clean-code and SOLID bullets in `cosmic-python/SKILL.md` | The bullet ends with `*Checked by:* <value>` |
 
+*Revised 2026-11-16 (D-42):* the bullets are now the fourth catalogue table, `## Clean code and
+SOLID` (`CC-` ids), so the column goes on four tables and no bullet remains. The values are
+written in the short form of D-43.
+
 A value is one or more of the following, separated by `; `:
 
 | Checker | Written as |
@@ -256,7 +260,8 @@ row the reason is the one in the table below this one.
 | Checklist 12 (no real sleeps) | Semgrep `mfy-test-real-sleep` |
 | Checklist 1, 2, 4, 5, 6, 8, 9, 10, 13, 14, 15, 16 | review only |
 
-Reasons for the review-only rows (the text after "because"):
+Reasons for the review-only rows (the text after "because"). *Revised 2026-11-16 (D-43):* the
+skill gets the short form of each reason; this table keeps the full one.
 
 | Rows | Reason |
 |---|---|
@@ -539,6 +544,8 @@ a pin or a file is corrected in place or marked dropped.
 - **Per EPIC:** the L3 lens text in `meaningfy-code-review` gains the contract judgement (the
   `pr-review-modes` delta); `epic-delivery`'s reviewer brief and ledger name the moment (the last
   build stage); `architecture-guardrails.md` § grooming points to both and drops "periodically".
+  *Revised 2026-11-16 (D-44):* the lean text no longer says "periodically"; the pointer replaces
+  its "At a natural review point" bullet, within the budget of D-44.
   Its proof is three scenarios in `tests/features/agents/code-reviewer.feature`, one per scenario
   of the spec requirement (the last build stage, an earlier stage, a repository without
   `.importlinter`); skillery has no import contracts, so this EPIC's own review cannot show it.
@@ -856,6 +863,10 @@ mutation runs (tasks 3.5 and 3.6) and withdraws D-25, and settles that the tool 
 `dependencies.yaml` stay in this EPIC, on the owner's answers recorded in the same file ("Candidate
 drops" and "Questions the revisions left open"). No clarity-gate run followed.
 
+**Revised after the gate, not gated again (2026-11-16).** D-42 to D-46, under § Delivery
+decisions, reconcile the open tasks with the lean skills on `develop` after `lean-skills` was
+archived. No clarity-gate run followed (S-10).
+
 ## Delivery decisions
 
 Recorded 2026-11-14, when the five changes of the test strategy work were read against each other
@@ -890,7 +901,9 @@ and against A as delivered. These override the decisions above where they differ
   - The L3 row is `CHK-82` in `skills/test-strategy/references/architecture.md` (line 12), not
     in `software.md`. Task 3.7 edits that file for the per-EPIC judgement.
   - The sentence "`gap → B` rows are filled by the EPIC `harden-checks-and-tests`" in
-    `software.md` (line 3) is removed by task 3.7, when the last such row is gone.
+    `software.md` (line 3) is removed by task 3.7, when the last such row is gone. *Revised
+    2026-11-16 (D-45):* `lean-skills` cut that sentence; task 3.7 edits the gap legend of
+    `skills/test-strategy/SKILL.md` instead.
   - A-4 holds (`tests/test_test_strategy.py`, lines 77 to 79). A-5 holds: item 6 names
     polyfactory and the checklist has 16 items. A-7 holds: all four phases have `criteria`.
   - A-6 differs: see D-16.
@@ -1207,7 +1220,8 @@ epic session.
   `exceptions.py`) cannot sit in a one-file fixture either; it is shown by IT-04, and each fixture
   holds a near miss of code shape instead. The exception rule matches a base named `Exception`,
   `BaseException` or ending `Error`, `Timeout` or `Warning`; its "Checked by" value on the prose
-  side is written `(partial: a base with another name is reviewed)`.
+  side is written `(partial: a base with another name is reviewed)`. *Revised 2026-11-16 (D-43):*
+  written `(partial: other bases are reviewed)`.
 - **D-40 The review round of the tool side (five lenses and the tester on PR #246, one round,
   no P1).** Accepted, fixed in one pass:
   - *Import contract.* `domain-no-io` lists all twelve packages of D-3 (`SPARQLWrapper`,
@@ -1275,6 +1289,101 @@ epic session.
   their own pull request. Task 1.12, the catalogue entry and the L1 lens line of task 1.7, task
   1.14 and the rest of 1.16 still wait for the pilot, as D-34 says. Found while writing them and
   fixed in the same pull request: `layout.md` still described a Poetry `packages` table.
+
+Revised 2026-11-16, after the gate. EPIC `lean-skills` rewrote every skill to the lean standard
+([`creating-skills.md`, The lean standard](../../../docs/development/creating-skills.md#the-lean-standard))
+and was archived on 2026-11-16
+([`2026-11-16-lean-skills`](../archive/2026-11-16-lean-skills/design.md), D-10 and D-14 to D-18).
+Each open task that edits a skill was read against the text and the size on `develop` at 7d85edd.
+The clarity gate was not run again on these entries (S-10).
+
+- **D-42 The catalogue layout the pilot left (corrects D-3's *Where* table, D-31, the D-33 row on
+  "Checked by", task 1.12 and the hand-over).** `lean-skills` D-10 moved the ten clean-code and
+  SOLID bullets into a fourth table of `principles-and-anti-patterns.md`, `## Clean code and SOLID`,
+  with the ids `CC-NAMES`, `CC-SMALL-FUNCTIONS`, `CC-NO-MAGIC-STRINGS`, `CC-SHALLOW-NESTING`,
+  `CC-EXTRACT-THRESHOLD`, `CC-SRP`, `CC-OCP`, `CC-LSP`, `CC-ISP`, `CC-DIP`. `cosmic-python/SKILL.md`
+  holds no catalogue entry.
+  - *The column* goes on four tables: principles, best practices, anti-patterns, clean code and
+    SOLID. No suffix on a bullet is written.
+  - *The first assignment* maps as before: small functions, no magic strings, names and nesting
+    are their `CC-` rows; "Clean code: DRY" is `CC-EXTRACT-THRESHOLD`, review only; the five SOLID
+    rows are review only.
+  - *Three entries are new* since D-3: `BP-ABC-INTERFACES`, `BP-INJECT-ADAPTERS`,
+    `BP-STRICT-BASE-MODEL`. Each is review only, with the SOLID reason.
+  - *The checklist* still has 16 items with the same numbers and content (3, 7, 10, 11, 12 as in
+    D-3). The E clause of task 1.12 still applies only if `test-suite-care` stage 1 lands first;
+    on 7d85edd it has not.
+  - *The collector* that D-40 put off can be written: a row of the four tables or an item 1 to 16
+    without a value fails. TC-04 and TC-05 may drop `SKILL.md` from their sources.
+  - *Still true for task 1.7:* the anti-patterns table takes the `AP-SPARQL-FROM-STRINGS` row, and
+    the L1 row of `meaningfy-code-review` takes its id.
+- **D-43 `cosmic-python` has room for short values only (completes D-3 and D-33; corrects D-39's
+  wording; tasks 1.7, 1.12, 2.5).** On 7d85edd the skill is 6,767 bytes of body and 13,909 of
+  references: 20,676 of 24,576, so 3,900 bytes are free, and it has no `over_budget` entry. The 55
+  values (39 entries, 16 items) written with D-3's full reasons come to about 4.2 KB; with the
+  `AP-SPARQL-FROM-STRINGS` row and the three lines of item 10 the skill would end about 0.8 KB
+  over. So each value is written short: a review-only reason of three to five words, a partial
+  note of at most five. That is about 3.1 KB, or 3.6 KB with the row and item 10. The full
+  reasons stay in D-3, which the skill does not need.
+
+    | D-3 reason or note | Written in the skill |
+    |---|---|
+    | `PR-SURVEY-FIRST` | it leaves no trace |
+    | duplication across files | duplication needs a reader |
+    | where a rule or a helper belongs | placement is a judgement |
+    | origin and licence | licence is not visible |
+    | one concern or one layout | cohesion needs component names |
+    | Clean code: names | meaning is not visible |
+    | Clean code: nesting | the nesting rule is preview-only |
+    | SOLID; the three new `BP-` entries | a judgement on responsibilities |
+    | Checklist 1, 2, 13 | the layout is the project's |
+    | Checklist 4, 5, 6 | a choice between correct options |
+    | Checklist 8, 9, 16 | it needs the rule table |
+    | Checklist 10 | invariants are a design judgement |
+    | Checklist 14 | flakiness shows across runs |
+    | Checklist 15 | `bdd-gherkin` checks it by reading |
+    | names partial; exception partial | `(partial: only five banned names)`; `(partial: other bases are reviewed)` |
+    | coverage partial; `PT018` partial | `(partial: per layer is reviewed)`; `(partial: messages are reviewed)` |
+    | SPARQL partial (D-40) | ``(partial: `+=` and `join` are reviewed)`` |
+
+  The builder of task 1.12 measures with `prose_budget` before the pull request; task 2.5 writes
+  item 10 into what is left. If the skill is still over: no `over_budget` entry, since that needs
+  an assessment. First cut within `cosmic-python` (its body is 600 bytes over the 6 KB target);
+  if that is not enough, the owner chooses between moving the values to a file under `quality/`
+  that TC-04 reads (S-9) and an exemption.
+- **D-44 `project-setup` is at its budget (task 3.3).** On 7d85edd it is 8,315 + 16,182 = 24,497
+  of 24,576 bytes: 79 free, no `over_budget` entry. The prose of task 3.3 in
+  `architecture-guardrails.md` and `modernizing-existing-projects.md` is net zero or smaller over
+  the skill. The pointer to `check_contracts.py` and the L3 judgement replaces the grooming
+  bullet "At a natural review point…"; step 8 of the modernizing plan names
+  `make check-architecture` in place of words, with no new line. `check_contracts.py`,
+  `dot-importlinter.tmpl`, `Makefile.tmpl`, `pyproject.toml.tmpl` and `scaffold.sh` are material
+  and not counted. More room comes from a cut within `project-setup`, never an exemption.
+- **D-45 The `gap → B` sentence moved (corrects D-15 and task 3.7).** `lean-skills` (commit
+  c6406d2) cut the sentence from line 3 of `software.md`. The one statement left is the gap legend
+  in `skills/test-strategy/SKILL.md` ("`gap → B` is the EPIC `harden-checks-and-tests`"). Task 3.7
+  removes that clause once no `gap → B` row is left (TC-12). Lines 33, 34, 41 and 45 of
+  `software.md` and `CHK-82` at line 12 of `architecture.md` hold as D-15 cites them; the
+  inventory still ends at `CHK-144`. `test-strategy` is `over_budget`; the rows add no prose.
+- **D-46 The other open skill tasks hold (record).** Task 1.14: the rows as D-15 cites them.
+  Task 2.4: the brief under `## Adversarial tester` in `team-and-briefs.md`, the tester's ledger
+  row (line 125 of `stage-loop.md`) and R3's condition in Prepare are on `develop`;
+  `epic-delivery` is `over_budget` and the brief is replaced at about the same size. Task 2.5: the
+  `test` group of `pyproject.toml.tmpl` has neither Hypothesis nor Schemathesis; item 10 reads as
+  D-3 cites it; its size is D-43's. Task 2.6: `CHK-5`, `CHK-17` and line 45 hold. Task 3.4: the L3
+  row is at line 75 of `meaningfy-code-review/SKILL.md`, whose body (10,765 bytes) is already over
+  the advisory 6 KB target, so the judgement is one sentence in the row (D-33); the reviewer's
+  brief is under `## Reviewer`, and the ledger has no L3 row of its own, so the moment goes in the
+  "Review set of the appetite" row. Task 3.2 writes material only.
+- **D-47 A skill with no room (owner, 2026-11-16).** Standing rule, asked in one question round:
+  a planned addition to a skill at or near 24 KB is paid for in the same pull request by an equal
+  cut from that skill, or the prose moves to a tool or a template (S-9). Only when neither works
+  does the builder ask the owner for an `over_budget` entry. So D-43's short values are the way
+  task 1.12 fits `cosmic-python`, and D-44's zero-net edit is the way task 3.3 fits
+  `project-setup`; the owner is asked only if those fail.
+- **D-48 B stage 1's tool side has landed.** PR #246 merged the `quality/` folder, Ruff, Semgrep
+  and the Makefile template's quality targets on 2026-11-15, so the branches of other PLANs that
+  read "if B stage 1 has landed" apply (for example `test-suite-care` D-21, D-27, D-28).
 
 ## Open Questions
 

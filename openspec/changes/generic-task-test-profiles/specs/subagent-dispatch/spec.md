@@ -14,8 +14,8 @@ piece); the draft as a path; what is already decided (the criteria and who confi
 attack list its owning skill supplies, and, at a second read, the points already open with the
 owner, or "none"); the no-gos (no rewrite, no proposed wording, no verdict); and the report
 expected. The brief SHALL also name the tools the reader may use, taken from the table of recommended tools
-per activity in `guardrails` (the row for reading prose; for code or a repository, the row for
-reading code), and the reference SHALL NOT define a tool list of its own (DEC-12, revised
+per activity in `guardrails` (the rows *Read a file or a range* and *Search text*; for code or a
+repository, the rows for reading code as well; design D-35), and the reference SHALL NOT define a tool list of its own (DEC-12, revised
 2026-11-15; design D-28). What was decided about the piece reaches the reader as criteria and open points: the
 brief SHALL carry no dossier, no thread and none of the author's reasoning. The reader SHALL
 return an assessment, not a verdict: the base report plus the reviewing fields without their

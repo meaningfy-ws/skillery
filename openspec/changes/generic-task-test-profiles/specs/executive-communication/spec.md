@@ -2,14 +2,16 @@
 
 ### Requirement: A message is written against stated criteria and read by a busy recipient
 `executive-communication` SHALL hold the message profile in a `## Review profile` section, for
-decision requests, client messages that are not sales emails, and internal messages: what makes
+decision requests, client messages (sales emails and follow-ups included, design D-38), and
+internal messages: what makes
 the message succeed and fail, the reader's role (a busy recipient) and what that reader attacks.
 The criteria SHALL be stated after the diagnosis and before drafting. When the recipient is outside
 Meaningfy, the owner SHALL confirm them and the reader SHALL run by the brief of `guardrails`
 before the message is handed over. For an internal message the criteria SHALL be stated without
 waiting for confirmation and the reader SHALL run only on request. A message that states scope or
-price is an offer and takes the profile of `proposal-writing`; sales emails and follow-ups in a
-deal's thread take that of `sales-conversations` (generic-task-test-profiles DEC-1, DEC-3, DEC-5).
+price is an offer and takes the profile of `proposal-writing`; for sales emails and follow-ups the
+attended and scheduled rules of `sales-method-ownership` apply (generic-task-test-profiles DEC-1,
+DEC-3, DEC-5).
 
 #### Scenario: A recommendation for a client
 - **WHEN** the user asks for a recommendation email to a client's head of data
