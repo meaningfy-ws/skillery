@@ -26,7 +26,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   `stack-operations` to 24 KB. The prose of all skills is now 0.89 MB, from 1.30 MB. No skill is
   waiting for its rewrite any more: `skill-budget.yaml` lists only the five recorded exceptions,
   and a new or changed skill must meet the standard. Templates you copy (the Decision Package,
-  the vault permission files) now sit in `assets/`; every check id is unchanged.
+  the vault permission files) now sit in `assets/`; every check id is unchanged. A skill that
+  tells the agent to use an external plugin (`superpowers`, `code-review`, `commit-commands`, the
+  obsidian plugin) now says what to do when it is not installed.
 
 ## [3.17.1] - 2026-11-16
 

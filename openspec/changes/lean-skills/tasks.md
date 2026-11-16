@@ -93,6 +93,8 @@ list, shape, practices) and the modified `skill-crafting-method`.
   D-21; decided as D-24.
 - [x] 5.2 `pending` empty and removed; measure total prose of `skills/` (D-1 measure) and record it
   against 1 MB (DEC-9) in `evidence/`. 0.89 MiB (`evidence/size-after-stage-5.md`).
+- [x] 5.3 Reconcile the EPIC with the delivery: the "As delivered" section of the proposal, the
+  capability list, practice 5 across all skills, `creating-skills.md` (design D-25).
 
 ## Roadmap
 

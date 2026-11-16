@@ -15,7 +15,9 @@ metadata:
 
 Without a house rule, commits drift into past-tense one-liners, branches carry commit-type prefixes
 and PRs assume paid GitHub features. This skill owns the **conventions and policy**; the mechanical
-*act* of committing, pushing and opening PRs is the external `commit-commands` skill's.
+*act* of committing, pushing and opening PRs is the external `commit-commands` skill's. If it is not
+installed, offer to install it (`dependencies.yaml`); if the person declines, say that you work
+without it and run `git` directly, losing its one-step commit, push and PR.
 
 ## Quick Start
 

@@ -158,8 +158,10 @@ names a dependency for knowledge the dependency does not hold.
 
 ### Modified Capabilities
 
-- `skill-crafting-method`: the method refers to the lean standard. To confirm when the PLAN is
-  derived, together with `code-principles-governance` (the `cosmic-python` catalogue).
+- `skill-crafting-method`: the method refers to the lean standard and states no number of its own.
+- `code-principles-governance`: catalogue ids survive a rewrite of the owning skill (stage 2).
+- `writing-antipatterns`: the per-genre files go; the inversion matrix is the single source
+  (stage 5).
 
 ## Impact
 
@@ -171,3 +173,26 @@ names a dependency for knowledge the dependency does not hold.
 - A new repository to keep: `meaningfy-ws/agent-rules-books`. Its upstream marks its own legal
   question (text distilled through ChatGPT from books) as unresolved; the fork brings that into a
   Meaningfy organisation.
+
+## As delivered (reconciled 2026-11-16)
+
+Where the delivery departs from the shape above, the PLAN records the decision; the shape above is
+kept as it was agreed.
+
+- **DEC-13, order.** Stages 3 and 4 did not wait for the EPICs that add text to their domains: the
+  owner asked for the EPIC to be finished at once (design D-18). Those EPICs now write into lean
+  skills and meet the standard on arrival.
+- **The owner checkpoint** after the pilot was decided by the lead on the owner's instruction
+  (design D-17); the owner may overrule it at acceptance.
+- **Every skill within budget** reads "within budget or under a recorded exception" (DEC-2). Five
+  skills hold one: `test-strategy`, `epic-delivery`, `sales-pipeline-custody`,
+  `infrastructure-operations`, `semantic-consulting-coach` (design D-22 to D-24). The exception
+  route did not become the default: 47 of 52 skills fit.
+- **The 1 MB total** is met: 0.89 MiB. Re-measured, the baseline is 1.30 MiB, not the 1.45 MB
+  first stated, which also counted two non-Markdown templates and used decimal units
+  ([`evidence/size-after-stage-5.md`](evidence/size-after-stage-5.md)).
+- **52 skills, not 51.** `session-retrospective` arrived from another EPIC during the work and met
+  the standard on arrival.
+- **Practice 5** (the fallback sentence for a missing external dependency) was checked across all
+  skills after the last build stage and added where a body tells the agent to use one (design
+  D-25); the lint does not check it.

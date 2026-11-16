@@ -17,7 +17,9 @@ A vault stays useful only if every agent writes the same shape; left alone, each
 own folders, kinds and links, and shares with the company memory what nobody opted in. This skill is
 the **one place** Meaningfy's note conventions are defined; the other `vault-*` skills cite it by
 section and never restate it. Obsidian's syntax (wikilinks, callouts, properties, Bases, the CLI)
-comes from the external plugin `obsidian@obsidian-skills`; the owner's profile and write rules come
+comes from the external plugin `obsidian@obsidian-skills`. If it is not installed, offer to install
+it (`dependencies.yaml`); if the person declines, say that you work without it and that Obsidian
+syntax and CLI use then rest on general knowledge. The owner's profile and write rules come
 from the vault's `AGENTS.md`, read at run time. When a rule here clashes with the vault's
 `AGENTS.md`, the vault wins for that vault: it describes its owner. Report the clash as a
 `skill-change` note (Staging).
