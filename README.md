@@ -137,7 +137,7 @@ Pin one exact release with `#vX.Y.Z` instead of `#releases` (from the release af
 | Understand what the voice and writing skills cover, or add a register, channel or genre | [`docs/environment/communication.md`](docs/environment/communication.md) |
 | Keep your rules for agents: load them, learn new ones, review them weekly | `rulebook` · `rule-learner` · `rule-steward`, in `meaningfy-core` (how they work: [`docs/environment/rules.md`](docs/environment/rules.md); settings in [`docs/environment/setup.md`](docs/environment/setup.md); the Langfuse deployment they need: [`docs/environment/langfuse-deployment-spec.md`](docs/environment/langfuse-deployment-spec.md)) |
 | Know how a piece of work (code, doc, post, offer, contract) will succeed or fail, and which checks it needs | `test-strategy` (the loop, the questions, the matrix per activity family) → the skill that owns each check |
-| Make a slow test suite quicker | `test-suite-care` (measure, map tests to scenarios, propose; you decide) → `cosmic-python` (the testing checklist) |
+| Make a slow test suite quicker | `test-suite-care` (measure, map tests to scenarios, propose; you decide) → `cosmic-python` (the testing checklist); how to run it on a project: [`docs/practice/ai-coding/test-suite-audit.md`](docs/practice/ai-coding/test-suite-audit.md) |
 | Ship a service | `ci-cd-delivery` (deploy contract) |
 | Change, deploy, resize or retire a server or stack | `devops-engineer` (consent card before anything is applied) → `infrastructure-operations`, `stack-operations` |
 | Check the fleet every day, answer alerts at night | `ops-watch` (scheduled; setup in [`docs/environment/devops-agents.md`](docs/environment/devops-agents.md)) → `service-reliability` |
