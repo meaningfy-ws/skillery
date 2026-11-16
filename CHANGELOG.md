@@ -12,6 +12,64 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Changed
+
+- **The sales skills are lean** (EPIC `lean-skills`, stage 4). All seven `meaningfy-sales` skills
+  take the lean shape; `sales-operations` drops from 30 KB to 24 KB and `sales-conversations` from
+  28 KB to 24 KB. The five route files of `sales-pipeline-custody` are one `references/routes.md`,
+  and its lead sources sit in `odoo-crm-conventions.md`; the skill keeps its pipeline rules under a
+  recorded exception. The proposal and SoW templates and the PERT worksheet you copy now sit in
+  `assets/`. Every check id is unchanged.
+- **Every skill is lean** (EPIC `lean-skills`, stage 5). The consulting, core, devops, rules and
+  vault skills take the lean shape; `writing-antipatterns` drops from 48 KB to 23 KB,
+  `semantic-consulting-coach` from 56 KB to 32 KB, `rulebook`, `service-reliability` and
+  `stack-operations` to 24 KB. The prose of all skills is now 0.89 MB, from 1.30 MB. No skill is
+  waiting for its rewrite any more: `skill-budget.yaml` lists only the five recorded exceptions,
+  and a new or changed skill must meet the standard. Templates you copy (the Decision Package,
+  the vault permission files) now sit in `assets/`; every check id is unchanged.
+
+## [3.17.1] - 2026-11-16
+
+### Fixed
+
+- **The lead now writes the mark line.** In 3.16.0 and 3.17.0 the rule sat too deep: in walked
+  sessions the delivery lead briefed workers with no mark, and planning wrote it into a file.
+  `epic-planning` now opens its workflow with *Mark first*, and `epic-delivery` asks for the line in
+  the first reply of a stage, so `session-retrospective` reads phase and stage instead of guessing
+  them.
+
+## [3.17.0] - 2026-11-16
+
+### Changed
+
+- **The engineering skills are lean** (EPIC `lean-skills`, stage 3). `architecture` drops from
+  141 KB to 24 KB and `project-setup` from 137 KB to 24 KB; `linkml-engineering`,
+  `conceptual-modelling`, `modelling-conventions`, `formal-reasoning`, `epic-planning`,
+  `clarity-gate`, `ci-cd-delivery` and `meaningfy-release` take the lean shape. Templates you
+  copy now sit in each skill's `assets/` (the ADR and use-case templates of `architecture`, the
+  settings resolver of `project-setup`). `epic-delivery` and `test-strategy` keep their method
+  tables under a recorded exception. Every check id and every cited file name is unchanged.
+
+### Fixed
+
+- **`rules-first` no longer blocks an ordinary memory edit, and is harder to get past** (#272).
+  An edit that adds a line such as `type: user-facing docs` to a project note was refused as a
+  `user` note; the type is now read as a whole word. A `feedback` or `user` note is now refused
+  whatever the case (`Feedback`), wherever its `type:` sits in the frontmatter, when written as a
+  block value, a quoted key, a tagged or anchored value (`!!str feedback`, `&a feedback`), an
+  indented plain value or after padding; in a sub-folder of the memory folder; through a
+  symlinked `~/.claude` or memory folder; on macOS whatever the case of the path; and on Windows
+  paths with backslashes. An edit that only changes the value (`project` to `feedback`) is refused
+  too, because the edit is applied to the note before its type is read. The denied types and the
+  message now live in the rulebook skill (`assets/memory-deny.json`). The session block waits up
+  to 15 s for `rules.py where` instead of 5 s, so a busy machine no longer drops the store lines.
+  `rules.py where` now says "add or replace" the rules line, and `rules.py stats` counts each
+  `rules.py` call of a command, writes and usage alike. A plain mod with a `config.json` no longer
+  replaces a modules mod's settings in the generated plugin. The `project-setup` template says
+  `.claude/memory/MEMORY.md` is a repository file, not the CLI's memory.
+- The `no-poll-loops` timing tests take the best of three runs, so a loaded machine no longer
+  fails them (#268).
+
 ## [3.16.0] - 2026-11-15
 
 ### Changed

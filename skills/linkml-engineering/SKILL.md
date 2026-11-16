@@ -13,89 +13,95 @@ metadata:
 
 # LinkML Engineering
 
-## Overview
+LinkML is the pivot from which a deterministic toolchain renders Pydantic, JSON Schema, OWL, SHACL,
+docs and diagrams. Left alone, an agent authors a schema from nothing, hand-writes URIs, edits
+generated files and mutes the linter; this skill derives the schema from an existing model and keeps
+generation outside the LLM path. With no model yet, `conceptual-modelling` comes first.
 
-LinkML is the **pivot artefact** in Meaningfy's single-source-of-specifications approach: from one
-hand-authored schema, a deterministic toolchain renders Pydantic, JSON Schema, OWL, SHACL, JSON-LD,
-TypeScript, SQL, docs, and diagrams. This skill owns the *engineering* of that pivot — how to run
-LinkML in a layered project without it becoming a foot-gun.
+## Quick Start
 
-It is deliberately **not a greenfield schema-authoring skill**. LinkML is always a *follow-up*
-representation of a model that already exists (a UML model, a text specification, a model2owl output,
-another existing model). If no model exists yet, that is `conceptual-modelling`'s job first.
+**Input:** a UML model where `Invoice` and `CreditNote` both carry an `issueDate`, and `status` is a
+free string with values DRAFT and ISSUED.
 
-This skill **reuses** `modelling-conventions` for the
-representation-agnostic craft (reusable properties, URI-everywhere, anti-patterns, naming) and adds the
-**LinkML-specific mechanics** that realise those principles. It is not an ontology-authoring skill —
-but it keeps ontologies in mind, because a well-authored schema must generate complete, correct OWL and
-SHACL even when the delivered target is JSON or Python.
+1. Derive: model2owl's LinkML output is the draft. Ask the user for the `default_prefix` (`dom:`).
+2. Refine: one top-level slot `issued_at` (`range: datetime`, `required: true`, a conceptual
+   `description`) referenced by both classes; an enum `DocumentStatus` with a description on each
+   value; no `class_uri` written by hand.
+3. Generate: `make generate-models`; the diff touches only the invoice modules.
+4. Guard: `make check-models` passes; `linkml-lint` reports nothing.
 
-## The workflow: derive → author → generate & guard
+**Output:** the YAML and the regenerated artefacts in one commit, and OWL in which `dom:issued_at` is
+one property with domain, range and definition.
 
-### 1. Derive — LinkML from an existing source
+## Workflow
 
-Turn the upstream artefact into an initial schema. There is a distinct entry point per input kind (UML,
-text spec, model2owl output, existing model). See
-[`references/deriving-linkml.md`](references/deriving-linkml.md).
+1. **Derive** the draft from the upstream source. Read `references/deriving-linkml.md` when you start
+   from a UML model, a text spec, a model2owl output or another schema: it gives the entry point and
+   the mapping for each.
+2. **Author and refine** with LinkML's own constructs. Read `references/authoring-mechanics.md`
+   before writing or reviewing any schema element: it holds the mandatory header, reusable slots and
+   `slot_usage`, implicit URIs, the URI-as-datatype artifice, the slot contract, enums as SKOS and the
+   class-design rules.
+3. **Author for complete OWL/SHACL**, even when the project ships only JSON, Python or a database.
+   Read `references/owl-shacl-completeness.md` when checking a schema or its generated semantics: it
+   holds what MUST be present in the OWL and in the SHACL.
+4. **Generate** through `make` only. Read `references/generation-and-templates.md` when wiring or
+   changing generation: it holds the `make generate-models` bridge, the strict-base Pydantic template,
+   per-module output, the enable-on-demand targets and the Neo4j generators in `scripts/linkml_neo4j/`.
+5. **Guard** with gates chosen with the user, not imposed. Read `references/quality-gates.md` when
+   setting up or reviewing a project's gates: it gives the candidate table, the lint rules and the
+   freshness check.
 
-### 2. Author / refine — LinkML mechanics atop the shared conventions
+The working loop, for every change: find the schemas folder and its `make` target; edit the YAML
+only; lint (warnings not muted) and fix; regenerate; review the generated diff (only what you
+expected); validate the inline examples and run the tests; commit the YAML and the regenerated
+artefacts together, never separately.
 
-Apply the shared conventions through LinkML's own constructs: top-level reusable `slots:`, the
-URI-as-datatype artifice, minted `prefixes`/`default_prefix` with **implicit** `class_uri`/`slot_uri`,
-`enums` over free strings, and constraints declared in the schema. SEMIC and model2owl conventions and
-checkers are the cited authority for the URI/naming/datatype slice. See
-[`references/authoring-mechanics.md`](references/authoring-mechanics.md).
+## Rules
 
-**Complete OWL/SHACL is a first-class outcome, not a side effect.** Because every class and property is
-URI-identified, the schema can render *complete* OWL and SHACL — the elements that MUST be present for
-each are listed in [`references/owl-shacl-completeness.md`](references/owl-shacl-completeness.md). Author
-for that completeness even when the project only ships JSON/Python/DB, so the semantic option stays open.
+### Common mistakes
 
-### 3. Generate & guard
+| Mistake | Why it fails | Do instead |
+|---|---|---|
+| Editing a generated file | the next regeneration wipes it; the freshness gate fails | change the YAML or the template |
+| Running a generator ad hoc | output is not reproducible | add or use a `make` target |
+| A validation in Python that the schema can state | the contract drifts from the model | `pattern`, bounds, `required`, `unique_keys` in the YAML |
+| A bare `string` where a closed set fits | the set lives in code, spellings diverge | an `enum` with described values |
+| Muting the linter | every convention it enforces is lost | fix what it reports |
+| Committing model changes without regenerating | the code no longer matches the YAML | regenerate and commit both together |
+| Hand-written `class_uri` everywhere | identity stops being systematic | implicit URIs; explicit only for a reused term |
 
-Render the targets deterministically, **outside the LLM path**, via `make`-driven generation with custom
-templates (a strict project Pydantic base, custom code generation for other languages) and per-module
-artefact layout. Then establish quality gates — **chosen with the user, not imposed**. See
-[`references/generation-and-templates.md`](references/generation-and-templates.md) and
-[`references/quality-gates.md`](references/quality-gates.md).
+## Before you hand over
 
-## The working loop
-
-1. Locate the schemas dir and the `make` target that generates from it — never invoke generators ad hoc.
-2. Make the change in **YAML only** (never hand-edit a generated file), respecting the conventions.
-3. Lint the schema (warnings not muted); fix what it reports.
-4. Regenerate the targets.
-5. Review the generated diff — it should touch only what you expect.
-6. Validate the inline examples; run the project's tests.
-7. Commit the YAML **and** the regenerated artefacts together, never separately.
+| Question | If not | Action |
+|---|---|---|
+| Does every class, slot and enum value have a conceptual `description`? | OWL/SHACL ship empty semantics | write them |
+| Is `default_prefix` set, and was the user asked for it? | implicit URIs are wrong or missing | ask, then set it |
+| Does `make check-models` pass after `make generate-models`? | generated code drifted | regenerate, commit both |
+| Does `linkml-lint` pass without muting? | conventions are unenforced | fix the findings |
+| Was the gate set chosen with the user and recorded? | gates are folklore | run the selection |
 
 ## Boundary & Related Skills
 
-**This skill OWNS:** the operational LinkML discipline — deriving LinkML from an existing source;
-LinkML-specific authoring mechanics (reusable `slots:`, URI-as-datatype, implicit `class_uri`/`slot_uri`,
-enums, schema-level constraints); complete-and-correct OWL/SHACL generation; custom generator templates
-and `make`-target transformation automation (including diagrams); per-module artefact generation; and
-the guided quality-gate process.
+**Owns:** deriving LinkML from an existing source; the LinkML authoring mechanics; complete and
+correct OWL/SHACL generation; custom generator templates and `make` automation, diagrams included;
+per-module generation; the guided quality-gate process.
 
-**This skill REUSES:**
-- Generic modelling craft (reusable-property and URI-everywhere *principles*, anti-patterns, naming,
-  guardrails) → `modelling-conventions`. This skill
-  states the LinkML *mechanism*; it does not restate the principle.
+**Reuses:** the generic modelling craft (reusable-property and URI-everywhere principles,
+anti-patterns, naming, guardrails) from `modelling-conventions`; this skill states the LinkML
+mechanism, not the principle.
 
-**This skill DELEGATES:**
-- The representation-agnostic model, UML conceptual modelling, terminology, and the LinkML-vs-model2owl
-  **source decision** → `conceptual-modelling`.
-- Competency-question tests over fixture facts → `formal-reasoning`; they are reasoning over facts,
-  not a LinkML quality gate.
+**Delegates:**
+- the representation-agnostic model, UML modelling, terminology and the LinkML-vs-model2owl source
+  decision → `conceptual-modelling`;
+- competency-question tests over fixture facts (reasoning, not a LinkML gate) → `formal-reasoning`.
 
-Where the generated Pydantic/JSON Schema contract is *consumed* (a service's `entrypoints/api`) is
-the related skill `cosmic-python`.
+Where the generated contract is consumed (a service's `entrypoints/api`) is the related skill
+`cosmic-python`; scaffolding the gates, automation and per-module layout into a repo is the related
+skill `project-setup`'s.
 
-Scaffolding the gates, automation and per-module layout into a repo is the job of the related
-skill `project-setup`, when the project uses LinkML.
-
-**Conditional:** product-development projects that use LinkML. A project modelling only in OWL/UML
-without a LinkML pivot does not need this skill.
+**Conditional:** product projects that use LinkML; a project modelling only in OWL or UML does not
+need it.
 
 **Related:** `modelling-conventions`, `conceptual-modelling`, `architecture`, `cosmic-python`,
 `project-setup`, `formal-reasoning`.

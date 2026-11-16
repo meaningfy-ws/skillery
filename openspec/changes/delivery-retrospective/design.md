@@ -111,8 +111,8 @@ Settled in the EPIC: DEC-1 to DEC-11. New here:
 - **D-10** Where the mark sentence sits: `epic-delivery` defines the form in
   [`references/team-and-briefs.md`](../../../skills/epic-delivery/references/team-and-briefs.md),
   section *What every brief names*, item 6, directly under the three result-line forms, and its
-  `## The loop of a stage` names the duty in one sentence; `epic-planning`
-  ([`SKILL.md`](../../../skills/epic-planning/SKILL.md), section *Procedure*) adds one sentence to
+  *The loop of a stage* names the duty in one sentence; `epic-planning`
+  ([`SKILL.md`](../../../skills/epic-planning/SKILL.md), section *Workflow*) adds one sentence to
   step 4 (`phase=shape`) and one to step 6 (`phase=plan`).
 - **D-11** Skill shape. `skills/session-retrospective/SKILL.md`, body target 6 KB, no references
   unless the body passes it: title and the bias it corrects (guessing where the time went), Quick
@@ -312,3 +312,17 @@ Recorded after stage 2 (2026-11-15).
   `session-retrospective` adds the spawn-time mark (D-15), the edited PR body (D-17), the 1%
   threshold, malformed records (D-20 F5) and the default folder with no override (D-5, D-20 F4).
   No code change; nothing built contradicts the EPIC's no-gos.
+
+Recorded at the close (2026-11-15), on the developer's word "do everything in this session,
+proceed independently towards completion".
+
+- **D-29** First walk of 3.4 on 3.16.0 (headless sessions in the sandbox, `claude -p`): failed.
+  S1 and S2 loaded `epic-delivery`, read `references/team-and-briefs.md` and briefed a worker with
+  no mark; S3 and S4 wrote the mark into the change's files as an HTML comment, not in a reply. The
+  rule sat one clause deep in a reference, and the planning steps did not say where to write it.
+  Three fixes, each walked again with the bundle loaded by `--plugin-dir` (`evidence/walk-3.4.md`):
+  the literal line and "in your reply, not in a file" in each step; then, since a duty deep in a
+  numbered step was still missed, `epic-planning` opens its procedure with *Mark first* and
+  `epic-delivery` step 1 says "your first reply of the stage, before any read, brief or question".
+  Run 4 passes S1–S4, and run 5 on the lean skills of 3.17.0 (merged into this branch) too. A
+  patch release ships it; the developer signs 3.4 off on that evidence or walks it by hand.

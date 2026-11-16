@@ -1,6 +1,6 @@
 # Odoo CRM conventions
 
-How every `meaningfy-sales` skill reads and writes Odoo CRM through the Odoo MCP tools. **Which** writes are allowed is decided by [write-rules](write-rules.md) and [`../assets/write-policy.yaml`](../assets/write-policy.yaml). This file is the how-to.
+How every `meaningfy-sales` skill reads and writes Odoo CRM through the Odoo MCP tools. **Which** writes are allowed is decided by [write-rules](write-rules.md) and [`../assets/write-policy.yaml`](../assets/write-policy.yaml); this file is the how-to.
 
 ## Models and fields used
 
@@ -25,17 +25,28 @@ Read with explicit fields and small pages; prefer counts before wide reads. Incl
 ## How to write
 
 - **Dossier**: write the template from `sales-qualification` into `crm.lead.description`. Keep the existing text under *Previous notes* at the end.
-- **Internal note**: `message_post` with `message_type` = `comment` and `subtype_xmlid` = `mail.mt_note`. Never pass `partner_ids`; never write `@name` in the body. Anything that notifies a person is a send. **Write the body as plain text**: the Odoo connector escapes HTML, so tags would show as text. Separate items with ` · ` or numbers. Rich formatting belongs in the dossier (`description` accepts HTML).
+- **Internal note**: `message_post` with `message_type` = `comment` and `subtype_xmlid` = `mail.mt_note`. Never pass `partner_ids`; never write `@name` in the body. **Write the body as plain text**: the Odoo connector escapes HTML, so tags would show as text. Separate items with ` · ` or numbers. Rich formatting belongs in the dossier (`description` accepts HTML).
 - **Profiles**: the company and person profiles of `sales-accounts` go into the contact's `comment` (HTML allowed). Text the agent did not write is kept under *Previous notes*; the agent's own sections are updated in place.
-- **Next activity**: `mail.activity` on the deal (or on the contact, for relationship work not tied to a deal), assigned to the owner, with a summary and a date. Mark one done with `action_feedback` and a short feedback text citing the evidence, then create the next one in the same step. To re-date an overdue activity, write the reason into its `note` in the same call as the new `date_deadline`. Hard deadlines use the activity type *Deadline*.
-- **Stars**: write `priority` ('0'–'3') with the score in the log line's source (`dossier attention score of YYYY-MM-DD: 6/10, nurture`). Before writing, find who set the current value: the field's tracking if Odoo tracks it, otherwise the *Log* sections of the run notes. A non-zero value the agent did not set is the owner's: do not write; report the difference.
+- **Next activity**: `mail.activity` on the deal (or on the contact, for relationship work not tied to a deal), assigned to the owner, with a summary and a date. Mark one done with `action_feedback` and a short feedback text citing the evidence, then create the next one in the same step. To re-date an overdue activity, write the reason into its `note` in the same call as the new `date_deadline`.
+- **Stars**: write `priority` ('0'–'3') with the score in the log line's source (`dossier attention score of YYYY-MM-DD: 6/10, nurture`). Before writing, find who set the current value: the field's tracking if Odoo tracks it, otherwise the *Log* sections of the run notes. A non-zero value the agent did not set is the owner's.
 - **Attention filters**: run the domains of `assets/odoo-views.yaml` with `search_count`, then `search_read` on the hits with explicit fields. Agent checks read the chatter or the dossier of the records the domain narrows to.
 - **Team and stage together**: write `stage_id` and `team_id` in the same call. Odoo otherwise recomputes the missing one and can move the deal to the wrong pipeline (seen during the Odoo setup, when changing the salesperson moved two deals). Re-read the record after any write touching `user_id`, `team_id` or `stage_id`.
 - **Old values**: read the fields before writing them, so the log line carries old → new.
-- **Entity resolution before any write** (hard rules, rule zero), and before a create the search of `sales-accounts` (`references/identity.md`): leads and contacts, archived ones included, by email, web domain, phone, VAT and name. One match that agrees on two keys is enriched instead of creating; otherwise follow `identity.md` section 2 (ambiguous matches are questions); duplicate pairs are merge proposals for the owner (the agent never merges).
+- **Entity resolution before any write** (write rules, rule zero), and before a create the search of `sales-accounts` (`references/identity.md`): leads and contacts, archived ones included, by email, web domain, phone, VAT and name. One match that agrees on two keys is enriched instead of creating; otherwise follow `identity.md` section 2 (ambiguous matches are questions); duplicate pairs are merge proposals for the owner (the agent never merges).
 - **Lead → opportunity**: write `type` = opportunity, `team_id` and the first `stage_id` in one call; never use the conversion wizard (it can merge and create partners).
 - **Won and lost**: after the owner's yes, use `action_set_won` or `action_set_lost`. **After `action_set_won`, re-read the stage**: Odoo moves the deal to the first won stage it finds, which can belong to another pipeline (seen on 10 Oct 2026: Partnerships deals landed in *Won – awarded & signed* of Calls & Tenders); if so, write the pipeline's own won stage and the team together. For lost, pick the closest existing `crm.lost.reason` and quote the owner's own reason in an internal note; propose a new reason separately (configuration) without holding the approved action. Log line: stage at close · `active` true → false (lost) or stage → won stage · lost reason · the owner's yes (P ref).
 
+## Lead sources
+
+| What | Odoo | Values |
+|---|---|---|
+| **Source** (`source_id`) | the kind of origin | existing: Conference/Event, Referral, LinkedIn, Search engine, Newsletter…; candidates to propose: Partner introduction, Member directory, Tender portal, Cold research, Inbound, Warm network |
+| **Medium** (`medium_id`) | how we first talked | in person, email, LinkedIn, phone, introduction (create the missing ones on the owner's yes) |
+| **Event tag** (`tag_ids`) | groups everything from one event | `Event: <name> <year>`, one tag per event attended |
+| Campaign (`campaign_id`) | not used for now | kept empty unless the owner decides to use campaigns |
+
+Unknown values stay empty, never guessed. An approved intake plan can include new sources, media and tags. In the triage, propose source and event tag for existing deals whose origin is clear from their history.
+
 ## Logging
 
-Every write gets one line in the iteration's *Log* (the run note's last section) (format in write-rules, section 2). The guardrail auditor compares Odoo's `write_date` and chatter with these lines.
+Every write gets one line in the iteration's *Log* (write rules, section 2). The guardrail auditor compares Odoo's `write_date` and chatter with these lines.

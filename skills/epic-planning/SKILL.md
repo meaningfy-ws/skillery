@@ -13,23 +13,34 @@ metadata:
 
 # EPIC Planning
 
-## Overview
+Architecture and human intent become **shaped EPICs**, each deriving a gated **PLAN**. The mistake
+it corrects: writing a spec on silent assumptions, or as a parallel `EPIC.md`/`PLAN.md` beside the
+spine. In the Meaningfy spine the artifacts are OpenSpec-native (the `meaningfy` schema): the
+**EPIC ≡ `proposal.md`** (the Shape-Up work shape) and the **PLAN ≡ `design.md` + `tasks.md`**
+(the pair the clarity gate scores). Ask before assuming (Human Sovereignty).
 
-Specifications-first. Architecture and human intent are turned into **shaped EPICs**, each of
-which derives a gated **PLAN**. In the Meaningfy spine the artifacts are OpenSpec-native (the `meaningfy`
-schema): the **EPIC ≡ `proposal.md`** (the Shape-Up work shape) and the
-**PLAN ≡ `design.md` + `tasks.md`** (the pair the clarity gate scores). One artifact per concept —
-never a parallel `EPIC.md`/`PLAN.md` file. Ask before assuming; never ship a spec with hidden
-assumptions (Human Sovereignty).
+## Quick Start
 
-This skill **authors**. The living-spec lifecycle after authoring — archive, grooming `specs/`,
-regenerating the orientation index — belongs to `spec-stewardship`.
+Seed: "the lint should flag a skill over 24 KB". Intake reads the seed, the standard and
+`tools/repo_lint`, and lists them back. One round of questions settles the counted files and the
+exception list; the answers become `DEC-1`, `DEC-2` and a `RISK-1` (old skills fail at once), and
+the round goes to `inputs/`. `proposal.md`: appetite `SMALL`, no-go "no auto-trimming". The
+readiness check passes; `design.md` + `tasks.md` are derived, attacked (a skill with no
+`references/`) and gated: run 1, 8/10, one gap fixed; run 2, 9/10, pass, logged in
+`evidence/clarity-gate.md`. The developer signs off the scenarios.
 
-## Procedure (maps to the OpenSpec `/opsx` build-tier flow)
+## Workflow (maps to the OpenSpec `/opsx` build-tier flow)
+
+**Mark first.** Your first reply, before any question or file, holds on its own line
+`mark: change=<id> phase=shape stage=-` when you start from seeds, or `phase=plan` when you start
+from a shaped EPIC; write the `phase=plan` line again when you reach step 6. In the reply, never in
+a file (form: `epic-delivery`).
 
 1. **Seed intake** (`/opsx:explore`). Read every human seed and supporting input — seed notes,
    architecture/ADRs, sample/test data, free notes, and for brownfield an existing-codebase analysis
-   (optionally via GitNexus). Enumerate what you read. Details: [`references/seed-intake.md`](references/seed-intake.md).
+   (optionally via GitNexus). Enumerate what you read. Read `references/seed-intake.md` before you
+   start eliciting: it adds the seed sources, the elicitation discipline, the layout of
+   `inputs/` and the format of the Q&A record.
 2. **Elicit** (`/opsx:explore` + `superpowers:brainstorming`). Drive a *myriad of clarifying
    questions*, **one concern per question, asked together in rounds**, to surface and decide every ambiguity, conflict, and
    assumption **before** writing the EPIC. After each round, summarise what you understood and
@@ -48,9 +59,9 @@ regenerating the orientation index — belongs to `spec-stewardship`.
 4. **Shape the EPIC** (`/opsx:propose` → `proposal.md`). Use the `meaningfy` schema's
    `proposal.md` template (`openspec/schemas/meaningfy/templates/proposal.md` in a spine-wired repo):
    appetite, why, solution outline, **key decisions** (each with a citeable `DEC-` id), rabbit-holes,
-   **no-gos** (mandatory). At the start of shaping, write the mark line with `phase=shape stage=-`
-   (form: `epic-delivery`, `references/team-and-briefs.md`). Cite the EPIC's **golden-thread parents** (the requirement/architecture it
-   derives from — see [`references/golden-thread.md`](references/golden-thread.md)). Keep it at shaping
+   **no-gos** (mandatory). Cite the EPIC's **golden-thread parents** (the requirement or architecture it
+   derives from). Read `references/golden-thread.md` when you cite a parent or mint an id: it adds
+   the traceability chain, the id prefixes and what is enforced today. Keep it at shaping
    altitude — leave implementation room.
 5. **EPIC readiness check** (lightweight). Before deriving the PLAN, run the **lightweight variant**
    of `clarity-gate` over the EPIC — a quick readiness pass that catches
@@ -61,8 +72,7 @@ regenerating the orientation index — belongs to `spec-stewardship`.
    Risks / Trade-offs as `RISK-<n>`: likelihood, impact, mitigation or acceptance) and the tasks half (ordered
    breakdown with layers/dependencies/acceptance, roadmap). Each PLAN cites its parent EPIC id
    (golden thread). The PLAN's depth follows the appetite: a TINY or SMALL PLAN keeps the sections
-   the gate scores and stays short in each. At the start of this step, write the mark line with
-   `phase=plan stage=-` (form: `epic-delivery`, `references/team-and-briefs.md`).
+   the gate scores and stays short in each. Its mark: see *Mark first*.
 7. **Attack the PLAN.** Before the gate, try to break it, in a fresh subagent when one pays
    (`guardrails`, *Subagent dispatch*): the input, state or order of events under which it fails,
    and the assumption which, if false, sinks it. Each counterexample becomes an error-matrix row,
@@ -80,9 +90,9 @@ The PLAN cuts its tasks into stages; delivery after the gate is `epic-delivery`'
 
 The navigator mod tracks these phases from [`assets/workflows/epic-shaping.workflow.json`](assets/workflows/epic-shaping.workflow.json).
 
-## The shaping session — from an initiative to a backlog of EPICs
+### The shaping session — from an initiative to a backlog of EPICs
 
-One shaping session per initiative, with the developer. The procedure above shapes **one** EPIC;
+One shaping session per initiative, with the developer. The steps above shape **one** EPIC;
 this is how an initiative becomes several, in order:
 
 1. **Architect** the initiative: use cases, drivers, decisions, C4 views (`architecture`).
@@ -94,7 +104,7 @@ this is how an initiative becomes several, in order:
    library, as an issue or its own EPIC there; what only this product needs stays here. In doubt,
    ask the developer with a recommendation (default: the library).
 5. **Slice** the architecture into EPICs, each one vertical slice that delivers or enables a use
-   case and fits one appetite. Shape each with the procedure above; record the evidence of step 3
+   case and fits one appetite. Shape each with the steps above; record the evidence of step 3
    in the change that needs it.
 6. **Order** the EPICs: dependencies first (library work before the EPIC that needs it), then
    value. The order goes into each EPIC's Rabbit-holes or Why, not into a separate plan file.
@@ -103,7 +113,9 @@ The session ends with each EPIC's PLAN gated and its scenarios signed off; an EP
 a PLAN gets one here. Between EPIC and PLAN the session may reset with the hand-over note
 (`epic-delivery`'s `assets/templates/handover.md`).
 
-## Appetite — how deep and extensive the solution may be
+## Rules
+
+### Appetite — how deep and extensive the solution may be
 
 An EPIC's appetite is one of six named sizes, never a number of days or weeks: an agent cannot act
 on a duration, but it can act on how far the solution should go.
@@ -120,7 +132,7 @@ on a duration, but it can act on how far the solution should go.
 The size is a judgement; the examples illustrate it, they do not define it. When the work outgrows
 its appetite, cut scope or re-shape the EPIC (below) — never let it grow silently.
 
-## When the bet itself is wrong (freeze vs re-shape)
+### When the bet itself is wrong (freeze vs re-shape)
 
 The EPIC **freezes once shaped**. But elicitation or implementation can reveal two different kinds
 of wrongness — handle them differently:
@@ -131,11 +143,20 @@ of wrongness — handle them differently:
   logged event** — record why in the EPIC's decisions and the change inputs, not a silent edit. A
   re-shape is a visible decision with an audit trail, which keeps the freeze meaningful.
 
-## What you do NOT do
+### What you do NOT do
 
 - Write implementation code, Gherkin step definitions, or commit changes.
 - Run the living-spec lifecycle (archive/groom/memory) — that is `spec-stewardship`.
 - Make architectural decisions unilaterally — propose options with trade-offs; the developer decides.
+
+## Before you hand over
+
+| Question | If not | Action |
+|---|---|---|
+| Are the seeds and the Q&A record in `inputs/`? | The shaping is untraceable | Write them (step 3) |
+| Does `proposal.md` have no-gos and every key decision as a `DEC-`? | The readiness check fails | Ask, then fill them |
+| Does `tasks.md` cite its parent EPIC on its first line? | The schema rule fails | Add the parent id |
+| Does `evidence/clarity-gate.md` log each run, ≥ 9/10 or the accepted `DEC-` ids? | The PLAN is not gated | Run or record the gate (step 8) |
 
 ## Boundary & Related Skills
 

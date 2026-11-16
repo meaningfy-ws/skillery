@@ -40,7 +40,7 @@ break them (`test-strategy`'s `generic-writing` matrix marks both as `gap → D`
   [`recipient-reader`](../../../skills/sales-operations/assets/prompts/recipient-reader.md), which
   answers ten fixed questions as the recipient (`CLR`), is given no criteria and does not attack.
   The sales agent has no `Agent` tool today, so where it cannot start them the run is recorded
-  *unverified* (`sales-operations`, *Independent reviewers*; `references/goal-loop.md`, lines 68–70).
+  *unverified* (`sales-operations`, *Independent reviewers*; `references/goal-loop.md`, *4. Verify*).
 - **The three agents.** `lawyer` is a lead with `Agent` and `guardrails`. `proposal-writer` is
   `delegated` (it cannot ask mid-run; questions go back in its output) with
   `tools: [Read, Grep, Glob, Write, Skill]`. `sales-agent` is `scheduled` and may lead a human

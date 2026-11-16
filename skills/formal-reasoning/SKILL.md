@@ -30,7 +30,8 @@ engine would answer and where its install line is, and stop: never present prose
 **Input:** "Do our pricing rules conflict for a public tender?"
 
 1. Copy [`templates/reasoning-project/clingo/`](templates/reasoning-project/clingo/) to a project
-   folder. Write the rules in `rules.lp`, each with a `%%` paraphrase line above it:
+   folder ([the template README](templates/reasoning-project/README.md) has the layout and a Prolog
+   twin). Write the rules in `rules.lp`, each with a `%%` paraphrase line above it:
 
    ```
    %% A public client is priced at a fixed price.
@@ -76,8 +77,13 @@ report you can paste into a review. Here: yes, the two pricing rules conflict.
 2. **Write the tests first.** Each `[[test]]` has an `id`, a `query`, the `expect`ed answer and,
    for a competency question, the `question` in words and who agreed the answer and when
    (`agreed_by`, `agreed_on`). An answer written after the run certifies whatever the code says.
-3. **Write the rules**, each with a `%%` paraphrase line directly above it, using only the pure
-   subset ([pure-subset](references/pure-subset.md)). Facts use base predicates; rules lift them.
+   Read `references/patterns.md` when the question is a conflict, a dead rule, an exception with
+   priority, a minimal fix, a closure or a competency question: it gives each as a minimal template
+   of rules, paraphrases and test.
+3. **Write the rules**, each with a `%%` paraphrase line directly above it. Facts use base
+   predicates; rules lift them. Read `references/pure-subset.md` before writing rules in either
+   language: it holds what each may use, what the run refuses, and why facts never define a ruled
+   predicate.
 4. **Run** `run_rules.py`. It refuses (exit 2) a rule without a paraphrase, impure Prolog, a
    malformed tests file, or any engine error or warning, before it reports any answer.
 5. **Paraphrase back.** Read each `means:` line beside its rule. Then read each `FAIL` line: it
@@ -85,7 +91,13 @@ report you can paste into a review. Here: yes, the two pricing rules conflict.
 6. **Fix** the rule, the paraphrase or (only with whoever agreed it) the expected answer, and run
    again until it exits 0. Save the `--json` report under `runs/` when the result matters.
 
-## Engine choice
+Read `references/rules-from-text.md` when the rules come from a policy, a contract or a regulation:
+it adds the source hash, clause ids, deontic classes, the paraphrase-or-flag rule and the citation of
+each clause in its rule.
+
+## Rules
+
+### Engine choice
 
 | The question | Engine | Why |
 |---|---|---|
@@ -94,10 +106,11 @@ report you can paste into a review. Here: yes, the two pricing rules conflict.
 | Does the instance data conform to the model? | **No engine here**: the SHACL/OWL toolchain | Conformance belongs to the modelling skills |
 
 The file extension picks the engine. clingo grounds every fact before solving, so the report prints
-the ground size on every run and warns when the facts file passes 10,000 statements. Details, the
-grounding guard and when not to use an engine at all: [engines](references/engines.md).
+the ground size on every run and warns when the facts file passes 10,000 statements. Read
+`references/engines.md` when the engine is unclear, the ground size grows, or an engine is missing:
+it adds the grounding guard, when not to use an engine at all, and where each install line lives.
 
-## The test format
+### The test format
 
 `tests.toml` holds one `[[test]]` table per question. The same keys serve both engines:
 
@@ -112,37 +125,18 @@ required in practice for a competency question. Answers compare as sets, ignorin
 whitespace. A `#show` in the rules never hides an answer from a test, and a clingo query on a
 predicate the program never uses is refused, like an unknown procedure in Prolog.
 
-## References
+### Common mistakes
 
-- [engines](references/engines.md): engine choice, the grounding guard, when not to use an engine,
-  and where each engine's install line lives.
-- [patterns](references/patterns.md): conflict, dead rule, exception with priority, minimal fix,
-  closure, and competency-question tests, each as a minimal template.
-- [pure-subset](references/pure-subset.md): what each language may use, and why facts never define
-  a ruled predicate.
-- [rules-from-text](references/rules-from-text.md): clause ids, deontic classes, paraphrase or flag,
-  and the source hash.
-- [templates/reasoning-project](templates/reasoning-project/README.md): the project layout and two
-  runnable projects.
-
-## Gotchas
-
-- **Asking the model to "reason carefully" about a rule set.** It still reasons in prose. Run the
-  rules in an engine with tests.
-- **Writing the expected answers after the run.** The test then certifies the code. Agree them
-  first and record `agreed_by` and `agreed_on`.
-- **A cut or `assert` "for speed".** Order-dependent code hides wrong answers. Use `:- table` and
-  pure clauses; the run refuses the rest.
-- **Loading a million-row CSV into clingo.** Grounding blows up. Use SWI-Prolog, or query the data
-  where it lives.
-- **A facts file that defines a predicate the rules also define.** SWI-Prolog silently replaces the
-  rules. Facts go on base predicates such as `direct_part_of/2`; the run refuses the warning.
-- **Reading "no output" as "no solutions".** An unknown predicate or a syntax error also prints
-  nothing. The run treats any engine error or warning as a refusal, never as an empty answer.
-- **Formalising a clause that cannot be paraphrased back.** List it as flagged prose for a human
-  ([rules-from-text](references/rules-from-text.md)).
-- **Copying an engine's install steps into a project's docs.** They drift. Point to the engine's
-  entry in skillery's `dependencies.yaml`.
+| Mistake | Why it fails | Do instead |
+|---|---|---|
+| Asking the model to "reason carefully" about a rule set | it still reasons in prose | run the rules in an engine with tests |
+| Writing the expected answers after the run | the test certifies the code | agree them first; record `agreed_by`, `agreed_on` |
+| A cut or `assert` "for speed" | order-dependent code hides wrong answers | `:- table` and pure clauses; the run refuses the rest |
+| Loading a million-row CSV into clingo | grounding blows up | SWI-Prolog, or query the data where it lives |
+| A facts file defining a predicate the rules also define | SWI-Prolog silently replaces the rules | facts on base predicates (`direct_part_of/2`); the run refuses the warning |
+| Reading "no output" as "no solutions" | an unknown predicate or a syntax error also prints nothing | the run treats any engine error or warning as a refusal |
+| Formalising a clause that cannot be paraphrased back | the rule says something the text does not | list it as flagged prose for a human |
+| Copying an engine's install steps into a project's docs | they drift | point to the engine's entry in skillery's `dependencies.yaml` |
 
 ## Boundary & Related Skills
 

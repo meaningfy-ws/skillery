@@ -9,8 +9,8 @@ follow it for those. This file covers only what is release-specific.
 1. **Cut** `release/X.Y.Z` from the integration branch once the scope for the version is feature-complete.
 2. **Stabilise only.** On a release branch you commit bug fixes, docs, and version metadata — **no new
    features.** New features wait for the next release line.
-3. Let **release-please** (see [`pypi-publishing.md`](pypi-publishing.md) and SKILL §4) bump the version
-   and assemble the CHANGELOG via its release PR.
+3. Let **release-please** (the release engine in `SKILL.md`) bump the version and assemble the
+   CHANGELOG via its release PR.
 4. **Tag on merge.** Merging the release PR produces the annotated tag `vX.Y.Z`, the GitHub Release, and
    the publish job.
 5. **Back-merge** the release branch into every long-lived line (e.g. `main` and `develop`) so the
