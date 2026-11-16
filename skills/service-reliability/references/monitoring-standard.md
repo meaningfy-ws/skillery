@@ -1,7 +1,7 @@
 # Monitoring standard
 
-What must be watched, and from where. Monitoring answers one question first: **can the client use the
-service?** Host and container metrics explain why something broke; they do not tell you that it did.
+Monitoring answers **can the client use the service?** first; host and container metrics explain why
+something broke, not that it did.
 
 ## The rules
 
@@ -14,23 +14,20 @@ The check-up reports a missing SHOULD as a finding; it does not block anything.
 
 ## What else the monitoring stack holds
 
-- **Host and container metrics** (node exporter, cAdvisor) on every Docker host, with 15 to 30 days of
-  retention. They feed the disk forecast of the daily check-up.
-- **A last-success metric for every backup** (see [backup-restore.md](backup-restore.md)).
+- **Host and container metrics** (node exporter, cAdvisor) on every Docker host, 15 to 30 days of
+  retention; they feed the check-up's disk forecast.
+- **A last-success metric for every backup** ([backup-restore.md](backup-restore.md)).
 - **One availability target per client-facing service**, written down (for example 99.5% a month,
-  measured by the probe) and stricter than any contract SLA. It is reviewed in the monthly look at
+  measured by the probe) and stricter than any contract SLA; reviewed in the monthly look at
   incidents, not enforced by machinery.
 
 ## How targets and rules change
 
 Scrape targets and alert rules live in git, in the stacks repository's monitoring stack, and change
-only by PR. A new exporter is registered in the same PR that installs it, with labels that name the
-stack and the service; a retired system's targets are removed and its alerts silenced in the
-retirement PR. Each rule names its owner and its runbook in annotations, never in a comment
-([alerting.md](alerting.md)). The PR checks that validate the configuration (`promtool check`) are
-owned by `infrastructure-operations`.
+only by PR. A new exporter is registered in the PR that installs it, with labels that name the stack
+and the service; a retired system's targets are removed and its alerts silenced in the retirement PR.
+Owner and runbook go in annotations, never in a comment ([alerting.md](alerting.md)). The PR checks
+(`promtool check`) are owned by `infrastructure-operations`.
 
-## Not now
-
-Multi-region synthetic monitoring, long-term metric storage, distributed tracing, ELK or a SIEM, and
-error-budget machinery are out of scope for a team this size.
+Not now: multi-region synthetic monitoring, long-term metric storage, distributed tracing, ELK or a
+SIEM, error-budget machinery.

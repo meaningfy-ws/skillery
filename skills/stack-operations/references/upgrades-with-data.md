@@ -1,10 +1,9 @@
 # Upgrades that touch data
 
-Most version bumps are a pin change and a deploy ([versions-and-promotion.md](versions-and-promotion.md)).
-Some change the data on disk, and then a revert alone does not undo them: a database major version
-(PostgreSQL 15 to 16, for example), a search index or triplestore format, an application release
-whose migration rewrites its schema. Treat these as a data change: the safe-change protocol and its
-consent apply (`infrastructure-operations`), and an unattended agent never does it.
+Most version bumps are a pin change and a deploy. Some change the data on disk, and a revert alone
+does not undo them: a database major version, a search index or triplestore format, an application
+migration that rewrites its schema. These are a data change: the safe-change protocol and its consent
+apply (`infrastructure-operations`), and an unattended agent never does it.
 
 ## Before
 
@@ -18,8 +17,7 @@ consent apply (`infrastructure-operations`), and an unattended agent never does 
 
 ## PostgreSQL major versions
 
-A major upgrade cannot just change the image tag: the new server refuses the old data directory.
-Use one of:
+Changing only the image tag fails: the new server refuses the old data directory. Use one of:
 
 - **Dump and restore** (simplest, needs downtime): `pg_dumpall` from the old container, start the new
   version on an empty directory under `/opt/data/<stack>/`, restore, compare row counts.
@@ -31,9 +29,7 @@ passed. Minor versions (16.3 to 16.4) are a pin change.
 
 ## Application schema migrations
 
-Keep migrations backward-compatible across one release: add first, remove in a later release
-(expand, then contract). Then the previous image still runs on the new schema, and rollback is a
-revert.
+Expand, then contract (the rule in [rollback.md](rollback.md)), so rollback stays a revert.
 
 ## After
 

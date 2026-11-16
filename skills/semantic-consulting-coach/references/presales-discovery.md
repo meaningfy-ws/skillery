@@ -1,19 +1,14 @@
 # Pre-sales Discovery: posture and decision
 
-Questions the **consultant asks their prospects** (distinct from the coaching
-questions the coach asks the *user*, which live in `question-bank.md`).
-
-> This sheet supports **pre-sales conversations, not selling.** The goal is to
-> decide whether to **stop**, **schedule a focused follow-up**, or **propose the
-> Proof of Value** (see `engagement-model.md`).
+The posture for pre-sales conversations the user runs with prospects: not selling, but deciding
+whether to **stop**, **schedule a focused follow-up** or **propose the Proof of Value**. The coach's
+questions to the user are a different bank ([`question-bank.md`](question-bank.md)).
 
 ## The questions
 
-The questions themselves, and the qualification they feed (five Ps from MEDDPICC), are owned by
-`sales-qualification` (its prospect question bank: first encounters, landscape and semantic
-pressure, readiness and decision dynamics). This sheet keeps the coaching posture around them:
-use one or two questions at a first encounter, the full bank only on a scheduled discovery call,
-and stop when there is no conceptual signal.
+The prospect questions, and the qualification they feed (five Ps from MEDDPICC), are owned by
+`sales-qualification`. The posture around them: one or two questions at a first encounter, the
+full bank only on a scheduled discovery call, and stop when there is no conceptual signal.
 
 ## Internal decision (after the conversation): choose one
 
@@ -23,8 +18,5 @@ and stop when there is no conceptual signal.
 | **Deepen discovery** | Relevance, but unclear readiness | Schedule a focused follow-up |
 | **Introduce the Proof of Value** | Clear pain, urgency, or sequencing questions | Propose the paid Proof of Value |
 
-## Boundary reminder
-
-When the conversation moves from **"is this relevant?"** to **"what should we
-do?"**, pre-sales has reached its boundary. **Propose a disciplined next step,
-not more discussion.**
+When the conversation moves from "is this relevant?" to "what should we do?", pre-sales has
+reached its boundary: propose a disciplined next step, not more discussion.

@@ -13,9 +13,7 @@ An ambiguous match stops that item: it becomes a question with the candidates an
 
 ## 1. The write policy
 
-The agent may read everything it can reach. It writes a lot, because a groomed, complete, up-to-date Odoo is the goal. It does nothing risky or irreversible on its own.
-
-The tier of every write is set in [`../assets/write-policy.yaml`](../assets/write-policy.yaml). That file is the only source; look an action up there before doing it.
+The agent may read everything it can reach. It writes a lot, because a groomed, complete, up-to-date Odoo is the goal. It does nothing risky or irreversible on its own. The tier of every write is set in [`../assets/write-policy.yaml`](../assets/write-policy.yaml), the only source; look an action up there before doing it.
 
 - **do** (do and log): reversible, internal, evidenced. Do it and log it.
 - **ask** (ask first): propose it in the run note with a reference (P1, P2…) and do it only after **the owner's yes** under that proposal.
@@ -32,7 +30,7 @@ How to read the policy:
 - **Contacts' identity** (`odoo-partner-identity`, `odoo-partner-structure`): name, email, VAT and employer are filled when empty, never overwritten on dormancy; moving a person to another employer is *ask*.
 - **Stars** (`odoo-priority`): *do* only with the dossier's attention score cited; never back over a value the owner set.
 - **Closing dates and forecasts** (`odoo-forecast`): *do* only in the pipeline's last open stage and only with a date or figure the client or partner stated, cited. Never an estimate of our own.
-- **Activities** (`odoo-activity`, `odoo-activity-redate`): setting and completing activities is *do*; moving an activity's date is *do* only with the reason written in its note. Every open lead and opportunity keeps at least one open, dated activity (`SKILL.md`, *Next actions*).
+- **Activities** (`odoo-activity`, `odoo-activity-redate`): setting and completing activities is *do*; moving an activity's date is *do* only with the reason written in its note.
 - **Conversion** (`odoo-convert`): lead → opportunity is *do* only with a cited two-way signal and with team and stage written together.
 - **Notes** (`odoo-note`): internal note subtype only (`mail.mt_note`; the discussion subtype `mail.mt_comment` notifies followers and is *never*). No `partner_ids`, no @mentions. Anything that notifies a person is a send.
 - **Commitments** (`gmail-draft-create`, `gmail-draft-update`): a draft may not commit Meaningfy to a price, guarantee, free work, named staff or certification, a delivery or start date for work, or exclusivity unless the owner approved it for that deal. Prices inside the approved ranges of the offer catalogue (`offer_catalogue` in `sales-config.yaml`, see `sales-operations`) need no approval; a price it does not list is *ask*. Otherwise, ask.

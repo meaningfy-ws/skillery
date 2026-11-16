@@ -9,12 +9,13 @@ const WORKER = /(^|:)(implementer|code-reviewer)$/
 
 export const isMarkLine = (line: string): boolean => MARK.test(line)
 
-/** Whether the text has a mark line outside a fenced block. */
+/** Whether the text has a mark line outside a ``` or ~~~ fenced block. */
 export function hasMark(text: string): boolean {
-  let fenced = false
+  let fence = '' // the opening fence's character; only the same character closes it
   for (const line of text.split('\n')) {
-    if (line.trimStart().startsWith('```')) fenced = !fenced
-    else if (!fenced && isMarkLine(line)) return true
+    const head = line.trimStart().slice(0, 3)
+    if (head === '```' || head === '~~~') fence = fence === head.charAt(0) ? '' : fence || head.charAt(0)
+    else if (!fence && isMarkLine(line)) return true
   }
   return false
 }

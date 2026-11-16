@@ -56,16 +56,11 @@ slices and the adoption of the shared checks.
    - Read `references/ci-and-infra.md` when you wire CI, the CD stub or `infra/`: it adds the gates
      per archetype, the CD seam and the infra gotchas.
 5. **Verify** with *Before you hand over*.
-6. **Hand off.** Install what `AGENTS.md` routes to; summarise what is made, stubbed and next:
-   ```
-   npx -y @fission-ai/openspec@1.4.1 init --tools claude --profile core
-   /plugin marketplace add meaningfy-ws/skillery#releases
-   /plugin install meaningfy-core@meaningfy-skillery
-   /plugin install meaningfy-building@meaningfy-skillery
-   /plugin install superpowers@claude-plugins-official
-   /plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail
-   ```
-   If the person declines one, say that you work without it and that its routes will not resolve.
+6. **Hand off.** Install what `AGENTS.md` routes to (OpenSpec 1.4.1 with `--profile core`, the
+   skillery bundles `meaningfy-core` and `meaningfy-building` from `meaningfy-ws/skillery#releases`,
+   `superpowers`, `ponytail`) with the commands for the running CLI: `dependencies.yaml` for the
+   tools, skillery's `docs/environment/dual-cli/` setup guide for the bundles; summarise what is made, stubbed and next. If the person declines one, say that you work without
+   it and that its routes will not resolve.
    The first EPIC is `/opsx:propose`; its PLAN passes `clarity-gate` before `/opsx:apply`.
 
 ## Rules

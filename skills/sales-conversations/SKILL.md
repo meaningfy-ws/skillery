@@ -14,11 +14,13 @@ metadata:
 # Sales Conversations
 
 A meeting without a goal roams, and a follow-up sent three days late loses the deal's momentum.
-This skill makes every external sales meeting start from a plan and end with a dated next step, and
-it drafts the messages around the meeting. `sales-operations` calls it for meetings today or
-tomorrow, after-meeting work, replies waiting and rotting deals; the owner can call it directly. It
-calls `sales-accounts` for the people in the meeting, `sales-qualification` when the deal's dossier
-is missing or older than the last contact, and `sales-pipeline-custody` for every Odoo write.
+Every external sales meeting starts from a plan and ends with a dated next step; the messages
+around it are drafts, never sent. This skill calls `sales-accounts` for the people in the meeting,
+`sales-qualification` when the deal's dossier is missing or older than the last contact, and
+`sales-pipeline-custody` for every Odoo write.
+
+Read `references/selling-method.md` before writing any plan or draft: it adds the principles, the
+channel matrix, personal touches, price, the cadence and where each source is not used.
 
 ## Quick Start
 
@@ -28,9 +30,9 @@ is missing or older than the last contact, and `sales-pipeline-custody` for ever
 2. Read her profile (`sales-accounts`): cares about the AI pilot; fears being blamed for a failed
    platform choice.
 3. Fill [`assets/templates/meeting-plan.md`](assets/templates/meeting-plan.md): the commitment to ask
-   for is "an intro to whoever owns the data budget"; insight 2 from [insights](references/insights.md)
-   ("AI does not scale on data that disagrees"); three calibrated questions on the economic buyer and
-   the decision process; the offer is held, because the economic buyer is OPEN.
+   for is "an intro to whoever owns the data budget"; insight 2 ("AI does not scale on data that
+   disagrees"); three calibrated questions on the economic buyer and the decision process; the
+   offer is held, because the economic buyer is OPEN.
 
 **Output:** a one-screen plan posted as an internal note on the deal, with "Decision needed from the
 owner before the meeting: none".
@@ -40,51 +42,47 @@ owner before the meeting: none".
 ### Before: the meeting plan
 
 1. **Objective**: "a meeting plan for meeting M with deal #ID that meets the acceptance criteria".
-2. **Read**: the dossier (via `sales-qualification`), the last exchanges, the calendar event and its attendees.
-3. **Fill [`assets/templates/meeting-plan.md`](assets/templates/meeting-plan.md)**:
-   - who leads, and their goal;
-   - the **one commitment to ask for**;
-   - the champion's risk and our cover;
-   - labels;
-   - calibrated questions that close the biggest MEDDPICC gaps, the weakest of the five Ps first;
-   - the offer, named in their words;
-   - likely objections;
-   - non-cash concessions;
-   - the next step, with a date;
-   - when we walk away;
-   - what to check on LinkedIn.
-   
-   In Discovery-stage meetings, **hold the offer while pain or the economic buyer is OPEN**: the plan's weight is on questions.
+2. **Read**: the dossier (via `sales-qualification`), the last exchanges, the calendar event and its
+   attendees.
+3. **Fill [`assets/templates/meeting-plan.md`](assets/templates/meeting-plan.md)**, every field:
+   the **one commitment to ask for**; calibrated questions that close the biggest MEDDPICC gaps,
+   the weakest of the five Ps first. In Discovery-stage meetings, **hold the offer while pain or
+   the economic buyer is OPEN**: the plan's weight is on questions.
+   Read `references/insights.md` when a plan or a first touch needs an insight to teach: it adds
+   the six insights Meaningfy teaches, with proof, opening question and role, and
+   the rules for using and adding one.
 4. **Post the plan** as an internal note on the deal (through `sales-pipeline-custody`) and log it.
 
 ### During: tools to use
 
-The discovery flow, listening first, aiming for "that's right". Details are in [conversation-tools](references/conversation-tools.md).
+Read `references/conversation-tools.md` when choosing the tools for a meeting: it adds Meaningfy's
+discovery flow, the conditions on commercial teaching and listening, and when each is not used.
 
 ### After: notes, follow-up, next step
 
 1. When the owner's notes arrive (vault or chat), update the dossier via `sales-qualification`.
-2. Draft the follow-up **the same day** ([email-patterns](references/email-patterns.md)).
-3. Set the next activity. If the stage's *Exit when* is now true, move the stage per the pipeline rules.
-4. Add any new objection, and the answer that worked, to the objection library ([objections](references/objections.md)).
+2. Draft the follow-up **the same day**. Read `references/email-patterns.md` before any draft: it
+   adds the cc rule, the whose-turn check, meeting proposals, the pattern per situation and what a
+   draft never does.
+3. Set the next activity. If the stage's *Exit when* is now true, move the stage per the pipeline
+   rules.
+4. Read `references/objections.md` when an objection comes up or a new one must be filed: it adds
+   the five objection types and first moves, and the rules of the objection library.
 
-### Replies and revivals
-
-First decide **whose turn** it is ([email-patterns](references/email-patterns.md#first-whose-turn-is-it)).
-- **Ours**: deliver what was asked and own any delay.
-- **Theirs**: revive, within the cadence limits of the method.
-
-## Write rules
+## Rules
 
 Before any write, read the write rules of `sales-pipeline-custody`.
-- **Drafts**: creating Gmail drafts is *do and log*. Sending is *never*.
-- **Commitments**: a draft that commits Meaningfy (price, guarantee, free work, named staff, date, exclusivity) is *ask first*.
+- **Drafts**: creating Gmail drafts is *do and log*. Sending, or scheduling a send, is *never*.
+- **Commitments**: a draft that commits Meaningfy (price, guarantee, free work, named staff, date,
+  exclusivity) is *ask first*.
+- **Whose turn first.** Before a reply or revival, decide whose turn it is: a revival when the
+  ball is ours (they asked for an offer) loses the deal; deliver what was asked first.
+- **The other sender in cc** on every external draft; without it the draft is not written.
+- **No sales technique in a tender**, and nothing behind a partner's back (the channel matrix).
 
-## The method
+## Before you hand over: acceptance criteria
 
-[selling-method](references/selling-method.md) holds the principles, the channel matrix (B2G, direct, partner-led), decisions under uncertainty, personal touches, where prices come from, the cadence, and where each source is not used. Read it before writing a plan or a draft.
-
-## Acceptance criteria (checked by the goal verifier and the recipient reader)
+Checked by the goal verifier and the recipient reader.
 
 | Work item | Criteria |
 |---|---|
@@ -94,19 +92,9 @@ Before any write, read the write rules of `sales-pipeline-custody`.
 | Partner draft | states what is in it for the partner; goes through the partner; quotes nothing below the partner |
 | Every draft | a **Gmail draft**, never sent; in the language and formality of the thread; the other of the owner and the second sender in cc; logged with its draft id |
 
-## Gotchas
-
-- **Drafts only.** Creating a draft is *do and log*; sending, or scheduling a send, is *never*.
-- **Whose turn first.** A revival sent when the ball is ours (they asked for an offer) loses the deal;
-  deliver what was asked before anything else.
-- **The other sender in cc** on every external draft; without it the draft is not written.
-- **Hold the offer in Discovery** while the pain or the economic buyer is OPEN.
-- **No sales technique in a tender**, and nothing behind a partner's back (the channel matrix).
-
 ## Boundary & Related Skills
 
-**Owns:** the meeting plan; the selling method and the channel matrix; the conversation tools
-(discovery flow, commercial teaching, listening, rapport); the commercial insights; the objection
+**Owns:** the meeting plan; the selling method and the channel matrix; the conversation tools; the commercial insights; the objection
 taxonomy and the library rules; the email patterns, whose turn, the cc rule and the cadence.
 
 **Does NOT own:** the tone of an outreach email (`meaningfy-voice`, channel `outreach-email`);

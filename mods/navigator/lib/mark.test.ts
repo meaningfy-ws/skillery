@@ -92,3 +92,10 @@ test('the shared fixture: every line is a mark or not, as expected', () => {
   for (const r of rows) assert.equal(isMarkLine(r.line), r.mark, JSON.stringify(r.line))
   assert.equal(hasMark('text\n```\nmark: change=x phase=deliver stage=1\n```'), false) // inside a fence
 })
+
+test('a tilde fence hides a mark, and a backtick line inside it does not close it', () => {
+  const m = 'mark: change=x phase=deliver stage=1'
+  assert.equal(hasMark(`~~~\n${m}\n~~~`), false)
+  assert.equal(hasMark(`~~~\n\`\`\`\n${m}\n\`\`\`\n~~~`), false)
+  assert.equal(hasMark(`~~~\nx\n~~~\n${m}`), true)
+})

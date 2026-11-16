@@ -86,16 +86,3 @@ numbers, no spin.
 
 *Why:* a tentative or hedged ending throws away the momentum the piece just built. A confident close
 keeps the house rule against overclaiming by staying specific.
-
----
-
-## What must survive imitation
-
-If a draft loses these, it stops reading as clear explanation, whatever the topic:
-
-1. Exactly one controlling metaphor, carried throughout.
-2. A concrete example beside every abstract claim.
-3. Self-answered questions as pivots.
-4. Short declaratives for emphasis.
-5. Coined terms explained once.
-6. A confident, grounded close — under the house knobs, never overclaiming.

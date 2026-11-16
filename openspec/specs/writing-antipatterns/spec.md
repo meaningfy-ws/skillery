@@ -21,8 +21,8 @@ diagram-structure antipatterns (`modelling-conventions`, `architecture`), or a g
 #### Scenario: A genre is looked up for a drafting task
 
 - **WHEN** a skill is producing prose in one of the 8 named genres
-- **THEN** it links to that genre's reference file in `writing-antipatterns` rather than
-  restating antipattern guidance inline
+- **THEN** it cites `writing-antipatterns` and uses that genre's column of the inversion matrix
+  rather than restating antipattern guidance inline
 
 #### Scenario: A domain is mistaken for a genre
 
@@ -36,25 +36,6 @@ diagram-structure antipatterns (`modelling-conventions`, `architecture`), or a g
   (e.g. "god-class", "free strings where a controlled set belongs")
 - **THEN** it is rejected from this skill and pointed at `modelling-conventions` or `architecture`,
   whichever already owns it
-
-### Requirement: Antipattern entries are single-sourced; per-genre files are filtered views
-
-Each antipattern SHALL have exactly one canonical prose entry in
-`references/inversion-matrix.md`. Per-genre reference files SHALL contain only a pointer table
-(move, status, link to the canonical entry) and SHALL NOT restate an entry's smell, fix, or
-detection cue text.
-
-#### Scenario: A new antipattern is added
-
-- **WHEN** a new genre-conditional antipattern is documented
-- **THEN** it is added as one row in `inversion-matrix.md`, and each affected per-genre file gains
-  one pointer-table row linking back to it — no antipattern text is duplicated across files
-
-#### Scenario: A per-genre file is audited
-
-- **WHEN** a per-genre reference file is reviewed
-- **THEN** every row is a pointer (move name, status, link) and no full smell/fix/cue prose
-  appears outside `inversion-matrix.md`
 
 ### Requirement: Unguarded and guarded defects are kept distinct
 
@@ -121,4 +102,22 @@ status for each of the eight genres.
 
 - **WHEN** a specification states "the service MUST NOT store the token"
 - **THEN** the negative framing is not reported as a defect
+
+### Requirement: Antipattern entries are single-sourced in the inversion matrix
+
+Each antipattern SHALL have exactly one canonical prose entry in
+`references/inversion-matrix.md`, and the compact matrix there SHALL give its status in each of the
+eight genres. No other file of the skill SHALL restate an entry's smell, fix or detection cue.
+
+#### Scenario: A new antipattern is added
+
+- **WHEN** a new genre-conditional antipattern is documented
+- **THEN** it is added as one entry in `inversion-matrix.md` and one row of the compact matrix with
+  a status for all eight genres, and no antipattern text is duplicated in another file
+
+#### Scenario: One genre's view is needed
+
+- **WHEN** a reviewer checks a Decision record
+- **THEN** the Decision record column of the compact matrix gives every move's status, and the
+  reviewer opens an entry only for a move it flags
 

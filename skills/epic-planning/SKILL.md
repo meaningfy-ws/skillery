@@ -43,7 +43,9 @@ a file (form: `epic-delivery`).
    `inputs/` and the format of the Q&A record.
 2. **Elicit** (`/opsx:explore` + `superpowers:brainstorming`). Drive a *myriad of clarifying
    questions*, **one concern per question, asked together in rounds**, to surface and decide every ambiguity, conflict, and
-   assumption **before** writing the EPIC. After each round, summarise what you understood and
+   assumption **before** writing the EPIC. If `superpowers` is not installed, offer to install it
+   (`dependencies.yaml`); if the person declines, say that you work without it and lose its
+   brainstorming discipline, not this interview. After each round, summarise what you understood and
    confirm. Make no silent assumptions. **Include a test-scenario interview**: help the human enumerate
    what the EPIC must *prove* — key assertions, scenarios, edge cases — so the design phase can author
    `.feature` coverage (handed to `bdd-gherkin`; the PLAN's design half

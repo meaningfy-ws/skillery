@@ -1,7 +1,5 @@
 # The rule model
 
-The one definition of what a rule is. `rule-learner` and `rule-steward` cite it and never restate it.
-
 ## Fields
 
 | Field | Required | Meaning |
@@ -53,8 +51,7 @@ how the rule is phrased and what it needs.
 - **default:** applies unless a more specific rule or an exception says otherwise.
 - **soft:** a preference; any default or hard rule on the same slot beats it.
 
-An exception is drafted at its base's strength. A weaker exception would always lose to its base,
-so it would be dead on arrival.
+An exception is drafted at its base's strength; a weaker one is dead on arrival.
 
 ## Scope
 
@@ -84,9 +81,8 @@ more specific.
 `load` returns, per slot, the rules that fire and that no other firing rule beats. If they carry
 different values it prints `CONFLICT`, and the owner decides. Recency never decides.
 
-An exception's scope must contain its base's scope (anything else is a lint error). This keeps
-"excepts" and "more specific" pointing the same way, so "beats" cannot form a cycle among valid rules.
-If a hand edit makes one anyway, `load` prints `CONFLICT on <slot> (no winner)` rather than dropping
+An exception's scope must contain its base's scope (anything else is a lint error), so "beats"
+cannot form a cycle among valid rules. If a hand edit makes one anyway, `load` prints `CONFLICT on <slot> (no winner)` rather than dropping
 the slot.
 
 ## Lint
@@ -94,10 +90,11 @@ the slot.
 `lint` evaluates every active rule in its own scope as the context, and every pair of rules on the
 same slot.
 
-**Errors** refuse a write: an unreadable note; an invalid `type`, `strength`, `status` or id; a
-duplicate id; an `exception_of` or `supersedes` cycle; an exception whose scope does not contain its
-base's; a reference to a rule that does not exist; a check pattern that does not compile; a missing
-required field (`source` and `because` included).
+**Errors** refuse a write (code in brackets): an unreadable note (`parse`); an invalid `type`,
+`strength`, `status` or id (`invalid`); a duplicate id (`duplicate-id`); an `exception_of` or
+`supersedes` cycle (`cycle`); an exception whose scope does not contain its base's
+(`narrow-exception`); a reference to a rule that does not exist (`dangling`); a check pattern that
+does not compile (`regex`); a missing required field, `source` and `because` included (`missing`).
 
 **Warnings** are written and reported:
 
@@ -105,10 +102,10 @@ required field (`source` and `because` included).
   which beats the other;
 - **dead:** the rule never wins in its own scope, so it never wins anywhere;
 - **redundant:** removing the rule changes nothing in its own scope. Two rules equal in scope, slot,
-  value and strength are reported once, as duplicates. An exception that restores an earlier value,
+  value and strength are reported once, as `duplicate`. An exception that restores an earlier value,
   or a rule that overrides a narrower one through specificity, changes the outcome and is not
   redundant;
-- **weak exception:** an exception weaker than its base;
+- **weak-exception:** an exception weaker than its base;
 - **vocabulary:** a scope value outside the activity's playbook vocabulary;
 - **oversized:** more than 30 active rules in one activity.
 
@@ -144,7 +141,7 @@ A rule can live in a git repository instead of the owner's vault, so the whole t
 
 - **References stay inside one store:** `exception_of` and `supersedes` name a rule of the same store,
   because a teammate has no access to the owner's vault.
-- **Reading:** `load`, `check FILE` and `search` read both stores. Precedence is unchanged; a rule of
+- **Reading both stores:** precedence is unchanged; a rule of
   one store never overrides one of the other except by strength or specificity, and two that disagree
   print `CONFLICT R-… vs P-…`.
 

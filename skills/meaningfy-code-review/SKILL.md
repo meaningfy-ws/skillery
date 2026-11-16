@@ -19,7 +19,8 @@ The **criteria, modes, and dispatch contract** for a Meaningfy pre-PR review. Th
 to run it* (two modes, five lenses fanned out in parallel), *the review procedure* (methodical and
 catalogue-complete, not a curated checklist), and *how to report*. The read-only standalone *run* is
 performed by the external `code-review` command or the `code-reviewer` agent wrapper (which loads this
-skill). The review **criteria are the `cosmic-python` catalogue itself** — this skill scopes and
+skill). If `code-review` is not installed, offer to install it (`dependencies.yaml`); if the person
+declines, say that you work without it: the main thread dispatches the lenses, no one-command run. The review **criteria are the `cosmic-python` catalogue itself** — this skill scopes and
 sequences it, it does not restate or sample it.
 
 ## Review modes

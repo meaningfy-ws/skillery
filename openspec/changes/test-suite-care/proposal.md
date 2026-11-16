@@ -94,7 +94,7 @@ project.
   traceability check); the map reads those names and adds the tests that carry none —
   rejected: tagging every test by hand; coverage and mutation score only.
 - **DEC-3** *(revised 2026-11-14 by owner decision,
-  [`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+  [`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
   decision 5)*: A stage's adversarial tests are distilled before the stage merges. The tester's
   report names the scenario each new test attacks. In step 4 of the stage loop of `epic-delivery`
   (Decide and fix), where the lead already decides each tester finding, a builder sorts the tests

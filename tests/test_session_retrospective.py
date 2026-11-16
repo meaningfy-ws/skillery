@@ -59,7 +59,7 @@ def test_digest_then_report_writes_the_three_outputs(digest_dir):
     sessions = [json.loads(line) for line in (digest_dir / "sessions.jsonl").open()]
     assert len(sessions) == 1 and sessions[0]["repo"] == "demo" and sessions[0]["subagents"]["count"] == 1
     report_mod.main(digest_dir)
-    for name in ("epics.tsv", "phases.tsv", "signals.txt"):
+    for name in ("epics.tsv", "phases.tsv", "rounds.tsv", "signals.txt"):
         assert (digest_dir / name).is_file()
     row = (digest_dir / "epics.tsv").read_text().splitlines()[1].split("\t")
     assert row[:2] == ["demo", "demo-epic"] and row[4] == "1"
@@ -211,6 +211,39 @@ def test_an_output_folder_outside_any_tree_is_written(tmp_path):
     assert (tmp_path / "free/out/sessions.jsonl").is_file()
 
 
+def test_the_output_folder_is_readable_by_its_owner_only(tmp_path):
+    root = _write_session(tmp_path / "t", [USER, ASSISTANT, COST])
+    out = tmp_path / "out"
+    out.mkdir(mode=0o755)
+    digest_mod.digest(root, out, 36500)
+    assert out.stat().st_mode & 0o777 == 0o700
+
+
+def test_a_symlinked_output_file_is_replaced_not_followed(tmp_path):
+    root = _write_session(tmp_path / "t", [USER, ASSISTANT, COST])
+    out, target = tmp_path / "out", tmp_path / "elsewhere.txt"
+    out.mkdir()
+    target.write_text("keep")
+    for name in ("sessions.jsonl", "phases.tsv"):
+        (out / name).symlink_to(target)
+    digest_mod.digest(root, out, 36500)
+    report_mod.main(out)
+    assert target.read_text() == "keep"
+    assert not (out / "sessions.jsonl").is_symlink() and not (out / "phases.tsv").is_symlink()
+
+
+def test_the_report_refuses_a_digest_folder_inside_a_git_tree(tmp_path, capsys):
+    root = _write_session(tmp_path / "t", [USER, ASSISTANT, COST])
+    repo = tmp_path / "repo"
+    _git_init(repo)
+    digest_mod.digest(root, tmp_path / "out", 36500)
+    shutil.move(str(tmp_path / "out"), str(repo / "out"))
+    with pytest.raises(SystemExit) as exc:
+        report_mod.main(repo / "out")
+    assert exc.value.code == 2 and "inside a git working tree" in capsys.readouterr().err
+    assert not (repo / "out/epics.tsv").exists()
+
+
 # --- task 2.4: marks, result lines, rounds -------------------------------------------------------
 
 MARK_LINES = json.loads((ROOT / "tests/fixtures/session-retrospective/mark-lines.json").read_text())
@@ -287,6 +320,12 @@ def test_a_mark_inside_a_fence_is_ignored(tmp_path):
     phases, _, _, events = _review(tmp_path, [_a(1, _text(f"Example:\n```\n{MARK_X2}\n```\ndone"))])
     assert not [e for e in events if e["kind"].startswith("mark")]
     assert [p[2] for p in phases] == ["guessed:unmarked"]
+
+
+def test_a_tilde_fence_hides_a_mark_and_a_backtick_line_inside_it_does_not_close_it(tmp_path):
+    text = f"~~~\n{MARK_X2}\n~~~\nthen\n~~~\n```\n{MARK_X2}\n```\n~~~"
+    _, _, _, events = _review(tmp_path, [_a(1, _text(text))])
+    assert not [e for e in events if e["kind"].startswith("mark")]
 
 
 def test_a_subagent_keeps_the_epic_phase_and_stage_of_its_spawn(tmp_path):

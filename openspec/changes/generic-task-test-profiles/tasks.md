@@ -4,7 +4,9 @@
      with A as delivered: design § Delivery decisions, D-15 to D-26. Revised 2026-11-14 by
      owner decision (D-27, the reader's tool list); not gated again. Revised 2026-11-15 after the
      owner's settlement of the open EPICs (design D-28 to D-32); not gated again. Also on 2026-11-15,
-     the owner agreed to drop the baseline tallies O-1 to O-4 and the cost sign-off (D-33). -->
+     the owner agreed to drop the baseline tallies O-1 to O-4 and the cost sign-off (D-33).
+     Revised 2026-11-16, after the gate, against the lean skills of EPIC lean-skills (design D-34
+     to D-37); not gated again (S-10). -->
 
 > Derives from: EPIC `generic-task-test-profiles` ([`proposal.md`](proposal.md)); design in
 > [`design.md`](design.md). EPIC A `test-strategy` is delivered (2026-11-14). Order (D-32): this
@@ -34,6 +36,9 @@
   (the reader agent follows the table if it differs); measure `guardrails` with `wc -c`
   (`SKILL.md` and `references/`) and record the figure in `evidence/` as the starting size of
   D-29.
+  *Revised 2026-11-16 (D-34, D-35):* the table has no row for reading prose; check that the rows
+  *Read a file or a range* and *Search text* still give `Read`, `Grep` and `Glob`. The starting
+  size on 7d85edd is 18,436 bytes; record the figure measured at the start.
 - [ ] 1.2 Write the two fabricated offers, `offer-planted.md` and `offer-clean.md`, under
   `evidence/planted-flaw/`; nothing under `tests/` (D-11, DEC-11). The planted flaw is the one of
   D-18, a claim about past work that names no work, and not the scope and price mismatch of D-11.
@@ -67,6 +72,10 @@
   it adds) in place of the two-line bullet, at most 0.3 KB; the exception in
   `subagent-reports.md` is at most 0.2 KB. Measure `guardrails` again and record the growth, which
   must not pass 6 KB nor take the skill past 24 KB of prose; if it would, cut the reference.
+  *Revised 2026-11-16 (D-34, D-35):* the reference is at most 5 KB and the growth at most 5.5 KB
+  (the room is 6,140 bytes). Add `adversarial-reader` to the *Agents* column of the rows *Read a
+  file or a range* and *Search text* of `references/activity-tools.md`, so the table's lint checks
+  the agent.
 - [ ] 1.6 Probes for `guardrails` in `tests/trigger_probes.yaml` (D-12); its description before
   and after in `evidence/probes.md`. Run `make skill-inventory`. The near-miss of D-12 ("have a
   cold reader test this installation manual", expects `technical-writing`) is the probe that
@@ -91,24 +100,31 @@ that the line matches the skill's `exists` rows, and those rows arrive in 3.1 (D
   allow-lists with the hyphen form); red before 2.1–2.5, green after.
 - [ ] 2.1 `proposal-writing`: the `## Review profile` section, its *Attacks* bullets as they were
   used in 1.7 (`evidence/planted-flaw.md`; one to three, D-31; the other four skills follow D-31
-  in 2.2 to 2.5, each section at most about 1 KB), the criteria sentence in *Flow* step
-  1, the new step 5 (D-2, D-3; spec `sales-method-ownership`, *The offer
+  in 2.2 to 2.5, each section at most about 1 KB), the criteria sentence in *Workflow* step
+  1 (*Revised 2026-11-16 (D-37):* was *Flow*), the new step 5 (D-2, D-3; spec `sales-method-ownership`, *The offer
   profile has one owner*).
 - [ ] 2.2 `contract-practice`: the section, the fifth intake bullet, the *review* row and the
   sentence under *Lawyer-review flag* (a finding on a number, or on a term that changes what a party can claim or must do, is an open
   point); the workflow file is not touched (D-2, D-3, D-6; spec `legal-contract-practice`).
 - [ ] 2.3 `meaningfy-voice`: the section with its two step lines in
-  `references/channels/linkedin.md`, the pointer and differences in `blog.md`, lines 23–24 of
-  SKILL.md, the description's post trigger (D-2, D-3, D-14; spec
+  `references/channels/linkedin.md`, the pointer and differences in `blog.md`, the channel-profile
+  pointer of SKILL.md, the description's post trigger (D-2, D-3, D-14; spec
   `company-voice`, both requirements).
-- [ ] 2.4 `executive-communication`: the section, the criteria and reader lines in *Start here*,
+- [ ] 2.4 `executive-communication`: the section, the criteria and reader lines in *Workflow* step 1 (diagnose before you structure),
   (D-2, D-3; spec `executive-communication`).
-- [ ] 2.5 `sales-conversations`: the section, the subsection *In an attended session: criteria and a reader* (pick-up included)
+  *Revised 2026-11-16 (D-38):* the section also covers sales emails and follow-ups: the
+  attended-session rule (pick-up included) and the scheduled-run rule of spec
+  `sales-method-ownership`, *Sales messages take the message profile*. The section stays at most
+  about 1.3 KB.
+- [x] 2.5 *Dropped 2026-11-16 (D-38): the sales profile folds into task 2.4;
+  `sales-conversations` gains no text.* Was: `sales-conversations`: the section, the subsection *In an attended session: criteria and a reader* (pick-up included)
   under *Workflow*; `sales-operations` is not touched (D-2, D-3, D-4; spec
   `sales-method-ownership`, *The sales-message profile has one owner*).
   *Added 2026-11-15 (D-30, D-31):* add only after the passages R2 later cuts are left alone; the
   text restates no external sales method; the section is at most about 1 KB, with one to three
   *Attacks* bullets.
+  *Revised 2026-11-16 (D-36):* the skill is 24,564 bytes, 12 under the budget, so this task cannot
+  add its section as written. Settled by D-38: the task is dropped.
 - [ ] 2.6 Feature files: add the scenarios of design § *Scenarios* to the three files, with the
   `# Traces to:` line and the extra Given line in `proposal-writer.feature`; add `guardrails` to
   the Background skill lists of `proposal-writer.feature` and `sales-agent.feature` (D-5, D-11).
@@ -136,14 +152,19 @@ that the line matches the skill's `exists` rows, and those rows arrive in 3.1 (D
     the post's check received"; reconciled 2026-11-14);
   - `generic-writing.md`: the ten rows of D-10 and the `ADQ` row set to status `accepted` with
     its reason, no row left naming D. If `test-suite-care`'s stage 3 has added the words
-    "assessed on request by `CHK-<m>`" to a row, they stay. In line 3, the sentence on
-    "`gap → D` rows" goes;
+    "assessed on request by `CHK-<m>`" to a row, they stay. *Revised 2026-11-16 (D-37):* the
+    sentence on "`gap → D` rows" in line 3 is already gone; nothing to remove;
   - the pointer line of each technique owner, as D-10 lists them: `proposal-writing` and
     `contract-practice` to `VAL, VER, ROB, RSK`, `meaningfy-voice` and `executive-communication`
-    to `VAL, ROB, CLR`, and a new line with `VAL, ROB` in `sales-conversations`;
+    to `VAL, ROB, CLR`, and a new line with `VAL, ROB` in `sales-conversations`
+    (*Revised 2026-11-16 (D-38):* no sales profile, so four profiles, eight rows and four ids, not
+    five profiles, ten rows and five ids; no line in `sales-conversations`);
   - `skills/test-strategy/SKILL.md`: the Quick Start's sentence on the `VAL` row (lines 33–34),
-    and the two cells "none yet (a gap)" in the column *Example in a post* (lines 67–68): the
-    `ROB` cell names the adversarial reader's read, the `ADQ` cell says the gap is `accepted`.
+    and the two cells "none yet (a gap)" in the column *Example in a post* (lines 67–68;
+    *Revised 2026-11-16 (D-37):* now 69–70): the
+    `ROB` cell names the adversarial reader's read, the `ADQ` cell says the gap is `accepted`;
+  - *Added 2026-11-16 (D-37):* the `over_budget` reason of `test-strategy` in `skill-budget.yaml`
+    names a 144-row inventory; set it to the new count.
 - [ ] 3.2 Run the four *with* runs, isolated, from the head of stage 2, with the prompts of 1.3;
   complete `evidence/baseline.md` with the pairs (no tallies, D-33).
 - [ ] 3.3 Docs: the two CHANGELOG lines, the `docs/future-features.md` row, `guardrails` under

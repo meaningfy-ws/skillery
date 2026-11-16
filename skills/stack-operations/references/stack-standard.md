@@ -1,12 +1,11 @@
 # The per-stack minimum (S1–S9)
 
-**Level: MUST** for every stack, and every stack is deployed health-gated (how:
-[deploy-workflow.md](deploy-workflow.md)). Why: a stack that misses one of these fails in a way
-nobody sees until it is an outage — a full disk, a crash loop, a silent version change.
+**Level: MUST** for every stack, deployed health-gated ([deploy-workflow.md](deploy-workflow.md)).
+Why: a miss fails unseen until it is an outage: a full disk, a crash loop, a silent version change.
 
-`scripts/check_stack.py` checks each rule per service. It reads YAML only (no Docker, no network),
-needs Python 3.8+ with `pyyaml`, prints one row per stack, service and rule, and exits 1 when any
-rule is `missing` or a file is `unreadable`. The same command runs in a session and as a CI step.
+`scripts/check_stack.py` reads YAML only (Python 3.8+, `pyyaml`; no Docker, no network), prints one
+row per stack, service and rule, and exits 1 when a rule is `missing` or a file `unreadable`, in a
+session and as a CI step.
 
 ## The rules
 

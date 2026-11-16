@@ -25,7 +25,7 @@ Measured on `develop` `8994178` and on both forks, 2026-11-15:
 | Full commits of the forks' heads | `agent-rules-books` `893a88a6fce3a80c565bf39ac65021b43a8b2990`; `wondel-ai-skills` `c5265583b1a9740f06831e1d3e89b35bba3eb430`. The installer accepts a `#<ref>` that is a branch, a tag or a full 40-character commit; a short commit fails |
 | Copies inside the wondel fork | each of the 16 skills also sits in two `plugins/*/skills/` folders, identical today; the installer takes the top-level folder first |
 | Trigger sets in `tests/evals/triggers/` | only `executive-communication.json` and `test-strategy.json` |
-| The lean standard | delivered by `lean-skills` stage 1: 24 KB of prose per skill, body near 6 KB, pointer sentences checked by lint; `skill-budget.yaml` exempts skills still waiting for their rewrite |
+| The lean standard | delivered by `lean-skills` stage 1: 24 KB of prose per skill, body near 6 KB, pointer sentences checked by lint; `skill-budget.yaml` exempts skills still waiting for their rewrite. *Revised 2026-11-16 (D-21):* every skill is rewritten and the `pending` key is gone; only `over_budget` remains |
 | Restatement of the two authors (DEC-9) | `sales-conversations/references/selling-method.md`, `conversation-tools.md`; `sales-qualification/references/value-equation.md` |
 
 Name collisions to keep in mind: the wondel fork also holds `clean-architecture`,
@@ -315,6 +315,9 @@ reader compares before and after, as `lean-skills` does for its rewrites. The fi
 against it. `sales-conversations`
 (27,977 bytes of prose as `prose_budget` counts it, pending `[budget, pointers]` in `skill-budget.yaml`) may fall under 24 KB with the
 cut; `prose_budget` then asks for `budget` to leave its pending list, in the same pull request.
+*Revised 2026-11-16 (D-23, D-24):* `sales-conversations` is now 24,564 bytes (body 5,814,
+references 18,750) and nothing is pending; how much of this cut is left is D-24, an owner
+decision.
 
 ### D-15 Spec deltas
 
@@ -420,7 +423,8 @@ the skill that must pass it).
 | `DO_NOT_TRACK=1` does not stop the telemetry event | task 1.1 (watch the network or the CLI's debug output) | RISK-6; the owner is told in the task 1.6 round |
 | An opencode user who also uses Claude Code runs both commands | each skill loads twice in opencode | The setup heading says: run only the claude-code command if you use both |
 | A record links to a fork file | `make lint` (broken link) | Name files in backticks, no links |
-| The sales cut brings `sales-conversations` under 24 KB | `prose_budget`: "remove it from pending" | Remove `budget` from its pending list in the same pull request |
+| The sales cut brings `sales-conversations` under 24 KB | `prose_budget`: "remove it from pending" | Remove `budget` from its pending list in the same pull request. *Revised 2026-11-16 (D-23):* moot, the skill is under 24 KB and not pending |
+| A pointer line pushes a skill over 24 KB (D-22) | `prose_budget` | Offset the bytes in the same pull request; otherwise to the owner, never an `over_budget` entry by the builder |
 | A stage 4 trigger set is missing | task 3.4 has not written it | Write it from the probes and fix it before the "before" run |
 | A stage 4 run uses the lead's own plugins | the run was not under the scratch `CLAUDE_CONFIG_DIR` | Discard it; rerun with `claude -p` in the scratch configuration |
 | The opencode install fails or lands where opencode does not look | task 1.1 | `opencode_status: unverified (…what was seen)`; a recorded gap, not a stop (DEC-14) |
@@ -553,6 +557,66 @@ stage 1b, under the floor: D-18 rejects a pin of the form `unpinned: …`, the f
 spec still allow (moot while the full commit installs; align the lint if the fallback is ever
 used); and a command with no `--skill` part passes `_dep_commands` (stage 2's
 `external-skills-install` render rejects it).
+
+Revised 2026-11-16, after the gate. EPIC `lean-skills` rewrote every skill to the lean standard and
+was archived ([`2026-11-16-lean-skills`](../archive/2026-11-16-lean-skills/)). Every open task of
+stages 2 to 4 was checked against the text and the sizes on `develop` `7d85edd`. Unchanged: 2.1 to
+2.7 (the standard D-9 and D-10 rely on is the same; D-10's estimate stays 22 KB of 24; the probe
+neighbours of D-12 and `use-cases/UC-W13-negotiation-partner.md` exist), 3.3 (the five agents of
+D-13 have 23 to 32 body lines of 40, and a feature file each), 3.4 (still only two trigger sets),
+3.5 and 4.1 to 4.5. Revised: 3.1 and 3.2, below. The clarity gate was not run again on these
+entries (S-10 of [the reassessment](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)).
+
+- **D-21 The lean standard is complete.** `skill-budget.yaml` has no `pending` key any more; only
+  `over_budget` remains (`semantic-consulting-coach` is one of its five entries). The Context row is
+  corrected in place.
+- **D-22 Room for the pointer lines (task 3.1).** Sizes of the D-13 forecast, body plus
+  references: `architecture` 24,576 (8,140 + 16,436), exactly at the budget; `sales-conversations`
+  24,564, 12 bytes under it; `sales-qualification` 22,530; `cosmic-python` 20,676;
+  `executive-communication` 11,246; `proposal-writing` 7,828; `estimation` 6,753;
+  `technical-writing` 5,574; `semantic-consulting-coach` 32,021 under `over_budget`. The line of
+  D-13 is about 112 bytes, so in `architecture` and `sales-conversations` it fails `prose_budget`
+  unless the same pull request removes as many bytes from that skill (for `sales-conversations`,
+  the cut of task 3.2 can pay for it). If no offset is found, the owner decides; the builder never
+  adds an `over_budget` entry. Bodies already over the 6 KB target (`architecture`,
+  `sales-qualification`, `semantic-consulting-coach`, `executive-communication`, `cosmic-python`)
+  take the line only where the help applies, as D-13 says; it adds to an advisory note, not an
+  error.
+- **D-23 D-14's size facts are stale.** `sales-conversations` is 24,564 bytes, not 27,977, and is
+  not pending, so the step "update `skill-budget.yaml` if `prose_budget` asks" of task 3.2 and its
+  error-matrix row are moot. Corrected in place.
+- **D-24 DEC-9 after lean-skills: shrunk to the lines left (owner, 2026-11-16).** Measured on `7d85edd`. The three files
+  hold 13,088 bytes (`sales-conversations/references/selling-method.md` 7,767,
+  `conversation-tools.md` 2,226, `sales-qualification/references/value-equation.md` 3,095). `lean-skills` already dropped the generic Voss definitions and the repeated "where not
+  used" lines (its `evidence/assessment-sales-conversations.md`, rows 22, 29, 31, 39). What is left
+  that restates the authors' method:
+  - `selling-method.md`: principle 11 "Tactical empathy (Voss)", 187 bytes, already almost a
+    pointer to `conversation-tools.md`. Principles 5 and 9 name Hormozi but state our rules (a
+    small credited first step; never discount).
+  - `conversation-tools.md`: the Listening opener (mirror, label, calibrated and no-oriented
+    questions, "that's right"), 130 bytes; the graceful no, 53 bytes; Belief-breaking, 126 bytes
+    with its heading; and the Hormozi step order inside the discovery flow, about 250 of a
+    409-byte line that also carries our three MEDDPICC pillars.
+  - `value-equation.md`: the paragraph defining the value equation, 194 bytes. Its lever table
+    (about 560 bytes) applies the equation to the dossier with our evidence, so it is ours.
+
+  In all, about 0.7 to 0.9 KB of 13 KB. A pointer through `skill-orchestration` costs about 110 to
+  150 bytes each, so the net saving is under 0.5 KB. The Meaningfy restrictions stay in every
+  option: the Hormozi and Voss lines of "Where each source is not used", the B2G row, the
+  discovery flow's "does not close in the room", the accusation-audit condition, the focus
+  question and the people behind the table, principles 5 and 9.
+  Options: **(a)** keep task 3.2 as written (heading list, cut, second reader) for under 0.5 KB;
+  **(b)** shrink it to the few lines above inside task 3.2, replaced by one pointer per file to
+  `negotiation` or `hundred-million-offers`, with one second reader; this also pays for the D-22
+  line in `sales-conversations`; **(c)** drop DEC-9 as done by `lean-skills`, drop or shrink the
+  `sales-method-ownership` delta (D-15), and find the D-22 offset in `sales-conversations`
+  elsewhere. The pointers of (a) and (b) name skills that stage 1b registers. Owner's answer
+  (2026-11-16, one question round): **(b)**. DEC-9 keeps its intent; task 3.2 cuts only the lines
+  listed above and pays for the D-22 line in `sales-conversations`.
+- **D-25 A skill with no room (owner, 2026-11-16).** Standing rule for every planned addition to a
+  skill at or near 24 KB: the same pull request cuts at least what it adds from that skill, or
+  moves the prose to a tool or a template (S-9). Only when neither works does the builder ask the
+  owner for an `over_budget` entry. This settles the open branch of D-22 for `architecture`.
 
 ## Open Questions
 

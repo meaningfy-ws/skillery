@@ -13,19 +13,10 @@ metadata:
 
 # Rulebook
 
-## Overview
-
-The owner keeps telling agents how work should be done: "British English", "never send without my
-approval", "fixed price when the scope is clear". This skill keeps those statements as explicit rules
-in the owner's vault, one note per rule, and brings the right ones into the session that needs them.
-
-The work is split on purpose. The script decides what is valid, which rule wins and what an output
-breaks; the agent only proposes. Nothing here is learned statistically: every rule was approved by
-the owner, and every one can be read, edited and retired.
-
-The rule model (the twelve types, their fields, strength, scope, precedence and the note format) is
-defined in [`references/rule-model.md`](references/rule-model.md). Every subcommand and exit code is
-in [`references/commands.md`](references/commands.md).
+The owner's statements of how work should be done ("British English", "never send without my
+approval") are explicit, owner-approved rules, one note each. The script decides what is valid,
+which rule wins and what an output breaks; the agent only proposes, and never reads the rules
+folder whole or writes a rule note by hand.
 
 ## Quick Start
 
@@ -61,39 +52,11 @@ in [`references/commands.md`](references/commands.md).
    python3 <this skill's folder>/scripts/rules.py cite R-0042 R-0043
    ```
 
-## Running the script
-
-- The script is `scripts/rules.py` in this skill's folder. Run it with `python3` (`python` on
-  Windows); it needs Python 3.11 or later and nothing else.
-- It finds the vault through `MEANINGFY_VAULT` (the vault root), or the current directory when that
-  holds `08 How to/`. A session in a code repository, or on any other surface than the vault, needs
-  `MEANINGFY_VAULT`. Without either it exits 3 and names the setting.
-- Run it from the session's working directory. If you have run `cd` elsewhere in this session, run
-  `cd <session directory>` as its own command first, never as `cd` chained to the script call with
-  `&&`: a compound command may stop matching the permission rule.
-- Its per-machine permission rule, for both CLIs, is in
-  [`references/commands.md`](references/commands.md#permissions-per-machine).
-- Run it by its full path, unquoted, as the skill's folder gives it: your permission settings
-  allow the script by that path, so another spelling stops to ask.
-- It prints plain text, so its output is safe to show the owner.
-
-## Where rules live
-
-- **Rules:** `08 How to/Rules/R-NNNN <title>.md`, kind `rule`, one note per rule, `private: true`.
-- **Playbooks:** `08 How to/Playbooks/<Activity>.md`, kind `playbook`, at most one per activity. A
-  playbook holds the activity's procedure (its body), its scope vocabulary and its golden examples.
-- **Candidates:** `00 Inbox/proposed/`, `status: idea`, until the owner approves them.
-- **Repository rules:** in a git repository, `docs/rules/P-NNNN <title>.md`, shared with the team
-  (rule model, Repository store). `where` says which stores the session sees.
-
-For the required properties of both kinds, see `vault-conventions` (when the vault-assistant bundle is installed); their meaning is in the rule
-model reference.
-
-## Use protocol
+## Workflow: the use protocol
 
 1. **Load at the start of an activity**, with the activity name and the context tags the playbook's
    vocabulary offers (`--context audience=client --context channel=email`). Load again when the
-   activity or the context changes. Never read the rules folder whole: `load` returns only what applies.
+   activity or the context changes. `load` returns only what applies.
    **The "say once" rule:** when `load` exits 3, tell the owner once per session, "Your rules are not loaded: set
    `MEANINGFY_VAULT` (see https://github.com/meaningfy-ws/skillery/blob/develop/docs/environment/setup.md)", do not run `load` again in that session, and carry
    on. Scheduled and unattended runs skip `load` altogether.
@@ -106,18 +69,36 @@ model reference.
 5. **Cite what applied.** After the output is done, `cite` the ids of the rules that actually shaped
    it, and only those. A cite is the usage signal the weekly review reads.
 
-## Precedence
+Read `references/rule-model.md` when you draft, edit or judge a rule, or must explain why one rule
+beat another: it adds the fields, the twelve types, strength, scope, precedence, lint, lifecycle,
+the repository store and the note format.
 
-A rule fires when every scope tag it carries is in the context; `activity:*` means any activity.
-Among rules that fire and set the same slot, hard beats default beats soft; then an exception beats
-every rule up its `exception_of` chain; then a strictly more specific scope wins. Anything left is a
-conflict for the owner. The formal definition, and why it cannot loop among valid rules, is in the
-rule model reference.
+## Rules
 
-## Writing rules
+**Running the script.**
 
-Only `rules.py` writes rule notes. It assigns the next free id, validates every write against the
-lint and refuses (exit 4) a write that would add a new error; warnings are written and printed.
+- The script is `scripts/rules.py` in this skill's folder. Run it with `python3` (`python` on
+  Windows); it needs Python 3.11 or later and nothing else.
+- It finds the vault through `MEANINGFY_VAULT` (the vault root), or the current directory when that
+  holds `08 How to/`. A session in a code repository, or on any other surface than the vault, needs
+  `MEANINGFY_VAULT`. Without either it exits 3 and names the setting.
+- Run it from the session's working directory. If you have run `cd` elsewhere in this session, run
+  `cd <session directory>` as its own command first, never as `cd` chained to the script call with
+  `&&`: a compound command may stop matching the permission rule.
+- Run it by its full path, unquoted, as the skill's folder gives it: your permission settings
+  allow the script by that path, so another spelling stops to ask.
+
+Read `references/commands.md` when you need a command beyond `load`, `check` and `cite`, an exit
+code, or the per-machine permission rule: it adds every subcommand's output, the exit codes and
+the allow rule per CLI.
+
+**Where rules live.** The vault holds `R-` rules, one playbook per activity and the candidates; a
+git repository's `docs/rules/` holds the team's `P-` rules. `where` says which stores the session
+sees.
+
+**Writing rules.** Only `rules.py` writes rule notes. It assigns the next free id, validates every
+write against the lint and refuses (exit 4) a write that would add a new error; warnings are
+written and printed. An edit the owner makes in Obsidian is welcome; run `lint` after it.
 
 | Who | Calls |
 |---|---|
@@ -125,23 +106,15 @@ lint and refuses (exit 4) a write that would add a new error; warnings are writt
 | rule-steward, in the weekly review | `stats`, `lint`, `check --golden`, `approve`, `retire`, `update`, `confirm` |
 | any agent, in any activity | `load`, `check`, `cite` |
 
-An edit the owner makes in Obsidian is welcome; run `lint` after it, because the script was not there
-to validate it.
+**Common mistakes**
 
-## Gotchas
-
-- **Hand-written frontmatter.** An agent that edits a rule note directly skips the validation and the
-  id allocation. Use `add` or `update`, even for a one-word change.
-- **Citing from memory.** Cite only the rules that shaped this output, not every rule `load` printed.
-  An inflated cite hides the rules nobody uses.
-- **Inventing scope values.** Use the tags in the playbook's vocabulary. A new value is a lint warning
-  and fires for no context anyone loads.
-- **"Redundant" can over-report.** The lint evaluates each rule in its own scope; a rule that matters
-  only in a wider combination of tags may still be flagged. Redundancy is a warning, and the owner
-  decides.
-- **A refused write (exit 4)** prints the new errors. Fix the input; never write the note by hand to
-  get round it.
-- **Line numbers** in `check` count from the top of the file, frontmatter included.
+| Mistake | Why it fails | Do instead |
+|---|---|---|
+| Editing a rule note by hand, even after a refused write (exit 4) | skips the validation and the id allocation | `add` or `update`, even for one word; after exit 4, fix the input it names |
+| Citing every rule `load` printed | an inflated cite hides the rules nobody uses | cite only the rules that shaped this output |
+| Inventing a scope value | a lint warning, and it fires for no context anyone loads | use the tags in the playbook's vocabulary |
+| Retiring a rule lint calls "redundant" | lint judges each rule in its own scope only, so it can over-report | report it; the owner decides |
+| Counting `check` line numbers from the body | they count from the file's top, frontmatter included | count from line 1 |
 
 ## Boundary & Related Skills
 

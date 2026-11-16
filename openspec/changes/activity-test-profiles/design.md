@@ -6,6 +6,8 @@
      gated again: ../delivery-retrospective/inputs/cross-check-test-epics.md, decisions 6 and 7.
      Revised 2026-11-15 by owner decision after the gate (D-37 to D-41, under Delivery decisions)
      and not gated again (S-10): ../delivery-process-and-tools/inputs/reassessment-2026-11-15.md.
+     Revised 2026-11-16 against the lean skills on develop (D-42 to D-46) and not gated again
+     (S-10): ../archive/2026-11-16-lean-skills/.
      The texts those entries supersede carry a note naming the entry. -->
 
 > Derives from: EPIC `activity-test-profiles` ([`proposal.md`](proposal.md)), DEC-1..DEC-8; the
@@ -441,7 +443,7 @@ the row alone carried it.
   |---|---|---|
   | documentation | `technical-writing` (it gains a `references/` folder) | `documentation-workflow` |
   | devops | `infrastructure-operations`, or `stack-operations` for a check on one stack | `operations-practice` |
-  | architecture | `architecture`, in a reference file only (its SKILL.md is at the cap) | none: no `architecture` capability exists, and C creates none (the proposal's "or none"); the owner confirms the worked example's outline instead |
+  | architecture | `architecture`, in a reference file only (its SKILL.md is at the cap; *Revised 2026-11-16 (D-45):* the skill is at its 24 KB budget, so any addition needs an equal cut or an owner decision) | none: no `architecture` capability exists, and C creates none (the proposal's "or none"); the owner confirms the worked example's outline instead |
   | modelling | `conceptual-modelling` | none, for the same reason; if the owner confirms `modelling-conventions` or `linkml-engineering` as the better owner, a new delta for that live capability |
   | ui | none in the catalogue | no check is written: the failure becomes a skillery issue, and the row is `accepted` with the issue number in its reason |
 
@@ -741,7 +743,7 @@ The adversarial tester takes these rows as its targets.
 | The `epic-shape` requirement was changed by another change since the delta was written | `openspec validate activity-test-profiles --strict`; stage 2's preflight | Rewrite the MODIFIED block from the live text |
 | A new `exists` row names an owner whose pointer line lacks the question or the file | `tests/test_test_strategy.py` (pointer check) | Extend the pointer line |
 | Two branches take the same `CHK-<n>` | The rebase conflict in `inventory.md`; the stage checker (A's test does not see a duplicate) | Renumber C's id at the rebase |
-| An addition would push `architecture`'s SKILL.md over its cap | `skill_too_long` (blocking) | D-14: a reference file only |
+| An addition would push `architecture`'s SKILL.md over its cap | `skill_too_long` (blocking) | D-14: a reference file only. *Revised 2026-11-16 (D-45):* the budget binds first, `prose_budget` (blocking); an equal cut or the developer's decision |
 | An `accepted` reason points into `openspec/` | A Markdown link: `cross_skill_paths` (blocking); a plain path: the stage checker | D-10: the change id as text |
 | The tester's report has no property for the INV-1 row | The lead, against D-13 | Return it once; then a finding to the owner; the third proof stays open |
 | The lead dispatches the tester with the installed, older brief | The report has no table of properties | D-13: dispatch again with the brief read from the working tree |
@@ -843,7 +845,9 @@ developer confirms them in task 0.2, before stage 1.
 - **D-26 A fill in the architecture family (overrides D-14's "in a reference file only" and the
   error-matrix row on the cap; D-10 holds).** An `exists` row owned by `architecture` makes
   `pointer_errors` in `tests/test_test_strategy.py` compare the skill's pointer with the row's
-  question. `architecture`'s SKILL.md body is at the 650-line cap, so no line can be added. The
+  question. `architecture`'s SKILL.md body is at the 650-line cap, so no line can be added
+  (*Revised 2026-11-16 (D-45):* the body is 119 lines now; the limit that binds is the 24 KB
+  budget, which the skill meets with no byte to spare). The
   skill has no pointer line of its own, but its `**Related:**` line already holds the folded form
   the test accepts (`FOLDED_POINTER`): "`test-strategy` (answers `VAL, VER, ADQ, CLR, RSK` in its
   matrix, `references/architecture.md`)". A stage 4 fill adds its question id (`ROB`) inside that
@@ -858,7 +862,8 @@ developer confirms them in task 0.2, before stage 1.
 - **D-28 The sentence the close step removes (corrects D-10).** D-10 says every family paragraph
   ends with "… to fill or accept". Five do. `ui.md` ends "… to fill or accept, possibly by a
   pointer to an external design plugin." The close step removes the whole sentence, from "`gap →
-  C` rows" to its full stop, whatever its tail.
+  C` rows" to its full stop, whatever its tail. *Revised 2026-11-16 (D-42):* the lean rewrite
+  removed that sentence from five files; only `ui.md` still names `gap → C` in its paragraph.
 - **D-29 Ids (corrects D-9 and § Tests and proofs; adds to D-10).** B's tests in
   `tests/test_quality.py` are TC-09 to TC-12 and IT-01 to IT-04. C's tests in that file carry the
   prefix `C-` in code and in evidence: `C-TC-9` to `C-TC-12`, `C-IT-1` to `C-IT-4`. The ids in
@@ -912,7 +917,7 @@ developer confirms them in task 0.2, before stage 1.
 
 Revised 2026-11-14 by owner decision, after the gate. The session measurements were compared with
 this EPIC and the owner decided on the result
-([`cross-check-test-epics.md`](../delivery-retrospective/inputs/cross-check-test-epics.md),
+([`cross-check-test-epics.md`](../archive/2026-11-16-delivery-retrospective/inputs/cross-check-test-epics.md),
 decisions 6 and 7). The clarity gate was not run again on this entry.
 
 - **D-36 An accept-only stage takes the small review set (corrects D-14, "It may take"; bears
@@ -1005,3 +1010,56 @@ Each entry names the text it corrects; ids stay as they were.
   and 3, and before B's stage 3 and the remaining R1 stages, which rewrite each skill once after
   C's text has landed. R2 has registered `technical-writing`'s routing by then (wave 3); task
   0.2 reads the skill as R2 left it. C is archived after B (D-16), so after B's stage 3.
+
+Revised 2026-11-16, after the gate. EPIC `lean-skills` (R1) rewrote every skill to the lean
+standard and was archived on 2026-11-16
+([`archive/2026-11-16-lean-skills`](../archive/2026-11-16-lean-skills/)). Each open task that
+edits a skill was read against the text on develop (7d85edd) and its size. The standard is
+[`creating-skills.md`, *The lean standard*](../../../docs/development/creating-skills.md#the-lean-standard):
+body target 6 KB (advisory), body plus `references/` at most 24,576 bytes (failing,
+`prose_budget`) unless the skill is listed `over_budget` in `skill-budget.yaml`. The clarity gate
+was not run again on these entries (S-10). Sizes are bytes at 7d85edd.
+
+- **D-42 The paragraph sentence is mostly gone (corrects D-10 and D-28; task 1.8).** The lean
+  rewrite cut the sentence "`gap → C` rows are for the EPIC `activity-test-profiles` to fill or
+  accept" from `documentation.md`, `shaping.md`, `devops.md`, `architecture.md` and
+  `modelling.md`. The ten gap rows themselves are unchanged. `ui.md`'s paragraph now ends "…, not
+  in the catalogue, so a `gap → C` row may be filled by a pointer to one." The close step of
+  stage 5 removes that clause, from ", so a" to the full stop. The other close steps have no
+  sentence to remove.
+- **D-43 Pointers and size in `epic-planning` and `technical-writing` (adds to D-4 and D-40;
+  tasks 1.7, 2.5, 2.6).** Every mention of a file in a skill's `references/` is one sentence in
+  the pointer form "Read `<file>` when `<situation>`: it adds `<what>`", checked by
+  `reference_pointers`. The sentence of task 2.6 that points to `invariants.md` takes that form,
+  in step 6. A new reference of `technical-writing` (task 1.7) gets such a sentence at its point
+  of need. `epic-planning`'s body is 11,678 bytes, nearly twice the target, and its references
+  5,827; the two sentences and a 1.5 KB `invariants.md` keep it near 19 KB, inside the budget.
+  The delivery measures the body before and after and records both in
+  `evidence/catch-shaping.md`, as D-40 asks for `technical-writing`.
+- **D-44 `stack-operations` has no room (corrects D-40's devops bullet; task 3.6).**
+  `stack-operations` is 24,547 bytes, 29 under the budget, and not listed `over_budget`. The
+  *Recommended checks* subsection would fail `prose_budget`. So the delivery cuts at least as many
+  bytes from `stack-operations` in the same commit, a passage the lean sorting classes `drop` or
+  `owner`, and records the sizes in `evidence/catch-devops.md`. If no such passage is found, the
+  developer decides in the stage's round of kind 3: an `over_budget` entry with its reason, or
+  the line goes elsewhere. `stack-standard.md` is MUST-level for every stack, so the subsection
+  says it sits outside that MUST, as in `repo-checks.md`. `infrastructure-operations` is
+  `over_budget`, so its subsection passes the lint; it stays as short as D-40 says.
+- **D-45 `architecture` is at its budget (corrects D-14's table and D-26's premise; task 4.4).**
+  The body is 119 lines, not 650; the line cap no longer binds. The budget does: 8,140 + 16,436 =
+  24,576 bytes, exactly the limit, and the skill is not exempt. Any byte added fails
+  `prose_budget`, including `ROB` in the `**Related:**` line. A stage 4 fill in `architecture`
+  therefore cuts as many bytes in the same commit, or the developer decides an `over_budget` entry
+  in the round of kind 3. D-26's placement holds. For `modelling`: `conceptual-modelling` has
+  about 12 KB of room; `linkml-engineering` has 1,190 bytes, if the developer names it owner.
+- **D-46 Facts that moved but change no task.** `technical-writing`'s body is 5,574 bytes, not
+  "about 6.1 KB" (D-40); "near 6 KB" still holds, with about 0.5 KB to the target; its `verify`
+  row is still in the workflow table. `test-strategy` defines `accepted` at SKILL.md line 120, not
+  110 to 113 (Context). `test-strategy` is `over_budget`, so the matrix edits pass the lint. The
+  template and `schema.yaml` are material and have no budget; the section list still starts at
+  line 129. `epic-planning` steps 2, 6 and 8 read as D-4 and D-38 assume.
+- **D-47 A skill with no room (owner, 2026-11-16).** Standing rule, asked in one question round:
+  a planned addition to a skill at or near 24 KB is paid for in the same pull request by an equal
+  cut from that skill, or the prose moves to a tool or a template (S-9). Only when neither works
+  does the builder ask the owner for an `over_budget` entry. It settles the open branch of D-44
+  (`stack-operations`) and D-45 (`architecture`, `linkml-engineering`).

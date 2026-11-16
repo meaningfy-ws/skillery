@@ -1,7 +1,7 @@
 # Shared services and their consumers
 
-A shared service is one stack that other stacks or people use: a database, a graph store, an object
-store. Its failure or change reaches every consumer, so the provider keeps a contract:
+A shared service is one stack that other stacks or people use (a database, a graph store, an object
+store). The provider keeps a contract:
 
 1. **The provider's README lists its consumers** (the Consumers section of the stack template): who,
    which service, which account, how it is checked.

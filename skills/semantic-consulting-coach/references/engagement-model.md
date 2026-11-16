@@ -1,147 +1,84 @@
 # Engagement Model: coaching the client's journey through the stages
 
-**This is a meta-business skill.** Its job is to help the user *design and
-refine* their own engagement process and work out how best to run each step.
-This file gives the **coaching frame**: what is being sold, the client's
-cognitive states, and the design questions that pressure-test an engagement.
-**Meaningfy's own commercial model — the stages, the free/paid line, the
-Discovery & Onboarding package and its two tiers, Semantic Layer adoption and
-its building blocks, the repeat-client rule — is company fact, decided and
-owned by
-[`engagement-lifecycle.md`](engagement-lifecycle.md).
-This file cites that model; it does not restate it.** Treat the *coaching
-method* below — how to elicit, how to hold a boundary, which questions to
-ask — as a working draft to pressure-test; the commercial facts it cites are
-not a draft.
+The coaching frame for Meaningfy's engagement stages: the client's cognitive states, the state-2
+signals, the Proof of Value's intent and design questions, and the posture that holds the boundary.
+The commercial facts (stages, the free/paid line, tiers, durations, safeguards, building blocks,
+repeat clients) are owned by [`engagement-lifecycle.md`](engagement-lifecycle.md); this file cites
+them and does not restate them. The coaching *method* here is a working draft to pressure-test; the
+commercial facts are not.
 
-> **Modes ≠ Stages.** The engagement stages in
-> [`engagement-lifecycle.md`](engagement-lifecycle.md)
-> are the *commercial engagement model* the user is designing. The coach's Exploration / Alignment /
-> Synthesis are *conversation modes*. See SKILL.md. Don't conflate them.
+## What is being sold
 
-## What you are really selling
-
-> You are not selling "semantics", "advisory", or "pilots". You are selling
-> **the moment when uncertainty becomes safe to commit.**
-
-(This is the business *thesis*. Do not confuse it with the **Governing Thought**
-of a communication artefact, the one-sentence takeaway defined in the
-`executive-communication` skill. Different term, different layer.)
-
-The unit of value is **decision-readiness**, a *deliverable state* in which the
-organisation knows: what to do next, why, what success looks like, and what comes
-later. This is not vague advisory; it is a defined outcome. The whole point of the
-engagement structure in [`engagement-lifecycle.md`](engagement-lifecycle.md) is to protect that value.
-
-## The free → paid boundary
-
-Only **presale** is free — because it produces no deliverable. Everything past
-it (Discovery & Onboarding at either tier, direct-to-build, or any Semantic
-Layer building block) is paid; see
-[`engagement-lifecycle.md`](engagement-lifecycle.md)
-for the full statement and each stage's detail.
-
-When a conversation moves from **"is this relevant?"** to **"what should we
-do?"** or **"build this for us"**, presale has reached its boundary. Propose a
-disciplined paid next step, not more discussion.
+You sell **the moment when uncertainty becomes safe to commit**, not "semantics", "advisory" or
+"pilots". The unit of value is **decision-readiness**: the organisation knows what to do next, why,
+what success looks like and what comes later. This thesis is not the **Governing Thought** of an
+artefact (`executive-communication`): different term, different layer.
 
 ## The three cognitive states of a client
 
-The states describe the *client's head*; the commercial stages (above) describe
-*what is sold*. They are related but not identical — State 1 now spans **both**
-free presale and the paid discovery workshop of Discovery & Onboarding, because a client
-can be purely orienting while already buying a short paid read.
+The states describe the client's head; the stages describe what is sold.
 
 | State | Client question | Commercial | Design rule |
 |-------|-----------------|------------|-------------|
-| **1. Orientation** | "Is this even relevant to us?" | Spans free presale **and** the paid discovery workshop | Teach generously; the discovery workshop gives a fast expert read but stays short of deep customisation. |
-| **2. Decision pressure** | "If we do this, what do we do *first*, and what *not*?" | **Paid** (the Proof of Value) | Where the real value starts: scoping, trade-offs, sequencing. Answering for free leaks intellectual capital. |
-| **3. Execution** | "Build this with us." | Paid (a build contract — via the Proof of Value's hand-off or direct-to-build) | A separate engagement with its own scope and budget. |
+| **1. Orientation** | "Is this even relevant to us?" | Free presale and the paid discovery workshop | Teach generously; the workshop gives a fast expert read short of deep customisation. |
+| **2. Decision pressure** | "If we do this, what do we do *first*, and what *not*?" | **Paid** (the Proof of Value) | Scoping, trade-offs, sequencing. Answering for free leaks intellectual capital. |
+| **3. Execution** | "Build this with us." | Paid (a build contract, via the Proof of Value's hand-off or direct-to-build) | A separate engagement with its own scope and budget. |
 
-**State-2 signals (already paid territory):** "Which domain should we start
-with?" · "Is marketing data the right entry point?" · "Governance or
-architecture?" · "What before a pilot?" · "How do we avoid shelfware?"
+**State-2 signals (already paid territory):** "Which domain should we start with?" · "Is marketing
+data the right entry point?" · "Governance or architecture?" · "What before a pilot?" · "How do we
+avoid shelfware?" When they appear, propose a disciplined paid next step, not more discussion.
 
-## The engagement stages: intentions, not instructions
+## The stages: intentions, not instructions
 
-**Internal principle: do not collapse the stages.** Each has a distinct purpose,
-boundary, and commercial model (all stated in [`engagement-lifecycle.md`](engagement-lifecycle.md), not
-here). The skill's job is to help the user make each stage's *intent* sharp and
-its *boundary* defensible, not to dictate the activities inside it or to restate
-its commercial facts.
-
-| Stage | Purpose / question it answers | Pointer |
-|-------|-------------------------------|---------|
-| **Presale** | Mutual recognition: "Are we even relevant to each other?" | `engagement-lifecycle.md` |
-| **Discovery & Onboarding — discovery workshop** | A fast, expert, paid read — distinct from and not a substitute for the Proof of Value's Decision Package | `engagement-lifecycle.md` |
-| **Discovery & Onboarding — Proof of Value** | Make a safe, informed commitment possible: "What is the right next step, and why?" | intent detailed below |
-| **Direct-to-build** | "We know what we want — build it," with its elicitation done at the start of the contract | `engagement-lifecycle.md` |
-| **Semantic Layer building blocks** | Build what was decided (modelling/ontology, software, data mappings & integration, analytics/BI, agentic frameworks, training) | `engagement-lifecycle.md` |
-| **Repeat client** | Sustain, scale, evolve what was built — a fact, not a phase, led by `executive-communication` | `engagement-lifecycle.md#repeat-clients` |
-
-When coaching the discovery workshop, direct-to-build, or a Semantic Layer building
-block (or refining the Proof of Value), work from intent outward: *what is this
-stage for, where does it stop, who pays and how, and what does "done" look
-like?* Then let the user design the activities. The stages are not a ladder —
-the discovery workshop, the Proof of Value, and direct-to-build are alternative first
-purchases, freely composable afterwards.
+**Do not collapse the stages.** Make each stage's *intent* sharp and its *boundary* defensible;
+do not dictate the activities inside it. Work from intent outward: what is this stage for, where
+does it stop, who pays and how, what does "done" look like? Then let the user design the
+activities. The discovery workshop, the Proof of Value and direct-to-build are alternative first
+purchases, not a ladder; the workshop never substitutes for the Proof of Value's Decision Package.
 
 ## The Proof of Value (the keystone): its intent
 
-The flagship offering. A short, paid engagement that moves an organisation from
-awareness/interest to a **safe, informed decision about what to build next**:
+It answers: *what is the right next step for this organisation, given its data landscape,
+governance maturity, legacy constraints and strategic ambitions?* It sits **before** any pilot,
+implementation or programme.
 
-> What is the right next step for this organisation, given its data landscape,
-> governance maturity, legacy constraints, and strategic ambitions?
+**It is:** decision-enabling, fixed-frame, a bridge between strategy, governance and execution.
+**It is not:** open-ended discovery; a Big4-style maturity assessment; a technical pilot or PoC; a
+substitute for the client's own decision. *Meaningfy does not decide for the client; it makes
+deciding safe.*
 
-It sits deliberately **before** any pilot, implementation, or programme.
+**When it fits:** the client knows semantics, governance or interoperability matters, feels
+pressure from analytics, AI or reuse, has fragmented or legacy data, and is unsure where to start
+("start small, but not randomly"). Its frame, duration and boundary safeguard are in
+[`engagement-lifecycle.md`](engagement-lifecycle.md).
 
-**It is:** decision-enabling, fixed-frame, a way to reduce uncertainty and
-internal risk, a bridge between strategy, governance, and execution.
-**It is not:** open-ended discovery; a Big4-style maturity assessment; a
-technical pilot/PoC; a substitute for the client's own decision. *Meaningfy does
-not decide for the client; it makes deciding safe.*
+**Design questions the coach helps the user answer (left open):** team and seniority, and when;
+how *variable depth* fits the fixed frame; how much discovery, landscape reading, scoping and option
+framing; which client inputs and how access is secured; what is explicitly *out* of scope to
+protect the boundary with the build contract. **Working names** (structure matters more): Semantic
+Readiness & Direction Phase · Semantic & Governance Alignment Phase · Decision Foundation for a
+Semantic Layer · Semantic Architecture & Scope Definition.
 
-**When it fits:** the client knows semantics/governance/interoperability matters,
-feels pressure from analytics/AI/reuse, has fragmented/legacy data, and is unsure
-where to start or how to sequence ("start small, but not randomly").
+## Holding the boundary: the posture inside the Proof of Value
 
-**The output that defines the value, a Decision Package:** a clear
-recommendation for the first initiative; a defined scope (what is in, **what is
-explicitly out**); a sequenced roadmap (pilot → scale); explicit
-**buy / build / defer** decisions; a **ready-to-contract execution brief**. It
-earns the right to say, calmly: *"From here, we can execute, or you can take
-this and execute with someone else."*
+From Meaningfy's internal posture register, for senior consultants and leadership: under pressure
+to give more than the boundary allows, a safe pair of hands, calm, respectful and firm.
 
-**Duration and shape (resolved):** **4–6 weeks, calendar-boxed, at a fixed
-price and fixed duration** — calendar-based, not effort-based, so depth varies
-while the frame does not (see
-`engagement-lifecycle.md`
-for the stated rule).
+- **Ambiguity is a signal, not a failure.** A vague or contradictory client has not yet decided.
+  Hold the ambiguity safely until it can be resolved deliberately.
+- **Usefulness outranks helpfulness.** Usefulness enables a decision that holds over time.
+- **We do not guess.** No architectural sketches, sequencing recommendations, pilot definitions or
+  governance designs from partial understanding. Say so, calmly.
+- **Calm under pressure.** Client urgency does not transfer; slow the interaction down.
+- **No need to prove expertise.** The urge to impress means the posture is already lost.
+- **Protective, not defensive.** *"We can, but that would be guesswork at this stage."* · *"Giving
+  you something quick now may cost you more later."*
+- **Redirect, don't block.** *"This is exactly what our Proof of Value is designed to address."*
+- **Yes / not yet.** Yes to orientation, explanation, clarification; not yet to recommendations,
+  sequencing, commitments. "Not yet" is sequencing, not refusal.
+- **End cleanly.** Summarise what is known, what is undecided and what step is required, then
+  pause; silence is an acceptable outcome, not a gap to fill. Meaningfy is not here to move fast; it is here to move right.
 
-**Boundary safeguard (principle, stated as a rule in [`engagement-lifecycle.md`](engagement-lifecycle.md)):**
-if agreed outcomes can't be reached for reasons outside Meaningfy's control,
-**signal it explicitly** and offer a scope reduction, short extension, or clean
-stop with partial delivery, never silent overwork. **Clean handover:** execution
-is always a *separate* engagement with its own scope and budget.
-
-**Design questions the coach helps the user answer (the "how", left open):**
-- Team and seniority: who is engaged, and when?
-- Commercial model: how is *variable depth* handled inside the fixed 4–6 week
-  frame?
-- Activities: how much structured discovery, landscape reading, scoping, option
-  framing?
-- Inputs required from the client, and how access is secured.
-- What is explicitly *out* of scope to protect the boundary with the build
-  contract.
-
-**Working names** (structure matters more than the name): Semantic Readiness &
-Direction Phase · Semantic & Governance Alignment Phase · Decision Foundation for
-a Semantic Layer · Semantic Architecture & Scope Definition.
-
-## Related reference
-
-For the internal posture and discipline for holding this boundary under client
-pressure — ambiguity as a signal, helpfulness vs. usefulness, calm under
-pressure, protective-not-defensive language — see
-[`decision-phase-posture.md`](decision-phase-posture.md).
+**Red flags (pause and reassess):** answering the same contextual question repeatedly; sketching
+solutions with no client ownership; feeling pressure to justify Meaningfy's value; a client
+avoiding decision authority or budget.

@@ -15,6 +15,9 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # the digest script beside this one
+from session_digest import fresh, git_root_of  # noqa: E402
+
 INPUTS = ("sessions.jsonl", "agents.jsonl", "events.jsonl")
 ROLES = [("review", r"review|lens|\bL[1-5]\b|critic"), ("verify", r"verif|check|audit|validat|second|gate|score|cold read"),
          ("build", r"build|implement|fix|stage \d|task \d|write|draft|refactor|migrat"),
@@ -48,7 +51,7 @@ def load_inputs(D):
         if not (D / name).is_file():
             print(f"epic_report: missing {D / name}; run session_digest.py first", file=sys.stderr)
             sys.exit(2)
-    return [[json.loads(l) for l in open(D / n)] for n in INPUTS]
+    return [[json.loads(l) for l in open(D / n, encoding="utf-8")] for n in INPUTS]
 
 
 def aggregate(sessions, agents, events):
@@ -145,11 +148,11 @@ ROUND_COLS = ("repo", "epic", "session", "stage", "role", "lens", "round", "find
 
 
 def write_tables(D, rows, rounds=()):
-    with open(D / "rounds.tsv", "w") as f:
+    with fresh(D / "rounds.tsv") as f:
         f.write("\t".join(ROUND_COLS) + "\n")
         for r in rounds:
             f.write("\t".join(str(r[c]) for c in ROUND_COLS) + "\n")
-    with open(D / "epics.tsv", "w") as f:
+    with fresh(D / "epics.tsv") as f:
         f.write("repo\tepic\tfirst\tlast\tsessions\test_usd\tmain_usd\tsub_usd\tcalls\tcache_read_M\tcache_write_M\tout_M\tprompts\tcompactions\t"
                 "bash_n\tbash_h\tbash_err\task_n\task_wait_h\tagents\troles\ttop_cmds_by_time\n")
         for (repo, epic), x in rows:
@@ -158,7 +161,7 @@ def write_tables(D, rows, rounds=()):
                                         round(x["sub_usd"]), x["calls"], round(x["cr"] / 1e6), round(x["cw"] / 1e6, 1), round(x["out"] / 1e6, 2),
                                         x["prompts"], x["compact"], x["bash_n"], round(x["bash_s"] / 3600, 1), x["bash_err"], x["ask_n"],
                                         round(x["ask_s"] / 3600, 1), sum(x["roles"].values()), dict(x["roles"].most_common()), cmds])) + "\n")
-    with open(D / "phases.tsv", "w") as f:
+    with fresh(D / "phases.tsv") as f:
         f.write("repo\tepic\tphase\tstage\test_usd\n")
         for (repo, epic), x in rows:
             for (ph, stage), usd in x["phase_usd"].most_common():
@@ -167,7 +170,7 @@ def write_tables(D, rows, rounds=()):
 
 
 def write_signals(D, sessions, agents, events, rows, cost, cmd_repeat, read_paths, rounds=(), bad_marks=0):
-    with open(D / "signals.txt", "w") as f:
+    with fresh(D / "signals.txt") as f:
         p = lambda *a: print(*a, file=f)
         tot = sum(cost.values())
         p(f"TOTAL recorded cost ${tot:.0f} over {len(sessions)} sessions, {len(agents)} subagents")
@@ -225,6 +228,10 @@ def write_signals(D, sessions, agents, events, rows, cost, cmd_repeat, read_path
 
 def main(digest_dir):
     D = Path(digest_dir)
+    tree = git_root_of(D)
+    if tree:  # the report writes beside the digest, so the digest's rule holds here too (D-5)
+        print(f"digest folder is inside a git working tree: {tree}; move it outside", file=sys.stderr)
+        sys.exit(2)
     sessions, agents, events = load_inputs(D)
     rows, cost, cmd_repeat, read_paths, rounds, bad_marks = aggregate(sessions, agents, events)
     write_tables(D, rows, rounds)

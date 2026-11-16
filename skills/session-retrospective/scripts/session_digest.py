@@ -77,12 +77,13 @@ def user_text(content):
 
 
 def lines_outside_fences(text):
-    """The lines of a text that are not inside a ``` fenced block (D-1, D-3)."""
-    fenced = False
+    """The lines of a text that are not inside a ``` or ~~~ fenced block (D-1, D-3)."""
+    fence = ""  # the opening fence's character; only the same character closes it
     for line in text.splitlines():
-        if line.lstrip().startswith("```"):
-            fenced = not fenced
-        elif not fenced:
+        head = line.lstrip()[:3]
+        if head in ("```", "~~~"):
+            fence = "" if fence == head[0] else fence or head[0]
+        elif not fence:
             yield line
 
 
@@ -132,7 +133,7 @@ def parse_stream(path, session, agent=""):
                        "dur_s": None if dur is None else round(dur, 1), "err": err, "epic": epic,
                        "branch": branch, "text": text[:limit], **extra})
 
-    with open(path, errors="replace") as fh:
+    with open(path, encoding="utf-8", errors="replace") as fh:
         for line in fh:
             st["lines"] += 1
             if line.startswith('{"type":"api-request') or line.startswith('{"type":"attachment"'):
@@ -279,11 +280,18 @@ def warn_drift(lines, unknown, no_usage, any_cost, sessions):
         print("warning: no session has a cost-state record", file=sys.stderr)
 
 
+def fresh(path):
+    """Open an output file for writing; a symlink there is replaced, never followed."""
+    path.unlink(missing_ok=True)
+    return open(path, "w", encoding="utf-8")
+
+
 def digest(root, out, days):
     cutoff = time.time() - days * 86400
     out.mkdir(parents=True, exist_ok=True)
+    out.chmod(0o700)  # the digest holds private text
     n, lines, unknown, no_usage, any_cost = 0, 0, Counter(), [], False
-    with open(out / "sessions.jsonl", "w") as fs, open(out / "agents.jsonl", "w") as fa, open(out / "events.jsonl", "w") as fe:
+    with fresh(out / "sessions.jsonl") as fs, fresh(out / "agents.jsonl") as fa, fresh(out / "events.jsonl") as fe:
         for path in sorted(root.glob("*/*.jsonl")):
             sub_files = sorted((path.parent / path.stem).rglob("agent-*.jsonl"))
             if max(f.stat().st_mtime for f in [path, *sub_files]) < cutoff:

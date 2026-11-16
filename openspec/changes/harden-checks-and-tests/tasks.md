@@ -8,7 +8,9 @@
      Revised again 2026-11-15 by owner decision (design D-35): the weekly mutation runs are
      dropped, tasks 3.5 and 3.6 removed; not gated again. Reconciled 2026-11-15 with the
      delivered tool side (D-36 to D-40) and with project-setup's move to uv (PR #248). Revised
-     2026-11-15 by owner decision (D-41): the project-setup part of the prose side goes first. -->
+     2026-11-15 by owner decision (D-41): the project-setup part of the prose side goes first.
+     Revised 2026-11-16 after lean-skills was archived (D-42 to D-46): tasks 1.12, 2.5, 3.3 and
+     3.7 adjusted to the lean text and the budget; not gated again (S-10). -->
 
 
 > Derives from: EPIC `harden-checks-and-tests` ([`proposal.md`](proposal.md)); design in [`design.md`](design.md).
@@ -88,6 +90,11 @@ in D-33. Each side ends with the checks of task 1.16.
   *Revised 2026-11-15 (D-31, D-34):* prose side. The ten bullets stay and each keeps its value,
   in the place and form the `lean-skills` pilot left them; this task switches on the skipped
   cases of TC-04 and TC-05.
+  *Revised 2026-11-16 (D-42, D-43):* the column goes on the four tables of
+  `principles-and-anti-patterns.md` (the ten bullets are now the `CC-` table) and on the 16
+  items; no bullet suffix. `BP-ABC-INTERFACES`, `BP-INJECT-ADAPTERS` and `BP-STRICT-BASE-MODEL`
+  are review only. Values take D-43's short form; write the collector that fails an entry without
+  a value (D-40); measure `cosmic-python` with `prose_budget` before the PR, counting the 1.7 row.
 - [x] 1.13 Project wiring. In `Makefile.tmpl`: the pin and the three tool versions,
   `quality-fetch`, `quality-tools`, `check-semgrep` (three passes), `check-layout` (ls-lint and the
   four `test -f` lines), `check-makefile`, the new `check-quality`. The template
@@ -150,6 +157,7 @@ in D-33. Each side ends with the checks of task 1.16.
   from Poetry to uv in PR #248).
   *Revised 2026-11-15 (D-32, D-33):* no example is added to `example-testing-patterns.md`;
   item 10 gains about three lines, which method fits when.
+  *Revised 2026-11-16 (D-43):* item 10 fits in what task 1.12 leaves under 24 KB; measure again.
 - [ ] 2.6 [A] Update the tester and property-test rows of the inventory and the software file
   (`CHK-17`, `CHK-5`), and fill the `ROB` row "stateful and contract-driven properties for the
   tester" (`software.md` line 45, `gap → B`): it takes the next free id and status `exists`
@@ -176,6 +184,8 @@ are dropped (D-35).
   product and the library archetype and run `make check-architecture` on each, green; update
   `architecture-guardrails.md` and the import-contract step of
   `modernizing-existing-projects.md` (D-11, D-13).
+  *Revised 2026-11-16 (D-44):* `project-setup` has 79 bytes free; the prose edits are net zero or
+  smaller, the pointer replacing the grooming bullet "At a natural review point…".
 - [ ] 3.4 The per-EPIC judgement: first the three scenarios in
   `tests/features/agents/code-reviewer.feature`; then the L3 lens text in `meaningfy-code-review`,
   and the reviewer brief and the ledger row in `epic-delivery` (D-11; spec *L3 judges the import
@@ -190,6 +200,9 @@ are dropped (D-35).
   *Revised 2026-11-15 (D-35):* the mutation row (`software.md` line 41, `ADQ`) is not filled. Its
   status becomes `accepted`, with the reason "weekly mutation runs dropped, nobody named to read
   them", so no `gap → B` row remains.
+  *Revised 2026-11-16 (D-45):* the line-3 sentence of `software.md` is already gone; remove
+  "`gap → B` is the EPIC `harden-checks-and-tests`," from the gap legend of
+  `skills/test-strategy/SKILL.md` instead.
 - [ ] 3.8 Ask the developer which repository is the sample project (Q-22, with D-13's
   recommendation); run IT-06 there: one failing and one passing `make check-architecture`;
   record them in `evidence/sample-project.md` (DEC-15, D-13).

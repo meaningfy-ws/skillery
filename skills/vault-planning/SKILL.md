@@ -14,17 +14,23 @@ metadata:
 
 # Vault Planning
 
-## Overview
+An agent asked to plan tends to write objectives for the owner; here every objective comes from the
+owner, and each horizon frames the next. The year sets a few objectives, each quarter turns them into
+objectives with measurable key results, the month picks what to push, the week names a few outcomes,
+and `vault-daily` turns the week into today. A **planning** session sets a horizon's plan; a **review**
+session looks back on a finished period and feeds the next plan. The plans file and the review note
+have fixed shapes, owned by `vault-conventions`. Read
+[`references/planning-practices.md`](references/planning-practices.md) when the owner asks why the
+method works this way or wants a different cadence: it gives what is taken from multi-scale planning,
+OKRs and the GTD weekly review, what is left out, and the default cadence per horizon.
 
-Each horizon frames the next: the year sets a few objectives, each quarter turns them into objectives
-with measurable key results, the month picks what to push, the week names a few outcomes, and
-`vault-daily` turns the week into today. A **planning** session sets a
-horizon's plan; a **review** session looks back on a finished period and feeds the next plan. The
-method draws on multi-scale planning, OKRs and the GTD weekly review:
-[`references/planning-practices.md`](references/planning-practices.md).
+## Quick Start
 
-The plans file and the review note have fixed shapes, owned by
-`vault-conventions` (`references/project-files.md`).
+`plan week` on Monday. The last weekly review's next focus is "close the audit report"; the month's
+objective is "Security Audit delivered". The agent puts the focus to the owner, then asks for 3 to 5
+outcomes. The owner names three; one serves nothing above it and is marked "unplanned". The agent
+writes `## Week 2026-W47` above last week's section, marks last week's items `done`, `dropped` or
+`carried over`, appends one change-log line per change, and reports the plan in five lines.
 
 ## The one rule
 
@@ -32,14 +38,15 @@ The plans file and the review note have fixed shapes, owned by
 from the vault (active projects, open tasks, last review's next focus) as questions, never as decisions.
 A plan the owner did not state is not written. If the owner wants no plan for a horizon, write none.
 
-## Planning session (`plan <horizon>`)
+## Workflow
+
+### Planning session (`plan <horizon>`)
 
 1. **Load the frame.** Open `05 To Do/Objectives YYYY.md`. Missing: offer to create it (`kind:
    objectives`) and ask for the year's objectives first; if the owner prefers to start at a shorter
-   horizon, plan that one. Read the
-   horizon above the one being planned, and the latest review of the same horizon in
-   `04 Daily/reviews/`, if any. An item with nothing above it to cite is marked "unplanned", which is
-   fine.
+   horizon, plan that one. Read the horizon above the one being planned, and the latest review of the
+   same horizon in `04 Daily/reviews/`, if any. An item with nothing above it to cite is marked
+   "unplanned", which is fine.
 2. **Start from the review.** If the last review has a "Next focus" or carried-over items, put them to
    the owner first. No review yet for a finished period: offer to run it first, and continue without it
    if the owner declines.
@@ -55,16 +62,16 @@ A plan the owner did not state is not written. If the owner wants no plan for a 
    change-log line per change: `- YYYY-MM-DD <what changed>: <why>`.
 5. **Report** the plan in five lines or fewer.
 
-## Review session (`review <horizon>`)
+### Review session (`review <horizon>`)
 
 1. **Read the period's records:** for a week, its daily notes and the `sessions.md` entries of projects
    touched; for a month, quarter or year, the reviews of the shorter periods inside it; and the plan
    that was set for the period.
 2. **Weekly only, the GTD sweep:** list the items waiting in `00 Inbox/` and `00 Inbox/proposed/`
-   (leaving `kind: rule` notes to the rules step), every
-   active project without a session this week (in both project homes, as
-   `vault-conventions` defines them), and `To-Do.md` items older than two weeks. Ask what to
-   do with each (the owner acts, or names a skill such as `vault-promote`); change nothing yourself.
+   (leaving `kind: rule` notes to the rules step), every active project without a session this week
+   (in both project homes, as `vault-conventions` defines them), and `To-Do.md` items older than two
+   weeks. Ask what to do with each (the owner acts, or names a skill such as `vault-promote`); change
+   nothing yourself.
 3. **Weekly only, the rules step:** run `rule-steward`. It reports the rule candidates waiting in
    `00 Inbox/proposed/`, the usage flags, the lint findings and the failing golden examples; the owner
    approves, edits, rejects or leaves each one, and the decisions are applied in this session.
@@ -75,12 +82,20 @@ A plan the owner did not state is not written. If the owner wants no plan for a 
 6. **Friction** with the vault's method that the owner raises becomes a `kind: skill-change` note in
    `00 Inbox/proposed/`; never edit a skill.
 
-## Guards
+## Rules
 
 - Never invent an objective, key result, deadline or metric.
 - Never rewrite the change log; it is append-only.
-- Never plan a project into existence: new work that needs a folder goes through
-  `vault-project`.
+- Never plan a project into existence: new work that needs a folder goes through `vault-project`.
+
+## Before you hand over
+
+| Question | If not | Action |
+|---|---|---|
+| Did the owner state every objective, key result and outcome written? | the plan is the agent's, not the owner's | remove it and ask |
+| Does every item cite the item above it, or say "unplanned"? | the cascade is broken | add the citation or the mark |
+| Were past items marked, not deleted, and one change-log line appended per change? | the history is lost | restore and mark them; append the lines |
+| Could a third person check each key result? | the review cannot judge it | ask for a number, a date or a yes/no |
 
 ## Boundary & Related Skills
 
