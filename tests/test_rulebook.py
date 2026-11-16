@@ -468,6 +468,57 @@ def test_stats_counts_rules_written_and_memory_writes_denied(tmp_path):
     assert lines[1:3] == ["rules written: 3", "memory writes denied: 2"]
 
 
+def test_stats_counts_every_call_in_a_command_and_reads_flags_as_tokens(tmp_path):
+    cmd = lambda c: {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+                     "input": {"command": c}, "output": {"stdout": ""}}
+    rp = 'python3 "<skills>/rulebook/scripts/rules.py"'
+    data = [cmd(f"{rp} add --dry-run && {rp} add --type tone"),  # one written
+            cmd(f"{rp} add --dry-run; {rp} add --candidate\n{rp} add --type x"),  # one written
+            cmd(f"{rp} add --do 'never write --candidate in a note' --type tone"),  # a write: the flag is inside a value
+            cmd(f"{rp} add --dry-run | cat"),  # none
+            cmd(f"{rp} add --candidate && {rp} update R-0010 --dry-run")]  # none
+    path = tmp_path / "calls.json"
+    path.write_text(json.dumps({"data": data, "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    assert _stats(path=path).stdout.splitlines()[1] == "rules written: 3"
+
+
+@pytest.mark.parametrize("command, written", [
+    ("{rp} add --type a && {rp} add --type b", 2),
+    ("{rp} add --type a; {rp} confirm R-0001; {rp} cite R-0001", 2),
+    ("{rp} add --dry-run && {rp} add --type b", 1),
+    ("{rp} load --for x | cat", 0),
+    ("echo nothing to see", 0),
+])
+def test_stats_counts_each_write_call_of_a_command(tmp_path, command, written):
+    rp = 'python3 "<skills>/rulebook/scripts/rules.py"'
+    obs = {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+           "input": {"command": command.format(rp=rp)}, "output": {"stdout": ""}}
+    path = tmp_path / "one.json"
+    path.write_text(json.dumps({"data": [obs], "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    assert _stats(path=path).stdout.splitlines()[1] == f"rules written: {written}"
+
+
+def test_stats_usage_counts_follow_every_call_in_a_command(tmp_path):
+    rp = 'python3 "<skills>/rulebook/scripts/rules.py"'
+    obs = {"type": "SPAN", "name": "Bash", "startTime": "2026-10-20T09:00:00.000Z",
+           "input": {"command": f"{rp} load --for x && {rp} cite R-0001 && {rp} override R-0002 --reason why"},
+           "output": {"stdout": ""}}
+    path = tmp_path / "usage.json"
+    path.write_text(json.dumps({"data": [obs], "meta": {"page": 1, "totalPages": 1}}), encoding="utf-8")
+    out = _stats(path=path).stdout
+    assert _row(out, "R-0001") == [0, 1, 0, 0]
+    assert _row(out, "R-0002") == [0, 0, 1, 0]
+
+
+def test_rules_calls_skips_lines_without_rules_py_before_tokenising(monkeypatch):
+    seen = []
+    mod = _module()
+    real = mod._tokens
+    monkeypatch.setattr(mod, "_tokens", lambda line: seen.append(line) or real(line))
+    assert mod._rules_calls("echo hi\nls -la\npython3 rules.py add x") == [("add", ["x"])]
+    assert seen == ["python3 rules.py add x"]
+
+
 def test_langfuse_not_configured():
     r = run("stats", "--today", TODAY)
     assert r.returncode == 3
@@ -718,7 +769,9 @@ def test_skills_never_tell_the_agent_to_run_a_dotdot_path(skill):
 
 REPO_FIX = FIX / "repo"
 POINTER = ("- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, "
-           "load them with the rulebook skill; change them only through it, by pull request.")
+           "load them with the rulebook skill; change them only through it, by pull request. "
+           "Preferences and corrections go to the rulebook, never to the CLI's memory; "
+           "project state goes to the spine and the repository's docs.")
 ADD_REPO = ("add", "--store", "repo", "--type", "constraint", "--strength", "hard", "--scope", "activity:coding",
             "--when", "committing", "--do", "never force push", "--because", "history is shared",
             "--source", "2026-10-29 owner: 'never force push'", "--today", TODAY)
@@ -885,13 +938,20 @@ def test_t20_where_describes_each_case(tmp_path, vault):
                         f"repository: none (no .git found)\ndefault store: vault\n{MISSING_POLICY}\n-- end --\n")
 
 
-MISSING_POLICY = ("routing policy: missing (add the rules line of docs/environment/global-prompt.md "
-                  "to your global instructions)")
+MISSING_POLICY = ("routing policy: missing (add or replace the rules line of docs/environment/global-prompt.md "
+                  "in your global instructions)")
 ROUTING = ROOT / "skills/rulebook/assets/routing.md"
 
 
 def _sentence():
-    return ROUTING.read_text(encoding="utf-8").splitlines()[2]
+    return _module().routing_sentence()
+
+
+def test_the_three_policy_statuses_share_one_label():
+    m = _module()
+    assert m.POLICY_LABEL == "routing policy:"
+    assert m.POLICY_MISSING == MISSING_POLICY and m.POLICY_MISSING.startswith(m.POLICY_LABEL)
+    assert m.routing_sentence() == ROUTING.read_text(encoding="utf-8").splitlines()[2]
 
 
 def _policy(tmp_path, env, script=SCRIPT):

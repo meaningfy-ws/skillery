@@ -280,3 +280,10 @@ Recorded by the lead during stage 1 (after the PLAN gate; not re-gated).
   **Release hold** (L2): until stage 2 puts the routing sentence in `global-prompt.md`, `where`
   reports `routing policy: missing` to everyone and points at a line that does not hold the
   sentence, so stage 1 is not released without stage 2.
+- **D-13 A fifth copy of `POINTER`** *(2026-11-15, stage 2)*. `skills/rulebook/references/rule-model.md`
+  quotes `POINTER` word for word and `test_rule_model_describes_the_repository_store` asserts it, so
+  task 2.1 extends that line too. It carries the routing sentence through `POINTER`, which T-8
+  already checks; no new home.
+- **D-14 Review set, stage 2** *(2026-11-15)*. No RISK row names stage 2 (a text and test change),
+  so the MEDIUM default applies: two reviewers, L1+L2 and L3+L4+L5. Floor and one fix pass as in
+  stage 1.

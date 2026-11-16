@@ -82,7 +82,6 @@ CHECKLIST = "cosmic-python/references/testing-checklist.md"
 DEPENDENCY_FILES = {
     "project-setup/assets/templates/root/pyproject.toml.tmpl",
     "project-setup/references/config-files.md",
-    "project-setup/references/decisions.md",
 }
 POINTER_FILE = "project-setup/references/testing-setup.md"
 

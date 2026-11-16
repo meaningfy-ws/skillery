@@ -13,29 +13,34 @@ metadata:
 
 # Clarity Gate
 
-## Overview
-
-A document is only as good as the assumptions it hides. The **Clarity Gate** is an
-*epistemic* check run **before** a specification (EPIC, design, requirements) is allowed
-to drive code generation. It verifies that every claim is grounded, every assumption is
-made visible, and every requirement is specific enough to generate unambiguous output.
-
-The primary failure mode it catches: a spec that *reads* fine but smuggles unstated
-assumptions which compound into defects downstream. Passing a readability check is not
-enough — the gate is designed to surface what the prose quietly assumes.
+An *epistemic* check run **before** a specification (EPIC, design, requirements) drives code. The
+mistake it corrects: passing a spec that *reads* fine but smuggles unstated assumptions, which
+compound into defects downstream. The gate verifies that every claim is grounded, every assumption
+visible, and every requirement specific enough to generate unambiguous output.
 
 ## Quick Start
 
-1. Read the spec to be gated.
-2. Apply the 13-item checklist (7 foundation + 6 document-architecture) — see
-   `references/clarity-gate-checklist.md` for the full checklist and scoring rubric.
-3. Score against the 6 criteria: actionability, specificity, consistency, structure,
-   disambiguation, reference clarity.
-4. The spec must score **≥ 9/10** to proceed. Below 9: list the specific gaps, revise,
-   re-score. The one exception: a gap the developer explicitly accepts, recorded as a decision
-   (`epic-planning` says when that is offered).
+A PLAN's `design.md` says "retry the upload a few times, then fail gracefully"; `tasks.md` says
+"handle errors as usual".
 
-## Full vs. lightweight
+1. Read the spec to be gated.
+2. Apply the 13-item checklist (7 foundation + 6 document-architecture). Item 1 (Actionable) and
+   item 12 (Deep Links) fail: "a few", "gracefully" and "as usual" decide nothing. Read
+   `references/clarity-gate-checklist.md` whenever you run the full gate: it adds the 13 items, the
+   weighted 6-criterion rubric, the score interpretation, the self-assessment questions and the
+   failure-recovery table.
+3. Score against the 6 criteria: actionability, specificity, consistency, structure,
+   disambiguation, reference clarity. Result: 7/10.
+4. Return the specific gaps: "a few → 3 retries, 2 s back-off"; "gracefully → which error, to whom";
+   "as usual → link the error matrix row". The PLAN is revised and re-scored: 9/10, pass.
+
+The spec must score **≥ 9/10** to proceed. Below 9: list the specific gaps, revise, re-score. The
+one exception: a gap the developer explicitly accepts, recorded as a decision (`epic-planning` says
+when that is offered).
+
+## Rules
+
+### Full vs. lightweight
 
 - **Full gate (specs/EPICs):** the complete 13-item checklist + scoring; gate at ≥9/10.
   Used before an EPIC proceeds to implementation.
@@ -43,9 +48,18 @@ enough — the gate is designed to surface what the prose quietly assumes.
   references (no vague "see elsewhere")? planned-vs-present clearly marked? single source
   (link, don't copy)? Use for docstrings, READMEs, summaries — no numeric score required.
 
+### Scoring honestly
+
+- A 9/10 that hides one critical assumption is a failed gate, not a pass.
+- A failed spec gets the *specific* missing items back, never a vague "needs work".
+- Apply **MECE** as a completeness lens: roles, permissions, states, and edge cases should be
+  **mutually exclusive** (no overlap) and **collectively exhaustive** (no gaps). Overlaps hide
+  conflicting rules; gaps are the unstated cases that become defects.
+
 ## Boundary & Related Skills
 
-**Owns:** the readiness check for specs/docs — the checklist, the scoring, the ≥9/10 bar.
+**Owns:** the readiness check for specs/docs — the checklist, the scoring, the ≥9/10 bar. It
+measures spec readiness, not downstream correctness; tests and review remain.
 
 **Does NOT own:** producing the spec (that is `epic-planning` + the external `stream-coding`
 method), writing code (`cosmic-python`), or writing the docs themselves (`technical-writing`).
@@ -57,15 +71,3 @@ design-phase `.feature` coverage the gate scores), `spec-stewardship` (lifecycle
 gate sits inside), `technical-writing` (applies the lightweight check).
 
 Answers `VER, CLR` in `test-strategy`'s matrix (`references/documentation.md`, `references/shaping.md`).
-
-## Tips
-
-- Score honestly: a 9/10 that hides one critical assumption is a failed gate, not a pass.
-- When you fail a spec, return the *specific* missing items, not a vague "needs work".
-- Apply **MECE** as a completeness lens: roles, permissions, states, and edge cases should be
-  **mutually exclusive** (no overlap) and **collectively exhaustive** (no gaps). Overlaps hide
-  conflicting rules; gaps are the unstated cases that become defects.
-
-## Limitations
-
-- The gate measures spec readiness, not downstream correctness; tests and review remain.

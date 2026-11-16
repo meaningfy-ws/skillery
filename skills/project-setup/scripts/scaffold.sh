@@ -34,7 +34,7 @@ Options:
                          legacy aliases service|pipeline|cli -> product
       --deployable       this repo ships a deployable artifact -> CD TODO stub (ci-cd-delivery)
       --neo4j            project the PINNED gen-neo4j-constraints/gen-neomodel generators into
-                          scripts/ (product + LinkML only — see references/checklists.md)
+                          scripts/ (product + LinkML only — see references/spine-projection.md)
       --linkml-generators DIR  the linkml-engineering skill's scripts/linkml_neo4j/ folder
                          (default: $LINKML_NEO4J_DIR, else the sibling skill in a source checkout)
       --python VER       Python version           (default: 3.12)
@@ -60,7 +60,7 @@ Modes:
   fill gaps    existing repo, apply  scaffold.sh -p pkg -n "Name" --skip-existing
 For the full modernization (brownfield) workflow see references/modernizing-existing-projects.md.
 For what the spine projection lays down see references/spine-projection.md.
-After running, see references/checklists.md for the Definition-of-Done.
+After running, see SKILL.md "Before you hand over" for the Definition-of-Done.
 EOF
 }
 
@@ -227,7 +227,7 @@ scaffold_openspec() {
 # An installed skill lives in its own plugin folder, so the caller passes that folder
 # (--linkml-generators or LINKML_NEO4J_DIR); a source checkout finds the sibling skill. Only
 # meaningful for a product using LinkML with a Neo4j target (--neo4j); see
-# references/checklists.md.
+# references/spine-projection.md.
 scaffold_neo4j_generators() {
   local gen_src="${LINKML_NEO4J_DIR:-$SCRIPT_DIR/../../linkml-engineering/scripts/linkml_neo4j}"
   local gen_dst="$TARGET/scripts"
@@ -242,7 +242,7 @@ scaffold_neo4j_generators() {
         echo "  skip (exists): scripts/$f (re-run with --force to refresh; never clobbered in place)"
       else
         cp "$gen_src/$f" "$gen_dst/$f"
-        echo "  copied scripts/$f (PINNED — refresh via --force; see references/checklists.md)"
+        echo "  copied scripts/$f (PINNED — refresh via --force; see references/spine-projection.md)"
       fi
     done
   else
@@ -475,7 +475,7 @@ Done. Next steps:
        /plugin install meaningfy-building@meaningfy-skillery
        /plugin install superpowers@claude-plugins-official
        /plugin marketplace add DietrichGebert/ponytail && /plugin install ponytail@ponytail
-  6. Work the Definition-of-Done in references/checklists.md, then shape your first EPIC with
+  6. Work the Definition-of-Done in SKILL.md "Before you hand over", then shape your first EPIC with
      /opsx:propose -> openspec/changes/<id>/proposal.md (EPIC) + design.md/tasks.md (PLAN);
      gate the PLAN with clarity-gate (≥9/10) before /opsx:apply.
 EOF

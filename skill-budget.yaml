@@ -2,26 +2,15 @@
 # exempt from. A skill leaves this list in the pull request that rewrites it.
 # The standard: docs/development/creating-skills.md#the-lean-standard
 pending:
-  architecture: [budget, pointers]
-  ci-cd-delivery: [pointers]
-  clarity-gate: [pointers]
-  conceptual-modelling: [pointers]
   decision-package: [pointers]
-  epic-delivery: [budget, pointers]
-  epic-planning: [pointers]
   estimation: [pointers]
   executive-communication: [pointers]
   explanatory-writing: [pointers]
-  formal-reasoning: [pointers]
   guardrails: [pointers]
   infrastructure-operations: [budget, pointers]
   infrastructure-security: [pointers]
-  linkml-engineering: [budget, pointers]
   meaningfy-git-workflow: [pointers]
-  meaningfy-release: [pointers]
   meaningfy-voice: [pointers]
-  modelling-conventions: [pointers]
-  project-setup: [budget, pointers]
   proposal-writing: [pointers]
   rule-learner: [pointers]
   rule-steward: [pointers]
@@ -35,11 +24,12 @@ pending:
   service-reliability: [budget, pointers]
   skillery-feedback: [pointers]
   stack-operations: [budget, pointers]
-  test-strategy: [budget, pointers]
   vault-conventions: [pointers]
   vault-daily: [pointers]
   vault-planning: [pointers]
   vault-setup: [pointers]
   writing-antipatterns: [budget, pointers]
 # Skills over the 24 KB prose budget for a recorded reason (DEC-2). Exempt from the budget only.
-over_budget: {}
+over_budget:
+  epic-delivery: "the delivery method itself (brief templates, stage steps with triggers T1-T3, check ledger, library rule), cited by about 25 test-strategy checks; assessment-epic-delivery.md"
+  test-strategy: "the matrix (nine family files, cited by 41 skills and fixed by tests/test_test_strategy.py) and the 144-row check inventory other EPICs edit; assessment-test-strategy.md"

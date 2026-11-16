@@ -82,7 +82,10 @@ The generator requires `hooks.json` of every mod, and `config.json`, `types.d.ts
 `*.test.mjs` and `*.test.ts` do not ship.
 
 The mod reads its data only under `${plugin root}/data/`, which is the same path in development and
-after install. A bundle that holds only mods is left out of the opencode catalogue: mods are
+after install. That is the modules mod's seam. A plain mod has a second one: it may read
+`${plugin root}/skills/<owner>/` when the owner skill is in the same bundle (`rules-first` reads
+`skills/rulebook/assets/` and `scripts/`, and `meaningfy-core` carries `rulebook`). It reads no skill of
+another bundle, which may not be installed. Nothing checks this yet; a reviewer does. A bundle that holds only mods is left out of the opencode catalogue: mods are
 Claude Code only, a recorded gap in
 [`docs/environment/dual-cli/compatibility.md`](../environment/dual-cli/compatibility.md).
 

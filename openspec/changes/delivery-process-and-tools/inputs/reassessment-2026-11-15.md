@@ -63,7 +63,7 @@ Checked on 2026-11-15, after the owner's "make sure the other epics [...] are re
 
 - **`rules-first-memory`: needed, and smaller than drafted.** The agent had guessed it was mostly
   delivered; the audit
-  ([`audit-2026-11-15.md`](../../rules-first-memory/inputs/audit-2026-11-15.md)) shows almost none
+  ([`audit-2026-11-15.md`](../../archive/2026-11-15-rules-first-memory/inputs/audit-2026-11-15.md)) shows almost none
   of it is: no rules mod, no rule hook, and the line that keeps preferences out of the CLI's
   memory exists only in the owner's private instructions. The audit puts what is left at MEDIUM,
   not the drafted LARGE. It also advised against citing rule ids from the orchestrator (R2

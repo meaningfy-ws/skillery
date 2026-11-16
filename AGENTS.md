@@ -148,4 +148,4 @@ Resources, tools and CLI guides: `.claude/skills/gitnexus/`.
 
 <!-- gitnexus:end -->
 
-- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, load them with the rulebook skill; change them only through it, by pull request.
+- **Rules:** this repository's rules for agents are in `docs/rules/`. At the start of an activity, load them with the rulebook skill; change them only through it, by pull request. Preferences and corrections go to the rulebook, never to the CLI's memory; project state goes to the spine and the repository's docs.
