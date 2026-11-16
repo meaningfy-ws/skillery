@@ -1,55 +1,42 @@
 # Deriving LinkML from an existing source
 
-LinkML is never authored from nothing here — it is derived from a model or spec that already exists,
-then refined (see [`authoring-mechanics.md`](authoring-mechanics.md)). If there is no upstream source,
-stop and establish the model first via `conceptual-modelling`.
-
-Each input kind has a distinct entry point. In all cases the output is a *draft* LinkML schema that you
-then bring up to the conventions — derivation gets you the structure, refinement gets you the quality.
+Each input kind has its own entry point. The output is always a draft: derivation gives the
+structure, the refinement in `authoring-mechanics.md` gives the quality. With no upstream source,
+stop: the model comes first, through `conceptual-modelling`.
 
 ## From a UML model
 
-The strongest path when the domain is modelled in UML. Run **model2owl**, which has mature OWL/SHACL/HTML
-generators and can emit LinkML artefacts from the UML. In that setup:
+Run model2owl first, as a prerequisite stage of generation, not a competing path:
 
 ```
 UML model ──model2owl──▶ LinkML schema ──LinkML generators──▶ Pydantic / JSON Schema / OWL / SHACL / …
 ```
 
-model2owl runs **first**, as a prerequisite stage of generation — it is not a competing path. Configuring
-model2owl and wiring it into a repo is a separate concern (a future dedicated skill, tightly linked to
-`project-setup`); here, treat its LinkML output as the derivation input. Map UML classes → LinkML
-classes, UML attributes/associations → **reusable top-level slots**, and UML enumerations → LinkML
-`enums`. Carry the UML element identities into minted URIs so nothing loses identity in the crossing.
+Configuring model2owl and wiring it into a repo is not this skill's job; treat its LinkML output as the
+derivation input. UML classes → classes, attributes and associations → reusable top-level slots,
+enumerations → `enums`. Carry the UML element identities into the minted URIs, so nothing loses
+identity in the crossing.
 
 ## From a text specification
 
-When the source is prose (a spec, a standard, an API description):
-
-1. Extract the entities → candidate classes, the attributes → candidate **shared slots**, and the closed
-   value sets → `enums`.
-2. Where the spec mirrors a published standard (e.g. an error shape, a bibliographic record), map onto
-   that vocabulary rather than inventing terms, and record the mapping.
-3. Draft the schema, then refine to the conventions. The spec's own wording seeds the `description:` of
-   each class and slot — definitions are not optional.
+1. Entities → candidate classes, attributes → candidate shared slots, closed value sets → `enums`.
+2. Where the spec mirrors a published standard (an error shape, a bibliographic record), map onto that
+   vocabulary instead of inventing terms, and record the mapping.
+3. The spec's own wording seeds each `description:`; definitions are not optional.
 
 ## From a model2owl output
 
-If a project already runs model2owl, its LinkML output *is* the derivation input — do not re-derive from
-the UML by hand. Refine the generated schema (reusable slots, implicit URIs, constraints) rather than
-editing it as if hand-authored; if the generated shape is wrong, fix it upstream in the UML/model2owl
-config, not in the LinkML.
+Its LinkML output is the derivation input: never re-derive from the UML by hand. Refine the generated
+schema (reusable slots, implicit URIs, constraints); if the generated shape is wrong, fix it upstream
+in the UML or the model2owl configuration, not in the LinkML.
 
 ## From another existing model
 
-An existing schema (JSON Schema, an ORM, a protobuf/XSD, an older LinkML) is a derivation source:
-translate its structure into LinkML classes + reusable slots + enums, then refine. Prefer regenerating
-from the new LinkML over maintaining both — the point of the pivot is to collapse parallel definitions
-into one source of truth.
+A JSON Schema, an ORM, a protobuf or XSD, an older LinkML: translate into classes, reusable slots and
+enums, then refine. Regenerate the old form from the new LinkML instead of maintaining both; the point
+of the pivot is one source of truth.
 
-## After derivation
+## Done when
 
-Whatever the source, the draft is not done until it clears the conventions
-(`modelling-conventions`: editor guardrails)
-and the LinkML mechanics in [`authoring-mechanics.md`](authoring-mechanics.md): reusable slots, implicit
-URIs everywhere, enums for closed sets, constraints in the schema, a description on every class and slot.
+The draft clears the per-edit checklist of `modelling-conventions` and the mechanics: reusable slots,
+implicit URIs, enums for closed sets, constraints in the schema, a description on every element.

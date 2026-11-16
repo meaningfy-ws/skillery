@@ -111,8 +111,8 @@ Settled in the EPIC: DEC-1 to DEC-11. New here:
 - **D-10** Where the mark sentence sits: `epic-delivery` defines the form in
   [`references/team-and-briefs.md`](../../../skills/epic-delivery/references/team-and-briefs.md),
   section *What every brief names*, item 6, directly under the three result-line forms, and its
-  `## The loop of a stage` names the duty in one sentence; `epic-planning`
-  ([`SKILL.md`](../../../skills/epic-planning/SKILL.md), section *Procedure*) adds one sentence to
+  *The loop of a stage* names the duty in one sentence; `epic-planning`
+  ([`SKILL.md`](../../../skills/epic-planning/SKILL.md), section *Workflow*) adds one sentence to
   step 4 (`phase=shape`) and one to step 6 (`phase=plan`).
 - **D-11** Skill shape. `skills/session-retrospective/SKILL.md`, body target 6 KB, no references
   unless the body passes it: title and the bias it corrects (guessing where the time went), Quick
@@ -324,4 +324,5 @@ proceed independently towards completion".
   the literal line and "in your reply, not in a file" in each step; then, since a duty deep in a
   numbered step was still missed, `epic-planning` opens its procedure with *Mark first* and
   `epic-delivery` step 1 says "your first reply of the stage, before any read, brief or question".
-  Run 4 passes S1–S4. A patch release (3.16.1) ships it; the developer signs off on that evidence.
+  Run 4 passes S1–S4, and run 5 on the lean skills of 3.17.0 (merged into this branch) too. A
+  patch release ships it; the developer signs 3.4 off on that evidence or walks it by hand.

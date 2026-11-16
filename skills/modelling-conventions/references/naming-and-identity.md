@@ -53,8 +53,5 @@ human-readable label where they aid understanding. Missing or technical-only def
 - **Mint at authoring time**, human-readable, like the other golden-thread IDs — not auto-generated
   from content hashes (those break on moves and across repos).
 
-Why "implicit by default" matters downstream: a model where identity is systematic — not hand-written
-per element — is one a generator can render to OWL/SHACL **completely**, because every class and
-property already resolves to a URI. The LinkML realisation of this (minted `prefixes` +
-`default_prefix`, implicit `class_uri`/`slot_uri`, the URI-as-datatype artifice) is owned by
-`linkml-engineering`.
+The LinkML realisation (minted `prefixes` + `default_prefix`, implicit `class_uri`/`slot_uri`, the
+URI-as-datatype artifice) is owned by `linkml-engineering`.

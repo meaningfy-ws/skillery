@@ -207,7 +207,8 @@ What the mod leaves alone:
 - Existing `feedback` and `user` notes stay where they are and keep loading, but the agent can no
   longer edit them. Move them into rules, or delete them, by hand. A later migration may do it for
   you.
-- The mod fails open: if it cannot read its input, the session and the write go on.
+- The mod fails open: if it cannot read its input, or the deny data it takes from the rulebook
+  (`memory-deny.json`), the session and the write go on.
 
 On opencode the block is a recorded gap and the deny does not apply
 ([`dual-cli/compatibility.md`](dual-cli/compatibility.md)).

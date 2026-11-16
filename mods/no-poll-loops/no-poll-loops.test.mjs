@@ -122,9 +122,11 @@ test("quoted python sleep loop in a bash loop is allowed (quote stripping)", () 
   assert.equal(check("while true; do python -c 'import time; time.sleep(1)'; done"), null));
 
 // Limits: check() must stay fast on large and pathological input. Run in a child so a hang fails.
+// The best of three runs is timed: a quadratic scan is slow every time, a loaded machine only once.
 const timeInChild = (source) => {
-  const code = `import(${JSON.stringify(MODULE)}).then(({check})=>{const s=${source};` +
-    `const t=performance.now();check(s);process.stdout.write(String(performance.now()-t));})`;
+  const code = `import(${JSON.stringify(MODULE)}).then(({check})=>{const s=${source};const ms=[];` +
+    `for(let i=0;i<3;i++){const t=performance.now();check(s);ms.push(performance.now()-t);}` +
+    `process.stdout.write(String(Math.min(...ms)));})`;
   const r = spawnSync(process.execPath, ["-e", code], { encoding: "utf8", timeout: 5000 });
   return r.status === 0 ? Number(r.stdout) : Infinity;
 };

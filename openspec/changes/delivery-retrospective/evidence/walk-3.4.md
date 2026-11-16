@@ -48,6 +48,7 @@ against its first `Agent` call. "Block" is the position among the lead's content
 | 2 | fix 1 (D-29), by `--plugin-dir` | mark only in the final message, after a reader agent | same | fail: stopped for questions before step 4, no mark | fail: PLAN written, no mark |
 | 3 | fix 2: *Mark first* at the head of `epic-planning` | | | pass: block 5 of 12, in the reply | pass: block 5 of 24 |
 | 4 | fix 3: delivery step 1 "first reply, before any read" | pass: block 5, agent at 14, again in the last message | pass: block 5, again in the last message (no worker by turn 20) | | |
+| 5 | fixes 2–3 on the lean skills of 3.17.0 (2026-11-16) | pass: block 5, agent at 18, again last | pass: block 5, again last | pass: block 5 | pass: block 5, again at step 6 |
 
 The report on run 3 and 4 sessions takes their phases from the marks (`shape`, `plan`,
 `deliver`); events before block 5 stay guessed, as the late-mark rule says. S5 is not run

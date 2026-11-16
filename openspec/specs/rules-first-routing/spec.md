@@ -27,7 +27,7 @@ DEC-11).
 
 ### Requirement: Memory writes of preferences are denied
 The mod SHALL deny a Write or Edit of a note whose frontmatter `type` is `feedback` or `user`,
-inside Claude Code's auto-memory folder (`<config root>/projects/<slug>/memory/*.md`, config root
+inside Claude Code's auto-memory folder (`<config root>/projects/<slug>/memory/**/*.md`, any depth, config root
 `CLAUDE_CONFIG_DIR` or `~/.claude`). The deny message SHALL name `rule-learner`, SHALL say to draft the
 statement as a candidate for the rule approval card, and SHALL carry a fixed marker. Notes of type
 `project` or `reference`, `MEMORY.md`, and files elsewhere SHALL pass (DEC-5, DEC-6, DEC-10).
