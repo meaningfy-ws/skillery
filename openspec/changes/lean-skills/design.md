@@ -485,6 +485,15 @@ them) over the old per-level scheme of the deleted `architecture-project-structu
 floor: `project-setup` sits one byte under budget, so the next addition there pays for itself;
 `architecture`'s ADR template is MADR-shaped while `project-setup` names the Nygard format.
 
+**D-23 Stage 4 decided by the lead (2026-11-16).** One exception: `sales-pipeline-custody` (36 KB:
+the five pipelines, the lead lifecycle, the star rubrics, the next-action and closing-date rules
+and the write tiers every sales skill cites); a later split of the write rules into their own skill
+would bring it under budget and is the owner's to decide. The second reader found two losses in it,
+both restored (the partner qualified in the *Partner* block; the `Deadline:` stand-in activity).
+The other six fit the budget; the templates of `proposal-writing` and the PERT worksheet of
+`estimation` moved to `assets/`. Under the floor: `sales-operations` and `sales-conversations`
+sit within 12 bytes of the budget.
+
 ### Anti-patterns
 
 | Don't | Do instead | Why |

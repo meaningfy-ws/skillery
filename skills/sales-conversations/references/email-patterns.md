@@ -1,19 +1,16 @@
 # Email patterns
 
-All of these are **drafts**: Gmail drafts, or internal Odoo notes. The cadence and where prices come from are in [selling-method](selling-method.md). The tone, the sign-off and what a commercial email never does (fake deadlines or scarcity, inflated claims, "just checking in") are the `outreach-email` channel of `meaningfy-voice`.
+All of these are **drafts**: Gmail drafts, or internal Odoo notes. The cadence and where prices come from are in [selling-method](selling-method.md). The tone, the sign-off and what a commercial email never does are the `outreach-email` channel of `meaningfy-voice`.
 
 ## Copy: the owner and the second sender
 
-Every draft to anyone outside Meaningfy has the other of the two in **cc**, whoever sends it:
-- a draft the owner sends (in their mailbox) has the second sender in cc;
-- a draft the second sender will send (written for them to send, for example in a deal they lead) has the owner in cc;
-- this holds for every pattern below, replies and partner mails included; keep anyone already in cc on the thread.
+Every draft to anyone outside Meaningfy, replies and partner mails included, has the other of the two in **cc**: the second sender when the owner sends, the owner when the second sender sends (a deal they lead). Keep anyone already in cc on the thread.
 
 Take the second sender's address from their Odoo user or their recent mail on the thread, never from guesswork; if it cannot be resolved, raise a decision card, not the draft. Internal mails between the owner and the second sender need no cc.
 
 ## Proposing a meeting
 
-A draft that proposes a meeting offers two or three concrete slots and the owner's booking link (`booking_link` in `sales-config.yaml`, see `sales-operations`), so the other side can pick a time without another round.
+A draft that proposes a meeting offers two or three concrete slots and the owner's booking link (`booking_link` in `sales-config.yaml`, see `sales-operations`).
 
 ## First: whose turn is it?
 
@@ -41,9 +38,6 @@ Write the verdict in the run note next to the draft: *whose turn*.
 | **"We can help you win this bid"** | to a consultancy, for a tender that fits | only after the owner's go/no-go and a check that the call's rules allow our role · the call · our specialism and proof · the role we can take · a short call |
 | **Reinforce** | after a yes | confirm the decision and the next step; nothing new to sell |
 
-## Never (sales method; the tone rules are in `meaningfy-voice`)
+## Never
 
-- Discounts.
-- A commitment (price, guarantee, free work, named staff, date, exclusivity) without the owner's approval: these are *ask first*.
-- Contacting a partner's client behind the partner.
-- Any sales technique in public procurement.
+No discount, no commitment without the owner's approval (*ask first*), nothing behind a partner's back, no sales technique in public procurement ([selling-method](selling-method.md)).

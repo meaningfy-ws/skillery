@@ -1,10 +1,8 @@
 # Commercial insights
 
-The insights Meaningfy teaches (Challenger: *teach, tailor, take control*, see [selling-method](selling-method.md)). A commercial insight is a reframe: it shows prospects something about their own problem that they had not seen, and it leads to what we do best without naming us first.
+The insights Meaningfy teaches (Challenger: *teach, tailor, take control*, see [selling-method](selling-method.md)): reframes of the prospect's own problem that lead to what we do best without naming us first.
 
-Every insight here is a position Meaningfy takes. In a message it is stated as our view, with proof where we have it, never as a statistic we cannot source. Tailor it to the person's role (the table's last column) and to what their profile and dossier say they care about. One insight per message, the one that fits them best.
-
-## Commercial insights
+Every insight here is a position Meaningfy takes. In a message it is stated as our view, with proof where we have it. Tailor it to the person's role (the table's last column) and to what their profile and dossier say they care about. One insight per message, the one that fits them best.
 
 | # | Insight (the reframe) | What they usually believe | Proof we can show | Opening question | Tailored for |
 |---|---|---|---|---|---|

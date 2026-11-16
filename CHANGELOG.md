@@ -12,6 +12,15 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Changed
+
+- **The sales skills are lean** (EPIC `lean-skills`, stage 4). All seven `meaningfy-sales` skills
+  take the lean shape; `sales-operations` drops from 30 KB to 24 KB and `sales-conversations` from
+  28 KB to 24 KB. The five route files of `sales-pipeline-custody` are one `references/routes.md`,
+  and its lead sources sit in `odoo-crm-conventions.md`; the skill keeps its pipeline rules under a
+  recorded exception. The proposal and SoW templates and the PERT worksheet you copy now sit in
+  `assets/`. Every check id is unchanged.
+
 ## [3.17.1] - 2026-11-16
 
 ### Fixed
