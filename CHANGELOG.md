@@ -12,6 +12,15 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- **`test-suite-care`** in `meaningfy-building` (EPIC `test-suite-care`, stage 1). When your test
+  suite is slow or large, it measures where the time goes (two read-only scripts), maps each test
+  to the scenario it serves and proposes cuts in three classes, cheaper set-up first; you decide
+  each one. The testing checklist of `cosmic-python` gains rules 17 to 21 and a Sources table;
+  scaffolded projects get `make test-fast`, `make test-changed`, `make profile-tests` and a `slow`
+  marker; `epic-delivery` distils a stage's adversarial tests in the fix pass.
+
 ## [3.18.0] - 2026-11-16
 
 ### Fixed

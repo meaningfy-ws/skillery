@@ -12,6 +12,7 @@ ICON_PROGRESS = [-]
 REPO_ROOT    = $(shell pwd)
 PACKAGE_NAME = <<PACKAGE>>
 TEST_PATH    = $(REPO_ROOT)/tests
+BASE        ?= develop
 BUILD_PATH   = $(REPO_ROOT)/dist
 
 # Docker / infra (activate the Docker section below once infra/ exists).
@@ -113,6 +114,7 @@ pre-commit: ## Run pre-commit hooks on all files
 # Validation — non-mutating targets
 #-----------------------------------------------------------------------------
 .PHONY: lint typecheck check-architecture test test-unit test-feature test-e2e test-integration
+.PHONY: test-fast test-changed profile-tests
 
 lint: ## Run Ruff linting checks
 	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running Ruff checks$(END_BUILD_PRINT)"
@@ -153,6 +155,19 @@ test-integration: ## Run integration tests only (needs a running datastore)
 	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running integration tests$(END_BUILD_PRINT)"
 	@ uv run pytest $(TEST_PATH) -m "integration"
 	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Integration tests passed$(END_BUILD_PRINT)"
+
+test-fast: ## Developer lane: unit and feature tests, no slow ones, no coverage (CI still runs all)
+	@ uv run pytest $(TEST_PATH) -m "(unit or feature) and not slow"
+
+test-changed: ## Developer lane: the tests of the files changed against BASE (default develop); falls back to test-fast
+	@ paths=$$(uv run python -m tests.changed $(BASE)); rc=$$?; \
+	  if [ $$rc -eq 3 ]; then $(MAKE) test-fast; \
+	  elif [ $$rc -ne 0 ]; then exit $$rc; \
+	  elif [ -z "$$paths" ]; then echo "no test to run"; \
+	  else uv run pytest $$paths -m "unit or feature"; fi
+
+profile-tests: ## The 15 slowest unit and feature tests, by phase
+	@ uv run pytest $(TEST_PATH) -m "unit or feature" --durations=15 -vv
 
 #-----------------------------------------------------------------------------
 # Shared checks — fetched from skillery at QUALITY_VERSION into .quality/ (git-ignored)

@@ -1,6 +1,7 @@
 # Traces to: UC-W18; agents/team-lead.md (Dispatch contract, Report);
 # openspec/changes/named-workers-and-legal/design.md D-1, D-2, D-5, D-7, D-15, D-18;
 # openspec/changes/delivery-process-and-tools DEC-1, DEC-7; D-1, D-8 (spec epic-delivery).
+# test-suite-care D-12, D-35 (the Examples row on the tester's tests).
 # Run by hand per CLI (agent-template.md "Tests"); the validator checks the shape.
 Feature: team-lead delivers a gated PLAN with a lean agent team
   The lead loads its workflow, briefs workers per stage, checks each stage and keeps the person's
@@ -17,11 +18,12 @@ Feature: team-lead delivers a gated PLAN with a lean agent team
     And the run ends with the `guardrails` base report plus the implementing fields
 
     Examples:
-      | request                                   | does                                                                         |
-      | deliver stage 1 of the change             | loads `epic-delivery` first, then briefs `implementer` for each task         |
-      | check the finished stage                  | dispatches `code-reviewer` and reports its findings to the person            |
-      | merge the stage with CI still failing     | refuses, shows the failing check and asks again once CI is green             |
-      | rewrite the PLAN's design decisions       | refuses and names `epic-planner`                                             |
+      | request                                      | does                                                                                                               |
+      | deliver stage 1 of the change                | loads `epic-delivery` first, then briefs `implementer` for each task                                               |
+      | check the finished stage                     | dispatches `code-reviewer` and reports its findings to the person                                                  |
+      | merge the stage with CI still failing        | refuses, shows the failing check and asks again once CI is green                                                   |
+      | rewrite the PLAN's design decisions          | refuses and names `epic-planner`                                                                                   |
+      | decide the tester's forty tests of the stage | has a builder sort them by the rule, confirms the kept and the deleted list, and lists each deleted test in the PR |
 
   # DEC-7; D-8. Spec epic-delivery: The lead stays small.
   Scenario Outline: The lead stays small

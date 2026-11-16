@@ -3,3 +3,6 @@
 semgrep==1.185.0
 ruff==0.17.5
 hypothesis==6.170.15
+coverage==7.17.3
+pytest-cov==7.1.0
+pytest-xdist==3.8.0

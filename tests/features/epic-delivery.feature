@@ -215,6 +215,17 @@ Feature: The lead delivers a gated PLAN with a team scaled to the appetite
     And the full gates run once after the fix pass, then CI
     And no reviewer re-runs the test suite
 
+  # test-suite-care D-12, D-35, D-38, D-46, D-51. Spec epic-delivery: a stage's adversarial tests are distilled.
+  Scenario: A stage's adversarial tests are distilled
+    Given the tester reported forty tests, each with what it attacks and whether it failed on its first run
+    And three failed on their first run and the lead accepted their findings
+    When the builder of the stage's one fix pass sorts the tests by the rule
+    Then it keeps the three, any test that alone covers a scenario and one property per PLAN invariant, in files named by feature
+    And it deletes the rest and returns the kept list, the deleted list and the refactoring opportunities it saw
+    And the lead confirms the lists before the gate run that checks the pass
+    And no second fix pass follows
+    And the stage PR lists each deleted test with its reason
+
   Scenario Outline: Builders work through the code tools, not the shell
     Given a builder on a programming task in a session that <has>
     When it needs to <need>

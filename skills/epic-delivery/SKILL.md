@@ -64,7 +64,8 @@ fresh from the note, and after the archive the next task does too (`guardrails`,
 A stage is a group of tasks that ends in one PR; the PLAN cuts the tasks into stages. Its six
 steps are those of the Quick Start: **Prepare** (the mark line in the stage's first reply, never in a file), **Build** (one builder per task, a gate re-run
 only on a trigger), **Challenge** (the full gates once, then the review set), **Decide and fix**
-(only Critical findings, one fix pass), **Check** (one fresh checker or the full gates and CI; an
+(only Critical findings, one fix pass; the pass's builder sorts the tester's tests and the lead
+confirms the lists), **Check** (one fresh checker or the full gates and CI; an
 unmet item goes to the developer, no second fix pass), **Merge** (the hand-over note last, one
 watch-and-merge command, the session ends). Read `references/stage-loop.md` when you run any step
 of a stage or close the EPIC: it adds the triggers T1–T3, the tester condition, the floor, the
