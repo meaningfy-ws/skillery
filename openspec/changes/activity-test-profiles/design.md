@@ -944,7 +944,7 @@ decisions 6 and 7). The clarity gate was not run again on this entry.
 Revised 2026-11-15 by owner decision, after the gate, against the three refactoring EPICs: R1
 `lean-skills`, R2 `orchestrate-external-skills`, R3 `delivery-process-and-tools`. What the owner
 settled is in
-[`reassessment-2026-11-15.md`](../delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
+[`reassessment-2026-11-15.md`](../archive/2026-11-16-delivery-process-and-tools/inputs/reassessment-2026-11-15.md)
 (S-4, S-6, S-9, S-10 and the order). The clarity gate was not run again on these entries (S-10).
 Each entry names the text it corrects; ids stay as they were.
 

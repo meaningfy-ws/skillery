@@ -31,5 +31,5 @@ session without a lead, through `AGENTS.md`).
 ## opencode
 
 Not run. Reason: opencode renders the agents at install time; a hand run needs an install of this
-checkout into a scratch opencode configuration. Left to the acceptance demo, with the
-start-weight measurement (task 3.5), which needs the same setup.
+checkout into a scratch opencode configuration. Waived by the owner at the acceptance demo
+(2026-11-16, `acceptance.md`).
