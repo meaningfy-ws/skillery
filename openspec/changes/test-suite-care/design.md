@@ -951,6 +951,13 @@ Recorded 2026-11-17 by the lead after the trial (owner: "go ahead, proceed as ne
 - **D-69 The second trial is the trial repository's `test-debt-paydown` change.** It runs on the
   skills tasks 1.14 and 1.15 correct (its mutation stage needs #312's method, its builders #316);
   it is not a task of this change, and nothing here waits for it.
+- **D-70 Tasks 1.14 and 1.15 are reviewed as a small stage.** `git diff 646f1c6..HEAD` adds about
+  400 lines (under the 600 of `small_stage`), Markdown plus three standard-library scripts with
+  their tests, low risk: review set `[["L1","L2"],["L3","L4","L5"]]`, two reviewers in parallel.
+- **D-71 The budget cut spares exempt skills (corrects the 1.15 build).** D-53 asks a cut only of a
+  skill at or near 24 KB; `epic-delivery` is in `skill-budget.yaml`'s `over_budget`, so its
+  worked examples (the LARGE-EPIC walk-through, the T1 example, the navigator-band note) were
+  restored. `testing-setup.md` keeps "on the package" (24,573 bytes).
 
 ## Open Questions
 

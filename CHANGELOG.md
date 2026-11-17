@@ -19,6 +19,23 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   `meaningfy-core`, pinned to the commit Meaningfy read in full, with telemetry off. Until
   `skill-orchestration` ships, they inform reasoning only; on a conflict the Meaningfy skill that
   owns the subject wins, and two strategy and management skills may also guide executive writing.
+- **`test-suite-care` gains a map refresher and a covered-files report** (EPIC `test-suite-care`,
+  task 1.14; #314). `refresh_map.py` keeps the scenario map in step with the collected tests;
+  `overlap.py --files` lists the files each test covers.
+
+### Changed
+
+- **`test-suite-care` learns from its first trial** (#307 to #315). Slow tests are confirmed by
+  running each alone, a fixture's saving is measured before it is proposed, a merge keeps the case a
+  mutation run shows matters, lanes come from your `make` targets and CI, and a moved test names
+  the CI lane that still runs it. The report template has one decided fix per row. Fixture timings
+  now go to their own file (`phases.jsonl.fixtures`) also without xdist.
+- **Delivery guidance from the same trial** (#316 to #319, #195). In `epic-delivery`, the lead
+  makes each builder's worktree itself, parallel builders get their own scratch folders and the
+  merge waits for CI to have run on the pull request; adversarial tests record what they found.
+  `project-setup` sets pytest-timeout's `signal` method under xdist. `epic-planning`'s PLAN names
+  the CI lane of every moved test. `cosmic-python` rule 6 keeps polyfactory as the default and
+  names `model_copy(update=…)` as the smell.
 
 ## [3.19.0] - 2026-11-16
 
