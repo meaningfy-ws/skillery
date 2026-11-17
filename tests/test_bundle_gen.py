@@ -491,7 +491,11 @@ def test_hooks_only_mod_needs_only_hooks_json(tmp_path):
 def test_real_core_plugin_names_the_hooks_file_and_no_types_and_navigator_keeps_its_own():
     manifests = gen.plugin_manifests(REPO)
     core = json.loads(manifests["bundles/meaningfy-core/.claude-plugin/plugin.json"])
-    assert core["hooks"] == ["./mods/no-poll-loops/hooks.json", "./mods/rules-first/hooks.json"]
+    assert core["hooks"] == [
+        "./mods/no-poll-loops/hooks.json",
+        "./mods/no-shell-edits/hooks.json",
+        "./mods/rules-first/hooks.json",
+    ]
     assert "types" not in core and "userConfig" not in core
     nav = json.loads(manifests["bundles/meaningfy-navigator/.claude-plugin/plugin.json"])
     assert nav["hooks"] == ["./mods/navigator/hooks.json"]

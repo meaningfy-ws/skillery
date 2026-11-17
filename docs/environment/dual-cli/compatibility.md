@@ -93,6 +93,7 @@ The only recorded *capability* gap is on the agent-hook surface, owned by
 |---|---|---|---|
 | `persist-before-compaction` | `PreCompact` hook | no `PreCompact` equivalent | degrades to `Stop`/`session.idle` binding on opencode. |
 | `no-poll-loops` | `PreToolUse` command hook on `Bash` (the `no-poll-loops` mod in `meaningfy-core`) | `tool.execute.before` handler for `bash` in `tools/opencode-plugin.mjs`, the same `check` | parity: both deny the same sleep loops with the same message and fail open. |
+| `no-shell-edits` | `PreToolUse` command hook on `Bash` (the `no-shell-edits` mod in `meaningfy-core`) | `tool.execute.before` handler for `bash` in `tools/opencode-plugin.mjs`, the same `check` | parity: both deny the same shell edits with the same message and fail open. |
 
 The mark line (`epic-delivery`) has one recorded gap:
 

@@ -108,7 +108,8 @@ already exists; this skill is the map.
     or the single review pass where the appetite's review set has no checker, per `epic-delivery`.
 - **Enforced by:** the binding's one-line mandate (read every session), each agent's `## Report`
   section (checked by the catalogue's own lint), and the coordinator's own judgement. The
-  `no-poll-loops` intent (`hooks.yaml`) denies a sleep loop. No hook blocks a spawn,
+  `no-poll-loops` intent (`hooks.yaml`) denies a sleep loop, and `no-shell-edits` a file written or
+  reverted through Bash. No hook blocks a spawn,
   except navigator's strict mode (`hooks.yaml` `navigator-strict-spawn`). The keys named here live
   in `assets/session-thresholds.json`, the one home of the numbers.
 
