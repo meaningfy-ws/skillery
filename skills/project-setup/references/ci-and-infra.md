@@ -19,20 +19,19 @@ The clarity gate is never a CI step: CI may remind that the PLAN passed it, neve
 it. A `doc-only` repo has no `ci.yaml`: `docs.yaml`, the spine validate and its link checks.
 
 Service containers when the job shares one datastore; testcontainers when each test needs a clean
-instance. Keep `_reusable-tests.yml` only when several triggers or repos run the same tests;
-otherwise delete it. `docs.yaml` builds on PRs, deploys to Pages only from the default branch.
+instance. Keep `_reusable-tests.yml` only when several triggers or repos run the same tests.
+`docs.yaml` builds on PRs, deploys to Pages only from the default branch.
 
 ## The CD seam
 
 Deploy is `ci-cd-delivery`'s. A deployable product gets a marked `deploy.yaml` TODO stub, never a
 guessed workflow, until DevOps ratifies its §6; then render its templates and delete the stub. A
-library or doc-only repo gets none. Secrets never live in the repo.
+library or doc-only repo gets none. No secrets in the repo.
 
 ## Infra
 
 `infra/` at the root (D11), multistage `docker/Dockerfile` (uv builder → slim non-root runtime).
-Two gotchas: the dockerignore is `infra/docker/Dockerfile.dockerignore`, since a root one is ignored
-for a nested Dockerfile; `.env` is `infra/.env`, every Make docker target passes `--env-file
+Two gotchas: the dockerignore is `infra/docker/Dockerfile.dockerignore` (a root one is ignored); `.env` is `infra/.env`, every Make docker target passes `--env-file
 infra/.env`, and `make check-env` fails early with the fix. Committed: `infra/.env.example`, an
 optional `infra/.env.common` (non-secret values), `.secrets.example`. Ignored by git and the
-dockerignore: the real `infra/.env` and `.secrets`. Only a value safe in a public PR is committed.
+dockerignore: the real `infra/.env` and `.secrets`. Commit only what is safe in a public PR.

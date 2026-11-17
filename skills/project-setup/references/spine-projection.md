@@ -10,13 +10,12 @@ and the `meaningfy` schema's, the golden thread `epic-planning`'s.
   groomed. The repo `AGENTS.md` carries a "Golden thread" note (EPIC → PLAN → specs → commit).
 
 The commands come from OpenSpec, core profile, at `OPENSPEC_PIN` in the scaffolder (in step with
-skillery's `openspec/openspec-version.txt`); expanded verbs are opt-in per repo.
+skillery's `openspec/openspec-version.txt`); expanded verbs are opt-in.
 
 **Refresh the schema** by re-running `project-setup`: `--dry-run` shows the diff, `--skip-existing`
 keeps an existing schema, authored `specs/` and `changes/` are never touched. Review the diff in
 its own commit and re-run `openspec validate --strict`. The pinned Neo4j generators in `scripts/`
-refresh with `--force`; review the diff. No `--upgrade-schema` tool (YAGNI) until
-several repos need a coordinated bump.
+refresh with `--force`; review the diff. There is no `--upgrade-schema` tool (YAGNI).
 
 ## Validation
 
