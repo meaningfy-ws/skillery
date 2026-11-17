@@ -11,4 +11,8 @@ Asked: OQ-3 only (D-46: OQ-1 and OQ-2 wait with stage 2; OQ-4 and OQ-5 were answ
 
 ## Task 1.12, acceptance demo
 
-Not yet held (after the trial on the trial repository, tasks 1.11 and 1.12).
+Held 2026-11-16 in the trial repository, inside its change `test-suite-grooming` (D-64;
+`trial.md`). Owner's decision on the report: **"I accept everything"**. The sample check of the map
+was waived by the owner; the skill gains a path for that in task 1.14 (D-66). The owner's answer on
+the decisions the lead took while the owner was away (2026-11-17): do what is right in the
+situation, even over an earlier decision (D-65).

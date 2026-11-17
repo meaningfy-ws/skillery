@@ -1,3 +1,5 @@
+<!-- CLOSED 2026-11-17: stage 1 delivered (PR #298, PR #320 and the trial), stage 2 deferred
+     (D-43), stage 3 skipped by the owner (D-73); archived. Deviations: deviations.md. -->
 <!-- STATUS: PLAN derived, attacked and gated 2026-11-14 (9.05 on the fourth run). Nothing
      delivered. Revised 2026-11-14 by owner decision (design D-35, D-36: tasks 1.9 and 3.2);
      not gated again. Revised 2026-11-15 against the three refactoring EPICs (design D-37 to
@@ -114,19 +116,40 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       the floor bullet, which already deletes a test under the floor and is cited, not restated.
 - [x] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
       T-1 to T-12 and T-15 green (T-7 and T-2 may skip in CI).
-- [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
+- [x] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
       feature and integration lanes; build the map with one subagent per test folder; write the
       report; open the pull request there with both files. *Acceptance:* the report has every
       section of D-7; the map has one row per test function (its rows match the node ids of
       `pytest --collect-only -q` with the `[...]` suffix removed, each once).
-- [ ] 1.12 Acceptance demo with the owner (D-5, D-7, D-14): the sample check of the map, then the discussion of
+      *Done 2026-11-17 (D-64):* as the trial repository's change `test-suite-grooming`;
+      `evidence/trial.md`.
+- [x] 1.12 Acceptance demo with the owner (D-5, D-7, D-14): the sample check of the map, then the discussion of
       the report; decisions recorded in the report and in `evidence/acceptance.md`.
       *Acceptance:* every proposal has a decision and a reason.
-- [ ] 1.13 The approved proposals as pull requests in `rdf-persistence`, each with before and
+      *Done 2026-11-16 (D-64):* the owner accepted every proposal and waived the sample check;
+      `evidence/acceptance.md`.
+- [x] 1.13 The approved proposals as pull requests in `rdf-persistence`, each with before and
       after (D-7). What the trial taught goes into the skill as a follow-up PR in skillery,
       within the budget of D-40.
       *Acceptance:* each merged pull request names its proposal id; or the report records that
       none was approved.
+      *Done 2026-11-17 (D-64):* the proposals landed in one pull request whose commits name their
+      proposal ids; the follow-up in skillery is tasks 1.14 and 1.15 (D-66).
+- [x] 1.14 The trial's feedback into `test-suite-care` (D-66, D-68), test first: issues #307 to
+      #315 and the further items of D-66. *Acceptance:* a test per script change is red before
+      and green after (fixture lines never in the phase file; `--files`; the refresher keeps the
+      map on an empty or failed collection and drops a vanished test's row); each issue is
+      answered by a named line of `SKILL.md`, `references/` or `assets/`; the skill stays within
+      D-40 and D-53; the trigger probes still pass.
+- [x] 1.15 The trial's feedback into the other skills (D-66, D-67): `epic-delivery` #316, #317 and
+      the #195 comment; `project-setup` #318; the `implementer` agent #319; `epic-planning` the
+      PLAN half of #315; `cosmic-python` rule 6 (D-67). *Acceptance:* each issue is answered by a
+      named line; a behavioural agent change has its Gherkin scenario; D-53 holds for every skill
+      at or near 24 KB.
+- [x] 1.16 Stage review of 1.14 and 1.15, a `CHANGELOG.md` line, `make validate`, one PR whose body
+      closes #307 to #319, merge on green CI (CI checked to have run on the PR before the merge).
+      *Done 2026-11-17:* PR #320, merged after its four checks ran and passed; review set D-70,
+      dispositions D-72.
 
 ## 2. Stage 2: UI suites (deferred 2026-11-15, D-43)
 
@@ -142,37 +165,16 @@ owner (issue #230). The ids are kept; the tasks are not part of this delivery.
 
 ## 3. Stage 3: checks that are not code
 
-Starts after the retrospective tooling EPIC (`openspec/changes/delivery-retrospective`) is
-delivered, no earlier than wave 4 (D-44). *Revised 2026-11-16 (D-52):* that EPIC was archived
-on 2026-11-16, so only the wave remains.
+*Skipped 2026-11-17 by owner decision (D-73): "skip stage 3, enough improvements for now".* Not
+delivered with this EPIC; the ids are kept. A later EPIC may take up the assessment of checks that
+are not code from `proposal.md` (DEC-11) and `design.md` (D-11, D-13, D-29).
 
-- [ ] 3.1 Write T-14 (D-15). *Acceptance:* red, because the file and the id are missing.
-- [ ] 3.2 Write `references/non-code-checks.md` (D-11); add the second inventory id and its row
-      in `skills/test-strategy/references/cross-cutting.md`, and extend the pointer line (D-13). Link the file
-      from `SKILL.md`.
-      *Acceptance:* 3.1 and `tests/test_test_strategy.py` pass.
-      *Reconciled with B, C and D:* apply D-22 of the design's Delivery decisions.
-      *Reconciled:* D-29 names the four files and the cell.
-      *Revised 2026-11-14 (D-36):* step 4 of the procedure names the two scripts as the source
-      of the tokens and minutes.
-      *Revised 2026-11-15 (D-40, D-42):* the file is at most 2.5 KB and the skill stays within
-      24 KB; the link says when to open the file. The scripts are named at their path in
-      `openspec/changes/delivery-retrospective/inputs/scripts/` and are neither moved nor
-      changed; no skill is assumed for them.
-      *Revised 2026-11-15 (D-44, D-46):* this task starts after the retrospective tooling EPIC
-      is delivered; the file may still cite the scripts' present path until that EPIC corrects
-      the line.
-      *Revised 2026-11-16 (D-52):* that EPIC is delivered; the file cites the scripts in
-      `skills/session-retrospective/scripts/`.
-- [ ] 3.3 Trigger probe (D-16): "is our cold reader any good, does it catch real problems" expects
-      `test-suite-care`; near-miss "have a reader attack this draft" expects the skill that holds
-      the adversarial reader's brief (`guardrails`, EPIC D); asked three times, recorded as in 1.5.
-- [ ] 3.4 Stage review, a line in `CHANGELOG.md`, `make validate`, PR, merge.
-- [ ] 3.5 Trial (D-11): assess the cold reader of `technical-writing` on one past document of this
-      repository, five planted flaws, three runs on each copy; the owner reads first, then decides.
-      Recorded in `evidence/non-code-trial.md`. *Acceptance:* the record has the six run results,
-      the owner's own findings and the decision.
-- [ ] 3.6 Archive the change (`spec-stewardship`).
+- 3.1 *Skipped (D-73), id kept.*
+- 3.2 *Skipped (D-73), id kept.*
+- 3.3 *Skipped (D-73), id kept.*
+- 3.4 *Skipped (D-73), id kept.*
+- 3.5 *Skipped (D-73), id kept.*
+- [x] 3.6 Archive the change (`spec-stewardship`), after stage 1 (D-73).
 - 3.7 *Handed over 2026-11-15 (D-45), id kept.* The programme's closing check (D-33) is run in
       the last stage of `harden-checks-and-tests`, which now lands last. This EPIC runs none.
 

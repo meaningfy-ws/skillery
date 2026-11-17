@@ -19,8 +19,9 @@ copy these.
    that is missing or wrong is an issue for the library (the dependency rule of `epic-delivery`).
 5. For the project's own ports, write one fake that implements the real port, with a small API.
    Prefer it over mock stubs.
-6. Build model objects with polyfactory factories, through the models, never bare dicts; write a
-   small builder function only where a factory cannot express the object. Shared read-only data is
+6. Build model objects with polyfactory factories, through the models, never bare dicts; a
+   project whose validated named builders exist already meets this. Never `model_copy(update=…)`: it
+   skips validation. Write a builder only where a factory cannot express the object. Shared read-only data is
    session-scoped; mutable state is function-scoped. Costly set-up is shared at the widest scope
    whose tests do not change what it builds; a mock is never shared.
 

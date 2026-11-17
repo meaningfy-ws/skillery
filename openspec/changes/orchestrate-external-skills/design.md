@@ -618,6 +618,32 @@ entries (S-10 of [the reassessment](../archive/2026-11-16-delivery-process-and-t
   moves the prose to a tool or a template (S-9). Only when neither works does the builder ask the
   owner for an `over_budget` entry. This settles the open branch of D-22 for `architecture`.
 
+Stage 1b, PR #302. Five lenses, no tester (no code changed), 1,062 added lines (over the
+small-stage limit). No reviewer labelled a finding Critical; the lead re-labelled one and took a
+missed conflict to the owner. The lead wrote the three register entries itself instead of briefing
+a builder (data copied from D-3 and the stage-1a entries); recorded as a deviation.
+
+- **D-26** *(Critical, re-labelled; L1 W2, L2 W1, L3 W1, L4 W1, L5 W1)*. The setup-doc sentence
+  named which Meaningfy skill wins, incompletely: no owner for the consulting and core rows, and
+  "Meaningfy's skills win" against the owner's group-G answer (guidance, no override). Reason: as
+  D-19, what an installer reads today steers agents against the owner's answers. Fix: the sentence
+  keeps the general rule, names `cosmic-python` for the book sets only, says the strategy and
+  management pair may guide executive writing, and points to the owner's recorded answers instead
+  of listing winners (the overrides' one home is stage 2, DEC-18). The CHANGELOG line follows.
+- **D-27** *(owner, 2026-11-16; L1 W1)*. A conflict the readers missed: `scorecard-marketing`
+  sends a visitor's email and partial answers before submission or consent
+  (`references/technical-implementation.md`, "Abandonment Recovery"). Taken to the owner per D-6:
+  **accepted**, no override. Added as a row of its record and to
+  `inputs/stage-1b-conflicts-2026-11-16.md`.
+
+Under the floor (not fixed in this stage): the install commands repeat what `source`, `pin` and
+`skills` hold, and the per-fork facts repeat across bundle entries (L5 W2, S1; D-2 chose full
+commands; stage 2's install render may derive them); the records' fallback drafts carry full
+commands (L3 S1, L5 S2; stage 2 takes the command from `assets/install.md`, as the error matrix
+says); the free-text forms of the "Named in" column and the double second-reader marks (L4 S1);
+the fork's `SKILL.md` reading lists carry an affiliate tag (L1 S1; stage 2's overrides add "cite
+books by title and author, never the fork's links").
+
 ## Open Questions
 
 None left open. The owner answered the four planning questions on 2026-11-15

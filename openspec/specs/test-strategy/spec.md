@@ -6,7 +6,6 @@ work starts: the `test-strategy` skill. This capability covers what that skill o
 definition of a test, the six questions, the five stances), the matrix that maps each activity
 family and question to the check that answers it, the inventory behind the matrix, and the proofs
 that keep them honest (inventory coverage, one home per fact, the trigger probes).
-
 ## Requirements
 ### Requirement: One discipline, stated once
 The catalogue SHALL hold one skill, `test-strategy` in `meaningfy-core`, that owns the loop every
@@ -79,4 +78,15 @@ against `clarity-gate`, `bdd-gherkin`, `technical-writing` and `meaningfy-code-r
 #### Scenario: A Gherkin request
 - **WHEN** the probe "write Gherkin scenarios for this acceptance criterion" is evaluated
 - **THEN** it expects `bdd-gherkin`, as a near-miss of `test-strategy`
+
+### Requirement: The matrix names the audit of a test suite
+The software matrix SHALL hold an `ADQ` row for the test suite audit, owned
+by `test-suite-care` (the UI matrix row is deferred with stage 2, design D-43). The rows of the
+testing checklist SHALL name the developer's lanes among their moments.
+The matrix's questions, stances and columns SHALL NOT change (test-suite-care
+DEC-9; design D-13).
+
+#### Scenario: Which check says a suite is worth its cost
+- **WHEN** someone reads the software matrix for the adequacy of the tests
+- **THEN** a row names the test suite audit, its owner `test-suite-care` and "the developer" as the one who decides
 
