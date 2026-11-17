@@ -27,8 +27,8 @@ check a sample and decide.
 Open a session in the worktree and ask, for example: "our test suite takes too long, find what to
 cut". The skill loads and the agent:
 
-1. finds the project's test command for each tier it has (unit, feature, integration, end to end;
-   often `make` targets) and runs each twice: once for timings, once for per-test coverage. The
+1. finds the project's test command for each lane its `make` targets and CI run (unit, feature,
+   integration, end to end) and runs each twice: once for timings, once for per-test coverage. The
    coverage run always sets `COVERAGE_CORE=ctrace`, because the default core on recent Python
    loses per-test lines without saying so. The skill's scripts do the measuring; nothing in the
    project is edited and the raw output goes to a folder outside the repository;
@@ -36,7 +36,8 @@ cut". The skill loads and the agent:
    requirement or capability it serves and a confidence. On a large suite it uses one subagent per
    test folder, the most expensive part of the audit (expect a long session on thousands of tests);
 3. asks you to check a sample, ten rows of each confidence drawn at random: is the test really
-   about that scenario? One wrong `high` row sends that test file back to be mapped again;
+   about that scenario? One wrong `high` row sends that test file back to be mapped again. You may
+   waive the sample; the report then says so, and dropping a test needs stronger evidence;
 4. writes `tests/audit/report-<date>.md`: where the time goes, then the proposals.
 
 The agent opens one pull request in the project with the map and the report.

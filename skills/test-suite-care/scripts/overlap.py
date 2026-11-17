@@ -3,6 +3,7 @@
 Usage:
   overlap.py <.coverage> [--phases <phases.jsonl>]   -> {"contained", "identical_cases", "no_lines"}
   overlap.py <after> --compare <before>              -> {"changed"}
+  overlap.py <.coverage> --files                     -> {"files"}
 
 The data file comes from a run with pytest-cov's --cov-context=test; only contexts ending in
 "|run" (the test's call) are read. Lines are those of `arc` when the file measured branches,
@@ -14,8 +15,10 @@ else those of `line_bits`. Exit 2 when the file holds no per-test context.
 - no_lines: tests that passed their call in --phases (phase_times.py) and have no context:
   coverage records no context for a test that runs no measured line.
 - changed: tests whose lines differ between the two files, with the lines only in each.
+- files: per test function (its parametrised cases merged), the measured files its call covered:
+  the scenario map's "code it covers" evidence.
 
-Standard library only; read-only.
+A missing or unreadable input exits 2 and names it. Standard library only; read-only.
 """
 import argparse
 import json
@@ -35,6 +38,7 @@ def _numbits_lines(blob):
 
 def read_tests(path):
     """Map each test node id to the frozenset of "file:line" its call covered."""
+    open(path, "rb").close()  # a missing file is named, not reported as an unopenable database
     db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
     try:
         meta = dict(db.execute("select key, value from meta"))
@@ -95,6 +99,13 @@ def no_lines(tests, phases_path):
     return sorted(passed - set(tests))
 
 
+def covered_files(tests):
+    files = defaultdict(set)
+    for test, lines in tests.items():
+        files[test.split("[", 1)[0]].update(line.rsplit(":", 1)[0] for line in lines)
+    return {func: sorted(files[func]) for func in sorted(files)}
+
+
 def compare(after, before):
     return [{"test": t, "only_after": sorted(after.get(t, set()) - before.get(t, set())),
              "only_before": sorted(before.get(t, set()) - after.get(t, set()))}
@@ -106,16 +117,22 @@ def main(argv=None):
     parser.add_argument("coverage")
     parser.add_argument("--phases")
     parser.add_argument("--compare", metavar="BEFORE")
+    parser.add_argument("--files", action="store_true")
     args = parser.parse_args(argv)
     try:
         tests = read_tests(args.coverage)
         if args.compare:
             result = {"changed": compare(tests, read_tests(args.compare))}
+        elif args.files:
+            result = {"files": covered_files(tests)}
         else:
             result = {"contained": contained(tests), "identical_cases": identical_cases(tests),
                       "no_lines": no_lines(tests, args.phases) if args.phases else []}
     except NoContexts as exc:
         print(exc, file=sys.stderr)
+        return 2
+    except (OSError, sqlite3.DatabaseError, json.JSONDecodeError, KeyError) as exc:
+        print(f"cannot read the input: {exc}", file=sys.stderr)
         return 2
     json.dump(result, sys.stdout, indent=1)
     print()
