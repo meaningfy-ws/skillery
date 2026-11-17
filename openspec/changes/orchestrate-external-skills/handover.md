@@ -1,5 +1,10 @@
 # Hand-over: orchestrate-external-skills, after stage 1b
 
+## Parked
+2026-11-17: the owner parked this EPIC's implementation and will continue it elsewhere. The owner
+also parked opencode support to focus on Claude Code; stage 2's routing scenarios then run on
+Claude only, unless the owner lifts that.
+
 ## Done
 Stage 1b (the wondel skills, tasks 1.10 to 1.14), PR #302 (merged by the watch-and-merge command
 after this note). Stage 1 is complete: both forks are registered, all 24 skills read in full.
