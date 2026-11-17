@@ -28,7 +28,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **`test-suite-care` learns from its first trial.** Slow tests are confirmed by running each
   alone, a fixture's saving is measured before it is proposed, a merge keeps the case a mutation
   run shows matters, lanes come from your `make` targets and CI, and a moved test names the CI lane
-  that still runs it. The report template has one decided fix per row. Fixture timings always go
+  that still runs it. The report template has one decided fix per row. It no longer offers to
+  judge checks that are not code (a reader, a checklist): that part of its EPIC was dropped. Fixture timings always go
   to a separate file (`phases.jsonl.fixtures`, or one per xdist worker), so `phases.jsonl` holds
   only phase timings.
 - **Delivery guidance from the same trial.** In `epic-delivery`, the lead makes each builder's

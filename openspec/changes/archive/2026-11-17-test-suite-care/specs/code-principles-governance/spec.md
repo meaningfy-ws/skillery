@@ -10,8 +10,7 @@ runs something real, that a test over the project's threshold carries the `slow`
 a file of adversarial tests is named by feature. Its rules on shared data and on quarantine SHALL
 say that costly set-up is shared only where tests do not change it, and that a skip or expected
 failure carries an issue link unless it skips for a tool the machine lacks. The checklist SHALL give the source of each added rule once.
-The rule on one assert per idea SHALL say that it applies to unit and feature tests. The quality
-checks of `bdd-gherkin` SHALL include that no step joins two actions.
+The quality checks of `bdd-gherkin` SHALL include that no step joins two actions.
 `test-suite-care` SHALL cite these rules by number and SHALL NOT restate them (test-suite-care
 DEC-10; design D-8).
 

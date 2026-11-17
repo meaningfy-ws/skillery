@@ -1,8 +1,13 @@
-<!-- Delta of the PLAN (design.md). The first requirement and the one on checks that are not code come from the shaping. Revised 2026-11-15 (design D-43): the requirement on UI suites is removed;
-     stage 2 is deferred. -->
+# test-suite-care Specification
 
-## ADDED Requirements
+## Purpose
+An existing test suite is kept small and quick without losing a specified feature: the
+`test-suite-care` skill measures each test's cost, maps each test to the scenario it serves, and
+proposes reductions in three classes that the owner decides. This capability covers the audit, its
+scenario map, the classes of proposal and the developer's lanes a scaffolded project gets. UI suites
+(deferred) and the assessment of checks that are not code (skipped) are outside it.
 
+## Requirements
 ### Requirement: A test suite is reduced only against the features it serves, by the owner's decision
 An audit of a test suite SHALL measure the cost of each test, SHALL map each test to the spec
 scenario it serves or to "serves none", and SHALL report each proposed reduction with its evidence,
@@ -21,19 +26,6 @@ stays covered and the owner has approved the proposal. The audit SHALL NOT set a
 #### Scenario: Nothing worth reducing
 - **WHEN** the owner discusses the report and approves no proposal
 - **THEN** the audit is complete, and the report records the decision
-
-### Requirement: A check that is not code is assessed for the project and the task
-An assessment of a check that is not code SHALL show whether the check catches a planted flaw,
-whether it gives the same findings when run again, and what it costs against what it has found. The
-owner SHALL decide what follows; the assessment SHALL NOT retire a check (test-suite-care DEC-11).
-
-#### Scenario: A reader that misses the planted flaw
-- **WHEN** an adversarial reader is run on a draft with a planted flaw and does not report it
-- **THEN** the assessment records the miss with the run's evidence, and the owner decides whether the check is changed, kept or dropped
-
-#### Scenario: A reader that changes its mind
-- **WHEN** three runs of a check on the same seeded copy report three different sets of planted flaws
-- **THEN** the report says "unstable", gives the three lists and no pass mark
 
 ### Requirement: Proposals are classed by what they can lose
 The audit SHALL class each proposal: class 1 splits or shares a fixture, or changes a marker or a
@@ -100,3 +92,4 @@ scheduled run (design D-10).
 #### Scenario: A change in one layer
 - **WHEN** a developer changes a file under the package's services layer and runs the changed-files lane
 - **THEN** the unit tests of the services layer run, and a change to a shared file falls back to the fast lane
+
