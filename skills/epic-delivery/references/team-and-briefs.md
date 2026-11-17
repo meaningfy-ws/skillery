@@ -19,13 +19,12 @@ The developer and the domain expert are people (`SKILL.md`, *The team*).
 | Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | On its condition ([`stage-loop.md`](stage-loop.md), Prepare) |
 | UX designer | A general-purpose subagent with the design skills | opus | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
 
-No role has its own catalogue agent beyond these. The checker and the tester differ from the others
-by their brief, not by their tools. The lead sets the model only for the general-purpose roles: opus,
-since both are judgement work (the model rule of `guardrails` §5).
+The checker and the tester differ from the others by their brief, not by their tools. The lead sets
+the model only for the general-purpose roles: opus, as both are judgement work (`guardrails` §5).
 
 The tester tries to break the behaviour and leaves tests in the suite. The checker reads the stage
-against the briefs and the decisions and leaves only a verdict. A checker never writes the tests it
-judges, and never built or tested the stage it checks.
+against the briefs and the decisions and leaves only a verdict; it never wrote the tests it judges
+and never built or tested the stage.
 
 ## What every brief names
 
@@ -76,6 +75,19 @@ Tools for each activity, and their fallbacks: the table in `guardrails` (`refere
 > `<project list>`; the testing checklist; no workaround of our library: stop and report it.
 > **Report:** base report + the *implementing* fields (`guardrails` `references/subagent-reports.md`) + Upstream findings.
 
+**Worktrees.** The lead makes each builder's worktree (`git worktree add <path> <sha>`, outside the
+sandbox, under a git-ignored folder); the brief names the path and base commit, and the builder
+runs `git rev-parse HEAD` first. Not the Agent tool's `isolation: worktree`: it bases on the remote
+default branch. Commits there need the sandbox bypass. A long parallel session starts in its own worktree.
+
+**Edits.** Edit tool only, Makefiles one recipe at a time, never `sed -i`. A mechanical edit at
+many sites may use a reviewed, append-only script that writes a list of edits; the builder reads
+every changed site back.
+
+**Parallel builders** each get a scratch directory, `<scratchpad>/<task-id>/`, and run no script
+they did not write. Never kill processes by pattern, `git stash` (the stack is shared by all
+worktrees) or start a second background run.
+
 A **fixer** is a builder whose task is a set of accepted findings, named by their `design.md`
 decision. A **spike** is a builder whose task is one question; it ends with yes or no and the
 evidence in `evidence/spike-<topic>.md`, and its code is not kept.
@@ -87,7 +99,8 @@ evidence in `evidence/spike-<topic>.md`, and its code is not kept.
 > `## Invariants` section, or per error-matrix row where it has none. **Read:** the stage's tasks,
 > scenarios and diff range. **Standing rules:** as for the builder. **Report:** base report + the
 > tests added, each with what it attacks (a scenario or error-matrix row, or "none" and why) and
-> whether it failed on its first run + each failing test with what it shows + Upstream findings
+> whether it failed on its first run (the test's docstring says "found <defect id>" or "probe of
+> <decision id>") + each failing test with what it shows + Upstream findings
 > and the result line.
 
 A failing test is a finding: the lead decides it in step 4, under the floor. A failure in our library becomes an

@@ -34,6 +34,25 @@ Feature: implementer turns one ready task into tested code and reports back
     When the implementer starts the task
     Then it loads `cosmic-python` with the Skill tool, as its preload holds only the TDD skill
 
+  # Failure case: skillery issue #319 (a hundreds-of-sites edit was done by a rewriting script).
+  Scenario Outline: It edits with the Edit tool, and a script only for a reviewed mechanical edit
+    Given the task changes <sites> sites with the same mechanical edit
+    When the implementer makes the edit
+    Then it <method>
+    And it never runs `sed -i`
+
+    Examples:
+      | sites   | method                                                                                  |
+      | one     | uses the Edit tool                                                                      |
+      | hundreds | may run a reviewed script that only appends a list of edits, then reads every changed site back |
+
+  # Failure case: skillery issue #316 (a builder worked on the wrong base commit).
+  Scenario: It checks its base commit first
+    Given the brief names a worktree path and a base commit
+    When the implementer starts the task
+    Then it runs `git rev-parse HEAD` in that worktree first
+    And it stops and reports if the commit differs
+
   Scenario: The task is ticked only when green
     Given the task's tests fail after the edit
     When the implementer reports

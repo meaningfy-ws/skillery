@@ -74,7 +74,8 @@ a file (form: `epic-delivery`).
    Risks / Trade-offs as `RISK-<n>`: likelihood, impact, mitigation or acceptance) and the tasks half (ordered
    breakdown with layers/dependencies/acceptance, roadmap). Each PLAN cites its parent EPIC id
    (golden thread). The PLAN's depth follows the appetite: a TINY or SMALL PLAN keeps the sections
-   the gate scores and stays short in each. Its mark: see *Mark first*.
+   the gate scores and stays short in each. For every test the PLAN moves or rewrites, it lists the
+   lane that still runs it in CI and what it still proves. Its mark: see *Mark first*.
 7. **Attack the PLAN.** Before the gate, try to break it, in a fresh subagent when one pays
    (`guardrails`, *Subagent dispatch*): the input, state or order of events under which it fails,
    and the assumption which, if false, sinks it. Each counterexample becomes an error-matrix row,
