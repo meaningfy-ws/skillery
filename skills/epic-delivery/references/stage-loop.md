@@ -7,15 +7,15 @@ review set of each appetite is in
 ## The steps
 
 1. **Prepare.**
-   - Every change the stage needs in one of our libraries is merged upstream and the lock is
-     refreshed. A missing one blocks the stage ([`dependencies.md`](dependencies.md)).
+   - Every change the stage needs in our libraries is merged and the lock refreshed; a missing one
+     blocks the stage ([`dependencies.md`](dependencies.md)).
    - Every external-library decision the stage needs is recorded in `design.md`.
-   - The lead refreshes the project's code index in the background, where the project has one. A
-     failed refresh warns, and the step reads the code instead.
+   - The lead refreshes the project's code index in the background, if it has one; a failed
+     refresh warns, and the step reads the code instead.
    - **Tester condition** (defined here only): from MEDIUM up, the stage changed code and a PLAN
      `## Invariants` row for it has a *Test* cell starting `tester`; with no such section, every
      stage from LARGE up. The PR body gets `tester: yes, <INV-n>` or `tester: no, <reason>`.
-   - A stage risk not in the PLAN's `RISK-` rows is recorded as a `D-n`.
+   - A stage risk outside the PLAN's `RISK-` rows is a `D-n`.
    - Scenarios: signed off once per EPIC at the PLAN gate *(provisional)*, per `bdd-gherkin`. A
      scenario changed since is re-signed alone. Nothing is built on an unsigned scenario.
 2. **Build.**
@@ -23,10 +23,10 @@ review set of each appetite is in
      developer) and the change check before the commit; builders run neither.
    - Builders take the tasks one at a time, test-first. Parallel builders only on disjoint files;
      otherwise one after another, or in separate worktrees.
-   - The builder also updates the docs its task changed. There is no separate writer.
+   - The builder also updates the docs its task changed; there is no separate writer.
    - While a task is in progress the builder runs only the narrow checks its edit touches.
-   - Before it reports, the builder runs the project's task gate once. The project's `AGENTS.md`
-     names it: the full gates by default, a narrower gate where the project says so.
+   - Before it reports, the builder runs the project's task gate once: the full gates by default, a
+     narrower gate where the project's `AGENTS.md` says so.
    - The builder reports every gate run with the *implementing* fields (`guardrails`
      `references/subagent-reports.md`).
    - The lead reads the diff and the report, reads the upstream findings and files the issues they
@@ -34,9 +34,7 @@ review set of each appetite is in
      commit body (`Re-run: T1, <reason>`):
      - **T1** the report lacks a field, or contradicts the diff: tests added but the count
        unchanged; exit 0 with failures listed; no gate for a file type the diff touches. The lead
-       re-runs the task gate. Example: a builder reports `exit 0, 41 passed`, the diff adds two
-       tests and the previous count was 41; the commit body reads
-       `Re-run: T1, count unchanged after two added tests`.
+       re-runs the task gate.
      - **T2** parallel builders touched a shared file. The lead re-runs the task gate.
      - **T3** the lead's full-gates run after a fix round (step 4).
 3. **Challenge.**
@@ -48,8 +46,7 @@ review set of each appetite is in
    - Reviewers are read-only. They read the gate report in the PR body and never re-run the suite;
      a missing or red run is a finding. Each report ends with its result line.
 4. **Decide and fix.**
-   - Before the fix round the lead checks that `git status` is clean; an edit made by a reviewer
-     is discarded and reported.
+   - Before the fix round `git status` must be clean; a reviewer's edit is discarded and reported.
    - **The floor:** only a Critical finding (`meaningfy-code-review`'s scale) is fixed. The rest
      are rejected "under the floor", one line each under `## Delivery decisions`, and a tester
      test that failed first for one is deleted. A re-label to Critical needs a reason; the label,
@@ -82,15 +79,10 @@ review set of each appetite is in
    it, the note re-committed last, then the command runs again. Once the PR lists a check run, one
    background command: `gh pr checks <n> --watch --fail-fast && gh pr merge <n> --merge
    --delete-branch` (the repository's merge method); its notice is the only wait, never a sleep
-   loop. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing
-   check, a refused merge, or only the local branch left. Then the session ends, no compaction;
-   the next stage starts fresh from the note's prompt.
-
-A LARGE EPIC with screens, three stages, runs this way: all scenarios signed off at the gate; per
-stage, builder tasks, full gates, the PR, then five lenses, the UX lens and the tester on its
-condition in parallel, the one fix pass, full gates, the checker, the note, watch-and-merge, a
-fresh session. After stage 3 the mandatory demo, then the docs stage when docs are owed (one PR
-with the LARGE review set), then archive.
+   loop. Check first that the PR's CI actually ran and passed: required checks may not exist, and
+   `gh pr merge --auto` then merges at once. On a non-zero exit,
+   `gh pr view <n> --json state,mergeStateStatus` tells a red or missing check, a refused merge, or only the local branch left. Then the session ends, no compaction;
+   the next stage starts from the note's prompt.
 
 ## After the last build stage
 
@@ -103,18 +95,15 @@ In this order: accept, docs stage, archive.
   and the date, or the skip (who, why, date), go to `evidence/acceptance.md`. A rejection is a
   decision in `design.md` and a fix stage (steps 4–6) before any docs are written.
 - **Docs stage.** The lead decides at accept. If the EPIC changed a use case, the architecture,
-  installation or user-facing behaviour, it loads `technical-writing` first, then writes
-  `evidence/docs-owed.md` (the pages owed) during the workflow's *inventory* phase, so the
-  documentation workflow sees it. Otherwise it writes "no docs owed" in `evidence/docs-owed.md`
-  and archives. As-built that contradicts an ADR is a finding to the lead and the developer
+  installation or user-facing behaviour, it loads `technical-writing`, then writes the pages owed
+  to `evidence/docs-owed.md` in the workflow's *inventory* phase. Otherwise it writes "no docs
+  owed" there and archives. As-built that contradicts an ADR is a finding to the lead and the developer
   decides; the page is not edited to match.
 - **Archive.** The lead archives the change per `spec-stewardship`.
 
 In `tasks.md` only the build stages carry checkboxes. The docs stage and the close are plain lines
 under their own headings, with no checkbox; the documentation workflow tracks the docs stage. The
-navigator band shows `accept` once every build box is ticked; while the lead has `technical-writing`
-loaded mid-build it shows *documentation*, and loading `epic-delivery` or `openspec-apply-change`
-switches back.
+navigator band shows `accept` once every build box is ticked.
 
 ## The check ledger
 

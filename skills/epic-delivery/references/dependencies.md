@@ -32,8 +32,7 @@ What to do when a library falls short. The rule depends on who owns the library.
 7. **Resume after the upstream merge.** The fix is a change in the library's own repository. Once
    it is merged, refresh the lock in the consumer's PR and unblock the task.
 
-Other tasks go on while one is blocked. If the whole stage is blocked, it waits; it does not ship
-around the gap.
+Other tasks go on while one is blocked; a wholly blocked stage waits.
 
 ### The shape of the issue
 
