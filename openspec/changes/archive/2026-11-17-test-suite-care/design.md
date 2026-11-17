@@ -986,6 +986,14 @@ Recorded 2026-11-17 by the lead after the trial (owner: "go ahead, proceed as ne
     nothing contradicts it.
   - The pytester test of #318: no `project-setup` template configures pytest-timeout. The line
     is guidance until a template does, and the test comes with that template.
+- **D-73 Stage 3 is skipped and the change is archived (owner, 2026-11-17).** "Skip stage 3, enough
+  improvements for now." The assessment of checks that are not code (DEC-11, D-11, D-13, D-29) is
+  not delivered. Its requirement leaves the `test-suite-care` delta and its cross-cutting row
+  leaves the `test-strategy` delta. The skill's description drops the "check that is not code"
+  trigger, so the skill no longer claims what it cannot do. The rule-11 sentence of the
+  `code-principles-governance` delta was never built and belonged to the deferred stage 2 (L2 W3),
+  so it leaves the delta too. Stage 2 stays deferred (D-43). The change is archived with stage 1
+  delivered; `deviations.md` lists what differs from the EPIC.
 
 ## Open Questions
 

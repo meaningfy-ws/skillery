@@ -1,6 +1,6 @@
 ---
 name: test-suite-care
-description: "Use this skill when a test suite has grown slow or large and must be made smaller or quicker without losing a specified feature, or when a check that is not code (a reader, a checklist) must be judged for whether it earns its place: 'our tests take too long', 'which tests can we drop', 'is our cold reader any good'. It audits the suite, maps tests to the scenarios they serve and proposes reductions the owner decides. Not for writing tests (cosmic-python) or choosing an activity's checks (test-strategy)."
+description: "Use this skill when a test suite has grown slow or large and must be made smaller or quicker without losing a specified feature: 'our tests take too long', 'which tests can we drop'. It audits the suite, maps tests to the scenarios they serve and proposes reductions the owner decides. Not for writing tests (cosmic-python) or choosing an activity's checks (test-strategy)."
 license: Apache 2.0
 metadata:
   purpose: quality
