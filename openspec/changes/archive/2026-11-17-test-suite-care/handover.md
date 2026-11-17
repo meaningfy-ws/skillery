@@ -26,6 +26,17 @@ silently); D-61 to D-63, the three findings the lead re-labelled Critical and fi
 - checkmake was not run on the new Makefile targets (no local binary).
 - The "write tests for this function" probe loaded no skill in 3 runs (`cosmic-python`'s trigger).
 
+## Paused (2026-11-16)
+Released in 3.19.0 (PR #300, back-merge #301); the how-to is
+`docs/practice/ai-coding/test-suite-audit.md` (PR #299). The owner keeps the change open: no
+split, no archive. The trial waits until the owner says work on `rdf-persistence` is finished;
+start nothing in it before then. Stage 3 still waits for wave 4.
+
+*Updated 2026-11-17:* the owner says the `rdf-persistence` work is finished, so the trial can
+start; the owner continues it in another session. Before the audit, read that repository's
+`test-lanes` change (it superseded `test-profiling`), so no proposal repeats lanes it already has.
+Its unit job takes up to 60 minutes in CI (its PR #135): runs A and B take hours on an idle machine.
+
 ## Next
 Task 1.11, the trial on the trial repository named in D-14, then 1.12 (the acceptance demo with
 the owner) and 1.13. Read first: tasks.md 1.11 to 1.13, design.md D-2, D-5 to D-7, D-14, D-55,

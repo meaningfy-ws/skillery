@@ -213,6 +213,145 @@ def test_overlap_on_a_real_branch_coverage_run(pytester, monkeypatch):
     assert ("test_mod.py::test_a", "test_mod.py::test_b") in contained
 
 
+# T-16 (#308): without xdist the phase file holds phase lines only
+def test_phase_times_without_xdist_keeps_fixture_lines_out_of_the_phase_file(pytester, monkeypatch):
+    _run_phase_times(pytester, monkeypatch)
+    out = pytester.path / "out"
+    phases = _jsonl([out / "phases.jsonl"])
+    assert phases and all("phase" in x for x in phases), phases
+    fixtures = _jsonl([out / "phases.jsonl.fixtures"])
+    assert [x["fixture"] for x in fixtures] == ["slow", "slow"]
+
+
+# T-17 (#314): the files each test function covered, its cases merged
+def test_overlap_files_lists_the_covered_files_per_test_function(tmp_path):
+    db = _coverage_db(tmp_path / ".coverage", CONTEXTS)
+    con = sqlite3.connect(db)
+    con.execute("insert into file values (2, '/src/other.py')")
+    con.execute("insert into line_bits values (2, 6, ?)", (_numbits({3}),))  # test_p[c]
+    con.commit()
+    con.close()
+    result = _overlap(db, "--files")
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["files"] == {
+        "t.py::test_big": ["/src/mod.py"],
+        "t.py::test_p": ["/src/mod.py", "/src/other.py"],
+        "t.py::test_small": ["/src/mod.py"],
+    }
+
+
+# T-18 (D-63, tester findings 1 to 4): a missing input is named, without a traceback
+@pytest.mark.parametrize("args", [("missing.coverage",), ("DB", "--phases", "missing.jsonl")])
+def test_overlap_missing_input_exits_2_with_its_name(tmp_path, args):
+    db = _coverage_db(tmp_path / ".coverage", CONTEXTS)
+    result = _overlap(*[db if a == "DB" else tmp_path / a for a in args])
+    assert result.returncode == 2
+    assert "missing" in result.stderr and "Traceback" not in result.stderr
+
+
+@pytest.mark.parametrize("line", ["[1, 2]", '{"phase": "call", "outcome": "passed"}', "not json"])
+def test_overlap_malformed_phases_line_exits_2(tmp_path, line):
+    db = _coverage_db(tmp_path / ".coverage", CONTEXTS)
+    (tmp_path / "p.jsonl").write_text(line + "\n")
+    result = _overlap(db, "--phases", tmp_path / "p.jsonl")
+    assert result.returncode == 2 and "Traceback" not in result.stderr, result.stderr
+
+
+# T-19 (#314): the map refresher
+REFRESH = SCRIPTS / "refresh_map.py"
+MAP = ("test,level,confidence\r\n"
+       "t.py::test_a,scenario,high\r\n"
+       "t.py::test_b,none,none\r\n"
+       "t.py::test_c,scenario,high\r\n"
+       "t.py::test_d,scenario,high\r\n"
+       "t.py::test_e,scenario,high\r\n"
+       "t.py::test_f,scenario,high\r\n")
+
+
+def _refresh(tmp_path, collected, map_text=MAP):
+    path = tmp_path / "scenario-map.csv"
+    path.write_bytes(map_text.encode())
+    run = subprocess.run([sys.executable, str(REFRESH), "--map", str(path), "--collect", "-"],
+                         input=collected, capture_output=True, text=True)
+    return run, path.read_bytes().decode()
+
+
+def test_refresh_map_drops_a_vanished_test_and_lists_new_ids(tmp_path):
+    collected = "".join(f"t.py::test_{n}\n" for n in "acdef") + "t.py::test_g[1]\nt.py::test_g[2]\n\n6 tests\n"
+    run, text = _refresh(tmp_path, collected)
+    assert run.returncode == 1, run.stdout + run.stderr
+    assert "t.py::test_b" not in text and text.startswith("test,level,confidence\r\n")
+    assert text.count("\r\n") == 6  # CRLF kept
+    assert "t.py::test_g" in run.stdout and "[" not in run.stdout.split("New", 1)[1]
+
+
+@pytest.mark.parametrize("collected", ["", "no tests ran\n", "ERROR collecting t.py\n"])
+def test_refresh_map_keeps_the_map_on_an_empty_or_failed_collection(tmp_path, collected):
+    run, text = _refresh(tmp_path, collected)
+    assert run.returncode == 2
+    assert text == MAP
+
+
+def test_refresh_map_refuses_to_remove_more_than_a_fifth(tmp_path):
+    run, text = _refresh(tmp_path, "t.py::test_a\nt.py::test_c\n")
+    assert run.returncode == 3
+    assert text == MAP
+
+
+ALL_SIX = "".join(f"t.py::test_{n}\n" for n in "abcdef")
+
+
+@pytest.mark.parametrize("summary", ["6/9 tests collected (3 deselected) in 0.01s",
+                                     "Interrupted: 1 error during collection",
+                                     "6 tests collected, 1 error in 0.02s"])
+def test_refresh_map_refuses_a_filtered_or_failed_collection(tmp_path, summary):
+    run, text = _refresh(tmp_path, ALL_SIX + "\n" + summary + "\n")
+    assert run.returncode == 2, run.stderr
+    assert text == MAP
+
+
+def test_refresh_map_keeps_lf_ids_with_spaces_and_errors_inside_a_case(tmp_path):
+    lf_map = "test,level\nt.py::test_a,none\ndir x/t.py::test_s,none\n"
+    run, text = _refresh(tmp_path, "t.py::test_a[2 errors]\ndir x/t.py::test_s[a::b]\n", lf_map)
+    assert run.returncode == 0, run.stderr
+    assert text == lf_map
+    assert not list(tmp_path.glob("*.tmp")) and [p.name for p in tmp_path.iterdir()] == ["scenario-map.csv"]
+
+
+@pytest.mark.parametrize("map_text", ["level,confidence\nx,y\n", "test,level\nt.py::test_a\n"])
+def test_refresh_map_malformed_map_exits_4(tmp_path, map_text):
+    run, text = _refresh(tmp_path, "t.py::test_a\n", map_text)
+    assert run.returncode == 4
+    assert text == map_text
+
+
+def test_refresh_map_unreadable_input_exits_2_with_its_name(tmp_path):
+    run = subprocess.run([sys.executable, str(REFRESH), "--map", str(tmp_path / "nomap.csv"),
+                          "--collect", "-"], input="t.py::test_a\n", capture_output=True, text=True)
+    assert run.returncode == 2
+    assert "nomap.csv" in run.stderr and "Traceback" not in run.stderr
+
+
+# T-20: the refresher on real collect output, as scenario-map.md documents the command
+def test_refresh_map_reads_real_collect_output(pytester, monkeypatch):
+    monkeypatch.setenv("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
+    pytester.makepyfile(test_t="import pytest\n\n@pytest.mark.parametrize('x', [1, 2])\n"
+                               "def test_a(x):\n    pass\n\ndef test_new():\n    pass\n")
+    pytester.makeini("[pytest]\naddopts = -q\n")  # a project's own -q would make -q into -qq
+    collected = pytester.runpytest_subprocess("--collect-only", "-q", "-o", "addopts=")
+    path = pytester.path / "map.csv"
+    path.write_text("test,level\ntest_t.py::test_a,none\ntest_t.py::test_gone,none\n"
+                    + "".join(f"test_t.py::test_k{n},none\n" for n in range(4)))
+    run = subprocess.run([sys.executable, str(REFRESH), "--map", str(path), "--collect", "-"],
+                         input="\n".join(collected.outlines), capture_output=True, text=True)
+    assert run.returncode == 3, run.stdout + run.stderr  # 5 of 6 rows gone: refused, so ids were read
+    pytester.makepyfile(test_bad="import nonexistent_module_xyz\n")
+    failed = pytester.runpytest_subprocess("--collect-only", "-q", "-o", "addopts=")
+    run = subprocess.run([sys.executable, str(REFRESH), "--map", str(path), "--collect", "-"],
+                         input="\n".join(failed.outlines), capture_output=True, text=True)
+    assert run.returncode == 2, run.stdout + run.stderr
+
+
 # T-8: the changed-files lane on a temporary git repository
 REPO_FILES = [
     "pytest.ini", "uv.lock", "docs/a.md", "tests/__init__.py", "tests/conftest.py",

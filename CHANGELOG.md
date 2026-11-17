@@ -12,6 +12,35 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.20.0] - 2026-11-17
+
+### Added
+
+- **The wondel skills are registered per bundle** (EPIC `orchestrate-external-skills`, stage 1b).
+  The setup guides now list the wondel skills for `meaningfy-sales`, `meaningfy-consulting` and
+  `meaningfy-core`, pinned to the commit Meaningfy read in full, with telemetry off. Until
+  `skill-orchestration` ships, they inform reasoning only; on a conflict the Meaningfy skill that
+  owns the subject wins, and two strategy and management skills may also guide executive writing.
+- **`test-suite-care` gains a map refresher and a covered-files report.** `refresh_map.py` keeps
+  the scenario map in step with the collected tests and leaves it untouched when the collection
+  failed or was filtered; `overlap.py --files` lists the files each test covers.
+
+### Changed
+
+- **`test-suite-care` learns from its first trial.** Slow tests are confirmed by running each
+  alone, a fixture's saving is measured before it is proposed, a merge keeps the case a mutation
+  run shows matters, lanes come from your `make` targets and CI, and a moved test names the CI lane
+  that still runs it. The report template has one decided fix per row. It no longer offers to
+  judge checks that are not code (a reader, a checklist): that part of its EPIC was dropped.
+  Fixture timings always go to a separate file (`phases.jsonl.fixtures`, or one per xdist
+  worker), so `phases.jsonl` holds only phase timings.
+- **Delivery guidance from the same trial.** In `epic-delivery`, the lead makes each builder's
+  worktree itself, parallel builders get their own scratch folders and the merge waits for CI to
+  have run on the pull request; an adversarial test's docstring records the defect it found.
+  `project-setup` sets pytest-timeout's `signal` method under xdist. `epic-planning`'s PLAN names
+  the CI lane of every moved test. `cosmic-python` rule 6 keeps polyfactory as the default and
+  names `model_copy(update=…)` as the smell.
+
 ## [3.19.0] - 2026-11-16
 
 ### Added
