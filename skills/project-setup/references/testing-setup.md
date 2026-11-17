@@ -20,5 +20,5 @@ capabilities, which hint at the import-linter components), `tests/e2e/`, `tests/
   proven on a hosted-runner run of the PR before merge.
 - **Datastores**: testcontainers in a module-scoped fixture, flushed per test, marked by path as
   integration or e2e (outside the fast lane).
-- **Coverage** ≥ 80 %. The skeleton's `__main__.py` stub carries `# pragma: no cover`; remove it
+- **Coverage** ≥ 80 % on the package. The skeleton's `__main__.py` stub carries `# pragma: no cover`; remove it
   when you replace the stub.
