@@ -12,6 +12,28 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.21.0] - 2026-11-17
+
+### Added
+
+- **The `no-shell-edits` mod stops edits through the shell.** `meaningfy-core` now denies a Bash
+  command that writes or reverts a file in place: `sed -i`, `perl -i`, an inline python or node
+  script that writes a file, a `cat`/`tee` heredoc outside `$TMPDIR`, and `git checkout` or
+  `git restore` of a file. The message points to Edit or Serena. opencode gets the same check.
+
+### Changed
+
+- **Builder worktrees live where the session can edit.** `epic-delivery` puts each builder's
+  worktree in a git-ignored `.worktrees/` (or a folder added to the session), and every builder
+  brief carries the line "Edit or Serena only; Bash runs commands". A worktree beside the
+  repository had sent builders to `python3 - <<E` edits under the sandbox bypass.
+- **Every brief names its tools.** `epic-delivery` adds a *Tools* item to what every brief names:
+  reviewers, checkers and testers read code with Read, Grep and Serena rather than `sed -n` and
+  `grep | head` chains, and a sandbox bypass names the commands it covers. The code-reviewer agent
+  says the same.
+- **The tools table names Serena's real tools** (`find_symbol`, `replace_symbol_body`,
+  `replace_content`, …) and drops the Bash fallback for editing a file.
+
 ## [3.20.0] - 2026-11-17
 
 ### Added

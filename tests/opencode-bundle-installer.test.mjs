@@ -413,6 +413,19 @@ test("no-poll-loops: the module ships in package.json files", () => {
   assert.ok(pkg.files.includes("mods/no-poll-loops/no-poll-loops.mjs"));
 });
 
+test("no-shell-edits: bash sed -i throws with the message", () => {
+  assert.match(beforeBash(JSON.stringify("sed -i 's/a/b/' f.py")), /^threw:Shell edits are denied/);
+});
+
+test("no-shell-edits: a read-only sed passes", () => {
+  assert.equal(beforeBash(JSON.stringify("sed -n 1,5p f.py")), "passed");
+});
+
+test("no-shell-edits: the module ships in package.json files", () => {
+  const pkg = JSON.parse(fs.readFileSync(path.join(REPO, "package.json"), "utf8"));
+  assert.ok(pkg.files.includes("mods/no-shell-edits/no-shell-edits.mjs"));
+});
+
 test("TC-21 report prints parity and gap rows and writes nothing", () => {
   const root = fixture();
   const before = fs.readdirSync(root).sort();

@@ -39,7 +39,11 @@ and never built or tested the stage.
    ([`dependencies.md`](dependencies.md)): never work around our library. A project that names no
    task gate or full gates leaves this item unwritable: the lead asks the developer, and the answer
    goes into the project's `AGENTS.md`.
-6. **The report expected**: the base report and the *implementing* fields of `guardrails`
+6. **Tools**, for every role: code is read with Read (a range), Grep and Serena, not `sed -n`,
+   `cat` or `grep -A | head` chains through Bash; files change through Edit or Serena only; Bash
+   runs tests, checks and git, one purpose per call. A sandbox bypass names the commands it covers
+   (`uv run pytest <file>`, `git commit`), never "commands need the sandbox disabled".
+7. **The report expected**: the base report and the *implementing* fields of `guardrails`
    `references/subagent-reports.md`, plus
    **Upstream findings**: every bug, gap or awkwardness met in any library, each marked *ours* or
    *external*, with a reproduction, or "none". The lead routes them per the dependency rule.
@@ -74,16 +78,28 @@ Tools for each activity, and their fallbacks: the table in `guardrails` (`refere
 > this task changes. **Read:** `tasks.md` §`<n>`, `design.md` `<DEC-n>`,
 > `tests/features/<f>.feature`. **Decided:** `<…>`. **Out of scope:** `<…>`. **Standing rules:**
 > `<project list>`; the testing checklist; no workaround of our library: stop and report it.
+> **Edits:** Edit or Serena only; Bash runs commands and never writes a file. **Scratch:**
+> `<scratchpad>/<task-id>/`.
 > **Report:** base report + the *implementing* fields (`guardrails` `references/subagent-reports.md`) + Upstream findings.
 
-**Worktrees.** The lead makes each builder's worktree (`git worktree add <path> <sha>`, outside the
-sandbox, under a git-ignored folder), never the Agent tool's `isolation: worktree`, which bases on
-the remote default branch. The brief names the path and the base commit. The builder runs
-`git rev-parse HEAD` there first and, if it is not the named commit, stops and reports. Builder and
-lead commit in a worktree with the sandbox bypass. The lead of a long session with parallel
-builders works in its own worktree from the start, so another session cannot take its checkout.
+The brief always carries the *Edits* line word for word, and never a blanket "commands need the
+sandbox disabled": that sends every step, file writes included, through Bash.
 
-**Edits.** Edit tool only, Makefiles one recipe at a time, never `sed -i`. For the same mechanical
+**Worktrees.** The lead makes each builder's worktree (`git worktree add <path> <sha>`, outside the
+sandbox) inside a folder its session can edit: a git-ignored `.worktrees/` in the repository, or a
+folder the session was started with (`--add-dir`, `permissions.additionalDirectories`). A worktree
+beside the repository is outside the session, so `Edit` is refused there and the builder falls
+back to shell edits. Never the Agent tool's `isolation: worktree`, which bases on the remote
+default branch. The brief names the path and the base commit. The builder runs
+`git rev-parse HEAD` there first and, if it is not the named commit, stops and reports. Builder and
+lead use the sandbox bypass only for commands that write `.git` or the environment (`git commit`,
+`uv sync`). Parallel sessions each started in their own worktree need none of this; the lead of a
+long session with parallel builders works in its own worktree from the start, so another session
+cannot take its checkout.
+
+**Edits.** Edit tool or Serena only, Makefiles one recipe at a time, never `sed -i`, an inline
+`python`/`node` write, a `cat`/`tee` heredoc or a `git checkout`/`git restore` of a file; the
+`no-shell-edits` mod denies them. If `Edit` is refused, the builder stops and reports. For the same mechanical
 edit at many sites, the builder may write a script that only prints the edits
 (`file:line old → new`); the lead reviews that list before the builder applies it, and the builder
 reads every changed site back.

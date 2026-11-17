@@ -2,7 +2,7 @@
 #   binding axes: mechanism = git | ci | agent | mod ; phase = quality | phase-gate
 #   provenance: { skill: <name> } OR { rule: "<MUST/NEVER rule in a binding>" }
 # A single intent MAY carry several bindings (e.g. a ci PR-check AND an agent pre-apply gate).
-version: 3.20.0
+version: 3.21.0
 
 hooks:
   # ---- git / quality ----
@@ -266,6 +266,10 @@ hooks:
     bindings: [{ mechanism: agent, phase: quality, trigger: PreToolUse(Bash) }]
   - id: no-poll-loops
     intent: Deny a Bash sleep loop (while/until/for with sleep, watch -n); wait in the foreground or once in the background
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: mod, phase: quality, trigger: PreToolUse(Bash) }]
+  - id: no-shell-edits
+    intent: Deny a Bash command that writes or reverts a file in place (sed -i, perl -i, an inline python/node write, a cat/tee heredoc outside $TMPDIR, git checkout/restore of a path); edit with Edit or Serena
     provenance: { skill: guardrails }
     bindings: [{ mechanism: mod, phase: quality, trigger: PreToolUse(Bash) }]
   - id: rules-first
