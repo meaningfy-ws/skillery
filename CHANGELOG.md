@@ -12,6 +12,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.21.0] - 2026-11-17
+
 ### Added
 
 - **The `no-shell-edits` mod stops edits through the shell.** `meaningfy-core` now denies a Bash
