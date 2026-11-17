@@ -12,6 +12,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.20.0] - 2026-11-17
+
 ### Added
 
 - **The wondel skills are registered per bundle** (EPIC `orchestrate-external-skills`, stage 1b).
@@ -29,9 +31,9 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   alone, a fixture's saving is measured before it is proposed, a merge keeps the case a mutation
   run shows matters, lanes come from your `make` targets and CI, and a moved test names the CI lane
   that still runs it. The report template has one decided fix per row. It no longer offers to
-  judge checks that are not code (a reader, a checklist): that part of its EPIC was dropped. Fixture timings always go
-  to a separate file (`phases.jsonl.fixtures`, or one per xdist worker), so `phases.jsonl` holds
-  only phase timings.
+  judge checks that are not code (a reader, a checklist): that part of its EPIC was dropped.
+  Fixture timings always go to a separate file (`phases.jsonl.fixtures`, or one per xdist
+  worker), so `phases.jsonl` holds only phase timings.
 - **Delivery guidance from the same trial.** In `epic-delivery`, the lead makes each builder's
   worktree itself, parallel builders get their own scratch folders and the merge waits for CI to
   have run on the pull request; an adversarial test's docstring records the defect it found.
