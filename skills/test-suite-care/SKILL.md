@@ -38,13 +38,14 @@ A project's `make test` takes 310 s.
 The audit covers pytest suites; for any other runner, say so and stop. Output goes outside the
 repository, except the map and the report, which go in one pull request.
 
-1. **Measure.** Two runs of the project's own test command for each tier it has: run A for time
+1. **Measure.** Two runs of the project's own test command for each lane its `make` targets and
+   CI run: run A for time
    per phase and per fixture, run B for the lines each test covers. Read `references/measuring.md`
    before the first run: it gives both commands and the settings that silently spoil the data.
 2. **Map.** One row per test function: the scenario, requirement or capability it serves, with a
    confidence. Read `references/scenario-map.md` when you build or update the map: it holds the
-   format, the levels, the evidence each confidence needs and the owner's sample check. With
-   many test folders, give each folder to a fresh subagent and merge the rows.
+   format, the levels, the evidence each confidence needs, the owner's sample check and how to
+   split the mapping among subagents.
 3. **Find the waste.** Read `references/waste.md` when you read the evidence for proposals: it
    holds the eight kinds of waste, the evidence each requires and its class.
 4. **Report.** Fill `assets/report-template.md` as `tests/audit/report-<yyyy-mm-dd>.md`, class 1
@@ -63,9 +64,9 @@ repository, except the map and the report, which go in one pull request.
 | 2 | Parametrised cases are merged | A case that mattered | All the evidence of W-3 |
 | 3 | A test is dropped | The only guard of a behaviour | All the evidence of its row, and a survivor |
 
-- **Share only the unchanging part of a fixture.** What a test changes (a store it writes to, a
-  mock whose calls it asserts) keeps function scope; what none changes may widen, with a cheap
-  reset. Never share a mock. Widen an async fixture only as far as the event-loop
+- **Share what no test changes.** What a test changes (a store it writes to, a mock whose calls
+  it asserts) keeps function scope; what none changes may widen, with a cheap reset. Never share a
+  mock. Widen an async fixture only as far as the event-loop
   setting allows.
 - **Check a fixture change:** run B before and after; `overlap.py <after> --compare <before>` lists
   no test that uses the fixture; the suite passes twice, the second time with the test files in
@@ -89,15 +90,14 @@ repository, except the map and the report, which go in one pull request.
 | Drop the test that runs the real adapter, store or service | The lower-tier test runs a fake | Keep it; it is never W-5 |
 | Force every test onto a scenario | A forced row makes a drop look safe | Record `none` |
 | Append flags to a `make` target | The target takes none and carries its own coverage flags | Pass them in `PYTEST_ADDOPTS` |
-| Take timings from run B | Coverage slows a run about 2.3 times | Time from run A only |
-| Write the audited project's name or thresholds into this skill | They fit one project | State them in the report |
+| Take timings from run B | Coverage slows a run about 2.3 times | Time from run A only || Write the audited project's name or thresholds into this skill | They fit one project | State them in the report |
 
 Residual risk: a shared fixture can let a test pass on another's work without changing any covered
 line. Say so in the pull request of every class 1 fixture change.
 
 ## Boundary & Related Skills
 
-**Owns:** the audit of an existing suite (measure, map, waste, report, decision), its two scripts
+**Owns:** the audit of an existing suite (measure, map, waste, report, decision), its three scripts
 and the report template.
 
 **Does not own:** the rules every test follows, cited by number (`cosmic-python`'s testing

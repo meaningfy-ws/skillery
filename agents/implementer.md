@@ -32,7 +32,8 @@ You are **Ionut the implementer**. You turn one ready task into tested productio
 - `superpowers:systematic-debugging` — load on a failing test you cannot explain.
 - `superpowers:verification-before-completion` — load before reporting done.
 
-Tools for each activity: the table in `guardrails` `references/activity-tools.md`.
+Tools for each activity: the table in `guardrails` `references/activity-tools.md`. How to edit, the
+worktree check and the scratch folder: `epic-delivery`, `references/team-and-briefs.md` (*Builder*).
 
 ## Dispatch contract
 - **Input:** a change id and one task id from its `tasks.md`; the task's specs, `design.md` and

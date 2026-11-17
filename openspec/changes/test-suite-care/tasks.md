@@ -114,19 +114,38 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       the floor bullet, which already deletes a test under the floor and is cited, not restated.
 - [x] 1.10 Stage review, fixes, PR, merge on green CI. *Acceptance:* `make validate` passes with
       T-1 to T-12 and T-15 green (T-7 and T-2 may skip in CI).
-- [ ] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
+- [x] 1.11 Trial on `rdf-persistence` (D-14): run A and run B on an idle machine for the unit,
       feature and integration lanes; build the map with one subagent per test folder; write the
       report; open the pull request there with both files. *Acceptance:* the report has every
       section of D-7; the map has one row per test function (its rows match the node ids of
       `pytest --collect-only -q` with the `[...]` suffix removed, each once).
-- [ ] 1.12 Acceptance demo with the owner (D-5, D-7, D-14): the sample check of the map, then the discussion of
+      *Done 2026-11-17 (D-64):* as the trial repository's change `test-suite-grooming`;
+      `evidence/trial.md`.
+- [x] 1.12 Acceptance demo with the owner (D-5, D-7, D-14): the sample check of the map, then the discussion of
       the report; decisions recorded in the report and in `evidence/acceptance.md`.
       *Acceptance:* every proposal has a decision and a reason.
-- [ ] 1.13 The approved proposals as pull requests in `rdf-persistence`, each with before and
+      *Done 2026-11-16 (D-64):* the owner accepted every proposal and waived the sample check;
+      `evidence/acceptance.md`.
+- [x] 1.13 The approved proposals as pull requests in `rdf-persistence`, each with before and
       after (D-7). What the trial taught goes into the skill as a follow-up PR in skillery,
       within the budget of D-40.
       *Acceptance:* each merged pull request names its proposal id; or the report records that
       none was approved.
+      *Done 2026-11-17 (D-64):* the proposals landed in one pull request whose commits name their
+      proposal ids; the follow-up in skillery is tasks 1.14 and 1.15 (D-66).
+- [x] 1.14 The trial's feedback into `test-suite-care` (D-66, D-68), test first: issues #307 to
+      #315 and the further items of D-66. *Acceptance:* a test per script change is red before
+      and green after (fixture lines never in the phase file; `--files`; the refresher keeps the
+      map on an empty or failed collection and drops a vanished test's row); each issue is
+      answered by a named line of `SKILL.md`, `references/` or `assets/`; the skill stays within
+      D-40 and D-53; the trigger probes still pass.
+- [x] 1.15 The trial's feedback into the other skills (D-66, D-67): `epic-delivery` #316, #317 and
+      the #195 comment; `project-setup` #318; the `implementer` agent #319; `epic-planning` the
+      PLAN half of #315; `cosmic-python` rule 6 (D-67). *Acceptance:* each issue is answered by a
+      named line; a behavioural agent change has its Gherkin scenario; D-53 holds for every skill
+      at or near 24 KB.
+- [ ] 1.16 Stage review of 1.14 and 1.15, a `CHANGELOG.md` line, `make validate`, one PR whose body
+      closes #307 to #319, merge on green CI (CI checked to have run on the PR before the merge).
 
 ## 2. Stage 2: UI suites (deferred 2026-11-15, D-43)
 

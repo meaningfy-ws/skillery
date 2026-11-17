@@ -918,6 +918,75 @@ reason. Every other finding is rejected "under the floor" (one line each below).
   5 (`--compare` lists a test present in one file with an empty line set; it errs towards
   rejecting a change). Their tests are deleted with the reason "under the floor".
 
+Recorded 2026-11-17 by the lead after the trial (owner: "go ahead, proceed as needed").
+
+- **D-64 The trial ran as the trial repository's own change (D-14; tasks 1.11 to 1.13).** The
+  trial repository delivered the audit and its proposals as its change `test-suite-grooming`
+  (one pull request, merged 2026-11-17), driven by skillery 3.19.0's skills, instead of the
+  separate pull requests task 1.11 names. The report, the map (one row per test function) and the
+  before and after numbers are there; `evidence/trial.md` points at each. The owner accepted every
+  proposal and waived the sample check of the map; the skill had no path for a waived sample, and
+  task 1.14 adds one (D-66).
+- **D-65 Decisions taken while the owner is away (owner, 2026-11-17).** Standing answer: do what is
+  right in the situation, even where an earlier decision said otherwise, and record it. It covers
+  the trial repository's 16 lead decisions and this change's own delivery decisions.
+- **D-66 The trial's feedback lands in this change, as tasks 1.14 and 1.15 (owner, 2026-11-17).**
+  The owner filed it as issues #307 to #319 and a comment on #195. Task 1.14 changes
+  `test-suite-care`: #307 to #315 (the `test-suite-care` half of #315), the review's further
+  improvements (the waived sample, one decided fix per broken-rule row, the fan-out of the map, a
+  part-serving map row, the xdist fixture-scope note, the report sections every real audit needed)
+  and the under-the-floor script items of D-63. Task 1.15 changes the other skills: `epic-delivery`
+  (#316, #317, the #195 comment), `project-setup` (#318), the `implementer` agent (#319),
+  `epic-planning` (the PLAN half of #315) and `cosmic-python` rule 6. D-53 governs every addition.
+- **D-67 Polyfactory stays the default (owner, 2026-11-17).** Rule 6 keeps polyfactory as the way
+  to build model objects. A project whose validated named builders already exist meets the rule's
+  intent; the smell the rule names is `model_copy(update=…)`, which skips validation. This narrows
+  the trial's suggestion to make polyfactory optional.
+- **D-68 The scripts (task 1.14).** `phase_times.py` writes fixture lines to a file of their own in
+  every mode (`<out>.fixtures`, or `<out>.<worker>` under xdist), so the phase file holds phase
+  lines only (#308). `overlap.py --files` prints, per test function, the measured files its call
+  covered: the map's "code it covers" evidence (#314). `refresh_map.py`, the trial's refresher made
+  generic (the collect output is read from a file or stdin), keeps the map in step and refuses an
+  empty or failed collection (#314). Standard library only, as D-2.
+- **D-69 The second trial is the trial repository's `test-debt-paydown` change.** It runs on the
+  skills tasks 1.14 and 1.15 correct (its mutation stage needs #312's method, its builders #316);
+  it is not a task of this change, and nothing here waits for it.
+- **D-70 Tasks 1.14 and 1.15 are reviewed as a small stage.** `git diff 646f1c6..HEAD` adds about
+  400 lines (under the 600 of `small_stage`), Markdown plus three standard-library scripts with
+  their tests, low risk: review set `[["L1","L2"],["L3","L4","L5"]]`, two reviewers in parallel.
+- **D-71 The budget cut spares exempt skills (corrects the 1.15 build).** D-53 asks a cut only of a
+  skill at or near 24 KB; `epic-delivery` is in `skill-budget.yaml`'s `over_budget`, so its
+  worked examples (the LARGE-EPIC walk-through, the T1 example, the navigator-band note) were
+  restored. `testing-setup.md` keeps "on the package" (24,573 bytes).
+- **D-72 The review of tasks 1.14 and 1.15 (D-70).** L1+L2: 1 Critical, 3 Major, 11 Minor;
+  L3+L4+L5: 5 Major, 9 Minor, 3 suggestions. Fixed:
+  - **C1:** `refresh_map.py` documented `--collect-only -qq`, which prints counts, not ids. It now
+    documents `-q -o addopts=""`, and T-20 pipes real collect output through it.
+  - **The other Majors:**
+    - a filtered collection (`deselected`) is refused;
+    - an unreadable input exits 2 and is named;
+    - W-3 keeps rule 8's positive and negative rows;
+    - the review of a mechanical-edit list is named;
+    - a builder stops on a wrong base commit;
+    - the mutation rule is stated once (`waste.md` W-4) and the method once (`measuring.md`);
+    - the refresher's command is runnable.
+  - **The Minors:**
+    - ids with spaces are kept, and a case id never reads as an error;
+    - the temporary file is unique and removed on failure, and the map's file mode is kept;
+    - the `-n 0` alone run, a fresh `<out>` per run, and the message-mutant rule narrowed to rule 9;
+    - `overlap.py`'s exclusive modes and its malformed phases lines;
+    - the how-to's split, the template slot, the CHANGELOG wording, the dropped duplicate lines in
+      `SKILL.md`;
+    - the `project-setup` conditions restored within 24 KB, and `team-and-briefs.md`'s "no role has
+      its own agent" line restored.
+
+  Rejected:
+  - S1, one shared `function_id`: the scripts run by path and stay independent.
+  - S3: `agent-template.md`'s row is about `isolation: worktree`, which is still not adopted, so
+    nothing contradicts it.
+  - The pytester test of #318: no `project-setup` template configures pytest-timeout. The line
+    is guidance until a template does, and the test comes with that template.
+
 ## Open Questions
 
 None blocks stage 1. To confirm with the owner at scenario sign-off (task 1.0):
