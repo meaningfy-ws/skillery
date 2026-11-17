@@ -1,7 +1,7 @@
 # Test suite audit, <yyyy-mm-dd>
 
 Map: `tests/audit/scenario-map.csv` at commit `<sha>`. Owner's sample: <n> rows, <n> wrong (or:
-waived by the owner on <date>; class 3 then needs W-8 pair evidence or a re-read `high` survivor).
+waived by the owner on <date>, see `scenario-map.md`, *A waived sample*).
 
 ## Numbers
 

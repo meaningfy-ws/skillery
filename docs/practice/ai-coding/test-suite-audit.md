@@ -33,8 +33,9 @@ cut". The skill loads and the agent:
    loses per-test lines without saying so. The skill's scripts do the measuring; nothing in the
    project is edited and the raw output goes to a folder outside the repository;
 2. builds the scenario map, `tests/audit/scenario-map.csv`: each test function with the scenario,
-   requirement or capability it serves and a confidence. On a large suite it uses one subagent per
-   test folder, the most expensive part of the audit (expect a long session on thousands of tests);
+   requirement or capability it serves and a confidence. On a large suite it splits the tests into
+   chunks of a few hundred, one subagent each, the most expensive part of the audit (expect a long
+   session on thousands of tests);
 3. asks you to check a sample, ten rows of each confidence drawn at random: is the test really
    about that scenario? One wrong `high` row sends that test file back to be mapped again. You may
    waive the sample; the report then says so, and dropping a test needs stronger evidence;

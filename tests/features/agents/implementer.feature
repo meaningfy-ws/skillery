@@ -42,9 +42,9 @@ Feature: implementer turns one ready task into tested code and reports back
     And it never runs `sed -i`
 
     Examples:
-      | sites   | method                                                                                  |
-      | one     | uses the Edit tool                                                                      |
-      | hundreds | may run a reviewed script that only appends a list of edits, then reads every changed site back |
+      | sites    | method                                                                                                   |
+      | one      | uses the Edit tool                                                                                       |
+      | hundreds | applies a printed list of edits only after the lead has reviewed it, then reads every changed site back |
 
   # Failure case: skillery issue #316 (a builder worked on the wrong base commit).
   Scenario: It checks its base commit first

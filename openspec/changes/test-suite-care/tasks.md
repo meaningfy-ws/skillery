@@ -133,13 +133,13 @@ the design decision it carries out, or is procedural (sign-off, baseline, review
       none was approved.
       *Done 2026-11-17 (D-64):* the proposals landed in one pull request whose commits name their
       proposal ids; the follow-up in skillery is tasks 1.14 and 1.15 (D-66).
-- [ ] 1.14 The trial's feedback into `test-suite-care` (D-66, D-68), test first: issues #307 to
+- [x] 1.14 The trial's feedback into `test-suite-care` (D-66, D-68), test first: issues #307 to
       #315 and the further items of D-66. *Acceptance:* a test per script change is red before
       and green after (fixture lines never in the phase file; `--files`; the refresher keeps the
       map on an empty or failed collection and drops a vanished test's row); each issue is
       answered by a named line of `SKILL.md`, `references/` or `assets/`; the skill stays within
       D-40 and D-53; the trigger probes still pass.
-- [ ] 1.15 The trial's feedback into the other skills (D-66, D-67): `epic-delivery` #316, #317 and
+- [x] 1.15 The trial's feedback into the other skills (D-66, D-67): `epic-delivery` #316, #317 and
       the #195 comment; `project-setup` #318; the `implementer` agent #319; `epic-planning` the
       PLAN half of #315; `cosmic-python` rule 6 (D-67). *Acceptance:* each issue is answered by a
       named line; a behavioural agent change has its Gherkin scenario; D-53 holds for every skill

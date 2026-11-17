@@ -19,7 +19,8 @@ files (D8), spine (pinned schema, commands), memory (`MEMORY.md` a ≤ 200-line 
 buckets), infra (root, multistage non-root, layered env), CI (on `make`, mirroring `check-all`),
 versions (`requires-python` bound, Ruff and mypy track it).
 
-Carry only detected gaps into the EPIC: naming a conformant dimension misreads as a constraint.
+Carry only detected gaps into the EPIC: a conformant dimension named as a no-go, decision or
+finding reads as a constraint.
 Cite the standard, do not recite it.
 
 ## 2. Plan: least risk first
@@ -37,7 +38,7 @@ Cite the standard, do not recite it.
 8. Tighten `.importlinter` to the real contracts; violations fixed in their own commits.
 9. Pillars: docs, `infra/`, `model/`, the CD stub, if wanted.
 
-Never mix the `/src` lift with a tooling swap. A repo without tests gets the smoke harness first.
+Never mix the `/src` lift with a tooling swap. A repo without tests gets the smoke harness before step 6.
 
 ## 3. Apply
 

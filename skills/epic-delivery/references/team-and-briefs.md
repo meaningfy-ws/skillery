@@ -19,8 +19,9 @@ The developer and the domain expert are people (`SKILL.md`, *The team*).
 | Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | On its condition ([`stage-loop.md`](stage-loop.md), Prepare) |
 | UX designer | A general-purpose subagent with the design skills | opus | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
 
-The checker and the tester differ from the others by their brief, not by their tools. The lead sets
-the model only for the general-purpose roles: opus, as both are judgement work (`guardrails` §5).
+No role has its own catalogue agent beyond these. The checker and the tester differ from the others
+by their brief, not by their tools. The lead sets the model only for the general-purpose roles:
+opus, as both are judgement work (`guardrails` §5).
 
 The tester tries to break the behaviour and leaves tests in the suite. The checker reads the stage
 against the briefs and the decisions and leaves only a verdict; it never wrote the tests it judges
@@ -76,17 +77,20 @@ Tools for each activity, and their fallbacks: the table in `guardrails` (`refere
 > **Report:** base report + the *implementing* fields (`guardrails` `references/subagent-reports.md`) + Upstream findings.
 
 **Worktrees.** The lead makes each builder's worktree (`git worktree add <path> <sha>`, outside the
-sandbox, under a git-ignored folder); the brief names the path and base commit, and the builder
-runs `git rev-parse HEAD` first. Not the Agent tool's `isolation: worktree`: it bases on the remote
-default branch. Commits there need the sandbox bypass. A long parallel session starts in its own worktree.
+sandbox, under a git-ignored folder), never the Agent tool's `isolation: worktree`, which bases on
+the remote default branch. The brief names the path and the base commit. The builder runs
+`git rev-parse HEAD` there first and, if it is not the named commit, stops and reports. Builder and
+lead commit in a worktree with the sandbox bypass. The lead of a long session with parallel
+builders works in its own worktree from the start, so another session cannot take its checkout.
 
-**Edits.** Edit tool only, Makefiles one recipe at a time, never `sed -i`. A mechanical edit at
-many sites may use a reviewed, append-only script that writes a list of edits; the builder reads
-every changed site back.
+**Edits.** Edit tool only, Makefiles one recipe at a time, never `sed -i`. For the same mechanical
+edit at many sites, the builder may write a script that only prints the edits
+(`file:line old → new`); the lead reviews that list before the builder applies it, and the builder
+reads every changed site back.
 
-**Parallel builders** each get a scratch directory, `<scratchpad>/<task-id>/`, and run no script
-they did not write. Never kill processes by pattern, `git stash` (the stack is shared by all
-worktrees) or start a second background run.
+**Parallel builders** each get a scratch directory, `<scratchpad>/<task-id>/`, and never run a
+script from another builder's directory. They never kill processes by pattern, never use
+`git stash` (the stack is shared by all worktrees) and never start a second background run.
 
 A **fixer** is a builder whose task is a set of accepted findings, named by their `design.md`
 decision. A **spike** is a builder whose task is one question; it ends with yes or no and the

@@ -15,7 +15,7 @@ skillery's `openspec/openspec-version.txt`); expanded verbs are opt-in.
 **Refresh the schema** by re-running `project-setup`: `--dry-run` shows the diff, `--skip-existing`
 keeps an existing schema, authored `specs/` and `changes/` are never touched. Review the diff in
 its own commit and re-run `openspec validate --strict`. The pinned Neo4j generators in `scripts/`
-refresh with `--force`; review the diff. There is no `--upgrade-schema` tool (YAGNI).
+refresh with `--force`; review the diff. No `--upgrade-schema` tool until repos need a joint bump.
 
 ## Validation
 

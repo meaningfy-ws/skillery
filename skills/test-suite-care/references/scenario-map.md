@@ -33,10 +33,12 @@ tests/unit/adapters/test_mapper.py::test_generated_context,none,,,,none,
 - **A waived sample.** The owner may waive it. The report's header and *Decisions* say so, and a
   class 3 proposal then goes ahead only with W-8's pair evidence or a survivor at `high` that the
   lead has read again.
-- Check the count: the rows match the node ids of `pytest --collect-only -q`, with the `[...]`
-  suffix removed, each once.
+- Check the count: the rows match the node ids of the whole suite's collection, with the `[...]`
+  suffix removed, each once. Collect with `-q` exactly once and the project's options cleared:
+  `pytest --collect-only -q -o addopts="" > <out>/collect.txt` (`-qq` prints counts, not ids; a
+  marker in the options filters tests out).
 - **Keep it in step.** After each landed proposal, and before a later audit, run
-  `<skill>/scripts/refresh_map.py --map tests/audit/scenario-map.csv --collect <collect output>`:
+  `python <skill>/scripts/refresh_map.py --map tests/audit/scenario-map.csv --collect <out>/collect.txt`:
   it removes the rows of tests that are gone, lists the new ones to map, and leaves the map
-  untouched when the collection failed or would remove more than a fifth of the rows. A renamed
-  test is mapped again.
+  untouched when the collection failed or was filtered, or would remove more than a fifth of the
+  rows. A renamed test is mapped again.

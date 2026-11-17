@@ -15,9 +15,8 @@ capabilities, which hint at the import-linter components), `tests/e2e/`, `tests/
 - **Test data**: `test_data/` only for fixtures awkward to build in code (root conftest's
   `load_text_file`); model objects follow rule 6 of `cosmic-python`'s testing-checklist.md. A
   fixture used by one tree lives in its nearest `conftest.py`.
-- **Timeouts**: with xdist, pytest-timeout uses `timeout_method = signal`; a thread timeout kills the
-  worker, its queued tests are never rescheduled and CI hangs. A new CI time limit or dist mode is
-  proven on a hosted-runner run of the PR before merge.
+- **Timeouts**: under xdist, pytest-timeout uses `timeout_method = signal` (a thread timeout kills
+  the worker and CI hangs). Prove a new CI limit or dist mode on the PR's hosted runner.
 - **Datastores**: testcontainers in a module-scoped fixture, flushed per test, marked by path as
   integration or e2e (outside the fast lane).
 - **Coverage** ≥ 80 % on the package. The skeleton's `__main__.py` stub carries `# pragma: no cover`; remove it

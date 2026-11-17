@@ -958,6 +958,34 @@ Recorded 2026-11-17 by the lead after the trial (owner: "go ahead, proceed as ne
   skill at or near 24 KB; `epic-delivery` is in `skill-budget.yaml`'s `over_budget`, so its
   worked examples (the LARGE-EPIC walk-through, the T1 example, the navigator-band note) were
   restored. `testing-setup.md` keeps "on the package" (24,573 bytes).
+- **D-72 The review of tasks 1.14 and 1.15 (D-70).** L1+L2: 1 Critical, 3 Major, 11 Minor;
+  L3+L4+L5: 5 Major, 9 Minor, 3 suggestions. Fixed:
+  - **C1:** `refresh_map.py` documented `--collect-only -qq`, which prints counts, not ids. It now
+    documents `-q -o addopts=""`, and T-20 pipes real collect output through it.
+  - **The other Majors:**
+    - a filtered collection (`deselected`) is refused;
+    - an unreadable input exits 2 and is named;
+    - W-3 keeps rule 8's positive and negative rows;
+    - the review of a mechanical-edit list is named;
+    - a builder stops on a wrong base commit;
+    - the mutation rule is stated once (`waste.md` W-4) and the method once (`measuring.md`);
+    - the refresher's command is runnable.
+  - **The Minors:**
+    - ids with spaces are kept, and a case id never reads as an error;
+    - the temporary file is unique and removed on failure, and the map's file mode is kept;
+    - the `-n 0` alone run, a fresh `<out>` per run, and the message-mutant rule narrowed to rule 9;
+    - `overlap.py`'s exclusive modes and its malformed phases lines;
+    - the how-to's split, the template slot, the CHANGELOG wording, the dropped duplicate lines in
+      `SKILL.md`;
+    - the `project-setup` conditions restored within 24 KB, and `team-and-briefs.md`'s "no role has
+      its own agent" line restored.
+
+  Rejected:
+  - S1, one shared `function_id`: the scripts run by path and stay independent.
+  - S3: `agent-template.md`'s row is about `isolation: worktree`, which is still not adopted, so
+    nothing contradicts it.
+  - The pytester test of #318: no `project-setup` template configures pytest-timeout. The line
+    is guidance until a template does, and the test comes with that template.
 
 ## Open Questions
 

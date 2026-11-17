@@ -94,7 +94,11 @@ def no_lines(tests, phases_path):
     with open(phases_path, encoding="utf-8") as f:
         for line in f:
             row = json.loads(line) if line.strip() else {}
+            if not isinstance(row, dict):
+                raise ValueError(f"{phases_path}: a line is not a JSON object")
             if row.get("phase") == "call" and row.get("outcome") == "passed":
+                if "test" not in row:
+                    raise ValueError(f"{phases_path}: a phase line has no test")
                 passed.add(row["test"])
     return sorted(passed - set(tests))
 
@@ -116,8 +120,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     parser.add_argument("coverage")
     parser.add_argument("--phases")
-    parser.add_argument("--compare", metavar="BEFORE")
-    parser.add_argument("--files", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--compare", metavar="BEFORE")
+    mode.add_argument("--files", action="store_true")
     args = parser.parse_args(argv)
     try:
         tests = read_tests(args.coverage)
@@ -131,7 +136,7 @@ def main(argv=None):
     except NoContexts as exc:
         print(exc, file=sys.stderr)
         return 2
-    except (OSError, sqlite3.DatabaseError, json.JSONDecodeError, KeyError) as exc:
+    except (OSError, sqlite3.DatabaseError, ValueError) as exc:  # JSONDecodeError is a ValueError
         print(f"cannot read the input: {exc}", file=sys.stderr)
         return 2
     json.dump(result, sys.stdout, indent=1)

@@ -65,8 +65,8 @@ repository, except the map and the report, which go in one pull request.
 | 3 | A test is dropped | The only guard of a behaviour | All the evidence of its row, and a survivor |
 
 - **Share what no test changes.** What a test changes (a store it writes to, a mock whose calls
-  it asserts) keeps function scope; what none changes may widen, with a cheap reset. Among tests
-  that only read, share the whole fixture. Never share a mock. Widen an async fixture only as far as the event-loop
+  it asserts) keeps function scope; what none changes may widen, with a cheap reset. Never share a
+  mock. Widen an async fixture only as far as the event-loop
   setting allows.
 - **Check a fixture change:** run B before and after; `overlap.py <after> --compare <before>` lists
   no test that uses the fixture; the suite passes twice, the second time with the test files in
@@ -90,10 +90,7 @@ repository, except the map and the report, which go in one pull request.
 | Drop the test that runs the real adapter, store or service | The lower-tier test runs a fake | Keep it; it is never W-5 |
 | Force every test onto a scenario | A forced row makes a drop look safe | Record `none` |
 | Append flags to a `make` target | The target takes none and carries its own coverage flags | Pass them in `PYTEST_ADDOPTS` |
-| Take timings from run B | Coverage slows a run about 2.3 times | Time from run A only |
-| Trust run A's slow tests | A busy xdist worker inflates them | Confirm each alone |
-| Estimate a fixture's saving by reading | Such estimates often measure at zero | Time its parts |
-| Write the audited project's name or thresholds into this skill | They fit one project | State them in the report |
+| Take timings from run B | Coverage slows a run about 2.3 times | Time from run A only || Write the audited project's name or thresholds into this skill | They fit one project | State them in the report |
 
 Residual risk: a shared fixture can let a test pass on another's work without changing any covered
 line. Say so in the pull request of every class 1 fixture change.

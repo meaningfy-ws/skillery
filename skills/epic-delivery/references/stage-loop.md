@@ -79,9 +79,9 @@ review set of each appetite is in
 6. **Merge.** Within the lead's authority (`SKILL.md`, *Authority*); without a grant the developer
    approves the merge first. The note ([template](../assets/templates/handover.md)) is committed as
    `openspec/changes/<id>/handover.md`, the PR's last commit; a fix after a red check goes before
-   it, the note re-committed last, then the command runs again. Required checks may not exist, and
-   `gh pr merge --auto` then merges at once: never merge before CI has run on the PR and passed.
-   Once the PR lists a check run, one
+   it, the note re-committed last, then the command runs again. A PR that lists no check run has
+   not had CI: wait for it, never merge, and never use `gh pr merge --auto` (with no required
+   checks it merges at once). Once the PR lists a check run, one
    background command: `gh pr checks <n> --watch --fail-fast && gh pr merge <n> --merge
    --delete-branch` (the repository's merge method); its notice is the only wait, never a sleep
    loop. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing

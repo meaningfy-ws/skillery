@@ -24,11 +24,12 @@ its Sources table.
 - **W-3, identical lines are a hint:** generated validators, one function with several loops and
   two branches of one condition cover the same lines and are different classes. The survivor of a
   group is the case that fails under the group's mutation (a mutation run of the touched module),
-  never "the first N". A rule table keeps one negative row per rule and a test that every rule has
-  a row. Where a mutation run covers the layer, its unchanged surviving set is the acceptance.
+  never "the first N". A rule table keeps rule 8's positive and negative row per rule and its test
+  that every rule has a row. Where a mutation run covers the layer, the merge's acceptance check is
+  the one in `measuring.md` (*Mutation*).
 - **W-4, narrow before reading:** read only `contained` pairs that the map already puts at `high`
-  on the same scenario; most are refuted on reading. In a layer that mutation covers, prefer W-8's
-  evidence.
+  on the same scenario; most are refuted on reading. In a layer a mutation run already covers, a
+  W-4 drop also needs W-8's pair evidence.
 - **A move keeps the guard.** A class 1 proposal that moves a test to another lane or tier names
   the lane that still runs it in CI and what it still proves. A lane CI does not run guards
   nothing; a rewrite under rule 12 keeps the bound that was the test's point.
