@@ -49,5 +49,6 @@ Checks that apply to every family: how agents report and check each other, the h
 | RSK | CHK-116 Sensitive-data and interaction safety | `guardrails` | the approved-model rule | agent runtime | the adversary | exists |
 | RSK | CHK-118 Rule approval card | `rule-learner` | dry-run warnings | wrap-up or on request | the adversary | exists |
 | RSK | CHK-140 `no-poll-loops` mod | the `no-poll-loops` mod | a PreToolUse hook | before every Bash call | the adversary | exists |
+| RSK | CHK-146 `no-shell-edits` mod | the `no-shell-edits` mod | a PreToolUse hook | before every Bash call | the adversary | exists |
 | RSK | CHK-141 Navigator strict mode | the navigator mod | strict hooks | commit, archive, spawn in strict repositories | the adversary | exists |
 | RSK | CHK-143 skillery-feedback sanitise-then-approve | `skillery-feedback` | the "Never in an issue" list | before filing an issue | the person who files | exists |
