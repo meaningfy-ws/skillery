@@ -189,6 +189,19 @@ checked. The opencode plugin imports `check` and throws the same message from `t
 for `bash`; a failed import disables only that check. Its id in `hooks.yaml` is the folder name, and
 `mod_bindings_match` requires the pair both ways.
 
+## no-shell-edits
+
+A plain mod built the same way: `mods/no-shell-edits/hooks.json` runs `no-shell-edits.mjs` before
+every `Bash` call, and `meaningfy-core` carries it. `check(command)` denies a file written or
+reverted through the shell: `sed -i`/`--in-place`, `perl -i`, an inline `python`/`node` script
+(`-c`, `-e` or a heredoc) that opens a file for writing, a `cat >`/`tee` heredoc whose target is
+not under `/tmp`, `/dev` or `$TMPDIR`, and `git checkout`/`git restore` of a path (`--` or a name
+with a file extension; `git restore --staged` and branch checkouts run). Quoted text and heredoc
+bodies fed to other commands (a commit message, a PR body) are not read. It exits 2 with the
+message; errors fail open. The failure case is a builder that edited a worktree with
+`python3 - <<E … open(p,'w')` under the sandbox bypass; the commands are in its test. The opencode
+plugin calls the same `check`.
+
 ## Checks
 
 - `make mods` (part of `make validate`) runs the `lib/` unit tests and each mod's `*.test.mjs` with
