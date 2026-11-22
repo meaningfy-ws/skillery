@@ -373,8 +373,10 @@ compaction after `proposal.md`, a fresh session per EPIC.
   and 4.6); C owns `skills/epic-delivery/assets/templates/`, `references/team-and-briefs.md`,
   `skills/guardrails/references/activity-tools.md`, `skills/rulebook/` and its tests (4.5, the
   script side of 4.6). GitNexus impact: `tools/repo_lint` and `skills/rulebook/scripts` are in
-  the index, so the lead runs impact on `lint.py`'s check list and `rules.py` `cmd_load` before
-  the briefs (run below); the change check before the stage's last commit.
+  the index, so the lead ran impact on `lint.py` `prose_budget` and `rules.py` `cmd_load` before
+  the briefs: both UNKNOWN, the index (last at cf32e0a) does not hold them; the changes are
+  additive (a new check function appended to `ALL_CHECKS`, a new flag on `load`), the re-index runs
+  in the background for the change check before the stage's last commit.
 
 ## Open Questions
 
