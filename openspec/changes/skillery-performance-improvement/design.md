@@ -249,6 +249,21 @@ compaction after `proposal.md`, a fresh session per EPIC.
   commit body `lead-fixed:`), the pattern D-6 makes the rule in stage 3; F4 (pin `usageType`) and
   F5 (the spec's illustrative counts) go to the spec sync at archive; F6 is the hand-over commit.
 
+- **D-27** Stage 2 runs three builders in parallel on disjoint files in the main checkout
+  (navigator code + thresholds + guardrails §6; rule-learner + epic-planning; epic-delivery), on
+  branch `feature/spi-stage-2`. GitNexus impact is not applicable: `mods/` is outside its index
+  scope and the other files are prose; the change check is `make mods` and `make validate`. A
+  new threshold key `fixer_max_red_runs: 3` carries D-5's default so the navigator can warn (2.4).
+  Task 2.5 (the stage-2 measurement) runs after the release and is left open in this stage.
+- **D-28** The navigator's offer is an action, not a text: the number and unit appear in the
+  warnings (`context 152,300 tokens mid-step (context_warn_tokens)`), the compact and fresh offers
+  stay buttons. The `session-navigation` scenario that quotes an offer text is read as the warning
+  text at the spec sync. The fixer-bound warning is keyed per agent
+  (`hygiene:fixer-bound:<agentId>`) so one agent's warning cannot hide another's; every
+  `full-gates` run by a subagent counts, red or green. The engine's `usage.context` fields are read
+  defensively (`tokens`, else `window × percent`), since no typing for `$.session.usage()` exists
+  in the repository; task 1.4's measurement confirms which fields the CLI provides.
+
 ## Open Questions
 
 - Whether `/context` output is machine-readable for 1.4, or read by hand (either is acceptable).

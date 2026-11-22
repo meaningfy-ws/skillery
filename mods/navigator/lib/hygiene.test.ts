@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { offer, onCompact, thresholdsFrom, type HygieneInput, type Thresholds } from './hygiene.ts'
+import { contextTokens, offer, onCompact, thresholdsFrom, type HygieneInput, type Thresholds } from './hygiene.ts'
 
 // Test data only: the mod reads these values from the guardrails file, never from code.
 const RAW = {
@@ -105,6 +105,55 @@ test('the rules come from the data: other events make the safe point', () => {
   const t = thresholdsFrom({ ...RAW, safe_point: { after: 'commit', and_any: ['pr-merged'] }, task_boundary: { any: ['archived'] } })
   assert.equal(offer(t, input({ events: ['commit', 'phase-left'], contextPercent: 62 })).offer, null)
   assert.equal(offer(t, input({ events: ['commit', 'pr-merged'], contextPercent: 62 })).offer, 'compact')
+})
+
+// D-1: the token keys decide when the engine gives a count; the percent keys are the fallback.
+const TOKENS = { fresh_offer_min_tokens: 90000, compact_offer_tokens: 150000, context_warn_tokens: 250000, fixer_max_red_runs: 3 }
+const byTokens = thresholdsFrom({ ...RAW, ...TOKENS })
+
+test('thresholdsFrom: the token keys are optional numbers, the percent keys stay required', () => {
+  assert.ok(byTokens.ok)
+  assert.deepEqual(thresholdsFrom({ ...RAW, ...TOKENS, compact_offer_tokens: '150000' }), { ok: false, error: 'compact_offer_tokens' })
+  assert.deepEqual(thresholdsFrom({ ...RAW, ...TOKENS, fixer_max_red_runs: -1 }), { ok: false, error: 'fixer_max_red_runs' })
+  const { context_warn_percent: _, ...noPercent } = { ...RAW, ...TOKENS }
+  assert.deepEqual(thresholdsFrom(noPercent), { ok: false, error: 'context_warn_percent' })
+})
+
+test('D-1: compaction is offered at 152,300 tokens although the percent reads 15 (tokens win)', () => {
+  const r = offer(byTokens, input({ events: ['commit', 'phase-left'], contextPercent: 15, contextTokens: 152300 }))
+  assert.equal(r.offer, 'compact')
+  assert.equal(offer(byTokens, input({ events: ['commit', 'phase-left'], contextPercent: 62, contextTokens: 149999 })).offer, null)
+})
+
+test('D-1: with no token count the percent keys decide, and the warning says so', () => {
+  assert.equal(offer(byTokens, input({ events: ['commit', 'phase-left'], contextPercent: 61 })).offer, 'compact')
+  const w = offer(byTokens, input({ contextPercent: 80 })).warnings
+  assert.equal(w[0]!.message, 'context 80% mid-step (context_warn_percent, no token count)')
+})
+
+test('D-1: a 1 M window at 260,000 tokens warns, naming the number and the unit', () => {
+  const w = offer(byTokens, input({ contextPercent: 26, contextTokens: 260000 })).warnings
+  assert.deepEqual(w.map(x => x.key), ['hygiene:context'])
+  assert.equal(w[0]!.message, 'context 260,000 tokens mid-step (context_warn_tokens)')
+  assert.deepEqual(offer(byTokens, input({ contextPercent: 90, contextTokens: 249999 })).warnings, [])
+})
+
+test('D-1: the fresh offer is made from 90,000 tokens, not below', () => {
+  assert.equal(offer(byTokens, input({ events: ['pr-merged'], contextPercent: 40, contextTokens: 89999 })).offer, null)
+  assert.equal(offer(byTokens, input({ events: ['pr-merged'], contextPercent: 5, contextTokens: 90000 })).offer, 'fresh')
+})
+
+test('D-1: a token count with no token keys in the file falls back to the percent keys', () => {
+  const r = offer(parsed, input({ contextPercent: 80, contextTokens: 300000 }))
+  assert.match(r.warnings[0]!.message, /context 80% mid-step \(context_warn_percent\)/)
+})
+
+test('D-1: contextTokens takes tokens, else window x percent, else nothing', () => {
+  assert.equal(contextTokens({ percent: 15, tokens: 152300, window: 1000000 }), 152300)
+  assert.equal(contextTokens({ percent: 26, window: 1000000 }), 260000)
+  assert.equal(contextTokens({ percent: 26 }), undefined)
+  assert.equal(contextTokens({ percent: 26, tokens: '5' }), undefined)
+  assert.equal(contextTokens(undefined), undefined)
 })
 
 test('an automatic compaction warns; a manual one does not', () => {

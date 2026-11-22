@@ -1,4 +1,8 @@
 {
+  "fresh_offer_min_tokens": 90000,
+  "compact_offer_tokens": 150000,
+  "context_warn_tokens": 250000,
+  "fixer_max_red_runs": 3,
   "compact_offer_context_percent": 50,
   "context_warn_percent": 75,
   "fresh_offer_min_context_percent": 15,

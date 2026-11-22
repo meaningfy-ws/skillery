@@ -47,6 +47,7 @@ export const EMPTY: NavState = {
   workerThisTurn: false,
   turnEvents: [],
   agentCalls: {},
+  gateRuns: {},
   shipLog: [],
   hygieneEvents: [],
   offer: null,
@@ -84,7 +85,7 @@ export type Signal =
   | { kind: 'AgentCalled'; id: string; agentId: string }
   | { kind: 'SpawnAsked'; id: string; type: string; description: string; agentId?: string }
   | { kind: 'AcceptedRead'; id: string; keys: string[] }
-  | { kind: 'TurnEnded'; id: string; turnId: string; contextPercent: number; cleanTree: boolean; at: number;
+  | { kind: 'TurnEnded'; id: string; turnId: string; contextPercent: number; contextTokens?: number; cleanTree: boolean; at: number;
       tokens?: number; usd?: number | null }
   | { kind: 'Compacted'; id: string; trigger: string }
   | { kind: 'ToggleBand'; id: string }

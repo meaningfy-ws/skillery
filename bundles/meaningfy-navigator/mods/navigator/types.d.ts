@@ -143,6 +143,7 @@ export type NavState = {
   workerThisTurn: boolean // the lead spawned an implementer or code-reviewer in this turn
   turnEvents: ({ kind: 'skill'; name: string; agent: string } | { kind: 'tool' | 'spawn'; agent: string })[]
   agentCalls: Record<string, number> // tool calls per subagent (PD-6)
+  gateRuns: Record<string, number> // full-gates runs per subagent (D-5)
   shipLog: ({ kind: 'spawn'; role: Role } | { kind: 'ship' })[] // per change (PD-9)
   hygieneEvents: HygieneEvent[] // since the last safe point or task boundary
   offer: 'compact' | 'fresh' | null

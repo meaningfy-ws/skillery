@@ -91,6 +91,35 @@ test('TC-08 a commit and a phase left at 62% offers compact; no commit at 62% do
   assert.equal(reduce(s, { kind: 'UserPrompted', id: id(), at: 6 }).offer, null)
 })
 
+const turnTokens = (contextPercent: number, contextTokens?: number): Signal =>
+  ({ kind: 'TurnEnded', id: id(), turnId: id(), contextPercent, contextTokens, cleanTree: true, at: 5 })
+
+test('D-1: the TurnEnded token count decides the offer and the warning, the percent is the fallback', () => {
+  const start = base('SMALL').slice(0, 3)
+  const open = { kind: 'ChangeRead', id: id(), change: change('SMALL', 0, 9), openChanges: 1, at: 2 } as const
+  const safe = [...start, open, { kind: 'SkillLoaded', id: id(), name: 'epic-delivery', at: 3 } as const, cmd('git commit -m x')]
+  assert.equal(run(...safe, turnTokens(15, 152300)).offer, 'compact')
+  assert.equal(run(...safe, turnTokens(62)).offer, 'compact') // no count: 62% >= 50%
+  const warn = run(...base('SMALL'), turnTokens(26, 260000))
+  assert.equal(warn.warnings.find(w => w.key === 'hygiene:context')?.message, 'context 260,000 tokens mid-step (context_warn_tokens)')
+})
+
+test('D-5: one subagent running the full-gates command more than fixer_max_red_runs times warns once, never denies', () => {
+  const gate = (agentId: string): Signal => ({ kind: 'ToolRan', id: id(), command: 'make check-all', ok: false, at: 4, agentId })
+  const fixer = (runs: number, agentId = 'f1') => Array.from({ length: runs }, () => gate(agentId))
+  const bound = (s: NavState) => s.warnings.filter(w => w.key.startsWith('hygiene:fixer-bound'))
+  assert.deepEqual(bound(run(...base('SMALL'), ...fixer(3))), [])
+  const four = bound(run(...base('SMALL'), ...fixer(4)))
+  assert.equal(four.length, 1)
+  assert.match(four[0]!.message, /f1/)
+  assert.match(four[0]!.message, /4/)
+  assert.equal(bound(run(...base('SMALL'), ...fixer(6))).length, 1)
+  assert.deepEqual(bound(run(...base('SMALL'), ...fixer(2, 'f1'), ...fixer(2, 'f2'))), [])
+  assert.deepEqual(bound(run(...base('SMALL'), ...Array.from({ length: 5 }, () =>
+    ({ kind: 'ToolRan', id: id(), command: 'ls', ok: true, at: 4, agentId: 'f1' }) as Signal))), [])
+  assert.deepEqual(bound(run(...base('SMALL'), ...Array.from({ length: 5 }, () => cmd('make check-all')))), []) // the lead's runs are not counted
+})
+
 test('mid-step past the warn level: a warning, no offer; it is replaced, not repeated', () => {
   const s = run(...base('SMALL'), turn(80), turn(81))
   assert.equal(s.offer, null)

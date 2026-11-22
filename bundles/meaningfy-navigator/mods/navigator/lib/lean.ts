@@ -48,7 +48,7 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
     case 'ToolUsed': // any tool but Skill, by its agent (D-9)
       return { ...n, turnEvents: [...n.turnEvents, { kind: 'tool', agent: s.agentId ?? MAIN }] }
     case 'ToolRan': { // not a tool event: the call's ToolUsed is (one event per call)
-      if (s.agentId) return n
+      if (s.agentId) return t.ok ? fixerRun(n, t.thresholds.fixer_max_red_runs, s.agentId, s.command) : n
       if (s.ok && shipCommand(s.command)) {
         n = { ...n, shipLog: [...n.shipLog, { kind: 'ship' }] }
         if (reviews && n.change) add(secondCheck(reviews, appetite, n.change.id, n.shipLog))
@@ -75,7 +75,7 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       if (t.ok) add([...inlineSpawn(t.thresholds, s.agentId, n.agentCalls[s.agentId] ?? 0),
         ...reportOversized(t.thresholds, s.agentId, s.answer ?? '')])
       add(unusedSkills(n.turnEvents, s.agentId))
-      return { ...n, turnEvents: n.turnEvents.filter(e => e.agent !== s.agentId) }
+      return { ...n, gateRuns: Object.fromEntries(Object.entries(n.gateRuns).filter(([a]) => a !== s.agentId)), turnEvents: n.turnEvents.filter(e => e.agent !== s.agentId) }
     case 'AnswerShown':
       return hasMark(s.text) ? { ...n, marked: true } : n
     case 'TurnEnded': {
@@ -84,7 +84,7 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       n = { ...n, markWarned: n.markWarned || missing.length > 0, workerThisTurn: false }
       add(unusedSkills(n.turnEvents, MAIN)) // only the lead's; a background subagent's events wait for its finish (D-9)
       // shortcut: idle resets are not offered; the gap is only known once the person has typed (DD-40).
-      const r = offer(t, { events: n.hygieneEvents, contextPercent: s.contextPercent, idleMinutes: 0,
+      const r = offer(t, { events: n.hygieneEvents, contextPercent: s.contextPercent, contextTokens: s.contextTokens, idleMinutes: 0,
         cleanTree: s.cleanTree, openUnticked: !!n.change && n.change.done < n.change.total })
       const kept = n.warnings.filter(w => w.key !== 'hygiene:context' && w.key !== 'hygiene:thresholds-missing')
       n = { ...n, warnings: kept }
@@ -103,6 +103,18 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
     default:
       return n
   }
+}
+
+/** D-5: one subagent ran the active workflow's `full-gates` command more than `max` times: a warning, never a deny. */
+function fixerRun(s: NavState, max: number | undefined, agentId: string, command: string): NavState {
+  const w = workflowOf(s)
+  const g = w?.gates?.['full-gates']
+  if (max === undefined || g?.kind !== 'command' || !new RegExp(g.match).test(command)) return s
+  const runs = (s.gateRuns[agentId] ?? 0) + 1
+  const next = { ...s, gateRuns: { ...s.gateRuns, [agentId]: runs } }
+  if (runs <= max) return next
+  return { ...next, warnings: addWarnings(next, [{ key: `hygiene:fixer-bound:${agentId}`, remedy: null, owner: 'guardrails',
+    message: `subagent ${agentId} ran full-gates ${runs} times (fixer_max_red_runs ${max}); end it and decide per the bounded fixer` }]) }
 }
 
 /** The role of a spawn, from the active workflow's roles, else the one with a review set. */

@@ -6,6 +6,7 @@ import type { EngineInterface } from 'claude-code'
 import { commandFor, validatePlan } from './lib/actions.ts'
 import { appetitesOf, archivedFolders, readChange, type ChangeFiles } from './lib/change.ts'
 import { ARCHIVE_DIR, acceptTarget, appendDeviation, archiveCheck, archivedRefusal, parseDeviations } from './lib/deviations.ts'
+import { contextTokens } from './lib/hygiene.ts'
 import { PR_TIMEOUT_MS, prSignal, prViewArgs, shouldAskGh, type PrOutcome } from './lib/pr.ts'
 import { parseDiffAdded, parseStatus, planDrift } from './lib/plan-drift.ts'
 import { planHash } from './lib/plan-hash.ts'
@@ -259,7 +260,7 @@ export async function turnEndedSignal($: EngineInterface, turnId: string, tokens
   const root = (await state($)).root?.path
   const status = root ? await git($, root, ['status', '--porcelain']) : null
   return { kind: 'TurnEnded', id: `turn:${turnId}`, turnId, contextPercent: usage.context.percent ?? 0,
-    cleanTree: status !== null && status.trim() === '', at: await $.clock.now(), tokens, usd: usage.cost?.usd ?? null }
+    contextTokens: contextTokens(usage.context), cleanTree: status !== null && status.trim() === '', at: await $.clock.now(), tokens, usd: usage.cost?.usd ?? null }
 }
 
 /** `carry` is the root of the session this one moves on from (`/clear`, `/resume`, `/branch`). */
