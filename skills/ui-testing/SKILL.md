@@ -40,14 +40,14 @@ Each rule names its source. The rule text is the same for every tool.
 
 | Id | Rule | Source |
 |---|---|---|
-| UI-1 | Component tests live next to the code they test. End-to-end scenarios are Gherkin features, one per use case. | `cosmic-python` testing checklist, rule 2 (moved here) |
+| UI-1 | Component tests live next to the code they test. End-to-end scenarios are Gherkin features, one per use case. | `cosmic-python` testing checklist, rule 2 |
 | UI-2 | Set state through the API or a stored session, not the screen. Only the log-in use case logs in through the screen. | Cypress best practices, "Organizing tests, logging in, controlling state" |
 | UI-3 | Select by role, label or `data-testid`. Never by CSS class, XPath or position. | Cypress, "Selecting elements"; Playwright, "Use locators" |
 | UI-4 | Use assertions that retry until a deadline. No fixed wait. | Cypress, "Unnecessary waiting"; Playwright, "Use web first assertions"; checklist rule 12 |
 | UI-5 | Never visit a site you do not control. Stub third parties at the network layer. | Cypress, "Visiting external sites" |
 | UI-6 | Reset state before a test, not after. | Cypress, "Using after or afterEach hooks" |
 | UI-7 | One journey groups its assertions. Do not split it into one-assert tests. | Cypress, "Creating tiny tests with a single assertion" |
-| UI-8 | Run an accessibility check on every page a scenario visits. | checklist rule 2 (moved here), CHK-58 |
+| UI-8 | Run an accessibility check on every page a scenario visits. | originally checklist rule 2; CHK-58 |
 | UI-9 | Retries are 0 on every lane. A test that is sometimes red on unchanged code is quarantined under checklist rule 14. | checklist rule 14; `test-suite-care` waste list |
 
 UI-7 does not conflict with checklist rule 11: a journey is one idea, so its assertions stay
@@ -76,8 +76,8 @@ matrix or the broken-screen check on a new scenario: it adds the pass and fail c
 **Owns:** how UI tests are written and run: the rules UI-1 to UI-9, the per-tool rows, the
 accessibility check, the browser and device matrix and the broken-screen check.
 
-**Delegates:** Gherkin wording and traceability → `bdd-gherkin`; the rules every non-UI test
-follows → `cosmic-python`'s testing checklist; the UX lens on screens → `meaningfy-code-review`;
+**Delegates:** Gherkin wording and traceability → `bdd-gherkin`; the testing checklist's
+general rules, which UI tests also follow (rules 12 and 14 are cited above) → `cosmic-python`; the UX lens on screens → `meaningfy-code-review`;
 the cost of a suite → `test-suite-care`; which checks an activity needs → `test-strategy`.
 
 **Related:** `bdd-gherkin`, `cosmic-python`, `test-suite-care`, `test-strategy`,

@@ -57,6 +57,47 @@ GOOD = """Checked against Cypress 15.0.0 and Playwright 1.58.0 on 2026-11-22
 """
 
 
+SKILL = REPO / "skills" / "ui-testing" / "SKILL.md"
+RULE_ID = re.compile(r"^UI-\d+\b")
+
+
+def row_ids(text: str) -> list[str]:
+    """Return the `UI-n` ids that start a table row, in row order (the Id or Rule column)."""
+    ids = []
+    for line in text.splitlines():
+        if not line.lstrip().startswith("|"):
+            continue
+        first = line.strip().strip("|").split("|")[0].strip()
+        found = RULE_ID.match(first)
+        if found:
+            ids.append(found.group(0))
+    return ids
+
+
+def test_rule_ids_match_per_tool_rows_in_order():
+    skill_ids = row_ids(SKILL.read_text(encoding="utf-8"))
+    tool_ids = row_ids(ROWS.read_text(encoding="utf-8"))
+    assert skill_ids == [f"UI-{n}" for n in range(1, 10)]
+    assert tool_ids == skill_ids
+
+
+def test_tooling_rows_come_after_the_rule_rows():
+    text = ROWS.read_text(encoding="utf-8")
+    firsts = [
+        line.strip().strip("|").split("|")[0].strip()
+        for line in text.splitlines()[1:]
+        if line.lstrip().startswith("|")
+    ][2:]
+    flags = [bool(RULE_ID.match(f)) for f in firsts]
+    assert flags == sorted(flags, reverse=True), "a tooling row sits among the rule rows"
+    assert all(f.startswith("Tooling:") for f, rule in zip(firsts, flags) if not rule)
+
+
+def test_row_ids_ignores_non_rule_rows_fixture():
+    text = "| Rule | A | B |\n|---|---|---|\n| UI-2 x | a | b |\n| Tooling: axe engine (UI-8) | a | b |\n"
+    assert row_ids(text) == ["UI-2"]
+
+
 def test_real_rows_hold_the_format():
     assert ROWS.is_file(), f"{ROWS} is missing"
     assert check_rows(ROWS.read_text(encoding="utf-8")) == []

@@ -19,7 +19,7 @@ check. Each part has a check id in `test-strategy`'s inventory.
 - The release branch's gate runs Chromium, Firefox and WebKit on desktop, and one phone viewport
   (Playwright `Pixel 7`, Cypress `iphone-x`).
 - A project may list fewer browsers in its `AGENTS.md`. That list shrinks only the release matrix.
-- No scheduled run is added (`test-suite-care`, D-10).
+- No scheduled run is added: the release gate runs the full matrix.
 
 ## Broken-screen check (CHK-148; answers ADQ)
 
