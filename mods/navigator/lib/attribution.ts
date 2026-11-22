@@ -23,7 +23,7 @@ export function creditSkill(state: Pick<NavState, 'skillCalls' | 'pendingSpawns'
   const call = extreme(state.skillCalls.filter(c => c.name === name), c => c.at, false)
   if (call) return { agent: call.agentId, via: 'call', toolUseId: call.toolUseId }
 
-  const fresh = extreme(state.subagents.filter(s => !s.done && !state.agentCalls[s.agentId]), s => s.startedAt, true)
+  const fresh = extreme(state.subagents.filter(s => !s.done && !Object.hasOwn(state.agentCalls, s.agentId)), s => s.startedAt, true)
   if (fresh) return { agent: fresh.agentId, via: 'preload' }
 
   const pending = extreme(state.pendingSpawns, s => s.at, true)

@@ -12,7 +12,13 @@ import { addWarnings } from './process-drift.ts'
 import type { Change, NavState, Signal, Warning } from './state.ts'
 import { isArchive, isCommit, isPrMerge, workflowOf } from './workflow.ts'
 
-const groupsDone = (c: Change | null) => c?.groups.filter(groupDone).length ?? 0
+/** D-5's bound when the thresholds file sets none. */
+const DEFAULT_FIXER_MAX_RED_RUNS = 3
+
+/** A per-agent count by own property only: an id like `constructor` must not read `Object.prototype`. */
+const countOf = (counts: Record<string, number>, agentId: string) => Object.hasOwn(counts, agentId) ? counts[agentId]! : 0
+
+const groupsDone =(c: Change | null) => c?.groups.filter(groupDone).length ?? 0
 
 /** The hygiene events a signal makes (§6.5's fixed vocabulary). */
 function eventsOf(prev: NavState, next: NavState, s: Signal): HygieneEvent[] {
@@ -44,11 +50,11 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       return agent ? { ...n, turnEvents: [...n.turnEvents, { kind: 'skill', name: s.name, agent }] } : n
     }
     case 'AgentCalled': // every tool call of a subagent counts for PD-6, not only Bash (DD-41)
-      return { ...n, agentCalls: { ...n.agentCalls, [s.agentId]: (n.agentCalls[s.agentId] ?? 0) + 1 } }
+      return { ...n, agentCalls: { ...n.agentCalls, [s.agentId]: countOf(n.agentCalls, s.agentId) + 1 } }
     case 'ToolUsed': // any tool but Skill, by its agent (D-9)
       return { ...n, turnEvents: [...n.turnEvents, { kind: 'tool', agent: s.agentId ?? MAIN }] }
     case 'ToolRan': { // not a tool event: the call's ToolUsed is (one event per call)
-      if (s.agentId) return t.ok ? fixerRun(n, t.thresholds.fixer_max_red_runs, s.agentId, s.command) : n
+      if (s.agentId) return t.ok ? fixerRun(n, t.thresholds.fixer_max_red_runs ?? DEFAULT_FIXER_MAX_RED_RUNS, s.agentId, s.command) : n
       if (s.ok && shipCommand(s.command)) {
         n = { ...n, shipLog: [...n.shipLog, { kind: 'ship' }] }
         if (reviews && n.change) add(secondCheck(reviews, appetite, n.change.id, n.shipLog))
@@ -72,10 +78,13 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       return n
     }
     case 'SubagentFinished':
-      if (t.ok) add([...inlineSpawn(t.thresholds, s.agentId, n.agentCalls[s.agentId] ?? 0),
+      if (t.ok) add([...inlineSpawn(t.thresholds, s.agentId, countOf(n.agentCalls, s.agentId)),
         ...reportOversized(t.thresholds, s.agentId, s.answer ?? '')])
       add(unusedSkills(n.turnEvents, s.agentId))
-      return { ...n, gateRuns: Object.fromEntries(Object.entries(n.gateRuns).filter(([a]) => a !== s.agentId)), turnEvents: n.turnEvents.filter(e => e.agent !== s.agentId) }
+      // the fixer-bound warning goes with the count it was made from (D-32 W1)
+      return { ...n, gateRuns: Object.fromEntries(Object.entries(n.gateRuns).filter(([a]) => a !== s.agentId)),
+        warnings: n.warnings.filter(w => w.key !== `hygiene:fixer-bound:${s.agentId}`),
+        turnEvents: n.turnEvents.filter(e => e.agent !== s.agentId) }
     case 'AnswerShown':
       return hasMark(s.text) ? { ...n, marked: true } : n
     case 'TurnEnded': {
@@ -106,11 +115,11 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
 }
 
 /** D-5: one subagent ran the active workflow's `full-gates` command more than `max` times: a warning, never a deny. */
-function fixerRun(s: NavState, max: number | undefined, agentId: string, command: string): NavState {
+function fixerRun(s: NavState, max: number, agentId: string, command: string): NavState {
   const w = workflowOf(s)
   const g = w?.gates?.['full-gates']
-  if (max === undefined || g?.kind !== 'command' || !new RegExp(g.match).test(command)) return s
-  const runs = (s.gateRuns[agentId] ?? 0) + 1
+  if (g?.kind !== 'command' || !new RegExp(g.match).test(command)) return s
+  const runs = countOf(s.gateRuns, agentId) + 1
   const next = { ...s, gateRuns: { ...s.gateRuns, [agentId]: runs } }
   if (runs <= max) return next
   return { ...next, warnings: addWarnings(next, [{ key: `hygiene:fixer-bound:${agentId}`, remedy: null, owner: 'guardrails',

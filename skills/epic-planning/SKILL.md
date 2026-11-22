@@ -45,7 +45,8 @@ a file (form: `epic-delivery`).
    assumption **before** writing the EPIC. If `superpowers` is not installed, offer to install it
    (`dependencies.yaml`); if the person declines, say that you work without it and lose its
    brainstorming discipline, not this interview. Rounds per EPIC are capped by appetite: `TINY` and
-   `SMALL` two, `MEDIUM` three, `LARGE` and above four. Confirm what you understood inside the
+   `SMALL` two, `MEDIUM` three, `LARGE` and above four; at the cap the gaps still open are recorded
+   in the EPIC as assumptions for the developer, and no further round is sent. Confirm what you understood inside the
    next round, never in a turn of its own. Make no silent assumptions. **Include a test-scenario interview**: help the human enumerate
    what the EPIC must *prove* — key assertions, scenarios, edge cases — so the design phase can author
    `.feature` coverage (handed to `bdd-gherkin`, scored by `clarity-gate`). Step definitions stay in implement.
@@ -62,7 +63,7 @@ a file (form: `epic-delivery`).
    **no-gos** (mandatory). Cite the EPIC's **golden-thread parents** (the requirement or architecture it
    derives from). Read `references/golden-thread.md` when you cite a parent or mint an id: it adds
    the traceability chain, the id prefixes and what is enforced today. Keep it at shaping
-   altitude. Once `proposal.md` is saved, compact the session (a safe point: the state is in the
+   altitude. Once `proposal.md` is saved, compact the session, or reset with the hand-over note (a safe point: the state is in the
    artefacts), then derive the PLAN.
 5. **EPIC readiness check** (lightweight). Before deriving the PLAN, run the **lightweight variant**
    of `clarity-gate` over the EPIC — a quick readiness pass that catches

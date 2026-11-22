@@ -4,7 +4,8 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { EMPTY, reduce, type Change, type NavState, type Signal } from './state.ts'
 import { overspawnNow } from './lean.ts'
-import { decideSpawn } from './strict.ts'
+import { thresholdsFrom } from './hygiene.ts'
+import { decideArchive, decideCommit, decideSpawn } from './strict.ts'
 import { bandView } from './view.ts'
 import { resolveWorkflows } from './workflow.ts'
 
@@ -118,6 +119,101 @@ test('D-5: one subagent running the full-gates command more than fixer_max_red_r
   assert.deepEqual(bound(run(...base('SMALL'), ...Array.from({ length: 5 }, () =>
     ({ kind: 'ToolRan', id: id(), command: 'ls', ok: true, at: 4, agentId: 'f1' }) as Signal))), [])
   assert.deepEqual(bound(run(...base('SMALL'), ...Array.from({ length: 5 }, () => cmd('make check-all')))), []) // the lead's runs are not counted
+})
+
+// Stage 2 tester and review sort (D-30, D-32): the tests that failed first for an accepted finding, the
+// error-matrix property, and the scenarios no other test covers.
+const gateRun = (agentId: string, command = 'make check-all'): Signal => ({ kind: 'ToolRan', id: id(), command, ok: false, at: 4, agentId })
+const gateTimes = (k: number, agentId: string, command?: string) => Array.from({ length: k }, () => gateRun(agentId, command))
+const finish = (agentId: string): Signal => ({ kind: 'SubagentFinished', id: id(), agentId, tokens: 1 })
+const fixerBound = (s: NavState) => s.warnings.filter(w => w.key.startsWith('hygiene:fixer-bound'))
+
+test('found a missing fixer_max_red_runs gives no default: D-5 says default 3 but the fixer runs unbounded', () => {
+  const { fixer_max_red_runs: _, ...noKey } = thresholds
+  assert.equal(fixerBound(run(...base('SMALL', noKey), ...gateTimes(3, 'f1'))).length, 0)
+  assert.equal(fixerBound(run(...base('SMALL', noKey), ...gateTimes(4, 'f1'))).length, 1)
+})
+
+test('probe of D-5: an agent id that names an Object property counts like any other', () => {
+  for (const a of ['constructor', 'toString', 'hasOwnProperty', '__proto__']) {
+    assert.deepEqual(fixerBound(run(...base('SMALL'), ...gateTimes(3, a))), [], `${a}: three runs are within the bound`)
+    assert.equal(fixerBound(run(...base('SMALL'), ...gateTimes(4, a))).length, 1, `${a}: four runs exceed it`)
+  }
+})
+
+test('probe of D-5: the tool calls of an agent named after an Object property count from zero (PD-6)', () => {
+  const call = (agentId: string): Signal => ({ kind: 'AgentCalled', id: id(), agentId })
+  const s = run(...base('SMALL'), call('constructor'), call('constructor'))
+  assert.equal(s.agentCalls['constructor'], 2)
+})
+
+test('D-32 W1: the fixer-bound warning goes when its agent finishes', () => {
+  const s = run(...base('SMALL'), ...gateTimes(4, 'f1'), ...gateTimes(4, 'f2'))
+  assert.deepEqual(fixerBound(s).map(w => w.key).sort(), ['hygiene:fixer-bound:f1', 'hygiene:fixer-bound:f2'])
+  assert.deepEqual(fixerBound(reduce(s, finish('f1'))).map(w => w.key), ['hygiene:fixer-bound:f2']) // only its own
+  assert.deepEqual(fixerBound(run(...base('SMALL'), ...gateTimes(4, 'f1'), finish('f1'))), [])
+})
+
+test('D-32 W6: past 250,000 tokens with a fixer-bound warning, strict mode denies nothing', () => {
+  const loose = run(...base('SMALL'), ...gateTimes(4, 'f1'), turnTokens(26, 260000))
+  assert.deepEqual(keys(loose).filter(k => k.startsWith('hygiene:')).sort(), ['hygiene:context', 'hygiene:fixer-bound:f1'])
+  const strict: NavState = { ...loose, mode: { repo: 'strict', session: null } }
+  const clean: NavState = { ...strict, warnings: strict.warnings.filter(w => !w.key.startsWith('hygiene:')) }
+  // the same state without the two hygiene warnings decides the same: they add no deny
+  assert.deepEqual(decideCommit(strict), decideCommit(clean))
+  assert.deepEqual(decideArchive(strict), decideArchive(clean))
+  assert.deepEqual(decideSpawn(strict, overspawnNow(strict), null), { allow: true })
+  const denied = [decideCommit(strict), decideArchive(strict)].filter(d => 'deny' in d)
+  for (const d of denied) assert.ok(!/hygiene:/.test((d as { deny: string }).deny), 'no deny names a hygiene warning')
+})
+
+test('probe of D-5: spellings the workflow match rejects do not count (double space, dry run)', () => {
+  for (const c of ['make  check-all', 'make check-all -n', 'make check-all --dry-run', 'make check-all-fast', 'make check-allx',
+    'make validate', 'echo make-check-all']) {
+    const s = run(...base('SMALL'), ...gateTimes(8, 'f1', c))
+    assert.deepEqual(fixerBound(s), [], c)
+    assert.equal(s.gateRuns['f1'] ?? 0, 0, c)
+  }
+})
+
+test('probe of D-5: spellings the match accepts do count (chained, env prefix, trailing flags)', () => {
+  for (const c of ['make check-all', 'cd x && make check-all', 'FOO=1 make check-all', 'make check-all 2>&1 | tail -5']) {
+    assert.equal(run(...base('SMALL'), ...gateTimes(4, 'f1', c)).gateRuns['f1'], 4, c)
+  }
+})
+
+test('probe of D-5: after SubagentFinished a new agent with the same id string counts from zero', () => {
+  const s = run(...base('SMALL'), ...gateTimes(4, 'f1'), finish('f1'), ...gateTimes(3, 'f1'))
+  assert.equal(s.gateRuns['f1'], 3)
+  assert.deepEqual(fixerBound(s), [])
+})
+
+test('probe of D-28: two agents both past the bound give two warnings keyed per agent', () => {
+  const s = run(...base('SMALL'), ...gateTimes(4, 'f1'), ...gateTimes(5, 'f2'))
+  assert.deepEqual(fixerBound(s).map(w => w.key).sort(), ['hygiene:fixer-bound:f1', 'hygiene:fixer-bound:f2'])
+})
+
+test('probe of D-1: a non-numeric token key is rejected, never thrown later', () => {
+  const values: unknown[] = ['150000', null, Number.NaN, Infinity, -1, {}, [], true, '']
+  for (const key of ['fresh_offer_min_tokens', 'compact_offer_tokens', 'context_warn_tokens', 'fixer_max_red_runs']) {
+    for (const v of values) {
+      const raw = { ...thresholds, [key]: v }
+      const p = thresholdsFrom(raw)
+      assert.doesNotThrow(() => run(...base('SMALL', raw), turnTokens(80, 300000), ...gateTimes(5, 'f1')), `${key}=${String(v)}`)
+      if (p.ok) assert.equal(typeof (p.thresholds as Record<string, unknown>)[key], 'number', `${key}=${String(v)} accepted as a non-number`)
+    }
+  }
+})
+
+// error-matrix row "A fixer exceeds the bound anyway": the warning exists iff n > bound
+test('error row "fixer exceeds the bound": for n runs the warning exists iff n > bound', () => {
+  for (const max of [1, 2, 3, 5, 8]) {
+    for (let runs = 0; runs <= 10; runs++) {
+      const s = run(...base('SMALL', { ...thresholds, fixer_max_red_runs: max }), ...gateTimes(runs, 'f1'))
+      assert.equal(fixerBound(s).length === 1, runs > max, `bound ${max}, ${runs} runs`)
+      assert.equal(fixerBound(s).length <= 1, true, `one warning per agent, bound ${max}, ${runs} runs`)
+    }
+  }
 })
 
 test('mid-step past the warn level: a warning, no offer; it is replaced, not repeated', () => {

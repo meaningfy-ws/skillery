@@ -268,6 +268,34 @@ compaction after `proposal.md`, a fresh session per EPIC.
   600, low risk (a pure-function change in the navigator with its tests, and prose). The review
   set is the small stage's two grouped runs, L1+L2 and L3+L4+L5, as `epic-delivery.workflow.json`
   lists them; the tester runs (code changed, no `## Invariants` section); one checker.
+- **D-30** Stage 2 tester findings. Accepted (fixed in the one pass): T1 `contextTokens` treats
+  `window: 0` as a count of 0, so a 90 % session never warns (`hygiene.ts`, guard `> 0`, not
+  `>= 0`); T4 a thresholds file without `fixer_max_red_runs` leaves the fixer unbounded (default
+  3, D-5); T6 re-labelled Critical: `gateRuns[agentId]` and `agentCalls[agentId]` read
+  `Object.prototype` for ids like `constructor` (own-property access or a `Map`). Under the floor:
+  T2 the "no token count" suffix prints when a count was given but a key is missing (message
+  only); T3 `fixer_max_red_runs: 0` warns at the first run (a bound of 0 is not a supported
+  setting; the file ships 3); T5 the warning keeps its first count. Their failed-first tests are
+  deleted in the sort, listed in the PR with the reason; the kept tests cover the two
+  error-matrix rows and the accepted findings.
+- **D-31** Under the floor, stage 2 review L3+L4+L5: W1 `fixerRun` sits in `lean.ts` rather than
+  `dispatch.ts` and builds its warning by hand; W2 "default 3" repeated in two epic-delivery
+  pages; W3 the key name `fixer_max_red_runs` counts every gate run, not only red ones; W4
+  epic-delivery restates "compact at a safe point"; S1 the gate regex built in three places; S2
+  `isCount` repeated and `offer()`'s shape; S3 a partial token-key set falls back silently; S4
+  `agentCalls` never cleared; S5 guardrails §6 bullet holds two rules; S6, S7 pointers. W1, S1
+  and S2 are the refactoring candidates for stage 4's navigator work (the checker agent); the rest
+  for the docs stage.
+- **D-32** Stage 2 review L1+L2, accepted (re-labelled Critical, each a scenario of this stage's
+  deltas left without text or test): W1 the per-agent fixer-bound warning outlives the agent
+  (cleared on `SubagentFinished`, with a test); W3 the lead notes a hygiene conflict with a
+  repository rule under Open in `handover.md` (stage-loop step 6); W4 at the round cap the gaps
+  left are recorded in the EPIC as assumptions for the developer and no further round is sent;
+  W5 after `proposal.md` the planner compacts or resets with the hand-over note; W6 one
+  strict-mode test past 250,000 tokens with a fixer-bound warning denies nothing. D-28 is extended
+  to the `subagent-dispatch` scenario "A compaction offer in tokens": the number is in the warning,
+  the offer stays a button (W2). Under the floor: S1 (same as T2), S2 `usage.context?.percent`
+  (pre-existing code, docs stage), S3 (same as r2-W2).
 
 ## Open Questions
 

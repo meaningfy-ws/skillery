@@ -93,7 +93,8 @@ review set of each appetite is in
    background command: `gh pr checks <n> --watch --fail-fast && gh pr merge <n> --merge
    --delete-branch` (the repository's merge method); its notice is the only wait, never a sleep
    loop. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing
-   check, a refused merge, or only the local branch left. Then the session ends, no compaction;
+   check, a refused merge, or only the local branch left. When a repository rule conflicted with
+   session hygiene during the stage, the lead notes it under Open in `handover.md`. Then the session ends, no compaction;
    the next stage starts fresh from the note's prompt.
 
 A LARGE EPIC with screens, three stages, runs this way: all scenarios signed off at the gate; per

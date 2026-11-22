@@ -63,7 +63,7 @@ export function contextTokens(context: unknown): number | undefined {
   const c = (isObj(context) ? context : {}) as { tokens?: unknown; window?: unknown; percent?: unknown }
   const ok = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0
   if (ok(c.tokens)) return c.tokens
-  return ok(c.window) && ok(c.percent) ? Math.round(c.window * c.percent / 100) : undefined
+  return ok(c.window) && c.window > 0 && ok(c.percent) ? Math.round(c.window * c.percent / 100) : undefined // a window of 0 is no window
 }
 
 const warning = (key: string, message: string): Warning => ({ key, message, remedy: null, owner: 'guardrails' })
