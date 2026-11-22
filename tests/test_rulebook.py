@@ -171,6 +171,16 @@ def test_load_shape():
     assert _lines(out, "CHECK R-0010")
 
 
+def test_load_brief_prints_the_rules_without_the_playbook():
+    full = run("load", "--activity", "writing")
+    brief = run("load", "--brief", "--activity", "writing")
+    assert full.returncode == 0 and brief.returncode == 0
+    assert "PLAYBOOK" in full.stdout and "PLAYBOOK" not in brief.stdout
+    assert brief.stdout.rstrip().endswith("-- end --")
+    rule_lines = lambda out: [ln for ln in out.splitlines() if ln.startswith(("R-", "P-", "CHECK", "CONFLICT"))]
+    assert rule_lines(brief.stdout) and rule_lines(brief.stdout) == rule_lines(full.stdout)
+
+
 # ---------------------------------------------------------------- check
 
 def test_check_pattern_fails(tmp_path):

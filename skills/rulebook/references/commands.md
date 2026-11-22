@@ -24,14 +24,14 @@ refused: the repository has no candidates.
 
 | Command | Does | Prints |
 |---|---|---|
-| `load --activity A [--context k=v ...]` | the rules in force for the activity and context | the playbook procedure (`PLAYBOOK <name>` then its body), one line per winning rule (`R-0042 [default] spelling=british: <do> (because: ...)`), the rules without a slot, a `CHECK` line naming the rules with a check pattern, `CONFLICT ...: ask the owner` lines, `SKIPPED` for unreadable notes, then `-- end --` |
+| `load --activity A [--brief] [--context k=v ...]` | the rules in force for the activity and context; `--brief` omits the playbook | the playbook procedure (`PLAYBOOK <name>` then its body), one line per winning rule (`R-0042 [default] spelling=british: <do> (because: ...)`), the rules without a slot, a `CHECK` line naming the rules with a check pattern, `CONFLICT ...: ask the owner` lines, `SKIPPED` for unreadable notes, then `-- end --` |
 | `check --activity A [--context k=v ...] FILE` | runs the check patterns of the rules in force on FILE | `VIOLATION R-NNNN line N: <line>` per hit (exit 1), or `OK`, then `-- end --` |
 | `check --golden [--activity A]` | runs each playbook's golden examples through `check` in their context (the `golden:` format is in the rule model) | `GOLDEN <path>: ok`, `FAIL` (with its violations) or `missing`; exit 1 on any failure |
-| `where` | the stores this session sees, and the default store for a new rule | `vault: <path>` or `none (<why>)`, `repository: <root> (docs/rules/ present \| not yet created)` or `none (<why>)`, `default store: repository \| vault`, `routing policy: present (<file>) \| missing (<fix>) \| unknown (routing.md not found)` (the routing sentence of `assets/routing.md` found in the global instructions), `-- end --`; always exit 0 |
+| `where` | the stores this session sees, and the default store for a new rule | `vault: <path>` or `none (<why>)`, `repository: <root> (docs/rules/ present \| not yet created)` or `none (<why>)`, `default store: repository \| vault`, `routing policy: present (<file>) \| missing (<fix>) \| unknown (routing.md not found)` (the sentence of `assets/routing.md` in the global instructions), `-- end --`; always exit 0 |
 | `lint [--store all\|vault\|repo]` | the whole rule set: errors per store, warnings over both | `ERROR <code>: ...` and `WARNING <code>: ...` lines and a count; exit 1 on any error |
 | `search WORD ...` | rules and candidates whose id, `when`, `do`, slot, value, reason or source hold every word | `R-NNNN [status] [strength] <do> (when: ...)` |
 
-What `load`, `check FILE` and `search` read, by the stores present:
+What `load`, `check FILE` and `search` read, by store:
 
 | Vault | Repository store | Prints | Exit |
 |---|---|---|---|
@@ -47,12 +47,12 @@ What `load`, `check FILE` and `search` read, by the stores present:
 | `cite R-NNNN ...` | the rules that shaped an output |
 | `override R-NNNN --reason "..."` | a correction by the owner against a rule in force |
 
-Both only print a line. They exist so that the call shows up in the session trace, where `stats`
-counts it. A repeated call is a second real event.
+Both only print a line, so the call shows up in the session trace, where `stats` counts it. A
+repeated call is a second real event.
 
 ## Writing
 
-A refused write (exit 4) leaves the file unchanged.
+A refused write (exit 4) changes nothing.
 
 | Command | Does |
 |---|---|
@@ -92,13 +92,13 @@ In `~/.claude/settings.json`, under `permissions.allow`; it covers the vault and
 "Bash(python3 <home>/.claude/plugins/cache/meaningfy-skillery/meaningfy-core/*/skills/rulebook/scripts/rules.py *)"
 ```
 
-- `<home>` is the home folder written out (`/home/<user>`, `/Users/<user>`); the `*` in the middle
-  stands for the installed version.
-- On Windows, write `python` and the Windows path.
+- `<home>` is the home folder written out (`/home/<user>`, `/Users/<user>`); the middle `*` is the
+  installed version.
+- On Windows, use `python` and the Windows path.
 - It is the narrowest pattern the syntax accepts: a `*` matches any text, so `Bash(python3:*)` or
   `Bash(python3 *rules.py *)` would allow any other Python program.
-- **Not yet tested live.** The first time the owner runs `load`, confirm it runs without a prompt.
-  If Claude Code warns at startup about the wildcard, drop the rule and approve the script when asked.
+- **Not yet tested live.** On the owner's first `load`, confirm it runs without a prompt. If Claude
+  Code warns about the wildcard, drop the rule and approve the script.
 
 ### opencode
 
@@ -108,10 +108,10 @@ In the user-level `~/.config/opencode/opencode.json`:
 { "permission": { "bash": { "python3 <home>/.config/opencode/skills/rulebook/scripts/rules.py *": "allow" } } }
 ```
 
-- `<home>` is the home folder written out; on Windows, `python` and the Windows path.
+- `<home>` is the home folder written out; on Windows, `python` and its path.
 - For a project install (`skillery-opencode install --project`), the path is
-  `<repo>/.opencode/skills/rulebook/scripts/rules.py`; add that rule to the repository's own settings.
+  `<repo>/.opencode/skills/rulebook/scripts/rules.py`; add the rule to the repository's settings.
 - opencode's `*` matches any text, so a pinned path is the narrowest rule: `python3 *rules.py *` would
-  allow any Python program whose arguments mention `rules.py`. Within one map the last matching rule
-  wins; how opencode merges the user file with the vault's `"*": "ask"` is not verified, so if the
-  script still prompts in the vault, approve it. **Not tested live.**
+  allow any Python program naming `rules.py`. The last matching rule in a map wins; how opencode
+  merges the user file with the vault's `"*": "ask"` is not verified, so if the script still prompts
+  in the vault, approve it. **Not tested live.**

@@ -33,7 +33,8 @@ and never built or tested the stage.
 2. The files in scope, as paths.
 3. The decisions already made: `DEC-n`, the ADR, the spec scenario, the use case.
 4. What is out of scope.
-5. **Standing rules**: the project's own list and its narrow checks, task gate, full gates, docs
+5. **Standing rules**: the rules come pasted from `rules.py load --brief` (the lead runs `load`;
+   subagents do not); the project's own list and its narrow checks, task gate, full gates, docs
    gate and code-intelligence tools, all from the *Checks* block in its `AGENTS.md` (no GitNexus
    tool for a builder or reviewer: the lead pastes at most ten impact lines per task); the testing
    checklist (`cosmic-python` `references/testing-checklist.md`); and the dependency rule
@@ -80,13 +81,13 @@ Tools for each activity, and their fallbacks: the table in `guardrails` (`refere
 
 ## Builder
 
-> **Goal:** implement task `<n>` of `openspec/changes/<id>/tasks.md`, test-first. Update the docs
-> this task changes. **Read:** `tasks.md` §`<n>`, `design.md` `<DEC-n>`,
-> `tests/features/<f>.feature`. **Decided:** `<…>`. **Out of scope:** `<…>`. **Standing rules:**
-> `<project list>`; the testing checklist; no workaround of our library: stop and report it.
-> **Edits:** Edit or Serena only; Bash runs commands and never writes a file. **Scratch:**
-> `<scratchpad>/<task-id>/`.
-> **Report:** base report + the *implementing* fields (`guardrails` `references/subagent-reports.md`) + Upstream findings, at most `<subagent_report_max_lines>` lines.
+> Built from [the builder card](../assets/templates/builder-brief.md). **Edits:** Edit or Serena
+> only; Bash runs commands and never writes a file. **Scratch:** `<scratchpad>/<task-id>/`.
+
+The card owns the goal, reads, decisions, scope, gate, worktree path, rules, impact, tools,
+principles and report line; this page no longer repeats them. The cuts from the old template: the
+inline Goal/Read/Decided/Out of scope text, the standing-rules sentence (the card's Rules line, pasted
+from `rules.py load --brief`), the report line, and the Tools wording (the card's Tools line).
 
 The brief always carries the *Edits* line word for word, and never a blanket "commands need the
 sandbox disabled": that sends every step, file writes included, through Bash.
@@ -117,7 +118,7 @@ script from another builder's directory. They never kill processes by pattern, n
 A **fixer** is a builder whose task is a set of accepted findings, named by their `design.md`
 decision, except a light chore: at most ten lines in files the lead has already read in this
 stage and no new test, which the lead applies with Edit, naming it in the commit body
-(`lead-fixed: <finding id>`). Its brief is the builder brief plus two items:
+(`lead-fixed: <finding id>`). Its brief is the card (its *Fixer only* line) plus two items:
 
 > **Bound:** `max_red_runs: <n>` (default 3, from `session-thresholds.json` `fixer_max_red_runs`;
 > the PLAN may set another) and **one pass**: fix the named findings once, no second round. At
@@ -157,12 +158,10 @@ covers. The lenses are owned by `meaningfy-code-review`.
 
 > **Goal:** check stage `<s>` of `<id>`. Read-only. You did not build, test or review it. **Read:**
 > the briefs of the stage, `design.md` (decisions incl. accepted findings), the spec scenarios, the
-> diff range. **Check:** every brief item and every accepted finding is met (yes or no, with
-> evidence); each re-label of a finding as Critical (agree or not, one line); the traceability
-> check per `bdd-gherkin`. **Report:** base report + the verdict per item and the result line, at
-> most `<subagent_report_max_lines>` lines.
+> diff range. **Check:** per `stage-check`. **Report:** base report + the verdict per item and the
+> result line, at most `<subagent_report_max_lines>` lines.
 
+Read `stage-check` when you brief the checker: it adds what the checker verifies and how it reports.
 The checker is the stage's four-eyes pass, and the cold reader too when the stage changed no how-to
-or tutorial page. When it did, the lead also dispatches a cold reader per `technical-writing`: a
-separate fresh agent given only the page, because the checker has context a cold reader must not
-have.
+or tutorial page; when it did, the lead also dispatches a cold reader per `technical-writing`, a
+separate fresh agent given only the page.

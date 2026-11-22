@@ -31,12 +31,12 @@
 
 ## 4. Lower the floor (stage 4, DEC-5, DEC-9, DEC-15, DEC-16)
 
-- [ ] 4.1 `skills/guardrails/assets/model-matrix.json` with D-2's roles and values; `metadata.role` on every agent; `tools/repo_lint` check "agent model matches the matrix" with its test; workflow definitions name roles. `subagent-dispatch` "The subagent's agent and model are the cheapest that fit"; design.md#d-2.
-- [ ] 4.2 Agents: the variant 1.4 chose (one preload per role, `Skill` and MCP names per the measurement); the thin `skills/stage-check` holding the moved check references; the new `agents/checker.md`; both declared in `bundles.yaml` with facets; a Gherkin scenario per agent change; `make bundles`, `make skill-inventory`. `subagent-dispatch` "A subagent starts fresh from a brief"; design.md#d-3.
-- [ ] 4.3 `agents/epic-planner.md`: drop the `stream-coding` preload and the duplicate `epic-planning` load, with its Gherkin scenario; `dependencies.yaml` and the two skills keep `stream-coding` as an external pointer. `epic-shape` "Planning effort follows the appetite"; design.md §Algorithm "The planner" (DEC-16).
-- [ ] 4.4 Rewrite `clarity-gate/references/clarity-gate-checklist.md` (≤ 4 KB, minimums per appetite); the `design.md` budget check in `tools/repo_lint` (appetite parsed as `appetiteOf`, archived and allow-listed changes exempt, unparseable is an error) with its tests; `tasks.md` template says "cite a design anchor". `epic-shape` "A PLAN has a size budget by appetite"; design.md#d-9.
-- [ ] 4.5 `epic-delivery/assets/templates/builder-brief.md` (≤ 2 KB); builder and fixer briefs point to it; `cosmic-python` principles cited by id; Serena essentials in the card, `initial_instructions` not called by subagents (`activity-tools.md` line changed). `subagent-dispatch` "A subagent starts fresh from a brief"; design.md#d-15.
-- [ ] 4.6 `rulebook` `load --brief` (rules without the playbook) with its test; agent bodies drop "load the rulebook"; `epic-delivery` briefs carry the rules. `rules-first-routing` "Rules reach a subagent through its brief"; design.md#d-14.
+- [x] 4.1 `skills/guardrails/assets/model-matrix.json` with D-2's roles and values; `metadata.role` on every agent; `tools/repo_lint` check "agent model matches the matrix" with its test; workflow definitions name roles. `subagent-dispatch` "The subagent's agent and model are the cheapest that fit"; design.md#d-2.
+- [x] 4.2 Agents: the variant 1.4 chose (one preload per role, `Skill` and MCP names per the measurement); the thin `skills/stage-check` holding the moved check references; the new `agents/checker.md`; both declared in `bundles.yaml` with facets; a Gherkin scenario per agent change; `make bundles`, `make skill-inventory`. `subagent-dispatch` "A subagent starts fresh from a brief"; design.md#d-3.
+- [x] 4.3 `agents/epic-planner.md`: drop the `stream-coding` preload and the duplicate `epic-planning` load, with its Gherkin scenario; `dependencies.yaml` and the two skills keep `stream-coding` as an external pointer. `epic-shape` "Planning effort follows the appetite"; design.md §Algorithm "The planner" (DEC-16).
+- [x] 4.4 Rewrite `clarity-gate/references/clarity-gate-checklist.md` (≤ 4 KB, minimums per appetite); the `design.md` budget check in `tools/repo_lint` (appetite parsed as `appetiteOf`, archived and allow-listed changes exempt, unparseable is an error) with its tests; `tasks.md` template says "cite a design anchor". `epic-shape` "A PLAN has a size budget by appetite"; design.md#d-9.
+- [x] 4.5 `epic-delivery/assets/templates/builder-brief.md` (≤ 2 KB); builder and fixer briefs point to it; `cosmic-python` principles cited by id; Serena essentials in the card, `initial_instructions` not called by subagents (`activity-tools.md` line changed). `subagent-dispatch` "A subagent starts fresh from a brief"; design.md#d-15.
+- [x] 4.6 `rulebook` `load --brief` (rules without the playbook) with its test; agent bodies drop "load the rulebook"; `epic-delivery` briefs carry the rules. `rules-first-routing` "Rules reach a subagent through its brief"; design.md#d-14.
 - [ ] 4.7 Measure: within seven days of the release, §Stage 4: the starting load of a session, an implementer and a reviewer (as 1.4), against 1.4; gates passed. `session-retrospective` "Usage reports form a comparable series"; design.md#d-17.
 
 ## 5. Quiet the tools (stage 5, DEC-8, DEC-14)
@@ -53,7 +53,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [x] 1.5 · [x] 1.6 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [ ] 2.5 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [ ] 3.5 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5 · [ ] 4.6 · [ ] 4.7 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 5.4 · [ ] 5.5 · [ ] 6.1
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [x] 1.5 · [x] 1.6 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [ ] 2.5 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [ ] 3.5 · [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5 · [x] 4.6 · [ ] 4.7 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 5.4 · [ ] 5.5 · [ ] 6.1
 
 Within a stage, tasks are independent unless numbered after one they name (2.1 before 2.4's
 threshold reference; 4.1 before 4.2; 1.2 before 1.3, 1.5 and 1.6; 1.4 decides 4.2's variant);

@@ -377,6 +377,13 @@ compaction after `proposal.md`, a fresh session per EPIC.
   the briefs: both UNKNOWN, the index (last at cf32e0a) does not hold them; the changes are
   additive (a new check function appended to `ALL_CHECKS`, a new flag on `load`), the re-index runs
   in the background for the change check before the stage's last commit.
+- **D-43** Stage 4 is a LARGE small stage under the installed method (3.21.0): code in
+  `tools/repo_lint` and `rules.py` with tests, agent frontmatter, one new skill and agent, and
+  prose; review set two grouped runs, L1+L2 and L3+L4+L5; the tester runs (code changed; the
+  opt-in rule of stage 3 is not yet the installed method); the checker is a general-purpose
+  subagent, since the new `checker` agent is not installed in this session. Light chores by the
+  lead: the `test-strategy` inventory row CHK-60 and the agent template's skills row follow the
+  new checklist and the one-preload rule (builders A and B found them outside their files).
 
 ## Open Questions
 

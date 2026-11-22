@@ -104,7 +104,7 @@ written and printed. An edit the owner makes in Obsidian is welcome; run `lint` 
 |---|---|
 | rule-learner, in a session | `search`, `add`, `add --candidate`, `update`, `confirm`, `override` |
 | rule-steward, in the weekly review | `stats`, `lint`, `check --golden`, `approve`, `retire`, `update`, `confirm` |
-| any agent, in any activity | `load`, `check`, `cite` |
+| any agent, in any activity | `load`, `check`, `cite`; the lead pastes `load --brief` into briefs, subagents do not run `load` |
 
 **Common mistakes**
 
