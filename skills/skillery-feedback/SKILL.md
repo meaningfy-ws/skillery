@@ -40,7 +40,8 @@ the installed Docker Compose does not have; the person says "report this to skil
    ```
 
 4. On the person's yes, file it with the defect form's labels:
-   `gh issue create --repo meaningfy-ws/skillery --title "<title>" --label defect --body-file <draft>`.
+   `gh issue create --repo meaningfy-ws/skillery --title "<title>" --label bug --body-file <draft>`
+   (a request takes `--label request`).
 
 **Output:** the issue URL, given to the person.
 

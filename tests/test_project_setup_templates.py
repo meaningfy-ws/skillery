@@ -207,6 +207,29 @@ def test_check_bindings_passes_with_the_block_in_agents(tmp_path):
 
 
 @needs_make
+def test_check_bindings_fails_when_agents_is_over_its_budget(tmp_path):
+    _scaffold(tmp_path)
+    agents = tmp_path / "AGENTS.md"
+    budget = int(re.match(r"<!-- size budget: (\d+) characters -->", _text(agents)).group(1))
+    agents.write_text(_text(agents) + "x" * budget, encoding="utf-8")
+    bad = _bindings(tmp_path)
+    assert bad.returncode != 0
+    assert "AGENTS.md" in bad.stdout + bad.stderr and f"budget of {budget}" in bad.stdout + bad.stderr
+
+
+@needs_make
+def test_check_bindings_counts_characters_not_bytes(tmp_path):
+    _scaffold(tmp_path)
+    agents = tmp_path / "AGENTS.md"
+    first, _, rest = _text(agents).partition("\n")
+    budget = int(re.match(r"<!-- size budget: (\d+) characters -->", first).group(1))
+    # exactly at the budget, in two-byte characters: over in bytes, within in characters
+    agents.write_text(first + "\n" + "ț" * budget, encoding="utf-8")
+    done = _bindings(tmp_path)
+    assert done.returncode == 0, done.stdout + done.stderr
+
+
+@needs_make
 def test_check_bindings_passes_with_no_claude_file(tmp_path):
     _scaffold(tmp_path)
     (tmp_path / "CLAUDE.md").unlink()
