@@ -77,7 +77,7 @@ the old split and half-way through SHALL be read by the same phases (lean-delive
 `design.md` of an active change SHALL stay within a budget read from the appetite in its
 `proposal.md`: `TINY` 4 KB, `SMALL` 8 KB, `MEDIUM` 12 KB, `LARGE` 16 KB, `VERY LARGE` 24 KB
 (KB = 1024 raw bytes, as `repo_lint` measures prose). The appetite SHALL be parsed as the
-navigator's `appetiteOf` does: the workflow appetite names, longest match first, on the first line
+navigator's `appetiteOf` does: the workflow appetite names, longest match first, on the first paragraph
 under `## Appetite`. `make lint` SHALL fail on a non-exempt active change over budget or with an
 unparseable appetite; exempt: archived changes and those in an allowlist file of the changes active
 when the check lands. Every task in `tasks.md` SHALL cite a design anchor
@@ -95,8 +95,8 @@ examples 1, 1, 2, 3 (D-9, DEC-9).
 - **THEN** `make lint` passes without a message about it
 
 #### Scenario: An unparseable appetite
-- **WHEN** a non-exempt active change's first line under `## Appetite` names no workflow appetite
-- **THEN** `make lint` fails naming the change and the line it could not parse
+- **WHEN** a non-exempt active change's first paragraph under `## Appetite` names no workflow appetite
+- **THEN** `make lint` fails naming the change and the paragraph it could not parse
 
 #### Scenario: A task without an anchor
 - **WHEN** a task line in `tasks.md` names no `design.md#d-n`

@@ -12,7 +12,7 @@ Feature: technical-writer writes documentation and has a cold reader test it
   # Traces to: D-2; spec subagent-dispatch (The subagent's agent and model are the cheapest that fit).
   Scenario: Its role and model follow the matrix
     When `agents/technical-writer.md` is read
-    Then its `metadata.role` is `cold-reader` and its `model:` is the mid model the matrix names for that role
+    Then its `metadata.role` is `lead` and its `model:` is the large model the matrix names for that role
 
   Scenario Outline: The lead writes, tests or refuses
     Given the person asks to <request>

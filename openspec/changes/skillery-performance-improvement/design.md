@@ -84,7 +84,7 @@ opencode parity (DEC-10), per-person tracking, a model router.
   `design.md` budget TINY 4 KB, SMALL 8, MEDIUM 12, LARGE 16, VERY LARGE 24 (KB = 1024 raw bytes,
   as `repo_lint` measures prose); `make lint` errors on a non-exempt active change; exempt: archived
   changes and an allowlist of the changes active when the check lands (today's four, 48–111 KB).
-  Appetite parsed as the navigator's `appetiteOf` (workflow names, longest first, first line under
+  Appetite parsed as the navigator's `appetiteOf` (workflow names, longest first, first paragraph under
   `## Appetite`); unparseable is an error. `tasks.md` cites design anchors. (DEC-9)
 - **D-10 Tool-output principle and mod.** DEC-14's text in `guardrails` §Session hygiene and the
   `activity-tools.md` header; one line in the brief templates. Mod `quiet-tools` (PreToolUse on

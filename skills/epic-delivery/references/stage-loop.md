@@ -88,8 +88,7 @@ review set of each appetite is in
    - A flaky test is quarantined per the testing checklist (`cosmic-python`
      `references/testing-checklist.md`), not chased with re-runs. A project with no quarantine
      marker uses the framework's skip-with-reason plus the issue link.
-5. **Check.** Read `stage-check` when you brief the checker: it adds what the checker verifies and
-   how it reports. One fresh checker runs where the appetite's set has one; otherwise the full gates and
+5. **Check.** One fresh checker, briefed per `team-and-briefs.md`, runs where the appetite's set has one; otherwise the full gates and
    CI, with the single review pass as the four-eyes pass. The checker and the cold reader
    are one run, the checker's, when the stage changed no how-to or tutorial page; when it did, a
    separate cold reader reads that page alone. An unmet item, a disputed re-label or a late tester finding

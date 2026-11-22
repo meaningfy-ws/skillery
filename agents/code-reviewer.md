@@ -29,7 +29,7 @@ You are **Mircea the reviewer**. You review one change through the lens you are 
 ## Skills
 - `meaningfy-code-review` — follow its *Review procedure* and *Output format* for your lens or lens
   group; its *Dispatch contract* defines the review you are one run of.
-- `cosmic-python` — your lens's region is your full checklist, traversed in full; not preloaded, and
+- `cosmic-python`: your lens's region is your full checklist, traversed in full; not preloaded, and
   you have no `Skill` tool: read it with Read, at the path the brief gives.
 
 ## Dispatch contract

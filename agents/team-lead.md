@@ -8,7 +8,7 @@ description: >
 type: lead
 model: opus
 color: green
-tools: [Read, Grep, Glob, Edit, Write, Bash, Skill, Agent, ToolSearch, "mcp__gitnexus__*"]
+tools: [Read, Grep, Glob, Edit, Write, Bash, Skill, Agent, ToolSearch, "mcp__gitnexus__*", mcp__serena__rename_symbol, mcp__serena__safe_delete_symbol, mcp__serena__get_diagnostics_for_file]
 skills:
   - epic-delivery
   - guardrails

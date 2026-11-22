@@ -564,7 +564,10 @@
         "Skill",
         "Agent",
         "ToolSearch",
-        "mcp__gitnexus__*"
+        "mcp__gitnexus__*",
+        "mcp__serena__rename_symbol",
+        "mcp__serena__safe_delete_symbol",
+        "mcp__serena__get_diagnostics_for_file"
       ],
       "skills": [
         "epic-delivery",
@@ -587,7 +590,7 @@
       "name": "technical-writer",
       "description": "Viorica the technical writer writes and improves documentation with the person: reads the code and existing docs, drafts clearly in the right genre and has a cold reader test it. Use when someone opens a session to document, explain or summarise a module, a project or a change. Not for delegation; not for changing code or specs.\n",
       "type": "lead",
-      "model": "sonnet",
+      "model": "opus",
       "color": "pink",
       "tools": [
         "Read",
@@ -606,7 +609,7 @@
         "guardrails"
       ],
       "metadata": {
-        "role": "cold-reader",
+        "role": "lead",
         "purpose": "content",
         "area": "cross-cutting",
         "subject": "generic",

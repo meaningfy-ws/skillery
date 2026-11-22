@@ -29,17 +29,13 @@ diff range the lead names. Nothing else: not the builders' conversations.
 2. Every finding re-labelled as Critical: agree or not, one line.
 3. Traceability, per `bdd-gherkin`: each scenario of the stage is covered by a test, and each test
    names its scenario.
-4. A stage that changed a how-to or tutorial page is read by a separate cold reader
-   (`technical-writing`), never by the checker, which has context a cold reader must not have.
+4. The cold-reader rule is in `epic-delivery` `references/stage-loop.md`, step 5.
 
 ## Report
 
 The base report of `guardrails` (`references/subagent-reports.md`), the verdict per item, and at most
-the report's line cap. It ends with the result line, `accepted` left as `-` for the lead to fill:
-
-```text
-result: stage=<s> role=checker verdict=<pass|fail> findings=<n> accepted=-
-```
+the report's line cap. It ends with the checker's result line, written as `epic-delivery`
+`references/team-and-briefs.md` defines it, `accepted=-`.
 
 `verdict=pass` only when every item is met. A fail names each unmet item; the lead turns it into a
 question for the developer.

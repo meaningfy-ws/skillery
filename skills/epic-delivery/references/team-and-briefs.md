@@ -14,7 +14,7 @@ The developer and the domain expert are people (`SKILL.md`, *The team*).
 | Architect | `system-architect` agent | Declared (opus) | Shaping session |
 | Planner | `epic-planner` agent | Declared (opus) | Shaping only (an `epic-planner` session) |
 | Builder | `implementer` agent | Declared (sonnet) | Every task, every accepted fix, every spike |
-| Reviewer | `code-reviewer` agent, one per run of the appetite's review set (a lens or a lens group) | Declared (opus) | Every stage, scaled by appetite |
+| Reviewer | `code-reviewer` agent, one per run of the appetite's review set (a lens or a lens group) | A single-lens run is `reviewer-single`, the agent's declared model; a grouped run (L1+L2 or L3+L4+L5) is `reviewer-merged`, so the lead passes that role's model when it spawns it (`guardrails/assets/model-matrix.json`) | Every stage, scaled by appetite |
 | Checker | A fresh general-purpose subagent | opus | Once per stage, where the appetite's review set has one ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)) |
 | Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | Opt-in, on its condition ([`stage-loop.md`](stage-loop.md), Prepare) |
 | UX designer | A general-purpose subagent with the design skills | opus | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
@@ -33,8 +33,8 @@ and never built or tested the stage.
 2. The files in scope, as paths.
 3. The decisions already made: `DEC-n`, the ADR, the spec scenario, the use case.
 4. What is out of scope.
-5. **Standing rules**: the rules come pasted from `rules.py load --brief` (the lead runs `load`;
-   subagents do not); the project's own list and its narrow checks, task gate, full gates, docs
+5. **Standing rules**: the lead pastes `rules.py load --brief` into briefs; subagents do not run
+   `load`; the project's own list and its narrow checks, task gate, full gates, docs
    gate and code-intelligence tools, all from the *Checks* block in its `AGENTS.md` (no GitNexus
    tool for a builder or reviewer: the lead pastes at most ten impact lines per task); the testing
    checklist (`cosmic-python` `references/testing-checklist.md`); and the dependency rule
@@ -42,7 +42,7 @@ and never built or tested the stage.
    task gate or full gates leaves this item unwritable: the lead asks the developer, and the answer
    goes into the project's `AGENTS.md`.
 6. **Tools**, for every role: code is read with Read (a range), Grep and Serena, not `sed -n`,
-   `cat` or `grep -A | head` chains through Bash; files change through Edit or Serena only; Bash
+   `cat` or `grep -A | head` chains through Bash; the card's *Edits* line, word for word; Bash
    runs tests, checks and git, one purpose per call. A sandbox bypass names the commands it covers
    (`uv run pytest <file>`, `git commit`), never "commands need the sandbox disabled".
 7. **The report expected**, the last line of every brief: the base report, its purpose extension
@@ -81,16 +81,13 @@ Tools for each activity, and their fallbacks: the table in `guardrails` (`refere
 
 ## Builder
 
-> Built from [the builder card](../assets/templates/builder-brief.md). **Edits:** Edit or Serena
-> only; Bash runs commands and never writes a file. **Scratch:** `<scratchpad>/<task-id>/`.
+> Built from [the builder card](../assets/templates/builder-brief.md). **Scratch:**
+> `<scratchpad>/<task-id>/`.
 
-The card owns the goal, reads, decisions, scope, gate, worktree path, rules, impact, tools,
-principles and report line; this page no longer repeats them. The cuts from the old template: the
-inline Goal/Read/Decided/Out of scope text, the standing-rules sentence (the card's Rules line, pasted
-from `rules.py load --brief`), the report line, and the Tools wording (the card's Tools line).
-
-The brief always carries the *Edits* line word for word, and never a blanket "commands need the
-sandbox disabled": that sends every step, file writes included, through Bash.
+The card owns the goal, reads, decisions, scope, gate, worktree path, rules, impact, edits, tools,
+principles, the fixer line and the report line; this page does not repeat them. The brief carries the
+card's *Edits* line word for word, and never a blanket "commands need the sandbox disabled": that
+sends every step, file writes included, through Bash.
 
 **Worktrees.** The lead makes each builder's worktree (`git worktree add <path> <sha>`, outside the
 sandbox) inside a folder its session can edit: a git-ignored `.worktrees/` in the repository, or a
@@ -104,7 +101,7 @@ lead use the sandbox bypass only for commands that write `.git` or the environme
 long session with parallel builders works in its own worktree from the start, so another session
 cannot take its checkout.
 
-**Edits.** Edit tool or Serena only, Makefiles one recipe at a time, never `sed -i`, an inline
+**Edits.** Beyond the card's line: Makefiles one recipe at a time, never `sed -i`, an inline
 `python`/`node` write, a `cat`/`tee` heredoc or a `git checkout`/`git restore` of a file; the
 `no-shell-edits` mod denies them. If `Edit` is refused, the builder stops and reports. For the same mechanical
 edit at many sites, the builder may write a script that only prints the edits
@@ -118,12 +115,8 @@ script from another builder's directory. They never kill processes by pattern, n
 A **fixer** is a builder whose task is a set of accepted findings, named by their `design.md`
 decision, except a light chore: at most ten lines in files the lead has already read in this
 stage and no new test, which the lead applies with Edit, naming it in the commit body
-(`lead-fixed: <finding id>`). Its brief is the card (its *Fixer only* line) plus two items:
-
-> **Bound:** `max_red_runs: <n>` (default 3, from `session-thresholds.json` `fixer_max_red_runs`;
-> the PLAN may set another) and **one pass**: fix the named findings once, no second round. At
-> the bound, stop and return the base report with `result: blocked`, the failing check verbatim
-> (one line), your hypothesis and what you tried (at most five lines). Do not run a further gate.
+(`lead-fixed: <finding id>`). Its brief is the card, whose *Fixer only* line is the bound and the
+one pass.
 
 A **spike** is a builder whose task is one question; it ends with yes or no and the
 evidence in `evidence/spike-<topic>.md`, and its code is not kept.
@@ -152,7 +145,9 @@ upstream issue, not a fix here.
 
 Where the appetite's set is one pass or two grouped runs (the default from MEDIUM up;
 `SKILL.md`, *Review sets*), the brief names the appetite and the lenses each reviewer
-covers. The lenses are owned by `meaningfy-code-review`.
+covers. A grouped run is the `reviewer-merged` role: the lead passes the model the matrix names for
+it (`guardrails/assets/model-matrix.json`); a single-lens run is `reviewer-single`, the agent's
+declared model. The lenses are owned by `meaningfy-code-review`.
 
 ## Checker
 
