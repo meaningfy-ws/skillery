@@ -214,6 +214,10 @@ compaction after `proposal.md`, a fresh session per EPIC.
   feature branch (no worktrees), the tester condition is not met (`tester: no, no code changed`),
   and the stage takes the small review set (two grouped runs) as a low-risk stage; the added-line
   count is recorded in the PR body.
+- **D-23** Task 1.4's interactive half (the `/context` composition of a fresh session, an
+  implementer and a reviewer, and the three variants) cannot run inside a running session; it is
+  the first step of the next session, named in the hand-over note, and stage 4 depends on it, not
+  stage 2. The Langfuse-derived floors are on the baseline page now.
 - **D-22** Inventory (task 1.5): the three lists and the exact disable commands are written to the
   inventory page; nothing is disabled until the owner approves the list (DEC-17).
 

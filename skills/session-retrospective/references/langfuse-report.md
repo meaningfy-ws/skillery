@@ -213,5 +213,9 @@ own page and never edits the first.
    occasional connector) or the window is too short to tell.
 6. Write the page: the counts, the three lists, and the window. Numbers and names only.
 7. The owner marks the subset of **unused** to disable. Nothing is disabled before that.
-8. Disable with the CLI's commands: `claude plugin disable <plugin>` or `claude plugin uninstall
-   <plugin>`, and `claude mcp remove <server>`. Record on the page what was disabled and when.
+8. Disable with the CLI's commands: `claude plugin disable <name>@<marketplace>` (the marketplace
+   suffix is required) and `claude mcp remove <name> -s user` (the scope flag). Record on the page
+   what was disabled and when.
+   - Plugins synced from claude.ai are switched off in the claude.ai plugin settings.
+   - User-level skills under `~/.claude/skills/` are removed by deleting their folder; a broken
+     symlink there counts as unused.

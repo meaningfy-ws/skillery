@@ -36,3 +36,4 @@ page named `inventory-<host>-<date>.md`.
 |---|---|---|
 | [`2026-11-09.md`](2026-11-09.md) | about two weeks to 2026-11-09, skillery only | Transcripts and `gh`; the first evidence, linked not copied |
 | [`2026-11-22.md`](2026-11-22.md) | 2026-11-08 to 2026-11-23, all projects | Langfuse; the baseline of the performance EPIC |
+| [`inventory-lps-desktop-2026-11.md`](inventory-lps-desktop-2026-11.md) | 2026-11-08 to 2026-11-22, one machine | Local config and the window's tags; used, unused, undecided; nothing disabled |
