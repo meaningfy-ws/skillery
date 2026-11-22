@@ -16,12 +16,16 @@ the docs stage and the archive; a purely technical EPIC has nothing to accept. T
 | Below LARGE | Offered; the developer may skip it. The skip (who, why, date) goes to `evidence/acceptance.md` |
 | LARGE and above | Mandatory; the verdict, what was shown and the date go to `evidence/acceptance.md` |
 
+The demo runs the `@manual` scenarios from the feature file in `tests/manual/`, not from a copied
+list (`bdd-gherkin`).
+
 ## Validation review *(provisional)*
 
 Once per iteration (a group of EPICs). The lead runs it with the developer. For each EPIC: did it
 deliver its value and meet its success measure? For each ADR: did the decision hold in practice? An
 ADR that did not hold gets its status changed and a new decision, through the architect. The
-findings go to the next shaping session's `inputs/`.
+findings go to the next shaping session's `inputs/`. It runs the `@manual` scenarios from the
+feature file too, not from a copied list.
 
 ## The evidence folder
 

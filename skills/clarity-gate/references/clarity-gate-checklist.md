@@ -10,7 +10,7 @@ The full gate for an EPIC or a PLAN (`design.md` and `tasks.md`). Tick 13 items,
 2. **Current**: nothing outdated, no superseded decision still listed.
 3. **Single source**: each decision is written once.
 4. **Decision, not wish**: no "might", "ideally", "eventually".
-5. **Prompt-ready**: every section is fit to put in an agent's brief; delete what is not.
+5. **Prompt-ready**: every section is fit to put in an agent's brief.
 6. **No future state**: the text describes the current decision only.
 7. **No fluff**: no motivational or aspirational prose.
 
@@ -18,7 +18,7 @@ The full gate for an EPIC or a PLAN (`design.md` and `tasks.md`). Tick 13 items,
 
 8. **Type identified**: each document is strategic (EPIC), implementation (PLAN) or reference.
 9. **Anti-patterns placed**: in the PLAN only; the EPIC points to them.
-10. **Test cases placed**: in the PLAN and the scenarios only; the EPIC points to them.
+10. **Test cases placed**: in the PLAN and the scenarios only; the EPIC points to them; a manual check not written as a `@manual` Gherkin feature is a gap.
 11. **Error handling placed**: the error matrix is in the PLAN only; the EPIC points to it.
 12. **Deep links**: every reference names a path and an anchor (`file.md#anchor`), never "see elsewhere"; a task in `tasks.md` without a `design.md#d-n` anchor is a gap.
 13. **No duplication**: the EPIC points to the PLAN, it does not copy it.
@@ -35,7 +35,7 @@ The full gate for an EPIC or a PLAN (`design.md` and `tasks.md`). Tick 13 items,
 
 A row names this change's risk, not a generic one. The anti-pattern row says what not to do, what to do
 instead and why. The error row says the failure, how it is detected, the response and the fallback. The
-byte budget of `design.md` by appetite is in `assets/design-budgets.json`, the one source; do not pad to the minimum.
+byte budget of `design.md` by appetite is in `assets/design-budgets.json`, the one source.
 
 ## Rubric
 
