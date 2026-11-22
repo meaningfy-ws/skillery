@@ -40,7 +40,7 @@
   - *Acceptance:* the generated files are committed and `make validate` is green.
 - [x] 1.8 Write the CHANGELOG `Unreleased` line for the installer: "`ui-testing`: rules for UI tests
   in Cypress or Playwright (#230)".
-- [ ] 1.9 The stage's full gates, the review set and the merge, as the stage loop of
+- [x] 1.9 The stage's full gates, the review set and the merge, as the stage loop of
   `epic-delivery` runs them.
 
 ## 2. Stage 2: `project-setup` records the UI tool
@@ -65,22 +65,22 @@
 - [x] 2.4 Smoke run (RISK-4): scaffold with `--ui-tool playwright` into `$TMPDIR`, then run
   `uv sync` and `make ui-browsers`. Record the result in the PR body.
   - *Acceptance:* both exit 0, or the failure is recorded as a `D-n` with an issue.
-- [ ] 2.5 The CHANGELOG line, the full gates, the review set and the merge.
+- [x] 2.5 The CHANGELOG line, the full gates, the review set and the merge.
 
 ## 3. Stage 3: the trial and the close
 
-- [ ] 3.1 Record the trial repository's commit. Run the audit of D-8 step 1 into
+- [x] 3.1 Record the trial repository's commit. Run the audit of D-8 step 1 into
   `evidence/trial-audit.md`.
   - *Acceptance:* each of UI-1 to UI-9 has a count and `file:line` citations, or "0".
-- [ ] 3.2 Run the before-and-after of D-8 step 2. The lead picks the uncovered journey and names it
+- [x] 3.2 Run the before-and-after of D-8 step 2. The lead picks the uncovered journey and names it
   in both briefs. The blind scoring goes into `evidence/trial-ab.md`.
   - *Depends on:* stage 1 merged.
   - *Acceptance:* both outputs are saved under `evidence/trial-output/`, and the trial repository
     has no change (`git -C ../entity-resolution-service-webapp status` is clean).
-- [ ] 3.3 Write `evidence/failure-case.md` (D-8 step 3) and check D-8's pass condition.
-- [ ] 3.4 Offer the developer a pull request to the trial repository carrying the audit's fixes,
+- [x] 3.3 Write `evidence/failure-case.md` (D-8 step 3) and check D-8's pass condition.
+- [x] 3.4 Offer the developer a pull request to the trial repository carrying the audit's fixes,
   and record the answer in `evidence/acceptance.md`.
-- [ ] 3.5 The acceptance demo, the docs stage (`evidence/docs-owed.md`), the archive, and
+- [x] 3.5 The acceptance demo, the docs stage (`evidence/docs-owed.md`), the archive, and
   `make fix-spec-links`. Comment on #230 with the merged PRs and close it.
 
 ## Roadmap
