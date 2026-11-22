@@ -105,6 +105,7 @@ checklist, rules 17 to 21 among them); writing tests (`cosmic-python`); the deve
 (`project-setup`); distilling a stage's adversarial tests (`epic-delivery`); which checks an
 activity needs (`test-strategy`).
 
-**Related:** `cosmic-python`, `test-strategy`, `project-setup`, `epic-delivery`, `bdd-gherkin`.
+**Related:** `cosmic-python`, `test-strategy`, `project-setup`, `epic-delivery`, `bdd-gherkin`,
+`ui-testing` (the rules for UI tests).
 
 Answers `ADQ` in `test-strategy`'s matrix (`references/software.md`).

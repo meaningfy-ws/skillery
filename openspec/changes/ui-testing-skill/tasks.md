@@ -5,40 +5,40 @@
 
 ## 1. Stage 1: the `ui-testing` skill and what moves into it
 
-- [ ] 1.1 Add the failing trigger probes to `tests/trigger_probes.yaml`.
+- [x] 1.1 Add the failing trigger probes to `tests/trigger_probes.yaml`.
   - Positive: "write a Playwright test for the login page", which expects `ui-testing`.
   - Positive: "our Cypress tests use cy.wait(5000), fix them", which expects `ui-testing`.
   - Near-miss: "write Gherkin scenarios for this acceptance criterion" (`bdd-gherkin`).
   - Near-miss: "our test suite takes 20 minutes, what can we drop" (`test-suite-care`).
   - Near-miss: "review the usability of these screens" (`meaningfy-code-review`).
   - *Acceptance:* the probe test fails, naming `ui-testing` as unknown.
-- [ ] 1.2 Write SKILL with the frontmatter and facets of D-1, the nine rules of D-2 (each citing its
+- [x] 1.2 Write SKILL with the frontmatter and facets of D-1, the nine rules of D-2 (each citing its
   source), *Which tool* (D-4), a Quick Start and `## Boundary & Related Skills`.
   - The Quick Start shows an agent writing a log-in-then-filter scenario for a Playwright project
     and applying UI-2, UI-3, UI-4 and UI-8.
   - *Depends on:* 1.1.
   - *Acceptance:* 1.1's probes pass; `make lint` is green.
-- [ ] 1.3 Write ROWS (D-3): the checked-against line, then one row per rule that a tool changes,
+- [x] 1.3 Write ROWS (D-3): the checked-against line, then one row per rule that a tool changes,
   plus the Gherkin-runner and axe-engine rows.
   - *Acceptance:* the test of 1.5 passes.
-- [ ] 1.4 Write SUITE (D-5): accessibility, the browser and device matrix, the broken-screen check.
+- [x] 1.4 Write SUITE (D-5): accessibility, the browser and device matrix, the broken-screen check.
   - *Acceptance:* each part names its check id (CHK-58, CHK-147, CHK-148).
-- [ ] 1.5 Write the ROWS format test, test-first: add `tests/test_ui_testing_rows.py`, which fails
+- [x] 1.5 Write the ROWS format test, test-first: add `tests/test_ui_testing_rows.py`, which fails
   when:
   - a ROWS cell has more than one line;
   - a non-empty cell has no link;
   - the "Checked against" line is missing.
   - *Acceptance:* red before 1.3, green after.
-- [ ] 1.6 Make the moves of D-7:
+- [x] 1.6 Make the moves of D-7:
   - in CHECKLIST, the pointer for rule 2 and the scope of rule 11;
   - CHK-58 re-pointed, and CHK-147 and CHK-148 added to INVENTORY;
   - the UI-MATRIX rows;
   - the pointer lines in `bdd-gherkin` and `test-suite-care`.
   - *Acceptance:* `tests/test_test_strategy.py` is green, and no UI-MATRIX row reads `gap`.
-- [ ] 1.7 Declare `ui-testing` in `meaningfy-building` in `bundles.yaml`. Then run `make bundles` and
+- [x] 1.7 Declare `ui-testing` in `meaningfy-building` in `bundles.yaml`. Then run `make bundles` and
   `make skill-inventory`, and add the README entry-point row.
   - *Acceptance:* the generated files are committed and `make validate` is green.
-- [ ] 1.8 Write the CHANGELOG `Unreleased` line for the installer: "`ui-testing`: rules for UI tests
+- [x] 1.8 Write the CHANGELOG `Unreleased` line for the installer: "`ui-testing`: rules for UI tests
   in Cypress or Playwright (#230)".
 - [ ] 1.9 The stage's full gates, the review set and the merge, as the stage loop of
   `epic-delivery` runs them.

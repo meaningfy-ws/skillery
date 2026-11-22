@@ -134,4 +134,4 @@ sensitive-data interaction safety → `guardrails`.
 **Related:** `architecture`, `meaningfy-code-review`, `bdd-gherkin`, `guardrails`,
 `conceptual-modelling`, `linkml-engineering`, `ci-cd-delivery`, `meaningfy-git-workflow`, `epic-delivery`.
 
-Answers `VER, ADQ, ROB` in `test-strategy`'s matrix (`references/software.md`, `references/ui.md`).
+Answers `VER, ADQ, ROB` in `test-strategy`'s matrix (`references/software.md`).

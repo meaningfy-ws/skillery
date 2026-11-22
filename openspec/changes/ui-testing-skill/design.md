@@ -13,7 +13,7 @@ The trial repository has a Playwright 1.58 suite in TypeScript (`inputs/trial-ba
 `project-setup` scaffolds Python repositories with uv and pytest. `pytest-bdd` is already pinned
 there, and the scaffold has a `frontend/` convention, an `e2e` tier and a `test-e2e` target.
 
-The paths this plan uses by short name:
+Short names:
 
 | Short name | Path |
 |---|---|
@@ -221,7 +221,7 @@ Run 2026-11-22, inline by the lead (P-0006: at TINY to MEDIUM the attack and the
 
 ## Delivery decisions
 
-<!-- Filled during delivery. -->
+- D-1 Stage 1: one builder for tasks 1.1–1.8 (one skill).
 
 ## Open Questions
 
