@@ -359,6 +359,22 @@ compaction after `proposal.md`, a fresh session per EPIC.
   scenarios' "risk named as a focus" sentence added to `meaningfy-code-review` and `epic-delivery`;
   F-2 the `AGENTS.md` GitNexus block and its template name the index at both points, as the
   `catalogue-governance` delta says (`lead-fixed:` in the commit body); one more full gates run.
+- **D-41** Stage 4 ships the designed variant of D-3 (one preload per role, no `Skill` tool, exact
+  MCP tool names) without the interactive A/B of 1.4, which needs a fresh session the owner's
+  autonomy grant (D-19) does not provide: today's traces give the measured floor in this
+  repository, `implementer` and `code-reviewer` about 53 k tokens at their first call,
+  general-purpose about 35 k; 4.7 measures the shipped variant against it, and RISK-8's fallback
+  (the floor target to the owner) applies if it is not under 40 k.
+- **D-42** Stage 4 on branch `feature/spi-stage-4`, three builders on disjoint files: A owns
+  `tools/repo_lint`, `tests/test_repo_lint.py`, `skills/guardrails/assets/model-matrix.json`,
+  `skills/clarity-gate/`, the `tasks.md` template (4.1's lint and asset, 4.4); B owns `agents/`,
+  `skills/stage-check/` (new), `bundles.yaml`, `facets.yaml` if needed, `tests/features/agents/`,
+  `tests/trigger_probes.yaml`, the workflow JSON `roles` block (4.2, 4.3, the agent side of 4.1
+  and 4.6); C owns `skills/epic-delivery/assets/templates/`, `references/team-and-briefs.md`,
+  `skills/guardrails/references/activity-tools.md`, `skills/rulebook/` and its tests (4.5, the
+  script side of 4.6). GitNexus impact: `tools/repo_lint` and `skills/rulebook/scripts` are in
+  the index, so the lead runs impact on `lint.py`'s check list and `rules.py` `cmd_load` before
+  the briefs (run below); the change check before the stage's last commit.
 
 ## Open Questions
 
