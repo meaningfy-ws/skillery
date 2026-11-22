@@ -17,7 +17,8 @@ Enumerate what you read, out loud, so the human can correct the input set before
 
 - One concern per question; ask open questions together in one round, unless an answer changes the next question.
 - Surface **every** ambiguity, conflict, and unstated assumption — and get a decision on each.
-- After each round: summarise what you understood, and confirm before moving on.
+- Rounds are capped per EPIC by appetite (the numbers are in `SKILL.md`, step 2). Summarise what you
+  understood and confirm it inside the next round, never in a turn of its own.
 - Make **no silent assumptions** (Human Sovereignty). If something cannot be decided now, park it as
   an Open Question in the PLAN's `design.md`, not a guess.
 - This composes with `superpowers:brainstorming` and maps to `/opsx:explore` — reference, don't

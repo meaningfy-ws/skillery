@@ -76,6 +76,9 @@ row text for later. Nothing is lost silently.
   example.
 - **L-9 Where a rule goes.** Run `rules.py where` before the card: its `default store` fills the card's
   Store column. In a git repository rows default to the repository; the owner may switch a row to the vault.
+- **L-10 Session hygiene.** A candidate that keeps a session past a stage boundary ("carry on in
+  the same session", "no fresh session between stages") is still shown, with the Warnings cell
+  "conflicts with session hygiene (guardrails §6)".
 
 **Mutations.** Each candidate carries exactly one:
 
