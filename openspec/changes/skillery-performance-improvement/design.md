@@ -263,6 +263,11 @@ compaction after `proposal.md`, a fresh session per EPIC.
   `full-gates` run by a subagent counts, red or green. The engine's `usage.context` fields are read
   defensively (`tokens`, else `window × percent`), since no typing for `$.session.usage()` exists
   in the repository; task 1.4's measurement confirms which fields the CLI provides.
+- **D-29** Stage 2 is a LARGE small stage: 190 added lines outside the spine and the generated
+  bundles (`git diff develop --numstat`), under the workflow's `small_stage.max_added_lines` of
+  600, low risk (a pure-function change in the navigator with its tests, and prose). The review
+  set is the small stage's two grouped runs, L1+L2 and L3+L4+L5, as `epic-delivery.workflow.json`
+  lists them; the tester runs (code changed, no `## Invariants` section); one checker.
 
 ## Open Questions
 
