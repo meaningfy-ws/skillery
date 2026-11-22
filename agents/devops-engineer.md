@@ -16,6 +16,7 @@ skills:
   - service-reliability
   - infrastructure-security
 metadata:
+  role: lead
   purpose: devops
   area: operations
   subject: delivery-infra

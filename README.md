@@ -38,7 +38,7 @@ each one serves, and which skills depend on which — see
 | **meaningfy-consulting** | **semantic-consulting-coach** · **decision-package** · **executive-communication** | …do advisory work |
 | **meaningfy-sales** | **proposal-writing** · **estimation** · **sales-operations** *(workflow)* · **sales-pipeline-custody** · **sales-accounts** · **sales-qualification** · **sales-conversations** | …write proposals and offers, estimate work, run the daily sales grooming of the Odoo pipelines, qualify a deal, or prepare a meeting and its follow-up (agent setup: [`docs/environment/sales-agent.md`](docs/environment/sales-agent.md)); requires `meaningfy-consulting` |
 | **meaningfy-architecture** | **architecture** *(workflow)* · **conceptual-modelling** *(workflow)* · **modelling-conventions** · **linkml-engineering** · **formal-reasoning** | …design systems or model a domain |
-| **meaningfy-building** | **epic-planning** *(workflow)* · **epic-delivery** *(workflow)* · **session-retrospective** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **cosmic-python** · **test-suite-care** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** *(workflow)* | …build software with the spine |
+| **meaningfy-building** | **epic-planning** *(workflow)* · **epic-delivery** *(workflow)* · **session-retrospective** · **spec-stewardship** · **clarity-gate** · **bdd-gherkin** · **meaningfy-code-review** · **stage-check** · **cosmic-python** · **test-suite-care** · **project-setup** · **ci-cd-delivery** · **meaningfy-release** *(workflow)* | …build software with the spine |
 | **meaningfy-devops** | **infrastructure-operations** *(workflow)* · **stack-operations** · **service-reliability** · **infrastructure-security** | …operate servers and stacks, run the daily check-up, answer alerts or review an infrastructure change (agent setup: [`docs/environment/devops-agents.md`](docs/environment/devops-agents.md)); requires `meaningfy-consulting` |
 | **meaningfy-legal** | **contract-practice** *(workflow)* | …draft, revise or align contracts in your own contract repository, with Tolic the lawyer (no live trial yet) |
 | **meaningfy-navigator** *(Claude Code only)* | the **navigator** mod — no skills | …want to see, while you work, which change you are on, its task progress and which skills and subagents run (CLI and desktop; see [`docs/environment/navigator.md`](docs/environment/navigator.md)) |
@@ -112,8 +112,8 @@ Pin one exact release with `#vX.Y.Z` instead of `#releases` (from the release af
   `code-reviewer`) each just load the relevant skills and run them in isolation; a lead
   (`epic-planner`, `team-lead`, …) is started as your session and works with you. How an agent is written: [`docs/development/agent-template.md`](docs/development/agent-template.md), next to the
   skill template [`docs/development/skill-template.md`](docs/development/skill-template.md).
-- Example invocations: "use the code-reviewer agent with lens L3 on this diff" (a full review is five,
-  one per lens); "use the implementer agent on task 2.1 of change `<id>`" (it reports, you commit);
+- Example invocations: "use the code-reviewer agent with lens L3 on this diff" (a full review is two grouped
+  runs, L1+L2 and L3+L4+L5; five single lenses only for a recorded risk); "use the implementer agent on task 2.1 of change `<id>`" (it reports, you commit);
   start a session with the epic-planner agent and give it your seeds; it asks its questions directly.
 
 **What do I reach for?**

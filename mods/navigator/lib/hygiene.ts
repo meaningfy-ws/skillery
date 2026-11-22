@@ -15,6 +15,11 @@ export type Thresholds = {
   idle_reset_minutes: number
   subagent_report_max_lines: number
   lookup_max_tool_calls: number
+  // D-1: tokens decide when the engine reports a count; the percent keys above are the fallback.
+  fresh_offer_min_tokens?: number
+  compact_offer_tokens?: number
+  context_warn_tokens?: number
+  fixer_max_red_runs?: number // D-5
   model_rank: string[]
   safe_point: { after: HygieneEvent; and_any: HygieneEvent[] }
   task_boundary: { any: HygieneEvent[] }
@@ -24,6 +29,8 @@ export type ParsedThresholds = { ok: true; thresholds: Thresholds } | { ok: fals
 
 const NUMBERS = ['compact_offer_context_percent', 'context_warn_percent', 'fresh_offer_min_context_percent',
   'idle_reset_minutes', 'subagent_report_max_lines', 'lookup_max_tool_calls'] as const
+const OPTIONAL_NUMBERS = ['fresh_offer_min_tokens', 'compact_offer_tokens', 'context_warn_tokens', 'fixer_max_red_runs'] as const
+const isCount = (v: unknown) => typeof v === 'number' && Number.isFinite(v) && v >= 0
 
 const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
 const isEvent = (v: unknown): v is HygieneEvent => (EVENTS as readonly unknown[]).includes(v)
@@ -35,8 +42,9 @@ export function thresholdsFrom(raw: unknown): ParsedThresholds {
   const bad = (error: string): ParsedThresholds => ({ ok: false, error })
   for (const k of NUMBERS) {
     const v = raw[k]
-    if (typeof v !== 'number' || !Number.isFinite(v) || v < 0) return bad(k)
+    if (!isCount(v)) return bad(k)
   }
+  for (const k of OPTIONAL_NUMBERS) if (raw[k] !== undefined && !isCount(raw[k])) return bad(k)
   const rank = raw['model_rank']
   if (!Array.isArray(rank) || rank.length === 0 || !rank.every(m => typeof m === 'string' && m)) return bad('model_rank')
   const sp = raw['safe_point']
@@ -49,11 +57,21 @@ export function thresholdsFrom(raw: unknown): ParsedThresholds {
   return { ok: true, thresholds: raw as Thresholds }
 }
 
+/** The context size in tokens (D-1): `tokens`, else `window × percent / 100`, else none. Read defensively: the
+ *  engine typing available to this repository does not declare these fields. */
+export function contextTokens(context: unknown): number | undefined {
+  const c = (isObj(context) ? context : {}) as { tokens?: unknown; window?: unknown; percent?: unknown }
+  const ok = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0
+  if (ok(c.tokens)) return c.tokens
+  return ok(c.window) && c.window > 0 && ok(c.percent) ? Math.round(c.window * c.percent / 100) : undefined // a window of 0 is no window
+}
+
 const warning = (key: string, message: string): Warning => ({ key, message, remedy: null, owner: 'guardrails' })
 
 export type HygieneInput = {
   events: HygieneEvent[] // since the last safe point or task boundary, oldest first
   contextPercent: number
+  contextTokens?: number // the engine's count, when it gives one (D-1)
   idleMinutes: number // now − lastUserPromptAt
   cleanTree: boolean
   openUnticked: boolean // a change is open and has an unticked task
@@ -76,10 +94,19 @@ export function offer(parsed: ParsedThresholds, i: HygieneInput): HygieneResult 
   const safe = has(t.safe_point.after) && t.safe_point.and_any.some(has)
   const idle = i.idleMinutes >= t.idle_reset_minutes && (i.cleanTree || !t.idle_reset.requires_clean_tree)
   const point = boundary ? 'task-boundary' : safe ? 'safe-point' : null
-  if ((boundary && i.contextPercent >= t.fresh_offer_min_context_percent) || idle) return { offer: 'fresh', point, warnings: [] }
-  if (safe && !boundary && i.contextPercent >= t.compact_offer_context_percent) return { offer: 'compact', point, warnings: [] }
-  if (point || i.contextPercent < t.context_warn_percent) return { offer: null, point, warnings: [] }
-  return { offer: null, point, warnings: [warning('hygiene:context', `context ${Math.round(i.contextPercent)}% mid-step (context_warn_percent)`)] }
+  // D-1: tokens decide when the engine gave a count and the file has the token keys, else the percent.
+  const tokens = typeof i.contextTokens === 'number' && Number.isFinite(i.contextTokens) ? i.contextTokens : null
+  const byTokens = tokens !== null && t.fresh_offer_min_tokens !== undefined && t.compact_offer_tokens !== undefined
+    && t.context_warn_tokens !== undefined
+  const reaches = (tokenKey: 'fresh_offer_min_tokens' | 'compact_offer_tokens' | 'context_warn_tokens',
+    percentKey: 'fresh_offer_min_context_percent' | 'compact_offer_context_percent' | 'context_warn_percent') =>
+    byTokens ? tokens! >= t[tokenKey]! : i.contextPercent >= t[percentKey]
+  if ((boundary && reaches('fresh_offer_min_tokens', 'fresh_offer_min_context_percent')) || idle) return { offer: 'fresh', point, warnings: [] }
+  if (safe && !boundary && reaches('compact_offer_tokens', 'compact_offer_context_percent')) return { offer: 'compact', point, warnings: [] }
+  if (point || !reaches('context_warn_tokens', 'context_warn_percent')) return { offer: null, point, warnings: [] }
+  const said = byTokens ? `${Math.round(tokens!).toLocaleString('en-US')} tokens mid-step (context_warn_tokens)`
+    : `${Math.round(i.contextPercent)}% mid-step (context_warn_percent${t.context_warn_tokens !== undefined ? ', no token count' : ''})`
+  return { offer: null, point, warnings: [warning('hygiene:context', `context ${said}`)] }
 }
 
 /** `session.compact`: an automatic one landed where the rule says not to. */

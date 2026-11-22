@@ -50,7 +50,8 @@ export type Gate =
 export type Review = {
   challenge: string
   reviewers: number
-  lenses?: string[]
+  lenses?: string[] | string[][] // one pass's lenses, or the grouped runs' lenses (D-4)
+  risk_reviewers?: number // the ceiling when the stage's mark recorded a risk (D-4); absent: `reviewers` stands
   small_stage?: { max_added_lines: number; reviewers: number; lenses: string[][] } // D-12
   ux: null | { wording: string; extra_reviewers: number }
   check: string
@@ -70,7 +71,9 @@ export type Workflow = {
   phases: Phase[]
   gates?: Record<string, Gate>
   reviews?: Record<string, Review>
-  roles?: Partial<Record<'reviewer' | 'checker' | 'tester', { agents?: string[]; describe?: string }>>
+  roles?: Partial<Record<'reviewer' | 'checker' | 'tester', { agents?: string[]; describe?: string }>> & {
+    matrix?: Record<string, string> // review lens or run kind → model-matrix role (D-45 C1)
+  }
   replaces?: Record<string, string>
   planDrift?: { ignore: string[] }
   source?: string // the file it was read from; set by resolveWorkflows, never written in a file
@@ -140,9 +143,11 @@ export type NavState = {
   turnRoles: Role[]
   marked: boolean // a mark line was shown in this session (D-9)
   markWarned: boolean // the missing-mark warning was given once
+  mark: null | { change: string; stage: string; risk: boolean } // the last mark line: its change and stage, and whether it recorded a risk (D-4)
   workerThisTurn: boolean // the lead spawned an implementer or code-reviewer in this turn
   turnEvents: ({ kind: 'skill'; name: string; agent: string } | { kind: 'tool' | 'spawn'; agent: string })[]
   agentCalls: Record<string, number> // tool calls per subagent (PD-6)
+  gateRuns: Record<string, number> // full-gates runs per subagent (D-5)
   shipLog: ({ kind: 'spawn'; role: Role } | { kind: 'ship' })[] // per change (PD-9)
   hygieneEvents: HygieneEvent[] // since the last safe point or task boundary
   offer: 'compact' | 'fresh' | null

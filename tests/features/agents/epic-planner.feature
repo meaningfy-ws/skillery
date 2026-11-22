@@ -6,8 +6,15 @@ Feature: epic-planner shapes an EPIC and derives a gated PLAN with the person
   one round at a time, and writes the change once no decision is open.
 
   Background:
-    Given the epic-planner agent is installed with skills `epic-planning`, `clarity-gate`, `bdd-gherkin`, `stream-coding`
+    Given the epic-planner agent is installed with skills `epic-planning`, `clarity-gate`, `bdd-gherkin`
     And the person starts a session with seeds for a new change
+
+  # Traces to: D-16, DEC-16; spec epic-shape (Planning effort follows the appetite).
+  Scenario: The preload stands and the planner loads nothing twice
+    When the person starts the session
+    Then `epic-planning`, `clarity-gate` and `bdd-gherkin` are preloaded and `stream-coding` is not
+    And the planner does not load `epic-planning` again with the Skill tool
+    And it keeps the `Skill` tool to load a skill on demand, as a lead
 
   Scenario Outline: Open decisions are asked in the session, in one round
     Given the seeds leave <open_decisions> decisions open

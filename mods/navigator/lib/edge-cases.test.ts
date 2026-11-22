@@ -510,13 +510,15 @@ test('s3 roleOf: a role regex that does not compile classes as other and never t
   assert.doesNotThrow(() => run(workflows([w]), read(change(3, 9)), spawnS('general-purpose', '(')))
 })
 
-test('s3 PD-8: one reviewer per turn over three turns is fine on SMALL; two in a turn over-spawn; LARGE allows 6', () => {
+test('s3 PD-8: one reviewer per turn over three turns is fine on SMALL; two in a turn over-spawn; LARGE allows 3, and 6 on a recorded risk (D-4)', () => {
   const s = run({ kind: 'ThresholdsRead', id: id(), raw: THRESHOLDS }, workflows(), read(change(3, 9, { appetite: 'SMALL' })),
     spawnS('code-reviewer'), turnEnd(10), spawnS('code-reviewer'), turnEnd(10), spawnS('code-reviewer'))
   assert.ok(!keys(s).some(k => k.startsWith('process:overspawn:')), keys(s).join())
   assert.equal(overspawn(epicDelivery, 'SMALL', 't', ['reviewer', 'reviewer']).length, 1)
-  assert.equal(overspawn(epicDelivery, 'LARGE', 't', Array(6).fill('reviewer')).length, 0)
-  assert.equal(overspawn(epicDelivery, 'LARGE', 't', Array(7).fill('reviewer')).length, 1)
+  assert.equal(overspawn(epicDelivery, 'LARGE', 't', Array(3).fill('reviewer')).length, 0)
+  assert.equal(overspawn(epicDelivery, 'LARGE', 't', Array(4).fill('reviewer')).length, 1)
+  assert.equal(overspawn(epicDelivery, 'LARGE', 't', Array(6).fill('reviewer'), true).length, 0)
+  assert.equal(overspawn(epicDelivery, 'LARGE', 't', Array(7).fill('reviewer'), true).length, 1)
   assert.equal(overspawn(epicDelivery, 'LARGE', 't', ['reviewer', 'checker', 'tester', 'other']).length, 0)
 })
 

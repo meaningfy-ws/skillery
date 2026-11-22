@@ -1,0 +1,17 @@
+{
+  "roles": {
+    "lead": "opus",
+    "planner": "opus",
+    "builder": "sonnet",
+    "fixer": "sonnet",
+    "reviewer-single": "sonnet",
+    "reviewer-merged": "opus",
+    "checker": "sonnet",
+    "cold-reader": "sonnet",
+    "explorer": "haiku",
+    "attack": "opus",
+    "gate-run-1": "opus",
+    "gate-run-2": "sonnet",
+    "spec-delta": "sonnet"
+  }
+}

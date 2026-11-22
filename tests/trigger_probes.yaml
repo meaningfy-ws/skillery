@@ -77,10 +77,23 @@ probes:
     expect: bdd-gherkin
   - probe: "review this change against the cosmic-python layers before the PR"
     expect: meaningfy-code-review
+  # stage-check (D-3): the checker's own method, against the code review it must not be mistaken for.
+  - probe: "check stage 2 against its briefs and the accepted findings, and give a pass or fail verdict per item"
+    expect: stage-check
+    near_miss_of: meaningfy-code-review
+  - probe: "run the pre-PR review of this diff through the L1 to L5 lenses"
+    expect: meaningfy-code-review
+    near_miss_of: stage-check
   # code-reviewer (D-13): several lenses in one dispatch only with the review set's or a recorded decision's authority.
   - probe: "dispatch one code-reviewer for lenses L1 and L2 on this small stage, per D-3 under Delivery decisions"
     expect: meaningfy-code-review
   - probe: "how many reviewers does this small stage need, and record the decision in design.md"
+    expect: epic-delivery
+    near_miss_of: meaningfy-code-review
+  # code-review default (D-4): two grouped runs, five single lenses as the opt-in deep review.
+  - probe: "run the two grouped review passes, L1+L2 and L3+L4+L5, each reporting per lens id, on this change"
+    expect: meaningfy-code-review
+  - probe: "what review set does a LARGE stage get and when does a recorded risk raise it to five lenses"
     expect: epic-delivery
     near_miss_of: meaningfy-code-review
   - probe: "set up my Obsidian vault and connect it to Google Drive"
@@ -279,6 +292,11 @@ probes:
     expect: session-retrospective
     near_miss_of: epic-delivery
   - probe: "which of my rules were never loaded in Langfuse this week"
+    expect: rule-steward
+    near_miss_of: session-retrospective
+  - probe: "run the Langfuse usage report for the last two weeks and read me the totals"
+    expect: session-retrospective
+  - probe: "groom my rules usage: which rules are never loaded or never cited"
     expect: rule-steward
     near_miss_of: session-retrospective
   # test-suite-care D-16 (task 1.5): the skill and its two neighbours.

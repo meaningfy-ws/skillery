@@ -27,7 +27,7 @@ A PLAN's `design.md` says "retry the upload a few times, then fail gracefully"; 
 2. Apply the 13-item checklist (7 foundation + 6 document-architecture). Item 1 (Actionable) and
    item 12 (Deep Links) fail: "a few", "gracefully" and "as usual" decide nothing. Read
    `references/clarity-gate-checklist.md` whenever you run the full gate: it adds the 13 items, the
-   weighted 6-criterion rubric, the score interpretation, the self-assessment questions and the
+   minimums by appetite, the weighted 6-criterion rubric, the score reading and the
    failure-recovery table.
 3. Score against the 6 criteria: actionability, specificity, consistency, structure,
    disambiguation, reference clarity. Result: 7/10.

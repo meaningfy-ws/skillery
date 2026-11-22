@@ -35,7 +35,7 @@ artifact — the shared pre-commit/CI config and the per-CLI Claude/opencode age
 | architecture / cosmic-python | 4 | git · ci | cosmic-python, architecture |
 | conceptual-modelling / LinkML | 3 | git · agent | conceptual-modelling |
 | architecture (ADRs, contracts) | 4 | ci · git | architecture, meaningfy-release |
-| GitNexus (once per task) | 3 | agent · git | the `AGENTS.md` GitNexus block |
+| GitNexus (stage start, before the stage commit) | 3 | agent · git | the `AGENTS.md` GitNexus block |
 | spine phase-gates | 6 | agent · ci | clarity-gate, bdd-gherkin, epic-planning, spec-stewardship, superpowers:brainstorming |
 | code-review phase-gates | 5 | agent · ci | meaningfy-code-review, guardrails, superpowers:receiving-code-review |
 | meta / agent discipline | 8 | agent | superpowers (using/verification), memory-systems, guardrails, meaningfy-git-workflow |
