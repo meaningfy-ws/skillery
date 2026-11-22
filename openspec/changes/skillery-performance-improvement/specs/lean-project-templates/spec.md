@@ -55,9 +55,9 @@ worktree is activated as its own Serena project at the worktree's path (D-13).
 - **THEN** the note tells it to activate that path as its own project, and symbol search runs against the worktree's files, not the main checkout's
 
 ### Requirement: Polling is denied and gates have one owner
-The polling denial is the `no-poll-loops` mod of `meaningfy-core`, which every Claude Code session
-with the plugin runs; `project-setup` SHALL ship no second hook and `AGENTS.md.tmpl` SHALL name that
-mod and `quiet-tools` as the hooks the session runs (D-49). `AGENTS.md.tmpl`
+The polling denial SHALL be the `no-poll-loops` mod of `meaningfy-core`, which every Claude Code
+session with the plugin runs; `project-setup` SHALL ship no second hook and `AGENTS.md.tmpl` SHALL
+name that mod and `quiet-tools` as the hooks the session runs (D-49). `AGENTS.md.tmpl`
 §Project specifics SHALL ship the gate-shape table of `epic-delivery`'s stage loop: narrow checks,
 task gate, full gates, docs gate, each with its one moment and one owner (D-13).
 
