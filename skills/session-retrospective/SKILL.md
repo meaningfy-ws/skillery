@@ -1,6 +1,6 @@
 ---
 name: session-retrospective
-description: "Use this skill after an EPIC is archived, or before a decision about delivery cost or process (for example how much testing a stage deserves), to review where agent-session time and money actually went: run the digest and report scripts over the CLI's local transcripts, then read the signals and the rounds table instead of guessing. Owns running and reading that review. The mark line is defined by epic-delivery; the Langfuse usage report of rules is rule-steward."
+description: "Use this skill after an EPIC is archived, or before a decision about delivery cost or process (for example how much testing a stage deserves), to review where agent-session time and money actually went: run the digest and report scripts over the CLI's local transcripts, then read the signals and the rounds table instead of guessing. Owns running and reading that review, and the Langfuse usage report of sessions. The mark line is defined by epic-delivery; the Langfuse usage report of rules is rule-steward."
 license: Apache 2.0
 metadata:
   purpose: software-development
@@ -53,6 +53,9 @@ python3 <this skill's folder>/scripts/epic_report.py ~/retro/2026-11-15
   stage with no lines is unmeasured, not free.
 - **Count Langfuse by `tool_id`, never by spans.** It holds about a third fewer events than the
   transcripts and may repeat a long turn; the scripts read the transcripts for that reason.
+- Read `references/langfuse-report.md` when you write a usage report from Langfuse or take an
+  inventory of installed skills: it adds the eight queries with their arguments, the pinned fields,
+  the gates-passed count, the per-stage proxies and the inventory steps.
 - **Never commit a digest.** It holds prompts, reports and commands. Keep it outside the repository
   and share numbers only, never text. Findings belong in the EPIC's notes, not in this skill.
 - **One run, one question.** State what you want to learn (which phase costs most; do reviews
@@ -78,8 +81,8 @@ python3 <this skill's folder>/scripts/epic_report.py ~/retro/2026-11-15
 
 ## Boundary & Related Skills
 
-**Owns:** running the two scripts, reading `signals.txt` and `rounds.tsv`, and the caveats on what
-the numbers mean.
+**Owns:** running the two scripts, reading `signals.txt` and `rounds.tsv`, the caveats on what
+the numbers mean, and the Langfuse usage report and inventory of the sessions.
 
 **Delegates:** the mark line and the result lines, and the duty to write them → `epic-delivery`
 (shaping and planning cite it from `epic-planning`); the Langfuse usage report of the owner's rules
