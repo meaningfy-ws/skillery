@@ -338,6 +338,17 @@ compaction after `proposal.md`, a fresh session per EPIC.
   expectation of the old implementer tool list in the installer's tests; it is updated in the
   same pass. Under the floor: L3+L4+L5 W2 (`small_stage` retirement, stage 4), W3 to W6 and
   S1 to S7 (W1 is C1); all candidates for stage 4's navigator work or the docs stage.
+- **D-38** Stage 3 tester (36 tests, 14 failed first, one of them a test error). Accepted, all in
+  the validator or the mark revive: T2/T3 `risk_reviewers` below `reviewers` or 0 rejected (S3);
+  T4 to T7 empty group, empty list, duplicate lens, lens outside L1 to L5 rejected (W3); T8/T9
+  `reviewers` (and `small_stage.reviewers`) must equal the group count; T10 `risk_reviewers` is
+  rejected below LARGE (D-4); T11/T12 a revived mark with a non-boolean `risk` or no `change`
+  never records a risk. Under the floor: T1 one mark per session, not per change (one EPIC per
+  session is the rule; a per-change map is stage 4's), T13 the `+`, `1.`, `>` list markers
+  (pre-existing regex class), T14 the tester's own over-strict backtick assertion (deleted), the
+  two upstream notes (a mark that fails to parse leaves the previous in force, by design; the
+  over-spawn count keeps its first text). The failed-first tests of accepted items are kept and
+  moved into `workflow.test.ts`, `mark.test.ts` and `dispatch.test.ts`; the others deleted.
 
 ## Open Questions
 
