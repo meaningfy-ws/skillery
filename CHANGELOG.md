@@ -14,12 +14,30 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ### Added
 
+- **Manual test scenarios are Gherkin features.** `bdd-gherkin` states that a check a person runs
+  is a `.feature` tagged `@manual` in `tests/manual/`, with no step definitions and its runs
+  recorded as evidence; `epic-planning`, the clarity checklist, `test-strategy` and the acceptance
+  demo point to it, and the scaffold creates `tests/manual/` (#304).
+- **The adversarial tester runs right after the riskiest task.** From LARGE up, the lead names the
+  stage's riskiest task in Prepare and the tester runs on that task's diff right after its
+  commit, again at Challenge only if the rest of the stage still needs it (#144).
+- **A scaffolded repository's CI is light; its local gate runs in parallel.** CI runs the spec
+  check and the linters only; `make check-all` runs its checks as separate targets with
+  `make -k -O -j$(JOBS)`, and the PR body carries its result line (#197).
 - **The devops engineer follows a repository's own instructions.** `devops-engineer` now loads
   `corpus-repository`, as the lawyer does, to read and follow the `AGENTS.md`, docs and checks of
   each infrastructure repository (#187).
 
 ### Fixed
 
+- **Installs from `releases` work on Windows.** The release workflow publishes real files under
+  `bundles/`, never symlinks, which git on Windows checked out as text files so no skill loaded
+  (#176).
+- **The navigator speaks plainly and keeps a change's gates.** Its warnings name a subagent by
+  type and task and carry no config key; a change's passed gates survive a switch to another
+  branch and back (#206, #207).
+- **Workflow gates match their own phase.** The architecting workflow gated each phase on the next
+  phase's artefact; the release runbook gains the validate step its workflow had (#225).
 - **The lawyer no longer holds Overleaf write tools.** `lawyer` gets the Overleaf connector's
   read tools only and changes a contract through the repository's own git flow, as the contract
   repository requires (#194).
