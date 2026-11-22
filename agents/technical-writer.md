@@ -6,7 +6,7 @@ description: >
   opens a session to document, explain or summarise a module, a project or a change. Not for
   delegation; not for changing code or specs.
 type: lead
-model: opus
+model: sonnet
 color: pink
 tools: [Read, Grep, Glob, Edit, Write, Skill, Agent]
 skills:
@@ -16,6 +16,7 @@ skills:
   - meaningfy-voice
   - guardrails
 metadata:
+  role: cold-reader
   purpose: content
   area: cross-cutting
   subject: generic

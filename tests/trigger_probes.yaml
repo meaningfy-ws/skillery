@@ -77,6 +77,13 @@ probes:
     expect: bdd-gherkin
   - probe: "review this change against the cosmic-python layers before the PR"
     expect: meaningfy-code-review
+  # stage-check (D-3): the checker's own method, against the code review it must not be mistaken for.
+  - probe: "check stage 2 against its briefs and the accepted findings, and give a pass or fail verdict per item"
+    expect: stage-check
+    near_miss_of: meaningfy-code-review
+  - probe: "run the pre-PR review of this diff through the L1 to L5 lenses"
+    expect: meaningfy-code-review
+    near_miss_of: stage-check
   # code-reviewer (D-13): several lenses in one dispatch only with the review set's or a recorded decision's authority.
   - probe: "dispatch one code-reviewer for lenses L1 and L2 on this small stage, per D-3 under Delivery decisions"
     expect: meaningfy-code-review

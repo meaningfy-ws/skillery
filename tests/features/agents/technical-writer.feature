@@ -9,6 +9,11 @@ Feature: technical-writer writes documentation and has a cold reader test it
     Given the technical-writer agent is installed with skills `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails`
     And the person starts a session in the repository to document
 
+  # Traces to: D-2; spec subagent-dispatch (The subagent's agent and model are the cheapest that fit).
+  Scenario: Its role and model follow the matrix
+    When `agents/technical-writer.md` is read
+    Then its `metadata.role` is `cold-reader` and its `model:` is the mid model the matrix names for that role
+
   Scenario Outline: The lead writes, tests or refuses
     Given the person asks to <request>
     When the technical-writer handles the request

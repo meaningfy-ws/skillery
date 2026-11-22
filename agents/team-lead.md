@@ -16,6 +16,7 @@ skills:
   - spec-stewardship
   - meaningfy-git-workflow
 metadata:
+  role: lead
   purpose: software-development
   area: coding
   subject: spec-driven

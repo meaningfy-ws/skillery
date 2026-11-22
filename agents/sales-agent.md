@@ -17,6 +17,7 @@ skills:
   - sales-qualification
   - sales-conversations
 metadata:
+  role: builder
   purpose: crm
   area: sales
   subject: generic

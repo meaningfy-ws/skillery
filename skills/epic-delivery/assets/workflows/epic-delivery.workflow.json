@@ -63,7 +63,8 @@
   "roles": {
     "reviewer": { "agents": ["code-reviewer"] },
     "checker":  { "describe": "\\bcheck(er)?\\b" },
-    "tester":   { "describe": "\\b(adversarial|tester)\\b" }
+    "tester":   { "describe": "\\b(adversarial|tester)\\b" },
+    "matrix":   { "reviewer": "reviewer-single", "checker": "checker", "tester": "builder" }
   },
   "replaces": { "writing-plans": "epic-planning", "executing-plans": "epic-delivery" },
   "planDrift": { "ignore": ["openspec/changes/**", "bundles/**", ".claude-plugin/**", "tools/opencode-catalogue.json",

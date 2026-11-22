@@ -70,6 +70,7 @@
         "clarity-gate",
         "bdd-gherkin",
         "meaningfy-code-review",
+        "stage-check",
         "cosmic-python",
         "test-suite-care",
         "project-setup",
@@ -81,6 +82,7 @@
         "team-lead",
         "implementer",
         "code-reviewer",
+        "checker",
         "release-manager"
       ]
     },
@@ -124,21 +126,17 @@
     }
   ],
   "agents": {
-    "code-reviewer": {
-      "name": "code-reviewer",
-      "description": "Mircea the reviewer reviews a change through one review lens (L1–L5) or one lens group of the review set (L1+L2, L3+L4+L5), or several lenses where a recorded decision authorises it, and reports prioritised findings per lens id; read-only. Use when a caller dispatches a pre-PR review, by default two grouped runs and for a recorded risk five single lenses (per meaningfy-code-review), or one pass for a TINY or SMALL appetite. Not for fixing code (implementer) or discussing findings.\n",
+    "checker": {
+      "name": "checker",
+      "description": "Paula the checker checks one finished stage of an OpenSpec change against its briefs, decisions and spec scenarios, and reports a verdict per item; read-only. Use when a lead dispatches the stage check, once per stage, where the appetite's review set has one. Not for reviewing code through lenses (code-reviewer) or fixing what it finds (implementer).\n",
       "type": "delegated",
-      "model": "opus",
+      "model": "sonnet",
       "color": "yellow",
       "tools": [
         "Read",
         "Grep",
         "Glob",
-        "Bash",
-        "Skill",
-        "ToolSearch",
-        "mcp__serena__*",
-        "mcp__ast-grep__*"
+        "Bash"
       ],
       "disallowedTools": [
         "Write",
@@ -147,10 +145,45 @@
         "Agent"
       ],
       "skills": [
-        "meaningfy-code-review",
-        "cosmic-python"
+        "stage-check"
       ],
       "metadata": {
+        "role": "checker",
+        "purpose": "software-development",
+        "area": "coding",
+        "subject": "spec-driven",
+        "posture": "precise",
+        "stage": "verify",
+        "maturity": "experimental"
+      }
+    },
+    "code-reviewer": {
+      "name": "code-reviewer",
+      "description": "Mircea the reviewer reviews a change through one review lens (L1–L5) or one lens group of the review set (L1+L2, L3+L4+L5), or several lenses where a recorded decision authorises it, and reports prioritised findings per lens id; read-only. Use when a caller dispatches a pre-PR review, by default two grouped runs and for a recorded risk five single lenses (per meaningfy-code-review), or one pass for a TINY or SMALL appetite. Not for fixing code (implementer) or discussing findings.\n",
+      "type": "delegated",
+      "model": "sonnet",
+      "color": "yellow",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Bash",
+        "ToolSearch",
+        "mcp__serena__get_symbols_overview",
+        "mcp__serena__find_symbol",
+        "mcp__serena__find_referencing_symbols"
+      ],
+      "disallowedTools": [
+        "Write",
+        "Edit",
+        "NotebookEdit",
+        "Agent"
+      ],
+      "skills": [
+        "meaningfy-code-review"
+      ],
+      "metadata": {
+        "role": "reviewer-single",
         "purpose": "software-development",
         "area": "coding",
         "subject": "python",
@@ -180,6 +213,7 @@
         "linkml-engineering"
       ],
       "metadata": {
+        "role": "lead",
         "purpose": "modelling",
         "area": "coding",
         "subject": "modelling",
@@ -211,6 +245,7 @@
         "infrastructure-security"
       ],
       "metadata": {
+        "role": "lead",
         "purpose": "devops",
         "area": "operations",
         "subject": "delivery-infra",
@@ -238,10 +273,10 @@
       "skills": [
         "epic-planning",
         "clarity-gate",
-        "bdd-gherkin",
-        "stream-coding"
+        "bdd-gherkin"
       ],
       "metadata": {
+        "role": "planner",
         "purpose": "software-development",
         "area": "coding",
         "subject": "spec-driven",
@@ -263,18 +298,22 @@
         "Glob",
         "Grep",
         "Bash",
-        "Skill",
         "ToolSearch",
-        "mcp__serena__*",
-        "mcp__ast-grep__*"
+        "mcp__serena__get_symbols_overview",
+        "mcp__serena__find_symbol",
+        "mcp__serena__find_referencing_symbols",
+        "mcp__serena__replace_symbol_body",
+        "mcp__serena__insert_after_symbol",
+        "mcp__ast-grep__find_code"
       ],
       "disallowedTools": [
         "Agent"
       ],
       "skills": [
-        "superpowers:test-driven-development"
+        "cosmic-python"
       ],
       "metadata": {
+        "role": "builder",
         "purpose": "software-development",
         "area": "coding",
         "subject": "python",
@@ -287,7 +326,7 @@
       "name": "infra-reviewer",
       "description": "Lilia the infrastructure reviewer reviews one infrastructure change — an OpenSpec change's plan or a PR in either infra repository — against the devops skills and reports findings, blast radius, undo path and stack conformance; read-only. Use when a caller wants the four-eyes review before executing a plan, mid-implementation or before merging. Not for applying or fixing changes (devops-engineer).\n",
       "type": "delegated",
-      "model": "opus",
+      "model": "sonnet",
       "color": "yellow",
       "tools": [
         "Read",
@@ -307,6 +346,7 @@
         "infrastructure-security"
       ],
       "metadata": {
+        "role": "reviewer-single",
         "purpose": "devops",
         "area": "operations",
         "subject": "delivery-infra",
@@ -339,6 +379,7 @@
         "meaningfy-git-workflow"
       ],
       "metadata": {
+        "role": "lead",
         "purpose": "contracts",
         "area": "legal",
         "subject": "generic",
@@ -372,6 +413,7 @@
         "infrastructure-security"
       ],
       "metadata": {
+        "role": "builder",
         "purpose": "devops",
         "area": "operations",
         "subject": "delivery-infra",
@@ -399,6 +441,7 @@
         "executive-communication"
       ],
       "metadata": {
+        "role": "builder",
         "purpose": "proposals",
         "area": "sales",
         "subject": "semantic-data",
@@ -429,6 +472,7 @@
         "guardrails"
       ],
       "metadata": {
+        "role": "lead",
         "purpose": "devops",
         "area": "coding",
         "subject": "git-release",
@@ -465,6 +509,7 @@
         "sales-conversations"
       ],
       "metadata": {
+        "role": "builder",
         "purpose": "crm",
         "area": "sales",
         "subject": "generic",
@@ -494,6 +539,7 @@
         "conceptual-modelling"
       ],
       "metadata": {
+        "role": "lead",
         "purpose": "modelling",
         "area": "coding",
         "subject": "modelling",
@@ -528,6 +574,7 @@
         "meaningfy-git-workflow"
       ],
       "metadata": {
+        "role": "lead",
         "purpose": "software-development",
         "area": "coding",
         "subject": "spec-driven",
@@ -540,7 +587,7 @@
       "name": "technical-writer",
       "description": "Viorica the technical writer writes and improves documentation with the person: reads the code and existing docs, drafts clearly in the right genre and has a cold reader test it. Use when someone opens a session to document, explain or summarise a module, a project or a change. Not for delegation; not for changing code or specs.\n",
       "type": "lead",
-      "model": "opus",
+      "model": "sonnet",
       "color": "pink",
       "tools": [
         "Read",
@@ -559,6 +606,7 @@
         "guardrails"
       ],
       "metadata": {
+        "role": "cold-reader",
         "purpose": "content",
         "area": "cross-cutting",
         "subject": "generic",

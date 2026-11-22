@@ -6,7 +6,7 @@ description: >
   read-only. Use when a caller wants the four-eyes review before executing a plan, mid-implementation
   or before merging. Not for applying or fixing changes (devops-engineer).
 type: delegated
-model: opus
+model: sonnet
 color: yellow
 tools: [Read, Grep, Glob, Bash, Skill]
 disallowedTools: [Write, Edit, NotebookEdit]
@@ -15,6 +15,7 @@ skills:
   - stack-operations
   - infrastructure-security
 metadata:
+  role: reviewer-single
   purpose: devops
   area: operations
   subject: delivery-infra
