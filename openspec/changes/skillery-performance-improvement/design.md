@@ -459,6 +459,14 @@ compaction after `proposal.md`, a fresh session per EPIC.
   ships no second hook. The gate-shape table is the `Checks` block of the AGENTS template, filled
   with the one-builder-gate, lead-full-gates-once shape. GitNexus impact: `mods/` and the templates
   are outside the index; the change check runs before the stage's last commit.
+- **D-50** Stage 5 review set: 645 added lines outside the spine and the generated files, most of
+  them tests and the mod; the two grouped runs stand as the LARGE default merged in stage 3 (as
+  D-43 read it); the tester runs (code changed: the mod, the scaffold script); the checker is a
+  general-purpose subagent (the `checker` agent is on develop, not installed). The delta
+  `lean-project-templates` was aligned by the lead with what was built: the binding check is a
+  Makefile target (`check-bindings`), the gate table has five rows; the `make validate` probe of
+  "A scaffolded repository passes its own validate" is owed to the docs stage, `check-bindings`
+  stands in (the Makefile template has no `validate` target).
 
 ## Open Questions
 

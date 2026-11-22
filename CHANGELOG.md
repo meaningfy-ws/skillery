@@ -51,6 +51,14 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   active change's `design.md` to its appetite's budget. Builders are briefed from the new builder
   card, with the rules pasted from `rules.py load --brief` and the five Serena essentials. Stage 4
   of `skillery-performance-improvement`.
+- **Quiet tools.** A tool call returns a result, not a log: `guardrails` §6 states the principle
+  and the new `quiet-tools` mod of `meaningfy-core` warns, never denies, when a Bash command
+  reads a file with `sed -n`, `cat`, `head` or `tail`, greps a path, or runs `pytest -v`.
+  `project-setup`'s templates give a new repository quiet gates (`pytest -q -rfE`, coverage to
+  xml), an AGENTS template cut to what is specific to the repository with a five-row gate table,
+  `make check-bindings` against a GitNexus block in `CLAUDE.md`, and a Serena project file for
+  the archetype's languages. The stage loop allows `gh pr merge --auto` only where the repository
+  has required checks. Stage 5 of `skillery-performance-improvement`.
 
 ## [3.21.0] - 2026-11-17
 
