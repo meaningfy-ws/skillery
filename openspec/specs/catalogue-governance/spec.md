@@ -6,7 +6,9 @@ Govern how the catalogue is organised: skills grouped into role bundles, plus on
 with single ownership, a
 flat skill layout, and external method skills (superpowers) landing in the spine rather than a
 parallel spec tree. The durable rules the validator and contributors hold the catalogue to.
+
 ## Requirements
+
 ### Requirement: Skills are organised into role bundles with single ownership
 
 The catalogue SHALL group skills, agents and mods into **bundles** declared in `bundles.yaml`: the
@@ -350,14 +352,16 @@ only what is Claude-only and point to the table (DEC-8, DEC-12, D-13, D-14).
 
 ### Requirement: Code checks run once per task
 The instruction template and this repository's `AGENTS.md` SHALL say, the latter in its GitNexus
-block between its markers, that the impact check runs once per task, before the brief, on the task's
-symbols, and the change check once before the task's commit, both by the lead; that a session
+block between its markers, that the code index and the impact check run once at the start of a
+piece of work (a stage, or a task worked alone), the impact on each task's symbols before its
+brief, and the change check once before that piece's last commit, both by the lead; that a session
 without a lead runs the impact check once before its first edit and the change check once before
-its commit, and brings a HIGH or CRITICAL result to the developer; and SHALL NOT say
-"before every edit" or "before every commit". The implementer SHALL run neither; a HIGH or
-CRITICAL impact result SHALL reach the developer through the lead before the brief. The
-repository SHALL re-index with `npx gitnexus analyze --skip-agents-md` so that the edited block
-stays, and the template's re-index line SHALL name that full command (DEC-11, D-15, D-32).
+its commit, and brings a HIGH or CRITICAL result to the developer; and SHALL NOT say "before every
+edit", "before every commit" or "per lens". The implementer and the reviewer SHALL run neither and
+SHALL take the impact result from the brief; a HIGH or CRITICAL impact result SHALL reach the
+developer through the lead before the brief. The repository SHALL re-index with
+`npx gitnexus analyze --skip-agents-md` so that the edited block stays, and the template's re-index
+line SHALL name that full command (DEC-11, D-7).
 
 #### Scenario: A session without a lead
 - **WHEN** a single session makes a direct-PR fix with no lead
@@ -365,7 +369,7 @@ stays, and the template's re-index line SHALL name that full command (DEC-11, D-
 
 #### Scenario: A task is briefed
 - **WHEN** the lead briefs a builder for a task
-- **THEN** the impact check has run once on the task's symbols and the builder runs none
+- **THEN** the impact check has run once on the task's symbols at the stage's start, at most ten lines of its result are in the brief, and the builder runs none
 
 #### Scenario: A HIGH impact result
 - **WHEN** the impact check on a task's symbols returns HIGH or CRITICAL
@@ -373,11 +377,15 @@ stays, and the template's re-index line SHALL name that full command (DEC-11, D-
 
 #### Scenario: The lead can run the checks
 - **WHEN** the `team-lead` agent is read
-- **THEN** its `tools:` list carries `mcp__gitnexus__*` and `ToolSearch`, so the lead can run the per-task checks, and its description is unchanged
+- **THEN** its `tools:` list carries `mcp__gitnexus__*` and `ToolSearch`, so the lead can run the checks at the two points, and its description is unchanged
 
 #### Scenario: A re-index
 - **WHEN** the repository is re-indexed with `--skip-agents-md`
-- **THEN** the GitNexus block still says once per task
+- **THEN** the GitNexus block still says the two points of a piece of work
+
+#### Scenario: A stage ends
+- **WHEN** the lead prepares the stage's last commit before its pull request
+- **THEN** the index, the change check and the impact check have run once since the stage's tasks were built, and no reviewer ran an impact check of its own
 
 ### Requirement: An agent without a local skill has no primary skill
 An agent whose `skills:` list holds no local skill (none un-namespaced and not external) SHALL have
@@ -387,4 +395,3 @@ zero or several bundles or without its file (D-25).
 #### Scenario: The implementer preloads only an external skill
 - **WHEN** `implementer` lists only `superpowers:test-driven-development` under `skills:`
 - **THEN** the bundle check reports no missing primary skill and still checks that the agent is in exactly one bundle
-
