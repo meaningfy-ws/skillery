@@ -36,52 +36,52 @@ readiness check passes; `design.md` + `tasks.md` are derived, attacked (a skill 
 from a shaped EPIC; write the `phase=plan` line again when you reach step 6. In the reply, never in
 a file (form: `epic-delivery`).
 
-1. **Seed intake** (`/opsx:explore`). Read every human seed and supporting input — seed notes,
-   architecture/ADRs, sample/test data, free notes, and for brownfield an existing-codebase analysis
-   (optionally via GitNexus). Enumerate what you read. Read `references/seed-intake.md` before you
+1. **Seed intake** (`/opsx:explore`). Read every seed and supporting input (notes, architecture,
+   ADRs, sample data, and for brownfield a codebase analysis) and enumerate what you read. Read `references/seed-intake.md` before you
    start eliciting: it adds the seed sources, the elicitation discipline, the layout of
    `inputs/` and the format of the Q&A record.
 2. **Elicit** (`/opsx:explore` + `superpowers:brainstorming`). Drive a *myriad of clarifying
    questions*, **one concern per question, asked together in rounds**, to surface and decide every ambiguity, conflict, and
    assumption **before** writing the EPIC. If `superpowers` is not installed, offer to install it
    (`dependencies.yaml`); if the person declines, say that you work without it and lose its
-   brainstorming discipline, not this interview. After each round, summarise what you understood and
-   confirm. Make no silent assumptions. **Include a test-scenario interview**: help the human enumerate
+   brainstorming discipline, not this interview. Rounds per EPIC are capped by appetite: `TINY` and
+   `SMALL` two, `MEDIUM` three, `LARGE` and above four; at the cap the gaps still open are recorded
+   in the EPIC as assumptions for the developer, and no further round is sent. Confirm what you understood inside the
+   next round, never in a turn of its own. Make no silent assumptions. **Include a test-scenario interview**: help the human enumerate
    what the EPIC must *prove* — key assertions, scenarios, edge cases — so the design phase can author
-   `.feature` coverage (handed to `bdd-gherkin`; the PLAN's design half
-   references that coverage and `clarity-gate` scores it). Step definitions stay in implement.
+   `.feature` coverage (handed to `bdd-gherkin`, scored by `clarity-gate`). Step definitions stay in implement.
    **Include a risk question**: what could go wrong for this EPIC — in the world around it, not in
    its text — how likely, how bad, and what we do about it (mitigate, accept, or cut scope). Each
    risk gets a `RISK-` id; scope traps go to Rabbit-holes, the rest to the PLAN's Risks.
    When run inside a subagent (it cannot ask), return the open concerns as one question round to
    the caller instead of asking.
 3. **Archive the seeds.** Write the captured seeds and the Q&A record to `changes/<id>/inputs/`,
-   marked **secondary** and **never deleted or groomed** — the authored EPIC supersedes them but does
-   not replace them (the EPIC is the primary, shaped truth).
+   marked **secondary** and **never deleted or groomed**; the EPIC is the primary, shaped truth.
 4. **Shape the EPIC** (`/opsx:propose` → `proposal.md`). Use the `meaningfy` schema's
    `proposal.md` template (`openspec/schemas/meaningfy/templates/proposal.md` in a spine-wired repo):
    appetite, why, solution outline, **key decisions** (each with a citeable `DEC-` id), rabbit-holes,
    **no-gos** (mandatory). Cite the EPIC's **golden-thread parents** (the requirement or architecture it
    derives from). Read `references/golden-thread.md` when you cite a parent or mint an id: it adds
    the traceability chain, the id prefixes and what is enforced today. Keep it at shaping
-   altitude — leave implementation room.
+   altitude. Once `proposal.md` is saved, compact the session, or reset with the hand-over note (a safe point: the state is in the
+   artefacts), then derive the PLAN.
 5. **EPIC readiness check** (lightweight). Before deriving the PLAN, run the **lightweight variant**
    of `clarity-gate` over the EPIC — a quick readiness pass that catches
    bet-level ambiguity (vague problem, missing no-gos, undecided key decisions). Not the full
-   ≥9/10 gate; it stops a vague EPIC producing a vague PLAN.
+   ≥9/10 gate.
 6. **Derive the PLAN** (`design.md` + `tasks.md`). From the shaped EPIC, produce the design half
-   (algorithm, concrete examples, anti-patterns, error matrix, decisions, and the elicited risks in
-   Risks / Trade-offs as `RISK-<n>`: likelihood, impact, mitigation or acceptance) and the tasks half (ordered
-   breakdown with layers/dependencies/acceptance, roadmap). Each PLAN cites its parent EPIC id
-   (golden thread). The PLAN's depth follows the appetite: a TINY or SMALL PLAN keeps the sections
+   (algorithm, examples, anti-patterns, error matrix, decisions, and the elicited risks as
+   `RISK-<n>`: likelihood, impact, mitigation or acceptance) and the tasks half (ordered
+   breakdown with layers, dependencies, acceptance, roadmap). Each PLAN cites its parent EPIC id.
+   The PLAN's depth follows the appetite: a TINY or SMALL PLAN keeps the sections
    the gate scores and stays short in each. For every test the PLAN moves or rewrites, it lists the
-   lane that still runs it in CI and what it still proves. Its mark: see *Mark first*.
-7. **Attack the PLAN.** Before the gate, try to break it, in a fresh subagent when one pays
-   (`guardrails`, *Subagent dispatch*): the input, state or order of events under which it fails,
+   lane that still runs it in CI and what it still proves.
+7. **Attack the PLAN.** Before the gate, try to break it, with the subagent use P-0006 sets for
+   the appetite (`guardrails`, *Subagent dispatch*): the input, state or order of events under which it fails,
    and the assumption which, if false, sinks it. Each counterexample becomes an error-matrix row,
    a `RISK-` entry or a PLAN fix. The gate checks the PLAN is clear; this checks it holds.
-8. **Gate the PLAN** (full `clarity-gate`, ≥9/10). Score the `design.md`+`tasks.md` pair. Block
-   progression to BDD/implementation until it passes. Below 9: list the specific gaps and **revise
+8. **Gate the PLAN** (full `clarity-gate`, ≥9/10; who runs it follows P-0006). Score the
+   `design.md`+`tasks.md` pair. Block progression to BDD/implementation until it passes. Below 9: list the specific gaps and **revise
    the PLAN** — never patch code to dodge a gap (Rule of Divergence). At every appetite and on any
    re-gate, the gate runs at most twice, the second run reading only the gaps the first listed.
    Still below 9: the gaps go to the developer as one question round, each with a recommendation
@@ -113,8 +113,8 @@ this is how an initiative becomes several, in order:
    value. The order goes into each EPIC's Rabbit-holes or Why, not into a separate plan file.
 
 The session ends with each EPIC's PLAN gated and its scenarios signed off; an EPIC shaped without
-a PLAN gets one here. Between EPIC and PLAN the session may reset with the hand-over note
-(`epic-delivery`'s `assets/templates/handover.md`).
+a PLAN gets one here. After slicing, each EPIC is shaped and planned in a fresh session started
+from the hand-over note (`epic-delivery`'s `assets/templates/handover.md`); the reset is mandatory.
 
 ## Rules
 

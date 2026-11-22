@@ -141,6 +141,10 @@ already exists; this skill is the map.
     exploring subagent (rule 5).
   - **Resume an old session only when its history is still needed**; otherwise start fresh from
     the spine and memory.
+  - **Tokens decide, percent falls back.** `fresh_offer_min_tokens`, `compact_offer_tokens` and
+    `context_warn_tokens` are the keys that decide where the CLI reports a token count; the
+    `*_percent` keys apply only when it does not. Session hygiene wins over a repository rule that
+    keeps a session past a stage boundary, and `rule-learner` flags such a candidate on its card.
 - **Enforced by:** the lead's own judgement, with navigator as a signal beside it: it reads the keys
   above from `assets/session-thresholds.json` and offers or warns, never decides. The per-CLI commands (fresh session, compact, context
   size, rewind) are in `docs/environment/dual-cli/context-commands.md`.

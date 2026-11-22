@@ -78,7 +78,8 @@ merge command, the order accept → docs stage → archive, and the check ledger
 Two people decide: the **developer** (direction, decisions, scenario sign-off, acceptance) and,
 when the model changes, the **domain expert** (validates it). The **lead** is the main session, or
 the `team-lead` agent: it talks to the developer, records decisions, writes briefs, runs impact and
-change checks, reads every diff and report, runs the stage's full gates, commits, files upstream
+change checks, reads every report and each diff's `git diff --stat` with a spot-check (the checker
+reads the full diff), compacts at a safe point past `compact_offer_tokens`, runs the stage's full gates, commits, files upstream
 issues, keeps the spine and docs current, archives and runs the validation review. Subagents do
 one job each: a **builder** one task test-first (model, code, the docs it changed; a fixer and a
 spike are builders), a **reviewer** one lens read-only, a **checker** one fresh pass per stage

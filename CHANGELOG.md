@@ -22,6 +22,14 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   tokens in a fortnight, 96.5 percent of them cached context) and one machine's inventory. Stage 1
   of `skillery-performance-improvement`; the baseline's numbers are what the next stages are
   measured against.
+- **Session hygiene decides in tokens, and a fixer has a bound.** `session-thresholds.json` gains
+  `fresh_offer_min_tokens`, `compact_offer_tokens`, `context_warn_tokens` (the percent keys stay
+  as the fallback) and `fixer_max_red_runs`; the navigator reads the token count from the session
+  usage, prints the number and unit it used, and warns when one subagent runs the full gates more
+  than the bound. `epic-planning` caps the question rounds by appetite, compacts once the proposal
+  is saved and makes the fresh session per EPIC mandatory; `epic-delivery` bounds the fixer with a
+  `blocked` report and lets the lead read `git diff --stat`; `rule-learner` flags a candidate rule
+  that keeps a session past a stage boundary. Stage 2 of `skillery-performance-improvement`.
 
 ## [3.21.0] - 2026-11-17
 

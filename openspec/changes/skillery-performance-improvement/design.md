@@ -249,6 +249,57 @@ compaction after `proposal.md`, a fresh session per EPIC.
   commit body `lead-fixed:`), the pattern D-6 makes the rule in stage 3; F4 (pin `usageType`) and
   F5 (the spec's illustrative counts) go to the spec sync at archive; F6 is the hand-over commit.
 
+- **D-27** Stage 2 runs three builders in parallel on disjoint files in the main checkout
+  (navigator code + thresholds + guardrails §6; rule-learner + epic-planning; epic-delivery), on
+  branch `feature/spi-stage-2`. GitNexus impact is not applicable: `mods/` is outside its index
+  scope and the other files are prose; the change check is `make mods` and `make validate`. A
+  new threshold key `fixer_max_red_runs: 3` carries D-5's default so the navigator can warn (2.4).
+  Task 2.5 (the stage-2 measurement) runs after the release and is left open in this stage.
+- **D-28** The navigator's offer is an action, not a text: the number and unit appear in the
+  warnings (`context 152,300 tokens mid-step (context_warn_tokens)`), the compact and fresh offers
+  stay buttons. The `session-navigation` scenario that quotes an offer text is read as the warning
+  text at the spec sync. The fixer-bound warning is keyed per agent
+  (`hygiene:fixer-bound:<agentId>`) so one agent's warning cannot hide another's; every
+  `full-gates` run by a subagent counts, red or green. The engine's `usage.context` fields are read
+  defensively (`tokens`, else `window × percent`), since no typing for `$.session.usage()` exists
+  in the repository; task 1.4's measurement confirms which fields the CLI provides.
+- **D-29** Stage 2 is a LARGE small stage: 190 added lines outside the spine and the generated
+  bundles (`git diff develop --numstat`), under the workflow's `small_stage.max_added_lines` of
+  600, low risk (a pure-function change in the navigator with its tests, and prose). The review
+  set is the small stage's two grouped runs, L1+L2 and L3+L4+L5, as `epic-delivery.workflow.json`
+  lists them; the tester runs (code changed, no `## Invariants` section); one checker.
+- **D-30** Stage 2 tester findings. Accepted (fixed in the one pass): T1 `contextTokens` treats
+  `window: 0` as a count of 0, so a 90 % session never warns (`hygiene.ts`, guard `> 0`, not
+  `>= 0`); T4 a thresholds file without `fixer_max_red_runs` leaves the fixer unbounded (default
+  3, D-5); T6 re-labelled Critical: `gateRuns[agentId]` and `agentCalls[agentId]` read
+  `Object.prototype` for ids like `constructor` (own-property access or a `Map`). Under the floor:
+  T2 the "no token count" suffix prints when a count was given but a key is missing (message
+  only); T3 `fixer_max_red_runs: 0` warns at the first run (a bound of 0 is not a supported
+  setting; the file ships 3); T5 the warning keeps its first count. Their failed-first tests are
+  deleted in the sort, listed in the PR with the reason; the kept tests cover the two
+  error-matrix rows and the accepted findings.
+- **D-31** Under the floor, stage 2 review L3+L4+L5: W1 `fixerRun` sits in `lean.ts` rather than
+  `dispatch.ts` and builds its warning by hand; W2 "default 3" repeated in two epic-delivery
+  pages; W3 the key name `fixer_max_red_runs` counts every gate run, not only red ones; W4
+  epic-delivery restates "compact at a safe point"; S1 the gate regex built in three places; S2
+  `isCount` repeated and `offer()`'s shape; S3 a partial token-key set falls back silently; S4
+  `agentCalls` never cleared; S5 guardrails §6 bullet holds two rules; S6, S7 pointers. W1, S1
+  and S2 are the refactoring candidates for stage 4's navigator work (the checker agent); the rest
+  for the docs stage.
+- **D-32** Stage 2 review L1+L2, accepted (re-labelled Critical, each a scenario of this stage's
+  deltas left without text or test): W1 the per-agent fixer-bound warning outlives the agent
+  (cleared on `SubagentFinished`, with a test); W3 the lead notes a hygiene conflict with a
+  repository rule under Open in `handover.md` (stage-loop step 6); W4 at the round cap the gaps
+  left are recorded in the EPIC as assumptions for the developer and no further round is sent;
+  W5 after `proposal.md` the planner compacts or resets with the hand-over note; W6 one
+  strict-mode test past 250,000 tokens with a fixer-bound warning denies nothing. D-28 is extended
+  to the `subagent-dispatch` scenario "A compaction offer in tokens": the number is in the warning,
+  the offer stays a button (W2). Under the floor: S1 (same as T2), S2 `usage.context?.percent`
+  (pre-existing code, docs stage), S3 (same as r2-W2).
+- **D-33** Stage 2 checker (pass): F1 `epic-planning` steps 7 and 8 point to P-0006's appetite
+  scoping, which task 3.1 writes with the owner in stage 3; until then the pointer is ahead of the
+  rule. Accepted for one stage; 3.1 closes it.
+
 ## Open Questions
 
 - Whether `/context` output is machine-readable for 1.4, or read by hand (either is acceptable).

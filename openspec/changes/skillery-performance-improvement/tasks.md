@@ -15,10 +15,10 @@
 
 ## 2. End sessions (stage 2, DEC-4, DEC-12, DEC-13)
 
-- [ ] 2.1 `session-thresholds.json`: the three token keys, percent kept as fallback; the navigator (`mods/navigator/lib/hygiene.ts`, `state.ts`, `io.ts`, `lean.ts` and their tests) reads tokens first, `window × percent` second, and prints the number and unit it used; `make mods` green; `guardrails` §Session hygiene names the keys. `subagent-dispatch` "Dispatch and hygiene thresholds are data", `session-navigation` "The navigator warns in tokens"; design.md#d-1.
-- [ ] 2.2 `guardrails`: session hygiene wins over a conflicting repository rule; `rule-learner`: a candidate rule that keeps a session past a stage boundary is flagged on the approval card. `subagent-dispatch` "A stage boundary is a fresh session"; design.md#d-1.
-- [ ] 2.3 `epic-planning`: compaction after `proposal.md` is saved, a fresh session per EPIC of an initiative, rounds capped by appetite with the confirmation inside the next round; `seed-intake.md` aligned. `epic-shape` "The PLAN is derived and gated while shaping", "Planning effort follows the appetite"; design.md#d-8.
-- [ ] 2.4 `epic-delivery`: the fixer brief carries `max_red_runs` and one pass; the `blocked` report and the lead's two options in `stage-loop.md`; the navigator warns when one subagent runs the `full-gates` command more than `max_red_runs` times (test in `mods/navigator`); the lead compacts at a safe point past `compact_offer_tokens`, reads `git diff --stat` and spot-checks, the checker reads the diff. `epic-delivery` "Findings pass a severity floor and a stage has one fix pass", "The lead stays small"; design.md#d-5, design.md#d-6.
+- [x] 2.1 `session-thresholds.json`: the three token keys, percent kept as fallback; the navigator (`mods/navigator/lib/hygiene.ts`, `state.ts`, `io.ts`, `lean.ts` and their tests) reads tokens first, `window × percent` second, and prints the number and unit it used; `make mods` green; `guardrails` §Session hygiene names the keys. `subagent-dispatch` "Dispatch and hygiene thresholds are data", `session-navigation` "The navigator warns in tokens"; design.md#d-1.
+- [x] 2.2 `guardrails`: session hygiene wins over a conflicting repository rule; `rule-learner`: a candidate rule that keeps a session past a stage boundary is flagged on the approval card. `subagent-dispatch` "A stage boundary is a fresh session"; design.md#d-1.
+- [x] 2.3 `epic-planning`: compaction after `proposal.md` is saved, a fresh session per EPIC of an initiative, rounds capped by appetite with the confirmation inside the next round; `seed-intake.md` aligned. `epic-shape` "The PLAN is derived and gated while shaping", "Planning effort follows the appetite"; design.md#d-8.
+- [x] 2.4 `epic-delivery`: the fixer brief carries `max_red_runs` and one pass; the `blocked` report and the lead's two options in `stage-loop.md`; the navigator warns when one subagent runs the `full-gates` command more than `max_red_runs` times (test in `mods/navigator`); the lead compacts at a safe point past `compact_offer_tokens`, reads `git diff --stat` and spot-checks, the checker reads the diff. `epic-delivery` "Findings pass a severity floor and a stage has one fix pass", "The lead stays small"; design.md#d-5, design.md#d-6.
 - [ ] 2.5 Measure: within seven days of the stage-2 release, §Stage 2 of the report page on the traces tagged with its version: median `LLM Call` context, share above 150 k, gates passed, against the baseline. `session-retrospective` "Usage reports form a comparable series"; design.md#d-17.
 
 ## 3. Scale verification (stage 3, DEC-3, DEC-11, DEC-13)
@@ -53,7 +53,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [x] 1.5 · [x] 1.6 · [ ] 2.1 · [ ] 2.2 · [ ] 2.3 · [ ] 2.4 · [ ] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5 · [ ] 4.6 · [ ] 4.7 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 5.4 · [ ] 5.5 · [ ] 6.1
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [x] 1.5 · [x] 1.6 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [ ] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5 · [ ] 4.6 · [ ] 4.7 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 5.4 · [ ] 5.5 · [ ] 6.1
 
 Within a stage, tasks are independent unless numbered after one they name (2.1 before 2.4's
 threshold reference; 4.1 before 4.2; 1.2 before 1.3, 1.5 and 1.6; 1.4 decides 4.2's variant);
