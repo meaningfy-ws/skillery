@@ -310,6 +310,14 @@ compaction after `proposal.md`, a fresh session per EPIC.
   `epic-delivery` prose (3.3, the stage-loop half of 3.4, the review-set wording of D-4).
   GitNexus impact is not applicable (navigator outside the index, the rest prose); the change
   check is `make mods`, `make bundles`, `make validate`. Task 3.5 runs after the release.
+- **D-35** Stage 3 is a LARGE small stage under the installed method (3.21.0): the reviewed
+  surface is navigator code with tests, workflow data and prose, well under the `small_stage`
+  limit (count in the PR body); review set two grouped runs, L1+L2 and L3+L4+L5; the tester runs
+  (code changed, the installed rule, not yet the opt-in rule this stage ships); one checker.
+  Builder A's upstream findings enter the fix pass as accepted items: the retrospective's
+  `MARK_RE` in `session_digest.py` must accept `risk=recorded`, and the five stale mentions of
+  the five-lens default (agent-template.md, workflows.md, navigator.md, test-strategy
+  software.md, stage-loop.md line 111) are brought in line.
 
 ## Open Questions
 
