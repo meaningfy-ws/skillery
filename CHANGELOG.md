@@ -12,6 +12,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.22.0] - 2026-11-22
+
+The five build stages of `skillery-performance-improvement`: the method spends fewer tokens per
+turn without dropping a gate. No BREAKING change; every previous default is one flag away (the
+five-lens review set, the full checklist).
+
 ### Added
 
 - **A Langfuse usage report, and the series that compares skillery's cost over time.**
