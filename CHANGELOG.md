@@ -12,11 +12,22 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- **The devops engineer follows a repository's own instructions.** `devops-engineer` now loads
+  `corpus-repository`, as the lawyer does, to read and follow the `AGENTS.md`, docs and checks of
+  each infrastructure repository (#187).
+
 ### Fixed
 
 - **The lawyer no longer holds Overleaf write tools.** `lawyer` gets the Overleaf connector's
   read tools only and changes a contract through the repository's own git flow, as the contract
   repository requires (#194).
+- **The lawyer's refusals are enforced, not only written.** A new `lawyer-refusals` hook in
+  `meaningfy-legal` denies, for the lawyer only, a command that sends, signs or registers a
+  contract, an Odoo command line or client, and any `mcp__odoo__*` tool, and tells him to ask the
+  owner. His `Agent` tool now starts only `Explore` and `checker`. Both work on Claude Code only;
+  on opencode the refusals stay prose, recorded in the compatibility gaps (#186).
 
 ## [3.22.1] - 2026-11-22
 

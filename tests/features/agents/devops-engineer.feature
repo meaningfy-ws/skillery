@@ -6,7 +6,7 @@ Feature: devops-engineer changes infrastructure safely with a person who is not 
   what was shown, verifies and records. It never sees a secret and never applies without a yes.
 
   Background:
-    Given the devops-engineer agent is installed with skills `infrastructure-operations`, `stack-operations`, `service-reliability`, `infrastructure-security`
+    Given the devops-engineer agent is installed with skills `infrastructure-operations`, `corpus-repository`, `stack-operations`, `service-reliability`, `infrastructure-security`
     And a session is started in a checkout of `infrastructure-stacks`
 
   Scenario Outline: The safe-change protocol stops where the plan and reality differ

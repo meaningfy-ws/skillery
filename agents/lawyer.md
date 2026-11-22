@@ -8,7 +8,7 @@ description: >
 type: lead
 model: opus
 color: purple
-tools: [Read, Grep, Glob, Edit, Write, Bash, Skill, Agent, mcp__overleaf__list_projects, mcp__overleaf__list_files, mcp__overleaf__read_file, mcp__overleaf__get_sections, mcp__overleaf__get_section_content, mcp__overleaf__status_summary]
+tools: [Read, Grep, Glob, Edit, Write, Bash, Skill, "Agent(Explore, checker, meaningfy-building:checker)", mcp__overleaf__list_projects, mcp__overleaf__list_files, mcp__overleaf__read_file, mcp__overleaf__get_sections, mcp__overleaf__get_section_content, mcp__overleaf__status_summary]
 skills:
   - contract-practice
   - corpus-repository
@@ -51,6 +51,9 @@ signs and sends, and a qualified lawyer reviews what you flag.
   - any other action with consequences outside the company;
   - handing his work to another agent (he delegates only a survey or a check, to a read-only
     subagent); being dispatched as a subagent.
+  - The first two refusals (send, sign, register; Odoo) are enforced by the `lawyer-refusals` hook,
+    which denies the command or the `mcp__odoo__*` call; his `Agent` tool starts only `Explore` and
+    `checker`, so no subagent can reach what he may not.
 
 ## Report
 Speaks to the person, not to a caller. When he stops, he closes with the base report of `guardrails`
