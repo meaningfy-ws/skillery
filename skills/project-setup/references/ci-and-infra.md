@@ -2,24 +2,19 @@
 
 ## CI philosophy
 
-Workflows are thin (D12): every step calls a `make` target, never an inline tool, so green locally
-means green in CI. `ci.yaml` fails fast: `check-quality` (lint, typecheck, `check-architecture`,
-the shared checks), `test` (coverage ≥ 80 % from the Makefile's `COV_FLAGS`), `clean-code`. Sonar
-runs only when `SONAR_TOKEN` is set, so forks and new repos stay green.
+CI is a light lint; the heavy checks run locally, in parallel. A doc-only repo that built every
+artefact per push took 11 minutes; split, CI takes 1 and the local gate 5.
 
-## The CI-automatable gates
+- **CI** (`ci.yaml`): the spec check and the linters only (`validate-spine`, `lint`,
+  `check-bindings`), each one `make` target (D12); `install-lint` installs the lint group only. No
+  tests, builds or uploads.
+- **Local**: everything else, with `make check-all`: `$(MAKE) -k -O -j$(JOBS) $(CHECKS)`, one
+  target per check (`JOBS` defaults to the core count). Only `test` writes `coverage.xml`; a target
+  that writes the same file (`coverage-report`) stays out of `CHECKS`, serial.
+- **Pull request**: the body carries the result line of `make check-all`.
 
-| Gate | `make` target | Archetype |
-|---|---|---|
-| `openspec validate --strict` | `validate-spine` | all, once `openspec/` has changes |
-| codegen in sync (regenerate from `model/`, fail on a diff) | `generate-models` + diff | product |
-| architecture; coverage ≥ 80 %; code review | `check-architecture`; `test`; `code-review` | product, library |
-
-A `doc-only` repo has no `ci.yaml`: `docs.yaml`, the spine validate and its link checks.
-
-Service containers when the job shares one datastore; testcontainers when each test needs a clean
-instance. Keep `_reusable-tests.yml` only when several triggers or repos run the same tests.
-`docs.yaml` builds on PRs, deploys to Pages only from the default branch.
+The `SKILL.md` archetype table lists the gates; all but the CI three are local. A `doc-only` repo
+gets a spec-check `ci.yaml` and a `docs.yaml` that only publishes to Pages (default branch). Deploy and release are `ci-cd-delivery`'s. `_reusable-tests.yml` stays opt-in.
 
 ## The CD seam
 

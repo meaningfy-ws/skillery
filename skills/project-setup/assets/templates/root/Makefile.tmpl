@@ -15,6 +15,12 @@ TEST_PATH    = $(REPO_ROOT)/tests
 BASE        ?= develop
 BUILD_PATH   = $(REPO_ROOT)/dist
 
+# Parallel jobs for `make check-all`: one per core (nproc, then sysctl on macOS, then 2).
+JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 2)
+
+# The spine check (CI runs it too); the pin matches the one the scaffold installs.
+OPENSPEC_VERSION = 1.4.1
+
 # Docker / infra (activate the Docker section below once infra/ exists).
 COMPOSE_FILE = $(REPO_ROOT)/infra/compose.yaml
 ENV_FILE     = $(REPO_ROOT)/infra/.env
@@ -67,7 +73,7 @@ help: ## Display available targets
 #-----------------------------------------------------------------------------
 # Install / build (mutating)
 #-----------------------------------------------------------------------------
-.PHONY: install-uv install lock build
+.PHONY: install-uv install install-lint lock build
 
 install-uv: ## Check that uv is installed (never installs it)
 	@ command -v uv >/dev/null 2>&1 || { echo "$(ICON_ERROR) uv is not installed: see https://docs.astral.sh/uv/getting-started/installation/" >&2; exit 1; }
@@ -76,6 +82,9 @@ install: install-uv ## Install project dependencies (all groups; does NOT lock)
 	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Installing dependencies$(END_BUILD_PRINT)"
 	@ uv sync --all-groups --locked
 	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Dependencies installed$(END_BUILD_PRINT)"
+
+install-lint: install-uv ## Install only the lint group (what CI needs; run with UV_NO_SYNC=1 afterwards)
+	@ uv sync --only-group lint --locked
 
 lock: ## Update uv.lock
 	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Locking dependencies$(END_BUILD_PRINT)"
@@ -113,8 +122,13 @@ pre-commit: ## Run pre-commit hooks on all files
 #-----------------------------------------------------------------------------
 # Validation — non-mutating targets
 #-----------------------------------------------------------------------------
-.PHONY: lint typecheck check-architecture test test-unit test-feature test-e2e test-integration
+.PHONY: validate-spine lint typecheck check-architecture test test-unit test-feature test-e2e test-integration
 .PHONY: test-fast test-changed profile-tests
+
+validate-spine: ## Validate the openspec/ spine (openspec validate --strict)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Validating the spine$(END_BUILD_PRINT)"
+	@ npx --yes @fission-ai/openspec@$(OPENSPEC_VERSION) validate --all --strict
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Spine is valid$(END_BUILD_PRINT)"
 
 lint: ## Run Ruff linting checks
 	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running Ruff checks$(END_BUILD_PRINT)"
@@ -244,7 +258,15 @@ reindex: ## Re-index the code for GitNexus (the lead runs it at stage start and 
 check-quality: lint typecheck check-architecture check-bindings check-semgrep check-layout check-makefile ## Static checks: lint, types, architecture, bindings, Semgrep, layout, Makefile
 	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) All quality checks passed$(END_BUILD_PRINT)"
 
-check-all: check-quality test ## Full suite: quality + all tests
+# The heavy gate runs here, not in CI (CI stays a light lint). Each check is its own target, so
+# make runs them side by side: -j for the jobs, -O to keep each target's output together, -k to
+# report every failure instead of the first. Only `test` writes coverage.xml, test-results.xml and
+# .coverage; keep any other target that writes them (coverage-report) out of CHECKS, or run it
+# after check-all, serial. Add a target to CHECKS only if it writes no file another one reads.
+CHECKS = lint typecheck check-architecture check-bindings check-semgrep check-layout check-makefile validate-spine test
+
+check-all: ## Full local gate: every check in parallel (JOBS=n to change); put its result line in the PR body
+	@ $(MAKE) -k -O -j$(JOBS) $(CHECKS)
 	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Full verification suite passed$(END_BUILD_PRINT)"
 
 ci-quick: check-quality test-unit ## CI fast: quality + unit tests
