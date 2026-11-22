@@ -384,6 +384,13 @@ compaction after `proposal.md`, a fresh session per EPIC.
   subagent, since the new `checker` agent is not installed in this session. Light chores by the
   lead: the `test-strategy` inventory row CHK-60 and the agent template's skills row follow the
   new checklist and the one-preload rule (builders A and B found them outside their files).
+  The PR adds 628 lines outside the spine and the generated files, 380 without the tests, so it
+  passes the installed `small_stage` limit only without its tests; the two grouped runs stand as
+  the LARGE default this EPIC merged in stage 3 (D-4), one release ahead of the installed method.
+  The first full gates run was red in the navigator suite: the `roles.matrix` block of the
+  workflow JSON was not known to the workflow validator (builder B ran `make bundles` and `make
+  lint`, not `make mods`); a fixer teaches the validator the key, test-first, before the PR's
+  gate report is written (a build defect, outside the one fix pass for findings).
 
 ## Open Questions
 

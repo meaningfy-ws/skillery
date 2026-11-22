@@ -40,6 +40,15 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   page changed, and runs GitNexus at two points of a stage; `implementer` and `code-reviewer`
   lose the GitNexus tools; the tester is opt-in. P-0006 is scoped by appetite. Stage 3 of
   `skillery-performance-improvement`.
+- **Every subagent starts lighter, and a model per role.** `guardrails/assets/model-matrix.json`
+  maps each role to a model and `make lint` holds every agent to it (`code-reviewer`,
+  `technical-writer`, `infra-reviewer` move to sonnet); `implementer` and `code-reviewer` preload
+  one skill each and name their tools exactly, with no `Skill` tool; the new `stage-check` skill
+  and `checker` agent own and run the stage check; `epic-planner` drops `stream-coding`. The
+  clarity checklist is the Meaningfy one (3 KB, minimums by appetite) and `make lint` holds an
+  active change's `design.md` to its appetite's budget. Builders are briefed from the new builder
+  card, with the rules pasted from `rules.py load --brief` and the five Serena essentials. Stage 4
+  of `skillery-performance-improvement`.
 
 ## [3.21.0] - 2026-11-17
 
