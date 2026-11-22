@@ -113,6 +113,22 @@ and `pomodoro` are removed by deleting the folder under `~/.claude/skills/`. The
 symlinks are removed with `rm` or the pipx environment is restored. Record on this page what was
 disabled and when.
 
+## Disabled, 2026-11-22
+
+The owner approved the list on 2026-11-22. What was done on lps-desktop:
+
+| Item | Action | Undo |
+|---|---|---|
+| context7, claude-md-management, frontend-design (official) | `claude plugin disable` | `claude plugin enable <name>@claude-plugins-official` |
+| mongodb | was a synced plugin, not the official one: `claude plugin disable mongodb@synced` | `claude plugin enable mongodb@synced` |
+| data, product-management, cowork-plugin-management, miro, pdf-viewer (synced) | `claude plugin disable <name>@synced`; the CLI controls synced plugins too | `claude plugin enable <name>@synced` |
+| The ten context-engineering skills, `officecli`, `pomodoro` | moved from `~/.claude/skills/` to `~/.claude/skills-disabled-2026-11-22/` | move the folder back |
+| The three broken odoo symlinks | removed (their pipx environment is gone) | reinstall `odoo-mcp-multi` with pipx |
+| pycharm | **not removed**: it is in no MCP config file; it comes from the PyCharm IDE integration and appears only while that link is active | turn off the Claude Code plugin in PyCharm, or ignore the failed connect |
+
+`CC_LANGFUSE_TRACE_TAGS` set to `skillery:3.22.0` in `~/.claude/settings.json` the same day, and
+the installed skillery bundles are at 3.22.0, so traces from here on compare against the baseline.
+
 ## Second machine
 
 Repeat `§Inventory` on the other machine with the same window and write its own page,
