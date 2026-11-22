@@ -299,6 +299,17 @@ compaction after `proposal.md`, a fresh session per EPIC.
 - **D-33** Stage 2 checker (pass): F1 `epic-planning` steps 7 and 8 point to P-0006's appetite
   scoping, which task 3.1 writes with the owner in stage 3; until then the pointer is ahead of the
   rule. Accepted for one stage; 3.1 closes it.
+- **D-34** Stage 3 on branch `feature/spi-stage-3`. Task 3.1's rule writes rest on the owner's
+  recorded answer to Q-3 (DEC-3: "scale by appetite and risk; revise R-0004 and P-0006 to say
+  when it pays"), given through the question dialog on 2026-11-22; no further card was answered
+  (the owner asked for autonomous progress, D-19). P-0006 is updated in the repository store
+  (this PR), R-0004 in the vault, both by `rules.py update`, sources quoting the answer. Two
+  builders on disjoint files: A owns `epic-delivery.workflow.json`, `mods/navigator` (dispatch,
+  mark, tests), `skills/meaningfy-code-review`, `agents/implementer.md`, `agents/code-reviewer.md`
+  and their feature files (3.2, the agent and review-skill halves of 3.4); B owns the
+  `epic-delivery` prose (3.3, the stage-loop half of 3.4, the review-set wording of D-4).
+  GitNexus impact is not applicable (navigator outside the index, the rest prose); the change
+  check is `make mods`, `make bundles`, `make validate`. Task 3.5 runs after the release.
 
 ## Open Questions
 
