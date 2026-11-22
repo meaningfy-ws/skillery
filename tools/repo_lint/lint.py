@@ -1647,6 +1647,95 @@ def binding_size(repo: Path) -> list[str]:
     return out
 
 
+MODEL_MATRIX = "skills/guardrails/assets/model-matrix.json"
+
+
+def agent_model_matrix(repo: Path) -> list[str]:
+    """Every agents/*.md declares a `metadata.role` of the model matrix and the matrix's model (D-2);
+    a matrix role no agent uses is reported too."""
+    agents_dir = repo / "agents"
+    if not agents_dir.exists():
+        return []
+    if not (repo / MODEL_MATRIX).exists():
+        return [f"{MODEL_MATRIX} does not exist"]
+    roles = json.loads(_read(repo, MODEL_MATRIX)).get("roles", {})
+    out: list[str] = []
+    for who, role, model in _agent_roles(repo):
+        if role is None:
+            out.append(f"{who}: no metadata.role (one of {', '.join(roles)})")
+        elif role not in roles:
+            out.append(f"{who}: role '{role}' is not in {MODEL_MATRIX}")
+        elif model != roles[role]:
+            out.append(f"{who}: role '{role}' takes model '{roles[role]}' in {MODEL_MATRIX}, "
+                       f"the agent declares '{model}'")
+    return out
+
+
+def _agent_roles(repo: Path) -> list[tuple[str, str | None, str | None]]:
+    """(agents/<file>, metadata.role, model) per agent whose frontmatter reads."""
+    found = []
+    for p in sorted((repo / "agents").glob("*.md")):
+        try:
+            fm, _ = bundle_gen.agent_frontmatter(repo, p.stem)
+        except ValueError:
+            continue  # agent_conformance and bundle_gates report an unreadable frontmatter
+        meta = fm.get("metadata")
+        found.append((f"agents/{p.name}", meta.get("role") if isinstance(meta, dict) else None, fm.get("model")))
+    return found
+
+
+def agent_model_matrix_report(repo: Path) -> list[str]:
+    """Advisory notes (never failing): matrix roles no agent uses, such as roles a spawn takes without an agent."""
+    if not (repo / "agents").exists() or not (repo / MODEL_MATRIX).exists():
+        return []
+    roles = json.loads(_read(repo, MODEL_MATRIX)).get("roles", {})
+    used = {role for _, role, _ in _agent_roles(repo)}
+    return [f"{MODEL_MATRIX}: role '{r}' is used by no agent" for r in roles if r not in used]
+
+
+# D-9: the design.md byte budget by appetite. HUGE has no PLAN, so it has no entry.
+DESIGN_BUDGETS = {"TINY": 4096, "SMALL": 8192, "MEDIUM": 12288, "LARGE": 16384, "VERY LARGE": 24576}
+DESIGN_BUDGET_EXEMPT = "openspec/changes/.design-budget-exempt"
+
+
+def _appetite_of(proposal: str) -> str | None:
+    """The appetite the way the navigator's `appetiteOf` reads it: the first paragraph under
+    `## Appetite`, the longest appetite name first, whole words only."""
+    parts = re.split(r"^## Appetite\s*$", proposal.replace("\r\n", "\n"), maxsplit=1, flags=re.MULTILINE)
+    if len(parts) < 2:
+        return None
+    para = re.split(r"\n\s*\n|^## ", parts[1].strip(), maxsplit=1, flags=re.MULTILINE)[0]
+    names = sorted([*DESIGN_BUDGETS, "HUGE"], key=len, reverse=True)
+    return next((a for a in names if re.search(rf"(?<![\w-]){re.escape(a)}(?![\w-])", para)), None)
+
+
+def design_budget(repo: Path) -> list[str]:
+    """An active change's design.md stays within the byte budget of its appetite (D-9). Archived changes
+    are exempt; so are the ids listed, one per line with `#` comments, in openspec/changes/.design-budget-exempt."""
+    changes = repo / "openspec" / "changes"
+    if not changes.exists():
+        return []
+    exempt_file = repo / DESIGN_BUDGET_EXEMPT
+    exempt = {line.split("#")[0].strip() for line in exempt_file.read_text(encoding="utf-8").splitlines()} \
+        if exempt_file.exists() else set()
+    out: list[str] = []
+    for design in sorted(changes.glob("*/design.md")):
+        cid = design.parent.name
+        if cid == "archive" or cid in exempt:
+            continue
+        proposal = design.parent / "proposal.md"
+        appetite = _appetite_of(proposal.read_text(encoding="utf-8")) if proposal.exists() else None
+        if appetite not in DESIGN_BUDGETS:
+            out.append(f"openspec/changes/{cid}: no budget, the appetite is "
+                       f"{'HUGE (it has no PLAN)' if appetite else 'not found under ## Appetite in proposal.md'}")
+            continue
+        size = design.stat().st_size
+        if size > DESIGN_BUDGETS[appetite]:
+            out.append(f"openspec/changes/{cid}/design.md: {size} bytes, over the {appetite} budget of "
+                       f"{DESIGN_BUDGETS[appetite]}; cut prose, or list the change in {DESIGN_BUDGET_EXEMPT}")
+    return out
+
+
 ALL_CHECKS = (
     missing_skill_dirs, wip_isolation, frontmatter_present_errors,
     frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long, description_angle_brackets,
@@ -1659,7 +1748,7 @@ ALL_CHECKS = (
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
     top_level_folders, quality_files, prose_budget, reference_pointers, activity_tools_table,
-    binding_size,
+    binding_size, agent_model_matrix, design_budget,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a
@@ -1678,6 +1767,7 @@ def _print_trigger_notes(repo: Path) -> None:
         ("reciprocal-Related (DEC-12 advisory)", reciprocal_related_report(repo)),
         ("description-length (method target)", description_length_report(repo)),
         ("lean body target", skill_size_report(repo)),
+        ("model-matrix roles without an agent", agent_model_matrix_report(repo)),
     ):
         if notes:
             print(f"\n(assist) {len(notes)} {label} note(s) — non-blocking:")

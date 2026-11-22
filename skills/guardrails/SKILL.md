@@ -90,7 +90,7 @@ already exists; this skill is the map.
     single-lens review; **opus** for design, judgement, unclear scope, or a second read where a miss
     is costly. When unsure, take the next model up. When a cheaper model's report fails the check,
     re-run the task one model up rather than patch its output. `model_rank` orders the models
-    from cheapest.
+    from cheapest. The model of each role is in `assets/model-matrix.json`, the one source.
   - **The base report back**, plus the fields of its purpose. Read `references/subagent-reports.md`
     when you name the report in a brief or judge one that came back: it gives the base report, the
     fields per purpose and the upstream findings. Long material goes to a file; the report carries the path.
@@ -178,7 +178,7 @@ standard, and returns the same base report with the verifying fields.
 ## How to use it
 
 - **Authoring an agent:** set its `tools:` and permissions to the minimum, and its model (the
-  agent's declared one, else the caller's); write its
+  one `assets/model-matrix.json` gives its `metadata.role`); write its
   no-gos; route irreversible actions through confirmation. (`agents/` wrappers + settings.)
 - **Designing a build step:** before the step's output is consumed, name which gate validates it.
 - **Reviewing:** check that untrusted content is handled as data and that no step exceeds its bounds.
