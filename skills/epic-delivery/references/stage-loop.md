@@ -29,8 +29,10 @@ review set of each appetite is in
      names it: the full gates by default, a narrower gate where the project says so.
    - The builder reports every gate run with the *implementing* fields (`guardrails`
      `references/subagent-reports.md`).
-   - The lead reads the diff and the report, reads the upstream findings and files the issues they
-     call for, and commits the task. It re-runs a gate only on a trigger, and names it in the
+   - The lead reads `git diff --stat` and the report, spot-checks the files the report names (the
+     checker reads the full diff), reads the upstream findings and files the issues they call for,
+     and commits the task. Once its context passes `compact_offer_tokens` it compacts at the next
+     safe point, after a commit (`guardrails` §6). It re-runs a gate only on a trigger, and names it in the
      commit body (`Re-run: T1, <reason>`):
      - **T1** the report lacks a field, or contradicts the diff: tests added but the count
        unchanged; exit 0 with failures listed; no gate for a file type the diff touches. The lead
@@ -65,9 +67,15 @@ review set of each appetite is in
      test with its reason, and the opportunities.
    - Each accepted finding is a decision in `design.md` before any code (the Rule of Divergence),
      or an upstream issue when it is our library's. The PR body gets the result lines again.
-   - **One fix pass:** fixers in one batch, security first, then structure; after a red run only
-     the failing tests re-run until green; then the full gates once (T3) and CI. A red CI run or a
+   - **One fix pass:** fixers in one batch, security first, then structure; a fixer re-runs
+     only the failing tests, at most `max_red_runs` red runs (`fixer_max_red_runs`, default 3),
+     then stops with a `blocked` report (below); then the full gates once (T3) and CI. A red CI run or a
      refused merge is no review round: only that failure is fixed.
+   - **After a `blocked` report** the lead chooses one of two: a fresh fixer briefed with that
+     report, or one question round to the developer with a recommendation per question. Never a
+     third fixer on the same finding; the lead tracks finding ids in the stage's result lines.
+     The navigator warns when one subagent runs the full gates more than `fixer_max_red_runs`
+     times.
    - A flaky test is quarantined per the testing checklist (`cosmic-python`
      `references/testing-checklist.md`), not chased with re-runs. A project with no quarantine
      marker uses the framework's skip-with-reason plus the issue link.
@@ -134,7 +142,7 @@ a row.
 | Full gates | Once per stage before the PR (skipped only if the last report ran them on the PR's head commit); once after the fix pass | Lead | T3 is the second |
 | Review set of the appetite (incl. L2 doc agreement, `meaningfy-code-review`) | Once per stage, on the PR | Reviewers | — |
 | Adversarial tester | Once per stage, on its condition (Prepare) | Tester | Distilled in step 4 |
-| Floor and fix pass; failing tests | Once per stage; failing tests after a red run, until green | Lead (floor), fixer | — |
+| Floor and fix pass; failing tests | Once per stage; failing tests after a red run, at most `max_red_runs` | Lead (floor), fixer | — |
 | Checker | Once per stage, after the fix pass | Checker | — (unmet → developer) |
 | Evidence before a claim (`verification-before-completion`) | Before the lead reports a stage done | Lead | — |
 | Cold reader | A how-to or tutorial changed in a stage; every task-oriented page of the docs stage | Cold reader | The page changed again |

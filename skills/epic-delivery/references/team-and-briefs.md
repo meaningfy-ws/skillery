@@ -109,7 +109,14 @@ script from another builder's directory. They never kill processes by pattern, n
 `git stash` (the stack is shared by all worktrees) and never start a second background run.
 
 A **fixer** is a builder whose task is a set of accepted findings, named by their `design.md`
-decision. A **spike** is a builder whose task is one question; it ends with yes or no and the
+decision. Its brief is the builder brief plus two items:
+
+> **Bound:** `max_red_runs: <n>` (default 3, from `session-thresholds.json` `fixer_max_red_runs`;
+> the PLAN may set another) and **one pass**: fix the named findings once, no second round. At
+> the bound, stop and return the base report with `result: blocked`, the failing check verbatim
+> (one line), your hypothesis and what you tried (at most five lines). Do not run a further gate.
+
+A **spike** is a builder whose task is one question; it ends with yes or no and the
 evidence in `evidence/spike-<topic>.md`, and its code is not kept.
 
 ## Adversarial tester
