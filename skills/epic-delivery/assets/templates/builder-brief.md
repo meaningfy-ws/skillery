@@ -13,7 +13,7 @@
 **Edits:** Edit or Serena only; Bash runs commands and never writes a file.
 **Tools:** read with Read, Grep and Serena. Serena essentials: `get_symbols_overview`, `find_symbol`,
 `find_referencing_symbols`, `replace_symbol_body`, `insert_after_symbol`. Do not call `initial_instructions`.
-Tool output: the summary form; long output to a file, read back only what decides the next step; never print a file to read it.
+**Tool output:** the summary form; long output to a file, read back only what decides the next step; never print a file to read it.
 **Principles:** <`cosmic-python` ids this task touches, e.g. `PR-SURVEY-FIRST`>; read those entries in
 `references/principles-and-anti-patterns.md`, not the whole catalogue.
 **Fixer only:** `max_red_runs: <n>` (default 3, `fixer_max_red_runs`; the PLAN may set another) and one

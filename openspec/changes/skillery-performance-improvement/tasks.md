@@ -44,8 +44,9 @@
 - [x] 5.1 The tool-output principle in `guardrails` §Session hygiene and the `activity-tools.md` header; one line in the brief templates. `activity-tools` "A tool call returns a result, not a log"; design.md#d-10.
 - [x] 5.2 Mod `mods/quiet-tools`: PreToolUse on Bash, warns on D-10's noisy forms through `hookSpecificOutput.additionalContext` at exit 0, names the quiet form, never denies; declared in a bundle, `make mods` green, a test per form asserting the `additionalContext`. `activity-tools` "A tool call returns a result, not a log"; design.md#d-10.
 - [x] 5.3 (the validate probe is the docs stage's; `check-bindings` stands in, D-49) `project-setup` templates per D-13 (pytest, AGENTS, Serena, `no_polling`, gate-shape table, GitNexus target and lint); the quick start shows the thin AGENTS; a probe scaffolds a repository and `make validate` passes there. `lean-project-templates` (all requirements); design.md#d-13.
-- [x] 5.4 (D-49: `--auto` only with required checks) `epic-delivery`: `gh pr merge --auto --merge` after the PR opens or one background watch, never a re-read of a running task's output; one full gate per stage, the fix pass re-runs the narrow checks. `epic-delivery` "A pull request is watched and merged by one command", "Each check runs once…"; design.md#d-18.
+- [x] 5.4 (D-49, D-52: `--auto` only at step 6, with required checks) `epic-delivery`: `gh pr merge --auto --merge` at step 6 or one background watch, never a re-read of a running task's output; one full gate per stage, the fix pass re-runs the narrow checks. `epic-delivery` "A pull request is watched and merged by one command", "Each check runs once…"; design.md#d-18.
 - [ ] 5.5 Measure: within seven days of the release, §Stage 5: `Tool: Bash` observations per turn and the share matching D-10's forms, gates passed, against the baseline. `session-retrospective` "Usage reports form a comparable series"; design.md#d-17.
+- [ ] 5.6 (docs stage) A scaffold probe runs the scaffolded repository's quality gate and validate where a validate target exists; the scenarios "A scaffolded repository passes its own validate" and "A template misfires" get their tests. `lean-project-templates` "A scaffolded repository passes its own validate", "A template misfires"; design.md#d-13.
 
 ## 6. Measure again (DEC-2)
 
@@ -53,7 +54,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [x] 1.5 · [x] 1.6 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [ ] 2.5 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [ ] 3.5 · [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5 · [x] 4.6 · [ ] 4.7 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 5.4 · [ ] 5.5 · [ ] 6.1
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [x] 1.5 · [x] 1.6 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [ ] 2.5 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [ ] 3.5 · [x] 4.1 · [x] 4.2 · [x] 4.3 · [x] 4.4 · [x] 4.5 · [x] 4.6 · [ ] 4.7 · [x] 5.1 · [x] 5.2 · [x] 5.3 · [x] 5.4 · [ ] 5.5 · [ ] 5.6 · [ ] 6.1
 
 Within a stage, tasks are independent unless numbered after one they name (2.1 before 2.4's
 threshold reference; 4.1 before 4.2; 1.2 before 1.3, 1.5 and 1.6; 1.4 decides 4.2's variant);

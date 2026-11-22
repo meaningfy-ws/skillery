@@ -34,4 +34,4 @@ Two gotchas: the dockerignore is `infra/docker/Dockerfile.dockerignore` (a neste
 ignores a root one); `.env` is `infra/.env`, every Make docker target passes `--env-file
 infra/.env`, and `make check-env` fails early with the fix. Committed: `infra/.env.example`, an
 optional `infra/.env.common` (non-secret values), `.secrets.example`. Ignored by git and the
-dockerignore: the real `infra/.env` and `.secrets`.
+dockerignore: the real `infra/.env` and `.secrets`. Commit only what is safe in a public PR.

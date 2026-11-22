@@ -146,8 +146,9 @@ already exists; this skill is the map.
     keeps a session past a stage boundary, and `rule-learner` flags such a candidate on its card.
   - **A tool call returns a result, not a log.** Ask the tool for its summary form (`-q`, `--stat`,
     `-rfE`, `| tail -20`); when the output may exceed about 40 lines, send it to a file and read back
-    only the lines that decide the next step; never print a file to read it, use Read. The lines are
-    the deliverable only when the owner asked for them.
+    only the lines that decide the next step. The lines are the deliverable only when the owner
+    asked for them.
+  - **Never print a file to read it;** use Read.
 - **Enforced by:** the lead's own judgement, with navigator as a signal beside it: it reads the keys
   above from `assets/session-thresholds.json` and offers or warns, never decides. The `quiet-tools`
   mod of `meaningfy-core` is the signal for the tool-output bullet: it warns, never denies. The

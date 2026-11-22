@@ -25,28 +25,29 @@ service, FastAPI, LinkML, PostgreSQL, deployable, package `orders`; the develope
 `scripts/scaffold.sh -p orders -n "Order Processing" -a product --deployable` writes a top-level
 `orders/`, root tool files, `.serena/project.yml`, `tests/` by tier, `AGENTS.md` with its `CLAUDE.md`
 pointer, `openspec/`, `model/`, `docs/`, `infra/`, CI and a `deploy.yaml` stub; `make check-all` is
-green. `AGENTS.md` stays thin (one pointer per skill, a `Checks` gate table); the gates are quiet (`-q -rfE`, coverage to `coverage.xml`).
+green, with quiet gates and a thin `AGENTS.md`.
 
 ## Workflow
 
-Confirm the plan before writing; commit only on explicit consent. Read
+Confirm the plan before writing; commit only when told. Read
 `references/modernizing-existing-projects.md` when the repo already exists, instead of steps 1 to 3:
 it adds the audit, the upgrade as an EPIC and PLAN, the order of slices and the shared checks.
 
 1. **Interview.** Read `references/interview.md` before the first question: it adds the seven
-   groups with their defaults, the archetype filter, the doc-only elicitation and the echo-back.
+   groups, the archetype filter, the doc-only elicitation and the echo-back.
 2. **Plan.** Show the resolved profile and the file tree; wait for a yes. An empty folder gets
    `git init` on the chosen default branch.
 3. **Scaffold.** `scripts/scaffold.sh -p <package> -n "<Name>" -a <product|library|doc-only>`, with
    `--deployable`, `--minimal` (agentic files and `.claude/` only), `--python`, `--slug`, `--org`,
    `--branch`, `--no-docs|--no-infra|--no-ci`, `--dry-run`, `--force|--skip-existing`. With
    `--neo4j`, pass `--linkml-generators <linkml-engineering folder>/scripts/linkml_neo4j`: skills
-   install apart, so the scaffolder cannot find a sibling. Idempotent.
+   install apart, so the scaffolder cannot find a sibling. Idempotent; never clobbers unasked (it prompts, or fails
+   without a terminal).
 4. **Fill the pillars.**
    - Read `references/config-files.md` when you edit or migrate a root tool file: it adds the rules
-     the templates cannot show and the migrations.
+     the templates cannot show, the suppression rule and the migrations.
    - Read `references/testing-setup.md` when you wire or move tests: it adds the tiers, the marker
-     hook and its gotcha, the lanes and the coverage gate.
+     hook, the lanes and the coverage gate.
    - Read `references/architecture-guardrails.md` when you write or groom `.importlinter`: it adds
      the tiers, the two-step method and the peer-import gotcha.
    - Read `references/agentic-setup.md` when you write `AGENTS.md`, `CLAUDE.md`, `.claude/` or
@@ -107,8 +108,8 @@ settings pattern in `assets/settings/config_resolver.py`.
 **Docs.** Drop a bucket that does not fit the archetype with its `nav.adoc` entry. `develop/`
 pages point to the skills and keep only the project's slots. API reference is generated from
 OpenAPI (`make openapi`, `make api-docs` with the openapi-generator `asciidoc` generator; a
-separate docs repo pulls it with `make update-api-docs`), never hand-written, and is ignored or
-committed with a codegen check. Prose is `technical-writing`'s.
+separate docs repo pulls it with `make update-api-docs`), never hand-written: ignored and
+regenerated in CI, or committed with a codegen check. Prose is `technical-writing`'s.
 
 ## Before you hand over
 
