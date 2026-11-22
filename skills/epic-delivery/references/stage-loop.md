@@ -77,7 +77,7 @@ review set of each appetite is in
    - Each accepted finding is a decision in `design.md` before any code (the Rule of Divergence),
      or an upstream issue when it is our library's. The PR body gets the result lines again.
    - **One fix pass:** fixers in one batch, security first, then structure; a fixer re-runs
-     only the failing tests, at most `max_red_runs` red runs (`fixer_max_red_runs`, default 3),
+     only the narrow checks its edit touches and the failing tests, never the full gates, at most `max_red_runs` red runs (`fixer_max_red_runs`, default 3),
      then stops with a `blocked` report (below); then the full gates once (T3) and CI. A red CI run or a
      refused merge is no review round: only that failure is fixed.
    - **After a `blocked` report** the lead chooses one of two: a fresh fixer briefed with that
@@ -97,12 +97,15 @@ review set of each appetite is in
 6. **Merge.** Within the lead's authority (`SKILL.md`, *Authority*); without a grant the developer
    approves the merge first. The note ([template](../assets/templates/handover.md)) is committed as
    `openspec/changes/<id>/handover.md`, the PR's last commit; a fix after a red check goes before
-   it, the note re-committed last, then the command runs again. A PR that lists no check run has
-   not had CI: wait for it, never merge, and never use `gh pr merge --auto` (with no required
-   checks it merges at once). Once the PR lists a check run, one
-   background command: `gh pr checks <n> --watch --fail-fast && gh pr merge <n> --merge
+   it, the note re-committed last, then the command runs again. `gh pr merge <n> --auto --merge
+   --delete-branch` is allowed only here, after the note is committed and the developer's approval
+   (or the grant) is given, in place of the watch-and-merge command, and only where the repository
+   has required checks (branch protection); with none it merges at once. Never when the PR opens: it
+   would merge before the review set and the note. A PR that lists no check run has
+   not had CI: wait for it and never merge. Once the PR lists a check run, one
+   background command, the default: `gh pr checks <n> --watch --fail-fast && gh pr merge <n> --merge
    --delete-branch` (the repository's merge method); its notice is the only wait, never a sleep
-   loop. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing
+   loop, and a running task's output file is never read while it runs. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing
    check, a refused merge, or only the local branch left. When a repository rule conflicted with
    session hygiene during the stage, the lead notes it under Open in `handover.md`. Then the session ends, no compaction;
    the next stage starts fresh from the note's prompt.

@@ -163,11 +163,12 @@ re-run the suite. No workflow phase SHALL repeat a check of the stage loop (DEC-
 - **THEN** it reads it from the brief and calls no GitNexus tool
 
 ### Requirement: A pull request is watched and merged by one command
-The Merge step SHALL hand the wait to one command: after the pull request opens, `gh pr merge <n>
---auto --merge --delete-branch`, so that the platform merges when the checks pass; where the
-repository has no auto-merge, one background command `gh pr checks <n> --watch --fail-fast && gh
-pr merge <n> --merge --delete-branch`, started once the pull request lists its first check run and
-awaited by its completion notice only. The lead SHALL NOT re-read a running task's output. On a
+The Merge step SHALL hand the wait to one command: by default one background command `gh pr checks
+<n> --watch --fail-fast && gh pr merge <n> --merge --delete-branch`, started once the pull request
+lists its first check run and awaited by its completion notice only; at step 6 only, after the
+hand-over note is committed and the approval (or the grant) is given, and where the repository has
+required checks, `gh pr merge <n> --auto --merge --delete-branch` in its place, so that the platform
+merges when the checks pass. The `--auto` form SHALL NOT run when the pull request opens. The lead SHALL NOT re-read a running task's output. On a
 non-zero exit the lead SHALL first run `gh pr view <n> --json state,mergeStateStatus` to tell a red
 check, a refused merge and a merge already done. The merge method SHALL follow the repository's
 own. Without the developer's grant for the EPIC, the developer SHALL approve the merge before the
@@ -175,8 +176,8 @@ command runs (lean-delivery D-23). A fix after a red check SHALL be committed be
 re-committed as the last commit, and the command run again (lean-delivery DEC-6, D-7, D-24).
 
 #### Scenario: Green checks
-- **WHEN** the pull request opens in a repository with auto-merge enabled
-- **THEN** the lead runs `gh pr merge <n> --auto --merge --delete-branch` once, and the platform merges and deletes the branch when the checks pass
+- **WHEN** at step 6 the hand-over note is committed, the approval or grant is given, and the repository has required checks
+- **THEN** the lead runs `gh pr merge <n> --auto --merge --delete-branch` once, in place of the watch-and-merge command, and the platform merges and deletes the branch when the checks pass
 
 #### Scenario: No auto-merge
 - **WHEN** the repository has no auto-merge and the pull request lists its first check run

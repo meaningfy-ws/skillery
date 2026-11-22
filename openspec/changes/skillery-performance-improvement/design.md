@@ -447,6 +447,69 @@ compaction after `proposal.md`, a fresh session per EPIC.
   validator binds `roles.matrix` keys to declared roles; F-6 the clarity checklist's deep-links
   item says a task without a `design.md#d-n` anchor is a gap; F-7 `team-lead.feature` gains a
   scenario for its three Serena tools.
+- **D-49** Stage 5 on branch `feature/spi-stage-5`, three builders on disjoint files: M owns
+  `mods/quiet-tools/` (new), `bundles.yaml`, `hooks.yaml`, `docs/development/mods.md` (5.2); T owns
+  `skills/project-setup/` (templates, SKILL quick start, a scaffold probe test) (5.3); P owns
+  `skills/guardrails/SKILL.md` §6, `references/activity-tools.md`, `skills/epic-delivery/` (5.1,
+  5.4). Two readings of the PLAN are settled here: D-18's `gh pr merge --auto` is allowed only
+  where the repository has required checks (branch protection), because with none it merges at
+  once (stage-loop step 6 already says so); otherwise the one watch-and-merge command stands.
+  D-13's "`no_polling` hook shipped" is met by the `no-poll-loops` mod of `meaningfy-core`, which
+  every Claude Code session with the plugin already runs: the template's `AGENTS.md` names it and
+  ships no second hook. The gate-shape table is the `Checks` block of the AGENTS template, filled
+  with the one-builder-gate, lead-full-gates-once shape. GitNexus impact: `mods/` and the templates
+  are outside the index; the change check runs before the stage's last commit.
+- **D-50** Stage 5 review set: 645 added lines outside the spine and the generated files, most of
+  them tests and the mod; the two grouped runs stand as the LARGE default merged in stage 3 (as
+  D-43 read it); the tester runs (code changed: the mod, the scaffold script); the checker is a
+  general-purpose subagent (the `checker` agent is on develop, not installed). The delta
+  `lean-project-templates` was aligned by the lead with what was built: the binding check is a
+  Makefile target (`check-bindings`), the gate table has five rows; the `make validate` probe of
+  "A scaffolded repository passes its own validate" is owed to the docs stage, `check-bindings`
+  stands in (the Makefile template has no `validate` target).
+- **D-51** Stage 5's first full gates run was red on three incidental items: the skill inventory
+  and the generated docs after a `project-setup` description change, and a bundle-gen test that
+  lists the core plugin's hooks by hand and did not know `quiet-tools`. Closed by the lead as light
+  chores (`make skill-inventory`; the hook added to the expectation; `lead-fixed:` in the commit
+  body). The lesson of D-36 holds and is worth a line in the builder card: a builder that changes
+  a description runs `make skill-inventory`, one that adds a mod checks `tests/test_bundle_gen.py`.
+- **D-52** Stage 5 reviews and tester, one fix pass as two fixers (code, prose). Accepted, code:
+  r1-W1/T the mod reads `pytest` by position (`pytest`, `python -m pytest`, `uv run pytest`) and
+  catches a short-option cluster with `v` (`-xv`, `-sv`, `-vvv`), `-v -q` nets to quiet, `-vv`
+  only with pytest (r2-W5); r1-W2/T wrapper words (`sudo`, `env`, `nohup`, `timeout <n>`, `nice`,
+  `xargs`, `time`) are skipped before the command word; r1-W3 `rg`/`ugrep` with no path and
+  `grep -r` with no path read the tree (warn); r1-S1/T a read whose stdout goes to a file or a
+  pipe into a non-reading command, and `grep -q`/`-c`, stay quiet; r1-W4 the untested branches;
+  r1-W7/T `check-bindings` is case-insensitive and matches `#`-headings of any depth, with the
+  test parametrised over both forms and a pass with the block in `AGENTS.md`; T the scaffold
+  re-run without `--skip-existing`/`--force` and without a terminal fails with a clear message;
+  r2-S9/S10 the `check-bindings` and `reindex` targets read as their neighbours (the template's
+  pattern is broader than the lint's exact marker, on purpose; D-54); r2-S11 the Serena template comment; r2-W2 the AGENTS template says the gate row
+  once. Accepted, prose: r1-W5 re-labelled Critical (`--auto` right after the PR opens merges
+  before the review set and the note): `--auto` is allowed only at step 6 after the note is
+  committed and the approval given, in place of the watch, with required checks; the delta's
+  "Green checks" scenario aligned and `--delete-branch` added; r2-W4 the sentence's place;
+  r2-W3 skillery's own `AGENTS.md` block checked against stage-loop (align if stale); r2-W6 the
+  compatibility-table row for `quiet-tools`; r2-W7 the four rules lost in the reference cuts
+  restored; r2-S8 the guardrails bullet split and the card label bold; r1-W6 an open task 5.6
+  carries the owed `make validate` probe; r1-S3 the Roadmap ticks; r1-S4 the two em dashes in the
+  AGENTS template. Under the floor: r2-W1 a shared tokeniser across the three Bash mods (a
+  follow-up; `bundle_gen` copies one folder per mod); T reads inside `bash -c` or a quoted
+  `$(cat f)`; T a marker inside a code fence in `CLAUDE.md` fails the check (documented example,
+  rare); r2-S12 names and the symlink test; r2-S13 skillery's own `AGENTS.md` gate table (docs
+  stage). The tester's kept tests move into the mod's test file and
+  `tests/test_project_setup_templates.py`; the rest are deleted.
+- **D-53** The change check before the stage's last commit (`detect_changes`, compare with
+  develop): 41 touched symbols, no affected flow, risk low; the mod and the templates are outside
+  the index, so the check speaks only for the prose and the one test it can see; `make mods` and
+  the template tests are the evidence for the rest.
+- **D-54** Stage 5 checker: fail, four textual items, closed by the lead as light chores with one
+  full gates run (stage-loop step 5, D-19): F1 the template's `check-bindings` pattern is broader
+  than the lint's exact `<!-- gitnexus:start -->` on purpose (a project's `CLAUDE.md` may carry
+  the block in any case or as a heading); the test is renamed and D-52 says so; F2 the
+  `lean-project-templates` delta's polling requirement reads as D-49 (the `no-poll-loops` mod, no
+  second hook); F3 the CHANGELOG states the whole `--auto` rule; F4 the delta's list of kept
+  sections names the working conventions and the `.claude/` index note.
 
 ## Open Questions
 

@@ -8,6 +8,7 @@
   "hooks": [
     "./mods/no-poll-loops/hooks.json",
     "./mods/no-shell-edits/hooks.json",
+    "./mods/quiet-tools/hooks.json",
     "./mods/rules-first/hooks.json"
   ]
 }

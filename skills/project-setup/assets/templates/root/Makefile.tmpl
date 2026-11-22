@@ -20,8 +20,8 @@ COMPOSE_FILE = $(REPO_ROOT)/infra/compose.yaml
 ENV_FILE     = $(REPO_ROOT)/infra/.env
 
 # Coverage flags — appended only in coverage-aware targets, never in pytest.ini.
+# Coverage goes to coverage.xml only: no per-file table in the output (a gate prints its result).
 COV_FLAGS = --cov=$(PACKAGE_NAME) \
-            --cov-report=term-missing \
             --cov-report=xml:$(REPO_ROOT)/coverage.xml \
             --cov-fail-under=80
 
@@ -131,6 +131,8 @@ check-architecture: ## Check architecture constraints with import-linter
 	@ uv run lint-imports --config $(REPO_ROOT)/.importlinter
 	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Architecture checks passed$(END_BUILD_PRINT)"
 
+# A gate prints its result: one summary line, the failures, and coverage.xml (no coverage table;
+# the per-file numbers are in coverage.xml). Coverage below the gate fails with one line.
 test: ## Run all tests (with coverage)
 	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running all tests$(END_BUILD_PRINT)"
 	@ uv run pytest $(TEST_PATH) $(COV_FLAGS) --junitxml=$(REPO_ROOT)/test-results.xml
@@ -217,11 +219,27 @@ check-makefile: quality-tools ## Check Makefile hygiene and required targets (ch
 	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Makefile checks passed$(END_BUILD_PRINT)"
 
 #-----------------------------------------------------------------------------
+# Bindings and code intelligence
+#-----------------------------------------------------------------------------
+.PHONY: check-bindings reindex
+
+check-bindings: ## Check that CLAUDE.md carries no GitNexus block (the block lives in AGENTS.md only)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Checking the bindings$(END_BUILD_PRINT)"
+	@ if grep -qiE 'gitnexus:start|^#+ .*GitNexus' CLAUDE.md 2>/dev/null; then \
+	    echo "$(ICON_ERROR) check-bindings: CLAUDE.md carries a GitNexus block; keep it in AGENTS.md only"; exit 1; fi
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) CLAUDE.md carries no GitNexus block$(END_BUILD_PRINT)"
+
+# --skip-agents-md leaves AGENTS.md and CLAUDE.md untouched.
+reindex: ## Re-index the code for GitNexus (the lead runs it at stage start and before the last commit)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Re-indexing the code$(END_BUILD_PRINT)"
+	@ npx gitnexus analyze --skip-agents-md
+
+#-----------------------------------------------------------------------------
 # Aggregates
 #-----------------------------------------------------------------------------
 .PHONY: check-quality check-all ci-quick ci-full
 
-check-quality: lint typecheck check-architecture check-semgrep check-layout check-makefile ## Static checks: lint, types, architecture, Semgrep, layout, Makefile
+check-quality: lint typecheck check-architecture check-bindings check-semgrep check-layout check-makefile ## Static checks: lint, types, architecture, bindings, Semgrep, layout, Makefile
 	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) All quality checks passed$(END_BUILD_PRINT)"
 
 check-all: check-quality test ## Full suite: quality + all tests

@@ -8,6 +8,9 @@ In the *Claude Code* column every backticked token is a tool name an agent can c
 matches it against the named agents' `tools:` lists). Flags and commands are plain text or sit in
 *Fallback*. The *opencode* column is not checked: there a tool is reached as `<server>_<tool>`.
 
+Whatever the tool, a call returns a result, not a log: ask for the summary form and send long
+output to a file (`SKILL.md` §6, tool output).
+
 | Activity | Agents | Claude Code | opencode | Fallback |
 |---|---|---|---|---|
 | Read code by symbol | implementer, code-reviewer | `mcp__serena__find_symbol` | unverified, gap | `Grep`, then `Read` of the range |

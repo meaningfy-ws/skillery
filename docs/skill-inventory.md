@@ -831,6 +831,7 @@ Cross-cutting basics everyone installs: clear technical writing, explanatory-wri
 | [`technical-writer`](../agents/technical-writer.md) *(agent)* | Viorica the technical writer writes and improves documentation with the person: reads the code and existing docs, drafts clearly in the right genre and has a cold reader test it. | `content` | `cross-cutting` | `generic` | `reusable` | `any` | `experimental` | `technical-writing`, `explanatory-writing`, `writing-antipatterns`, `meaningfy-voice`, `guardrails` | — |
 | [`no-poll-loops`](../mods/no-poll-loops/) *(mod)* | Claude Code mod | — | — | — | — | — | — | — | — |
 | [`no-shell-edits`](../mods/no-shell-edits/) *(mod)* | Claude Code mod | — | — | — | — | — | — | — | — |
+| [`quiet-tools`](../mods/quiet-tools/) *(mod)* | Claude Code mod | — | — | — | — | — | — | — | — |
 | [`rules-first`](../mods/rules-first/) *(mod)* | Claude Code mod | — | — | — | — | — | — | — | — |
 
 ## meaningfy-consulting
