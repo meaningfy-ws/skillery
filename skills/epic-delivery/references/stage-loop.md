@@ -152,7 +152,7 @@ a row.
 | Diff reading | Each task, before its commit | Lead | — |
 | Full gates | Once per stage before the PR (skipped only if the last report ran them on the PR's head commit); once after the fix pass | Lead | T3 is the second |
 | Review set of the appetite (incl. L2 doc agreement, `meaningfy-code-review`) | Once per stage, on the PR | Reviewers | — |
-| Adversarial tester (opt-in) | Once per stage, on its condition (Prepare) | Tester | Distilled in step 4 |
+| Adversarial tester | Once per stage, on its opt-in condition (Prepare) | Tester | Distilled in step 4 |
 | Floor and fix pass; failing tests | Once per stage; failing tests after a red run, at most `max_red_runs` | Lead (floor), fixer | — |
 | Checker (also the cold reader when no how-to or tutorial page changed) | Once per stage, after the fix pass | Checker | — (unmet → developer) |
 | Evidence before a claim (`verification-before-completion`) | Before the lead reports a stage done | Lead | — |
