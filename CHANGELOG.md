@@ -12,6 +12,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.24.0] - 2026-11-22
+
 ### Added
 
 - **`ui-testing`**: rules for UI tests in Cypress or Playwright (#230). Nine rules with their
