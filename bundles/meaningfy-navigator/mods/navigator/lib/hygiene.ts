@@ -104,8 +104,8 @@ export function offer(parsed: ParsedThresholds, i: HygieneInput): HygieneResult 
   if ((boundary && reaches('fresh_offer_min_tokens', 'fresh_offer_min_context_percent')) || idle) return { offer: 'fresh', point, warnings: [] }
   if (safe && !boundary && reaches('compact_offer_tokens', 'compact_offer_context_percent')) return { offer: 'compact', point, warnings: [] }
   if (point || !reaches('context_warn_tokens', 'context_warn_percent')) return { offer: null, point, warnings: [] }
-  const said = byTokens ? `${Math.round(tokens!).toLocaleString('en-US')} tokens mid-step (context_warn_tokens)`
-    : `${Math.round(i.contextPercent)}% mid-step (context_warn_percent${t.context_warn_tokens !== undefined ? ', no token count' : ''})`
+  const said = byTokens ? `${Math.round(tokens!).toLocaleString('en-US')} tokens mid-step`
+    : `${Math.round(i.contextPercent)}% mid-step${t.context_warn_tokens !== undefined ? ' (no token count)' : ''}`
   return { offer: null, point, warnings: [warning('hygiene:context', `context ${said}`)] }
 }
 
