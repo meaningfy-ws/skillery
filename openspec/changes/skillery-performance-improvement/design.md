@@ -434,6 +434,19 @@ compaction after `proposal.md`, a fresh session per EPIC.
   `main`. Each is a flow this stage changed on purpose and each has its suite green (navigator
   739 + 137, rulebook 578 with the lint tests, installer 36). Under D-19 the result is recorded
   here instead of being brought as a question; the owner can read it in this PR.
+- **D-48** Stage 4 checker: fail, seven items, fixed now by one fixer and one full gates run
+  (stage-loop step 5; the question it would have carried is answered by D-19): F-1 the roster row
+  in `team-and-briefs.md` names the `checker` agent (model from the matrix) and drops "no role has
+  its own catalogue agent" and "opus for the general-purpose roles"; F-2 the CHANGELOG line says
+  `code-reviewer` and `infra-reviewer` move to sonnet (not `technical-writer`) and "the delivery
+  workers start lighter", not every subagent; F-3 D-44 W3 is written where it is read: task 4.7
+  lists the four bundle-specific workers to measure, and the subagent-dispatch delta's "one
+  preload" sentence names the delivery workers now and the others once measured; F-4 the em dashes
+  left in `code-reviewer.md` and `epic-planner.md` go; F-5 the delta scenario "A workflow names a
+  role" uses the roles the delivery workflow declares (reviewer, checker, tester), since the
+  validator binds `roles.matrix` keys to declared roles; F-6 the clarity checklist's deep-links
+  item says a task without a `design.md#d-n` anchor is a gap; F-7 `team-lead.feature` gains a
+  scenario for its three Serena tools.
 
 ## Open Questions
 
