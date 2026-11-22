@@ -214,7 +214,8 @@ def test_check_bindings_passes_with_no_claude_file(tmp_path):
     assert done.returncode == 0 and done.stderr == ""
 
 
-def test_check_bindings_uses_the_pattern_of_the_lint():
+def test_check_bindings_matches_the_marker_or_a_heading_case_insensitively():
+    """The template's pattern is broader than the lint's exact marker on purpose (D-54)."""
     target = _make_target(_text(MAKEFILE), "check-bindings")
     assert "grep -qiE" in target and "gitnexus:start" in target and "^#+ .*GitNexus" in target
     assert "CLAUDE.md" in target and "exit 1" in target

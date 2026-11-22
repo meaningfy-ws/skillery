@@ -57,7 +57,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   `project-setup`'s templates give a new repository quiet gates (`pytest -q -rfE`, coverage to
   xml), an AGENTS template cut to what is specific to the repository with a five-row gate table,
   `make check-bindings` against a GitNexus block in `CLAUDE.md`, and a Serena project file for
-  the archetype's languages. The stage loop allows `gh pr merge --auto` only where the repository
+  the archetype's languages. The stage loop allows `gh pr merge --auto` only at the merge step,
+  after the hand-over note and the approval, in place of the watch, and only where the repository
   has required checks. Stage 5 of `skillery-performance-improvement`.
 
 ## [3.21.0] - 2026-11-17

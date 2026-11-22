@@ -20,7 +20,8 @@ without `--cov-report=term-missing`; `--cov-fail-under=80` stays (D-13).
 ### Requirement: The AGENTS template carries only what is specific to the repository
 `assets/templates/agentic/AGENTS.md.tmpl` SHALL keep only the sections that depend on the
 repository (the project header, *Skill routing*, *The spine*, *Project specifics* with its checks,
-libraries and GitNexus repo name) and SHALL point to the owning skill for the rest in one line each
+libraries and GitNexus repo name, the working conventions that name the repository's layers, and
+the note that `.claude/` is a regenerable index) and SHALL point to the owning skill for the rest in one line each
 (`guardrails` for session hygiene, dispatch and the tools table; `epic-delivery` for how work runs;
 `test-strategy` for success and failure first). `CLAUDE.md.tmpl` SHALL carry no GitNexus block;
 `project-setup` SHALL ship the "no GitNexus block in `CLAUDE.md`" check as a Makefile target
@@ -54,10 +55,9 @@ worktree is activated as its own Serena project at the worktree's path (D-13).
 - **THEN** the note tells it to activate that path as its own project, and symbol search runs against the worktree's files, not the main checkout's
 
 ### Requirement: Polling is denied and gates have one owner
-`project-setup` SHALL ship the `no_polling` hook (an agent-mechanism hook in `hooks.yaml`,
-PreToolUse on Bash) in the scaffolded `.claude/`: it SHALL deny a command that waits and re-reads
-(`sleep` followed by a status read, `watch`, a `while … sleep` loop, a re-read of a running task's
-output file) and name the quiet form, one background command and its notice. `AGENTS.md.tmpl`
+The polling denial is the `no-poll-loops` mod of `meaningfy-core`, which every Claude Code session
+with the plugin runs; `project-setup` SHALL ship no second hook and `AGENTS.md.tmpl` SHALL name that
+mod and `quiet-tools` as the hooks the session runs (D-49). `AGENTS.md.tmpl`
 §Project specifics SHALL ship the gate-shape table of `epic-delivery`'s stage loop: narrow checks,
 task gate, full gates, docs gate, each with its one moment and one owner (D-13).
 

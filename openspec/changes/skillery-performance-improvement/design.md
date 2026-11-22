@@ -483,8 +483,8 @@ compaction after `proposal.md`, a fresh session per EPIC.
   r1-W7/T `check-bindings` is case-insensitive and matches `#`-headings of any depth, with the
   test parametrised over both forms and a pass with the block in `AGENTS.md`; T the scaffold
   re-run without `--skip-existing`/`--force` and without a terminal fails with a clear message;
-  r2-S9/S10 the `check-bindings` and `reindex` targets read as their neighbours and share the
-  lint's pattern; r2-S11 the Serena template comment; r2-W2 the AGENTS template says the gate row
+  r2-S9/S10 the `check-bindings` and `reindex` targets read as their neighbours (the template's
+  pattern is broader than the lint's exact marker, on purpose; D-54); r2-S11 the Serena template comment; r2-W2 the AGENTS template says the gate row
   once. Accepted, prose: r1-W5 re-labelled Critical (`--auto` right after the PR opens merges
   before the review set and the note): `--auto` is allowed only at step 6 after the note is
   committed and the approval given, in place of the watch, with required checks; the delta's
@@ -503,6 +503,13 @@ compaction after `proposal.md`, a fresh session per EPIC.
   develop): 41 touched symbols, no affected flow, risk low; the mod and the templates are outside
   the index, so the check speaks only for the prose and the one test it can see; `make mods` and
   the template tests are the evidence for the rest.
+- **D-54** Stage 5 checker: fail, four textual items, closed by the lead as light chores with one
+  full gates run (stage-loop step 5, D-19): F1 the template's `check-bindings` pattern is broader
+  than the lint's exact `<!-- gitnexus:start -->` on purpose (a project's `CLAUDE.md` may carry
+  the block in any case or as a heading); the test is renamed and D-52 says so; F2 the
+  `lean-project-templates` delta's polling requirement reads as D-49 (the `no-poll-loops` mod, no
+  second hook); F3 the CHANGELOG states the whole `--auto` rule; F4 the delta's list of kept
+  sections names the working conventions and the `.claude/` index note.
 
 ## Open Questions
 
