@@ -318,6 +318,12 @@ compaction after `proposal.md`, a fresh session per EPIC.
   `MARK_RE` in `session_digest.py` must accept `risk=recorded`, and the five stale mentions of
   the five-lens default (agent-template.md, workflows.md, navigator.md, test-strategy
   software.md, stage-loop.md line 111) are brought in line.
+- **D-36** Stage 3's first full gates run failed (exit 2): the skill inventory drifted after the
+  review descriptions changed, and `test_distilling_in_epic_delivery` reads the tester's ledger
+  row by its label, which builder B had renamed. Both closed by the lead as light chores
+  (`make skill-inventory`, the opt-in note moved to the row's Moment column; `lead-fixed:` in the
+  commit bodies); a lesson for the briefs: a builder that changes a description runs
+  `make skill-inventory`, and the ledger's first column is read by a test.
 
 ## Open Questions
 
