@@ -58,6 +58,8 @@ review set of each appetite is in
 4. **Decide and fix.**
    - Before the fix round the lead checks that `git status` is clean; an edit made by a reviewer
      is discarded and reported.
+   - The lead groups the findings of all reviewers and the tester by `file:line` first: one
+     defect raised by several lenses is one decision, at the highest severity any lens gave it.
    - **The floor:** only a Critical finding (`meaningfy-code-review`'s scale) is fixed. The rest
      are rejected "under the floor", one line each under `## Delivery decisions`, and a tester
      test that failed first for one is deleted. A re-label to Critical needs a reason; the label,
@@ -103,10 +105,19 @@ review set of each appetite is in
    has required checks (branch protection); with none it merges at once. Never when the PR opens: it
    would merge before the review set and the note. A PR that lists no check run has
    not had CI: wait for it and never merge. Once the PR lists a check run, one
-   background command, the default: `gh pr checks <n> --watch --fail-fast && gh pr merge <n> --merge
-   --delete-branch` (the repository's merge method); its notice is the only wait, never a sleep
-   loop, and a running task's output file is never read while it runs. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing
-   check, a refused merge, or only the local branch left. When a repository rule conflicted with
+   background command, the default (the repository's merge method):
+
+   ```bash
+   gh pr checks <n> --watch --fail-fast && gh pr checks <n> --json bucket -q 'length > 0 and all(.[]; .bucket == "pass" or .bucket == "skipping")' | grep -qx true && gh pr merge <n> --merge --delete-branch
+   ```
+
+   The middle guard is not optional: `--watch` exits 0 when a newer push cancelled the run, and a
+   pipe after it (`| tail`) hides its failure when no check is registered yet; only the guard
+   keeps a PR without green CI from merging. Never pipe the watch.
+   Its notice is the only wait, never a sleep loop, and a running task's output file is never
+   read while it runs. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` and
+   `gh pr checks <n>` tell a red check, a check not registered or still running (start the
+   command again), a refused merge, or only the local branch left. When a repository rule conflicted with
    session hygiene during the stage, the lead notes it under Open in `handover.md`. Then the session ends, no compaction;
    the next stage starts fresh from the note's prompt.
 

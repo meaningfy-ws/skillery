@@ -12,6 +12,15 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Fixed
+
+- **The merge step no longer merges a pull request without green CI.** `epic-delivery`'s
+  watch-and-merge command gains a guard between the watch and the merge: the PR must list at
+  least one check and every check must have passed. `gh pr checks --watch` exits 0 when a newer
+  push cancelled the run, and a pipe after it hides its failure when no check is registered yet;
+  in both cases the merge used to follow (#283, #337).
+  Step 4 also groups the findings of all lenses by `file:line` before deciding them (#145).
+
 ## [3.22.0] - 2026-11-22
 
 The five build stages of `skillery-performance-improvement`: the method spends fewer tokens per
