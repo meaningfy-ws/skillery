@@ -4,16 +4,13 @@
 
 ## Context
 
-The material is quoted in `inputs/seeds/parked-sources.md`:
-- the six parked rules;
-- checklist rule 2;
-- the UI matrix, which has two gaps.
+Seeds: `inputs/seeds/parked-sources.md`.
 
 The trial repository has a Playwright 1.58 suite in TypeScript (`inputs/trial-baseline.md`).
 `project-setup` scaffolds Python repositories with uv and pytest. `pytest-bdd` is already pinned
 there, and the scaffold has a `frontend/` convention, an `e2e` tier and a `test-e2e` target.
 
-The paths this plan uses by short name:
+Short names:
 
 | Short name | Path |
 |---|---|
@@ -197,7 +194,6 @@ on our own.
 | A `serious` axe finding in a third-party widget | Goes to the accepted file with an issue link |
 | The trial repository is not checked out | Stage 3 stops; the lead asks the developer and never swaps the repository |
 | The "without" output breaks no rule | Recorded; the failure case rests on the audit |
-| SKILL goes over 24 KB | Move text into ROWS or SUITE; no exception |
 
 ## Risks / Trade-offs
 
@@ -221,7 +217,9 @@ Run 2026-11-22, inline by the lead (P-0006: at TINY to MEDIUM the attack and the
 
 ## Delivery decisions
 
-<!-- Filled during delivery. -->
+- D-1 Stage 1: one builder for tasks 1.1–1.8 (one skill).
+- D-2 Stage 1 review: wrong APIs, dead pointers and the row-id guard raised to Critical and fixed;
+  five findings under the floor (PR body).
 
 ## Open Questions
 

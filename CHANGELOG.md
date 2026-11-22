@@ -12,6 +12,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- **`ui-testing`**: rules for UI tests in Cypress or Playwright (#230). Nine rules with their
+  sources, one line per tool, and the accessibility, browser and broken-screen checks; checklist
+  rule 2 of `cosmic-python` now points to it.
+
 ## [3.23.0] - 2026-11-22
 
 ### Added
