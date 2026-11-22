@@ -4,8 +4,10 @@
 
 ## Context
 
-`gh pr checks --watch` (gh 2.86 to 2.102) exits 0 in two states that are not "all green": no
-check registered for the head commit, and a run cancelled by a newer push. Observed on PR #336
+Two ways the chain reached `gh pr merge` without green CI. `gh pr checks --watch` (gh 2.86)
+exits 0 when a newer push cancels the run before the new run reports (#283). With no check
+registered, `--watch` (gh 2.102) prints "no checks reported" and exits 1, but on PR #336 the lead
+piped it into `tail`, whose exit 0 the `&&` saw (#337; re-checked on PR #339). Observed on PR #336
 of skillery and in the #283 report.
 
 ## Decisions

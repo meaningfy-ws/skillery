@@ -111,8 +111,9 @@ review set of each appetite is in
    gh pr checks <n> --watch --fail-fast && gh pr checks <n> --json bucket -q 'length > 0 and all(.[]; .bucket == "pass" or .bucket == "skipping")' | grep -qx true && gh pr merge <n> --merge --delete-branch
    ```
 
-   The middle guard is not optional: `--watch` exits 0 when no check is registered yet and when a
-   newer push cancelled the run, so only the guard keeps a PR without green CI from merging.
+   The middle guard is not optional: `--watch` exits 0 when a newer push cancelled the run, and a
+   pipe after it (`| tail`) hides its failure when no check is registered yet; only the guard
+   keeps a PR without green CI from merging. Never pipe the watch.
    Its notice is the only wait, never a sleep loop, and a running task's output file is never
    read while it runs. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` and
    `gh pr checks <n>` tell a red check, a check not registered or still running (start the

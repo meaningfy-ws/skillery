@@ -5,7 +5,8 @@ The Merge step SHALL hand the wait to one command: by default one background com
 `gh pr checks <n> --watch --fail-fast && gh pr checks <n> --json bucket -q 'length > 0 and all(.[]; .bucket == "pass" or .bucket == "skipping")' | grep -qx true && gh pr merge <n> --merge --delete-branch`,
 started once the pull request lists its first check run and awaited by its completion notice
 only. The middle guard SHALL stand between the watch and the merge, because `gh pr checks
---watch` exits 0 when no check is registered yet and when a run is cancelled by a newer push: the
+--watch` exits 0 when a newer push cancels the run before the new run reports (#283), and a pipe
+after the watch (`| tail`) hides its non-zero exit when no check is registered yet (#337): the
 merge runs only when the pull request lists at least one check and every check passed or was
 skipped. At step 6 only, after the hand-over note is committed and the approval (or the grant) is
 given, and where the repository has required checks, `gh pr merge <n> --auto --merge
@@ -32,7 +33,7 @@ before the hand-over note, the note re-committed as the last commit, and the com
 - **THEN** the lead reads none of its output until the completion notice arrives
 
 #### Scenario: No check registered yet
-- **WHEN** the command starts before the pull request lists any check run, and the watch exits 0 at once
+- **WHEN** the command starts before the pull request lists any check run, and the watch's exit is lost in a pipe
 - **THEN** the guard finds no check, nothing is merged, the command exits non-zero, and the lead starts it again once a check is listed
 
 #### Scenario: A run cancelled by a newer push

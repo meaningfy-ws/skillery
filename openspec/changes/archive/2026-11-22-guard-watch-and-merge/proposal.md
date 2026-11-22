@@ -12,7 +12,8 @@ merged pull requests whose CI was not green, twice:
 - **#283** (3.15.0): the hand-over note's push cancelled the running CI run; the watch exited 0
   when the cancelled run ended, before the new run reported, and the merge ran.
 - **#337** (3.22.0, PR #336): the command started seconds after `gh pr create`; the watch printed
-  "no checks reported" and exited 0, and the merge ran.
+  "no checks reported" and exited 1, but its output was piped into `tail`, the pipeline exited 0,
+  and the merge ran. The guard holds whatever the watch's exit or a pipe does.
 
 The rule "start the watch once a check is listed" is prose; the command does not enforce it.
 Separately, #145 asks the lead to group findings by place before deciding them, since several
