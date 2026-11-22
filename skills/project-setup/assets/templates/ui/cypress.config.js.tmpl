@@ -1,0 +1,12 @@
+const { defineConfig } = require('cypress');
+
+// Rules for these tests: the ui-testing skill. Retries stay 0 on every lane (UI-9).
+module.exports = defineConfig({
+  retries: 0,
+  e2e: {
+    baseUrl: process.env.UI_BASE_URL || 'http://localhost:8000',
+    specPattern: 'tests/e2e/**/*.feature',
+    viewportWidth: 1280,
+    viewportHeight: 720,
+  },
+});

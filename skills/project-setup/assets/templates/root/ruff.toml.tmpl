@@ -48,7 +48,8 @@ allow-magic-value-types = ["bytes"]
 # "<<PACKAGE>>/__init__.py" = ["N802"]
 # "tests/**/*.py" = ["N802"]
 "**/config_resolver.py" = ["TID251"]  # the one module that reads the environment
-"tests/**/*.py" = ["PLR2004"]         # literal expected values are the point of a test
+"tests/e2e/conftest.py" = ["TID251"]  # reads UI_BASE_URL (the --ui-tool conftest)
+"tests/**/*.py" = ["PLR2004"]       # literal expected values are the point of a test
 
 [format]
 quote-style = "double"

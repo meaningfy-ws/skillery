@@ -45,7 +45,7 @@
 
 ## 2. Stage 2: `project-setup` records the UI tool
 
-- [ ] 2.1 Write the failing tests in TPL-TESTS:
+- [x] 2.1 Write the failing tests in TPL-TESTS:
   - `--ui-tool playwright` in a Python project adds the two dependencies, the `conftest.py`, the
     `ui-browsers` target and the `AGENTS.md` line;
   - `--ui-tool playwright --typescript`, and the same with a `frontend/` folder, writes
@@ -57,11 +57,11 @@
   - `library` with `--ui-tool` exits 2;
   - an unknown value exits 2.
   - *Acceptance:* all fail for the right reason.
-- [ ] 2.2 Implement D-6 in SCAFFOLD and the templates. The dependencies are pinned to the latest
+- [x] 2.2 Implement D-6 in SCAFFOLD and the templates. The dependencies are pinned to the latest
   PyPI release on the day of the task, in the same form as the other pins.
   - *Depends on:* 2.1.
   - *Acceptance:* 2.1 is green; a scaffolded repository passes its own `make check-bindings`.
-- [ ] 2.3 Add the question to INTERVIEW and the pointer line to TESTING-SETUP.
+- [x] 2.3 Add the question to INTERVIEW and the pointer line to TESTING-SETUP.
 - [ ] 2.4 Smoke run (RISK-4): scaffold with `--ui-tool playwright` into `$TMPDIR`, then run
   `uv sync` and `make ui-browsers`. Record the result in the PR body.
   - *Acceptance:* both exit 0, or the failure is recorded as a `D-n` with an issue.

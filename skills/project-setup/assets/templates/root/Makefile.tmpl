@@ -185,6 +185,7 @@ test-changed: ## Developer lane: the tests of the files changed against BASE (de
 profile-tests: ## The 15 slowest unit and feature tests, by phase
 	@ uv run pytest $(TEST_PATH) -m "unit or feature" --durations=15 -vv
 
+<<UI_MAKE_TARGETS>>
 #-----------------------------------------------------------------------------
 # Shared checks — fetched from skillery at QUALITY_VERSION into .quality/ (git-ignored)
 #-----------------------------------------------------------------------------
