@@ -24,8 +24,9 @@ See [`docs/development/governance.md`](docs/development/governance.md) for place
 
 ## Dual-CLI distribution
 
-This catalogue runs on both Claude Code and opencode from one set of sources, with verified parity.
-See the durable capability spec [`openspec/specs/dual-cli-distribution`](openspec/specs/dual-cli-distribution/spec.md)
+This catalogue runs on both Claude Code and opencode from one set of sources. **Claude Code is the
+first target for now** (P-0007): the opencode distribution is kept
+working by the existing `make validate` gates, and nothing more is owed to it. See the durable capability spec [`openspec/specs/dual-cli-distribution`](openspec/specs/dual-cli-distribution/spec.md)
 and [`docs/environment/dual-cli/`](docs/environment/dual-cli/README.md) (per-CLI setup + the source→CLI mapping + the
 external-dependency compatibility matrix). `AGENTS.md` is canonical; `CLAUDE.md` is a thin pointer
 that adds only Claude-specific guidance. **Both CLIs install only from the `releases` branch**
@@ -81,14 +82,18 @@ improvement loop and the Definition of Done. This binding mandates it; it does n
   This keeps triggers crisp and prevents collisions with external neighbours.
 - **Versioning** — the root [`VERSION`](VERSION) file is the single source of version truth; both
   CLI distributions derive their version from it.
-- **Dual-CLI parity** — anything you add or change must work on **both** CLIs; the rules are below.
+- **Claude Code first** — anything you add or change must work on Claude Code and keep the
+  existing `make validate` gates green, the opencode ones included; the rules are below.
 
 ### Dual-CLI authoring rules
 
-Skills and agents, bodies, commands, versions and hooks must work on both CLIs. The rules are in
+Skills and agents, bodies, commands, versions and hooks are written for Claude Code first (P-0007).
+The gates that `make validate` already runs for opencode stay and must pass. Beyond them, opencode
+parity is not required: no manual opencode check, no new opencode-only work, and parity is no
+reason to hold or widen a change. The rules the gates enforce are in
 [`docs/environment/dual-cli/`](docs/environment/dual-cli/README.md) and the
-[`dual-cli-distribution`](openspec/specs/dual-cli-distribution/spec.md) spec; `make validate` gates
-enforce them.
+[`dual-cli-distribution`](openspec/specs/dual-cli-distribution/spec.md) spec. Dropping those gates
+or that spec is a spine change: an EPIC.
 
 ## How to validate
 

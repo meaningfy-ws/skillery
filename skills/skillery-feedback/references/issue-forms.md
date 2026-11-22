@@ -5,7 +5,7 @@ in the body when you file from the command line.
 
 ## Defect — a skill or agent misbehaved
 
-Title: `[defect] <skill-or-agent>: <one line>` · Label: `defect`
+Title: `[defect] <skill-or-agent>: <one line>` · Label: `bug` (the defect form's label)
 
 | Field | What to write |
 |---|---|

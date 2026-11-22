@@ -34,5 +34,6 @@ gate dropped (every stage's full gates, review set and CI are in the PR bodies #
 
 ## Verdict
 
-Owed to the developer. Record here: accepted or rejected, by whom, the date, and what was wrong
-if rejected.
+**Accepted** by the developer (Eugeniu Costetchi) on 2026-11-22, on the demo above, with the
+archive and the 3.22.0 release authorised in the same answer. The DEC-2 numbers remain to be
+measured on the traces tagged with the release (tasks 2.5, 3.5, 4.7, 5.5, 6.1).
