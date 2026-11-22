@@ -447,6 +447,18 @@ compaction after `proposal.md`, a fresh session per EPIC.
   validator binds `roles.matrix` keys to declared roles; F-6 the clarity checklist's deep-links
   item says a task without a `design.md#d-n` anchor is a gap; F-7 `team-lead.feature` gains a
   scenario for its three Serena tools.
+- **D-49** Stage 5 on branch `feature/spi-stage-5`, three builders on disjoint files: M owns
+  `mods/quiet-tools/` (new), `bundles.yaml`, `hooks.yaml`, `docs/development/mods.md` (5.2); T owns
+  `skills/project-setup/` (templates, SKILL quick start, a scaffold probe test) (5.3); P owns
+  `skills/guardrails/SKILL.md` §6, `references/activity-tools.md`, `skills/epic-delivery/` (5.1,
+  5.4). Two readings of the PLAN are settled here: D-18's `gh pr merge --auto` is allowed only
+  where the repository has required checks (branch protection), because with none it merges at
+  once (stage-loop step 6 already says so); otherwise the one watch-and-merge command stands.
+  D-13's "`no_polling` hook shipped" is met by the `no-poll-loops` mod of `meaningfy-core`, which
+  every Claude Code session with the plugin already runs: the template's `AGENTS.md` names it and
+  ships no second hook. The gate-shape table is the `Checks` block of the AGENTS template, filled
+  with the one-builder-gate, lead-full-gates-once shape. GitNexus impact: `mods/` and the templates
+  are outside the index; the change check runs before the stage's last commit.
 
 ## Open Questions
 
