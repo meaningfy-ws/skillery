@@ -473,6 +473,32 @@ compaction after `proposal.md`, a fresh session per EPIC.
   chores (`make skill-inventory`; the hook added to the expectation; `lead-fixed:` in the commit
   body). The lesson of D-36 holds and is worth a line in the builder card: a builder that changes
   a description runs `make skill-inventory`, one that adds a mod checks `tests/test_bundle_gen.py`.
+- **D-52** Stage 5 reviews and tester, one fix pass as two fixers (code, prose). Accepted, code:
+  r1-W1/T the mod reads `pytest` by position (`pytest`, `python -m pytest`, `uv run pytest`) and
+  catches a short-option cluster with `v` (`-xv`, `-sv`, `-vvv`), `-v -q` nets to quiet, `-vv`
+  only with pytest (r2-W5); r1-W2/T wrapper words (`sudo`, `env`, `nohup`, `timeout <n>`, `nice`,
+  `xargs`, `time`) are skipped before the command word; r1-W3 `rg`/`ugrep` with no path and
+  `grep -r` with no path read the tree (warn); r1-S1/T a read whose stdout goes to a file or a
+  pipe into a non-reading command, and `grep -q`/`-c`, stay quiet; r1-W4 the untested branches;
+  r1-W7/T `check-bindings` is case-insensitive and matches `#`-headings of any depth, with the
+  test parametrised over both forms and a pass with the block in `AGENTS.md`; T the scaffold
+  re-run without `--skip-existing`/`--force` and without a terminal fails with a clear message;
+  r2-S9/S10 the `check-bindings` and `reindex` targets read as their neighbours and share the
+  lint's pattern; r2-S11 the Serena template comment; r2-W2 the AGENTS template says the gate row
+  once. Accepted, prose: r1-W5 re-labelled Critical (`--auto` right after the PR opens merges
+  before the review set and the note): `--auto` is allowed only at step 6 after the note is
+  committed and the approval given, in place of the watch, with required checks; the delta's
+  "Green checks" scenario aligned and `--delete-branch` added; r2-W4 the sentence's place;
+  r2-W3 skillery's own `AGENTS.md` block checked against stage-loop (align if stale); r2-W6 the
+  compatibility-table row for `quiet-tools`; r2-W7 the four rules lost in the reference cuts
+  restored; r2-S8 the guardrails bullet split and the card label bold; r1-W6 an open task 5.6
+  carries the owed `make validate` probe; r1-S3 the Roadmap ticks; r1-S4 the two em dashes in the
+  AGENTS template. Under the floor: r2-W1 a shared tokeniser across the three Bash mods (a
+  follow-up; `bundle_gen` copies one folder per mod); T reads inside `bash -c` or a quoted
+  `$(cat f)`; T a marker inside a code fence in `CLAUDE.md` fails the check (documented example,
+  rare); r2-S12 names and the symlink test; r2-S13 skillery's own `AGENTS.md` gate table (docs
+  stage). The tester's kept tests move into the mod's test file and
+  `tests/test_project_setup_templates.py`; the rest are deleted.
 
 ## Open Questions
 
