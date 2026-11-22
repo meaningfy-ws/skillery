@@ -1,0 +1,55 @@
+# Ruff — formatter + linter, replaces black + isort + flake8 + pylint (decision D4).
+# Config lives in this dedicated root file; pyproject.toml stays minimal.
+
+line-length = 100
+# Matches the project's Python version (rendered from --python at scaffold time).
+target-version = "py<<PYTHON_VERSION_NODOT>>"
+
+[lint]
+# Selection set from decision D4.
+select = [
+    "E",      # pycodestyle errors
+    "F",      # pyflakes
+    "I",      # import sorting (isort)
+    "B",      # flake8-bugbear
+    "UP",     # pyupgrade
+    "SIM",    # flake8-simplify
+    "C90",    # mccabe complexity
+    "N",      # pep8-naming conventions
+    "RUF100", # unused noqa directives
+    "S113",   # request without a timeout (hygiene; httpx has a default, requests.Session is a known gap)
+    "DTZ",    # naive datetime: constructor, utcnow(), now(), strptime() without %z (hygiene)
+    "BLE001", # blind except: Exception or BaseException (hygiene; a bare except is E722)
+    "TID251", # banned API: env reads outside the config class (cosmic-python:PR-CONFIG-DECOUPLED)
+    "PLR2004", # magic value in a comparison (cosmic-python:BP-CONSTANTS-ENUMS, AP-FREESTR-ANYLAYER)
+    "PLR0912", # too many branches, default 12 (clean code: small functions)
+    "PLR0913", # too many arguments, default 5 (clean code: small functions)
+    "PLR0915", # too many statements, default 50 (clean code: small functions)
+    "PT018",  # composite assertion `assert a and b` (testing checklist item 11)
+]
+ignore = [
+    "E501",   # line length is enforced by the formatter; avoid double-flagging
+]
+
+[lint.mccabe]
+max-complexity = 10
+
+[lint.pylint]
+# Strings and numbers in a comparison are flagged; a bytes literal is not a magic value.
+allow-magic-value-types = ["bytes"]
+
+[lint.flake8-tidy-imports.banned-api]
+"os.getenv".msg = "Read configuration through the typed config class (cosmic-python:PR-CONFIG-DECOUPLED)."
+"os.environ".msg = "Read configuration through the typed config class (cosmic-python:PR-CONFIG-DECOUPLED)."
+
+[lint.per-file-ignores]
+# Justified, scoped exceptions only. Example: a config module whose method names
+# are UPPER_SNAKE_CASE to mirror environment-variable names.
+# "<<PACKAGE>>/__init__.py" = ["N802"]
+# "tests/**/*.py" = ["N802"]
+"**/config_resolver.py" = ["TID251"]  # the one module that reads the environment
+"tests/**/*.py" = ["PLR2004"]         # literal expected values are the point of a test
+
+[format]
+quote-style = "double"
+indent-style = "space"

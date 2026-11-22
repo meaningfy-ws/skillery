@@ -189,6 +189,34 @@ test('D-7 a release command with an open change selects release, and no gate war
   assert.ok(!keys(s).some(k => k.startsWith('process:gate:')), keys(s).join())
 })
 
+// ---------------------------------------------------------------- #207 the passed gates survive a branch round trip
+const touch = (path: string, at: number): Signal => ({ kind: 'FileTouched', id: id(), path, at })
+
+test('#207 following A, then none, then A again keeps A\'s passed gates and raises no gate warning', () => {
+  const a = (over: Partial<Change> = {}) => change(5, 5, { id: 'a', ...over })
+  const before = run(workflows, read(a()), touch('openspec/changes/a/evidence/acceptance.md', 3), cmd('make check-all', 4))
+  assert.deepEqual([before.gates['full-gates']?.state, before.gates['acceptance']?.state], ['ok', 'ok'])
+  const away = reduce(before, read(null, 5))
+  const back = reduce(away, read(a(), 6))
+  assert.deepEqual([back.gates['full-gates']?.state, back.gates['acceptance']?.state], ['ok', 'ok'])
+  const archived = reduce(back, read(a({ archived: true }), 7))
+  assert.ok(!keys(archived).some(k => k.startsWith('process:gate:')), keys(archived).join())
+})
+
+test('#207 the gates are kept per change: B does not inherit A\'s, and A gets its own back', () => {
+  const a = change(5, 5, { id: 'a' })
+  const s = run(workflows, read(a), cmd('make check-all', 3), read(null, 4), read(change(1, 5, { id: 'b' }), 5))
+  assert.deepEqual(s.gates, {})
+  assert.equal(reduce(s, read(a, 6)).gates['full-gates']?.state, 'ok')
+})
+
+test('#207 a design edited while away still stales the restored skill gate (D-29)', () => {
+  const clarity: Signal = { kind: 'SkillLoaded', id: id(), name: 'clarity-gate', at: 3 }
+  const s = run(workflows, read(change(0, 5, { id: 'a', planHash: 'h1' })), clarity, read(null, 4))
+  const back = reduce(s, read(change(0, 5, { id: 'a', planHash: 'h2', designMtime: 100 }), 5))
+  assert.equal(back.gates['clarity']?.state, 'stale')
+})
+
 test('D-7 activate.commands must be a list of regular expressions', () => {
   const w = (commands: unknown) => ({ name: 'f', title: 'T', owner: 'o', activate: { commands },
     phases: [{ id: 'a', owner: 'o', expect: [], enter: {} }] })

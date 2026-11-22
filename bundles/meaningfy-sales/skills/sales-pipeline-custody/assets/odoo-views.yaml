@@ -1,0 +1,390 @@
+# Attention filters and views of the meaningfy-sales agent: where to look in each pipeline, and why.
+# Rules for using them: ../SKILL.md (Stars, Next actions, Attention filters) and ../references/odoo-crm-conventions.md.
+# Changes: proposed by the agent, approved by the owner, created in Odoo as shared saved filters (ir.filters on crm.lead,
+# configuration: ask first), then raised as a skillery issue so this file follows.
+#
+# Every filter has: a question, a kind (odoo = an Odoo domain, also saved in Odoo; agent_check = needs the chatter or
+# the dossier, computed by the agent), an action for each hit, a target (zero = the list should be empty; worklist =
+# work through it), a cadence (open day, close day, weekly) and an order (the runs work the filters in this order).
+# Domains are Odoo domain strings; relative dates use context_today() and relativedelta, as Odoo saved filters do.
+# "rotting" means: days since date_last_stage_update above the stage's days to rot (pipelines.yaml). Odoo's own rotting
+# flag is used where the installed version can filter on it; otherwise the agent computes it per stage.
+
+open_record: "[('type', 'in', ['lead', 'opportunity']), ('active', '=', True), ('stage_id.is_won', '=', False)]"
+
+activity_types:
+- name: Deadline
+  purpose: a hard date that cannot slip (tender submission, reply to a request for offer, NDA expiry); due on that date
+  status: to create (configuration, ask first)
+  until_created: the default activity type with a summary starting 'Deadline:'
+
+# The expected closing date (date_deadline) is set only in these stages, and only to a date the client or partner stated.
+closing_date_stages:
+  Direct Consulting: [Proposal & negotiation]
+  Consulting via Partner: [Offer & decision]
+  Calls & Tenders: ['Submitted, awaiting result']
+  FWC Execution: [Offer submitted & negotiation]
+  Partnerships: []
+
+views:
+  kanban: grouped by stage; sorted by priority (descending), then next activity date
+  list: stars, name, company, stage, next activity, next activity date, days in stage, tags; sorted by next activity date
+  pivot: stars (rows) × stage (columns), one per pipeline; copied into the weekly review's Bands section
+
+attention_filters:
+# ---------------- Core: every pipeline ----------------
+- id: overdue
+  name: Overdue
+  pipelines: all
+  kind: odoo
+  domain: "[('activity_date_deadline', '<', context_today().strftime('%Y-%m-%d'))]"
+  question: what did we promise and miss?
+  action: do it if it is the agent's work, or propose a new date with a reason; never move a date silently
+  target: zero
+  cadence: [open day]
+  order: 1
+- id: no-next-action
+  name: No next action
+  pipelines: all
+  kind: odoo
+  domain: "[('activity_ids', '=', False)]"
+  question: what is drifting?
+  action: set one dated activity with a concrete summary; if the next step is unclear, the activity is the question that clears it
+  target: zero
+  cadence: [open day, close day]
+  order: 2
+- id: top-rotting
+  name: ★★★ and rotting
+  pipelines: all
+  kind: odoo
+  domain: "[('priority', '=', '3')] + rotting"
+  question: which best record is going cold?
+  action: act today, first; a touch that adds something, or the overdue step delivered
+  target: zero
+  cadence: [open day]
+  order: 3
+- id: rotting
+  name: Rotting
+  pipelines: all
+  kind: odoo
+  domain: rotting
+  question: what is stuck?
+  action: a concrete next activity; past twice the days to rot, an advance-or-close proposal
+  target: zero
+  cadence: [open day]
+  order: 4
+- id: top-due-soon
+  name: ★★★ due within 7 days
+  pipelines: all
+  kind: odoo
+  domain: "[('priority', '=', '3'), ('activity_date_deadline', '<=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d'))]"
+  question: what needs preparing?
+  action: dossier, meeting plan or draft ready a day before the activity
+  target: worklist
+  cadence: [open day]
+  order: 5
+- id: touched-no-action
+  name: Touched today, no next action
+  pipelines: all
+  kind: odoo
+  domain: "[('write_date', '>=', context_today().strftime('%Y-%m-%d')), ('activity_ids', '=', False)]"
+  question: did today's work leave a record without its next step?
+  action: set the next activity
+  target: zero
+  cadence: [close day]
+  order: 6
+- id: top-tomorrow-unprepared
+  name: ★★★ due tomorrow, not prepared
+  pipelines: all
+  kind: agent_check
+  check: ★★★ records with an activity due tomorrow and no meeting plan, draft or dossier update for it
+  question: is tomorrow's best work ready?
+  action: prepare it now, or list it first under Open for tomorrow
+  target: zero
+  cadence: [close day]
+  order: 7
+- id: not-scored
+  name: Not scored
+  pipelines: [Direct Consulting, Consulting via Partner, Calls & Tenders, Partnerships]
+  kind: odoo
+  domain: "[('priority', '=', '0')]"
+  question: which records have no attention score yet?
+  action: score them (dossier) and set the stars, oldest first, within the run budget
+  target: worklist
+  cadence: [open day]
+  order: 8
+
+# ---------------- Direct Consulting ----------------
+- id: dc-unranked-leads
+  name: Leads not scored, older than 7 days
+  pipelines: [Direct Consulting]
+  kind: odoo
+  domain: "[('type', '=', 'lead'), ('priority', '=', '0'), ('create_date', '<', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"
+  question: which cold leads pile up unranked?
+  action: provisional score and stars, then a first touch, or propose leaving them in the source (tier C)
+  target: zero
+  cadence: [open day]
+  order: 10
+- id: dc-proposal-no-decision-date
+  name: Proposal without a decision date
+  pipelines: [Direct Consulting]
+  kind: odoo
+  domain: "[('stage_id.name', '=', 'Proposal & negotiation'), ('date_deadline', '=', False)]"
+  question: is this a decision or a hope?
+  action: ask the client for the decision date (draft); set it only when stated
+  target: zero
+  cadence: [open day]
+  order: 11
+- id: dc-weak-midfunnel
+  name: Weak deals mid-funnel
+  pipelines: [Direct Consulting]
+  kind: odoo
+  domain: "[('stage_id.name', 'in', ['Discovery', 'Solution shaping']), ('priority', 'in', ['0', '1']), ('date_last_stage_update', '<', (context_today() - relativedelta(days=21)).strftime('%Y-%m-%d'))]"
+  question: which weak deals sit in the middle of the funnel?
+  action: rescore; propose nurture or lost with the reasons
+  target: zero
+  cadence: [weekly]
+  order: 12
+- id: dc-top-silent
+  name: ★★★ silent for 10 days
+  pipelines: [Direct Consulting, Consulting via Partner]
+  kind: agent_check
+  check: ★★★ records with no two-way contact (mail, meeting, call note) in the last 10 days
+  question: is a top deal going silent?
+  action: a touch that adds something (insight, sourced observation, useful pointer), within the cadence
+  target: zero
+  cadence: [open day]
+  order: 13
+- id: dc-top-power-open
+  name: ★★★ with power unproven
+  pipelines: [Direct Consulting, Consulting via Partner]
+  kind: agent_check
+  check: ★★★ records whose dossier has the economic buyer or the champion OPEN
+  question: is the score high on unproven power?
+  action: make it the first question of the next meeting plan
+  target: zero
+  cadence: [weekly]
+  order: 14
+
+# ---------------- Consulting via Partner ----------------
+- id: cvp-intro-waiting
+  name: Partner introduction waiting on us
+  pipelines: [Consulting via Partner]
+  kind: odoo
+  domain: "[('stage_id.name', '=', 'Partner introduction'), ('date_last_stage_update', '<', (context_today() - relativedelta(days=3)).strftime('%Y-%m-%d'))]"
+  question: are we making the partner wait?
+  action: draft the request for the joint get-to-know meeting today
+  target: zero
+  cadence: [open day]
+  order: 20
+- id: cvp-offer-quiet
+  name: Offer quiet for 14 days
+  pipelines: [Consulting via Partner]
+  kind: odoo
+  domain: "[('stage_id.name', '=', 'Offer & decision'), ('date_last_stage_update', '<', (context_today() - relativedelta(days=14)).strftime('%Y-%m-%d'))]"
+  question: did the partner's client go quiet?
+  action: ask the partner contact, never the client directly
+  target: zero
+  cadence: [open day]
+  order: 21
+- id: cvp-by-partner
+  name: Deals by partner
+  pipelines: [Consulting via Partner]
+  kind: odoo
+  domain: "[]"
+  group_by: partner tag and partner company
+  question: which partners actually bring deals?
+  action: feed the partner-value score (reach) of each partner in Partnerships
+  target: worklist
+  cadence: [weekly]
+  order: 22
+
+# ---------------- Calls & Tenders ----------------
+- id: ct-deadline-14
+  name: Deadline within 14 days
+  pipelines: [Calls & Tenders]
+  kind: odoo
+  domain: "['|', ('activity_ids.activity_type_id.name', '=', 'Deadline'), ('activity_ids.summary', '=like', 'Deadline:%'), ('activity_ids.date_deadline', '<=', (context_today() + relativedelta(days=14)).strftime('%Y-%m-%d')), ('stage_id.name', '!=', 'Submitted, awaiting result')]"
+  question: which clock cannot slip?
+  action: writing plan with owners; status line in every run until submitted
+  target: worklist
+  cadence: [open day]
+  order: 30
+- id: ct-watch-undecided
+  name: Watch for more than 3 days
+  pipelines: [Calls & Tenders]
+  kind: odoo
+  domain: "[('stage_id.name', '=', 'Watch'), ('date_last_stage_update', '<', (context_today() - relativedelta(days=3)).strftime('%Y-%m-%d'))]"
+  question: which tenders are undecided?
+  action: go/no-go scorecard and proposal
+  target: zero
+  cadence: [open day]
+  order: 31
+- id: ct-result-unchased
+  name: Result date passed
+  pipelines: [Calls & Tenders]
+  kind: odoo
+  domain: "[('stage_id.name', '=', 'Submitted, awaiting result'), ('date_deadline', '<', context_today().strftime('%Y-%m-%d'))]"
+  question: which results are unchased?
+  action: draft the question to the contracting authority through the official channel
+  target: zero
+  cadence: [weekly]
+  order: 32
+
+# ---------------- FWC Execution ----------------
+- id: fwc-deadline-5
+  name: Request for offer due within 5 working days
+  pipelines: [FWC Execution]
+  kind: odoo
+  domain: "['|', ('activity_ids.activity_type_id.name', '=', 'Deadline'), ('activity_ids.summary', '=like', 'Deadline:%'), ('activity_ids.date_deadline', '<=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d')), ('stage_id.name', 'in', ['RfO received', 'Offer preparation'])]"
+  question: which request-for-offer clock is short?
+  action: offer ready the day before, with the partner
+  target: worklist
+  cadence: [open day]
+  order: 40
+- id: fwc-offer-stalled
+  name: Offer submitted for more than 14 days
+  pipelines: [FWC Execution]
+  kind: odoo
+  domain: "[('stage_id.name', '=', 'Offer submitted & negotiation'), ('date_last_stage_update', '<', (context_today() - relativedelta(days=14)).strftime('%Y-%m-%d'))]"
+  question: which order is lost in procurement?
+  action: chase through the framework contact
+  target: zero
+  cadence: [weekly]
+  order: 41
+
+# ---------------- Partnerships ----------------
+- id: pa-enablement-long
+  name: Enablement for more than 30 days
+  pipelines: [Partnerships]
+  kind: odoo
+  domain: "[('stage_id.name', '=', 'NDA & enablement'), ('date_last_stage_update', '<', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"
+  question: which enablement never ends?
+  action: propose two named joint targets
+  target: zero
+  cadence: [weekly]
+  order: 50
+- id: pa-top-no-rhythm
+  name: ★★★ partners without rhythm
+  pipelines: [Partnerships]
+  kind: agent_check
+  check: ★★★ partnerships with no activity done in the last 14 days
+  question: are the top partners getting rhythm?
+  action: a useful touch (a joint target, an introduction, a capability update)
+  target: zero
+  cadence: [open day]
+  order: 51
+- id: pa-agreement-no-joint-deal
+  name: Agreement without a joint deal
+  pipelines: [Partnerships]
+  kind: agent_check
+  check: partnerships in Agreement or Co-selling with no linked deal in Consulting via Partner or Calls & Tenders
+  question: is the partnership producing clients?
+  action: propose two named joint targets
+  target: zero
+  cadence: [weekly]
+  order: 52
+
+# ---------------- Client accounts (customer success, owned by sales-accounts) ----------------
+- id: ca-red
+  name: Client accounts in red
+  pipelines: [Client accounts]
+  kind: agent_check
+  check: client accounts whose account health is red (sales-accounts, customer-success)
+  question: which client is at risk?
+  action: a recovery plan in the run note, Needs you today, an activity within 7 days
+  target: zero
+  cadence: [open day, weekly]
+  order: 55
+- id: ca-review-due
+  name: Outcome review due
+  pipelines: [Client accounts]
+  kind: agent_check
+  check: client accounts whose next outcome review is due within 14 days or past, or that have none
+  question: which client needs its outcome review prepared?
+  action: prepare the one-page review as a draft for the owner; set the review activity if missing
+  target: zero
+  cadence: [weekly]
+  order: 56
+- id: ca-ready-to-grow
+  name: Green and outcome reached
+  pipelines: [Client accounts]
+  kind: agent_check
+  check: green client accounts whose desired outcome is reached or in sight, with no next ladder deal
+  question: which client is ready for the next step or a reference?
+  action: propose the next ladder deal; propose a reference or referral ask (ask first)
+  target: worklist
+  cadence: [weekly]
+  order: 57
+
+# ---------------- Weekly hygiene: every pipeline ----------------
+- id: hy-stale-stage
+  name: Stale stage
+  pipelines: all
+  kind: odoo
+  domain: rotting beyond twice the days to rot
+  question: what should advance or close?
+  action: the advance-or-close list of the weekly review
+  target: zero
+  cadence: [weekly]
+  order: 60
+- id: hy-not-now-open
+  name: ★ still open after 30 days
+  pipelines: all
+  kind: odoo
+  domain: "[('priority', '=', '1'), ('date_last_stage_update', '<', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"
+  question: which low-attention records are kept open by habit?
+  action: propose lost or nurture with the reasons
+  target: zero
+  cadence: [weekly]
+  order: 61
+- id: hy-won-no-next
+  name: Won this week, no next ladder deal
+  pipelines: [Direct Consulting, Consulting via Partner]
+  kind: agent_check
+  check: deals won this week with no new deal for the next step on the offer ladder
+  question: did a win open the next step?
+  action: propose the next ladder deal
+  target: zero
+  cadence: [weekly]
+  order: 62
+- id: hy-lost-this-week
+  name: Lost this week
+  pipelines: all
+  kind: odoo
+  domain: "[('active', '=', False), ('lost_reason_id', '!=', False), ('write_date', '>=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"
+  question: what did we lose, and what does it teach?
+  action: read for the lesson (silent evidence); add objections to the library
+  target: worklist
+  cadence: [weekly]
+  order: 63
+- id: hy-last-stage-no-date
+  name: Last stage without a decision date
+  pipelines: [Direct Consulting, Consulting via Partner, Calls & Tenders, FWC Execution]
+  kind: odoo
+  domain: "closing_date_stages + [('date_deadline', '=', False)]"
+  question: does every deal near a decision have a stated decision date?
+  action: ask the client or partner for it; never fill it on an estimate
+  target: zero
+  cadence: [weekly]
+  order: 64
+- id: hy-mail-ahead
+  name: Mail ahead of Odoo
+  pipelines: all
+  kind: agent_check
+  check: open records whose Gmail threads (or Confluence notes) show a signed contract, an award, a client decision or a grant decision that the record's stage or status does not reflect
+  question: did something decisive happen that Odoo does not know yet?
+  action: propose the stage move, won, lost or a new deal, with the mail cited; set a dated activity
+  target: zero
+  cadence: [weekly]
+  order: 65
+- id: hy-closing-note-open
+  name: Closing note, still open
+  pipelines: all
+  kind: agent_check
+  check: open records whose chatter or dossier already holds a loss assessment, a refusal ("declined", "went with someone else") or "not a sales deal"
+  question: which records are kept open after their end was written down?
+  action: propose lost (or a move out of the sales pipelines) with the note cited
+  target: zero
+  cadence: [weekly]
+  order: 66

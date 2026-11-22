@@ -78,6 +78,19 @@ These are validation activities this skill owns; when they run in a delivery is 
   scenario names its requirement (a use case id or an acceptance criterion). A gap in any of the
   three links is a finding.
 
+## Manual scenarios are Gherkin
+
+A manual scenario is an acceptance check a person runs, for example after a production install. It
+is always a Gherkin feature tagged `@manual`, never a checklist or a prose list.
+
+- **Folder.** Manual features live in `tests/manual/`, apart from the automated features
+  (`tests/feature/` in a scaffolded project, or the project's path). They still carry `@manual`. A name-mapping or step-definition check scans only
+  the automated folder.
+- **No step definitions.** A person runs the steps; nothing binds them.
+- **Evidence.** Record each run as evidence: scenario name, pass or fail, date, environment.
+- **Specification only.** Where a framework's own test runner cannot run step definitions, the feature
+  file may serve as specification only, its scenarios mapped by name to test methods.
+
 ## Boundary & Related Skills
 
 **Owns:** feature files + test data. **Does NOT** write step definitions or production code

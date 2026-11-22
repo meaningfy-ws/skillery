@@ -1,0 +1,3 @@
+# Use where the code of a retired system was removed: one comment, in the file that held its block.
+# <name> retired <YYYY-MM-DD> (<change-id>; <reason>). Final snapshot <snapshot-id> (delete-protected, keep until <YYYY-MM-DD>).
+# After the keep-until date: delete the snapshot (owner's go-ahead, irreversible), then delete this tombstone in the same PR.

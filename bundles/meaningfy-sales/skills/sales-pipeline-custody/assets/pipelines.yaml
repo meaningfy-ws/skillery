@@ -1,0 +1,234 @@
+# Meaningfy sales pipelines: the configuration Odoo CRM is expected to match.
+# Odoo ids are not kept here: read them live from Odoo by team and stage name.
+# Changes: proposed by the agent, approved by the owner, executed in Odoo, then raised as a skillery issue so this file follows.
+pipelines:
+- name: Direct Consulting
+  stages:
+  - name: New lead
+    sequence: 1
+    is_won: false
+    days_to_rot: 7
+    requirements: 'In this stage: a first contact with a prospect who may need us. Record the source, the contact
+      person and the company; make the first touch (mail, call, meeting request).
+
+      Exit when: contact and company identified, source recorded, first touch made.'
+  - name: Qualified
+    sequence: 2
+    is_won: false
+    days_to_rot: 14
+    requirements: 'In this stage: check the fit: a real pain we solve, a budget, a person who can act. Get a discovery
+      meeting in the calendar.
+
+      Exit when: the client stated a real pain; it fits one of our offers; a discovery meeting is agreed.'
+  - name: Discovery
+    sequence: 3
+    is_won: false
+    days_to_rot: 21
+    requirements: 'In this stage: run the discovery conversations: the pain and what it costs them, the people around
+      the deal, how they decide (MEDDPICC). Fill the deal dossier in the description.
+
+      Exit when: pain and metrics, champion, economic buyer and decision process are known.'
+  - name: Solution shaping
+    sequence: 4
+    is_won: false
+    days_to_rot: 21
+    requirements: 'In this stage: shape the next contract with the champion. The ladder: a 1–2 day discovery workshop
+      then a 4–6 week Proof of Value, both paid, then Scaling (the ladder: engagement-lifecycle). Agree the lead offer, the scope outline
+      and the budget range.
+
+      Exit when: the champion accepts the lead offer in principle; scope outline and budget range confirmed.'
+  - name: Proposal & negotiation
+    sequence: 5
+    is_won: false
+    days_to_rot: 14
+    requirements: 'In this stage: send the proposal, walk the client through it, handle objections, agree terms.
+      Never discount: trade scope, timing or bonuses instead.
+
+      Exit when: proposal sent, decision date set, procurement and legal steps known; contract signed → Won.'
+  - name: Won – contract signed
+    sequence: 6
+    is_won: true
+    days_to_rot: 0
+    requirements: Contract signed. Create the next deal on the ladder (workshop → Proof of Value → scaling) when
+      there is one.
+- name: Consulting via Partner
+  stages:
+  - name: Partner introduction
+    sequence: 1
+    is_won: false
+    days_to_rot: 7
+    requirements: 'In this stage: a partner (tool vendor or consultancy) introduces a client it owns, usually pre-qualified,
+      and shares what it knows. Record the partner, its contact, the client and what the partner expects from us.
+
+      Exit when: end client, partner contact and our role known; a get-to-know meeting is requested.'
+  - name: Get-to-know meeting
+    sequence: 2
+    is_won: false
+    days_to_rot: 14
+    requirements: 'In this stage: joint conversation with the partner and the client: understand the client''s need,
+      build rapport, position the discovery workshop.
+
+      Exit when: the client is interested; the commercial model with the partner is agreed (subcontract, referral,
+      co-delivery); who pays the workshop is clear.'
+  - name: Offer & decision
+    sequence: 3
+    is_won: false
+    days_to_rot: 14
+    requirements: 'In this stage: send the offer for the next step (first a 1–2 day discovery workshop, usually
+      paid; later a 4–6 week Proof of Value or scaling) to the partner or the client as agreed; follow up until
+      decided.
+
+      Exit when: the step is agreed (order, subcontract or signed proposal) → Won.'
+  - name: Won – order signed
+    sequence: 4
+    is_won: true
+    days_to_rot: 0
+    requirements: 'Agreed. A discovery workshop agreed is already a won deal. The Proof of Value (4–6 weeks) and
+      the scaling phase are new deals in this pipeline, each with its own offer (tag Offer: …).'
+- name: Calls & Tenders
+  stages:
+  - name: Watch
+    sequence: 1
+    is_won: false
+    days_to_rot: 3
+    requirements: 'In this stage: a call or tender is spotted (tender watch, partner, funder). Get the documents,
+      the deadline, the lots or topics.
+
+      Exit when: documents in hand; deadline and lots or topics known.'
+  - name: Go / no-go
+    sequence: 2
+    is_won: false
+    days_to_rot: 3
+    requirements: 'In this stage: score the opportunity (fit, chance to win, effort, partners needed) and decide
+      within 3 days. Decide our role: prime, consortium member, subcontractor or coordinator.
+
+      Exit when: decision recorded and role decided. No-go → mark lost with the reason.'
+  - name: Consortium & strategy
+    sequence: 3
+    is_won: false
+    days_to_rot: 5
+    requirements: 'In this stage: secure the partners (teaming agreement or letter of intent); agree win themes,
+      work split and budget split.
+
+      Exit when: partners committed; win themes and budget split agreed.'
+  - name: Writing
+    sequence: 4
+    is_won: false
+    days_to_rot: 14
+    requirements: 'In this stage: write and assemble the submission with the partners; check it against every requirement
+      of the call.
+
+      Exit when: submission complete, checked and submitted.'
+  - name: Submitted, awaiting result
+    sequence: 5
+    is_won: false
+    days_to_rot: 60
+    requirements: 'In this stage: wait for the evaluation; answer clarification requests; prepare the start if the
+      result looks likely.
+
+      Exit when: result received: won → contract or grant agreement; lost → mark lost with the evaluators'' feedback.'
+  - name: Won – awarded & signed
+    sequence: 6
+    is_won: true
+    days_to_rot: 0
+    requirements: Awarded and contract or grant agreement signed. Delivery starts; framework contracts continue
+      in FWC Execution.
+- name: FWC Execution
+  stages:
+  - name: Client need discovery
+    sequence: 1
+    is_won: false
+    days_to_rot: 14
+    requirements: 'In this stage: inside a framework contract we hold (always with a partner), understand the client''s
+      new need and agree the scope direction.
+
+      Exit when: need and scope direction agreed; a request for offer is expected.'
+  - name: RfO received
+    sequence: 2
+    is_won: false
+    days_to_rot: 7
+    requirements: 'In this stage: a formal request for offer arrives through the framework. Check it fits the framework
+      scope and our capacity; agree roles with the partner.
+
+      Exit when: fit and capacity confirmed; offer team set.'
+  - name: Offer preparation
+    sequence: 3
+    is_won: false
+    days_to_rot: 7
+    requirements: 'In this stage: clarify the request, ask formal questions if needed, prepare the technical and
+      financial offer with the partner.
+
+      Exit when: offer submitted.'
+  - name: Offer submitted & negotiation
+    sequence: 4
+    is_won: false
+    days_to_rot: 14
+    requirements: 'In this stage: answer the client''s questions; adjust scope, price and timeline.
+
+      Exit when: order (specific contract) signed → Won.'
+  - name: Won – order signed
+    sequence: 5
+    is_won: true
+    days_to_rot: 0
+    requirements: Order signed; delivery starts.
+- name: Partnerships
+  stages:
+  - name: Identified
+    sequence: 1
+    is_won: false
+    days_to_rot: 21
+    requirements: 'In this stage: a possible partner: tool vendor, service provider (a consultancy that uses us
+      as subcontractor) or introducer. Record the type (tag), why them and a contact.
+
+      Exit when: type, rationale and contact recorded; a first conversation is requested.'
+  - name: Fit & contact
+    sequence: 2
+    is_won: false
+    days_to_rot: 21
+    requirements: 'In this stage: first conversations: is there mutual value? Who has our clients, what do they
+      need from us, who is our champion on their side?
+
+      Exit when: mutual value confirmed; a champion named on their side.'
+  - name: NDA & enablement
+    sequence: 3
+    is_won: false
+    days_to_rot: 60
+    requirements: 'In this stage: sign the NDA. Tool vendors: enrol named team members in the vendor''s training,
+      academy or certification. Service providers: share the capability statement and CVs; complete supplier registration.
+
+      Exit when: NDA signed; enablement done (certifications or supplier registration).'
+  - name: Agreement
+    sequence: 4
+    is_won: false
+    days_to_rot: 30
+    requirements: 'In this stage: negotiate and sign the partnership, teaming or referral agreement.
+
+      Exit when: agreement signed.'
+  - name: Co-selling
+    sequence: 5
+    is_won: false
+    days_to_rot: 45
+    requirements: 'In this stage: work the joint pipeline: joint target accounts, introductions, joint events. Each
+      joint client opportunity is a deal in Consulting via Partner or Calls & Tenders, linked to this partner.
+
+      Exit when: a first joint client deal is won → Won.'
+  - name: Won – first joint client
+    sequence: 6
+    is_won: true
+    days_to_rot: 0
+    requirements: 'A first client signed together: the partnership is a success. Keep co-selling; the client deals
+      live in their own pipelines.'
+tags:
+  partner_type:
+  - Partnership - Vendor
+  - Partnership - Consulting/Subcontractor
+  - Partnership - Introducer
+  call_type:
+  - Public Procurement Tender
+  - Private Tender
+  - R&D Grants
+  event: []   # 'Event: <name> <year>', one per event attended; created on the owner's yes
+  offer_ladder:
+  - 'Offer: Discovery workshop'
+  - 'Offer: Proof of Value'
+  - 'Offer: Scaling'

@@ -1,0 +1,41 @@
+# CI workflow for <<PROJECT_NAME>> (doc-only repository)
+# ============================================================================
+# CI is a light lint (about one minute): the spec check and the bindings check.
+# No toolchain install, no docs build. The site build (`make build-docs`) and
+# the link and structure checks run locally; the pull request body carries the
+# result line of `make check-all`. See the project-setup skill,
+# references/ci-and-infra.md.
+#
+# Thin workflow (decision D12): every step calls a `make` target.
+#
+# Runs on push to <<DEFAULT_BRANCH>> and on PRs targeting <<DEFAULT_BRANCH>>.
+
+name: CI
+
+on:
+  push:
+    branches: [<<DEFAULT_BRANCH>>]
+  pull_request:
+    branches: [<<DEFAULT_BRANCH>>]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  spec:
+    name: Spec check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Spec check (openspec validate --strict)
+        run: make validate-spine
+
+      - name: Bindings check
+        run: make check-bindings

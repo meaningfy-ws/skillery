@@ -367,22 +367,30 @@ test('Status line: epic-shaping shows its name and phase with no change id, also
 
 // ---------------------------------------------------------------- architecture, modelling, release (navigator-workflows D-1, D-3, D-4, D-5, D-6)
 const archIn = (...signals: Signal[]) => run(workflows(), read(null), skill('architecture', 3), ...signals)
-const toDomain = [write('docs/use-cases/use-case-catalogue.adoc', 4), write('docs/architecture/c4-context.adoc', 5),
-  write('docs/adr/ADR-0001-store.md', 6), write('model/core.yaml', 7)]
+const toDomain = [write('docs/architecture/index.adoc', 3.5), write('docs/use-cases/use-case-catalogue.adoc', 4),
+  write('docs/architecture/c4-context.adoc', 5), write('docs/adr/ADR-0001-store.md', 6), write('model/core.yaml', 7)]
 
 test('Architecture to modelling: architecture walks drivers to domain; Next step names conceptual-modelling', () => {
   assert.deepEqual(where(archIn()), ['architecting', null, 'drivers'])
-  const phases = ['use-cases', 'c4', 'decide', 'domain']
+  const phases = ['use-cases', 'c4', 'decide', 'domain', 'domain']
   let s = archIn()
   toDomain.forEach((w, i) => { s = reduce(s, w); assert.equal(s.phase, phases[i], w.kind === 'FileTouched' ? w.path : '') })
   assert.equal(nextStep(s), 'conceptual-modelling')
   assert.deepEqual(keys(s), [])
 })
 
-test('Architecture: writing the ADR passes the adr gate; editing an old use case in decide stays in decide', () => {
+test('Architecture: each phase gates on its own artefact, so decide waits for the ADR and the ADR leaves it', () => {
   const s = archIn(toDomain[0]!, toDomain[1]!, toDomain[2]!)
-  assert.deepEqual([s.phase, s.gates.adr?.state], ['decide', 'ok'])
+  assert.deepEqual([s.phase, s.gates.adr?.state === 'ok'], ['decide', false])
   assert.equal(reduce(s, write('docs/use-cases/use-case-catalogue.adoc', 8)).phase, 'decide')
+  const done = reduce(s, toDomain[3]!)
+  assert.deepEqual([done.phase, done.gates.adr?.state], ['domain', 'ok'])
+})
+
+test('Architecture: the drivers gate is the business context, not the use case catalogue', () => {
+  const s = archIn(write('docs/use-cases/use-case-catalogue.adoc', 4))
+  assert.equal(s.gates.drivers?.state === 'ok', false)
+  assert.equal(archIn(toDomain[0]!).gates.drivers?.state, 'ok')
 })
 
 test('Architecture: reloading architecture or spawning system-architect keeps the phase', () => {

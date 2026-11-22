@@ -1,0 +1,39 @@
+---
+name: meaningfy-voice
+description: The Meaningfy company voice profile — British English, no em dash, plain current vocabulary, honest and direct, the SMILE values, and the register rule (teach, decide, bind). Use when a skill names `meaningfy-voice`, or when produced prose must sound like Meaningfy. Trigger on "write this in the Meaningfy voice", "is this on-voice", "which register applies", "check the tone against our voice". Holds the profile only; for message structure use executive-communication, for explanatory craft use explanatory-writing.
+license: Apache 2.0
+metadata:
+  purpose: content
+  area: cross-cutting
+  subject: generic
+  posture: precise
+  stage: any
+  maturity: stable
+---
+
+# Meaningfy Voice
+
+A foundation skill: it holds one resource and no method. The profile is the only place the
+Meaningfy voice is stated; other skills cite it by name.
+
+Read `references/company-voice.md` when a skill that writes for Meaningfy names this skill, or when a
+text must be checked for voice: it holds the default voice for every produced artefact (wording and
+tone, never structure), the SMILE values, the register rule that picks technical/educational,
+executive or bind wording, before/after pairs and the quick checklist.
+
+Read `references/channels/outreach-email.md` when writing a commercial email to a prospect, client
+or partner: it adds what that channel changes (one ask, match the thread, what never goes in, the
+sign-off). LinkedIn, blog, offer and internal message have no channel profile yet: use the default
+profile.
+
+## Boundary & Related Skills
+
+**Owns:** the company voice profile and the register selection rule.
+
+**Does NOT own:** message structure (`executive-communication`), explanatory craft
+(`explanatory-writing`), doc placement and form (`technical-writing`), or the genre-conditional
+antipatterns (`writing-antipatterns`).
+
+**Related:** `executive-communication`, `explanatory-writing`, `writing-antipatterns`, `vault-daily`, `sales-conversations` (applies the outreach-email channel).
+
+Answers `CLR` in `test-strategy`'s matrix (`references/generic-writing.md`).

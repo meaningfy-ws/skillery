@@ -1,0 +1,39 @@
+= ADR-0001: Record architecture decisions
+:navtitle: ADR-0001 Record decisions
+
+[cols="1,3"]
+|===
+| Status   | Accepted
+| Date     | <<YEAR>>-01-01
+| Deciders | Project maintainers
+|===
+
+== Context
+
+We need to record the architectural decisions made on this project. Decisions accumulate over a
+project's life; without a durable record, the _why_ behind the structure is lost, and future
+contributors re-litigate settled questions or break invariants they did not know existed.
+
+== Decision
+
+We will use *Architecture Decision Records* (ADRs), as
+https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions[described by Michael Nygard].
+
+* Each significant, architecturally-relevant decision gets one ADR.
+* ADRs are short AsciiDoc files in `modules/ROOT/pages/adr/`, numbered sequentially
+  (`adr-0001-…`, `adr-0002-…`), and listed in `nav.adoc`.
+* An ADR is immutable once *Accepted*. To change a decision, write a new ADR that *Supersedes* it
+  and update this one's status to *Superseded by ADR-XXXX*.
+* Each ADR records *Status*, *Context*, *Decision*, and *Consequences*.
+
+[TIP]
+====
+For the full ADR template and authoring guidance, use the `architecture` skill's ADR template
+rather than copying this file's headings ad hoc.
+====
+
+== Consequences
+
+* The rationale behind the architecture is preserved and discoverable next to the docs it explains.
+* Contributors have a lightweight, low-ceremony way to propose and record decisions.
+* The ADR index grows over time; it must be curated so superseded records are clearly marked.

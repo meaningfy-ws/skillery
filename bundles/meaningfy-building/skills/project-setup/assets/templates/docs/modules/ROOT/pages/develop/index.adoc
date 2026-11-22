@@ -1,0 +1,89 @@
+= Developer runbook
+:description: How <<PROJECT_NAME>> is developed: where code goes, the libraries it is built on, the gates, and how long they take.
+
+// A short project runbook. The method lives in the Meaningfy skills; this page records only what is
+// specific to <<PROJECT_NAME>> and points to the skill for every rule. Fill the slots; delete these
+// comment lines once resolved.
+
+This runbook describes how *<<PROJECT_NAME>>* is developed, for people and agents. `AGENTS.md` at
+the repository root is the short form that agents load.
+
+The runbook has three pages, plus one per library we build on:
+
+* this one: structure, libraries, gates and their durations;
+* xref:develop/agents.adoc[Working with agents]: sessions, the team, the loop, what the developer
+  decides;
+* xref:develop/testing.adoc[Testing checklist]: the rules every test follows.
+
+// Optional habit: open each page with the questions it answers. Keep this section if the project
+// does that; delete it if not.
+== Common questions
+
+*Where do I start a new feature?*::
+In a shaping session: an EPIC in `openspec/changes/<id>/`. Code comes after the PLAN passes the
+clarity gate (the `epic-planning` skill).
+
+*One of our libraries does not do what I need. What now?*::
+Stop the task and report it upstream; never work around it here. See <<libraries>>.
+
+*Which checks must pass before a PR?*::
+See <<gates>>.
+
+== Where the code goes
+
+[cols="1,3",options="header"]
+|===
+|Path |What it holds
+|`<<PACKAGE>>/` |The package, in the layers of the `cosmic-python` skill
+|`tests/` |`unit/`, `feature/`, `integration/`, `e2e/`
+|`docs/` |This Antora component
+|`openspec/` |The spine: changes and living specs
+|===
+
+[#libraries]
+== Our libraries
+
+Libraries we co-develop are never worked around: a gap is fixed upstream, as the `epic-delivery`
+skill describes. A gap in an external library is a decision recorded in the change's `design.md`.
+
+[cols="1,2,2",options="header"]
+|===
+|Library |Repository |What it does for us
+|_none yet_ | |
+|===
+
+// Add one page per library (`develop/<library>.adoc`): what it does for us, what we write ourselves,
+// and how to report a gap. List it in `nav.adoc`.
+
+[#gates]
+== The gates
+
+The gates every task and every PR must pass. How often each one runs scales with the EPIC's
+appetite (the `epic-delivery` skill).
+
+[cols="2,3",options="header"]
+|===
+|Gate |When
+|`make check-all` |After every task and before every PR
+|`openspec validate --all --strict` |With every change to `openspec/`
+|The clarity gate (≥ 9/10) |Before a PLAN's first task
+|===
+
+== Before a PR
+
+* The gates above pass.
+* Each commit cites its change and task (the `meaningfy-git-workflow` skill).
+* No workaround of one of our libraries.
+* The PR targets `<<DEFAULT_BRANCH>>`.
+
+// Optional habit: a durations table. Keep it if the project tracks how long checks take.
+[#durations]
+== How long the checks take
+
+Rough wall-clock times from ordinary runs, not from profiling. Update a row when a run differs a lot.
+
+[cols="2,1,1,1,3",options="header"]
+|===
+|Target |Tests |Time |Measured |Notes
+|`make check-all` |– |– |– |
+|===

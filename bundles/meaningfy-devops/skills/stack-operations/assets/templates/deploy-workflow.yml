@@ -1,0 +1,130 @@
+# Use this as .github/workflows/deploy-<stack>.yml in the stacks repo; a single instance is a one-row ALL list.
+# Per instance, a GitHub Environment <stack>-<instance> holds: variables HOST (private address of the VM),
+# BASTION_HOST; secrets SSH_KEY and every secret named in <stack>/.env.example.
+# Images are pinned in <stack>/compose.yml; this workflow never builds an image.
+name: Deploy <stack>
+
+on:
+  workflow_dispatch:
+    inputs:
+      instance:
+        description: "Instance to deploy"
+        type: choice
+        options: [all, <instance>]
+        default: all
+  push:
+    branches: [main]
+    paths:
+      - "<stack>/**"
+      - ".github/workflows/deploy-<stack>.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  instances:
+    runs-on: ubuntu-latest
+    outputs:
+      list: "${{ steps.pick.outputs.list }}"
+    steps:
+      - id: pick
+        env:
+          ALL: '["<instance>"]'   # every running instance of this stack
+          CHOSEN: "${{ inputs.instance }}"
+        run: |
+          if [ -n "$CHOSEN" ] && [ "$CHOSEN" != all ]; then echo "list=[\"$CHOSEN\"]" >> "$GITHUB_OUTPUT"
+          else echo "list=$ALL" >> "$GITHUB_OUTPUT"; fi
+
+  deploy:
+    needs: instances
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        instance: "${{ fromJSON(needs.instances.outputs.list) }}"
+    environment: "<stack>-${{ matrix.instance }}"
+    concurrency: "<stack>-${{ matrix.instance }}"
+    env:
+      TARGET_HOST: "${{ vars.HOST }}"
+      BASTION_HOST: "${{ vars.BASTION_HOST }}"
+    steps:
+      # An Environment without HOST is an instance whose VM is not provisioned yet: report, deploy nothing.
+      - name: Check that every value is set
+        id: guard
+        env:
+          S1: "${{ secrets.DNS_API_TOKEN }}"
+          S2: "${{ secrets.DB_PASSWORD }}"
+        run: |
+          if [ -z "$TARGET_HOST" ]; then
+            echo "::warning::<stack>-${{ matrix.instance }} has no HOST: nothing was deployed."
+            echo "ok=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          bad=0
+          for v in BASTION_HOST S1 S2; do
+            if [ -z "${!v}" ]; then echo "::error::$v is empty (see <stack>/.env.example)"; bad=1; fi
+            case "${!v}" in *'$'*) echo "::error::$v contains \$"; bad=1;; esac
+          done
+          [ $bad = 0 ] && echo "ok=true" >> "$GITHUB_OUTPUT"
+          exit $bad
+
+      - name: Check out this stack only
+        if: steps.guard.outputs.ok == 'true'
+        uses: actions/checkout@<sha>   # <version>
+        with:
+          sparse-checkout: <stack>
+          persist-credentials: false
+
+      - name: Set up SSH through the bastion
+        if: steps.guard.outputs.ok == 'true'
+        uses: webfactory/ssh-agent@<sha>   # <version>
+        with:
+          ssh-private-key: "${{ secrets.SSH_KEY }}"
+
+      - name: Configure SSH hosts
+        if: steps.guard.outputs.ok == 'true'
+        run: |
+          mkdir -p ~/.ssh
+          printf 'Host bastion\n  HostName %s\n  User <deploy-user>\nHost target\n  HostName %s\n  User <deploy-user>\n  ProxyJump bastion\nHost *\n  ServerAliveInterval 20\n  ServerAliveCountMax 30\n' \
+            "$BASTION_HOST" "$TARGET_HOST" >> ~/.ssh/config
+          ssh-keyscan -H "$BASTION_HOST" >> ~/.ssh/known_hosts
+          ssh -o StrictHostKeyChecking=accept-new target true
+
+      - name: Check the VM is ready
+        if: steps.guard.outputs.ok == 'true'
+        run: ssh target 'findmnt -n /opt/data >/dev/null && mkdir -p /opt/stacks/<stack> /opt/data/<stack>'
+
+      - name: Sync the stack
+        if: steps.guard.outputs.ok == 'true'
+        run: rsync -az --delete --exclude .env -e ssh <stack>/ target:/opt/stacks/<stack>/
+
+      - name: Write .env on the VM
+        if: steps.guard.outputs.ok == 'true'
+        # Values come through env:, never pasted into the script.
+        env:
+          DNS_API_TOKEN: "${{ secrets.DNS_API_TOKEN }}"
+          DB_PASSWORD: "${{ secrets.DB_PASSWORD }}"
+        run: |
+          umask 077
+          printf 'DNS_API_TOKEN=%s\nDB_PASSWORD=%s\n' "$DNS_API_TOKEN" "$DB_PASSWORD" \
+            | ssh target 'umask 077 && cat > /opt/stacks/<stack>/.env && chmod 600 /opt/stacks/<stack>/.env'
+
+      - name: Pull and start, health-gated
+        if: steps.guard.outputs.ok == 'true'
+        run: |
+          ssh target 'cd /opt/stacks/<stack> && docker compose config -q && docker compose pull \
+            && docker compose up -d --remove-orphans --wait --wait-timeout 300'
+
+      - name: Show failing services
+        if: failure() && steps.guard.outputs.ok == 'true'
+        run: |
+          ssh target 'cd /opt/stacks/<stack> && docker compose ps -a \
+            && docker compose logs --tail 40 2>&1 | grep -v -i -E "password|secret|token|key" || true'
+
+      # Keep the newest 3 images of every repository for rollback; images in use are never removed.
+      - name: Remove images beyond the last 3
+        if: steps.guard.outputs.ok == 'true'
+        run: |
+          ssh target 'for repo in $(docker image ls --format "{{.Repository}}" | sort -u); do
+            docker image ls "$repo" --format "{{.ID}}" | awk "!seen[\$0]++" | tail -n +4 | xargs -r docker image rm 2>/dev/null || true
+          done'

@@ -1,0 +1,43 @@
+# Permission settings: opencode
+
+> **UNVERIFIED.** The settings files below follow opencode's documented `permission` and `tools` settings, but
+> have not been tested against the pinned opencode version with these connectors. Tell the owner so,
+> and test each deny (see Verify) before relying on it.
+
+opencode reads `AGENTS.md` at the vault root natively; no pointer file is needed.
+
+## `opencode.json` at the vault root
+
+Copy [`assets/permissions/opencode.json`](../assets/permissions/opencode.json). Replace each `<…-server>` with the MCP server name as opencode shows it; opencode names MCP tools
+`<server>_<tool>`. Within a pattern map **the last matching rule wins**, so the catch-all `"*"` comes
+first and the specific rules after it. The older top-level `tools` block is deprecated; use
+`permission` only. `mv` and `rm` ask, so the owner approves each move or delete they requested
+(`vault-conventions`, Moving and deleting).
+
+The rulebook script (`.../rulebook/scripts/rules.py`) asks like any other command; the owner
+approves it, never refuses it, because it reads and writes only rule notes. Its allow rule is per
+machine (below).
+
+## `opencode.scheduled.json` at the vault root
+
+Loaded only by the scheduled run ([`scheduler.md`](scheduler.md)) through `OPENCODE_CONFIG`, on top of
+`opencode.json`, so an unattended run can never move or delete: copy
+[`assets/permissions/opencode.scheduled.json`](../assets/permissions/opencode.scheduled.json).
+
+## Per machine: the rulebook script
+
+The per-machine allow rule for the rulebook script is owned by `rulebook`:
+the "Permissions (per machine)" section of the `rulebook` skill's `references/commands.md`.
+
+## Gaps against Claude Code
+
+- `edit` is set to `ask` for the whole vault instead of denying edits to `AGENTS.md` and
+  `opencode.json` only; ask the owner to refuse any edit to those two files.
+- Skills cannot be invoked with a slash; the owner asks for them by name.
+- Rule usage is not traced on opencode (no Langfuse plugin), so the weekly rules review sees no
+  usage from opencode sessions.
+
+## Verify
+
+Start opencode at the vault root and ask the agent to send a test mail and to fetch a web page; both
+must be refused. Record the result for the owner.

@@ -1,0 +1,4 @@
+# Replaces Semgrep's built-in ignore list, which skips tests/ and would silence the test rules.
+.quality/
+.venv/
+node_modules/

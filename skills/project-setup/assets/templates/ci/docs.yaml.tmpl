@@ -1,9 +1,10 @@
 # Antora documentation build + deploy for <<PROJECT_NAME>>
 # ============================================================================
-# Builds the Antora site (`make build-docs`) on every push/PR that touches
-# docs/**, and publishes it to GitHub Pages on pushes to <<DEFAULT_BRANCH>>.
-# The build job runs on PRs too (catching broken docs before merge); only the
-# deploy job is gated to <<DEFAULT_BRANCH>>.
+# This is the publish job, not a check: it builds the Antora site
+# (`make build-docs`) and publishes it to GitHub Pages only on pushes to
+# <<DEFAULT_BRANCH>> that touch docs/**. It does not run on pull requests: CI
+# stays a light lint, and the docs build runs locally (`make build-docs`)
+# before the PR. See the project-setup skill, references/ci-and-infra.md.
 #
 # Prerequisites:
 #   - `make build-docs` produces the site at docs/build/site/.
@@ -14,11 +15,6 @@ name: Docs Build & Deploy
 
 on:
   push:
-    branches: [<<DEFAULT_BRANCH>>]
-    paths:
-      - "docs/**"
-      - "Makefile"
-  pull_request:
     branches: [<<DEFAULT_BRANCH>>]
     paths:
       - "docs/**"

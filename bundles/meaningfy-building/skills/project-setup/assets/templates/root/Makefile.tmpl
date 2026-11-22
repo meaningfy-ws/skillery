@@ -1,0 +1,378 @@
+SHELL = /bin/bash -o pipefail
+
+BUILD_PRINT     = \e[1;34m
+END_BUILD_PRINT = \e[0m
+
+ICON_DONE     = [done]
+ICON_ERROR    = [x]
+ICON_WARNING  = [!]
+ICON_PROGRESS = [-]
+
+# No-src layout: the top-level package lives at the repo root.
+REPO_ROOT    = $(shell pwd)
+PACKAGE_NAME = <<PACKAGE>>
+TEST_PATH    = $(REPO_ROOT)/tests
+BASE        ?= develop
+BUILD_PATH   = $(REPO_ROOT)/dist
+
+# Parallel jobs for `make check-all`: one per core (nproc, then sysctl on macOS, then 2).
+JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 2)
+
+# The spine check (CI runs it too); the pin matches the one the scaffold installs.
+OPENSPEC_VERSION = 1.4.1
+
+# Docker / infra (activate the Docker section below once infra/ exists).
+COMPOSE_FILE = $(REPO_ROOT)/infra/compose.yaml
+ENV_FILE     = $(REPO_ROOT)/infra/.env
+
+# Coverage flags — appended only in coverage-aware targets, never in pytest.ini.
+# Coverage goes to coverage.xml only: no per-file table in the output (a gate prints its result).
+COV_FLAGS = --cov=$(PACKAGE_NAME) \
+            --cov-report=xml:$(REPO_ROOT)/coverage.xml \
+            --cov-fail-under=80
+
+# Shared checks (Semgrep rules, ls-lint, checkmake) fetched from skillery at one pin.
+# Raise the pin by hand; the tool versions move together with scripts/quality/tools.sha256.
+QUALITY_VERSION   = v3.23.0
+# scripts/quality/external_sources.py assumes QUALITY_DIR is .quality.
+QUALITY_DIR       = .quality
+SEMGREP_VERSION   = 1.185.0
+LS_LINT_VERSION   = 2.3.2
+CHECKMAKE_VERSION = 0.3.2
+
+QUALITY_OS   = $(shell uname -s | tr '[:upper:]' '[:lower:]')
+QUALITY_ARCH = $(shell uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
+SEMGREP      = "$(QUALITY_DIR)/venv/bin/semgrep" scan --metrics=off --quiet
+LS_LINT      = "$(QUALITY_DIR)/bin/ls-lint-$(LS_LINT_VERSION)-$(QUALITY_OS)-$(QUALITY_ARCH)"
+CHECKMAKE    = "$(QUALITY_DIR)/bin/checkmake-$(CHECKMAKE_VERSION)-$(QUALITY_OS)-$(QUALITY_ARCH)"
+
+# get-tool(name, version, url): save the binary under tool-version-os-arch, verified against
+# scripts/quality/tools.sha256; no line for this platform, or a wrong sum, fails naming the cause.
+define get-tool
+f="$(QUALITY_DIR)/bin/$(1)-$(2)-$(QUALITY_OS)-$(QUALITY_ARCH)"; n=$$(basename "$$f"); \
+if [ ! -x "$$f" ]; then \
+  grep -q "  $$n$$" scripts/quality/tools.sha256 || { echo "$(ICON_ERROR) no checksum for $(1) $(2) on $(QUALITY_OS)-$(QUALITY_ARCH)"; exit 1; }; \
+  curl -fsSL -o "$$f" $(3) && \
+  { grep "  $$n$$" scripts/quality/tools.sha256 | (cd "$(QUALITY_DIR)/bin" && shasum -a 256 -c - >/dev/null) \
+    || { rm -f "$$f"; echo "$(ICON_ERROR) $(1) $(2) checksum mismatch on $(QUALITY_OS)-$(QUALITY_ARCH)"; exit 1; }; } && chmod +x "$$f"; \
+fi
+endef
+
+.DEFAULT_GOAL := help
+
+#-----------------------------------------------------------------------------
+# Help — auto-generated from `## ` comments on targets.
+#-----------------------------------------------------------------------------
+.PHONY: help
+help: ## Display available targets
+	@ echo -e "$(BUILD_PRINT)Available targets:$(END_BUILD_PRINT)"
+	@ grep -hE '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| sort \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}'
+
+#-----------------------------------------------------------------------------
+# Install / build (mutating)
+#-----------------------------------------------------------------------------
+.PHONY: install-uv install install-lint lock build
+
+install-uv: ## Check that uv is installed (never installs it)
+	@ command -v uv >/dev/null 2>&1 || { echo "$(ICON_ERROR) uv is not installed: see https://docs.astral.sh/uv/getting-started/installation/" >&2; exit 1; }
+
+install: install-uv ## Install project dependencies (all groups; does NOT lock)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Installing dependencies$(END_BUILD_PRINT)"
+	@ uv sync --all-groups --locked
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Dependencies installed$(END_BUILD_PRINT)"
+
+install-lint: install-uv ## Install only the lint group (what CI needs; run with UV_NO_SYNC=1 afterwards)
+	@ uv sync --only-group lint --locked
+
+lock: ## Update uv.lock
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Locking dependencies$(END_BUILD_PRINT)"
+	@ uv lock
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Lock file updated$(END_BUILD_PRINT)"
+
+build: ## Build the package distribution
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Building package$(END_BUILD_PRINT)"
+	@ uv build
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Package built successfully$(END_BUILD_PRINT)"
+
+run: ## Run the application (python -m <package>; tailor per archetype)
+	@ uv run python -m $(PACKAGE_NAME)
+
+#-----------------------------------------------------------------------------
+# Code quality — mutating targets
+#-----------------------------------------------------------------------------
+.PHONY: format lint-fix pre-commit
+
+format: ## Format code with Ruff
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Formatting code$(END_BUILD_PRINT)"
+	@ uv run ruff format $(PACKAGE_NAME) $(TEST_PATH)
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Format complete$(END_BUILD_PRINT)"
+
+lint-fix: ## Run Ruff checks with auto-fix
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running Ruff auto-fix$(END_BUILD_PRINT)"
+	@ uv run ruff check --fix $(PACKAGE_NAME) $(TEST_PATH)
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Ruff auto-fix complete$(END_BUILD_PRINT)"
+
+pre-commit: ## Run pre-commit hooks on all files
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running pre-commit hooks$(END_BUILD_PRINT)"
+	@ uv run pre-commit run --all-files
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Pre-commit hooks passed$(END_BUILD_PRINT)"
+
+#-----------------------------------------------------------------------------
+# Validation — non-mutating targets
+#-----------------------------------------------------------------------------
+.PHONY: validate-spine lint typecheck check-architecture test test-unit test-feature test-e2e test-integration
+.PHONY: test-fast test-changed profile-tests
+
+validate-spine: ## Validate the openspec/ spine (openspec validate --strict)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Validating the spine$(END_BUILD_PRINT)"
+	@ npx --yes @fission-ai/openspec@$(OPENSPEC_VERSION) validate --all --strict
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Spine is valid$(END_BUILD_PRINT)"
+
+lint: ## Run Ruff linting checks
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running Ruff checks$(END_BUILD_PRINT)"
+	@ uv run ruff check $(PACKAGE_NAME) $(TEST_PATH)
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Ruff checks passed$(END_BUILD_PRINT)"
+
+typecheck: ## Run mypy type checks
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running mypy$(END_BUILD_PRINT)"
+	@ uv run mypy $(PACKAGE_NAME)
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Type checks passed$(END_BUILD_PRINT)"
+
+check-architecture: ## Check architecture constraints with import-linter
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Checking architecture constraints$(END_BUILD_PRINT)"
+	@ uv run lint-imports --config $(REPO_ROOT)/.importlinter
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Architecture checks passed$(END_BUILD_PRINT)"
+
+# A gate prints its result: one summary line, the failures, and coverage.xml (no coverage table;
+# the per-file numbers are in coverage.xml). Coverage below the gate fails with one line.
+test: ## Run all tests (with coverage)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running all tests$(END_BUILD_PRINT)"
+	@ uv run pytest $(TEST_PATH) $(COV_FLAGS) --junitxml=$(REPO_ROOT)/test-results.xml
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) All tests passed$(END_BUILD_PRINT)"
+
+test-unit: ## Run unit tests only
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running unit tests$(END_BUILD_PRINT)"
+	@ uv run pytest $(TEST_PATH) -m "unit"
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Unit tests passed$(END_BUILD_PRINT)"
+
+test-feature: ## Run BDD feature tests only
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running feature tests$(END_BUILD_PRINT)"
+	@ uv run pytest $(TEST_PATH) -m "feature"
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Feature tests passed$(END_BUILD_PRINT)"
+
+test-e2e: ## Run end-to-end tests only
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running e2e tests$(END_BUILD_PRINT)"
+	@ uv run pytest $(TEST_PATH) -m "e2e"
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) E2e tests passed$(END_BUILD_PRINT)"
+
+test-integration: ## Run integration tests only (needs a running datastore)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running integration tests$(END_BUILD_PRINT)"
+	@ uv run pytest $(TEST_PATH) -m "integration"
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Integration tests passed$(END_BUILD_PRINT)"
+
+test-fast: ## Developer lane: unit and feature tests, no slow ones, no coverage (CI still runs all)
+	@ uv run pytest $(TEST_PATH) -m "(unit or feature) and not slow"
+
+test-changed: ## Developer lane: the tests of the files changed against BASE (default develop); falls back to test-fast
+	@ paths=$$(uv run python -m tests.changed $(BASE)); rc=$$?; \
+	  if [ $$rc -eq 3 ]; then $(MAKE) test-fast; \
+	  elif [ $$rc -ne 0 ]; then exit $$rc; \
+	  elif [ -z "$$paths" ]; then echo "no test to run"; \
+	  else uv run pytest $$paths -m "unit or feature"; fi
+
+profile-tests: ## The 15 slowest unit and feature tests, by phase
+	@ uv run pytest $(TEST_PATH) -m "unit or feature" --durations=15 -vv
+
+#-----------------------------------------------------------------------------
+# Shared checks — fetched from skillery at QUALITY_VERSION into .quality/ (git-ignored)
+#-----------------------------------------------------------------------------
+.PHONY: quality-fetch quality-tools check-semgrep check-layout check-makefile
+
+quality-fetch: ## Fetch the shared checks at the pinned skillery release
+	@ if [ "$$(cat "$(QUALITY_DIR)/.version" 2>/dev/null)" != "$(QUALITY_VERSION)" ]; then \
+	    tmp=$$(mktemp -d) || exit 1; \
+	    { curl -fsSL "https://github.com/meaningfy-ws/skillery/archive/$(QUALITY_VERSION).tar.gz" \
+	      | tar -xz -C "$$tmp" --strip-components=1; } \
+	      || { echo "$(ICON_ERROR) cannot download skillery at $(QUALITY_VERSION)"; rm -rf "$$tmp"; exit 1; }; \
+	    test -d "$$tmp/quality" || { echo "$(ICON_ERROR) no quality/ at $(QUALITY_VERSION)"; rm -rf "$$tmp"; exit 1; }; \
+	    rm -rf "$(QUALITY_DIR)" && mv "$$tmp/quality" "$(QUALITY_DIR)" && rm -rf "$$tmp" && \
+	    echo "$(QUALITY_VERSION)" > "$(QUALITY_DIR)/.version"; fi
+
+quality-tools: quality-fetch ## Install Semgrep, ls-lint and checkmake into .quality/ (checksum-verified)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Installing the shared check tools$(END_BUILD_PRINT)"
+	@ [ "$$("$(QUALITY_DIR)/venv/bin/semgrep" --version 2>/dev/null)" = "$(SEMGREP_VERSION)" ] \
+	    || { rm -rf "$(QUALITY_DIR)/venv" && python3 -m venv "$(QUALITY_DIR)/venv" \
+	    && "$(QUALITY_DIR)/venv/bin/pip" install --quiet semgrep==$(SEMGREP_VERSION); }
+	@ mkdir -p "$(QUALITY_DIR)/bin"
+	@ $(call get-tool,ls-lint,$(LS_LINT_VERSION),https://github.com/loeffel-io/ls-lint/releases/download/v$(LS_LINT_VERSION)/ls-lint-$(QUALITY_OS)-$(QUALITY_ARCH))
+	@ $(call get-tool,checkmake,$(CHECKMAKE_VERSION),https://github.com/checkmake/checkmake/releases/download/v$(CHECKMAKE_VERSION)/checkmake-v$(CHECKMAKE_VERSION).$(QUALITY_OS).$(QUALITY_ARCH))
+	@ python3 scripts/quality/external_sources.py fetch
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Shared check tools installed$(END_BUILD_PRINT)"
+
+check-semgrep: quality-tools ## Run the shared Semgrep rules (gating, suppression reasons, report-only)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running Semgrep rules$(END_BUILD_PRINT)"
+	@ gate=$$(python3 scripts/quality/external_sources.py paths gate) || exit 1; \
+	    $(SEMGREP) --config "$(QUALITY_DIR)/semgrep/rules" $$gate --error $(PACKAGE_NAME) "$(TEST_PATH)"
+	@ $(SEMGREP) --config "$(QUALITY_DIR)/semgrep/suppressions" --disable-nosem --error $(PACKAGE_NAME) "$(TEST_PATH)"
+	@ report=$$(python3 scripts/quality/external_sources.py paths report-only) || exit 1; \
+	    $(SEMGREP) --config "$(QUALITY_DIR)/semgrep/report-only" $$report $(PACKAGE_NAME) "$(TEST_PATH)"
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Semgrep rules passed$(END_BUILD_PRINT)"
+
+check-layout: quality-tools ## Check banned file names (ls-lint) and required files
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Checking file layout$(END_BUILD_PRINT)"
+	@ $(LS_LINT) --config "$(QUALITY_DIR)/ls-lint/python-project.yml"
+	@ for f in $(PACKAGE_NAME)/__init__.py $(TEST_PATH)/conftest.py ruff.toml .importlinter; do \
+	    test -f "$$f" || { echo "$(ICON_ERROR) missing $$f"; exit 1; }; done
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) File layout checks passed$(END_BUILD_PRINT)"
+
+check-makefile: quality-tools ## Check Makefile hygiene and required targets (checkmake)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Checking the Makefile$(END_BUILD_PRINT)"
+	@ $(CHECKMAKE) --config "$(QUALITY_DIR)/checkmake/python-project.ini" Makefile
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Makefile checks passed$(END_BUILD_PRINT)"
+
+#-----------------------------------------------------------------------------
+# Bindings and code intelligence
+#-----------------------------------------------------------------------------
+.PHONY: check-bindings reindex
+
+check-bindings: ## Check that CLAUDE.md carries no GitNexus block and AGENTS.md keeps its size budget
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Checking the bindings$(END_BUILD_PRINT)"
+	@ if grep -qiE 'gitnexus:start|^#+ .*GitNexus' CLAUDE.md 2>/dev/null; then \
+	    echo "$(ICON_ERROR) check-bindings: CLAUDE.md carries a GitNexus block; keep it in AGENTS.md only"; exit 1; fi
+	@# The budget is the first line's comment; characters are counted without that line.
+	@ test ! -f AGENTS.md || python3 -c 'import re, sys; first, _, rest = open("AGENTS.md", encoding="utf-8").read().partition("\n"); m = re.fullmatch(r"<!-- size budget: (\d+) characters -->", first.rstrip("\r")); sys.exit(m and len(rest) > int(m.group(1)) and f"check-bindings: AGENTS.md is {len(rest)} characters, over its budget of {m.group(1)}; cut prose, do not raise the figure")'
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) CLAUDE.md carries no GitNexus block; AGENTS.md is within its budget$(END_BUILD_PRINT)"
+
+# --skip-agents-md leaves AGENTS.md and CLAUDE.md untouched.
+reindex: ## Re-index the code for GitNexus (the lead runs it at stage start and before the last commit)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Re-indexing the code$(END_BUILD_PRINT)"
+	@ npx gitnexus analyze --skip-agents-md
+
+#-----------------------------------------------------------------------------
+# Aggregates
+#-----------------------------------------------------------------------------
+.PHONY: check-quality check-all ci-quick ci-full
+
+check-quality: lint typecheck check-architecture check-bindings check-semgrep check-layout check-makefile ## Static checks: lint, types, architecture, bindings, Semgrep, layout, Makefile
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) All quality checks passed$(END_BUILD_PRINT)"
+
+# The heavy gate runs here, not in CI (CI stays a light lint). Each check is its own target, so
+# make runs them side by side: -j for the jobs, -O to keep each target's output together, -k to
+# report every failure instead of the first. Only `test` writes coverage.xml, test-results.xml and
+# .coverage; keep any other target that writes them (coverage-report) out of CHECKS, or run it
+# after check-all, serial. Add a target to CHECKS only if it writes no file another one reads.
+CHECKS = lint typecheck check-architecture check-bindings check-semgrep check-layout check-makefile validate-spine test
+
+check-all: ## Full local gate: every check in parallel (JOBS=n to change); put its result line in the PR body
+	@ $(MAKE) -k -O -j$(JOBS) $(CHECKS)
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Full verification suite passed$(END_BUILD_PRINT)"
+
+ci-quick: check-quality test-unit ## CI fast: quality + unit tests
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) CI quick checks passed$(END_BUILD_PRINT)"
+
+ci-full: check-all clean-code ## CI full: quality + all tests + clean-code
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) CI full checks passed$(END_BUILD_PRINT)"
+
+#-----------------------------------------------------------------------------
+# Reports (opt-in)
+#-----------------------------------------------------------------------------
+.PHONY: coverage-report quality-report
+
+coverage-report: ## Generate HTML coverage report in reports/
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Generating coverage report$(END_BUILD_PRINT)"
+	@ mkdir -p $(REPO_ROOT)/reports
+	@ uv run pytest $(TEST_PATH) $(COV_FLAGS) --cov-report=html:$(REPO_ROOT)/reports/htmlcov -m "unit or feature"
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Coverage report at reports/htmlcov/index.html$(END_BUILD_PRINT)"
+
+quality-report: ## Generate Radon quality report in reports/
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Generating quality report$(END_BUILD_PRINT)"
+	@ mkdir -p $(REPO_ROOT)/reports
+	@ uv run radon cc $(PACKAGE_NAME) -s -a -j > $(REPO_ROOT)/reports/complexity.json
+	@ uv run radon mi $(PACKAGE_NAME) -s -j > $(REPO_ROOT)/reports/maintainability.json
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Quality reports at reports/$(END_BUILD_PRINT)"
+
+#-----------------------------------------------------------------------------
+# Clean code analysis (separate from check-quality)
+#-----------------------------------------------------------------------------
+.PHONY: complexity maintainability clean-code
+
+complexity: ## Radon cyclomatic complexity analysis
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Checking cyclomatic complexity$(END_BUILD_PRINT)"
+	@ uv run radon cc $(PACKAGE_NAME) -s -a
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Complexity analysis complete$(END_BUILD_PRINT)"
+
+maintainability: ## Radon maintainability index
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Checking maintainability index$(END_BUILD_PRINT)"
+	@ uv run radon mi $(PACKAGE_NAME) -s
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Maintainability analysis complete$(END_BUILD_PRINT)"
+
+clean-code: ## Xenon threshold checks
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running Xenon threshold checks$(END_BUILD_PRINT)"
+	@ uv run xenon $(PACKAGE_NAME) --max-absolute B --max-modules A --max-average A
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Clean code checks passed$(END_BUILD_PRINT)"
+
+#-----------------------------------------------------------------------------
+# Docs (Antora) — see the project-setup skill (Docs rules). Remove this block if --no-docs.
+#-----------------------------------------------------------------------------
+.PHONY: install-antora build-docs preview-docs clean-docs
+
+DOCS_DIR  = $(REPO_ROOT)/docs
+DOCS_SITE = $(DOCS_DIR)/build/site
+
+install-antora: ## Install the Antora doc toolchain (npm) in docs/
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Installing Antora toolchain$(END_BUILD_PRINT)"
+	@ cd $(DOCS_DIR) && npm install
+
+build-docs: ## Build the documentation site to docs/build/site/
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Building docs$(END_BUILD_PRINT)"
+	@ cd $(DOCS_DIR) && npx antora --fetch antora-playbook.local.yml
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Docs built at $(DOCS_SITE)$(END_BUILD_PRINT)"
+
+preview-docs: build-docs ## Build then serve docs at http://localhost:8080
+	@ python3 -m http.server --directory $(DOCS_SITE) 8080
+
+clean-docs: ## Remove built docs + node_modules
+	@ rm -rf $(DOCS_DIR)/build $(DOCS_DIR)/node_modules
+
+#-----------------------------------------------------------------------------
+# Docker / infra — see references/ci-and-infra.md. Remove this block if --no-infra.
+# .env lives at infra/.env; compose targets pass --env-file explicitly (D11).
+#-----------------------------------------------------------------------------
+.PHONY: check-env up down rebuild logs watch
+
+check-env:
+	@ test -f $(ENV_FILE) || (echo -e "$(ICON_ERROR) Missing $(ENV_FILE). Run: cp infra/.env.example infra/.env" && exit 1)
+
+up: check-env ## Start services (docker compose up -d)
+	@ docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up -d
+
+down: check-env ## Stop services (docker compose down)
+	@ docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) down
+
+rebuild: check-env ## Rebuild and start services
+	@ docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up -d --build
+
+logs: check-env ## Follow service logs
+	@ docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) logs -f
+
+watch: check-env ## Start services with file watching (hot-reload)
+	@ docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) watch
+
+#-----------------------------------------------------------------------------
+# Utilities
+#-----------------------------------------------------------------------------
+.PHONY: clean
+
+clean: ## Remove build artifacts and caches
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Cleaning build artifacts and caches$(END_BUILD_PRINT)"
+	@ rm -rf $(BUILD_PATH) $(REPO_ROOT)/reports
+	@ rm -rf $(REPO_ROOT)/.pytest_cache $(REPO_ROOT)/.mypy_cache $(REPO_ROOT)/.ruff_cache
+	@ rm -rf $(REPO_ROOT)/.import_linter_cache
+	@ rm -rf $(REPO_ROOT)/coverage.xml $(REPO_ROOT)/test-results.xml $(REPO_ROOT)/.coverage
+	@ rm -rf $(REPO_ROOT)/*.egg-info
+	@ uv run ruff clean 2>/dev/null || true
+	@ find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	@ find . -type f -name "*.pyc" -delete 2>/dev/null || true
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Clean complete$(END_BUILD_PRINT)"

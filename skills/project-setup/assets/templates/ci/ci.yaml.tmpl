@@ -1,14 +1,15 @@
 # CI workflow for <<PROJECT_NAME>>
 # ============================================================================
-# Thin workflow (decision D12): every step calls a `make` target — never an
-# inline tool command. The gates here mirror `make check-all` + `make
-# clean-code` (i.e. `make ci-full`) so "green locally" means "green in CI".
+# CI is a light lint (about one minute): the spec check and the linters. The
+# heavy checks (types, architecture, Semgrep, layout, tests, coverage, builds)
+# run locally: `make check-all` runs them in parallel, and the pull request
+# body carries its result line. See the project-setup skill, references/ci-and-infra.md.
+#
+# Thin workflow (decision D12): every step calls a `make` target, never an
+# inline tool command. Install only the lint group (`make install-lint`); do
+# not add a full install, a test run or a build here.
 #
 # Runs on push to <<DEFAULT_BRANCH>> and on PRs targeting <<DEFAULT_BRANCH>>.
-#
-# Optional secrets:
-#   - SONAR_TOKEN: SonarCloud token. The Sonar step is skipped if it is absent,
-#     so forks and early-stage repos stay green without configuring Sonar.
 
 name: CI
 
@@ -38,50 +39,16 @@ permissions:
   contents: read
 
 jobs:
-  quality:
-    name: Lint, Typecheck, Architecture & Test
+  lint:
+    name: Spec check and lint
     runs-on: ubuntu-latest
-
-    # ------------------------------------------------------------------------
-    # Service containers — uncomment when integration tests (`make
-    # test-integration`) need a live datastore. Set the matching env vars below
-    # so the test suite can reach them on localhost. For one-off ephemeral
-    # dependencies inside the tests, prefer `testcontainers` (in the `test`
-    # group) over standing services up here.
-    # ------------------------------------------------------------------------
-    # services:
-    #   postgres:
-    #     image: postgres:16-alpine
-    #     env:
-    #       POSTGRES_USER: ci_user
-    #       POSTGRES_PASSWORD: ci_password
-    #       POSTGRES_DB: ci_db
-    #     ports:
-    #       - 5432:5432
-    #     options: >-
-    #       --health-cmd "pg_isready -U ci_user"
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
-    #   redis:
-    #     image: redis:7-alpine
-    #     ports:
-    #       - 6379:6379
-    #     options: >-
-    #       --health-cmd "redis-cli ping"
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
-
-    # env:
-    #   DATABASE_URL: postgresql://ci_user:ci_password@localhost:5432/ci_db
-    #   REDIS_URL: redis://localhost:6379/0
+    env:
+      # `uv run` must not sync the full project: only the lint group is installed.
+      UV_NO_SYNC: "1"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up uv (Python <<PYTHON_VERSION>>)
         uses: astral-sh/setup-uv@v7
@@ -89,61 +56,14 @@ jobs:
           python-version: "<<PYTHON_VERSION>>"
           enable-cache: true
 
-      - name: Install dependencies
-        run: make install
+      - name: Install the lint group
+        run: make install-lint
+
+      - name: Spec check (openspec validate --strict)
+        run: make validate-spine
 
       - name: Lint (Ruff)
         run: make lint
 
-      - name: Type check (mypy)
-        run: make typecheck
-
-      - name: Architecture check (import-linter)
-        run: make check-architecture
-
-      - name: Cache shared checks
-        uses: actions/cache@v4
-        with:
-          path: .quality
-          key: quality-${{ runner.os }}-${{ hashFiles('Makefile', 'scripts/quality/tools.sha256') }}
-
-      - name: Static rules (Semgrep)
-        run: make check-semgrep
-
-      - name: File layout (ls-lint)
-        run: make check-layout
-
-      - name: Makefile hygiene (checkmake)
-        run: make check-makefile
-
-      - name: Run tests with coverage
-        run: make test
-
-      - name: Clean-code thresholds (Xenon)
-        run: make clean-code
-
-      - name: Upload coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          retention-days: 14
-          path: |
-            coverage.xml
-            test-results.xml
-
-      # SonarCloud — runs only when SONAR_TOKEN is configured.
-      - name: Check for SonarCloud token
-        id: sonar_check
-        run: |
-          if [ -n "${{ secrets.SONAR_TOKEN }}" ]; then
-            echo "has_token=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "has_token=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: SonarCloud scan
-        if: always() && steps.sonar_check.outputs.has_token == 'true'
-        uses: SonarSource/sonarqube-scan-action@v4
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Bindings check
+        run: make check-bindings

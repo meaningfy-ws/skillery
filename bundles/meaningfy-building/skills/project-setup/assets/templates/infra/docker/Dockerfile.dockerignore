@@ -1,0 +1,53 @@
+# Co-located dockerignore (the gotcha): Docker auto-discovers
+# "<dockerfile>.dockerignore" next to the Dockerfile, so this file scopes the
+# build context for infra/docker/Dockerfile — there is NO root .dockerignore.
+#
+# Keep the build context small: ship only the package + dependency manifests.
+
+# Virtualenvs / build outputs
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# VCS
+.git/
+.gitignore
+
+# Tests, docs, data — not needed in the runtime image
+tests/
+test/
+docs/
+
+# Tooling caches & reports
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.import_linter_cache/
+reports/
+htmlcov/
+coverage.xml
+test-results.xml
+.coverage
+
+# Bytecode
+__pycache__/
+*.py[cod]
+
+# Local env & secrets — never bake into an image
+infra/.env
+.env
+.env.*
+*.secrets
+
+# Editor / OS noise
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Agentic / CI metadata
+.claude/
+.github/
+.gitnexus/

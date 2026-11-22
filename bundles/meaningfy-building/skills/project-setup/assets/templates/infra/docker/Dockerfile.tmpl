@@ -1,0 +1,69 @@
+# Multistage image for <<PROJECT_NAME>>
+# ============================================================================
+# Stage 1 (builder): install the locked dependencies into an in-project venv.
+# Stage 2 (runtime): copy only the venv + the top-level package into a slim
+# image, run as a non-root user.
+#
+# No-src layout: the package <<PACKAGE>> sits at the repo root, so the build
+# context is the repo root (see compose.yaml: context = ../..).
+
+ARG ENVIRONMENT=production
+
+# -----------------------------------------------------------------------------
+# Builder stage — resolve and install dependencies
+# -----------------------------------------------------------------------------
+FROM python:<<PYTHON_VERSION>>-slim AS builder
+
+ARG ENVIRONMENT
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_COMPILE_BYTECODE=1
+
+COPY --from=ghcr.io/astral-sh/uv:0.13.5 /uv /uvx /bin/
+
+WORKDIR /app
+
+# Dependency layer first — cached unless the lock changes. Run `make lock` so
+# uv.lock exists and is committed before building.
+COPY pyproject.toml uv.lock README.md ./
+
+RUN if [ "$ENVIRONMENT" = "development" ]; then \
+      uv sync --locked --no-install-project --all-groups; \
+    else \
+      uv sync --locked --no-install-project --no-dev; \
+    fi
+
+# Application code (no src/: the package lives at the repo root).
+COPY <<PACKAGE>> <<PACKAGE>>/
+
+RUN if [ "$ENVIRONMENT" = "development" ]; then \
+      uv sync --locked --no-editable --all-groups; \
+    else \
+      uv sync --locked --no-editable --no-dev; \
+    fi
+
+# -----------------------------------------------------------------------------
+# Runtime stage — minimal, non-root
+# -----------------------------------------------------------------------------
+FROM python:<<PYTHON_VERSION>>-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/app/.venv/bin:${PATH}"
+
+RUN groupadd --gid 1000 appuser && \
+    useradd --uid 1000 --gid appuser --shell /bin/bash --create-home appuser
+
+WORKDIR /app
+
+COPY --from=builder /app/.venv .venv
+COPY --from=builder /app/<<PACKAGE>> <<PACKAGE>>/
+
+COPY --chmod=755 infra/scripts/entrypoint.sh /entrypoint.sh
+
+USER appuser
+
+EXPOSE 8000
+
+ENTRYPOINT ["/entrypoint.sh"]

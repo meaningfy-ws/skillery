@@ -1,0 +1,25 @@
+/*
+ * Supplemental brand tweaks layered on top of the Antora default UI bundle.
+ * Keep this small: only override what you need; the bundle ships the rest.
+ */
+
+/* Brand the top navbar. Swap the colour for your project's primary brand colour. */
+.navbar {
+  background: #0e1f2f;
+}
+
+.navbar-brand .navbar-item {
+  color: #fff;
+  font-weight: 500;
+}
+
+/* Optional brand logo in the navbar (drop the file in supplemental-ui/img/). */
+.navbar .logo {
+  height: 2.25rem;
+  margin: 0 0.5rem;
+}
+
+/* Match in-page links to the brand accent. */
+.doc a {
+  color: #1565c0;
+}

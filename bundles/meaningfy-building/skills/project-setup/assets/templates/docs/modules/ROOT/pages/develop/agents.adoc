@@ -1,0 +1,70 @@
+= Working with agents
+:description: How work on <<PROJECT_NAME>> runs when agents do it: sessions, the team, the loop of a stage, and what the developer decides.
+
+// The method is owned by the `epic-delivery` skill; this page names it and records only this
+// project's choices. Fill the slots; delete these comment lines once resolved.
+
+Work on *<<PROJECT_NAME>>* runs the way the `epic-delivery` skill describes. This page tells the
+people who work with the agents what to expect, and records the choices this project made. The rest
+of the method is in the xref:develop/index.adoc[developer runbook].
+
+// Optional habit: open each page with the questions it answers.
+== Common questions
+
+*Who decides?*::
+The developer. Agents draft, recommend and carry out. The lead asks every question, with options
+and a recommendation.
+
+*Can an agent accept the work?*::
+No. Agents verify; people validate (the scenario sign-off, the acceptance demo, the model review).
+
+*Can an agent commit and merge on its own?*::
+Only when the developer grants it for a named EPIC. See <<authority>>.
+
+== Sessions
+
+A *shaping session* turns a need into EPICs. An *epic session* delivers one EPIC, stage by stage,
+each stage one PR. A *validation review* closes an iteration. What each leaves behind is in the
+`epic-delivery` skill.
+
+== The team
+
+The main session is the *lead*: it is the only one that talks to the developer, and it commits. The
+other members are briefed for one job each. The roles, and when each is used, are in the
+`epic-delivery` skill.
+
+People on this project:
+
+[cols="1,2",options="header"]
+|===
+|Role |Who
+|Developer |_name_
+|Domain expert (when the model changes) |_name, or none_
+|===
+
+== The loop of a stage
+
+Prepare, build, challenge, decide and fix, check, merge. The loop scales with the EPIC's appetite:
+a small EPIC gets one review pass, a large one the full set. The steps and the scaling table are in
+the `epic-delivery` skill.
+
+== Standing rules for every brief
+
+Every brief carries the project's standing rules. Ours:
+
+* the xref:develop/testing.adoc[testing checklist];
+* no workaround of our libraries (xref:develop/index.adoc#libraries[Our libraries]);
+* _add this project's rules, for example "data goes through the generated models, never bare
+  dicts"_.
+
+[#authority]
+== Authority
+
+By default, agents commit only with the developer's consent. The developer may grant more for one
+named EPIC; the limits of that grant are in the `epic-delivery` skill.
+
+// Optional: this project's habits (AI attribution in commits or not, where temporary files go,
+// how often the code index is refreshed).
+== Habits
+
+* _Add this project's habits here._

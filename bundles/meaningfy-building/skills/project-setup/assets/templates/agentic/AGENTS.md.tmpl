@@ -1,0 +1,91 @@
+<!-- size budget: 12000 characters -->
+<!-- meaningfy-template-version: 3.1.0 -->
+<!-- CANONICAL, CLI-agnostic agent instruction file (opencode reads AGENTS.md natively; Claude Code
+     reads it through the @AGENTS.md import in CLAUDE.md). Edit THIS file. CLAUDE.md is a thin
+     pointer that adds only Claude-specific guidance — never a symlink, never a copy. This file
+     holds what is specific to THIS repository and points to the owning skill for the rest (DEC-12,
+     global vs repo split); it never restates a skill. The GitNexus block lives here, never in
+     CLAUDE.md (`make check-bindings`). -->
+
+# Project: <<PROJECT_NAME>>
+
+Meaningfy project: clean, layered, well-tested code. The company-wide standard lives in your
+**global agent instructions** (`~/.claude/CLAUDE.md` on Claude Code, `~/.config/opencode/AGENTS.md`
+on opencode) and in the installed skills. This file records only what is specific to **this** repo.
+If a request conflicts with the standard, flag it before proceeding.
+
+## Skill routing
+
+The global routing applies. Added here: the code layers → **cosmic-python**; keeping code minimal →
+**ponytail**; the domain model and `make generate-models` (product repos) → **conceptual-modelling**;
+release and image (deployable repos) → **ci-cd-delivery**. Commits, branches and PRs →
+**meaningfy-git-workflow**; the pre-PR review → **meaningfy-code-review**; docs →
+**technical-writing**; BDD features → **bdd-gherkin**.
+
+## The spine
+
+Work is shaped and remembered under `openspec/` (schema `meaningfy`): the EPIC is
+`changes/<id>/proposal.md`, the PLAN is `design.md` + `tasks.md` (clarity gate ≥ 9/10), requirements
+are `changes/<id>/specs/<cap>/spec.md` and merge into `openspec/specs/`, the durable truth, on
+archive. Drive it with `/opsx:*` on Claude Code or `opsx-*` on opencode; `superpowers` artifacts land
+here, never in `docs/superpowers/`. Method: **epic-planning**, **clarity-gate**, **spec-stewardship**.
+
+## How work runs here
+
+- Delivering a gated PLAN (team, stage loop, authority, our libraries) → **epic-delivery**.
+- Session hygiene, subagent dispatch, the tools table → **guardrails**.
+- How each activity succeeds and fails, and what to test → **test-strategy**.
+
+## Working conventions
+
+- The innermost layer is **`domain`** (the book's `models/`). Direction:
+  `entrypoints → services → domain`, `adapters → domain`. `domain` imports nothing upward.
+  Enforced by `.importlinter`; checked via `make check-architecture`.
+- Run Python tooling through uv (`uv run pytest`, `uv run ruff`, …) or the `make` targets below.
+- Default branch is **`<<DEFAULT_BRANCH>>`** (the PR target). Branch off it; never commit to it
+  directly.
+
+## `.claude/` is a regenerable index — the truth is `openspec/specs/`
+
+`.claude/memory/MEMORY.md` is a cheap orientation note (≤200 lines; stable patterns only; a
+repository file, not the CLI's own memory). It is an
+**index, not authority**: if it disagrees with `openspec/specs/`, `specs/` wins. Do not reintroduce
+parallel epic files under `.claude/`.
+
+Preferences and corrections go to the rulebook, never to the CLI's memory; project state goes to
+the spine and the repository's docs.
+
+## Project specifics
+
+<!-- Fill these in for this repository. Delete the guidance comments once resolved. -->
+
+- **Archetype:** <!-- product | library | doc-only -->
+- **Top-level package(s):** `<<PACKAGE>>/` (no `/src`). Multiple deployable units → multiple
+  top-level packages.
+- **Modules / bounded contexts:** <!-- e.g. billing, notifications, commons -->
+- **Domain model:** <!-- product only — model/ (LinkML); `make generate-models` regenerates targets -->
+- **Datastores / external systems:** <!-- e.g. MongoDB, Redis, the ERE engine, an OpenAPI client -->
+- **Deployable?** <!-- yes/no — if yes, see ci-cd-delivery; CD stub pending DevOps ratification -->
+- **Checks:** a gate prints its result, not its log. The `no-poll-loops` and `quiet-tools` mods of
+  `meaningfy-core` are the hooks every Claude Code session runs (no second hook here); run a long
+  command once in the background and wait for its notice.
+
+  | Gate | When and who | Command |
+  |---|---|---|
+  | Narrow checks | the builder, each edit: the tests the edit touches, the cheap static checks | <!-- e.g. `uv run pytest tests/<file>`, `make lint` --> |
+  | Task gate | the builder, once per task | <!-- default: the full gates, e.g. `make check-all` --> |
+  | Full gates | the lead, once per stage before the PR and once after the fix pass | <!-- e.g. `make check-all` --> |
+  | Docs gate | the checker, when the docs change | <!-- e.g. `make build-docs` --> |
+  | Code intelligence | the lead runs the index and impact at stage start and before the stage's last commit; builders and reviewers run none | `make reindex`, then the GitNexus impact tool |
+
+- **Code intelligence:** Serena for symbols and edits (`.serena/project.yml` lists the language
+  servers; a worktree is activated as its own project), `ast-grep` for one code shape across many
+  files, GitNexus for blast radius. The gate shape is the Code intelligence row above; a HIGH or
+  CRITICAL result goes to the developer, and without a lead the session runs impact once before its
+  first edit and the change check once before its commit. At stage start and before the stage's last
+  commit, re-index with `npx gitnexus analyze --skip-agents-md` (`make reindex`), which leaves this
+  file untouched.
+- **Our libraries (no workarounds):** <!-- the co-developed libraries, e.g. `meaningfy-ws/<repo>`, what each does for us; a gap in one is fixed upstream (epic-delivery) -->
+- **GitNexus repo name:** <!-- the name this repo is indexed under (gitnexus_*) -->
+
+See `docs/` for methodology (ai-coding), standards (engineering-standards), and philosophy.

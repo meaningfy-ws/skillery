@@ -11,10 +11,12 @@ follow it for those. This file covers only what is release-specific.
    features.** New features wait for the next release line.
 3. Let **release-please** (the release engine in `SKILL.md`) bump the version and assemble the
    CHANGELOG via its release PR.
-4. **Tag on merge.** Merging the release PR produces the annotated tag `vX.Y.Z`, the GitHub Release, and
+4. **Validate.** Run the project's full gates on the release branch before the merge, and keep their
+   saved output as the evidence that they pass (gate `validated`).
+5. **Tag on merge.** Merging the release PR produces the annotated tag `vX.Y.Z`, the GitHub Release, and
    the publish job.
-5. **Back-merge** the release branch into every long-lived line (e.g. `main` and `develop`) so the
-   version bump and any stabilisation fixes are not lost.
+6. **Back-merge** the release branch back into `develop`, the only long-lived line besides `main`, so
+   the version bump and any stabilisation fixes are not lost.
 
 ## Hotfix branch — `hotfix/X.Y.Z`
 
@@ -24,7 +26,7 @@ A production bug on an already-released version, fixed without dragging in unrel
    would smuggle in unreleased changes).
 2. Commit the fix as a `fix:` (so the engine resolves it to a PATCH bump).
 3. Tag `vX.Y.Z` and publish, same path as a normal release.
-4. **Back-merge to all long-lived lines** so the fix is not regressed by the next release.
+4. **Back-merge** the fix back into `develop` so it is not regressed by the next release.
 
 ## Pre-release promotion
 

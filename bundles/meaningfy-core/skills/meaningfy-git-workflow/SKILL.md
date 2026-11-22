@@ -1,0 +1,127 @@
+---
+name: meaningfy-git-workflow
+description: Meaningfy git and GitHub conventions — Conventional Commits (imperative, no trailing punctuation), branch naming, rebase/merge etiquette, the pull-request workflow, free-tier GitHub constraints, and dev-environment hygiene. Use when committing, branching, opening or maintaining a PR, or setting up a development environment for a Meaningfy project.
+license: Apache 2.0
+metadata:
+  purpose: software-development
+  area: coding
+  subject: git-release
+  posture: precise
+  stage: build
+  maturity: stable
+---
+
+# Meaningfy Git Workflow
+
+Without a house rule, commits drift into past-tense one-liners, branches carry commit-type prefixes
+and PRs assume paid GitHub features. This skill owns the **conventions and policy**; the mechanical
+*act* of committing, pushing and opening PRs is the external `commit-commands` skill's. If it is not
+installed, offer to install it (`dependencies.yaml`); if the person declines, say that you work
+without it and run `git` directly, losing its one-step commit, push and PR.
+
+## Quick Start
+
+Task: add credit-note support, OpenSpec change `add-export`, task 2.3.
+
+- Branch: `feature/credit-notes` off `develop` (not `feat/credit-notes`, not `feature/Credit_Notes`).
+- Commit:
+
+  ```text
+  feat(billing): add credit-note support
+
+  Clients asked to correct an issued invoice without voiding it.
+
+  - add the CreditNote model and its totals rule
+  - expose credit notes in the invoice export
+
+  Refs: add-export 2.3
+  ```
+
+- PR: title "Add credit-note support", one reviewer, `[WIP]` prefix until ready (private repo, free
+  tier: no drafts).
+
+## Commits
+
+- Follow **Conventional Commits** (`type(scope): summary`).
+- **Summary line:** imperative mood, **no trailing period or punctuation**; keep it short and
+  meaningful (e.g. `feat: add credit-note support`, not `Added credit notes.`).
+- **Body:** separated from the summary by one blank line, in three parts:
+  - **Why** — the reason for the change, in a sentence or two.
+  - **What** — one bullet per concern changed.
+  - **Trace** — `Refs: <change-id> <task>` when the commit belongs to an OpenSpec change (for
+    example `Refs: add-export 2.3`).
+
+  A trivial change (a typo, a link) takes a one-line body instead.
+- Commit often, in **granular, conceptually atomic** chunks so peers can follow the change.
+- Avoid successive commits with the same message (`trying to fix X`, `fix X again`). Make them
+  locally and **squash** into one before sharing; if already pushed, squash + rebase + force-push
+  at the end.
+- Use the developer's **company email** for company projects (set globally or per-repo).
+- In **infrastructure repos** the scope is the service or VM changed (`fix(<stack>): …`), and a
+  docs-only commit carries `[skip ci]` so it triggers no deploy.
+
+## Branch naming
+
+**GitFlow** is the standard branching model. Branch names are **lowercase + hyphens only** — no
+underscores, no spaces, and **never** a commit-type prefix (`feat/`, `fix/`, `chore/`, `rel/`, …):
+those belong to *commit messages*, not branches.
+
+**Permanent branches** (never delete, never commit directly):
+
+- `main` — production history. We use `main`; `master` is an accepted alias. Every merge is tagged
+  `vX.Y.Z`.
+- `develop` — integration branch for the next release. A repo always has both.
+
+**Temporary branches** (delete after merge; merge with `--no-ff` to preserve grouping):
+
+| Prefix | Branch off | Merge back into | Name |
+|--------|-----------|-----------------|------|
+| `feature/` | `develop` | `develop` | `feature/<descriptor>` or `feature/<author>/<ticket-id>` (e.g. `feature/login-ui`, `feature/ec/PROJ-123`) |
+| `release/` | `develop` | `main` **and** `develop` | `release/<version>` (e.g. `release/1.2.0`) |
+| `hotfix/`  | `main`    | `main` **and** `develop` | `hotfix/<version>` or `hotfix/<issue>` (e.g. `hotfix/1.2.1`) |
+
+Prefer the ticketing system's branch-name feature (e.g. Jira) to generate a `feature/` name. The
+`release/` + `hotfix/` *lifecycle* (cut-from, back-merge, tagging) is owned by
+`meaningfy-release` — this skill owns only the branch *shape*.
+
+## Workflow
+
+- **GitFlow is the model for every project** — always a `develop` and a `main`/`master`, with
+  `feature/` / `release/` / `hotfix/` supporting branches (above). A client may dictate extra
+  process, but the branch model and names are the Meaningfy default.
+- On a shared feature branch, use `git pull --rebase` (not plain `pull`).
+- Use **rebase** to incorporate base-branch changes and keep history clean — **unless** the
+  changes are numerous, in which case **merge**. Once you merge into a branch, do not rebase it
+  again for its lifetime (unless redoing the whole history before final merge).
+- After a **force-push** of a rebased branch, notify other developers to `reset --hard` (or
+  delete + refetch); they must stash/save work first — it is destructive.
+
+## Pull Requests
+
+- The feature's **main developer** opens the PR (another dev may open it in their stead).
+- Give the PR a **short, meaningful title** — not the verbatim branch name.
+- Assign **at least one reviewer** (four-eyes), except for small/non-critical/non-functional
+  changes or when sole-developer; assign at least one assignee (may be yourself) as the merger.
+- Mark work-in-progress with a **`[WIP]`** title prefix or the draft feature; remove it and
+  notify reviewers when ready.
+- Keep the PR branch up to date against its base (rebase for small changes; merge for large).
+
+## Free-tier GitHub constraints
+
+We do not use paid GitHub plans, so on private repos: **reviewers are limited to 1**, and
+**draft PRs are not available** — use the **`[WIP]` title prefix** instead of a draft. Any PR
+automation must assume this, not the paid-tier feature set.
+
+## Dev-environment hygiene
+
+Read `references/dev-environment.md` when setting up or debugging a development machine: it adds
+the WSL filesystem trap, the RDF auto-format warning, editor plugins and notification routing.
+
+## Boundary & Related Skills
+
+**Owns:** VCS/PR conventions + dev-environment hygiene. **Does NOT own:** code structure
+(`cosmic-python`), the mechanical commit/push/PR *commands* (external `commit-commands`), or the
+**release/hotfix branch lifecycle + versioning** (`meaningfy-release` — this skill owns only the
+branch *mechanics* it builds on).
+**Related:** `cosmic-python`, `meaningfy-release`, `commit-commands` (external), `code-review`
+(external) + `meaningfy-code-review` (the checklist).

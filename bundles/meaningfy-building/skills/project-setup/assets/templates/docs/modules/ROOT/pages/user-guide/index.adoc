@@ -1,0 +1,40 @@
+= User Guide
+:navtitle: User Guide Overview
+
+The user guide is for people _operating_ the running system — not developers building it. Where
+the xref:tutorials/getting-started.adoc[tutorials] teach a developer to stand the system up, the
+user guide walks an operator or end user through the everyday tasks the product exists to support.
+
+== Who this is for
+
+* Operators who run and monitor the deployed system.
+* End users who interact with it through its UI or API to get work done.
+
+== Common tasks
+
+[cols="2,4",options="header"]
+|===
+| Task | What you do
+
+| Submit a request | Send a well-formed request to the API and read the result.
+| Check system health | Query the health endpoint to confirm the service is ready.
+| Review activity | Inspect the audit trail to see what the system processed and when.
+|===
+
+== Submitting a request
+
+. Authenticate (if the deployment requires it).
+. Build a request matching the schema in the xref:reference/index.adoc[API reference].
+. Send it and inspect the response.
+
+[NOTE]
+====
+Replace this skeleton with the actual end-user workflows for your product. Keep each task
+goal-first and screenshot-light; link to the xref:reference/index.adoc[reference] for exhaustive
+field-level detail instead of repeating it here.
+====
+
+== Related
+
+* xref:reference/index.adoc[Reference] — exact request/response and configuration detail.
+* xref:tutorials/getting-started.adoc[Getting Started] — for setting the system up the first time.

@@ -1,5 +1,5 @@
 {
-  "version": "3.22.1",
+  "version": "3.23.0",
   "bundles": [
     {
       "name": "meaningfy-core",
@@ -240,6 +240,7 @@
       ],
       "skills": [
         "infrastructure-operations",
+        "corpus-repository",
         "stack-operations",
         "service-reliability",
         "infrastructure-security"
@@ -369,8 +370,13 @@
         "Write",
         "Bash",
         "Skill",
-        "Agent",
-        "mcp__overleaf__*"
+        "Agent(Explore, checker, meaningfy-building:checker)",
+        "mcp__overleaf__list_projects",
+        "mcp__overleaf__list_files",
+        "mcp__overleaf__read_file",
+        "mcp__overleaf__get_sections",
+        "mcp__overleaf__get_section_content",
+        "mcp__overleaf__status_summary"
       ],
       "skills": [
         "contract-practice",
