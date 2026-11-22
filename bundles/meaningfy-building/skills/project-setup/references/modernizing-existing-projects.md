@@ -10,8 +10,7 @@ apply in slices; archive into `openspec/specs/`.
 
 `scripts/scaffold.sh -p <pkg> -n "<Name>" -a <archetype> --dry-run` writes nothing, prints
 `+ create` per missing standard file and `= keep` per present one, and flags an `AGENTS.md` or
-`CLAUDE.md` symlink. Rate the 13 dimensions file presence cannot see
-as conformant, partial or missing: layout (`/src`?), pyproject (`[tool.*]`
+`CLAUDE.md` symlink. Rate the 13 dimensions it cannot see as conformant, partial or missing: layout (`/src`?), pyproject (`[tool.*]`
 sprawl, uv and `uv.lock` or Poetry), root tool configs, lint (Ruff or black/isort/flake8/pylint),
 tests (tiers, marker hook, pytest-bdd, coverage gate), architecture (`.importlinter` in CI), agent
 files (D8), spine (pinned schema, commands), memory (`MEMORY.md` a ≤ 200-line index), docs (Antora
@@ -41,8 +40,8 @@ Never mix the `/src` lift with a tooling swap. A repo without tests gets the smo
 ## 3. Apply
 
 `--dry-run` before every apply. The default mode prompts per collision, `--skip-existing` only
-adds, `--force` only for files you chose to regenerate. Migrations are deliberate edits, one concern
-per commit (`meaningfy-git-workflow`).
+adds, `--force` only for files you chose to regenerate. Migrations are deliberate edits, one
+concern per commit (`meaningfy-git-workflow`).
 
 ## Adopting the shared checks
 

@@ -129,9 +129,9 @@ organisation, what to test per layer.
 **Delegates:** TDD ritual → `superpowers:test-driven-development`; system design, topology,
 contracts and ADRs → `architecture`; domain model → `conceptual-modelling`; LinkML authoring and
 `make generate-models` → `linkml-engineering`; tooling, CI and import-linter contracts →
-`project-setup`; Gherkin → `bdd-gherkin`; commit and PR mechanics → `meaningfy-git-workflow`;
-sensitive-data interaction safety → `guardrails`.
-**Related:** `architecture`, `meaningfy-code-review`, `bdd-gherkin`, `guardrails`,
+`project-setup`; Gherkin → `bdd-gherkin`; UI tests → `ui-testing`; commit and PR mechanics →
+`meaningfy-git-workflow`; sensitive-data interaction safety → `guardrails`.
+**Related:** `architecture`, `meaningfy-code-review`, `bdd-gherkin`, `ui-testing`, `guardrails`,
 `conceptual-modelling`, `linkml-engineering`, `ci-cd-delivery`, `meaningfy-git-workflow`, `epic-delivery`.
 
-Answers `VER, ADQ, ROB` in `test-strategy`'s matrix (`references/software.md`, `references/ui.md`).
+Answers `VER, ADQ, ROB` in `test-strategy`'s matrix (`references/software.md`).

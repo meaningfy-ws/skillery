@@ -25,6 +25,7 @@ served_by:
   - stage-check
   - cosmic-python
   - test-suite-care
+  - ui-testing
   - project-setup
   - ci-cd-delivery
   - meaningfy-release

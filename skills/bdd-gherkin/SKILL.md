@@ -98,6 +98,6 @@ is always a Gherkin feature tagged `@manual`, never a checklist or a prose list.
 and does NOT plan (`epic-planning`) or score specs (`clarity-gate`).
 **Related:** `architecture` (the White/Blue use case catalogue Gherkin projects from), `epic-planning`,
 `epic-delivery` (when sign-off and the traceability check run),
-`clarity-gate`, `spec-stewardship`, `cosmic-python`.
+`clarity-gate`, `spec-stewardship`, `cosmic-python`, `ui-testing` (how UI tests are written and run).
 
 Answers `VAL, VER, ADQ` in `test-strategy`'s matrix (`references/software.md`, `references/shaping.md`, `references/architecture.md`, `references/cross-cutting.md`).

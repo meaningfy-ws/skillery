@@ -1,0 +1,10 @@
+#-----------------------------------------------------------------------------
+# UI tests — Playwright (Python); `make test-e2e` runs them (rules: the ui-testing skill)
+#-----------------------------------------------------------------------------
+.PHONY: ui-browsers
+
+# CI or a fresh machine also needs the system packages: `uv run playwright install-deps chromium` (as root).
+ui-browsers: ## Install the Playwright browser (Chromium); system packages: see the comment above
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Installing the Playwright browser$(END_BUILD_PRINT)"
+	@ uv run playwright install chromium
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) Playwright browser installed$(END_BUILD_PRINT)"

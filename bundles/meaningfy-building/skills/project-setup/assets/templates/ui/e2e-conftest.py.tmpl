@@ -1,0 +1,48 @@
+"""End-to-end fixtures for <<PROJECT_NAME>>: Playwright (Python) and the accessibility check.
+
+Rules for these tests: the ui-testing skill. The base URL comes from ``UI_BASE_URL``. Call
+``check_accessibility(page)`` on every page a scenario visits, once a retrying assertion has
+passed. A finding goes to ``a11y-accepted.json`` (a list of objects with ``rule``, ``selector``,
+``issue`` and ``date``), never into a switch that turns the check off.
+"""
+
+import json
+import os
+from collections.abc import Callable
+from pathlib import Path
+
+import pytest
+from axe_playwright_python.sync_playwright import Axe
+from playwright.sync_api import Page
+
+ACCEPTED_FILE = Path(__file__).parent / "a11y-accepted.json"
+BLOCKING = {"critical", "serious"}
+
+
+@pytest.fixture(scope="session")
+def base_url() -> str:
+    return os.environ.get("UI_BASE_URL", "http://localhost:8000")
+
+
+def _accepted() -> set[tuple[str, str]]:
+    if not ACCEPTED_FILE.exists():
+        return set()
+    return {(item["rule"], item["selector"]) for item in json.loads(ACCEPTED_FILE.read_text(encoding="utf-8"))}
+
+
+@pytest.fixture
+def check_accessibility() -> Callable[[Page], None]:
+    """Fail on a critical or serious axe finding that is not in ``a11y-accepted.json``."""
+
+    def check(page: Page) -> None:
+        accepted = _accepted()
+        found = [
+            f"{v['id']} ({v['impact']}) at {node['target']}"
+            for v in Axe().run(page).response["violations"]
+            if v["impact"] in BLOCKING
+            for node in v["nodes"]
+            if (v["id"], ",".join(map(str, node["target"]))) not in accepted
+        ]
+        assert not found, "accessibility findings:\n" + "\n".join(found)
+
+    return check

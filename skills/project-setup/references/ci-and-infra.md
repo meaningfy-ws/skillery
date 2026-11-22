@@ -2,8 +2,7 @@
 
 ## CI philosophy
 
-CI is a light lint; the heavy checks run locally, in parallel. A doc-only repo that built every
-artefact per push took 11 minutes; split, CI takes 1 and the local gate 5.
+CI is a light lint; the heavy checks run locally, in parallel (CI takes 1 minute, the local gate 5).
 
 - **CI** (`ci.yaml`): the spec check and the linters only (`validate-spine`, `lint`,
   `check-bindings`), each one `make` target (D12); `install-lint` installs the lint group only. No

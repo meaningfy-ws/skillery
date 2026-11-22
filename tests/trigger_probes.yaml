@@ -308,3 +308,17 @@ probes:
   - probe: "which checks does this activity need"
     expect: test-strategy
     near_miss_of: test-suite-care
+  # ui-testing D-1 (task 1.1): the skill and its three neighbours.
+  - probe: "write a Playwright test for the login page"
+    expect: ui-testing
+  - probe: "our Cypress tests use cy.wait(5000), fix them"
+    expect: ui-testing
+  - probe: "write Gherkin scenarios for this acceptance criterion"
+    expect: bdd-gherkin
+    near_miss_of: ui-testing
+  - probe: "our test suite takes 20 minutes, what can we drop"
+    expect: test-suite-care
+    near_miss_of: ui-testing
+  - probe: "review the usability of these screens"
+    expect: meaningfy-code-review
+    near_miss_of: ui-testing
