@@ -58,7 +58,8 @@ authoritative rules. In short:
 - One conceptually atomic change per commit; do not mix unrelated changes.
 - PRs target `<<DEFAULT_BRANCH>>`. Confirm with maintainers whether a change should be a
   **stacked PR** (based on a previous feature branch) or a **direct PR**.
-- CI must be green; `make check-all` mirrors the CI gate.
+- CI is a light lint and must be green; `make check-all` is the full gate, run locally. Paste its
+  result line into the pull request body.
 
 ## Documentation
 

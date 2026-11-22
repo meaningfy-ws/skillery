@@ -423,11 +423,16 @@ if [[ "$WITH_INFRA" -eq 1 ]]; then
 fi
 
 # ---- 8. CI pillar ---------------------------------------------------------
-# CI runs the CI-AUTOMATABLE gates as make targets (openspec validate --strict, codegen-in-sync
-# for products, check-architecture, coverage ≥80%, code review). clarity-gate is NOT a CI step
+# CI runs only the light set as make targets (openspec validate --strict, lint, check-bindings);
+# the heavy checks run locally through `make check-all`, in parallel. clarity-gate is NOT a CI step
 # (human/agent semantic gate) — CI may only emit a reminder. See references/ci-and-infra.md.
 if [[ "$WITH_CI" -eq 1 ]]; then
-  [[ "$CODE" -eq 1 ]] && render "$TPL/ci/ci.yaml.tmpl" "$TARGET/.github/workflows/ci.yaml"
+  # CI is a light lint for every archetype: the spec check and the linters (references/ci-and-infra.md).
+  if [[ "$CODE" -eq 1 ]]; then
+    render "$TPL/ci/ci.yaml.tmpl" "$TARGET/.github/workflows/ci.yaml"
+  else
+    render "$TPL/ci/ci-doc-only.yaml.tmpl" "$TARGET/.github/workflows/ci.yaml"
+  fi
   [[ "$WITH_DOCS" -eq 1 ]] && render "$TPL/ci/docs.yaml.tmpl" "$TARGET/.github/workflows/docs.yaml"
   # _reusable-tests.yml is opt-in (large projects only) — see references/ci-and-infra.md
 fi

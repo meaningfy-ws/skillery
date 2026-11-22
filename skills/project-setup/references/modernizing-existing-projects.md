@@ -15,7 +15,7 @@ as conformant, partial or missing: layout (`/src`?), pyproject (`[tool.*]`
 sprawl, uv and `uv.lock` or Poetry), root tool configs, lint (Ruff or black/isort/flake8/pylint),
 tests (tiers, marker hook, pytest-bdd, coverage gate), architecture (`.importlinter` in CI), agent
 files (D8), spine (pinned schema, commands), memory (`MEMORY.md` a ≤ 200-line index), docs (Antora
-buckets), infra (root, multistage non-root, layered env), CI (on `make`, mirroring `check-all`),
+buckets), infra (root, multistage non-root, layered env), CI (a light lint on `make`; the heavy `check-all` is local),
 versions (`requires-python` bound, Ruff and mypy track it).
 
 Carry only detected gaps into the EPIC: a conformant dimension named as a no-go, decision or
