@@ -324,6 +324,20 @@ compaction after `proposal.md`, a fresh session per EPIC.
   (`make skill-inventory`, the opt-in note moved to the row's Moment column; `lead-fixed:` in the
   commit bodies); a lesson for the briefs: a builder that changes a description runs
   `make skill-inventory`, and the ledger's first column is read by a test.
+- **D-37** Stage 3 reviews. Accepted from L1+L2: C1 the mark line's one definition
+  (`team-and-briefs.md`) gains `[ risk=recorded]`; C2 and W4 the code-reviewer feature scenarios
+  use a non-group pair (L1+L4) for the "no decision" case and drop the appetite-reading step;
+  W1 re-labelled Critical (a small stage keeps the grouped runs with no `D-n`, as the spec
+  scenario says); W2 the stale-mention list of D-35 extended (README.md:115, docs/development
+  README.md:132, team-and-briefs.md:17, setup.md:94, mcp-setup.md:15, compatibility.md:123,
+  software.md:19, hooks.md:38, the AGENTS.md GitNexus block and its template); W3 re-labelled
+  Critical (the validator's lens-group check has no rejection test) with S3's two validator
+  rules (`risk_reviewers >= reviewers`; a lens group accepted only where the appetite's set
+  names it, in the agent body); S1 the mark fixture gains the risk lines beside the `MARK_RE`
+  fix; S2 done by the lead (`rules.py confirm`). The red `opencode-installer` CI job is an
+  expectation of the old implementer tool list in the installer's tests; it is updated in the
+  same pass. Under the floor: L3+L4+L5 W2 (`small_stage` retirement, stage 4), W3 to W6 and
+  S1 to S7 (W1 is C1); all candidates for stage 4's navigator work or the docs stage.
 
 ## Open Questions
 
