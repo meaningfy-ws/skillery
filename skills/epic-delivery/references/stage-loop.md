@@ -108,8 +108,8 @@ review set of each appetite is in
    the next stage starts fresh from the note's prompt.
 
 A LARGE EPIC with screens, three stages, runs this way: all scenarios signed off at the gate; per
-stage, builder tasks, full gates, the PR, then five lenses, the UX lens and the tester on its
-condition in parallel, the one fix pass, full gates, the checker, the note, watch-and-merge, a
+stage, builder tasks, full gates, the PR, then the appetite's review set (the two grouped runs, the
+five lenses on a recorded risk), the UX lens and the tester on its condition in parallel, the one fix pass, full gates, the checker, the note, watch-and-merge, a
 fresh session. After stage 3 the mandatory demo, then the docs stage when docs are owed (one PR
 with the LARGE review set), then archive.
 

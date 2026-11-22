@@ -14,7 +14,7 @@ The developer and the domain expert are people (`SKILL.md`, *The team*).
 | Architect | `system-architect` agent | Declared (opus) | Shaping session |
 | Planner | `epic-planner` agent | Declared (opus) | Shaping only (an `epic-planner` session) |
 | Builder | `implementer` agent | Declared (sonnet) | Every task, every accepted fix, every spike |
-| Reviewer | `code-reviewer` agent, one per lens | Declared (opus) | Every stage, scaled by appetite |
+| Reviewer | `code-reviewer` agent, one per run of the appetite's review set (a lens or a lens group) | Declared (opus) | Every stage, scaled by appetite |
 | Checker | A fresh general-purpose subagent | opus | Once per stage, where the appetite's review set has one ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)) |
 | Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | Opt-in, on its condition ([`stage-loop.md`](stage-loop.md), Prepare) |
 | UX designer | A general-purpose subagent with the design skills | opus | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
@@ -64,8 +64,12 @@ and never built or tested the stage.
    **The mark** (its one definition) says which change, phase and stage the session is in:
 
    ```text
-   mark: change=<id> phase=<shape|plan|deliver> stage=<n|->
+   mark: change=<id> phase=<shape|plan|deliver> stage=<n|-> [risk=recorded]
    ```
+
+   The optional ` risk=recorded` (one space, lowercase) closes the line; the lead writes it when a
+   PLAN `RISK-` row names the stage or its files, or a `D-n` from Prepare records a risk, and it
+   holds for that stage only.
 
    The lead writes it as a whole line in its own message (not in a fence, not in a tool input) at the
    start of each stage and, in a session carried on from a hand-over note, before its first brief. It

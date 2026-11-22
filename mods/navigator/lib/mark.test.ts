@@ -4,7 +4,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { isMarkLine, hasMark, MISSING_MARK } from './mark.ts'
+import { isMarkLine, hasMark, lastMark, MISSING_MARK } from './mark.ts'
 import { isOpen } from './process-drift.ts'
 import { EMPTY, reduce, revive, type Change, type NavState, type Signal } from './state.ts'
 import { decideSpawn } from './strict.ts'
@@ -123,4 +123,48 @@ test('a tilde fence hides a mark, and a backtick line inside it does not close i
   assert.equal(hasMark(`~~~\n${m}\n~~~`), false)
   assert.equal(hasMark(`~~~\n\`\`\`\n${m}\n\`\`\`\n~~~`), false)
   assert.equal(hasMark(`~~~\nx\n~~~\n${m}`), true)
+})
+
+// Stage 3 tester (D-38): the shapes of a risk mark line.
+test('D-4: risk=recorded closes the line; before the stage, another value, doubled or with trailing text it is no mark line', () => {
+  for (const line of [`${MARK} risk=recorded risk=recorded`, `${MARK} risk=recorded because RISK-2`, `${MARK} risk=recorded.`,
+    `${MARK} risk=recorded stage=3`, `${MARK} \`risk=recorded\``,
+    'mark: change=x phase=deliver risk=recorded stage=2', 'mark: change=x risk=recorded phase=deliver stage=2',
+    'mark: risk=recorded change=x phase=deliver stage=2',
+    ...['yes', '', 'none', 'true', 'recorded,', 'recorded;', 'RECORDED'].map(v => `${MARK} risk=${v}`)]) {
+    assert.equal(isMarkLine(line), false, line)
+    assert.equal(lastMark(line), null, line)
+  }
+})
+
+test('D-4: a risk mark inside a fence is not a mark and the mark before it stands; after the fence it counts', () => {
+  assert.equal(lastMark(`${MARK}\n\`\`\`\n${MARK} risk=recorded\n\`\`\``)?.risk, false)
+  assert.equal(lastMark(`${MARK}\n~~~\n${MARK} risk=recorded\n~~~`)?.risk, false)
+  assert.equal(lastMark(`\`\`\`\nx\n\`\`\`\n${MARK} risk=recorded`)?.risk, true)
+})
+
+test('D-4: backticks around the whole line, a dash or star marker, indentation and CRLF keep the risk', () => {
+  assert.equal(lastMark(`\`${MARK} risk=recorded\``)?.risk, true)
+  for (const p of ['- ', '* ', '  - ', '\t* ']) assert.equal(lastMark(`${p}${MARK} risk=recorded`)?.risk, true, JSON.stringify(p))
+  assert.deepEqual(lastMark(`intro\r\n${MARK} risk=recorded\r\n`), { change: 'x', stage: '2', risk: true })
+})
+
+test('D-4: a stage of - can carry a risk, and in one answer the last mark decides', () => {
+  assert.deepEqual(lastMark('mark: change=x phase=shape stage=- risk=recorded'), { change: 'x', stage: '-', risk: true })
+  assert.equal(lastMark(`${MARK} risk=recorded\nmark: change=x phase=deliver stage=3`)?.risk, false)
+  assert.equal(lastMark(`${MARK}\n${MARK} risk=recorded`)?.risk, true)
+})
+
+test('D-4: an unrecognised risk value never raises a risk in the state', () => {
+  assert.equal(run(read, answer(MARK), answer(`${MARK} risk=yes`)).mark?.risk, false)
+})
+
+test('D-38: a stored mark with extra fields is kept; one with a non-boolean risk, or with no change or stage, revives as none', () => {
+  const keep = { change: 'x', stage: '2', risk: true }
+  assert.deepEqual(revive({ sessionId: 's', mark: { ...keep, extra: 1 } }).mark, { ...keep, extra: 1 })
+  for (const m of [{ change: 'x', stage: '2', risk: 'false' }, { change: 'x', stage: '2', risk: 1 }, { change: 'x', stage: '2', risk: [] },
+    { change: 'x', stage: '2', risk: {} }, { stage: '2', risk: true }, { change: 'x', risk: true }, 'x', 3, [], true, null]) {
+    assert.equal(revive({ sessionId: 's', mark: m }).mark, null, JSON.stringify(m))
+  }
+  assert.equal(revive({ sessionId: 's' }).mark, null)
 })

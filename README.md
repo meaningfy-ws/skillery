@@ -112,8 +112,8 @@ Pin one exact release with `#vX.Y.Z` instead of `#releases` (from the release af
   `code-reviewer`) each just load the relevant skills and run them in isolation; a lead
   (`epic-planner`, `team-lead`, …) is started as your session and works with you. How an agent is written: [`docs/development/agent-template.md`](docs/development/agent-template.md), next to the
   skill template [`docs/development/skill-template.md`](docs/development/skill-template.md).
-- Example invocations: "use the code-reviewer agent with lens L3 on this diff" (a full review is five,
-  one per lens); "use the implementer agent on task 2.1 of change `<id>`" (it reports, you commit);
+- Example invocations: "use the code-reviewer agent with lens L3 on this diff" (a full review is two grouped
+  runs, L1+L2 and L3+L4+L5; five single lenses only for a recorded risk); "use the implementer agent on task 2.1 of change `<id>`" (it reports, you commit);
   start a session with the epic-planner agent and give it your seeds; it asks its questions directly.
 
 **What do I reach for?**

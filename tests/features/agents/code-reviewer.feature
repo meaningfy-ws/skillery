@@ -81,14 +81,14 @@ Feature: code-reviewer reviews one change through one lens or one lens group, or
     And it reviews nothing
 
   Scenario: Several lenses are accepted with a recorded small-stage decision
-    Given the change's design.md records "D-3" under "## Delivery decisions" with lenses "L1" and "L2"
-    When the caller dispatches the code-reviewer with lenses "L1" and "L2" and cites "D-3"
+    Given the change's design.md records "D-3" under "## Delivery decisions" with lenses "L1" and "L4"
+    When the caller dispatches the code-reviewer with lenses "L1" and "L4" and cites "D-3"
     Then it reads "D-3" in design.md to confirm the lenses
-    And every finding reported is tagged with its own lens "L1" or "L2"
+    And every finding reported is tagged with its own lens "L1" or "L4"
 
   Scenario: Several lenses are refused when the cited decision is not recorded
     Given the change's design.md records no "D-3" under "## Delivery decisions"
-    When the caller dispatches the code-reviewer with lenses "L1" and "L2" and cites "D-3"
+    When the caller dispatches the code-reviewer with lenses "L1" and "L4" and cites "D-3"
     Then it returns "a lens group of the review set (L1+L2 or L3+L4+L5), one lens, or the deep review as five runs"
     And it reviews nothing
 

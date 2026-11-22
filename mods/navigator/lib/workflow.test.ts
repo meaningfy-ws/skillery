@@ -59,6 +59,11 @@ test('the schema rejects what it does not know', () => {
     [{ activate: { skills: 'one' } }, /list of names/],
     ...[2.5, -1, '5', null].map((risk_reviewers): [object, RegExp] =>
       [{ reviews: { MEDIUM: { challenge: 'c', reviewers: 2, ux: null, check: 'c', checker: true, tester: null, risk_reviewers } } }, /risk_reviewers/]),
+    // D-37 W3: a malformed lens group is refused with the "list of lens groups" message.
+    ...[[['L1'], 'L2'], [[1]], [['L1'], []], [['L1', 'L9']], [['L1', 'L2'], ['L2', 'L3']]].map((lenses): [object, RegExp] =>
+      [{ reviews: { MEDIUM: { challenge: 'c', reviewers: 2, ux: null, check: 'c', checker: true, tester: null, lenses } } }, /list of lens groups/]),
+    // D-37 S3: a risk run never has fewer reviewers than the default run.
+    [{ reviews: { LARGE: { challenge: 'c', reviewers: 2, ux: null, check: 'c', checker: true, tester: null, risk_reviewers: 1 } } }, /risk_reviewers.*reviewers|reviewers.*risk_reviewers/],
     ...[{ max_added_lines: 0, reviewers: 2, lenses: [['L1']] }, { max_added_lines: 600, reviewers: '2', lenses: [['L1']] },
       { max_added_lines: 600, reviewers: 2, lenses: ['L1'] }, { max_added_lines: 600, reviewers: 2, lenses: [['L1']], x: 1 },
       { max_added_lines: 600, reviewers: 2 }, 'small'].map((small_stage): [object, RegExp] =>
@@ -69,6 +74,56 @@ test('the schema rejects what it does not know', () => {
     assert.ok('error' in r && error.test(r.error), `${JSON.stringify(over)} → ${JSON.stringify(r)}`)
   }
   assert.match((parseWorkflow(src('f', '{'), 'repo') as { error: string }).error, /^workflow file f: not JSON/)
+})
+
+// Stage 3 tester (D-38): the review-set rules of the validator, on one MEDIUM or LARGE set at a time.
+const GROUPED = [['L1', 'L2'], ['L3', 'L4', 'L5']]
+const reviewSet = (over: Record<string, unknown>) =>
+  ({ challenge: 'c', reviewers: 2, lenses: GROUPED, ux: null, check: 'c', checker: true, tester: null, ...over })
+const reviewErr = (over: Record<string, unknown>, appetite = 'MEDIUM') =>
+  workflowError(JSON.parse(minimal({ reviews: { [appetite]: reviewSet(over) } })), 'default')
+
+test('D-4: the review set the tests start from is valid, and so are risk_reviewers beside reviewers from LARGE up', () => {
+  assert.equal(reviewErr({}), null)
+  for (const appetite of ['LARGE', 'VERY LARGE', 'HUGE']) {
+    assert.equal(reviewErr({ risk_reviewers: 2 }, appetite), null, appetite)
+    assert.equal(reviewErr({ risk_reviewers: 5 }, appetite), null, appetite)
+  }
+})
+
+test('D-4: a negative, fractional, string, boolean, list or object risk_reviewers is rejected', () => {
+  for (const v of [-1, 2.5, '5', true, [], {}, null]) assert.match(reviewErr({ risk_reviewers: v }, 'LARGE') ?? '', /risk_reviewers/, JSON.stringify(v))
+})
+
+test('D-38 S3: risk_reviewers below reviewers, or 0, is rejected, naming both keys', () => {
+  for (const v of [1, 0]) assert.match(reviewErr({ risk_reviewers: v }, 'LARGE') ?? '', /risk_reviewers.*reviewers/, String(v))
+})
+
+test('D-4: risk_reviewers below LARGE is rejected, so MEDIUM keeps its two runs on a risk', () => {
+  for (const appetite of ['TINY', 'SMALL', 'MEDIUM']) assert.match(reviewErr({ risk_reviewers: 5 }, appetite) ?? '', /risk_reviewers/, appetite)
+})
+
+test('D-38 W3: an empty group, an empty list, a duplicated lens or a lens outside L1 to L5 is rejected', () => {
+  assert.match(reviewErr({ lenses: [['L1'], []] }) ?? '', /lens groups/)
+  assert.match(reviewErr({ lenses: [], reviewers: 1 }) ?? '', /lens groups/)
+  assert.match(reviewErr({ lenses: [['L1', 'L2'], ['L2', 'L3']] }) ?? '', /lens groups/)
+  assert.match(reviewErr({ lenses: ['L2', 'L2'], reviewers: 1 }) ?? '', /lens groups/)
+  for (const lens of ['L6', 'L0', 'banana']) assert.match(reviewErr({ lenses: [['L1', lens], ['L3']] }) ?? '', /lens groups/, lens)
+})
+
+test('D-4: a mixed or deeper lens list is rejected, and a flat small_stage set is rejected', () => {
+  for (const l of [['L1', ['L2']], [[['L1']]], 'L1', 7, {}]) assert.match(reviewErr({ lenses: l }) ?? '', /lenses/, JSON.stringify(l))
+  const small = (lenses: unknown) => reviewErr({ small_stage: { max_added_lines: 600, reviewers: 2, lenses } }, 'LARGE')
+  assert.equal(small(GROUPED), null)
+  assert.match(small(['L1', 'L2']) ?? '', /small_stage/)
+})
+
+test('D-38: reviewers must equal the number of lens groups, a flat list being one group; so for small_stage.reviewers', () => {
+  assert.match(reviewErr({ reviewers: 3 }) ?? '', /reviewers/)
+  assert.match(reviewErr({ reviewers: 1 }) ?? '', /reviewers/)
+  assert.match(reviewErr({ reviewers: 2, lenses: ['L2', 'L3'] }) ?? '', /reviewers/)
+  assert.equal(reviewErr({ reviewers: 1, lenses: ['L2', 'L3'] }), null)
+  assert.match(reviewErr({ small_stage: { max_added_lines: 600, reviewers: 3, lenses: GROUPED } }, 'LARGE') ?? '', /small_stage/)
 })
 
 const withCriteria = (criteria?: unknown) =>

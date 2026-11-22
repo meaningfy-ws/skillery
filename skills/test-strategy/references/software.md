@@ -16,8 +16,8 @@ Checks on code, tests, projects and their delivery.
 | VER | CHK-11 Gherkin quality checks and use-case traceability | `bdd-gherkin` | checklist | after writing features | the verifier | exists |
 | VER | CHK-13 Review lens L2, spec correctness and tests, spec conformance and docs agree | `meaningfy-code-review` | reviewer subagent | per stage, on the PR | the verifier | exists |
 | VER | CHK-14 Review lens L4, principles and clean code | `meaningfy-code-review` | reviewer subagent | per stage, on the PR | the verifier | exists |
-| VER | CHK-15 Review lens L5, fit, elegance and refactoring | `meaningfy-code-review` | reviewer subagent, impact tool | per stage, on the PR | the verifier | exists |
-| VER | CHK-16 Review procedure per lens | `meaningfy-code-review` | five lens subagents | before the PR | the verifier | exists |
+| VER | CHK-15 Review lens L5, fit, elegance and refactoring | `meaningfy-code-review` | reviewer subagent, the brief's impact result | per stage, on the PR | the verifier | exists |
+| VER | CHK-16 Review procedure per lens | `meaningfy-code-review` | grouped reviewer subagents (single lenses on a recorded risk) | before the PR | the verifier | exists |
 | VER | CHK-18 Checker brief (four-eyes pass) | `epic-delivery` | fresh checker subagent | once per stage, after fixes | the verifier | exists |
 | VER | CHK-19 Reviewer brief | `epic-delivery` | read-only reviewer subagent | once per stage, on the PR | the verifier | exists |
 | VER | CHK-20 Narrow checks and task gate, with the re-run triggers T1 and T2 | `epic-delivery` | `make` targets | per edit; per task | the verifier | exists |

@@ -121,6 +121,7 @@ function fits(k: string, v: unknown, d: unknown): boolean {
   if (d !== null) return kindOf(v) === kindOf(d)
   if (k === 'thresholds' || v === null) return true
   if (k === 'root') return isObject(v) && typeof v['path'] === 'string' && typeof v['common'] === 'string' && typeof v['branch'] === 'string'
+  if (k === 'mark') return isObject(v) && typeof v['change'] === 'string' && typeof v['stage'] === 'string' && typeof v['risk'] === 'boolean'
   return kindOf(v) === NULLABLE[k]
 }
 

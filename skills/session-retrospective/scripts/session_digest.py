@@ -36,7 +36,7 @@ EPIC_RE = re.compile(r"openspec/changes/(?:archive/(?:\d{4}-\d{2}-\d{2}-)?)?([a-
 NOT_EPICS = {"archive"}
 WRAPPERS = {"uv", "poetry", "npx", "pipx", "sudo", "time", "timeout", "run", "exec", "python", "python3", "-m"}
 FILE_TOOLS = {"Read", "Edit", "Write", "NotebookEdit"}
-MARK_RE = re.compile(r"^[-*\s`]*mark: change=([a-z0-9][a-z0-9-]*) phase=(shape|plan|deliver) stage=(\d+|-)`?\s*$")
+MARK_RE = re.compile(r"^[-*\s`]*mark: change=([a-z0-9][a-z0-9-]*) phase=(shape|plan|deliver) stage=(\d+|-)( risk=recorded)?`?\s*$")
 MARK_BAD_RE = re.compile(r"^[-*\s`]*mark:")
 RESULT_RE = re.compile(r"^[-*\s`]*result: stage=(\S+) role=(tester|reviewer|checker)( \w[\w-]*=\S+)+`?\s*$")
 KV_RE = re.compile(r"(\w[\w-]*)=(\S+)")

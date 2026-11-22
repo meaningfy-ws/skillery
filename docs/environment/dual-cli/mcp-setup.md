@@ -12,7 +12,7 @@ Install only what you use, from the ones this catalogue's skills/agents referenc
 <!-- GENERATED:dependencies:mcp-setup -->
 | Server | Why | Local package or hosted? |
 |---|---|---|
-| **GitNexus** | code intelligence; the `team-lead` runs the impact check once per task, the `implementer`/`code-reviewer` agents keep the tools | local (npm) |
+| **GitNexus** | code intelligence; the `team-lead` runs it at stage start and before the stage commit; the `implementer`/`code-reviewer` agents carry none | local (npm) |
 | **Atlassian / Rovo** (Confluence, Jira) | ticket/doc lookups | hosted (Atlassian-run endpoint) |
 | **Google Workspace** (Gmail, Drive, Calendar) | mail/doc/calendar lookups | hosted (OAuth) or CLI-native connector |
 | **Odoo** | ERP data access | local (PyPI) |

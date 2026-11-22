@@ -175,11 +175,11 @@ hooks:
 
   # ---- GitNexus (the AGENTS.md GitNexus block; epic-delivery D-15, D-32) ----
   - id: impact-before-edit
-    intent: Run impact once per task, before the brief, on the task's symbols (without a lead, once before the first edit); a HIGH/CRITICAL result goes to the developer first
+    intent: Run impact per task at stage start, on the task's symbols, before the brief (without a lead, once before the first edit); a HIGH/CRITICAL result goes to the developer first
     provenance: { rule: "AGENTS.md GitNexus block" }
     bindings: [{ mechanism: agent, phase: quality, trigger: pre-brief }]
   - id: detect-changes-precommit
-    intent: detect_changes() once before the task's commit — only expected symbols/flows touched
+    intent: detect_changes() once before the stage's last commit — only expected symbols/flows touched
     provenance: { rule: "AGENTS.md GitNexus block" }
     bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
   - id: rename-via-callgraph

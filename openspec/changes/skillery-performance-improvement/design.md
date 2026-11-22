@@ -349,6 +349,12 @@ compaction after `proposal.md`, a fresh session per EPIC.
   two upstream notes (a mark that fails to parse leaves the previous in force, by design; the
   over-spawn count keeps its first text). The failed-first tests of accepted items are kept and
   moved into `workflow.test.ts`, `mark.test.ts` and `dispatch.test.ts`; the others deleted.
+- **D-39** The fix pass changed the GitNexus block of `AGENTS.md`, its template and `hooks.yaml`
+  to the two points (D-7); the living spec `catalogue-governance` "Code checks run once per task"
+  said per task, so this change gains a MODIFIED delta for it (`specs/catalogue-governance/`),
+  keeping its three scenarios and adding "A stage ends". The code-reviewer keeps its appetite
+  check (the fixer's call on C2/W4), so a lens group is accepted only where the appetite's review
+  set names it.
 
 ## Open Questions
 

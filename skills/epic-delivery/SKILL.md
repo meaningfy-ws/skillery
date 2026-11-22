@@ -100,11 +100,11 @@ The review set of each appetite is data: the `reviews` of
 [`assets/workflows/epic-delivery.workflow.json`](assets/workflows/epic-delivery.workflow.json),
 which the navigator mod also reads. TINY and SMALL take one pass. MEDIUM and above take two grouped
 runs by default (L1 with L2; L3 with L4 and L5), that report per lens. From LARGE up, the
-five single lenses run when the lead's mark carries `risk=recorded` (a PLAN `RISK-` row naming the
-stage or its files, or a `D-n` from Prepare); MEDIUM with a risk keeps its two runs. The limits
-and counts are in the workflow file, not here. Its `small_stage` entry lets a low-risk stage under
-the added-lines limit keep the two grouped runs, once the lead records a `D-n` under
-`## Delivery decisions` with the size and the reason.
+five single lenses run when the lead's mark carries `risk=recorded`; MEDIUM with a risk keeps its
+two runs. Read [`references/team-and-briefs.md`](references/team-and-briefs.md) when writing the
+mark: it adds the mark's one definition and when the lead writes `risk=recorded`. The limits and counts are in the workflow file, not
+here. A small stage (under the `small_stage` added-lines limit, with no recorded risk) keeps the two
+grouped runs, with no `D-n` to record.
 
 ### Questions to the developer
 

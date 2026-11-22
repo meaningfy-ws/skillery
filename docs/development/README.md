@@ -129,8 +129,8 @@ Agents follow the same eight steps with four additions. The normative shape is
   reports to a note or channel). The type decides what the dispatch contract must say and how each
   CLI renders it.
 - **Dispatch contract, always.** Four short lists: what input it needs, what it returns, what side
-  effects it may have, what it refuses. If the agent is fanned out (the five-lens `code-reviewer`),
-  the contract states the unit of one run.
+  effects it may have, what it refuses. If the agent is fanned out (the `code-reviewer`, one run per lens or
+  lens group), the contract states the unit of one run.
 - **Report, always.** A `## Report` section says how the agent reports back: the base report of the
   `guardrails` skill plus the fields of its job, and what matters most.
 - **Skills, not knowledge.** The `skills:` list is the agent's competence; the body may not restate

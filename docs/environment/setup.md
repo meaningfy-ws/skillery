@@ -91,7 +91,7 @@ instead of restating them. Contributors read them; catalogue users need none of 
 |-----------|-----|--------|
 | `commit-commands` | Standardised commit / push / PR mechanics (`meaningfy-git-workflow` delegates here) | Claude marketplace `claude-plugins-official` |
 | `code-review` | Read-only PR review *run* (pairs with the `meaningfy-code-review` checklist skill) | Claude marketplace `claude-plugins-official` — **Claude-only**, no opencode equivalent (see [`dual-cli/compatibility.md`](dual-cli/compatibility.md)) |
-| `gitnexus-*` | Code intelligence; the `team-lead` runs the impact check once per task, and the `implementer` and `code-reviewer` wrappers keep the tools | external plugin + MCP server — see **MCP servers** below |
+| `gitnexus-*` | Code intelligence; the `team-lead` runs it at stage start and before the stage commit; the `implementer` and `code-reviewer` wrappers carry none | external plugin + MCP server — see **MCP servers** below |
 | `context7` | Up-to-date library documentation via MCP | external MCP server — see **MCP servers** below |
 
 > **Drift warning:** the repo validator **cannot detect** when an external skill is renamed

@@ -50,7 +50,7 @@ export function modelAbove(t: Thresholds, s: Spawn, parentModel: string): Warnin
 const ceiling = (r: Review, risk = false) => (risk ? r.risk_reviewers ?? r.reviewers : r.reviewers) + (r.ux?.extra_reviewers ?? 0)
 
 /** D-4: the lead's last mark recorded a risk for the change in view (`risk=recorded`). */
-export const riskRecorded = (s: NavState): boolean => !!s.mark?.risk && s.mark.change === s.change?.id
+export const riskRecorded = (s: NavState): boolean => s.mark?.risk === true && s.change !== null && s.mark.change === s.change.id
 
 const reviewOf = (s: NavState) => s.change?.appetite ? s.workflows.find(w => w.reviews)?.reviews?.[s.change.appetite] : undefined
 

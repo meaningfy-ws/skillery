@@ -202,7 +202,8 @@ test("implementer and code-reviewer declare a closed tool list with the code too
   const catalogue = loadCatalogue(path.join(REPO, "tools", "opencode-catalogue.json"));
   // ToolSearch keeps the code tools deferred (names only); without it their full schemas load at the
   // start and the worker is heavier than with no list at all (measured 2026-11-14, Claude Code 2.1.325).
-  const codeTools = ["ToolSearch", "mcp__serena__*", "mcp__ast-grep__*", "mcp__gitnexus__*"];
+  const codeTools = ["ToolSearch", "mcp__serena__*", "mcp__ast-grep__*"];
+  // GitNexus stays on the team-lead only (D-7): builders and reviewers run none.
   const expected = {
     implementer: ["Read", "Edit", "Write", "Glob", "Grep", "Bash", "Skill", ...codeTools],
     "code-reviewer": ["Read", "Grep", "Glob", "Bash", "Skill", ...codeTools],

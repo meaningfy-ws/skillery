@@ -70,7 +70,7 @@ warning, the warnings line shows only its buttons. **Details** unfolds the band:
 reading ~/r/.claude/worktrees/tdr · feature/tenant-dump-restore
 stages    ✓ 1 Dump 4/4 · ✓ 2 Restore 2/2 · ● 3 Dump and restore 0/2 · ○ Close 0/2
 phases    EPIC delivery · ✓ ready · ● apply · ○ accept · ○ archive · clarity · 9.1 · full-gates ✓
-appetite  LARGE · tasks 6/10 · reviewers 0/5 this turn · small stage: 2 reviewers allowed · 1.2M tokens
+appetite  LARGE · tasks 6/10 · reviewers 0/2 this turn · small stage: 2 reviewers allowed · 1.2M tokens
 skills    ready: epic-delivery · apply: test-driven-development, cosmic-python
 subagents implementer ×2 done · 3.1M tokens · 1 running · code-reviewer ×2 done · sonnet · 410.0k tokens
 [Accept: apply: clarity-gate has not run since its inputs ch…]
@@ -83,10 +83,10 @@ mode      ○ loose
 - **phases** ends with each gate's state: `✓` passed, `✗` failed, `·` not run since its inputs
   changed, with the clarity score when there is one. The stale `·` sits where `✓` or `✗` would, so
   `clarity · 9.1` reads "clarity not run since its inputs changed, last score 9.1", not a separator.
-- **appetite** shows the reviewers the review set allows this turn, and `small stage: 2 reviewers
-  allowed` from LARGE up when the stage is small enough for the smaller review (see
-  [`workflows.md`](../development/workflows.md#review-sets)); MEDIUM shows no small figure, since
-  its review set takes two reviewers by default. The figure is the branch's added lines
+- **appetite** shows the reviewers the review set allows this turn (the two grouped runs, more only
+  when the lead's mark records a risk), and `small stage: 2 reviewers allowed` from LARGE up when
+  the stage is small enough (see [`workflows.md`](../development/workflows.md#review-sets));
+  MEDIUM shows no small figure. The figure is the branch's added lines
   against its base (`git diff <base>...HEAD`), not the current stage's alone, so a branch that
   carries several stages adds them up. `diff truncated` shows when the branch's diff was too long to
   read whole.

@@ -136,10 +136,10 @@ leaves both files untouched.
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **skillery**. The lead runs it once per task:
+This project is indexed by GitNexus as **skillery**. The lead runs it at two points of a stage:
 
-- `impact({target, direction: "upstream"})` before the brief, on the task's symbols; a HIGH or CRITICAL result goes to the developer before the brief.
-- `detect_changes()` once before the task's commit.
+- `impact({target, direction: "upstream"})` at stage start, per task, on the task's symbols, pasted into the brief; a HIGH or CRITICAL result goes to the developer before the brief.
+- `detect_changes()` once before the stage's last commit.
 - Without a lead, the session runs impact once before its first edit and the change check once before its commit, and brings a HIGH or CRITICAL result to the developer.
 - Re-index with `npx gitnexus analyze --skip-agents-md`; it leaves this block untouched.
 - Never rename with find-and-replace; use `rename`.
