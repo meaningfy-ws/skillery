@@ -4,9 +4,7 @@
 How a gated PLAN is delivered by a lean agent team: the main session leads and alone talks to the
 developer, the loop of a stage scales with the EPIC's appetite, people validate once per EPIC, and a
 library gap is handled by who owns the library.
-
 ## Requirements
-
 ### Requirement: One lead talks to the developer
 In an epic session the main session SHALL act as the lead: it alone SHALL talk to the developer,
 record decisions, write briefs, read each diff and each member's report, commit, file issues in our
@@ -362,17 +360,23 @@ subagent (DEC-7, DEC-13, D-6, D-8).
 - **THEN** the lead hands it to an exploring subagent
 
 ### Requirement: A pull request is watched and merged by one command
-The Merge step SHALL hand the wait to one command: by default one background command `gh pr checks
-<n> --watch --fail-fast && gh pr merge <n> --merge --delete-branch`, started once the pull request
-lists its first check run and awaited by its completion notice only; at step 6 only, after the
-hand-over note is committed and the approval (or the grant) is given, and where the repository has
-required checks, `gh pr merge <n> --auto --merge --delete-branch` in its place, so that the platform
-merges when the checks pass. The `--auto` form SHALL NOT run when the pull request opens. The lead SHALL NOT re-read a running task's output. On a
-non-zero exit the lead SHALL first run `gh pr view <n> --json state,mergeStateStatus` to tell a red
-check, a refused merge and a merge already done. The merge method SHALL follow the repository's
-own. Without the developer's grant for the EPIC, the developer SHALL approve the merge before the
-command runs (lean-delivery D-23). A fix after a red check SHALL be committed before the hand-over note, the note
-re-committed as the last commit, and the command run again (lean-delivery DEC-6, D-7, D-24).
+The Merge step SHALL hand the wait to one command: by default one background command
+`gh pr checks <n> --watch --fail-fast && gh pr checks <n> --json bucket -q 'length > 0 and all(.[]; .bucket == "pass" or .bucket == "skipping")' | grep -qx true && gh pr merge <n> --merge --delete-branch`,
+started once the pull request lists its first check run and awaited by its completion notice
+only. The middle guard SHALL stand between the watch and the merge, because `gh pr checks
+--watch` exits 0 when no check is registered yet and when a run is cancelled by a newer push: the
+merge runs only when the pull request lists at least one check and every check passed or was
+skipped. At step 6 only, after the hand-over note is committed and the approval (or the grant) is
+given, and where the repository has required checks, `gh pr merge <n> --auto --merge
+--delete-branch` MAY run in its place, so that the platform merges when the checks pass. The
+`--auto` form SHALL NOT run when the pull request opens. The lead SHALL NOT re-read a running
+task's output. On a non-zero exit the lead SHALL first run `gh pr view <n> --json
+state,mergeStateStatus` and `gh pr checks <n>` to tell a red check, a check not yet registered or
+still running, a refused merge and a merge already done. The merge method SHALL follow the
+repository's own. Without the developer's grant for the EPIC, the developer SHALL approve the
+merge before the command runs (lean-delivery D-23). A fix after a red check SHALL be committed
+before the hand-over note, the note re-committed as the last commit, and the command run again
+(lean-delivery DEC-6, D-7, D-24; issues #283, #337).
 
 #### Scenario: Green checks
 - **WHEN** at step 6 the hand-over note is committed, the approval or grant is given, and the repository has required checks
@@ -387,8 +391,12 @@ re-committed as the last commit, and the command run again (lean-delivery DEC-6,
 - **THEN** the lead reads none of its output until the completion notice arrives
 
 #### Scenario: No check registered yet
-- **WHEN** the repository has no auto-merge and the pull request lists no check run
-- **THEN** the lead does not start the watch command until one is listed
+- **WHEN** the command starts before the pull request lists any check run, and the watch exits 0 at once
+- **THEN** the guard finds no check, nothing is merged, the command exits non-zero, and the lead starts it again once a check is listed
+
+#### Scenario: A run cancelled by a newer push
+- **WHEN** the hand-over note is pushed while CI runs, the first run is cancelled and the watch exits 0 before the new run reports
+- **THEN** the guard finds the new head commit's checks missing or pending, nothing is merged, and the command exits non-zero
 
 #### Scenario: No merge authority granted
 - **WHEN** the developer has granted no merge authority for the EPIC
@@ -467,3 +475,13 @@ delivery-process-and-tools DEC-4).
 #### Scenario: A rejected finding
 - **WHEN** a tester's test failed on its first run and the lead rejects its finding as not a defect
 - **THEN** the test is deleted and the pull request gives the rejection as its reason
+
+### Requirement: Findings are grouped by place before the floor
+In step 4 the lead SHALL group the findings of all reviewers and the tester by `file:line` before
+deciding them, so that one defect raised by several lenses is decided once, under the highest
+severity any lens gave it (issue #145).
+
+#### Scenario: One line raised by three lenses
+- **WHEN** L3, L4 and L5 each raise the same single-line simplification, one of them as a Warning
+- **THEN** the lead records one decision for it, at Warning, naming the three finding ids
+
