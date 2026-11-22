@@ -12,6 +12,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.22.1] - 2026-11-22
+
 ### Fixed
 
 - **The merge step no longer merges a pull request without green CI.** `epic-delivery`'s
