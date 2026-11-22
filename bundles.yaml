@@ -21,7 +21,7 @@ bundles:
       - corpus-repository
       - test-strategy
     agents: [technical-writer]
-    mods: [no-poll-loops, no-shell-edits, rules-first]
+    mods: [no-poll-loops, no-shell-edits, quiet-tools, rules-first]
   - name: meaningfy-consulting
     description: "The advisory role: semantic-technologies coaching, the Decision Package, and executive communication"
     skills:

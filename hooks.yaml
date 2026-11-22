@@ -272,6 +272,10 @@ hooks:
     intent: Deny a Bash command that writes or reverts a file in place (sed -i, perl -i, an inline python/node write, a cat/tee heredoc outside $TMPDIR, git checkout/restore of a path); edit with Edit or Serena
     provenance: { skill: guardrails }
     bindings: [{ mechanism: mod, phase: quality, trigger: PreToolUse(Bash) }]
+  - id: quiet-tools
+    intent: Warn, never deny, on a noisy Bash form (sed -n/cat/head/tail or grep/rg on a file, pytest -v or -vv); name the quiet form (the Read or Grep tool, -q -rfE)
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: mod, phase: quality, trigger: PreToolUse(Bash) }]
   - id: rules-first
     intent: Print the rule routing at session start; deny a memory write of a feedback or user note, a preference goes to the rulebook
     provenance: { skill: rulebook }

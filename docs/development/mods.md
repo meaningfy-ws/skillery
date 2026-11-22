@@ -202,6 +202,20 @@ message; errors fail open. The failure case is a builder that edited a worktree 
 `python3 - <<E … open(p,'w')` under the sandbox bypass; the commands are in its test. The opencode
 plugin calls the same `check`.
 
+## quiet-tools
+
+A plain mod that warns and never denies. `mods/quiet-tools/hooks.json` runs `quiet-tools.mjs`
+before every `Bash` call, and `meaningfy-core` carries it. `check(command)` returns one warning
+(the first noisy form found) or `null`: `sed -n` with a file, `cat`, `head` or `tail` with a file
+operand, `grep`/`rg`/`ugrep` with a path operand, `pytest -v`/`--verbose`, and `-vv`. A command that
+reads a pipe or a heredoc (`make test | tail -n 20`, `git log | grep fix`, `cat <<EOF`) runs
+unwarned. The warning names the quiet form: the Read tool with a range, the Grep tool, or
+`-q -rfE`. The hook prints `{"hookSpecificOutput": {"hookEventName": "PreToolUse",
+"additionalContext": "<text>"}}` on stdout and exits 0, because stderr at exit 0 does not reach the
+model; with no warning, a malformed input or an error it prints nothing and exits 0. The forms
+come from skillery-performance-improvement D-10. The mod has no opencode plugin: opencode has no
+way to add context to a tool call, so the gap is recorded rather than denied.
+
 ## Checks
 
 - `make mods` (part of `make validate`) runs the `lib/` unit tests and each mod's `*.test.mjs` with
