@@ -8,7 +8,9 @@ inputs as paths rather than pasted content, what is already decided or ruled out
 decisions made only in conversation — the scope and no-gos, and the report expected; where a written
 artifact already holds the context, the brief SHALL point to it. A catalogue agent SHALL preload
 one skill its role needs under `skills:` in its definition: builder `cosmic-python`, reviewer
-`meaningfy-code-review`, checker `stage-check`. Whether the agent lists the `Skill` tool, and
+`meaningfy-code-review`, checker `stage-check`. This sentence applies in this change to the
+delivery workers (`implementer`, `code-reviewer`, `checker`); the other catalogue workers follow
+once their floors are measured. Whether the agent lists the `Skill` tool, and
 whether its MCP tools are named exactly or by wildcard, SHALL follow the variant task 1.4 selects,
 the one measured under 40 k tokens at start (D-3); when the exact-name variant is selected, builder
 and fixer name the five Serena essentials `serena.get_symbols_overview`, `find_symbol`,
@@ -65,8 +67,8 @@ D-2).
 - **THEN** `make lint` fails naming the agent, the role and the matrix's model
 
 #### Scenario: A workflow names a role
-- **WHEN** the epic-delivery workflow file states who runs the attack
-- **THEN** it names the role `attack` and no model
+- **WHEN** the epic-delivery workflow file states who runs the review, the check and the tests
+- **THEN** it names the roles it declares (reviewer maps to `reviewer-single`, checker to `checker`, tester to `builder`) and no model, and the workflow validator binds the `roles.matrix` keys to declared roles
 
 #### Scenario: A mechanical search runs on a cheaper model
 - **WHEN** the task is to list every file that mentions a term

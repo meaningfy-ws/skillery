@@ -38,6 +38,14 @@ Feature: team-lead delivers a gated PLAN with a lean agent team
       | look at four known files                            | reads them in one call                                                    |
       | find where a rule is stated across the repository   | hands the reading to an exploring subagent and takes its conclusion back  |
 
+  # D-48 F-7. The lead's code-intelligence tools are named, not wildcarded, for Serena.
+  Scenario: The lead's tools name the three Serena tools and keep GitNexus
+    Given the team-lead agent definition is read
+    When its `tools` list is inspected
+    Then it names `mcp__serena__rename_symbol`, `mcp__serena__safe_delete_symbol` and `mcp__serena__get_diagnostics_for_file` exactly
+    And it holds no `mcp__serena__*` wildcard
+    And it keeps `mcp__gitnexus__*`
+
   # DEC-1; D-1. Spec epic-delivery: A stage ends with a hand-over note and a fresh session.
   Scenario: The note is committed before the merge
     Given a stage whose check has passed

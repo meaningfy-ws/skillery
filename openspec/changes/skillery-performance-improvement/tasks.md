@@ -37,7 +37,7 @@
 - [x] 4.4 Rewrite `clarity-gate/references/clarity-gate-checklist.md` (≤ 4 KB, minimums per appetite); the `design.md` budget check in `tools/repo_lint` (appetite parsed as `appetiteOf`, archived and allow-listed changes exempt, unparseable is an error) with its tests; `tasks.md` template says "cite a design anchor". `epic-shape` "A PLAN has a size budget by appetite"; design.md#d-9.
 - [x] 4.5 `epic-delivery/assets/templates/builder-brief.md` (≤ 2 KB); builder and fixer briefs point to it; `cosmic-python` principles cited by id; Serena essentials in the card, `initial_instructions` not called by subagents (`activity-tools.md` line changed). `subagent-dispatch` "A subagent starts fresh from a brief"; design.md#d-15.
 - [x] 4.6 `rulebook` `load --brief` (rules without the playbook) with its test; agent bodies drop "load the rulebook"; `epic-delivery` briefs carry the rules. `rules-first-routing` "Rules reach a subagent through its brief"; design.md#d-14.
-- [ ] 4.7 Measure: within seven days of the release, §Stage 4: the starting load of a session, an implementer and a reviewer (as 1.4), against 1.4; gates passed. `session-retrospective` "Usage reports form a comparable series"; design.md#d-17.
+- [ ] 4.7 Measure: within seven days of the release, §Stage 4: the starting load of a session, an implementer and a reviewer (as 1.4), against 1.4, and the four bundle-specific workers (`infra-reviewer`, `proposal-writer`, `ops-watch`, `sales-agent`) whose preloads D-44 W3 kept; gates passed. `session-retrospective` "Usage reports form a comparable series"; design.md#d-17.
 
 ## 5. Quiet the tools (stage 5, DEC-8, DEC-14)
 

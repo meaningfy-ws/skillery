@@ -15,13 +15,12 @@ The developer and the domain expert are people (`SKILL.md`, *The team*).
 | Planner | `epic-planner` agent | Declared (opus) | Shaping only (an `epic-planner` session) |
 | Builder | `implementer` agent | Declared (sonnet) | Every task, every accepted fix, every spike |
 | Reviewer | `code-reviewer` agent, one per run of the appetite's review set (a lens or a lens group) | A single-lens run is `reviewer-single`, the agent's declared model; a grouped run (L1+L2 or L3+L4+L5) is `reviewer-merged`, so the lead passes that role's model when it spawns it (`guardrails/assets/model-matrix.json`) | Every stage, scaled by appetite |
-| Checker | A fresh general-purpose subagent | opus | Once per stage, where the appetite's review set has one ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)) |
+| Checker | `checker` agent | Declared (from the matrix) | Once per stage, where the appetite's set has one ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)) |
 | Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | Opt-in, on its condition ([`stage-loop.md`](stage-loop.md), Prepare) |
-| UX designer | A general-purpose subagent with the design skills | opus | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
+| UX designer | A general-purpose subagent with the design skills | `reviewer-merged` (matrix) | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
 
-No role has its own catalogue agent beyond these. The checker and the tester differ from the others
-by their brief, not by their tools. The lead sets the model only for the general-purpose roles:
-opus, as both are judgement work (`guardrails` §5).
+The UX designer is the one general-purpose role; its model is the matrix's `reviewer-merged`
+(judgement work). Every model comes from `guardrails/assets/model-matrix.json` (`guardrails` §5).
 
 The tester tries to break the behaviour and leaves tests in the suite. The checker reads the stage
 against the briefs and the decisions and leaves only a verdict; it never wrote the tests it judges

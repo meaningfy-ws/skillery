@@ -20,7 +20,7 @@ The full gate for an EPIC or a PLAN (`design.md` and `tasks.md`). Tick 13 items,
 9. **Anti-patterns placed**: in the PLAN only; the EPIC points to them.
 10. **Test cases placed**: in the PLAN and the scenarios only; the EPIC points to them.
 11. **Error handling placed**: the error matrix is in the PLAN only; the EPIC points to it.
-12. **Deep links**: every reference names a path and an anchor (`file.md#anchor`), never "see elsewhere".
+12. **Deep links**: every reference names a path and an anchor (`file.md#anchor`), never "see elsewhere"; a task in `tasks.md` without a `design.md#d-n` anchor is a gap.
 13. **No duplication**: the EPIC points to the PLAN, it does not copy it.
 
 ## Minimums by appetite
