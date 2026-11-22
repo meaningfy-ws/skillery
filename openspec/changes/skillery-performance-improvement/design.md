@@ -212,8 +212,11 @@ compaction after `proposal.md`, a fresh session per EPIC.
   request when it pays. Untagged sessions are "unattributed" in the report.
 - **D-21** Stage 1 is docs only: builders run one after another in the main checkout on the
   feature branch (no worktrees), the tester condition is not met (`tester: no, no code changed`),
-  and the stage takes the small review set (two grouped runs) as a low-risk stage; the added-line
-  count is recorded in the PR body.
+  and the stage takes the small review set (two grouped runs, L1+L2 and L3+L4+L5). The PR adds
+  about 2,400 lines, above the `small_stage` limit of 600, but about 1,900 of them are the spine
+  files the clarity gate already passed (proposal, design, tasks, nine deltas, two seeds); the
+  reviewed surface (one reference, five pages, one pointer) is about 500 lines of documentation.
+  The deviation is deliberate and follows DEC-3 (verification scaled to risk).
 - **D-23** Task 1.4's interactive half (the `/context` composition of a fresh session, an
   implementer and a reviewer, and the three variants) cannot run inside a running session; it is
   the first step of the next session, named in the hand-over note, and stage 4 depends on it, not
