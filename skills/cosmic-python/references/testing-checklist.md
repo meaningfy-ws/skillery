@@ -9,8 +9,7 @@ copy these.
 1. A test lives in the tier folder of the layer it tests (`tests/unit/`, `tests/feature/`,
    `tests/integration/`, `tests/e2e/`); the folder also gives the marker. Domain tests import no
    adapter, service or fake.
-2. When the project has a UI: front-end tests live next to the layer they test. End-to-end scenarios are Gherkin features, one
-   per use case, with an accessibility check on every page a scenario visits.
+2. When the project has a UI, UI tests follow `ui-testing`.
 3. Nothing outside the container and end-to-end tests touches the network.
 
 ## Test doubles and data
@@ -34,8 +33,8 @@ copy these.
 9. Assert on problem responses by status and `type`, not by message text.
 10. Property-based tests (Hypothesis) cover invariants: round trip, order independence, bounds. CI
     runs them derandomised. Every other random generator is seeded.
-11. One assert per idea, each with a message. No `and` chains. Each Gherkin `Then` asserts one
-    thing.
+11. One assert per idea in unit and feature tests, each with a message. No `and` chains. Each
+    Gherkin `Then` asserts one thing.
 
 ## Time and containers
 

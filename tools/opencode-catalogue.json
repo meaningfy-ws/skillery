@@ -1,5 +1,5 @@
 {
-  "version": "3.23.0",
+  "version": "3.24.0",
   "bundles": [
     {
       "name": "meaningfy-core",
@@ -73,6 +73,7 @@
         "stage-check",
         "cosmic-python",
         "test-suite-care",
+        "ui-testing",
         "project-setup",
         "ci-cd-delivery",
         "meaningfy-release"
