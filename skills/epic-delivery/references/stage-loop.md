@@ -77,7 +77,7 @@ review set of each appetite is in
    - Each accepted finding is a decision in `design.md` before any code (the Rule of Divergence),
      or an upstream issue when it is our library's. The PR body gets the result lines again.
    - **One fix pass:** fixers in one batch, security first, then structure; a fixer re-runs
-     only the failing tests, at most `max_red_runs` red runs (`fixer_max_red_runs`, default 3),
+     only the narrow checks its edit touches and the failing tests, never the full gates, at most `max_red_runs` red runs (`fixer_max_red_runs`, default 3),
      then stops with a `blocked` report (below); then the full gates once (T3) and CI. A red CI run or a
      refused merge is no review round: only that failure is fixed.
    - **After a `blocked` report** the lead chooses one of two: a fresh fixer briefed with that
@@ -98,11 +98,12 @@ review set of each appetite is in
    approves the merge first. The note ([template](../assets/templates/handover.md)) is committed as
    `openspec/changes/<id>/handover.md`, the PR's last commit; a fix after a red check goes before
    it, the note re-committed last, then the command runs again. A PR that lists no check run has
-   not had CI: wait for it, never merge, and never use `gh pr merge --auto` (with no required
-   checks it merges at once). Once the PR lists a check run, one
+   not had CI: wait for it and never merge. Once the PR lists a check run, one
    background command: `gh pr checks <n> --watch --fail-fast && gh pr merge <n> --merge
    --delete-branch` (the repository's merge method); its notice is the only wait, never a sleep
-   loop. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing
+   loop, and a running task's output file is never read while it runs. `gh pr merge <n> --auto
+   --merge` right after the PR opens is allowed only where the repository has required checks
+   (branch protection); with none it merges at once. On a non-zero exit, `gh pr view <n> --json state,mergeStateStatus` tells a red or missing
    check, a refused merge, or only the local branch left. When a repository rule conflicted with
    session hygiene during the stage, the lead notes it under Open in `handover.md`. Then the session ends, no compaction;
    the next stage starts fresh from the note's prompt.

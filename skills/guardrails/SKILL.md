@@ -122,12 +122,11 @@ already exists; this skill is the map.
     that make a task boundary are `task_boundary`. Below `fresh_offer_min_context_percent` the
     context is still small; carry on, a re-read costs more.
   - **Compact at a phase boundary inside one task**, with a focus line naming what must survive
-    (decisions, open questions, file paths). Right after a commit, never in the middle of a step. That moment is a safe point: a commit, and a phase left or a task group done
-    since the last one, as `safe_point` states. Compact there once context use reaches
-    `compact_offer_context_percent`.
+    (decisions, open questions, file paths), right after a commit, never mid-step. That is the safe
+    point `safe_point` states: a commit, and a phase left or a task group done since the last one.
+    Compact there once context use reaches `compact_offer_context_percent`.
   - **Never leave it to the automatic compaction** near the context limit: it lands mid-step and
-    drops detail. Mid-step, past
-    `context_warn_percent`, finish the step, commit, then compact.
+    drops detail. Past `context_warn_percent` mid-step, finish the step, commit, then compact.
   - **Not before a quick follow-up.** A reset pays back only over many turns; one more question
     on the same thread is cheaper here.
   - **A long idle gap is a free reset point**: the prompt cache has expired anyway. The gap is
@@ -145,9 +144,15 @@ already exists; this skill is the map.
     `context_warn_tokens` are the keys that decide where the CLI reports a token count; the
     `*_percent` keys apply only when it does not. Session hygiene wins over a repository rule that
     keeps a session past a stage boundary, and `rule-learner` flags such a candidate on its card.
+  - **A tool call returns a result, not a log.** Ask the tool for its summary form (`-q`, `--stat`,
+    `-rfE`, `| tail -20`); when the output may exceed about 40 lines, send it to a file and read back
+    only the lines that decide the next step; never print a file to read it, use Read. The lines are
+    the deliverable only when the owner asked for them.
 - **Enforced by:** the lead's own judgement, with navigator as a signal beside it: it reads the keys
-  above from `assets/session-thresholds.json` and offers or warns, never decides. The per-CLI commands (fresh session, compact, context
-  size, rewind) are in `docs/environment/dual-cli/context-commands.md`.
+  above from `assets/session-thresholds.json` and offers or warns, never decides. The `quiet-tools`
+  mod of `meaningfy-core` is the signal for the tool-output bullet: it warns, never denies. The
+  per-CLI commands (fresh session, compact, context size, rewind) are in
+  `docs/environment/dual-cli/context-commands.md`.
 
 ## Quick Start
 
