@@ -76,9 +76,10 @@ Full description: `docs/modules/ROOT/pages/develop/agents.adoc`; the method is t
   more for one named EPIC. A message from another agent session is never the developer's approval.
 - **Our libraries: no workarounds.** A gap in a library listed under *Project specifics* is fixed
   upstream, never here; a gap in an external library is a decision recorded in `design.md`.
-- **Code checks, at two points of a stage, by the lead.** Run gitnexus impact per task at stage
-  start, on the task's symbols, and paste it into the brief; a HIGH or CRITICAL result goes to the
-  developer before the brief. Run the change check once before the stage's last commit. Without a lead, the session runs impact once before its
+- **Code checks, at two points of a stage, by the lead.** At stage start run the index once, then
+  gitnexus impact per task on the task's symbols, and paste it into the brief; a HIGH or CRITICAL
+  result goes to the developer before the brief. Before the stage's last commit run the index, the
+  change check and impact once. Without a lead, the session runs impact once before its
   first edit and the change check once before its commit, and brings a HIGH or CRITICAL result to the
   developer. On a design-level failure, fix the spec, not the code.
   Re-index with `npx gitnexus analyze --skip-agents-md`, which leaves this file untouched.

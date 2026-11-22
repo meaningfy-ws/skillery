@@ -355,6 +355,10 @@ compaction after `proposal.md`, a fresh session per EPIC.
   keeping its three scenarios and adding "A stage ends". The code-reviewer keeps its appetite
   check (the fixer's call on C2/W4), so a lens group is accepted only where the appetite's review
   set names it.
+- **D-40** Stage 3 checker (pass, two Warnings), closed by the lead as light chores: F-1 the MEDIUM
+  scenarios' "risk named as a focus" sentence added to `meaningfy-code-review` and `epic-delivery`;
+  F-2 the `AGENTS.md` GitNexus block and its template name the index at both points, as the
+  `catalogue-governance` delta says (`lead-fixed:` in the commit body); one more full gates run.
 
 ## Open Questions
 

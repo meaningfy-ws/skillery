@@ -45,8 +45,9 @@ L3+L4+L5, each invoking the `code-reviewer` agent scoped to its lens group. A gr
 its findings per lens id**, so a finding stays traceable to its lens and no lens changes what it
 checks. **Five single-lens runs in parallel** are the opt-in **deep review**: the caller asks for it
 on a recorded risk (a `RISK-` row of the PLAN that names the stage or its files, or a decision under
-`## Delivery decisions` in `design.md`, cited in the brief), and only from LARGE up. One run that
-puts all five lenses together is refused: the largest group is L3+L4+L5.
+`## Delivery decisions` in `design.md`, cited in the brief), and only from LARGE up. A MEDIUM
+change with a recorded risk keeps its two grouped runs, and both briefs name the risk as a focus.
+One run that puts all five lenses together is refused: the largest group is L3+L4+L5.
 
 - The **dispatcher** is the caller (the main thread, or the external `code-review` command), because
   the read-only `code-reviewer` agent cannot spawn subagents itself. The dispatcher MUST launch the

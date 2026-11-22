@@ -101,7 +101,7 @@ The review set of each appetite is data: the `reviews` of
 which the navigator mod also reads. TINY and SMALL take one pass. MEDIUM and above take two grouped
 runs by default (L1 with L2; L3 with L4 and L5), that report per lens. From LARGE up, the
 five single lenses run when the lead's mark carries `risk=recorded`; MEDIUM with a risk keeps its
-two runs. Read [`references/team-and-briefs.md`](references/team-and-briefs.md) when writing the
+two runs and names the risk as a focus in both briefs. Read [`references/team-and-briefs.md`](references/team-and-briefs.md) when writing the
 mark: it adds the mark's one definition and when the lead writes `risk=recorded`. The limits and counts are in the workflow file, not
 here. A small stage (under the `small_stage` added-lines limit, with no recorded risk) keeps the two
 grouped runs, with no `D-n` to record.
