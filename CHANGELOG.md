@@ -20,6 +20,11 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   push cancelled the run, and a pipe after it hides its failure when no check is registered yet;
   in both cases the merge used to follow (#283, #337).
   Step 4 also groups the findings of all lenses by `file:line` before deciding them (#145).
+- **A scaffolded project's `AGENTS.md` budget is enforced.** `project-setup`'s `make
+  check-bindings` (run by `check-quality`) fails when `AGENTS.md` is over the figure in its
+  first-line `size budget` comment, counted in characters as skillery's own lint does (#263).
+- **`skillery-feedback` files a defect with the `bug` label**, the one the defect form uses; the
+  `request` label now exists for the request form (#260).
 
 ## [3.22.0] - 2026-11-22
 
