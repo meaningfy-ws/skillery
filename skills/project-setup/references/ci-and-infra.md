@@ -15,8 +15,7 @@ runs only when `SONAR_TOKEN` is set, so forks and new repos stay green.
 | codegen in sync (regenerate from `model/`, fail on a diff) | `generate-models` + diff | product |
 | architecture; coverage ≥ 80 %; code review | `check-architecture`; `test`; `code-review` | product, library |
 
-The clarity gate is never a CI step: CI may remind that the PLAN passed it, never claim to enforce
-it. A `doc-only` repo has no `ci.yaml`: `docs.yaml`, the spine validate and its link checks.
+A `doc-only` repo has no `ci.yaml`: `docs.yaml`, the spine validate and its link checks.
 
 Service containers when the job shares one datastore; testcontainers when each test needs a clean
 instance. Keep `_reusable-tests.yml` only when several triggers or repos run the same tests.
@@ -35,4 +34,4 @@ Two gotchas: the dockerignore is `infra/docker/Dockerfile.dockerignore` (a neste
 ignores a root one); `.env` is `infra/.env`, every Make docker target passes `--env-file
 infra/.env`, and `make check-env` fails early with the fix. Committed: `infra/.env.example`, an
 optional `infra/.env.common` (non-secret values), `.secrets.example`. Ignored by git and the
-dockerignore: the real `infra/.env` and `.secrets`. Commit only what is safe in a public PR.
+dockerignore: the real `infra/.env` and `.secrets`.

@@ -7,7 +7,7 @@ and the `meaningfy` schema's, the golden thread `epic-planning`'s.
   three thin rules: proposal no-gos, specs SHALL + GWT, tasks cite their parent EPIC first.
 - `schemas/meaningfy/`: copied from `assets/openspec-schema/meaningfy/`, pinned per repo.
 - `specs/` (the truth) and `changes/` with `archive/`; `changes/<id>/inputs/` holds seeds, never
-  groomed. The repo `AGENTS.md` carries a "Golden thread" note (EPIC → PLAN → specs → commit).
+  groomed. The golden thread (EPIC → PLAN → specs → commit) is `epic-planning`'s.
 
 The commands come from OpenSpec, core profile, at `OPENSPEC_PIN` in the scaffolder (in step with
 skillery's `openspec/openspec-version.txt`); expanded verbs are opt-in.

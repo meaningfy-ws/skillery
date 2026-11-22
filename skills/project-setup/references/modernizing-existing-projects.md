@@ -1,8 +1,7 @@
 # Modernizing an existing project
 
 The upgrade is a shaped change in the repo's own spine, never big-bang patching, even for a small
-repo (then one or two commits): audit; imagine the ideal target for this repo's
-archetype and constraints, not a generic one; propose the EPIC (`proposal.md`: appetite, slices,
+repo: audit; imagine this repo's ideal target; propose the EPIC (`proposal.md`: appetite, slices,
 key decisions such as "lift `/src` last", rabbit-holes, no-gos) and the PLAN (`design.md` +
 `tasks.md`, the order below), gated by `clarity-gate`; the human approves before any slice lands;
 apply in slices; archive into `openspec/specs/`.
@@ -11,7 +10,7 @@ apply in slices; archive into `openspec/specs/`.
 
 `scripts/scaffold.sh -p <pkg> -n "<Name>" -a <archetype> --dry-run` writes nothing, prints
 `+ create` per missing standard file and `= keep` per present one, and flags an `AGENTS.md` or
-`CLAUDE.md` symlink. Keep the brief under the change's `inputs/`. Rate the 13 dimensions file presence cannot see
+`CLAUDE.md` symlink. Rate the 13 dimensions file presence cannot see
 as conformant, partial or missing: layout (`/src`?), pyproject (`[tool.*]`
 sprawl, uv and `uv.lock` or Poetry), root tool configs, lint (Ruff or black/isort/flake8/pylint),
 tests (tiers, marker hook, pytest-bdd, coverage gate), architecture (`.importlinter` in CI), agent
@@ -21,7 +20,6 @@ versions (`requires-python` bound, Ruff and mypy track it).
 
 Carry only detected gaps into the EPIC: a conformant dimension named as a no-go, decision or
 finding reads as a constraint.
-Cite the standard, do not recite it.
 
 ## 2. Plan: least risk first
 

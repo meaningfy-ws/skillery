@@ -1,0 +1,17 @@
+# Serena project for <<PROJECT_NAME>>; scaffold.sh writes this file to .serena/project.yml.
+#
+# language_servers: `python` always. Add `typescript` when the archetype or a `frontend/` folder says
+# so (scaffold.sh adds it for `--typescript` or an existing `frontend/`; for a later front end, add
+# `- typescript` by hand). A language missing here makes find_symbol find nothing in that tree and
+# the agents fall back to grep.
+#
+# Worktrees: a worktree is its own Serena project. A builder working in `../<repo>-<task>` activates
+# that path as its own Serena project; otherwise symbol search runs against the main checkout.
+project_name: "<<PROJECT_SLUG>>"
+language_servers:
+- python
+<<SERENA_EXTRA_SERVERS>>
+encoding: "utf-8"
+ignore_all_files_in_gitignore: true
+ls_workspace_folders:
+- "."

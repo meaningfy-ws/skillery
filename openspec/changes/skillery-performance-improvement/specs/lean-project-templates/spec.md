@@ -23,8 +23,10 @@ repository (the project header, *Skill routing*, *The spine*, *Project specifics
 libraries and GitNexus repo name) and SHALL point to the owning skill for the rest in one line each
 (`guardrails` for session hygiene, dispatch and the tools table; `epic-delivery` for how work runs;
 `test-strategy` for success and failure first). `CLAUDE.md.tmpl` SHALL carry no GitNexus block;
-`project-setup` SHALL ship the "no GitNexus block in `CLAUDE.md`" lint as a `quality/` check, and
-the Makefile template's re-index target SHALL run `npx gitnexus analyze --skip-agents-md` (D-13).
+`project-setup` SHALL ship the "no GitNexus block in `CLAUDE.md`" check as a Makefile target
+(`check-bindings`, run by the quality gate; it needs no network and no pin bump, which a shared
+`quality/` module would), and the Makefile template's re-index target SHALL run
+`npx gitnexus analyze --skip-agents-md` (D-13, D-49).
 
 #### Scenario: A scaffolded AGENTS.md
 - **WHEN** `scripts/scaffold.sh -p orders -n "Order Processing" -a product` writes `AGENTS.md`
@@ -69,7 +71,7 @@ task gate, full gates, docs gate, each with its one moment and one owner (D-13).
 
 #### Scenario: The gate table
 - **WHEN** a developer fills *Project specifics* of a scaffolded `AGENTS.md`
-- **THEN** the table has four rows (narrow checks by the builder per edit, task gate once per task by the builder, full gates once per stage by the lead, docs gate by the checker) and a `make` target per row
+- **THEN** the table has five rows (narrow checks by the builder per edit, task gate once per task by the builder, full gates once per stage by the lead, docs gate, code intelligence by the lead at the two points) and a `make` target per row that has one
 
 ### Requirement: A scaffolded repository passes its own validate
 A probe SHALL scaffold a product repository with `scripts/scaffold.sh` into a temporary directory
