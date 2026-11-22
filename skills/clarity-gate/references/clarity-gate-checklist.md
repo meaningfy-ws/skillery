@@ -31,10 +31,11 @@ The full gate for an EPIC or a PLAN (`design.md` and `tasks.md`). Tick 13 items,
 | SMALL | 3 | 3 | 1 |
 | MEDIUM | 4 | 4 | 2 |
 | LARGE | 5 | 5 | 3 |
+| VERY LARGE | 6 | 6 | 3 |
 
 A row names this change's risk, not a generic one. The anti-pattern row says what not to do, what to do
 instead and why. The error row says the failure, how it is detected, the response and the fallback. The
-size budget of `design.md` is in the `repo_lint` check `design_budget`; do not pad to the minimum.
+byte budget of `design.md` by appetite is in `assets/design-budgets.json`, the one source; do not pad to the minimum.
 
 ## Rubric
 
@@ -54,7 +55,7 @@ Score = the weighted sum, out of 10.
 | Score | Reading | Action |
 |-------|---------|--------|
 | 9 or more | pass | proceed |
-| 8.8 to under 9 | acceptable only when the owner says so (rule R-0005) | record the owner's word, see the rule |
+| 8.8 to under 9 | the owner may accept a score from 8.8 as good enough; the gate never does on its own | record the owner's word |
 | 7 to under 8.8 | 3 to 5 ambiguities | revise and re-score |
 | under 7 | not ready | return to the PLAN |
 

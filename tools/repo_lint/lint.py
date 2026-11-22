@@ -1650,19 +1650,39 @@ def binding_size(repo: Path) -> list[str]:
 MODEL_MATRIX = "skills/guardrails/assets/model-matrix.json"
 
 
+def _model_matrix(repo: Path) -> tuple[dict | None, str | None]:
+    """The matrix's `roles` mapping and no error, or None and one error line: the file is missing,
+    is not JSON, is not an object, or its `roles` is not an object. Never raises."""
+    if not (repo / MODEL_MATRIX).exists():
+        return None, f"{MODEL_MATRIX} does not exist"
+    try:
+        doc = json.loads(_read(repo, MODEL_MATRIX))
+    except ValueError as exc:
+        return None, f"{MODEL_MATRIX} is not valid JSON ({exc})"
+    if not isinstance(doc, dict):
+        return None, f"{MODEL_MATRIX}: the top level must be an object"
+    roles = doc.get("roles", {})
+    if not isinstance(roles, dict):
+        return None, f"{MODEL_MATRIX}: `roles` must be an object of role to model"
+    return roles, None
+
+
 def agent_model_matrix(repo: Path) -> list[str]:
-    """Every agents/*.md declares a `metadata.role` of the model matrix and the matrix's model (D-2);
-    a matrix role no agent uses is reported too."""
+    """Hard check (D-2): the matrix file reads, every value is a `modelAliases` key, and every
+    agents/*.md declares a `metadata.role` of the matrix with the matrix's model. The advisory twin,
+    `agent_model_matrix_report`, never fails: it lists matrix roles no agent uses."""
     agents_dir = repo / "agents"
     if not agents_dir.exists():
         return []
-    if not (repo / MODEL_MATRIX).exists():
-        return [f"{MODEL_MATRIX} does not exist"]
-    roles = json.loads(_read(repo, MODEL_MATRIX)).get("roles", {})
-    out: list[str] = []
+    roles, error = _model_matrix(repo)
+    if roles is None:
+        return [error]
+    aliases = bundle_gen._agent_map(repo)["modelAliases"]
+    out: list[str] = [f"{MODEL_MATRIX}: role '{r}' takes '{m}', which is not a model alias ({', '.join(aliases)})"
+                      for r, m in roles.items() if m not in aliases]
     for who, role, model in _agent_roles(repo):
-        if role is None:
-            out.append(f"{who}: no metadata.role (one of {', '.join(roles)})")
+        if role is None or not isinstance(role, str):
+            out.append(f"{who}: no metadata.role as a string (one of {', '.join(roles)})")
         elif role not in roles:
             out.append(f"{who}: role '{role}' is not in {MODEL_MATRIX}")
         elif model != roles[role]:
@@ -1686,27 +1706,49 @@ def _agent_roles(repo: Path) -> list[tuple[str, str | None, str | None]]:
 
 def agent_model_matrix_report(repo: Path) -> list[str]:
     """Advisory notes (never failing): matrix roles no agent uses, such as roles a spawn takes without an agent."""
-    if not (repo / "agents").exists() or not (repo / MODEL_MATRIX).exists():
+    roles, _ = _model_matrix(repo)
+    if not (repo / "agents").exists() or roles is None:
         return []
-    roles = json.loads(_read(repo, MODEL_MATRIX)).get("roles", {})
-    used = {role for _, role, _ in _agent_roles(repo)}
+    used = {role for _, role, _ in _agent_roles(repo) if isinstance(role, str)}
     return [f"{MODEL_MATRIX}: role '{r}' is used by no agent" for r in roles if r not in used]
 
 
-# D-9: the design.md byte budget by appetite. HUGE has no PLAN, so it has no entry.
-DESIGN_BUDGETS = {"TINY": 4096, "SMALL": 8192, "MEDIUM": 12288, "LARGE": 16384, "VERY LARGE": 24576}
+# D-9, D-45 W2: the design.md byte budget by appetite lives in a clarity-gate asset, the one source.
+# HUGE has no PLAN, so it has no entry there.
+DESIGN_BUDGETS_FILE = "skills/clarity-gate/assets/design-budgets.json"
 DESIGN_BUDGET_EXEMPT = "openspec/changes/.design-budget-exempt"
 
 
-def _appetite_of(proposal: str) -> str | None:
-    """The appetite the way the navigator's `appetiteOf` reads it: the first paragraph under
-    `## Appetite`, the longest appetite name first, whole words only."""
+def _appetite_paragraph(proposal: str) -> str | None:
+    """The first paragraph under `## Appetite` (the way the navigator's `appetiteOf` reads it), or None."""
     parts = re.split(r"^## Appetite\s*$", proposal.replace("\r\n", "\n"), maxsplit=1, flags=re.MULTILINE)
     if len(parts) < 2:
         return None
-    para = re.split(r"\n\s*\n|^## ", parts[1].strip(), maxsplit=1, flags=re.MULTILINE)[0]
-    names = sorted([*DESIGN_BUDGETS, "HUGE"], key=len, reverse=True)
+    return re.split(r"\n\s*\n|^## ", parts[1].strip(), maxsplit=1, flags=re.MULTILINE)[0]
+
+
+def _appetite_of(proposal: str, budgets: dict) -> str | None:
+    """The appetite named in the appetite paragraph: the budget keys plus HUGE, the longest name
+    first, whole words only."""
+    para = _appetite_paragraph(proposal)
+    if para is None:
+        return None
+    names = sorted([*budgets, "HUGE"], key=len, reverse=True)
     return next((a for a in names if re.search(rf"(?<![\w-]){re.escape(a)}(?![\w-])", para)), None)
+
+
+def _design_budgets(repo: Path) -> tuple[dict | None, str | None]:
+    """The appetite to byte-budget mapping, or None and one error line when the asset is missing or malformed."""
+    if not (repo / DESIGN_BUDGETS_FILE).exists():
+        return None, f"{DESIGN_BUDGETS_FILE} does not exist"
+    try:
+        doc = json.loads(_read(repo, DESIGN_BUDGETS_FILE))
+    except ValueError as exc:
+        return None, f"{DESIGN_BUDGETS_FILE} is not valid JSON ({exc})"
+    if not isinstance(doc, dict) or not doc or not all(isinstance(v, int) and not isinstance(v, bool)
+                                                       for v in doc.values()):
+        return None, f"{DESIGN_BUDGETS_FILE} must be an object of appetite to byte budget"
+    return doc, None
 
 
 def design_budget(repo: Path) -> list[str]:
@@ -1715,24 +1757,31 @@ def design_budget(repo: Path) -> list[str]:
     changes = repo / "openspec" / "changes"
     if not changes.exists():
         return []
+    budgets, error = _design_budgets(repo)
+    if budgets is None:
+        return [error]
     exempt_file = repo / DESIGN_BUDGET_EXEMPT
-    exempt = {line.split("#")[0].strip() for line in exempt_file.read_text(encoding="utf-8").splitlines()} \
-        if exempt_file.exists() else set()
+    exempt_text = exempt_file.read_text(encoding="utf-8-sig").replace("\r\n", "\n") if exempt_file.exists() else ""
+    exempt = {line.split("#")[0].strip() for line in exempt_text.splitlines()}
     out: list[str] = []
     for design in sorted(changes.glob("*/design.md")):
         cid = design.parent.name
         if cid == "archive" or cid in exempt:
             continue
         proposal = design.parent / "proposal.md"
-        appetite = _appetite_of(proposal.read_text(encoding="utf-8")) if proposal.exists() else None
-        if appetite not in DESIGN_BUDGETS:
-            out.append(f"openspec/changes/{cid}: no budget, the appetite is "
-                       f"{'HUGE (it has no PLAN)' if appetite else 'not found under ## Appetite in proposal.md'}")
+        text = proposal.read_text(encoding="utf-8") if proposal.exists() else ""
+        appetite = _appetite_of(text, budgets)
+        if appetite not in budgets:
+            para = (_appetite_paragraph(text) or "").strip()
+            out.append(f"openspec/changes/{cid}: no budget, " + (
+                "the appetite is HUGE (it has no PLAN)" if appetite else
+                f"the appetite is not found in proposal.md under ## Appetite (read: {para[:60]!r})" if para else
+                "no appetite paragraph under ## Appetite in proposal.md"))
             continue
         size = design.stat().st_size
-        if size > DESIGN_BUDGETS[appetite]:
+        if size > budgets[appetite]:
             out.append(f"openspec/changes/{cid}/design.md: {size} bytes, over the {appetite} budget of "
-                       f"{DESIGN_BUDGETS[appetite]}; cut prose, or list the change in {DESIGN_BUDGET_EXEMPT}")
+                       f"{budgets[appetite]}; cut prose, or list the change in {DESIGN_BUDGET_EXEMPT}")
     return out
 
 

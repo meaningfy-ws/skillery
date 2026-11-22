@@ -16,6 +16,7 @@ The clock is fixed with `--today`.
 import importlib.util
 import json
 import os
+import random
 import re
 import shlex
 import shutil
@@ -1204,3 +1205,110 @@ def test_user_docs_cover_the_repository_store():
     rules = _text("docs/environment/rules.md").split("## Rules in a repository")[1].split("\n## ")[0]
     assert all(s in rules for s in ("P-0001", "to vault", "CONFLICT R-0001 vs P-0002"))
     assert "docs/rules/" in _text("CHANGELOG.md")
+
+
+# ------------------------------------------------------------ load --brief probes (D-14)
+BRIEF_CONFLICT_ARGS = ["--activity", "testing", "--context", "client=public", "--context", "channel=tender"]
+
+
+def test_brief_keeps_the_conflict_line():
+    """probe of D-14: dropping the playbook must not drop a CONFLICT line."""
+    r = run("load", "--brief", *BRIEF_CONFLICT_ARGS)
+    assert r.returncode == 0
+    assert "CONFLICT R-0031 vs R-0032 on pricing: ask the owner" in r.stdout
+
+
+def test_brief_keeps_the_no_winner_conflict_line():
+    """probe of D-14."""
+    r = run("load", "--brief", "--activity", "loops", "--context", "lang=en", "--context", "channel=chat")
+    assert "CONFLICT on order (no winner): ask the owner" in r.stdout
+
+
+def test_brief_keeps_skipped_and_check_lines():
+    """probe of D-14: SKIPPED and CHECK lines are not playbook text."""
+    r = run("load", "--brief", "--activity", "writing")
+    assert "SKIPPED R-0046 broken.md" in r.stdout and _lines(r.stdout, "CHECK R-0010")
+
+
+def test_brief_never_contains_playbook_for_any_activity():
+    """probe of D-14."""
+    for act in ("writing", "sales", "testing", "cycles", "loops", "nonexistent"):
+        r = run("load", "--brief", "--activity", act)
+        assert r.returncode == 0 and "PLAYBOOK" not in r.stdout
+        assert r.stdout.rstrip().endswith("-- end --")
+
+
+def test_brief_unknown_activity_is_only_global_rules_and_end():
+    """probe of D-14."""
+    r = run("load", "--brief", "--activity", "nonexistent")
+    assert r.stdout.rstrip().splitlines()[-1] == "-- end --"
+
+
+def test_brief_with_context_filters_matches_full_rule_lines():
+    """probe of D-14: --context narrows both modes the same way."""
+    args = ["--activity", "writing", "--context", "audience=us-client", "--context", "channel=tender"]
+    full, brief = run("load", *args), run("load", "--brief", *args)
+    assert _lines(brief.stdout, "R-0003 [default] spelling=british")
+    assert not _lines(brief.stdout, "R-0001 ") and not _lines(brief.stdout, "R-0002 ")
+    assert full.stdout.endswith(brief.stdout)
+
+
+def test_brief_without_a_vault_behaves_like_load(tmp_path):
+    """probe of D-14: with no vault both modes exit the same way and the brief has no playbook."""
+    full = run("load", "--activity", "writing", vault=None, cwd=tmp_path)
+    brief = run("load", "--brief", "--activity", "writing", vault=None, cwd=tmp_path)
+    assert brief.returncode == full.returncode
+    if full.returncode == 3:
+        assert brief.stderr == full.stderr
+    else:
+        assert brief.stdout == full.stdout and "PLAYBOOK" not in brief.stdout
+
+
+def test_brief_with_a_missing_vault_path_exits_3_like_load(tmp_path):
+    """probe of D-14: an unreadable vault path is an environment error in both modes."""
+    bad = tmp_path / "nowhere"
+    full = run("load", "--activity", "writing", vault=bad, cwd=tmp_path)
+    brief = run("load", "--brief", "--activity", "writing", vault=bad, cwd=tmp_path)
+    assert brief.returncode == full.returncode
+
+
+def test_brief_has_no_golden_flag():
+    """probe of D-14: `--golden` belongs to check; load rejects it in both modes (usage error, exit 2)."""
+    assert run("load", "--brief", "--activity", "writing", "--golden").returncode == 2
+
+
+def test_brief_without_activity_is_a_usage_error():
+    """probe of D-14."""
+    assert run("load", "--brief").returncode == 2
+
+
+def test_brief_when_the_playbook_body_looks_like_a_rule_line(vault):
+    """probe of D-14: a playbook body line starting `R-9999 [hard]` must not leak into the brief."""
+    pb = next((vault / "08 How to" / "Playbooks").glob("Writing*.md"))
+    pb.write_text(pb.read_text(encoding="utf-8") + "\nR-9999 [hard] playbook text posing as a rule\n", encoding="utf-8")
+    r = run("load", "--brief", "--activity", "writing", vault=vault)
+    assert "R-9999" not in r.stdout
+
+
+def test_load_minus_playbook_equals_brief_for_random_rule_sets(vault):
+    """probe of D-14 (property): for any subset of rules, `load` minus the PLAYBOOK block is `load --brief`."""
+    files = sorted((vault / RULES).glob("*.md"))
+    rng = random.Random(14)
+    for _ in range(12):
+        keep = {p for p in files if rng.random() < 0.6}
+        stash = vault / "stash"
+        stash.mkdir(exist_ok=True)
+        for p in files:
+            target = stash / p.name
+            if p in keep and target.exists():
+                shutil.move(target, p)
+            elif p not in keep and p.exists():
+                shutil.move(p, target)
+        for act in ("writing", "testing", "loops"):
+            full = run("load", "--activity", act, vault=vault)
+            brief = run("load", "--brief", "--activity", act, vault=vault)
+            assert full.returncode == brief.returncode == 0
+            assert full.stdout.endswith(brief.stdout)
+            head = full.stdout[: len(full.stdout) - len(brief.stdout)]
+            assert head == "" or head.startswith("PLAYBOOK")
+            assert "PLAYBOOK" not in brief.stdout
