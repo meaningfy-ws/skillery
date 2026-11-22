@@ -296,6 +296,9 @@ compaction after `proposal.md`, a fresh session per EPIC.
   to the `subagent-dispatch` scenario "A compaction offer in tokens": the number is in the warning,
   the offer stays a button (W2). Under the floor: S1 (same as T2), S2 `usage.context?.percent`
   (pre-existing code, docs stage), S3 (same as r2-W2).
+- **D-33** Stage 2 checker (pass): F1 `epic-planning` steps 7 and 8 point to P-0006's appetite
+  scoping, which task 3.1 writes with the owner in stage 3; until then the pointer is ahead of the
+  rule. Accepted for one stage; 3.1 closes it.
 
 ## Open Questions
 
