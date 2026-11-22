@@ -12,6 +12,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.23.0] - 2026-11-22
+
 ### Added
 
 - **Manual test scenarios are Gherkin features.** `bdd-gherkin` states that a check a person runs
