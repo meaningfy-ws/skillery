@@ -126,10 +126,10 @@ case "$UI_TOOL" in
   *) echo "ERROR: unknown --ui-tool '$UI_TOOL' (use playwright|cypress|none)." >&2; exit 2;;
 esac
 [[ "$UI_TOOL" != "none" && "$ARCHETYPE" != "product" ]] && { echo "ERROR: --ui-tool needs the product archetype." >&2; exit 2; }
-UI_LANG="" ; UI_NAME="" ; UI_DIR="." ; UI_PY_DEPS_FILE="" ; UI_MAKE_FILE="" ; UI_LINE=""
+UI_LANG="" ; UI_NAME="" ; UI_DIR="." ; UI_TESTS_DIR="tests/e2e" ; UI_PY_DEPS_FILE="" ; UI_MAKE_FILE="" ; UI_RUFF_FILE="" ; UI_LINE=""
 if [[ "$UI_TOOL" != "none" ]]; then
-  [[ -d "$TARGET/frontend" ]] && UI_DIR="frontend"
-  UI_TMP="$(mktemp -d)"; trap 'rm -rf "$UI_TMP"' EXIT
+  # A config in frontend/ reaches the repository's tests/e2e one level up.
+  [[ -d "$TARGET/frontend" ]] && { UI_DIR="frontend"; UI_TESTS_DIR="../tests/e2e"; }
   if [[ "$UI_TOOL" == "cypress" ]]; then
     UI_NAME="Cypress" ; UI_LANG="JavaScript" ; UI_MAKE_SRC="$TPL/ui/Makefile-cypress.tmpl"
   elif [[ -n "$SERENA_EXTRA" ]]; then
@@ -137,10 +137,10 @@ if [[ "$UI_TOOL" != "none" ]]; then
   else
     UI_NAME="Playwright" ; UI_LANG="Python" ; UI_MAKE_SRC="$TPL/ui/Makefile-playwright-python.tmpl"
     UI_PY_DEPS_FILE="$TPL/ui/pyproject-playwright-deps.tmpl"
+    UI_RUFF_FILE="$TPL/ui/ruff-e2e-ignore.tmpl"
   fi
   [[ -f "$UI_MAKE_SRC" ]] || { echo "  MISSING TEMPLATE: $UI_MAKE_SRC" >&2; exit 1; }
-  sed -e "s|<<UI_DIR>>|$UI_DIR|g" "$UI_MAKE_SRC" > "$UI_TMP/Makefile.ui"
-  UI_MAKE_FILE="$UI_TMP/Makefile.ui"
+  UI_MAKE_FILE="$UI_MAKE_SRC"   # its <<UI_DIR>> is substituted by render's second pass
   UI_LINE="UI tests: $UI_NAME ($UI_LANG)"
 fi
 
@@ -175,14 +175,17 @@ render() {
     fi
   fi
   # The UI placeholders sit alone on a line: replaced by a fragment or a line, else the line goes.
+  # The first pass inserts the fragments; the second pass substitutes every placeholder, theirs too.
   local ui_sed=() m f
-  for m in UI_PY_DEPS UI_MAKE_TARGETS; do
-    [[ "$m" == "UI_PY_DEPS" ]] && f="$UI_PY_DEPS_FILE" || f="$UI_MAKE_FILE"
+  for m in UI_PY_DEPS UI_MAKE_TARGETS UI_RUFF_IGNORE; do
+    case "$m" in UI_PY_DEPS) f="$UI_PY_DEPS_FILE";; UI_MAKE_TARGETS) f="$UI_MAKE_FILE";; *) f="$UI_RUFF_FILE";; esac
     if [[ -n "$f" ]]; then ui_sed+=(-e "/^<<$m>>\$/{" -e "r $f" -e "d" -e "}"); else ui_sed+=(-e "/^<<$m>>\$/d"); fi
   done
   if [[ -n "$UI_LINE" ]]; then ui_sed+=(-e "s|^<<UI_TESTS_LINE>>\$|- $(esc "$UI_LINE")|")
   else ui_sed+=(-e "/^<<UI_TESTS_LINE>>\$/d"); fi
-  if ! sed "${ui_sed[@]}" \
+  if ! sed "${ui_sed[@]}" "$src" | sed \
+           -e "s|<<UI_TESTS_DIR>>|$(esc "$UI_TESTS_DIR")|g" \
+           -e "s|<<UI_DIR>>|$(esc "$UI_DIR")|g" \
            -e "s|<<PACKAGE>>|$(esc "$PACKAGE")|g" \
            -e "s|<<PROJECT_NAME>>|$(esc "$PROJECT_NAME")|g" \
            -e "s|<<PROJECT_SLUG>>|$(esc "$SLUG")|g" \
@@ -193,7 +196,7 @@ render() {
            -e "s|<<DESCRIPTION>>|$(esc "$DESC")|g" \
            -e "s|<<YEAR>>|$(esc "$YEAR")|g" \
            -e "s|<<SERENA_EXTRA_SERVERS>>|$(esc "$SERENA_EXTRA")|g" \
-           "$src" > "$dst.tmp"; then
+           > "$dst.tmp"; then
     echo "  RENDER FAILED: $src" >&2; rm -f "$dst.tmp"; exit 1
   fi
   mv "$dst.tmp" "$dst"
@@ -442,6 +445,8 @@ if [[ "$UI_TOOL" != "none" ]]; then
   else
     if [[ "$UI_TOOL" == "cypress" ]]; then
       render "$TPL/ui/cypress.config.js.tmpl" "$TARGET/$UI_DIR/cypress.config.js"
+      render "$TPL/ui/cypress-preprocessorrc.json.tmpl" "$TARGET/$UI_DIR/.cypress-cucumber-preprocessorrc.json"
+      render "$TPL/ui/cypress-support-e2e.js.tmpl" "$TARGET/tests/e2e/support/e2e.js"
     else
       render "$TPL/ui/playwright.config.ts.tmpl" "$TARGET/$UI_DIR/playwright.config.ts"
     fi
@@ -459,6 +464,18 @@ fi
 # ---- 5. agentic layer (AGENTS.md canonical) + spine (openspec/) ---------------
 scaffold_agentic
 scaffold_openspec
+
+# A kept Makefile, pyproject.toml or AGENTS.md misses the UI tool's part: name what to add.
+if [[ "$UI_TOOL" != "none" && "$DRY_RUN" -eq 0 ]]; then
+  ui_missing() { # FILE MARKER WHAT : warn when FILE lacks MARKER
+    [[ -f "$TARGET/$1" ]] && grep -q -F -- "$2" "$TARGET/$1" || echo "  WARNING: $1 was kept without the UI tool: add $3"
+  }
+  ui_target="test-ui" ; [[ "$UI_LANG" == "Python" ]] && ui_target="ui-browsers"
+  ui_missing Makefile "$ui_target:" "the '$ui_target' make target (from assets/templates/ui/$(basename "$UI_MAKE_FILE"))"
+  [[ "$UI_LANG" == "Python" ]] && ui_missing pyproject.toml "pytest-playwright" \
+    "the dev dependencies $(sed 's/^ *//; s/,$//' "$UI_PY_DEPS_FILE" | paste -sd' ' -)"
+  ui_missing AGENTS.md "$UI_LINE" "the line '- $UI_LINE'"
+fi
 [[ "$PRODUCT" -eq 1 && "$NEO4J" -eq 1 ]] && scaffold_neo4j_generators
 
 # ---- 6. docs pillar (Antora) ----------------------------------------------

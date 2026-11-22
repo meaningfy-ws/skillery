@@ -1,8 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
+import { defineBddConfig } from 'playwright-bdd';
 
 // Rules for these tests: the ui-testing skill. Retries stay 0 on every lane (UI-9).
+// `npx bddgen` turns the features into tests under testDir; `make test-ui` runs both.
+const testDir = defineBddConfig({
+  features: '<<UI_TESTS_DIR>>/**/*.feature',
+  steps: '<<UI_TESTS_DIR>>/steps/**/*.ts',
+});
+
 export default defineConfig({
-  testDir: 'tests/e2e',
+  testDir,
   retries: 0,
   use: { baseURL: process.env.UI_BASE_URL ?? 'http://localhost:8000' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 720 } } }],

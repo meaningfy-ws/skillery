@@ -62,7 +62,7 @@
   - *Depends on:* 2.1.
   - *Acceptance:* 2.1 is green; a scaffolded repository passes its own `make check-bindings`.
 - [x] 2.3 Add the question to INTERVIEW and the pointer line to TESTING-SETUP.
-- [ ] 2.4 Smoke run (RISK-4): scaffold with `--ui-tool playwright` into `$TMPDIR`, then run
+- [x] 2.4 Smoke run (RISK-4): scaffold with `--ui-tool playwright` into `$TMPDIR`, then run
   `uv sync` and `make ui-browsers`. Record the result in the PR body.
   - *Acceptance:* both exit 0, or the failure is recorded as a `D-n` with an issue.
 - [ ] 2.5 The CHANGELOG line, the full gates, the review set and the merge.
