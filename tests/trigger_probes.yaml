@@ -281,6 +281,11 @@ probes:
   - probe: "which of my rules were never loaded in Langfuse this week"
     expect: rule-steward
     near_miss_of: session-retrospective
+  - probe: "run the Langfuse usage report for the last two weeks and read me the totals"
+    expect: session-retrospective
+  - probe: "groom my rules usage: which rules are never loaded or never cited"
+    expect: rule-steward
+    near_miss_of: session-retrospective
   # test-suite-care D-16 (task 1.5): the skill and its two neighbours.
   - probe: "our test suite takes too long, find what to cut"
     expect: test-suite-care

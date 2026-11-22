@@ -224,6 +224,25 @@ compaction after `proposal.md`, a fresh session per EPIC.
 - **D-22** Inventory (task 1.5): the three lists and the exact disable commands are written to the
   inventory page; nothing is disabled until the owner approves the list (DEC-17).
 
+- **D-24** Stage 1 review, accepted findings (one fix pass): C1 the baseline page carries no
+  gates-passed value, so D-17's "worsen" could never fire: the first-run CI green share of the
+  window's merged PRs is computed now across skillery, rdf-persistence and mapping-workbench-v2
+  and the Critical count is "no data before stage 1"; r1-W2 re-labelled Critical (the page claims
+  procedure-derived numbers that no query produces): the cache split and the main-thread p50 get
+  their query arguments, the seed-only sections are labelled so; r1-W5 re-labelled Critical (a
+  description change without trigger probes breaks the binding's "proven triggers"): one positive
+  and one near-miss probe; r1-W6 re-labelled Critical (client and server names in a distributed
+  catalogue): names become counts.
+- **D-25** Under the floor, stage 1: r1-W1 "Critical findings" counts all findings (renamed in
+  stage 2 when the result lines carry severity); r1-W3 the baseline's work mix is "not recorded"
+  (accepted: appetites were not marked in the window); r1-W4 the dropped tag test (D-20 says so);
+  r1-S1 1,159 calls vs 1,124 spawns (35 unnamed `Agent` calls); r1-S2 `gh` date bounds and run
+  limits; r1-S3 attribution line (folded into C1's fix); r1-S4 "§Floor" vs "Floors"; r2-W1 proxies
+  copied from D-17 (the reference will generalise when the EPIC archives); r2-W2 dated values in
+  the method (same moment); r2-W3 README restates rules; r2-W4 inventory file name has a month,
+  not a date; r2-W5 window forms differ; r2-W6 folded into C1; r2-W7 the docs register row's
+  description; r2-S1 to S4. Each is a candidate for the docs stage of this EPIC.
+
 ## Open Questions
 
 - Whether `/context` output is machine-readable for 1.4, or read by hand (either is acceptable).

@@ -58,12 +58,12 @@ nothing while shadowed.
 | gitnexus, serena, langfuse | user | yes |
 | ast-grep | user | not in the top calls (undecided: repository rules name it) |
 | memory, n8n-mcp, overleaf | user | not in the top calls (undecided) |
-| neo4j-remote-* (7 servers: default, budget, LUXSE, db-mrv, itsecops, cargo, cscdemo) | user | not in the top calls (undecided: per client) |
+| neo4j-remote-* (7 per-client neo4j servers) | user | not in the top calls (undecided: per client) |
 | pycharm | user | no; fails to connect (ECONNREFUSED) |
 | atlassian, figma | plugin | yes |
 | context7, mongodb | plugin | no |
 
-15 servers sit in the user config. `odoo`, `novamira-meaningfy-lu` and the claude.ai Google Sheets
+15 servers sit in the user config. `odoo`, one client MCP adapter and the claude.ai Google Sheets
 connector were called but are not in the user config (project scope or a connector; not checked).
 claude.ai connectors: not inventoried locally.
 

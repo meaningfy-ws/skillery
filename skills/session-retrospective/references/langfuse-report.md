@@ -72,6 +72,31 @@ Read: `GENERATION` carries the tokens; `SPAN` and `TOOL` carry time, not tokens.
 Read: `inputTokens` includes the cached context, so p50 is the context a call carries. Tokens are
 calls times context; a high p90 on few calls and a low p50 on many need different fixes.
 
+### Q3a Cache split
+
+```json
+{"view":"observations","dimensions":[{"field":"usageType"}],
+ "metrics":[{"measure":"usageByType","aggregation":"sum"}],
+ "filters":[],"fromTimestamp":"FROM","toTimestamp":"TO"}
+```
+
+Read: one row per usage kind (input, output, cache reads, 5-minute and 1-hour cache writes); the
+share of cache reads is the first figure to check.
+
+### Q3b Main-thread context
+
+```json
+{"view":"observations","dimensions":[],
+ "metrics":[{"measure":"inputTokens","aggregation":"p50"},{"measure":"inputTokens","aggregation":"p90"},
+            {"measure":"inputTokens","aggregation":"max"}],
+ "filters":[{"column":"name","operator":"=","value":"LLM Call","type":"string"}],
+ "fromTimestamp":"FROM","toTimestamp":"TO"}
+```
+
+Run it again with `"metrics":[{"measure":"inputTokens","aggregation":"histogram"}]` and
+`"config":{"bins":10}` for the histogram. Read: the p50 is the main-thread context that stage 2 is
+compared with.
+
 ### Q4 Per day, with cost
 
 ```json
@@ -142,12 +167,16 @@ Langfuse cannot tell whether work was good, so each page adds two counts, read a
    its first run:
 
    ```bash
-   gh pr list --state merged --search "merged:FROM_DATE..TO_DATE" --json number --limit 200
-   gh run list --event pull_request --branch <head branch> --json databaseId,conclusion,createdAt
+   gh pr list -R <repo> --state merged --search "merged:FROM_DATE..LAST_DAY" --limit 200 \
+     --json number,headRefName,createdAt,mergedAt
+   gh run list -R <repo> --branch <headRefName> --limit 50 --json conclusion,createdAt,event
    ```
 
-   Take the oldest run of each PR (smallest `createdAt`). Gates passed = PRs whose oldest run is
-   `success`, divided by merged PRs. Report both numbers.
+   `FROM_DATE` is the window's first day and `LAST_DAY` its last included day (the window's end
+   day minus one, since the end is excluded). Keep the PRs whose `mergedAt` lies inside the window.
+   For each PR take the earliest run created at or after the PR's `createdAt`, of any event. Gates
+   passed = PRs whose earliest run is `success`, divided by PRs with a run. Report, per repository
+   and in total: merged PRs, PRs with a run, first-run green count and share.
 2. **Critical findings.** In the stage's `rounds.tsv` (from `scripts/epic_report.py`, built from the
    `result:` lines of `epic-delivery`) sum the `findings` column of the rows with
    `accepted` not `-`, per stage. A stage with no `result:` lines is unmeasured, not zero.
