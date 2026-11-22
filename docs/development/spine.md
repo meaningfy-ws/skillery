@@ -52,6 +52,8 @@ as the artifact-lifecycle engine, with a thin Meaningfy fork of its schema.
   **Not** CI-automated.
 - **`openspec validate --strict`** — *structural*, checks artifact shape and
   delta format. **CI-automated** (see [`../Makefile`](../../Makefile) target
-  `validate-spine`).
+  `validate-spine`). Locally, run `make validate-spine` or `npx @fission-ai/openspec@<pin>`, not a
+  globally installed `openspec`: versions disagree. The pinned 1.4.1 looks for SHALL or MUST only
+  in a requirement's first sentence, so a delta a newer CLI accepts can fail CI.
 
 They are complementary: structure is mechanical, clarity is judgement.
