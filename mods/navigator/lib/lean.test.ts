@@ -117,7 +117,7 @@ test('D-1: the TurnEnded token count decides the offer and the warning, the perc
   assert.equal(run(...safe, turnTokens(15, 152300)).offer, 'compact')
   assert.equal(run(...safe, turnTokens(62)).offer, 'compact') // no count: 62% >= 50%
   const warn = run(...base('SMALL'), turnTokens(26, 260000))
-  assert.equal(warn.warnings.find(w => w.key === 'hygiene:context')?.message, 'context 260,000 tokens mid-step (context_warn_tokens)')
+  assert.equal(warn.warnings.find(w => w.key === 'hygiene:context')?.message, 'context 260,000 tokens mid-step')
 })
 
 test('D-5: one subagent running the full-gates command more than fixer_max_red_runs times warns once, never denies', () => {
@@ -127,8 +127,8 @@ test('D-5: one subagent running the full-gates command more than fixer_max_red_r
   assert.deepEqual(bound(run(...base('SMALL'), ...fixer(3))), [])
   const four = bound(run(...base('SMALL'), ...fixer(4)))
   assert.equal(four.length, 1)
-  assert.match(four[0]!.message, /f1/)
-  assert.match(four[0]!.message, /4/)
+  assert.match(four[0]!.message, /4 times/)
+  assert.doesNotMatch(four[0]!.message, /[a-z]+_[a-z_]+|f1/) // #206: no config key, no agent id
   assert.equal(bound(run(...base('SMALL'), ...fixer(6))).length, 1)
   assert.deepEqual(bound(run(...base('SMALL'), ...fixer(2, 'f1'), ...fixer(2, 'f2'))), [])
   assert.deepEqual(bound(run(...base('SMALL'), ...Array.from({ length: 5 }, () =>
@@ -249,6 +249,34 @@ test('a subagent with few tool calls was a lookup (PD-6); an oversized report (P
     { kind: 'SubagentFinished', id: id(), agentId: 'a1', tokens: 10, answer: 'x\n'.repeat(60) })
   assert.ok(keys(s).includes('process:inline:a1'), keys(s).join())
   assert.ok(keys(s).includes('hygiene:report:a1'))
+})
+
+// #206: a warning a person reads names the subagent by type and task, and carries no config key or agent id.
+test('#206 subagent warnings name the subagent by type and task, with no config key and no agent id', () => {
+  const spawned: Signal = { kind: 'SubagentSpawned', id: id(), agentId: 'a1f3c9d2e7b45', type: 'meaningfy-building:implementer', model: 'opus',
+    description: 'task 1.6 parser', at: 3, asked: 'claude-opus-4-1', parentModel: 'claude-sonnet-4-5' }
+  const gate = (): Signal => ({ kind: 'ToolRan', id: id(), command: 'make check-all', ok: false, at: 4, agentId: 'a1f3c9d2e7b45' })
+  const running = run(...base('SMALL'), spawned, gate(), gate(), gate(), gate()) // the fixer-bound warning goes when the subagent finishes
+  const s = reduce(running, { kind: 'SubagentFinished', id: id(), agentId: 'a1f3c9d2e7b45', tokens: 10, answer: 'x\n'.repeat(60) })
+  const said = [...running.warnings.filter(w => w.key.startsWith('hygiene:fixer-bound:')),
+    ...s.warnings.filter(w => /^(process:inline|process:model|hygiene:report):/.test(w.key))]
+  assert.equal(said.length, 4, keys(running).concat(keys(s)).join())
+  for (const w of said) {
+    assert.doesNotMatch(w.message, /[a-z]+_[a-z_]+/, w.message)
+    assert.ok(!w.message.includes('a1f3c9d2e7b45'), w.message)
+    assert.ok(w.message.includes('implementer') && w.message.includes('task 1.6 parser'), w.message)
+  }
+  assert.deepEqual(said.map(w => w.message), [
+    'subagent implementer "task 1.6 parser" ran full-gates 4 times (limit 3); end it and decide per the bounded fixer',
+    'subagent implementer "task 1.6 parser" runs claude-opus-4-1, above the caller\'s claude-sonnet-4-5',
+    'subagent implementer "task 1.6 parser" made 0 tool calls, few enough to do inline',
+    'subagent implementer "task 1.6 parser" returned 60 lines'])
+})
+
+test('#206 a subagent the navigator never saw spawn is named plainly, never by its id', () => {
+  const s = run(...base('SMALL'), { kind: 'SubagentFinished', id: id(), agentId: 'zz9', tokens: 10, answer: 'x\n'.repeat(60) })
+  const w = s.warnings.find(x => x.key === 'hygiene:report:zz9')!
+  assert.equal(w.message, 'a subagent returned 60 lines')
 })
 
 test('an auto compaction warns; the band shows the offer folded', () => {

@@ -26,8 +26,8 @@
                     "fails": "the tag points at a commit other than the merge, or the publish job failed" },
       "enter": {} },
     { "id": "back-merge", "owner": "meaningfy-release", "expect": [], "allow": ["meaningfy-git-workflow"], "gates": ["back"],
-      "criteria": { "succeeds": "the release branch (for a hotfix, the fix) is merged into every long-lived line",
-                    "fails": "a long-lived line lacks the version bump or the fixes after the release" },
+      "criteria": { "succeeds": "the release branch (for a hotfix, the fix) is merged back into `develop`",
+                    "fails": "`develop` lacks the version bump or the fixes after the release" },
       "enter": {} }
   ],
   "gates": {

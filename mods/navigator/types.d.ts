@@ -132,6 +132,8 @@ export type NavState = {
   skills: SkillUse[]
   subagents: Subagent[]
   gates: Record<string, GateState>
+  /** The passed gates of a change the session left, with the design hash they were read against; returning to it restores them (#207). */
+  gatesByChange: Record<string, { gates: Record<string, GateState>; planHash: string }>
   warnings: Warning[]
   planTruncated: boolean // the last plan-drift read saw more than the diff cap
   planAdded: number | null // added lines the last plan-drift read counted (D-12); null before a read and after a change switch (D-22)

@@ -271,6 +271,15 @@ def test_unreleased_lists_the_wip_paths(tmp_path):
     assert gen.unreleased(repo) == ["agents/ag2.md", "skills/s3"]
 
 
+def test_releases_workflow_publishes_real_files_not_symlinks():
+    # #176: a symlink on `releases` checks out as a text file on Windows, and the bundle loads no skill.
+    wf = (Path(__file__).resolve().parents[1] / ".github/workflows/releases.yml").read_text(encoding="utf-8")
+    deref = wf.index("Replace the bundle symlinks with real files")
+    assert deref < wf.index("git add -A -f bundles"), "the copy must run before the tree is staged"
+    assert 'readlink -f "$link"' in wf and 'cp -R "$target" "$link"' in wf
+    assert "grep -q '^120000'" in wf, "the publish step must refuse a tree with symlinks under bundles/"
+
+
 def test_schema_copy_is_written_and_gated(tmp_path):
     repo = _repo(tmp_path)
     src = repo / "skills/project-setup/assets/openspec-schema/meaningfy"

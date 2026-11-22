@@ -343,3 +343,81 @@ def test_scaffold_detects_a_frontend_folder(tmp_path):
     (tmp_path / "frontend").mkdir()
     _scaffold(tmp_path)
     assert yaml.safe_load(_text(tmp_path / ".serena/project.yml"))["language_servers"] == ["python", "typescript"]
+
+
+# ---- issue #197: CI is light, the local gate runs in parallel -------------------------------
+
+CI_CODE = TPL / "ci/ci.yaml.tmpl"
+CI_DOC_ONLY = TPL / "ci/ci-doc-only.yaml.tmpl"
+CI_REFERENCE = SKILL / "references/ci-and-infra.md"
+
+# What CI must not run: the full toolchain, the test suite, any artefact build.
+HEAVY_CI_STEPS = (
+    "make install\n", "make test", "make build", "make typecheck", "make check-architecture",
+    "make check-semgrep", "make check-layout", "make check-makefile", "make clean-code",
+    "make ci-", "make check-all", "--all-groups", "pytest",
+)
+
+
+def _ci_runs(path: Path) -> list[str]:
+    doc = yaml.safe_load(_text(path).replace("<<", "").replace(">>", ""))
+    return [step["run"] for job in doc["jobs"].values() for step in job["steps"] if "run" in step]
+
+
+@pytest.mark.parametrize("path", [CI_CODE, CI_DOC_ONLY])
+def test_ci_template_is_the_light_set_only(path):
+    text = "\n".join(_ci_runs(path)) + "\n"
+    for heavy in HEAVY_CI_STEPS:
+        assert heavy not in text, heavy
+    assert "make validate-spine" in text and "make check-bindings" in text
+
+
+def test_code_ci_lints_and_installs_only_the_lint_group():
+    runs = "\n".join(_ci_runs(CI_CODE))
+    assert "make lint" in runs and "make install-lint" in runs
+    assert "--only-group lint" in _make_target(_text(MAKEFILE), "install-lint")
+
+
+@pytest.mark.parametrize("path", [CI_CODE, CI_DOC_ONLY])
+def test_ci_templates_build_and_upload_nothing(path):
+    text = _text(path).lower()
+    assert "upload-artifact" not in text and "sonar" not in text and "coverage.xml" not in text
+
+
+def test_check_all_runs_separate_targets_in_parallel():
+    text = _text(MAKEFILE)
+    target = _make_target(text, "check-all")
+    assert "$(MAKE) -k -O -j$(JOBS)" in target and "$(CHECKS)" in target
+    assert re.search(r"^JOBS \?= .*nproc.*\|\| .*echo \d", text, re.M)
+    checks = re.search(r"^CHECKS\s*=\s*(.+)$", text, re.M).group(1).split()
+    for name in ("lint", "typecheck", "check-architecture", "check-bindings", "check-semgrep",
+                 "check-layout", "check-makefile", "validate-spine", "test"):
+        assert name in checks
+        _make_target(text, name)  # each stays a target of its own
+
+
+def test_check_all_says_which_targets_must_stay_serial():
+    text = _text(MAKEFILE)
+    comment = text[: text.index("\ncheck-all:")].rsplit("\n\n", 1)[-1]
+    assert "coverage.xml" in comment and "serial" in comment
+
+
+@needs_make
+def test_scaffolded_check_all_lists_the_parallel_targets(tmp_path):
+    _scaffold(tmp_path)
+    # The first line of a dry run is the parallel invocation. GNU make 4.3 can crash in the
+    # sub-make's output sync under some sandboxes, so the targets it names are listed by a plain
+    # dry run of their own (same targets, no -O) instead of through check-all's sub-make.
+    out = subprocess.run(["make", "-n", "check-all"], cwd=tmp_path, capture_output=True, text=True)
+    invocation = re.search(r"^make.* -k -O -j\d+ (lint typecheck check-architecture .+)$", out.stdout, re.M)
+    assert invocation, out.stdout + out.stderr
+    listed = subprocess.run(["make", "-n", *invocation.group(1).split()], cwd=tmp_path, capture_output=True, text=True)
+    assert listed.returncode == 0, listed.stderr
+    for command in ("ruff check", "mypy", "lint-imports", "pytest", "openspec"):
+        assert command in listed.stdout, command
+
+
+def test_the_gate_reference_splits_light_ci_from_the_parallel_local_gate():
+    text = _text(CI_REFERENCE)
+    assert "light" in text.lower() and "make check-all" in text and "-j" in text
+    assert "result line" in text and "pull request" in text.lower()

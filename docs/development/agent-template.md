@@ -66,8 +66,9 @@ agent file under this standard is the worker.
 - **Leads delegate.** Every agent of type `lead` may spawn subagents, so its `tools` include `Agent`
   and its `disallowedTools` do not deny it; it follows `guardrails`, *Subagent dispatch*. Its
   **Refuses** line names whom it delegates a job to, preferring a read-only subagent for a survey or
-  a check. `Agent` stays unscoped: the opencode renderer has no analogue for `Agent(<type>)` and
-  would drop the tool.
+  a check. `Agent` stays unscoped unless a refusal needs it: the opencode renderer has no analogue
+  for `Agent(<type>)` and drops the tool, so a scope holds on Claude Code only (recorded gap). The
+  `lawyer` scopes it to `Explore` and `checker`.
 - **A lead loads its primary skill first.** A lead is the main session, and preloaded skills emit no
   load event, so its `## Glue` step 1 is: "Load `<primary skill>` with the Skill tool before anything
   else, so the session's workflow is shown."

@@ -202,6 +202,24 @@ message; errors fail open. The failure case is a builder that edited a worktree 
 `python3 - <<E … open(p,'w')` under the sandbox bypass; the commands are in its test. The opencode
 plugin calls the same `check`.
 
+## lawyer-refusals
+
+A plain mod that denies, for one agent. `mods/lawyer-refusals/hooks.json` runs
+`lawyer-refusals.mjs` before every `Bash` call and every `mcp__odoo__*` call, and `meaningfy-legal`
+carries it. A plugin agent cannot carry its own `hooks:` (the `hooks` row of the
+frontmatter table in [`agent-template.md`](agent-template.md)), so the mod scopes itself: `check(input)` takes the whole
+hook input and acts only when `agent_type` is `lawyer` or `<plugin>:lawyer`; any other agent, and a
+session with no agent type, passes. For the lawyer it denies a `make` target or a script named
+`send`, `sign` or `register` (`make send-contract`, `./scripts/sign.sh`, `python register.py`), an
+Odoo CLI or client (`odoo`, `odoo-bin`, `odoo_*.py`, `python -m odoo`) and any `mcp__odoo__*` tool.
+Quoted text, a `bash -c` body excepted, is not read, so a commit message that says "sign" runs.
+The exit is 2 with a message that tells him to ask the owner to confirm that one action, or to ask
+the owner for the Odoo values; errors fail open. The contract workflow names no command, so the
+match is by name, not by the repository's own file: a command named otherwise is not caught (the
+`Refuses` prose still holds). His `Agent` tool is scoped to `Explore` and `checker`, so no subagent
+reaches what the hook denies. opencode has neither the scope nor the hook; both gaps are in
+[`compatibility.md`](../environment/dual-cli/compatibility.md).
+
 ## quiet-tools
 
 A plain mod that warns and never denies. `mods/quiet-tools/hooks.json` runs `quiet-tools.mjs`

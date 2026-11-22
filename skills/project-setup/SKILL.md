@@ -66,7 +66,8 @@ it adds the audit, the upgrade as an EPIC and PLAN, the order of slices and the 
 
 ## Rules
 
-**Archetypes.** The archetype fixes CI gates:
+**Archetypes.** The archetype fixes the gates. CI runs only the light ones; the rest run locally
+with `make check-all`:
 
 | Archetype | `model/` | Deploy | Gates |
 |---|---|---|---|

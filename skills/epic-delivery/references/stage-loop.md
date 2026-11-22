@@ -18,6 +18,10 @@ review set of each appetite is in
      changed code and either a PLAN `## Invariants` row for it has a *Test* cell starting
      `tester`, or the lead records a `D-n` asking for it. Otherwise none runs. The PR body gets
      `tester: yes, <INV-n or D-n>` or `tester: no, <reason>`.
+   - **Riskiest task** (LARGE and up, when the tester condition holds): the lead names the stage's
+     riskiest task in Prepare, the task that adds an invariant, a write order, concurrent writes or
+     a security boundary, and records it with the tester line (`riskiest: T-n, <why>`). The tester
+     runs right after that task's commit (step 2).
    - A stage risk not in the PLAN's `RISK-` rows is recorded as a `D-n`.
    - Scenarios: signed off once per EPIC at the PLAN gate *(provisional)*, per `bdd-gherkin`. A
      scenario changed since is re-signed alone. Nothing is built on an unsigned scenario.
@@ -45,12 +49,19 @@ review set of each appetite is in
        `Re-run: T1, count unchanged after two added tests`.
      - **T2** parallel builders touched a shared file. The lead re-runs the task gate.
      - **T3** the lead's full-gates run after a fix round (step 4).
+   - **Tester after the riskiest task** (LARGE and up, tester condition holds): right after the
+     commit of the task Prepare named, the lead runs the tester on that task's diff only (the
+     task's commit range), while the builder's context is fresh. Its findings wait for step 4 and
+     are decided there with the others, grouped by `file:line`. A Critical one that blocks the
+     next task is the exception: the lead sends a fixer before the next brief.
 3. **Challenge.**
    - The lead runs the full gates once, unless the last task's report ran them on the commit that
      is the PR's head (same check, same code). It records the report, the *implementing* fields,
      in the PR body and opens the PR.
    - Then, in parallel: the appetite's review set (the workflow file; `SKILL.md`, *Review sets*)
-     and the tester on its condition.
+     and the tester on its condition. From LARGE up, where the tester already ran after the
+     riskiest task (step 2), it runs here again only if the rest of the stage still meets the
+     condition; otherwise its first run is the stage's only one.
    - **Parallel spawns:** the lead sends independent spawns in one message: the reviewers of a
      stage, and builders on disjoint files.
    - Reviewers are read-only. They read the gate report in the PR body and never re-run the suite;
@@ -166,7 +177,7 @@ a row.
 | Diff reading | Each task, before its commit | Lead | — |
 | Full gates | Once per stage before the PR (skipped only if the last report ran them on the PR's head commit); once after the fix pass | Lead | T3 is the second |
 | Review set of the appetite (incl. L2 doc agreement, `meaningfy-code-review`) | Once per stage, on the PR | Reviewers | — |
-| Adversarial tester | Once per stage, on its opt-in condition (Prepare) | Tester | Distilled in step 4 |
+| Adversarial tester | On its opt-in condition (Prepare): MEDIUM once per stage, at Challenge; LARGE and up right after the riskiest task's commit, and at Challenge again only if the rest of the stage still meets the condition; a Critical finding that blocks the next task goes to a fixer before the next brief | Tester | Distilled in step 4 |
 | Floor and fix pass; failing tests | Once per stage; failing tests after a red run, at most `max_red_runs` | Lead (floor), fixer | — |
 | Checker (also the cold reader when no how-to or tutorial page changed) | Once per stage, after the fix pass | Checker | — (unmet → developer) |
 | Evidence before a claim (`verification-before-completion`) | Before the lead reports a stage done | Lead | — |
