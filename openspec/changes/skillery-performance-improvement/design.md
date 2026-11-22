@@ -243,6 +243,12 @@ compaction after `proposal.md`, a fresh session per EPIC.
   not a date; r2-W5 window forms differ; r2-W6 folded into C1; r2-W7 the docs register row's
   description; r2-S1 to S4. Each is a candidate for the docs stage of this EPIC.
 
+- **D-26** Checker findings of stage 1 (pass, none Critical): F1 the CHANGELOG line, F2 the
+  roadmap boxes, F3 the cost evidence (74 observations after 12:35Z carried 4.37 USD) and F7 the
+  revert sentence are closed by the lead as light chores (under ten lines, files already read,
+  commit body `lead-fixed:`), the pattern D-6 makes the rule in stage 3; F4 (pin `usageType`) and
+  F5 (the spec's illustrative counts) go to the spec sync at archive; F6 is the hand-over commit.
+
 ## Open Questions
 
 - Whether `/context` output is machine-readable for 1.4, or read by hand (either is acceptable).

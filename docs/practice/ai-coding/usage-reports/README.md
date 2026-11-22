@@ -19,8 +19,9 @@ belongs to the [`session-retrospective`](../../../../skills/session-retrospectiv
 
 A page is named `<date>.md` (the day the report was taken, `YYYY-MM-DD`). A stage page is not a
 separate file: it is a `§Stage n` section of the dated page taken within seven days of that stage's
-release, over the traces tagged `skillery:<version>`, next to the baseline. The closing page of the
-EPIC is taken after fourteen days and carries its four numbers. An inventory of a machine is a
+release, over the traces tagged `skillery:<version>`, next to the baseline. A stage whose gates
+passed worsen against the baseline is reverted and re-planned; the EPIC's `design.md` owns that
+rule. The closing page of the EPIC is taken after fourteen days and carries its four numbers. An inventory of a machine is a
 page named `inventory-<host>-<date>.md`.
 
 ## Add a page

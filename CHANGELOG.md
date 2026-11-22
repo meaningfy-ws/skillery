@@ -12,6 +12,17 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Added
+
+- **A Langfuse usage report, and the series that compares skillery's cost over time.**
+  `session-retrospective` gains `references/langfuse-report.md`: the eight queries that measure
+  tokens, context per call, spawns and tool calls over a window, with their exact arguments, the
+  pinned fields, the gates-passed source and the sanitation inventory procedure.
+  `docs/practice/ai-coding/usage-reports/` starts the series with the 2026-11-22 baseline (6.9 B
+  tokens in a fortnight, 96.5 percent of them cached context) and one machine's inventory. Stage 1
+  of `skillery-performance-improvement`; the baseline's numbers are what the next stages are
+  measured against.
+
 ## [3.21.0] - 2026-11-17
 
 ### Added
