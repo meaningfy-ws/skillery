@@ -467,6 +467,12 @@ compaction after `proposal.md`, a fresh session per EPIC.
   Makefile target (`check-bindings`), the gate table has five rows; the `make validate` probe of
   "A scaffolded repository passes its own validate" is owed to the docs stage, `check-bindings`
   stands in (the Makefile template has no `validate` target).
+- **D-51** Stage 5's first full gates run was red on three incidental items: the skill inventory
+  and the generated docs after a `project-setup` description change, and a bundle-gen test that
+  lists the core plugin's hooks by hand and did not know `quiet-tools`. Closed by the lead as light
+  chores (`make skill-inventory`; the hook added to the expectation; `lead-fixed:` in the commit
+  body). The lesson of D-36 holds and is worth a line in the builder card: a builder that changes
+  a description runs `make skill-inventory`, one that adds a mod checks `tests/test_bundle_gen.py`.
 
 ## Open Questions
 
