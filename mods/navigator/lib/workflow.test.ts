@@ -214,6 +214,23 @@ test('D-4 epic-delivery: the review sets as data, one pass at TINY and SMALL, tw
   assert.match(reviews.LARGE?.challenge ?? '', /five single lenses.*risk/i)
 })
 
+test('roles.matrix: string values for declared roles pass; a non-string value or an undeclared role is refused naming the key', () => {
+  const roles = { reviewer: { agents: ['code-reviewer'] }, checker: { describe: '\\bcheck(er)?\\b' } }
+  const ok = (matrix?: object) => parseWorkflow(src('f', minimal({ roles: matrix ? { ...roles, matrix } : roles })), 'default')
+  assert.ok('workflow' in ok({ reviewer: 'reviewer-single', checker: 'checker' }))
+  assert.ok('workflow' in ok())
+  const bad: [object, RegExp][] = [
+    [{ reviewer: 1 }, /roles\.matrix\.reviewer/],
+    [{ checker: null }, /roles\.matrix\.checker/],
+    [{ tester: 'builder' }, /roles\.matrix\.tester/],
+    [{ ghost: 'builder' }, /roles\.matrix\.ghost/],
+  ]
+  for (const [matrix, error] of bad) {
+    const r = ok(matrix)
+    assert.ok('error' in r && error.test(r.error), `${JSON.stringify(matrix)} → ${JSON.stringify(r)}`)
+  }
+})
+
 test('a misspelt skill in a workflow is caught', () => {
   const w = JSON.parse(minimal({ owner: 'epic-deliverie' })) as Workflow
   assert.deepEqual(namesIn(w).filter(n => !known.has(n)), ['epic-deliverie'])

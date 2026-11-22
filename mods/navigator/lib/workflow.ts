@@ -90,6 +90,15 @@ export function workflowError(w: unknown, origin: Origin, partial = false): stri
     if (!isObj(w.roles)) return `'roles' must be an object`
     for (const [role, r] of Object.entries(w.roles)) {
       const at = `roles.${role}`
+      if (role === 'matrix') {
+        // D-2: role id -> matrix id (agent name); every key is a role declared in this block.
+        if (!isObj(r)) return `${at} must map declared roles to matrix ids`
+        for (const [k, v] of Object.entries(r)) {
+          if (!['reviewer', 'checker', 'tester'].includes(k) || !(k in w.roles)) return `${at}.${k}: not a role declared in 'roles'`
+          if (!isStr(v)) return `${at}.${k} must be a string`
+        }
+        continue
+      }
       if (!['reviewer', 'checker', 'tester'].includes(role)) return `unknown role '${role}'`
       if (!isObj(r) || Object.keys(r).some(k => k !== 'agents' && k !== 'describe')) return `${at}: only 'agents' and 'describe'`
       if ('agents' in r && !isStrs(r.agents)) return `${at}.agents must be a list of names`
