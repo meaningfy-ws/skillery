@@ -499,6 +499,10 @@ compaction after `proposal.md`, a fresh session per EPIC.
   rare); r2-S12 names and the symlink test; r2-S13 skillery's own `AGENTS.md` gate table (docs
   stage). The tester's kept tests move into the mod's test file and
   `tests/test_project_setup_templates.py`; the rest are deleted.
+- **D-53** The change check before the stage's last commit (`detect_changes`, compare with
+  develop): 41 touched symbols, no affected flow, risk low; the mod and the templates are outside
+  the index, so the check speaks only for the prose and the one test it can see; `make mods` and
+  the template tests are the evidence for the rest.
 
 ## Open Questions
 
