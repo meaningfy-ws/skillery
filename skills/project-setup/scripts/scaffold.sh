@@ -136,6 +136,10 @@ render() {
     if [[ "$FORCE" -eq 1 ]]; then :
     elif [[ "$SKIP_EXISTING" -eq 1 ]]; then echo "  skip (exists): ${dst#"$TARGET"/}"; return 0
     else
+      if [[ ! -t 0 ]]; then
+        echo "  ${dst#"$TARGET"/} exists and there is no terminal to ask: re-run with --skip-existing or --force" >&2
+        exit 1
+      fi
       read -r -p "  overwrite ${dst#"$TARGET"/}? [y/N] " a
       [[ "${a:-N}" =~ ^[Yy]$ ]] || { echo "  kept existing"; return 0; }
     fi

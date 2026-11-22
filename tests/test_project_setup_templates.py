@@ -155,18 +155,154 @@ def _scaffold(target: Path, *extra: str) -> None:
     )
 
 
-@pytest.mark.skipif(shutil.which("bash") is None or shutil.which("make") is None, reason="bash and make required")
+needs_make = pytest.mark.skipif(
+    shutil.which("bash") is None or shutil.which("make") is None, reason="bash and make required"
+)
+needs_bash = pytest.mark.skipif(shutil.which("bash") is None, reason="bash required to run scaffold.sh")
+
+GITNEXUS_BLOCK = "\n<!-- gitnexus:start -->\n# GitNexus: Code Intelligence\nblock\n<!-- gitnexus:end -->\n"
+
+
+def _bindings(repo: Path) -> subprocess.CompletedProcess:
+    return subprocess.run(["make", "check-bindings"], cwd=repo, capture_output=True, text=True)
+
+
+@needs_make
 def test_scaffolded_repository_passes_check_bindings(tmp_path):
     _scaffold(tmp_path)
     assert (tmp_path / "AGENTS.md").exists() and (tmp_path / "CLAUDE.md").exists()
-    ok = subprocess.run(["make", "check-bindings"], cwd=tmp_path, capture_output=True, text=True)
+    ok = _bindings(tmp_path)
     assert ok.returncode == 0, ok.stdout + ok.stderr
+    assert "no GitNexus block" in ok.stdout  # the done line
 
-    (tmp_path / "CLAUDE.md").write_text(
-        _text(tmp_path / "CLAUDE.md") + "\n<!-- gitnexus:start -->\nblock\n<!-- gitnexus:end -->\n", encoding="utf-8")
-    bad = subprocess.run(["make", "check-bindings"], cwd=tmp_path, capture_output=True, text=True)
+
+@needs_make
+@pytest.mark.parametrize(
+    "addition",
+    [
+        "\n<!-- gitnexus:start -->\nblock\n<!-- gitnexus:end -->\n",
+        "\n<!-- GITNEXUS:START -->\n",
+        "\n# GitNexus\n",
+        "\n## GitNexus Code Intelligence\n",
+        "\n###### gitnexus notes\n",
+    ],
+    ids=["marker", "upper-case marker", "heading", "deeper heading", "deepest heading"],
+)
+def test_check_bindings_fails_on_a_block_in_claude(tmp_path, addition):
+    _scaffold(tmp_path)
+    claude = tmp_path / "CLAUDE.md"
+    claude.write_text(_text(claude) + addition, encoding="utf-8")
+    bad = _bindings(tmp_path)
     assert bad.returncode != 0
     assert "CLAUDE.md" in bad.stdout + bad.stderr and "AGENTS.md" in bad.stdout + bad.stderr
+
+
+@needs_make
+def test_check_bindings_passes_with_the_block_in_agents(tmp_path):
+    _scaffold(tmp_path)
+    agents = tmp_path / "AGENTS.md"
+    agents.write_text(_text(agents) + GITNEXUS_BLOCK, encoding="utf-8")
+    done = _bindings(tmp_path)
+    assert done.returncode == 0, done.stdout + done.stderr
+
+
+@needs_make
+def test_check_bindings_passes_with_no_claude_file(tmp_path):
+    _scaffold(tmp_path)
+    (tmp_path / "CLAUDE.md").unlink()
+    done = _bindings(tmp_path)
+    assert done.returncode == 0 and done.stderr == ""
+
+
+def test_check_bindings_uses_the_pattern_of_the_lint():
+    target = _make_target(_text(MAKEFILE), "check-bindings")
+    assert "grep -qiE" in target and "gitnexus:start" in target and "^#+ .*GitNexus" in target
+    assert "CLAUDE.md" in target and "exit 1" in target
+
+
+def test_reindex_prints_a_progress_line():
+    assert "ICON_PROGRESS" in _make_target(_text(MAKEFILE), "reindex")
+
+
+def _run_scaffold(target: Path, *extra: str, script: Path = SCAFFOLD, name: str = "Order Processing"):
+    return subprocess.run(
+        ["bash", str(script), "-p", "orders", "-n", name, "-a", "product",
+         "--no-lock", "--no-docs", "--no-infra", "--target", str(target), *extra],
+        cwd=ROOT, capture_output=True, text=True, stdin=subprocess.DEVNULL, timeout=120,
+    )
+
+
+def _snapshot(root: Path) -> dict[str, bytes]:
+    return {str(p.relative_to(root)): p.read_bytes() for p in sorted(root.rglob("*")) if p.is_file()}
+
+
+@needs_bash
+def test_skip_existing_rerun_is_idempotent_and_keeps_an_edit(tmp_path):
+    assert _run_scaffold(tmp_path, "--skip-existing").returncode == 0
+    (tmp_path / "AGENTS.md").write_text("# my own edit\n", encoding="utf-8")
+    (tmp_path / ".serena/project.yml").write_text("project_name: edited\n", encoding="utf-8")
+    before = _snapshot(tmp_path)
+    again = _run_scaffold(tmp_path, "--skip-existing")
+    assert again.returncode == 0, again.stdout + again.stderr
+    assert _snapshot(tmp_path) == before
+    assert "skip (exists): .serena/project.yml" in again.stdout
+
+
+@needs_bash
+def test_rerun_without_a_flag_and_no_terminal_fails_naming_both_flags(tmp_path):
+    assert _run_scaffold(tmp_path, "--skip-existing").returncode == 0
+    (tmp_path / "AGENTS.md").write_text("# my own edit\n", encoding="utf-8")
+    before = _snapshot(tmp_path)
+    again = _run_scaffold(tmp_path)
+    assert again.returncode != 0
+    message = again.stdout + again.stderr
+    assert "--skip-existing" in message and "--force" in message and "exists" in message
+    assert "--skip-existing" in message.strip().splitlines()[-1], "one clear last line"
+    assert _snapshot(tmp_path) == before
+
+
+@needs_bash
+def test_force_restores_a_user_edit_of_the_serena_project(tmp_path):
+    assert _run_scaffold(tmp_path, "--skip-existing").returncode == 0
+    (tmp_path / ".serena/project.yml").write_text("project_name: edited\n", encoding="utf-8")
+    assert _run_scaffold(tmp_path, "--force").returncode == 0
+    assert yaml.safe_load(_text(tmp_path / ".serena/project.yml"))["project_name"] == "orders"
+
+
+@needs_make
+def test_target_path_with_spaces(tmp_path):
+    target = tmp_path / "my repo" / "with space"
+    done = _run_scaffold(target, "--skip-existing")
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert (target / ".serena/project.yml").exists() and (target / "CLAUDE.md").exists()
+    assert _bindings(target).returncode == 0
+
+
+@needs_bash
+def test_project_name_with_sed_metacharacters_renders_literally(tmp_path):
+    name = "R&D | Orders \\ Co"
+    done = _run_scaffold(tmp_path, "--skip-existing", name=name)
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert name in _text(tmp_path / "AGENTS.md")
+
+
+@needs_bash
+def test_typescript_flag_and_frontend_folder_list_typescript_once(tmp_path):
+    (tmp_path / "frontend").mkdir()
+    assert _run_scaffold(tmp_path, "--skip-existing", "--typescript").returncode == 0
+    assert yaml.safe_load(_text(tmp_path / ".serena/project.yml"))["language_servers"] == ["python", "typescript"]
+
+
+@needs_bash
+def test_missing_template_fails_naming_the_template_and_leaves_no_temp_file(tmp_path):
+    skill = tmp_path / "skill"
+    shutil.copytree(SKILL, skill)
+    (skill / "assets/templates/root/dot-serena-project.yml.tmpl").unlink()
+    target = tmp_path / "out"
+    done = _run_scaffold(target, "--skip-existing", script=skill / "scripts/scaffold.sh")
+    assert done.returncode != 0
+    assert "MISSING TEMPLATE" in done.stderr and "dot-serena-project.yml.tmpl" in done.stderr
+    assert not list(target.rglob("*.tmp"))
 
 
 @pytest.mark.skipif(shutil.which("bash") is None, reason="bash required to run scaffold.sh")

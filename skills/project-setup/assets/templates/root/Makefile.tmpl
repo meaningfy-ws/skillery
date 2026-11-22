@@ -224,11 +224,14 @@ check-makefile: quality-tools ## Check Makefile hygiene and required targets (ch
 .PHONY: check-bindings reindex
 
 check-bindings: ## Check that CLAUDE.md carries no GitNexus block (the block lives in AGENTS.md only)
-	@ ! grep -qE 'gitnexus:start|^# GitNexus' CLAUDE.md 2>/dev/null \
-	    || { echo "$(ICON_ERROR) check-bindings: CLAUDE.md carries a GitNexus block; keep it in AGENTS.md only"; exit 1; }
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Checking the bindings$(END_BUILD_PRINT)"
+	@ if grep -qiE 'gitnexus:start|^#+ .*GitNexus' CLAUDE.md 2>/dev/null; then \
+	    echo "$(ICON_ERROR) check-bindings: CLAUDE.md carries a GitNexus block; keep it in AGENTS.md only"; exit 1; fi
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) CLAUDE.md carries no GitNexus block$(END_BUILD_PRINT)"
 
 # --skip-agents-md leaves AGENTS.md and CLAUDE.md untouched.
 reindex: ## Re-index the code for GitNexus (the lead runs it at stage start and before the last commit)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Re-indexing the code$(END_BUILD_PRINT)"
 	@ npx gitnexus analyze --skip-agents-md
 
 #-----------------------------------------------------------------------------

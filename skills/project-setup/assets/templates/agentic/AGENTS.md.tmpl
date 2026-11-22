@@ -49,7 +49,7 @@ here, never in `docs/superpowers/`. Method: **epic-planning**, **clarity-gate**,
 
 `.claude/memory/MEMORY.md` is a cheap orientation note (≤200 lines; stable patterns only; a
 repository file, not the CLI's own memory). It is an
-**index, not authority** — if it disagrees with `openspec/specs/`, `specs/` wins. Do not reintroduce
+**index, not authority**: if it disagrees with `openspec/specs/`, `specs/` wins. Do not reintroduce
 parallel epic files under `.claude/`.
 
 Preferences and corrections go to the rulebook, never to the CLI's memory; project state goes to
@@ -80,14 +80,12 @@ the spine and the repository's docs.
 
 - **Code intelligence:** Serena for symbols and edits (`.serena/project.yml` lists the language
   servers; a worktree is activated as its own project), `ast-grep` for one code shape across many
-  files, GitNexus for blast radius.
-  At stage start run the index once, then impact per task on the task's symbols, and paste it into
-  the brief; a HIGH or CRITICAL result goes to the developer before the brief. Before the stage's
-  last commit run the index, the change check and impact once. Without a lead, the session runs
-  impact once before its first edit and the change check once before its commit, and brings a HIGH
-  or CRITICAL result to the developer. Re-index with `npx gitnexus analyze --skip-agents-md`
-  (`make reindex`), which leaves this file untouched.
-- **Our libraries (no workarounds):** <!-- the co-developed libraries, e.g. `meaningfy-ws/<repo>` — what each does for us; a gap in one is fixed upstream (epic-delivery) -->
+  files, GitNexus for blast radius. The gate shape is the Code intelligence row above; a HIGH or
+  CRITICAL result goes to the developer, and without a lead the session runs impact once before its
+  first edit and the change check once before its commit. At stage start and before the stage's last
+  commit, re-index with `npx gitnexus analyze --skip-agents-md` (`make reindex`), which leaves this
+  file untouched.
+- **Our libraries (no workarounds):** <!-- the co-developed libraries, e.g. `meaningfy-ws/<repo>`, what each does for us; a gap in one is fixed upstream (epic-delivery) -->
 - **GitNexus repo name:** <!-- the name this repo is indexed under (gitnexus_*) -->
 
 See `docs/` for methodology (ai-coding), standards (engineering-standards), and philosophy.

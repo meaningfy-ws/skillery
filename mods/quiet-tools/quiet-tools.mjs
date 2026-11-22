@@ -17,10 +17,15 @@ const MAX_INPUT = 64 * 1024;
 // string is read as a heredoc. Both only matter for adversarial input.
 const SEPARATORS = new Set([";", "&", "|", "(", ")", "`"]);
 const QUOTED = "\0"; // stands for quoted text, so a quoted word is never a command name
-const SKIPPED = new Set(["then", "else", "elif", "if", "do", "while", "until", "{", "!", "time", "exec", "command"]);
+const SKIPPED = new Set(["then", "else", "elif", "if", "do", "while", "until", "{", "!", "time", "exec", "command", "nohup"]);
+// Wrapper words skipped before the command word, with the flags that take a value.
+const WRAPPERS = { sudo: ["-u", "-g"], env: ["-u"], xargs: ["-n", "-I", "-P", "-L", "-d"], timeout: ["-s", "-k"], nice: ["-n"] };
 const REDIRECT = /^\d*(>>?|<|>&|&>)$/; // an operator whose target is the next word
+const STDOUT_TO_FILE = /^(1?>>?|&>>?)([^&]|$)/; // `> f`, `>> f`, `&> f`, `>f`; not `2>`, not `>&1`
 const GREP_VALUE_FLAGS = new Set(["-e", "-f", "-m", "-A", "-B", "-C", "-d", "-D", "-g", "-t", "-T", "-j"]);
 const GREP_PATTERN_FLAGS = new Set(["-e", "-f", "--regexp", "--file"]);
+// A command that passes what it is fed on to the context; any other command ends the read.
+const READING = new Set(["cat", "head", "tail", "sed", "grep", "rg", "ugrep", "awk", "tee"]);
 
 /** Split a command into simple commands: `{ words, piped }`, `piped` when a `|` feeds it. Quoted
  * text becomes one QUOTED mark; heredoc bodies and comments are dropped. One pass, linear cost. */
@@ -75,6 +80,9 @@ function tokenise(src) {
       endCommand();
       piped = true; // the next command reads this one's output
       i += src[i + 1] === "&" ? 2 : 1;
+    } else if (c === "&" && (/[<>]$/.test(word) || src[i + 1] === ">")) {
+      word += c; // `2>&1` and `&>` are redirections, not a command separator
+      i++;
     } else if (SEPARATORS.has(c)) {
       endCommand();
       piped = false;
@@ -95,11 +103,22 @@ function tokenise(src) {
  * a `<` redirection supplies stdin. */
 function split(words) {
   let start = 0;
-  while (start < words.length && (SKIPPED.has(words[start]) || /^\w+=/.test(words[start]))) start++;
+  while (start < words.length) {
+    const w = words[start];
+    const wrapper = w.slice(w.lastIndexOf("/") + 1);
+    if (SKIPPED.has(w) || /^\w+=/.test(w)) start++;
+    else if (Object.hasOwn(WRAPPERS, wrapper)) {
+      start++;
+      while (words[start]?.startsWith("-")) start += WRAPPERS[wrapper].includes(words[start]) ? 2 : 1;
+      if (wrapper === "timeout") start++; // the duration
+    } else break;
+  }
   const args = [];
   let fed = false;
+  let toFile = false;
   for (let i = start + 1; i < words.length; i++) {
     const w = words[i];
+    if (STDOUT_TO_FILE.test(w)) toFile = true;
     if (REDIRECT.test(w)) {
       if (w.endsWith("<")) fed = true;
       i++;
@@ -108,7 +127,30 @@ function split(words) {
     } else args.push(w);
   }
   const name = words[start]?.slice(words[start].lastIndexOf("/") + 1);
-  return { name, args, fed };
+  return { name, args, fed, toFile };
+}
+
+/** The arguments of a pytest run when the command is one (by position), else null. */
+function pytestArgs(name, args) {
+  if (name === "pytest") return args;
+  if (/^python[\d.]*$/.test(name ?? "") && args[0] === "-m" && args[1] === "pytest") return args.slice(2);
+  if (name === "uv" && args[0] === "run") {
+    const rest = args.slice(1);
+    while (rest[0]?.startsWith("-")) rest.shift();
+    return rest.length ? pytestArgs(rest[0], rest.slice(1)) : null;
+  }
+  return null;
+}
+
+/** Net verbosity of pytest arguments: each `v` adds one, each `q` takes one off. */
+function verbosity(args) {
+  let level = 0;
+  for (const a of args) {
+    if (a === "--verbose") level++;
+    else if (a === "--quiet") level--;
+    else if (/^-[A-Za-z]+$/.test(a)) for (const ch of a) level += ch === "v" ? 1 : ch === "q" ? -1 : 0;
+  }
+  return level;
 }
 
 const isOption = (arg) => arg.startsWith("-") && arg.length > 1;
@@ -129,25 +171,30 @@ function operands(args, valued = new Set()) {
 }
 
 /** The warning for one simple command, else null. */
-function checkCommand({ words, piped }) {
-  const { name, args, fed } = split(words);
-  if (args.includes("-vv")) return NO_VERBOSE;
-  if (words.includes("pytest") && args.some((a) => a === "-v" || a === "--verbose")) return NO_VERBOSE;
+function checkCommand({ words, piped }, reads) {
+  const { name, args, fed, toFile } = split(words);
+  if (toFile || !reads) return null; // the output goes to a file or a command that does not print it
+  const testArgs = pytestArgs(name, args);
+  if (testArgs && verbosity(testArgs) > 0) return NO_VERBOSE;
   if (piped || fed) return null; // reads stdin: no file is read into the context
-  if (name === "cat") return operands(args).length ? READ_FILE : null;
+  const files = (valued) => operands(args, valued).filter((a) => a !== "-"); // `-` is stdin
+  if (name === "cat") return files().length ? READ_FILE : null;
   if (name === "head" || name === "tail") {
-    return operands(args, new Set(["-n", "-c"])).length ? READ_FILE : null;
+    return files(new Set(["-n", "-c"])).length ? READ_FILE : null;
   }
   if (name === "sed") {
     const quiet = args.some((a) => a === "--quiet" || a === "--silent" || /^-[A-Za-z]*n/.test(a));
     const scripted = args.some((a) => a === "-e" || a === "-f");
-    const found = operands(args, new Set(["-e", "-f"])).length;
-    return quiet && found >= (scripted ? 1 : 2) ? READ_FILE : null;
+    return quiet && files(new Set(["-e", "-f"])).length >= (scripted ? 1 : 2) ? READ_FILE : null;
   }
   if (name === "grep" || name === "rg" || name === "ugrep") {
+    if (name === "grep" && args.some((a) => /^-[A-Za-z]*[qc]/.test(a) || /^--(quiet|silent|count)$/.test(a))) return null;
     const patterned = args.some((a) => GREP_PATTERN_FLAGS.has(a) || /^--(regexp|file)=/.test(a));
-    const found = operands(args, GREP_VALUE_FLAGS).length;
-    return found >= (patterned ? 1 : 2) ? USE_GREP : null;
+    // rg and ugrep, and grep -r, search the working tree when no path is given
+    const tree = name !== "grep" || args.some((a) => /^-[A-Za-z]*[rR]/.test(a) || /^--(recursive|dereference-recursive)$/.test(a));
+    const needed = (patterned ? 0 : 1) + (tree ? 0 : 1);
+    const found = files(GREP_VALUE_FLAGS).length;
+    return found >= needed && (found > 0 || patterned) ? USE_GREP : null;
   }
   return null;
 }
@@ -156,8 +203,14 @@ function checkCommand({ words, piped }) {
 export function check(command) {
   const src = String(command);
   if (src.length > MAX_INPUT) return null;
-  for (const simple of tokenise(src)) {
-    const message = checkCommand(simple);
+  const commands = tokenise(src);
+  for (const [i, simple] of commands.entries()) {
+    // the output is read only when every later command of the pipeline passes it on
+    let reads = true;
+    for (let j = i + 1; j < commands.length && commands[j].piped; j++) {
+      if (!READING.has(split(commands[j].words).name)) reads = false;
+    }
+    const message = checkCommand(simple, reads);
     if (message) return message;
   }
   return null;
