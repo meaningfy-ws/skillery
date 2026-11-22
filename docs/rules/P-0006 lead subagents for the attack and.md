@@ -12,6 +12,6 @@ because: the owner wants planning to move faster
 source: 2026-11-15 'act as an leader of subagents to move faster'; 2026-11-22 DEC-3 of skillery-performance-improvement, the owner's answer 'Scale by appetite/risk'
 added: 2026-11-15
 approved: 2026-11-15
-last_confirmed: 2026-11-15
+last_confirmed: 2026-11-22
 private: false
 ---
