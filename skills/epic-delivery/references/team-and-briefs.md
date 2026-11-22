@@ -16,7 +16,7 @@ The developer and the domain expert are people (`SKILL.md`, *The team*).
 | Builder | `implementer` agent | Declared (sonnet) | Every task, every accepted fix, every spike |
 | Reviewer | `code-reviewer` agent, one per run of the appetite's review set (a lens or a lens group) | A single-lens run is `reviewer-single`, the agent's declared model; a grouped run (L1+L2 or L3+L4+L5) is `reviewer-merged`, so the lead passes that role's model when it spawns it (`guardrails/assets/model-matrix.json`) | Every stage, scaled by appetite |
 | Checker | `checker` agent | Declared (from the matrix) | Once per stage, where the appetite's set has one ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)) |
-| Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | Opt-in, on its condition ([`stage-loop.md`](stage-loop.md), Prepare) |
+| Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | Opt-in, on its condition ([`stage-loop.md`](stage-loop.md), Prepare); from LARGE up right after the riskiest task |
 | UX designer | A general-purpose subagent with the design skills | `reviewer-merged` (matrix) | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
 
 The UX designer is the one general-purpose role; its model is the matrix's `reviewer-merged`
@@ -125,7 +125,7 @@ evidence in `evidence/spike-<topic>.md`, and its code is not kept.
 > **Goal:** break the behaviour of stage `<s>` of `<id>`: edge cases, bad input, failures, limits.
 > Write tests only, never production code; write one property per invariant in the PLAN's
 > `## Invariants` section, or per error-matrix row where it has none. **Read:** the stage's tasks,
-> scenarios and diff range. **Standing rules:** as for the builder. **Report:** base report + the
+> scenarios and diff range (run right after the riskiest task: that task's diff only). **Standing rules:** as for the builder. **Report:** base report + the
 > tests added, each with what it attacks (a scenario or error-matrix row, or "none" and why) and
 > whether it failed on its first run (the test's docstring says "found <defect id>" or "probe of
 > <decision id>") + each failing test with what it shows + Upstream findings and the result line,
