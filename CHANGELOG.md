@@ -12,6 +12,12 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+### Fixed
+
+- **The lawyer no longer holds Overleaf write tools.** `lawyer` gets the Overleaf connector's
+  read tools only and changes a contract through the repository's own git flow, as the contract
+  repository requires (#194).
+
 ## [3.22.1] - 2026-11-22
 
 ### Fixed

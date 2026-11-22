@@ -370,7 +370,12 @@
         "Bash",
         "Skill",
         "Agent",
-        "mcp__overleaf__*"
+        "mcp__overleaf__list_projects",
+        "mcp__overleaf__list_files",
+        "mcp__overleaf__read_file",
+        "mcp__overleaf__get_sections",
+        "mcp__overleaf__get_section_content",
+        "mcp__overleaf__status_summary"
       ],
       "skills": [
         "contract-practice",
