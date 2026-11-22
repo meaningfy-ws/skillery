@@ -2,7 +2,7 @@
 // model order come from the guardrails data file; review sets and roles from the workflow file.
 
 import type { Thresholds } from './hygiene.ts'
-import type { NavState, Review, Warning, Workflow } from './state.ts'
+import type { NavState, Review, Subagent, Warning, Workflow } from './state.ts'
 import { bare } from './workflow.ts'
 import { isShip } from './workflow.ts'
 
@@ -26,23 +26,35 @@ export function roleOf(w: Workflow, type: string, description: string): Role {
     ?? 'other'
 }
 
+const TASK_MAX = 30 // a subagent's task in a warning, as in the band's now line
+
+/** How a warning names a subagent to a person (#206): its type and task, never its id. A subagent the navigator
+ *  did not see spawn has no type, so it is "a subagent". */
+export function subagentName(subagents: readonly Subagent[], agentId: string): string {
+  const a = subagents.find(x => x.agentId === agentId)
+  if (!a || !a.type || a.type === '?') return 'a subagent'
+  const chars = [...a.description.trim()]
+  const task = chars.length > TASK_MAX ? `${chars.slice(0, TASK_MAX - 1).join('')}…` : chars.join('')
+  return task ? `subagent ${bare(a.type)} "${task}"` : `subagent ${bare(a.type)}`
+}
+
 /** PD-6: a finished subagent that made at most the lookup count of tool calls should have been done inline. */
-export const inlineSpawn = (t: Thresholds, agentId: string, toolCalls: number): Warning[] =>
+export const inlineSpawn = (t: Thresholds, agentId: string, toolCalls: number, who = 'a subagent'): Warning[] =>
   toolCalls <= t.lookup_max_tool_calls
-    ? [warning(`process:inline:${agentId}`, `subagent ${agentId} made ${toolCalls} tool calls (lookup_max_tool_calls)`, null, 'guardrails')]
+    ? [warning(`process:inline:${agentId}`, `${who} made ${toolCalls} tool calls, few enough to do inline`, null, 'guardrails')]
     : []
 
 /** Position in `model_rank` by substring, cheapest first; -1 when unranked. */
 const rank = (t: Thresholds, model: string) => t.model_rank.findIndex(m => model.toLowerCase().includes(m.toLowerCase()))
 
-export type Spawn = { agentId: string; model: string; declared: boolean }
+export type Spawn = { agentId: string; model: string; declared: boolean; who?: string }
 
 /** PD-7: an agent with no declared model asked for a model above the caller's. A declared model is never judged. */
 export function modelAbove(t: Thresholds, s: Spawn, parentModel: string): Warning[] {
   if (s.declared || !s.model) return []
   const asked = rank(t, s.model), parent = rank(t, parentModel)
   return asked >= 0 && parent >= 0 && asked > parent
-    ? [warning(`process:model:${s.agentId}`, `subagent ${s.agentId} runs ${s.model}, above the caller's ${parentModel}`, null, 'guardrails')]
+    ? [warning(`process:model:${s.agentId}`, `${s.who ?? 'a subagent'} runs ${s.model}, above the caller's ${parentModel}`, null, 'guardrails')]
     : []
 }
 
@@ -99,10 +111,10 @@ export function secondCheck(w: Workflow, appetite: string | null, change: string
 }
 
 /** PD-10: a base report longer than the report limit. */
-export function reportOversized(t: Thresholds, agentId: string, answer: string): Warning[] {
+export function reportOversized(t: Thresholds, agentId: string, answer: string, who = 'a subagent'): Warning[] {
   const lines = answer.replace(/\n$/, '').split('\n').length
   return lines > t.subagent_report_max_lines
-    ? [warning(`hygiene:report:${agentId}`, `subagent ${agentId} returned ${lines} lines (subagent_report_max_lines)`, null, 'guardrails')]
+    ? [warning(`hygiene:report:${agentId}`, `${who} returned ${lines} lines`, null, 'guardrails')]
     : []
 }
 
