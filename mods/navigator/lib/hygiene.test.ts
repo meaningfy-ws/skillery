@@ -95,7 +95,8 @@ test('mid-step at the warn threshold → hygiene:context warning, no offer', () 
   const r = offer(parsed, input({ contextPercent: 75 }))
   assert.equal(r.offer, null)
   assert.deepEqual(r.warnings.map(w => [w.key, w.remedy, w.owner]), [['hygiene:context', null, 'guardrails']])
-  assert.match(r.warnings[0]!.message, /mid-step \(context_warn_percent\)/)
+  assert.equal(r.warnings[0]!.message, 'context 75% mid-step')
+  assert.doesNotMatch(r.warnings[0]!.message, /[a-z]+_[a-z_]+/) // #206: no config key in a message a person reads
   assert.deepEqual(offer(parsed, input({ contextPercent: 74 })).warnings, [])
   // not mid-step: a safe point at high context offers instead of warning
   assert.deepEqual(offer(parsed, input({ events: ['commit', 'phase-left'], contextPercent: 80 })).warnings, [])
@@ -128,13 +129,15 @@ test('D-1: compaction is offered at 152,300 tokens although the percent reads 15
 test('D-1: with no token count the percent keys decide, and the warning says so', () => {
   assert.equal(offer(byTokens, input({ events: ['commit', 'phase-left'], contextPercent: 61 })).offer, 'compact')
   const w = offer(byTokens, input({ contextPercent: 80 })).warnings
-  assert.equal(w[0]!.message, 'context 80% mid-step (context_warn_percent, no token count)')
+  assert.equal(w[0]!.message, 'context 80% mid-step (no token count)')
+  assert.doesNotMatch(w[0]!.message, /[a-z]+_[a-z_]+/) // #206
 })
 
 test('D-1: a 1 M window at 260,000 tokens warns, naming the number and the unit', () => {
   const w = offer(byTokens, input({ contextPercent: 26, contextTokens: 260000 })).warnings
   assert.deepEqual(w.map(x => x.key), ['hygiene:context'])
-  assert.equal(w[0]!.message, 'context 260,000 tokens mid-step (context_warn_tokens)')
+  assert.equal(w[0]!.message, 'context 260,000 tokens mid-step')
+  assert.doesNotMatch(w[0]!.message, /[a-z]+_[a-z_]+/) // #206
   assert.deepEqual(offer(byTokens, input({ contextPercent: 90, contextTokens: 249999 })).warnings, [])
 })
 
@@ -145,7 +148,7 @@ test('D-1: the fresh offer is made from 90,000 tokens, not below', () => {
 
 test('D-1: a token count with no token keys in the file falls back to the percent keys', () => {
   const r = offer(parsed, input({ contextPercent: 80, contextTokens: 300000 }))
-  assert.match(r.warnings[0]!.message, /context 80% mid-step \(context_warn_percent\)/)
+  assert.equal(r.warnings[0]!.message, 'context 80% mid-step')
 })
 
 test('D-1: contextTokens takes tokens, else window x percent, else nothing', () => {

@@ -4,7 +4,7 @@
 
 import { creditLoad } from './attribution.ts'
 import { groupDone } from './change.ts'
-import { MAIN, inlineSpawn, modelAbove, overspawn, reportOversized, riskRecorded, roleOf, secondCheck, shipCommand, unusedSkills,
+import { MAIN, inlineSpawn, modelAbove, overspawn, reportOversized, riskRecorded, roleOf, secondCheck, shipCommand, subagentName, unusedSkills,
   type Role } from './dispatch.ts'
 import { isWorkerSpawn, lastMark, missingMark } from './mark.ts'
 import { offer, onCompact, thresholdsFrom, type HygieneEvent } from './hygiene.ts'
@@ -74,12 +74,15 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       n = { ...n, parentModel: s.parentModel ?? n.parentModel }
       // shortcut: the event does not say whether the agent declares a model, so an explicit ask is
       // taken as undeclared (DD-40); upgrade by reading the agent's frontmatter.
-      if (t.ok && s.asked) add(modelAbove(t.thresholds, { agentId: s.agentId, model: s.asked, declared: false }, n.parentModel))
+      if (t.ok && s.asked) add(modelAbove(t.thresholds, { agentId: s.agentId, model: s.asked, declared: false, who: subagentName(n.subagents, s.agentId) }, n.parentModel))
       return n
     }
     case 'SubagentFinished':
-      if (t.ok) add([...inlineSpawn(t.thresholds, s.agentId, countOf(n.agentCalls, s.agentId)),
-        ...reportOversized(t.thresholds, s.agentId, s.answer ?? '')])
+      if (t.ok) {
+        const who = subagentName(n.subagents, s.agentId)
+        add([...inlineSpawn(t.thresholds, s.agentId, countOf(n.agentCalls, s.agentId), who),
+          ...reportOversized(t.thresholds, s.agentId, s.answer ?? '', who)])
+      }
       add(unusedSkills(n.turnEvents, s.agentId))
       // the fixer-bound warning goes with the count it was made from (D-32 W1)
       return { ...n, gateRuns: Object.fromEntries(Object.entries(n.gateRuns).filter(([a]) => a !== s.agentId)),
@@ -125,7 +128,7 @@ function fixerRun(s: NavState, max: number, agentId: string, command: string): N
   const next = { ...s, gateRuns: { ...s.gateRuns, [agentId]: runs } }
   if (runs <= max) return next
   return { ...next, warnings: addWarnings(next, [{ key: `hygiene:fixer-bound:${agentId}`, remedy: null, owner: 'guardrails',
-    message: `subagent ${agentId} ran full-gates ${runs} times (fixer_max_red_runs ${max}); end it and decide per the bounded fixer` }]) }
+    message: `${subagentName(s.subagents, agentId)} ran full-gates ${runs} times (limit ${max}); end it and decide per the bounded fixer` }]) }
 }
 
 /** The role of a spawn, from the active workflow's roles, else the one with a review set. */

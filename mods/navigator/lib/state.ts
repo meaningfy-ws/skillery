@@ -34,6 +34,7 @@ export const EMPTY: NavState = {
   skills: [],
   subagents: [],
   gates: {},
+  gatesByChange: {},
   warnings: [],
   accepted: [],
   planTruncated: false,
@@ -171,12 +172,16 @@ function apply(state: NavState, s: Signal): NavState {
       const left = state.lastChangeId !== null && s.change?.id !== state.lastChangeId
       const read = { ...(left ? handOff(state, state.lastChangeId!) : state), change: s.change, openChanges: s.openChanges,
         lastChangeId: s.change?.id ?? null, planAdded: switched ? null : state.planAdded }
-      const w = workflowOf(read)
-      // The same change's design changed since the previous read (D-15); a first read or another change compares nothing.
-      const before = state.change?.id === s.change?.id ? state.change?.planHash : undefined
+      // Returning to a change the session left restores its passed gates (#207); they judge the design they were read against.
+      const kept = s.change && switched ? read.gatesByChange[s.change.id] : undefined
+      const restored = kept ? withoutKept(read, s.change!.id, kept.gates) : read
+      // A restored change has no workflow chosen yet, so the stale rule runs over every workflow's gates.
+      const judged = kept ? restored.workflows : [workflowOf(restored)].filter(x => x !== undefined)
+      // The same change's design changed since the previous read (D-15), or while it was away; a first read compares nothing.
+      const before = kept ? kept.planHash : state.change?.id === s.change?.id ? state.change?.planHash : undefined
       const edited = typeof before === 'string' && before !== s.change?.planHash
-      const gates = w && edited ? gatesAfterPlan(read.gates, w, s.change?.designMtime) : read.gates
-      return navigate({ ...read, gates }, s.at)
+      const gates = edited ? judged.reduce((g, w) => gatesAfterPlan(g, w, s.change?.designMtime), restored.gates) : restored.gates
+      return navigate({ ...restored, gates }, s.at)
     }
     case 'SkillLoaded': {
       const credit = creditLoad(state, s.name)
@@ -299,6 +304,12 @@ function withScore(state: NavState, w: Workflow, text: string): NavState {
   const id = last && score && Object.entries(w.gates ?? {})
     .find(([gid, g]) => g.kind === 'skill' && bare(g.skill) === bare(last.name) && state.gates[gid]?.state === 'ok')?.[0]
   return id ? { ...state, gates: { ...state.gates, [id]: { ...state.gates[id]!, detail: score } } } : state
+}
+
+/** The followed change is one the session left before: its stored gates come back and the store forgets them (#207). */
+function withoutKept(state: NavState, id: string, gates: NavState['gates']): NavState {
+  const { [id]: _taken, ...rest } = state.gatesByChange
+  return { ...state, gates, gatesByChange: rest }
 }
 
 /** New gate states; a gate that passes clears its open gate warnings. */

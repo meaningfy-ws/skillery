@@ -84,7 +84,10 @@ export function handOff(s: NavState, oldId: string): NavState {
     return { ...s, accepted: [], warnings: s.warnings.filter(x => !x.key.startsWith('plan:') && x.key !== `process:second-check:${oldId}`) }
   }
   const scoped = ['process:gate:', 'process:missing:', 'process:elsewhere:', `process:second-check:${oldId}`, 'plan:']
-  return { ...s, gates: {}, accepted: [], workflow: null, variant: null, phase: null, signalPhase: null,
+  // The old change's gates are kept by its id: coming back to it restores them (#207).
+  const kept = Object.keys(s.gates).length === 0 ? s.gatesByChange
+    : { ...s.gatesByChange, [oldId]: { gates: s.gates, planHash: s.change?.planHash ?? '' } }
+  return { ...s, gates: {}, gatesByChange: kept, accepted: [], workflow: null, variant: null, phase: null, signalPhase: null,
     warnings: s.warnings.filter(w => !scoped.some(p => w.key.startsWith(p))) }
 }
 
