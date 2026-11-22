@@ -391,7 +391,8 @@ render "$TPL/tests/feature/example.feature" "$TARGET/tests/feature/example.featu
 render "$TPL/tests/feature/test_example.py" "$TARGET/tests/feature/test_example.py"
 pyinit "tests"; pyinit "tests/unit"; pyinit "tests/feature"
 pyinit "tests/e2e"; pyinit "tests/integration"
-[[ "$DRY_RUN" -eq 0 ]] && mkdir -p "$TARGET/tests/test_data"
+[[ "$DRY_RUN" -eq 0 ]] && mkdir -p "$TARGET/tests/test_data" "$TARGET/tests/manual"
+[[ "$DRY_RUN" -eq 0 ]] && : > "$TARGET/tests/manual/.gitkeep"
 fi
 
 # ---- 5. agentic layer (AGENTS.md canonical) + spine (openspec/) ---------------

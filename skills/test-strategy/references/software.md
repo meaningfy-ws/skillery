@@ -1,6 +1,6 @@
 # Software: the matrix
 
-Checks on code, tests, projects and their delivery.
+Checks on code, tests, projects and their delivery. Manual acceptance checks, such as the acceptance demo, are `@manual` Gherkin features (`bdd-gherkin`).
 
 | Question | Check | Technique owner | Tool | Moment | Decided by | Status |
 |---|---|---|---|---|---|---|

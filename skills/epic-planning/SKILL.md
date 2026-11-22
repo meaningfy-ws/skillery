@@ -48,7 +48,7 @@ a file (form: `epic-delivery`).
    `SMALL` two, `MEDIUM` three, `LARGE` and above four; at the cap the gaps still open are recorded
    in the EPIC as assumptions for the developer, and no further round is sent. Confirm what you understood inside the
    next round, never in a turn of its own. Make no silent assumptions. **Include a test-scenario interview**: help the human enumerate
-   what the EPIC must *prove* — key assertions, scenarios, edge cases — so the design phase can author
+   what the EPIC must *prove* — key assertions, scenarios, edge cases (manual acceptance checks are `@manual` features, see `bdd-gherkin`) — so the design phase can author
    `.feature` coverage (handed to `bdd-gherkin`, scored by `clarity-gate`). Step definitions stay in implement.
    **Include a risk question**: what could go wrong for this EPIC — in the world around it, not in
    its text — how likely, how bad, and what we do about it (mitigate, accept, or cut scope). Each

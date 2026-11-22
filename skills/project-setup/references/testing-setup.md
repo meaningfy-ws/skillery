@@ -3,11 +3,11 @@
 Tests are a sibling of the package, by tier: `tests/unit/` (mirrors the code tree),
 `tests/feature/<capability>/` (pytest-bdd, steps next to the `.feature`; mirrors the business
 capabilities, which hint at the import-linter components), `tests/e2e/`, `tests/integration/`,
-`tests/test_data/`.
+`tests/test_data/`, `tests/manual/` (`@manual` features, `bdd-gherkin`).
 
 - **Markers by path** (D5): `pytest_collection_modifyitems` in `tests/conftest.py` stamps each
   test's marker from its folder. Never a per-file `pytestmark`: in a `conftest.py` it is silently
-  ignored (a conftest is a plugin, not a test module). Register every marker (`--strict-markers`).
+  ignored. Register every marker (`--strict-markers`).
 - **Lanes**: `make test-unit`, `test-feature`, `test-integration`, `test-e2e` filter with `-m`;
   `make test` runs all with coverage. `make test-fast` skips slow tests (CI still runs them);
   `make test-changed` runs the unit and feature tests of the changed files. `ci-quick` each
@@ -18,5 +18,4 @@ capabilities, which hint at the import-linter components), `tests/e2e/`, `tests/
   the worker and CI hangs). Prove a new CI limit or dist mode on the PR's hosted runner.
 - **Datastores**: testcontainers in a module-scoped fixture, flushed per test, marked by path as
   integration or e2e (outside the fast lane).
-- **Coverage** ≥ 80 % on the package. The skeleton's `__main__.py` stub carries `# pragma: no cover`; remove it
-  when you replace the stub.
+- **Coverage** ≥ 80 % on the package. Remove the skeleton `__main__.py` stub's `# pragma: no cover` when you replace it.
