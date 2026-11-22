@@ -268,6 +268,10 @@ hooks:
     intent: Deny a Bash sleep loop (while/until/for with sleep, watch -n); wait in the foreground or once in the background
     provenance: { skill: guardrails }
     bindings: [{ mechanism: mod, phase: quality, trigger: PreToolUse(Bash) }]
+  - id: lawyer-refusals
+    intent: For the lawyer agent only, deny a Bash command that sends, signs or registers a contract (make send, sign, register and scripts of those names), a Bash Odoo CLI or client, and any mcp__odoo__ tool; ask the owner to confirm that one action or for the values
+    provenance: { skill: contract-practice }
+    bindings: [{ mechanism: mod, phase: quality, trigger: "PreToolUse(Bash, mcp__odoo__*)" }]
   - id: no-shell-edits
     intent: Deny a Bash command that writes or reverts a file in place (sed -i, perl -i, an inline python/node write, a cat/tee heredoc outside $TMPDIR, git checkout/restore of a path); edit with Edit or Serena
     provenance: { skill: guardrails }

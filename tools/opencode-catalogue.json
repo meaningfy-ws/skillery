@@ -240,6 +240,7 @@
       ],
       "skills": [
         "infrastructure-operations",
+        "corpus-repository",
         "stack-operations",
         "service-reliability",
         "infrastructure-security"
@@ -369,7 +370,7 @@
         "Write",
         "Bash",
         "Skill",
-        "Agent",
+        "Agent(Explore, checker, meaningfy-building:checker)",
         "mcp__overleaf__list_projects",
         "mcp__overleaf__list_files",
         "mcp__overleaf__read_file",

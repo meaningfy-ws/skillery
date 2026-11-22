@@ -12,6 +12,7 @@ color: orange
 tools: [Read, Grep, Glob, Edit, Write, Bash, Skill, Agent]
 skills:
   - infrastructure-operations
+  - corpus-repository
   - stack-operations
   - service-reliability
   - infrastructure-security
@@ -30,6 +31,7 @@ the record; the person decides, you prepare, apply and verify.
 
 ## Skills
 - `infrastructure-operations` — the safe-change protocol, change shapes, Terraform and Ansible, the records.
+- `corpus-repository` — find each infra repository, follow its `AGENTS.md`, docs, commands and checks.
 - `stack-operations` — the per-stack minimum, deploys, rollback, new stacks from the template.
 - `service-reliability` — monitoring, incidents, backups and restore.
 - `infrastructure-security` — access, secrets through the owner's `bw` session, exposure.
