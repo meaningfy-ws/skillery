@@ -84,7 +84,7 @@ opencode parity (DEC-10), per-person tracking, a model router.
   `design.md` budget TINY 4 KB, SMALL 8, MEDIUM 12, LARGE 16, VERY LARGE 24 (KB = 1024 raw bytes,
   as `repo_lint` measures prose); `make lint` errors on a non-exempt active change; exempt: archived
   changes and an allowlist of the changes active when the check lands (today's four, 48–111 KB).
-  Appetite parsed as the navigator's `appetiteOf` (workflow names, longest first, first line under
+  Appetite parsed as the navigator's `appetiteOf` (workflow names, longest first, first paragraph under
   `## Appetite`); unparseable is an error. `tasks.md` cites design anchors. (DEC-9)
 - **D-10 Tool-output principle and mod.** DEC-14's text in `guardrails` §Session hygiene and the
   `activity-tools.md` header; one line in the brief templates. Mod `quiet-tools` (PreToolUse on
@@ -359,6 +359,94 @@ compaction after `proposal.md`, a fresh session per EPIC.
   scenarios' "risk named as a focus" sentence added to `meaningfy-code-review` and `epic-delivery`;
   F-2 the `AGENTS.md` GitNexus block and its template name the index at both points, as the
   `catalogue-governance` delta says (`lead-fixed:` in the commit body); one more full gates run.
+- **D-41** Stage 4 ships the designed variant of D-3 (one preload per role, no `Skill` tool, exact
+  MCP tool names) without the interactive A/B of 1.4, which needs a fresh session the owner's
+  autonomy grant (D-19) does not provide: today's traces give the measured floor in this
+  repository, `implementer` and `code-reviewer` about 53 k tokens at their first call,
+  general-purpose about 35 k; 4.7 measures the shipped variant against it, and RISK-8's fallback
+  (the floor target to the owner) applies if it is not under 40 k.
+- **D-42** Stage 4 on branch `feature/spi-stage-4`, three builders on disjoint files: A owns
+  `tools/repo_lint`, `tests/test_repo_lint.py`, `skills/guardrails/assets/model-matrix.json`,
+  `skills/clarity-gate/`, the `tasks.md` template (4.1's lint and asset, 4.4); B owns `agents/`,
+  `skills/stage-check/` (new), `bundles.yaml`, `facets.yaml` if needed, `tests/features/agents/`,
+  `tests/trigger_probes.yaml`, the workflow JSON `roles` block (4.2, 4.3, the agent side of 4.1
+  and 4.6); C owns `skills/epic-delivery/assets/templates/`, `references/team-and-briefs.md`,
+  `skills/guardrails/references/activity-tools.md`, `skills/rulebook/` and its tests (4.5, the
+  script side of 4.6). GitNexus impact: `tools/repo_lint` and `skills/rulebook/scripts` are in
+  the index, so the lead ran impact on `lint.py` `prose_budget` and `rules.py` `cmd_load` before
+  the briefs: both UNKNOWN, the index (last at cf32e0a) does not hold them; the changes are
+  additive (a new check function appended to `ALL_CHECKS`, a new flag on `load`), the re-index runs
+  in the background for the change check before the stage's last commit.
+- **D-43** Stage 4 is a LARGE small stage under the installed method (3.21.0): code in
+  `tools/repo_lint` and `rules.py` with tests, agent frontmatter, one new skill and agent, and
+  prose; review set two grouped runs, L1+L2 and L3+L4+L5; the tester runs (code changed; the
+  opt-in rule of stage 3 is not yet the installed method); the checker is a general-purpose
+  subagent, since the new `checker` agent is not installed in this session. Light chores by the
+  lead: the `test-strategy` inventory row CHK-60 and the agent template's skills row follow the
+  new checklist and the one-preload rule (builders A and B found them outside their files).
+  The PR adds 628 lines outside the spine and the generated files, 380 without the tests, so it
+  passes the installed `small_stage` limit only without its tests; the two grouped runs stand as
+  the LARGE default this EPIC merged in stage 3 (D-4), one release ahead of the installed method.
+  The first full gates run was red in the navigator suite: the `roles.matrix` block of the
+  workflow JSON was not known to the workflow validator (builder B ran `make bundles` and `make
+  lint`, not `make mods`); a fixer teaches the validator the key, test-first, before the PR's
+  gate report is written (a build defect, outside the one fix pass for findings).
+- **D-44** Stage 4 review L1+L2. Accepted: W1 re-labelled Critical (a grouped run is the
+  `reviewer-merged` role on the large model, D-2: the workflow's `roles.matrix` maps grouped runs
+  to `reviewer-merged` and `team-and-briefs.md` says the lead passes that model when it spawns a
+  grouped run); W2 re-labelled Critical (`technical-writer` is a lead agent that spawns the cold
+  reader, role `lead`, model `opus`, feature file aligned); W4 the unparseable-appetite error names
+  the paragraph it read; W5 the Serena rows for rename, safe delete and diagnostics return to the
+  activity-tools table for the lead, and `team-lead` names those Serena tools exactly (S6 with it);
+  W6 em dashes removed from the three agent bodies; S1 "first paragraph" in the epic-shape delta
+  and D-9; S2 the four missing budget tests; S3 a malformed matrix file is one lint error, not a
+  crash; S4 the card's rules pointed to, the history paragraph dropped; S5 the rules-first delta
+  writes `load --brief --activity <a>`. Decided, not fixed: W3 the one-preload rule applies in this
+  stage to the delivery workers (`implementer`, `code-reviewer`, `checker`); the bundle-specific
+  workers (`infra-reviewer`, `proposal-writer`, `ops-watch`, `sales-agent`) keep their preloads
+  and `Skill` until their floors are measured (4.7 lists them), and D-41 is read so.
+- **D-45** Stage 4 review L3+L4+L5. C1 is the `roles.matrix` gate defect, closed by the gate fixer;
+  the key stays under `roles` (validated, and typed in `types.d.ts` in the fix pass), mapping the
+  single-lens default; a grouped run is the `reviewer-merged` role by the brief (D-44 W1).
+  Accepted: W2 the appetite budgets leave `lint.py` for a `clarity-gate` asset
+  (`assets/design-budgets.json`) the lint reads, with the appetite names from the workflow file;
+  W3 the VERY LARGE row and no pointer to `repo_lint` in the checklist; W4 the owner-consent
+  condition stated inline instead of "R-0005"; W5, W6 `stage-check` points to `team-and-briefs`
+  for the result line and the cold-reader rule; W7, W8 one Edits line and one fixer line, in the
+  card, pointed to from `team-and-briefs`; W9 the history paragraph dropped (also D-44 S4); W10 a
+  guarded `_model_matrix(repo)` (also D-44 S3); S11 the Serena essentials in the card only, the
+  table points; S12 one "Read `stage-check`" sentence; S13 the docstring; S15 the matrix values
+  checked against `model_rank`; S16b "the lead pastes `load --brief`" said once, in
+  `team-and-briefs`. Under the floor: S14 the test file split; S16a the commands.md rewording (it
+  paid the prose budget).
+- **D-46** Stage 4 tester (60 tests, 8 failed first, 6 defects). Accepted: T1 malformed matrix
+  JSON or a top-level list crashes the lint (one error line instead; with D-44 S3, D-45 W10); T2 a
+  list-typed `metadata.role` crashes both matrix checks (reported, never raised); T4 a matrix value
+  that is not a model alias is an error (D-45 S15); T6 the allowlist read strips a UTF-8 BOM.
+  Under the floor: T3 an agent model alias in the wrong case is `bundle_gates`' report, not the
+  matrix check's (its test is deleted); T5 `VERY  LARGE` with two spaces reads as LARGE, the same
+  as the navigator's `appetiteOf` (one rule for both; the test is deleted). The kept tests move
+  into `tests/test_repo_lint_budget.py` and `tests/test_rulebook.py`; the adversarial files go.
+  The fix pass runs as two fixers on disjoint files, code and prose, in one batch.
+- **D-47** The change check before the stage's last commit (`detect_changes`, compare with
+  develop) reports 131 touched symbols and 22 affected flows, rated critical by count: the
+  navigator's workflow validator (`workflowError`), the rulebook's `cmd_load` and the lint's
+  `main`. Each is a flow this stage changed on purpose and each has its suite green (navigator
+  739 + 137, rulebook 578 with the lint tests, installer 36). Under D-19 the result is recorded
+  here instead of being brought as a question; the owner can read it in this PR.
+- **D-48** Stage 4 checker: fail, seven items, fixed now by one fixer and one full gates run
+  (stage-loop step 5; the question it would have carried is answered by D-19): F-1 the roster row
+  in `team-and-briefs.md` names the `checker` agent (model from the matrix) and drops "no role has
+  its own catalogue agent" and "opus for the general-purpose roles"; F-2 the CHANGELOG line says
+  `code-reviewer` and `infra-reviewer` move to sonnet (not `technical-writer`) and "the delivery
+  workers start lighter", not every subagent; F-3 D-44 W3 is written where it is read: task 4.7
+  lists the four bundle-specific workers to measure, and the subagent-dispatch delta's "one
+  preload" sentence names the delivery workers now and the others once measured; F-4 the em dashes
+  left in `code-reviewer.md` and `epic-planner.md` go; F-5 the delta scenario "A workflow names a
+  role" uses the roles the delivery workflow declares (reviewer, checker, tester), since the
+  validator binds `roles.matrix` keys to declared roles; F-6 the clarity checklist's deep-links
+  item says a task without a `design.md#d-n` anchor is a gap; F-7 `team-lead.feature` gains a
+  scenario for its three Serena tools.
 
 ## Open Questions
 

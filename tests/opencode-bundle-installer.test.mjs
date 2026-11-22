@@ -202,22 +202,35 @@ test("implementer and code-reviewer declare a closed tool list with the code too
   const catalogue = loadCatalogue(path.join(REPO, "tools", "opencode-catalogue.json"));
   // ToolSearch keeps the code tools deferred (names only); without it their full schemas load at the
   // start and the worker is heavier than with no list at all (measured 2026-11-14, Claude Code 2.1.325).
-  const codeTools = ["ToolSearch", "mcp__serena__*", "mcp__ast-grep__*"];
+  // Stage 4 (D-3, D-41): no `Skill` tool (one preload per role) and the code tools by exact name, not globs.
+  const serenaRead = ["mcp__serena__get_symbols_overview", "mcp__serena__find_symbol", "mcp__serena__find_referencing_symbols"];
+  const serenaEdit = ["mcp__serena__replace_symbol_body", "mcp__serena__insert_after_symbol"];
   // GitNexus stays on the team-lead only (D-7): builders and reviewers run none.
   const expected = {
-    implementer: ["Read", "Edit", "Write", "Glob", "Grep", "Bash", "Skill", ...codeTools],
-    "code-reviewer": ["Read", "Grep", "Glob", "Bash", "Skill", ...codeTools],
+    implementer: [
+      "Read", "Edit", "Write", "Glob", "Grep", "Bash", "ToolSearch",
+      ...serenaRead, ...serenaEdit, "mcp__ast-grep__find_code",
+    ],
+    "code-reviewer": ["Read", "Grep", "Glob", "Bash", "ToolSearch", ...serenaRead],
+    checker: ["Read", "Grep", "Glob", "Bash"],
   };
   for (const [stem, tools] of Object.entries(expected)) {
     assert.deepEqual(catalogue.agents[stem].tools, tools, stem);
+    assert.ok(!tools.includes("Skill") && !tools.some((t) => t.endsWith("*")), `${stem}: no Skill, no wildcard`);
     const { content, gaps } = renderAgent(catalogue.agents[stem], agentBody(stem, path.join(REPO, "agents")), MAP);
-    const rendered = Object.fromEntries(tools.filter((t) => Object.hasOwn(MAP.toolNames, t)).map((t) => [MAP.toolNames[t], true]));
+    // The renderer adds opencode's skill tool whenever `skills:` is non-empty (its body line loads them), so a
+    // Claude agent without `Skill` still has one on opencode: the preload is how the skill loads there.
+    const rendered = Object.fromEntries(
+      [...tools.filter((t) => Object.hasOwn(MAP.toolNames, t)).map((t) => MAP.toolNames[t]), MAP.toolNames.Skill].map((n) => [n, true]),
+    );
     assert.ok(content.split("\n").includes(`tools: ${JSON.stringify(rendered)}`), stem);
     // opencode has no analogue for these: a recorded gap, and its allow-list does not restrict (G-6).
-    for (const tool of codeTools) assert.ok(gaps.includes(`tool '${tool}' has no opencode analogue`), `${stem} ${tool}`);
+    for (const tool of tools.filter((t) => !Object.hasOwn(MAP.toolNames, t))) {
+      assert.ok(gaps.includes(`tool '${tool}' has no opencode analogue`), `${stem} ${tool}`);
+    }
     assert.match(content, /^permission: .*"task":"deny"/m, stem);
     assert.ok(!gaps.some((g) => g.includes("'Agent'")), stem);
-    assert.equal(/^permission: .*"edit":"deny"/m.test(content), stem === "code-reviewer", stem);
+    assert.equal(/^permission: .*"edit":"deny"/m.test(content), stem !== "implementer", stem);
   }
 });
 

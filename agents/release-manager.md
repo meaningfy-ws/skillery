@@ -13,6 +13,7 @@ skills:
   - meaningfy-git-workflow
   - guardrails
 metadata:
+  role: lead
   purpose: devops
   area: coding
   subject: git-release

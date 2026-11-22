@@ -71,7 +71,9 @@ export type Workflow = {
   phases: Phase[]
   gates?: Record<string, Gate>
   reviews?: Record<string, Review>
-  roles?: Partial<Record<'reviewer' | 'checker' | 'tester', { agents?: string[]; describe?: string }>>
+  roles?: Partial<Record<'reviewer' | 'checker' | 'tester', { agents?: string[]; describe?: string }>> & {
+    matrix?: Record<string, string> // review lens or run kind → model-matrix role (D-45 C1)
+  }
   replaces?: Record<string, string>
   planDrift?: { ignore: string[] }
   source?: string // the file it was read from; set by resolveWorkflows, never written in a file

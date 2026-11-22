@@ -1,0 +1,10 @@
+# Active changes whose design.md was over its appetite's budget (D-9) when the check landed.
+# One change id per line; remove a line when the change is archived or its design is cut to budget.
+activity-test-profiles
+generic-task-test-profiles
+harden-checks-and-tests
+orchestrate-external-skills
+# The teaching example's appetite reads "Small" (not an appetite name); its design.md is 1 KB.
+example-spine-roundtrip
+# Over its 16 KB LARGE budget after its delivery decisions (D-20 onward) were recorded.
+skillery-performance-improvement

@@ -16,6 +16,7 @@ skills:
   - meaningfy-voice
   - guardrails
 metadata:
+  role: lead
   purpose: content
   area: cross-cutting
   subject: generic

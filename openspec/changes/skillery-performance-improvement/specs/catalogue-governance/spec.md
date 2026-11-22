@@ -25,6 +25,14 @@ line SHALL name that full command (DEC-11, D-7).
 - **WHEN** the impact check on a task's symbols returns HIGH or CRITICAL
 - **THEN** the lead brings it to the developer before the brief
 
+#### Scenario: The lead can run the checks
+- **WHEN** the `team-lead` agent is read
+- **THEN** its `tools:` list carries `mcp__gitnexus__*` and `ToolSearch`, so the lead can run the checks at the two points, and its description is unchanged
+
+#### Scenario: A re-index
+- **WHEN** the repository is re-indexed with `--skip-agents-md`
+- **THEN** the GitNexus block still says the two points of a piece of work
+
 #### Scenario: A stage ends
 - **WHEN** the lead prepares the stage's last commit before its pull request
 - **THEN** the index, the change check and the impact check have run once since the stage's tasks were built, and no reviewer ran an impact check of its own

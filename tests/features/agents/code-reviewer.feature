@@ -7,7 +7,7 @@ Feature: code-reviewer reviews one change through one lens or one lens group, or
   Other several-lens briefs are accepted only with a confirmed appetite or a recorded decision.
 
   Background:
-    Given the code-reviewer agent is installed with skills `meaningfy-code-review`, `cosmic-python`
+    Given the code-reviewer agent is installed with skills `meaningfy-code-review`
     And a change with a diff, its specs and its covering scenarios
 
   Scenario Outline: One dispatch reviews one lens
@@ -132,8 +132,22 @@ Feature: code-reviewer reviews one change through one lens or one lens group, or
     Given the session has connector tools the review does not need
     And the project has the code-intelligence servers `serena`, `ast-grep` and `gitnexus`
     When the caller dispatches the code-reviewer with lens "L1"
-    Then it can read, search, run commands and load skills
-    And it can load and call a tool of the `serena` and `ast-grep` servers
-    And it is offered no tool of the `gitnexus` server
+    Then it can read, search and run commands
+    And it can call Serena's `get_symbols_overview`, `find_symbol` and `find_referencing_symbols`
+    And it is offered no tool of the `gitnexus` or `ast-grep` servers
     And no other connector tool and no file-editing tool is offered to it
     And its report reaches the caller
+
+  # Traces to: D-3, D-41, D-2; spec subagent-dispatch (A subagent starts fresh from a brief; The subagent's agent and model are the cheapest that fit).
+  Scenario: It starts with one preload and the exact read-only tool list
+    When the caller dispatches the code-reviewer with lens "L1"
+    Then its only preloaded skill is `meaningfy-code-review`
+    And its tools are exactly Read, Grep, Glob, Bash, ToolSearch and Serena's `get_symbols_overview`, `find_symbol` and `find_referencing_symbols`
+    And it has no `Skill` tool, no tool named by a wildcard and no edit tool
+    And its role is `reviewer-single` and its model the mid model the matrix names for it
+
+  # Traces to: D-14; spec rules-first-routing (Rules reach a subagent through its brief).
+  Scenario: The rules arrive in the brief
+    Given the lead pasted the rules from `load --brief` in the brief
+    When the caller dispatches the code-reviewer with lens "L1"
+    Then it does not load the rulebook itself

@@ -481,7 +481,7 @@ def cmd_load(args) -> int:
     vault, repo = find_stores()
     rules, active, skipped = _merged_index(vault, repo)
     pb = read_playbooks(vault).get(args.activity) if vault else None
-    out = [f"PLAYBOOK {pb.path.stem}", pb.body.strip()] if pb else []
+    out = [f"PLAYBOOK {pb.path.stem}", pb.body.strip()] if pb and not args.brief else []
     out += skipped
     shown, conflicts = _applicable(_context(args), rules, active)
     out += [_line(i, rules[i]) for i in shown]
@@ -1021,6 +1021,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     s = sub.add_parser("load", parents=[ctx], help="print the rules that apply to an activity and context")
     s.add_argument("--activity", required=True)
+    s.add_argument("--brief", action="store_true", help="omit the playbook, for pasting into a subagent brief")
     s.set_defaults(func=cmd_load)
     s = sub.add_parser("check", parents=[ctx], help="run the check patterns on a file, or on the golden examples")
     s.add_argument("--activity")

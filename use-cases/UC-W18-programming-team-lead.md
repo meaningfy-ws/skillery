@@ -11,6 +11,7 @@ served_by:
   - team-lead
   - implementer
   - code-reviewer
+  - checker
   - release-manager
   - technical-writer
   skills:
@@ -21,6 +22,7 @@ served_by:
   - clarity-gate
   - bdd-gherkin
   - meaningfy-code-review
+  - stage-check
   - cosmic-python
   - test-suite-care
   - project-setup

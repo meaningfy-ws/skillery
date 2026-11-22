@@ -1647,6 +1647,144 @@ def binding_size(repo: Path) -> list[str]:
     return out
 
 
+MODEL_MATRIX = "skills/guardrails/assets/model-matrix.json"
+
+
+def _model_matrix(repo: Path) -> tuple[dict | None, str | None]:
+    """The matrix's `roles` mapping and no error, or None and one error line: the file is missing,
+    is not JSON, is not an object, or its `roles` is not an object. Never raises."""
+    if not (repo / MODEL_MATRIX).exists():
+        return None, f"{MODEL_MATRIX} does not exist"
+    try:
+        doc = json.loads(_read(repo, MODEL_MATRIX))
+    except ValueError as exc:
+        return None, f"{MODEL_MATRIX} is not valid JSON ({exc})"
+    if not isinstance(doc, dict):
+        return None, f"{MODEL_MATRIX}: the top level must be an object"
+    roles = doc.get("roles", {})
+    if not isinstance(roles, dict):
+        return None, f"{MODEL_MATRIX}: `roles` must be an object of role to model"
+    return roles, None
+
+
+def agent_model_matrix(repo: Path) -> list[str]:
+    """Hard check (D-2): the matrix file reads, every value is a `modelAliases` key, and every
+    agents/*.md declares a `metadata.role` of the matrix with the matrix's model. The advisory twin,
+    `agent_model_matrix_report`, never fails: it lists matrix roles no agent uses."""
+    agents_dir = repo / "agents"
+    if not agents_dir.exists():
+        return []
+    roles, error = _model_matrix(repo)
+    if roles is None:
+        return [error]
+    aliases = bundle_gen._agent_map(repo)["modelAliases"]
+    out: list[str] = [f"{MODEL_MATRIX}: role '{r}' takes '{m}', which is not a model alias ({', '.join(aliases)})"
+                      for r, m in roles.items() if m not in aliases]
+    for who, role, model in _agent_roles(repo):
+        if role is None or not isinstance(role, str):
+            out.append(f"{who}: no metadata.role as a string (one of {', '.join(roles)})")
+        elif role not in roles:
+            out.append(f"{who}: role '{role}' is not in {MODEL_MATRIX}")
+        elif model != roles[role]:
+            out.append(f"{who}: role '{role}' takes model '{roles[role]}' in {MODEL_MATRIX}, "
+                       f"the agent declares '{model}'")
+    return out
+
+
+def _agent_roles(repo: Path) -> list[tuple[str, str | None, str | None]]:
+    """(agents/<file>, metadata.role, model) per agent whose frontmatter reads."""
+    found = []
+    for p in sorted((repo / "agents").glob("*.md")):
+        try:
+            fm, _ = bundle_gen.agent_frontmatter(repo, p.stem)
+        except ValueError:
+            continue  # agent_conformance and bundle_gates report an unreadable frontmatter
+        meta = fm.get("metadata")
+        found.append((f"agents/{p.name}", meta.get("role") if isinstance(meta, dict) else None, fm.get("model")))
+    return found
+
+
+def agent_model_matrix_report(repo: Path) -> list[str]:
+    """Advisory notes (never failing): matrix roles no agent uses, such as roles a spawn takes without an agent."""
+    roles, _ = _model_matrix(repo)
+    if not (repo / "agents").exists() or roles is None:
+        return []
+    used = {role for _, role, _ in _agent_roles(repo) if isinstance(role, str)}
+    return [f"{MODEL_MATRIX}: role '{r}' is used by no agent" for r in roles if r not in used]
+
+
+# D-9, D-45 W2: the design.md byte budget by appetite lives in a clarity-gate asset, the one source.
+# HUGE has no PLAN, so it has no entry there.
+DESIGN_BUDGETS_FILE = "skills/clarity-gate/assets/design-budgets.json"
+DESIGN_BUDGET_EXEMPT = "openspec/changes/.design-budget-exempt"
+
+
+def _appetite_paragraph(proposal: str) -> str | None:
+    """The first paragraph under `## Appetite` (the way the navigator's `appetiteOf` reads it), or None."""
+    parts = re.split(r"^## Appetite\s*$", proposal.replace("\r\n", "\n"), maxsplit=1, flags=re.MULTILINE)
+    if len(parts) < 2:
+        return None
+    return re.split(r"\n\s*\n|^## ", parts[1].strip(), maxsplit=1, flags=re.MULTILINE)[0]
+
+
+def _appetite_of(proposal: str, budgets: dict) -> str | None:
+    """The appetite named in the appetite paragraph: the budget keys plus HUGE, the longest name
+    first, whole words only."""
+    para = _appetite_paragraph(proposal)
+    if para is None:
+        return None
+    names = sorted([*budgets, "HUGE"], key=len, reverse=True)
+    return next((a for a in names if re.search(rf"(?<![\w-]){re.escape(a)}(?![\w-])", para)), None)
+
+
+def _design_budgets(repo: Path) -> tuple[dict | None, str | None]:
+    """The appetite to byte-budget mapping, or None and one error line when the asset is missing or malformed."""
+    if not (repo / DESIGN_BUDGETS_FILE).exists():
+        return None, f"{DESIGN_BUDGETS_FILE} does not exist"
+    try:
+        doc = json.loads(_read(repo, DESIGN_BUDGETS_FILE))
+    except ValueError as exc:
+        return None, f"{DESIGN_BUDGETS_FILE} is not valid JSON ({exc})"
+    if not isinstance(doc, dict) or not doc or not all(isinstance(v, int) and not isinstance(v, bool)
+                                                       for v in doc.values()):
+        return None, f"{DESIGN_BUDGETS_FILE} must be an object of appetite to byte budget"
+    return doc, None
+
+
+def design_budget(repo: Path) -> list[str]:
+    """An active change's design.md stays within the byte budget of its appetite (D-9). Archived changes
+    are exempt; so are the ids listed, one per line with `#` comments, in openspec/changes/.design-budget-exempt."""
+    changes = repo / "openspec" / "changes"
+    if not changes.exists():
+        return []
+    budgets, error = _design_budgets(repo)
+    if budgets is None:
+        return [error]
+    exempt_file = repo / DESIGN_BUDGET_EXEMPT
+    exempt_text = exempt_file.read_text(encoding="utf-8-sig").replace("\r\n", "\n") if exempt_file.exists() else ""
+    exempt = {line.split("#")[0].strip() for line in exempt_text.splitlines()}
+    out: list[str] = []
+    for design in sorted(changes.glob("*/design.md")):
+        cid = design.parent.name
+        if cid == "archive" or cid in exempt:
+            continue
+        proposal = design.parent / "proposal.md"
+        text = proposal.read_text(encoding="utf-8") if proposal.exists() else ""
+        appetite = _appetite_of(text, budgets)
+        if appetite not in budgets:
+            para = (_appetite_paragraph(text) or "").strip()
+            out.append(f"openspec/changes/{cid}: no budget, " + (
+                "the appetite is HUGE (it has no PLAN)" if appetite else
+                f"the appetite is not found in proposal.md under ## Appetite (read: {para[:60]!r})" if para else
+                "no appetite paragraph under ## Appetite in proposal.md"))
+            continue
+        size = design.stat().st_size
+        if size > budgets[appetite]:
+            out.append(f"openspec/changes/{cid}/design.md: {size} bytes, over the {appetite} budget of "
+                       f"{budgets[appetite]}; cut prose, or list the change in {DESIGN_BUDGET_EXEMPT}")
+    return out
+
+
 ALL_CHECKS = (
     missing_skill_dirs, wip_isolation, frontmatter_present_errors,
     frontmatter_errors, frontmatter_strict_yaml, frontmatter_keys, description_too_long, description_angle_brackets,
@@ -1659,7 +1797,7 @@ ALL_CHECKS = (
     bundle_gates, facets_declared, bundle_requirements, doc_register_complete, use_case_catalogue,
     cross_skill_paths, use_case_coverage, use_case_changes_registered, dependencies_register,
     top_level_folders, quality_files, prose_budget, reference_pointers, activity_tools_table,
-    binding_size,
+    binding_size, agent_model_matrix, design_budget,
 )
 
 # The method checks (skill-crafting-method DEC-6, H-6): they hold in any catalogue repo with a
@@ -1678,6 +1816,7 @@ def _print_trigger_notes(repo: Path) -> None:
         ("reciprocal-Related (DEC-12 advisory)", reciprocal_related_report(repo)),
         ("description-length (method target)", description_length_report(repo)),
         ("lean body target", skill_size_report(repo)),
+        ("model-matrix roles without an agent", agent_model_matrix_report(repo)),
     ):
         if notes:
             print(f"\n(assist) {len(notes)} {label} note(s) — non-blocking:")
