@@ -19,7 +19,9 @@ convention on top of it.
   default branch, `develop`, so `develop` must always carry a valid `bundles/` tree.
 - **`bundles/` is committed everywhere and never hand-edited.** `make bundles` generates it as
   relative symlinks into `skills/` and `agents/` plus one `.claude-plugin/plugin.json` per bundle
-  (claude.ai's sync, used by Claude Desktop, needs the `plugin.json`); commit the result.
+  (claude.ai's sync, used by Claude Desktop, needs the `plugin.json`); commit the result. On
+  `releases` the workflow replaces each symlink with a real copy and refuses a tree that still holds
+  one, so an install works on Windows with default git settings (#176).
 - **Release tags live on `releases`.** `vX.Y.Z` points at the release commit on `releases`, the tree
   people install, so `meaningfy-ws/skillery#vX.Y.Z` pins one exact release. The workflow creates the
   tag; nobody tags by hand. (Releases up to `v3.3.0` were tagged on `main`.)

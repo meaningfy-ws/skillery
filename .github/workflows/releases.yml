@@ -38,6 +38,16 @@ jobs:
       # CI has no .venv, which `make bundles` activates.
       - if: steps.v.outputs.skip != '1'
         run: python -m tools.bundle_gen generate
+      # develop and main keep bundles/ as symlinks; the releases tree holds real files, because
+      # git on Windows without symlink support checks a link out as a text file and the bundle
+      # then loads no skill (#176).
+      - name: Replace the bundle symlinks with real files
+        if: steps.v.outputs.skip != '1'
+        run: |
+          find bundles -type l -print0 | while IFS= read -r -d '' link; do
+            target=$(readlink -f "$link"); rm "$link"; cp -R "$target" "$link"
+          done
+          if [ -n "$(find bundles -type l)" ]; then echo "symlinks left under bundles/"; exit 1; fi
       - name: Append the release commit to releases, tag it and publish the GitHub Release
         if: steps.v.outputs.skip != '1'
         env:
@@ -49,6 +59,7 @@ jobs:
           # only released items ship: drop skills/agents listed in no bundle (rebundle-by-activity D-14)
           python -m tools.bundle_gen unreleased | xargs -r git rm -r -q --cached --
           tree=$(git write-tree)
+          if git ls-tree -r "$tree" bundles | grep -q '^120000'; then echo "the release tree holds symlinks under bundles/"; exit 1; fi
           parent=()
           if git fetch --depth=1 origin releases; then parent=(-p FETCH_HEAD); fi
           commit=$(git commit-tree "$tree" "${parent[@]}" -m "release: $TAG (main $GITHUB_SHA)")
