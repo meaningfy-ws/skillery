@@ -50,7 +50,8 @@ export type Gate =
 export type Review = {
   challenge: string
   reviewers: number
-  lenses?: string[]
+  lenses?: string[] | string[][] // one pass's lenses, or the grouped runs' lenses (D-4)
+  risk_reviewers?: number // the ceiling when the stage's mark recorded a risk (D-4); absent: `reviewers` stands
   small_stage?: { max_added_lines: number; reviewers: number; lenses: string[][] } // D-12
   ux: null | { wording: string; extra_reviewers: number }
   check: string
@@ -140,6 +141,7 @@ export type NavState = {
   turnRoles: Role[]
   marked: boolean // a mark line was shown in this session (D-9)
   markWarned: boolean // the missing-mark warning was given once
+  mark: null | { change: string; stage: string; risk: boolean } // the last mark line: its change and stage, and whether it recorded a risk (D-4)
   workerThisTurn: boolean // the lead spawned an implementer or code-reviewer in this turn
   turnEvents: ({ kind: 'skill'; name: string; agent: string } | { kind: 'tool' | 'spawn'; agent: string })[]
   agentCalls: Record<string, number> // tool calls per subagent (PD-6)

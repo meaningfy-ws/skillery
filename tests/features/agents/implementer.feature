@@ -22,6 +22,13 @@ Feature: implementer turns one ready task into tested code and reports back
       | HIGH     | the HIGH result goes to the developer through the lead, before the brief |
       | CRITICAL | the CRITICAL result goes to the developer through the lead, before the brief |
 
+  # Traces to: DEC-4, DEC-11; D-7.
+  Scenario: The implementer runs no GitNexus tool and reads the impact from the brief
+    Given the brief carries the lead's upstream impact result for the task's symbols
+    When the implementer works on the task
+    Then it runs no GitNexus tool
+    And it takes the blast radius of the symbols it changes from the brief
+
   # Traces to: DEC-11; D-15.
   Scenario: The report carries no impact summary
     When the implementer reports
@@ -90,6 +97,7 @@ Feature: implementer turns one ready task into tested code and reports back
     And the project has the code-intelligence servers `serena`, `ast-grep` and `gitnexus`
     When the caller dispatches the implementer on the task
     Then it can read, edit, search, run commands and load skills
-    And it can load and call a tool of each code-intelligence server
+    And it can load and call a tool of the `serena` and `ast-grep` servers
+    And it is offered no tool of the `gitnexus` server
     And no other connector tool is offered to it
     And its report reaches the caller

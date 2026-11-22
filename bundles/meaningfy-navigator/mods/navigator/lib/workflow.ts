@@ -177,21 +177,50 @@ function gateError(g: unknown, at: string): string | null {
   return null
 }
 
+const LENSES = ['L1', 'L2', 'L3', 'L4', 'L5']
+const RISK_APPETITES = ['LARGE', 'VERY LARGE', 'HUGE']
+
+/** The lens groups of a `lenses` value (a flat list is one group), or null when a group is empty, a lens is outside
+ *  L1 to L5, or a lens is named twice. */
+function lensGroups(v: unknown): string[][] | null {
+  const groups = isStrs(v) ? [v as string[]] : Array.isArray(v) && v.every(isStrs) ? (v as string[][]) : null
+  if (!groups) return null
+  const flat = groups.flat()
+  return groups.some(g => g.length === 0) || flat.some(l => !LENSES.includes(l)) || new Set(flat).size !== flat.length ? null : groups
+}
+
 const SMALL_STAGE_KEYS = ['max_added_lines', 'reviewers', 'lenses']
 
 function reviewError(r: unknown, at: string): string | null {
   if (!isObj(r)) return `${at}: not an object`
-  const fields = ['challenge', 'reviewers', 'lenses', 'small_stage', 'ux', 'check', 'checker', 'tester']
+  const fields = ['challenge', 'reviewers', 'risk_reviewers', 'lenses', 'small_stage', 'ux', 'check', 'checker', 'tester']
   const extra = Object.keys(r).find(k => !fields.includes(k))
   if (extra) return `${at}: unknown key '${extra}'`
   if (!isStr(r.challenge) || !isStr(r.check)) return `${at}: needs 'challenge' and 'check' wording`
   if (!Number.isInteger(r.reviewers) || (r.reviewers as number) < 0) return `${at}.reviewers must be a whole number`
-  if ('lenses' in r && !isStrs(r.lenses)) return `${at}.lenses must be a list`
+  if ('risk_reviewers' in r && !(Number.isInteger(r.risk_reviewers) && (r.risk_reviewers as number) >= 0)) {
+    return `${at}.risk_reviewers must be a whole number`
+  }
+  if ('lenses' in r && !isStrs(r.lenses) && !(Array.isArray(r.lenses) && r.lenses.every(isStrs))) {
+    return `${at}.lenses must be a list of lenses or a list of lens groups`
+  }
+  if ('lenses' in r) {
+    const groups = lensGroups(r.lenses)
+    if (!groups) return `${at}.lenses must be a list of lens groups: non-empty, each lens one of ${LENSES.join(', ')} and in one group only`
+    if (groups.length !== r.reviewers) return `${at}.reviewers must equal the number of lens groups (${groups.length}); a flat list is one group`
+  }
+  if ('risk_reviewers' in r) {
+    if ((r.risk_reviewers as number) < (r.reviewers as number) || r.risk_reviewers === 0) {
+      return `${at}.risk_reviewers must not be below reviewers, nor 0`
+    }
+    if (!RISK_APPETITES.includes(at.replace('reviews.', ''))) return `${at}.risk_reviewers is for ${RISK_APPETITES.join(', ')} only`
+  }
   if ('small_stage' in r) {
     const s = r.small_stage
     const ok = isObj(s) && Object.keys(s).every(k => SMALL_STAGE_KEYS.includes(k)) && Number.isInteger(s.max_added_lines) && (s.max_added_lines as number) > 0 &&
-      Number.isInteger(s.reviewers) && (s.reviewers as number) >= 0 && Array.isArray(s.lenses) && s.lenses.every(isStrs)
-    if (!ok) return `${at}.small_stage must be {max_added_lines, reviewers, lenses: [[lens, ...], ...]}`
+      Number.isInteger(s.reviewers) && (s.reviewers as number) >= 0 && Array.isArray(s.lenses) && s.lenses.every(isStrs) &&
+      lensGroups(s.lenses) !== null && s.lenses.length === s.reviewers
+    if (!ok) return `${at}.small_stage must be {max_added_lines, reviewers (the number of groups), lenses: [[lens, ...], ...]}`
   }
   if (typeof r.checker !== 'boolean') return `${at}.checker must be true or false`
   if (!(r.tester === null || isStr(r.tester))) return `${at}.tester must be its wording or null`

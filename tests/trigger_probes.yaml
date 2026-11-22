@@ -83,6 +83,12 @@ probes:
   - probe: "how many reviewers does this small stage need, and record the decision in design.md"
     expect: epic-delivery
     near_miss_of: meaningfy-code-review
+  # code-review default (D-4): two grouped runs, five single lenses as the opt-in deep review.
+  - probe: "run the two grouped review passes, L1+L2 and L3+L4+L5, each reporting per lens id, on this change"
+    expect: meaningfy-code-review
+  - probe: "what review set does a LARGE stage get and when does a recorded risk raise it to five lenses"
+    expect: epic-delivery
+    near_miss_of: meaningfy-code-review
   - probe: "set up my Obsidian vault and connect it to Google Drive"
     expect: vault-setup
   - probe: "what properties does a meeting note in my vault need"

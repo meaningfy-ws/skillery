@@ -30,6 +30,16 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
   is saved and makes the fresh session per EPIC mandatory; `epic-delivery` bounds the fixer with a
   `blocked` report and lets the lead read `git diff --stat`; `rule-learner` flags a candidate rule
   that keeps a session past a stage boundary. Stage 2 of `skillery-performance-improvement`.
+- **Verification scaled to the appetite.** The review set is data in `epic-delivery`'s workflow
+  file: from MEDIUM up two grouped runs (L1+L2; L3+L4+L5) by default, five single lenses from
+  LARGE up when the lead's mark carries `risk=recorded`; the navigator reads the mark and sets
+  its over-spawn ceiling from it. `meaningfy-code-review` makes the grouped run its default and
+  the five lenses the opt-in deep review. The lead applies a light chore itself (at most ten lines
+  in files already read, `lead-fixed:` in the commit body), sends independent spawns in one
+  message, ends every brief with the report shape, merges checker and cold reader when no how-to
+  page changed, and runs GitNexus at two points of a stage; `implementer` and `code-reviewer`
+  lose the GitNexus tools; the tester is opt-in. P-0006 is scoped by appetite. Stage 3 of
+  `skillery-performance-improvement`.
 
 ## [3.21.0] - 2026-11-17
 

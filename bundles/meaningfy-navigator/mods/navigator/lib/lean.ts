@@ -4,9 +4,9 @@
 
 import { creditLoad } from './attribution.ts'
 import { groupDone } from './change.ts'
-import { MAIN, inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
+import { MAIN, inlineSpawn, modelAbove, overspawn, reportOversized, riskRecorded, roleOf, secondCheck, shipCommand, unusedSkills,
   type Role } from './dispatch.ts'
-import { hasMark, isWorkerSpawn, missingMark } from './mark.ts'
+import { isWorkerSpawn, lastMark, missingMark } from './mark.ts'
 import { offer, onCompact, thresholdsFrom, type HygieneEvent } from './hygiene.ts'
 import { addWarnings } from './process-drift.ts'
 import type { Change, NavState, Signal, Warning } from './state.ts'
@@ -67,7 +67,7 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       n = { ...n, workerThisTurn: n.workerThisTurn || worker, turnRoles: [...n.turnRoles, role],
         shipLog: [...n.shipLog, { kind: 'spawn', role }],
         turnEvents: [...n.turnEvents, { kind: 'spawn', agent: s.agentId ?? MAIN }] }
-      if (reviews) add(overspawn(reviews, appetite, n.turnId || 'start', n.turnRoles))
+      if (reviews) add(overspawn(reviews, appetite, n.turnId || 'start', n.turnRoles, riskRecorded(n)))
       return n
     }
     case 'SubagentSpawned': {
@@ -85,8 +85,10 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       return { ...n, gateRuns: Object.fromEntries(Object.entries(n.gateRuns).filter(([a]) => a !== s.agentId)),
         warnings: n.warnings.filter(w => w.key !== `hygiene:fixer-bound:${s.agentId}`),
         turnEvents: n.turnEvents.filter(e => e.agent !== s.agentId) }
-    case 'AnswerShown':
-      return hasMark(s.text) ? { ...n, marked: true } : n
+    case 'AnswerShown': {
+      const mark = lastMark(s.text)
+      return mark ? { ...n, marked: true, mark } : n
+    }
     case 'TurnEnded': {
       const missing = missingMark(n) // D-9: never at the spawn, the answer comes after it
       add(missing)
@@ -135,7 +137,7 @@ function roleIn(s: NavState, type: string, description: string): Role {
 /** Strict, after `SpawnAsked` recorded this spawn: the over-spawn it makes, if any. */
 export function overspawnNow(s: NavState): Warning | null {
   const reviews = s.workflows.find(w => w.reviews)
-  return (reviews && overspawn(reviews, s.change?.appetite ?? null, s.turnId || 'start', s.turnRoles)[0]) || null
+  return (reviews && overspawn(reviews, s.change?.appetite ?? null, s.turnId || 'start', s.turnRoles, riskRecorded(s))[0]) || null
 }
 
 /** Strict: the parent's model when the spawn asks one ranked above it (PD-7). */

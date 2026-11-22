@@ -15,11 +15,12 @@ matches it against the named agents' `tools:` lists). Flags and commands are pla
 | File overview | implementer, code-reviewer | `mcp__serena__get_symbols_overview` | unverified, gap | `Grep` for definitions |
 | Edit a symbol body or insert beside it | implementer | `mcp__serena__replace_symbol_body`, `mcp__serena__insert_after_symbol`, `mcp__serena__insert_before_symbol` | unverified, gap | `Edit` |
 | Replace text in a file (not a symbol) | implementer | `Edit`; `mcp__serena__replace_content` | `edit` | none |
-| Rename | implementer | `mcp__serena__rename_symbol`; in an indexed repository `mcp__gitnexus__rename` | unverified, gap; `gitnexus_rename` | `mcp__ast-grep__find_code_by_rule`, then `Edit`; never find-and-replace |
+| Rename | implementer | `mcp__serena__rename_symbol` | unverified, gap | `mcp__ast-grep__find_code_by_rule`, then `Edit`; never find-and-replace |
+| Rename in an indexed repository | lead | `mcp__gitnexus__rename` | `gitnexus_rename` | `mcp__serena__rename_symbol`; never find-and-replace |
 | Safe delete | implementer | `mcp__serena__safe_delete_symbol` | unverified, gap | find references first, then `Edit` |
 | Diagnostics | implementer, code-reviewer | `mcp__serena__get_diagnostics_for_file` | unverified, gap | the project's own lint and type check through `Bash` |
 | Structural search and rewrite (ast-grep) | implementer, code-reviewer | `mcp__ast-grep__find_code`, `mcp__ast-grep__find_code_by_rule` | `ast-grep_find_code`, `ast-grep_find_code_by_rule` | `Grep` |
-| Impact and change check (GitNexus) | lead, code-reviewer | `mcp__gitnexus__impact`, `mcp__gitnexus__detect_changes`, `mcp__gitnexus__context` | `gitnexus_impact`, `gitnexus_detect_changes`, `gitnexus_context` | `Grep` for callers; warn that no impact check ran |
+| Impact and change check (GitNexus); builders and reviewers take the result from the lead's brief | lead | `mcp__gitnexus__impact`, `mcp__gitnexus__detect_changes`, `mcp__gitnexus__context` | `gitnexus_impact`, `gitnexus_detect_changes`, `gitnexus_context` | `Grep` for callers; warn that no impact check ran |
 | Read a file or a range | lead, implementer, code-reviewer | `Read` | `read` | `Bash` with a ranged read |
 | Edit a file | lead, implementer | `Edit`, `Write` | `edit`, `write` | none: never `Bash` (`sed -i`, an inline script, a heredoc), which the `no-shell-edits` mod denies; if `Edit` is refused, stop and report |
 | Search text | lead, implementer, code-reviewer | `Grep`, `Glob` | `grep`, `glob` | `Bash` with `grep` or `find` |

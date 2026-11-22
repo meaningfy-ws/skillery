@@ -44,6 +44,7 @@ export const EMPTY: NavState = {
   turnRoles: [],
   marked: false,
   markWarned: false,
+  mark: null,
   workerThisTurn: false,
   turnEvents: [],
   agentCalls: {},
@@ -110,7 +111,7 @@ const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array'
 /** What a field that defaults to null holds otherwise; `thresholds` is unparsed, so anything. */
 const NULLABLE: Record<string, string | undefined> = { change: 'object', root: 'object', lastChangeId: 'string',
   workflow: 'string', variant: 'string', phase: 'string', signalPhase: 'string', pending: 'string', usd: 'number',
-  planAdded: 'number' }
+  planAdded: 'number', mark: 'object' }
 
 const isObject = (v: unknown): v is Record<string, unknown> => kindOf(v) === 'object'
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter(x => typeof x === 'string') : [])
@@ -120,6 +121,7 @@ function fits(k: string, v: unknown, d: unknown): boolean {
   if (d !== null) return kindOf(v) === kindOf(d)
   if (k === 'thresholds' || v === null) return true
   if (k === 'root') return isObject(v) && typeof v['path'] === 'string' && typeof v['common'] === 'string' && typeof v['branch'] === 'string'
+  if (k === 'mark') return isObject(v) && typeof v['change'] === 'string' && typeof v['stage'] === 'string' && typeof v['risk'] === 'boolean'
   return kindOf(v) === NULLABLE[k]
 }
 

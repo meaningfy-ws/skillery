@@ -151,17 +151,17 @@ skill. A repository changes the patterns through `extends`, giving the whole `ac
 
 The `reviews` of [`epic-delivery.workflow.json`](../../skills/epic-delivery/assets/workflows/epic-delivery.workflow.json)
 give, per appetite, the reviewers, lenses, check and tester of a stage. From MEDIUM up the tester
-runs on its condition, stated once in `epic-delivery`'s stage loop (Prepare). At MEDIUM the
-`challenge` reads two reviewers (L1 with L2; L3 with L4 and L5) by default and the five lenses when
-a risk is recorded for the stage; `reviewers` stays 5, the ceiling a turn may spawn. From LARGE up
-each entry also has a `small_stage`:
+runs on its condition, stated once in `epic-delivery`'s stage loop (Prepare). From MEDIUM up the
+`challenge` reads two grouped runs (L1 with L2; L3 with L4 and L5) by default, and `reviewers` is
+the ceiling a turn may spawn. From LARGE up the five single lenses run when the lead's mark records a
+risk for the stage (`risk_reviewers`), and each entry also has a `small_stage`:
 
 ```json
 "small_stage": { "max_added_lines": 600, "reviewers": 2, "lenses": [["L1", "L2"], ["L3", "L4", "L5"]] }
 ```
 
-It is an allowance for a stage whose added lines are at or under the limit: two reviewers, each
-covering one group of lenses. When the lead may use it, and what it records, are owned by
+It marks a stage whose added lines are at or under the limit: the two grouped runs stay, with no
+decision to record. When the lead may use it, and what it records, are owned by
 [`epic-delivery`](../../skills/epic-delivery/SKILL.md) (*The loop of a stage*); navigator shows the
 small figure beside the full set and checks the over-spawn against the full set; at MEDIUM there is
 no small figure to show. A repository can

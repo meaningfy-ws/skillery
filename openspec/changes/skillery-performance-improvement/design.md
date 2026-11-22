@@ -299,6 +299,66 @@ compaction after `proposal.md`, a fresh session per EPIC.
 - **D-33** Stage 2 checker (pass): F1 `epic-planning` steps 7 and 8 point to P-0006's appetite
   scoping, which task 3.1 writes with the owner in stage 3; until then the pointer is ahead of the
   rule. Accepted for one stage; 3.1 closes it.
+- **D-34** Stage 3 on branch `feature/spi-stage-3`. Task 3.1's rule writes rest on the owner's
+  recorded answer to Q-3 (DEC-3: "scale by appetite and risk; revise R-0004 and P-0006 to say
+  when it pays"), given through the question dialog on 2026-11-22; no further card was answered
+  (the owner asked for autonomous progress, D-19). P-0006 is updated in the repository store
+  (this PR), R-0004 in the vault, both by `rules.py update`, sources quoting the answer. Two
+  builders on disjoint files: A owns `epic-delivery.workflow.json`, `mods/navigator` (dispatch,
+  mark, tests), `skills/meaningfy-code-review`, `agents/implementer.md`, `agents/code-reviewer.md`
+  and their feature files (3.2, the agent and review-skill halves of 3.4); B owns the
+  `epic-delivery` prose (3.3, the stage-loop half of 3.4, the review-set wording of D-4).
+  GitNexus impact is not applicable (navigator outside the index, the rest prose); the change
+  check is `make mods`, `make bundles`, `make validate`. Task 3.5 runs after the release.
+- **D-35** Stage 3 is a LARGE small stage under the installed method (3.21.0): the reviewed
+  surface is navigator code with tests, workflow data and prose, well under the `small_stage`
+  limit (count in the PR body); review set two grouped runs, L1+L2 and L3+L4+L5; the tester runs
+  (code changed, the installed rule, not yet the opt-in rule this stage ships); one checker.
+  Builder A's upstream findings enter the fix pass as accepted items: the retrospective's
+  `MARK_RE` in `session_digest.py` must accept `risk=recorded`, and the five stale mentions of
+  the five-lens default (agent-template.md, workflows.md, navigator.md, test-strategy
+  software.md, stage-loop.md line 111) are brought in line.
+- **D-36** Stage 3's first full gates run failed (exit 2): the skill inventory drifted after the
+  review descriptions changed, and `test_distilling_in_epic_delivery` reads the tester's ledger
+  row by its label, which builder B had renamed. Both closed by the lead as light chores
+  (`make skill-inventory`, the opt-in note moved to the row's Moment column; `lead-fixed:` in the
+  commit bodies); a lesson for the briefs: a builder that changes a description runs
+  `make skill-inventory`, and the ledger's first column is read by a test.
+- **D-37** Stage 3 reviews. Accepted from L1+L2: C1 the mark line's one definition
+  (`team-and-briefs.md`) gains `[ risk=recorded]`; C2 and W4 the code-reviewer feature scenarios
+  use a non-group pair (L1+L4) for the "no decision" case and drop the appetite-reading step;
+  W1 re-labelled Critical (a small stage keeps the grouped runs with no `D-n`, as the spec
+  scenario says); W2 the stale-mention list of D-35 extended (README.md:115, docs/development
+  README.md:132, team-and-briefs.md:17, setup.md:94, mcp-setup.md:15, compatibility.md:123,
+  software.md:19, hooks.md:38, the AGENTS.md GitNexus block and its template); W3 re-labelled
+  Critical (the validator's lens-group check has no rejection test) with S3's two validator
+  rules (`risk_reviewers >= reviewers`; a lens group accepted only where the appetite's set
+  names it, in the agent body); S1 the mark fixture gains the risk lines beside the `MARK_RE`
+  fix; S2 done by the lead (`rules.py confirm`). The red `opencode-installer` CI job is an
+  expectation of the old implementer tool list in the installer's tests; it is updated in the
+  same pass. Under the floor: L3+L4+L5 W2 (`small_stage` retirement, stage 4), W3 to W6 and
+  S1 to S7 (W1 is C1); all candidates for stage 4's navigator work or the docs stage.
+- **D-38** Stage 3 tester (36 tests, 14 failed first, one of them a test error). Accepted, all in
+  the validator or the mark revive: T2/T3 `risk_reviewers` below `reviewers` or 0 rejected (S3);
+  T4 to T7 empty group, empty list, duplicate lens, lens outside L1 to L5 rejected (W3); T8/T9
+  `reviewers` (and `small_stage.reviewers`) must equal the group count; T10 `risk_reviewers` is
+  rejected below LARGE (D-4); T11/T12 a revived mark with a non-boolean `risk` or no `change`
+  never records a risk. Under the floor: T1 one mark per session, not per change (one EPIC per
+  session is the rule; a per-change map is stage 4's), T13 the `+`, `1.`, `>` list markers
+  (pre-existing regex class), T14 the tester's own over-strict backtick assertion (deleted), the
+  two upstream notes (a mark that fails to parse leaves the previous in force, by design; the
+  over-spawn count keeps its first text). The failed-first tests of accepted items are kept and
+  moved into `workflow.test.ts`, `mark.test.ts` and `dispatch.test.ts`; the others deleted.
+- **D-39** The fix pass changed the GitNexus block of `AGENTS.md`, its template and `hooks.yaml`
+  to the two points (D-7); the living spec `catalogue-governance` "Code checks run once per task"
+  said per task, so this change gains a MODIFIED delta for it (`specs/catalogue-governance/`),
+  keeping its three scenarios and adding "A stage ends". The code-reviewer keeps its appetite
+  check (the fixer's call on C2/W4), so a lens group is accepted only where the appetite's review
+  set names it.
+- **D-40** Stage 3 checker (pass, two Warnings), closed by the lead as light chores: F-1 the MEDIUM
+  scenarios' "risk named as a focus" sentence added to `meaningfy-code-review` and `epic-delivery`;
+  F-2 the `AGENTS.md` GitNexus block and its template name the index at both points, as the
+  `catalogue-governance` delta says (`lead-fixed:` in the commit body); one more full gates run.
 
 ## Open Questions
 

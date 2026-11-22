@@ -10,17 +10,21 @@ review set of each appetite is in
    - Every change the stage needs in one of our libraries is merged upstream and the lock is
      refreshed. A missing one blocks the stage ([`dependencies.md`](dependencies.md)).
    - Every external-library decision the stage needs is recorded in `design.md`.
-   - The lead refreshes the project's code index in the background, where the project has one. A
-     failed refresh warns, and the step reads the code instead.
-   - **Tester condition** (defined here only): from MEDIUM up, the stage changed code and a PLAN
-     `## Invariants` row for it has a *Test* cell starting `tester`; with no such section, every
-     stage from LARGE up. The PR body gets `tester: yes, <INV-n>` or `tester: no, <reason>`.
+   - The lead runs the project's code index once at stage start, where the project has one. A
+     failed run warns, and the step reads the code instead. Then it runs `impact` on each task's
+     symbols and pastes at most ten lines per task into that task's brief (high or critical: to
+     the developer first).
+   - **Tester condition** (defined here only; the tester is opt-in): from MEDIUM up, the stage
+     changed code and either a PLAN `## Invariants` row for it has a *Test* cell starting
+     `tester`, or the lead records a `D-n` asking for it. Otherwise none runs. The PR body gets
+     `tester: yes, <INV-n or D-n>` or `tester: no, <reason>`.
    - A stage risk not in the PLAN's `RISK-` rows is recorded as a `D-n`.
    - Scenarios: signed off once per EPIC at the PLAN gate *(provisional)*, per `bdd-gherkin`. A
      scenario changed since is re-signed alone. Nothing is built on an unsigned scenario.
 2. **Build.**
-   - Per task the lead runs impact on its symbols before the brief (high or critical: to the
-     developer) and the change check before the commit; builders run neither.
+   - Builders and reviewers run no GitNexus tool; the brief carries the pasted impact lines.
+     Before the stage commit the lead runs the index, `detect_changes` and `impact` once. More runs
+     only when a task's scope moves, never per edit or per lens.
    - Builders take the tasks one at a time, test-first. Parallel builders only on disjoint files;
      otherwise one after another, or in separate worktrees.
    - The builder also updates the docs its task changed. There is no separate writer.
@@ -45,8 +49,10 @@ review set of each appetite is in
    - The lead runs the full gates once, unless the last task's report ran them on the commit that
      is the PR's head (same check, same code). It records the report, the *implementing* fields,
      in the PR body and opens the PR.
-   - Then, in parallel: the appetite's review set (the workflow file; `SKILL.md` for MEDIUM and
-     the small stage) and the tester on its condition.
+   - Then, in parallel: the appetite's review set (the workflow file; `SKILL.md`, *Review sets*)
+     and the tester on its condition.
+   - **Parallel spawns:** the lead sends independent spawns in one message: the reviewers of a
+     stage, and builders on disjoint files.
    - Reviewers are read-only. They read the gate report in the PR body and never re-run the suite;
      a missing or red run is a finding. Each report ends with its result line.
 4. **Decide and fix.**
@@ -55,7 +61,10 @@ review set of each appetite is in
    - **The floor:** only a Critical finding (`meaningfy-code-review`'s scale) is fixed. The rest
      are rejected "under the floor", one line each under `## Delivery decisions`, and a tester
      test that failed first for one is deleted. A re-label to Critical needs a reason; the label,
-     not the lens, decides, and the checker judges it.
+     not the lens, decides, and the checker judges it. A Critical finding that is a light chore
+     (at most ten lines in files the lead has already read in this stage, no new test) the lead
+     applies with Edit and the commit body says `lead-fixed: <finding id>`; every other one is a
+     brief.
    - **The sort of the tester's tests**, in the one fix pass, before the gate run that checks it
      (with no finding above the floor, the sort is the whole pass). Its builder keeps a test that
      failed first for an accepted finding, a test that alone covers a scenario or an error-matrix
@@ -80,8 +89,9 @@ review set of each appetite is in
      `references/testing-checklist.md`), not chased with re-runs. A project with no quarantine
      marker uses the framework's skip-with-reason plus the issue link.
 5. **Check.** One fresh checker where the appetite's set has one; otherwise the full gates and
-   CI, with the single review pass as the four-eyes pass. A cold reader reads any how-to or
-   tutorial page the stage changed. An unmet item, a disputed re-label or a late tester finding
+   CI, with the single review pass as the four-eyes pass. The checker and the cold reader
+   are one run, the checker's, when the stage changed no how-to or tutorial page; when it did, a
+   separate cold reader reads that page alone. An unmet item, a disputed re-label or a late tester finding
    goes to the developer as a question: fix it now as a `D-n` (one fixer, one full-gates run,
    nothing else) or a follow-up issue. No second fix pass.
 6. **Merge.** Within the lead's authority (`SKILL.md`, *Authority*); without a grant the developer
@@ -98,8 +108,8 @@ review set of each appetite is in
    the next stage starts fresh from the note's prompt.
 
 A LARGE EPIC with screens, three stages, runs this way: all scenarios signed off at the gate; per
-stage, builder tasks, full gates, the PR, then five lenses, the UX lens and the tester on its
-condition in parallel, the one fix pass, full gates, the checker, the note, watch-and-merge, a
+stage, builder tasks, full gates, the PR, then the appetite's review set (the two grouped runs, the
+five lenses on a recorded risk), the UX lens and the tester on its condition in parallel, the one fix pass, full gates, the checker, the note, watch-and-merge, a
 fresh session. After stage 3 the mandatory demo, then the docs stage when docs are owed (one PR
 with the LARGE review set), then archive.
 
@@ -136,17 +146,17 @@ a row.
 |---|---|---|---|
 | Clarity gate (at most 2 runs, any appetite) | In shaping, before the epic session | Planner; the developer decides gaps | — |
 | Scenario sign-off | At the PLAN gate; a changed scenario alone | Developer | The scenario changed |
-| Impact (index refreshed in Prepare) | Once per task, before the brief | Lead | — |
+| Impact (GitNexus, lead only) | Two points: index and `impact` per task at stage start (≤ 10 lines per brief); index, `detect_changes` and `impact` once before the stage commit | Lead | A task's scope moves |
 | Narrow checks | While a task is in progress | Builder | Each edit |
 | Task gate | Once per task, before the report | Builder | T1, T2 (lead) |
-| Diff reading; change check | Each task, before its commit | Lead | — |
+| Diff reading | Each task, before its commit | Lead | — |
 | Full gates | Once per stage before the PR (skipped only if the last report ran them on the PR's head commit); once after the fix pass | Lead | T3 is the second |
 | Review set of the appetite (incl. L2 doc agreement, `meaningfy-code-review`) | Once per stage, on the PR | Reviewers | — |
-| Adversarial tester | Once per stage, on its condition (Prepare) | Tester | Distilled in step 4 |
+| Adversarial tester | Once per stage, on its opt-in condition (Prepare) | Tester | Distilled in step 4 |
 | Floor and fix pass; failing tests | Once per stage; failing tests after a red run, at most `max_red_runs` | Lead (floor), fixer | — |
-| Checker | Once per stage, after the fix pass | Checker | — (unmet → developer) |
+| Checker (also the cold reader when no how-to or tutorial page changed) | Once per stage, after the fix pass | Checker | — (unmet → developer) |
 | Evidence before a claim (`verification-before-completion`) | Before the lead reports a stage done | Lead | — |
-| Cold reader | A how-to or tutorial changed in a stage; every task-oriented page of the docs stage | Cold reader | The page changed again |
+| Cold reader (separate agent) | A how-to or tutorial changed in a stage; every task-oriented page of the docs stage | Cold reader | The page changed again |
 | CI | Each push | CI | — |
 | Acceptance demo or skip record | After the last build stage | Developer | Rejection → fix stage |
 | Docs-stage verify (snippets, docs gate) | Docs stage | Builder | — |
