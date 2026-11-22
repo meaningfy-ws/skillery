@@ -428,6 +428,12 @@ compaction after `proposal.md`, a fresh session per EPIC.
   as the navigator's `appetiteOf` (one rule for both; the test is deleted). The kept tests move
   into `tests/test_repo_lint_budget.py` and `tests/test_rulebook.py`; the adversarial files go.
   The fix pass runs as two fixers on disjoint files, code and prose, in one batch.
+- **D-47** The change check before the stage's last commit (`detect_changes`, compare with
+  develop) reports 131 touched symbols and 22 affected flows, rated critical by count: the
+  navigator's workflow validator (`workflowError`), the rulebook's `cmd_load` and the lint's
+  `main`. Each is a flow this stage changed on purpose and each has its suite green (navigator
+  739 + 137, rulebook 578 with the lint tests, installer 36). Under D-19 the result is recorded
+  here instead of being brought as a question; the owner can read it in this PR.
 
 ## Open Questions
 
