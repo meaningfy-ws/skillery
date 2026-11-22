@@ -90,7 +90,7 @@ already exists; this skill is the map.
     single-lens review; **opus** for design, judgement, unclear scope, or a second read where a miss
     is costly. When unsure, take the next model up. When a cheaper model's report fails the check,
     re-run the task one model up rather than patch its output. `model_rank` orders the models
-    from cheapest.
+    from cheapest. The model of each role is in `assets/model-matrix.json`, the one source.
   - **The base report back**, plus the fields of its purpose. Read `references/subagent-reports.md`
     when you name the report in a brief or judge one that came back: it gives the base report, the
     fields per purpose and the upstream findings. Long material goes to a file; the report carries the path.
@@ -122,12 +122,11 @@ already exists; this skill is the map.
     that make a task boundary are `task_boundary`. Below `fresh_offer_min_context_percent` the
     context is still small; carry on, a re-read costs more.
   - **Compact at a phase boundary inside one task**, with a focus line naming what must survive
-    (decisions, open questions, file paths). Right after a commit, never in the middle of a step. That moment is a safe point: a commit, and a phase left or a task group done
-    since the last one, as `safe_point` states. Compact there once context use reaches
-    `compact_offer_context_percent`.
+    (decisions, open questions, file paths), right after a commit, never mid-step. That is the safe
+    point `safe_point` states: a commit, and a phase left or a task group done since the last one.
+    Compact there once context use reaches `compact_offer_context_percent`.
   - **Never leave it to the automatic compaction** near the context limit: it lands mid-step and
-    drops detail. Mid-step, past
-    `context_warn_percent`, finish the step, commit, then compact.
+    drops detail. Past `context_warn_percent` mid-step, finish the step, commit, then compact.
   - **Not before a quick follow-up.** A reset pays back only over many turns; one more question
     on the same thread is cheaper here.
   - **A long idle gap is a free reset point**: the prompt cache has expired anyway. The gap is
@@ -141,9 +140,20 @@ already exists; this skill is the map.
     exploring subagent (rule 5).
   - **Resume an old session only when its history is still needed**; otherwise start fresh from
     the spine and memory.
+  - **Tokens decide, percent falls back.** `fresh_offer_min_tokens`, `compact_offer_tokens` and
+    `context_warn_tokens` are the keys that decide where the CLI reports a token count; the
+    `*_percent` keys apply only when it does not. Session hygiene wins over a repository rule that
+    keeps a session past a stage boundary, and `rule-learner` flags such a candidate on its card.
+  - **A tool call returns a result, not a log.** Ask the tool for its summary form (`-q`, `--stat`,
+    `-rfE`, `| tail -20`); when the output may exceed about 40 lines, send it to a file and read back
+    only the lines that decide the next step. The lines are the deliverable only when the owner
+    asked for them.
+  - **Never print a file to read it;** use Read.
 - **Enforced by:** the lead's own judgement, with navigator as a signal beside it: it reads the keys
-  above from `assets/session-thresholds.json` and offers or warns, never decides. The per-CLI commands (fresh session, compact, context
-  size, rewind) are in `docs/environment/dual-cli/context-commands.md`.
+  above from `assets/session-thresholds.json` and offers or warns, never decides. The `quiet-tools`
+  mod of `meaningfy-core` is the signal for the tool-output bullet: it warns, never denies. The
+  per-CLI commands (fresh session, compact, context size, rewind) are in
+  `docs/environment/dual-cli/context-commands.md`.
 
 ## Quick Start
 
@@ -174,7 +184,7 @@ standard, and returns the same base report with the verifying fields.
 ## How to use it
 
 - **Authoring an agent:** set its `tools:` and permissions to the minimum, and its model (the
-  agent's declared one, else the caller's); write its
+  one `assets/model-matrix.json` gives its `metadata.role`); write its
   no-gos; route irreversible actions through confirmation. (`agents/` wrappers + settings.)
 - **Designing a build step:** before the step's output is consumed, name which gate validates it.
 - **Reviewing:** check that untrusted content is handled as data and that no step exceeds its bounds.

@@ -1,7 +1,8 @@
 <!-- PLAN (tasks half). PLAN = design.md + this file. The apply phase parses `- [ ]` checkboxes.
 
      What belongs here: ordered, verifiable steps, each small enough for one session. NO rationale (that belongs in design.md).
-     A task references the spec requirement/scenario it satisfies; it does not restate the acceptance criteria. -->
+     A task references the spec requirement/scenario it satisfies; it does not restate the acceptance criteria.
+     Each task cites a design anchor (`design.md#d-n`) for the decision it carries out. -->
 
 > Derives from: <the EPIC this plan derives from>
 

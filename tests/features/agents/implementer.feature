@@ -5,7 +5,7 @@ Feature: implementer turns one ready task into tested code and reports back
   and the caller commits.
 
   Background:
-    Given the implementer agent is installed with skills `superpowers:test-driven-development`
+    Given the implementer agent is installed with skills `cosmic-python`
     And a change whose PLAN passed the clarity gate and whose scenarios are written
 
   # Traces to: DEC-11; D-15.
@@ -22,17 +22,34 @@ Feature: implementer turns one ready task into tested code and reports back
       | HIGH     | the HIGH result goes to the developer through the lead, before the brief |
       | CRITICAL | the CRITICAL result goes to the developer through the lead, before the brief |
 
+  # Traces to: DEC-4, DEC-11; D-7.
+  Scenario: The implementer runs no GitNexus tool and reads the impact from the brief
+    Given the brief carries the lead's upstream impact result for the task's symbols
+    When the implementer works on the task
+    Then it runs no GitNexus tool
+    And it takes the blast radius of the symbols it changes from the brief
+
   # Traces to: DEC-11; D-15.
   Scenario: The report carries no impact summary
     When the implementer reports
     Then the report ends with the `guardrails` base report plus the implementing fields
     And its impact summary reads "none; impact is the lead's, per task"
 
-  # Traces to: DEC-10; D-16.
-  Scenario: It loads cosmic-python in a Python repository
-    Given the task is in a Python repository
+  # Traces to: D-3, D-41; spec subagent-dispatch (A subagent starts fresh from a brief).
+  Scenario: It starts with one preload and the exact tool list
+    Given the session has the whole skill listing and every connector tool
+    When the caller dispatches the implementer on the task
+    Then its only preloaded skill is `cosmic-python`
+    And its tools are exactly Read, Edit, Write, Glob, Grep, Bash, ToolSearch, Serena's `get_symbols_overview`, `find_symbol`, `find_referencing_symbols`, `replace_symbol_body` and `insert_after_symbol`, and ast-grep's `find_code`
+    And it has no `Skill` tool and no tool named by a wildcard
+    And a skill the task needs beyond `cosmic-python` reaches it through the builder card, not a preload
+
+  # Traces to: D-14; spec rules-first-routing (Rules reach a subagent through its brief).
+  Scenario: The rules arrive in the brief
+    Given the lead loaded the rules for the task with `load --brief` and pasted them in the brief
     When the implementer starts the task
-    Then it loads `cosmic-python` with the Skill tool, as its preload holds only the TDD skill
+    Then it does not load the rulebook itself
+    And it applies the rules the brief carries
 
   # Failure case: skillery issue #319 (a hundreds-of-sites edit was done by a rewriting script).
   Scenario Outline: It edits with the Edit tool, and a script only for a reviewed mechanical edit
@@ -89,7 +106,9 @@ Feature: implementer turns one ready task into tested code and reports back
     Given the session has connector tools the task does not need
     And the project has the code-intelligence servers `serena`, `ast-grep` and `gitnexus`
     When the caller dispatches the implementer on the task
-    Then it can read, edit, search, run commands and load skills
-    And it can load and call a tool of each code-intelligence server
+    Then it can read, edit, search and run commands
+    And it can call the named tools of the `serena` and `ast-grep` servers
+    And it can fetch another tool of those servers through `ToolSearch`
+    And it is offered no tool of the `gitnexus` server
     And no other connector tool is offered to it
     And its report reaches the caller

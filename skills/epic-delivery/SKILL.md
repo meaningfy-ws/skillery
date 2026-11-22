@@ -26,9 +26,9 @@ A SMALL EPIC, "add a trigger probe and sharpen one rule", gated and ready.
    `mark: change=add-probe phase=deliver stage=1`, in the reply, never in a file; it repeats the
    line in the last message of each turn that briefs a builder. No library change is pending. The
    sharpened rule changes a use case but adds no scenario, so there is nothing to sign off.
-2. **Build.** Three tasks. Per task the lead runs impact, briefs one builder, reads the diff and the
-   report (the *implementing* fields of `guardrails`), runs the change check and commits. All three
-   reports agree with their diffs, so the lead re-runs nothing.
+2. **Build.** Three tasks. At stage start the lead runs impact per task; then per task it briefs one
+   builder, reads the diff and the report (the *implementing* fields of `guardrails`) and commits.
+   All three reports agree with their diffs, so the lead re-runs nothing.
 3. **Challenge.** The lead runs the full gates once, records the report in the PR body and opens
    the PR. One `code-reviewer` pass covers spec and tests (L2) and structure (L3); it reads that
    gate report and does not re-run the suite.
@@ -62,14 +62,14 @@ fresh from the note, and after the archive the next task does too (`guardrails`,
 ### The loop of a stage
 
 A stage is a group of tasks that ends in one PR; the PLAN cuts the tasks into stages. Its six
-steps are those of the Quick Start: **Prepare** (the mark line in the stage's first reply, never in a file), **Build** (one builder per task, a gate re-run
-only on a trigger), **Challenge** (the full gates once, then the review set), **Decide and fix**
-(only Critical findings, one fix pass; the pass's builder sorts the tester's tests and the lead
-confirms the lists), **Check** (one fresh checker or the full gates and CI; an
-unmet item goes to the developer, no second fix pass), **Merge** (the hand-over note last, one
-watch-and-merge command, the session ends). Read `references/stage-loop.md` when you run any step
-of a stage or close the EPIC: it adds the triggers T1–T3, the tester condition, the floor, the
-merge command, the order accept → docs stage → archive, and the check ledger.
+steps are those of the Quick Start: **Prepare** (the mark line in the stage's first reply, never in
+a file), **Build** (one builder per task, a gate re-run only on a trigger), **Challenge** (the full
+gates once, then the review set), **Decide and fix** (only Critical findings, one fix pass),
+**Check** (one fresh checker or the full gates and CI; an unmet item goes to the developer, no
+second fix pass), **Merge** (the hand-over note last, one watch-and-merge command, the session
+ends). Read `references/stage-loop.md` when you run any step
+or close the EPIC: it adds the triggers T1–T3, the tester condition, the floor, the merge command,
+the close order and the check ledger.
 
 ## Rules
 
@@ -78,30 +78,33 @@ merge command, the order accept → docs stage → archive, and the check ledger
 Two people decide: the **developer** (direction, decisions, scenario sign-off, acceptance) and,
 when the model changes, the **domain expert** (validates it). The **lead** is the main session, or
 the `team-lead` agent: it talks to the developer, records decisions, writes briefs, runs impact and
-change checks, reads every diff and report, runs the stage's full gates, commits, files upstream
+change checks, reads every report and each diff's `git diff --stat` with a spot-check, compacts at
+a safe point past `compact_offer_tokens`, runs the stage's full gates, commits, files upstream
 issues, keeps the spine and docs current, archives and runs the validation review. Subagents do
-one job each: a **builder** one task test-first (model, code, the docs it changed; a fixer and a
-spike are builders), a **reviewer** one lens read-only, a **checker** one fresh pass per stage
-against the briefs and decisions. Architect and planner work in shaping; an adversarial tester (a
-builder brief that writes only tests) and a UX designer (when screens change) are conditional
-briefs. The lead never takes a
-builder's task, even a one-line fix (that is a fixer brief), and hands wide reading to an exploring
-subagent (`guardrails` §5, §6). Members never talk to the developer, never commit and never file issues: a member that
-needs a decision or meets a library problem stops that part and reports it. If the lead cannot
-write a brief, the task is not ready: fix the PLAN. Read `references/team-and-briefs.md` before you
-write any brief: it adds who plays each role with which model, the six items every brief names,
-the four brief templates, and the one definition of the mark line and the result line.
+one job each: a **builder** one task test-first (a fixer and a spike are builders), a **reviewer**
+one lens read-only, a **checker** one fresh pass per stage against the briefs and decisions. An
+opt-in adversarial tester (a builder brief that writes only tests) and a UX designer (when screens change) are
+conditional briefs. The lead takes no builder's task except a **light chore**: a finding that
+changes at most ten lines in files the lead has already read in this stage and needs no new test.
+The lead applies it with Edit and the commit body names it (`lead-fixed: <finding id>`); everything
+else is a brief. Wide reading goes to an exploring subagent. Members never
+talk to the developer, never commit and never file issues: a member that needs a decision or
+meets a library problem stops that part and reports it. If the lead cannot write a brief, the task
+is not ready: fix the PLAN. Read `references/team-and-briefs.md` before you write any brief: it
+adds the roles and models, the items every brief names, the four templates, and the mark and
+result lines.
 
 ### Review sets
 
 The review set of each appetite is data: the `reviews` of
 [`assets/workflows/epic-delivery.workflow.json`](assets/workflows/epic-delivery.workflow.json),
-which the navigator mod also reads. MEDIUM takes two reviewers (L1 with L2; L3 with L4 and L5) by
-default, the five lenses when a risk is recorded for the stage (a PLAN `RISK-` row naming the
-stage or its files, or a `D-n` from Prepare). From LARGE up, a `small_stage` lets a low-risk stage
-at or under its added-lines limit (`git diff`, generated files included) take the small set, once
-the lead records a `D-n` under `## Delivery decisions` with the size and the reason. The small set
-is an allowance, not a ceiling.
+which the navigator mod also reads. TINY and SMALL take one pass. MEDIUM and above take two grouped
+runs by default (L1 with L2; L3 with L4 and L5), that report per lens. From LARGE up, the
+five single lenses run when the lead's mark carries `risk=recorded`; MEDIUM with a risk keeps its
+two runs and names the risk as a focus in both briefs. Read [`references/team-and-briefs.md`](references/team-and-briefs.md) when writing the
+mark: it adds the mark's one definition and when the lead writes `risk=recorded`. The limits and counts are in the workflow file, not
+here. A small stage (under the `small_stage` added-lines limit, with no recorded risk) keeps the two
+grouped runs, with no `D-n` to record.
 
 ### Questions to the developer
 

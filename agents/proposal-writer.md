@@ -13,6 +13,7 @@ skills:
   - estimation
   - executive-communication
 metadata:
+  role: builder
   purpose: proposals
   area: sales
   subject: semantic-data

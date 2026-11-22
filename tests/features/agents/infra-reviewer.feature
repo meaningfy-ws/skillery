@@ -9,6 +9,11 @@ Feature: infra-reviewer gives an infrastructure change its second reading
     Given the infra-reviewer agent is installed with skills `infrastructure-operations`, `stack-operations`, `infrastructure-security`
     And `infrastructure-stacks` and `cloud-infrastructure` are checked out side by side
 
+  # Traces to: D-2; spec subagent-dispatch (The subagent's agent and model are the cheapest that fit).
+  Scenario: Its role and model follow the matrix
+    When `agents/infra-reviewer.md` is read
+    Then its `metadata.role` is `reviewer-single` and its `model:` is the mid model the matrix names for that role
+
   Scenario Outline: A change is reviewed at any point of its implementation
     Given <input>
     When infra-reviewer is dispatched on it

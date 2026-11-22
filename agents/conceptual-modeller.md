@@ -13,6 +13,7 @@ skills:
   - modelling-conventions
   - linkml-engineering
 metadata:
+  role: lead
   purpose: modelling
   area: coding
   subject: modelling

@@ -494,6 +494,7 @@ def test_real_core_plugin_names_the_hooks_file_and_no_types_and_navigator_keeps_
     assert core["hooks"] == [
         "./mods/no-poll-loops/hooks.json",
         "./mods/no-shell-edits/hooks.json",
+        "./mods/quiet-tools/hooks.json",
         "./mods/rules-first/hooks.json",
     ]
     assert "types" not in core and "userConfig" not in core

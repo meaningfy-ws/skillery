@@ -17,6 +17,7 @@ skills:
   - infrastructure-operations
   - infrastructure-security
 metadata:
+  role: builder
   purpose: devops
   area: operations
   subject: delivery-infra

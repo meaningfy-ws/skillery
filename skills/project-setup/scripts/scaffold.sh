@@ -16,7 +16,7 @@ PACKAGE="" ; PROJECT_NAME="" ; SLUG="" ; PYVER="3.12"
 ORG="meaningfy-ws" ; BRANCH="develop" ; DESC="" ; YEAR="$(date +%Y)"
 ARCHETYPE="product" ; TARGET="$(pwd)"
 WITH_DOCS=1 ; WITH_INFRA=1 ; WITH_CI=1 ; DEPLOYABLE=0
-FORCE=0 ; SKIP_EXISTING=0 ; NO_LOCK=0 ; DRY_RUN=0 ; MINIMAL=0 ; NEO4J=0
+FORCE=0 ; SKIP_EXISTING=0 ; NO_LOCK=0 ; DRY_RUN=0 ; MINIMAL=0 ; NEO4J=0 ; TYPESCRIPT=0
 # OpenSpec version this skill pins schemas against (kept in sync with openspec/openspec-version.txt).
 OPENSPEC_PIN="1.4.1"
 
@@ -37,6 +37,8 @@ Options:
                           scripts/ (product + LinkML only — see references/spine-projection.md)
       --linkml-generators DIR  the linkml-engineering skill's scripts/linkml_neo4j/ folder
                          (default: $LINKML_NEO4J_DIR, else the sibling skill in a source checkout)
+      --typescript       add typescript to .serena/project.yml language_servers (also set when
+                         a frontend/ folder exists in the target)
       --python VER       Python version           (default: 3.12)
       --org ORG          GitHub org               (default: meaningfy-ws)
       --branch BRANCH    default/PR branch        (default: develop)
@@ -78,6 +80,7 @@ while [[ $# -gt 0 ]]; do
     --target)     TARGET="$2"; shift 2;;
     --deployable) DEPLOYABLE=1; shift;;
     --neo4j)      NEO4J=1; shift;;
+    --typescript) TYPESCRIPT=1; shift;;
     --linkml-generators) LINKML_NEO4J_DIR="$2"; shift 2;;
     --minimal)    MINIMAL=1; shift;;
     --no-docs)    WITH_DOCS=0; shift;;
@@ -107,6 +110,9 @@ PRODUCT=0 ; CODE=1
 [[ "$ARCHETYPE" == "doc-only" ]] && CODE=0
 [[ -z "$SLUG" ]] && SLUG="$(echo "$PACKAGE" | tr '_' '-')"
 PYVER_NODOT="${PYVER//./}"
+# Serena language servers: python always; typescript when asked for or a frontend/ folder exists.
+SERENA_EXTRA=""
+if [[ "$TYPESCRIPT" -eq 1 || -d "$TARGET/frontend" ]]; then SERENA_EXTRA="- typescript"; fi
 
 [[ "$DRY_RUN" -eq 1 ]] && echo "DRY RUN — gap analysis only, no files written." || true
 echo "Scaffolding '$PROJECT_NAME' (package: $PACKAGE, slug: $SLUG, archetype: $ARCHETYPE) into: $TARGET"
@@ -130,6 +136,10 @@ render() {
     if [[ "$FORCE" -eq 1 ]]; then :
     elif [[ "$SKIP_EXISTING" -eq 1 ]]; then echo "  skip (exists): ${dst#"$TARGET"/}"; return 0
     else
+      if [[ ! -t 0 ]]; then
+        echo "  ${dst#"$TARGET"/} exists and there is no terminal to ask: re-run with --skip-existing or --force" >&2
+        exit 1
+      fi
       read -r -p "  overwrite ${dst#"$TARGET"/}? [y/N] " a
       [[ "${a:-N}" =~ ^[Yy]$ ]] || { echo "  kept existing"; return 0; }
     fi
@@ -143,6 +153,7 @@ render() {
            -e "s|<<DEFAULT_BRANCH>>|$(esc "$BRANCH")|g" \
            -e "s|<<DESCRIPTION>>|$(esc "$DESC")|g" \
            -e "s|<<YEAR>>|$(esc "$YEAR")|g" \
+           -e "s|<<SERENA_EXTRA_SERVERS>>|$(esc "$SERENA_EXTRA")|g" \
            "$src" > "$dst.tmp"; then
     echo "  RENDER FAILED: $src" >&2; rm -f "$dst.tmp"; exit 1
   fi
@@ -277,6 +288,7 @@ render "$TPL/root/dot-coveragerc"                 "$TARGET/.coveragerc"
 render "$TPL/root/dot-pre-commit-config.yaml"     "$TARGET/.pre-commit-config.yaml"
 render "$TPL/root/dot-gitignore"                  "$TARGET/.gitignore"
 render "$TPL/root/dot-semgrepignore"              "$TARGET/.semgrepignore"
+render "$TPL/root/dot-serena-project.yml.tmpl"    "$TARGET/.serena/project.yml"
 render "$TPL/root/dot-importlinter.tmpl"          "$TARGET/.importlinter"
 render "$TPL/root/Makefile.tmpl"                  "$TARGET/Makefile"
 render "$TPL/root/sonar-project.properties.tmpl"  "$TARGET/sonar-project.properties"

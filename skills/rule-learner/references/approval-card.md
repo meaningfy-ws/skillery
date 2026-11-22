@@ -19,7 +19,7 @@ answers.
 | When / do | the situation and the action |
 | Because | one line |
 | Source | the owner's words, quoted |
-| Warnings | what the lint would report on writing it (CONFLICT, dead, redundant), or nothing |
+| Warnings | what the lint would report on writing it (CONFLICT, dead, redundant), or nothing; for a rule that keeps a session past a stage boundary: "conflicts with session hygiene (guardrails §6)" |
 
 Heading line: "Rows default to this repository; answer `N to vault` for a personal preference." The
 owner may answer `N to vault` or `N to repo` on any row; offer `to repo` only when `where` names a
@@ -43,6 +43,7 @@ before saying yes.
 > | 4 | NEEDS_OWNER | selection-heuristic | default | offers | vault | pricing a tender / ? | | "tenders are different" | |
 > | 5 | REJECT | | | | | send the Acme memo today | a one-off request | "send this one today" | |
 > | 6 | NEW | constraint | hard | coding | repo | committing in this repository / never commit straight to main | main is reviewed | "never commit straight to main in this repo" | none |
+> | 7 | NEW | default | default | delivery | repo | a stage is merged / carry on in the same session | fewer restarts | "do not end the session after the merge" | conflicts with session hygiene (guardrails §6) |
 >
 > Row 4: what should change for tenders, the pricing model or the margin?
 

@@ -12,6 +12,61 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 
 ## [Unreleased]
 
+## [3.22.0] - 2026-11-22
+
+The five build stages of `skillery-performance-improvement`: the method spends fewer tokens per
+turn without dropping a gate. No BREAKING change; every previous default is one flag away (the
+five-lens review set, the full checklist).
+
+### Added
+
+- **A Langfuse usage report, and the series that compares skillery's cost over time.**
+  `session-retrospective` gains `references/langfuse-report.md`: the eight queries that measure
+  tokens, context per call, spawns and tool calls over a window, with their exact arguments, the
+  pinned fields, the gates-passed source and the sanitation inventory procedure.
+  `docs/practice/ai-coding/usage-reports/` starts the series with the 2026-11-22 baseline (6.9 B
+  tokens in a fortnight, 96.5 percent of them cached context) and one machine's inventory. Stage 1
+  of `skillery-performance-improvement`; the baseline's numbers are what the next stages are
+  measured against.
+- **Session hygiene decides in tokens, and a fixer has a bound.** `session-thresholds.json` gains
+  `fresh_offer_min_tokens`, `compact_offer_tokens`, `context_warn_tokens` (the percent keys stay
+  as the fallback) and `fixer_max_red_runs`; the navigator reads the token count from the session
+  usage, prints the number and unit it used, and warns when one subagent runs the full gates more
+  than the bound. `epic-planning` caps the question rounds by appetite, compacts once the proposal
+  is saved and makes the fresh session per EPIC mandatory; `epic-delivery` bounds the fixer with a
+  `blocked` report and lets the lead read `git diff --stat`; `rule-learner` flags a candidate rule
+  that keeps a session past a stage boundary. Stage 2 of `skillery-performance-improvement`.
+- **Verification scaled to the appetite.** The review set is data in `epic-delivery`'s workflow
+  file: from MEDIUM up two grouped runs (L1+L2; L3+L4+L5) by default, five single lenses from
+  LARGE up when the lead's mark carries `risk=recorded`; the navigator reads the mark and sets
+  its over-spawn ceiling from it. `meaningfy-code-review` makes the grouped run its default and
+  the five lenses the opt-in deep review. The lead applies a light chore itself (at most ten lines
+  in files already read, `lead-fixed:` in the commit body), sends independent spawns in one
+  message, ends every brief with the report shape, merges checker and cold reader when no how-to
+  page changed, and runs GitNexus at two points of a stage; `implementer` and `code-reviewer`
+  lose the GitNexus tools; the tester is opt-in. P-0006 is scoped by appetite. Stage 3 of
+  `skillery-performance-improvement`.
+- **The delivery workers start lighter, and a model per role.** `guardrails/assets/model-matrix.json`
+  maps each role to a model and `make lint` holds every agent to it (`code-reviewer` and
+  `infra-reviewer` move to sonnet); `implementer` and `code-reviewer` preload
+  one skill each and name their tools exactly, with no `Skill` tool; the four bundle-specific
+  workers (`infra-reviewer`, `proposal-writer`, `ops-watch`, `sales-agent`) keep their preloads
+  until measured; the new `stage-check` skill
+  and `checker` agent own and run the stage check; `epic-planner` drops `stream-coding`. The
+  clarity checklist is the Meaningfy one (3 KB, minimums by appetite) and `make lint` holds an
+  active change's `design.md` to its appetite's budget. Builders are briefed from the new builder
+  card, with the rules pasted from `rules.py load --brief` and the five Serena essentials. Stage 4
+  of `skillery-performance-improvement`.
+- **Quiet tools.** A tool call returns a result, not a log: `guardrails` §6 states the principle
+  and the new `quiet-tools` mod of `meaningfy-core` warns, never denies, when a Bash command
+  reads a file with `sed -n`, `cat`, `head` or `tail`, greps a path, or runs `pytest -v`.
+  `project-setup`'s templates give a new repository quiet gates (`pytest -q -rfE`, coverage to
+  xml), an AGENTS template cut to what is specific to the repository with a five-row gate table,
+  `make check-bindings` against a GitNexus block in `CLAUDE.md`, and a Serena project file for
+  the archetype's languages. The stage loop allows `gh pr merge --auto` only at the merge step,
+  after the hand-over note and the approval, in place of the watch, and only where the repository
+  has required checks. Stage 5 of `skillery-performance-improvement`.
+
 ## [3.21.0] - 2026-11-17
 
 ### Added

@@ -15,6 +15,7 @@ skills:
   - guardrails
   - meaningfy-git-workflow
 metadata:
+  role: lead
   purpose: contracts
   area: legal
   subject: generic

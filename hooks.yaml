@@ -2,7 +2,7 @@
 #   binding axes: mechanism = git | ci | agent | mod ; phase = quality | phase-gate
 #   provenance: { skill: <name> } OR { rule: "<MUST/NEVER rule in a binding>" }
 # A single intent MAY carry several bindings (e.g. a ci PR-check AND an agent pre-apply gate).
-version: 3.21.0
+version: 3.22.0
 
 hooks:
   # ---- git / quality ----
@@ -175,11 +175,11 @@ hooks:
 
   # ---- GitNexus (the AGENTS.md GitNexus block; epic-delivery D-15, D-32) ----
   - id: impact-before-edit
-    intent: Run impact once per task, before the brief, on the task's symbols (without a lead, once before the first edit); a HIGH/CRITICAL result goes to the developer first
+    intent: Run impact per task at stage start, on the task's symbols, before the brief (without a lead, once before the first edit); a HIGH/CRITICAL result goes to the developer first
     provenance: { rule: "AGENTS.md GitNexus block" }
     bindings: [{ mechanism: agent, phase: quality, trigger: pre-brief }]
   - id: detect-changes-precommit
-    intent: detect_changes() once before the task's commit — only expected symbols/flows touched
+    intent: detect_changes() once before the stage's last commit — only expected symbols/flows touched
     provenance: { rule: "AGENTS.md GitNexus block" }
     bindings: [{ mechanism: git, phase: quality, trigger: pre-commit }]
   - id: rename-via-callgraph
@@ -270,6 +270,10 @@ hooks:
     bindings: [{ mechanism: mod, phase: quality, trigger: PreToolUse(Bash) }]
   - id: no-shell-edits
     intent: Deny a Bash command that writes or reverts a file in place (sed -i, perl -i, an inline python/node write, a cat/tee heredoc outside $TMPDIR, git checkout/restore of a path); edit with Edit or Serena
+    provenance: { skill: guardrails }
+    bindings: [{ mechanism: mod, phase: quality, trigger: PreToolUse(Bash) }]
+  - id: quiet-tools
+    intent: Warn, never deny, on a noisy Bash form (sed -n/cat/head/tail or grep/rg on a file, pytest -v or -vv); name the quiet form (the Read or Grep tool, -q -rfE)
     provenance: { skill: guardrails }
     bindings: [{ mechanism: mod, phase: quality, trigger: PreToolUse(Bash) }]
   - id: rules-first

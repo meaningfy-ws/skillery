@@ -4,15 +4,21 @@
 
 import { creditLoad } from './attribution.ts'
 import { groupDone } from './change.ts'
-import { MAIN, inlineSpawn, modelAbove, overspawn, reportOversized, roleOf, secondCheck, shipCommand, unusedSkills,
+import { MAIN, inlineSpawn, modelAbove, overspawn, reportOversized, riskRecorded, roleOf, secondCheck, shipCommand, unusedSkills,
   type Role } from './dispatch.ts'
-import { hasMark, isWorkerSpawn, missingMark } from './mark.ts'
+import { isWorkerSpawn, lastMark, missingMark } from './mark.ts'
 import { offer, onCompact, thresholdsFrom, type HygieneEvent } from './hygiene.ts'
 import { addWarnings } from './process-drift.ts'
 import type { Change, NavState, Signal, Warning } from './state.ts'
 import { isArchive, isCommit, isPrMerge, workflowOf } from './workflow.ts'
 
-const groupsDone = (c: Change | null) => c?.groups.filter(groupDone).length ?? 0
+/** D-5's bound when the thresholds file sets none. */
+const DEFAULT_FIXER_MAX_RED_RUNS = 3
+
+/** A per-agent count by own property only: an id like `constructor` must not read `Object.prototype`. */
+const countOf = (counts: Record<string, number>, agentId: string) => Object.hasOwn(counts, agentId) ? counts[agentId]! : 0
+
+const groupsDone =(c: Change | null) => c?.groups.filter(groupDone).length ?? 0
 
 /** The hygiene events a signal makes (§6.5's fixed vocabulary). */
 function eventsOf(prev: NavState, next: NavState, s: Signal): HygieneEvent[] {
@@ -44,11 +50,11 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       return agent ? { ...n, turnEvents: [...n.turnEvents, { kind: 'skill', name: s.name, agent }] } : n
     }
     case 'AgentCalled': // every tool call of a subagent counts for PD-6, not only Bash (DD-41)
-      return { ...n, agentCalls: { ...n.agentCalls, [s.agentId]: (n.agentCalls[s.agentId] ?? 0) + 1 } }
+      return { ...n, agentCalls: { ...n.agentCalls, [s.agentId]: countOf(n.agentCalls, s.agentId) + 1 } }
     case 'ToolUsed': // any tool but Skill, by its agent (D-9)
       return { ...n, turnEvents: [...n.turnEvents, { kind: 'tool', agent: s.agentId ?? MAIN }] }
     case 'ToolRan': { // not a tool event: the call's ToolUsed is (one event per call)
-      if (s.agentId) return n
+      if (s.agentId) return t.ok ? fixerRun(n, t.thresholds.fixer_max_red_runs ?? DEFAULT_FIXER_MAX_RED_RUNS, s.agentId, s.command) : n
       if (s.ok && shipCommand(s.command)) {
         n = { ...n, shipLog: [...n.shipLog, { kind: 'ship' }] }
         if (reviews && n.change) add(secondCheck(reviews, appetite, n.change.id, n.shipLog))
@@ -61,7 +67,7 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       n = { ...n, workerThisTurn: n.workerThisTurn || worker, turnRoles: [...n.turnRoles, role],
         shipLog: [...n.shipLog, { kind: 'spawn', role }],
         turnEvents: [...n.turnEvents, { kind: 'spawn', agent: s.agentId ?? MAIN }] }
-      if (reviews) add(overspawn(reviews, appetite, n.turnId || 'start', n.turnRoles))
+      if (reviews) add(overspawn(reviews, appetite, n.turnId || 'start', n.turnRoles, riskRecorded(n)))
       return n
     }
     case 'SubagentSpawned': {
@@ -72,19 +78,24 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
       return n
     }
     case 'SubagentFinished':
-      if (t.ok) add([...inlineSpawn(t.thresholds, s.agentId, n.agentCalls[s.agentId] ?? 0),
+      if (t.ok) add([...inlineSpawn(t.thresholds, s.agentId, countOf(n.agentCalls, s.agentId)),
         ...reportOversized(t.thresholds, s.agentId, s.answer ?? '')])
       add(unusedSkills(n.turnEvents, s.agentId))
-      return { ...n, turnEvents: n.turnEvents.filter(e => e.agent !== s.agentId) }
-    case 'AnswerShown':
-      return hasMark(s.text) ? { ...n, marked: true } : n
+      // the fixer-bound warning goes with the count it was made from (D-32 W1)
+      return { ...n, gateRuns: Object.fromEntries(Object.entries(n.gateRuns).filter(([a]) => a !== s.agentId)),
+        warnings: n.warnings.filter(w => w.key !== `hygiene:fixer-bound:${s.agentId}`),
+        turnEvents: n.turnEvents.filter(e => e.agent !== s.agentId) }
+    case 'AnswerShown': {
+      const mark = lastMark(s.text)
+      return mark ? { ...n, marked: true, mark } : n
+    }
     case 'TurnEnded': {
       const missing = missingMark(n) // D-9: never at the spawn, the answer comes after it
       add(missing)
       n = { ...n, markWarned: n.markWarned || missing.length > 0, workerThisTurn: false }
       add(unusedSkills(n.turnEvents, MAIN)) // only the lead's; a background subagent's events wait for its finish (D-9)
       // shortcut: idle resets are not offered; the gap is only known once the person has typed (DD-40).
-      const r = offer(t, { events: n.hygieneEvents, contextPercent: s.contextPercent, idleMinutes: 0,
+      const r = offer(t, { events: n.hygieneEvents, contextPercent: s.contextPercent, contextTokens: s.contextTokens, idleMinutes: 0,
         cleanTree: s.cleanTree, openUnticked: !!n.change && n.change.done < n.change.total })
       const kept = n.warnings.filter(w => w.key !== 'hygiene:context' && w.key !== 'hygiene:thresholds-missing')
       n = { ...n, warnings: kept }
@@ -105,6 +116,18 @@ export function lean(prev: NavState, after: NavState, s: Signal): NavState {
   }
 }
 
+/** D-5: one subagent ran the active workflow's `full-gates` command more than `max` times: a warning, never a deny. */
+function fixerRun(s: NavState, max: number, agentId: string, command: string): NavState {
+  const w = workflowOf(s)
+  const g = w?.gates?.['full-gates']
+  if (g?.kind !== 'command' || !new RegExp(g.match).test(command)) return s
+  const runs = countOf(s.gateRuns, agentId) + 1
+  const next = { ...s, gateRuns: { ...s.gateRuns, [agentId]: runs } }
+  if (runs <= max) return next
+  return { ...next, warnings: addWarnings(next, [{ key: `hygiene:fixer-bound:${agentId}`, remedy: null, owner: 'guardrails',
+    message: `subagent ${agentId} ran full-gates ${runs} times (fixer_max_red_runs ${max}); end it and decide per the bounded fixer` }]) }
+}
+
 /** The role of a spawn, from the active workflow's roles, else the one with a review set. */
 function roleIn(s: NavState, type: string, description: string): Role {
   const w = workflowOf(s) ?? s.workflows.find(x => x.reviews)
@@ -114,7 +137,7 @@ function roleIn(s: NavState, type: string, description: string): Role {
 /** Strict, after `SpawnAsked` recorded this spawn: the over-spawn it makes, if any. */
 export function overspawnNow(s: NavState): Warning | null {
   const reviews = s.workflows.find(w => w.reviews)
-  return (reviews && overspawn(reviews, s.change?.appetite ?? null, s.turnId || 'start', s.turnRoles)[0]) || null
+  return (reviews && overspawn(reviews, s.change?.appetite ?? null, s.turnId || 'start', s.turnRoles, riskRecorded(s))[0]) || null
 }
 
 /** Strict: the parent's model when the spawn asks one ranked above it (PD-7). */

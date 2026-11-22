@@ -13,6 +13,7 @@ skills:
   - modelling-conventions
   - conceptual-modelling
 metadata:
+  role: lead
   purpose: modelling
   area: coding
   subject: modelling
