@@ -43,11 +43,11 @@ The navigator mod tracks these phases and their gates from
 2. **Bump** (`bumped`). The engine bumps the version file(s) and writes the CHANGELOG section; both
    name the same version.
 3. **Validate** (`validated`). The project's full gates run on the release branch before the merge,
-   and their saved output shows them passing.
+   and their saved output shows them passing (runbook step 4).
 4. **Merge** (`merged`). A human reviews the release PR (four-eyes); it is never merged with red gates.
 5. **Publish** (`published`). The tag `vX.Y.Z` points at the merge commit and the publish job runs
    green.
-6. **Back-merge** (`back`) into every long-lived line.
+6. **Back-merge** (`back`) back into `develop`.
 
 ## Rules
 
@@ -132,7 +132,7 @@ layers in adoption order and the rung each kind of repo should reach.
 | Did a human review the release PR, with the gates green? | four-eyes is broken | hold the merge |
 | Does the GitHub Release body link its CHANGELOG section and carry the breaking-change callouts? | readers miss the migration steps | edit the release notes |
 | Did TestPyPI succeed before PyPI? | a bad upload can only be yanked | run the dry-run job first |
-| Is the release merged back into every long-lived line? | the next release regresses | back-merge now |
+| Is the release merged back into `develop`? | the next release regresses | back-merge now |
 
 ## Boundary & Related Skills
 
