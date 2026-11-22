@@ -16,7 +16,7 @@ The developer and the domain expert are people (`SKILL.md`, *The team*).
 | Builder | `implementer` agent | Declared (sonnet) | Every task, every accepted fix, every spike |
 | Reviewer | `code-reviewer` agent, one per lens | Declared (opus) | Every stage, scaled by appetite |
 | Checker | A fresh general-purpose subagent | opus | Once per stage, where the appetite's review set has one ([`epic-delivery.workflow.json`](../assets/workflows/epic-delivery.workflow.json)) |
-| Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | On its condition ([`stage-loop.md`](stage-loop.md), Prepare) |
+| Adversarial tester | `implementer` with the tester brief | Declared (sonnet) | Opt-in, on its condition ([`stage-loop.md`](stage-loop.md), Prepare) |
 | UX designer | A general-purpose subagent with the design skills | opus | Screens in scope, any size (the UX review lens runs where the appetite's review set has `ux`, when screens changed) |
 
 No role has its own catalogue agent beyond these. The checker and the tester differ from the others
@@ -34,7 +34,8 @@ and never built or tested the stage.
 3. The decisions already made: `DEC-n`, the ADR, the spec scenario, the use case.
 4. What is out of scope.
 5. **Standing rules**: the project's own list and its narrow checks, task gate, full gates, docs
-   gate and code-intelligence tools, all from the *Checks* block in its `AGENTS.md`; the testing
+   gate and code-intelligence tools, all from the *Checks* block in its `AGENTS.md` (no GitNexus
+   tool for a builder or reviewer: the lead pastes at most ten impact lines per task); the testing
    checklist (`cosmic-python` `references/testing-checklist.md`); and the dependency rule
    ([`dependencies.md`](dependencies.md)): never work around our library. A project that names no
    task gate or full gates leaves this item unwritable: the lead asks the developer, and the answer
@@ -43,10 +44,11 @@ and never built or tested the stage.
    `cat` or `grep -A | head` chains through Bash; files change through Edit or Serena only; Bash
    runs tests, checks and git, one purpose per call. A sandbox bypass names the commands it covers
    (`uv run pytest <file>`, `git commit`), never "commands need the sandbox disabled".
-7. **The report expected**: the base report and the *implementing* fields of `guardrails`
-   `references/subagent-reports.md`, plus
+7. **The report expected**, the last line of every brief: the base report, its purpose extension
+   (for a builder the *implementing* fields of `guardrails` `references/subagent-reports.md`, plus
    **Upstream findings**: every bug, gap or awkwardness met in any library, each marked *ours* or
-   *external*, with a reproduction, or "none". The lead routes them per the dependency rule.
+   *external*, with a reproduction, or "none"; the lead routes them per the dependency rule), and
+   the line cap, `subagent_report_max_lines` of `session-thresholds.json`.
    For the tester, a reviewer and the checker, the report ends in **the result line** (its one
    definition), written with `accepted=-`:
 
@@ -80,7 +82,7 @@ Tools for each activity, and their fallbacks: the table in `guardrails` (`refere
 > `<project list>`; the testing checklist; no workaround of our library: stop and report it.
 > **Edits:** Edit or Serena only; Bash runs commands and never writes a file. **Scratch:**
 > `<scratchpad>/<task-id>/`.
-> **Report:** base report + the *implementing* fields (`guardrails` `references/subagent-reports.md`) + Upstream findings.
+> **Report:** base report + the *implementing* fields (`guardrails` `references/subagent-reports.md`) + Upstream findings, at most `<subagent_report_max_lines>` lines.
 
 The brief always carries the *Edits* line word for word, and never a blanket "commands need the
 sandbox disabled": that sends every step, file writes included, through Bash.
@@ -104,12 +106,14 @@ edit at many sites, the builder may write a script that only prints the edits
 (`file:line old → new`); the lead reviews that list before the builder applies it, and the builder
 reads every changed site back.
 
-**Parallel builders** each get a scratch directory, `<scratchpad>/<task-id>/`, and never run a
+**Parallel builders** (spawned in one message, per [`stage-loop.md`](stage-loop.md), step 3) each get a scratch directory, `<scratchpad>/<task-id>/`, and never run a
 script from another builder's directory. They never kill processes by pattern, never use
 `git stash` (the stack is shared by all worktrees) and never start a second background run.
 
 A **fixer** is a builder whose task is a set of accepted findings, named by their `design.md`
-decision. Its brief is the builder brief plus two items:
+decision, except a light chore: at most ten lines in files the lead has already read in this
+stage and no new test, which the lead applies with Edit, naming it in the commit body
+(`lead-fixed: <finding id>`). Its brief is the builder brief plus two items:
 
 > **Bound:** `max_red_runs: <n>` (default 3, from `session-thresholds.json` `fixer_max_red_runs`;
 > the PLAN may set another) and **one pass**: fix the named findings once, no second round. At
@@ -127,8 +131,8 @@ evidence in `evidence/spike-<topic>.md`, and its code is not kept.
 > scenarios and diff range. **Standing rules:** as for the builder. **Report:** base report + the
 > tests added, each with what it attacks (a scenario or error-matrix row, or "none" and why) and
 > whether it failed on its first run (the test's docstring says "found <defect id>" or "probe of
-> <decision id>") + each failing test with what it shows + Upstream findings
-> and the result line.
+> <decision id>") + each failing test with what it shows + Upstream findings and the result line,
+> at most `<subagent_report_max_lines>` lines.
 
 A failing test is a finding: the lead decides it in step 4, under the floor. A failure in our library becomes an
 upstream issue, not a fix here.
@@ -138,10 +142,11 @@ upstream issue, not a fix here.
 > **Goal:** review stage `<s>` of `<id>` through lens `<Ln>`. Read-only. **Read:** the diff range,
 > `design.md`, the ADRs the stage touches, the stage's gate report. Do not re-run the suite: a
 > missing or red gate run is a finding. **Report:** findings by priority per
-> `meaningfy-code-review`, any workaround of our library as a finding, and the result line.
+> `meaningfy-code-review`, any workaround of our library as a finding, and the result line, at
+> most `<subagent_report_max_lines>` lines.
 
-Where the appetite's set is one pass or two merged reviewers (the MEDIUM default, a recorded small
-stage; `SKILL.md`, the review sets), the brief names the appetite and the lenses each reviewer
+Where the appetite's set is one pass or two grouped runs (the default from MEDIUM up;
+`SKILL.md`, *Review sets*), the brief names the appetite and the lenses each reviewer
 covers. The lenses are owned by `meaningfy-code-review`.
 
 ## Checker
@@ -150,8 +155,10 @@ covers. The lenses are owned by `meaningfy-code-review`.
 > the briefs of the stage, `design.md` (decisions incl. accepted findings), the spec scenarios, the
 > diff range. **Check:** every brief item and every accepted finding is met (yes or no, with
 > evidence); each re-label of a finding as Critical (agree or not, one line); the traceability
-> check per `bdd-gherkin`. **Report:** base report + the verdict per item and the result line.
+> check per `bdd-gherkin`. **Report:** base report + the verdict per item and the result line, at
+> most `<subagent_report_max_lines>` lines.
 
-The checker is the stage's four-eyes pass. When the stage changed a how-to or tutorial page, the
-lead also dispatches a cold reader per `technical-writing`: a separate fresh agent given only the
-page, because the checker has context a cold reader must not have.
+The checker is the stage's four-eyes pass, and the cold reader too when the stage changed no how-to
+or tutorial page. When it did, the lead also dispatches a cold reader per `technical-writing`: a
+separate fresh agent given only the page, because the checker has context a cold reader must not
+have.
