@@ -391,6 +391,43 @@ compaction after `proposal.md`, a fresh session per EPIC.
   workflow JSON was not known to the workflow validator (builder B ran `make bundles` and `make
   lint`, not `make mods`); a fixer teaches the validator the key, test-first, before the PR's
   gate report is written (a build defect, outside the one fix pass for findings).
+- **D-44** Stage 4 review L1+L2. Accepted: W1 re-labelled Critical (a grouped run is the
+  `reviewer-merged` role on the large model, D-2: the workflow's `roles.matrix` maps grouped runs
+  to `reviewer-merged` and `team-and-briefs.md` says the lead passes that model when it spawns a
+  grouped run); W2 re-labelled Critical (`technical-writer` is a lead agent that spawns the cold
+  reader, role `lead`, model `opus`, feature file aligned); W4 the unparseable-appetite error names
+  the paragraph it read; W5 the Serena rows for rename, safe delete and diagnostics return to the
+  activity-tools table for the lead, and `team-lead` names those Serena tools exactly (S6 with it);
+  W6 em dashes removed from the three agent bodies; S1 "first paragraph" in the epic-shape delta
+  and D-9; S2 the four missing budget tests; S3 a malformed matrix file is one lint error, not a
+  crash; S4 the card's rules pointed to, the history paragraph dropped; S5 the rules-first delta
+  writes `load --brief --activity <a>`. Decided, not fixed: W3 the one-preload rule applies in this
+  stage to the delivery workers (`implementer`, `code-reviewer`, `checker`); the bundle-specific
+  workers (`infra-reviewer`, `proposal-writer`, `ops-watch`, `sales-agent`) keep their preloads
+  and `Skill` until their floors are measured (4.7 lists them), and D-41 is read so.
+- **D-45** Stage 4 review L3+L4+L5. C1 is the `roles.matrix` gate defect, closed by the gate fixer;
+  the key stays under `roles` (validated, and typed in `types.d.ts` in the fix pass), mapping the
+  single-lens default; a grouped run is the `reviewer-merged` role by the brief (D-44 W1).
+  Accepted: W2 the appetite budgets leave `lint.py` for a `clarity-gate` asset
+  (`assets/design-budgets.json`) the lint reads, with the appetite names from the workflow file;
+  W3 the VERY LARGE row and no pointer to `repo_lint` in the checklist; W4 the owner-consent
+  condition stated inline instead of "R-0005"; W5, W6 `stage-check` points to `team-and-briefs`
+  for the result line and the cold-reader rule; W7, W8 one Edits line and one fixer line, in the
+  card, pointed to from `team-and-briefs`; W9 the history paragraph dropped (also D-44 S4); W10 a
+  guarded `_model_matrix(repo)` (also D-44 S3); S11 the Serena essentials in the card only, the
+  table points; S12 one "Read `stage-check`" sentence; S13 the docstring; S15 the matrix values
+  checked against `model_rank`; S16b "the lead pastes `load --brief`" said once, in
+  `team-and-briefs`. Under the floor: S14 the test file split; S16a the commands.md rewording (it
+  paid the prose budget).
+- **D-46** Stage 4 tester (60 tests, 8 failed first, 6 defects). Accepted: T1 malformed matrix
+  JSON or a top-level list crashes the lint (one error line instead; with D-44 S3, D-45 W10); T2 a
+  list-typed `metadata.role` crashes both matrix checks (reported, never raised); T4 a matrix value
+  that is not a model alias is an error (D-45 S15); T6 the allowlist read strips a UTF-8 BOM.
+  Under the floor: T3 an agent model alias in the wrong case is `bundle_gates`' report, not the
+  matrix check's (its test is deleted); T5 `VERY  LARGE` with two spaces reads as LARGE, the same
+  as the navigator's `appetiteOf` (one rule for both; the test is deleted). The kept tests move
+  into `tests/test_repo_lint_budget.py` and `tests/test_rulebook.py`; the adversarial files go.
+  The fix pass runs as two fixers on disjoint files, code and prose, in one batch.
 
 ## Open Questions
 
