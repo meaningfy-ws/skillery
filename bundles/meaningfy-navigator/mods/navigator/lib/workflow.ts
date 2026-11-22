@@ -181,12 +181,17 @@ const SMALL_STAGE_KEYS = ['max_added_lines', 'reviewers', 'lenses']
 
 function reviewError(r: unknown, at: string): string | null {
   if (!isObj(r)) return `${at}: not an object`
-  const fields = ['challenge', 'reviewers', 'lenses', 'small_stage', 'ux', 'check', 'checker', 'tester']
+  const fields = ['challenge', 'reviewers', 'risk_reviewers', 'lenses', 'small_stage', 'ux', 'check', 'checker', 'tester']
   const extra = Object.keys(r).find(k => !fields.includes(k))
   if (extra) return `${at}: unknown key '${extra}'`
   if (!isStr(r.challenge) || !isStr(r.check)) return `${at}: needs 'challenge' and 'check' wording`
   if (!Number.isInteger(r.reviewers) || (r.reviewers as number) < 0) return `${at}.reviewers must be a whole number`
-  if ('lenses' in r && !isStrs(r.lenses)) return `${at}.lenses must be a list`
+  if ('risk_reviewers' in r && !(Number.isInteger(r.risk_reviewers) && (r.risk_reviewers as number) >= 0)) {
+    return `${at}.risk_reviewers must be a whole number`
+  }
+  if ('lenses' in r && !isStrs(r.lenses) && !(Array.isArray(r.lenses) && r.lenses.every(isStrs))) {
+    return `${at}.lenses must be a list of lenses or a list of lens groups`
+  }
   if ('small_stage' in r) {
     const s = r.small_stage
     const ok = isObj(s) && Object.keys(s).every(k => SMALL_STAGE_KEYS.includes(k)) && Number.isInteger(s.max_added_lines) && (s.max_added_lines as number) > 0 &&

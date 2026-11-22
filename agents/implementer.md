@@ -7,7 +7,7 @@ description: >
 type: delegated
 model: sonnet
 color: blue
-tools: [Read, Edit, Write, Glob, Grep, Bash, Skill, ToolSearch, "mcp__serena__*", "mcp__ast-grep__*", "mcp__gitnexus__*"]
+tools: [Read, Edit, Write, Glob, Grep, Bash, Skill, ToolSearch, "mcp__serena__*", "mcp__ast-grep__*"]
 disallowedTools: [Agent]
 skills:
   - superpowers:test-driven-development
@@ -44,7 +44,8 @@ worktree check and the scratch folder: `epic-delivery`, `references/team-and-bri
   the caller to promote.
 - **Side effects:** edits source, test and step-definition files for that task; ticks its `tasks.md`
   checkbox once its tests are green. It uses the project's code-intelligence tools and no other MCP
-  tool; the truth stays in the spine (owner `epic-delivery`, `references/team-and-briefs.md`).
+  tool, and runs no GitNexus tool: the impact result is in the brief, and the lead runs more only
+  when the task's scope moves; the truth stays in the spine (owner `epic-delivery`, `references/team-and-briefs.md`).
 - **Refuses:** committing, pushing or opening PRs (the caller commits, per `meaningfy-git-workflow`);
   patching code to hide a design-level failure; editing the PLAN beyond ticking `tasks.md`
   checkboxes, or `.feature` files.

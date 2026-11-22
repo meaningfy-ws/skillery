@@ -57,6 +57,8 @@ test('the schema rejects what it does not know', () => {
     [{ variants: [{ name: 'v', phases: ['nope'], activate: {} }] }, /no phase 'nope'/],
     [{ reviews: { SMALL: { challenge: 'c', reviewers: 1, ux: null, check: 'c', checker: 'no', tester: null } } }, /checker/],
     [{ activate: { skills: 'one' } }, /list of names/],
+    ...[2.5, -1, '5', null].map((risk_reviewers): [object, RegExp] =>
+      [{ reviews: { MEDIUM: { challenge: 'c', reviewers: 2, ux: null, check: 'c', checker: true, tester: null, risk_reviewers } } }, /risk_reviewers/]),
     ...[{ max_added_lines: 0, reviewers: 2, lenses: [['L1']] }, { max_added_lines: 600, reviewers: '2', lenses: [['L1']] },
       { max_added_lines: 600, reviewers: 2, lenses: ['L1'] }, { max_added_lines: 600, reviewers: 2, lenses: [['L1']], x: 1 },
       { max_added_lines: 600, reviewers: 2 }, 'small'].map((small_stage): [object, RegExp] =>
@@ -139,8 +141,22 @@ test('D-12 epic-delivery: LARGE and above carry the small_stage set; TINY, SMALL
     assert.deepEqual(set.small_stage, sized ? DEFAULT_SMALL_STAGE : undefined, name)
     assert.equal(set.tester, ['TINY', 'SMALL'].includes(name) ? null : TESTER, name)
   }
-  assert.equal(reviews.MEDIUM?.reviewers, 5)
-  assert.match(reviews.MEDIUM?.challenge ?? '', /^Two reviewers \(L1 with L2; L3 with L4 and L5\) by default; the five lenses when a risk is recorded/)
+})
+
+test('D-4 epic-delivery: the review sets as data, one pass at TINY and SMALL, two grouped runs from MEDIUM, five lenses on a risk from LARGE', () => {
+  const r = parseWorkflow(defaults.find(d => d.path.endsWith('epic-delivery.workflow.json'))!, 'default')
+  const reviews = (r as { workflow: Workflow }).workflow.reviews ?? {}
+  const GROUPS = [['L1', 'L2'], ['L3', 'L4', 'L5']]
+  for (const name of ['TINY', 'SMALL']) {
+    assert.deepEqual([reviews[name]?.reviewers, reviews[name]?.lenses, reviews[name]?.risk_reviewers], [1, ['L2', 'L3'], undefined], name)
+  }
+  assert.deepEqual([reviews.MEDIUM?.reviewers, reviews.MEDIUM?.lenses, reviews.MEDIUM?.risk_reviewers], [2, GROUPS, undefined])
+  for (const name of ['LARGE', 'VERY LARGE', 'HUGE']) {
+    assert.deepEqual([reviews[name]?.reviewers, reviews[name]?.lenses, reviews[name]?.risk_reviewers, reviews[name]?.ux?.extra_reviewers],
+      [2, GROUPS, 5, 1], name)
+  }
+  assert.match(reviews.MEDIUM?.challenge ?? '', /^Two grouped runs \(L1 with L2; L3 with L4 and L5\)/)
+  assert.match(reviews.LARGE?.challenge ?? '', /five single lenses.*risk/i)
 })
 
 test('a misspelt skill in a workflow is caught', () => {

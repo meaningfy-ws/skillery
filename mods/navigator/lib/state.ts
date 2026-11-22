@@ -44,6 +44,7 @@ export const EMPTY: NavState = {
   turnRoles: [],
   marked: false,
   markWarned: false,
+  mark: null,
   workerThisTurn: false,
   turnEvents: [],
   agentCalls: {},
@@ -110,7 +111,7 @@ const kindOf = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array'
 /** What a field that defaults to null holds otherwise; `thresholds` is unparsed, so anything. */
 const NULLABLE: Record<string, string | undefined> = { change: 'object', root: 'object', lastChangeId: 'string',
   workflow: 'string', variant: 'string', phase: 'string', signalPhase: 'string', pending: 'string', usd: 'number',
-  planAdded: 'number' }
+  planAdded: 'number', mark: 'object' }
 
 const isObject = (v: unknown): v is Record<string, unknown> => kindOf(v) === 'object'
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter(x => typeof x === 'string') : [])

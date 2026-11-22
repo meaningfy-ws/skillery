@@ -91,6 +91,46 @@ test('reviewQuota is the ceiling, UX included, whatever the plan size; null with
   assert.equal(reviewQuota({ ...navAt('LARGE', 1), change: null }), null)
 })
 
+// D-4: the default review is two grouped runs; five single lenses only on a recorded risk.
+const GROUPS = [['L1', 'L2'], ['L3', 'L4', 'L5']]
+const WR: Workflow = { ...W, reviews: {
+  MEDIUM: { ...review(2, true), lenses: GROUPS },
+  LARGE: { ...review(2, true, 1), risk_reviewers: 5 },
+  'VERY LARGE': { ...review(2, true, 1), risk_reviewers: 5, small_stage: SMALL_STAGE },
+} }
+const withMark = (appetite: string, risk: boolean | null, change = 'x') => ({
+  ...navAt(appetite, 1), workflows: [WR], mark: risk === null ? null : { change, stage: '2', risk },
+})
+
+test('D-4: a MEDIUM stage with no risk has a ceiling of 2, and a recorded risk keeps it at 2', () => {
+  assert.equal(reviewQuota(withMark('MEDIUM', false)), 2)
+  assert.equal(reviewQuota(withMark('MEDIUM', true)), 2) // no risk_reviewers: the two grouped runs stay
+  assert.equal(reviewQuota(withMark('MEDIUM', null)), 2) // no mark at all
+})
+
+test('D-4: LARGE has the default ceiling, UX included, and the risk_reviewers one when the stage mark recorded a risk', () => {
+  assert.equal(reviewQuota(withMark('LARGE', false)), 3)
+  assert.equal(reviewQuota(withMark('LARGE', null)), 3)
+  assert.equal(reviewQuota(withMark('LARGE', true)), 6)
+})
+
+test('D-4: a risk recorded for another change does not raise this change\'s ceiling', () => {
+  assert.equal(reviewQuota(withMark('LARGE', true, 'other')), 3)
+})
+
+test('D-4: a LARGE small stage still shows its allowance, with or without a risk', () => {
+  assert.equal(smallStageAllowance({ ...withMark('VERY LARGE', true), planAdded: 600 }), 2)
+  assert.equal(smallStageAllowance({ ...withMark('VERY LARGE', false), planAdded: 601 }), null)
+})
+
+test('D-4: over-spawn judges against the default ceiling, and the risk ceiling only when a risk is passed', () => {
+  assert.equal(overspawn(WR, 'MEDIUM', 't', Array(3).fill('reviewer')).length, 1)
+  assert.deepEqual(overspawn(WR, 'MEDIUM', 't', Array(2).fill('reviewer')), [])
+  assert.equal(overspawn(WR, 'LARGE', 't', Array(4).fill('reviewer')).length, 1)
+  assert.deepEqual(overspawn(WR, 'LARGE', 't', Array(6).fill('reviewer'), true), [])
+  assert.equal(overspawn(WR, 'LARGE', 't', Array(7).fill('reviewer'), true).length, 1)
+})
+
 test('TC-06: MEDIUM, 5 reviewer spawns, then gh pr create → second check missing', () => {
   const events = [...spawns(5), { kind: 'ship' } as DispatchEvent]
   const w = secondCheck(W, 'MEDIUM', 'navigator', events)

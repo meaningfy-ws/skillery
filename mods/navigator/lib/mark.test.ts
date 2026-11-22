@@ -93,6 +93,31 @@ test('the shared fixture: every line is a mark or not, as expected', () => {
   assert.equal(hasMark('text\n```\nmark: change=x phase=deliver stage=1\n```'), false) // inside a fence
 })
 
+test('D-4: a mark may end in risk=recorded; the mark without the field still parses', () => {
+  const m = 'mark: change=x phase=deliver stage=2'
+  for (const line of [m, `${m} risk=recorded`, `- \`${m} risk=recorded\``, `${m} risk=recorded   `]) assert.equal(isMarkLine(line), true, line)
+  for (const line of [`${m} risk=high`, `${m} risk=`, `${m} risk=recorded extra`, `${m}  risk=recorded`, `${m} risk=Recorded`]) {
+    assert.equal(isMarkLine(line), false, line)
+  }
+})
+
+test('D-4: the state records the last mark per change and stage, with its risk', () => {
+  assert.equal(run(read).mark, null)
+  assert.deepEqual(run(read, answer(MARK)).mark, { change: 'x', stage: '2', risk: false })
+  assert.deepEqual(run(read, answer(`${MARK} risk=recorded`)).mark, { change: 'x', stage: '2', risk: true })
+  // the next stage's mark replaces it: the risk belongs to one stage
+  assert.deepEqual(run(read, answer(`${MARK} risk=recorded`), answer('mark: change=x phase=deliver stage=3')).mark,
+    { change: 'x', stage: '3', risk: false })
+  // a mark inside a fence is not a mark
+  assert.equal(run(read, answer(`\`\`\`\n${MARK} risk=recorded\n\`\`\``)).mark, null)
+})
+
+test('D-4: a state stored before the mark field existed revives with none', () => {
+  assert.equal(revive({ sessionId: 's' }).mark, null)
+  assert.equal(revive({ sessionId: 's', mark: 'x' }).mark, null)
+  assert.deepEqual(revive({ sessionId: 's', mark: { change: 'x', stage: '1', risk: true } }).mark, { change: 'x', stage: '1', risk: true })
+})
+
 test('a tilde fence hides a mark, and a backtick line inside it does not close it', () => {
   const m = 'mark: change=x phase=deliver stage=1'
   assert.equal(hasMark(`~~~\n${m}\n~~~`), false)

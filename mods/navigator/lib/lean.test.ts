@@ -48,23 +48,38 @@ test('TC-07 SMALL: five reviewers in one turn → over-spawn (PD-8); the next tu
   assert.ok(!keys(split).some(k => k.startsWith('process:overspawn:')))
 })
 
-test('D-22: a small stage (added ≤ 600) is an allowance: the full set still passes, the band shows both, six over-spawn', () => {
+test('D-4, D-22: two grouped runs by default (ceiling 2 + 1 UX), five lenses once the mark records a risk, the small stage shown beside', () => {
   const planRead = (added: number, truncated = false): Signal => ({ kind: 'PlanRead', id: id(), warnings: [], truncated, added })
   const fan = (n: number) => Array.from({ length: n }, () => spawn('code-reviewer'))
+  const risk: Signal = { kind: 'AnswerShown', id: id(), text: 'mark: change=x phase=deliver stage=2 risk=recorded', at: 3 }
   const strict = (s: NavState): NavState => ({ ...s, mode: { repo: 'strict', session: null } })
-  const five = run(...base('VERY LARGE'), planRead(600), ...fan(5))
+  const three = run(...base('VERY LARGE'), planRead(600), ...fan(3))
+  assert.ok(!keys(three).some(k => k.startsWith('process:overspawn:')), keys(three).join())
+  assert.deepEqual(decideSpawn(strict(three), overspawnNow(three), null), { allow: true })
+  assert.deepEqual(appetite(three).slice(2, 4), ['reviewers 3/3 this turn', 'small stage: 2 reviewers allowed'])
+  const four = run(...base('VERY LARGE'), planRead(600), ...fan(4)) // five lenses without a recorded risk
+  assert.ok(keys(four).some(k => k.startsWith('process:overspawn:')), keys(four).join())
+  const five = run(...base('VERY LARGE'), planRead(600), risk, ...fan(5)) // risk=recorded: five single lenses
   assert.ok(!keys(five).some(k => k.startsWith('process:overspawn:')), keys(five).join())
   assert.deepEqual(decideSpawn(strict(five), overspawnNow(five), null), { allow: true })
-  assert.deepEqual(appetite(five).slice(2, 4),
-    ['reviewers 5/6 this turn', 'small stage: 2 reviewers allowed'])
-  const seven = run(...base('VERY LARGE'), planRead(600), ...fan(7)) // ceiling = 5 + 1 UX
+  assert.ok(JSON.stringify(band(five)).includes('reviewers 5/6 this turn'))
+  const seven = run(...base('VERY LARGE'), planRead(600), risk, ...fan(7)) // ceiling = 5 + 1 UX
   assert.ok(keys(seven).some(k => k.startsWith('process:overspawn:')), keys(seven).join())
   assert.ok('deny' in decideSpawn(strict(seven), overspawnNow(seven), null))
   for (const read of [planRead(601), planRead(10, true)]) {
-    const full = run(...base('VERY LARGE'), read, ...fan(5))
+    const full = run(...base('VERY LARGE'), read, ...fan(3))
     assert.ok(!keys(full).some(k => k.startsWith('process:overspawn:')), keys(full).join())
-    assert.ok(JSON.stringify(band(full)).includes('reviewers 5/6 this turn'))
+    assert.ok(JSON.stringify(band(full)).includes('reviewers 3/3 this turn'))
   }
+})
+
+test('D-4: a MEDIUM stage allows two reviewers, with or without a recorded risk', () => {
+  const risk: Signal = { kind: 'AnswerShown', id: id(), text: 'mark: change=x phase=deliver stage=2 risk=recorded', at: 3 }
+  const fan = (n: number) => Array.from({ length: n }, () => spawn('code-reviewer'))
+  assert.ok(!keys(run(...base('MEDIUM'), ...fan(2))).some(k => k.startsWith('process:overspawn:')))
+  assert.ok(keys(run(...base('MEDIUM'), ...fan(3))).some(k => k.startsWith('process:overspawn:')))
+  assert.ok(keys(run(...base('MEDIUM'), risk, ...fan(3))).some(k => k.startsWith('process:overspawn:')))
+  assert.ok(JSON.stringify(band(run(...base('MEDIUM'), risk))).includes('reviewers 0/2 this turn'))
 })
 
 test('D-22: no plan read yet, or a change switch, shows no small-stage figure', () => {

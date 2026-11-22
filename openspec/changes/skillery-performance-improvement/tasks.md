@@ -24,9 +24,9 @@
 ## 3. Scale verification (stage 3, DEC-3, DEC-11, DEC-13)
 
 - [x] 3.1 (approved through DEC-3, D-34) Propose P-0006 (D-8 wording) and R-0004 ("when it pays") to the owner through `rule-learner`; write what is approved with `rules.py`; `epic-planning` step 7–8 cite the scoped rule. `epic-shape` "Planning effort follows the appetite"; design.md#d-8.
-- [ ] 3.2 `epic-delivery` workflow JSON (`reviewers`, `lenses`, `risk_reviewers` per appetite; the navigator's ceiling in `mods/navigator/lib/dispatch.ts` reads `risk=recorded` from the mark, with tests) and `meaningfy-code-review`: the review sets of D-4, the grouped run reporting per lens id, the five-lens run as the opt-in deep review, the "combined is a defect" sentence replaced; `code-reviewer` body accepts a lens group. `epic-delivery` "The loop scales with the appetite", `pr-review-modes` "The default review is two grouped runs"; design.md#d-4.
-- [ ] 3.3 `epic-delivery`: the light-chore rule and `lead-fixed:` commit line; independent spawns in one message; checker and cold reader merged when no how-to page changed; the tester opt-in; every brief ends with the report shape. `epic-delivery` "The lead stays small", "Each check runs once, at its moment, with one owner"; design.md#d-6.
-- [ ] 3.4 GitNexus at two points: `epic-delivery` stage loop and briefs, `meaningfy-code-review` lenses take blast radius from the brief, `team-lead` keeps the GitNexus tools, `implementer` and `code-reviewer` lose them, with a Gherkin scenario under `tests/features/agents` for each agent change. `epic-delivery` "Each check runs once…", `pr-review-modes` "Refactor recommendations carry gitnexus blast radius"; design.md#d-7.
+- [x] 3.2 `epic-delivery` workflow JSON (`reviewers`, `lenses`, `risk_reviewers` per appetite; the navigator's ceiling in `mods/navigator/lib/dispatch.ts` reads `risk=recorded` from the mark, with tests) and `meaningfy-code-review`: the review sets of D-4, the grouped run reporting per lens id, the five-lens run as the opt-in deep review, the "combined is a defect" sentence replaced; `code-reviewer` body accepts a lens group. `epic-delivery` "The loop scales with the appetite", `pr-review-modes` "The default review is two grouped runs"; design.md#d-4.
+- [x] 3.3 `epic-delivery`: the light-chore rule and `lead-fixed:` commit line; independent spawns in one message; checker and cold reader merged when no how-to page changed; the tester opt-in; every brief ends with the report shape. `epic-delivery` "The lead stays small", "Each check runs once, at its moment, with one owner"; design.md#d-6.
+- [x] 3.4 GitNexus at two points: `epic-delivery` stage loop and briefs, `meaningfy-code-review` lenses take blast radius from the brief, `team-lead` keeps the GitNexus tools, `implementer` and `code-reviewer` lose them, with a Gherkin scenario under `tests/features/agents` for each agent change. `epic-delivery` "Each check runs once…", `pr-review-modes` "Refactor recommendations carry gitnexus blast radius"; design.md#d-7.
 - [ ] 3.5 Measure: within seven days of the release, §Stage 3: spawns per stage and verification share from the result lines, gates passed. `session-retrospective` "Usage reports form a comparable series"; design.md#d-17.
 
 ## 4. Lower the floor (stage 4, DEC-5, DEC-9, DEC-15, DEC-16)
@@ -53,7 +53,7 @@
 
 ## Roadmap
 
-- [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [x] 1.5 · [x] 1.6 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [ ] 2.5 · [ ] 3.1 · [ ] 3.2 · [ ] 3.3 · [ ] 3.4 · [ ] 3.5 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5 · [ ] 4.6 · [ ] 4.7 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 5.4 · [ ] 5.5 · [ ] 6.1
+- [x] 1.1 · [x] 1.2 · [x] 1.3 · [ ] 1.4 · [x] 1.5 · [x] 1.6 · [x] 2.1 · [x] 2.2 · [x] 2.3 · [x] 2.4 · [ ] 2.5 · [x] 3.1 · [x] 3.2 · [x] 3.3 · [x] 3.4 · [ ] 3.5 · [ ] 4.1 · [ ] 4.2 · [ ] 4.3 · [ ] 4.4 · [ ] 4.5 · [ ] 4.6 · [ ] 4.7 · [ ] 5.1 · [ ] 5.2 · [ ] 5.3 · [ ] 5.4 · [ ] 5.5 · [ ] 6.1
 
 Within a stage, tasks are independent unless numbered after one they name (2.1 before 2.4's
 threshold reference; 4.1 before 4.2; 1.2 before 1.3, 1.5 and 1.6; 1.4 decides 4.2's variant);
