@@ -217,9 +217,8 @@ Run 2026-11-22, inline by the lead (P-0006: at TINY to MEDIUM the attack and the
 
 ## Delivery decisions
 
-- D-1 Stage 1: one builder for tasks 1.1–1.8 (one skill).
-- D-2 Stage 1 review: wrong APIs, dead pointers and the row-id guard raised to Critical and fixed;
-  five findings under the floor (PR body).
+- D-1 Stage 1: one builder for 1.1–1.8. D-2: wrong APIs, dead pointers raised to Critical (#355).
+- D-3 Stage 2 pins Cypress 15.21.2 (cypress-axe 1.7.0 peers ≤15); `ui-browsers` has no sudo.
 
 ## Open Questions
 

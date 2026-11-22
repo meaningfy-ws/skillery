@@ -1,0 +1,10 @@
+#-----------------------------------------------------------------------------
+# UI tests — Cypress (rules: the ui-testing skill)
+#-----------------------------------------------------------------------------
+.PHONY: test-ui
+
+test-ui: ## Run the UI tests (Cypress)
+	@ echo -e "$(BUILD_PRINT)$(ICON_PROGRESS) Running UI tests$(END_BUILD_PRINT)"
+	@ cd <<UI_DIR>> && npx cypress run
+	@ echo -e "$(BUILD_PRINT)$(ICON_DONE) UI tests passed$(END_BUILD_PRINT)"
+

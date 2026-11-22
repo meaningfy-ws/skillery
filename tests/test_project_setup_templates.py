@@ -5,9 +5,11 @@ The probe at the end runs the real scaffold.sh into a temporary repository.
 """
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -421,3 +423,214 @@ def test_the_gate_reference_splits_light_ci_from_the_parallel_local_gate():
     text = _text(CI_REFERENCE)
     assert "light" in text.lower() and "make check-all" in text and "-j" in text
     assert "result line" in text and "pull request" in text.lower()
+
+
+# ---- issue #230: --ui-tool records a product's UI tool (design D-6) --------------------------
+
+
+def _json(path: Path) -> dict:
+    return json.loads(_text(path))
+
+
+@needs_bash
+def test_ui_tool_playwright_python_pins_deps_and_writes_the_e2e_conftest(tmp_path):
+    done = _run_scaffold(tmp_path, "--skip-existing", "--ui-tool", "playwright")
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert "Python" in done.stdout
+    deps = _text(tmp_path / "pyproject.toml")
+    assert re.search(r'"pytest-playwright==\d+\.\d+\.\d+"', deps)
+    assert re.search(r'"axe-playwright-python==\d+\.\d+\.\d+"', deps)
+    conftest = _text(tmp_path / "tests/e2e/conftest.py")
+    assert "UI_BASE_URL" in conftest and "critical" in conftest and "serious" in conftest
+    makefile = _text(tmp_path / "Makefile")
+    browsers = _make_target(makefile, "ui-browsers")
+    assert "uv run playwright install chromium" in browsers and "--with-deps" not in browsers
+    assert "uv run playwright install-deps chromium" in makefile  # the CI / fresh-machine note
+    assert "UI tests: Playwright (Python)" in _text(tmp_path / "AGENTS.md")
+    assert not (tmp_path / "playwright.config.ts").exists() and not (tmp_path / "package.json").exists()
+
+
+@needs_bash
+@pytest.mark.parametrize("how", ["flag", "frontend"])
+def test_ui_tool_playwright_typescript_writes_config_and_package(tmp_path, how):
+    extra = ["--typescript"] if how == "flag" else []
+    if how == "frontend":
+        (tmp_path / "frontend").mkdir()
+    done = _run_scaffold(tmp_path, "--skip-existing", "--ui-tool", "playwright", *extra)
+    assert done.returncode == 0, done.stdout + done.stderr
+    base = tmp_path / "frontend" if how == "frontend" else tmp_path
+    config = _text(base / "playwright.config.ts")
+    assert "defineBddConfig" in config and "playwright-bdd" in config and "retries: 0" in config
+    assert "width: 1280" in config and "height: 720" in config and "chromium" in config
+    pkg = _json(base / "package.json")
+    assert set(pkg["devDependencies"]) == {"@playwright/test", "playwright-bdd", "@axe-core/playwright"}
+    assert all(re.fullmatch(r"\d+\.\d+\.\d+", v) for v in pkg["devDependencies"].values())
+    run = _make_target(_text(tmp_path / "Makefile"), "test-ui")
+    assert "npx bddgen && npx playwright test" in run
+    assert "UI tests: Playwright (TypeScript)" in _text(tmp_path / "AGENTS.md")
+    assert "playwright==" not in _text(tmp_path / "pyproject.toml")
+    assert not (tmp_path / "tests/e2e/conftest.py").exists()
+
+
+@needs_bash
+def test_ui_tool_cypress_writes_config_and_package(tmp_path):
+    done = _run_scaffold(tmp_path, "--skip-existing", "--ui-tool", "cypress")
+    assert done.returncode == 0, done.stdout + done.stderr
+    config = _text(tmp_path / "cypress.config.js")
+    assert ".feature" in config and "retries: 0" in config
+    assert "await addCucumberPreprocessorPlugin(on, config)" in config
+    assert "createEsbuildPlugin" in config and "file:preprocessor" in config and "return config" in config
+    assert "cypress-axe" in _text(tmp_path / "tests/e2e/support/e2e.js")
+    assert "stepDefinitions" in _text(tmp_path / ".cypress-cucumber-preprocessorrc.json")
+    pkg = _json(tmp_path / "package.json")
+    assert set(pkg["devDependencies"]) == {
+        "cypress", "@badeball/cypress-cucumber-preprocessor", "cypress-axe",
+        "@bahmutov/cypress-esbuild-preprocessor", "esbuild",
+    }
+    assert all(re.fullmatch(r"\d+\.\d+\.\d+", v) for v in pkg["devDependencies"].values())
+    assert "npx cypress run" in _make_target(_text(tmp_path / "Makefile"), "test-ui")
+    assert "UI tests: Cypress (JavaScript)" in _text(tmp_path / "AGENTS.md")
+
+
+@needs_bash
+def test_ui_tool_leaves_an_existing_package_json_and_names_the_dependencies(tmp_path):
+    (tmp_path / "package.json").write_bytes(b'{"name": "mine"}\n')
+    done = _run_scaffold(tmp_path, "--skip-existing", "--ui-tool", "cypress")
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert (tmp_path / "package.json").read_bytes() == b'{"name": "mine"}\n'
+    for dep in ("cypress", "@badeball/cypress-cucumber-preprocessor", "cypress-axe"):
+        assert dep in done.stdout + done.stderr
+    assert "WARNING" in done.stdout + done.stderr
+
+
+@needs_bash
+@pytest.mark.parametrize("extra", [(), ("--ui-tool", "none")])
+def test_ui_tool_none_or_default_changes_nothing(tmp_path, extra):
+    done = _run_scaffold(tmp_path, "--skip-existing", *extra)
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert "UI tests:" not in _text(tmp_path / "AGENTS.md")
+    assert "<<" not in _text(tmp_path / "AGENTS.md")
+    makefile = _text(tmp_path / "Makefile")
+    assert "ui-browsers" not in makefile and "test-ui" not in makefile and "<<" not in makefile
+    assert "playwright" not in _text(tmp_path / "pyproject.toml")
+    assert "<<" not in _text(tmp_path / "pyproject.toml")
+    for name in ("package.json", "playwright.config.ts", "cypress.config.js", "tests/e2e/conftest.py"):
+        assert not (tmp_path / name).exists()
+
+
+@needs_bash
+@pytest.mark.parametrize("archetype", ["library", "doc-only"])
+def test_ui_tool_needs_the_product_archetype(tmp_path, archetype):
+    done = subprocess.run(
+        ["bash", str(SCAFFOLD), "-p", "orders", "-n", "Orders", "-a", archetype, "--ui-tool", "playwright",
+         "--no-lock", "--target", str(tmp_path)],
+        cwd=ROOT, capture_output=True, text=True, stdin=subprocess.DEVNULL, timeout=120,
+    )
+    assert done.returncode == 2
+    assert "--ui-tool needs the product archetype" in done.stderr
+    assert not list(tmp_path.iterdir())
+
+
+@needs_bash
+def test_ui_tool_unknown_value_lists_the_three(tmp_path):
+    done = _run_scaffold(tmp_path, "--skip-existing", "--ui-tool", "selenium")
+    assert done.returncode == 2
+    assert all(v in done.stderr for v in ("playwright", "cypress", "none"))
+
+
+@needs_make
+@pytest.mark.parametrize("extra", [("playwright",), ("playwright", "--typescript"), ("cypress",)])
+def test_scaffolded_repository_with_a_ui_tool_passes_check_bindings(tmp_path, extra):
+    done = _run_scaffold(tmp_path, "--skip-existing", "--ui-tool", *extra)
+    assert done.returncode == 0, done.stdout + done.stderr
+    ok = _bindings(tmp_path)
+    assert ok.returncode == 0, ok.stdout + ok.stderr
+
+
+def _tests_paths(config: Path) -> list[Path]:
+    """Every tests/e2e path a config file names, glob tail cut off, resolved from the file's folder."""
+    found = re.findall(r"""['"]((?:\.\./)*tests/e2e[^'"]*)['"]""", _text(config))
+    return [(config.parent / re.split(r"[*\[{]", p)[0]).resolve() for p in found]
+
+
+@needs_bash
+@pytest.mark.parametrize("tool, files", [
+    ("cypress", ("cypress.config.js", ".cypress-cucumber-preprocessorrc.json")),
+    ("playwright", ("playwright.config.ts",)),
+])
+@pytest.mark.parametrize("where", ["root", "frontend"])
+def test_ui_config_paths_resolve_to_the_repository_tests_e2e(tmp_path, tool, files, where):
+    extra = ["--typescript"] if tool == "playwright" and where == "root" else []
+    if where == "frontend":
+        (tmp_path / "frontend").mkdir()
+    done = _run_scaffold(tmp_path, "--skip-existing", "--ui-tool", tool, *extra)
+    assert done.returncode == 0, done.stdout + done.stderr
+    base = tmp_path / "frontend" if where == "frontend" else tmp_path
+    want = (tmp_path / "tests/e2e").resolve()
+    for name in files:
+        paths = _tests_paths(base / name)
+        assert paths, name
+        assert all(p == want or want in p.parents for p in paths), (name, paths)
+    assert "<<" not in "".join(_text(f) for f in base.iterdir() if f.is_file())
+
+
+@needs_bash
+@pytest.mark.parametrize("extra", [(), ("--ui-tool", "cypress"), ("--ui-tool", "playwright", "--typescript")])
+def test_ruff_has_the_e2e_ignore_only_for_python_playwright(tmp_path, extra):
+    done = _run_scaffold(tmp_path, "--skip-existing", *extra)
+    assert done.returncode == 0, done.stdout + done.stderr
+    ruff = _text(tmp_path / "ruff.toml")
+    assert "tests/e2e/conftest.py" not in ruff and "<<" not in ruff
+    assert '"tests/**/*.py" = ["PLR2004"]         # literal' in ruff
+
+
+@needs_bash
+def test_ruff_has_the_e2e_ignore_for_python_playwright(tmp_path):
+    done = _run_scaffold(tmp_path, "--skip-existing", "--ui-tool", "playwright")
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert '"tests/e2e/conftest.py" = ["TID251"]' in _text(tmp_path / "ruff.toml")
+
+
+def test_scaffold_leaves_no_temp_dir_or_trap():
+    text = _text(SCAFFOLD)
+    assert "mktemp" not in text and "trap " not in text
+
+
+@needs_bash
+@pytest.mark.parametrize("tool, kept, names", [
+    ("playwright", "Makefile", ("ui-browsers",)),
+    ("playwright", "pyproject.toml", ("pytest-playwright", "axe-playwright-python")),
+    ("playwright", "AGENTS.md", ("UI tests: Playwright (Python)",)),
+    ("cypress", "Makefile", ("test-ui",)),
+    ("cypress", "AGENTS.md", ("UI tests: Cypress (JavaScript)",)),
+])
+def test_a_kept_file_that_misses_the_ui_tool_gets_a_warning(tmp_path, tool, kept, names):
+    (tmp_path / kept).write_bytes(b"# mine\n")
+    done = _run_scaffold(tmp_path, "--skip-existing", "--ui-tool", tool)
+    out = done.stdout + done.stderr
+    assert done.returncode == 0, out
+    assert (tmp_path / kept).read_bytes() == b"# mine\n"
+    warning = [ln for ln in out.splitlines() if "WARNING" in ln and kept in ln]
+    assert warning, out
+    assert all(n in " ".join(warning) for n in names), warning
+
+
+@needs_bash
+def test_a_complete_ui_scaffold_prints_no_half_applied_warning(tmp_path):
+    done = _run_scaffold(tmp_path, "--skip-existing", "--ui-tool", "playwright")
+    assert done.returncode == 0 and "WARNING" not in done.stdout + done.stderr
+
+
+@needs_bash
+def test_a_test_under_tests_e2e_gets_the_e2e_marker_from_its_folder(tmp_path):
+    assert _run_scaffold(tmp_path, "--skip-existing").returncode == 0
+    (tmp_path / "tests/e2e/test_probe.py").write_text("def test_probe():\n    assert True\n", encoding="utf-8")
+
+    def collected(marker: str) -> str:
+        return subprocess.run(
+            [sys.executable, "-m", "pytest", "tests/e2e", "-m", marker, "--collect-only", "-q", "-p", "no:cacheprovider"],
+            cwd=tmp_path, capture_output=True, text=True, timeout=120,
+        ).stdout
+
+    assert "test_probe" in collected("e2e")
+    assert "test_probe" not in collected("unit")

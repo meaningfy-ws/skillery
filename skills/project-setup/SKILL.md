@@ -31,7 +31,7 @@ green, with quiet gates and a thin `AGENTS.md`.
 
 Confirm the plan before writing; commit only when told. Read
 `references/modernizing-existing-projects.md` when the repo already exists, instead of steps 1 to 3:
-it adds the audit, the upgrade as an EPIC and PLAN, the order of slices and the shared checks.
+it adds the audit, the upgrade as an EPIC and PLAN, slice order and shared checks.
 
 1. **Interview.** Read `references/interview.md` before the first question: it adds the seven
    groups, the archetype filter, the doc-only elicitation and the echo-back.
@@ -41,17 +41,17 @@ it adds the audit, the upgrade as an EPIC and PLAN, the order of slices and the 
    `--deployable`, `--minimal` (agentic files and `.claude/` only), `--python`, `--slug`, `--org`,
    `--branch`, `--no-docs|--no-infra|--no-ci`, `--dry-run`, `--force|--skip-existing`. With
    `--neo4j`, pass `--linkml-generators <linkml-engineering folder>/scripts/linkml_neo4j`: skills
-   install apart, so the scaffolder cannot find a sibling. Idempotent; never clobbers unasked (it prompts, or fails
+   install apart, so no sibling is found. Idempotent; never clobbers unasked (it prompts, or fails
    without a terminal).
 4. **Fill the pillars.**
    - Read `references/config-files.md` when you edit or migrate a root tool file: it adds the rules
      the templates cannot show, the suppression rule and the migrations.
-   - Read `references/testing-setup.md` when you wire or move tests: it adds the tiers, the marker
-     hook, the lanes and the coverage gate.
+   - Read `references/testing-setup.md` when you wire or move tests: it adds the tiers, markers,
+     lanes and the coverage gate.
    - Read `references/architecture-guardrails.md` when you write or groom `.importlinter`: it adds
-     the tiers, the two-step method and the peer-import gotcha.
+     the tiers, two-step method and peer-import gotcha.
    - Read `references/agentic-setup.md` when you write `AGENTS.md`, `CLAUDE.md`, `.claude/` or
-     `.serena/`: it adds the pointer rule, the thin template, the index rules and Serena.
+     `.serena/`: it adds the pointer rule, thin template, index rules and Serena.
    - Read `references/spine-projection.md` when you project or refresh `openspec/`: it adds the
      config rules, the pins and the refresh path.
    - Read `references/ci-and-infra.md` when you wire CI, the CD stub or `infra/`: it adds the gates

@@ -17,6 +17,8 @@ Versions at or below `2.4.0` predate this changelog; see the git history and the
 - **`ui-testing`**: rules for UI tests in Cypress or Playwright (#230). Nine rules with their
   sources, one line per tool, and the accessibility, browser and broken-screen checks; checklist
   rule 2 of `cosmic-python` now points to it.
+- **`project-setup`**: `--ui-tool playwright|cypress|none` records a product's UI tool and writes its
+  config, make target and `AGENTS.md` line (#230).
 
 ## [3.23.0] - 2026-11-22
 
